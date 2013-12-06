@@ -1,0 +1,2083 @@
+<?xml version="1.0"?>
+<Schema name="reportSchema">
+	
+
+	
+	<Cube name="SubscriberCube">
+	    <Table name="subscriber"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="createYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="createMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="createWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="createDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		
+		<Dimension name="ModifiedYear">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedYear" defaultMember="All ModifiedYear">
+				<Level name="ModifiedYear" column="updateYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedMonth" defaultMember="All ModifiedMonth">
+				<Level name="ModifiedMonth" column="updateMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedWeekday">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedWeekday" defaultMember="All ModifiedWeekday">
+				<Level name="ModifiedWeekday" column="updateWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedDayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedDayOfMonth" defaultMember="All ModifiedDayOfMonth">
+				<Level name="ModifiedDayOfMonth" column="updateDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="State">
+			<Hierarchy hasAll="true" allMemberName="All State" defaultMember="All State">
+				<Level name="State" column="state" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="City">
+			<Hierarchy hasAll="true" allMemberName="All City" defaultMember="All City">
+				<Level name="City" column="city" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="KYCLevel">
+			<Hierarchy hasAll="true" allMemberName="All KYCLevel" defaultMember="All KYCLevel">
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Type">
+			<Hierarchy hasAll="true" allMemberName="All Type" defaultMember="All Type">
+				<Level name="Type" column="type" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="IdType">
+			<Hierarchy hasAll="true" allMemberName="All IdType" defaultMember="All IdType">
+				<Level name="IdType" column="IdType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="IdNumber">
+			<Hierarchy hasAll="true" allMemberName="All IdNumber" defaultMember="All IdNumber">
+				<Level name="IdNumber" column="IdNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<!--  <Dimension name="SubType">
+			<Hierarchy hasAll="true" allMemberName="All SubType" defaultMember="All SubType">
+				<Level name="SubType" column="subtype" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="Code">
+			<Hierarchy hasAll="true" allMemberName="All Code" defaultMember="All Code">
+				<Level name="Code" column="code" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension> -->
+		<Dimension name="MDN">
+			<Hierarchy hasAll="true" allMemberName="All MDN" defaultMember="All MDN">
+				<Level name="MDN" column="subscribermdn" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="FirstName">
+			<Hierarchy hasAll="true" allMemberName="All FirstName" defaultMember="All FirstName">
+				<Level name="FirstName" column="firstname" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="LastName">
+			<Hierarchy hasAll="true" allMemberName="All LastName" defaultMember="All LastName">
+				<Level name="LastName" column="lastname" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="AddressLine1">
+			<Hierarchy hasAll="true" allMemberName="All AddressLine1" defaultMember="All AddressLine1">
+				<Level name="AddressLine1" column="addressLine1" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="AddressLine2">
+			<Hierarchy hasAll="true" allMemberName="All AddressLine2" defaultMember="All AddressLine2">
+				<Level name="AddressLine2" column="addressLine2" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ZipCode">
+			<Hierarchy hasAll="true" allMemberName="All ZipCode" defaultMember="All ZipCode">
+				<Level name="ZipCode" column="zipCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Language">
+			<Hierarchy hasAll="true" allMemberName="All Language" defaultMember="All Language">
+				<Level name="Language" column="language" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="TimeZone">
+			<Hierarchy hasAll="true" allMemberName="All TimeZone" defaultMember="All TimeZone">
+				<Level name="TimeZone" column="timeZone" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Status">
+			<Hierarchy hasAll="true" allMemberName="All Status" defaultMember="All Status">
+				<Level name="Status" column="status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Restrictions">
+			<Hierarchy hasAll="true" allMemberName="All Restrictions" defaultMember="All Restrictions">
+				<Level name="Restrictions" column="restrictions" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DOB">
+			<Hierarchy hasAll="true" allMemberName="All DOB" defaultMember="All DOB">
+				<Level name="DOB" column="DOB" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Email">
+			<Hierarchy hasAll="true" allMemberName="All Email" defaultMember="All Email">
+				<Level name="Email" column="email" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Currency">
+			<Hierarchy hasAll="true" allMemberName="All Currency" defaultMember="All Currency">
+				<Level name="Currency" column="currency" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PartnerCode">
+			<Hierarchy hasAll="true" allMemberName="All PartnerCode" defaultMember="All PartnerCode">
+				<Level name="PartnerCode" column="partnerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PartnerType">
+			<Hierarchy hasAll="true" allMemberName="All PartnerType" defaultMember="All PartnerType">
+				<Level name="PartnerType" column="partnerType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="UserName">
+			<Hierarchy hasAll="true" allMemberName="All UserName" defaultMember="All UserName">
+				<Level name="UserName" column="userName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TradeName">
+			<Hierarchy hasAll="true" allMemberName="All TradeName" defaultMember="All TradeName">
+				<Level name="TradeName" column="tradeName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="LineOfBusiness">
+			<Hierarchy hasAll="true" allMemberName="All LineOfBusiness" defaultMember="All LineOfBusiness">
+				<Level name="LineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ContactPerson">
+			<Hierarchy hasAll="true" allMemberName="All ContactPerson" defaultMember="All ContactPerson">
+				<Level name="ContactPerson" column="contactPerson" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ContactPersonDesignation">
+			<Hierarchy hasAll="true" allMemberName="All ContactPersonDesignation" defaultMember="All ContactPersonDesignation">
+				<Level name="ContactPersonDesignation" column="ContactPersonDesignation" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PhoneNumber">
+			<Hierarchy hasAll="true" allMemberName="All PhoneNumber" defaultMember="All PhoneNumber">
+				<Level name="PhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="FaxNumber">
+			<Hierarchy hasAll="true" allMemberName="All FaxNumber" defaultMember="All FaxNumber">
+				<Level name="FaxNumber" column="faxNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PartnerClass">
+			<Hierarchy hasAll="true" allMemberName="All PartnerClass" defaultMember="All PartnerClass">
+				<Level name="PartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CreatedBy">
+			<Hierarchy hasAll="true" allMemberName="All CreatedBy" defaultMember="All CreatedBy">
+				<Level name="CreatedBy" column="CreatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="UpdatedBy">
+			<Hierarchy hasAll="true" allMemberName="All UpdatedBy" defaultMember="All UpdatedBy">
+				<Level name="UpdatedBy" column="UpdatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CreateTime">
+			<Hierarchy hasAll="true" allMemberName="All CreateTime" defaultMember="All CreateTime">
+				<Level name="CreateTime" column="CreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="UpdateTime">
+			<Hierarchy hasAll="true" allMemberName="All UpdateTime" defaultMember="All UpdateTime">
+				<Level name="UpdateTime" column="UpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+	
+		<Measure name="TotalCount" column="subscriberid" aggregator="count" />	
+    </Cube>
+    	
+	<Cube name="UserRolesAndRightsCube">
+	    <Table name="user_roles"/>
+		<Dimension name="Role">
+			<Hierarchy hasAll="true" allMemberName="All Role" defaultMember="All Role">
+				<Level name="Role" column="Role" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="UserName">
+			<Hierarchy hasAll="true" allMemberName="All UserName" defaultMember="All UserName">
+				<Level name="UserName" column="UserName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="LastUpdateTime">
+			<Hierarchy hasAll="true" allMemberName="All LastUpdateTime" defaultMember="All LastUpdateTime">
+				<Level name="LastUpdateTime" column="LastUpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CreateTime">
+			<Hierarchy hasAll="true" allMemberName="All CreateTime" defaultMember="All CreateTime">
+				<Level name="CreateTime" column="createTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="UpdatedBy">
+			<Hierarchy hasAll="true" allMemberName="All UpdatedBy" defaultMember="All UpdatedBy">
+				<Level name="UpdatedBy" column="UpdatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="UserID" aggregator="count" formatString="Standard"/>
+	
+    </Cube>
+	
+	<Cube name="KinInformationMissingAccountCube">
+	    <Table name="kinnformationmissingaccount"/>
+		<Dimension name="Subscriber MDN">
+			<Hierarchy hasAll="true" allMemberName="All Subscriber MDN" defaultMember="All Subscriber MDN">
+				<Level name="Subscriber MDN" column="SubscriberMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="FirstName">
+			<Hierarchy hasAll="true" allMemberName="All FirstName" defaultMember="All FirstName">
+				<Level name="FirstName" column="firstname" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="KYCLevel">
+			<Hierarchy hasAll="true" allMemberName="All KYCLevel" defaultMember="All KYCLevel">
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="Status">
+			<Hierarchy hasAll="true" allMemberName="All Status" defaultMember="All Status">
+				<Level name="Status" column="Status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="SubscriberID" aggregator="count" formatString="Standard"/>
+    </Cube>
+	
+	<Cube name="CommodityTransferCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="createYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="createMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="createWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="createDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+			
+		<Dimension name="ModifiedYear">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedYear" defaultMember="All ModifiedYear">
+				<Level name="ModifiedYear" column="updateYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedMonth" defaultMember="All ModifiedMonth">
+				<Level name="ModifiedMonth" column="updateMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedWeekday">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedWeekday" defaultMember="All ModifiedWeekday">
+				<Level name="ModifiedWeekday" column="updateWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedDayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedDayOfMonth" defaultMember="All ModifiedDayOfMonth">
+				<Level name="ModifiedDayOfMonth" column="updateDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+	<!--	<Dimension name="Hour">
+			<Hierarchy hasAll="true" allMemberName="All Hour" defaultMember="All Hour">
+				<Level name="Hour" column="hour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension> -->
+		
+		<Dimension name="CommodityTransferID">
+			<Hierarchy hasAll="true" allMemberName="All CommodityTransferID" defaultMember="All CommodityTransferID">
+				<Level name="CommodityTransferID" column="CommodityTransferID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="CommodityType">
+			<Hierarchy hasAll="true" allMemberName="All CommodityType" defaultMember="All CommodityType">
+				<Level name="CommodityType" column="UICategoryName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransferStatus">
+			<Hierarchy hasAll="true" allMemberName="All TransferStatus" defaultMember="All TransferStatus">
+				<Level name="TransferStatus" column="TransferStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransferStatusReason">
+			<Hierarchy hasAll="true" allMemberName="All TransferStatusReason" defaultMember="All TransferStatusReason">
+				<Level name="TransferStatusReason" column="TransferFailureReasonName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlId" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SctlId">
+				<Table name="sctltxn"/>
+				<Level name="SctlId" column="SctlId" uniqueMembers="true"/>
+				<Level name="TransactionID" column="TransactionID" uniqueMembers="true"/>
+				<Level name="Status" column="Status" uniqueMembers="true"/>	
+				<Level name="Service" column="Service" uniqueMembers="true"/>
+				<Level name="TransactionType" column="TransactionType" uniqueMembers="true"/>
+				<Level name="SourceMDN" column="SourceMDN" uniqueMembers="true"/>
+				<Level name="DestinationMDN" column="DestMDN" uniqueMembers="true"/>
+				<Level name="TransactionAmount" column="TransactionAmount" uniqueMembers="true"/>		
+				<Level name="CalculatedCharge" column="CalculatedCharge" uniqueMembers="true"/>							
+				<Level name="Channel" column="Channel" uniqueMembers="true"/>				
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="SourceMDN" foreignKey="SourceMDN">
+			<Hierarchy hasAll="true" primaryKey="subscribermdn">
+				<Table name="subscriber"/>
+				<Level name="SourceType" column="type" uniqueMembers="true"/>
+				<Level name="SourceMDN" column="subscribermdn" uniqueMembers="true"/>
+				<Level name="SourceFirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="SourceLastName" column="lastname" uniqueMembers="true"/>				
+				<Level name="SourceKycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="SourceStatus" column="status" uniqueMembers="true"/>
+				<Level name="SourceRestrictions" column="restrictions" uniqueMembers="true"/>
+				<Level name="SourceDOB" column="DOB" uniqueMembers="true"/>
+				<Level name="SourceEmail" column="email" uniqueMembers="true"/>
+				<Level name="SourceCurrency" column="currency" uniqueMembers="true"/>
+				<Level name="SourceLanguage" column="language" uniqueMembers="true"/>
+				<Level name="SourceTimeZone" column="timeZone" uniqueMembers="true"/>
+				<Level name="SourceAddressLine1" column="addressLine1" uniqueMembers="true"/>
+				<Level name="SourceAddressLine2" column="addressLine2" uniqueMembers="true"/>
+				<Level name="SourceState" column="state" uniqueMembers="true"/>
+				<Level name="SourceCity" column="city" uniqueMembers="true"/>
+				<Level name="SourceZipCode" column="zipCode" uniqueMembers="true"/>
+				<Level name="SourcePartnerCode" column="partnerCode" uniqueMembers="true"/>
+				<Level name="SourcePartnerType" column="partnerType" uniqueMembers="true"/>
+				<Level name="SourceUserName" column="userName" uniqueMembers="true"/>
+				<Level name="SourceTradeName" column="tradeName" uniqueMembers="true"/>
+				<Level name="SourceLineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+				<Level name="SourceContactPerson" column="contactPerson" uniqueMembers="true"/>
+				<Level name="SourcePhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+				<Level name="SourceFaxNumber" column="faxNumber" uniqueMembers="true"/>
+				<Level name="SourcePartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationMDN" foreignKey="DestMDN">
+			<Hierarchy hasAll="true" primaryKey="subscribermdn">
+				<Table name="subscriber"/>
+				<Level name="DestinationType" column="type" uniqueMembers="true"/>
+				<Level name="DestinationMDN" column="subscribermdn" uniqueMembers="true"/>
+				<Level name="DestinationFirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="DestinationLastName" column="lastname" uniqueMembers="true"/>
+				<Level name="DestinationKycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="DestinationStatus" column="status" uniqueMembers="true"/>
+				<Level name="DestinationRestrictions" column="restrictions" uniqueMembers="true"/>
+				<Level name="DestinationDOB" column="DOB" uniqueMembers="true"/>
+				<Level name="DestinationEmail" column="email" uniqueMembers="true"/>
+				<Level name="DestinationCurrency" column="currency" uniqueMembers="true"/>
+				<Level name="DestinationLanguage" column="language" uniqueMembers="true"/>
+				<Level name="DestinationTimeZone" column="timeZone" uniqueMembers="true"/>
+				<Level name="DestinationAddressLine1" column="addressLine1" uniqueMembers="true"/>
+				<Level name="DestinationAddressLine2" column="addressLine2" uniqueMembers="true"/>
+				<Level name="DestinationState" column="state" uniqueMembers="true"/>
+				<Level name="DestinationCity" column="city" uniqueMembers="true"/>
+				<Level name="DestinationZipCode" column="zipCode" uniqueMembers="true"/>
+				<Level name="DestinationPartnerCode" column="partnerCode" uniqueMembers="true"/>
+				<Level name="DestinationPartnerType" column="partnerType" uniqueMembers="true"/>
+				<Level name="DestinationUserName" column="userName" uniqueMembers="true"/>
+				<Level name="DestinationTradeName" column="tradeName" uniqueMembers="true"/>
+				<Level name="DestinationLineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+				<Level name="DestinationContactPerson" column="contactPerson" uniqueMembers="true"/>
+				<Level name="DestinationPhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+				<Level name="DestinationFaxNumber" column="faxNumber" uniqueMembers="true"/>
+				<Level name="DestinationPartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePocket" foreignKey="SourcePocketID">
+			<Hierarchy hasAll="true" primaryKey="PocketID">
+				<Table name="pocket"/>
+				<Level name="SourcePocketID" column="PocketID" uniqueMembers="true"/>
+				<Level name="SourceSubscriberMDN" column="SubscriberMDN" uniqueMembers="true"/>
+				<Level name="SourceSubscriberID" column="SubscriberID" uniqueMembers="true"/>
+				<Level name="SourceCurrentBalance" column="CurrentBalance" uniqueMembers="true"/>
+				<Level name="SourcePocketType" column="pocketType" uniqueMembers="true"/>
+				<Level name="SourcePocketStatus" column="pocketStatus" uniqueMembers="true"/>
+				<Level name="SourceCreateTime" column="CreateTime" uniqueMembers="true"/>
+				<Level name="SourceUpdateTime" column="UpdateTime" uniqueMembers="true"/>
+				<Level name="SourceCurrentDailyExpenditure" column="CurrentDailyExpenditure" uniqueMembers="true"/>
+				<Level name="SourceCurrentWeeklyExpenditure" column="CurrentWeeklyExpenditure" uniqueMembers="true"/>
+				<Level name="SourceCurrentMonthlyExpenditure" column="CurrentMonthlyExpenditure" uniqueMembers="true"/>
+				<Level name="SourceCurrentDailyTxnsCount" column="CurrentDailyTxnsCount" uniqueMembers="true"/>
+				<Level name="SourceCurrentWeeklyTxnsCount" column="CurrentWeeklyTxnsCount" uniqueMembers="true"/>
+				<Level name="SourceCurrentMonthlyTxnsCount" column="CurrentMonthlyTxnsCount" uniqueMembers="true"/>
+				<Level name="SourcePkDescription" column="PkDescription" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerTransaction" column="PkMaxAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="SourcePkMinAmountPerTransaction" column="PkMinAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerDay" column="PkMaxAmountPerDay" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerWeek" column="PkMaxAmountPerWeek" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerMonth" column="PkMaxAmountPerMonth" uniqueMembers="true"/>
+				<Level name="SourcePkMaxTransactionsPerDay" column="PkMaxTransactionsPerDay" uniqueMembers="true"/>
+				<Level name="SourcePkMaxTransactionsPerWeek" column="PkMaxTransactionsPerWeek" uniqueMembers="true"/>
+				<Level name="SourcePkMaxTransactionsPerMonth" column="PkMaxTransactionsPerMonth" uniqueMembers="true"/>
+
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationPocket" foreignKey="DestPocketID">
+			<Hierarchy hasAll="true" primaryKey="PocketID">
+				<Table name="pocket"/>
+				<Level name="DestinationPocketID" column="PocketID" uniqueMembers="true"/>
+				<Level name="DestinationSubscriberMDN" column="SubscriberMDN" uniqueMembers="true"/>
+				<Level name="DestinationSubscriberID" column="SubscriberID" uniqueMembers="true"/>
+				<Level name="DestinationCurrentBalance" column="CurrentBalance" uniqueMembers="true"/>
+				<Level name="DestinationPocketType" column="pocketType" uniqueMembers="true"/>
+				<Level name="DestinationPocketStatus" column="pocketStatus" uniqueMembers="true"/>
+				<Level name="DestinationCreateTime" column="CreateTime" uniqueMembers="true"/>
+				<Level name="DestinationUpdateTime" column="UpdateTime" uniqueMembers="true"/>
+				<Level name="DestinationCurrentDailyExpenditure" column="CurrentDailyExpenditure" uniqueMembers="true"/>
+				<Level name="DestinationCurrentWeeklyExpenditure" column="CurrentWeeklyExpenditure" uniqueMembers="true"/>
+				<Level name="DestinationCurrentMonthlyExpenditure" column="CurrentMonthlyExpenditure" uniqueMembers="true"/>
+				<Level name="DestinationCurrentDailyTxnsCount" column="CurrentDailyTxnsCount" uniqueMembers="true"/>
+				<Level name="DestinationCurrentWeeklyTxnsCount" column="CurrentWeeklyTxnsCount" uniqueMembers="true"/>
+				<Level name="DestinationCurrentMonthlyTxnsCount" column="CurrentMonthlyTxnsCount" uniqueMembers="true"/>
+				<Level name="DestinationPkDescription" column="PkDescription" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerTransaction" column="PkMaxAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="DestinationPkMinAmountPerTransaction" column="PkMinAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerDay" column="PkMaxAmountPerDay" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerWeek" column="PkMaxAmountPerWeek" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerMonth" column="PkMaxAmountPerMonth" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxTransactionsPerDay" column="PkMaxTransactionsPerDay" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxTransactionsPerWeek" column="PkMaxTransactionsPerWeek" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxTransactionsPerMonth" column="PkMaxTransactionsPerMonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="BankRRN">
+			<Hierarchy hasAll="true" allMemberName="All BankRRN" defaultMember="All BankRRN">
+				<Level name="BankRRN" column="bankRRN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankSTAN">
+			<Hierarchy hasAll="true" allMemberName="All BankSTAN" defaultMember="All BankSTAN">
+				<Level name="BankSTAN" column="bankSTAN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRAction">
+			<Hierarchy hasAll="true" allMemberName="All CSRAction" defaultMember="All CSRAction">
+				<Level name="CSRAction" column="CSRAction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRACtionTime">
+			<Hierarchy hasAll="true" allMemberName="All CSRACtionTime" defaultMember="All CSRACtionTime">
+				<Level name="CSRACtionTime" column="CSRACtionTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserID">
+			<Hierarchy hasAll="true" allMemberName="All CSRUserID" defaultMember="All CSRUserID">
+				<Level name="CSRUserID" column="CSRUserID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserName">
+			<Hierarchy hasAll="true" allMemberName="All CSRUserName" defaultMember="All CSRUserName">
+				<Level name="CSRUserName" column="CSRUserName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="NotificationCode">
+			<Hierarchy hasAll="true" allMemberName="All NotificationCode" defaultMember="All NotificationCode">
+				<Level name="NotificationCode" column="NotificationCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TaxAmount">
+			<Hierarchy hasAll="true" allMemberName="All TaxAmount" defaultMember="All TaxAmount">
+				<Level name="TaxAmount" column="TaxAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Transactions" column="CommodityTransferID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="#,###.00"/>
+		<Measure name="Calculated Charge" column="Charges" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+    
+    
+	
+	<Cube name="PocketCube">
+	    <Table name="pocket"/>
+	    <Dimension name="PocketID">
+			<Hierarchy hasAll="true" allMemberName="All PocketID" defaultMember="All PocketID">
+				<Level name="PocketID" column="PocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CardPan">
+			<Hierarchy hasAll="true" allMemberName="All CardPan" defaultMember="All CardPan">
+				<Level name="CardPan" column="CardPan" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="SubscriberMDN" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="MDN" column="subscribermdn" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="SubscriberFirstName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="FirstName" column="FirstName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberLastName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="LastName" column="LastName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberKYCLevel" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberType" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Type" column="Type" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberIdType" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="IdType" column="IdType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberIdNumber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="IdNumber" column="IdNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberAddressLine1" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="AddressLine1" column="addressLine1" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberAddressLine2" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="AddressLine2" column="addressLine2" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberZipCode" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="ZipCode" column="zipCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberState" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="State" column="State" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCity" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="City" column="City" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCreateTime" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="CreateTime" column="CreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberUpdateTime" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="UpdateTime" column="UpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCreatedBy" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="CreatedBy" column="CreatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberUpdatedBy" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="UpdatedBy" column="UpdatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberLanguage" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Language" column="language" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberTimeZone" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="TimeZone" column="timeZone" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberStatus" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Status" column="status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberRestrictions" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Restrictions" column="restrictions" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberDOB" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="DOB" column="DOB" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberEmail" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Email" column="email" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCurrency" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Currency" column="currency" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPartnerCode" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PartnerCode" column="partnerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPartnerType" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PartnerType" column="partnerType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberUserName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="UserName" column="userName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberTradeName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="TradeName" column="tradeName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberLineOfBusiness" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="LineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberContactPerson" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="ContactPerson" column="contactPerson" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberContactPersonDesignation" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="ContactPersonDesignation" column="ContactPersonDesignation" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPhoneNumber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberFaxNumber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="FaxNumber" column="faxNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPartnerClass" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="CurrentBalance">
+			<Hierarchy hasAll="true" allMemberName="All CurrentBalance" defaultMember="All CurrentBalance">
+				<Level name="CurrentBalance" column="CurrentBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CurrentDailyExpenditure">
+			<Hierarchy hasAll="true" allMemberName="All CurrentDailyExpenditure" defaultMember="All CurrentDailyExpenditure">
+				<Level name="CurrentDailyExpenditure" column="CurrentDailyExpenditure" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CurrentWeeklyExpenditure">
+			<Hierarchy hasAll="true" allMemberName="All CurrentWeeklyExpenditure" defaultMember="All CurrentWeeklyExpenditure">
+				<Level name="CurrentWeeklyExpenditure" column="CurrentWeeklyExpenditure" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="CurrentMonthlyExpenditure">
+			<Hierarchy hasAll="true" allMemberName="All CurrentMonthlyExpenditure" defaultMember="All CurrentMonthlyExpenditure">
+				<Level name="CurrentMonthlyExpenditure" column="CurrentMonthlyExpenditure" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="CurrentDailyTxnsCount">
+			<Hierarchy hasAll="true" allMemberName="All CurrentDailyTxnsCount" defaultMember="All CurrentDailyTxnsCount">
+				<Level name="CurrentDailyTxnsCount" column="CurrentDailyTxnsCount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CurrentWeeklyTxnsCount">
+			<Hierarchy hasAll="true" allMemberName="All CurrentWeeklyTxnsCount" defaultMember="All CurrentWeeklyTxnsCount">
+				<Level name="CurrentWeeklyTxnsCount" column="CurrentWeeklyTxnsCount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CurrentMonthlyTxnsCount">
+			<Hierarchy hasAll="true" allMemberName="All CurrentMonthlyTxnsCount" defaultMember="All CurrentMonthlyTxnsCount">
+				<Level name="CurrentMonthlyTxnsCount" column="CurrentMonthlyTxnsCount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="PkDescription">
+			<Hierarchy hasAll="true" allMemberName="All PkDescription" defaultMember="All PkDescription">
+				<Level name="PkDescription" column="PkDescription" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PkMaxAmountPerTransaction">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxAmountPerTransaction" defaultMember="All PkMaxAmountPerTransaction">
+				<Level name="PkMaxAmountPerTransaction" column="PkMaxAmountPerTransaction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="PkMinAmountPerTransaction">
+			<Hierarchy hasAll="true" allMemberName="All PkMinAmountPerTransaction" defaultMember="All PkMinAmountPerTransaction">
+				<Level name="PkMinAmountPerTransaction" column="PkMinAmountPerTransaction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="PkMaxAmountPerDay">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxAmountPerDay" defaultMember="All PkMaxAmountPerDay">
+				<Level name="PkMaxAmountPerDay" column="PkMaxAmountPerDay" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PkMaxAmountPerWeek">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxAmountPerWeek" defaultMember="All PkMaxAmountPerWeek">
+				<Level name="PkMaxAmountPerWeek" column="PkMaxAmountPerWeek" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PkMaxAmountPerMonth">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxAmountPerMonth" defaultMember="All PkMaxAmountPerMonth">
+				<Level name="PkMaxAmountPerMonth" column="PkMaxAmountPerMonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="PkMaxTransactionsPerDay">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxTransactionsPerDay" defaultMember="All PkMaxTransactionsPerDay">
+				<Level name="PkMaxTransactionsPerDay" column="PkMaxTransactionsPerDay" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PkMaxTransactionsPerWeek">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxTransactionsPerWeek" defaultMember="All PkMaxTransactionsPerWeek">
+				<Level name="PkMaxTransactionsPerWeek" column="PkMaxTransactionsPerWeek" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PkMaxTransactionsPerMonth">
+			<Hierarchy hasAll="true" allMemberName="All PkMaxTransactionsPerMonth" defaultMember="All PkMaxTransactionsPerMonth">
+				<Level name="PkMaxTransactionsPerMonth" column="PkMaxTransactionsPerMonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PocketType">
+			<Hierarchy hasAll="true" allMemberName="All PocketType" defaultMember="All PocketType">
+				<Level name="PocketType" column="pocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PocketStatus">
+			<Hierarchy hasAll="true" allMemberName="All PocketStatus" defaultMember="All PocketStatus">
+				<Level name="PocketStatus" column="pocketStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		
+		<Measure name="Total Pockets" column="PocketID" aggregator="count" formatString="Standard"/>
+    </Cube>
+
+
+
+	<Cube name="SubscriberCommodityTransferCube">
+	    <Table name="subscriber_based_transaction"/>
+	    <Dimension name="TransactionMDN">
+			<Hierarchy hasAll="true" allMemberName="All TransactionMDN" defaultMember="All TransactionMDN">
+				<Level name="TransactionMDN" column="TransactionMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="createYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="createMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="createWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="createDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+			
+		<Dimension name="ModifiedYear">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedYear" defaultMember="All ModifiedYear">
+				<Level name="ModifiedYear" column="updateYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedMonth" defaultMember="All ModifiedMonth">
+				<Level name="ModifiedMonth" column="updateMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedWeekday">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedWeekday" defaultMember="All ModifiedWeekday">
+				<Level name="ModifiedWeekday" column="updateWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedDayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedDayOfMonth" defaultMember="All ModifiedDayOfMonth">
+				<Level name="ModifiedDayOfMonth" column="updateDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+	<!--	<Dimension name="Hour">
+			<Hierarchy hasAll="true" allMemberName="All Hour" defaultMember="All Hour">
+				<Level name="Hour" column="hour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension> -->
+		
+		<Dimension name="CommodityTransferID">
+			<Hierarchy hasAll="true" allMemberName="All CommodityTransferID" defaultMember="All CommodityTransferID">
+				<Level name="CommodityTransferID" column="CommodityTransferID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="CommodityType">
+			<Hierarchy hasAll="true" allMemberName="All CommodityType" defaultMember="All CommodityType">
+				<Level name="CommodityType" column="UICategoryName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransferStatus">
+			<Hierarchy hasAll="true" allMemberName="All TransferStatus" defaultMember="All TransferStatus">
+				<Level name="TransferStatus" column="TransferStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransferStatusReason">
+			<Hierarchy hasAll="true" allMemberName="All TransferStatusReason" defaultMember="All TransferStatusReason">
+				<Level name="TransferStatusReason" column="TransferFailureReasonName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+				<Dimension name="SctlTxnSCTLID" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="SCTLID" column="SCTLID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnTransactionID" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="TransactionID" column="TransactionID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnSourceMDN" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="SourceMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnDestMDN" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="DestMDN" column="DestMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnServiceID" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="ServiceID" column="ServiceID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnService" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="Service" column="Service" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnTransactionTypeID" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="TransactionTypeID" column="TransactionTypeID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnTransactionType" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="TransactionType" column="TransactionType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnChannelCodeID" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="ChannelCodeID" column="ChannelCodeID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnChannel" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="Channel" column="Channel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnTransactionAmount" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="TransactionAmount" column="TransactionAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnCalculatedCharge" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="CalculatedCharge" column="CalculatedCharge" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnPaidAmount" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="PaidAmount" column="PaidAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnCommodityTransferID" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="CommodityTransferID" column="CommodityTransferID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnStatusId" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="StatusId" column="StatusId" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnStatus" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="Status" column="Status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SctlTxnISchargeDistributed" foreignKey="SctlId">
+			<Hierarchy hasAll="true" primaryKey="SCTLID">
+				<Table name="sctltxn"/>
+				<Level name="ISchargeDistributed" column="ISchargeDistributed" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		
+		<Dimension name="SourceMDN" foreignKey="SourceMDN">
+			<Hierarchy hasAll="true" primaryKey="subscribermdn">
+				<Table name="subscriber"/>
+				<Level name="SourceType" column="type" uniqueMembers="true"/>
+				<Level name="SourceMDN" column="subscribermdn" uniqueMembers="true"/>
+				<Level name="SourceFirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="SourceLastName" column="lastname" uniqueMembers="true"/>				
+				<Level name="SourceKycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="SourceStatus" column="status" uniqueMembers="true"/>
+				<Level name="SourceRestrictions" column="restrictions" uniqueMembers="true"/>
+				<Level name="SourceDOB" column="DOB" uniqueMembers="true"/>
+				<Level name="SourceEmail" column="email" uniqueMembers="true"/>
+				<Level name="SourceCurrency" column="currency" uniqueMembers="true"/>
+				<Level name="SourceLanguage" column="language" uniqueMembers="true"/>
+				<Level name="SourceTimeZone" column="timeZone" uniqueMembers="true"/>
+				<Level name="SourceAddressLine1" column="addressLine1" uniqueMembers="true"/>
+				<Level name="SourceAddressLine2" column="addressLine2" uniqueMembers="true"/>
+				<Level name="SourceState" column="state" uniqueMembers="true"/>
+				<Level name="SourceCity" column="city" uniqueMembers="true"/>
+				<Level name="SourceZipCode" column="zipCode" uniqueMembers="true"/>
+				<Level name="SourcePartnerCode" column="partnerCode" uniqueMembers="true"/>
+				<Level name="SourcePartnerType" column="partnerType" uniqueMembers="true"/>
+				<Level name="SourceUserName" column="userName" uniqueMembers="true"/>
+				<Level name="SourceTradeName" column="tradeName" uniqueMembers="true"/>
+				<Level name="SourceLineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+				<Level name="SourceContactPerson" column="contactPerson" uniqueMembers="true"/>
+				<Level name="SourcePhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+				<Level name="SourceFaxNumber" column="faxNumber" uniqueMembers="true"/>
+				<Level name="SourcePartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationMDN" foreignKey="DestMDN">
+			<Hierarchy hasAll="true" primaryKey="subscribermdn">
+				<Table name="subscriber"/>
+				<Level name="DestinationType" column="type" uniqueMembers="true"/>
+				<Level name="DestinationMDN" column="subscribermdn" uniqueMembers="true"/>
+				<Level name="DestinationFirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="DestinationLastName" column="lastname" uniqueMembers="true"/>
+				<Level name="DestinationKycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="DestinationStatus" column="status" uniqueMembers="true"/>
+				<Level name="DestinationRestrictions" column="restrictions" uniqueMembers="true"/>
+				<Level name="DestinationDOB" column="DOB" uniqueMembers="true"/>
+				<Level name="DestinationEmail" column="email" uniqueMembers="true"/>
+				<Level name="DestinationCurrency" column="currency" uniqueMembers="true"/>
+				<Level name="DestinationLanguage" column="language" uniqueMembers="true"/>
+				<Level name="DestinationTimeZone" column="timeZone" uniqueMembers="true"/>
+				<Level name="DestinationAddressLine1" column="addressLine1" uniqueMembers="true"/>
+				<Level name="DestinationAddressLine2" column="addressLine2" uniqueMembers="true"/>
+				<Level name="DestinationState" column="state" uniqueMembers="true"/>
+				<Level name="DestinationCity" column="city" uniqueMembers="true"/>
+				<Level name="DestinationZipCode" column="zipCode" uniqueMembers="true"/>
+				<Level name="DestinationPartnerCode" column="partnerCode" uniqueMembers="true"/>
+				<Level name="DestinationPartnerType" column="partnerType" uniqueMembers="true"/>
+				<Level name="DestinationUserName" column="userName" uniqueMembers="true"/>
+				<Level name="DestinationTradeName" column="tradeName" uniqueMembers="true"/>
+				<Level name="DestinationLineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+				<Level name="DestinationContactPerson" column="contactPerson" uniqueMembers="true"/>
+				<Level name="DestinationPhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+				<Level name="DestinationFaxNumber" column="faxNumber" uniqueMembers="true"/>
+				<Level name="DestinationPartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePocket" foreignKey="SourcePocketID">
+			<Hierarchy hasAll="true" primaryKey="PocketID">
+				<Table name="pocket"/>
+				<Level name="SourcePocketID" column="PocketID" uniqueMembers="true"/>
+				<Level name="SourceSubscriberMDN" column="SubscriberMDN" uniqueMembers="true"/>
+				<Level name="SourceSubscriberID" column="SubscriberID" uniqueMembers="true"/>
+				<Level name="SourceCurrentBalance" column="CurrentBalance" uniqueMembers="true"/>
+				<Level name="SourcePocketType" column="pocketType" uniqueMembers="true"/>
+				<Level name="SourcePocketStatus" column="pocketStatus" uniqueMembers="true"/>
+				<Level name="SourceCreateTime" column="CreateTime" uniqueMembers="true"/>
+				<Level name="SourceUpdateTime" column="UpdateTime" uniqueMembers="true"/>
+				<Level name="SourceCurrentDailyExpenditure" column="CurrentDailyExpenditure" uniqueMembers="true"/>
+				<Level name="SourceCurrentWeeklyExpenditure" column="CurrentWeeklyExpenditure" uniqueMembers="true"/>
+				<Level name="SourceCurrentMonthlyExpenditure" column="CurrentMonthlyExpenditure" uniqueMembers="true"/>
+				<Level name="SourceCurrentDailyTxnsCount" column="CurrentDailyTxnsCount" uniqueMembers="true"/>
+				<Level name="SourceCurrentWeeklyTxnsCount" column="CurrentWeeklyTxnsCount" uniqueMembers="true"/>
+				<Level name="SourceCurrentMonthlyTxnsCount" column="CurrentMonthlyTxnsCount" uniqueMembers="true"/>
+				<Level name="SourcePkDescription" column="PkDescription" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerTransaction" column="PkMaxAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="SourcePkMinAmountPerTransaction" column="PkMinAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerDay" column="PkMaxAmountPerDay" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerWeek" column="PkMaxAmountPerWeek" uniqueMembers="true"/>
+				<Level name="SourcePkMaxAmountPerMonth" column="PkMaxAmountPerMonth" uniqueMembers="true"/>
+				<Level name="SourcePkMaxTransactionsPerDay" column="PkMaxTransactionsPerDay" uniqueMembers="true"/>
+				<Level name="SourcePkMaxTransactionsPerWeek" column="PkMaxTransactionsPerWeek" uniqueMembers="true"/>
+				<Level name="SourcePkMaxTransactionsPerMonth" column="PkMaxTransactionsPerMonth" uniqueMembers="true"/>
+
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationPocket" foreignKey="DestPocketID">
+			<Hierarchy hasAll="true" primaryKey="PocketID">
+				<Table name="pocket"/>
+				<Level name="DestinationPocketID" column="PocketID" uniqueMembers="true"/>
+				<Level name="DestinationSubscriberMDN" column="SubscriberMDN" uniqueMembers="true"/>
+				<Level name="DestinationSubscriberID" column="SubscriberID" uniqueMembers="true"/>
+				<Level name="DestinationCurrentBalance" column="CurrentBalance" uniqueMembers="true"/>
+				<Level name="DestinationPocketType" column="pocketType" uniqueMembers="true"/>
+				<Level name="DestinationPocketStatus" column="pocketStatus" uniqueMembers="true"/>
+				<Level name="DestinationCreateTime" column="CreateTime" uniqueMembers="true"/>
+				<Level name="DestinationUpdateTime" column="UpdateTime" uniqueMembers="true"/>
+				<Level name="DestinationCurrentDailyExpenditure" column="CurrentDailyExpenditure" uniqueMembers="true"/>
+				<Level name="DestinationCurrentWeeklyExpenditure" column="CurrentWeeklyExpenditure" uniqueMembers="true"/>
+				<Level name="DestinationCurrentMonthlyExpenditure" column="CurrentMonthlyExpenditure" uniqueMembers="true"/>
+				<Level name="DestinationCurrentDailyTxnsCount" column="CurrentDailyTxnsCount" uniqueMembers="true"/>
+				<Level name="DestinationCurrentWeeklyTxnsCount" column="CurrentWeeklyTxnsCount" uniqueMembers="true"/>
+				<Level name="DestinationCurrentMonthlyTxnsCount" column="CurrentMonthlyTxnsCount" uniqueMembers="true"/>
+				<Level name="DestinationPkDescription" column="PkDescription" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerTransaction" column="PkMaxAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="DestinationPkMinAmountPerTransaction" column="PkMinAmountPerTransaction" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerDay" column="PkMaxAmountPerDay" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerWeek" column="PkMaxAmountPerWeek" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxAmountPerMonth" column="PkMaxAmountPerMonth" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxTransactionsPerDay" column="PkMaxTransactionsPerDay" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxTransactionsPerWeek" column="PkMaxTransactionsPerWeek" uniqueMembers="true"/>
+				<Level name="DestinationPkMaxTransactionsPerMonth" column="PkMaxTransactionsPerMonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="BankRRN">
+			<Hierarchy hasAll="true" allMemberName="All BankRRN" defaultMember="All BankRRN">
+				<Level name="BankRRN" column="bankRRN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankSTAN">
+			<Hierarchy hasAll="true" allMemberName="All BankSTAN" defaultMember="All BankSTAN">
+				<Level name="BankSTAN" column="bankSTAN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRAction">
+			<Hierarchy hasAll="true" allMemberName="All CSRAction" defaultMember="All CSRAction">
+				<Level name="CSRAction" column="CSRAction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRACtionTime">
+			<Hierarchy hasAll="true" allMemberName="All CSRACtionTime" defaultMember="All CSRACtionTime">
+				<Level name="CSRACtionTime" column="CSRACtionTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserID">
+			<Hierarchy hasAll="true" allMemberName="All CSRUserID" defaultMember="All CSRUserID">
+				<Level name="CSRUserID" column="CSRUserID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserName">
+			<Hierarchy hasAll="true" allMemberName="All CSRUserName" defaultMember="All CSRUserName">
+				<Level name="CSRUserName" column="CSRUserName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="NotificationCode">
+			<Hierarchy hasAll="true" allMemberName="All NotificationCode" defaultMember="All NotificationCode">
+				<Level name="NotificationCode" column="NotificationCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TaxAmount">
+			<Hierarchy hasAll="true" allMemberName="All TaxAmount" defaultMember="All TaxAmount">
+				<Level name="TaxAmount" column="TaxAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Transactions" column="CommodityTransferID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="#,###.00"/>
+		<Measure name="Calculated Charge" column="Charges" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+ 
+    
+    
+    <Cube name="TransactionCube">
+	    <Table name="sctltxn"/>
+		<Dimension name="SCTLID">
+			<Hierarchy hasAll="true" allMemberName="All SCTLID" defaultMember="All SCTLID">
+				<Level name="SCTLID" column="SCTLID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="createYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="createMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="createWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="createDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Hour">
+			<Hierarchy hasAll="true" allMemberName="All Hour" defaultMember="All Hour">
+				<Level name="Hour" column="createHour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="ModifiedYear">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedYear" defaultMember="All ModifiedYear">
+				<Level name="ModifiedYear" column="updateYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedMonth" defaultMember="All ModifiedMonth">
+				<Level name="ModifiedMonth" column="updateMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedWeekday">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedWeekday" defaultMember="All ModifiedWeekday">
+				<Level name="ModifiedWeekday" column="updateWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedDayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedDayOfMonth" defaultMember="All ModifiedDayOfMonth">
+				<Level name="ModifiedDayOfMonth" column="updateDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedHour">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedHour" defaultMember="All ModifiedHour">
+				<Level name="ModifiedHour" column="updateHour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="Service">
+			<Hierarchy hasAll="true" allMemberName="All Service" defaultMember="All Service">
+				<Level name="Service" column="Service" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionType">
+			<Hierarchy hasAll="true" allMemberName="All TransactionType" defaultMember="All TransactionType">
+				<Level name="TransactionType" column="TransactionType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Channel">
+			<Hierarchy hasAll="true" allMemberName="All Channel" defaultMember="All Channel">
+				<Level name="Channel" column="Channel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionStatus">
+			<Hierarchy hasAll="true" allMemberName="All TransactionStatus" defaultMember="All TransactionStatus">
+				<Level name="TransactionStatus" column="Status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceMDN">
+			<Hierarchy hasAll="true" allMemberName="All SourceMDN" defaultMember="All SourceMDN">
+				<Level name="SourceMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePartnerCode" foreignKey="SourceMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="SourcePartnerCode" column="partnerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestMDN">
+			<Hierarchy hasAll="true" allMemberName="All DestMDN" defaultMember="All DestMDN">
+				<Level name="DestMDN" column="DestMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPartnerCode" foreignKey="DestMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="DestPartnerCode" column="partnerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+  
+		<Dimension name="SourcePocketID" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePocketID"  table="pocket" column="PocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceCurrentBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourceCurrentBalance"  table="pocket" column="CurrentBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceCardPan" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourceCardPan"  table="pocket" column="CardPan" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePkDescription" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePkDescription"  table="pocket" column="PkDescription" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePocketType" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePocketType"  table="pocket" column="pocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePocketStatus" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePocketStatus"  table="pocket" column="pocketStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="DestPocketID" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPocketID"  table="pocket" column="PocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestCurrentBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestCurrentBalance"  table="pocket" column="CurrentBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestCardPan" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestCardPan"  table="pocket" column="CardPan" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPkDescription" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPkDescription"  table="pocket" column="PkDescription" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPocketType" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPocketType"  table="pocket" column="pocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPocketStatus" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPocketStatus"  table="pocket" column="pocketStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="TransferStatus" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="TransferStatus" column="TransferStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransferFailureReasonName" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="TransferFailureReasonName" column="TransferFailureReasonName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRAction" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRAction" column="CSRAction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRACtionTime" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRACtionTime" column="CSRACtionTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserID" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRUserID" column="CSRUserID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserName" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRUserName" column="CSRUserName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="NotificationCode" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="NotificationCode" column="NotificationCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankRRN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="BankRRN" column="bankRRN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankSTAN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="BankSTAN" column="bankSTAN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Currency" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="Currency" column="Currency" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="OperatorRRN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="OperatorRRN" column="OperatorRRN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="OperatorSTAN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="OperatorSTAN" column="OperatorSTAN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankCode" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="BankCode" column="BankCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SrcPkEndingBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="SrcPkEndingBalance" column="SourcePocketBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPkEndingBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="DestPkEndingBalance" column="DestPocketBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="TransactionID">
+			<Hierarchy hasAll="true" allMemberName="All TransactionID" defaultMember="All TransactionID">
+				<Level name="TransactionID" column="TransactionID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PaidAmount">
+			<Hierarchy hasAll="true" allMemberName="All PaidAmount" defaultMember="All PaidAmount">
+				<Level name="PaidAmount" column="PaidAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionAmount">
+			<Hierarchy hasAll="true" allMemberName="All TransactionAmount" defaultMember="All TransactionAmount">
+				<Level name="TransactionAmount" column="TransactionAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CalculatedCharge">
+			<Hierarchy hasAll="true" allMemberName="All CalculatedCharge" defaultMember="All CalculatedCharge">
+				<Level name="CalculatedCharge" column="CalculatedCharge" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CreateTime">
+			<Hierarchy hasAll="true" allMemberName="All CreateTime" defaultMember="All CreateTime">
+				<Level name="CreateTime" column="CreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CompletionTime">
+			<Hierarchy hasAll="true" allMemberName="All CompletionTime" defaultMember="All CompletionTime">
+				<Level name="CompletionTime" column="UpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BillerCode">
+			<Hierarchy hasAll="true" allMemberName="All BillerCode" defaultMember="All BillerCode">
+				<Level name="BillerCode" column="MFSBillerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ReconId">
+			<Hierarchy hasAll="true" allMemberName="All ReconId" defaultMember="All ReconId">
+				<Level name="ReconId" column="Info1" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Transactions" column="SCTLID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="TransactionAmount" aggregator="sum" formatString="#,###.00"/>
+		<Measure name="Calculated Charge" column="CalculatedCharge" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+    
+    
+    
+    <Cube name="SubscriberTransactionCube">
+	    <Table name="subscriber_based_sctltxn"/>
+	    <Dimension name="SubscriberMDN">
+			<Hierarchy hasAll="true" allMemberName="All SubscriberMdn" defaultMember="All SubscriberMdn">
+				<Level name="SubscriberMdn" column="SubscriberMdn" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberFirstName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="FirstName" column="FirstName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberLastName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="LastName" column="LastName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberKYCLevel" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberType" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Type" column="Type" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberIdType" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="IdType" column="IdType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberIdNumber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="IdNumber" column="IdNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberAddressLine1" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="AddressLine1" column="addressLine1" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberAddressLine2" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="AddressLine2" column="addressLine2" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberZipCode" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="ZipCode" column="zipCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberState" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="State" column="State" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCity" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="City" column="City" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCreateTime" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="CreateTime" column="CreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberUpdateTime" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="UpdateTime" column="UpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCreatedBy" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="CreatedBy" column="CreatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberUpdatedBy" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="UpdatedBy" column="UpdatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberLanguage" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Language" column="language" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberTimeZone" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="TimeZone" column="timeZone" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberStatus" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Status" column="status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberRestrictions" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Restrictions" column="restrictions" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberDOB" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="DOB" column="DOB" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberEmail" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Email" column="email" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberCurrency" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="Currency" column="currency" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPartnerCode" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PartnerCode" column="partnerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPartnerType" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PartnerType" column="partnerType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberUserName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="UserName" column="userName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberTradeName" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="TradeName" column="tradeName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberLineOfBusiness" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="LineOfBusiness" column="lineOfBusiness" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberContactPerson" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="ContactPerson" column="contactPerson" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPhoneNumber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PhoneNumber" column="phoneNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberFaxNumber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="FaxNumber" column="faxNumber" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberPartnerClass" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="SubscriberMDN">
+				<Table name="subscriber"/>
+				<Level name="PartnerClass" column="partnerClass" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SCTLID">
+			<Hierarchy hasAll="true" allMemberName="All SCTLID" defaultMember="All SCTLID">
+				<Level name="SCTLID" column="SCTLID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="createYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="createMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="createWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="createDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Hour">
+			<Hierarchy hasAll="true" allMemberName="All Hour" defaultMember="All Hour">
+				<Level name="Hour" column="createHour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="ModifiedYear">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedYear" defaultMember="All ModifiedYear">
+				<Level name="ModifiedYear" column="updateYear" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedMonth" defaultMember="All ModifiedMonth">
+				<Level name="ModifiedMonth" column="updateMonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedWeekday">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedWeekday" defaultMember="All ModifiedWeekday">
+				<Level name="ModifiedWeekday" column="updateWeekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedDayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedDayOfMonth" defaultMember="All ModifiedDayOfMonth">
+				<Level name="ModifiedDayOfMonth" column="updateDayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ModifiedHour">
+			<Hierarchy hasAll="true" allMemberName="All ModifiedHour" defaultMember="All ModifiedHour">
+				<Level name="ModifiedHour" column="updateHour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="Service">
+			<Hierarchy hasAll="true" allMemberName="All Service" defaultMember="All Service">
+				<Level name="Service" column="Service" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionType">
+			<Hierarchy hasAll="true" allMemberName="All TransactionType" defaultMember="All TransactionType">
+				<Level name="TransactionType" column="TransactionType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Channel">
+			<Hierarchy hasAll="true" allMemberName="All Channel" defaultMember="All Channel">
+				<Level name="Channel" column="Channel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionStatus">
+			<Hierarchy hasAll="true" allMemberName="All TransactionStatus" defaultMember="All TransactionStatus">
+				<Level name="TransactionStatus" column="Status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceMDN">
+			<Hierarchy hasAll="true" allMemberName="All SourceMDN" defaultMember="All SourceMDN">
+				<Level name="SourceMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestMDN">
+			<Hierarchy hasAll="true" allMemberName="All DestMDN" defaultMember="All DestMDN">
+				<Level name="DestMDN" column="DestMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+  
+		<Dimension name="SourcePocketID" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePocketID"  table="pocket" column="PocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceCurrentBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourceCurrentBalance"  table="pocket" column="CurrentBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceCardPan" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourceCardPan"  table="pocket" column="CardPan" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePkDescription" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePkDescription"  table="pocket" column="PkDescription" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePocketType" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePocketType"  table="pocket" column="pocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourcePocketStatus" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="SourcePocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="SourcePocketStatus"  table="pocket" column="pocketStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="DestPocketID" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPocketID"  table="pocket" column="PocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestCurrentBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestCurrentBalance"  table="pocket" column="CurrentBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestCardPan" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestCardPan"  table="pocket" column="CardPan" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPkDescription" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPkDescription"  table="pocket" column="PkDescription" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPocketType" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPocketType"  table="pocket" column="pocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPocketStatus" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID" primaryKeyTable="commodity_transfer">
+				<Join leftKey="DestPocketID" rightKey="PocketID">
+					<Table name="commodity_transfer"/>
+					<Table name="pocket"/>
+				</Join>
+				<Level name="DestPocketStatus"  table="pocket" column="pocketStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Dimension name="TransferStatus" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="TransferStatus" column="TransferStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransferFailureReasonName" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="TransferFailureReasonName" column="TransferFailureReasonName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRAction" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRAction" column="CSRAction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRACtionTime" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRACtionTime" column="CSRACtionTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserID" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRUserID" column="CSRUserID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CSRUserName" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="CSRUserName" column="CSRUserName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="NotificationCode" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="NotificationCode" column="NotificationCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankRRN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="BankRRN" column="bankRRN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankSTAN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="BankSTAN" column="bankSTAN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Currency" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="Currency" column="Currency" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="OperatorRRN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="OperatorRRN" column="OperatorRRN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="OperatorSTAN" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="OperatorSTAN" column="OperatorSTAN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BankCode" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="BankCode" column="BankCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SrcPkEndingBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="SrcPkEndingBalance" column="SourcePocketBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestPkEndingBalance" foreignKey="CommodityTransferID">
+			<Hierarchy hasAll="true" primaryKey="CommodityTransferID">
+				<Table name="commodity_transfer"/>
+				<Level name="DestPkEndingBalance" column="DestPocketBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="TransactionID">
+			<Hierarchy hasAll="true" allMemberName="All TransactionID" defaultMember="All TransactionID">
+				<Level name="TransactionID" column="TransactionID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PaidAmount">
+			<Hierarchy hasAll="true" allMemberName="All PaidAmount" defaultMember="All PaidAmount">
+				<Level name="PaidAmount" column="PaidAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionAmount">
+			<Hierarchy hasAll="true" allMemberName="All TransactionAmount" defaultMember="All TransactionAmount">
+				<Level name="TransactionAmount" column="TransactionAmount" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CalculatedCharge">
+			<Hierarchy hasAll="true" allMemberName="All CalculatedCharge" defaultMember="All CalculatedCharge">
+				<Level name="CalculatedCharge" column="CalculatedCharge" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CreateTime">
+			<Hierarchy hasAll="true" allMemberName="All CreateTime" defaultMember="All CreateTime">
+				<Level name="CreateTime" column="CreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CompletionTime">
+			<Hierarchy hasAll="true" allMemberName="All CompletionTime" defaultMember="All CompletionTime">
+				<Level name="CompletionTime" column="UpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="BillerCode">
+			<Hierarchy hasAll="true" allMemberName="All BillerCode" defaultMember="All BillerCode">
+				<Level name="BillerCode" column="MFSBillerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ReconId">
+			<Hierarchy hasAll="true" allMemberName="All ReconId" defaultMember="All ReconId">
+				<Level name="ReconId" column="Info1" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Transactions" column="SCTLID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="TransactionAmount" aggregator="sum" formatString="#,###.00"/>
+		<Measure name="Calculated Charge" column="CalculatedCharge" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+	
+</Schema>

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:46 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.PocketTemplateConfig" optimistic-lock="version" table="pocket_template_config" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SubscriberType" type="java.lang.Integer" >
+<column name="SubscriberType" not-null="true"  sql-type="int" />
+</property>
+<property name="BusinessPartnerType" type="java.lang.Integer" >
+<column name="BusinessPartnerType"    sql-type="int" />
+</property>
+<many-to-one name="KYCLevelByKYCLevel" foreign-key="FK_PocketTemplateConfig_KYCLevelByKYCLevel" class="com.mfino.domain.KYCLevel" fetch="select">
+<column name="KYCLevel" not-null="true"   />
+</many-to-one>
+<property name="Commodity" type="java.lang.Integer" >
+<column name="Commodity" not-null="true"  sql-type="int" />
+</property>
+<property name="PocketType" type="java.lang.Integer" >
+<column name="PocketType" not-null="true"  sql-type="int" />
+</property>
+<property name="IsSuspencePocket" type="java.lang.Boolean" >
+<column name="IsSuspencePocket" not-null="true"  sql-type="tinyint" />
+</property>
+<property name="IsCollectorPocket" type="java.lang.Boolean" >
+<column name="IsCollectorPocket" not-null="true"  sql-type="tinyint" />
+</property>
+<property name="IsDefault" type="java.lang.Boolean" >
+<column name="IsDefault" not-null="true"  sql-type="tinyint" />
+</property>
+<many-to-one name="PocketTemplate" foreign-key="FK_PocketTemplateConfig_PocketTemplate" class="com.mfino.domain.PocketTemplate" fetch="select">
+<column name="PocketTemplateID" not-null="true"   />
+</many-to-one>
+<set name="PTC_Group_MapFromPtcID" inverse="true">
+<key>
+<column name="PtcID"    />
+</key>
+<one-to-many class="com.mfino.domain.PTC_Group_Map" />
+</set>
+</class>
+</hibernate-mapping>

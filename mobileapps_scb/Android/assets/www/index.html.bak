@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html class="ui-mobile-rendering">
+<head>
+<title>EazyMoney</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="css/jquerymobile.css" />
+<link rel="stylesheet" href="css/styles.css" />
+
+<script src="lib/jquery.js"></script>
+<script src="lib/jquerymobile.js"></script>
+<script src="lib/underscore.js"></script>
+<script src="lib/backbone.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/appconfig.js"></script>
+
+<script src="js/models/models.js"></script>
+
+<script src="js/views/menu.js"></script>
+<script src="js/views/login.js"></script>
+<script src="js/views/activation.js"></script>
+<script src="js/views/transfer.js"></script>
+<script src="js/views/agentmenu.js"></script>
+<script src="js/views/subscribermenu.js"></script>
+<script src="js/views/responseView.js"></script>
+<script src="js/views/agentTransfer.js"></script>
+
+
+<script src="js/utils.js"></script>
+
+<script src="js/main.js"></script>
+
+</head>
+
+<body >
+	
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:52 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.SMSPartner" optimistic-lock="version" table="sms_partner" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="PartnerName" type="java.lang.String" >
+<column name="PartnerName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="User" foreign-key="FK_SMSPartner_User" class="com.mfino.domain.User" fetch="select">
+<column name="UserID" not-null="true"   />
+</many-to-one>
+<property name="ContactName" type="java.lang.String" >
+<column name="ContactName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ContactPhone" type="java.lang.String" >
+<column name="ContactPhone" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ContactEmail" type="java.lang.String" >
+<column name="ContactEmail" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ServerIP" type="java.lang.String" >
+<column name="ServerIP" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="APIKey" type="java.lang.String" >
+<column name="APIKey" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SendReport" type="java.lang.Boolean" >
+<column name="SendReport"    sql-type="tinyint" />
+</property>
+<set name="SMSCFromPartnerID" inverse="true">
+<key>
+<column name="PartnerID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SMSC" />
+</set>
+<set name="SMSTransactionsLogFromPartnerID" inverse="true">
+<key>
+<column name="PartnerID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SMSTransactionsLog" />
+</set>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,12 @@
+<channel-adaptor name='zenith' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2_zenith">
+	<channel class="org.jpos.iso.channel.PostChannel" logger="Q2_zenith" packager="org.jpos.iso.packager.PostPackager">
+		<property name="host" value="localhost" />
+		<property name="port" value="9777" />
+		<property name="packager-logger" value="Q2_zenith" />
+		<property name="packager-realm" value="mfino-debug" />
+		<property name="packager-config" value="jpos_cfg/postpack.xml" />
+	</channel>
+	<in>zenithsend</in>
+	<out>zenithreceive</out>
+	<reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>

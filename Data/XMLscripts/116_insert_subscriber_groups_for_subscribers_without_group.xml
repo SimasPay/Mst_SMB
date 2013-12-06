@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="MFS_MAIN" dbms="mysql" id="PROCEDURE-INSERT_SUBSCRIBER_GROUPS-2"> 
+
+		<createProcedure> 
+			
+			create procedure insert_subscriber_groups()
+			BEGIN
+				declare no_more_records INT Default 0;
+				declare sub_id, groupId bigint(20);
+				declare s_cursor cursor for select id from subscriber s where not exists(select 1 from subscriber_groups sg where sg.subscriberid=s.id);
+				declare Continue Handler for NOT FOUND Set no_more_records = 1;	
+					
+				select id into groupId from groups where groupname = 'ANY';
+				open s_cursor;
+				Loop1:loop
+					fetch s_cursor into sub_id;
+					
+					if (no_more_records = 1) then 
+						close s_cursor;
+						leave Loop1;
+					end if;
+					
+					Insert into subscriber_groups (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, subscriberId, groupID) values (1, now(), 'System', now(), 'System', sub_id, groupId);
+					
+				end loop Loop1;
+			End;
+
+		</createProcedure> 
+		<sql>
+			call insert_subscriber_groups();
+			drop procedure if exists insert_subscriber_groups;
+		</sql>
+ 		<rollback/>
+	</changeSet>
+	
+	<changeSet author="MFS_MAIN" dbms="oracle" id="PROCEDURE-INSERT_SUBSCRIBER_GROUPS-2"> 
+		<createProcedure> 
+			DECLARE 
+			  command1 varchar(2000);
+			  cursor s_cursor is select id from subscriber s where not exists(select 1 from subscriber_groups sg where sg.subscriberid=s.id);
+			  groupId number(19);
+			  part1 varchar(255) := 'Insert into subscriber_groups (Id, Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, subscriberId, groupID) values (subscriber_groups_id_seq.nextval, 1, sysdate, ''System'', sysdate, ''System'', ';
+			BEGIN
+			  select id into groupId from groups where groupname = 'ANY';
+			  For s in s_cursor loop
+				command1 := part1 || s.id || ',' || groupId || ')';
+				execute immediate command1; 
+			  End loop;
+
+				exception
+					when no_data_found then
+						dbms_output.put_line('No record avialable');
+					when too_many_rows then
+						dbms_output.put_line('Too many rows');
+			END;
+ 		</createProcedure> 
+		<rollback/>
+	</changeSet>
+</databaseChangeLog>

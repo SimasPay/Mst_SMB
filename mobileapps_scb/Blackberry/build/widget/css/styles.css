@@ -1,0 +1,45 @@
+.requiredColor  {color:#FF0000;}
+#footer {bottom:0; width:100%;}
+.ui-page {background:  url(../img/background.jpg) no-repeat center center;   background-size:100% 100%;}
+.ui-btn {background:#8B0000; font-weight:bold;color:#fff;text-shadow:0 1px 1px #194b7e;}
+.ui-content .ui-btn-text{font-size:15px;}
+.ui-content .ui-select{font-size:10px;width:90%;}
+.ui-selectmenu-list .ui-btn-active .ui-link-inherit{color:black;}
+.ui-btn-hover-c{color: #DCDCDC; border:3px solid #8B0000;}
+.ui-btn-hover-a{color: #DCDCDC; border:3px solid #8B0000;}
+.ui-btn-active{color:black;}
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+/* Styles */
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen and (min-width : 321px) {
+/* Styles */
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width : 320px) {
+/* Styles */
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
+/* Styles */
+}
+
+/* iPads (landscape) ----------- */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+/* Styles */
+}
+
+/* iPads (portrait) ----------- */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+/* Styles */
+}
+
+
+/* iPhone 4 ----------- */
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5),only screen and (min-device-pixel-ratio : 1.5) {
+/* Styles */
+}

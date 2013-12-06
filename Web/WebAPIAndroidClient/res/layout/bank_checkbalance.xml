@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<TableRow>
+		<TextView android:id="@+id/bacbTextView01"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="SourceMDN">
+		</TextView>
+		<EditText android:id="@+id/bacbSourceMDNET"
+			android:layout_height="wrap_content" android:width="140.0px">
+		</EditText>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:id="@+id/bacbTextView02"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="SourcePIN">
+		</TextView>
+		<EditText android:id="@+id/bacbSourcePINET"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+		</EditText>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:id="@+id/bacbTextView03"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="BankID">
+		</TextView>
+		<EditText android:id="@+id/bacbBankIDET"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+		</EditText>
+	</TableRow>
+
+	<TableRow>
+		<Button android:id="@+id/bacbCheckBalanceButton"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Check Balance">
+		</Button>
+		<Button android:id="@+id/bacbBackButton" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Back">
+		</Button>
+	</TableRow>
+
+</TableLayout>

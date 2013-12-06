@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:50 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.DistributionChainLevel" optimistic-lock="version" table="distribution_chain_lvl" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="DistributionChainTemplateByTemplateID" foreign-key="FK_DistributionChainLevel_DistributionChainTemplateByTemplateID" class="com.mfino.domain.DistributionChainTemplate" fetch="select">
+<column name="TemplateID" not-null="true"  unique-key="TemplateID" />
+</many-to-one>
+<property name="DistributionLevel" type="java.lang.Integer" unique-key="TemplateID">
+<column name="DistributionLevel" not-null="true"  sql-type="int" />
+</property>
+<property name="Permissions" type="java.lang.Integer" >
+<column name="Permissions" not-null="true"  sql-type="int" />
+</property>
+<property name="Commission" type="big_decimal" >
+<column name="Commission"    sql-type="decimal(25,4)" />
+</property>
+<property name="MaxCommission" type="big_decimal" >
+<column name="MaxCommission"    sql-type="decimal(25,4)" />
+</property>
+<property name="MinCommission" type="big_decimal" >
+<column name="MinCommission"    sql-type="decimal(25,4)" />
+</property>
+<property name="MaxWeeklyLOPAmount" type="big_decimal" >
+<column name="MaxWeeklyLOPAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="MaxLOPAmount" type="big_decimal" >
+<column name="MaxLOPAmount"    sql-type="decimal(25,4)" />
+</property>
+<many-to-one name="TransactionType" foreign-key="FK_DistributionChainLevel_TransactionType" class="com.mfino.domain.TransactionType" fetch="select">
+<column name="TransactionTypeID"     />
+</many-to-one>
+<set name="LOPFromDCTLevelID" inverse="true">
+<key>
+<column name="DCTLevelID"    />
+</key>
+<one-to-many class="com.mfino.domain.LOP" />
+</set>
+<set name="CommodityTransferFromDCTLevelID" inverse="true">
+<key>
+<column name="DCTLevelID"    />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromDCTLevelID" inverse="true">
+<key>
+<column name="DCTLevelID"    />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+<set name="BulkLOPFromDCTLevelID" inverse="true">
+<key>
+<column name="DCTLevelID"    />
+</key>
+<one-to-many class="com.mfino.domain.BulkLOP" />
+</set>
+</class>
+</hibernate-mapping>

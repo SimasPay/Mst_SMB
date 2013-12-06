@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/osgi
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/osgi-compendium
+       http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.jasypt.org/schema/encryption
+       http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+ 
+ 	<context:component-scan base-package="com.mfino.webapi.services" />
+ 	<context:component-scan base-package="com.mfino.webapi.servlet" />
+    <context:component-scan base-package="com.mfino.service.impl" />
+    <context:component-scan base-package="com.mfino.transactionapi.service"/>
+    <context:component-scan base-package="com.mfino.transactionapi.handlers"/>
+    <context:component-scan base-package="com.mfino.service" />
+	<context:annotation-config />
+		
+	<bean id="configSaltgenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>YJW9qh52RP8gfRDI</value>
+        </property>
+    </bean>
+		
+	<bean id="config"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="passwordEnvName">
+			<value>ENCRYPTION_KEY</value>
+		</property>
+	<!--<property name="password">
+			<value>mfinozenith</value>
+		</property>  -->
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+    		<ref bean = "configSaltgenerator" />
+    	</property>			
+	</bean>
+		
+	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<ref bean="config" />
+		</property>			
+	</bean>
+	
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="stringEncryptor" />
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/database_config.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="saletGenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>${mfino.saltGenerator.salt}</value>
+        </property>
+    </bean>
+	
+	<bean id="hibernateStringEncryptor"
+		class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateStringEncryptor</value>
+		</property>
+		<property name="password">
+			<value>${mfino.hibernateStringEncryptor.password}</value>
+		</property>  
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>	
+	</bean>
+	
+	<bean id="hibernateUniqueStringEncryptor"
+		class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateUniqueStringEncryptor</value>
+		</property>
+		<property name="password">
+			<value>${mfino.hibernateUniqueStringEncryptor.password}</value>
+		</property>  
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>	
+	</bean>
+		
+	<!-- DB connection and persistence layer -->
+	<!-- DataSource Definition -->
+	<!--  DB connection and persistence layer -->
+	<!--  DataSource Definition -->	 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>${mfino.dbcp.driverClassName}</value>
+		</property>
+		<property name="url">
+			<value>${mfino.dbcp.url}</value>
+		</property>
+		<property name="username">
+			<value>${mfino.dbcp.username}</value>
+		</property>
+		<property name="defaultAutoCommit">
+			<value>${mfino.dbcp.defaultAutoCommit}</value>
+		</property>
+		<property name="password">
+			<value>${mfino.dbcp.password}</value>
+		</property>
+	    <property name="maxActive">
+			<value>${mfino.dbcp.maxActive}</value>
+		</property>
+	    <property name="maxIdle">
+			<value>${mfino.dbcp.maxIdle}</value>
+		</property>
+	    <property name="initialSize">
+			<value>${mfino.dbcp.initialSize}</value>
+		</property>
+	    <property name="validationQuery">
+			<value>${mfino.dbcp.validationQuery}</value>
+		</property>
+		<property name="removeAbandoned">
+			<value>${mfino.dbcp.removeAbandoned}</value>
+		</property>
+		<property name="removeAbandonedTimeout">
+			<value>${mfino.dbcp.removeAbandonedTimeout}</value>
+		</property>
+		<property name="logAbandoned">
+			<value>${mfino.dbcp.logAbandoned}</value>
+		</property>
+	</bean>
+
+
+	<!-- <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" 
+		destroy-method="close"> <property name="driverClass" value="${driverClassName}" 
+		/> <property name="jdbcUrl" value="${url}" /> <property name="username" value="${username}" 
+		/> <property name="password" value="${password}" /> </bean> -->
+
+
+	<!-- Spring Data Access Exception Translator Definition -->
+	<!-- <bean id="jdbcExceptionTranslator" class="org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator"> 
+		<property name="dataSource"> <ref bean="dataSource" /> </property> </bean> -->
+
+	<!-- Hibernate SessionFactory Definition -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+		lazy-init="false">
+		<!-- <property name="mappingLocations"> -->
+		<property name="mappingResources">
+			<list>
+				<!-- <value>classpath*:META-INF/com/mfino/domain/*.hbm.xml</value> -->
+				<value>com/mfino/domain/RSubscriberMDN.hbm.xml</value>
+				<value>com/mfino/domain/RPocket.hbm.xml</value>
+				<value>com/mfino/domain/RDbParam.hbm.xml</value>
+				<value>com/mfino/domain/RSubscriber.hbm.xml</value>
+				<value>com/mfino/domain/RMobileNetworkOperator.hbm.xml</value>
+				<value>com/mfino/domain/RPocketTemplate.hbm.xml</value>
+				<value>com/mfino/domain/REnumText.hbm.xml</value>
+				<value>com/mfino/domain/RUser.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionsLog.hbm.xml</value>
+				<value>com/mfino/domain/RBank.hbm.xml</value>
+				<value>com/mfino/domain/RNotification.hbm.xml</value>
+				<value>com/mfino/domain/RCommodityTransfer.hbm.xml</value>
+				<value>com/mfino/domain/RPendingCommodityTransfer.hbm.xml</value>
+				<value>com/mfino/domain/RmFinoServiceProvider.hbm.xml</value>
+				<value>com/mfino/domain/RPerson2Person.hbm.xml</value>
+				<value>com/mfino/domain/RAddress.hbm.xml</value>
+				<value>com/mfino/domain/RLOP.hbm.xml</value>
+				<value>com/mfino/domain/RMerchant.hbm.xml</value>
+				<value>com/mfino/domain/RBulkUpload.hbm.xml</value>
+				<value>com/mfino/domain/RBulkUploadEntry.hbm.xml</value>
+				<value>com/mfino/domain/RDistributionChainTemplate.hbm.xml</value>
+				<value>com/mfino/domain/RDistributionChainLevel.hbm.xml</value>
+				<value>com/mfino/domain/RRolePermission.hbm.xml</value>
+				<value>com/mfino/domain/RBulkBankAccount.hbm.xml</value>
+				<value>com/mfino/domain/RSAPGroupID.hbm.xml</value>
+				<value>com/mfino/domain/RPermissionItems.hbm.xml</value>
+				<value>com/mfino/domain/ROfflineReport.hbm.xml</value>
+				<value>com/mfino/domain/ROfflineReportReceiver.hbm.xml</value>
+				<value>com/mfino/domain/ROfflineReportForCompany.hbm.xml</value>
+				<value>com/mfino/domain/RActivitiesLog.hbm.xml</value>
+				<value>com/mfino/domain/RBulkUploadFile.hbm.xml</value>
+				<value>com/mfino/domain/RRegion.hbm.xml</value>
+				<value>com/mfino/domain/RCompany.hbm.xml</value>
+				<value>com/mfino/domain/RProductIndicator.hbm.xml</value>
+				<value>com/mfino/domain/RMDNRange.hbm.xml</value>
+				<value>com/mfino/domain/RBrand.hbm.xml</value>
+				<value>com/mfino/domain/RSMSCode.hbm.xml</value>
+				<value>com/mfino/domain/RMerchantCode.hbm.xml</value>
+				<value>com/mfino/domain/RPendingTransactionsFile.hbm.xml</value>
+				<value>com/mfino/domain/RPendingTransactionsEntry.hbm.xml</value>
+				<value>com/mfino/domain/RBulkLOP.hbm.xml</value>
+				<value>com/mfino/domain/RLOPHistory.hbm.xml</value>
+				<value>com/mfino/domain/RCreditCardTransaction.hbm.xml</value>
+				<value>com/mfino/domain/RCardInfo.hbm.xml</value>
+				<value>com/mfino/domain/RChannelCode.hbm.xml</value>
+				<value>com/mfino/domain/RMerchantPrefixCode.hbm.xml</value>
+				<value>com/mfino/domain/RSMSC.hbm.xml</value>
+				<value>com/mfino/domain/RSMSPartner.hbm.xml</value>
+				<value>com/mfino/domain/RSMSTransactionsLog.hbm.xml</value>
+				<value>com/mfino/domain/RBiller.hbm.xml</value>
+				<value>com/mfino/domain/RBankAdmin.hbm.xml</value>
+				<value>com/mfino/domain/RCreditCardDestinations.hbm.xml</value>
+				<value>com/mfino/domain/RDenomination.hbm.xml</value>
+				<value>com/mfino/domain/RBillPaymentTransaction.hbm.xml</value>
+				<value>com/mfino/domain/RPartner.hbm.xml</value>
+				<value>com/mfino/domain/RPartnerServices.hbm.xml</value>
+				<value>com/mfino/domain/RService.hbm.xml</value>
+				<value>com/mfino/domain/RServiceTransaction.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionType.hbm.xml</value>
+				<value>com/mfino/domain/RSettlementTemplate.hbm.xml</value>
+				<value>com/mfino/domain/RServiceSettlementConfig.hbm.xml</value>
+				<value>com/mfino/domain/RMFSBiller.hbm.xml</value>
+				<value>com/mfino/domain/RMFSBillerPartner.hbm.xml</value>
+				<value>com/mfino/domain/RSettlementTransactionLogs.hbm.xml</value>
+				<value>com/mfino/domain/RServiceChargeTransactionLog.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionAmountDistributionLog.hbm.xml</value>
+				<value>com/mfino/domain/RSettlementSchedulerLogs.hbm.xml</value>
+				<value>com/mfino/domain/RChargeType.hbm.xml</value>
+				<value>com/mfino/domain/RChargeDefinition.hbm.xml</value>
+				<value>com/mfino/domain/RChargePricing.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionRule.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionCharge.hbm.xml</value>
+				<value>com/mfino/domain/RSharePartner.hbm.xml</value>
+				<value>com/mfino/domain/RAuthorizingPerson.hbm.xml</value>
+				<value>com/mfino/domain/RSubscribersAdditionalFields.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionChargeLog.hbm.xml</value>
+				<value>com/mfino/domain/RKYCLevel.hbm.xml</value>
+				<value>com/mfino/domain/RKYCFields.hbm.xml</value>
+				<value>com/mfino/domain/RSystemParameters.hbm.xml</value>
+				<value>com/mfino/domain/RServiceAudit.hbm.xml</value>
+				<value>com/mfino/domain/RChannelSessionManagement.hbm.xml</value>
+				<value>com/mfino/domain/RLedger.hbm.xml</value>
+				<value>com/mfino/domain/RBillPayments.hbm.xml</value>
+				<value>com/mfino/domain/RReportParameters.hbm.xml</value>
+				<value>com/mfino/domain/RChargeTxnCommodityTransferMap.hbm.xml</value>
+				<value>com/mfino/domain/RAirtimePurchase.hbm.xml</value>
+				<value>com/mfino/domain/RVisafoneTxnGenerator.hbm.xml</value>		
+				<value>com/mfino/domain/RCommodityTransferNextID.hbm.xml</value>		
+				<value>com/mfino/domain/RUnRegisteredTxnInfo.hbm.xml</value>	
+				<value>com/mfino/domain/RInterbankTransfer.hbm.xml</value>
+				<value>com/mfino/domain/RInterBankCode.hbm.xml</value>						
+				<value>com/mfino/domain/RSubscriberGroup.hbm.xml</value>
+				<value>com/mfino/domain/RGroup.hbm.xml</value>
+				<value>com/mfino/domain/RPocketTemplateConfig.hbm.xml</value>	
+				<value>com/mfino/domain/RDCTRestrictions.hbm.xml</value>
+				<value>com/mfino/domain/RPartnerRestrictions.hbm.xml</value>				
+				<value>com/mfino/domain/RIntegrationPartnerMapping.hbm.xml</value>
+				<value>com/mfino/domain/RMFSDenominations.hbm.xml</value>
+				<value>com/mfino/domain/RAutoReversals.hbm.xml</value>
+				<value>com/mfino/domain/RIPMapping.hbm.xml</value>
+				<value>com/mfino/domain/RExcludeSubscriberLifeCycle.hbm.xml</value>							
+				<value>com/mfino/domain/RRole.hbm.xml</value>
+				<value>com/mfino/domain/RIntegrationSummary.hbm.xml</value>
+				<value>com/mfino/domain/RMoneyClearanceGraved.hbm.xml</value>
+				<value>com/mfino/domain/RClosedAccountSettlementMDN.hbm.xml</value>         
+				<value>com/mfino/domain/RAgentCashInTransactions.hbm.xml</value>
+				<value>com/mfino/domain/RPTC_Group_Map.hbm.xml</value>				
+				<value>com/mfino/domain/RPurpose.hbm.xml</value>
+				<value>com/mfino/domain/RExpirationType.hbm.xml</value>
+				<value>com/mfino/domain/RFundDefinition.hbm.xml</value>
+				<value>com/mfino/domain/RFundDistributionInfo.hbm.xml</value>
+				<value>com/mfino/domain/RFundEvents.hbm.xml</value>					
+				<value>com/mfino/domain/RNotificationLog.hbm.xml</value>
+				<value>com/mfino/domain/RNotificationLogDetails.hbm.xml</value>
+				<value>com/mfino/domain/RScheduleTemplate.hbm.xml</value>
+				<value>com/mfino/domain/RSCTLSettlementMap.hbm.xml</value>
+				<value>com/mfino/domain/RSettlementTransactionSCTLMap.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionPendingSummary.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionIdentifier.hbm.xml</value>
+				<value>com/mfino/domain/RActorChannelMapping.hbm.xml</value>
+				<value>com/mfino/domain/RAdjustments.hbm.xml</value>
+				<value>com/mfino/domain/RPermissionGroup.hbm.xml</value>
+				<value>com/mfino/domain/RMFATransactionInfo.hbm.xml</value>
+				<value>com/mfino/domain/RMFAAuthentication.hbm.xml</value>
+				<value>com/mfino/domain/RRuleKey.hbm.xml</value>
+				<value>com/mfino/domain/RTransactionRuleAddnInfo.hbm.xml</value>
+				<value>com/mfino/domain/RMFSLedger.hbm.xml</value>
+				<value>com/mfino/domain/RSubscriberStatusEvent.hbm.xml</value>
+				<value>com/mfino/domain/RBulkUploadFileEntry.hbm.xml</value>
+				<value>com/mfino/domain/RRetiredCardPANInfo.hbm.xml</value>
+				<value>com/mfino/domain/RMdnOtp.hbm.xml</value>
+				<value>com/mfino/domain/RFavoriteCategory.hbm.xml</value>
+				<value>com/mfino/domain/RSubscriberFavorite.hbm.xml</value>
+				<value>com/mfino/domain/RPartnerDefaultServices.hbm.xml</value>
+				<value>com/mfino/domain/RServiceDefaultConfiguration.hbm.xml</value>
+			</list>
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${mfino.hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${mfino.hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${mfino.hibernate.format_sql}</prop>
+				<prop key="hibernate.bytecode.use_reflection_optimizer">${mfino.hibernate.bytecode.use_reflection_optimizer}</prop>
+				<prop key="hibernate.jdbc.batch_size">${mfino.hibernate.jdbc.batch_size}</prop>
+				<!--<prop key="hibernate.query.factory_class">${mfino.hibernate.queryTranslator}</prop>-->
+			</props>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- Hibernate Transaction Manager Definition -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="hibernateSessionHolder" class="com.mfino.hibernate.session.HibernateSessionHolder" />
+
+	<!-- Expose all the dao as services -->
+	<bean id="subscriberDAO" class="com.mfino.dao.SubscriberDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="subscriberDAO" interface="com.mfino.dao.SubscriberDAO" />
+
+	<bean id="subscriberMDNDAO" class="com.mfino.dao.SubscriberMDNDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="subscriberMDNDAO" interface="com.mfino.dao.SubscriberMDNDAO" />
+
+	<bean id="transactionsLogDAO" class="com.mfino.dao.TransactionsLogDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="transactionsLogDAO" interface="com.mfino.dao.TransactionsLogDAO" />
+
+	<bean id="activitiesLogDAO" class="com.mfino.dao.ActivitiesLogDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="activitiesLogDAO" interface="com.mfino.dao.ActivitiesLogDAO" />
+
+	<bean id="pocketDAO" class="com.mfino.dao.PocketDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="pocketDAO" interface="com.mfino.dao.PocketDAO" />
+
+	<bean id="notificationDAO" class="com.mfino.dao.NotificationDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="notificationDAO" interface="com.mfino.dao.NotificationDAO" />
+
+	<bean id="mfinoServiceProviderDAO" class="com.mfino.dao.MfinoServiceProviderDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="mfinoServiceProviderDAO" interface="com.mfino.dao.MfinoServiceProviderDAO" />
+
+	<bean id="pendingCommodityTransferDAO" class="com.mfino.dao.PendingCommodityTransferDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="pendingCommodityTransferDAO"
+		interface="com.mfino.dao.PendingCommodityTransferDAO" />
+
+	<bean id="systemParameterDao" class="com.mfino.dao.SystemParametersDao">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="systemParameterDao" interface="com.mfino.dao.SystemParametersDao" />
+
+	<bean id="commodityTransferDao" class="com.mfino.dao.CommodityTransferDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="commodityTransferDao" interface="com.mfino.dao.CommodityTransferDAO" />
+
+	<bean id="ledgerDao" class="com.mfino.dao.LedgerDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="ledgerDao" interface="com.mfino.dao.LedgerDAO" />
+
+	<bean id="mfsLedgerDAO" class="com.mfino.dao.MFSLedgerDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="mfsLedgerDAO" interface="com.mfino.dao.MFSLedgerDAO" />	
+	
+	<bean id="pendingTransactionsEntryDAO" class="com.mfino.dao.PendingTransactionsEntryDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="pendingTransactionsEntryDAO"
+		interface="com.mfino.dao.PendingTransactionsEntryDAO" />
+
+	<bean id="pendingTransactionsFileDao" class="com.mfino.dao.PendingTransactionsFileDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="pendingTransactionsFileDao"
+		interface="com.mfino.dao.PendingTransactionsFileDAO" />
+
+	<bean id="userDao" class="com.mfino.dao.UserDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="userDao" interface="com.mfino.dao.UserDAO" />
+	
+	<bean id="sctlDao" class="com.mfino.dao.ServiceChargeTransactionLogDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="sctlDao" interface="com.mfino.dao.ServiceChargeTransactionLogDAO" />
+	
+	<bean id="commodityTransferNextIDDAO" class="com.mfino.dao.CommodityTransferNextIDDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="commodityTransferNextIDDAO" interface="com.mfino.dao.CommodityTransferNextIDDAO" />
+
+	<bean id="unRegisteredTxnInfoDAO" class="com.mfino.dao.UnRegisteredTxnInfoDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="unRegisteredTxnInfoDAO" interface="com.mfino.dao.UnRegisteredTxnInfoDAO" />
+	
+	<bean id="fundDistributionInfoDAO" class="com.mfino.dao.FundDistributionInfoDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="fundDistributionInfoDAO" interface="com.mfino.dao.FundDistributionInfoDAO" />
+	
+	<bean id="chargeTxnCommodityTransferMapDAO" class="com.mfino.dao.ChargeTxnCommodityTransferMapDAO">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="chargeTxnCommodityTransferMapDAO" interface="com.mfino.dao.ChargeTxnCommodityTransferMapDAO" />
+	
+	<bean id="integrationSummaryDao" class="com.mfino.dao.IntegrationSummaryDao">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="integrationSummaryDao" interface="com.mfino.dao.IntegrationSummaryDao" />
+	
+	<osgi:service ref="sessionFactory" interface="org.hibernate.SessionFactory" />
+	<osgi:service ref="hibernateSessionHolder"
+		interface="com.mfino.hibernate.session.HibernateSessionHolder" />
+		
+	<bean id="hibernateService" class="com.mfino.service.impl.HibernateServiceDefaultImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+	<osgi:service ref="hibernateService" interface="com.mfino.service.HibernateService" />	
+
+	<bean id="daoFactory" class="com.mfino.dao.DAOFactory" factory-method="getInstance">
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>     
+    </bean>
+    
+    <bean id="coreServiceFactory" class="com.mfino.service.CoreServiceFactory" factory-method="getInstance">
+    	<property name="hibernateService" ref="hibernateService"/>     
+    </bean>
+    
+    <osgi:service ref ="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
+	<osgi:service ref ="AgentServiceImpl" interface="com.mfino.service.AgentService"/>
+	<osgi:service ref ="AuthorizationServiceImpl" interface="com.mfino.service.AuthorizationService"/>
+	<osgi:service ref ="BillerServiceImpl" interface="com.mfino.service.BillerService"/>
+	<osgi:service ref ="BillPaymentsServiceImpl" interface="com.mfino.service.BillPaymentsService"/>
+	<osgi:service ref ="BulkBankAccountServiceImpl" interface="com.mfino.service.BulkBankAccountService"/>
+	<osgi:service ref ="BulkUploadEntryServiceImpl" interface="com.mfino.service.BulkUploadEntryService"/>
+	<osgi:service ref ="BulkUploadServiceImpl" interface="com.mfino.service.BulkUploadService"/>
+	<osgi:service ref ="ChannelCodeServiceImpl" interface="com.mfino.service.ChannelCodeService"/>
+	<osgi:service ref ="ChannelSessionManagementServiceImpl" interface="com.mfino.service.ChannelSessionManagementService"/>
+	<osgi:service ref ="ChargeTxnCommodityTransferMapServiceImpl" interface="com.mfino.service.ChargeTxnCommodityTransferMapService"/>
+	<osgi:service ref ="ClosedAccountSettlementMDNServiceImpl" interface="com.mfino.service.ClosedAccountSettlementMDNService"/>
+	<osgi:service ref ="CommodityTransferServiceImpl" interface="com.mfino.service.CommodityTransferService"/>
+	<osgi:service ref ="DefaultPocketMaintainerServiceImpl" interface="com.mfino.service.DefaultPocketMaintainerService"/>
+	<osgi:service ref ="DistributionChainTemplateServiceImpl" interface="com.mfino.service.DistributionChainTemplateService"/>
+	<osgi:service ref ="DistributionTreeServiceImpl" interface="com.mfino.service.DistributionTreeService"/>
+	<osgi:service ref ="EnumTextServiceImpl" interface="com.mfino.service.EnumTextService"/>
+	<osgi:service ref ="FundStorageServiceImpl" interface="com.mfino.service.FundStorageService"/>
+	<osgi:service ref ="FundValidationServiceImpl" interface="com.mfino.service.FundValidationService"/>
+	<osgi:service ref ="IntegrationPartnerMappingServiceImpl" interface="com.mfino.service.IntegrationPartnerMappingService"/>
+	<osgi:service ref ="JSAuthGeneratorServiceImpl" interface="com.mfino.service.JSAuthGeneratorService"/>
+	<osgi:service ref ="KYCLevelServiceImpl" interface="com.mfino.service.KYCLevelService"/>
+	<osgi:service ref ="LOPServiceImpl" interface="com.mfino.service.LOPService"/>
+	<osgi:service ref ="MailServiceImpl" interface="com.mfino.service.MailService"/>
+	<osgi:service ref ="MDNRangeServiceImpl" interface="com.mfino.service.MDNRangeService"/>
+	<osgi:service ref ="MfinoUtilServiceImpl" interface= "com.mfino.service.MfinoUtilService" />
+	<osgi:service ref ="MFSBillerServiceImpl" interface="com.mfino.service.MFSBillerService"/>
+	<osgi:service ref ="MFSDenominationsServiceImpl" interface="com.mfino.service.MFSDenominationsService"/>
+	<osgi:service ref ="MoneyClearanceGravedServiceImpl" interface="com.mfino.service.MoneyClearanceGravedService"/>
+	<osgi:service ref ="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>
+	<osgi:service ref ="NotificationLogDetailsServiceImpl" interface="com.mfino.service.NotificationLogDetailsService"/>
+	<osgi:service ref ="NotificationLogServiceImpl" interface="com.mfino.service.NotificationLogService"/>
+	<osgi:service ref ="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService"/>
+	<osgi:service ref ="NotificationServiceImpl" interface="com.mfino.service.NotificationService"/>
+	<osgi:service ref ="PartnerRestrictionsServiceImpl" interface="com.mfino.service.PartnerRestrictionsService"/>
+	<osgi:service ref ="PartnerServiceImpl" interface="com.mfino.service.PartnerService"/>
+	<osgi:service ref ="PartnerServicesServiceImpl" interface="com.mfino.service.PartnerServicesService"/>
+	<osgi:service ref ="PendingCommodityTransferServiceImpl" interface="com.mfino.service.PendingCommodityTransferService"/>
+	<osgi:service ref ="PendingTransactionsServiceImpl" interface="com.mfino.service.PendingTransactionsService"/>
+	<osgi:service ref ="PermissionServiceImpl" interface="com.mfino.service.PermissionService"/>
+	<osgi:service ref ="PocketServiceImpl" interface="com.mfino.service.PocketService"/>
+	<osgi:service ref ="PocketTemplateServiceImpl" interface="com.mfino.service.PocketTemplateService"/>
+	<osgi:service ref ="ResultServiceImpl" interface="com.mfino.service.ResultService"/>
+	<osgi:service ref ="SCTLServiceImpl" interface="com.mfino.service.SCTLService"/>
+	<osgi:service ref ="ServiceChargeTransactionLogServiceImpl" interface="com.mfino.service.ServiceChargeTransactionLogService"/>
+	<osgi:service ref ="SCTLSettlementMapServiceImpl" interface="com.mfino.service.SCTLSettlementMapService"/>
+	<osgi:service ref ="SMSServiceImpl" interface="com.mfino.service.SMSService"/>
+	<osgi:service ref ="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService"/>
+	<osgi:service ref ="SubscriberServiceExtendedImpl" interface="com.mfino.service.SubscriberServiceExtended"/>
+	<osgi:service ref ="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService"/>
+	<osgi:service ref ="SubscriberStatusEventServiceImpl" interface="com.mfino.service.SubscriberStatusEventService"/>
+	<osgi:service ref ="TaxServiceImpl" interface="com.mfino.service.TaxService"/>
+	<osgi:service ref ="TellerCashinServiceImpl" interface="com.mfino.service.TellerCashinService"/>
+	<osgi:service ref ="TransactionIdentifierServiceImpl" interface="com.mfino.service.TransactionIdentifierService"/>
+	<osgi:service ref ="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService"/>
+	<osgi:service ref ="TransactionPendingSummaryServiceImpl" interface="com.mfino.service.TransactionPendingSummaryService"/>
+	<osgi:service ref ="TransactionTypeServiceImpl" interface="com.mfino.service.TransactionTypeService"/>
+	<osgi:service ref ="UnRegisteredTxnInfoServiceImpl" interface="com.mfino.service.UnRegisteredTxnInfoService"/>
+	<osgi:service ref ="UserServiceImpl" interface="com.mfino.service.UserService"/>
+	<osgi:service ref ="DCTRestrictionsServiceImpl" interface="com.mfino.service.DCTRestrictionsService"/>
+	<osgi:service ref ="MFAServiceImpl" interface="com.mfino.service.MFAService"/>
+	<osgi:service ref ="MfinoServiceImpl" interface="com.mfino.service.MfinoService"/>
+	<osgi:service ref ="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService"/>
+	<osgi:service ref ="RelationshipServiceImpl" interface="com.mfino.service.RelationshipService"/>
+	<osgi:service ref ="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService"/>
+	<osgi:service ref ="ZTEDataPushServiceImpl" interface="com.mfino.service.ZTEDataPushService"/>
+	<osgi:service ref ="SubscriberFavoriteServiceImpl" interface="com.mfino.service.SubscriberFavoriteService"/>
+    <osgi:service ref ="FavoriteCategoryServiceImpl" interface="com.mfino.service.FavoriteCategoryService"/>
+    <osgi:service ref ="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
+    <osgi:service ref="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+    
+</beans>

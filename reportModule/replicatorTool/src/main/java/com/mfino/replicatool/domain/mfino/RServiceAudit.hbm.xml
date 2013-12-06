@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:57 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.ServiceAudit" optimistic-lock="version" table="service_audit" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ServiceProviderID" type="java.lang.Long" >
+<column name="ServiceProviderID"    sql-type="bigint" />
+</property>
+<property name="ServiceID" type="java.lang.Long" >
+<column name="ServiceID"    sql-type="bigint" />
+</property>
+<property name="SourceType" type="java.lang.Integer" >
+<column name="SourceType"    sql-type="int" />
+</property>
+<property name="SourceID" type="java.lang.Long" >
+<column name="SourceID"    sql-type="bigint" />
+</property>
+<property name="KYCLevelId" type="java.lang.Long" >
+<column name="KYCLevelId"    sql-type="bigint" />
+</property>
+<property name="LastTransactionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastTransactionTime"   length="19" sql-type="datetime" />
+</property>
+<property name="CurrentDailyExpenditure" type="big_decimal" >
+<column name="CurrentDailyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentWeeklyExpenditure" type="big_decimal" >
+<column name="CurrentWeeklyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentMonthlyExpenditure" type="big_decimal" >
+<column name="CurrentMonthlyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentDailyTxnsCount" type="java.lang.Integer" >
+<column name="CurrentDailyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="CurrentWeeklyTxnsCount" type="java.lang.Integer" >
+<column name="CurrentWeeklyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="CurrentMonthlyTxnsCount" type="java.lang.Integer" >
+<column name="CurrentMonthlyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="PreviousDailyExpenditure" type="big_decimal" >
+<column name="PreviousDailyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="PreviousWeeklyExpenditure" type="big_decimal" >
+<column name="PreviousWeeklyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="PreviousMonthlyExpenditure" type="big_decimal" >
+<column name="PreviousMonthlyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="PreviousDailyTxnsCount" type="java.lang.Integer" >
+<column name="PreviousDailyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="PreviousWeeklyTxnsCount" type="java.lang.Integer" >
+<column name="PreviousWeeklyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="PreviousMonthlyTxnsCount" type="java.lang.Integer" >
+<column name="PreviousMonthlyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

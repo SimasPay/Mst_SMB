@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:54 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.ServiceSettlementConfig" optimistic-lock="version" table="service_settlement_cfg" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_ServiceSettlementConfig_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="SettlementTemplate" foreign-key="FK_ServiceSettlementConfig_SettlementTemplate" class="com.mfino.domain.SettlementTemplate" fetch="select">
+<column name="SettlementTemplateID" not-null="true"   />
+</many-to-one>
+<many-to-one name="PartnerServicesByPartnerServiceID" foreign-key="FK_ServiceSettlementConfig_PartnerServicesByPartnerServiceID" class="com.mfino.domain.PartnerServices" fetch="select">
+<column name="PartnerServiceID" not-null="true"   />
+</many-to-one>
+<property name="StartDate" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StartDate"   length="19" sql-type="datetime" />
+</property>
+<property name="EndDate" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="EndDate"   length="19" sql-type="datetime" />
+</property>
+<property name="IsDefault" type="java.lang.Boolean" >
+<column name="IsDefault"    sql-type="tinyint" />
+</property>
+<property name="SchedulerStatus" type="java.lang.Integer" >
+<column name="SchedulerStatus"    sql-type="int" />
+</property>
+<many-to-one name="PocketByCollectorPocket" foreign-key="FK_ServiceSettlementConfig_PocketByCollectorPocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="CollectorPocket"     />
+</many-to-one>
+<property name="SimilarConfigID" type="java.lang.Long" >
+<column name="SimilarConfigID"    sql-type="bigint" />
+</property>
+</class>
+</hibernate-mapping>

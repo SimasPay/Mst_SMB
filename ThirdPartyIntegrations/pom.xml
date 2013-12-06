@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<camel-version>2.7.1-fuse-00-43</camel-version>
+		<log4j-version>1.2.16</log4j-version>
+		<jaxb-api-version>2.1</jaxb-api-version>
+		<jaxb-impl-version>2.1.13</jaxb-impl-version>
+	</properties>
+
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.mfino.application</groupId>
+		<artifactId>root</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>ThirdPartyIntegrations</artifactId>
+	<packaging>pom</packaging>
+	<name>ThirdParty Integrations Modules</name>
+	<url>http://www.mfino.com</url>
+
+	<modules>
+		<module>Clickatell</module>
+		<module>NIBSSInterEmoney</module>
+		<module>ThirdPartyConfiguration</module>
+		<module>StarTimes</module>
+	</modules>	
+</project>

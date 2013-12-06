@@ -1,0 +1,9 @@
+DELETE FROM rule_key where serviceid=(select id from service where ServiceName = 'AgentServices') and transactiontypeid=(select id from transaction_type where TransactionName = 'BillPay');
+
+INSERT INTO rule_key (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ServiceID, TransactionTypeID, TxnRuleKey, TxnRuleKeyType, TxnRuleKeyPriority,  TxnRuleKeyComparision) VALUES('1', now(), 'system', now(), 'system', (select id from service where ServiceName = 'AgentServices'), (select id from transaction_type where TransactionName = 'BillPay'), 'BillerCode', 'Additional', 50, 'Equal');
+
+INSERT INTO rule_key (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ServiceID, TransactionTypeID, TxnRuleKey, TxnRuleKeyType, TxnRuleKeyPriority,  TxnRuleKeyComparision) VALUES('1', now(), 'system', now(), 'system', (select id from service where ServiceName = 'AgentServices'), (select id from transaction_type where TransactionName = 'BillPay'), 'SourceGroup', 'Standard', 30, 'Equal');
+
+INSERT INTO rule_key (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ServiceID, TransactionTypeID, TxnRuleKey, TxnRuleKeyType, TxnRuleKeyPriority,  TxnRuleKeyComparision) VALUES('1', now(), 'system', now(), 'system', (select id from service where ServiceName = 'AgentServices'), (select id from transaction_type where TransactionName = 'BillPay'), 'DestGroup', 'Standard', 20, 'Equal');
+
+INSERT INTO rule_key (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ServiceID, TransactionTypeID, TxnRuleKey, TxnRuleKeyType, TxnRuleKeyPriority,  TxnRuleKeyComparision) VALUES('1', now(), 'system', now(), 'system', (select id from service where ServiceName = 'AgentServices'), (select id from transaction_type where TransactionName = 'BillPay'), 'Channel', 'Standard', 10, 'Equal');

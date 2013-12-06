@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.openmobileallianceorg.org/tech/DTD/xhtml-mobile10.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+        <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+        </SCRIPT>
+    </HEAD>
+    <body onload="loadWatchList();setTimeout('effects()',50);setTimeout('loadWatchListDetails()',2000);">
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                        </td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%" valign="middle">
+                            <INPUT id="editbutton" type="button" value=" Edit" class="menuButton" onclick="goToPage('editwatchlist.html');" >
+                        </td>
+                        <td width="60%">
+                            <DIV align="center"> Watch List </DIV>
+                        </td>
+                        <td width="20%">
+                            <INPUT id="menubutton"
+                                   type="button"
+                                   value="Menu"
+
+                                   class="menuButton"
+                                   onclick="goToPage('trading.html');"
+                                   >
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+        <HR>
+        <DIV id="cmbody">
+            <table border="0" width="100%" cellpadding="0" cellspacing="0" style="background-color:black;height:50px;">
+                <thead>
+                    <tr style="background-color:black;height:50px;">
+                        <td width="30%" valign="middle">
+                            <DIV align="center" style="color:white;"> Ticker </DIV>
+                        </td>
+                        <td width="30%">
+                            <DIV align="center" style="color:white;"> Last </DIV>
+                        </td>
+                        <td width="40%">
+                            <DIV align="center" style="color:white;"> Chg </DIV>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:white;height:30px;">
+                        <td align="center" width="30" valign="middle">
+                            <span id="line11"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line12"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line13"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:LightSteelBlue;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line21"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line22"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line23"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:white;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line31"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line32"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line33"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:LightSteelBlue;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line41"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line42"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line43"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:white;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line51"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line52"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line53"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:LightSteelBlue;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line61"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line62"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line63"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:white;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line71"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line72"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line73"></span>
+                        </td>
+                    </tr>
+                    <tr style="background:LightSteelBlue;height:30px;">
+                        <td align="center" width="30%" valign="middle">
+                            <span id="line81"></span>
+                        </td>
+                        <td align="center" width="30%">
+                            <span id="line82"></span>
+                        </td>
+                        <td align="center" width="40%">
+                            <span id="line83"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <DIV class="footer1" align="center" valign="middle">
+                <IMG border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </DIV>
+        </DIV>
+    </BODY>
+</HTML>

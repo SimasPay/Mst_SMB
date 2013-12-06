@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><PaymentNotificationRequest>
+<Payments>
+<Payment>
+<ProductGroupCode>HTTPSERVICE</ProductGroupCode>
+<PaymentLogId>1392026</PaymentLogId>
+<CustReference>2348059376342</CustReference>
+<AlternateCustReference>13320</AlternateCustReference>
+<Amount>10000.00</Amount>
+<PaymentStatus>0</PaymentStatus>
+<PaymentMethod>Other Bank Cheque</PaymentMethod>
+<PaymentReference>FBN|BRH|ONGAS|5-07-2012|216418</PaymentReference>
+<TerminalId/>
+<ChannelName>Bank Branc</ChannelName>
+<Location>ADETOKUNBOÂ ADEMOLA</Location>
+<IsReversal>False</IsReversal>
+<PaymentDate>07/05/2012 00:00:00</PaymentDate>
+<SettlementDate>07/11/2012 00:00:00</SettlementDate>
+<InstitutionId>ONGAS</InstitutionId>
+<InstitutionName>Oando Gas</InstitutionName>
+<BranchName>ADETOKUNBOÂ ADEMOLA</BranchName>
+<BankName>First Bank of Nigeria Plc</BankName>
+<FeeName/>
+<CustomerName>AKUTE POWER LTD </CustomerName>
+<OtherCustomerInfo>|</OtherCustomerInfo>
+<ReceiptNo>1218701800</ReceiptNo>
+<CollectionsAccount>95034303024801</CollectionsAccount>
+<ThirdPartyCode/>
+<PaymentItems>
+<PaymentItem>
+<ItemName>Oando Gas</ItemName>
+<ItemCode>ONG01</ItemCode>
+<ItemAmount>10000.00</ItemAmount>
+</PaymentItem>
+</PaymentItems>
+<BankCode>FBN</BankCode>
+<CustomerAddress/>
+<CustomerPhoneNumber></CustomerPhoneNumber>
+<DepositorName/>
+<DepositSlipNumber>8695483</DepositSlipNumber>
+<PaymentCurrency>566</PaymentCurrency>
+</Payment>
+</Payments>
+</PaymentNotificationRequest>

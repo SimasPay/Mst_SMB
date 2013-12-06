@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="com.mfino.dbcopytool.reportdb.domain.TransactionPendingSummary"  table="txn_pending_summary" catalog="report">
+
+		<id name="id" type="string">
+            <column name="Id" />
+            <generator class="assigned" />
+        </id>
+        <property name="sctlId" type="string">
+            <column name="SctlId" />
+        </property>
+        <property name="csruserId" type="string">
+            <column name="CSRUserID" />
+        </property>
+        <property name="csruserName" type="string">
+            <column name="CSRUserName" />
+         </property>
+		<property name="csraction" type="string">
+            <column name="CSRAction" />
+        </property>
+        <property name="csractionTime" type="timestamp">
+            <column name="CSRACtionTime" length="19" />
+        </property>       
+        <property name="csrcomment" type="string">
+            <column name="CSRComment" />
+        </property>
+         
+</class>
+</hibernate-mapping>

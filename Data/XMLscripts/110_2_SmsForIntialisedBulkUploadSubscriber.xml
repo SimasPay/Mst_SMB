@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+	<changeSet author="MFS_MAIN" id="DATA-SYSTEMPARAMETERS-102">
+        <delete tableName="system_parameters">
+			<where>ParameterName='sms.interval.inactive.bulkupload'</where>
+		</delete>
+		<insert tableName="system_parameters">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="System"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="ParameterName" value="sms.interval.inactive.bulkupload"/>
+            <column name="ParameterValue" value="2"/>
+            <column name="Description" value="Time interval between succesive sms"/>
+        </insert>
+	</changeSet>
+
+ 	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-103">
+		<delete tableName="notification">
+			<where>code='2034'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="2034"/>
+			<column name="CodeName" value="ActivationSMSTypeBulkUpload"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Dear Subscriber, You are registered for mfino easymoney kindly activate your account."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="2034"/>
+			<column name="CodeName" value="ActivationSMSTypeBulkUpload"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Dear Subscriber, You are registered for mfino easymoney kindly activate your account."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+				<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="2034"/>
+			<column name="CodeName" value="ActivationSMSTypeBulkUpload"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Dear Subscriber, You are registered for mfino easymoney kindly activate your account."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="2034"/>
+			<column name="CodeName" value="ActivationSMSTypeBulkUpload"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Dear Subscriber, You are registered for mfino easymoney kindly activate your account."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="2034"/>
+			<column name="CodeName" value="ActivationSMSTypeBulkUpload"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Dear Subscriber, You are registered for mfino easymoney kindly activate your account."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>

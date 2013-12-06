@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:50 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.DistributionChainTemplate" optimistic-lock="version" table="distribution_chain_temp" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_DistributionChainTemplate_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<property name="Name" type="java.lang.String" >
+<column name="Name" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Service" foreign-key="FK_DistributionChainTemplate_Service" class="com.mfino.domain.Service" fetch="select">
+<column name="ServiceID"     />
+</many-to-one>
+<set name="LOPFromDCTID" inverse="true">
+<key>
+<column name="DCTID"    />
+</key>
+<one-to-many class="com.mfino.domain.LOP" />
+</set>
+<set name="DistributionChainLevelFromTemplateID" inverse="true">
+<key>
+<column name="TemplateID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.DistributionChainLevel" />
+</set>
+<set name="DCTRestrictionsFromDCTID" inverse="true">
+<key>
+<column name="DCTID"    />
+</key>
+<one-to-many class="com.mfino.domain.DCTRestrictions" />
+</set>
+<set name="PartnerRestrictionsFromDCTID" inverse="true">
+<key>
+<column name="DCTID"    />
+</key>
+<one-to-many class="com.mfino.domain.PartnerRestrictions" />
+</set>
+<set name="BulkLOPFromDCTID" inverse="true">
+<key>
+<column name="DCTID"    />
+</key>
+<one-to-many class="com.mfino.domain.BulkLOP" />
+</set>
+<set name="PartnerServicesFromDistributionChainTemplateID" inverse="true">
+<key>
+<column name="DistributionChainTemplateID"    />
+</key>
+<one-to-many class="com.mfino.domain.PartnerServices" />
+</set>
+</class>
+</hibernate-mapping>

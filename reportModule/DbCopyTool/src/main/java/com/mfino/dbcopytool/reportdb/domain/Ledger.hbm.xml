@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+<class name="com.mfino.dbcopytool.reportdb.domain.Ledger"  table="ledger" catalog="report">
+
+<id name="ID" type="string">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+
+<property name="commodityTransferID" type="string" >
+ <column name="CommodityTransferID" />
+</property>
+<property name="sourceMDN" type="string" >
+<column name="SourceMDN" />
+</property>
+<property name="sourcePocketID" type="string" >
+ <column name="SourcePocketID"   />
+</property>
+<property name="sourcePocketBalance" type="string" >
+ <column name="SourcePocketBalance"    />
+</property>
+<property name="destMDN" type="string" >
+<column name="DestMDN"  />
+</property>
+<property name="destPocketID" type="string" >
+ <column name="DestPocketID" />
+</property>
+<property name="destPocketBalance" type="string" >
+<column name="DestPocketBalance"    />
+</property>
+<property name="amount" type="string" >
+<column name="Amount"  />
+</property>
+<property name="createTime" type="timestamp">
+            <column name="CreateTime" length="19" />
+        </property>
+         <property name="year" type="string">
+            <column name="Year" />
+        </property>
+        <property name="monthName" type="string">
+            <column name="MonthName" />
+        </property>
+        <property name="dayofMonth" type="string">
+            <column name="DayofMonth" />
+        </property>
+        <property name="weekDay" type="string">
+            <column name="WeekDay" />
+        </property>
+          <property name="updateTime" type="timestamp">
+            <column name="UpdateTime" length="19" />
+        </property>
+</class>
+</hibernate-mapping>

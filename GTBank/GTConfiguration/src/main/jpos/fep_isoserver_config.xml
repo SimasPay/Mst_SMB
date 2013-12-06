@@ -1,0 +1,34 @@
+<server name="fep-server" class="org.jpos.q2.iso.QServer" logger="Q2_fep">
+	<attr name="port" type="java.lang.Integer">30020</attr>
+	<channel name="fep" class="org.jpos.iso.channel.PostChannel" packager="org.jpos.iso.packager.GenericPackager" logger="Q2_fep">
+		<property name="packager-realm" value="mfino-debug" />
+		<property name="packager-config" value="jpos_cfg/fep.xml" />
+	</channel>
+	
+	<request-listener class="com.mfino.fep.iso8583.FEPISORequestListener" logger="Q2_fep">
+		<!-- <property name="cashoutRequestQueue" value="CashoutIQueue" />-->
+		<property name="frontendID" value="999" /> 
+		<!-- value(default-isoResponseCode)-->
+		<property name="notificationToISOResponse" value="sysmalfunction-05"/>
+		<property name="notificationToISOResponse" value="invalidmsg-30"/>
+		<property name="notificationToISOResponse" value="timedout-09"/>
+		<property name="notificationToISOResponse" value="notsupported-12"/>
+		<!-- value(notificationCode-isoResponseCode)-->
+		<property name="notificationToISOResponse" value="11-14"/>
+		<property name="notificationToISOResponse" value="27-62"/>
+		<property name="notificationToISOResponse" value="7-14"/>
+		<property name="notificationToISOResponse" value="29-55"/>
+		<property name="notificationToISOResponse" value="710-54"/>
+		<property name="notificationToISOResponse" value="59-56"/>
+		<property name="notificationToISOResponse" value="620-39"/>		
+		<property name="notificationToISOResponse" value="571-14"/>
+		<property name="notificationToISOResponse" value="618-14"/>
+		<property name="notificationToISOResponse" value="753-03"/>
+		<property name="notificationToISOResponse" value="637-03"/>
+		<property name="notificationToISOResponse" value="572-06"/>
+		<property name="notificationToISOResponse" value="712-06"/>
+		<property name="notificationToISOResponse" value="711-00"/>
+		<property name="notificationToISOResponse" value="749-06"/>
+		<property name="notificationToISOResponse" value="748-00"/>
+	</request-listener>
+</server>

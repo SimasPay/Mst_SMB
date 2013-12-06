@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.SubscriberBasedSctlTxn" table="subscriber_based_sctltxn" catalog="report">
+        <id name="sctlIdSubscriberMDN" type="string">
+            <column name="SctlIdSubscriberMDN" />
+            <generator class="assigned" />
+        </id>
+        
+        <property name="sctlid" type="string">
+            <column name="SCTLID" />
+        </property>
+        <property name="transactionId" type="string">
+            <column name="TransactionID" />
+        </property>
+    
+        <property name="sourceMdn" type="string">
+            <column name="SourceMDN" />
+        </property>
+        <property name="destMdn" type="string">
+            <column name="DestMDN" />
+        </property>
+        <property name="subscriberMdn" type="string">
+            <column name="SubscriberMdn" />
+        </property>
+        <property name="sourceSubscriberId" type="string">
+            <column name="SourceSubscriberId" />
+        </property>
+        <property name="destSubscriberId" type="string">
+            <column name="DestSubscriberId" />
+        </property>
+        
+        <property name="serviceId" type="string">
+            <column name="ServiceID" />
+        </property>
+        <property name="service" type="string">
+            <column name="Service" />
+        </property>
+        
+        <property name="transactionTypeId" type="string">
+            <column name="TransactionTypeID" />
+        </property>
+        <property name="transactionType" type="string">
+            <column name="TransactionType" />
+        </property>
+        
+        <property name="channelCodeId" type="string">
+            <column name="ChannelCodeID" />
+        </property>
+         <property name="channel" type="string">
+            <column name="Channel" />
+        </property>
+        
+        <property name="transactionAmount" type="big_decimal">
+            <column name="TransactionAmount" sql-type="decimal(25,4)" />
+        </property>    
+        <property name="calculatedCharge" type="big_decimal">
+            <column name="CalculatedCharge"  sql-type="decimal(25,4)"/>
+        </property>
+        <property name="paidAmount" type="big_decimal">
+            <column name="PaidAmount"  sql-type="decimal(25,4)"/>
+        </property>
+        
+        <property name="commodityTransferId" type="string">
+            <column name="CommodityTransferID" />
+        </property>
+        
+        <property name="statusId" type="string">
+            <column name="StatusId" />
+        </property>
+         <property name="status" type="string">
+            <column name="Status" />
+        </property>
+        <property name="mfsBillerCode" type="string">
+            <column name="MFSBillerCode" />
+        </property>
+        <property name="info1" type="string">
+            <column name="Info1" />
+        </property>
+        <property name="invoiceNo" type="string">
+            <column name="InvoiceNo" />
+        </property>
+        
+        <property name="ischargeDistributed" type="java.lang.Boolean">
+            <column name="ISchargeDistributed" />
+        </property>
+         <property name="createTime" type="timestamp">
+            <column name="CreateTime" length="19" />
+        </property>
+         <property name="createYear" type="string">
+            <column name="CreateYear" />
+        </property>
+        <property name="createMonthName" type="string">
+            <column name="CreateMonthName" />
+        </property>
+        <property name="createDayofMonth" type="string">
+            <column name="CreateDayofMonth" />
+        </property>
+        <property name="createWeekDay" type="string">
+            <column name="CreateWeekDay" />
+        </property>
+         <property name="createHour" type="string">
+            <column name="CreateHour" />
+        </property>
+        <property name="updateTime" type="timestamp">
+            <column name="UpdateTime" length="19" />
+        </property>
+        <property name="updateYear" type="string">
+            <column name="UpdateYear" />
+        </property>
+        <property name="updateMonthName" type="string">
+            <column name="UpdateMonthName" />
+        </property>
+        <property name="updateDayofMonth" type="string">
+            <column name="UpdateDayofMonth" />
+        </property>
+        <property name="updateWeekDay" type="string">
+            <column name="UpdateWeekDay" />
+        </property>
+         <property name="updateHour" type="string">
+            <column name="UpdateHour" />
+        </property>
+    </class>
+</hibernate-mapping>

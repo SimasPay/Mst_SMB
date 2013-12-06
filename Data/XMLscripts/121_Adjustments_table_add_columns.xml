@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+ 	<property name="autoIncrement" value="true" dbms="mysql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+ 	
+  	<property name="BIGINT" value="BIGINT" dbms="mysql"/>
+	<property name="BIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="INT" value="INT" dbms="mysql"/>
+	<property name="INT" value="NUMBER(10,0)" dbms="oracle"/>
+ 	
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+	
+	<property name="DATETIME" value="DATETIME" dbms="mysql"/>
+	<property name="DATETIME" value="TIMESTAMP(0)" dbms="oracle"/>
+	
+	<changeSet author="MFS_MAIN" id="TABLE-ADJUSTMENTS-160">
+		<addColumn tableName="adjustments">
+			<column name="AdjustmentType" type="${INT}"/>
+			<column name="Description" type="${VARCHAR}"/>
+ 		</addColumn>
+	</changeSet>
+</databaseChangeLog>

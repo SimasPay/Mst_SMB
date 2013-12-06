@@ -1,0 +1,152 @@
+{
+  "totalCount": 4,
+  "version": 2.6,
+  "success": true,
+  "purchaseData": [
+    {
+      "productCategory": "Mobile Phone",
+      "providers": [
+        {
+          "providerName": "Telkomsel",
+          "products": [
+            {
+              "productName": "Telkomsel",
+              "productCode": "010002",
+              "Denom": "25000 50000 100000 150000 200000 500000 1000000"
+            },
+			{
+              "productName": "Kartu AS",
+              "productCode": "010003",
+              "Denom": "25000 50000 100000"
+            }
+          ]
+        },
+		{
+          "providerName": "Indosat",
+          "products": [
+            {
+              "productName": "Mentari",
+              "productCode": "011002",
+              "Denom": "25000 50000 100000 150000 250000"
+            },
+			{
+              "productName": "Kartu IMS",
+              "productCode": "011003",
+              "Denom": "25000 50000 100000 150000 250000"
+            }
+          ]
+        },
+		{
+          "providerName": "XL",
+          "products": [
+            {
+              "productName": "XL Bebas Reguler",
+              "productCode": "013002",
+              "Denom": "25000 50000 100000 200000"
+            },
+			{
+              "productName": "XL Bebas Xtra",
+              "productCode": "013003",
+              "Denom": "50000 100000"
+            }
+          ]
+        },
+		{
+          "providerName": "Bakrie Telecom",
+          "products": [
+            {
+              "productName": "Esia",
+              "productCode": "018002",
+              "Denom": "25000 50000 100000 150000 250000"
+            }
+          ]
+        },
+		{
+          "providerName": "Hutch",
+          "products": [
+            {
+              "productName": "Three",
+              "productCode": "012102",
+              "Denom": "30000 40000 50000 75000 100000 150000 300000 500000"
+            }
+          ]
+        },
+		{
+          "providerName": "AXIS",
+          "products": [
+            {
+              "productName": "Axis",
+              "productCode": "013102",
+              "Denom": "25000 50000 75000 100000 150000 200000 300000"
+            }
+          ]
+        },
+		{
+          "providerName": "Smartfren Telco",
+          "products": [
+            {
+              "productName": "Smartfren",
+              "productCode": "019003",
+              "Denom": "10000 20000 50000 100000 150000 200000 300000 500000"
+            }
+          ]
+        }
+      ]
+    },
+	{
+      "productCategory": "Other purchase",
+      "providers": [
+        {
+          "providerName": "PLN",
+          "products": [
+            {
+              "productName": "PLN Voucher/Token",
+              "productCode": "301422",
+              "Denom": ""
+            }
+          ]
+        }
+      ]
+    },
+	{
+      "productCategory": "Ticket",
+      "providers": [
+        {
+          "providerName": "Ticket",
+          "products": [
+            {
+              "productName": "Lion Air",
+              "productCode": "710110",
+              "Denom": ""
+            }
+          ]
+        }
+      ]
+    },
+	{
+      "productCategory": "TV cable voucher",
+      "providers": [
+        {
+          "providerName": "Telkom Grup",
+          "products": [
+            {
+              "productName": "TelkomVision",
+              "productCode": "060101",
+              "Denom": "40000 50000 60000 75000 85000 140000 250000"
+            }
+          ]
+        },
+		{
+          "providerName": "TV Kabel",
+          "products": [
+            {
+              "productName": "Orange TV",
+              "productCode": "060701",
+              "Denom": "30000 50000 80000 100000"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

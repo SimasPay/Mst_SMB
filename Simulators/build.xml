@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="startEnvironment" default="build">
+	<property name="base.dir" value="."/>
+	<property name="jar.dir" value="${base.dir}/lib"/>
+	<property environment="env"/>
+	<property name="client" value="defaultClient"/>
+	<property name="message" value="test Message"/>
+	
+		<condition property="isWindows">
+                <os family="windows" />
+        </condition>
+        <condition property="isUnix">
+                <os family="unix" />
+        </condition>
+	
+	<target name="if_windows" if="isWindows">
+		<property name="kill.exe" value="common/bin/pskill" />
+		<property name="killOption" value="-t" />	
+		<property name="isoMockCmd" value="-classpath ISOMock/lib/ISOTest-0.1-SNAPSHOT.jar;ISOMock/lib/jpos-1.8.2.jar;ISOMock/lib/jdom-1.0.jar;ISOMock/lib/commons-lang-2.4.jar;ISOMock/lib/commons-cli-1.2.jar com.mfino.mce.iso.jpos.test.server.ISOJPOSServer ${arg}" />
+		<property name="isoSmpp16255Cmd" value="-classpath smpp/lib/smpp.jar;smpp/lib/smscsim.jar com.logica.smscsim.Simulator 16255 false" />
+		<property name="isoSmpp16355Cmd" value="-classpath smpp/lib/smpp.jar;smpp/lib/smscsim.jar com.logica.smscsim.Simulator 16355 true" />
+	</target>
+	<target name="if_unix" if="isUnix" >
+		<property name="kill.exe" value="kill" />
+		<property name="killOption" value="-9" />
+		<property name="isoMockCmd" value="-classpath ISOMock/lib/ISOTest-0.1-SNAPSHOT.jar:ISOMock/lib/jpos-1.8.2.jar:ISOMock/lib/jdom-1.0.jar:ISOMock/lib/commons-lang-2.4.jar:ISOMock/lib/commons-cli-1.2.jar com.mfino.mce.iso.jpos.test.server.ISOJPOSServer ${arg}" />
+		<property name="isoSmpp16255Cmd" value="-classpath smpp/lib/smpp.jar:smpp/lib/smscsim.jar com.logica.smscsim.Simulator 16255 false" />
+		<property name="isoSmpp16355Cmd" value="-classpath smpp/lib/smpp.jar:smpp/lib/smscsim.jar com.logica.smscsim.Simulator 16355 true" />
+	</target>
+	
+	<target name="pre" depends="if_windows, if_unix" >
+	</target>
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="common/lib/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+
+	<target name="run-mock" depends="pre">
+		<mkdir dir="logs"/>
+		<mkdir dir="smpp/logs"/>
+		<parallel> 
+			<java fork="true" classname="com.logica.smscsim.Simulator" output="logs/ISOSmpp_16255.out" >
+				<classpath>
+					<pathelement location="smpp/lib/smpp.jar"/>
+					<pathelement location="smpp/lib/smscsim.jar"/>
+				</classpath>
+				<arg value="16255"/>
+				<arg value="false"/>
+				<arg line=""/>
+			</java>	
+		
+			<java fork="true" classname="com.logica.smscsim.Simulator" output="logs/ISOSmpp_16355.out" >
+				<classpath>
+					<pathelement location="smpp/lib/smpp.jar"/>
+					<pathelement location="smpp/lib/smscsim.jar"/>
+				</classpath>
+				<arg value="16355"/>
+				<arg value="true"/>
+				<arg line=""/>
+			</java> 
+			
+			<exec executable="java" output="logs/ISOMock.out">
+				<arg line="${isoMockCmd}" />
+			</exec>	
+		</parallel>
+	</target>
+	
+		
+	<target name="send-msg">
+		<java fork="true" classname="com.mfino.teststk.StkTestClient" >
+				<classpath>
+					<pathelement location="smpp/lib/stktestclient.jar"/>
+					<pathelement location="smpp/lib/smscsim.jar"/>
+				</classpath>
+			<arg value="${client}"/>
+			<arg value="${message}"/>
+			<arg line=""/>
+		</java>
+	</target>
+	
+	<target name="stop-mock" depends="pre">
+		<exec executable="${env.JAVA_HOME}/bin/jps" output="pid.out.file"/>
+		
+		<loadfile srcfile="pid.out.file" property="pid.out_1">
+			<filterchain>
+				<linecontains>
+					<contains value="Simulator"/>
+				</linecontains>
+				<tokenfilter>
+					<deletecharacters chars="Simulator"/>
+					<trim/>
+					<ignoreblank/>
+				</tokenfilter>
+				<tailfilter lines="1"/>
+				<striplinebreaks />				
+			</filterchain>
+		</loadfile>
+		
+		
+		<loadfile srcfile="pid.out.file" property="pid.out_2">
+			<filterchain>
+				<linecontains>
+					<contains value="Simulator"/>
+				</linecontains>
+				<tokenfilter>
+					<deletecharacters chars="Simulator"/>
+					<trim/>
+					<ignoreblank/>
+				</tokenfilter>
+				<headfilter lines="1"/>
+				<striplinebreaks />
+			</filterchain>
+		</loadfile>
+		
+		
+		<loadfile srcfile="pid.out.file" property="pid.out_3">
+			<filterchain>
+				<linecontains>
+					<contains value="ISOJPOSServer"/>
+				</linecontains>
+				<tokenfilter>
+					<deletecharacters chars="ISOJPOSServer"/>
+					<trim/>
+					<ignoreblank/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+
+		<echo>Stopping Mock.... </echo>
+		<exec executable="${kill.exe}">
+			<arg value="${killOption}"/>			
+			<arg value="${pid.out_1}"/>			
+		</exec>
+		<exec executable="${kill.exe}">
+			<arg value="${killOption}"/>			
+			<arg value="${pid.out_2}"/>
+		</exec>
+		<exec executable="${kill.exe}">
+			<arg value="${killOption}"/>			
+			<arg value="${pid.out_3}"/>
+		</exec>
+		
+		<delete file="pid.out.file"/> 
+			
+	
+	</target>
+	
+</project>

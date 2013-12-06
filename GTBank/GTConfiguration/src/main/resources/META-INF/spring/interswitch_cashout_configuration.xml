@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:camel-cxf="http://camel.apache.org/schema/cxf"
+	xmlns:broker="http://activemq.apache.org/schema/core" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:http="http://cxf.apache.org/transports/http/configuration"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xmlns:sec="http://cxf.apache.org/configuration/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+	http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+    http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+    http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+    http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd
+    http://www.jasypt.org/schema/encryption
+    http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd">
+
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+	
+	<osgi:reference id="transactionIdentifierServiceImpl" bean-name="TransactionIdentifierServiceImpl" interface="com.mfino.service.TransactionIdentifierService"/>
+	
+	<bean id="config"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="passwordEnvName">
+			<value>ENCRYPTION_KEY</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+	</bean>
+
+	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<ref bean="config" />
+		</property>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="stringEncryptor" />
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<camel-cxf:cxfEndpoint id="atmCashout"
+		address="${interswitch_url}" serviceClass="com.interswitchng.techquest.ISO8583ServicesPortType"
+		xmlns:ssp="http://techquest.interswitchng.com/" endpointName="ssp:ISO8583ServicesSoap12Endpoint"
+		serviceName="ssp:ISO8583ServicesPortTypeService" />
+
+	<http:conduit name="{http://techquest.interswitchng.com/}ISO8583ServicesSoap12Endpoint.http-conduit">
+		<http:tlsClientParameters
+			secureSocketProtocol="SSL">
+			<sec:keyManagers keyPassword="${interswitch_key_pwd}">
+				<sec:keyStore type="JKS" password="${interswitch_keystore_pwd}"
+					file="${interswitch_keystore_loc}" />
+			</sec:keyManagers>
+			<sec:trustManagers>
+				<sec:keyStore type="JKS" password="${interswitch_truststore_pwd}"
+					file="${interswitch_truststore_loc}" />
+			</sec:trustManagers>
+			<sec:cipherSuitesFilter>
+				<!-- these filters ensure that a ciphersuite with export-suitable or 
+					null encryption is used, but exclude anonymous Diffie-Hellman key change 
+					as this is vulnerable to man-in-the-middle attacks -->
+				<sec:include>.*_EXPORT_.*</sec:include>
+				<sec:include>.*_EXPORT1024_.*</sec:include>
+				<sec:include>.*_WITH_DES_.*</sec:include>
+				<sec:include>.*_WITH_AES_.*</sec:include>
+				<sec:include>.*_WITH_NULL_.*</sec:include>
+				<sec:exclude>.*_DH_anon_.*</sec:exclude>
+			</sec:cipherSuitesFilter>
+		</http:tlsClientParameters>
+		<!-- <http:client AutoRedirect="true" Connection="Keep-Alive" /> -->
+	</http:conduit>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<bean id="cashoutProcessor" class="com.mfino.integration.cashout.FrontendCashoutProcessor">
+	  <!-- this frontendID  is currently not used -->
+		<property name="transactionIdentifierService" ref="transactionIdentifierServiceImpl" />
+		<property name="frontendID" value="126" />
+		<property name="CashOutQueue" value="jms:CashoutIQueue?disableReplyTo=true" />
+		<property name="InstitutionID" value="1"/>
+		<property name="KWP" value="${cashout.kwp}"/>
+		<property name="timeout" value="${interswitch.timeout}" />
+	</bean>
+
+	<bean id="sedaOutProcessor" class="com.mfino.integration.cashout.SedaOutProcessor" />
+
+	<camelContext id="interswitchCashinContext" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+
+		<route>
+			<from uri="cxf:bean:atmCashout" />
+			<process ref="cashoutProcessor" />
+		</route>
+
+		<route>
+			<from uri="jms:COFEQ?disableReplyTo=true" />
+			<process ref="sedaOutProcessor" />
+		</route>
+
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

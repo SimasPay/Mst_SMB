@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Merchant"
+			android:id="@+id/Merchant"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Airtime Transfer"
+			android:id="@+id/MerchantAirtimeTransferTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="ChangePin"
+			android:id="@+id/MerchantChangePinTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="CheckBalance"
+			android:id="@+id/MerchantCheckBalanceTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Last 3 Transactions"
+			android:id="@+id/MerchantLastNTxnsTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Recharge"
+			android:id="@+id/MerchantRechargeTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="ResetPin"
+			android:id="@+id/MerchantResetPinTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<Button android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/GoBackInMerchantHome"
+			android:text="Back">
+		</Button>
+	</TableRow>
+
+</TableLayout>

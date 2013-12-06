@@ -1,0 +1,2 @@
+com.mfino.handset.subscriber.midlets.MFSClientMidlet
+com.mfino.handset.subscriber.midlets.MobileBankingMidlet

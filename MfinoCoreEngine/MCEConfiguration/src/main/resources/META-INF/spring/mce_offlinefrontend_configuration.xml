@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    
+	    http://www.springframework.org/schema/beans/spring-beans.xsd  
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd 
+	    http://www.springframework.org/schema/osgi    
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd  
+	    http://www.springframework.org/schema/osgi-compendium  
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd
+	    http://www.jasypt.org/schema/encryption
+        http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+	
+	<bean id="offlineFrontendService" class="com.mfino.offlinefrontend.impl.OfflineFrontendServiceImpl" />
+
+	<bean id="classBasedDynamicRouter" class="com.mfino.mce.core.routing.ClassBasedDynamicRouter">
+		<constructor-arg>
+			<map>
+				<entry key="com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank"
+					value="jms:integrationResponseMissingMessageQueue?disableReplyTo=true" />
+				<!-- missing iso response -->
+				<entry key="com.mfino.domain.NoISOResponseMsg"
+					value="jms:integrationResponseMissingMessageQueue?disableReplyTo=true" />
+			</map>
+		</constructor-arg>
+		<property name="defaultQueue" value="jms:backendServiceQueue?disableReplyTo=true" />
+	</bean>
+	
+	<bean id="controlBean" class="com.mfino.mce.core.util.FrontEndControlBean">
+		<property name="isOfflineBank" value="${offline.bank}"/>
+	</bean>		
+
+	<camelContext id="offlinefrontend" xmlns="http://camel.apache.org/schema/spring">
+    <route>
+        <from uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+        <choice>
+      		<when>
+        		<method bean="controlBean" method="isOfflineBank"/>
+		        <to uri="bean:offlineFrontendService?method=processMessage"/>
+		        <to uri="jms:frontendResponseServiceQueue?disableReplyTo=true"/>
+     		 </when>
+   		</choice>        
+    </route>
+    <route>
+        <from uri="jms:frontendResponseServiceQueue?disableReplyTo=true"/>
+        <filter>
+            <simple>${in.body.destinationQueue} == null</simple>
+            <removeHeader headerName="CamelSlipEndPoint"/>
+            <dynamicRouter>
+                <method method="findDestination" ref="classBasedDynamicRouter"></method>
+            </dynamicRouter>
+          </filter>
+            <filter>
+                <simple>${in.body.destinationQueue} != null</simple>
+                <setHeader headerName="destinationQueue">
+                    <simple>${body.destinationQueue}</simple>
+                </setHeader>
+                <recipientList>
+                    <simple>${body.nextQueue}</simple>
+                </recipientList>
+            </filter>
+       
+    </route>
+</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+
+</beans>

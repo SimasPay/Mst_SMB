@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+        <property name="hibernate.conncetion.driver_class">oracle.jdbc.driver.OracleDriver</property>
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@mfinodbserver:1523/mfinodb</property>
+        <property name="hibernate.connection.username">mfino</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+         <property name="hibernate.connection.password">ENC(BV1Pld5yEn47oljN4ye/VQ==)</property>  
+        
+        <property name="connection.provider_class">org.jasypt.hibernate.connectionprovider.EncryptedPasswordC3P0ConnectionProvider</property>
+   		<property name="connection.encryptor_registered_name">dbPasswordEncryptor</property>
+        
+   		<property name="show_sql">false</property>
+	    <property name="hibernate.hbm2ddl.auto">update</property> 
+        
+        <mapping resource="com/mfino/dbcopytool/reportdb/domain/CommodityTransfer.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/CopyInfo.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/KinInformationMissingAccount.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/Ledger.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/Partner.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/Pocket.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/SctlTxn.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/Subscriber.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/UserRoles.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/Users.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/Authorities.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/SubscriberBasedCT.hbm.xml"></mapping>
+      	<mapping resource="com/mfino/dbcopytool/reportdb/domain/SubscriberBasedSctlTxn.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/IntegreationSummary.hbm.xml"></mapping>
+		<mapping resource="com/mfino/dbcopytool/reportdb/domain/TransactionPendingSummary.hbm.xml"></mapping>
+	</session-factory>
+</hibernate-configuration>

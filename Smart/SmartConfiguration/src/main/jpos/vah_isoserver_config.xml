@@ -1,0 +1,21 @@
+<server name="xml-server" class="org.jpos.q2.iso.QServer" logger="Q2_vah">
+<attr name="port" type="java.lang.Integer">8881</attr>
+<!-- optional server-socket-factory element
+<server-socket-factory class="org.jpos.iso.SunJSSESocketFactory" logger="Q2">
+<property name="keystore" value="/path/to/your/keystore.jks" />
+<property name="clientauth" value="true" />
+<property name="serverauth" value="true" />
+<property name="storepassword" value="secret" />
+<property name="keypassword" value="secret" />
+<property name="addEnabledCipherSuite" value="SSL_RSA_WITH_3DES_EDE_CBC_SHA" />
+<property name="addEnabledCipherSuite" value="TLS_DHE_DSS_WITH_AES_256_CBC_SHA" />
+</server-socket-factory>
+-->
+	<channel name="vah" class="org.jpos.iso.channel.ASCIIChannel" packager="org.jpos.iso.packager.GenericPackager" logger="Q2_vah">
+		<property name="packager-config" value="jpos/jpos_cfg/iso87ascii-vah.xml" />
+	</channel>
+	<request-listener class="com.mfino.vah.iso8583.VAHRequestListener" logger="Q2_vah">
+		<!-- <property name="my-property" value="ABC" />
+		<property name="my-other-property" value="XYZ" />-->
+	</request-listener>
+</server>

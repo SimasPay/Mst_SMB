@@ -1,0 +1,367 @@
+<external-response-codes>
+  <response-code>
+   <code>01</code>
+   <description>Refer to card issuer</description>
+   <notification-text>Refer to card issuer</notification-text>
+  </response-code>
+  <response-code>
+   <code>02</code>
+   <description>Refer to card issuer, special condition</description>
+   <notification-text>Refer to card issuer, special condition</notification-text>
+  </response-code>
+  <response-code>
+   <code>03</code>
+   <description>Invalid merchant</description>
+   <notification-text>Invalid merchant</notification-text>
+  </response-code>
+  <response-code>
+   <code>04</code>
+   <description>Pick-up card</description>
+   <notification-text>Pick-up card</notification-text>
+  </response-code>
+  <response-code>
+   <code>05</code>
+   <description>Do not honor</description>
+   <notification-text>Do not honor</notification-text>
+  </response-code>
+  <response-code>
+   <code>06</code>
+   <description>Error</description>
+   <notification-text>Error</notification-text>
+  </response-code>
+  <response-code>
+   <code>07</code>
+   <description>Pick-up card, special condition</description>
+   <notification-text>Pick-up card, special condition</notification-text>
+  </response-code>
+  <response-code>
+   <code>08</code>
+   <description>Honor with identification</description>
+   <notification-text>Honor with identification</notification-text>
+  </response-code>
+  <response-code>
+   <code>09</code>
+   <description>Request in progress</description>
+   <notification-text>Request in progress</notification-text>
+  </response-code>
+  <response-code>
+   <code>10</code>
+   <description>Approved, partial</description>
+   <notification-text>Approved, partial</notification-text>
+  </response-code>
+  <response-code>
+   <code>11</code>
+   <description>Approved, VIP</description>
+   <notification-text>Approved, VIP</notification-text>
+  </response-code>
+  <response-code>
+   <code>12</code>
+   <description>Invalid transaction</description>
+   <notification-text>Invalid transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>13</code>
+   <description>Invalid amount</description>
+   <notification-text>Invalid amount</notification-text>
+  </response-code>
+  <response-code>
+   <code>14</code>
+   <description>Invalid card number</description>
+   <notification-text>Invalid card number</notification-text>
+  </response-code>
+  <response-code>
+   <code>15</code>
+   <description>No such issuer</description>
+   <notification-text>No such issuer</notification-text>
+  </response-code>
+  <response-code>
+   <code>16</code>
+   <description>Approved, update track 3</description>
+   <notification-text>Approved, update track 3</notification-text>
+  </response-code>
+  <response-code>
+   <code>17</code>
+   <description>Customer cancellation</description>
+   <notification-text>Customer cancellation</notification-text>
+  </response-code>
+  <response-code>
+   <code>18</code>
+   <description>Customer dispute</description>
+   <notification-text>Customer dispute</notification-text>
+  </response-code>
+  <response-code>
+   <code>19</code>
+   <description>Re-enter transaction</description>
+   <notification-text>Re-enter transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>20</code>
+   <description>Invalid response</description>
+   <notification-text>Invalid response</notification-text>
+  </response-code>
+  <response-code>
+   <code>21</code>
+   <description>No action taken</description>
+   <notification-text>No action taken</notification-text>
+  </response-code>
+  <response-code>
+   <code>22</code>
+   <description>Suspected malfunction</description>
+   <notification-text>Suspected malfunction</notification-text>
+  </response-code>
+  <response-code>
+   <code>23</code>
+   <description>Unacceptable transaction fee</description>
+   <notification-text>Unacceptable transaction fee</notification-text>
+  </response-code>
+  <response-code>
+   <code>24</code>
+   <description>File update not supported</description>
+   <notification-text>File update not supported</notification-text>
+  </response-code>
+  <response-code>
+   <code>25</code>
+   <description>Unable to locate record</description>
+   <notification-text>Unable to locate record</notification-text>
+  </response-code>
+  <response-code>
+   <code>26</code>
+   <description>Duplicate record</description>
+   <notification-text>Duplicate record</notification-text>
+  </response-code>
+  <response-code>
+   <code>27</code>
+   <description>File update edit error</description>
+   <notification-text>File update edit error</notification-text>
+  </response-code>
+  <response-code>
+   <code>28</code>
+   <description>File update file locked</description>
+   <notification-text>File update file locked</notification-text>
+  </response-code>
+  <response-code>
+   <code>29</code>
+   <description>File update failed</description>
+   <notification-text>File update failed</notification-text>
+  </response-code>
+  <response-code>
+   <code>30</code>
+   <description>Format error</description>
+   <notification-text>Format error</notification-text>
+  </response-code>
+  <response-code>
+   <code>31</code>
+   <description>Bank not supported</description>
+   <notification-text>Bank not supported</notification-text>
+  </response-code>
+  <response-code>
+   <code>32</code>
+   <description>Completed partially</description>
+   <notification-text>Completed partially</notification-text>
+  </response-code>
+  <response-code>
+   <code>33</code>
+   <description>Expired card, pick-up</description>
+   <notification-text>Expired card, pick-up</notification-text>
+  </response-code>
+  <response-code>
+   <code>34</code>
+   <description>Suspected fraud, pick-up</description>
+   <notification-text>Suspected fraud, pick-up</notification-text>
+  </response-code>
+  <response-code>
+   <code>35</code>
+   <description>Contact acquirer, pick-up</description>
+   <notification-text>Contact acquirer, pick-up</notification-text>
+  </response-code>
+  <response-code>
+   <code>36</code>
+   <description>Restricted card, pick-up</description>
+   <notification-text>Restricted card, pick-up</notification-text>
+  </response-code>
+  <response-code>
+   <code>37</code>
+   <description>Call acquirer security, pick-up</description>
+   <notification-text>Call acquirer security, pick-up</notification-text>
+  </response-code>
+  <response-code>
+   <code>38</code>
+   <description>PIN tries exceeded, pick-up</description>
+   <notification-text>PIN tries exceeded, pick-up</notification-text>
+  </response-code>
+  <response-code>
+   <code>39</code>
+   <description>No credit account</description>
+   <notification-text>No credit account</notification-text>
+  </response-code>
+  <response-code>
+   <code>40</code>
+   <description>Function not supported</description>
+   <notification-text>Function not supported</notification-text>
+  </response-code>
+  <response-code>
+   <code>41</code>
+   <description>Lost card</description>
+   <notification-text>Lost card</notification-text>
+  </response-code>
+  <response-code>
+   <code>42</code>
+   <description>No universal account</description>
+   <notification-text>No universal account</notification-text>
+  </response-code>
+  <response-code>
+   <code>43</code>
+   <description>Stolen card</description>
+   <notification-text>Stolen card</notification-text>
+  </response-code>
+  <response-code>
+   <code>44</code>
+   <description>No investment account</description>
+   <notification-text>No investment account</notification-text>
+  </response-code>
+  <response-code>
+   <code>51</code>
+   <description>Not sufficient funds</description>
+   <notification-text>Not sufficient funds</notification-text>
+  </response-code>
+  <response-code>
+   <code>52</code>
+   <description>No check account</description>
+   <notification-text>No check account</notification-text>
+  </response-code>
+  <response-code>
+   <code>53</code>
+   <description>No savings account</description>
+   <notification-text>No savings account</notification-text>
+  </response-code>
+  <response-code>
+   <code>54</code>
+   <description>Expired card</description>
+   <notification-text>Expired card</notification-text>
+  </response-code>
+  <response-code>
+   <code>55</code>
+   <description>Incorrect PIN</description>
+   <notification-text>Incorrect PIN</notification-text>
+  </response-code>
+  <response-code>
+   <code>56</code>
+   <description>No card record</description>
+   <notification-text>No card record</notification-text>
+  </response-code>
+  <response-code>
+   <code>57</code>
+   <description>Transaction not permitted to cardholder</description>
+   <notification-text>Transaction not permitted to cardholder</notification-text>
+  </response-code>
+  <response-code>
+   <code>58</code>
+   <description>Transaction not permitted on terminal</description>
+   <notification-text>Transaction not permitted on terminal</notification-text>
+  </response-code>
+  <response-code>
+   <code>59</code>
+   <description>Suspected fraud</description>
+   <notification-text>Suspected fraud</notification-text>
+  </response-code>
+  <response-code>
+   <code>60</code>
+   <description>Contact acquirer</description>
+   <notification-text>Contact acquirer</notification-text>
+  </response-code>
+  <response-code>
+   <code>61</code>
+   <description>Exceeds withdrawal limit</description>
+   <notification-text>Exceeds withdrawal limit</notification-text>
+  </response-code>
+  <response-code>
+   <code>62</code>
+   <description>Restricted card</description>
+   <notification-text>Restricted card</notification-text>
+  </response-code>
+  <response-code>
+   <code>63</code>
+   <description>Security violation</description>
+   <notification-text>Security violation</notification-text>
+  </response-code>
+  <response-code>
+   <code>64</code>
+   <description>Original amount incorrect</description>
+   <notification-text>Original amount incorrect</notification-text>
+  </response-code>
+  <response-code>
+   <code>65</code>
+   <description>Exceeds withdrawal frequency</description>
+   <notification-text>Exceeds withdrawal frequency</notification-text>
+  </response-code>
+  <response-code>
+   <code>66</code>
+   <description>Call acquirer security</description>
+   <notification-text>Call acquirer security</notification-text>
+  </response-code>
+  <response-code>
+   <code>67</code>
+   <description>Hard capture</description>
+   <notification-text>Hard capture</notification-text>
+  </response-code>
+  <response-code>
+   <code>68</code>
+   <description>Response received too late</description>
+   <notification-text>Response received too late</notification-text>
+  </response-code>
+  <response-code>
+   <code>75</code>
+   <description>PIN tries exceeded</description>
+   <notification-text>PIN tries exceeded</notification-text>
+  </response-code>
+  <response-code>
+   <code>77</code>
+   <description>Intervene, bank approval required</description>
+   <notification-text>Intervene, bank approval required</notification-text>
+  </response-code>
+  <response-code>
+   <code>78</code>
+   <description>Intervene, bank approval required for partial amount</description>
+   <notification-text>Intervene, bank approval required for partial amount</notification-text>
+  </response-code>
+  <response-code>
+   <code>90</code>
+   <description>Cut-off in progress</description>
+   <notification-text>Cut-off in progress</notification-text>
+  </response-code>
+  <response-code>
+   <code>91</code>
+   <description>Issuer or switch inoperative</description>
+   <notification-text>Issuer or switch inoperative</notification-text>
+  </response-code>
+  <response-code>
+   <code>92</code>
+   <description>Routing error</description>
+   <notification-text>Routing error</notification-text>
+  </response-code>
+  <response-code>
+   <code>93</code>
+   <description>Violation of law</description>
+   <notification-text>Violation of law</notification-text>
+  </response-code>
+  <response-code>
+   <code>94</code>
+   <description>Duplicate transaction</description>
+   <notification-text>Duplicate transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>95</code>
+   <description>Reconcile error</description>
+   <notification-text>Reconcile error</notification-text>
+  </response-code>
+  <response-code>
+   <code>96</code>
+   <description>System malfunction</description>
+   <notification-text>System malfunction</notification-text>
+  </response-code>
+  <response-code>
+   <code>98</code>
+   <description>Exceeds cash limit</description>
+   <notification-text>Exceeds cash limit</notification-text>
+  </response-code>
+</external-response-codes>

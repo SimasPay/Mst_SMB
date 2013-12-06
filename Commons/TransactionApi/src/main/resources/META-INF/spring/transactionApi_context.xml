@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/osgi
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/osgi-compendium
+       http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.jasypt.org/schema/encryption
+       http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+		<context:annotation-config />
+
+		<!-- Importing required services to my application context -->
+		<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+		<osgi:reference id="HierarchyServiceImpl" interface="com.mfino.commons.hierarchyservice.HierarchyService" context-class-loader="service-provider"/>
+
+		<osgi:reference id="AgentServiceImpl" interface="com.mfino.service.AgentService"/>
+		<osgi:reference id="AuthorizationServiceImpl" interface="com.mfino.service.AuthorizationService"/>
+		<osgi:reference id="BillerServiceImpl" interface="com.mfino.service.BillerService" context-class-loader="service-provider"/>
+		<osgi:reference id="BillPaymentsServiceImpl" interface="com.mfino.service.BillPaymentsService" context-class-loader="service-provider"/>
+		<osgi:reference id="BulkBankAccountServiceImpl" interface="com.mfino.service.BulkBankAccountService"/>
+		<osgi:reference id="BulkUploadEntryServiceImpl" interface="com.mfino.service.BulkUploadEntryService"/>
+		<osgi:reference id="BulkUploadServiceImpl" interface="com.mfino.service.BulkUploadService"/>
+		<osgi:reference id="ChannelCodeServiceImpl" interface="com.mfino.service.ChannelCodeService" context-class-loader="service-provider"/>
+		<osgi:reference id="ChannelSessionManagementServiceImpl" interface="com.mfino.service.ChannelSessionManagementService"/>
+		<osgi:reference id="ChargeTxnCommodityTransferMapServiceImpl" interface="com.mfino.service.ChargeTxnCommodityTransferMapService"/>
+		<osgi:reference id="ClosedAccountSettlementMDNServiceImpl" interface="com.mfino.service.ClosedAccountSettlementMDNService"/>
+		<osgi:reference id="CommodityTransferServiceImpl" interface="com.mfino.service.CommodityTransferService"  context-class-loader="service-provider"/>
+		<osgi:reference id="DefaultPocketMaintainerServiceImpl" interface="com.mfino.service.DefaultPocketMaintainerService"/>
+		<osgi:reference id="DistributionChainTemplateServiceImpl" interface="com.mfino.service.DistributionChainTemplateService"/>
+		<osgi:reference id="DistributionTreeServiceImpl" interface="com.mfino.service.DistributionTreeService"/>
+		<osgi:reference id="EnumTextServiceImpl" interface="com.mfino.service.EnumTextService"/>
+		<osgi:reference id="FundStorageServiceImpl" interface="com.mfino.service.FundStorageService"/>
+		<osgi:reference id="FundValidationServiceImpl" interface="com.mfino.service.FundValidationService"/>
+		<osgi:reference id="IntegrationPartnerMappingServiceImpl" interface="com.mfino.service.IntegrationPartnerMappingService" context-class-loader="service-provider"/>
+		<osgi:reference id="JSAuthGeneratorServiceImpl" interface="com.mfino.service.JSAuthGeneratorService"/>
+		<osgi:reference id="KYCLevelServiceImpl" interface="com.mfino.service.KYCLevelService"/>
+		<osgi:reference id="LOPServiceImpl" interface="com.mfino.service.LOPService"/>
+		<osgi:reference id="MailServiceImpl" interface="com.mfino.service.MailService"/>
+		<osgi:reference id="MDNRangeServiceImpl" interface="com.mfino.service.MDNRangeService"/>
+		<osgi:reference id="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService" />
+		<osgi:reference id="MFSBillerServiceImpl" interface="com.mfino.service.MFSBillerService" context-class-loader="service-provider"/>
+		<osgi:reference id="MFSDenominationsServiceImpl" interface="com.mfino.service.MFSDenominationsService"/>
+		<osgi:reference id="MoneyClearanceGravedServiceImpl" interface="com.mfino.service.MoneyClearanceGravedService"/>
+		<osgi:reference id="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>
+		<osgi:reference id="NotificationLogDetailsServiceImpl" interface="com.mfino.service.NotificationLogDetailsService"/>
+		<osgi:reference id="NotificationLogServiceImpl" interface="com.mfino.service.NotificationLogService"/>
+		<osgi:reference id="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService" context-class-loader="service-provider"/>
+		<osgi:reference id="NotificationServiceImpl" interface="com.mfino.service.NotificationService" context-class-loader="service-provider"/>
+		<osgi:reference id="PartnerRestrictionsServiceImpl" interface="com.mfino.service.PartnerRestrictionsService"/>
+		<osgi:reference id="PartnerServiceImpl" interface="com.mfino.service.PartnerService" context-class-loader="service-provider"/>
+		<osgi:reference id="PartnerServicesServiceImpl" interface="com.mfino.service.PartnerServicesService" context-class-loader="service-provider"/>
+		<osgi:reference id="PendingCommodityTransferServiceImpl" interface="com.mfino.service.PendingCommodityTransferService" context-class-loader="service-provider"/>
+		<osgi:reference id="PendingTransactionsServiceImpl" interface="com.mfino.service.PendingTransactionsService"/>
+		<osgi:reference id="PermissionServiceImpl" interface="com.mfino.service.PermissionService"/>
+		<osgi:reference id="PocketServiceImpl" interface="com.mfino.service.PocketService"  context-class-loader="service-provider"/>
+		<osgi:reference id="PocketTemplateServiceImpl" interface="com.mfino.service.PocketTemplateService"/>
+		<osgi:reference id="ResultServiceImpl" interface="com.mfino.service.ResultService"/>
+		<osgi:reference id="ServiceChargeTransactionLogServiceImpl" interface="com.mfino.service.ServiceChargeTransactionLogService" />
+		<osgi:reference id="SCTLServiceImpl" interface="com.mfino.service.SCTLService" context-class-loader="service-provider"/>
+		<osgi:reference id="SCTLSettlementMapServiceImpl" interface="com.mfino.service.SCTLSettlementMapService"/>
+		<osgi:reference id="SMSServiceImpl" interface="com.mfino.service.SMSService"/>
+		<osgi:reference id="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" context-class-loader="service-provider"/>
+		<osgi:reference id="SubscriberServiceExtendedImpl" interface="com.mfino.service.SubscriberServiceExtended" context-class-loader="service-provider"/>
+		<osgi:reference id="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" context-class-loader="service-provider"/>
+		<osgi:reference id="SubscriberStatusEventServiceImpl" interface="com.mfino.service.SubscriberStatusEventService"/>
+		<osgi:reference id="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService" context-class-loader="service-provider"/>
+		<osgi:reference id="TaxServiceImpl" interface="com.mfino.service.TaxService" context-class-loader="service-provider"/>
+		<osgi:reference id="TellerCashinServiceImpl" interface="com.mfino.service.TellerCashinService" context-class-loader="service-provider"/>
+		<osgi:reference id="TransactionIdentifierServiceImpl" interface="com.mfino.service.TransactionIdentifierService" context-class-loader="service-provider"/>
+		<osgi:reference id="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService" context-class-loader="service-provider"/>
+		<osgi:reference id="TransactionPendingSummaryServiceImpl" interface="com.mfino.service.TransactionPendingSummaryService" context-class-loader="service-provider"/>
+		<osgi:reference id="TransactionTypeServiceImpl" interface="com.mfino.service.TransactionTypeService"/>
+		<osgi:reference id="UnRegisteredTxnInfoServiceImpl" interface="com.mfino.service.UnRegisteredTxnInfoService"/>
+		<osgi:reference id="UserServiceImpl" interface="com.mfino.service.UserService"/>
+		<osgi:reference id="DCTRestrictionsServiceImpl" interface="com.mfino.service.DCTRestrictionsService"/>
+		<osgi:reference id="MFAServiceImpl" interface="com.mfino.service.MFAService" context-class-loader="service-provider"/>
+		<osgi:reference id="MfinoServiceImpl" interface="com.mfino.service.MfinoService" context-class-loader="service-provider"/>
+		<osgi:reference id="RelationshipServiceImpl" interface="com.mfino.service.RelationshipService"/>
+		<osgi:reference id="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" context-class-loader="service-provider"/>
+		<osgi:reference id="ZTEDataPushServiceImpl" interface="com.mfino.service.ZTEDataPushService"/>
+		<osgi:reference id="SubscriberFavoriteServiceImpl" interface="com.mfino.service.SubscriberFavoriteService"/>
+		<osgi:reference id="FavoriteCategoryServiceImpl" interface="com.mfino.service.FavoriteCategoryService"/>
+		<osgi:reference id="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.interswitch.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.wallet.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.account.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.subscriber.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.payment.agent.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.money.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.payment.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.mobileshopping.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.nfc.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.service.impl"/>		
+
+		<!-- Exposing handlers as OSGI services.-->
+		
+		<osgi:service ref="TransactionApiValidationServiceImpl" interface="com.mfino.transactionapi.service.TransactionApiValidationService" />
+		<osgi:service ref="SMSRequestHandlerImpl" interface="com.mfino.transactionapi.handlers.SMSRequestHandler" />
+		<osgi:service ref="CashinReversalHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.CashinReversalHandler" /> 
+		<osgi:service ref="IntegrationCashinInquiryHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.IntegrationCashinInquiryHandler" />
+		<osgi:service ref="IntegrationCashinConfirmHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.IntegrationCashinConfirmHandler" />
+		<osgi:service ref="InterswitchCashinStatusHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.InterswitchCashinStatusHandler" />
+		<osgi:service ref="ReversalFromATMHandlerImpl" interface="com.mfino.transactionapi.handlers.wallet.ReversalFromATMHandler" />
+		<osgi:service ref="WithdrawFromATMHandlerImpl" interface="com.mfino.transactionapi.handlers.wallet.WithdrawFromATMHandler" />
+
+		<tx:annotation-driven transaction-manager="txManager" />
+</beans>

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:55 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.MFSBillerPartner" optimistic-lock="version" table="mfsbiller_partner_map" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_MFSBillerPartner_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="MFSBiller" foreign-key="FK_MFSBillerPartner_MFSBiller" class="com.mfino.domain.MFSBiller" fetch="select">
+<column name="MFSBillerId" not-null="true"   />
+</many-to-one>
+<many-to-one name="Partner" foreign-key="FK_MFSBillerPartner_Partner" class="com.mfino.domain.Partner" fetch="select">
+<column name="PartnerID" not-null="true"   />
+</many-to-one>
+<property name="PartnerBillerCode" type="java.lang.String" >
+<column name="PartnerBillerCode"    sql-type="varchar(255)" />
+</property>
+<property name="BillerPartnerType" type="java.lang.Integer" >
+<column name="BillerPartnerType"    sql-type="int" />
+</property>
+<property name="IntegrationCode" type="java.lang.String" >
+<column name="IntegrationCode"    sql-type="varchar(255)" />
+</property>
+<property name="ChargesIncluded" type="java.lang.Boolean" >
+<column name="ChargesIncluded"    sql-type="tinyint" />
+</property>
+<set name="MFSDenominationsFromMFSID" inverse="true">
+<key>
+<column name="MFSID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MFSDenominations" />
+</set>
+</class>
+</hibernate-mapping>

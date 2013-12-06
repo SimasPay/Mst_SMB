@@ -1,0 +1,302 @@
+<external-response-codes>
+  <response-code>
+   <code>03</code>
+   <description>Invalid Sender</description>
+   <notification-text>Invalid Sender</notification-text>
+  </response-code>
+  <response-code>
+   <code>05</code>
+   <description>Do not honor</description>
+   <notification-text>Do not honor</notification-text>
+  </response-code>
+  <response-code>
+   <code>06</code>
+   <description>Dormant Account</description>
+   <notification-text>Dormant Account</notification-text>
+  </response-code>
+  <response-code>
+   <code>07</code>
+   <description>Invalid Account</description>
+   <notification-text>Invalid Account</notification-text>
+  </response-code>
+ <response-code>
+   <code>08</code>
+   <description>Account Name Mismatch</description>
+   <notification-text>Account Name Mismatch</notification-text>
+  </response-code>
+  <response-code>
+   <code>09</code>
+   <description>Request processing in progress</description>
+   <notification-text>Request processing in progress</notification-text>
+  </response-code>
+  <response-code>
+   <code>12</code>
+   <description>Invalid transaction</description>
+   <notification-text>Invalid transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>13</code>
+   <description>Invalid Amount</description>
+   <notification-text>Invalid Amount</notification-text>
+  </response-code>
+  <response-code>
+   <code>14</code>
+   <description>Invalid Batch Number</description>
+   <notification-text>Invalid Batch Number</notification-text>
+  </response-code>
+  <response-code>
+   <code>15</code>
+   <description>Invalid Session or Record ID</description>
+   <notification-text>Invalid Session or Record ID</notification-text>
+  </response-code>
+  <response-code>
+   <code>16</code>
+   <description>Unknown Bank Code</description>
+   <notification-text>Unknown Bank Code</notification-text>
+  </response-code>
+  <response-code>
+   <code>17</code>
+   <description>Invalid Channel</description>
+   <notification-text>Invalid Channel</notification-text>
+  </response-code>
+  <response-code>
+   <code>18</code>
+   <description>Wrong Method Call</description>
+   <notification-text>Wrong Method Call</notification-text>
+  </response-code>
+  <response-code>
+   <code>21</code>
+   <description>No action taken</description>
+   <notification-text>No action taken</notification-text>
+  </response-code>
+  <response-code>
+   <code>25</code>
+   <description>Unable to locate record</description>
+   <notification-text>Unable to locate record</notification-text>
+  </response-code>
+  <response-code>
+   <code>26</code>
+   <description>Duplicate record</description>
+   <notification-text>Duplicate record</notification-text>
+  </response-code>
+  <response-code>
+   <code>30</code>
+   <description>Format error</description>
+   <notification-text>Format error</notification-text>
+  </response-code>
+  <response-code>
+   <code>34</code>
+   <description>Suspected fraud</description>
+   <notification-text>Suspected fraud</notification-text>
+  </response-code>
+  <response-code>
+   <code>35</code>
+   <description>Contact sending bank</description>
+   <notification-text>Contact sending bank</notification-text>
+  </response-code>
+  <response-code>
+   <code>51</code>
+   <description>No sufficient funds</description>
+   <notification-text>No sufficient funds</notification-text>
+  </response-code>
+  <response-code>
+   <code>57</code>
+   <description>Transaction not permitted to sender</description>
+   <notification-text>Transaction not permitted to sender</notification-text>
+  </response-code>
+  <response-code>
+   <code>58</code>
+   <description>Transaction not permitted on channel</description>
+   <notification-text>Transaction not permitted on channel</notification-text>
+  </response-code>
+   <response-code>
+   <code>61</code>
+   <description>Transfer limit Exceeded</description>
+   <notification-text>Transfer limit Exceeded</notification-text>
+  </response-code>
+  <response-code>
+   <code>63</code>
+   <description>Security violation</description>
+   <notification-text>Security violation</notification-text>
+  </response-code>
+  <response-code>
+   <code>65</code>
+   <description>Exceeds withdrawal frequency</description>
+   <notification-text>Exceeds withdrawal frequency</notification-text>
+  </response-code>
+  <response-code>
+   <code>68</code>
+   <description>Response received too late</description>
+   <notification-text>Response received too late</notification-text>
+  </response-code>
+  <response-code>
+   <code>91</code>
+   <description>Beneficiary Bank not available</description>
+   <notification-text>Beneficiary Bank not available</notification-text>
+  </response-code>
+  <response-code>
+   <code>92</code>
+   <description>Routing error</description>
+   <notification-text>Routing error</notification-text>
+  </response-code>
+  <response-code>
+   <code>94</code>
+   <description>Duplicate transaction</description>
+   <notification-text>Duplicate transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>-1</code>
+   <description>Maximum Transfer Limit Exceeded! Kindly visit your branch to transfer this amount</description>
+   <notification-text>Maximum Transfer Limit Exceeded! Kindly visit your branch to transfer this amount</notification-text>
+  </response-code>
+  <response-code>
+   <code>-2</code>
+   <description>This transaction will not be processed because the amount you want to transfer is not allowed</description>
+   <notification-text>This transaction will not be processed because the amount you want to transfer is not allowed</notification-text>
+  </response-code>
+  <response-code>
+   <code>00</code>
+   <description>Approved or completed successfully / Operation completed successfully</description>
+   <notification-text>Approved or completed successfully / Operation completed successfully</notification-text>
+  </response-code>
+  <response-code>
+   <code>X12</code>
+   <description>Card Already exist</description>
+   <notification-text>Card Already exist</notification-text>
+  </response-code>
+  <response-code>
+   <code>X13</code>
+   <description>Card is been Processed</description>
+   <notification-text>Card is been Processed</notification-text>
+  </response-code>
+  <response-code>
+   <code>30</code>
+   <description>Unable to Read XML</description>
+   <notification-text>Unable to Read XML</notification-text>
+  </response-code>
+  <response-code>
+   <code>88</code>
+   <description>Record is still been processed</description>
+   <notification-text>Record is still been processed</notification-text>
+  </response-code>
+  <response-code>
+   <code>xx0</code>
+   <description>An error has occurred. Please contact your account officer</description>
+   <notification-text>An error has occurred. Please contact your account officer</notification-text>
+  </response-code>
+  <response-code>
+   <code>0zx</code>
+   <description>VAT and FEE was not calculated Successfully</description>
+   <notification-text>VAT and FEE was not calculated Successfully</notification-text>
+  </response-code>
+  <response-code>
+   <code>x02</code>
+   <description>Timeout occurred while connecting to BANKS at this time. Kindly try again later</description>
+   <notification-text>Timeout occurred while connecting to BANKS at this time. Kindly try again later</notification-text>
+  </response-code>
+  <response-code>
+   <code>Y02</code>
+   <description>Timeout error while waiting for Response. Check your balance before your retry again.</description>
+   <notification-text>Timeout error while waiting for Response. Check your balance before your retry again.</notification-text>
+  </response-code>
+  <response-code>
+   <code>X03</code>
+   <description>Unable to debit customer's account for Principal</description>
+   <notification-text>Unable to debit customer's account for Principal</notification-text>
+  </response-code>
+  <response-code>
+   <code>X04</code>
+   <description>Transaction not allowed on this base number</description>
+   <notification-text>Transaction not allowed on this base number</notification-text>
+  </response-code>
+  <response-code>
+   <code>X05</code>
+   <description>Transaction not allowed on this ledger</description>
+   <notification-text>Transaction not allowed on this ledger</notification-text>
+  </response-code>
+  <response-code>
+   <code>x06</code>
+   <description>Account not found on BANKS / From Account not found on BANKS / To Account not found on BANKS / The from account does not exist / The TO account does not exist</description>
+   <notification-text>Account not found on BANKS / From Account not found on BANKS / To Account not found on BANKS / The from account does not exist / The TO account does not exist</notification-text>
+  </response-code>
+  <response-code>
+   <code>x08</code>
+   <description>Unable to save record</description>
+   <notification-text>Unable to save record</notification-text>
+  </response-code>
+  <response-code>
+   <code>x021</code>
+   <description>Transfer was not successful. Reason: Transaction initiation Error / Unable to Submit transaction at this time. Kindly try again later</description>
+   <notification-text>Transfer was not successful. Reason: Transaction initiation Error / Unable to Submit transaction at this time. Kindly try again later</notification-text>
+  </response-code>  
+  <response-code>
+   <code>x066</code>
+   <description>Dormant Account</description>
+   <notification-text>Dormant Account</notification-text>
+  </response-code>
+  <response-code>
+   <code>x07</code>
+   <description>Invalid Account (Internal)</description>
+   <notification-text>Invalid Account (Internal)</notification-text>
+  </response-code>
+  <response-code>
+   <code>x077</code>
+   <description>Transaction not allowed on same account</description>
+   <notification-text>Transaction not allowed on same account</notification-text>
+  </response-code>
+  <response-code>
+   <code>011x</code>
+   <description>Unable to conclude transaction</description>
+   <notification-text>Unable to conclude transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>x21</code>
+   <description>No Action Taken</description>
+   <notification-text>No Action Taken</notification-text>
+  </response-code>
+  <response-code>
+   <code>x25</code>
+   <description>Unable to locate record</description>
+   <notification-text>Unable to locate record</notification-text>
+  </response-code>
+  <response-code>
+   <code>X30</code>
+   <description>Unable to Read XML</description>
+   <notification-text>Unable to Read XML</notification-text>
+  </response-code>
+  <response-code>
+   <code>x31</code>
+   <description>wrong account format</description>
+   <notification-text>wrong account format</notification-text>
+  </response-code>
+  <response-code>
+   <code>x51</code>
+   <description>No sufficient funds</description>
+   <notification-text>No sufficient funds</notification-text>
+  </response-code>
+  <response-code>
+   <code>x57</code>
+   <description>Transaction not permitted to sender (Internal)</description>
+   <notification-text>Transaction not permitted to sender (Internal)</notification-text>
+  </response-code>
+  <response-code>
+   <code>x577</code>
+   <description>The transaction will not be processed because the session ID for Name enquiry is null or empty</description>
+   <notification-text>The transaction will not be processed because the session ID for Name enquiry is null or empty</notification-text>
+  </response-code>
+  <response-code>
+   <code>X84</code>
+   <description>No account found for this customer number, please enter a valid customer number</description>
+   <notification-text>No account found for this customer number, please enter a valid customer number</notification-text>
+  </response-code>
+   <response-code>
+   <code>X86</code>
+   <description>Customer name longer than the expected 25 characters</description>
+   <notification-text>Customer name longer than the expected 25 characters</notification-text>
+  </response-code>
+   <response-code>
+   <code>X98</code>
+   <description>No Instant card is available for your branch, please contact E-business Group</description>
+   <notification-text>No Instant card is available for your branch, please contact E-business Group</notification-text>
+  </response-code>
+</external-response-codes>

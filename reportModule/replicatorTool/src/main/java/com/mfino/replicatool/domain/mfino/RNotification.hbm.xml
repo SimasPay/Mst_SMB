@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:48 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Notification" optimistic-lock="version" table="notification" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_Notification_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"  unique-key="Code" />
+</many-to-one>
+<property name="Code" type="java.lang.Integer" unique-key="Code">
+<column name="Code" not-null="true"  sql-type="int" />
+</property>
+<property name="CodeName" type="java.lang.String" >
+<column name="CodeName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="NotificationMethod" type="java.lang.Integer" unique-key="Code">
+<column name="NotificationMethod" not-null="true"  sql-type="int" />
+</property>
+<property name="IsActive" type="java.lang.Boolean" >
+<column name="IsActive" not-null="true"  sql-type="tinyint" />
+</property>
+<property name="Text" type="java.lang.String" >
+<column name="Text" not-null="true"  sql-type="LONGTEXT" />
+</property>
+<property name="STKML" type="java.lang.String" >
+<column name="STKML"    sql-type="LONGTEXT" />
+</property>
+<property name="Language" type="java.lang.Integer" unique-key="Code">
+<column name="Language" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  default="'1'"  sql-type="int" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="AccessCode" type="java.lang.String" >
+<column name="AccessCode"    sql-type="varchar(255)" />
+</property>
+<property name="SMSNotificationCode" type="java.lang.String" >
+<column name="SMSNotificationCode"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Company" foreign-key="FK_Notification_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"  unique-key="Code" />
+</many-to-one>
+</class>
+</hibernate-mapping>

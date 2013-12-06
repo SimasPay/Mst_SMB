@@ -1,0 +1,5 @@
+<?xmlversion='1.0' encoding='UTF-8'?> 
+<schema id='A7'> 
+	<field id='key-under-lmk' type='A' length='33'/> 
+	<field id='check-value' type='A' length='6'/> 
+</schema> 

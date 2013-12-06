@@ -1,0 +1,28 @@
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+xmlns:tns="http://techquest.interswitchng.com/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://techquest.interswitchng.com/">
+
+	<wsdl:import namespace="http://techquest.interswitchng.com/" location="ServicePortTypes - ISO8583.wsdl"/>
+
+	
+	
+	<!-- ######################## Service Ports #################-->	
+
+	<!-- ######### ISO8583 Service Ports ############# -->
+	<wsdl:binding name="ISO8583ServicesSoap12Binding" type="tns:ISO8583ServicesPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="Iso8583PostXml">
+			<soap12:operation soapAction="Iso8583PostXml" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<!-- ##################################### -->
+
+		
+</wsdl:definitions>

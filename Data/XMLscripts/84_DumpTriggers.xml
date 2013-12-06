@@ -1,0 +1,2917 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-INTERBANK_TRANSFERS_ID-1"> 
+		 <createProcedure> 
+			CREATE OR REPLACE TRIGGER interbank_transfers_ID_TRG BEFORE INSERT ON interbank_transfers
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  interbank_transfers_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM interbank_transfers;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT interbank_transfers_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END;
+		</createProcedure>
+		<rollback>
+			drop trigger interbank_transfers_ID_TRG
+		</rollback>
+	</changeSet>
+ 	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-VISAFONE_TXN_GENERATOR_ID-2"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER visafone_txn_generator_id_TRG BEFORE INSERT ON visafone_txn_generator
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.id IS NULL THEN
+				SELECT  visafone_txn_generator_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(id),0) INTO v_newVal FROM visafone_txn_generator;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT visafone_txn_generator_id_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.id := v_newVal;
+			  END IF;
+			END; 
+ 		</createProcedure>  
+		<rollback> 
+			drop trigger visafone_txn_generator_id_TRG 
+		</rollback> 
+	</changeSet>
+    <changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SUBSCRIBER_ADDI_INFO_ID-3"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER subscriber_addi_info_ID_TRG BEFORE INSERT ON subscriber_addi_info
+			FOR EACH ROW
+			DECLARE 
+				v_newVal NUMBER(12) := 0;
+				v_incval NUMBER(12) := 0;
+			BEGIN
+				IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  subscriber_addi_info_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+					IF v_newVal = 1 THEN 
+					--get the max indentity value from the table
+					SELECT NVL(max(ID),0) INTO v_newVal FROM subscriber_addi_info;
+					v_newVal := v_newVal + 1;
+							--set the sequence to that value
+						LOOP
+							EXIT WHEN v_incval>=v_newVal;
+							SELECT subscriber_addi_info_ID_SEQ.nextval INTO v_incval FROM dual;
+						END LOOP;
+					END IF;
+							--used to emulate LAST_INSERT_ID()
+					--mysql_utilities.identity := v_newVal; 
+				   -- assign the value from the sequence to emulate the identity column
+					:new.ID := v_newVal;
+				END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger subscriber_addi_info_ID_TRG 
+		</rollback> 
+	</changeSet>
+ 	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MFINO_SERVICE_PROVIDER_ID-4"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER mfino_service_provider_ID_TRG BEFORE INSERT ON mfino_service_provider
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  mfino_service_provider_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM mfino_service_provider;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT mfino_service_provider_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger mfino_service_provider_ID_TRG 
+		</rollback> 
+	 </changeSet>
+ 	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MFSBILLER_PARTNER_MAP_ID-5"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER mfsbiller_partner_map_ID_TRG BEFORE INSERT ON mfsbiller_partner_map
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  mfsbiller_partner_map_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM mfsbiller_partner_map;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT mfsbiller_partner_map_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger mfsbiller_partner_map_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-POCKET_ID-6"> 
+		<createProcedure> 
+	        CREATE OR REPLACE TRIGGER pocket_ID_TRG BEFORE INSERT ON pocket
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  pocket_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM pocket;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT pocket_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+	    </createProcedure>
+		<rollback> 
+			 drop trigger pocket_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-REPORT_PARAMETERS_ID-7"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER report_parameters_ID_TRG BEFORE INSERT ON report_parameters
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  report_parameters_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM report_parameters;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT report_parameters_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+		    drop trigger report_parameters_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BULK_UPLOAD_ENTRY_ID-8"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER bulk_upload_entry_ID_TRG BEFORE INSERT ON bulk_upload_entry
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bulk_upload_entry_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bulk_upload_entry;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bulk_upload_entry_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bulk_upload_entry_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-address_ID-9"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER address_ID_TRG BEFORE INSERT ON address
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  address_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM address;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT address_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+			 </createProcedure>
+			 <rollback> 
+			 drop trigger address_ID_TRG 
+					 </rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SERVICE_SETTLEMENT_CFG_ID-10"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER service_settlement_cfg_ID_TRG BEFORE INSERT ON service_settlement_cfg
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  service_settlement_cfg_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM service_settlement_cfg;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT service_settlement_cfg_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+        </createProcedure>
+		<rollback> 
+			 drop trigger service_settlement_cfg_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-AGENT_CASHIN_TXN_LOG_ID-11"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER agent_cashin_txn_log_ID_TRG BEFORE INSERT ON agent_cashin_txn_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  agent_cashin_txn_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM agent_cashin_txn_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT agent_cashin_txn_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+        </createProcedure>
+		<rollback> 
+			 drop trigger agent_cashin_txn_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BANK_ID-12"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bank_ID_TRG BEFORE INSERT ON bank
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bank_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bank;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bank_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bank_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SERVICE_AUDIT_ID-13"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER service_audit_ID_TRG BEFORE INSERT ON service_audit
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  service_audit_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM service_audit;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT service_audit_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger service_audit_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SHARE_PARTNER_ID-14"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER share_partner_ID_TRG BEFORE INSERT ON share_partner
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  share_partner_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM share_partner;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT share_partner_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger share_partner_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-OFFLINE_REPORT_ID-15"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER offline_report_ID_TRG BEFORE INSERT ON offline_report
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  offline_report_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM offline_report;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT offline_report_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger offline_report_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-DB_PARAM_ID-16"> 
+		<createProcedure> 
+		    CREATE OR REPLACE TRIGGER db_param_ID_TRG BEFORE INSERT ON db_param
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  db_param_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM db_param;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT db_param_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger db_param_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BILLER_ID-17"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER biller_ID_TRG BEFORE INSERT ON biller
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  biller_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM biller;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT biller_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger biller_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PERSON_2_PERSON_ID-18"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER person_2_person_ID_TRG BEFORE INSERT ON person_2_person
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  person_2_person_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM person_2_person;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT person_2_person_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+        </createProcedure>
+		<rollback> 
+			 drop trigger person_2_person_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BRAND_ID-19"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER brand_ID_TRG BEFORE INSERT ON brand
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  brand_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM brand;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT brand_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+        </createProcedure>
+		<rollback> 
+			 drop trigger interbank_transfers_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MERCHANT_PREFIX_CODE_ID-20"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER merchant_prefix_code_ID_TRG BEFORE INSERT ON merchant_prefix_code
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  merchant_prefix_code_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM merchant_prefix_code;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT merchant_prefix_code_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger merchant_prefix_code_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-DISTRIBUTION_CHAIN_LVL_ID-21"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER distribution_chain_lvl_ID_TRG BEFORE INSERT ON distribution_chain_lvl
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  distribution_chain_lvl_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM distribution_chain_lvl;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT distribution_chain_lvl_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger distribution_chain_lvl_ID_TRG 
+    	 </rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CHANNEL_SESSION_MGMT_ID-22"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER channel_session_mgmt_ID_TRG BEFORE INSERT ON channel_session_mgmt
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  channel_session_mgmt_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM channel_session_mgmt;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT channel_session_mgmt_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger channel_session_mgmt_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-UNREGISTERED_TXN_INFO_ID-23"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER unregistered_txn_info_ID_TRG BEFORE INSERT ON unregistered_txn_info
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  unregistered_txn_info_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM unregistered_txn_info;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT unregistered_txn_info_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger unregistered_txn_info_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SUBSCRIBER_MDN_ID-24"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER subscriber_mdn_ID_TRG BEFORE INSERT ON subscriber_mdn
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  subscriber_mdn_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM subscriber_mdn;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT subscriber_mdn_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+	    </createProcedure>
+		<rollback> 
+			 drop trigger subscriber_mdn_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SMS_CODE_ID-25"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER sms_code_ID_TRG BEFORE INSERT ON sms_code
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  sms_code_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM sms_code;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT sms_code_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger sms_code_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-GROUPS_ID-26"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER groups_ID_TRG BEFORE INSERT ON groups
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  groups_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM groups;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT groups_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger groups_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SAP_GROUPID_ID-27"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER sap_groupid_ID_TRG BEFORE INSERT ON sap_groupid
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  sap_groupid_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM sap_groupid;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT sap_groupid_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger sap_groupid_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MOBILE_NETWORK_OPERATOR_ID-28"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER mobile_network_operator_ID_TRG BEFORE INSERT ON mobile_network_operator
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  mobile_network_operator_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM mobile_network_operator;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT mobile_network_operator_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger mobile_network_operator_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BULK_BANK_ACCOUNT_ID-29"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bulk_bank_account_ID_TRG BEFORE INSERT ON bulk_bank_account
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bulk_bank_account_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bulk_bank_account;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bulk_bank_account_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+	    </createProcedure>
+		<rollback> 
+			 drop trigger bulk_bank_account_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-TRANSACTION_CHARGE_ID-30"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER transaction_charge_ID_TRG BEFORE INSERT ON transaction_charge
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  transaction_charge_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM transaction_charge;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT transaction_charge_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger transaction_charge_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SYSTEM_PARAMETERS_ID-31"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER system_parameters_ID_TRG BEFORE INSERT ON system_parameters
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  system_parameters_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM system_parameters;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT system_parameters_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+	    </createProcedure>
+		<rollback> 
+			 drop trigger system_parameters_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-TRANSACTION_CHARGE_LOG_ID-32"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER transaction_charge_log_ID_TRG BEFORE INSERT ON transaction_charge_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  transaction_charge_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM transaction_charge_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT transaction_charge_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger transaction_charge_log_ID_TRG 
+		</rollback> 
+    </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BILL_PAYMENTS_ID-33"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bill_payments_ID_TRG BEFORE INSERT ON bill_payments
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bill_payments_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bill_payments;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bill_payments_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bill_payments_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SERVICE_TRANSACTION_ID-34"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER service_transaction_ID_TRG BEFORE INSERT ON service_transaction
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  service_transaction_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM service_transaction;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT service_transaction_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger interbank_transfers_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-TRANSACTION_TYPE_ID-35"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER transaction_type_ID_TRG BEFORE INSERT ON transaction_type
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  transaction_type_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM transaction_type;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT transaction_type_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger transaction_type_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-DENOMINATION_ID-36"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER denomination_ID_TRG BEFORE INSERT ON denomination
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  denomination_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM denomination;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT denomination_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger denomination_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-NOTIFICATION_ID-37"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER notification_ID_TRG BEFORE INSERT ON notification
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  notification_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM notification;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT notification_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger notification_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SMS_PARTNER_ID-38"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER sms_partner_ID_TRG BEFORE INSERT ON sms_partner
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  sms_partner_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM sms_partner;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT sms_partner_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+			</createProcedure>
+		<rollback> 
+			 drop trigger sms_partner_ID_TRG 
+	    </rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BANK_ADMIN_ID-39"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER bank_admin_ID_TRG BEFORE INSERT ON bank_admin
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bank_admin_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bank_admin;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bank_admin_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bank_admin_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-INTERBANK_CODES_ID-40"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER interbank_codes_ID_TRG BEFORE INSERT ON interbank_codes
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  interbank_codes_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM interbank_codes;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT interbank_codes_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger interbank_codes_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-DISTRIBUTION_CHAIN_TEMP_ID-41"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER distribution_chain_temp_ID_TRG BEFORE INSERT ON distribution_chain_temp
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  distribution_chain_temp_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM distribution_chain_temp;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT distribution_chain_temp_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+	    </createProcedure>
+		<rollback> 
+			 drop trigger distribution_chain_temp_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MDN_RANGE_ID-42"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER mdn_range_ID_TRG BEFORE INSERT ON mdn_range
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  mdn_range_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM mdn_range;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT mdn_range_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger mdn_range_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-LOP_HISTORY_ID-43"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER lop_history_ID_TRG BEFORE INSERT ON lop_history
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  lop_history_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM lop_history;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT lop_history_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger lop_history_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-AIRTIME_PURCHASE_ID-44"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER airtime_purchase_ID_TRG BEFORE INSERT ON airtime_purchase
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  airtime_purchase_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM airtime_purchase;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT airtime_purchase_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger airtime_purchase_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PARTNER_SERVICES_ID-45"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER partner_services_ID_TRG BEFORE INSERT ON partner_services
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  partner_services_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM partner_services;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT partner_services_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger partner_services_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-TXN_AMOUNT_DSTRB_LOG_ID-46"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER txn_amount_dstrb_log_ID_TRG BEFORE INSERT ON txn_amount_dstrb_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  txn_amount_dstrb_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM txn_amount_dstrb_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT txn_amount_dstrb_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger txn_amount_dstrb_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PENDING_TXNS_ENTRY_ID-47"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER pending_txns_entry_ID_TRG BEFORE INSERT ON pending_txns_entry
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  pending_txns_entry_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM pending_txns_entry;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT pending_txns_entry_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger pending_txns_entry_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-ACTIVITIES_LOG_ID-48"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER activities_log_ID_TRG BEFORE INSERT ON activities_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  activities_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM activities_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT activities_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger activities_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PARTNER_ID-49"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER partner_ID_TRG BEFORE INSERT ON partner
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  partner_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM partner;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT partner_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger partner_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-COMPANY_ID-50"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER company_ID_TRG BEFORE INSERT ON company
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  company_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM company;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT company_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger company_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-KYC_FIELDS_ID-51"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER kyc_fields_ID_TRG BEFORE INSERT ON kyc_fields
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  kyc_fields_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM kyc_fields;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT kyc_fields_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger kyc_fields_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SMSC_CONFIGURATION_ID-52"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER smsc_configuration_ID_TRG BEFORE INSERT ON smsc_configuration
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  smsc_configuration_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM smsc_configuration;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT smsc_configuration_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger smsc_configuration_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CHARGETXN_TRANSFER_MAP_ID-53"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER chargetxn_transfer_map_ID_TRG BEFORE INSERT ON chargetxn_transfer_map
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  chargetxn_transfer_map_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM chargetxn_transfer_map;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT chargetxn_transfer_map_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger chargetxn_transfer_map_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PERMISSION_ITEM_ID-54"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER permission_item_ID_TRG BEFORE INSERT ON permission_item
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  permission_item_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM permission_item;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT permission_item_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger permission_item_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SMS_TRANSACTION_LOG_ID-55"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER sms_transaction_log_ID_TRG BEFORE INSERT ON sms_transaction_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  sms_transaction_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM sms_transaction_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT sms_transaction_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger sms_transaction_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-POCKET_TEMPLATE_CONFIG_ID-56"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER pocket_template_config_ID_TRG BEFORE INSERT ON pocket_template_config
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  pocket_template_config_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM pocket_template_config;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT pocket_template_config_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger pocket_template_config_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PENDING_TXNS_FILE_ID-57"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER pending_txns_file_ID_TRG BEFORE INSERT ON pending_txns_file
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  pending_txns_file_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM pending_txns_file;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT pending_txns_file_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger pending_txns_file_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SETTLEMENT_SCHEDULE_LOG_ID-58"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER settlement_schedule_log_ID_TRG BEFORE INSERT ON settlement_schedule_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  settlement_schedule_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM settlement_schedule_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT settlement_schedule_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger settlement_schedule_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SETTLEMENT_TXN_LOG_ID-59"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER settlement_txn_log_ID_TRG BEFORE INSERT ON settlement_txn_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  settlement_txn_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM settlement_txn_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT settlement_txn_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger settlement_txn_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-REGION_ID-60"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER region_ID_TRG BEFORE INSERT ON region
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  region_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM region;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT region_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger region_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SUBSCRIBER_ID-61"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER subscriber_ID_TRG BEFORE INSERT ON subscriber
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  subscriber_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM subscriber;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT subscriber_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger subscriber_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-ENUM_TEXT_ID-62"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER enum_text_ID_TRG BEFORE INSERT ON enum_text
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  enum_text_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM enum_text;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT enum_text_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger enum_text_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CHARGE_TYPE_ID-63"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER charge_type_ID_TRG BEFORE INSERT ON charge_type
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  charge_type_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM charge_type;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT charge_type_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger charge_type_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-POCKET_TEMPLATE_ID-64"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER pocket_template_ID_TRG BEFORE INSERT ON pocket_template
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  pocket_template_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM pocket_template;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT pocket_template_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger pocket_template_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CHARGE_PRICING_ID-65"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER charge_pricing_ID_TRG BEFORE INSERT ON charge_pricing
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  charge_pricing_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM charge_pricing;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT charge_pricing_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger charge_pricing_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CHARGE_DEFINITION_ID-66"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER charge_definition_ID_TRG BEFORE INSERT ON charge_definition
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  charge_definition_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM charge_definition;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT charge_definition_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger charge_definition_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-ROLE_PERMISSION_ID-67"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER role_permission_ID_TRG BEFORE INSERT ON role_permission
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  role_permission_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM role_permission;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT role_permission_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger role_permission_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SERVICE_CHARGE_TXN_LOG_ID-68"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER service_charge_txn_log_ID_TRG BEFORE INSERT ON service_charge_txn_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  service_charge_txn_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM service_charge_txn_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT service_charge_txn_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger service_charge_txn_log_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-LEDGER_ID-69"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER ledger_ID_TRG BEFORE INSERT ON ledger
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  ledger_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM ledger;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT ledger_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger ledger_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-KYC_LEVEL_ID-70"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER kyc_level_ID_TRG BEFORE INSERT ON kyc_level
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  kyc_level_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM kyc_level;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT kyc_level_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger kyc_level_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CHANNEL_CODE_ID-71"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER channel_code_ID_TRG BEFORE INSERT ON channel_code
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  channel_code_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM channel_code;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT channel_code_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger channel_code_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-AUTH_PERSON_DETAILS_ID-72"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER auth_person_details_ID_TRG BEFORE INSERT ON auth_person_details
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  auth_person_details_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM auth_person_details;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT auth_person_details_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger auth_person_details_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SERVICE_ID-73"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER service_ID_TRG BEFORE INSERT ON service
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  service_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM service;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT service_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger service_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-OFFLINE_REPORT_RECEIVER_ID-74"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER offline_report_receiver_ID_TRG BEFORE INSERT ON offline_report_receiver
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  offline_report_receiver_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM offline_report_receiver;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT offline_report_receiver_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger offline_report_receiver_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-TRANSACTION_RULE_ID-75"> 
+		<createProcedure> 
+			CREATE OR REPLACE TRIGGER transaction_rule_ID_TRG BEFORE INSERT ON transaction_rule
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  transaction_rule_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM transaction_rule;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT transaction_rule_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger transaction_rule_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-OFFLINE_REPORT_COMPANY_ID-76"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER offline_report_company_ID_TRG BEFORE INSERT ON offline_report_company
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  offline_report_company_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM offline_report_company;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT offline_report_company_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger offline_report_company_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MFINO_USER_ID-77"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER mfino_user_ID_TRG BEFORE INSERT ON mfino_user
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  mfino_user_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM mfino_user;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT mfino_user_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger mfino_user_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BULK_LOP_ID-78"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bulk_lop_ID_TRG BEFORE INSERT ON bulk_lop
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bulk_lop_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bulk_lop;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bulk_lop_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bulk_lop_ID_TRG 
+		</rollback> 
+	 </changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MFS_BILLER_ID-79"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER mfs_biller_ID_TRG BEFORE INSERT ON mfs_biller
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  mfs_biller_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM mfs_biller;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT mfs_biller_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger mfs_biller_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-TRANSACTION_LOG_ID-80"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER transaction_log_ID_TRG BEFORE INSERT ON transaction_log
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  transaction_log_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM transaction_log;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT transaction_log_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger transaction_log_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SETTLEMENT_TEMPLATE_ID-81"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER settlement_template_ID_TRG BEFORE INSERT ON settlement_template
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  settlement_template_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM settlement_template;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT settlement_template_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger settlement_template_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BILL_PAYMENT_TXN_ID-82"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bill_payment_txn_ID_TRG BEFORE INSERT ON bill_payment_txn
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bill_payment_txn_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bill_payment_txn;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bill_payment_txn_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bill_payment_txn_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BULK_UPLOAD_FILE_ID-83"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bulk_upload_file_ID_TRG BEFORE INSERT ON bulk_upload_file
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bulk_upload_file_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bulk_upload_file;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bulk_upload_file_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger bulk_upload_file_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-BULK_UPLOAD_ID-84"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER bulk_upload_ID_TRG BEFORE INSERT ON bulk_upload
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  bulk_upload_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM bulk_upload;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT bulk_upload_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger bulk_upload_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-PRODUCT_INDICATOR_ID-85"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER product_indicator_ID_TRG BEFORE INSERT ON product_indicator
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  product_indicator_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM product_indicator;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT product_indicator_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger product_indicator_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CREDIT_CARD_TRANSACTION_ID-86"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER credit_card_transaction_ID_TRG BEFORE INSERT ON credit_card_transaction
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  credit_card_transaction_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM credit_card_transaction;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT credit_card_transaction_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger credit_card_transaction_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CARD_INFO_ID-87"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER card_info_ID_TRG BEFORE INSERT ON card_info
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  card_info_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM card_info;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT card_info_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger card_info_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-CREDITCARD_DESTINATIONS_ID-88"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER creditcard_destinations_ID_TRG BEFORE INSERT ON creditcard_destinations
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  creditcard_destinations_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM creditcard_destinations;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT creditcard_destinations_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			drop trigger creditcard_destinations_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-SUBSCRIBER_GROUPS_ID-89"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER subscriber_groups_ID_TRG BEFORE INSERT ON subscriber_groups
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  subscriber_groups_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM subscriber_groups;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT subscriber_groups_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger subscriber_groups_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-LETTER_OF_PURCHASE_ID-90"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER letter_of_purchase_ID_TRG BEFORE INSERT ON letter_of_purchase
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  letter_of_purchase_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM letter_of_purchase;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT letter_of_purchase_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger letter_of_purchase_ID_TRG 
+		</rollback> 
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="TRIGGER-MERCHANT_CODE_ID-91"> 
+		<createProcedure> 
+			 CREATE OR REPLACE TRIGGER merchant_code_ID_TRG BEFORE INSERT ON merchant_code
+			FOR EACH ROW
+			DECLARE 
+			v_newVal NUMBER(12) := 0;
+			v_incval NUMBER(12) := 0;
+			BEGIN
+			  IF INSERTING AND :new.ID IS NULL THEN
+				SELECT  merchant_code_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+				-- If this is the first time this table have been inserted into (sequence == 1)
+				IF v_newVal = 1 THEN 
+				  --get the max indentity value from the table
+				  SELECT NVL(max(ID),0) INTO v_newVal FROM merchant_code;
+				  v_newVal := v_newVal + 1;
+				  --set the sequence to that value
+				  LOOP
+					   EXIT WHEN v_incval>=v_newVal;
+					   SELECT merchant_code_ID_SEQ.nextval INTO v_incval FROM dual;
+				  END LOOP;
+				END IF;
+				--used to emulate LAST_INSERT_ID()
+				--mysql_utilities.identity := v_newVal; 
+			   -- assign the value from the sequence to emulate the identity column
+			   :new.ID := v_newVal;
+			  END IF;
+			END; 
+		</createProcedure>
+		<rollback> 
+			 drop trigger merchant_code_ID_TRG 
+		</rollback> 
+	 </changeSet>
+
+</databaseChangeLog>

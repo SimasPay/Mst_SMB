@@ -1,0 +1,7 @@
+<?xmlversion='1.0' encoding='UTF-8'?> 
+<schema id='A6'> 
+	<field id='key-type' type='A' length='3'/> 
+	<field id='zmk' type='A' length='33'/> 
+	<field id='key-under-zmk' type='A' length='33'/> 
+	<field id='key-scheme' type='A' length='1'/> 
+</schema> 

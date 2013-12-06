@@ -1,0 +1,6 @@
+
+<%@ include file="/WEB-INF/jspf/include.jspf" %>
+
+<script type="text/javascript" src="<c:url value="/js/mfino.js"/>">
+</script>
+

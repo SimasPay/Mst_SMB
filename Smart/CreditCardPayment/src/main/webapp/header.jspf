@@ -1,0 +1,31 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
+<%
+            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+            response.setHeader("Cache-Control", "no-store"); // HTTP 1.1
+            response.setDateHeader("Expires", 0);
+%>
+
+
+
+
+<table width = "845" align = "center">
+	<Tr> 
+		<Td>
+		<a href="http://www.smartfren.com"><img src="./images/smartfren-logo.png" style="border-style: none"></a> 
+		</Td>
+	</Tr>
+</table>
+
+<table width = "98%">
+<tr>
+	<td>
+		<div align="right">
+			<a href="securityCheck.jsp?toPage=changePassword" class="top_title" />Ganti Login PIN</a>
+			<a href="editProfileIndex.jsp" class="top_title" />Edit Profil</a>
+			<a href="index.jsp" class="top_title" />Pembayaran</a>
+			<a href="j_spring_security_logout" class="top_title" />Keluar</a>
+		</div>
+	</td>
+</tr>
+</table>

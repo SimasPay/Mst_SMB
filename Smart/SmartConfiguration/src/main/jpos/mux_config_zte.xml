@@ -1,0 +1,4 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_zte" name="ztemux">
+	<in>ztereceive</in>
+	<out>ztesend</out>
+</mux>

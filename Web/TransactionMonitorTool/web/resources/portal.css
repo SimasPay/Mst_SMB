@@ -1,0 +1,461 @@
+#app-header {		
+	border-bottom: 17px solid black;
+}
+
+#app-header .x-form-item-label {
+	color: #542723;
+	font-family: Arial;
+	padding-top: 5px;
+}
+
+#app-msg {
+	background: #D1DDEF;
+	border: 1px solid #ACC3E4;
+	padding: 3px 15px;
+	font-weight: bold;
+	font-size: 13px;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.x-panel-ghost {
+	z-index: 1;
+}
+
+.x-border-layout-ct {
+	background: #DFE8F6;
+}
+
+.x-portal-body {
+	padding: 0 0 0 8px;
+}
+
+.x-portal .x-portal-column {
+	/* columns must have vertical padding to avoid losing dimensions when empty */
+	padding: 8px 8px 0 0;
+}
+
+.x-portal .x-panel-dd-spacer {
+	border: 2px dashed #99bbe8;
+	background: #f6f6f6;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	margin-bottom: 10px;
+}
+
+.x-portlet {
+	margin-bottom: 10px;
+	padding: 1px;
+}
+
+.x-portlet .x-panel-body {	
+	background-image: url(images/transaction_bg.jpg);
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-color: #ddd5c8;
+}
+
+.portlet-content {
+	padding: 10px;
+	font-size: 11px;
+}
+
+#app-options .portlet-content {
+	padding: 5px;
+	font-size: 12px;
+}
+
+#balanceportlet .x-panel-body {
+	border: none;
+}
+
+#balanceportletview .x-panel-body {
+	background-image: url(images/transaction_bg.jpg);
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #ddd5c8;
+}
+
+.portlet-content {
+	background-image: url(images/balance_bg.gif);
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+	border: none;
+	cursor: pointer;
+	margin: 5px 36px;
+	padding: 12px 0px 12px 55px;
+	background-repeat: no-repeat;
+}
+
+#settings , .x-nlg .x-btn-default-small{
+	background-image: url(images/settings.gif);
+	background-repeat: no-repeat;
+	background-position: -3px;
+}
+
+#settings .x-btn-inner {
+	text-align: center;
+	color: white;
+	font-size: 14px;
+	font-family: arial;
+	font-weight: bolder;
+	text-transform: uppercase;
+	padding-left: 21px;
+}
+
+div.custom-header {
+	height: 50px; 
+	width: 100%;
+}
+
+div#header-combo {
+	float: left;
+	width: 320px;
+	height: 30px;
+}
+
+div.header-buttons {
+	float: right; 
+	width: 300px; 
+	height: 35px;	
+}
+
+div#settings {
+	height: 30px;
+}
+
+div#logout {
+	height: 43px;
+	margin-left: 131px;
+	background-image: url(images/logout.png);
+	margin-top: -10px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+/* #logout a {
+	height: 43px;
+	margin-left: 131px;
+	background-image: url(images/logout.png);
+	margin-top: -10px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+ */
+#profile-logo {
+	height: 50px;
+	margin-left: 10px;
+	background-image: url(images/mfino_logo.png);	
+	width: 194px;
+	background-repeat: no-repeat;
+	float: left;
+}
+
+#headerCombo {
+	float: left;
+	width: 194px;
+	height: 30px;
+	margin-left: 540px;
+}
+
+#headerCombo .x-form-trigger {
+	background-image: url(images/trigger_icon.gif);
+	background-position: 0 0;
+	width: 30px;
+	height: 27px;
+	border-bottom: 1px solid #b5b8c8;
+	cursor: pointer;
+	cursor: hand;
+}
+
+#headerCombo .x-form-text {
+	height: 27px;
+	border-color: #b5b8c8;
+	color: #7c7872;
+}
+
+.x-boundlist {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #b5b8c8;
+	background: white;
+	color: #7c7872;
+}
+
+.x-boundlist-selected {
+	background: url(images/transaction_bg.jpg);
+	border-color: #b5b8c8;
+}
+
+.x-boundlist-item-over {
+	background: url(images/transaction_bg.jpg);
+	border-color: #b5b8c8;
+}
+
+#summary-chart-panel-body,#service-chart-panel-body,#channel-chart-panel-body
+	{
+	border: none;
+	border-bottom: 1px solid #ddd5c8;
+}
+
+#summary-bottom-grid {
+	margin-left: 100px;
+	margin-top: 21px;
+}
+
+#service-bottom-grid {
+	margin-left: 30px;
+	margin-top: 15px;
+}
+
+#failed-transactions-grid {
+	left: 30px;
+	top: 10px;
+}
+
+#channel-bottom-grid {
+	margin-left: 50px;
+	margin-top: 15px;
+}
+
+span.summary-transactions-link,span.channel-transactions-link,span.service-transactions-link,span.failed-transactions-link
+	{
+	cursor: pointer;
+	text-decoration: underline;
+	color: #47829a;
+	font-family: arial;
+	font-size: 12px;	
+}
+
+.x-panel-default-framed {
+	border-color: #8B7D7B;
+	background-color: #CDCDC1;
+}
+
+.x-panel-header, .x-nlg .x-panel-header-default-top {	
+	background-image: url(images/transaction_bg.jpg);	
+	border-color: #ddd5c8;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;	
+	/* height: 40px;
+	padding-top: 10px; */
+}
+
+.x-panel-collapsed .x-panel-header {	
+	background-image: url(images/transaction_bg.jpg);	
+	border-color: #ddd5c8;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#dashboardPanel-body {	
+	background-color: white;
+}
+
+#TransactionSummaryPortlet-body .x-panel-body-default,
+#PerServiceTransactionsPortlet-body .x-panel-body-default,
+#PerChannelTransactionsPortlet-body .x-panel-body-default,
+#FailedTransactionsPortlet-body .x-panel-body-default {
+	border: none;
+	border-bottom: 1px solid #ddd5c8;
+} 
+
+.x-column-header, .x-nlg .x-column-header {
+	background-image: url(images/table_header_bg.jpg);
+}
+
+#TransactionSummaryPortlet .x-column-header-inner,
+#PerServiceTransactionsPortlet .x-column-header-inner,
+#PerChannelTransactionsPortlet .x-column-header-inner,
+#FailedTransactionsPortlet .x-column-header-inner {
+    line-height: 18px;
+    padding: 4px 15px 3px;
+    color: #5f5f5f;
+	font-family: arial;
+	font-size: 11px;
+}
+
+#settingsGrid .x-column-header-inner {	
+    color: #5f5f5f;
+	font-family: arial;
+	font-size: 12px;
+}
+
+#resultsGrid .x-column-header-inner {
+	color: #5f5f5f;
+	font-family: arial;
+	font-size: 12px;
+}
+
+#TransactionSummaryPortlet .x-grid-with-row-lines .x-grid-cell-inner,
+#PerServiceTransactionsPortlet .x-grid-with-row-lines .x-grid-cell-inner,
+#PerChannelTransactionsPortlet .x-grid-with-row-lines .x-grid-cell-inner,
+#FailedTransactionsPortlet .x-grid-with-row-lines .x-grid-cell-inner {
+	line-height: 18px;	
+	padding: 4px 15px 3px;
+	color: #5f5f5f;
+}
+
+.settingsGrid .x-grid-cell-inner {
+	line-height: 20px;
+	color: #5f5f5f;
+}
+
+#resultsGrid .x-grid-cell-inner {
+	/* color: #5f5f5f; */
+}
+
+.x-grid-header-ct {
+	border: none;	
+}
+
+.x-grid-row .x-grid-cell {
+	border-right: 1px solid #ddd5c8;	
+}
+
+.x-grid-row .x-grid-cell-first {
+	border-left: 1px solid #ddd5c8;
+}
+
+.x-column-header {
+	border: 1px solid #c5c5c5;
+	border-left: none;
+}
+
+.x-column-header-first {
+	border-left: 1px solid #ddd5c8;
+}
+
+.x-panel-header-text {
+	color: #000000;
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Arial;
+	text-transform: uppercase;
+	padding-left: 10px;
+}
+
+.x-window-header-text-default {
+	color: #000000;
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Arial;
+	text-transform: uppercase;
+}
+
+#app-header .x-panel-body-default {
+	border: none;
+	background-image: url(images/header_bg.jpg);
+	padding-top: 8px;	
+}
+
+.x-window-header-default-top {
+	background-image: url(images/transaction_bg.jpg);
+}
+
+.x-window-default {
+	background-image: url(images/transaction_bg.jpg);
+	border-color: #CDCDC1;
+}
+
+.x-toolbar-default,
+.x-window-body-default {
+	background-image: url(images/transaction_bg.jpg);
+	border-color: #ddd5c8;
+}
+
+.x-panel-body-default, .x-panel .x-grid-body {
+	border-color: #ddd5c8;
+}
+
+img.x-tool-collapse-top {
+	overflow: hidden;
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-image: url(images/up_arrow.gif);
+	margin: 0;
+	background-position: 0;
+}
+
+img.x-tool-expand-bottom {
+	overflow: hidden;
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-image: url(images/down_arrow.gif);
+	margin: 0;
+	background-position: 0;
+}
+
+.x-tool-over .x-tool-collapse-top,
+.x-tool-over .x-tool-expand-bottom {
+	background-position: 0;
+}
+
+#settingsGrid .x-grid-view {
+	overflow: hidden;
+}
+
+
+
+/* ------------ Style for Date range field ----------------*/
+
+.mfino-field-daterange .x-form-text {
+	font-size: 13px;
+	padding: 5px 0px 2px 6px;
+}
+
+.mfino-field-daterange .x-form-trigger {
+	height: 25px !important;
+}
+
+.x-date-bottom .x-panel-body {
+	background: transparent !important;
+}
+
+.mfino-daterangepicker-cell {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+}
+
+.mfino-daterangepicker-label {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.mfino-datepicker {
+	border: 1px solid #A3BAD9 !important;
+}
+
+.mfino-datepicker .x-datepicker-header {
+	background-image: url(images/transaction_bg.jpg);
+}
+
+.mfino-daterangerpicker-bottom {
+	height: 20px;
+}
+
+.mfino-datepicker .x-datepicker-month span {
+	color: black !important;
+}
+
+.mfino-daterangerpicker-bottom .x-btn {
+	float: right;
+}
+
+.mfino-region-collapsed .x-layout-collapsed {
+	height: 0px !important;
+}

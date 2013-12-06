@@ -1,0 +1,1 @@
+java -cp Core\target\com.mfino.application-Core-jar-with-dependencies.jar com.mfino.hibernate.SchemaUpdateRun Core\src\hibernate.cfg.xml

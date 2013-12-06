@@ -1,0 +1,142 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+        </SCRIPT>
+        <link rel="stylesheet" href="../css/spinningwheel.css" type="text/css" media="all" />
+        <script type="text/javascript" src="../js/spinningwheel.js"></script>
+        <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+    </HEAD>
+    <body onload="loadSymbol();setTimeout('effects()',50);" onunload="saveSymbol(null);">
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%"></td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%" align="right" valign="middle">
+                            <INPUT id="backbutton" type="button" value=" Back" class="back_btn" onclick="javascript:history.back();" >
+                        </td>
+                        <td width="60%" align="center" valign="middle">
+                            <DIV align="center">
+                                <div class="headerLabel">
+                                    Place a Trade
+                                </div>
+                            </DIV>
+                        </td>
+                        <td width="20%" align="right" valign="middle">
+                            <INPUT id="menubutton"
+                                   type="button"
+                                   value="Menu"
+
+                                   class="menuButton"
+                                   onclick="goToPage('trading.html');"
+                                   >
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+        <hr>
+        <div id="cmbody">
+            <ul>
+                <li id="oneItem" style="background-image:none;" onmousedown="linkOnMouseDownPlain(this);" onmouseup="linkOnMouseUpPlain(this);"  onclick="openTradeAccountPicker('placeatradeaccount');">
+                    <div style="display:inline;width: 80%;">Account</div>
+                    <input id="placeatradeaccount" style="cursor:pointer;display:inline;float:right;text-align:right;color:blue;" type="textfield" class="textfields" readonly value="David&rsquo;s Investments">
+                </li>
+            </ul>
+            <ul>
+                <li id="firstItem" onclick="javascript:document.getElementById('placeatradesymbol').focus();" style="cursor:pointer;background-image:none;" onmousedown="linkOnMouseDownPlain(this);" onmouseup="linkOnMouseUpPlain(this);">
+                    <div style="display:inline;width: 80%;">Symbol</div>
+                    <input id="placeatradesymbol" style="display:inline;float:right;text-align:right;color:blue;" type="textfield"  class="textfields" onchange="loadSymbolValue();">
+                    <div id="symboltradevalue"><img src='../images/loading-green.gif' style='width:43px;height:11px;vertical-align:middle;margin:1px;padding:1px;'><br></div>
+                </li>
+                <li onclick="openTradeActionPicker('placeatradeaction');" style="background-image:none;" onmousedown="linkOnMouseDownPlain(this);" onmouseup="linkOnMouseUpPlain(this);">
+                    <div style="display:inline;width: 80%;">Action</div>
+                    <input id="placeatradeaction" style="display:inline;float:right;text-align:right;color:blue;" type="textfield" readonly  class="textfields">
+                </li>
+                <li id="lastItem" onclick="javascript:document.getElementById('placeatradequantity').focus();" style="background-image:none;" onmousedown="linkOnMouseDownPlain(this);" onmouseup="linkOnMouseUpPlain(this);">
+                    <div style="display:inline;width: 80%;">Quantity</div>
+                    <input id="placeatradequantity" style="display:inline;float:right;text-align:right;color:blue;" type="textfield"  class="textfields">
+                </li>
+            </ul>
+            <div class="roundedBorder" style="padding:10px;">
+                <div style="text-align:center;">Order Type</div>
+                <div style="margin: 2px;padding: 2px;vertical-align:bottom;">
+                    <input type=radio style="display:inline;" name="ordertype" value="marketorder" id="marketorder" checked>
+                    <label for="marketorder"  style="display:inline;" >Market Order&nbsp;</label>
+                    <label for="marketorderamount"  style="display:inline;text-align:right;" >&nbsp;</label>
+                    <input id="marketorderamount" style="display:inline;text-align:right;float:right;color:blue;" type="textfield"  class="textfields" size="10">
+                </div>
+                <div style="margin: 2px;padding: 2px;vertical-align:bottom;">
+                    <input type=radio style="display:inline;" name="ordertype" id="limit" value="limit">
+                    <label for="limit"  style="display:inline;" >Limit&nbsp;</label>
+                    <label for="limitamount"  style="display:inline;text-align:right;" >&nbsp;</label>
+                    <input id="limitamount" style="display:inline;text-align:right;float:right;color:blue;" type="textfield"  class="textfields" size="10">
+                </div>
+                <div style="margin: 2px;padding: 2px;vertical-align:bottom;">
+                    <input type=radio style="display:inline;" name="ordertype" id="stop" value="stop">
+                    <label for="stop"  style="display:inline;" >Stop&nbsp;</label>
+                    <label for="stopamount"  style="display:inline;text-align:right;" >&nbsp;</label>
+                    <input id="stopamount" style="display:inline;text-align:right;float:right;color:blue;" type="textfield" class="textfields" size="10">
+                </div>
+                <div style="margin: 2px;padding: 2px;vertical-align:bottom;">
+                    <input type=radio style="display:inline;" name="ordertype" id="stoplimit" value="stoplimit">
+                    <span style="display:inline;" >Stop&nbsp;</span>
+                    <span style="display:inline;padding-right:30px;float:right;" >Limit&nbsp;</span>
+                    <br>
+                    <label for="stoplimitstopamount"  style="display:inline;padding-left:15px;" >&nbsp;</label>
+                    <input id="stoplimitstopamount" style="display:inline;text-align:left;color:blue;" type="textfield" size="10" class="textfields">
+                    <label for="stoplimitlimitamount"  style="display:inline;" >&nbsp;</label>
+                    <input id="stoplimitlimitamount" style="display:inline;text-align:right;padding-right:30px;float:right;color:blue;" type="textfield" class="textfields" size="10">
+                </div>
+            </div>
+            <ul>
+                <li id="firstItem" onclick="openTradeTimingPicker('placeatradetiming');" style="cursor:pointer;background-image:none;" onmousedown="linkOnMouseDownPlain(this);" onmouseup="linkOnMouseUpPlain(this);">
+                    <label for="placeatradetiming">Timing</label>
+                    <input id="placeatradetiming" style="display:inline;float:right;text-align:right;color:blue;" type="textfield" class="textfields" readonly>
+                </li>
+                <li id="lastItem" style="background-image:none;" onmousedown="linkOnMouseDownPlain(this);" onmouseup="linkOnMouseUpPlain(this);">
+                    <label for="reinvestdividends">Reinvest Dividends</label>
+                    <input type="checkbox" id="reinvestdividends" style="display:inline;float:right;" name="reinvestdividends">
+                </li>
+            </ul>
+            <div style="display:block;">
+                <center>
+                    <INPUT class="bigbuttons" style="display:inline;width:40%;" type="button" name="revieworder" value="Review Order" onclick="reviewOrder();goToPage('reviewtrade.html');">
+                    <INPUT class="bigbuttons" style="display:inline;width:40%;" type="button" name="clearorder" value="Clear Order" onclick="clearOrderFields();">
+                </center>
+            </div>
+            <div class="footer1" align="center">
+                <img border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </div>
+        </div>
+    </body>
+</html>

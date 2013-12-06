@@ -1,0 +1,4 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_fidelity" name="fidelitymux">
+	<in>fidelityreceive</in>
+	<out>fidelitysend</out>
+</mux>

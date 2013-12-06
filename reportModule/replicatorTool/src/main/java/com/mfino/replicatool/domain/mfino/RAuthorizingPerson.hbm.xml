@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:55 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.AuthorizingPerson" optimistic-lock="version" table="auth_person_details" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_AuthorizingPerson_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<property name="FirstName" type="java.lang.String" >
+<column name="FirstName"    sql-type="varchar(255)" />
+</property>
+<property name="LastName" type="java.lang.String" >
+<column name="LastName"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Address" foreign-key="FK_AuthorizingPerson_Address" class="com.mfino.domain.Address" fetch="select">
+<column name="AddressID"     />
+</many-to-one>
+<property name="IDDesc" type="java.lang.String" >
+<column name="IDDesc"    sql-type="varchar(255)" />
+</property>
+<property name="IDNumber" type="java.lang.String" >
+<column name="IDNumber"    sql-type="varchar(255)" />
+</property>
+<property name="DateOfBirth" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="DateOfBirth"   length="19" sql-type="datetime" />
+</property>
+<set name="SubscriberFromAuthorizingPersonID" inverse="true">
+<key>
+<column name="AuthorizingPersonID"    />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+</class>
+</hibernate-mapping>

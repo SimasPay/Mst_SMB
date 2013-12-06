@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:54 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.PartnerServices" optimistic-lock="version" table="partner_services" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_PartnerServices_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Partner" foreign-key="FK_PartnerServices_Partner" class="com.mfino.domain.Partner" fetch="select">
+<column name="PartnerID" not-null="true"   />
+</many-to-one>
+<many-to-one name="PartnerByServiceProviderID" foreign-key="FK_PartnerServices_PartnerByServiceProviderID" class="com.mfino.domain.Partner" fetch="select">
+<column name="ServiceProviderID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Service" foreign-key="FK_PartnerServices_Service" class="com.mfino.domain.Service" fetch="select">
+<column name="ServiceID" not-null="true"   />
+</many-to-one>
+<many-to-one name="DistributionChainTemplate" foreign-key="FK_PartnerServices_DistributionChainTemplate" class="com.mfino.domain.DistributionChainTemplate" fetch="select">
+<column name="DistributionChainTemplateID"     />
+</many-to-one>
+<many-to-one name="PartnerByParentID" foreign-key="FK_PartnerServices_PartnerByParentID" class="com.mfino.domain.Partner" fetch="select">
+<column name="ParentID"     />
+</many-to-one>
+<property name="PSLevel" type="java.lang.Integer" >
+<column name="PSLevel"    sql-type="int" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<many-to-one name="PocketByCollectorPocket" foreign-key="FK_PartnerServices_PocketByCollectorPocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="CollectorPocket" not-null="true"   />
+</many-to-one>
+<many-to-one name="PocketBySourcePocket" foreign-key="FK_PartnerServices_PocketBySourcePocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="SourcePocket"     />
+</many-to-one>
+<many-to-one name="PocketByDestPocketID" foreign-key="FK_PartnerServices_PocketByDestPocketID" class="com.mfino.domain.Pocket" fetch="select">
+<column name="DestPocketID"     />
+</many-to-one>
+<property name="IsServiceChargeShare" type="java.lang.Integer" >
+<column name="IsServiceChargeShare"    sql-type="int" />
+</property>
+<set name="ServiceSettlementConfigFromPartnerServiceID" inverse="true">
+<key>
+<column name="PartnerServiceID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ServiceSettlementConfig" />
+</set>
+</class>
+</hibernate-mapping>

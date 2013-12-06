@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.Subscriber" table="subscriber" catalog="report">
+        <id name="subscriberId" type="string">
+            <column name="SubscriberID" />
+            <generator class="assigned" />
+        </id>
+        <property name="subscriberMdn" type="string">
+            <column name="SubscriberMDN" />
+        </property>
+        <property name="firstName" type="string">
+            <column name="FirstName" />
+        </property> 
+         <property name="lastName" type="string">
+            <column name="LastName" />
+        </property> 
+        <property name="kyclevel" type="string">
+            <column name="KYCLevel" />
+        </property>
+         <property name="type" type="string">
+            <column name="Type" />
+        </property>
+        <property name="IdType" type="string">
+            <column name="IdType" />
+        </property>
+         <property name="IdNumber" type="string">
+            <column name="IdNumber" />
+        </property>  
+        <property name="addressLine1" type="string">
+            <column name="addressLine1" />
+        </property>
+        <property name="addressLine2" type="string">
+            <column name="addressLine2" />
+        </property>
+        <property name="zipCode" type="string">
+            <column name="zipCode" />
+        </property>
+        <property name="state" type="string">
+            <column name="State" />
+        </property>
+        <property name="city" type="string">
+            <column name="City" />
+        </property>
+        <property name="createTime" type="timestamp">
+            <column name="CreateTime" length="19" />
+        </property>
+        <property name="createYear" type="string">
+            <column name="CreateYear" />
+        </property>
+        <property name="createMonthName" type="string">
+            <column name="CreateMonthName" />
+        </property>
+        <property name="createDayofMonth" type="string">
+            <column name="CreateDayofMonth" />
+        </property>
+        <property name="createWeekDay" type="string">
+            <column name="CreateWeekDay" />
+        </property>
+        <property name="updateTime" type="timestamp">
+            <column name="UpdateTime" length="19" />
+        </property>
+        <property name="updateYear" type="string">
+            <column name="UpdateYear" />
+        </property>
+        <property name="updateMonthName" type="string">
+            <column name="UpdateMonthName" />
+        </property>
+        <property name="updateDayofMonth" type="string">
+            <column name="UpdateDayofMonth" />
+        </property>
+        <property name="updateWeekDay" type="string">
+            <column name="UpdateWeekDay" />
+        </property>
+        <property name="createdBy" type="string">
+            <column name="CreatedBy" />
+        </property>
+        <property name="updatedBy" type="string">
+            <column name="UpdatedBy" />
+        </property>
+        <property name="language" type="string">
+            <column name="language" />
+        </property>
+        <property name="timeZone" type="string">
+            <column name="timeZone" />
+        </property>
+        <property name="status" type="string">
+            <column name="status" />
+        </property>
+        <property name="restrictions" type="string">
+            <column name="restrictions" />
+        </property>
+        <property name="DOB" type="string">
+            <column name="DOB" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" />
+        </property> 
+         <property name="currency" type="string">
+            <column name="currency" />
+        </property>
+	 	<property name="partnerCode" type="string">
+            <column name="partnerCode" />
+        </property>
+        <property name="partnerType" type="string">
+            <column name="partnerType" />
+        </property>
+        <property name="userName" type="string">
+            <column name="userName" />
+        </property>
+        <property name="tradeName" type="string">
+            <column name="tradeName" />
+        </property>
+        <property name="lineOfBusiness" type="string">
+            <column name="lineOfBusiness" />
+        </property>
+        <property name="contactPerson" type="string">
+            <column name="contactPerson" />
+        </property>
+        <property name="contactPersonDesignation" type="string">
+            <column name="ContactPersonDesignation" />
+        </property>
+        <property name="phoneNumber" type="string">
+            <column name="phoneNumber" />
+        </property>
+        <property name="faxNumber" type="string">
+            <column name="faxNumber" />
+        </property>
+        <property name="partnerClass" type="string">
+            <column name="partnerClass" />
+        </property>      
+    </class>
+</hibernate-mapping>

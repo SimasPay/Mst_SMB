@@ -1,0 +1,9 @@
+
+
+DELETE FROM `system_parameters` WHERE ParameterName='pin.length';
+
+INSERT INTO `system_parameters` (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) VALUES (1,now(),'System',now(),'system','pin.length','4','Pin Length');
+
+DELETE FROM `system_parameters` WHERE ParameterName='country.code';
+
+INSERT INTO `system_parameters` (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) VALUES (1,now(),'System',now(),'system','country.code','234','Country Prefix code');

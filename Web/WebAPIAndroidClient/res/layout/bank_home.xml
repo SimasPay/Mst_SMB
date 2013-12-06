@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Bank" android:id="@+id/Bank"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Activation"
+			android:id="@+id/BankActivationTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Recharge"
+			android:id="@+id/BankRechargeTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="TransferInquiry"
+			android:id="@+id/BankTransferInquiryTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="MoneyTransfer"
+			android:id="@+id/BankMoneyTransferTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="CheckBalance"
+			android:id="@+id/BankCheckBalanceTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="ChangePin"
+			android:id="@+id/BankChangePinTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Last 3 Transactions"
+			android:id="@+id/BankLastThreeTxnsTextView"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>	
+	</TableRow>
+	<TableRow>
+		<Button android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/GoBackInBankHome"
+			android:text="Back">
+		</Button>
+	</TableRow>
+
+</TableLayout>

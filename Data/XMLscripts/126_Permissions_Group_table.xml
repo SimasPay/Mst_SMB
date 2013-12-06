@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+	<property name="autoIncrement" value="true" dbms="mysql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+	<property name="INTUNSIGNED" value="INT UNSIGNED" dbms="mysql"/>
+	<property name="INTUNSIGNED" value="NUMBER(10,0)" dbms="oracle"/>
+	
+	<property name="UNSIGNEDBIGINT" value="BIGINT UNSIGNED" dbms="mysql"/>
+	<property name="UNSIGNEDBIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="LONGTEXT" value="LONGTEXT" dbms="mysql"/>
+	<property name="LONGTEXT" value="CLOB" dbms="oracle"/>
+
+	<property name="UNSIGNEDTINYINT" value="TINYINT UNSIGNED" dbms="mysql"/>
+	<property name="UNSIGNEDTINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+	
+	<property name="BIGINT" value="BIGINT" dbms="mysql"/>
+	<property name="BIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="INT" value="INT" dbms="mysql"/>
+	<property name="INT" value="NUMBER(10,0)" dbms="oracle"/>
+	
+	<property name="TINYINT" value="TINYINT" dbms="mysql"/>
+	<property name="TINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+
+	<property name="DECIMAL" value="DECIMAL(25,4)" dbms="mysql"/>
+	<property name="DECIMAL" value="NUMBER(25,4)" dbms="oracle"/>
+	
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+
+	<changeSet author="MFS_MAIN" id="TABLE-PERMISSIONGROUP-160">
+        <createTable tableName="permission_group">
+            <column name="ID" type="${BIGINT}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Version" type="${INT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastUpdateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue=" " name="UpdatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PermissionGroupName" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>            
+         </createTable>
+		 <modifySql dbms="mysql"> 
+ 	 	 	 <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8" /> 
+		 </modifySql>
+    </changeSet>	
+</databaseChangeLog>

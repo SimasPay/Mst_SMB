@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd">
+
+	<context:annotation-config />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt" class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory" />
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory" />
+		<property name="concurrentConsumers" value="${concurrentConsumers}" />
+	</bean>
+
+	<osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService" />
+
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig" />
+	</bean>
+
+	<bean id="billPayBillerIntegrationService" class="com.mfino.smart.gateway.impl.GatewayIntegrationServiecImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+	</bean>
+
+	<bean id="integrationResponseHandler" class="com.mfino.iframework.handler.ResponseHandler">
+		<property name="variantFilepath" value="${billpay.integration.gateway.variant}" />
+	</bean>
+	
+	<bean id="uniqueSuffix" class="java.util.concurrent.atomic.AtomicInteger"/>
+
+	<bean id="integrationRequestHandler" class="com.mfino.iframework.handler.RequestHandler">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="requestTypeTorequestFormatMap">
+			<map>
+				<entry key="Inquiry" value="${billpay.integration.gateway.inquiry.request}" />
+				<entry key="Payment" value="${billpay.integration.gateway.payment.request}" />
+				<entry key="Reversal" value="${billpay.integration.gateway.reversal.request}" />
+			</map>
+		</property>
+		<property name="variantFilepath" value="${billpay.integration.gateway.variant}" />
+		<property name="integrationDetails">
+			<map>
+				<entry key="integration.billercategory" value="122" />
+				<entry key="integration.billerid" value="2" />
+				<entry key="integration.channelid" value="4" />
+			</map>
+		</property>
+		<property name="uniqueSuffix" ref="uniqueSuffix"/>
+	</bean>
+
+	<camelContext id="gatewayBillPayIntegrationCalls" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+
+		<!-- route for biller inquiry -->
+		<route>
+			<from uri="jms:gatewayBillerInquiryQueue?disableReplyTo=false" />
+			<setHeader headerName="eventContext">
+				<constant>BILLER_INQUIRY_PENDING</constant>
+			</setHeader>
+			<to uri="bean:billPayBillerIntegrationService?method=preBillerInquiry" />
+			<to uri="direct:doInquiry" />
+		</route>
+		<route>
+			<from uri="direct:doInquiry" />
+			<setHeader headerName="requestType">
+				<constant>Inquiry</constant>
+			</setHeader>
+			<to uri="bean:integrationRequestHandler?method=constructRequest" />
+
+			<onException>
+				<exception>java.net.SocketTimeoutException</exception>
+				<redeliveryPolicy maximumRedeliveries="1" />
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<to uri="direct:inquiryTimedout" />
+			</onException>
+
+			<to uri="http://{{billpay.integration.gateway.host}}:{{billpay.integration.gateway.port}}?bridgeEndpoint=true&amp;httpClient.soTimeout=5000" />
+			<to uri="bean:integrationResponseHandler?method=handleResponse" />
+			<setHeader headerName="requestType">
+				<constant>Invalid</constant>
+			</setHeader>
+			<to uri="direct:inquiryResponseReceived" />
+		</route>
+		<route>
+			<from uri="direct:inquiryResponseReceived" />
+			<to uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse" />
+			<filter>
+				<simple>${body.response.result} == '00'</simple>
+				<to uri="direct:inquirySuccessful" />
+			</filter>
+			<filter>
+				<simple>${body.response.result} == '1'</simple>
+				<to uri="direct:inquiryFailed" />
+			</filter>
+		</route>
+		<route>
+			<from uri="direct:inquiryTimedout" />
+			<to uri="bean:billPayBillerIntegrationService?method=handleNoResponse"/>
+			<to uri="direct:inquiryFailed" />
+		</route>
+		<route>
+			<from uri="direct:inquiryFailed" />
+			<setHeader headerName="eventContext">
+				<constant>BILLER_INQUIRY_FAILED</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+				<to uri="jms:gatewaySuspenseAndChargesToSourceReversalQueue?disableReplyTo=true" />
+			</multicast>
+		</route>
+		<route>
+			<from uri="direct:inquirySuccessful" />
+			<setHeader headerName="eventContext">
+				<constant>BILLER_INQUIRY_SUCCESSFUL</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:gatewayConfirmQueue?disableReplyTo=true" />
+			</multicast>
+		</route>
+
+
+		<!-- Biller Confirmation -->
+		<route>
+			<from uri="jms:gatewayConfirmQueue?disableReplyTo=false" />
+			<setHeader headerName="eventContext">
+				<constant>BILLER_CONFIRMATION_PENDING</constant>
+			</setHeader>
+			<to uri="bean:billPayBillerIntegrationService?method=preBillerConfirmation" />
+			<to uri="direct:doConfirmation" />
+		</route>
+		<route>
+			<from uri="direct:doConfirmation" />
+			<setHeader headerName="requestType">
+				<constant>Payment</constant>
+			</setHeader>
+			<to uri="bean:integrationRequestHandler?method=constructRequest" />
+
+			<onException>
+				<exception>java.net.SocketTimeoutException</exception>
+				<redeliveryPolicy maximumRedeliveries="1" />
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<to uri="direct:confirmationTimedout" />
+			</onException>
+
+			<to uri="http://{{billpay.integration.gateway.host}}:{{billpay.integration.gateway.port}}?bridgeEndpoint=true&amp;httpClient.soTimeout=5000" />
+			<to uri="bean:integrationResponseHandler?method=handleResponse" />
+			<setHeader headerName="requestType">
+				<constant>Invalid</constant>
+			</setHeader>
+			<to uri="direct:confirmResponseReceived" />
+		</route>
+		<route>
+			<from uri="direct:confirmResponseReceived" />
+			<to uri="bean:billPayBillerIntegrationService?method=handleBillPayConfirmationResponse" />
+			<filter>
+				<simple>${body.response.result} == '00'</simple>
+				<to uri="direct:confirmationSuccessful" />
+			</filter>
+			<filter>
+				<simple>${body.response.result} == '1'</simple>
+				<to uri="direct:confirmationFailed" />
+			</filter>
+		</route>
+		<route>
+			<from uri="direct:confirmationSuccessful" />
+			<setHeader headerName="eventContext">
+				<constant>BILLER_CONFIRMATION_SUCCESSFUL</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+				<to uri="jms:gatewaySuspenseToDestinationInquiryQueue?disableReplyTo=true" />
+			</multicast>
+		</route>
+		<route>
+			<from uri="direct:confirmationFailed" />
+			<setHeader headerName="eventContext">
+				<constant>BILLER_CONFIRMATION_FAILED</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+				<to uri="jms:gatewaySuspenseAndChargesToSourceReversalQueue?disableReplyTo=true" />
+			</multicast>
+		</route>
+		<route>
+			<from uri="direct:confirmationTimedout"/>
+			<to uri="bean:billPayBillerIntegrationService?method=handleNoResponse"/>
+			<multicast>
+				<to uri="direct:confirmResponseReceived"/>
+				<to uri="jms:gatewayIntegrationReversalQueue?disableReplyTo=true"/>
+			</multicast>
+		</route>
+		
+		<route>
+			<from uri="jms:gatewayIntegrationReversalQueue?disableReplyTo=true"/>
+			<setHeader headerName="requestType">
+				<constant>Reversal</constant>
+			</setHeader>
+			<to uri="bean:integrationRequestHandler?method=constructRequest" />
+
+			<onException>
+				<exception>java.net.SocketTimeoutException</exception>
+				<redeliveryPolicy maximumRedeliveries="3" />
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<to uri="direct:reversalTimedout" />
+			</onException>
+
+			<to uri="http://localhost:7634?bridgeEndpoint=true&amp;httpClient.soTimeout=10000" />
+			<to uri="bean:integrationResponseHandler?method=handleResponse" />
+			<setHeader headerName="requestType">
+				<constant>Invalid</constant>
+			</setHeader>
+			<to uri="direct:reversalResponseReceived" />
+		</route>
+		<route>
+			<from uri="direct:reversalTimedout"/>
+			<to uri="jms:reversalTimedoutQueue?disableReplyTo=true"/>
+		</route>
+		
+		<route>
+			<from uri="direct:reversalResponseReceived"/>
+			<to uri="jms:reversalResponseReceivedQueue?disableReplyTo=true"/>
+		</route>
+
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter" class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

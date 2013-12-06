@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:49 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Subscriber" optimistic-lock="version" table="subscriber" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_Subscriber_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"  index="MSP" />
+</many-to-one>
+<many-to-one name="Company" foreign-key="FK_Subscriber_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="ParentID" type="java.lang.Long" >
+<column name="ParentID" not-null="true"  default="'0'"  sql-type="bigint" />
+</property>
+<property name="FirstName" type="java.lang.String" index="FirstName">
+<column name="FirstName"    sql-type="varchar(255)" />
+</property>
+<property name="LastName" type="java.lang.String" index="LastName">
+<column name="LastName"    sql-type="varchar(255)" />
+</property>
+<property name="Gender" type="java.lang.String" >
+<column name="Gender"    sql-type="varchar(255)" />
+</property>
+<property name="BirthPlace" type="java.lang.String" >
+<column name="BirthPlace"    sql-type="varchar(255)" />
+</property>
+<property name="DateOfBirth" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="DateOfBirth"   length="19" sql-type="datetime" />
+</property>
+<property name="MDNBrand" type="java.lang.String" >
+<column name="MDNBrand"    sql-type="varchar(255)" />
+</property>
+<property name="Email" type="java.lang.String" >
+<column name="Email"    sql-type="varchar(255)" />
+</property>
+<property name="NotificationMethod" type="java.lang.Integer" >
+<column name="NotificationMethod"    sql-type="int" />
+</property>
+<property name="Language" type="java.lang.Integer" >
+<column name="Language" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="Currency" type="java.lang.String" >
+<column name="Currency" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Timezone" type="java.lang.String" >
+<column name="Timezone"    sql-type="varchar(255)" />
+</property>
+<property name="Restrictions" type="java.lang.Integer" >
+<column name="Restrictions" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="Type" type="java.lang.Integer" >
+<column name="Type" not-null="true"  sql-type="int" />
+</property>
+<property name="Status" type="java.lang.Integer" index="Status">
+<column name="Status" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="ActivationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ActivationTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ApproveOrRejectTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ApproveOrRejectTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ApprovedOrRejectedBy" type="java.lang.String" >
+<column name="ApprovedOrRejectedBy"    sql-type="varchar(255)" />
+</property>
+<property name="ApprovalIdNumber" type="java.lang.String" >
+<column name="ApprovalIdNumber"    sql-type="varchar(255)" />
+</property>
+<property name="ApproveOrRejectComment" type="java.lang.String" >
+<column name="ApproveOrRejectComment"    sql-type="varchar(255)" />
+</property>
+<property name="AppliedBy" type="java.lang.String" >
+<column name="AppliedBy"    sql-type="varchar(255)" />
+</property>
+<property name="AppliedTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="AppliedTime"   length="19" sql-type="datetime" />
+</property>
+<property name="DompetMerchant" type="java.lang.Boolean" >
+<column name="DompetMerchant" not-null="true"  default="'0'"  sql-type="tinyint" />
+</property>
+<many-to-one name="User" foreign-key="FK_Subscriber_User" class="com.mfino.domain.User" fetch="select">
+<column name="UserID"     />
+</many-to-one>
+<many-to-one name="AddressBySubscriberAddressID" foreign-key="FK_Subscriber_AddressBySubscriberAddressID" class="com.mfino.domain.Address" fetch="select">
+<column name="SubscriberAddressID"     />
+</many-to-one>
+<property name="SecurityQuestion" type="java.lang.String" >
+<column name="SecurityQuestion"    sql-type="varchar(255)" />
+</property>
+<property name="SecurityAnswer" type="java.lang.String" >
+<column name="SecurityAnswer"    sql-type="varchar(255)" />
+</property>
+<property name="PartnerType" type="java.lang.Integer" >
+<column name="PartnerType"    sql-type="int" />
+</property>
+<many-to-one name="KYCLevelByKYCLevel" foreign-key="FK_Subscriber_KYCLevelByKYCLevel" class="com.mfino.domain.KYCLevel" fetch="select">
+<column name="KYCLevel"     />
+</many-to-one>
+<property name="UpgradableKYCLevel" type="java.lang.Long" >
+<column name="UpgradableKYCLevel"    sql-type="bigint" />
+</property>
+<property name="UpgradeState" type="java.lang.Integer" >
+<column name="UpgradeState"    sql-type="int" />
+</property>
+<property name="IDExiparetionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="IDExiparetionTime"   length="19" sql-type="datetime" />
+</property>
+<many-to-one name="UserBySubscriberUserID" foreign-key="FK_Subscriber_UserBySubscriberUserID" class="com.mfino.domain.User" fetch="select">
+<column name="SubscriberUserID"     />
+</many-to-one>
+<property name="ReferenceAccount" type="java.lang.Long" >
+<column name="ReferenceAccount"    sql-type="bigint" />
+</property>
+<many-to-one name="AuthorizingPerson" foreign-key="FK_Subscriber_AuthorizingPerson" class="com.mfino.domain.AuthorizingPerson" fetch="select">
+<column name="AuthorizingPersonID"     />
+</many-to-one>
+<property name="AliasName" type="java.lang.String" >
+<column name="AliasName"    sql-type="varchar(255)" />
+</property>
+<property name="DetailsRequired" type="java.lang.Boolean" >
+<column name="DetailsRequired"    sql-type="tinyint" />
+</property>
+<property name="RegistrationMedium" type="java.lang.Integer" >
+<column name="RegistrationMedium"    default="'0'"  sql-type="int" />
+</property>
+<property name="RegisteringPartnerID" type="java.lang.Long" >
+<column name="RegisteringPartnerID"    sql-type="bigint" />
+</property>
+<set name="CommodityTransferFromSourceSubscriberID" inverse="true">
+<key>
+<column name="SourceSubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromSourceSubscriberID" inverse="true">
+<key>
+<column name="SourceSubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+<set name="SubscriberMDNFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SubscriberMDN" />
+</set>
+<set name="BulkUploadFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID"    />
+</key>
+<one-to-many class="com.mfino.domain.BulkUpload" />
+</set>
+<set name="Person2PersonFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Person2Person" />
+</set>
+<one-to-one name="Merchant" />
+<set name="CardInfoFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CardInfo" />
+</set>
+<set name="CreditCardTransactionFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CreditCardTransaction" />
+</set>
+<set name="BillPaymentTransactionFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BillPaymentTransaction" />
+</set>
+<set name="CreditCardDestinationsFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CreditCardDestinations" />
+</set>
+<set name="PartnerFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Partner" />
+</set>
+<set name="TransactionAmountDistributionLogFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionAmountDistributionLog" />
+</set>
+<set name="SubscribersAdditionalFieldsFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SubscribersAdditionalFields" />
+</set>
+<set name="SubscriberGroupFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SubscriberGroup" />
+</set>
+</class>
+</hibernate-mapping>

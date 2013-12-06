@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:55 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.TransactionAmountDistributionLog" optimistic-lock="version" table="txn_amount_dstrb_log" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_TransactionAmountDistributionLog_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID"     />
+</many-to-one>
+<property name="ServiceChargeTransactionLogID" type="java.lang.Long" >
+<column name="ServiceChargeTransactionLogID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="TransactionID" type="java.lang.Long" >
+<column name="TransactionID" not-null="true"  sql-type="bigint" />
+</property>
+<many-to-one name="TransactionCharge" foreign-key="FK_TransactionAmountDistributionLog_TransactionCharge" class="com.mfino.domain.TransactionCharge" fetch="select">
+<column name="TransactionChargeID"     />
+</many-to-one>
+<many-to-one name="Partner" foreign-key="FK_TransactionAmountDistributionLog_Partner" class="com.mfino.domain.Partner" fetch="select">
+<column name="PartnerID"     />
+</many-to-one>
+<many-to-one name="Pocket" foreign-key="FK_TransactionAmountDistributionLog_Pocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="PocketID" not-null="true"   />
+</many-to-one>
+<property name="ShareAmount" type="big_decimal" >
+<column name="ShareAmount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="TaxAmount" type="big_decimal" >
+<column name="TaxAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="IsPartOfCharge" type="java.lang.Boolean" >
+<column name="IsPartOfCharge"    sql-type="tinyint" />
+</property>
+<property name="IsActualAmount" type="java.lang.Boolean" >
+<column name="IsActualAmount"    sql-type="tinyint" />
+</property>
+<property name="IsPartOfSharedUpChain" type="java.lang.Boolean" >
+<column name="IsPartOfSharedUpChain"    sql-type="tinyint" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  sql-type="int" />
+</property>
+<property name="FailureReason" type="java.lang.String" >
+<column name="FailureReason"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Subscriber" foreign-key="FK_TransactionAmountDistributionLog_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID"     />
+</many-to-one>
+</class>
+</hibernate-mapping>

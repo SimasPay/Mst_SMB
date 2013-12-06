@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://neptune.ucitech.com/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://neptune.ucitech.com/">
+    <xs:element name="addCustomerProductByMerchant" type="tns:addCustomerProductByMerchant"/>
+    <xs:element name="addCustomerProductByMerchantResponse" type="tns:addCustomerProductByMerchantResponse"/>
+    <xs:element name="addCustomerProductsByMerchant" type="tns:addCustomerProductsByMerchant"/>
+    <xs:element name="addCustomerProductsByMerchantResponse" type="tns:addCustomerProductsByMerchantResponse"/>
+    <xs:element name="delCustomerProductByMerchant" type="tns:delCustomerProductByMerchant"/>
+    <xs:element name="delCustomerProductByMerchantResponse" type="tns:delCustomerProductByMerchantResponse"/>
+    <xs:element name="delCustomerProductsByMerchant" type="tns:delCustomerProductsByMerchant"/>
+    <xs:element name="delCustomerProductsByMerchantResponse" type="tns:delCustomerProductsByMerchantResponse"/>
+    <xs:element name="login" type="tns:login"/>
+    <xs:element name="loginResponse" type="tns:loginResponse"/>
+    <xs:element name="queryCustomerByMerchant" type="tns:queryCustomerByMerchant"/>
+    <xs:element name="queryCustomerByMerchantResponse" type="tns:queryCustomerByMerchantResponse"/>
+    <xs:element name="queryMerchantProducts" type="tns:queryMerchantProducts"/>
+    <xs:element name="queryMerchantProductsResponse" type="tns:queryMerchantProductsResponse"/>
+    <xs:element name="queryMerchantTransaction" type="tns:queryMerchantTransaction"/>
+    <xs:element name="queryMerchantTransactionResponse" type="tns:queryMerchantTransactionResponse"/>
+    <xs:element name="queryMerchants" type="tns:queryMerchants"/>
+    <xs:element name="queryMerchantsResponse" type="tns:queryMerchantsResponse"/>
+    <xs:element name="response" type="tns:proxyResponse"/>
+    <xs:complexType name="delCustomerProductByMerchant">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="order">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="additionalInfo" type="xs:string"/>
+            <xs:element minOccurs="0" name="customerId" type="xs:string"/>
+            <xs:element minOccurs="0" name="id" type="xs:long"/>
+            <xs:element minOccurs="0" name="item" type="tns:item"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="item">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="productId" type="xs:int"/>
+            <xs:element minOccurs="0" name="quantity" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="delCustomerProductByMerchantResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="proxyResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="desc" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="record" nillable="true" type="xs:anyType"/>
+            <xs:element minOccurs="0" name="retn" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="merchant">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType final="extension restriction" name="product">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="id" type="xs:int"/>
+            <xs:element minOccurs="0" name="name" type="xs:string"/>
+            <xs:element minOccurs="0" name="price" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="balance">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appname" type="xs:string"/>
+            <xs:element minOccurs="0" name="balance" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="transaction">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="account" type="xs:string"/>
+            <xs:element minOccurs="0" name="errorCode" type="xs:string"/>
+            <xs:element minOccurs="0" name="id" type="xs:string"/>
+            <xs:element minOccurs="0" name="msisdn" type="xs:string"/>
+            <xs:element minOccurs="0" name="startTime" type="xs:string"/>
+            <xs:element minOccurs="0" name="transactionId" type="xs:string"/>
+            <xs:element minOccurs="0" name="value" type="xs:string"/>
+            <xs:element minOccurs="0" name="vendor" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryMerchantTransaction">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryMerchantTransactionResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="delCustomerProductsByMerchant">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="delCustomerProductsByMerchantResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryMerchants">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryMerchantsResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="addCustomerProductsByMerchant">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="addCustomerProductsByMerchantResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryMerchantProducts">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryMerchantProductsResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="login">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="loginResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryCustomerByMerchant">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="queryCustomerByMerchantResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="addCustomerProductByMerchant">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="appid" type="xs:string"/>
+            <xs:element minOccurs="0" name="merchantId" type="xs:string"/>
+            <xs:element minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="addCustomerProductByMerchantResponse">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="tns:proxyResponse"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

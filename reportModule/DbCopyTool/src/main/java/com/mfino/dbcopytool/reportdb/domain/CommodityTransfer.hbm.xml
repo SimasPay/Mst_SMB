@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.CommodityTransfer" table="commodity_transfer" catalog="report">
+        <id name="commodityTransferId" type="string">
+            <column name="CommodityTransferID" />
+            <generator class="assigned" />
+        </id>
+        <property name="transactionId" type="string">
+            <column name="TransactionID" />
+        </property>
+        <property name="commodityTransferCreateTime" type="timestamp">
+            <column name="CommodityTransferCreateTime" length="19" />
+        </property>
+         <property name="createYear" type="string">
+            <column name="CreateYear" />
+        </property>
+        <property name="createMonthName" type="string">
+            <column name="CreateMonthName" />
+        </property>
+        <property name="createDayofMonth" type="string">
+            <column name="CreateDayofMonth" />
+        </property>
+        <property name="createWeekDay" type="string">
+            <column name="CreateWeekDay" />
+        </property>
+        <property name="uicategory" type="string">
+            <column name="UICategory" />
+        </property>
+        <property name="uicategoryName" type="string">
+            <column name="UICategoryName" />
+        </property>
+        <property name="transferStatus" type="string">
+            <column name="TransferStatus" />
+        </property>
+        <property name="transferFailureReason" type="string">
+            <column name="TransferFailureReason" />
+        </property>
+        <property name="transferFailureReasonName" type="string">
+            <column name="TransferFailureReasonName" />
+        </property>
+        <property name="sourcePocketId" type="string">
+            <column name="SourcePocketID" />
+        </property>
+        <property name="destPocketId" type="string">
+            <column name="DestPocketID" />
+        </property>
+        <property name="amount" type="big_decimal">
+            <column name="Amount" precision="25" scale="4" />
+        </property>
+        <property name="charges" type="big_decimal">
+            <column name="Charges" precision="25" scale="4" />
+        </property>
+        <property name="taxAmount" type="big_decimal">
+            <column name="TaxAmount" precision="25" scale="4" />
+        </property>
+        <property name="transactionChargeId" type="string">
+            <column name="TransactionChargeID" />
+        </property>
+        <property name="isPartOfSharedUpChain" type="java.lang.Boolean">
+            <column name="IsPartOfSharedUpChain" />
+        </property>
+        <property name="sourceSubscriberId" type="string">
+            <column name="SourceSubscriberID" />
+        </property>
+        <property name="sourcePocketType" type="string">
+            <column name="SourcePocketType" />
+        </property>
+        <property name="sourceMessage" type="string">
+            <column name="SourceMessage" />
+        </property>
+        <property name="destSubscriberId" type="string">
+            <column name="DestSubscriberID" />
+        </property>
+        <property name="destPocketType" type="string">
+            <column name="DestPocketType" />
+        </property>
+        <property name="sourceMdn" type="string">
+            <column name="SourceMDN" />
+        </property>
+        <property name="destMdn" type="string">
+            <column name="DestMDN" />
+        </property>
+        <property name="sourcePocketBalance" type="big_decimal">
+            <column name="SourcePocketBalance" precision="25" scale="4" />
+        </property>
+        <property name="destPocketBalance" type="big_decimal">
+            <column name="DestPocketBalance" precision="25" scale="4" />
+        </property>
+        <property name="csraction" type="string">
+            <column name="CSRAction" />
+        </property>
+        <property name="csractionTime" type="timestamp">
+            <column name="CSRACtionTime" length="19" />
+        </property>
+        <property name="csruserId" type="string">
+            <column name="CSRUserID" />
+        </property>
+        <property name="csruserName" type="string">
+            <column name="CSRUserName" />
+        </property>
+        <property name="notificationCode" type="string">
+            <column name="NotificationCode" />
+        </property>
+        <property name="sctlID" type="string">
+            <column name="SctlId" />
+        </property>
+         <property name="commodityTransferUpdateTime" type="timestamp">
+            <column name="CommodityTransferUpdateTime" length="19" />
+        </property>
+        <property name="updateYear" type="string">
+            <column name="UpdateYear" />
+        </property>
+        <property name="updateMonthName" type="string">
+            <column name="UpdateMonthName" />
+        </property>
+        <property name="updateDayofMonth" type="string">
+            <column name="UpdateDayofMonth" />
+        </property>
+        <property name="updateWeekDay" type="string">
+            <column name="UpdateWeekDay" />
+        </property>
+		<property name="bankRRN" type="string">
+            <column name="bankRRN" />
+        </property>
+        <property name="bankSTAN" type="string">
+            <column name="bankSTAN" />
+        </property>
+        <property name="currency" type="string">
+            <column name="Currency" />
+        </property>
+		<property name="operatorRRN" type="string">
+            <column name="OperatorRRN" />
+        </property>
+        <property name="operatorSTAN" type="string">
+            <column name="OperatorSTAN" />
+        </property>
+         <property name="bankCode" type="string">
+            <column name="BankCode" />
+        </property>
+        <property name="operatorResponseCode" type="string">
+            <column name="OperatorResponseCode" />
+        </property>
+    </class>
+</hibernate-mapping>

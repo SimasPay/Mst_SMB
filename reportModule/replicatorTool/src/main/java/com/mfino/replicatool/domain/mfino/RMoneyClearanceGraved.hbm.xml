@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:59 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.MoneyClearanceGraved" optimistic-lock="version" table="money_clearance_graved" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="SubscriberMDNByMDNID" foreign-key="FK_MoneyClearanceGraved_SubscriberMDNByMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="MDNID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Pocket" foreign-key="FK_MoneyClearanceGraved_Pocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="PocketID" not-null="true"   />
+</many-to-one>
+<many-to-one name="ServiceChargeTransactionLogBySctlId" foreign-key="FK_MoneyClearanceGraved_ServiceChargeTransactionLogBySctlId" class="com.mfino.domain.ServiceChargeTransactionLog" fetch="select">
+<column name="SctlId" not-null="true"   />
+</many-to-one>
+<property name="Amount" type="big_decimal" >
+<column name="Amount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<many-to-one name="SubscriberMDNByRefundMDNID" foreign-key="FK_MoneyClearanceGraved_SubscriberMDNByRefundMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="RefundMDNID"     />
+</many-to-one>
+<property name="RefundAccountNumber" type="java.lang.String" >
+<column name="RefundAccountNumber"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="PocketByRefundPocketID" foreign-key="FK_MoneyClearanceGraved_PocketByRefundPocketID" class="com.mfino.domain.Pocket" fetch="select">
+<column name="RefundPocketID"     />
+</many-to-one>
+<many-to-one name="ServiceChargeTransactionLogByRefundSctlID" foreign-key="FK_MoneyClearanceGraved_ServiceChargeTransactionLogByRefundSctlID" class="com.mfino.domain.ServiceChargeTransactionLog" fetch="select">
+<column name="RefundSctlID"     />
+</many-to-one>
+<property name="MCStatus" type="java.lang.Integer" >
+<column name="MCStatus" not-null="true"  sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

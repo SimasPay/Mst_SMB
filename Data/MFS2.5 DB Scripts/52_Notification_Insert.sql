@@ -1,0 +1,13 @@
+use mfino;
+
+delete from notification where code = 688;
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,688,"TransactionCannotBeCancelled",1,"REF ID: $(TransferID). This transaction cannot be cancelled, Please contact your customer care for manual reconciliation.",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,688,"TransactionCannotBeCancelled",2,"REF ID: $(TransferID). This transaction cannot be cancelled, Please contact your customer care for manual reconciliation.",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,688,"TransactionCannotBeCancelled",4,"REF ID: $(TransferID). This transaction cannot be cancelled, Please contact your customer care for manual reconciliation.",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,688,"TransactionCannotBeCancelled",8,"REF ID: $(TransferID). This transaction cannot be cancelled, Please contact your customer care for manual reconciliation.",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,688,"TransactionCannotBeCancelled",16,"REF ID: $(TransferID). This transaction cannot be cancelled, Please contact your customer care for manual reconciliation.",null,0,0,now(),null,null,1);

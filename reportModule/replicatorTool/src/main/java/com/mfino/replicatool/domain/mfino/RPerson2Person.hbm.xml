@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:49 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Person2Person" optimistic-lock="version" table="person_2_person" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_Person2Person_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"  unique-key="MSPID" />
+</many-to-one>
+<many-to-one name="Subscriber" foreign-key="FK_Person2Person_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID" not-null="true"  unique-key="MSPID" />
+</many-to-one>
+<property name="MDN" type="java.lang.String" unique-key="MSPID">
+<column name="MDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="PeerName" type="java.lang.String" >
+<column name="PeerName"    sql-type="varchar(255)" />
+</property>
+<property name="ActivationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ActivationTime"   length="19" sql-type="datetime" />
+</property>
+</class>
+</hibernate-mapping>

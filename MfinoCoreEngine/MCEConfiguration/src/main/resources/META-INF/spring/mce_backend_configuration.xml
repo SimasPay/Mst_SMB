@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+    xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<!-- <osgi:reference id="jms" interface="org.apache.camel.Component" /> -->
+	<context:annotation-config />
+
+	<osgi:reference id="backendService"
+		interface="com.mfino.mce.backend.BackendService" />
+	<osgi:reference id="pendingClearanceService"
+		interface="com.mfino.mce.backend.PendingClearanceService" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="brokerURL"
+			value="tcp://${jms.brokerURL.host}:${jms.brokerURL.port}" />
+	</bean>-->
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+	</bean>
+
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<bean id="backendDynamicRouter" class="com.mfino.mce.backend.BackendDynamicRouter">
+		<constructor-arg>
+			<map>
+				<entry key="com.mfino.mce.core.util.BackendResponse" value="jms:notificationQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMBalanceInquiryToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMMoneyTransferReversalToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMGetLastTransactionsToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMGetMDNBillDebtsToOperator"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMCommodityTransferToOperator"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMNewSubscriberActivationToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMExistingSubscriberReactivationToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<camelContext id="backend" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<threadPool id="backendPool" threadName="backendThread"
+			poolSize="5" maxPoolSize="20" />
+		<route>
+			<from uri="jms:backendServiceQueue?disableReplyTo=true" />
+			<!-- add login to send the notification messages to notification queue -->
+			<threads executorServiceRef="backendPool">
+				<!-- this header need to be unset before we start the dynamic routing -->
+				<camel:removeHeader headerName="CamelSlipEndpoint" />
+				<to uri="bean:backendService?method=processMessage" />
+				<camel:dynamicRouter>
+					<method ref="backendDynamicRouter" method="findDestination" />
+				</camel:dynamicRouter>
+			</threads>
+		</route>
+
+		<route>
+			<from
+				uri="jms:integrationResponseMissingMessageQueue?disableReplyTo=true" />
+			<camel:removeHeader headerName="CamelSlipEndpoint" />
+			<to uri="bean:backendService?method=processMessage" />
+			<camel:dynamicRouter>
+				<method ref="backendDynamicRouter" method="findDestination" />
+			</camel:dynamicRouter>
+		</route>
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />		
+
+	<!-- <osgi:reference id="fixService" interface="com.mfino.mce.fix.FixService"/> -->
+</beans>

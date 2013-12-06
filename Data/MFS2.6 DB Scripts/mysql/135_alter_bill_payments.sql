@@ -1,0 +1,1 @@
+alter table bill_payments modify inresponsecode varchar(255);

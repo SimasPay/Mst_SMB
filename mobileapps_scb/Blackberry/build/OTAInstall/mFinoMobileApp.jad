@@ -1,0 +1,78 @@
+RIM-COD-SHA1-9: 08 0a 60 19 5e 30 b9 db 7e 0e 60 5f 81 c9 85 b5 91 27 f4 31
+RIM-COD-SHA1-8: 76 63 9b 99 6e 71 82 38 2e 57 e7 6e dc 33 67 9c ab 29 0e fc
+RIM-COD-SHA1-7: 4b ef 61 29 92 0d cc a7 27 70 6c 31 d4 40 31 98 3b 70 ab d8
+RIM-COD-SHA1-6: 4d 46 93 86 93 76 d3 55 44 09 7a 4a c7 65 ba de 9f e1 31 23
+RIM-COD-SHA1-5: 62 c2 b3 60 ee f6 56 fc 7b 0f f3 d0 bb f1 80 33 d7 f6 72 42
+RIM-COD-SHA1-4: a0 7e ec 88 f3 55 bc a0 8f f8 0e 6a 3b 7d 51 10 d7 0d d5 44
+RIM-COD-SHA1-3: d1 08 61 3d 9b 9a 11 93 97 16 43 cd d5 b2 36 45 b6 d1 75 70
+RIM-COD-SHA1-2: d3 92 63 38 54 89 03 d7 43 9c 52 37 bb c2 14 19 2e 9a 44 b3
+RIM-COD-SHA1-1: e0 ca a1 33 43 2a 1a 7b de 5e 13 ed 16 8e 4f 22 ee ca 76 9a
+RIM-COD-URL-19: mFinoMobileApp-19.cod
+RIM-COD-URL-18: mFinoMobileApp-18.cod
+RIM-COD-URL-17: mFinoMobileApp-17.cod
+RIM-COD-URL-16: mFinoMobileApp-16.cod
+RIM-COD-URL-15: mFinoMobileApp-15.cod
+RIM-COD-URL-14: mFinoMobileApp-14.cod
+RIM-COD-URL-13: mFinoMobileApp-13.cod
+RIM-COD-URL-12: mFinoMobileApp-12.cod
+RIM-COD-Size: 69200
+RIM-MIDlet-Icon-2-1: resources/icon.png,focused
+RIM-COD-URL-11: mFinoMobileApp-11.cod
+RIM-MIDlet-Icon-Count-2: 1
+RIM-COD-URL-10: mFinoMobileApp-10.cod
+RIM-MIDlet-Icon-Count-1: 1
+MIDlet-Vendor: Unknown
+RIM-MIDlet-Icon-1-1: resources/icon.png,focused
+Manifest-Version: 1.0
+RIM-MIDlet-Flags-1: 0
+RIM-COD-Size-19: 65264
+RIM-COD-Size-18: 44460
+RIM-COD-Size-17: 51292
+RIM-COD-Size-16: 42516
+RIM-COD-Size-15: 31940
+RIM-COD-Size-14: 61540
+RIM-COD-Size-13: 60580
+RIM-COD-Size-12: 58040
+RIM-COD-Size-11: 50428
+RIM-COD-Size-10: 55196
+MIDlet-Version: 1.0.0.0
+MicroEdition-Profile: MIDP-2.0
+RIM-COD-URL: mFinoMobileApp.cod
+RIM-COD-Creation-Time: 1348571941
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Jar-URL: mFinoMobileApp.jar
+RIM-COD-SHA1-19: 33 63 c4 8b 0a c3 0c 2e 83 33 e8 3d aa 9d 4f 3f 6e 53 d9 68
+RIM-COD-SHA1-18: 9f 8c 56 2f c1 4f 1c c0 51 ab 6f 40 3c fc a4 14 fa de c1 f3
+RIM-COD-SHA1-17: d8 87 12 55 06 d1 ea 7c bf 45 76 2e 44 5c a8 c2 94 5d b1 fa
+RIM-COD-SHA1-16: 3c 31 bd c5 61 29 b3 87 bf 11 a9 87 08 31 2b e0 85 13 e3 a9
+RIM-COD-SHA1-15: dd 77 b9 92 e0 29 47 6c 2c be 3b 38 16 33 fe 7c 75 c3 27 83
+RIM-COD-SHA1-14: 63 be f5 c9 ca ef 7d 96 11 1c 33 a4 6f 36 b1 39 88 ef 31 67
+RIM-COD-SHA1-13: d3 97 98 58 ff 8a 42 5f 92 9c 29 41 c8 18 e6 29 bd 7e bb 5e
+RIM-COD-SHA1-12: b3 96 2c 1b 19 b3 dc a4 06 68 67 8b 1c cb 3e 79 5e d4 db f1
+RIM-COD-Size-9: 66236
+RIM-COD-SHA1-11: 86 3c cf b9 82 bb cc e2 99 5e 80 c4 bb 08 5a f9 d8 f2 b9 f8
+RIM-COD-Size-8: 63236
+RIM-COD-SHA1-10: e0 e2 b1 78 e7 4f ca 6f a8 1c 10 31 c8 2c 7c 8a c9 46 02 ed
+RIM-COD-Size-7: 66744
+MIDlet-Description: mfino Mobile Application
+RIM-COD-Size-6: 64936
+RIM-COD-Size-5: 69484
+RIM-COD-Size-4: 62548
+RIM-COD-Size-3: 65536
+RIM-COD-Size-2: 70240
+RIM-COD-Size-1: 70328
+MIDlet-1: mFinoMobileApp,resources/icon.png,rim:foreground;WIDGET;
+MIDlet-Name: mFinoMobileApp
+RIM-COD-SHA1: c9 7e 9a 22 f2 0f a4 77 86 95 d8 cf 82 45 9b d6 f3 b5 2f eb
+RIM-COD-Module-Dependencies: net_rim_cldc,net_rim_bb_web_jse_api,net_rim_xml_org,net_rim_bb_browser_field2_api,net_rim_os,net_rim_bbapi_phone,net_rim_bbapi_mailv2,net_rim_bbapi_push,net_rim_bbapi_messagelist,net_rim_pdap,net_rim_bbapi_invoke,net_rim_networkapi,net_rim_bb_browser_field_api,net_rim_xml,net_rim_bbapi_browser,net_rim_locationapi
+MIDlet-Jar-Size: 1455959
+RIM-COD-URL-9: mFinoMobileApp-9.cod
+RIM-COD-URL-8: mFinoMobileApp-8.cod
+RIM-COD-URL-7: mFinoMobileApp-7.cod
+RIM-COD-URL-6: mFinoMobileApp-6.cod
+RIM-COD-URL-5: mFinoMobileApp-5.cod
+RIM-COD-URL-4: mFinoMobileApp-4.cod
+RIM-COD-URL-3: mFinoMobileApp-3.cod
+RIM-COD-URL-2: mFinoMobileApp-2.cod
+RIM-COD-URL-1: mFinoMobileApp-1.cod
+RIM-COD-Module-Name: mFinoMobileApp

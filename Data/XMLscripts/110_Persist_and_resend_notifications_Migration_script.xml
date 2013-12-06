@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	 
+	<changeSet author="MFS_MAIN" dbms="mysql" id="PROCEDURE-POPULATENEWCOLUMNSWITHDEFAULTVALUES-1"> 
+	
+		<createProcedure> 
+			Create Procedure populate_new_columns_with_default_values()
+			Begin
+				Declare notificationLogID BIGINT;
+				Declare sctlId BIGINT;
+				Declare srcMDN VARCHAR(255);
+				Declare no_more_records INT Default 0;
+				
+				-- Cursor contains the data from notification_log table
+				Declare Notification_Log_Cur Cursor for select
+					n.ID,
+					n.SctlID	
+					from
+					notification_log n
+					where n.NotificationMethod is NULL;
+				
+				Declare Continue Handler for NOT FOUND Set no_more_records = 1;	
+
+				Open Notification_Log_Cur;
+				LOOP1: loop
+					Fetch Notification_Log_Cur into notificationLogID, sctlId;
+					if (no_more_records = 1) then 
+						close Notification_Log_Cur;
+						leave LOOP1;
+					end if;
+
+					SELECT sctl.SourceMDN INTO srcMDN FROM service_charge_txn_log sctl WHERE sctl.ID = sctlId;
+					UPDATE notification_log SET NotificationReceiverType=1, NotificationMethod=1, SourceAddress=srcMDN where ID=notificationLogID;
+
+				End loop LOOP1;
+			End;
+		</createProcedure> 
+		<sql>
+			CALL populate_new_columns_with_default_values();
+			DROP PROCEDURE populate_new_columns_with_default_values;
+		</sql>
+	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="PROCEDURE-POPULATENEWCOLUMNSWITHDEFAULTVALUES-1"> 
+		<createProcedure> 
+			-- Procedure for populating newly created columns of notification_log table with default values
+			-- Its a one-time activity
+
+			CREATE OR REPLACE Procedure insert_default_values
+			   
+			IS
+				notificationLogID notification_log.ID%TYPE;
+				sctl_id notification_log.SctlID%TYPE;
+				srcMDN notification_log.SourceAddress%TYPE;
+				CURSOR notification_log_cursor is  select ID, SctlID from notification_log where NotificationMethod is NULL;
+
+			BEGIN	
+				For nl in notification_log_cursor loop
+					notificationLogID := nl.ID;
+					sctl_id := nl.SctlID;
+					SELECT sctl.SourceMDN INTO srcMDN FROM service_charge_txn_log sctl WHERE sctl.ID = sctl_id;
+					UPDATE notification_log SET NotificationReceiverType=1, NotificationMethod=1, SourceAddress=srcMDN where ID=notificationLogID;
+					commit;
+				End loop;
+
+			END;
+			/
+
+			CALL insert_default_values();
+
+			DROP PROCEDURE insert_default_values;
+
+			commit;
+		</createProcedure> 
+	</changeSet>
+</databaseChangeLog>

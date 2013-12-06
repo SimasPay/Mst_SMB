@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='NH'>
+	<field id='clear-pin' type='N' length='5'/>
+</schema> 

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd	    
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+	    http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<context:annotation-config />
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+ 
+ 	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+
+ 	<osgi:reference id="sctlServiceImpl" bean-name="SCTLServiceImpl" interface="com.mfino.service.SCTLService" />
+	<osgi:reference id="subscriberMdnServiceImpl" bean-name="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />
+	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	<osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />
+	<osgi:reference id="channelCodeServiceImpl" bean-name="ChannelCodeServiceImpl" interface="com.mfino.service.ChannelCodeService" />
+	
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+	<osgi:reference id="transactionApiValidationServiceImpl" bean-name="TransactionApiValidationServiceImpl" interface="com.mfino.transactionapi.service.TransactionApiValidationService" />
+	<osgi:reference id="cashinReversalHandlerImpl" bean-name="CashinReversalHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.CashinReversalHandler"/>
+	<osgi:reference id="integrationCashinConfirmHandlerImpl" bean-name="IntegrationCashinConfirmHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.IntegrationCashinConfirmHandler"/>
+	<osgi:reference id="integrationCashinInquiryHandlerImpl" bean-name="IntegrationCashinInquiryHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.IntegrationCashinInquiryHandler"/>
+		
+
+	<bean id="cashinListener" class="com.mfino.cashin.CashinMessageListener">
+		<property name="integrationCashinConfirmHandler" ref="integrationCashinConfirmHandlerImpl"/>
+		<property name="integrationCashinInquiryHandler" ref="integrationCashinInquiryHandlerImpl"/>
+		<property name="cashinReversalHandler" ref="cashinReversalHandlerImpl" />
+		<property name="channelCodeService" ref="channelCodeServiceImpl" />
+		<property name="transactionApiValidationService" ref="transactionApiValidationServiceImpl" />
+		<property name="subscriberMdnService" ref="subscriberMdnServiceImpl" />
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+	</bean>
+
+	<bean id="channelRooter" class="com.mfino.cashin.ChannelBasedRooter">
+		<constructor-arg value="${mce.cashin.channeltoqmappingfile}" />
+		<property name="defaultQueue" value="jms:deadChannelQueue?disableReplyTo=true" />
+	</bean>
+
+	<camel:camelContext id="cashinContext"
+		xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+
+		<route>
+			<from uri="jms:CIQueue?disableReplyTo=true" />
+			<process ref="cashinListener" />
+			<to uri="jms:COQueue?disableReplyTo=true" />
+		</route>
+
+		<route>
+			<from uri="jms:COQueue?disableReplyTo=true" />
+<!-- 			<camel:removeHeader headerName="CamelSlipEndPoint" />
+			<camel:dynamicRouter>
+				<method ref="channelBasedRouter" method="nextQueue" />
+			</camel:dynamicRouter> -->
+			<recipientList>      
+			    <header>frontendOutQ</header>
+		    </recipientList>
+		    </route>
+
+	</camel:camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+</beans>

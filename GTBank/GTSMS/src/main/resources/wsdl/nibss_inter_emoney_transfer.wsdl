@@ -1,0 +1,200 @@
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://tempuri.org/">
+<wsdl:types>
+<s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+<s:element name="MM_TransactionQuerySingleItem">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="BenBank" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="sessionid" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_TransactionQuerySingleItemResponse">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="MM_TransactionQuerySingleItemResult" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_TransactionQuery">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="TransactionID" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_TransactionQueryResponse">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="MM_TransactionQueryResult" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_BenNameEnquirySingleItem">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="BenOPCode" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="BenAcctNo" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_BenNameEnquirySingleItemResponse">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="MM_BenNameEnquirySingleItemResult" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_FundTransferSingleItem">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="1" maxOccurs="1" name="userid" type="s:long"/>
+<s:element minOccurs="0" maxOccurs="1" name="source_acct" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="BenOPCode" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="BenAcctNo" type="s:string"/>
+<s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:decimal"/>
+<s:element minOccurs="0" maxOccurs="1" name="Remarks" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="Reference" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="CustName" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="BenName" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="MM_FundTransferSingleItemResponse">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="MM_FundTransferSingleItemResult" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+</s:schema>
+</wsdl:types>
+<wsdl:message name="MM_TransactionQuerySingleItemSoapIn">
+<wsdl:part name="parameters" element="tns:MM_TransactionQuerySingleItem"/>
+</wsdl:message>
+<wsdl:message name="MM_TransactionQuerySingleItemSoapOut">
+<wsdl:part name="parameters" element="tns:MM_TransactionQuerySingleItemResponse"/>
+</wsdl:message>
+<wsdl:message name="MM_TransactionQuerySoapIn">
+<wsdl:part name="parameters" element="tns:MM_TransactionQuery"/>
+</wsdl:message>
+<wsdl:message name="MM_TransactionQuerySoapOut">
+<wsdl:part name="parameters" element="tns:MM_TransactionQueryResponse"/>
+</wsdl:message>
+<wsdl:message name="MM_BenNameEnquirySingleItemSoapIn">
+<wsdl:part name="parameters" element="tns:MM_BenNameEnquirySingleItem"/>
+</wsdl:message>
+<wsdl:message name="MM_BenNameEnquirySingleItemSoapOut">
+<wsdl:part name="parameters" element="tns:MM_BenNameEnquirySingleItemResponse"/>
+</wsdl:message>
+<wsdl:message name="MM_FundTransferSingleItemSoapIn">
+<wsdl:part name="parameters" element="tns:MM_FundTransferSingleItem"/>
+</wsdl:message>
+<wsdl:message name="MM_FundTransferSingleItemSoapOut">
+<wsdl:part name="parameters" element="tns:MM_FundTransferSingleItemResponse"/>
+</wsdl:message>
+<wsdl:portType name="NIPServiceSoap">
+<wsdl:operation name="MM_TransactionQuerySingleItem">
+<wsdl:input message="tns:MM_TransactionQuerySingleItemSoapIn"/>
+<wsdl:output message="tns:MM_TransactionQuerySingleItemSoapOut"/>
+</wsdl:operation>
+<wsdl:operation name="MM_TransactionQuery">
+<wsdl:input message="tns:MM_TransactionQuerySoapIn"/>
+<wsdl:output message="tns:MM_TransactionQuerySoapOut"/>
+</wsdl:operation>
+<wsdl:operation name="MM_BenNameEnquirySingleItem">
+<wsdl:input message="tns:MM_BenNameEnquirySingleItemSoapIn"/>
+<wsdl:output message="tns:MM_BenNameEnquirySingleItemSoapOut"/>
+</wsdl:operation>
+<wsdl:operation name="MM_FundTransferSingleItem">
+<wsdl:input message="tns:MM_FundTransferSingleItemSoapIn"/>
+<wsdl:output message="tns:MM_FundTransferSingleItemSoapOut"/>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="NIPServiceSoap" type="tns:NIPServiceSoap">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="MM_TransactionQuerySingleItem">
+<soap:operation soapAction="http://tempuri.org/MM_TransactionQuerySingleItem" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="MM_TransactionQuery">
+<soap:operation soapAction="http://tempuri.org/MM_TransactionQuery" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="MM_BenNameEnquirySingleItem">
+<soap:operation soapAction="http://tempuri.org/MM_BenNameEnquirySingleItem" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="MM_FundTransferSingleItem">
+<soap:operation soapAction="http://tempuri.org/MM_FundTransferSingleItem" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="NIPServiceSoap12" type="tns:NIPServiceSoap">
+<soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="MM_TransactionQuerySingleItem">
+<soap12:operation soapAction="http://tempuri.org/MM_TransactionQuerySingleItem" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="MM_TransactionQuery">
+<soap12:operation soapAction="http://tempuri.org/MM_TransactionQuery" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="MM_BenNameEnquirySingleItem">
+<soap12:operation soapAction="http://tempuri.org/MM_BenNameEnquirySingleItem" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="MM_FundTransferSingleItem">
+<soap12:operation soapAction="http://tempuri.org/MM_FundTransferSingleItem" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="NIPService">
+<wsdl:port name="NIPServiceSoap" binding="tns:NIPServiceSoap">
+<soap:address location="http://gtweb.gtbank.com/MM_NIPClient/GTBNIPService.asmx"/>
+</wsdl:port>
+<wsdl:port name="NIPServiceSoap12" binding="tns:NIPServiceSoap12">
+<soap12:address location="http://gtweb.gtbank.com/MM_NIPClient/GTBNIPService.asmx"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

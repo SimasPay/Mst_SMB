@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.openmobileallianceorg.org/tech/DTD/xhtml-mobile10.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+        <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+            var req = false;
+
+            function hideMenu()
+            {
+                var option = getGetQuoteOption();
+                
+                document.getElementById('placeTradeButton').style.visibility = 'hidden';
+                document.getElementById('addToWatchListButton').style.visibility = 'hidden';
+                if(option == 'home')
+                {
+                    document.getElementById('menubutton').style.visibility = 'hidden';
+                    document.getElementById('signoutbutton').style.visibility = 'hidden';
+                    document.getElementById('TICKER').style.visibility = 'hidden';
+                }
+                else
+                {
+                    document.getElementById('TICKER').style.visibility = 'hidden';
+                    document.getElementById('menubutton').style.visibility = 'visible';
+                    document.getElementById('signoutbutton').style.visibility = 'visible';
+                }
+            }
+
+            function hideContent()
+            {
+                var quoteCtrDiv = document.getElementById('quote-content-div');
+                quoteCtrDiv.style.visibility = 'hidden';
+                quoteCtrDiv.style.height = '0px';
+            }
+
+            function processReqChange() {
+                // only if req shows "loaded"
+                if (req.readyState == 4) {
+                    // only if "OK"
+                    if (req.status == 200) {
+                        var response = req.responseText;
+                        response = response.replace( /"/g, ' ' );
+                        var dataArray = response.split(',');
+
+                        //snld1 c1p oba t8mw vr2 j3 y
+                        document.getElementById('symbol').innerHTML = dataArray[0];
+                        document.getElementById('name').innerHTML = dataArray[1];
+                        document.getElementById('lasttrade').innerHTML = dataArray[2];
+                        document.getElementById('tradetime').innerHTML = dataArray[3];
+
+                        var chng = dataArray[4];
+
+                        document.getElementById('change').innerHTML = chng;
+
+                        if(chng.indexOf('-') > -1)
+                        {
+                            document.getElementById('change').style.color = "red";
+                        }
+                        else
+                        {
+                            document.getElementById('change').style.color = "green";
+                        }
+
+                        document.getElementById('prevclose').innerHTML = dataArray[5];
+
+                        document.getElementById('open').innerHTML = dataArray[6];
+                        document.getElementById('bid').innerHTML = dataArray[7];
+                        document.getElementById('ask').innerHTML = dataArray[8];
+
+                        document.getElementById('1yrtargetest').innerHTML = dataArray[9];
+                        document.getElementById('daysrange').innerHTML = dataArray[10];
+                        document.getElementById('52wkrange').innerHTML = dataArray[11];
+
+                        document.getElementById('volume').innerHTML = dataArray[12];
+                        document.getElementById('pettm').innerHTML = dataArray[13];
+
+                        document.getElementById('marketcap').innerHTML = dataArray[14];
+                        document.getElementById('divyield').innerHTML = dataArray[15];
+                        //http://chart.bigcharts.com/custom/cnnmoney-com/markets/big.chart?symb=aapl&sid=0&o_symb=aapl&x=0&y=0&style=1858&size=1
+                        document.getElementById('chartImg').src = 'http://chart.bigcharts.com/custom/cnnmoney-com/markets/big.chart?symb='+trim(dataArray[0])+'&sid=0&o_symb=aapl&x=0&y=0&style=1858&size=1';
+                        var quoteCtr = document.getElementById('quote-content');
+                        quoteCtr.innerHTML = '';
+
+                        var option = getGetQuoteOption();
+
+                        if(option == 'menu')
+                        {
+                            document.getElementById('placeTradeButton').style.visibility = 'visible';
+                            document.getElementById('addToWatchListButton').style.visibility = 'visible';
+                        }
+                    } 
+                    else
+                    {
+                        var quoteCtr = document.getElementById('quote-content');
+                        quoteCtr.innerHTML = "There was a problem retrieving the XML data:\n" +
+                            req.statusText;
+
+                        document.getElementById('placeTradeButton').style.visibility = 'hidden';
+                        document.getElementById('addToWatchListButton').style.visibility = 'hidden';
+
+                    }
+                }
+            }
+
+            function showContent()
+            {
+                var quoteCtrDiv = document.getElementById('quote-content-div');
+                quoteCtrDiv.style.visibility = 'visible';
+                quoteCtrDiv.style.height = '100%';
+
+                var quoteCtr = document.getElementById('quote-content');
+
+                quoteCtr.innerHTML = "<img src='../images/loading-green.gif' style='width:43px;height:11px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;'>";
+
+                var sym = document.getElementById('ipsymbol').value;
+
+                var url = '/mfinomb/StocksProcessor?symbol='+sym;
+
+                if (window.XMLHttpRequest) {
+                    try {
+                        req = new XMLHttpRequest();
+                    } catch (e) {
+                        req = false;
+                    }
+                } 
+
+                if (req)
+                {
+                    req.onreadystatechange = processReqChange;
+                    req.open('GET', url, true);
+                    req.send(null);
+                } 
+                else
+                {
+                    quoteCtrDiv.innerHTML =
+                        "Sorry, your browser does not support " +
+                        "XMLHTTPRequest objects.";
+                }
+
+                document.getElementById('getQuoteButton').value = "Get Another Quote";
+                document.getElementById('getQuoteButton').blur();
+                document.getElementById('ipsymbol').focus();
+                document.getElementById('ipsymbol').blur();
+            }
+
+        </SCRIPT>
+    </HEAD>
+    <body onload="setTimeout('effects()',50);hideContent();hideMenu();">
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                        </td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                            <INPUT id="backbutton" type="button" value=" Back" class="back_btn" onclick="javascript:history.back();" >
+                        </td>
+                        <td width="60%">
+                            <DIV align="center">Get a Quote</DIV>
+                        </td>
+                        <td width="20%">
+                            <INPUT id="menubutton"
+                                   type="button"
+                                   value="Menu"
+
+                                   class="menuButton"
+                                   onclick="goToPage('trading.html');"
+                                   >
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+         <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+       <hr>
+        <DIV class="cmbody">
+            <center>
+                <div id="quote-content-div" style="background:white;border:1px solid gray;-webkit-border-radius: 10px;margin:10px;padding:10px;vertical-align:middle;text-align:center;">
+                    <span id="quote-content" style="font-weight:normal;"></span>
+                    <table border="0" width="100%" >
+                        <tbody>
+                            <tr style="background:LightSteelBlue;font-weight:bold;font-size:15px;">
+                                <td colspan="2"><span id="name" style="float:left;"></span><span id="symbol"  style="float:right;"></span></td>
+                            </tr>
+                            <tr style="background:white;font-weight:bold;font-size:15px;">
+                                <td colspan="2">
+                                    <span id="lasttrade" style="float:left;"></span>&nbsp;&nbsp;<span id="change" style="float:right;"></span>
+                                </td>
+                            </tr>
+                            <tr style="font-size:12px;background:LightSteelBlue;">
+                                <td><span style="float:left;font-weight:bold;">Last:</span><span id="tradetime" style="float:right;"></span></td>
+                                <td><span style="float:left;font-weight:bold;">Prev Close:</span><span id="prevclose" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:white;">
+                                <td><span style="float:left;font-weight:bold;">Open:</span><span id="open" style="float:right;"></span></td>
+                                <td><span style="float:left;font-weight:bold;">Bid:</span><span id="bid" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:LightSteelBlue;">
+                                <td><span style="float:left;font-weight:bold;">Ask:</span><span id="ask" style="float:right;"></span></td>
+                                <td><span style="float:left;font-weight:bold;">1y Target Est:</span><span id="1yrtargetest" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:white;">
+                                <td><span style="float:left;font-weight:bold;">Volume:</span><span id="volume" style="float:right;"></span></td>
+                                <td><span style="float:left;font-weight:bold;">P/E (ttm):</span><span id="pettm" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:LightSteelBlue;">
+                                <td><span style="float:left;font-weight:bold;">Market Cap:</span><span id="marketcap" style="float:right;"></span></td>
+                                <td><span style="float:left;font-weight:bold;">Div & Yield:</span><span id="divyield" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:white;">
+                                <td colspan="2"><span style="float:left;font-weight:bold;">Day's Range:</span><span id="daysrange" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:LightSteelBlue;">
+                                <td colspan="2"><span style="float:left;font-weight:bold;">52wk Range:</span><span id="52wkrange" style="float:right;"></span></td>
+                            </tr>
+                            <tr style="font-size:12px;background:LightSteelBlue;">
+                                <td colspan="2">
+                                    <div align="center">
+                                        <img id="chartImg" src="'../images/loading-green.gif'">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </center>
+            <ul>
+                <li id="oneItem" style="background:white;" onclick="javascript:document.getElementById('ipsymbol').focus();"
+                    onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUpPlain(this);">
+                    Symbol&nbsp;&nbsp;
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="ipsymbol" class="textfields" type="text" name="symbol" style="color:blue;">
+                    </span>
+                </li>
+            </ul>
+            <center>
+                <INPUT id="getQuoteButton" class="bigbuttons" style="width:80%;" type="button" name="getaquote" value="Get Quote"  onclick="showContent();">
+                <br>
+                <INPUT id="marketsButton" class="bigbuttons" style="width:80%;" type="button" name="markets" value="Markets"  onclick="goToPage('markets.html');">
+                <br>
+                <INPUT id="placeTradeButton" class="bigbuttons" style="width:80%;" type="button" name="getaquote" value="Place a Trade"  onclick="saveSymbol();goToPage('placeatrade.html');">
+                <br>
+                <INPUT id="addToWatchListButton" class="bigbuttons" style="width:80%;" type="button" name="getaquote" value="Add to Watch List"  onclick="saveToWatchListToEdit();goToPage('editwatchlist.html');">
+                <br>
+            </center>
+            <DIV class="footer1" align="center" valign="middle">
+                <IMG border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </DIV>
+        </DIV>
+    </BODY>
+</HTML>

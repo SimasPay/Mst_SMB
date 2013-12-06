@@ -1,0 +1,885 @@
+
+<%@ include file="/WEB-INF/jspf/include.jspf" %>
+
+<!-- UX -->
+<script type="text/javascript" src="<c:url value="/js/ux/RowAction/js/Ext.ux.grid.RowActions.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/RowAction/js/Ext.ux.grid.RowEditor.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/RowAction/js/Ext.ux.Toast.js"/>">
+</script>
+
+<script type="text/javascript" src="<c:url value="/js/ux/form/FileUploadField.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/plugins/ContainerMask.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/daterangepicker.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/menu/daterangemenu.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/menu/flexidatemenu.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/form/daterangefield.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/ux/CheckColumn.js"/>">
+</script>
+
+<!-- Application -->
+<script type="text/javascript" src="<c:url value="/js/init.js"/>" ></script>
+<script type="text/javascript" src="<c:url value="/js/msg.English.js"/>">
+</script>
+
+<!-- Fix Protocol -->
+<script type="text/javascript" src="<c:url value="/js/fix/ExtJSFIXProxy.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/fix/ExtJSFIXReader.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/fix/ExtJSFIXWriter.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/fix/ExtJSFIXStore.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/fix/FIXMsg.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/fix/mFinoFIX.js"/>">
+</script>
+
+<!-- util -->
+<script type="text/javascript" src="<c:url value="/js/util/enumStoreFactory.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/util/showResponse.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/util/validation.js"/>"></script>
+
+
+<script type="text/javascript" src="<c:url value="/js/page/main.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/util/fix.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/Form.js"/>">
+</script>
+<!-- Subscriber Tab -->
+<script type="text/javascript" src="<c:url value="/js/page/subscriber.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CheckBalanceSubscriber.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ConvertSubscriberForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberTab.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForSubscriber.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/Person2PersonGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberTransactionsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ClosedAccountSettlementForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ClosedAccountSettlementApproveRejectWindow.js"/>">
+</script>
+
+<!-- Pocket widgets -->
+<script type="text/javascript" src="<c:url value="/js/widget/PocketAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketEditForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTransactionsSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTransactionsViewGridWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTransactionsViewGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BookingDatedBalanceViewGridWindow.js"/>">
+</script>
+<!-- PocketTemplate widgets -->
+<script type="text/javascript" src="<c:url value="/js/page/pocketTemplate.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketIssuerForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketIssuerViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTemplateSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketIssuerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketIssuerGrid.js"/>">
+</script>
+
+<!--Dct widgets -->
+<script type="text/javascript" src="<c:url value="/js/page/distribution.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTLevelGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/LOPAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransfer.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/Recharge.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/Transfer.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CheckBalance.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DistributeWindow.js"/>">
+</script>
+
+<!--Merchant tab  -->
+<%-- <script type="text/javascript" src="<c:url value="/js/widget/MerchantList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/merchant.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForMerchant.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantTab.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantDCTDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MDNRange.js"/>">
+</script> 
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantTree.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CashFlowGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DistributionChainWindow.js"/>">
+</script>
+--%>
+
+<!--notification tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/notification.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationEditForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationAddForm.js"/>">
+</script>
+
+<!--user tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/user.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UserEditForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UserAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UserSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UserDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UserGrid.js"/>">
+</script>
+
+<!-- Enum tab -->
+<script type="text/javascript" src="<c:url value="/js/page/enumPage.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RemoteDropDown.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EditableRemoteDropDown.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EnumDropDown.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EnumDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EnumGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EnumSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EnumAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/EnumEditForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkBankAccount.js"/>">
+</script>
+
+
+<!-- product indicator tab -->
+<%-- <script type="text/javascript" src="<c:url value="/js/page/productIndicator.js"/>">
+</script> 
+<script type="text/javascript" src="<c:url value="/js/widget/ProductIndicatorDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ProductIndicatorSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ProductIndicatorGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ProductIndicatorAddForm.js"/>">
+</script>
+--%>
+
+
+<!--bulk upload  -->
+<script type="text/javascript" src="<c:url value="/js/page/bulkUpload.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadViewGridWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CustomerBulkUploadGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UploadFile.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadFileViewGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadPendingFileViewGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadViewGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkUploadSearchForm.js"/>">
+</script>
+
+<!--brand tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/brand.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BrandSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BrandDetailsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BrandAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BrandDetailsDisplay.js"/>">
+</script>
+
+<!--Region tab  -->
+<%-- <script type="text/javascript" src="<c:url value="/js/page/region.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RegionSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RegionDetailsForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RegionDetailsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RegionDetailsDisplay.js"/>">
+</script> --%>
+
+
+<!-- smscodes -->
+<%-- 
+<script type="text/javascript" src="<c:url value="/js/page/smsCodes.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCodesGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCodeAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCodeSearchForm.js"/>">
+</script> 
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCodeDetails.js"/>">
+</script>--%>
+
+<!-- MerchantCode widgets -->
+<%-- 
+<script type="text/javascript" src="<c:url value="/js/page/merchantCodes.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantCodeAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantCodeSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantCodeDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantCodesGrid.js"/>">
+</script> 
+--%>
+
+<!--Lop widgets  -->
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowLOP.js"/>">
+</script>
+<%--
+<script type="text/javascript" src="<c:url value="/js/page/bulkLop.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/lop.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/LOPDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/LOPGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/LOPReportGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/LOPSearchForm.js"/>">
+</script>
+ <script type="text/javascript" src="<c:url value="/js/widget/BulkLOPAddGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPDistributeWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPConfirmRejectWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPConfirmApproveWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkLOPDiscountWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/LOPHistoryGrid.js"/>">
+</script> --%>
+
+<!--Channel codes tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/channelCodes.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChannelCodeDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChannelCodeAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChannelCodeSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChannelCodesGrid.js"/>">
+</script>
+
+<!--Merchant Prefixcodes  -->
+<%-- <script type="text/javascript" src="<c:url value="/js/page/merchantPrefixCodes.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantPrefixCodeDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantPrefixCodeAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantPrefixCodeSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MerchantPrefixCodesGrid.js"/>">
+</script> --%>
+
+<!--smspartner tab  -->
+<%-- <script type="text/javascript" src="<c:url value="/js/widget/SMSCAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCEditForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSCGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSPartnerSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSPartnerList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSPartnerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SMSPartnerForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/smsPartner.js"/>">
+</script>
+ --%>
+
+<!--bankAdmin tab  -->
+<%-- <script type="text/javascript" src="<c:url value="/js/page/bankAdmin.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BankAdminSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BankAdminAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BankAdminGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BankAdminDetails.js"/>">
+</script> --%>
+
+
+<!--biller tab  -->
+<%-- <script type="text/javascript" src="<c:url value="/js/widget/BillerSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BillerList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BillerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BillerAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/biller.js"/>">
+</script>
+ <script type="text/javascript" src="<c:url value="/js/widget/DenominationForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DenominationDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DenominationGrid.js"/>">
+</script> --%>
+
+<!--mfs biller tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/mfsBiller.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSBillerList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSBillerForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSBillerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSBillerSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSBillerPartnerGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSBillerPartnerForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/MFSDenominationsGrid.js"/>">
+</script>
+
+<!-- charge type tab -->
+<script type="text/javascript" src="<c:url value="/js/page/chargeType.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTypeDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTypeForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTypeGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTypeSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTypeViewForm.js"/>">
+</script>
+
+<!--charge definition tab -->
+<script type="text/javascript" src="<c:url value="/js/page/chargeDefinition.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeDefinitionDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeDefinitionForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeDefinitionGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeDefinitionSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeDefinitionViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargePricingGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargePricingGridView.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForChargeDefinition.js"/>">
+</script>
+
+<!--Transaction rule tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/transactionRule.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionRuleDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionRuleForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionRuleGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionRuleSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionRuleViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TxnRuleAdditionalInfoGrid.js"/>">
+</script>
+
+<!--transaction chargetab  -->
+<script type="text/javascript" src="<c:url value="/js/page/transactionCharge.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionChargeDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionChargeForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionChargeGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionChargeSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionChargeViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SharePartnerGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SharePartnerGridView.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForTransactionCharge.js"/>">
+</script>
+
+<!--Partners tab  -->
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectPartnerWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/agent.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AgentCashIn.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CashIn.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CashOut.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CashOutRegistered.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CashOutUnregistered.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CashOutView.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChangePin.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerTab.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/serviceProvider.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerServiceGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForPartnerService.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerServiceForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SettlementConfigGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SettlementTemplateAddForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SettlementTemplateGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerServiceViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SettlementConfigGridView.js"/>">
+</script>
+
+<%-- <script type="text/javascript" src="<c:url value="/js/page/Partnertransaction.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerTransactionsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerTransactionDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerTransactionSearchForm.js"/>">
+</script> --%>
+
+<!--Report tab -->
+<script type="text/javascript" src="<c:url value="/js/page/report.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ReportSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ReportDetails.js"/>">
+</script>
+
+
+<!--Charge transaction tab -->
+<script type="text/javascript" src="<c:url value="/js/page/chargeTransactions.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTransactionDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTransactionSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeTransactionsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChargeDistributionViewGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ReverseTransactionForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectReverseTransactionWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ResolveWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationLogWindow.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/NotificationLogGrid.js" />">
+</script>
+<!-- transaction tab -->
+<%-- <script type="text/javascript" src="<c:url value="/js/page/transaction.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionSearchForm.js"/>">
+</script>
+--%>
+<script type="text/javascript" src="<c:url value="/js/widget/TransactionDetails.js"/>">
+</script>
+<%--CreditCard Transactions  --%>
+<%--
+<script type="text/javascript" src="<c:url value="/js/widget/CCDetailsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CreditCardGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CCTransactionDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CreditCardSearchForm.js"/>">
+</script> 
+--%>
+
+<!--Bulk Resolve  -->
+<script type="text/javascript" src="<c:url value="/js/widget/BulkResolve.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkResolveGrid.js"/>">
+</script>
+
+<!--Bulk Transfer  -->
+<script type="text/javascript" src="<c:url value="/js/page/bulkTransfer.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/UploadTransferFile.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferFileGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectBulkTranferWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferViewGridWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferEntrySearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/BulkTransferReverseTxnsGrid.js"/>">
+</script>
+
+<!--OLAP  -->
+<script type="text/javascript" src="<c:url value="/js/page/OLAP.js"/>">
+</script>
+
+
+<!--CreditCard Reviewer  -->
+<%--
+ <script type="text/javascript" src="<c:url value="/js/widget/CCReviewerGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CCDestinationDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CreditCardUserList.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CreditCardUserTab.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CCDestinationGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CCDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CCReviewerSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/CCReviewerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/page/creditCardReviewer.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ConfirmApproveWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ConfirmRejectWindow.js"/>">
+</script>
+ --%>
+ 
+ <!-- Groups related java script files-->
+<script type="text/javascript" src="<c:url value="/js/page/groups.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/GroupForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/GroupGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/GroupViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/GroupSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/GroupDetails.js"/>">
+</script>
+
+<!--Pocket Template Config Tab  -->
+<script type="text/javascript" src="<c:url value="/js/page/pocketTemplateConfig.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTemplateConfigIssuerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTemplateConfigIssuerForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTemplateConfigIssuerGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTemplateConfigIssuerViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PocketTemplateConfigSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForPocketTemplateConfig.js"/>">
+</script>
+
+<!-- Distribution Hierarchy related files -->
+<script type="text/javascript" src="<c:url value="/js/page/distributionHierarchy.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHTree.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHDCTDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHPartnerDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DCTRestrictionsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHDCTTabPanel.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHPartnerTabPanel.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerRestrictionsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/DHPartnerServiceForm.js"/>">
+</script>
+
+<!-- System Parameters related files -->
+<script type="text/javascript" src="<c:url value="/js/page/systemParameters.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SystemParametersGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SystemParameterEditForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SystemParametersSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SystemParameterViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SystemParemterDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SystemParameterAddForm.js"/>">
+</script>
+
+<!-- Integrations related files -->
+<script type="text/javascript" src="<c:url value="/js/page/integrations.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/IntegrationsSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/IntegrationsGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/IntegrationDetails.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/IntegrationForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/IPMappingGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForIntegrations.js"/>">
+</script>
+
+<script type="text/javascript" src="<c:url value="/js/page/teller.js"/>">
+</script>
+
+<!-- Change Password related files -->
+<script type="text/javascript" src="<c:url value="/js/widget/ChangePassword.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ChangePasswordWindow.js" />">
+</script>
+
+<!-- Scheduler Config -->
+<script type="text/javascript" src="<c:url value="/js/page/schedulerConfig.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowForSchedulerConfig.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/schedulerConfigDetails.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/schedulerConfigGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/schedulerConfigSearchForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/schedulerConfigAddForm.js" />">
+</script>
+
+
+<!-- Agent CashIn related files -->
+<script type="text/javascript" src="<c:url value="/js/page/fundingForAgent.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FundingForAgentDetails.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FundingForAgentGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectAgentCashInWindow.js" />">
+</script>
+
+<!-- FundDefinitions related files -->
+<script type="text/javascript" src="<c:url value="/js/page/fundDefinitions.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FundDefinitionDetails.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FundDefinitionsGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FundDefinitionForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/FundDefinitionTab.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PurposeGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PurposeAddForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ExpiryGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ExpiryAddForm.js" />">
+</script>
+
+<!-- Actor Channel Mapping related files -->
+<script type="text/javascript" src="<c:url value="/js/page/actorChannelMapping.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ActorChannelMappingDetails.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ActorChannelMappingForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ActorChannelMappingGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ActorChannelMappingSearchForm.js" />">
+</script>
+
+<!-- App Uploader -->
+<script type="text/javascript" src="<c:url value="/js/page/appUploader.js" />">
+</script>
+
+<!-- Adjustments -->
+<script type="text/javascript" src="<c:url value="/js/page/adjustments.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsTransactionSearchForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsWindow.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsChargeTransactionsGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectAdjustmentWindow.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentDetails.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsLedgerGrid.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsSctlSearchForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AdjustmentsSctlTransactionsView.js" />">
+</script>
+
+<!-- Permissions -->
+<script type="text/javascript" src="<c:url value="/js/page/permissions.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RoleDetails.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RoleSearchForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RoleList.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PermissionsTab.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PermissionsForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/RoleForm.js" />">
+</script>
+
+
+<script type="text/javascript" src="<c:url value="/js/widget/FormWindowWithValidation.js" />">
+</script>
+
+<script type="text/javascript" src="<c:url value="/js/widget/PartnerTransfer.js" />">
+</script>

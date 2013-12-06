@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30/07/2012 21:44:59 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<typedef name="encryptedBigDecimal" class="org.jasypt.hibernate.type.EncryptedBigDecimalAsStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="encryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="uniqueencryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateUniqueStringEncryptor</param>
+</typedef>
+<class name="com.mfino.domain.ChannelSessionManagement" optimistic-lock="version" table="channel_session_mgmt" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="SubscriberMDNByMDNID" foreign-key="FK_ChannelSessionManagement_SubscriberMDNByMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="MDNID" not-null="true"   />
+</many-to-one>
+<property name="SessionKey" type="java.lang.String" >
+<column name="SessionKey"    sql-type="varchar(255)" />
+</property>
+<property name="RequestCountAfterLogin" type="java.lang.Integer" >
+<column name="RequestCountAfterLogin"    sql-type="int" />
+</property>
+<property name="LastRequestTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastRequestTime"   length="19" sql-type="datetime" />
+</property>
+<property name="LastLoginTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastLoginTime"   length="19" sql-type="datetime" />
+</property>
+</class>
+</hibernate-mapping>

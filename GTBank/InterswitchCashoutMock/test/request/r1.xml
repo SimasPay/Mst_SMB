@@ -1,0 +1,336 @@
+
+<tec:Iso8583PostXml>
+	<!--Optional: -->
+	<tec:MsgType>?</tec:MsgType>
+	<!--Zero or more repetitions: -->
+	<tec:Fields>
+		<!--Optional: -->
+		<tec:Field_002>?</tec:Field_002>
+		<!--Optional: -->
+		<tec:Field_003>?</tec:Field_003>
+		<!--Optional: -->
+		<tec:Field_004>?</tec:Field_004>
+		<!--Optional: -->
+		<tec:Field_005>?</tec:Field_005>
+		<!--Optional: -->
+		<tec:Field_006>?</tec:Field_006>
+		<!--Optional: -->
+		<tec:Field_007>?</tec:Field_007>
+		<!--Optional: -->
+		<tec:Field_008>?</tec:Field_008>
+		<!--Optional: -->
+		<tec:Field_009>?</tec:Field_009>
+		<!--Optional: -->
+		<tec:Field_010>?</tec:Field_010>
+		<!--Optional: -->
+		<tec:Field_011>?</tec:Field_011>
+		<!--Optional: -->
+		<tec:Field_012>?</tec:Field_012>
+		<!--Optional: -->
+		<tec:Field_013>?</tec:Field_013>
+		<!--Optional: -->
+		<tec:Field_014>?</tec:Field_014>
+		<!--Optional: -->
+		<tec:Field_015>?</tec:Field_015>
+		<!--Optional: -->
+		<tec:Field_016>?</tec:Field_016>
+		<!--Optional: -->
+		<tec:Field_017>?</tec:Field_017>
+		<!--Optional: -->
+		<tec:Field_018>?</tec:Field_018>
+		<!--Optional: -->
+		<tec:Field_019>?</tec:Field_019>
+		<!--Optional: -->
+		<tec:Field_020>?</tec:Field_020>
+		<!--Optional: -->
+		<tec:Field_021>?</tec:Field_021>
+		<!--Optional: -->
+		<tec:Field_022>?</tec:Field_022>
+		<!--Optional: -->
+		<tec:Field_023>?</tec:Field_023>
+		<!--Optional: -->
+		<tec:Field_024>?</tec:Field_024>
+		<!--Optional: -->
+		<tec:Field_025>?</tec:Field_025>
+		<!--Optional: -->
+		<tec:Field_026>?</tec:Field_026>
+		<!--Optional: -->
+		<tec:Field_027>?</tec:Field_027>
+		<!--Optional: -->
+		<tec:Field_028>?</tec:Field_028>
+		<!--Optional: -->
+		<tec:Field_029>?</tec:Field_029>
+		<!--Optional: -->
+		<tec:Field_030>?</tec:Field_030>
+		<!--Optional: -->
+		<tec:Field_031>?</tec:Field_031>
+		<!--Optional: -->
+		<tec:Field_032>?</tec:Field_032>
+		<!--Optional: -->
+		<tec:Field_033>?</tec:Field_033>
+		<!--Optional: -->
+		<tec:Field_034>?</tec:Field_034>
+		<!--Optional: -->
+		<tec:Field_035>?</tec:Field_035>
+		<!--Optional: -->
+		<tec:Field_036>?</tec:Field_036>
+		<!--Optional: -->
+		<tec:Field_037>?</tec:Field_037>
+		<!--Optional: -->
+		<tec:Field_038>?</tec:Field_038>
+		<!--Optional: -->
+		<tec:Field_039>?</tec:Field_039>
+		<!--Optional: -->
+		<tec:Field_040>?</tec:Field_040>
+		<!--Optional: -->
+		<tec:Field_041>?</tec:Field_041>
+		<!--Optional: -->
+		<tec:Field_042>?</tec:Field_042>
+		<!--Optional: -->
+		<tec:Field_043>?</tec:Field_043>
+		<!--Optional: -->
+		<tec:Field_044>?</tec:Field_044>
+		<!--Optional: -->
+		<tec:Field_045>?</tec:Field_045>
+		<!--Optional: -->
+		<tec:Field_046>?</tec:Field_046>
+		<!--Optional: -->
+		<tec:Field_047>?</tec:Field_047>
+		<!--Optional: -->
+		<tec:Field_048>?</tec:Field_048>
+		<!--Optional: -->
+		<tec:Field_049>?</tec:Field_049>
+		<!--Optional: -->
+		<tec:Field_050>?</tec:Field_050>
+		<!--Optional: -->
+		<tec:Field_051>?</tec:Field_051>
+		<!--Optional: -->
+		<tec:Field_052>?</tec:Field_052>
+		<!--Optional: -->
+		<tec:Field_053>?</tec:Field_053>
+		<!--Optional: -->
+		<tec:Field_054>?</tec:Field_054>
+		<!--Optional: -->
+		<tec:Field_055>?</tec:Field_055>
+		<!--Optional: -->
+		<tec:Field_056>?</tec:Field_056>
+		<!--Optional: -->
+		<tec:Field_057>?</tec:Field_057>
+		<!--Optional: -->
+		<tec:Field_058>?</tec:Field_058>
+		<!--Optional: -->
+		<tec:Field_059>?</tec:Field_059>
+		<!--Optional: -->
+		<tec:Field_060>?</tec:Field_060>
+		<!--Optional: -->
+		<tec:Field_061>?</tec:Field_061>
+		<!--Optional: -->
+		<tec:Field_062>?</tec:Field_062>
+		<!--Optional: -->
+		<tec:Field_063>?</tec:Field_063>
+		<!--Optional: -->
+		<tec:Field_064>?</tec:Field_064>
+		<!--Optional: -->
+		<tec:Field_065>?</tec:Field_065>
+		<!--Optional: -->
+		<tec:Field_066>?</tec:Field_066>
+		<!--Optional: -->
+		<tec:Field_067>?</tec:Field_067>
+		<!--Optional: -->
+		<tec:Field_068>?</tec:Field_068>
+		<!--Optional: -->
+		<tec:Field_069>?</tec:Field_069>
+		<!--Optional: -->
+		<tec:Field_070>?</tec:Field_070>
+		<!--Optional: -->
+		<tec:Field_071>?</tec:Field_071>
+		<!--Optional: -->
+		<tec:Field_072>?</tec:Field_072>
+		<!--Optional: -->
+		<tec:Field_073>?</tec:Field_073>
+		<!--Optional: -->
+		<tec:Field_074>?</tec:Field_074>
+		<!--Optional: -->
+		<tec:Field_075>?</tec:Field_075>
+		<!--Optional: -->
+		<tec:Field_076>?</tec:Field_076>
+		<!--Optional: -->
+		<tec:Field_077>?</tec:Field_077>
+		<!--Optional: -->
+		<tec:Field_078>?</tec:Field_078>
+		<!--Optional: -->
+		<tec:Field_079>?</tec:Field_079>
+		<!--Optional: -->
+		<tec:Field_080>?</tec:Field_080>
+		<!--Optional: -->
+		<tec:Field_081>?</tec:Field_081>
+		<!--Optional: -->
+		<tec:Field_082>?</tec:Field_082>
+		<!--Optional: -->
+		<tec:Field_083>?</tec:Field_083>
+		<!--Optional: -->
+		<tec:Field_084>?</tec:Field_084>
+		<!--Optional: -->
+		<tec:Field_085>?</tec:Field_085>
+		<!--Optional: -->
+		<tec:Field_086>?</tec:Field_086>
+		<!--Optional: -->
+		<tec:Field_087>?</tec:Field_087>
+		<!--Optional: -->
+		<tec:Field_088>?</tec:Field_088>
+		<!--Optional: -->
+		<tec:Field_089>?</tec:Field_089>
+		<!--Optional: -->
+		<tec:Field_090>?</tec:Field_090>
+		<!--Optional: -->
+		<tec:Field_091>?</tec:Field_091>
+		<!--Optional: -->
+		<tec:Field_092>?</tec:Field_092>
+		<!--Optional: -->
+		<tec:Field_093>?</tec:Field_093>
+		<!--Optional: -->
+		<tec:Field_094>?</tec:Field_094>
+		<!--Optional: -->
+		<tec:Field_095>?</tec:Field_095>
+		<!--Optional: -->
+		<tec:Field_096>?</tec:Field_096>
+		<!--Optional: -->
+		<tec:Field_097>?</tec:Field_097>
+		<!--Optional: -->
+		<tec:Field_098>?</tec:Field_098>
+		<!--Optional: -->
+		<tec:Field_099>?</tec:Field_099>
+		<!--Optional: -->
+		<tec:Field_100>?</tec:Field_100>
+		<!--Optional: -->
+		<tec:Field_101>?</tec:Field_101>
+		<!--Optional: -->
+		<tec:Field_102>?</tec:Field_102>
+		<!--Optional: -->
+		<tec:Field_103>?</tec:Field_103>
+		<!--Optional: -->
+		<tec:Field_104>?</tec:Field_104>
+		<!--Optional: -->
+		<tec:Field_105>?</tec:Field_105>
+		<!--Optional: -->
+		<tec:Field_106>?</tec:Field_106>
+		<!--Optional: -->
+		<tec:Field_107>?</tec:Field_107>
+		<!--Optional: -->
+		<tec:Field_108>?</tec:Field_108>
+		<!--Optional: -->
+		<tec:Field_109>?</tec:Field_109>
+		<!--Optional: -->
+		<tec:Field_110>?</tec:Field_110>
+		<!--Optional: -->
+		<tec:Field_111>?</tec:Field_111>
+		<!--Optional: -->
+		<tec:Field_112>?</tec:Field_112>
+		<!--Optional: -->
+		<tec:Field_113>?</tec:Field_113>
+		<!--Optional: -->
+		<tec:Field_114>?</tec:Field_114>
+		<!--Optional: -->
+		<tec:Field_115>?</tec:Field_115>
+		<!--Optional: -->
+		<tec:Field_116>?</tec:Field_116>
+		<!--Optional: -->
+		<tec:Field_117>?</tec:Field_117>
+		<!--Optional: -->
+		<tec:Field_118>?</tec:Field_118>
+		<!--Optional: -->
+		<tec:Field_119>?</tec:Field_119>
+		<!--Optional: -->
+		<tec:Field_120>?</tec:Field_120>
+		<!--Optional: -->
+		<tec:Field_121>?</tec:Field_121>
+		<!--Optional: -->
+		<tec:Field_122>?</tec:Field_122>
+		<!--Optional: -->
+		<tec:Field_123>?</tec:Field_123>
+		<!--Optional: -->
+		<tec:Field_124>?</tec:Field_124>
+		<!--Optional: -->
+		<tec:Field_125>?</tec:Field_125>
+		<!--Optional: -->
+		<tec:Field_126>?</tec:Field_126>
+		<!--Optional: -->
+		<tec:Field_127_001>?</tec:Field_127_001>
+		<!--Optional: -->
+		<tec:Field_127_002>?</tec:Field_127_002>
+		<!--Optional: -->
+		<tec:Field_127_003>?</tec:Field_127_003>
+		<!--Optional: -->
+		<tec:Field_127_004>?</tec:Field_127_004>
+		<!--Optional: -->
+		<tec:Field_127_005>?</tec:Field_127_005>
+		<!--Optional: -->
+		<tec:Field_127_006>?</tec:Field_127_006>
+		<!--Optional: -->
+		<tec:Field_127_007>?</tec:Field_127_007>
+		<!--Optional: -->
+		<tec:Field_127_008>?</tec:Field_127_008>
+		<!--Optional: -->
+		<tec:Field_127_009>?</tec:Field_127_009>
+		<!--Optional: -->
+		<tec:Field_127_010>?</tec:Field_127_010>
+		<!--Optional: -->
+		<tec:Field_127_011>?</tec:Field_127_011>
+		<!--Optional: -->
+		<tec:Field_127_012>?</tec:Field_127_012>
+		<!--Optional: -->
+		<tec:Field_127_013>?</tec:Field_127_013>
+		<!--Optional: -->
+		<tec:Field_127_014>?</tec:Field_127_014>
+		<!--Optional: -->
+		<tec:Field_127_015>?</tec:Field_127_015>
+		<!--Optional: -->
+		<tec:Field_127_016>?</tec:Field_127_016>
+		<!--Optional: -->
+		<tec:Field_127_017>?</tec:Field_127_017>
+		<!--Optional: -->
+		<tec:Field_127_018>?</tec:Field_127_018>
+		<!--Optional: -->
+		<tec:Field_127_019>?</tec:Field_127_019>
+		<!--Optional: -->
+		<tec:Field_127_020>?</tec:Field_127_020>
+		<!--Optional: -->
+		<tec:Field_127_021>?</tec:Field_127_021>
+		<!--Optional: -->
+		<tec:Field_127_022>?</tec:Field_127_022>
+		<!--Optional: -->
+		<tec:Field_127_023>?</tec:Field_127_023>
+		<!--Optional: -->
+		<tec:Field_127_024>?</tec:Field_127_024>
+		<!--Optional: -->
+		<tec:Field_127_025>?</tec:Field_127_025>
+		<!--Optional: -->
+		<tec:Field_127_026>?</tec:Field_127_026>
+		<!--Optional: -->
+		<tec:Field_127_027>?</tec:Field_127_027>
+		<!--Optional: -->
+		<tec:Field_127_028>?</tec:Field_127_028>
+		<!--Optional: -->
+		<tec:Field_127_029>?</tec:Field_127_029>
+		<!--Optional: -->
+		<tec:Field_127_030>?</tec:Field_127_030>
+		<!--Optional: -->
+		<tec:Field_127_031>?</tec:Field_127_031>
+		<!--Optional: -->
+		<tec:Field_127_032>?</tec:Field_127_032>
+		<!--Optional: -->
+		<tec:Field_127_033>?</tec:Field_127_033>
+		<!--Optional: -->
+		<tec:Field_127_034>?</tec:Field_127_034>
+		<!--Optional: -->
+		<tec:Field_127_035>?</tec:Field_127_035>
+		<!--Optional: -->
+		<tec:Field_127_036>?</tec:Field_127_036>
+		<!--Optional: -->
+		<tec:Field_127_037>?</tec:Field_127_037>
+		<!--Optional: -->
+		<tec:Field_127_038>?</tec:Field_127_038>
+		<!--Optional: -->
+		<tec:Field_127_039>?</tec:Field_127_039>
+	</tec:Fields>
+</tec:Iso8583PostXml>

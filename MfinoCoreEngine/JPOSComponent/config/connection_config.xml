@@ -1,0 +1,17 @@
+<channel-adaptor name='mfino' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2">
+	<channel class="org.jpos.iso.channel.PostChannel" logger="Q2"
+				packager="org.jpos.iso.packager.PostPackager">
+				<!-- header="ISO016000055">-->
+		<property name="host" value="localhost" />
+		<property name="port" value="9777" />
+		<!-- <property name="host" value="172.29.8.192" />
+		<property name="port" value="8400" /> -->
+		<property name="packager-logger" value="Q2" />
+		<property name="packager-realm" value="mfino-debug" />
+		<property name="packager-config" value="jpos_cfg/postpack.xml" />
+	</channel>
+	<in>mfinosend</in>
+	<out>mfinoreceive</out>
+	<!-- reconnect after sleeping for 5 secs in case connection is lost -->
+	<reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>

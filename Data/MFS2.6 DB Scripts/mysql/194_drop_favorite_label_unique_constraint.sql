@@ -1,0 +1,1 @@
+ALTER TABLE subscriber_favorite DROP INDEX UNIQUE_fav_label;

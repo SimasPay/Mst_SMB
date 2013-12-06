@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Subscriber"
+			android:id="@+id/Subscriber"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text=""
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Activation"
+			android:id="@+id/ActivationTextView" android:onClick="onClickActivation"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text=""
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="ShareLoad"
+			android:id="@+id/ShareLoadTextView" android:onClick="onClickShareLoad"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="ChangePin"
+			android:id="@+id/ChangePinTextView" android:onClick="onClickChangePin"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="ResetPin"
+			android:id="@+id/ResetPinTextView" android:onClick="onClickResetPin"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Last N Transactions"
+			android:id="@+id/LastNTxnsTextView" android:onClick="onClickLastNTxns"></TextView>
+	</TableRow>
+	<TableRow>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="      "
+			android:id="@+id/SPACEA">
+		</TextView>
+	</TableRow>
+	<TableRow>
+		<Button android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/GoBackInSubscriberHome"
+			android:text="Back">
+		</Button>
+	</TableRow>
+
+</TableLayout>

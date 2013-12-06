@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	
+	<import resource="spring-datasource-beans.xml"/>
+    
+    <bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    <bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+    <context:component-scan base-package="com.mfino.report" />
+
+    <bean id="contextHolder" class="com.mfino.web.ContextHolder" />
+
+    <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
+        <constructor-arg value="GMT" />
+    </bean>
+    
+     <bean id="offlineReport" class="com.mfino.report.base.OfflineReportScheduler" >
+     </bean>
+    
+    <bean id="offlineReportJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="offlineReport" />
+        <property name="targetMethod" value="main" />
+        <property name="concurrent" value="false" />
+    </bean>
+     <bean id="offlineReportTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="offlineReportJob" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0 1 * * ?" />        
+    </bean>  
+
+     <bean id="eodReport" class="com.mfino.report.generalreports.EODSummaryReport" >
+     </bean>
+    
+    <bean id="eodReportJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="eodReport" />
+        <property name="targetMethod" value="run" />
+        <property name="concurrent" value="false" />
+    </bean>
+     <bean id="eodReportTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="eodReportJob" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0 6 * * ?" />        
+    </bean>  
+     <!-- <bean id="eodReportTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="eodReportJob" />
+        <property name="startDelay" value="10000" />
+        <property name="repeatInterval" value="1800000" />
+    </bean> -->
+	<!-- All triggers need to be added here to work -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+            	<ref bean="offlineReportTrigger"/> 
+            	<ref bean="eodReportTrigger"/> 
+            </list>
+        </property>
+    </bean>
+    
+
+	<!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+</beans>

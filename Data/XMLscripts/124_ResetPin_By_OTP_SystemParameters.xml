@@ -1,0 +1,23 @@
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+	<changeSet author="MFS_MAIN" id="DATA-SYSTEMPARAMETERS-152">
+        <delete tableName="system_parameters">
+			<where>ParameterName='reset.pin.mode'</where>
+		</delete>
+		<insert tableName="system_parameters">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="System"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="ParameterName" value="reset.pin.mode"/>
+            <column name="ParameterValue" value="direct"/>
+            <column name="Description" value="Reset Pin by OTP mode"/>
+        </insert>
+	</changeSet>
+	</databaseChangeLog>

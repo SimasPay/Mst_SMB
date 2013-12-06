@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.6.1  Built on : Aug 31, 2011 (12:22:40 CEST) -->
+<serviceGroup>
+    <service name="NibssFasterPay">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="com.zenithbank.nfp.NibssFasterPayMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">com.zenithbank.nfp.NibssFasterPaySkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="nameenquirybulkitem" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/nameenquirybulkitemRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/nameenquirybulkitemResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransfersingleitem2_dc" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfersingleitem2_dcRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfersingleitem2_dcResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransfernotification_dc" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfernotification_dcRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfernotification_dcResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransferbulkitem" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransferbulkitemRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransferbulkitemResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransferbulkitem_dd" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransferbulkitem_ddRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransferbulkitem_ddResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransfersingleitem_dc" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfersingleitem_dcRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfersingleitem_dcResponse</outputActionMapping>
+        </operation>
+        <operation name="balanceenquiry" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/balanceenquiryRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/balanceenquiryResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransfernotification_dd" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfernotification_ddRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfernotification_ddResponse</outputActionMapping>
+        </operation>
+        <operation name="txnstatusquerybulkitem" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/txnstatusquerybulkitemRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/txnstatusquerybulkitemResponse</outputActionMapping>
+        </operation>
+        <operation name="txnstatusquerysingleitem" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/txnstatusquerysingleitemRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/txnstatusquerysingleitemResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransferbulkitem_dc" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransferbulkitem_dcRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransferbulkitem_dcResponse</outputActionMapping>
+        </operation>
+        <operation name="getTransactionStatus" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/getTransactionStatusRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/getTransactionStatusResponse</outputActionMapping>
+        </operation>
+        <operation name="nameenquirysingleitem" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/nameenquirysingleitemRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/nameenquirysingleitemResponse</outputActionMapping>
+        </operation>
+        <operation name="nameenquirynotification" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/nameenquirynotificationRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/nameenquirynotificationResponse</outputActionMapping>
+        </operation>
+        <operation name="fundtransfersingleitem_dd" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://nfp.zenithbank.com">
+            <actionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfersingleitem_ddRequest</actionMapping>
+            <outputActionMapping>http://nfp.zenithbank.com/NibssFasterPayPortType/fundtransfersingleitem_ddResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

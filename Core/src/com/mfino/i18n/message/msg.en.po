@@ -1,0 +1,22 @@
+#This is an example PO file. For detailed information please refer to the GNU
+#manual pages.
+#http://www.gnu.org/software/hello/manual/gettext/
+#http://www.gnu.org/software/hello/manual/gettext/PO-Files.html#PO-Files
+
+#This file should be automatically generated through a tool. We probably have to
+#write it our own but hopefully could use some GNU ones. Also, strictly speaking,
+#we don't need the English version of this file.
+
+#  translator-comments
+#. extracted-comments
+#: reference...
+#, flag...
+#| msgid previous-untranslated-string
+msgid untranslated-string
+msgstr translated-string
+
+#example
+#: lib/error.c:116
+msgid "Unknown system error"
+msgstr "Error desconegut del sistema"
+

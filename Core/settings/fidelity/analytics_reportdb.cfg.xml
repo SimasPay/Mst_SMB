@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>    
+        <property name="hibernate.conncetion.driver_class">oracle.jdbc.driver.OracleDriver</property>
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@analyticsreportdbserver:1523/report</property>
+        <property name="hibernate.connection.username">mfino</property>
+        <property name="hibernate.connection.password">ENC(BV1Pld5yEn47oljN4ye/VQ==)</property>
+        <property name="hibernate.conncetion.driver_class">com.mysql.jdbc.Driver</property> 
+        
+        <property name="connection.provider_class">org.jasypt.hibernate.connectionprovider.EncryptedPasswordC3P0ConnectionProvider</property>
+   		<property name="connection.encryptor_registered_name">dbPasswordEncryptor</property>
+   		
+   		
+ 
+        
+         <mapping resource="com/mfino/report/olap/domain/Users.hbm.xml"/>
+
+        
+	</session-factory>
+</hibernate-configuration>

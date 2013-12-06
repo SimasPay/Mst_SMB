@@ -1,0 +1,855 @@
+\documentclass[11pt,titlepage]{article}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\setlength{\headheight}{50pt}
+\pagestyle{fancy}
+\lhead{{\includegraphics[width=4cm]{mfino_logo.jpg}}}
+\chead{}
+\rhead{\bfseries mFino Web API 1.1}
+\lfoot{}
+\cfoot{}
+\rfoot{\thepage}
+\usepackage{url}
+\usepackage[hypertex]{hyperref}
+\usepackage[all]{hypcap}
+\title{\Huge{mFino Web API}}
+\author{\Large{mFino Technical Team}}
+\date {\Large{Jan 2011}}
+\begin{document}
+\maketitle
+\tableofcontents
+\listoftables
+
+\newpage
+\section{Introduction}
+The scope of this document is to provide the technical design specifications of an Application Program Interface (API) to mFino's Mobile Financial Services (MFS) platform, mWallet. We shall call this the \textbf{mFino Web API} henceforth. This document will also provide details on the integration aspects for clients to consume this API.
+
+The purpose of this document is to be enable external applications to integrate with the mWallet platform. mFino Web API is language independent, stateless, web based and uses standard request response format. The three main parts of the API are as follows:
+\begin{enumerate}
+\item Authentication
+\item Request format
+\item Response format
+\end{enumerate}
+
+\subsection{Authentication}
+mFino Web API will use {\em basic access authentication}  ({\url{http://en.wikipedia.org/wiki/Basic_access_authentication}}) for governing  access to the API. Only authenticated clients will be able to access the WebAPI. Since this is a stateless API, every request has to be authenticated. The conversational state has to be maintained by the client through additional paramaters provided in the API wherever required. 
+
+\subsection{Request Format}
+The communication between the client and the API (request) should adhere to the following:
+\begin{itemize}
+\item Http protocol will be used for communication.
+\item Http request type: POST
+\item For every HTTP request, mFino WebAPI will reply with an XML document as the response.
+\item The standard set of parameters to be used in the request are described in Table \ref{request-table}. The exact parameters to be used for each function are described in later sections. 
+\item The request parameters have to be in URL encoded form conforming to the standard internet mime type \textit{application/x-www-form-urlencoded}. The parameters and values form key value pairs with $=$ separating the  the value from the key and ampersand (\&) separating the key value pairs. 
+
+\textbf{Example:}
+\begin{verbatim}
+serviceName=activation&sourceMDN=621234567890&sourcePIN=123456&
+amount=12000&destMDN=629876543210&mode=subscriber
+\end{verbatim}
+\item mFino WebAPI expects the client to have the capability of parsing and sending the transferID and/or parentTxnID to enable the WebAPI to maintain the client's state across API calls.
+\end{itemize}
+
+\subsection{Response Format}
+mFino WebAPI's response to a client request will adhere to the following:
+\begin{itemize}
+\item mFino WebAPI always sends response in XML format.
+\item Client should be able to handle standard http response codes in addition to mfino WebAPI server response 
+\end{itemize}
+
+The response XML will conform to the below XML Schema.
+\begin{verbatim}
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+targetNamespace="http://www.w3schools.com" xmlns="http://www.w3schools.com" 
+elementFormDefault="qualified">
+<xs:element name="response">
+  <xs:complexType>
+    <xs:sequence>      
+      <xs:element name="message">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="code" type="xs:integer" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="balanceDetail" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>           
+              <xs:element name="commodityType" type="xs:string" 
+                   maxOccurs="1" minOccurs="1"/>
+              <xs:element name="balance" type="xs:string"
+                   maxOccurs="1" minOccurs="1"/>
+              <xs:element name="transactionTime" type="xs:dateTime" 
+                   maxOccurs="1" minOccurs="1"/>            
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="transactionDetails" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="transactionDetail">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="refID" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="commodityType" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="sourceMDN" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="destMDN" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="transactionType" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="transactionTime" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="amount" type="xs:string" 
+                       maxOccurs="1" minOccurs="1"/>
+                  <xs:element name="transferStatus" type="xs:string" 
+                       maxOccurs="1" minOccurs="0"/>
+                  <xs:element name="transferType" type="xs:string" 
+                       maxOccurs="1" minOccurs="0"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+     <xs:element name="refID" type="xs:integer" 
+            maxOccurs="1" minOccurs="0"/>
+     <xs:element name="parentTxnID" type="xs:string" 
+            maxOccurs="1" minOccurs="0"/>
+     <xs:element name="transferID" type="xs:string" 
+            maxOccurs="1" minOccurs="0"/>
+     <xs:element name="transactionTime" type="xs:string" 
+            maxOccurs="1" minOccurs="0"/>
+     <xs:element name="sourceRefID" type="xs:integer" 
+            maxOccurs="1" minOccurs="0"/>
+     <xs:element name="lastBalanceAfterTransaction" type="xs:integer" 
+            maxOccurs="1" minOccurs="0"/>
+   </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>
+\end{verbatim}
+
+\begin{table}
+\centering
+\begin{tabular}{|p{4cm}|p{9cm}|}
+\hline
+{\bf PARAMETER} & {\bf DESCRIPTION}\\
+\hline
+\hline
+serviceName & Name of the function. See Table~\ref{service-table} \\
+\hline
+sourceMDN & Incoming MDN (to be captured from the incoming message by the  invoker) \\
+\hline
+sourcePIN & MPIN entered by the subscriber/merchant invoking the request \\
+\hline
+secretAnswer & Secret answer entered by the subscriber invoking the request \\
+\hline
+contactNumber & Contact number that will be given as input by subscriber \\
+\hline
+destMDN & Destination MDN entered by the subscriber/merchant \\ 
+\hline
+newPIN & During change PIN, this will be the new PIN entered by the user \\
+\hline
+oldPIN & During change PIN, this will be the existing PIN entered by the user \\
+\hline
+amount & Transaction amount entered by the merchant/subscriber \\
+\hline
+bucketType & Selection made by subscriber. See Table~\ref{bucket-table}\\
+\hline
+cardPANSuffix & The last 6 (configurable) digits of the Card PAN. Used for activating the bank account \\
+\hline
+channelID & Channel from which the request is sent like BlackBerry, WAP, J2ME etc. Values (>6) will be provided later. \\
+\hline
+bankID & Bank Id as entered by the subscriber/merchant. For future use. The default value is 153 (Bank Sinarmas) \\
+\hline
+mode & The API mode. The modes currenlty supported are shown in Table~\ref{mode-table}\\
+\hline
+transferID & mFino ID of a transaction. To be used by the client to maintain the conversational state across API calls. \\
+\hline
+parentTxnID & mFino ID of an activity. To be used by the client to maintain the conversational state across API calls.\\
+\hline
+\end{tabular}
+\label{request-table}
+\caption{Web API request parameters}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|p{9cm}|}
+\hline
+SERVICE NAME & DESCRIPTION \\
+\hline
+\hline
+activation & Activate entity (subscriber, bank account etc) by setting pin \\
+\hline
+checkBalance & Check balance of the default pocket \\
+\hline
+changePin & Change pin by providing old pin and new pin \\
+\hline
+resetPin & Reset pin by providing security answer\\
+\hline
+getTransactions & Retur the last n transactions. Currently only n=3 is supported\\
+\hline
+recharge & Topup the airtime balance of a subscriber\\
+\hline
+transfer & Transfer a commodity (airtime, money) between two entities\\
+\hline
+changeSettings & Change subscriber's settings like email, language and notification method \\
+\hline
+\end{tabular}
+\label{service-table}
+\caption{Service names to be used in the Web API requests}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+BUCKET TYPE & DESCRIPTION\\
+\hline
+\hline
+Reg & Regular airtime\\
+\hline
+Cal & Call and SMS\\
+\hline
+Dat & Data\\
+\hline
+SPL & Special purpose\\
+\hline
+\end{tabular}
+\label{bucket-table}
+\caption{Bucket types used by the billing system}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+MODE TYPE & VALUE & DESCRIPTION\\
+\hline
+\hline
+Subscriber & 1 & subscriber services\\
+\hline
+E-Load Merchant & 2 & airtime merchant services\\
+\hline
+Bank Account & 3 & bank account/emoney services\\
+\hline
+\end{tabular}
+\label{mode-table}
+\caption{Values for different API modes}
+\end{table}
+
+\pagebreak[4]
+\section{Subscriber API}
+This section describes all the basic mWallet functions pertaining to subscriber that can be accessed by the API. The {\bf mode} parameter must be set to {\bf 1 (subscriber)} for all these functions.
+\subsection{Activation}
+Activation is the process of a subscriber activating his/her mobile commerce account with the operator. A subscriber has to be activated before performing any mobile commerce activities or transactions. The process of activation includes the pin set up as well. 
+The following mandatory parameters have to be sent for activation:
+\begin{enumerate}
+\item serviceName\textbf{=activation}
+\item sourceMDN
+\item sourcePIN
+\item secretAnswer
+\item contactNumber
+\item mode\textbf{=1} (subscriber)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=activation&sourceMDN=621234567890&sourcePIN=123456&
+secretAnswer=121290&contactNumber=629876543210&mode=1&channelID=7
+
+Response:
+<response>
+  <message code="63">Welcome to M-Commerce Service. You can use your
+    PIN for Smart Dompet and share load service.
+  </message>
+  <transactionTime>28/01/2011 12:22</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Shareload}
+Shareload allows subscribers to transfer talk time/pulsa with other subscribers. In other words it allows subscribers to \textit{share} their e\textit{load} with others.
+The following mandatory parameters have to be sent for Shareload service:
+\begin{enumerate}
+\item serviceName\textbf{=transfer}
+\item sourceMDN
+\item sourcePIN
+\item destMDN
+\item amount
+\item mode\textbf{=1} (subscriber)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=transfer&sourceMDN=621234567890&sourcePIN=123456&
+destMDN=629876543210&amount=12000&mode=1&channelID=7
+
+Response:
+<response>
+  <message code="76">Share load 12000 to 629876543210 on 12/12/2010
+    successful.Thank you.
+  </message>
+  <transactionTime>12/12/2010 12:22</transactionTime>
+  <refID>1234567</refID>
+</response>
+\end{verbatim}
+
+\subsection{Change Pin}
+Change Pin service allows subscribers to change their mobile commerce pin. This requires the subscribers to know their existing pin.
+The following mandatory parameters have to be sent for Change Pin:
+\begin{enumerate}
+\item serviceName\textbf{=changePin}
+\item sourceMDN
+\item oldPIN
+\item newPIN
+\item mode\textbf{=1} (subscriber)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=changePin&sourceMDN=621234567890&oldPIN=123456&
+newPIN=120070&mode=1&channelID=8
+
+Response:
+<response>
+   <message code="26">You have successfully changed your MPIN number on 
+      2010-06-24 13:15:00.
+   </message>
+   <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Reset Pin}
+Reset Pin service allows subscribers to reset their mobile commerce pin by providing a secrete answer set during activation. This is useful in circumstances where the subscriber has forgotten his/her pin.
+The following mandatory parameters have to be sent for Reset Pin:
+\begin{enumerate}
+\item serviceName\textbf{=resetPin}
+\item	sourceMDN
+\item secretAnswer
+\item newPIN
+\item mode\textbf{=1} (subscriber)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=resetPin&sourceMDN=621234567890&newPIN=123456&secretAnswer=12000
+&mode=1&channelID=9
+
+Response:
+<response>
+  <message code="47">You have successfully reset your MPIN number on 
+   2010-06-24 13:15:00.
+   </message>
+  <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Last $n$ Transactions}
+This service allows the subscribers to check the last $n$ transactions they have performed or were involved in. Currently $n=3$ is supported. So, a maximum of $3$ transactions can be retrieved. 
+The following parameters have to be sent for Last 3 Transactions:
+\begin{enumerate}
+\item serviceName\textbf{=getTransactions}
+\item sourceMDN
+\item sourcePIN
+\item mode\textbf{=1} (subscriber)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=getTransactions&sourceMDN=621234567890&sourcePIN=123456
+&mode=1&channelID=7
+
+Response:
+<response>
+<message code="25">Last 3 transactions</message>
+<transactionDetails>
+  <transactionDetail>
+    <commodityType>AirTime</commodityType>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN>
+    <transactionTime>22/01/2011 12:22</transactionTime>
+    <amount>50000</amount>
+	 <refID>1234567</refID>
+	 <transactionType>shareload</transactionType>
+  </transactionDetail>
+</transactionDetails>
+<transactionTime>28/01/2011 12:22</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Change Settings}
+This service allows subscribers to change certain settings like language, email, notification method etc. 
+The following parameters have to be sent for Change Settings function:
+\begin{enumerate}
+\item serviceName\textbf{=changeSettings}
+\item sourceMDN
+\item sourcePIN
+\item email
+\item language (0 - English, 1 - Bahasa)
+\item notificationMethod (1 - SMS, 2 - Email, 3 - both)
+\item mode\textbf{=1} (subscriber)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+At least one valid value of email,language and notificaionMethod should be sent in the request.
+\begin{verbatim}
+Request:
+serviceName=changeSettings&sourceMDN=621234567890&sourcePIN=123456&language=0
+&email=foo@bar.com&mode=1&channelID=7
+
+Response:
+<response>
+<message code="552">Your settings change has been successful</message>
+<transactionTime>28/01/2011 12:22</transactionTime>
+</response>
+\end{verbatim}
+
+
+\section{E-Load Merchant API}
+This section describes all the mWallet services pertaining to Airtime merchants that can be accessed by the API. The {\bf mode} parameter must be set to {\bf 2} for all these functions.
+\subsection{Recharge}
+The process of a mobile agent/airtime merchant topping up a subscribers talk time is called Recharge. 
+The following mandatory parameters have to be sent for mobile agent recharge:
+\begin{enumerate}
+\item serviceName\textbf{=recharge}
+\item sourceMDN
+\item sourcePIN
+\item destMDN
+\item bucketType
+\item amount
+\item mode\textbf{=2} (e-load merchant)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=recharge&sourceMDN=621234567890&sourcePIN=123456&
+destMDN=629876543210&bucketType=Reg&amount=5000&mode=2&channelID=7
+
+Response:
+<response>
+  <message code="77">Thank you for topping up 5000 on 2010-06-24 13:15:00 to 
+     629876543210. REF: 1051271.  Your airtime stock balance now is 6,655,000.
+  </message>
+  <refID>1051271</refID>
+  <lastBalanceAfterTransaction>6655000</lastBalanceAfterTransaction>
+  <sourceRefID></sourceRefID>
+  <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Airtime Transfer}
+An airtime merchant can transfer his/her airtime stock to another airtime merchant using this service. 
+The following mandatory parameters have to be sent for mobile agent recharge.
+\begin{enumerate}
+\item serviceName\textbf{=transfer}
+\item sourceMDN
+\item sourcePIN
+\item destMDN
+\item amount
+\item mode\textbf{=2} (e-load merchant)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=transfer&sourceMDN=621234567890&sourcePIN=123456&
+destMDN=629876543210&amount=25000&mode=2&channelID=7
+
+Response:
+<response>
+  <message code="77">Thank you for transferring Airtime Stock of 25000 on 
+     2010-06-24 13:15:00 to 629876543210. Your airtime stock balance now is 
+     6,630,000.  REF: 1051272. 
+  </message>
+  <lastBalanceAfterTransaction>6630000</lastBalanceAfterTransaction>
+  <refID>1051272</refID>
+  <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Change Pin}
+Change Pin service allows merchants to change their merchant pin. The merchants are required to know their existing pin.
+The following mandatory parameters have to be sent for Change Pin:
+\begin{enumerate}
+\item serviceName\textbf{=changePin}
+\item sourceMDN
+\item oldPIN
+\item newPIN
+\item mode\textbf{=2} (e-load merchant)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=changePin&sourceMDN=621234567890&oldPIN=123456&
+newPIN=123654&mode=2&channelID=8
+
+Response:
+<response>
+   <message code="26">You have successfully changed your MPIN number on 
+      2010-06-24 13:15:00.
+   </message>
+  <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Reset Pin}
+Reset Pin service allows airtime merchants to reset their merchant pin by providing a secrete answer that has been set during mobile commerce activation. This is useful in circumstances where the merchant has forgotten his/her pin.
+The following mandatory parameters have to be sent for Reset Pin:
+\begin{enumerate}
+\item serviceName\textbf{=resetPin}
+\item	sourceMDN
+\item secretAnswer
+\item newPIN
+\item mode\textbf{=2} (e-load merchant)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=resetPin&sourceMDN=621234567890&newPIN=123456&secretAnswer=12000
+&mode=2&channelID=9
+
+Response:
+<response>
+	<message code="47">You have successfully reset your MPIN number on 
+2010-06-24 13:15:00.
+   </message>
+  <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Check Balance}
+This service allows merchants to check their airtime stock balance.
+The following mandatory parameters have to be sent for Check Balance:
+\begin{enumerate}
+\item serviceName\textbf{=checkBalance}
+\item sourceMDN
+\item sourcePIN
+\item mode\textbf{=2} (e-load merchant)
+\item channelID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=checkBalance&sourceMDN=621234567890&sourcePIN=123456&
+mode=2&channelID=8
+
+Response:
+<response>
+ <message code="25">Your airtime balance on 2010-06-22 14:35:15 is 6630000
+ </message>
+ <balanceDetail>
+    <commodityType>Airtime</commodityType>
+    <balance>6630000</balance>
+ </balanceDetail>
+ <transactionTime>22/06/2010 14:35</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Last Three Transactions}
+The following parameters have to be sent for Last 3 Transaction.
+\begin{enumerate}
+\item serviceName\textbf{=getTransactions}
+\item sourceMDN
+\item sourcePIN
+\item mode\textbf{=2} (e-load merchant)
+\item channelID
+\end{enumerate}
+
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=getTransactions&sourceMDN=621234567890&sourcePIN=123456
+&mode=3&channelID=7
+
+Response:
+<response>
+<message code="39">Last 3 transactions</message>
+<transactionDetails>
+  <transactionDetail>
+    <commodityType>Airtime</commodityType>
+    <refID>1464974</refID>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN>
+    <transactionTime>19/06/2010 09:00</transactionTime>
+	 <transactionType>MA_Topup</transactionType>
+    <amount>50000</amount>
+  </transactionDetail>
+  <transactionDetail>
+    <commodityType>Airtime</commodityType>
+    <refID>1203947</refID>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN>
+    <transactionTime>17/06/2010 16:30</transactionTime>
+	 <transactionType>MA_Topup</transactionType>
+    <amount>50000</amount>
+  </transactionDetail>
+  <transactionDetail>
+    <commodityType>Airtime</commodityType>
+    <transactionID>1000900</transactionID>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN>
+    <transactionTime>16/06/2010 08:45</transactionTime>
+	 <transactionType>MA_Topup</transactionType>
+    <amount>50000</amount>
+  </transactionDetail>
+</transactionDetails>
+<transactionTime>28/01/2011 12:22</transactionTime>
+</response>
+
+\end{verbatim}
+
+\section{E-Money/Bank Account API}
+This section describes all the mwallet services pertaining to a subscriber's bank/emoney account. A subscriber is allowed to link his/her bank account to his mobile number (MDN) and then perform transactions using his/her mobile number instead of using the bank account details. A subscriber is currently allowed to actively use either a bank account or an e-money account but not both. Bank account overrides the subscribers emoney account. The \textbf{mode} parameter must be set to {\textbf 3} for all these services. 
+
+\subsection{Activation}
+This service allows a subscriber to activate his/her linked bank account by setting up the pin and providing partial card number details. This step is mandatory for accessing the rest of the bank account services.
+The following mandatory parameters have to be sent for activating the bank 
+account in mWallet.
+\begin{enumerate}
+\item serviceName=activation
+\item sourceMDN
+\item sourcePIN
+\item cardPANSuffix
+\item mode=3 (bankAccount)
+\item channelID
+\item bankID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=activation&sourceMDN=621234567890&sourcePIN=123456&
+cardPANSuffix=440673&mode=3&channelID=7&bankID=153
+
+Response:
+<response>
+  <message code="63">Welcome to M-Commerce Service. You can use your PIN for 
+     Smart Dompet service. For info call 881.
+  </message>
+  <transactionTime>28/01/2011 12:22</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Recharge}
+This service allows a subscriber to topup his/her airtime by paying through the linked bank account\footnote{Emoney account can be used whereever bank account is mentioned in this section}. 
+The following mandatory parameters have to be sent for recharge (self or 
+others) via bank account:
+\begin{enumerate}
+\item serviceName\textbf{=recharge}
+\item sourceMDN
+\item sourcePIN
+\item destMDN
+\item bucketType
+\item amount
+\item mode\textbf{=3}
+\item channelID
+\item bankID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=recharge&sourceMDN=621234567890&sourcePIN=123456&
+destMDN=629876543210&bucketType=Reg&amount=5000&mode=3&channelID=7&bankID=153
+
+Response:
+<response>
+  <message code="77">Thank you for topping up 5000 on 2010-06-24 13:15:00 to 
+     629876543210. REF: 1051231
+  </message>
+  <refID>1234556</refID>
+  <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Funds Transfer}
+A subscriber can transfer money from his/her bank account to another subscriber's bank account using this service. Since fund transfer involves a confirmation step, this is split into two steps. The first step is to peform an inquiry and the second is to transfer money. 
+\subsubsection{Transfer Inquiry}
+The following mandatory parameters have to be sent for transferInquiry.
+\begin{enumerate}
+\item serviceName\textbf{=transferInquiry}
+\item sourceMDN
+\item sourcePIN
+\item destMDN
+\item amount
+\item mode\textbf{=3}
+\item channelID
+\item bankID
+\end{enumerate}
+
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=transferInquiry&sourceMDN=621234567890&sourcePIN=123456&
+destMDN=629876543210&amount=12000&mode=3&channelID=7&bankID=153
+
+Response:
+<response>
+  <message code="72">You requested to transfer IDR 120000 to 
+     629876543210 -- XYZ. 
+  </message>
+  <transactionTime>28/01/2011 12:22</transactionTime>
+  <transferID>1000123</transferID>
+  <parentTxnID>78911231</parentTxnID>
+</response>
+\end{verbatim}
+
+\subsubsection{Money Transfer}
+Money transfer service requests the bank to transfer funds between the source and destination accounts. A transferInquiry has to be performed before a money transfer action. Money Transfer has to be performed within X seconds (as configured in the platform) of performaning a transferInquiry failing which the  transfer is expired.
+
+The API client can use this as a user confirmation mechanism. The client can prompt the end user to confirm the data from the transferInquiry before performing a money transfer. 
+
+The following mandatory parameters have to be sent for transfer.
+\begin{enumerate}
+\item serviceName=transfer
+\item sourceMDN
+\item sourcePIN
+\item destMDN
+\item amount
+\item mode=3 (bankAccount)
+\item channelID
+\item bankID
+\item transferID
+\item parentTxnID
+\item confirmed
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=transfer&sourceMDN=621234567890&sourcePIN=123456&
+destMDN=629876543210&amount=12000&mode=3&channelID=7&bankID=153&
+transferID=1000123&parentTxnID=78911231&confirmed=true
+
+Response:
+<response>
+  <message code="72">Thank you for transferring IDR 12000 to 629876543210
+     on 2010-06-17 16:30:00. REF: 1000123
+  </message>
+  <refID>1000123</refID>
+  <transactionTime>17/06/2010 16:30</transactionTime>
+</response> 
+\end{verbatim}
+
+\subsection{Check Balance}
+This service allows a subscriber to check his/her bank account balance. 
+The following mandatory parameters have to be sent for Check Balance.
+\begin{enumerate}
+\item serviceName\textbf{=checkBalance}
+\item sourceMDN
+\item sourcePIN
+\item mode\textbf{=3}
+\item channelID
+\item bankID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=checkBalance&sourceMDN=621234567890&sourcePIN=123456&
+mode=3&channelID=8&bankID=153
+
+Response:
+<response>
+ <message code="274">Your balance on 2010-06-22 14:35:15 is IDR 2,000,000
+ </message>
+ <balanceDetail>
+    <commodityType>Money</commodityType>
+    <balance>2000000</balance>
+    <transactionTime>22/06/2010 14:35</transactionTime>
+ </balanceDetail>
+</response>
+\end{verbatim}
+
+\subsection{Change Pin}
+Change Pin service allows subscribers to change their bank account pin. The subscribers are required to know their existing pin.\footnote{Please note that a bank account pin can not be reset using this API. In other words, there is no reset pin.} The following mandatory parameters have to be sent for Change Pin.
+\begin{enumerate}
+\item serviceName\textbf{=changePin}
+\item sourceMDN
+\item oldPIN
+\item newPIN
+\item mode\textbf{=3}
+\item channelID
+\item bankID
+\end{enumerate}
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=changePin&sourceMDN=621234567890&oldPIN=123456&
+newPIN=120700&mode=3&channelID=8&bankID=153
+
+Response:
+<response>
+   <message code="26">You have successfully changed your MPIN number on 
+      2010-06-24 13:15:00.
+   </message>
+   <transactionTime>24/06/2010 13:15</transactionTime>
+</response>
+\end{verbatim}
+
+\subsection{Last Three Transactions}
+The following parameters have to be sent for Last 3 Transaction.
+\begin{enumerate}
+\item serviceName\textbf{=getTransactions}
+\item sourceMDN
+\item sourcePIN
+\item mode\textbf{=3}
+\item channelID
+\item bankID
+\end{enumerate}
+
+\textbf{Example:}
+\begin{verbatim}
+Request:
+serviceName=getTransactions&sourceMDN=621234567890&sourcePIN=123456
+&mode=3&channelID=7&bankID=153
+
+Response:
+<response>
+<message code="25">Last 3 transactions</message>
+<transactionDetails>
+  <transactionDetail>
+    <commodityType>Money</commodityType>
+    <refID>1464874</refID>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN> <!-- only for emoney txns -->
+    <transactionTime>19/06/2010 09:00</transactionTime>
+    <amount>50000</amount>
+    <bankID>153</bankID>
+  </transactionDetail>
+  <transactionDetail>
+    <commodityType>Money</commodityType>
+    <refID>1203247</refID>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN> <!-- only for emoney txns -->
+    <transactionTime>17/06/2010 16:30</transactionTime>
+    <amount>50000</amount>
+    <bankID>153</bankID>
+  </transactionDetail>
+  <transactionDetail>
+    <commodityType>Money</commodityType>
+    <refID>1000000</refID>
+    <sourceMDN>621234567890</sourceMDN>
+    <destMDN>621234567890</destMDN> <!-- only for emoney txns -->
+    <transactionTime>16/06/2010 08:45</transactionTime>
+    <amount>50000</amount>
+    <bankID>153</bankID>
+  </transactionDetail>
+</transactionDetails>
+</response>
+\end{verbatim}
+
+\end{document}

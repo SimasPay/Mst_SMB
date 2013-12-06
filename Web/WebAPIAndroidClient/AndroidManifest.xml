@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.mfino.android.client" android:versionCode="1"
+	android:versionName="1.0">
+
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:name=".WebapiHome" android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".subscriber.SubscriberActivationScreen"></activity>
+		<activity android:name=".subscriber.SubscriberLastNTxnsScreen"></activity>
+		<activity android:name=".subscriber.SubscriberResetPinScreen"></activity>
+		<activity android:name=".subscriber.SubscriberShareLoadScreen"></activity>
+		<activity android:name=".subscriber.SubscriberChangePinScreen"></activity>
+		<activity android:name=".merchant.MerchantAirtimeTransferScreen"></activity>
+		<activity android:name=".merchant.MerchantChangePinScreen"></activity>
+		<activity android:name=".merchant.MerchantCheckBalanceScreen"></activity>
+		<activity android:name=".merchant.MerchantLastNTxnsScreen"></activity>
+		<activity android:name=".merchant.MerchantRechargeScreen"></activity>
+		<activity android:name=".merchant.MerchantResetPinScreen"></activity>
+		<activity android:name=".bank.BankActivationScreen"></activity>
+		<activity android:name=".bank.BankChangePinScreen"></activity>
+		<activity android:name=".bank.BankCheckBalanceScreen"></activity>
+		<activity android:name=".bank.BankLastNTxnsScreen"></activity>
+		<activity android:name=".bank.BankMoneyTransferScreen"></activity>
+		<activity android:name=".bank.BankRechargeScreen"></activity>
+		<activity android:name=".bank.BankTransferInquiryScreen"></activity>
+		<activity android:name=".common.ShowResult"></activity>
+		<activity android:name=".bank.BankHome"></activity>
+		<activity android:name=".merchant.MerchantHome"></activity>
+		<activity android:name=".subscriber.SubscriberHome"></activity>
+	</application>
+
+</manifest> 

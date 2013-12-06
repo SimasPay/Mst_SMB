@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+--><!-- Configures the Camel Context-->
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:camel="http://camel.apache.org/schema/spring"
+   	   xmlns:context="http://www.springframework.org/schema/context"
+  	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:broker="http://activemq.apache.org/schema/core"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"  
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+	    http://www.springframework.org/schema/tx 
+	    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://www.springframework.org/schema/mvc
+	    http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	
+	<!--
+	  for auto wiring 
+	 -->
+	<context:annotation-config />
+
+   	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" /> 
+  
+    <!-- 
+		Import all osgi services for use in backend context
+	 -->
+    <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+	<osgi:reference id="coreDataWrapper" interface="com.mfino.mce.core.CoreDataWrapper"/>
+	<osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" />
+
+   	<osgi:reference id="mfinoUtilServiceImpl" bean-name="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService"/>
+	<osgi:reference id="subscriberStatusEventServiceImpl" bean-name="SubscriberStatusEventServiceImpl" interface="com.mfino.service.SubscriberStatusEventService"/>
+	<osgi:reference id="moneyServiceImpl" bean-name="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>
+	
+
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="integrationSummaryService" class="com.mfino.mce.backend.impl.IntegrationSummaryServiceImpl">
+  <property name="coreDataWrapper" ref="coreDataWrapper"/>
+ </bean>
+	<bean id="commodityTransferSequenceGeneratorImpl" class="com.mfino.mce.backend.impl.CommodityTransferSequenceGeneratorImpl"> 
+		<property name="coreDataWrapper" ref="coreDataWrapper"/> 
+	</bean>
+	
+	<bean id="commodityTransferServiceImpl" class="com.mfino.mce.backend.impl.CommodityTransferServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="timeout" value="${pct.timeout}"></property>
+		<property name="commodityTransferSequenceGenerator" ref="commodityTransferSequenceGeneratorImpl"/> 
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="transactionLogServiceImpl" class="com.mfino.mce.backend.impl.TransactionLogServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+	</bean>
+	
+	<bean id="ledgerServiceImpl" class="com.mfino.mce.backend.impl.LedgerServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="moneyService" ref="moneyServiceImpl" />
+	</bean>
+
+	<bean id="validationServiceImpl" class="com.mfino.mce.backend.impl.ValidationServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="mfinoUtilService" ref="mfinoUtilServiceImpl"/>
+		<property name="ledgerService" ref="ledgerServiceImpl" />
+		<property name="subscriberStatusEventService" ref="subscriberStatusEventServiceImpl"/>
+	</bean>
+	
+	<bean id="tellerEmoneyTransferService" class="com.mfino.mce.bankteller.impl.TellerEmoneyTransferServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+	</bean>
+
+	<bean id="tellerBankService" class="com.mfino.mce.bankteller.impl.TellerBankServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="validationService" ref="validationServiceImpl" />
+		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
+		<property name="ledgerService" ref="ledgerServiceImpl" />
+		<property name="tellerEmoneyTransferService" ref="tellerEmoneyTransferService" />
+		<property name="moneyService" ref="moneyServiceImpl" />
+		<property name="integrationSummaryService" ref="integrationSummaryService" />
+	</bean>
+	
+	<bean id="tellerPendingClearanceServiceImpl" class="com.mfino.mce.bankteller.impl.TellerPendingClearanceServiceImpl">
+		<property name="tellerBankService" ref="tellerBankService" />
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+	</bean>
+	
+	<bean id="tellerService" class="com.mfino.mce.bankteller.impl.TellerServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="tellerBankService" ref="tellerBankService" />
+		<property name="validationService" ref="validationServiceImpl" />
+		<property name="transactionLogService" ref="transactionLogServiceImpl" />
+		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
+		<property name="tellerPendingClearanceService" ref="tellerPendingClearanceServiceImpl" />
+	</bean>
+	
+	<!--
+	  Create an osgi service from the bean created above
+	-->
+	<osgi:service ref="tellerService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.bankteller.TellerService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="tellerPendingClearanceServiceImpl">
+		<osgi:interfaces>
+			<value>com.mfino.mce.bankteller.TellerPendingClearanceService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="tellerEmoneyTransferService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.bankteller.TellerEmoneyTransferService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<tx:annotation-driven transaction-manager="txManager" />
+</beans>

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30/07/2012 21:45:00 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<typedef name="encryptedBigDecimal" class="org.jasypt.hibernate.type.EncryptedBigDecimalAsStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="encryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="uniqueencryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateUniqueStringEncryptor</param>
+</typedef>
+<class name="com.mfino.domain.Ledger" optimistic-lock="version" table="ledger" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="CommodityTransferID" type="java.lang.Long" >
+<column name="CommodityTransferID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN"    sql-type="varchar(255)" />
+</property>
+<property name="SourcePocketID" type="java.lang.Long" >
+<column name="SourcePocketID"    sql-type="bigint" />
+</property>
+<property name="SourcePocketBalance" type="java.math.BigDecimal" >
+<column name="SourcePocketBalance"    sql-type="decimal(25,4)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+<property name="DestPocketID" type="java.lang.Long" >
+<column name="DestPocketID"    sql-type="bigint" />
+</property>
+<property name="DestPocketBalance" type="java.math.BigDecimal" >
+<column name="DestPocketBalance"    sql-type="decimal(25,4)" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount"    sql-type="decimal(25,4)" />
+</property>
+</class>
+</hibernate-mapping>

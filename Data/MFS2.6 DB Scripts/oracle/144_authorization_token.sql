@@ -1,0 +1,1 @@
+ALTER TABLE subscriber_mdn ADD authorizationToken  VARCHAR2(255) DEFAULT NULL;

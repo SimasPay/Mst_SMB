@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+	    http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<context:annotation-config />
+	
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="brokerURL"
+			value="tcp://${jms.brokerURL.host}:${jms.brokerURL.port}" />
+	</bean>
+
+
+	<osgi:reference id="coreDataWrapper" interface="com.mfino.mce.core.CoreDataWrapper" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+	
+
+	<bean id="ledgerServiceImpl" class="com.mfino.mce.backend.impl.LedgerServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+	</bean>
+	<bean id="vsImpl" class="com.mfino.mce.backend.impl.ValidationServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+	</bean>
+	<bean id="commodityTransferSequenceGeneratorImpl" class="com.mfino.mce.backend.impl.CommodityTransferSequenceGeneratorImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+	</bean>
+	<bean id="commodityTransferServiceImpl" class="com.mfino.mce.backend.impl.CommodityTransferServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+		<property name="timeout" value="${pct.timeout}"/>
+		<property name="commodityTransferSequenceGenerator" ref="commodityTransferSequenceGeneratorImpl"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="bankService"
+		class="com.mfino.tools.adjustments.services.AdjustmentBankService">
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+		<property name="validationService" ref="vsImpl" />
+		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
+		<property name="ledgerService" ref="ledgerServiceImpl" />
+	</bean>
+
+	<bean id="inqCreator" class="com.mfino.tools.adjustments.InquiryCreatorImpl">
+		<property name="channel" value="7" />
+	</bean>
+
+	<bean id="inquiryToConfirm"
+		class="com.mfino.tools.adjustments.conversions.InquiryToConfirmationImpl">
+		<property name="channel" value="7" />
+	</bean>
+
+	<bean id="tLogImpl"
+		class="com.mfino.tools.adjustments.services.TransactionLogServiceImpl">
+	</bean>
+	
+
+	<bean id="adjService" class="com.mfino.tools.adjustments.services.AdjustmentService">
+		<property name="bankService" ref="bankService" />
+		<property name="validationService" ref="vsImpl" />
+		<property name="transactionLogService" ref="tLogImpl" />
+	</bean>
+	
+	<bean id="filter" class="com.mfino.tools.adjustments.FilterBean"/>
+	<bean id="sctlStatus" class="com.mfino.tools.adjustments.SctlStatusBeanImpl">
+	</bean>
+	<bean id="propSetter" class="com.mfino.tools.adjustments.PropertySetterBean"/>
+	<bean id="adjustmentMessageCreator" class="com.mfino.tools.adjustments.AdjustmentMessageCreator">
+	</bean>
+	<camelContext id="commodityAdjustments" xmlns="http://camel.apache.org/schema/spring">
+		<route>
+			<from uri="file://D:\servicemix-4.4.1-fuse-01-13\mfino_conf\request" />
+			<setHeader headerName="adjustmentInitiator">
+				<constant>INITIATED_FROM_FILE</constant>
+			</setHeader>
+			<process ref="inqCreator" />
+			<to uri="jms:adjInquiryQueue?disableReplyTo=true" />
+		</route>
+		<route>
+			<from uri="jms:adjustmentsQueue?disableReplyTo=true" />
+			<setHeader headerName="adjustmentInitiator">
+				<constant>INITIATED_FROM_ADMIN_APP</constant>
+			</setHeader>
+			<to uri="bean:inqCreator?method=processMessage" />
+			<to uri="jms:adjInquiryQueue?disableReplyTo=true" />
+		</route>
+
+		<route>
+			<from uri="jms:adjInquiryQueue?disableReplyTo=true" />
+			<to uri="bean:adjService" />
+			<filter>
+				<method bean="filter" method="isResponseObjectOfBackendResponse"/>
+				<log message="mceResponse in an Object of BackendResponse" />
+				<to uri="jms:adjServiceResultQueue?disableReplyTo=true" />
+			</filter>
+			
+			<setHeader headerName="destinationQueue">
+				<simple>jms:adjFrontendResponseQueue?disableReplyTo=true</simple>
+			</setHeader>
+			<to uri="bean:propSetter?method=setDestQueue"/>
+		
+	 		<filter>
+				<method bean="filter" method="isResponseObjectOfTransferInquiryToBank"/>
+				<log message="mceResponse in an Object of TransferInquiryToBank" />
+				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+		 	</filter>
+			<filter>
+				<method bean="filter" method="isResponseObjectOfMoneyTransferToBank"/>
+				<log message="mceResponse in an Object of MoneyTransferToBank" />
+				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+			</filter>
+			<filter>
+				<method bean="filter" method="isResponseObjectOfMoneyTransferReversalToBank"/>
+				<log message="mceResponse in an Object of MoneyTransferReversalToBank" />
+				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+			</filter>
+		</route>
+		
+		<route>
+			<from uri="jms:adjServiceResultQueue?disableReplyTo=true" />
+			<filter>
+				<method bean="filter" method="isRequestObjectOfBankToBank"/>
+				<log message="reqeust is an Object of BankAccountToBankAccount" />
+				<to uri="jms:inquiryResultQueue?disableReplyTo=true"/>
+			</filter>
+		 
+			<filter>
+				<method bean="filter" method="isRequestObjectOfTransferInquiryFromBank"/>
+				<log message="reqeust is an Object of InquiryFromBank.Going to inquiryResultQueue" />
+				<to uri="jms:inquiryResultQueue?disableReplyTo=true"/>
+				</filter>
+			<filter>
+				<method bean="filter" method="isRequestObjectOfMoneyTransferFromBank"/>
+				<log message="reqeust is an Object of MoneyTransferFromBank.Going to inquiryResultQueue" />
+				<to uri="jms:confirmResultQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<method bean="filter" method="isRequestObjectOfMoneyTransferReversalFromBank"/>
+				<log message="reqeust is an Object of MoneyTransferReversalFromBank.Going to inquiryResultQueue" />
+				<to uri="jms:confirmResultQueue?disableReplyTo=true"/>
+			</filter>
+		
+			<filter>
+				<method bean="filter" method="isRequestObjectOfBankToBankConfirm"/>
+				<log message="reqeust is an Object of BankAccountToBankAccountConfirmation" />
+				<to uri="jms:confirmResultQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<method bean="filter" method="isRequestObjectOfBackendResponse"/>
+				<log message="reqeust is an Object of BackendResponse" />
+				<to uri="jms:confirmResultQueue?disableReplyTo=true"/>
+			</filter>
+		</route>
+		
+		<route> 
+			<from uri="jms:adjFrontendResponseQueue?disableReplyTo=true" /> 
+			<to uri="jms:adjInquiryQueue?disableReplyTo=true" /> 
+		</route>
+
+		<route>
+			<from uri="jms:inquiryResultQueue?disableReplyTo=true"/>
+				<filter>
+					<method bean="filter" method="isInquirySuccessful"/>
+					<log message="Inquiry is successful and going for confirmation" />
+					<to uri="bean:sctlStatus?method=updateToPending"/>
+				<to uri="jms:adjConfirmQueue?disableReplyTo=true" />
+			</filter>
+			<filter>
+				<method bean="filter" method="isInquiryNotSuccessful"/>
+				<log message="Inquiry failed.Sending the message to outQueue." />
+				<to uri="bean:sctlStatus?method=updateToFailed"/>
+				<to uri="jms:outQueue?disableReplyTo=true" />
+			</filter>
+		</route>
+
+		<route>
+			<from uri="jms:adjConfirmQueue?disableReplyTo=true"/>
+			<to uri="bean:inquiryToConfirm" />
+			<to uri="jms:adjInquiryQueue?disableReplyTo=true"/>
+		</route>
+		
+		<route>
+			<from uri="jms:confirmResultQueue?disableReplyTo=true"/>
+				<filter>
+					<method bean="filter" method="isConfirmationNotSuccessful"/>
+					<log message="Transfer confirmation failed.BoBo" />
+					<to uri="bean:sctlStatus?method=updateToFailed"/>
+					<to uri="jms:outQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<method bean="filter" method="isEtoEConfirmationSuccessful"/>
+					<log message="Emoney to Emoney transfer confirmation is successful.HoHo" />
+					<to uri="bean:sctlStatus?method=updateToSuccessful"/>
+					<to uri="jms:outQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<method bean="filter" method="isEtoBConfirmationSuccessful"/>
+					<log message="Emoney to Bank transfer confirmation is successful.HoHo" />
+					<to uri="bean:sctlStatus?method=updateToSuccessful"/>
+					<to uri="jms:outQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<method bean="filter" method="isBtoEConfirmationSuccessful"/>
+					<log message="Bank to Emoney transfer confirmation is successful.HoHo" />
+					<to uri="bean:sctlStatus?method=updateToSuccessful"/>
+					<to uri="jms:outQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<method bean="filter" method="isBtoBConfirmationSuccessful"/>
+					<log message="Bank to Bank transfer confirmation is successful.HoHo" />
+					<to uri="bean:sctlStatus?method=updateToSuccessful"/>
+					<to uri="jms:outQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<method bean="filter" method="isRequestObjectOfBackendResponse"/>
+					<log message="Backend Response" />
+					<to uri="jms:outQueue?disableReplyTo=true" />
+				</filter>
+		</route>
+
+		<route>
+			<from uri="jms:outQueue?disableReplyTo=true" />
+			<log message="Filtering message to send to file or bean"/>
+			<filter>
+				<simple>${in.headers.adjustmentInitiator}== 'INITIATED_FROM_ADMIN_APP'</simple>
+				<log message="filter sending to adjustmentMessageCreator"/>
+				<process ref="adjustmentMessageCreator"/>
+				<log message="filter sending to fixReplyQueue"/>
+				<to uri="jms:FixReplyQueue?disableReplyTo=true" />	
+			</filter>
+			<filter>
+				<simple>${in.headers.adjustmentInitiator} == 'INITIATED_FROM_FILE'</simple>
+				<log message="filter sending to file"/>
+				<to uri="file://D:\servicemix-4.4.1-fuse-01-13\mfino_conf\response" />
+			</filter>
+		</route>
+
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>	
+	
+	<tx:annotation-driven transaction-manager="txManager" />	
+</beans>

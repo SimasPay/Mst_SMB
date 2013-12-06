@@ -1,0 +1,1 @@
+ALTER TABLE service_charge_txn_log ADD COLUMN `parentIntegrationTransID` BIGINT(20) UNSIGNED DEFAULT NULL;

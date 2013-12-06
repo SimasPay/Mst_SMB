@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:47 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.BulkUploadEntry" optimistic-lock="version" table="bulk_upload_entry" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="UploadID" type="java.lang.Long" unique-key="UploadID">
+<column name="UploadID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="LineNumber" type="java.lang.Integer" unique-key="UploadID">
+<column name="LineNumber" not-null="true"  sql-type="int" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  sql-type="int" />
+</property>
+<property name="TransferFailureReason" type="java.lang.Integer" >
+<column name="TransferFailureReason"    sql-type="int" />
+</property>
+<property name="NotificationCode" type="java.lang.Integer" >
+<column name="NotificationCode"    sql-type="int" />
+</property>
+<property name="TransferID" type="java.lang.Long" >
+<column name="TransferID"    sql-type="bigint" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+<property name="FirstName" type="java.lang.String" >
+<column name="FirstName"    sql-type="varchar(255)" />
+</property>
+<property name="LastName" type="java.lang.String" >
+<column name="LastName"    sql-type="varchar(255)" />
+</property>
+<property name="IsUnRegistered" type="java.lang.Boolean" >
+<column name="IsUnRegistered"    sql-type="tinyint" />
+</property>
+<property name="FailureReason" type="java.lang.String" >
+<column name="FailureReason"    sql-type="varchar(255)" />
+</property>
+<property name="ServiceChargeTransactionLogID" type="java.lang.Long" >
+<column name="ServiceChargeTransactionLogID"    sql-type="bigint" />
+</property>
+</class>
+</hibernate-mapping>

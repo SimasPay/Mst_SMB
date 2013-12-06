@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.6.1  Built on : Aug 31, 2011 (12:22:40 CEST) -->
+<serviceGroup>
+    <service name="Service">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.tempuri.pos_txns.type.ServiceMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">org.tempuri.pos_txns.type.ServiceSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="GetPOS_TXNS" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://tempuri.org/POS_TXNS/type/">
+            <actionMapping>http://tempuri.org/POS_TXNS/type/GetPOS_TXNS</actionMapping>
+            <outputActionMapping>http://tempuri.org/POS_TXNS/type/ServiceSoap/GetPOS_TXNSResponse</outputActionMapping>
+        </operation>
+        <operation name="SavePOS_TXNS" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://tempuri.org/POS_TXNS/type/">
+            <actionMapping>http://tempuri.org/POS_TXNS/type/SavePOS_TXNS</actionMapping>
+            <outputActionMapping>http://tempuri.org/POS_TXNS/type/ServiceSoap/SavePOS_TXNSResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

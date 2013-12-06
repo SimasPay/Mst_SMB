@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>    
+        <property name="hibernate.conncetion.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://mfinodbserver:3306/replica</property>
+        <property name="hibernate.connection.username">mfino</property>
+        <property name="hibernate.connection.password">ENC(BV1Pld5yEn47oljN4ye/VQ==)</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="show_sql">false</property> 
+        
+        <property name="connection.provider_class">org.jasypt.hibernate.connectionprovider.EncryptedPasswordC3P0ConnectionProvider</property>
+   		<property name="connection.encryptor_registered_name">dbPasswordEncryptor</property>
+
+        
+       
+       			<mapping resource="com/mfino/domain/RSubscriberMDN.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RDbParam.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSubscriber.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMobileNetworkOperator.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPocketTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/domain/REnumText.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RUser.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RTransactionsLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBank.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RNotification.hbm.xml"/>			
+				<mapping resource="com/mfino/domain/RmFinoServiceProvider.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPerson2Person.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RAddress.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RLOP.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMerchant.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBulkUpload.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBulkUploadEntry.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RDistributionChainTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RDistributionChainLevel.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RRolePermission.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBulkBankAccount.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSAPGroupID.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPermissionItems.hbm.xml"/>
+				<mapping resource="com/mfino/domain/ROfflineReport.hbm.xml"/>
+				<mapping resource="com/mfino/domain/ROfflineReportReceiver.hbm.xml"/>
+				<mapping resource="com/mfino/domain/ROfflineReportForCompany.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RActivitiesLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBulkUploadFile.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RRegion.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RCompany.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RProductIndicator.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMDNRange.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBrand.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSMSCode.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMerchantCode.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPendingTransactionsFile.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPendingTransactionsEntry.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBulkLOP.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RLOPHistory.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RCreditCardTransaction.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RCardInfo.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RChannelCode.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMerchantPrefixCode.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSMSC.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSMSPartner.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSMSTransactionsLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBiller.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBankAdmin.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RCreditCardDestinations.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RDenomination.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RBillPaymentTransaction.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPartner.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPartnerServices.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RService.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RServiceTransaction.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RTransactionType.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSettlementTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RServiceSettlementConfig.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMFSBiller.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMFSBillerPartner.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSettlementTransactionLogs.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RServiceChargeTransactionLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RTransactionAmountDistributionLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSettlementSchedulerLogs.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RChargeType.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RChargeDefinition.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RChargePricing.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RTransactionRule.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RTransactionCharge.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSharePartner.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RAuthorizingPerson.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSubscribersAdditionalFields.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RTransactionChargeLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RKYCLevel.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RKYCFields.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSystemParameters.hbm.xml"/>
+			    <mapping resource="com/mfino/domain/RServiceAudit.hbm.xml"/>				
+				<mapping resource="com/mfino/domain/RBillPayments.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RReportParameters.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RChargeTxnCommodityTransferMap.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RAirtimePurchase.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RVisafoneTxnGenerator.hbm.xml"/>			
+				<mapping resource="com/mfino/domain/RInterbankTransfer.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RInterBankCode.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSubscriberGroup.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RGroup.hbm.xml"/>
+        		<mapping resource="com/mfino/domain/RPocketTemplateConfig.hbm.xml"/>
+        		<mapping resource="com/mfino/domain/RDCTRestrictions.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPartnerRestrictions.hbm.xml"/>
+       			<mapping resource="com/mfino/domain/RIntegrationPartnerMapping.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RMFSDenominations.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RAutoReversals.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RIPMapping.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RAgentCashInTransactions.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RPTC_Group_Map.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RNotificationLog.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RScheduleTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSCTLSettlementMap.hbm.xml"/>
+				<mapping resource="com/mfino/domain/RSettlementTransactionSCTLMap.hbm.xml"/>
+				
+				<!-- Required to generate decrypted information -->
+				<mapping resource="com/mfino/domain/decrypted/CopyInfo.hbm.xml"/>
+				<mapping resource="com/mfino/domain/decrypted/RPocket.hbm.xml"/>
+				<mapping resource="com/mfino/domain/decrypted/RChannelSessionManagement.hbm.xml"/>
+				<mapping resource="com/mfino/domain/decrypted/RLedger.hbm.xml"/>
+				<mapping resource="com/mfino/domain/decrypted/RCommodityTransfer.hbm.xml"/>
+				<mapping resource="com/mfino/domain/decrypted/RPendingCommodityTransfer.hbm.xml"/>
+				<mapping resource="com/mfino/domain/decrypted/RUnRegisteredTxnInfo.hbm.xml"/>
+				
+				
+	</session-factory>
+</hibernate-configuration>

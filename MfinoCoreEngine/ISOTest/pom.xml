@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>MfinoCoreEngine</artifactId>
+    <groupId>com.mfino.mce</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.mfino.mce</groupId>
+  <artifactId>ISOTest</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>ISOTest</name>
+  <description>ISO Test</description>
+  <repositories>
+    <repository> 
+      <id>jpos</id> 
+      <name>jPOS Central Repository</name> 
+      <url>http://jpos.org/maven</url> 
+      <layout>default</layout> 
+    </repository>
+    </repositories>
+    
+   <dependencies>
+   <dependency>
+      <groupId>org.jpos</groupId>
+      <artifactId>jpos</artifactId>
+      <version>1.8.2</version>
+    </dependency>
+   <dependency>
+			<groupId>com.mfino.application</groupId>
+			<artifactId>Core</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+	</dependency>
+	
+	 <dependency>
+			<groupId>com.mfino.mce</groupId>
+			<artifactId>Frontend</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.mfino.application</groupId>
+		<artifactId>ZenithISO8583</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+  </dependencies>
+</project>

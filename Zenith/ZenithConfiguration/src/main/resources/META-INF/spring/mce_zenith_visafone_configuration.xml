@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="airtimePermissions" class="com.mfino.stk.RequestPermissions">
+		<constructor-arg index="0">
+			<list value-type="java.lang.String">
+			<!-- <value>operatorcode,mdn series,permission</value> -->
+		<!--If the mdn series is not mentioned here, it's blocked-->	
+		<!--visafone-->
+				<value>4,07025,true</value>
+				<value>4,0704,true</value>
+				<value>4,07026,true</value>
+		<!--etisalat-->
+				<value>5,809,false</value>
+				<value>5,817,false</value>
+				<value>5,818,false</value>
+		<!--Glo-->		
+				<value>2,0805,false</value>
+				<value>2,0807,false</value>
+				<value>2,0815,false</value>
+				<value>2,0705,false</value>
+		<!--MTN-->		
+				<value>1,0803,false</value>
+				<value>1,0806,false</value>
+				<value>1,0703,false</value>
+				<value>1,0706,false</value>
+				<value>1,0810,false</value>
+				<value>1,0813,false</value>				
+		<!--Airtel-->		
+				<value>3,0802,false</value>
+				<value>3,0808,false</value>
+				<value>3,0708,false</value>
+				<value>3,0812,false</value>				
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+	<osgi:reference id="mfinoServiceImpl" bean-name="MfinoServiceImpl" interface="com.mfino.service.MfinoService" />
+	<osgi:reference id="notificationServiceImpl" bean-name="NotificationServiceImpl" interface="com.mfino.service.NotificationService" />
+	<osgi:reference id="notificationMessageParserServiceImpl" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService" />
+	<osgi:reference id="partnerServiceImpl" bean-name="PartnerServiceImpl" interface="com.mfino.service.PartnerService" />
+	<osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />
+	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	<osgi:reference id="systemParametersServiceImpl" bean-name="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService" />
+	<osgi:reference id="smsRequestHandlerImpl" bean-name="SMSRequestHandlerImpl" interface="com.mfino.transactionapi.handlers.SMSRequestHandler" />
+
+	<bean id="brandValidator" class="com.mfino.stk.BrandValidator">
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<constructor-arg>
+			<ref bean="airtimePermissions" />
+		</constructor-arg>
+	</bean>
+
+	 <bean id="visafoneEncryptionDecryption" class="com.mfino.stk.VisafoneEncryptionDecryption" /> 
+	<!--uncomment use the below bean instead of the above one for internal testing -->
+	<!-- <bean id="visafoneEncryptionDecryption" class="com.mfino.stk.VisafonePlainTextProcessor" /> -->
+
+	<bean id="bs03validator" class="com.mfino.stk.validations.RechargePinRequestValidator" />
+	<bean id="bs02validator" class="com.mfino.stk.validations.TopupRequestValidator">
+		<property name="brandValidator" ref="brandValidator"></property>
+	</bean>
+
+	<bean id="encryptedRequestProcessor" class="com.mfino.stk.processor.EncryptedRequestProcessor">
+		<property name="visafoneEncryptionDecryption" ref="visafoneEncryptionDecryption" />
+		<property name="systemParametersService" ref="systemParametersServiceImpl" />
+		<property name="smsRequestHandler" ref="smsRequestHandlerImpl" />
+		<property name="pocketService" ref="pocketServiceImpl" />
+		<property name="validators">
+			<list>
+				<ref bean="bs03validator" />
+				<ref bean="bs02validator" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="plainTextRequestProcessor" class="com.mfino.stk.processor.PlainTextRequestProcessor">
+	</bean>
+
+	<bean id="requestProcessorFactory" class="com.mfino.stk.processor.RequestProcessorFactory">
+		<property name="encryptedRequestProcessor" ref="encryptedRequestProcessor" />
+		<property name="plainTextRequestProcessor" ref="plainTextRequestProcessor" />
+	</bean>
+
+	<bean id="stkService" class="com.mfino.stk.STKServiceImpl">
+		<property name="processorFactory" ref="requestProcessorFactory" />
+		<property name="smsQueueName" value="jms:SMSNotificationQueue?disableReplyTo=true" />
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="notificationMessageParserService" ref="notificationMessageParserServiceImpl" />
+		<property name="partnerService" ref="partnerServiceImpl" />
+		<property name="notificationService" ref="notificationServiceImpl" />
+		<property name="mfinoService" ref="mfinoServiceImpl" />
+		<property name="htm" ref="txManager" />
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<bean id="smsConf" class="com.mfino.mce.notification.conf.SMSConf">
+		<!-- <osgix:managed-properties persistent-id="com.mfino.mce.sms" /> -->
+		<property name="from" value="eaZyMoney" />
+	</bean>
+
+	<bean id="SMSNotificationService"
+		class="com.mfino.mce.notification.impl.SMSNotificationServiceDefaultImpl">
+		<property name="smsConf" ref="smsConf" />
+	</bean>
+
+	<!-- Configuration for retrying sending sms -->
+	<bean id="smsErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
+		<property name="deadLetterUri" value="jms:visafoneSMSNotificationQueue.DLQ" />
+		<property name="redeliveryPolicy" ref="smsRedeliveryPolicyConfig" />
+	</bean>
+
+	<bean id="smsRedeliveryPolicyConfig" class="org.apache.camel.processor.RedeliveryPolicy">
+		<property name="maximumRedeliveries" value="1" />
+		<property name="redeliveryDelay" value="5000" />
+	</bean>
+
+	<!-- sms server connection information -->
+	<camel:endpoint id="visfoneSMSServerLink"
+		uri="smpp://{{visfoneSMSServerLink.uri.user}}@{{visfoneSMSServerLink.uri.host}}:{{visfoneSMSServerLink.uri.port}}?password={{visfoneSMSServerLink.uri.password}}&amp;sourceAddrTon=5&amp;systemType=mfsconsumer&amp;dataCoding=4&amp;alphabet=4&amp;transactionTimer=9999999" />
+
+	<camelContext id="visafonestk" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<threadPool id="visafonestkPool" threadName="visafonestkThread"
+			poolSize="2" maxPoolSize="10" />
+			
+		 <route> 
+		 	<from uri="smpp://{{visafonestk.uri.user}}@{{visafonestk.uri.host}}:{{visafonestk.uri.port}}?password={{visafonestk.uri.password}}&amp;sourceAddrTon=5&amp;systemType=mfsconsumer&amp;dataCoding=4&amp;alphabet=4&amp;transactionTimer=9999999" /> 
+		 	<to uri="jms:visafoneSTKQueue?disableReplyTo=true" /> 
+		</route> 
+	<!--uncomment and use the below route instead of the above one for internal testing -->
+	<!-- 	<route>
+			<from uri="file://C:\Users\karthik\Desktop\stk?noop=true" />
+			<setHeader headerName="camelsmppsourceaddr">
+				<constant>9618016516</constant>
+			</setHeader>
+			<to uri="jms:visafoneSTKQueue?disableReplyTo=true" />
+		</route>
+	 -->
+		<route> 
+			<from uri="smpp://{{visfoneSMSServerLink.uri.user}}@{{visfoneSMSServerLink.uri.host}}:{{visfoneSMSServerLink.uri.port}}?password={{visfoneSMSServerLink.uri.password}}&amp;sourceAddrTon=5&amp;systemType=mfsconsumer&amp;dataCoding=4&amp;alphabet=4&amp;transactionTimer=9999999" /> 
+			<to uri="jms:visafoneSTKQueue?disableReplyTo=true" /> 
+		</route>
+
+	 
+		<route>
+			<from uri="jms:visafoneSTKQueue?disableReplyTo=true" />
+			<threads executorServiceRef="visafonestkPool">
+				<camel:removeHeader headerName="CamelSlipEndpoint" />
+				<to uri="bean:stkService?method=process" />
+			</threads>
+		</route>
+
+		<!-- <route errorHandlerRef="smsErrorHandler"> <from uri="jms:visafoneSMSNotificationQueue?disableReplyTo=true" 
+			/> <process ref="SMSNotificationService" /> <to ref="visfoneSMSServerLink" 
+			/> </route> -->
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+	
+	
+
+</beans>

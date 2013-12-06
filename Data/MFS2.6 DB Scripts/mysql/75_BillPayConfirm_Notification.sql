@@ -1,0 +1,25 @@
+
+
+DELETE FROM `notification` WHERE Code=2029;
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2029,"BillpaymentConfirmationSuccessfulToReceiver",1,"$(BillerCode) received $(Currency) $(Amount) from $(SenderMDN), ServiceCharge $(Currency) $(serviceCharge). REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2029,"BillpaymentConfirmationSuccessfulToReceiver",2,"$(BillerCode) received $(Currency) $(Amount) from $(SenderMDN), ServiceCharge $(Currency) $(serviceCharge). REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2029,"BillpaymentConfirmationSuccessfulToReceiver",4,"$(BillerCode) received $(Currency) $(Amount) from $(SenderMDN), ServiceCharge $(Currency) $(serviceCharge). REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2029,"BillpaymentConfirmationSuccessfulToReceiver",8,"$(BillerCode) received $(Currency) $(Amount) from $(SenderMDN), ServiceCharge $(Currency) $(serviceCharge). REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2029,"BillpaymentConfirmationSuccessfulToReceiver",16,"$(BillerCode) received $(Currency) $(Amount) from $(SenderMDN), ServiceCharge $(Currency) $(serviceCharge). REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+DELETE FROM `notification` WHERE Code=2030;
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2030,"BillpaymentConfirmationSuccess",1,"Your top up request for $(InvoiceNumber) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2030,"BillpaymentConfirmationSuccess",2,"Your top up request for $(InvoiceNumber) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2030,"BillpaymentConfirmationSuccess",4,"Your top up request for $(InvoiceNumber) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2030,"BillpaymentConfirmationSuccess",8,"Your top up request for $(InvoiceNumber) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)",null,0,0,now(),null,null,1);
+
+INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Version`,`MSPID`,`Code`,`CodeName`,`NotificationMethod`,`Text`,`STKML`,`Language`,`Status`,`StatusTime`,`AccessCode`,`SMSNotificationCode`,`CompanyID`) VALUES (now(),"System",now(),"System",0,1,2030,"BillpaymentConfirmationSuccess",16,"Your top up request for $(InvoiceNumber) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)",null,0,0,now(),null,null,1);

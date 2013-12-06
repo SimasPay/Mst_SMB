@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='DE'>
+	<field id='pvk' type='A' length='16' />
+	<field id='pin' type='N' length='5' />
+	<field id='check-length' type='N' length='2' />
+	<field id='account-number' type='N' length='12' />
+	<field id='dt' type='N' length='16' />
+	<field id='pvd' type='A' length='12' />
+</schema> 

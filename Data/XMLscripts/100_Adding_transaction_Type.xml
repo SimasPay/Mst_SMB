@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+	<changeSet author="MFS_MAIN" id="DATA-PERMISSIONITEM-68">
+ 		<delete tableName="service_transaction">
+			<where>serviceid=(select id from service where servicename='Account') and transactiontypeid=(select id from transaction_type where transactionname='SubscriberRegistrationThroughWeb')</where>
+ 		</delete>
+		<delete tableName="transaction_type">
+			<where>TRANSACTIONNAME = 'SubscriberRegistrationThroughWeb'</where>
+ 		</delete>
+	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-TRANSACTIONTYPE-69">
+        <insert tableName="transaction_type">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="MSPID" valueNumeric="1"/>
+            <column name="TransactionName" value="SubscriberRegistrationThroughWeb"/>
+            <column name="DisplayName" value="Subscriber Registration Through Web"/>
+        </insert>
+	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-SERVICETRANSACTION-70">
+        <insert tableName="service_transaction">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="MSPID" valueNumeric="1"/>
+            <column name="ServiceID" valueComputed="(select id from service where SERVICENAME = 'Account')"/>
+            <column name="TransactionTypeID" valueComputed="(select id from transaction_type where TRANSACTIONNAME = 'SubscriberRegistrationThroughWeb')"/>
+	     </insert>
+   </changeSet>
+</databaseChangeLog>

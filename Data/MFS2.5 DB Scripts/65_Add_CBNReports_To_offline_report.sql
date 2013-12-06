@@ -1,0 +1,2 @@
+INSERT INTO `offline_report` (`Version`,`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy`,`Name`,`ReportSql`,`ReportClass`,`TriggerEnable`) VALUES
+ (1,'2012-01-06 18:37:47','system','2012-01-06 18:37:47','system','CBNReports',NULL,'com.mfino.report.zenithreport.CBNReports',1);

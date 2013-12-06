@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:49 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Company" optimistic-lock="version" table="company" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="CompanyName" type="java.lang.String" unique-key="CompanyName">
+<column name="CompanyName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="CompanyCode" type="java.lang.Integer" unique-key="CompanyCode">
+<column name="CompanyCode" not-null="true"  sql-type="int" />
+</property>
+<property name="CustomerServiceNumber" type="java.lang.String" >
+<column name="CustomerServiceNumber"    sql-type="varchar(255)" />
+</property>
+<property name="smsc" type="java.lang.String" >
+<column name="smsc"    sql-type="varchar(255)" />
+</property>
+<set name="LOPFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.LOP" />
+</set>
+<set name="ProductIndicatorFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ProductIndicator" />
+</set>
+<set name="ActivitiesLogFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ActivitiesLog" />
+</set>
+<set name="CommodityTransferFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+<set name="PocketFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID"    />
+</key>
+<one-to-many class="com.mfino.domain.Pocket" />
+</set>
+<set name="BulkUploadFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkUpload" />
+</set>
+<set name="OfflineReportForCompanyFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID"    />
+</key>
+<one-to-many class="com.mfino.domain.OfflineReportForCompany" />
+</set>
+<set name="UserFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.User" />
+</set>
+<set name="NotificationFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Notification" />
+</set>
+<set name="BrandFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Brand" />
+</set>
+<set name="SubscriberFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+<set name="BulkUploadFileFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkUploadFile" />
+</set>
+<set name="RegionFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Region" />
+</set>
+<set name="MerchantCodeFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MerchantCode" />
+</set>
+<set name="PendingTransactionsFileFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PendingTransactionsFile" />
+</set>
+<set name="BulkLOPFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkLOP" />
+</set>
+<set name="CreditCardTransactionFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CreditCardTransaction" />
+</set>
+<set name="BillerFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID"    />
+</key>
+<one-to-many class="com.mfino.domain.Biller" />
+</set>
+<set name="BillPaymentTransactionFromCompanyID" inverse="true">
+<key>
+<column name="CompanyID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BillPaymentTransaction" />
+</set>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd 
+	    http://camel.apache.org/schema/cxf
+		http://camel.apache.org/schema/cxf/camel-cxf.xsd ">
+
+	<context:annotation-config />
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+	
+	<osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService" />
+	
+
+	
+<!-- Generic Webservice bean definition completed -->
+	<!-- End Point where the service for generic webserice is available -->
+	<cxf:cxfEndpoint id="gwsBillpaySoapEndPoint"
+		address="${MfinoBillpayService.url}"
+		serviceClass="org.tempuri.ServiceSoap" endpointName="ServiceSoap">
+		<cxf:properties>
+			<entry key="dataFormat" value="POJO" />
+		</cxf:properties>
+	</cxf:cxfEndpoint>
+
+	<bean id="gwsWSCommunicator"
+		class="com.mfino.zenith.billpay.mfinows.communicators.ProcessRequestCommunicator">
+		<property name="webServiceEndpointBean" value="gwsBillpaySoapEndPoint" />
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="params">
+			<map>
+				<entry>
+					<key>
+						<value>merchant_code</value>
+					</key>
+					<value>eazymoney</value>
+				</entry>
+				<entry>
+					<key>
+						<value>appid</value>
+					</key>
+					<value>eazymoney</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+<!-- Generic Webservice bean definition completed -->
+
+<!-- ZionCell Webservice bean definition completed -->
+	<!-- End Point where the service for ZionCell webserice is available -->
+	<cxf:cxfEndpoint id="zionBillpaySoapEndPoint"
+		address="${ZionBillpayService.url}"
+		serviceClass="org.tempuri.ServiceSoap" endpointName="ServiceSoap">
+		<cxf:properties>
+			<entry key="dataFormat" value="POJO" />
+		</cxf:properties>
+	</cxf:cxfEndpoint>
+
+	<bean id="zionWSCommunicator"
+		class="com.mfino.zenith.billpay.mfinows.communicators.ProcessRequestCommunicator">
+		<property name="webServiceEndpointBean" value="zionBillpaySoapEndPoint" />
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="params">
+			<map>
+				<entry>
+					<key>
+						<value>merchant_code</value>
+					</key>
+					<value>eazymoney</value>
+				</entry>
+				<entry>
+					<key>
+						<value>appid</value>
+					</key>
+					<value>eazymoney</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+<!-- ZionCell Webservice bean definition completed -->
+	
+	<camelContext id="billpaymerchants" xmlns="http://camel.apache.org/schema/spring">
+
+		<route>
+			<from uri="jms:gwsBillerValidationQueue?disableReplyTo=true" />
+				 <choice>
+            		<when>
+						<simple>${in.body.request.getIntegrationCode} == '1111'</simple>
+            	  	  	<to uri="jms:gwsQ?disableReplyTo=true"/>
+            		</when>
+            		<when>
+						<simple>${in.body.request.getIntegrationCode} == 'zion'</simple>
+            		    <to uri="jms:gwsQ?disableReplyTo=true"/>
+           			 </when>
+           		 	<otherwise>
+	        	 	   <to uri="jms:gwsQBillerValidationFail?disableReplyTo=true" />
+            		</otherwise>
+      		 	</choice>
+		</route>
+		<!-- route for biller confirmation -->
+
+		<route>
+			<from uri="jms:gwsBillerAdviceCommunicatorQueue?disableReplyTo=true" />
+			 <filter>
+				<simple>${in.body.request.getIntegrationCode} == '1111'</simple>
+				<process ref="gwsWSCommunicator" />
+			</filter>
+			 <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'zion'</simple>
+				<process ref="zionWSCommunicator" />
+			</filter>			
+			<setHeader headerName="eventContext">
+				<constant>BILLER_CONFIRMATION_COMPLETED</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:gwsBillPayEventProcessingQueue?disableReplyTo=true"/>
+				<to uri="jms:gwsBillPayConfirmationResponseQueue?disableReplyTo=true"/>
+			</multicast>
+		</route>
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="txManager" />		
+</beans>

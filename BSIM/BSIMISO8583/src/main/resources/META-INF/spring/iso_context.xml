@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. --><!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+		http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+	
+
+    <context:annotation-config />
+    
+  	 <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+	 <osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	 <osgi:reference id="transactionLogServiceImpl" bean-name="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService" />
+ 	 <osgi:reference id="subscriberMdnServiceImpl" bean-name="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />
+ 	 <osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />
+ 	 <osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" />
+ 	 <osgi:reference id="subscriberServiceExtendedImpl" bean-name="SubscriberServiceExtendedImpl" interface="com.mfino.service.SubscriberServiceExtended" />
+	 <osgi:reference id="notificationServiceImpl" bean-name="NotificationServiceImpl" interface="com.mfino.service.NotificationService" />
+	 <osgi:reference id="mfinoUtilServiceImpl" bean-name="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService" /> 
+	 <osgi:reference id="kycLevelServiceImpl" bean-name="KYCLevelServiceImpl" interface="com.mfino.service.KYCLevelService" /> 
+	 <osgi:reference id="smsServiceImpl" bean-name="SMSServiceImpl" interface="com.mfino.service.SMSService" /> 
+	 <osgi:reference id="notificationMessageParserServiceImpl" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService" />
+	 <osgi:reference id="systemParametersServiceImpl" bean-name="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService" /> 
+	 	
+	 
+	<bean id="billPaymentReversalToBankProcessor" class="com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentReversalToBankProcessor">
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+	</bean>
+	<bean id="moneyTransferReversalToBankProcessor" class="com.mfino.bsim.iso8583.processor.fixtoiso.MoneyTransferReversalToBankProcessor">
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+	</bean>
+	<!-- 
+	<bean id="TransactionHandler" class="com.mfino.bsim.iso8583.handlers.TransactionHandler">
+
+	</bean>-->
+	
+<!-- 	<bean id="daoFactory" class="com.mfino.dao.DAOFactory" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>     
+    </bean> -->
+	<bean id="atmRegistrationHandler" class="com.mfino.bsim.iso8583.handlers.ATMRegistrationHandler" factory-method="createInstance">
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="transactionLogService" ref="transactionLogServiceImpl" />
+		<property name="subscriberMdnService" ref="subscriberMdnServiceImpl" />
+		<property name="pocketService" ref="pocketServiceImpl" />
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+		<property name="subscriberServiceExtended" ref="subscriberServiceExtendedImpl" />
+		<property name="notificationService" ref="notificationServiceImpl" />
+		<property name="mfinoUtilService" ref="mfinoUtilServiceImpl" />
+		<property name="kycLevelService" ref="kycLevelServiceImpl" />
+		<property name="smsService" ref="smsServiceImpl" />
+		<property name="notificationMessageParserService" ref="notificationMessageParserServiceImpl" />
+		<property name="systemParametersService" ref="systemParametersServiceImpl" />
+		<property name="htm" ref="txManager" />
+	</bean>
+	<bean id="atmChangePinHandler" class="com.mfino.bsim.iso8583.handlers.ATMChangePinHandler" factory-method="createInstance">
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="transactionLogService" ref="transactionLogServiceImpl" />
+		<property name="subscriberMdnService" ref="subscriberMdnServiceImpl" />
+		<property name="pocketService" ref="pocketServiceImpl" />
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+		<property name="subscriberServiceExtended" ref="subscriberServiceExtendedImpl" />
+		<property name="notificationService" ref="notificationServiceImpl" />
+		<property name="mfinoUtilService" ref="mfinoUtilServiceImpl" />
+		<property name="kycLevelService" ref="kycLevelServiceImpl" />
+		<property name="smsService" ref="smsServiceImpl" />
+		<property name="notificationMessageParserService" ref="notificationMessageParserServiceImpl" />
+		<property name="systemParametersService" ref="systemParametersServiceImpl" />
+		<property name="htm" ref="txManager" />
+	</bean>
+	<bean id="atmRequestHandler" class="com.mfino.bsim.iso8583.handlers.ATMRequestHandler" factory-method="createInstance">
+		<property name="subscriberMdnService" ref="subscriberMdnServiceImpl" />
+		<property name="pocketService" ref="pocketServiceImpl" />
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="htm" ref="txManager" />
+	</bean>
+	<bean id="keyExchangeHandler" class="com.mfino.bsim.iso8583.nm.KeyExchangeHandler" factory-method="createInstance"> 
+ 		<property name="htm" ref="txManager" /> 
+ 	</bean> 	
+</beans>

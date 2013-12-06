@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+ 	<property name="autoIncrement" value="true" dbms="mysql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+ 	
+  	<property name="BIGINT" value="BIGINT" dbms="mysql"/>
+	<property name="BIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	 	
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+		
+	<changeSet author="MFS_MAIN" id="TABLE-PERMISSION_ITEM-160">
+		<addColumn tableName="permission_item">
+			<column name="PermissionGroupID" type="${BIGINT}"/>
+			<column name="Description" type="${VARCHAR}"/>
+ 		</addColumn>
+	</changeSet>
+	<changeSet author="MFS_MAIN" id="FKC-PERMISSION_ITEM_GROUPID-209">
+        <addForeignKeyConstraint baseColumnNames="PermissionGroupID" baseTableName="permission_item"  constraintName="fk_permission_item_groupid" referencedColumnNames="ID" referencedTableName="permission_group"  />
+    </changeSet>
+</databaseChangeLog>

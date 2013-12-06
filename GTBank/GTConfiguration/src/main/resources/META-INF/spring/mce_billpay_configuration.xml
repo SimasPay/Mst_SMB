@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd 
+	    http://camel.apache.org/schema/cxf
+		http://camel.apache.org/schema/cxf/camel-cxf.xsd ">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<camelContext id="billpay" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<route>
+			<from uri="jms:billPayQueue?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QuickTeller'</simple>
+				<to uri="jms:quickTellerBillPayQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+			    <simple>${in.body.request.getIntegrationCode} == 'clickatell'</simple>
+			    <to uri="jms:clickatellBillPayQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == '1111'</simple>
+				<to uri="jms:mfinowsQ?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'NIBSS'</simple>
+				<to uri="jms:nibssFundTransferQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ATPP'</simple>
+				<to uri="jms:airtimePinPurchaseQueue?disableReplyTo=true"/>
+			</filter>			
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'FRSC'</simple>
+				<to uri="jms:frscPaymentQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'StarTimes'</simple>
+				<to uri="jms:starTimesPaymentQueue?disableReplyTo=true"/>
+			</filter>			
+		</route>
+		<route>
+		    <from uri="jms:moneyTransferInquirySuspenseToDestination?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QuickTeller'</simple>
+				<to uri="jms:quicktellermoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'clickatell'</simple>
+				<to uri="jms:clickatellmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>
+		   <filter>
+				<simple>${in.body.request.getIntegrationCode} == '1111'</simple>
+				<to uri="jms:dstvmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'NIBSS'</simple>
+				<to uri="jms:nibssMoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ATPP'</simple>
+				<to uri="jms:airtimePinPurchaseQueue?disableReplyTo=true"/>
+			</filter>			   
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'FRSC'</simple>
+				<to uri="jms:frscPaymentInquirySuspenseToDestination?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'StarTimes'</simple>
+				<to uri="jms:starTimesPaymentInquirySuspenseToDestination?disableReplyTo=true"/>
+			</filter>			
+		</route>
+		
+		<route>
+		    <from uri="jms:suspenseAndChargesToSourceReversal?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QuickTeller'</simple>
+				<to uri="jms:quicktellersuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'clickatell'</simple>
+				<to uri="jms:clickatellsuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+		   </filter>
+		   <filter>
+				<simple>${in.body.request.getIntegrationCode} == '1111'</simple>
+				<to uri="jms:dstvmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'NIBSS'</simple>
+				<to uri="jms:nibssSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+		   </filter>
+		   <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ATPP'</simple>
+				<to uri="jms:airtimePinPurchaseQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'FRSC'</simple>
+				<to uri="jms:frscPaymentSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'StarTimes'</simple>
+				<to uri="jms:starTimesPaymentSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+			</filter>			
+		</route>
+
+		<route>
+		    <from uri="jms:suspenseAndChargesRRQueue?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QuickTeller'</simple>
+				<to uri="jms:quicktellerSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'clickatell'</simple>
+				<to uri="jms:clickatellSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'NIBSS'</simple>
+				<to uri="jms:nibssSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ATPP'</simple>
+				<to uri="jms:atppSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'FRSC'</simple>
+				<to uri="jms:frscPaymentSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'StarTimes'</simple>
+				<to uri="jms:starTimesSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+			</filter>			
+		</route>
+
+		<route>
+		    <from uri="jms:bpSourceToSuspenseBRQueue?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QuickTeller'</simple>
+				<to uri="jms:quicktellerSourceToSuspenseBRQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'clickatell'</simple>
+				<to uri="jms:clickatellSourceToSuspenseBRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'NIBSS'</simple>
+				<to uri="jms:nibssSourceToSuspenseBRQueue?disableReplyTo=true"/>
+		   </filter>
+		   <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ATPP'</simple>
+				<to uri="jms:atppSourceToSuspenseBRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'FRSC'</simple>
+				<to uri="jms:frscPaymentSourceToSuspenseBRQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'StarTimes'</simple>
+				<to uri="jms:starTimesSourceToSuspenseBRQueue?disableReplyTo=true"/>
+			</filter>	
+		</route>
+
+		<route>
+		    <from uri="jms:bpSuspenseToDestBRQueue?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QuickTeller'</simple>
+				<to uri="jms:quicktellerSuspenseToDestBRQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'clickatell'</simple>
+				<to uri="jms:clickatellSuspenseToDestBRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'NIBSS'</simple>
+				<to uri="jms:nibssSuspenseToDestBRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ATPP'</simple>
+				<to uri="jms:atppSuspenseToDestBRQueue?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'FRSC'</simple>
+				<to uri="jms:frscPaymentSuspenseToDestBRQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'StarTimes'</simple>
+				<to uri="jms:starTimesSuspenseToDestBRQueue?disableReplyTo=true"/>
+			</filter>	
+		</route>		
+
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

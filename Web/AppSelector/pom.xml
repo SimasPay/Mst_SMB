@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>Web</artifactId>
+    <groupId>com.mfino.application</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>AppSelector</artifactId>
+  <packaging>war</packaging>
+  <name>AppSelector Maven Webapp</name>
+  
+  <url>http://maven.apache.org</url>
+  	<dependencies>
+  		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.8</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+  			<groupId>javax.servlet</groupId>
+  			<artifactId>jstl</artifactId>
+  			<version>1.1.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>3.3.2.GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>3.0.5.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
+		<dependency>
+ 			  <groupId>javax.persistence</groupId>
+ 			  <artifactId>persistence-api</artifactId>
+    		<version>1.0.2</version>
+			   <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-entitymanager</artifactId>
+		   <version>3.6.7.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.2</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+            
+      	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>3.0.5.RELEASE</version>
+		</dependency>
+     
+        <dependency>
+    	    <groupId>commons-dbcp</groupId>
+    	    <artifactId>commons-dbcp</artifactId>
+    	    <version>1.0</version>
+    	 </dependency>
+         
+         <dependency>
+	 	  	<groupId>atg.taglib.json</groupId>
+			<artifactId>json-taglib</artifactId>
+		    <version>0.4.1</version>
+    	 </dependency>
+   	</dependencies>
+  
+  <build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>1.6</source>
+				<target>1.6</target>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<configuration>
+				<downloadSources>true</downloadSources>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<version>2.2</version>
+			<configuration>
+				<warSourceDirectory>web</warSourceDirectory>
+					<webappDirectory>target/AppSelector</webappDirectory>
+					<warSourceExcludes>test</warSourceExcludes>
+				<warName>AppSelector</warName>
+				<archive>
+					<manifestEntries>
+						<release>${release}</release>
+						<revision>${revision}</revision>
+						<buildtime>${buildtime}</buildtime>
+					</manifestEntries>
+				</archive>
+ 			</configuration>
+		</plugin>
+	</plugins>
+    <finalName>AppSelector</finalName>
+ </build>
+</project>

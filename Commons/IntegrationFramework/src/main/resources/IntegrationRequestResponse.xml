@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:integration>
+<!-- xmlns:tns="http://www.mfino.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="IntegrationRequestResponse.xsd" -->
+  <tns:message type="inquiry">
+    <tns:requestOut>
+      <tns:field identifier="CustomerID" param="{CustomerID}"/>
+      <tns:field identifier="TerminalID" param="{TerminalID}"/>
+      <tns:field identifier="TxnID" param="{MFSRefID}"/>
+      <tns:field identifier="TxnAmount" param="{Amount}"/>
+    </tns:requestOut>
+    <tns:responseIn>
+      <tns:field identifier="ResponseCode" param="{ResponseCode}"/>
+      <tns:field identifier="BillInfo" param="{BillInfo}"/>
+      <tns:field identifier="PaymentRefID" param="{PaymentRefID}"/>
+    </tns:responseIn>
+  </tns:message>
+  <tns:message type="confirmation">
+    <tns:requestOut>
+      <tns:field identifier="CustomerID" param="{CustomerID}"/>
+      <tns:field identifier="TerminalID" param="{TerminalID}"/>
+      <tns:field identifier="TxnID" param="{MFSRefID}"/>
+      <tns:field identifier="TxnAmount" param="{Amount}"/>
+      <tns:field identifier="Info" param="{ConfirmBillInfo}"/>
+      <tns:field identifier="PaymentRefID" param="{ConfirmPaymentRefID}"/>
+    </tns:requestOut>
+    <tns:responseIn>
+      <tns:field identifier="ReferenceID" param="{ReconID}"/>
+      <tns:field identifier="ResponseCode" param="{ResponseCode}"/>
+    </tns:responseIn>
+  </tns:message>
+  <tns:parameter name="{CustomerID}" isSecure="false" isPersistent="true">
+      <tns:value>{txn.mdn}</tns:value>
+  </tns:parameter>
+  <tns:parameter name="{TerminalID}" isSecure="false" isPersistent="true">
+      <tns:value>20012</tns:value>
+  </tns:parameter>
+  <tns:parameter name="{MFSRefID}" isSecure="false" isPersistent="true">
+      <tns:value>{txn.sctlid}</tns:value>
+  </tns:parameter>
+  <tns:parameter name="{Amount}" isSecure="false" isPersistent="true">
+      <tns:value>{txn.amount}</tns:value>
+  </tns:parameter>  
+   <tns:parameter name="{ConfirmBillInfo}" isSecure="false" isPersistent="true">
+      <tns:value>{inquiry.BillInfo}</tns:value>
+  </tns:parameter>
+   <tns:parameter name="{ConfirmPaymentRefID}" isSecure="false" isPersistent="true">
+      <tns:value>{inquiry.PaymentRefID}</tns:value>
+  </tns:parameter>  
+</tns:integration>

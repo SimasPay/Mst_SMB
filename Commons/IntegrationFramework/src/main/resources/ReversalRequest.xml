@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Reversal>
+	<Header>
+		<MessageID>Value</MessageID>
+		<TrxID>Value</TrxID>
+		<TrxTime>Value</TrxTime>
+		<TerminalID>Value</TerminalID>
+		<ChannelID>Value</ChannelID>
+		<BillerID>Value</BillerID>
+		<BillerCategory>Value</BillerCategory>
+	</Header>
+	<Payload>
+		<CustomerID>Value</CustomerID>
+		<TrxAmount>Value</TrxAmount>
+		<OrigMessageID>Value</OrigMessageID>
+		<OrigTrxTime>Value</OrigTrxTime>
+	</Payload>
+</Reversal>

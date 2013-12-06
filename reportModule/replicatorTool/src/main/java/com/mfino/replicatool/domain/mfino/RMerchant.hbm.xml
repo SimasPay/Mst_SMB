@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:49 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Merchant" optimistic-lock="version" table="merchant" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<one-to-one name="Subscriber"  constrained="true"/>
+<many-to-one name="MerchantByParentID" foreign-key="FK_Merchant_MerchantByParentID" class="com.mfino.domain.Merchant" fetch="select">
+<column name="ParentID"     />
+</many-to-one>
+<property name="GroupID" type="java.lang.String" >
+<column name="GroupID"    sql-type="varchar(255)" />
+</property>
+<property name="TradeName" type="java.lang.String" >
+<column name="TradeName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="TypeOfOrganization" type="java.lang.String" >
+<column name="TypeOfOrganization"    sql-type="varchar(255)" />
+</property>
+<property name="DistributionChainTemplateID" type="java.lang.Long" >
+<column name="DistributionChainTemplateID"    sql-type="bigint" />
+</property>
+<property name="FaxNumber" type="java.lang.String" >
+<column name="FaxNumber"    sql-type="varchar(255)" />
+</property>
+<property name="WebSite" type="java.lang.String" >
+<column name="WebSite"    sql-type="varchar(255)" />
+</property>
+<property name="CurrentWeeklyPurchaseAmount" type="big_decimal" >
+<column name="CurrentWeeklyPurchaseAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="LastLOPTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastLOPTime"   length="19" sql-type="datetime" />
+</property>
+<property name="AuthorizedRepresentative" type="java.lang.String" >
+<column name="AuthorizedRepresentative"    sql-type="varchar(255)" />
+</property>
+<property name="RepresentativeName" type="java.lang.String" >
+<column name="RepresentativeName"    sql-type="varchar(255)" />
+</property>
+<property name="Designation" type="java.lang.String" >
+<column name="Designation"    sql-type="varchar(255)" />
+</property>
+<property name="FranchisePhoneNumber" type="java.lang.String" >
+<column name="FranchisePhoneNumber"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="AddressByFranchiseOutletAddressID" foreign-key="FK_Merchant_AddressByFranchiseOutletAddressID" class="com.mfino.domain.Address" fetch="select">
+<column name="FranchiseOutletAddressID"     />
+</many-to-one>
+<many-to-one name="AddressByMerchantAddressID" foreign-key="FK_Merchant_AddressByMerchantAddressID" class="com.mfino.domain.Address" fetch="select">
+<column name="MerchantAddressID"     />
+</many-to-one>
+<property name="Classification" type="java.lang.String" >
+<column name="Classification"    sql-type="varchar(255)" />
+</property>
+<property name="NumberOfOutlets" type="java.lang.Integer" >
+<column name="NumberOfOutlets"    sql-type="int" />
+</property>
+<property name="IndustryClassification" type="java.lang.String" >
+<column name="IndustryClassification"    sql-type="varchar(255)" />
+</property>
+<property name="YearEstablished" type="java.lang.Integer" >
+<column name="YearEstablished"    sql-type="int" />
+</property>
+<property name="AuthorizedFaxNumber" type="java.lang.String" >
+<column name="AuthorizedFaxNumber"    sql-type="varchar(255)" />
+</property>
+<property name="AuthorizedEmail" type="java.lang.String" >
+<column name="AuthorizedEmail"    sql-type="varchar(255)" />
+</property>
+<property name="AdminComment" type="java.lang.String" >
+<column name="AdminComment"    sql-type="varchar(255)" />
+</property>
+<property name="Status" type="java.lang.Integer" index="Status">
+<column name="Status" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<many-to-one name="Region" foreign-key="FK_Merchant_Region" class="com.mfino.domain.Region" fetch="select">
+<column name="RegionID"     />
+</many-to-one>
+<property name="RangeCheck" type="java.lang.Integer" >
+<column name="RangeCheck"    sql-type="int" />
+</property>
+<set name="LOPFromSubscriberID" inverse="true">
+<key>
+<column name="SubscriberID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.LOP" />
+</set>
+<set name="MerchantFromParentID" inverse="true">
+<key>
+<column name="ParentID"    />
+</key>
+<one-to-many class="com.mfino.domain.Merchant" />
+</set>
+<set name="MDNRangeFromMerchantID" inverse="true">
+<key>
+<column name="MerchantID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MDNRange" />
+</set>
+<set name="BulkLOPFromMerchantID" inverse="true">
+<key>
+<column name="MerchantID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkLOP" />
+</set>
+</class>
+</hibernate-mapping>

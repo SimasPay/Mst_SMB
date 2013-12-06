@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='NG'>
+	<field id='accountnumber'  type='N' length='12'/>
+	<field id='pin' type='N' length='5' />
+</schema> 

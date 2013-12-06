@@ -1,0 +1,372 @@
+<xsd:schema attributeFormDefault="qualified"
+	elementFormDefault="qualified" targetNamespace="http://techquest.interswitchng.com/"
+	xmlns:tns="http://techquest.interswitchng.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+
+
+	<xsd:element name="Iso8583PostXml" nillable="true">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="0" name="Service"
+					nillable="false" type="xsd:string" />
+				<xsd:element maxOccurs="1" minOccurs="0" name="MsgType"
+					nillable="true" type="xsd:string" />
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="Fields"
+					nillable="true">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_002"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_003"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_004"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_005"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_006"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_007"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_008"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_009"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_010"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_011"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_012"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_013"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_014"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_015"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_016"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_017"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_018"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_019"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_020"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_021"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_022"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_023"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_024"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_025"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_026"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_027"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_028"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_029"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_030"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_031"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_032"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_033"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_034"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_035"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_036"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_037"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_038"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_039"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_040"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_041"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_042"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_043"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_044"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_045"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_046"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_047"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_048"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_049"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_050"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_051"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_052"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_053"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_054"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_055"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_056"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_057"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_058"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_059"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_060"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_061"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_062"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_063"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_064"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_065"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_066"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_067"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_068"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_069"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_070"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_071"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_072"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_073"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_074"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_075"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_076"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_077"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_078"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_079"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_080"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_081"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_082"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_083"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_084"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_085"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_086"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_087"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_088"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_089"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_090"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_091"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_092"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_093"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_094"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_095"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_096"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_097"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_098"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_099"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_100"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_101"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_102"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_103"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_104"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_105"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_106"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_107"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_108"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_109"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_110"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_111"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_112"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_113"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_114"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_115"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_116"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_117"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_118"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_119"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_120"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_121"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_122"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_123"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_124"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_125"
+								nillable="false" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_126"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_001"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_002"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_003"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_004"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_005"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_006"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_007"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_008"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_009"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_010"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_011"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_012"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_013"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_014"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_015"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_016"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_017"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_018"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_019"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_020"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_021"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_022"
+								nillable="true">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element maxOccurs="1" minOccurs="0"
+											name="StructureData" nillable="true">
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element maxOccurs="1" minOccurs="0"
+													name="CustomerID" nillable="true" type="xsd:string" />
+												<xsd:element maxOccurs="1" minOccurs="0"
+													name="WithdrawalCode" nillable="true" type="xsd:string" />
+											</xsd:sequence>
+										</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_023"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_024"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_025"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_026"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_027"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_028"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_029"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_030"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_031"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_032"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_033"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_034"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_035"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_036"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_037"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_038"
+								nillable="true" type="xsd:string" />
+							<xsd:element maxOccurs="1" minOccurs="0" name="Field_127_039"
+								nillable="true" type="xsd:string" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+
+
+
+</xsd:schema>

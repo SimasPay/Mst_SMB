@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://nfp.zenithbank.com" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://nfp.zenithbank.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://nfp.zenithbank.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:element name="txnstatusquerybulkitem">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="txnstatusquerybulkitemResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfersingleitem2_dc">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfersingleitem2_dcResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransferbulkitem">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransferbulkitemResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransferbulkitem_dc">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransferbulkitem_dcResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransferbulkitem_dd">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransferbulkitem_ddResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfernotification_dd">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfernotification_ddResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfernotification_dc">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfernotification_dcResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="balanceenquiry">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="balanceenquiryResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="nameenquirybulkitem">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="nameenquirybulkitemResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfersingleitem_dd">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfersingleitem_ddResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getTransactionStatus">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getTransactionStatusResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="nameenquirysingleitem">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="nameenquirysingleitemResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfersingleitem_dc">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="fundtransfersingleitem_dcResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="nameenquirynotification">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="nameenquirynotificationResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="txnstatusquerysingleitem">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="txnstatusquerysingleitemResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/> 
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="nameenquirynotificationRequest">
+    <wsdl:part name="parameters" element="tns:nameenquirynotification">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nameenquirysingleitemResponse">
+    <wsdl:part name="parameters" element="tns:nameenquirysingleitemResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfernotification_dcRequest">
+    <wsdl:part name="parameters" element="tns:fundtransfernotification_dc">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfersingleitem_dcRequest">
+    <wsdl:part name="parameters" element="tns:fundtransfersingleitem_dc">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfersingleitem_ddResponse">
+    <wsdl:part name="parameters" element="tns:fundtransfersingleitem_ddResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfersingleitem2_dcResponse">
+    <wsdl:part name="parameters" element="tns:fundtransfersingleitem2_dcResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nameenquirybulkitemResponse">
+    <wsdl:part name="parameters" element="tns:nameenquirybulkitemResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransferbulkitem_dcRequest">
+    <wsdl:part name="parameters" element="tns:fundtransferbulkitem_dc">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransferbulkitem_dcResponse">
+    <wsdl:part name="parameters" element="tns:fundtransferbulkitem_dcResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransferbulkitem_ddRequest">
+    <wsdl:part name="parameters" element="tns:fundtransferbulkitem_dd">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTransactionStatusResponse">
+    <wsdl:part name="parameters" element="tns:getTransactionStatusResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="txnstatusquerybulkitemRequest">
+    <wsdl:part name="parameters" element="tns:txnstatusquerybulkitem">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="txnstatusquerysingleitemRequest">
+    <wsdl:part name="parameters" element="tns:txnstatusquerysingleitem">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="txnstatusquerybulkitemResponse">
+    <wsdl:part name="parameters" element="tns:txnstatusquerybulkitemResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nameenquirybulkitemRequest">
+    <wsdl:part name="parameters" element="tns:nameenquirybulkitem">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransferbulkitemResponse">
+    <wsdl:part name="parameters" element="tns:fundtransferbulkitemResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransferbulkitem_ddResponse">
+    <wsdl:part name="parameters" element="tns:fundtransferbulkitem_ddResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfernotification_dcResponse">
+    <wsdl:part name="parameters" element="tns:fundtransfernotification_dcResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="balanceenquiryRequest">
+    <wsdl:part name="parameters" element="tns:balanceenquiry">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="balanceenquiryResponse">
+    <wsdl:part name="parameters" element="tns:balanceenquiryResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nameenquirysingleitemRequest">
+    <wsdl:part name="parameters" element="tns:nameenquirysingleitem">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nameenquirynotificationResponse">
+    <wsdl:part name="parameters" element="tns:nameenquirynotificationResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="txnstatusquerysingleitemResponse">
+    <wsdl:part name="parameters" element="tns:txnstatusquerysingleitemResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfernotification_ddRequest">
+    <wsdl:part name="parameters" element="tns:fundtransfernotification_dd">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTransactionStatusRequest">
+    <wsdl:part name="parameters" element="tns:getTransactionStatus">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfersingleitem_ddRequest">
+    <wsdl:part name="parameters" element="tns:fundtransfersingleitem_dd">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfersingleitem_dcResponse">
+    <wsdl:part name="parameters" element="tns:fundtransfersingleitem_dcResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfernotification_ddResponse">
+    <wsdl:part name="parameters" element="tns:fundtransfernotification_ddResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransfersingleitem2_dcRequest">
+    <wsdl:part name="parameters" element="tns:fundtransfersingleitem2_dc">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fundtransferbulkitemRequest">
+    <wsdl:part name="parameters" element="tns:fundtransferbulkitem">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="NibssFasterPayPortType">
+    <wsdl:operation name="txnstatusquerybulkitem">
+      <wsdl:input name="txnstatusquerybulkitemRequest" message="tns:txnstatusquerybulkitemRequest">
+    </wsdl:input>
+      <wsdl:output name="txnstatusquerybulkitemResponse" message="tns:txnstatusquerybulkitemResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfersingleitem2_dc">
+      <wsdl:input name="fundtransfersingleitem2_dcRequest" message="tns:fundtransfersingleitem2_dcRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransfersingleitem2_dcResponse" message="tns:fundtransfersingleitem2_dcResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransferbulkitem">
+      <wsdl:input name="fundtransferbulkitemRequest" message="tns:fundtransferbulkitemRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransferbulkitemResponse" message="tns:fundtransferbulkitemResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransferbulkitem_dc">
+      <wsdl:input name="fundtransferbulkitem_dcRequest" message="tns:fundtransferbulkitem_dcRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransferbulkitem_dcResponse" message="tns:fundtransferbulkitem_dcResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransferbulkitem_dd">
+      <wsdl:input name="fundtransferbulkitem_ddRequest" message="tns:fundtransferbulkitem_ddRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransferbulkitem_ddResponse" message="tns:fundtransferbulkitem_ddResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfernotification_dd">
+      <wsdl:input name="fundtransfernotification_ddRequest" message="tns:fundtransfernotification_ddRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransfernotification_ddResponse" message="tns:fundtransfernotification_ddResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfernotification_dc">
+      <wsdl:input name="fundtransfernotification_dcRequest" message="tns:fundtransfernotification_dcRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransfernotification_dcResponse" message="tns:fundtransfernotification_dcResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="balanceenquiry">
+      <wsdl:input name="balanceenquiryRequest" message="tns:balanceenquiryRequest">
+    </wsdl:input>
+      <wsdl:output name="balanceenquiryResponse" message="tns:balanceenquiryResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nameenquirybulkitem">
+      <wsdl:input name="nameenquirybulkitemRequest" message="tns:nameenquirybulkitemRequest">
+    </wsdl:input>
+      <wsdl:output name="nameenquirybulkitemResponse" message="tns:nameenquirybulkitemResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfersingleitem_dd">
+      <wsdl:input name="fundtransfersingleitem_ddRequest" message="tns:fundtransfersingleitem_ddRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransfersingleitem_ddResponse" message="tns:fundtransfersingleitem_ddResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTransactionStatus">
+      <wsdl:input name="getTransactionStatusRequest" message="tns:getTransactionStatusRequest">
+    </wsdl:input>
+      <wsdl:output name="getTransactionStatusResponse" message="tns:getTransactionStatusResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nameenquirysingleitem">
+      <wsdl:input name="nameenquirysingleitemRequest" message="tns:nameenquirysingleitemRequest">
+    </wsdl:input>
+      <wsdl:output name="nameenquirysingleitemResponse" message="tns:nameenquirysingleitemResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfersingleitem_dc">
+      <wsdl:input name="fundtransfersingleitem_dcRequest" message="tns:fundtransfersingleitem_dcRequest">
+    </wsdl:input>
+      <wsdl:output name="fundtransfersingleitem_dcResponse" message="tns:fundtransfersingleitem_dcResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nameenquirynotification">
+      <wsdl:input name="nameenquirynotificationRequest" message="tns:nameenquirynotificationRequest">
+    </wsdl:input>
+      <wsdl:output name="nameenquirynotificationResponse" message="tns:nameenquirynotificationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="txnstatusquerysingleitem">
+      <wsdl:input name="txnstatusquerysingleitemRequest" message="tns:txnstatusquerysingleitemRequest">
+    </wsdl:input>
+      <wsdl:output name="txnstatusquerysingleitemResponse" message="tns:txnstatusquerysingleitemResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NibssFasterPayHttpBinding" type="tns:NibssFasterPayPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="txnstatusquerybulkitem">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="txnstatusquerybulkitemRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="txnstatusquerybulkitemResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfersingleitem2_dc">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransfersingleitem2_dcRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransfersingleitem2_dcResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransferbulkitem">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransferbulkitemRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransferbulkitemResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransferbulkitem_dc">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransferbulkitem_dcRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransferbulkitem_dcResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransferbulkitem_dd">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransferbulkitem_ddRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransferbulkitem_ddResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfernotification_dd">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransfernotification_ddRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransfernotification_ddResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfernotification_dc">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransfernotification_dcRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransfernotification_dcResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="balanceenquiry">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="balanceenquiryRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="balanceenquiryResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nameenquirybulkitem">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="nameenquirybulkitemRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="nameenquirybulkitemResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfersingleitem_dd">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransfersingleitem_ddRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransfersingleitem_ddResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTransactionStatus">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getTransactionStatusRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getTransactionStatusResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nameenquirysingleitem">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="nameenquirysingleitemRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="nameenquirysingleitemResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fundtransfersingleitem_dc">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="fundtransfersingleitem_dcRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="fundtransfersingleitem_dcResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nameenquirynotification">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="nameenquirynotificationRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="nameenquirynotificationResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="txnstatusquerysingleitem">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="txnstatusquerysingleitemRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="txnstatusquerysingleitemResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="NibssFasterPay">
+    <wsdl:port name="NibssFasterPayHttpPort" binding="tns:NibssFasterPayHttpBinding">
+      <wsdlsoap:address location="http://172.29.30.251:8080/NibssFasterPay/services/NibssFasterPay"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

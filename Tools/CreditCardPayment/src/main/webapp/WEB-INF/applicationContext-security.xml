@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+        xmlns:bean="http://www.springframework.org/schema/bean"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+
+    
+    <global-method-security secured-annotations="enabled">
+        <!-- example for future authorization against business logic
+        <protect-pointcut expression="execution(* org.springframework.samples.petclinic.Clinic.storeVisit(..))"
+            access="ROLE_SUPERVISOR"/>
+        -->
+    </global-method-security>
+ 
+    <http auto-config="false">
+        <form-login login-page="/login.htm" default-target-url="/index.htm"
+            authentication-failure-url="/login.htm?login_error=1" />
+        <logout logout-success-url="/index.htm"/>
+
+        <!-- 
+        <intercept-url pattern="/login.htm" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
+        -->
+        <intercept-url pattern="/changepassword.htm*" filters="none"/>
+        <intercept-url pattern="/registration.jsp" filters="none"/>
+        <intercept-url pattern="/ValidateRegistrationServlet" filters="none"/>
+        <intercept-url pattern="/RegistrationServlet" filters="none"/>
+        <intercept-url pattern="/confirmRegistration.jsp" filters="none"/>
+		<intercept-url pattern="/CodeValidation" filters="none"/>
+		<intercept-url pattern="/ValidateForgotPassword" filters="none"/>
+		<intercept-url pattern="/ForgotPasswordServlet" filters="none"/>		
+		<intercept-url pattern="/getData" filters="none"/>		
+        <intercept-url pattern="/verify*" filters="none"/>
+        <intercept-url pattern="/notify*" filters="none"/>
+        <intercept-url pattern="/redirect*" filters="none"/>
+        <intercept-url pattern="/forgotPasswordConfirmationCode.jsp*" filters="none"/>
+        <intercept-url pattern="/ForgotPasswordConfirmationCodeServlet" filters="none"/>
+        <intercept-url pattern="/ForgotPasswordUpdationServlet" filters="none"/>           
+        <intercept-url pattern="/cancel*" filters="none"/>
+        <intercept-url pattern="/codeConfirmationResult.jsp*" filters="none"/>
+        <intercept-url pattern="/mdnvalidation.jsp" filters="none"/>
+        <intercept-url pattern="/CodeConfirmServlet" filters="none"/>
+        <intercept-url pattern="/registrationCodeConfirmation.jsp" filters="none"/>
+        <intercept-url pattern="/notifyEdu" filters="none"/>
+        <intercept-url pattern="/timeout" filters="none"/>
+        <intercept-url pattern="/forgotPassword.jsp" filters="none"/>
+        <intercept-url pattern="/login.htm*" filters="none"/>
+        <intercept-url pattern="/confirmRegistration.htm" filters="none"/>
+        <intercept-url pattern="/js/**" filters="none" />
+        <intercept-url pattern="/test/**" filters="none" />
+        <intercept-url pattern="/images/**" filters="none" />
+        <intercept-url pattern="/css/**" filters="none" />
+        <intercept-url pattern="/resources/**" filters="none" />     
+        <!--
+        Grant access to any Prinicipal that is already authenticated
+        -->
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED"/>
+    </http>
+    
+    <beans:bean id="authenticationProcessingFilter" class="com.mfino.security.AuthProcessingFilter">
+        <custom-filter before="AUTHENTICATION_PROCESSING_FILTER" />
+        <beans:property name="defaultTargetUrl" value="/changepassword.htm" />
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <beans:property name="alwaysUseDefaultTargetUrl" value="true"/>
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager"/>
+
+    <beans:bean id="authenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+        <beans:property name="loginFormUrl" value="/login.htm" />
+        <beans:property name="forceHttps" value="false" />
+    </beans:bean>
+
+    <beans:bean id="authenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+        <custom-authentication-provider />
+        <beans:property name="hideUserNotFoundExceptions" value="false" />
+        <beans:property name="userDetailsService" ref="customUserService" />
+        <beans:property name="passwordEncoder" ref="passwordEncoder"/>
+        <beans:property name="saltSource" ref="saltSource"/>
+    </beans:bean>
+</beans:beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.Users" table="users" catalog="report">
+        <id name="username" type="string">
+            <column name="username" />
+            <generator class="assigned" />
+        </id>
+        <property name="password" type="string">
+            <column name="password" />
+        </property>
+        <property name="enabled" type="java.lang.Boolean">
+            <column name="enabled" />
+        </property>
+
+    </class>
+</hibernate-mapping>

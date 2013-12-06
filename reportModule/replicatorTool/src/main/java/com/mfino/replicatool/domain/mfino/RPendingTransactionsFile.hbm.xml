@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:51 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.PendingTransactionsFile" optimistic-lock="version" table="pending_txns_file" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="FileName" type="java.lang.String" >
+<column name="FileName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="FileData" type="java.lang.String" >
+<column name="FileData" not-null="true"  sql-type="LONGTEXT" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="RecordCount" type="java.lang.Integer" >
+<column name="RecordCount"    sql-type="int" />
+</property>
+<property name="TotalLineCount" type="java.lang.Integer" >
+<column name="TotalLineCount"    sql-type="int" />
+</property>
+<property name="ErrorLineCount" type="java.lang.Integer" >
+<column name="ErrorLineCount"    sql-type="int" />
+</property>
+<property name="UploadFileStatus" type="java.lang.Integer" index="UploadFileStatus">
+<column name="UploadFileStatus" not-null="true"  sql-type="int" />
+</property>
+<property name="UploadReport" type="java.lang.String" >
+<column name="UploadReport"    sql-type="LONGTEXT" />
+</property>
+<property name="RecordType" type="java.lang.Integer" >
+<column name="RecordType"    sql-type="int" />
+</property>
+<property name="FileProcessedDate" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="FileProcessedDate"   length="19" sql-type="datetime" />
+</property>
+<many-to-one name="Company" foreign-key="FK_PendingTransactionsFile_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ResolveAs" type="java.lang.Integer" >
+<column name="ResolveAs"    sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

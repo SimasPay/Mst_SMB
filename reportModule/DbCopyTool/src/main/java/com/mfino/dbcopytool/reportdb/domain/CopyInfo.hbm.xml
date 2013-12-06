@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+<class name="com.mfino.dbcopytool.reportdb.domain.CopyScheduleInfo" table="copy_info" catalog="report">
+        <id name="Id" type="java.lang.Long">
+            <column name="Id" />
+            <generator class="increment"/>
+        </id>
+         <property name="className" type="string">
+            <column name="ClassName" />
+        </property>
+        <property name="lastCopyTime" type="timestamp">
+            <column name="LastCopyTime" length="19" />
+        </property>
+        
+</class>
+</hibernate-mapping>

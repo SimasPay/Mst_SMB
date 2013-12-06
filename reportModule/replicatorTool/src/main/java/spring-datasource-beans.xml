@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/osgi
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/osgi-compendium
+       http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.jasypt.org/schema/encryption
+       http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd">
+
+	<context:annotation-config/>
+	
+	
+	<bean id="configSaltgenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>YJW9qh52RP8gfRDI</value>
+        </property>
+    </bean>
+	
+	<bean id="config"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="passwordEnvName">
+			<value>ENCRYPTION_KEY</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+    	<property name="saltGenerator">
+    		<ref bean = "configSaltgenerator" />
+    	</property>
+	</bean>
+	
+	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<ref bean="config" />
+		</property>			
+	</bean>	
+	
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="stringEncryptor" />
+		<property name="locations">
+			<list>
+				<value>classpath:database_config.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="saletGenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>${saletGenerator.salt}</value>
+        </property>
+    </bean>	
+	
+	<bean id="hibernateStringEncryptor" class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateStringEncryptor</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="password">
+			<value>${hibernateStringEncryptor.password}</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>			
+	</bean>	
+
+	<bean id="hibernateUniqueStringEncryptor" class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateUniqueStringEncryptor</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="password">
+			<value>${hibernateUniqueStringEncryptor.password}</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>		
+	</bean>
+	
+	<!--  DB connection and persistence layer -->
+	<!--  DataSource Definition -->	 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>${datasource.driver}</value>
+		</property>
+		<property name="url">
+			<value>${datasource.url}</value>
+		</property>
+		<property name="username">
+			<value>${datasource.username}</value>
+		</property>
+		<property name="password">
+			<value>${datasource.password}</value>
+		</property>
+	    <property name="maxActive">
+			<value>100</value>
+		</property>
+	    <property name="maxIdle">
+			<value>20</value>
+		</property>
+	    <property name="initialSize">
+			<value>40</value>
+		</property>
+	    <property name="validationQuery">
+			<value>SELECT 1</value>
+		</property>
+	</bean>
+	
+	<!--  Hibernate SessionFactory Definition -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="false">
+		 <!-- <property name="mappingLocations">-->
+		  <property name="mappingResources">
+			<list>				
+			 	<!-- <value>classpath*:META-INF/com/mfino/replicatool/domain/mfino/*.hbm.xml</value>-->
+				<value>com/mfino/replicatool/domain/mfino/RSubscriberMDN.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPocket.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RDbParam.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSubscriber.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMobileNetworkOperator.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPocketTemplate.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/REnumText.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RUser.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionsLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBank.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RNotification.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RCommodityTransfer.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPendingCommodityTransfer.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RmFinoServiceProvider.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPerson2Person.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RAddress.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RLOP.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMerchant.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBulkUpload.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBulkUploadEntry.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RDistributionChainTemplate.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RDistributionChainLevel.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RRolePermission.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBulkBankAccount.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSAPGroupID.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPermissionItems.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/ROfflineReport.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/ROfflineReportReceiver.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/ROfflineReportForCompany.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RActivitiesLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBulkUploadFile.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RRegion.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RCompany.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RProductIndicator.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMDNRange.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBrand.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSMSCode.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMerchantCode.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPendingTransactionsFile.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPendingTransactionsEntry.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBulkLOP.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RLOPHistory.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RCreditCardTransaction.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RCardInfo.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RChannelCode.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMerchantPrefixCode.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSMSC.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSMSPartner.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSMSTransactionsLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBiller.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBankAdmin.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RCreditCardDestinations.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RDenomination.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBillPaymentTransaction.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPartner.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPartnerServices.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RService.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RServiceTransaction.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionType.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSettlementTemplate.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RServiceSettlementConfig.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMFSBiller.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMFSBillerPartner.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSettlementTransactionLogs.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RServiceChargeTransactionLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionAmountDistributionLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSettlementSchedulerLogs.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RChargeType.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RChargeDefinition.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RChargePricing.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionRule.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionCharge.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSharePartner.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RAuthorizingPerson.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSubscribersAdditionalFields.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionChargeLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RKYCLevel.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RKYCFields.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RSystemParameters.hbm.xml</value>
+			    <value>com/mfino/replicatool/domain/mfino/RServiceAudit.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RChannelSessionManagement.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RLedger.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RBillPayments.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RReportParameters.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RChargeTxnCommodityTransferMap.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RAirtimePurchase.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RVisafoneTxnGenerator.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RUnRegisteredTxnInfo.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RInterbankTransfer.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RInterBankCode.hbm.xml</value>							
+				<value>com/mfino/replicatool/domain/mfino/RSubscriberGroup.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RGroup.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPocketTemplateConfig.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RDCTRestrictions.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPartnerRestrictions.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RIntegrationPartnerMapping.hbm.xml</value>	
+				<value>com/mfino/replicatool/domain/mfino/RMFSDenominations.hbm.xml</value>		
+				<value>com/mfino/replicatool/domain/mfino/RAutoReversals.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RIPMapping.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RExcludeSubscriberLifeCycle.hbm.xml</value>	
+				<value>com/mfino/replicatool/domain/mfino/RRole.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RIntegrationSummary.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPTC_Group_Map.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RPurpose.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RExpirationType.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RFundDefinition.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RFundDistributionInfo.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RFundEvents.hbm.xml</value>		
+				<value>com/mfino/replicatool/domain/mfino/RMoneyClearanceGraved.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RClosedAccountSettlementMDN.hbm.xml</value>				
+				<value>com/mfino/replicatool/domain/mfino/RNotificationLog.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RTransactionPendingSummary.hbm.xml</value>
+				<value>com/mfino/replicatool/domain/mfino/RMdnOtp.hbm.xml</value>
+				
+			</list>
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</prop>
+			</props>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- Hibernate Transaction Manager Definition -->
+	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+
+    <bean id="hibernateSessionHolder" class="com.mfino.hibernate.session.HibernateSessionHolder"/>
+    	
+    <!-- 
+    	Expose all the dao as services
+     -->
+    <bean id="subscriberDAO" class="com.mfino.dao.SubscriberDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="subscriberMDNDAO" class="com.mfino.dao.SubscriberMDNDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+	
+    <bean id="transactionsLogDAO" class="com.mfino.dao.TransactionsLogDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+    <bean id="activitiesLogDAO" class="com.mfino.dao.ActivitiesLogDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="pocketDAO" class="com.mfino.dao.PocketDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="notificationDAO" class="com.mfino.dao.NotificationDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="mfinoServiceProviderDAO" class="com.mfino.dao.MfinoServiceProviderDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="pendingCommodityTransferDAO" class="com.mfino.dao.PendingCommodityTransferDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    		
+    <bean id="systemParameterDao" class="com.mfino.dao.SystemParametersDao" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="commodityTransferDao" class="com.mfino.dao.CommodityTransferDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+
+	<bean id="serviceChargeTransactionLogDAO" class="com.mfino.dao.ServiceChargeTransactionLogDAO"> 
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+	</bean>   
+	
+	 <bean id="chargeDefinitionDAO" class="com.mfino.dao.ChargeDefinitionDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+
+    <bean id="hibernateService" class="com.mfino.service.impl.HibernateServiceDefaultImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	</bean>
+
+	<bean id="daoFactory" class="com.mfino.dao.DAOFactory" factory-method="getInstance">
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>     
+    </bean>
+    
+    <bean id="coreServiceFactory" class="com.mfino.service.CoreServiceFactory" factory-method="getInstance">
+    	<property name="hibernateService" ref="hibernateService"/>     
+    </bean>    
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
+  <services>
+    <service name="PGWDataPushService">
+      <implementation-class>com.ztesoft.zsmart.bss.ws.PGWDataPushService</implementation-class>
+      <wsdl-url>file:/C:/Documents%20and%20Settings/admin/Desktop/PGWDataPushInterface.wsdl</wsdl-url>
+      <local-wsdl-file>PGWDataPushInterface.wsdl</local-wsdl-file>
+      <service-name>PGWDataPushInterfaceService</service-name>
+      <port-name>PGWDataPushInterface</port-name>
+      <package-name>com.ztesoft.zsmart.bss.ws</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+      <use-provider>false</use-provider>
+      <wsimport-options>
+        <wsimport-option>
+          <wsimport-option-name>extension</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>verbose</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>xnocompile</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+      </wsimport-options>
+    </service>
+  </services>
+  <clients/>
+  <jsr109>false</jsr109>
+</jax-ws>

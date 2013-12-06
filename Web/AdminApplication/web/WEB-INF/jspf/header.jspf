@@ -1,0 +1,29 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<%@include file="include.jspf" %>
+
+<!-- CSS -->
+<link type="text/css" href="<c:url value="/extjs/resources/css/ext-all.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/resources/css/app.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/resources/css/mfinostyles.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/js/ux/RowAction/css/Ext.ux.grid.RowActions.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/js/ux/form/FileUploadField.css"/>" rel="stylesheet" />
+
+<!-- Base -->
+<script type="text/javascript" src="<c:url value="/extjs/adapter/ext/ext-base.js"/>" ></script>
+<script type="text/javascript" src="<c:url value="/extjs/ext-all.js"/>" ></script>
+
+
+
+<!-- Put all mFino javascript references in footer.jspf. All scripts there will be concatenated. -->
+
+<SCRIPT type="text/javascript">
+    Ext.onReady(function(){
+        Ext.BLANK_IMAGE_URL = '<c:url value="/extjs/resources/images/default/s.gif"/>';
+        mFino.DATA_URL = "<c:url value='/fix.htm'/>";
+        mFino.BASE_URL = "<c:url value='/'/>";
+    });
+    
+    if(top != self)
+    	top.location = self.location;
+</SCRIPT>

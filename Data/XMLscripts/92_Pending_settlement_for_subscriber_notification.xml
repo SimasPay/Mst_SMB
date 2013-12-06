@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-47">
+		<delete tableName="notification">
+			<where>code='806'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="806"/>
+			<column name="CodeName" value="PendingSettlementDetails"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="TradeName:$(TradeName), Pending Settlement Amount:$(Amount), Service:$(Service), Status:$(SettlementStatus)"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="806"/>
+			<column name="CodeName" value="PendingSettlementDetails"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="TradeName:$(TradeName), Pending Settlement Amount:$(Amount), Service:$(Service), Status:$(SettlementStatus)"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="806"/>
+			<column name="CodeName" value="PendingSettlementDetails"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="TradeName:$(TradeName), Pending Settlement Amount:$(Amount), Service:$(Service), Status:$(SettlementStatus)"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="806"/>
+			<column name="CodeName" value="PendingSettlementDetails"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="TradeName:$(TradeName), Pending Settlement Amount:$(Amount), Service:$(Service), Status:$(SettlementStatus)"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="806"/>
+			<column name="CodeName" value="PendingSettlementDetails"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="TradeName:$(TradeName), Pending Settlement Amount:$(Amount), Service:$(Service), Status:$(SettlementStatus)"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-48">
+		<delete tableName="notification">
+			<where>code='807'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="807"/>
+			<column name="CodeName" value="NoPendingsettlementsWereFound"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Dear Customer, there are no pending settlements for you"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="807"/>
+			<column name="CodeName" value="NoPendingsettlementsWereFound"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Dear Customer, there are no pending settlements for you"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="807"/>
+			<column name="CodeName" value="NoPendingsettlementsWereFound"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Dear Customer, there are no pending settlements for you"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="807"/>
+			<column name="CodeName" value="NoPendingsettlementsWereFound"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Dear Customer, there are no pending settlements for you"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="807"/>
+			<column name="CodeName" value="NoPendingsettlementsWereFound"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Dear Customer, there are no pending settlements for you"/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-49">
+		<delete tableName="notification">
+			<where>code='808'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="808"/>
+			<column name="CodeName" value="InvalidPartner"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Dear Customer, you are not registered as partner. Please contact our customer care services at: $(CustomerServiceShortCode)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="808"/>
+			<column name="CodeName" value="InvalidPartner"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Dear Customer, you are not registered as partner. Please contact our customer care services at: $(CustomerServiceShortCode)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="808"/>
+			<column name="CodeName" value="InvalidPartner"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Dear Customer, you are not registered as partner. Please contact our customer care services at: $(CustomerServiceShortCode)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="808"/>
+			<column name="CodeName" value="InvalidPartner"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Dear Customer, you are not registered as partner. Please contact our customer care services at: $(CustomerServiceShortCode)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="808"/>
+			<column name="CodeName" value="InvalidPartner"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Dear Customer, you are not registered as partner. Please contact our customer care services at: $(CustomerServiceShortCode)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+	</changeSet>
+    <changeSet author="MFS_MAIN" id="DATA-ENUMTEXT-50">
+        <delete tableName="enum_text">
+			<where>TagID='8037'</where>
+		</delete>
+		<insert tableName="enum_text">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="SettlementStatus"/>
+            <column name="TagID" valueNumeric="8037"/>
+            <column name="EnumCode" value="0"/>
+            <column name="EnumValue" value="Initiated"/>
+            <column name="DisplayText" value="Initiated"/>
+        </insert>
+		<insert tableName="enum_text">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="SettlementStatus"/>
+            <column name="TagID" valueNumeric="8037"/>
+            <column name="EnumCode" value="1"/>
+            <column name="EnumValue" value="Completed"/>
+            <column name="DisplayText" value="Completed"/>
+        </insert>
+		<insert tableName="enum_text">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="SettlementStatus"/>
+            <column name="TagID" valueNumeric="8037"/>
+            <column name="EnumCode" value="2"/>
+            <column name="EnumValue" value="Failed"/>
+            <column name="DisplayText" value="Failed"/>
+        </insert>
+		<insert tableName="enum_text">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="SettlementStatus"/>
+            <column name="TagID" valueNumeric="8037"/>
+            <column name="EnumCode" value="3"/>
+            <column name="EnumValue" value="Failed"/>
+            <column name="DisplayText" value="Failed"/>
+        </insert>
+	</changeSet>
+
+</databaseChangeLog>
+		

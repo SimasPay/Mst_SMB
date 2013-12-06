@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd	    
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<!-- <osgi:reference id="jms" interface="org.apache.camel.Component" /> -->
+
+	<osgi:reference id="frontendService"
+		interface="com.mfino.mce.frontend.FrontendService" />
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="brokerURL"
+			value="tcp://${jms.brokerURL.host}:${jms.brokerURL.port}" />
+	</bean>
+
+	<!-- JPOS sender configuration -->
+	<camel:endpoint id="isoResponseEndpoint" uri="vm:isoResponseQueue" />
+	<bean id="bankCommunicator" class="com.mfino.mce.iso.jpos.comm.JPOSProcessor">
+		<constructor-arg index="0" ref="isoResponseEndpoint" />
+		<!-- this value and aggregator value need to be in sync -->
+		<constructor-arg index="1" value="30000" />
+	</bean>
+
+	<osgi:reference id="isotofixfactory"
+		interface="com.mfino.iso8583.definitions.isotofix.IIsoToFixProcessorFactory" />
+	<!-- Bean for aggregating the request and reponse when talking to iso server -->
+	<bean id="aggStrategy" class="com.mfino.mce.frontend.FrontendAggregationStragety">
+		<property name="isotofixFactoryInstance" ref="isotofixfactory" />
+	</bean>
+
+	<bean id="headerSetter" class="com.mfino.mce.frontend.FrontendSetHeader" />
+
+	<bean id="noIsoResponse" class="com.mfino.gt.iso8583.NoISOResponseProcessor" />
+
+	<bean id="jposCommuniator" class="com.mfino.gt.iso8583.JPOSCommunicator">
+		<constructor-arg index="0" ref="bankCommunicator"></constructor-arg>
+		<constructor-arg index="1" ref="bankSimulator"></constructor-arg>
+	</bean>
+
+	<bean id="bankSimulator" class="com.mfino.gt.iso8583.BankSimulator">
+		<constructor-arg index="0" ref="isoResponseEndpoint" />
+		<constructor-arg index="1" value="30000" />
+	</bean>
+	
+	<bean id="timeoutExp" class="com.mfino.gt.iso8583.CompletionTimeoutExpression"/>
+	
+	<camel:camelContext id="gtiso"
+		xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+
+		<onException>
+			<exception>com.mfino.mce.iso.jpos.NoISOResponseException</exception>
+			<redeliveryPolicy maximumRedeliveries="1" />
+			<handled>
+				<constant>true</constant>
+			</handled>
+			<to uri="jms:ISOdeadLetterQueue?disableReplyTo=true" />
+		</onException>
+		<onException>
+			<exception>com.mfino.gt.iso8583.TimedoutISOException</exception>
+			<handled><constant>true</constant></handled>
+			<to uri="jms:ISOdeadLetterQueue?disableReplyTo=true" />
+		</onException>
+
+		<route>
+			<from uri="jms:gtISOQueue?disableReplyTo=true" />
+			<multicast>
+				<to uri="direct:a" />
+				<to uri="direct:b" />
+			</multicast>
+		</route>
+
+		<route>
+			<from uri="direct:a" />
+			<process ref="headerSetter" />
+			<to uri="jms:gtAggQueue?disableReplyTo=true" />
+		</route>
+
+		<route>
+			<from uri="direct:b" />
+			<threads poolSize="10">
+				<to uri="bean:frontendService?method=processMessage" />
+				<bean ref="jposCommuniator" method="processMessage" />
+			</threads>
+		</route>
+
+		<route>
+			<from ref="isoResponseEndpoint" />
+			<threads poolSize="10">
+				<to uri="log:isoServerReply" />
+				<process ref="headerSetter" />
+				<to uri="jms:gtAggQueue?disableReplyTo=true" />
+			</threads>
+		</route>
+
+		<route>
+			<from uri="jms:gtAggQueue?disableReplyTo=true" />
+			<aggregate strategyRef="aggStrategy" >
+				<correlationExpression>
+					<simple>header.corr_id</simple>
+					<!-- <header>corr_id</header> -->
+				</correlationExpression>
+				<completionTimeout>
+					<method ref="timeoutExp"/>
+				</completionTimeout>
+				<completionSize>
+					<camel:constant>2</camel:constant>
+				</completionSize>
+				<to uri="log:frontendreply]" />
+				<!-- delayedReply header is set if the reply was delayed -->
+				<camel:removeHeader headerName="CamelSlipEndpoint" />
+				<to uri="bean:noIsoResponse?method=processMessage" />
+				<to uri="jms:frontendResponseServiceQueue?disableReplyTo=true" />
+			</aggregate>
+		</route>
+	</camel:camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

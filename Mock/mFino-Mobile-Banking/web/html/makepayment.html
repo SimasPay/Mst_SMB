@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.openmobileallianceorg.org/tech/DTD/xhtml-mobile10.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+           <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+        </SCRIPT>
+    </HEAD>
+    <body onload="setTimeout('effects()',50);">
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                        </td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                            <INPUT id="backbutton" type="button" value=" Back" class="back_btn" onclick="javascript:history.back();" >
+                        </td>
+                        <td width="60%">
+                            <DIV align="center">Make Payment to</DIV>
+                        </td>
+                        <td width="20%">
+                            <INPUT id="menubutton"
+                                   type="button"
+                                   value="Menu"
+
+                                   class="menuButton"
+                                   onclick="displayMenu();"
+                                   >
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+        <hr>
+        <DIV id="cmbody">
+            <ul>
+                <li id="firstItem" onclick="setPaymentTo('Cable');goToPage('paymentfrom.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    Cable
+                </li>
+                <li onclick="setPaymentTo('Car loan');goToPage('paymentfrom.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    Car loan
+                </li>
+                <li onclick="setPaymentTo('David&rsquo;s Credit Card');goToPage('paymentfrom.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    David&rsquo;s Credit Card
+                </li>
+                <li onclick="setPaymentTo('Mobile phone');goToPage('paymentfrom.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    Mobile phone
+                </li>
+                <li onclick="setPaymentTo('Mortgage');goToPage('paymentfrom.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    Mortgage
+                </li>
+                <li id="lastItem" onclick="setPaymentTo('Utilities');goToPage('paymentfrom.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    Utilities
+                </li>
+            </ul>
+            <DIV class="footer1" align="center" valign="middle">
+                <IMG border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </DIV>
+        </DIV>
+    </BODY>
+</HTML>

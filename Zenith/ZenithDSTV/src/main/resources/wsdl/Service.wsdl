@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/POS_TXNS/type/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/POS_TXNS/type/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/POS_TXNS/type/">
+      <s:element name="SavePOS_TXNS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SWPAYTXNCODE" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SWDTIME" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="MerchantID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TerminalID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Amount" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CustServID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ResponseCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PWD" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SavePOS_TXNSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SavePOS_TXNSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPOS_TXNS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MerchantID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PWD" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPOS_TXNSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPOS_TXNSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SavePOS_TXNSSoapIn">
+    <wsdl:part name="parameters" element="tns:SavePOS_TXNS" />
+  </wsdl:message>
+  <wsdl:message name="SavePOS_TXNSSoapOut">
+    <wsdl:part name="parameters" element="tns:SavePOS_TXNSResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPOS_TXNSSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPOS_TXNS" />
+  </wsdl:message>
+  <wsdl:message name="GetPOS_TXNSSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPOS_TXNSResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="SavePOS_TXNS">
+      <wsdl:input message="tns:SavePOS_TXNSSoapIn" />
+      <wsdl:output message="tns:SavePOS_TXNSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPOS_TXNS">
+      <wsdl:input message="tns:GetPOS_TXNSSoapIn" />
+      <wsdl:output message="tns:GetPOS_TXNSSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SavePOS_TXNS">
+      <soap:operation soapAction="http://tempuri.org/POS_TXNS/type/SavePOS_TXNS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPOS_TXNS">
+      <soap:operation soapAction="http://tempuri.org/POS_TXNS/type/GetPOS_TXNS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SavePOS_TXNS">
+      <soap12:operation soapAction="http://tempuri.org/POS_TXNS/type/SavePOS_TXNS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPOS_TXNS">
+      <soap12:operation soapAction="http://tempuri.org/POS_TXNS/type/GetPOS_TXNS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="https://www.eazypaynigeria.com/pos_txns/service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="https://www.eazypaynigeria.com/pos_txns/service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

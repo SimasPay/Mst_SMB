@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+  	 
+	<property name="INT" value="INT" dbms="mysql"/>
+	<property name="INT" value="NUMBER(10,0)" dbms="oracle"/>
+ 
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+
+
+ 	<changeSet author="MFS_MAIN" id="TABLE-NOTIFICATIONLOG-154">
+		
+		<modifyDataType tableName="notification_log" columnName="NotificationMethod" newDataType="${INT}"  />
+		<modifyDataType tableName="notification_log" columnName="SourceAddress" newDataType="${VARCHAR}" />
+		<modifyDataType tableName="notification_log" columnName="NotificationReceiverType" newDataType="${INT}" />
+		
+	</changeSet>
+</databaseChangeLog>

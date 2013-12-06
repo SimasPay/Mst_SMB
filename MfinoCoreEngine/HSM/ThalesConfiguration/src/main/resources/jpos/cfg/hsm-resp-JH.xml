@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='JH'>
+<field id='pinblock' type='A' length='16'/>
+</schema>

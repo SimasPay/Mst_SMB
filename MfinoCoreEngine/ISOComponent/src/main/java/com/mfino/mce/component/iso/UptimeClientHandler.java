@@ -1,0 +1,88 @@
+package com.mfino.mce.component.iso;
+
+import java.net.ConnectException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.util.Timeout;
+import org.jboss.netty.util.Timer;
+import org.jboss.netty.util.TimerTask;
+
+/**
+ * Keep reconnecting to the server while printing out the current uptime and
+ * connection attempt status.
+ *
+ * @author <a href="http://www.jboss.org/netty/">The Netty Project</a>
+ * @author <a href="http://gleamynode.net/">Trustin Lee</a>
+ *
+ * @version $Rev: 2189 $, $Date: 2010-02-19 18:02:57 +0900 (Fri, 19 Feb 2010) $
+ */
+public class UptimeClientHandler extends SimpleChannelUpstreamHandler {
+	Log	log	= LogFactory.getLog(UptimeClientHandler.class);
+    final ClientBootstrap bootstrap;
+    private final Timer timer;
+    private long startTime = -1;
+    final private int timebeforeReconnect;
+
+    public UptimeClientHandler(ClientBootstrap bootstrap, Timer timer, int timeout) {
+        this.bootstrap = bootstrap;
+        this.timer = timer;
+        this.timebeforeReconnect = timeout; 
+    }
+
+    InetSocketAddress getRemoteAddress() {
+        return (InetSocketAddress) bootstrap.getOption("remoteAddress");
+    }
+
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+        println("Disconnected from: " + getRemoteAddress());
+    }
+
+    @Override
+    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) {
+        println("Sleeping for: " + timebeforeReconnect + "s");
+        timer.newTimeout(new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                println("Reconnecting to: " + getRemoteAddress());
+                bootstrap.connect();
+            }
+        }, timebeforeReconnect, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+        if (startTime < 0) {
+            startTime = System.currentTimeMillis();
+        }
+
+        println("Connected to: " + getRemoteAddress());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof ConnectException) {
+            startTime = -1;
+            println("Failed to connect: " + cause.getMessage());
+        }
+        ctx.getChannel().close();
+    }
+
+    void println(String msg) {
+        if (startTime < 0) {
+            System.err.format("[SERVER IS DOWN] %s%n", msg);
+            log.info("[ISO SERVER IS DOWN] %s%n "+ msg);
+        } else {
+            System.err.format("[UPTIME: %5ds] %s%n", (System.currentTimeMillis() - startTime) / 1000, msg);
+            log.info("[UPTIME: %5ds] %s%n " +(System.currentTimeMillis() - startTime) / 1000 + msg);
+        }
+    }
+}

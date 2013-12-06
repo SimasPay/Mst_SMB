@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	
+	<import resource="spring-datasource-beans.xml"/>   
+   <!-- This would take care of starting scheduler, when spring context is started, and scheduler will be stopped in SchedulerService::finalize() -->
+	<bean id="schedulerService" class="com.mfino.scheduler.settlement.SchedulerService" factory-method="getInstance">
+		<property name="timeZone" ref="timeZone" />
+		<property name="txManager" ref="txManager"/>
+	    <property name="cronExpressions">
+		    <map>
+		        <entry><key><value>CRON_DAILY</value></key><value>0 0 20 * * ?</value></entry>
+		        <entry><key><value>CRON_WEEKLY</value></key><value>0 0 15 ? * WED</value></entry>
+		        <entry><key><value>CRON_MONTHLY</value></key><value>0 0 15 5 * ?</value></entry>
+		    </map>
+	  </property>		
+	</bean>
+	
+	 <bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    <bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+    <context:component-scan base-package="com.mfino.scheduler" />
+    <context:component-scan base-package="com.mfino.web"/>
+    <context:component-scan base-package="com.mfino.service"/>
+    <context:component-scan base-package="com.mfino.service.impl"/>
+    <context:component-scan base-package="com.mfino.transactionapi.service"/>
+    <context:component-scan base-package="com.mfino.transactionapi.handlers"/>
+    <context:component-scan base-package="com.mfino.scheduler.service" />
+    <context:component-scan base-package="com.mfino.scheduler.service.impl" />
+    <context:component-scan base-package="com.mfino.scheduler.upload.service" />
+    <context:component-scan base-package="com.mfino.scheduler.upload.service.impl" />
+    <context:component-scan base-package="com.mfino.commons.hierarchyservice.impl" />
+    <context:annotation-config />
+    <bean id="contextHolder" class="com.mfino.web.ContextHolder"/>
+
+    <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
+        <constructor-arg value="GMT" />
+    </bean>
+    	
+   
+	<!-- for Bulk Pending Resolve-->		
+   <!-- <bean id="bulkPendingResolveTool" class="com.mfino.application.BulkPendingResolveTool" >
+   			<property name="sessionFactory" ref="sessionFactory"/>
+    		<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    	</bean>  
+    <bean id="bulkPendingResolveToolJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="bulkPendingResolveTool" />
+        <property name="targetMethod" value="uploadData" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="bulkPendingResolveToolTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="bulkPendingResolveToolJob" />
+        <property name="startDelay" value="10000" />
+        <property name="repeatInterval" value="1800000" />
+    </bean>-->	
+
+	<!-- for mfs bulkupload-->
+	<bean id="subscriberBulkUploadService" class="com.mfino.scheduler.upload.service.impl.SubscriberBulkUploadServiceImpl" >
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="txManager" ref="txManager"/> -->
+    	<property name="txManager" ref="txManager"/>
+    	<property name="cardPanLength">
+    	   <list>
+		     <value>10</value>
+    	     <value>16</value>
+		   </list>
+    	 </property>   
+    </bean>
+    <bean id="agentBulkUploadService" class="com.mfino.scheduler.upload.service.impl.AgentBulkUploadServiceImpl" >
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>    -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    
+    <bean id="baseBulkUpload" class="com.mfino.scheduler.service.impl.BulkUploadSchedulerServiceImpl" >
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/> -->
+    	<property name="txManager" ref="txManager"/>
+    	<property name="subscriberBulkUploadService" ref="subscriberBulkUploadService"/> 
+    	<property name="agentBulkUploadService" ref="agentBulkUploadService"/>   
+    </bean>
+     
+    <bean id="baseBulkUploadJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="baseBulkUpload" />
+        <property name="targetMethod" value="uploadData" />
+        <property name="concurrent" value="false" />
+    </bean>
+    
+    <bean id="baseBulkUploadTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="baseBulkUploadJob" />
+        <property name="startDelay" value="10000" />
+        <property name="repeatInterval" value="120000" />
+    </bean>
+
+	<!-- for Distribution of charges-->
+    <bean id="transactionAmountDistributionService" class="com.mfino.scheduler.service.impl.TransactionAmountDistributionServiceImpl">
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>    -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+   
+    <bean id="distributeTransactionAmount" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="transactionAmountDistributionService" />
+        <property name="targetMethod" value="distributeTransactionAmount" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="distributeTransactionAmountTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="distributeTransactionAmount" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0/5 * * * ?" />        
+    </bean>
+    
+    <!--For Update Collector Pockets -->
+    <bean id="updateCollectorPockets" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="transactionAmountDistributionService" />
+        <property name="targetMethod" value="updateCollectorPockets" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="updateCollectorPocketsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="updateCollectorPockets" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0/5 * * * ?" />        
+    </bean>
+    
+     <!--For Retry Update Collector Pockets -->
+    <bean id="retryCollectorPockets" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="transactionAmountDistributionService" />
+        <property name="targetMethod" value="retryCollectorPockets" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="retryCollectorPocketsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="retryCollectorPockets" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- runs every day at 4 AM  -->
+        <property name="cronExpression" value="0 0/5 * * * ?" />        
+    </bean>   
+    
+    <!--For Retry Failed Collector Pockets -->
+    <bean id="retryFailedCollectorPockets" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="transactionAmountDistributionService" />
+        <property name="targetMethod" value="retryFailedCollectorPockets" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="retryFailedCollectorPocketsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="retryFailedCollectorPockets" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- runs every day at 8 PM  -->
+        <property name="cronExpression" value="0 0 19 * * ?" />        
+    </bean>  
+    
+    
+	<!-- for Update Service Charge Transaction Logs -->
+    <bean id="SCTLClearService" class="com.mfino.scheduler.service.impl.SCTLClearServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="clearTheSCTL" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="SCTLClearService" />
+        <property name="targetMethod" value="clearTheSCTL" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="clearTheSCTLTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="clearTheSCTL" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- runs for every 10 minutes  -->
+        <property name="cronExpression" value="0 0/10 * * * ?" />        
+    </bean>
+  
+  	<!-- for Fund Transfer to funding Pockets-->
+	  <bean id="fundReimburse" class="com.mfino.scheduler.service.impl.FundReimburseServiceImpl">
+ 		<!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>   -->
+    	<property name="txManager" ref="txManager"/>
+     </bean>
+    <bean id="fundReimburseJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="fundReimburse" />
+        <property name="targetMethod" value="doReimburse" />
+        <property name="concurrent" value="false" />
+    </bean>
+
+    <bean id="fundReimburseTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="fundReimburseJob" />
+        <property name="timeZone" ref="timeZone" />
+		<!-- runs every day 1 AM    --> 
+        <property name="cronExpression" value="0 0 22 * * ?" />      
+    </bean>
+    
+	<bean id="settlementHandler" class="com.mfino.scheduler.settlement.SettlementHandlerImpl" factory-method="createInstance">
+ 	</bean>
+ 	
+ 	<bean id="settlementSchedulerLogsServiceImpl" class="com.mfino.service.impl.SettlementSchedulerLogsServiceImpl" factory-method="createInstance">
+ 	</bean>
+    
+    <!-- for Partner Settlements-->
+     <bean id="partnerSettlementService" class="com.mfino.scheduler.service.impl.PartnerSettlementServiceImpl" >
+    	<!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/> -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    
+    <bean id="partnerServiceSettlementJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="partnerSettlementService" />
+        <property name="targetMethod" value="processSettlementJobs" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="partnerServiceSettlementTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="partnerServiceSettlementJob" />
+        <property name="startDelay" value="20000" />
+        <property name="repeatInterval" value="300000" />
+    </bean>
+
+    <!-- <bean id="settlementConfigUpdateService" class="com.mfino.scheduler.migration.ServiceSettlementConfigUpdate" >
+    	 <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  	
+    </bean>
+    
+    <bean id="settlementConfigUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="settlementConfigUpdateService" />
+        <property name="targetMethod" value="updateCollectorPocketNStatus" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="settlementConfigUpdateTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="settlementConfigUpdateJob" />
+        <property name="startDelay" value="1000" />
+        <property name="repeatCount" value="0" />
+    </bean> --> 
+    
+    	<!-- for Update Subscriber Status -->
+    <bean id="subscriberLifeCycleService" class="com.mfino.scheduler.service.impl.SubscriberLifeCycleServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="updateSubscriberStatus" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="subscriberLifeCycleService" />
+        <property name="targetMethod" value="updateSubscriberStatus" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="forceGrave" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="subscriberLifeCycleService" />
+        <property name="targetMethod" value="forceGrave" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="forceGraveTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="forceGrave" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0/5 * * * ?" />        
+    </bean>
+    <bean id="updateSubscriberStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="updateSubscriberStatus" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- runs for every 10 minutes  -->
+        <property name="cronExpression" value="0 * 23 * * ?" />        
+    </bean>
+	
+	 <!-- for Update Subscriber Status based on OTP -->
+     <bean id="subscriberOTPLifeCycleService" class="com.mfino.scheduler.service.impl.SubscriberOTPLifeCycleServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+     <bean id="updateSubscriberOTPStatus" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="subscriberOTPLifeCycleService" />
+        <property name="targetMethod" value="updateSubscriberOTPStatus" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="updateSubscriberOTPStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="updateSubscriberOTPStatus" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- runs for every 10 minutes  -->
+        <property name="cronExpression" value="0 0/5 * * * ?" />        
+    </bean>
+    
+    	<!-- for Bulk Transfer -->
+    <bean id="bulkTransferService" class="com.mfino.scheduler.service.impl.BulkTransferSchedulerServiceImpl"> 
+         <!-- <property name="sessionFactory" ref="sessionFactory"/>  -->
+    	<!-- <property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="processBulkTransfer" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="bulkTransferService" />
+        <property name="targetMethod" value="processBulkTransfer" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="processBulkTransferTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="processBulkTransfer" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0 21 * * ?" />        
+    </bean>
+    
+    	<!-- for Teller EMoney Clearance -->
+    <bean id="tellerEMoneyClearanceService" class="com.mfino.scheduler.service.impl.TellerEMoneyClearanceServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="tellerEMoneyClearanceJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="tellerEMoneyClearanceService" />
+        <property name="targetMethod" value="clearTellerEMoney" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="tellerEMoneyClearanceTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="tellerEMoneyClearanceJob" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0 22 * * ?" />        
+    </bean>
+    
+    	<!-- for transfer to unregistered clerance -->
+    <bean id="transferToUnRegisteredClearanceService" class="com.mfino.scheduler.service.impl.TransferToUnRegisteredClearanceServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="checkExpirationOfTransferToUnRegistered" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="transferToUnRegisteredClearanceService" />
+        <property name="targetMethod" value="checkExpirationOfTransferToUnRegistered" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="checkExpirationOfTransferToUnRegisteredTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="checkExpirationOfTransferToUnRegistered" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0 19 * * ?" />        
+    </bean>  
+        	<!-- for reversing expired and failed funds and unfinished withdrawals -->
+    <bean id="reverseFundsService" class="com.mfino.scheduler.service.impl.ReverseFundsServiceImpl"> 
+        <property name="txManager" ref="txManager"/>
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    </bean>
+    <bean id="reverseFundsJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="reverseFundsService" />
+        <property name="targetMethod" value="reverseFunds" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="reverseFundsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="reverseFundsJob" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />     
+    </bean>  
+
+	 <!-- for Updaing the Pocket status to Graved -->
+     <bean id="pocketRetireService" class="com.mfino.scheduler.service.impl.PocketRetireServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+     <bean id="retirePockets" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="pocketRetireService" />
+        <property name="targetMethod" value="retirePockets" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="retirePocketsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="retirePockets" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0/15 * * * ?" />        
+    </bean>
+        
+     <bean id="activationMsgService" class="com.mfino.scheduler.service.impl.ActivationMsgServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="activationMsgJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="activationMsgService" />
+        <property name="targetMethod" value="getBulkUploadSubscriberList" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="activationMsgTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="activationMsgJob" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0 23 * * ?" />     
+    </bean>
+    
+	<!-- Update the pocket balances for the Defered Ledger entries -->
+    <bean id="UpdateMFSLedgerService" class="com.mfino.scheduler.service.impl.UpdateMFSLedgerServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/> --> 
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="updatePocketBalancesFromLedger" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="UpdateMFSLedgerService" />
+        <property name="targetMethod" value="updatePocketBalancesFromLedger" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="updatePocketBalancesFromLedgerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="updatePocketBalancesFromLedger" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- runs for every 10 minutes  -->
+        <property name="cronExpression" value="0 0/5 * * * ?" />        
+    </bean>    
+    
+    <!-- For constructing Booking dated value -->
+    <bean id="bdvService" class="com.mfino.scheduler.service.impl.BookingDatedValueServiceImpl"> 
+        <!-- <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="bdvJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="bdvService" />
+        <property name="targetMethod" value="constructBookingDatedBalance" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="bdvTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="bdvJob" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0 7 * * ?" />     
+    </bean>
+    
+    <!-- for KYC Upgrade -->
+    <bean id="kycUpgradeSchedulerService" class="com.mfino.scheduler.service.impl.KYCUpgradeSFTPSchedulerServiceImpl"> 
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="processKYCUpgrade" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="kycUpgradeSchedulerService" />
+        <property name="targetMethod" value="processKYCUpgrade" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="processKYCUpgradeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="processKYCUpgrade" />       
+		<property name="timeZone" ref="timeZone" />
+		<!-- corn expression for every 1 hour -->
+        <property name="cronExpression" value="0 0 0/1 * * ?" />        
+    </bean>
+      
+	<!-- All triggers need to be added here to work -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+            <!-- 
+            	<ref bean="settlementConfigUpdateTrigger"/>
+             -->
+            	<ref bean="baseBulkUploadTrigger"/>  
+                <ref bean="partnerServiceSettlementTrigger"/>
+                <ref bean="distributeTransactionAmountTrigger"/>
+                <ref bean="updateCollectorPocketsTrigger"/>
+                <ref bean="retryCollectorPocketsTrigger"/>
+                <ref bean="retryFailedCollectorPocketsTrigger"/>
+                <ref bean="clearTheSCTLTrigger"/> 
+                <!-- <ref bean="fundReimburseTrigger"/> -->
+                <ref bean="updateSubscriberStatusTrigger"/>
+				<ref bean="updateSubscriberOTPStatusTrigger"/> 				
+                <ref bean="processBulkTransferTrigger"/>
+                <ref bean="tellerEMoneyClearanceTrigger"/>
+                <ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
+                <ref bean="reverseFundsTrigger"/>
+                <ref bean="retirePocketsTrigger"/>
+                <ref bean="activationMsgTrigger"/>
+                <ref bean="forceGraveTrigger"/>
+                <ref bean="updatePocketBalancesFromLedgerTrigger"/>
+                <ref bean="bdvTrigger"/>
+                <ref bean="processKYCUpgradeTrigger"/>
+                
+            <!--                            
+                <ref bean="bulkPendingResolveToolTrigger"/>		
+            -->		
+             	 
+            </list>
+        </property>
+    </bean>
+    <tx:annotation-driven transaction-manager="txManager" />
+    <bean id="openSessionMethodInterceptor" class="com.mfino.scheduler.service.interceptor.OpenSessionMethodInterceptor">
+    </bean> 
+    
+<aop:config>
+    <aop:advisor advice-ref="openSessionMethodInterceptor" pointcut="execution(* com.mfino.scheduler.service.impl.*.*(..))"/>
+</aop:config>
+
+	<!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+</beans>

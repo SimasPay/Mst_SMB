@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+        xmlns:bean="http://www.springframework.org/schema/bean"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security 
+                        http://www.springframework.org/schema/security/spring-security-3.0.4.xsd
+                        http://www.springframework.org/schema/tx 
+                        http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       					http://www.springframework.org/schema/context
+       					http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+   	<context:annotation-config />
+  
+    <global-method-security secured-annotations="enabled">
+        <!-- example for future authorization against business logic
+        <protect-pointcut expression="execution(* org.springframework.samples.petclinic.Clinic.storeVisit(..))"
+            access="ROLE_SUPERVISOR"/>
+        -->
+    </global-method-security>
+ 
+    <http auto-config="false">
+        <form-login login-page="/login.htm" default-target-url="/index.htm"
+            authentication-failure-url="/login.htm?login_error=1" />
+        <logout logout-success-url="/login.htm" />
+
+        <!-- 
+        <intercept-url pattern="/login.htm" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
+        -->
+        <intercept-url pattern="/forgotpassword.htm*" filters="none"/>
+        <intercept-url pattern="/resetpassword.htm*" filters="none"/>
+        <intercept-url pattern="/activation.htm*" filters="none"/>
+        <intercept-url pattern="/login.htm*" filters="none"/>
+        <intercept-url pattern="/merchant_registration.htm*" filters="none"/>
+        <intercept-url pattern="/js/**" filters="none" />
+        <intercept-url pattern="/extjs/**" filters="none" />
+        <intercept-url pattern="/test/**" filters="none" />
+        <intercept-url pattern="/resources/**" filters="none" />     
+        <!--
+        Grant access to any Prinicipal that is already authenticated
+        -->
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED"/>
+        
+        <custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
+        <custom-filter ref="authenticationProcessingFilter" before="FORM_LOGIN_FILTER" />        
+        <custom-filter ref="customSessionManagementFilter" after="SESSION_MANAGEMENT_FILTER" />
+        
+        
+        <session-management session-authentication-strategy-ref="sas" invalid-session-url="/sessionExpired.htm"/>
+    </http>
+    
+    <beans:bean id="authenticationProcessingFilter" class="com.mfino.uicore.security.AuthProcessingFilter">
+        <!-- <beans:property name="defaultTargetUrl" value="/changepassword.htm" /> -->
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <beans:property name="sessionAuthenticationStrategy" ref="sas" />
+        <!-- <beans:property name="alwaysUseDefaultTargetUrl" value="true"/> -->
+    </beans:bean>
+    
+     <beans:bean id="customSessionManagementFilter" class="com.mfino.uicore.security.CustomSessionManagementFilter">
+    </beans:bean>
+     
+
+	<beans:bean id="concurrencyFilter"
+		class="org.springframework.security.web.session.ConcurrentSessionFilter" >
+		<beans:property name="sessionRegistry" ref="sessionRegistry" />
+		<beans:property name="expiredUrl" value="/sessionExpired.htm" />
+	</beans:bean>
+	
+	<beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+	
+	<beans:bean id="sas"
+	class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+		<beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+		<beans:property name="maximumSessions" value="1" />
+	</beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+    	<authentication-provider ref="authenticationProvider" />
+    </authentication-manager>
+
+    <beans:bean id="authenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl" value="/login.htm" />
+        <beans:property name="forceHttps" value="false" />
+    </beans:bean>
+
+    <beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="hideUserNotFoundExceptions" value="false" />
+        <beans:property name="userDetailsService" ref="customUserService" />
+        <beans:property name="passwordEncoder" ref="passwordEncoder"/>
+        <beans:property name="saltSource" ref="saltSource"/>
+    </beans:bean>
+    
+  	<tx:annotation-driven transaction-manager="txManager" />		
+    
+</beans:beans>

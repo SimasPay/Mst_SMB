@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"	
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:http="http://cxf.apache.org/transports/http/configuration"
+	xmlns:sec="http://cxf.apache.org/configuration/security"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://camel.apache.org/schema/spring  
+	http://camel.apache.org/schema/spring/camel-spring.xsd
+	http://www.springframework.org/schema/osgi   
+	http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	http://www.springframework.org/schema/osgi-compendium 
+	http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 		
+	http://activemq.apache.org/schema/core 
+	http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd 
+	http://camel.apache.org/schema/cxf
+	http://camel.apache.org/schema/cxf/camel-cxf.xsd 
+	http://cxf.apache.org/transports/http/configuration 
+	http://cxf.apache.org/schemas/configuration/http-conf.xsd
+	http://cxf.apache.org/configuration/security 
+	http://cxf.apache.org/schemas/configuration/security.xsd
+	http://cxf.apache.org/jaxws 
+	http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+	
+	<context:annotation-config />
+ 	
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	
+
+	<jaxws:client id="orbitServiceProxy" address="${orbit_service_url}"
+		serviceClass="com.techzultants.orbit.ws.OrbitWebService" />
+	
+			
+	<bean id="orbitWebServiceCommunicator"
+		class="com.mfino.orbit.communicator.OrbitCommunicator" abstract="true">
+		<property name="orbitService" ref="orbitServiceProxy" />
+		<property name="key" value="${orbit_key}"/>
+	</bean>
+		
+	<bean id="orbitBalanceInquiryCommunicator"
+		class="com.mfino.orbit.communicator.BalanceInquiryCommunicator" 
+		parent="orbitWebServiceCommunicator" />		
+	
+	<bean id="orbitTransferInquiryCommunicator"
+		class="com.mfino.orbit.communicator.FundTransferInquiryCommunicator"
+		parent="orbitWebServiceCommunicator" />	
+		
+	<bean id="orbitTransferCommunicator"
+		class="com.mfino.orbit.communicator.FundTransferCommunicator"
+		parent="orbitWebServiceCommunicator" />	
+		
+	<bean id="orbitTransferReversalCommunicator"
+		class="com.mfino.orbit.communicator.FundTransferReversalCommunicator"
+		parent="orbitWebServiceCommunicator" />	
+			
+	<bean id="orbitTransferStatusCommunicator"
+		class="com.mfino.orbit.communicator.TransferStatusCommunicator"
+		parent="orbitWebServiceCommunicator" />		
+		
+	<camelContext id="orbitWebService" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<onException>
+			<exception>com.mfino.orbit.NoResponseException</exception>
+			<redeliveryPolicy maximumRedeliveries="3"/>
+			<handled>
+				<constant>true</constant>
+			</handled>
+			<to uri="jms:deadLetterQueue?disableReplyTo=true"/>
+		</onException>
+		<route>
+			<from uri="jms:orbitRequestQueue?disableReplyTo=true" />
+			<threads threadName="Threads" poolSize="10">
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMBalanceInquiryToBank'</simple>
+					<to uri="bean:orbitBalanceInquiryCommunicator?method=process" />
+				</filter>
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+					<to uri="bean:orbitTransferInquiryCommunicator?method=process" />
+				</filter>
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+					<to uri="bean:orbitTransferCommunicator?method=process" />
+				</filter>
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferReversalToBank'</simple>
+					<to uri="bean:orbitTransferCommunicator?method=process" />
+				</filter>
+				<to uri="jms:orbitResponseQueue?disableReplyTo=true" />
+			</threads>
+		</route>
+		<route>
+			<from uri="jms:orbitResponseQueue?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.response} is 'com.mfino.domain.NoISOResponseMsg'</simple>
+				<to uri="bean:orbitTransferStatusCommunicator?method=process" />
+			</filter>
+			<to uri="jms:frontendResponseServiceQueue?disableReplyTo=true" />
+		</route>
+	</camelContext>
+	
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+</beans>

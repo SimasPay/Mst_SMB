@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="start" targetNamespace="http://neptune.ucitech.com/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:tns="http://neptune.ucitech.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <types>
+    <xsd:schema>
+			<xsd:import namespace="http://neptune.ucitech.com/" schemaLocation="neptune.xsd"/>
+		</xsd:schema>
+  </types>
+  <message name="queryMerchantProductsResponse">
+    <part name="parameters" element="tns:queryMerchantProductsResponse">
+    </part>
+  </message>
+  <message name="addCustomerProductByMerchant">
+    <part name="parameters" element="tns:addCustomerProductByMerchant">
+    </part>
+  </message>
+  <message name="delCustomerProductsByMerchantResponse">
+    <part name="parameters" element="tns:delCustomerProductsByMerchantResponse">
+    </part>
+  </message>
+  <message name="queryMerchantTransactionResponse">
+    <part name="parameters" element="tns:queryMerchantTransactionResponse">
+    </part>
+  </message>
+  <message name="login">
+    <part name="parameters" element="tns:login">
+    </part>
+  </message>
+  <message name="queryMerchantsResponse">
+    <part name="parameters" element="tns:queryMerchantsResponse">
+    </part>
+  </message>
+  <message name="queryCustomerByMerchant">
+    <part name="parameters" element="tns:queryCustomerByMerchant">
+    </part>
+  </message>
+  <message name="queryCustomerByMerchantResponse">
+    <part name="parameters" element="tns:queryCustomerByMerchantResponse">
+    </part>
+  </message>
+  <message name="queryMerchantProducts">
+    <part name="parameters" element="tns:queryMerchantProducts">
+    </part>
+  </message>
+  <message name="addCustomerProductsByMerchant">
+    <part name="parameters" element="tns:addCustomerProductsByMerchant">
+    </part>
+  </message>
+  <message name="delCustomerProductsByMerchant">
+    <part name="parameters" element="tns:delCustomerProductsByMerchant">
+    </part>
+  </message>
+  <message name="delCustomerProductByMerchantResponse">
+    <part name="parameters" element="tns:delCustomerProductByMerchantResponse">
+    </part>
+  </message>
+  <message name="delCustomerProductByMerchant">
+    <part name="parameters" element="tns:delCustomerProductByMerchant">
+    </part>
+  </message>
+  <message name="loginResponse">
+    <part name="parameters" element="tns:loginResponse">
+    </part>
+  </message>
+  <message name="queryMerchants">
+    <part name="parameters" element="tns:queryMerchants">
+    </part>
+  </message>
+  <message name="queryMerchantTransaction">
+    <part name="parameters" element="tns:queryMerchantTransaction">
+    </part>
+  </message>
+  <message name="addCustomerProductsByMerchantResponse">
+    <part name="parameters" element="tns:addCustomerProductsByMerchantResponse">
+    </part>
+  </message>
+  <message name="addCustomerProductByMerchantResponse">
+    <part name="parameters" element="tns:addCustomerProductByMerchantResponse">
+    </part>
+  </message>
+  <portType name="start">
+    <operation name="login">
+      <input message="tns:login" wsam:Action="http://neptune.ucitech.com/start/loginRequest">
+    </input>
+      <output message="tns:loginResponse" wsam:Action="http://neptune.ucitech.com/start/loginResponse">
+    </output>
+    </operation>
+    <operation name="queryMerchants">
+      <input message="tns:queryMerchants" wsam:Action="http://neptune.ucitech.com/start/queryMerchantsRequest">
+    </input>
+      <output message="tns:queryMerchantsResponse" wsam:Action="http://neptune.ucitech.com/start/queryMerchantsResponse">
+    </output>
+    </operation>
+    <operation name="queryMerchantProducts">
+      <input message="tns:queryMerchantProducts" wsam:Action="http://neptune.ucitech.com/start/queryMerchantProductsRequest">
+    </input>
+      <output message="tns:queryMerchantProductsResponse" wsam:Action="http://neptune.ucitech.com/start/queryMerchantProductsResponse">
+    </output>
+    </operation>
+    <operation name="queryMerchantTransaction">
+      <input message="tns:queryMerchantTransaction" wsam:Action="http://neptune.ucitech.com/start/queryMerchantTransactionRequest">
+    </input>
+      <output message="tns:queryMerchantTransactionResponse" wsam:Action="http://neptune.ucitech.com/start/queryMerchantTransactionResponse">
+    </output>
+    </operation>
+    <operation name="queryCustomerByMerchant">
+      <input message="tns:queryCustomerByMerchant" wsam:Action="http://neptune.ucitech.com/start/queryCustomerByMerchantRequest">
+    </input>
+      <output message="tns:queryCustomerByMerchantResponse" wsam:Action="http://neptune.ucitech.com/start/queryCustomerByMerchantResponse">
+    </output>
+    </operation>
+    <operation name="addCustomerProductByMerchant">
+      <input message="tns:addCustomerProductByMerchant" wsam:Action="http://neptune.ucitech.com/start/addCustomerProductByMerchantRequest">
+    </input>
+      <output message="tns:addCustomerProductByMerchantResponse" wsam:Action="http://neptune.ucitech.com/start/addCustomerProductByMerchantResponse">
+    </output>
+    </operation>
+    <operation name="delCustomerProductByMerchant">
+      <input message="tns:delCustomerProductByMerchant" wsam:Action="http://neptune.ucitech.com/start/delCustomerProductByMerchantRequest">
+    </input>
+      <output message="tns:delCustomerProductByMerchantResponse" wsam:Action="http://neptune.ucitech.com/start/delCustomerProductByMerchantResponse">
+    </output>
+    </operation>
+    <operation name="addCustomerProductsByMerchant">
+      <input message="tns:addCustomerProductsByMerchant" wsam:Action="http://neptune.ucitech.com/start/addCustomerProductsByMerchantRequest">
+    </input>
+      <output message="tns:addCustomerProductsByMerchantResponse" wsam:Action="http://neptune.ucitech.com/start/addCustomerProductsByMerchantResponse">
+    </output>
+    </operation>
+    <operation name="delCustomerProductsByMerchant">
+      <input message="tns:delCustomerProductsByMerchant" wsam:Action="http://neptune.ucitech.com/start/delCustomerProductsByMerchantRequest">
+    </input>
+      <output message="tns:delCustomerProductsByMerchantResponse" wsam:Action="http://neptune.ucitech.com/start/delCustomerProductsByMerchantResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="startPortBinding" type="tns:start">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="login">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="queryMerchants">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="queryMerchantProducts">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="queryMerchantTransaction">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="queryCustomerByMerchant">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="addCustomerProductByMerchant">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="delCustomerProductByMerchant">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="addCustomerProductsByMerchant">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="delCustomerProductsByMerchant">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="start">
+    <port name="startPort" binding="tns:startPortBinding">
+      <soap:address location="http://172.29.8.37:80/neptune/start"/>
+    </port>
+  </service>
+</definitions>

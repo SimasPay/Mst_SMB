@@ -1,0 +1,44 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>SMS Web Application</display-name>
+  <listener>
+		<listener-class>
+			com.mfino.sms.listeners.MFinoServletContextListener</listener-class>
+  </listener>
+  <servlet>
+  	<servlet-name>SMSProxyServlet</servlet-name>
+  	<display-name>SMSProxyServlet</display-name>
+  	<description></description>
+  	<servlet-class>
+  	com.mfino.sms.servlet.SMSProxyServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>DLRServlet</servlet-name>
+  	<display-name>DLRServlet</display-name>
+  	<description></description>
+  	<servlet-class>
+  	com.mfino.sms.servlet.DLRServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ResetPINServlet</servlet-name>
+  	<display-name>ResetPINServlet</display-name>
+  	<description></description>
+  	<servlet-class>
+  	com.mfino.sms.servlet.ResetPINServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>SMSProxyServlet</servlet-name>
+  	<url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>DLRServlet</servlet-name>
+  	<url-pattern>/DLRServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ResetPINServlet</servlet-name>
+  	<url-pattern>/resetpin</url-pattern>
+  </servlet-mapping>
+</web-app>

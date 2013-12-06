@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:52 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.BulkLOP" optimistic-lock="version" table="Bulk_LOP" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Merchant" foreign-key="FK_BulkLOP_Merchant" class="com.mfino.domain.Merchant" fetch="select">
+<column name="MerchantID" not-null="true"  index="MerchantID" />
+</many-to-one>
+<many-to-one name="SubscriberMDNByMDNID" foreign-key="FK_BulkLOP_SubscriberMDNByMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="MDNID" not-null="true"  index="MDNID" />
+</many-to-one>
+<many-to-one name="Company" foreign-key="FK_BulkLOP_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<many-to-one name="DistributionChainLevelByDCTLevelID" foreign-key="FK_BulkLOP_DistributionChainLevelByDCTLevelID" class="com.mfino.domain.DistributionChainLevel" fetch="select">
+<column name="DCTLevelID"     />
+</many-to-one>
+<many-to-one name="DistributionChainTemplateByDCTID" foreign-key="FK_BulkLOP_DistributionChainTemplateByDCTID" class="com.mfino.domain.DistributionChainTemplate" fetch="select">
+<column name="DCTID"    index="DCTID" />
+</many-to-one>
+<property name="LevelPermissions" type="java.lang.Integer" >
+<column name="LevelPermissions"    sql-type="int" />
+</property>
+<property name="GiroRefID" type="java.lang.String" >
+<column name="GiroRefID"    sql-type="varchar(255)" />
+</property>
+<property name="TransferDate" type="java.lang.String" >
+<column name="TransferDate"    sql-type="varchar(255)" />
+</property>
+<property name="ActualAmountPaid" type="big_decimal" >
+<column name="ActualAmountPaid"    sql-type="decimal(25,4)" />
+</property>
+<property name="AmountDistributed" type="big_decimal" >
+<column name="AmountDistributed"    sql-type="decimal(25,4)" />
+</property>
+<property name="Status" type="java.lang.String" index="Status">
+<column name="Status"    sql-type="varchar(255)" />
+</property>
+<property name="DistributedBy" type="java.lang.String" >
+<column name="DistributedBy"    sql-type="varchar(255)" />
+</property>
+<property name="DistributeTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="DistributeTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ApprovedBy" type="java.lang.String" >
+<column name="ApprovedBy"    sql-type="varchar(255)" />
+</property>
+<property name="ApprovalTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ApprovalTime"   length="19" sql-type="datetime" />
+</property>
+<property name="RejectedBy" type="java.lang.String" >
+<column name="RejectedBy"    sql-type="varchar(255)" />
+</property>
+<property name="RejectTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="RejectTime"   length="19" sql-type="datetime" />
+</property>
+<property name="LOPComment" type="java.lang.String" >
+<column name="LOPComment"    sql-type="varchar(255)" />
+</property>
+<property name="FileData" type="java.lang.String" >
+<column name="FileData"    sql-type="LONGTEXT" />
+</property>
+<property name="SourceApplication" type="java.lang.Integer" >
+<column name="SourceApplication" not-null="true"  default="'1'"  sql-type="int" />
+</property>
+<set name="LOPFromBulkLOPID" inverse="true">
+<key>
+<column name="BulkLOPID"    />
+</key>
+<one-to-many class="com.mfino.domain.LOP" />
+</set>
+</class>
+</hibernate-mapping>

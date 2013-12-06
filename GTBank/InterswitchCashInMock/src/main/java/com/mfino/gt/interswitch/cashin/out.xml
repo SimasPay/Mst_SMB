@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CashInRequest>
+	<PaymentLogId>32436</PaymentLogId>
+	<Amount>100</Amount>
+	<PaymentMethod>card</PaymentMethod>
+	<PaymentReference>FBN|ATM|2000111|99999</PaymentReference>
+	<TerminalId>1390999</TerminalId>
+	<ChannelName>ATM</ChannelName>
+	<PaymentDate> 2010-05-01			</PaymentDate>
+	<InstitutionId> 006			</InstitutionId>
+	<InstitutionName> Mtn Nigeria Limited			</InstitutionName>
+	<TargetFirstName> John Bello			</TargetFirstName>
+	<TargetLastName />
+	<ReceiptNo> 7843			</ReceiptNo>
+	<CollectionsAccount>090990333823</CollectionsAccount>
+	<TargetMdn>99894356677</TargetMdn>
+	<InitiatorName>Ope Adeoye</InitiatorName>
+</CashInRequest>

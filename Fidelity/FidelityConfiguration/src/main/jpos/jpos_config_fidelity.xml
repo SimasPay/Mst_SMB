@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logger name="Q2_fidelity" class="org.jpos.q2.qbean.LoggerAdaptor">
+  <log-listener class="org.jpos.util.DailyLogListener">
+    <property name="prefix" value="data/log/jpos-fidelity" />
+    <property name="date-format" value="-yyyy-MM-dd-HH"/>
+    <property name="compression-format" value="none"/> 
+  </log-listener>
+</logger>

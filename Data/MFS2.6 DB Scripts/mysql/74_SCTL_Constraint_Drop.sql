@@ -1,0 +1,1 @@
+ALTER TABLE `service_charge_txn_log` DROP INDEX `IntegrationTransactionID` ;

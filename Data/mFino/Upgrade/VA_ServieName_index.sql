@@ -1,0 +1,1 @@
+ALTER TABLE `mfino`.`merchant_prefix_code` ADD UNIQUE INDEX `VAServiceName` USING BTREE(`VAServiceName`);

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd	    
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<!-- <osgi:reference id="jms" interface="org.apache.camel.Component" /> -->
+
+	<bean id="clickatellISOUtil" class="com.mfino.clickatell.iso8583.ClickatellISOUtil">
+	    
+	</bean>
+	
+	<bean id="clickatellFIXToISOService" class="com.mfino.clickatell.iso8583.ClickatellFixToIsoProcessorFactory">
+		<property name="constantFieldsMap">
+			<map>
+			    <!--modify constants specific to clickatell -->
+				<entry key="SAVINGS_ACCOUNT" value="10" />
+				<entry key="CHECKING_ACCOUNT" value="20" />
+				<entry key="CREDITCARD_ACCOUNT" value="30" />
+				<entry key="UNSPECIFIED_ACCOUNT" value="00" />
+				<entry key="TPM_UseBankNewCodes" value="0" />
+				<entry key="ZERO_AMOUNT" value="000000000000"/>
+				<entry key="2" value="3150580000000003" />
+				<entry key="4" value="000000000000"/>
+				<entry key="9" value="00000000" />
+				<entry key="18" value="0006" />
+				<entry key="22" value="901" />
+				<entry key="23" value="000" />
+				<entry key="25" value="00" />
+				<entry key="26" value="12" />
+				<entry key="28" value="C00000000" />
+				<entry key="29" value="C00000000" />
+				<entry key="30" value="C00000000" />
+				<entry key="31" value="C00000000" />
+				<entry key="32" value="31058" />
+				<entry key="33" value="31058" />
+				<entry key="40" value="501" />
+				<entry key="41" value="05831058" />
+				<entry key="42" value="       " />
+				<entry key="43" value="SMS SMART                              " />
+				<entry key="49" value="566" />				
+				<entry key="63" value="456" />
+				<entry key="98" value="360360" />
+				<entry key="100" value="360360" />
+				<entry key="123" value="000000000000000" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="clickatellFrontendService" class="com.mfino.mce.frontend.impl.FrontendServiceDefaultImpl">
+		<property name="fixtoisoFactoryInstance" ref="clickatellFIXToISOService"/>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+    <!-- Start the jpos manager -->	    
+    <bean name="jposManager" class="com.mfino.mce.iso.jpos.JPOSManager" init-method="start" destroy-method="stop">
+    	<!-- deploy folder location where JPOS configuration files are defined-->
+    	<property name="deployFolder" value="jpos/deploy/"/>
+    	<property name="muxName" value="clickatellmux"/>
+    	<property name="timeout" value="30000"/>
+    	<property name="sleepOnNoReply" value="10000"/>
+    	<property name="channelName" value="clickatell"/>
+		<property name="echoInterval" value="300000" />
+    	<property name="isoUtil" ref="clickatellISOUtil"/>
+    </bean>
+    	
+	<!-- JPOS sender configuration -->
+	<camel:endpoint id="clickatellisoResponseEndpoint" uri="vm:clickatellIsoResponseQueue" />
+	<bean id="clickatellCommunicator" class="com.mfino.mce.iso.jpos.comm.JPOSProcessor">
+		<constructor-arg index="0" value="clickatellmux" />
+		<constructor-arg index="1" ref="clickatellisoResponseEndpoint" />
+		<!-- this value and aggregator value need to be in sync -->
+		<constructor-arg index="2" value="30000" />
+	</bean>
+
+	<bean id="isotofixfactory" class="com.mfino.clickatell.iso8583.ClickatellIsoToFixProcessorFactory">
+	</bean>
+	
+	<!-- Bean for aggregating the request and reponse when talking to iso server -->
+	<bean id="aggStrategy" class="com.mfino.mce.frontend.FrontendAggregationStragety">
+		<property name="isotofixFactoryInstance" ref="isotofixfactory" />
+	</bean>
+
+	<bean id="headerSetter" class="com.mfino.mce.frontend.FrontendSetHeader" />
+
+	<bean id="noIsoResponse" class="com.mfino.clickatell.iso8583.NoISOResponseProcessor" />
+	
+	<bean id="linkDown" class="com.mfino.clickatell.iso8583.BankLinkDownProcessor">
+		<constructor-arg index="0" ref="clickatellisoResponseEndpoint" />
+	</bean>
+
+	<bean id="jposCommuniator" class="com.mfino.clickatell.iso8583.JPOSCommunicator">
+		<constructor-arg index="0" ref="clickatellCommunicator"></constructor-arg>
+		<constructor-arg index="1" ref="linkDown"/>
+		<constructor-arg index="2" value="clickatellmux" />
+	</bean>
+	<bean id="timeoutExp" class="com.mfino.clickatell.iso8583.CompletionTimeoutExpression">
+	    <property name="timeout" value="30000"/>
+	</bean>
+	
+	<camelContext id="clickatelliso" xmlns="http://camel.apache.org/schema/spring">
+    <onException>
+        <exception>com.mfino.mce.iso.jpos.NoISOResponseException</exception>
+        <redeliveryPolicy maximumRedeliveries="10"/>
+        <handled>
+            <constant>true</constant>
+        </handled>
+        <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>
+    </onException>
+    <onException>
+        <exception>com.mfino.clickatell.iso8583.TimedoutISOException</exception>
+        <handled>
+            <constant>true</constant>
+        </handled>
+        <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>
+    </onException>
+    <route>
+        <from uri="jms:clickatellISOQueue?disableReplyTo=true"/>
+        <multicast>
+            <to uri="direct:a"/>
+            <to uri="direct:b"/>
+        </multicast>
+    </route>
+    <route>
+        <from uri="direct:a"/>
+        <process ref="headerSetter"/>
+        <to uri="jms:clickatellAggQueue?disableReplyTo=true"/>
+    </route>
+    <route>
+        <from uri="direct:b"/>
+        <threads threadName="Threads" poolSize="10">
+            <to uri="bean:clickatellFrontendService?method=processMessage"/>
+            <bean method="processMessage" ref="jposCommuniator"/>
+        </threads>
+    </route>
+    <route>
+        <from ref="clickatellisoResponseEndpoint"/>
+        <threads threadName="Threads" poolSize="10">
+            <to uri="log:isoServerReply"/>
+            <process ref="headerSetter"/>
+            <to uri="jms:clickatellAggQueue?disableReplyTo=true"/>
+        </threads>
+    </route>
+    <route>
+        <from uri="jms:clickatellAggQueue?disableReplyTo=true"/>
+        <aggregate strategyRef ="aggStrategy">
+            <description>&lt;header&gt;corr_id&lt;/header&gt;</description>
+            <correlationExpression>
+                <simple>header.corr_id</simple>
+            </correlationExpression>
+            <completionTimeout>
+                <method ref="timeoutExp"></method>
+            </completionTimeout>
+            <completionSize>
+                <constant>2</constant>
+            </completionSize>
+            <to uri="log:frontendreply]"/>
+            <removeHeader headerName="CamelSlipEndpoint">
+                <description>delayedReply header is set if the reply was delayed</description>
+            </removeHeader>
+            <to uri="bean:noIsoResponse?method=processMessage"/>
+            <to uri="jms:frontendResponseServiceQueue?disableReplyTo=true"/>
+        </aggregate>
+    </route>
+</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

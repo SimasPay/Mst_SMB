@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:53 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.SMSTransactionsLog" optimistic-lock="version" table="sms_transaction_log" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="FieldID" type="java.lang.String" >
+<column name="FieldID"    sql-type="varchar(255)" />
+</property>
+<property name="TransactionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="TransactionTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<many-to-one name="SMSPartnerByPartnerID" foreign-key="FK_SMSTransactionsLog_SMSPartnerByPartnerID" class="com.mfino.domain.SMSPartner" fetch="select">
+<column name="PartnerID" not-null="true"   />
+</many-to-one>
+<property name="Source" type="java.lang.String" >
+<column name="Source" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SmscID" type="java.lang.String" >
+<column name="SmscID" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="TransactionStatus" type="java.lang.String" >
+<column name="TransactionStatus"    sql-type="varchar(255)" />
+</property>
+<property name="DeliveryStatus" type="java.lang.String" >
+<column name="DeliveryStatus"    sql-type="varchar(255)" />
+</property>
+<property name="MessageData" type="java.lang.String" >
+<column name="MessageData" not-null="true"  sql-type="LONGTEXT" />
+</property>
+<property name="MessageCode" type="java.lang.Integer" >
+<column name="MessageCode"    sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

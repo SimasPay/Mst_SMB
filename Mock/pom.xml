@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+				http://maven.apache.org/maven-v4_0_0.xsd">
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.mfino.application</groupId>
+		<artifactId>root</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>Mock</artifactId>
+	<packaging>pom</packaging>
+	<name>Mock projects</name>
+	<url>http://www.mfino.com</url>
+
+	<modules>  
+	   <!-- 
+		<module>DataPushServerTest</module>
+		<module>j8583</module>
+    <module>ISO8583Mock</module>
+ 
+		<module>ArtajasasSimulator_Maven_project</module>
+	 -->      
+	</modules>
+</project>

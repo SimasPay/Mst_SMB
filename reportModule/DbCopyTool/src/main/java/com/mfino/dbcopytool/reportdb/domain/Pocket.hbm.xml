@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.Pocket" table="pocket" catalog="report">
+        <id name="pocketId" type="string">
+            <column name="PocketID" />
+            <generator class="assigned" />
+        </id>
+       
+        <property name="subscriberMdn" type="string">
+            <column name="SubscriberMDN" />
+        </property>
+         <property name="subscriberID" type="string">
+            <column name="SubscriberID" />
+        </property>
+        <property name="currentBalance" type="java.math.BigDecimal">
+            <column name="CurrentBalance" sql-type="decimal(25,4)"/>
+        </property>
+        <property name="cardPan" type="string">
+            <column name="CardPan" />
+        </property>   
+         <property name="createTime" type="timestamp">
+            <column name="CreateTime" length="19" />
+        </property>
+        <property name="updateTime" type="timestamp">
+            <column name="UpdateTime" length="19" />
+        </property>
+        
+ 	
+        <property name="currentDailyExpenditure" type="java.math.BigDecimal">
+            <column name="CurrentDailyExpenditure" sql-type="decimal(25,4)"/>
+        </property>
+         <property name="currentWeeklyExpenditure" type="java.math.BigDecimal">
+            <column name="CurrentWeeklyExpenditure" sql-type="decimal(25,4)"/>
+        </property>
+         <property name="currentMonthlyExpenditure" type="java.math.BigDecimal">
+            <column name="CurrentMonthlyExpenditure" sql-type="decimal(25,4)"/>
+        </property>
+        
+         <property name="currentDailyTxnsCount" type="string">
+            <column name="CurrentDailyTxnsCount" />
+        </property>
+         <property name="currentWeeklyTxnsCount" type="string">
+            <column name="CurrentWeeklyTxnsCount" />
+        </property>
+         <property name="currentMonthlyTxnsCount" type="string">
+            <column name="CurrentMonthlyTxnsCount" />
+        </property>
+        
+         <property name="pkDescription" type="string">
+            <column name="PkDescription" />
+        </property>   
+        <property name="pkMaxAmountPerTransaction" type="java.math.BigDecimal">
+            <column name="PkMaxAmountPerTransaction" sql-type="decimal(25,4)"/>
+        </property>
+        <property name="pkMinAmountPerTransaction" type="java.math.BigDecimal">
+            <column name="PkMinAmountPerTransaction" sql-type="decimal(25,4)"/>
+        </property>
+        <property name="pkMaxAmountPerDay" type="java.math.BigDecimal">
+            <column name="PkMaxAmountPerDay" sql-type="decimal(25,4)"/>
+        </property>
+        <property name="pkMaxAmountPerWeek" type="java.math.BigDecimal">
+            <column name="PkMaxAmountPerWeek" sql-type="decimal(25,4)"/>
+        </property>
+        <property name="pkMaxAmountPerMonth" type="java.math.BigDecimal">
+            <column name="PkMaxAmountPerMonth" sql-type="decimal(25,4)"/>
+        </property>  
+
+		<property name="pkMaxTransactionsPerDay" type="string">
+            <column name="PkMaxTransactionsPerDay" />
+        </property>  
+         <property name="pkMaxTransactionsPerWeek" type="string">
+            <column name="PkMaxTransactionsPerWeek" />
+        </property>  
+         <property name="pkMaxTransactionsPerMonth" type="string">
+            <column name="PkMaxTransactionsPerMonth" />
+        </property> 
+         <property name="pocketType" type="string">
+            <column name="pocketType" />
+        </property>
+         <property name="pocketStatus" type="string">
+            <column name="pocketStatus" />
+        </property> 
+		
+    </class>
+</hibernate-mapping>

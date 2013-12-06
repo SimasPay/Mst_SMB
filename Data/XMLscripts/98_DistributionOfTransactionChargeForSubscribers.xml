@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+ 
+ 	<property name="TINYINT" value="TINYINT" dbms="mysql"/>
+	<property name="TINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+
+	<property name="BIGINT" value="BIGINT" dbms="mysql"/>
+	<property name="BIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+
+ 	<changeSet author="MFS_MAIN" id="TABLE-TXNAMOUNTDSTRBLOG-142">
+		<modifyDataType tableName="txn_amount_dstrb_log" columnName="PartnerID" newDataType="${BIGINT}"/>
+	</changeSet>
+	
+	<changeSet author="MFS_MAIN" id="TABLE-TXNAMOUNTDSTRBLOG-143">
+		<addColumn tableName="txn_amount_dstrb_log">
+			<column name="SubscriberID" type="${BIGINT}"/>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet author="MFS_MAIN" dbms="oracle" id="FKC-TXNAMTDISTLOGSUBSCRIBER-203">
+        <addForeignKeyConstraint baseColumnNames="SubscriberID" baseTableName="txn_amount_dstrb_log"  constraintName="FK_TxnAmtDistLog_Subscriber" deferrable="false" referencedColumnNames="ID" referencedTableName="subscriber" />
+    </changeSet>
+	
+	<changeSet author="MFS_MAIN" dbms="mysql" id="FKC-TXNAMTDISTLOGSUBSCRIBER-204">
+        <addForeignKeyConstraint baseColumnNames="SubscriberID" baseTableName="txn_amount_dstrb_log"  constraintName="FK_TransactionAmountDistributionLog_Subscriber" deferrable="false" referencedColumnNames="ID" referencedTableName="subscriber" />
+    </changeSet>
+	
+ 	<changeSet author="MFS_MAIN" id="TABLE-SCTLSETTLEMENTMAP-144">
+		<modifyDataType tableName="sctl_settlement_map" columnName="PartnerID" newDataType="${BIGINT}"/>
+	</changeSet>
+	
+	<changeSet author="MFS_MAIN" id="TABLE-TRANSACTIONCHARGE-145">
+		<addColumn tableName="transaction_charge">
+			<column name="IsChrgDstrbApplicableToSrcSub" type="${TINYINT}" defaultValue="0" />
+			<column name="IsChrgDstrbApplicableToDestSub" type="${TINYINT}" defaultValue="0" />
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>

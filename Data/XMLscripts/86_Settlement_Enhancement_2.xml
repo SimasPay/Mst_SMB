@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+ 
+    <property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+	
+	<changeSet author="MFS_MAIN" id="DATA-SCHEDULETEMPLATE-40">
+        <insert tableName="schedule_template">
+            <column name="ID" valueNumeric="1"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Name" value="Daily"/>
+            <column name="ModeType" value="Daily"/>
+            <column name="TimeType" type="Daily"/>
+			<column name="DayOfWeek" value="1"/>
+            <column name="DayOfMonth" value="3"/>
+            <column name="Cron" value="0 0/5 * * * ?"/>
+            <column name="MSPID" valueNumeric="1"/>
+        </insert>
+	</changeSet>
+</databaseChangeLog>

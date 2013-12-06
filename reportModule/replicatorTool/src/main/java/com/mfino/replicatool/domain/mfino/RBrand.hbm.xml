@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:49 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Brand" optimistic-lock="version" table="brand" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_Brand_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Company" foreign-key="FK_Brand_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="InternationalCountryCode" type="java.lang.String" >
+<column name="InternationalCountryCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="PrefixCode" type="java.lang.String" index="PrefixCode">
+<column name="PrefixCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="BrandName" type="java.lang.String" unique-key="BrandName">
+<column name="BrandName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<set name="MDNRangeFromBrandID" inverse="true">
+<key>
+<column name="BrandID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MDNRange" />
+</set>
+<set name="SMSCodeFromBrandID" inverse="true">
+<key>
+<column name="BrandID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SMSCode" />
+</set>
+</class>
+</hibernate-mapping>

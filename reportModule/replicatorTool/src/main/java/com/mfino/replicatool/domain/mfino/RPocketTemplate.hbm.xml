@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:46 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.PocketTemplate" optimistic-lock="version" table="pocket_template" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_PocketTemplate_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<property name="Type" type="java.lang.Integer" >
+<column name="Type" not-null="true"  sql-type="int" />
+</property>
+<property name="BankAccountCardType" type="java.lang.Integer" >
+<column name="BankAccountCardType"    sql-type="int" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="Commodity" type="java.lang.Integer" >
+<column name="Commodity" not-null="true"  sql-type="int" />
+</property>
+<property name="CardPANSuffixLength" type="java.lang.Integer" >
+<column name="CardPANSuffixLength"    sql-type="int" />
+</property>
+<property name="Units" type="java.lang.String" >
+<column name="Units"    sql-type="varchar(255)" />
+</property>
+<property name="Allowance" type="java.lang.Integer" >
+<column name="Allowance" not-null="true"  sql-type="int" />
+</property>
+<property name="MaximumStoredValue" type="big_decimal" >
+<column name="MaximumStoredValue"    sql-type="decimal(25,4)" />
+</property>
+<property name="MinimumStoredValue" type="big_decimal" >
+<column name="MinimumStoredValue"    sql-type="decimal(25,4)" />
+</property>
+<property name="MaxAmountPerTransaction" type="big_decimal" >
+<column name="MaxAmountPerTransaction" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="MinAmountPerTransaction" type="big_decimal" >
+<column name="MinAmountPerTransaction" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="MaxAmountPerDay" type="big_decimal" >
+<column name="MaxAmountPerDay" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="MaxAmountPerWeek" type="big_decimal" >
+<column name="MaxAmountPerWeek" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="MaxAmountPerMonth" type="big_decimal" >
+<column name="MaxAmountPerMonth" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="MaxTransactionsPerDay" type="java.lang.Integer" >
+<column name="MaxTransactionsPerDay" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="MaxTransactionsPerWeek" type="java.lang.Integer" >
+<column name="MaxTransactionsPerWeek" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="MaxTransactionsPerMonth" type="java.lang.Integer" >
+<column name="MaxTransactionsPerMonth" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="MinTimeBetweenTransactions" type="java.lang.Integer" >
+<column name="MinTimeBetweenTransactions" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="BankCode" type="java.lang.Integer" >
+<column name="BankCode"    sql-type="int" />
+</property>
+<property name="OperatorCode" type="java.lang.Integer" >
+<column name="OperatorCode"    sql-type="int" />
+</property>
+<property name="BillingType" type="java.lang.Integer" >
+<column name="BillingType"    sql-type="int" />
+</property>
+<property name="LowBalanceNtfcThresholdAmt" type="big_decimal" >
+<column name="LowBalanceNtfcThresholdAmt"    sql-type="decimal(25,4)" />
+</property>
+<property name="LowBalanceNotificationEnabled" type="java.lang.Boolean" >
+<column name="LowBalanceNotificationEnabled"    sql-type="tinyint" />
+</property>
+<property name="WebTimeInterval" type="java.lang.Integer" >
+<column name="WebTimeInterval"    sql-type="int" />
+</property>
+<property name="WebServiceTimeInterval" type="java.lang.Integer" >
+<column name="WebServiceTimeInterval"    sql-type="int" />
+</property>
+<property name="UTKTimeInterval" type="java.lang.Integer" >
+<column name="UTKTimeInterval"    sql-type="int" />
+</property>
+<property name="BankChannelTimeInterval" type="java.lang.Integer" >
+<column name="BankChannelTimeInterval"    sql-type="int" />
+</property>
+<property name="Denomination" type="java.lang.Long" >
+<column name="Denomination"    sql-type="bigint" />
+</property>
+<property name="MaxUnits" type="java.lang.Long" >
+<column name="MaxUnits"    sql-type="bigint" />
+</property>
+<property name="PocketCode" type="java.lang.String" >
+<column name="PocketCode"    sql-type="varchar(255)" />
+</property>
+<property name="TypeOfCheck" type="java.lang.Integer" >
+<column name="TypeOfCheck" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="RegularExpression" type="java.lang.String" >
+<column name="RegularExpression"    sql-type="varchar(255)" />
+</property>
+<property name="IsCollectorPocket" type="java.lang.Boolean" >
+<column name="IsCollectorPocket"    sql-type="tinyint" />
+</property>
+<property name="NumberOfPocketsAllowedForMDN" type="java.lang.Integer" >
+<column name="NumberOfPocketsAllowedForMDN"    sql-type="int" />
+</property>
+<property name="IsSuspencePocket" type="java.lang.Boolean" >
+<column name="IsSuspencePocket"    sql-type="tinyint" />
+</property>
+<set name="PocketFromPocketTemplateID" inverse="true">
+<key>
+<column name="PocketTemplateID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Pocket" />
+</set>
+<set name="PocketFromOldPocketTemplateID" inverse="true">
+<key>
+<column name="OldPocketTemplateID"    />
+</key>
+<one-to-many class="com.mfino.domain.Pocket" />
+</set>
+<set name="PocketTemplateConfigFromPocketTemplateID" inverse="true">
+<key>
+<column name="PocketTemplateID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PocketTemplateConfig" />
+</set>
+<set name="KYCLevelFromPocketTemplateID" inverse="true">
+<key>
+<column name="PocketTemplateID"    />
+</key>
+<one-to-many class="com.mfino.domain.KYCLevel" />
+</set>
+</class>
+</hibernate-mapping>

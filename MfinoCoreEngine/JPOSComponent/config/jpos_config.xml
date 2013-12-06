@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
+  <!-- log-listener class="org.jpos.util.SimpleLogListener" / -->
+
+  <log-listener class="org.jpos.util.DailyLogListener">
+    <property name="prefix" value="data/log/jpos" />
+    <property name="date-format" value="-yyyy-MM-dd-HH"/>
+    <property name="compression-format" value="none"/> 
+  </log-listener>
+</logger>
+
+<!--    <logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
+        <log-listener class="org.jpos.util.RotateLogListener">
+			 <property name="logName" value="data/log/jpos.log"/>
+			 <property name="maxCopies" value="30"/>
+			 <property name="sleepTime" value="86400"/>
+			 <property name="maxSize" value="10485760"/>
+		</log-listener> 
+    </logger>
+	-->

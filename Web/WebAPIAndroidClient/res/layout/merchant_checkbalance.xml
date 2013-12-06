@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+<TableRow>
+<TextView 
+android:id="@+id/mecbTextView01" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourceMDN">
+</TextView>
+<EditText 
+android:id="@+id/mecbSourceMDNET"
+android:width="145.0px"
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/mecbTextView02" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourcePIN">
+</TextView>
+<EditText
+android:id="@+id/mecbSourcePINET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+
+<TableRow>
+<Button 
+android:id="@+id/mecbCheckBalanceButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Check Balance">
+</Button>
+<Button 
+android:id="@+id/mecbBackButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Back" >
+</Button>
+</TableRow>
+
+</TableLayout>

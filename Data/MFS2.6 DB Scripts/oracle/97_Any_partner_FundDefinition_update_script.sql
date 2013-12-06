@@ -1,0 +1,14 @@
+Delete from notification where code = 809;
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,809,'InvalidFundAccessCodeNewFacSpecificMerchant',1,'ERROR: Incorrect Fund Access Code. Please verify Fund Access Code and retry.The New Fund access code is $(OneTimePin) usable at Partner with trade name:$(PartnerCode).Number of tries left $(NumberOfTriesLeft).',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,809,'InvalidFundAccessCodeNewFacSpecificMerchant',2,'ERROR: Incorrect Fund Access Code. Please verify Fund Access Code and retry.The New Fund access code is $(OneTimePin) usable at Partner with trade name:$(PartnerCode).Number of tries left $(NumberOfTriesLeft).',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,809,'InvalidFundAccessCodeNewFacSpecificMerchant',4,'ERROR: Incorrect Fund Access Code. Please verify Fund Access Code and retry.The New Fund access code is $(OneTimePin) usable at Partner with trade name:$(PartnerCode).Number of tries left $(NumberOfTriesLeft).',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,809,'InvalidFundAccessCodeNewFacSpecificMerchant',8,'ERROR: Incorrect Fund Access Code. Please verify Fund Access Code and retry.The New Fund access code is $(OneTimePin) usable at Partner with trade name:$(PartnerCode).Number of tries left $(NumberOfTriesLeft).',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,809,'InvalidFundAccessCodeNewFacSpecificMerchant',16,'ERROR: Incorrect Fund Access Code. Please verify Fund Access Code and retry.The New Fund access code is $(OneTimePin) usable at Partner with trade name:$(PartnerCode).Number of tries left $(NumberOfTriesLeft).',null,0,0,sysdate,null,null,1);
+
+Update expiration_type set ExpiryValue=1800 where ID=1;
+
+Update purpose set Code='any' where ID=1;
+
+Update fund_definition set IsMultipleWithdrawalAllowed=0 where ID=1;
+
+commit;

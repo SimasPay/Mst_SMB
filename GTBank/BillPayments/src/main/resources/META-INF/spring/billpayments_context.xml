@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. --><!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<context:annotation-config />
+
+	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+	<osgi:reference id="bankService" interface="com.mfino.mce.backend.BankService"/>
+	
+	<osgi:reference id="autoReversalService" interface="com.mfino.mce.backend.AutoReversalService"/>
+	<osgi:reference id="autoReversalPendingResolveService" interface="com.mfino.mce.backend.AutoReversalPendingResolveService"/>
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	
+	<osgi:reference id="billerServiceImpl" bean-name="BillerServiceImpl" interface="com.mfino.service.BillerService"/>
+	<osgi:reference id="notificationMessageParserServiceImpl" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService"/>
+	<osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService"/>
+	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	<osgi:reference id="systemParametersServiceImpl" bean-name="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
+	<osgi:reference id="transactionPendingSummaryServiceImpl" bean-name="TransactionPendingSummaryServiceImpl" interface="com.mfino.service.TransactionPendingSummaryService" />
+	<osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" />
+	<osgi:reference id="serviceChargeTransactionLogServiceImpl" bean-name="ServiceChargeTransactionLogServiceImpl" interface="com.mfino.service.ServiceChargeTransactionLogService" />
+	
+
+	<bean id="billPaymentsService" class="com.mfino.billpayments.service.impl.BillPaymentsServiceImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="billPayMoneyTransferService" class="com.mfino.billpayments.service.impl.BillPayMoneyTransferServiceImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="bankService" ref="bankService" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="billerService" ref="billerServiceImpl" />
+		<property name="pocketService" ref="pocketServiceImpl" />
+		<property name="htm" ref="txManager" />
+	</bean>
+	
+	<bean id="billPayBillerIntegrationService" class="com.mfino.billpayments.service.impl.BillPayBillerIntegrationServiceImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="serviceChargeTransactionLogService" ref="serviceChargeTransactionLogServiceImpl" />
+	</bean>
+
+	<bean id="billPayEventProcessingService" class="com.mfino.billpayments.service.impl.BillPayEventProcessingServiceImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+	</bean>
+	
+	<bean id="billPaymentsSuspenceClearanceServiceImpl" class="com.mfino.billpayments.service.impl.BillPaymentsSuspenceClearanceServiceImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+	</bean>
+
+	<bean id="billPayPendingResolveServiceImpl" class="com.mfino.billpayments.service.impl.BillPayPendingResolveServiceImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="billPayMoneyTransferService" ref="billPayMoneyTransferService" />
+		<property name="autoReversalService" ref="autoReversalService" />
+		<property name="autoReversalPendingResolveService" ref="autoReversalPendingResolveService" />
+		<property name="bankService" ref="bankService" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="transactionPendingSummaryService" ref="transactionPendingSummaryServiceImpl" />
+	</bean>
+	
+	<bean id="billPayNotificationService" class="com.mfino.billpayments.service.impl.BillPayNotificationServiceImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="billerService" ref="billerServiceImpl" />
+		<property name="notificationMessageParserService" ref="notificationMessageParserServiceImpl" />
+	</bean>
+				
+	<osgi:service ref="billPaymentsService">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPaymentsService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="billPayMoneyTransferService">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPayMoneyTransferService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="billPayBillerIntegrationService">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPayBillerIntegrationService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="billPayEventProcessingService">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPayEventProcessingService</value>
+		</osgi:interfaces>
+	</osgi:service>	
+
+	<osgi:service ref="billPaymentsSuspenceClearanceServiceImpl">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPaymentsSuspenceClearanceService</value>
+		</osgi:interfaces>
+	</osgi:service>	
+
+	<osgi:service ref="billPayPendingResolveServiceImpl">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPayPendingResolveService</value>
+		</osgi:interfaces>
+	</osgi:service>	
+	
+	<osgi:service ref="billPayNotificationService">
+		<osgi:interfaces>
+			<value>com.mfino.billpayments.service.BillPayNotificationService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<tx:annotation-driven transaction-manager="txManager" />	
+</beans>

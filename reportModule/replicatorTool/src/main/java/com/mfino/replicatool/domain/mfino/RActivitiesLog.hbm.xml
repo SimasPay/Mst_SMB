@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:43 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.ActivitiesLog" optimistic-lock="version" table="activities_log" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Company" foreign-key="FK_ActivitiesLog_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="ParentTransactionID" type="java.lang.Long" index="TransactionID">
+<column name="ParentTransactionID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="TransferID" type="java.lang.Long" >
+<column name="TransferID"    sql-type="bigint" />
+</property>
+<property name="IsSuccessful" type="java.lang.Boolean" >
+<column name="IsSuccessful"    sql-type="tinyint" />
+</property>
+<property name="ErrorCode" type="java.lang.Integer" >
+<column name="ErrorCode"    sql-type="int" />
+</property>
+<property name="LOPID" type="java.lang.Long" >
+<column name="LOPID"    sql-type="bigint" />
+</property>
+<property name="BulkUploadEntryID" type="java.lang.Long" >
+<column name="BulkUploadEntryID"    sql-type="bigint" />
+</property>
+<property name="NotificationCode" type="java.lang.Integer" >
+<column name="NotificationCode"    sql-type="int" />
+</property>
+<property name="MsgType" type="java.lang.Integer" >
+<column name="MsgType"    sql-type="int" />
+</property>
+<property name="SourceSubscriberID" type="java.lang.Long" >
+<column name="SourceSubscriberID"    sql-type="bigint" />
+</property>
+<property name="SourceSubscriberName" type="java.lang.String" >
+<column name="SourceSubscriberName"    sql-type="varchar(255)" />
+</property>
+<property name="SourceMDNID" type="java.lang.Long" >
+<column name="SourceMDNID"    sql-type="bigint" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN"    sql-type="varchar(255)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+<property name="SourcePocketID" type="java.lang.Long" >
+<column name="SourcePocketID"    sql-type="bigint" />
+</property>
+<property name="SourcePocketType" type="java.lang.Integer" >
+<column name="SourcePocketType"    sql-type="int" />
+</property>
+<property name="SourceApplication" type="java.lang.Integer" >
+<column name="SourceApplication"    sql-type="int" />
+</property>
+<property name="ServletPath" type="java.lang.String" >
+<column name="ServletPath"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_ProcessingCode" type="java.lang.String" >
+<column name="ISO8583_ProcessingCode"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_PrimaryAccountNumber" type="java.lang.String" >
+<column name="ISO8583_PrimaryAccountNumber"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_SystemTraceAuditNumber" type="java.lang.String" >
+<column name="ISO8583_SystemTraceAuditNumber"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_RetrievalReferenceNum" type="java.lang.String" >
+<column name="ISO8583_RetrievalReferenceNum"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_MerchantType" type="java.lang.String" >
+<column name="ISO8583_MerchantType"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_AcquiringInstIdCode" type="java.lang.Integer" >
+<column name="ISO8583_AcquiringInstIdCode"    sql-type="int" />
+</property>
+<property name="ISO8583_CardAcceptorIdCode" type="java.lang.String" >
+<column name="ISO8583_CardAcceptorIdCode"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_Variant" type="java.lang.String" >
+<column name="ISO8583_Variant"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_ResponseCode" type="java.lang.String" >
+<column name="ISO8583_ResponseCode"    sql-type="varchar(255)" />
+</property>
+<property name="WebClientIP" type="java.lang.String" >
+<column name="WebClientIP"    sql-type="varchar(255)" />
+</property>
+<property name="Commodity" type="java.lang.Integer" >
+<column name="Commodity"    sql-type="int" />
+</property>
+<property name="ActivityCategory" type="java.lang.Integer" >
+<column name="ActivityCategory"    sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

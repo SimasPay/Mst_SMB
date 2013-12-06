@@ -1,0 +1,1 @@
+alter table pocket_template add (TypeOfCheck int(11) NOT NULL DEFAULT '0', RegularExpression varchar(255) DEFAULT NULL);

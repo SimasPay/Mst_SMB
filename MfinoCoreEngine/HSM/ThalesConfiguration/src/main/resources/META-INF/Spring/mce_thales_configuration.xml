@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd	    
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd
+		http://camel.apache.org/schema/cxf
+		http://camel.apache.org/schema/cxf/camel-cxf.xsd ">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+		 <!--
+		  Default values for all the properties can be given as below
+		  if the property is not obtained from the file it would used from below 
+		 -->
+		<property name="properties">  
+  				<props>
+     				<prop key="hsm.thales.timeout">10000</prop>
+     			<prop key="hsm.thales.pin.block.format">01</prop>
+                <prop key="hsm.thales.pin.validation.key">1CE4EAEE544ACF37</prop>
+                <prop key="hsm.thales.zone.private.key">AD09EC7F60F4AD42</prop>
+                <!-- make sure the value is given as two digit value -->
+                <prop key="hsm.thales.min.pin.length">04</prop>  
+                <prop key="hsm.thales.pin.encryption.enabled">true</prop>
+                <prop key="hsm.thales.keyschemetag">X</prop>
+                <prop key="hsm.thales.encrypted.component1">UF319B0EAB09532A4381295EC865A4604</prop>
+                <prop key="hsm.thales.encrypted.component2">UCCCF7EB7945F9989CB88A78F88030A0F</prop>
+                <prop key="hsm.thales.encrypted.component3">U6506A69C3833C8CE9B48030EE38D89FC</prop>
+                <prop key="hsm.thales.keytype">000</prop>
+                <prop key="hsm.thales.keyschemelmk">U</prop>
+  				</props>  
+  			</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+	
+	<!--
+	  Configuration
+	    1. PVK encrypted under LMK
+	    2. ZPK Encrypted under LMK
+	  
+	  Messages Supported
+	     1. Validate PIN given hashed PIN and Offset 
+	     2. Generate Offset given a Hashed PIN.
+	     
+	  Steps
+	   1. Take the message record in the log
+	   2. send the message to HSM(communication to HSM is blocked call)
+	   3. send the response back to the fix message handler.
+	    	     
+	 -->
+	 
+	 <bean id="hsmCommandImplementor" class="com.mfino.hsm.thales.command.ThalesCommandImplementor">
+	     <property name="timeout" value="${hsm.thales.timeout}"/>
+	     <property name="basePath" value="./jpos/cfg/hsm-"/>
+	     <property name="pinBlockFormat" value="${hsm.thales.pin.block.format}"/>
+	     <property name="pvk" value="${hsm.thales.pin.validation.key}"/>
+	     <property name="zpk" value="${hsm.thales.zone.private.key}"/>
+	     <property name="minPinLength" value="${hsm.thales.min.pin.length}"/>
+	     <property name="inQueueName" value="hthales-send"/>
+	     <property name="outQueueName" value="hthales-receive"/>
+	     <property name="pinEncryptionEnabled" value="${hsm.thales.pin.encryption.enabled}"/>
+	     <property name="keySchemeTag" value="${hsm.thales.keyschemetag}"/>
+	     <property name="component1" value="${hsm.thales.encrypted.component1}"/>
+	     <property name="component2" value="${hsm.thales.encrypted.component2}"/>
+	     <property name="component3" value="${hsm.thales.encrypted.component3}"/>
+	     <property name="keySchemeLMK" value="${hsm.thales.keyschemelmk}"/>
+	     <property name="keyType" value="${hsm.thales.keytype}"/>
+	 </bean>
+	     
+	 <bean id="hsmProcessor" class="com.mfino.hsm.thales.processor.ThalesProcessor">
+	     <property name="commandImplementor" ref="hsmCommandImplementor"/>
+	 </bean>
+	     
+	<camelContext id="thaleshsm_context" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+	    <route>
+	        <from uri="jms:hsmQueue?disableReplyTo=true"/>
+	        <log message="message received, sending to hsm" />
+	        <to uri="bean:hsmProcessor?method=processMessage"/>
+	        <to uri="jms:FixReplyQueue?disableReplyTo=true" />
+	    </route>
+	</camelContext>
+</beans>

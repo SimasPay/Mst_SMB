@@ -1,0 +1,162 @@
+package com.mfino.vah.handlers;
+
+import java.io.IOException;
+
+import javax.jms.JMSException;
+
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOSource;
+import org.jpos.iso.packager.XMLPackager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
+import com.mfino.vah.converters.IsoToNativeTransformer;
+import com.mfino.vah.converters.TransformationException;
+import com.mfino.vah.handlers.inqury.InquiryHandler;
+import com.mfino.vah.handlers.inqury.InquiryRequestException;
+import com.mfino.vah.handlers.inqury.InvalidRequestException;
+import com.mfino.vah.iso8583.IsoToFixConverterFactory;
+import com.mfino.vah.iso8583.ResponseCode;
+import com.mfino.vah.messaging.ChannelCommunicationException;
+import com.mfino.vah.messaging.QueueChannel;
+
+public class TransactionHandler implements Runnable {
+
+	private static Logger	         log	= LoggerFactory.getLogger(TransactionHandler.class);
+
+	private ISOMsg	                 msg;
+	private ISOSource	             source;
+	private QueueChannel	         channel;
+	private IsoToFixConverterFactory	isoToFixConverterFactory;
+
+	public TransactionHandler(ISOMsg msg, ISOSource source) throws JMSException {
+		this.msg = msg;
+		this.source = source;
+		this.channel = new QueueChannel("CIQueue", "smartCashinOutQueue");
+		this.isoToFixConverterFactory = IsoToFixConverterFactory.getInstance();
+	}
+
+	@Override
+	public void run() {
+		String element39 = ResponseCode.VAH_ERROR;
+		String response = null;
+		try {
+
+			try {
+				log.info("isomsg received in transactionhandler" + msg);
+				XMLPackager packager = new XMLPackager();
+				log.info("received isomsg-->" + new String(packager.pack(msg)));
+
+				// signon not done
+				msg.set(38, "123456");
+				if (!VAHEnum.Signon.getStatus()) {
+					log.warn("VAH ISO Request received before signon, so rejected");
+					element39 = ResponseCode.VAH_ERROR;
+				}
+				else {
+					String processingCode = msg.getString(3);
+					String mti = msg.getMTI();
+
+					log.info("mti=" + mti + " processingCode=" + processingCode);
+
+					if (mti.equals("0200") && processingCode.startsWith("37"))
+						throw new InquiryRequestException();
+
+					IsoToNativeTransformer transfomrer = isoToFixConverterFactory.getTransformer(mti, processingCode);
+					String request = transfomrer.transform(msg);
+					log.info("sending request=" + request + " to QueueChannel for processing ");
+					response = channel.requestAndReceive(request);
+					log.info("received reponse=" + response + " from QueueChannel");
+					
+					element39 = getResponseCode(response);
+				}
+			}
+			catch (ProcessorNotAvailableException e) {
+				log.warn("received a request that is not supported yet.");
+				element39 = ResponseCode.VAH_ERROR;
+			}
+			catch (TransformationException ex) {
+				log.error("could not transform the iso msg to cashin request string,invalid xml string", ex);
+				element39 = ResponseCode.VAH_ERROR;
+			}
+			catch (InquiryRequestException ex) {
+				log.info("setting inquiry successful response");
+
+				InquiryHandler handler = new InquiryHandler(msg);
+				try {
+					String de48 = handler.getInquiryResponseElement48();
+					msg.set(48, de48);
+					element39 = ResponseCode.APPROVED;	
+					response = "success";
+				}
+				catch (InvalidRequestException ex1) {
+					log.warn("requests other than 8881 are not supported", ex1);
+					element39 = ResponseCode.VAH_ERROR;
+				}
+				catch (Exception ex2) {
+					log.warn("exceptin occured.", ex2);
+					element39 = ResponseCode.VAH_ERROR;
+				}
+
+			}
+			catch (ChannelCommunicationException ex) {
+				log.error("couldnot communicate with the Queue channel", ex);
+				element39 = ResponseCode.VAH_ERROR;
+			}
+			finally {
+				if(null != response){
+					msg.set(39, element39);
+					msg.setResponseMTI();
+					XMLPackager packager = new XMLPackager();
+					log.info("response isomsg-->" + new String(packager.pack(msg)));
+					source.send(msg);
+				}
+				
+				try {
+					log.info("Closing JMS connection for this quueue channel **");
+					channel.close();
+				} catch (Exception e) {
+					log.error("TransactionHandler, Error while closing the channel ", e);
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (ISOException ex) {
+			log.error("Exception occured while handling the request ", ex);
+		}
+		catch (IOException ex) {
+			log.error("Exception occured while handling the request ", ex);
+		}
+
+	}
+
+	private String getResponseCode(String response) {
+		if(null == response) return null;
+		
+		if (response.contains(">100<")) {
+			log.info("response containts the string >100<.So successful");
+			return "00";
+		}
+		else if (response.contains(">112<")) {
+			log.info("response contains the string >112<. So failure");
+			return ResponseCode.VAH_ERROR;
+		}
+		else {
+			log.info("response doesn't contain the string >100<. So failure");
+			return ResponseCode.VAH_ERROR;
+		}
+	}
+
+	public static void main(String[] args) throws ISOException, InvalidRequestException {
+
+		ISOMsg msg = new ISOMsg();
+		msg.set(103, "80019876543210");
+		InquiryHandler p = new InquiryHandler(msg);
+
+		System.out.println(p.getInquiryResponseElement48());
+
+	}
+
+}

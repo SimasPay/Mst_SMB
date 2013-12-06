@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+	
+	<changeSet author="MFS_MAIN" id="DATA-PERMISSION-GROUP-119">
+		<delete tableName="permission_group">			
+		</delete>
+        <insert tableName="permission_group">
+			<column name="ID" value="1"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Subscriber"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="2"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Pocket"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="3"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Charge Transactions"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="4"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Pocket Template"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="5"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Distribution Template"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="6"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Notification"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="7"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Enum Page"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="8"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="User"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="9"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Report"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="10"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Bulk Upload"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="11"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="MNO Params"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="12"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Channel Codes"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="13"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Agent"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="14"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Partner"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="15"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Billers"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="16"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Distribution Hierarchy"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="17"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Charge Type"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="18"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Charge Definition"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="19"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Transaction Rule"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="20"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Transaction Charge"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="21"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Bulk Transfer"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="22"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Analytics"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="23"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Pocket Template Config"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="24"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="System Parameters"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="25"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Groups"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="26"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Integrations"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="27"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Bank Teller"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="28"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Funding For Agent"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="29"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Scheduler Config"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="30"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Fund Definitions"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="31"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Transaction Monitor"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="32"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Notification Log"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="33"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Actor Channel Mapping"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="34"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="App Uploader"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="35"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Adjustments"/>
+        </insert>
+		<insert tableName="permission_group">
+			<column name="ID" value="36"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="PermissionGroupName" value="Permissions"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

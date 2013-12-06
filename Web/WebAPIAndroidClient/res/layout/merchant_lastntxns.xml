@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+<TableRow>
+<TextView 
+android:id="@+id/meltTextView01" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourceMDN">
+</TextView>
+<EditText 
+android:id="@+id/meltSourceMDNET"
+android:width="150.0px" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/meltTextView02" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourcePIN">
+</TextView>
+<EditText
+android:id="@+id/meltSourcePINET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+
+<TableRow>
+<Button 
+android:id="@+id/meltLastNTxnsButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Get History">
+</Button>
+<Button 
+android:id="@+id/meltBackButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Back" >
+</Button>
+</TableRow>
+
+</TableLayout>

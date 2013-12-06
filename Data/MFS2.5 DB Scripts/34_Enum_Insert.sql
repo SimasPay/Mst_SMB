@@ -1,0 +1,3 @@
+INSERT IGNORE INTO `mfino`.`enum_text` (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',NOW(),'system',NOW(),'system','0','IntegrationServiceUnavailable','5067','20','IntegrationServiceUnavailable','IntegrationServiceUnavailable');
+
+INSERT IGNORE INTO `mfino`.`enum_text` (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',NOW(),'system',NOW(),'system','0','TransferFailureReason','5068','44','IntegrationServiceUnavailable','IntegrationServiceUnavailable');

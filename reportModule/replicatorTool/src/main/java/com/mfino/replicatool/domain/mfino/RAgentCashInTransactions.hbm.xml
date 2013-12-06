@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:57 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.AgentCashInTransactions" optimistic-lock="version" table="agent_cashin_txn_log" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="DestPartnerID" type="java.lang.Long" >
+<column name="DestPartnerID"    sql-type="bigint" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN"    sql-type="varchar(255)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+<property name="SourcePocketID" type="java.lang.Long" >
+<column name="SourcePocketID"    sql-type="bigint" />
+</property>
+<property name="DestPocketID" type="java.lang.Long" >
+<column name="DestPocketID"    sql-type="bigint" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount"    sql-type="decimal(25,4)" />
+</property>
+<property name="AgentCashInTrxnStatus" type="java.lang.Integer" >
+<column name="AgentCashInTrxnStatus"    sql-type="int" />
+</property>
+<property name="AgentCashInTrxnStatusReason" type="java.lang.String" >
+<column name="AgentCashInTrxnStatusReason"    sql-type="varchar(255)" />
+</property>
+<property name="SctlId" type="java.lang.Long" >
+<column name="SctlId"    sql-type="bigint" />
+</property>
+</class>
+</hibernate-mapping>

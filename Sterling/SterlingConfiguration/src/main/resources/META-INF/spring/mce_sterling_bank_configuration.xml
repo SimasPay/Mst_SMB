@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd	    
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd
+	    http://camel.apache.org/schema/cxf
+		http://camel.apache.org/schema/cxf/camel-cxf.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd ">
+
+
+	<context:annotation-config />
+
+	<osgi:reference id="integrationSummaryService" interface="com.mfino.mce.backend.IntegrationSummaryService" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	
+	<!-- <bean id="mfinoHttpClient" class="com.mfino.sterling.service.MfinoHttpConnector">
+		<property name="timeout" value="${sterling_https_timeout}" />
+	</bean> -->
+	<bean id="xmlWSCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingBankWSClient">
+		<property name="url"
+			value="${sterling_bank_web_service_url}" />
+		<!-- <property name="httpClient" ref="mfinoHttpClient" /> -->
+	</bean>
+
+	<cxf:cxfEndpoint id="SterlingBankWebService"
+		address="${sterling_bank_web_service_url}"
+		serviceClass="org.tempuri.IBSServicesSoap" endpointName="IBSServicesSoap" />
+		
+	<bean id="key" class="com.mfino.sterling.crypto.ByteArrayFactoryBean">
+		<property name="data" value="${sterling_bank_key}" />
+	</bean>	
+	<bean id="initializationVector" class="com.mfino.sterling.crypto.ByteArrayFactoryBean">
+		<property name="data" value="${sterling_bank_initializationvector}" />
+	</bean>           
+	<bean id="cryptoService"
+		class="com.mfino.sterling.crypto.CryptoService">
+		<property name="key" ref="key"/>
+		<property name="initializationVector" ref="initializationVector"/>
+	</bean>
+		
+	<bean id="sterlingBankWebServiceCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingBankWebServiceCommunicator" abstract="true">
+		<property name="xmlWSCommunicator" ref="xmlWSCommunicator" />
+		<property name="webServiceEndpointBean" value="SterlingBankWebService"/>
+		<property name="cryptoService" ref="cryptoService"/>
+		<property name="encryptionEnabled" value="${sterling_bank_encryption_enabled}"/>
+	</bean>
+		
+	<bean id="sterlingBankBalanceInquiryCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingBankBalanceInquiryCommunicator" 
+		parent="sterlingBankWebServiceCommunicator" />		
+	
+	<bean id="sterlingBankTransferInquiryCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingBankTransferInquiryCommunicator"
+		parent="sterlingBankWebServiceCommunicator" />	
+		
+	<bean id="sterlingBankTransferCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingBankTransferCommunicator"
+		parent="sterlingBankWebServiceCommunicator" />	
+		
+	<bean id="sterlingBankHistoryCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingBankHistoryCommunicator"
+		parent="sterlingBankWebServiceCommunicator" />
+		
+	<bean id="sterlingInterBankTransferInquiryCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingInterBankTransferInquiryCommunicator"
+		parent="sterlingBankWebServiceCommunicator" />
+
+	<bean id="sterlingInterBankTransferCommunicator"
+		class="com.mfino.sterling.bank.communicator.SterlingInterBankTransferCommunicator"
+		parent="sterlingBankWebServiceCommunicator" >
+		<property name="integrationSummaryService" ref="integrationSummaryService" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory" />
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory" />
+		<property name="concurrentConsumers" value="${concurrentConsumers}" />
+	</bean>
+
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig" />
+	</bean>
+
+	<camelContext id="sterlingbankWebService" xmlns="http://camel.apache.org/schema/spring"
+		useMDCLogging="true">
+		<route>
+			<from uri="jms:sterlingBankRequestQueue?disableReplyTo=true" />
+			<threads threadName="Threads" poolSize="10">
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMBalanceInquiryToBank'</simple>
+					<to uri="bean:sterlingBankBalanceInquiryCommunicator?method=process" />
+				</filter>
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+					<to uri="bean:sterlingBankTransferInquiryCommunicator?method=process" />
+				</filter>
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+					<to uri="bean:sterlingBankTransferCommunicator?method=process" />
+				</filter>
+				<filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMGetLastTransactionsToBank'</simple>
+					<to uri="bean:sterlingBankHistoryCommunicator?method=process" />
+				</filter>
+				<to uri="jms:frontendResponseServiceQueue?disableReplyTo=true" />
+			</threads>
+		</route>
+	</camelContext>
+	
+	<bean id="classBasedDynamicRouter" class="com.mfino.mce.core.routing.ClassBasedDynamicRouter">
+		<constructor-arg>
+			<map>
+				<entry key="com.mfino.fix.CmFinoFIX$CMInterBankTransferInquiryToBank"
+					value="jms:wsIBTInquiryQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMInterBankMoneyTransferToBank"
+					value="jms:wsIBTConfirmationQueue?disableReplyTo=true" />
+				<entry key="com.mfino.mce.core.util.BackendResponse" 
+				    value="jms:notificationQueue?disableReplyTo=true" />
+			</map>
+		</constructor-arg>
+	</bean>
+	
+	<osgi:reference id="interbankTransferService"
+		interface="com.mfino.sterling.interbank.InterBankTransferService" />
+		
+	<camelContext id="sterlinginterbanktransfer" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<threadPool id="ibtPool" threadName="IBTThread" poolSize="2"
+			maxPoolSize="10" />
+		<threadPool id="ibtWSPool" threadName="IBTWSThread"
+			poolSize="2" maxPoolSize="10" />
+
+		<route>
+			<from uri="jms:IBTQueue?disableReplyTo=true" />
+			<!-- add login to send the notification messages to notification queue -->
+			<threads executorServiceRef="ibtPool">
+				<to uri="bean:interbankTransferService?method=processMessage" />
+				<camel:removeHeader headerName="CamelSlipEndpoint" />
+				<camel:dynamicRouter>
+					<method ref="classBasedDynamicRouter" method="findDestination" />
+				</camel:dynamicRouter>
+			</threads>
+		</route>
+		<route>
+			<from uri="jms:wsIBTInquiryQueue?disableReplyTo=true" />
+			<threads executorServiceRef="ibtWSPool">
+				<to uri="bean:sterlingInterBankTransferInquiryCommunicator?method=process" />
+				<to uri="jms:IBTQueue?disableReplyTo=true" />
+			</threads>
+		</route>
+		<route>
+			<from uri="jms:wsIBTConfirmationQueue?disableReplyTo=true" />
+			<threads executorServiceRef="ibtWSPool">
+				<to uri="bean:sterlingInterBankTransferCommunicator?method=process" />
+				<to uri="jms:IBTQueue?disableReplyTo=true" />
+			</threads>
+		</route>
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+</beans>

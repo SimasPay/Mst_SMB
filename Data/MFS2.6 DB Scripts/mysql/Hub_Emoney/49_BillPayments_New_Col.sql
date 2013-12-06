@@ -1,0 +1,2 @@
+
+ALTER TABLE bill_payments ADD BillData LONGTEXT DEFAULT NULL;

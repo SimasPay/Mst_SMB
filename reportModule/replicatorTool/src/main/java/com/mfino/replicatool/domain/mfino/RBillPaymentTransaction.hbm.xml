@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:53 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.BillPaymentTransaction" optimistic-lock="version" table="bill_payment_txn" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Subscriber" foreign-key="FK_BillPaymentTransaction_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID" not-null="true"   />
+</many-to-one>
+<property name="ParentTransactionID" type="java.lang.Long" >
+<column name="ParentTransactionID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="TransactionID" type="java.lang.Long" >
+<column name="TransactionID"    sql-type="bigint" />
+</property>
+<property name="BankCode" type="java.lang.Integer" >
+<column name="BankCode" not-null="true"  sql-type="int" />
+</property>
+<property name="BillerID" type="java.lang.Long" >
+<column name="BillerID"    sql-type="bigint" />
+</property>
+<property name="BillerName" type="java.lang.String" >
+<column name="BillerName"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Company" foreign-key="FK_BillPaymentTransaction_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="BillPaymentReferenceID" type="java.lang.String" >
+<column name="BillPaymentReferenceID"    sql-type="varchar(255)" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount"    sql-type="decimal(25,4)" />
+</property>
+<property name="CustomerID" type="java.lang.String" >
+<column name="CustomerID" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="BillPaymentTransactionType" type="java.lang.Integer" >
+<column name="BillPaymentTransactionType" not-null="true"  sql-type="int" />
+</property>
+<property name="TransactionFee" type="big_decimal" >
+<column name="TransactionFee"    sql-type="decimal(25,4)" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status"    sql-type="int" />
+</property>
+<property name="NotificationCode" type="java.lang.Integer" >
+<column name="NotificationCode"    sql-type="int" />
+</property>
+<property name="TransactionDate" type="java.lang.String" >
+<column name="TransactionDate"    sql-type="varchar(255)" />
+</property>
+<property name="BillerCode" type="java.lang.String" >
+<column name="BillerCode"    sql-type="varchar(255)" />
+</property>
+</class>
+</hibernate-mapping>

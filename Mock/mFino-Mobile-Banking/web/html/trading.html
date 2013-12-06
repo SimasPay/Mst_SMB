@@ -1,0 +1,105 @@
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+        </SCRIPT>
+        <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+    </HEAD>
+    <body onload="setTimeout('effects()',50);">
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%"></td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%" align="right" valign="middle">
+                            <INPUT id="backbutton" type="button" value=" Back" class="back_btn" onclick="javascript:history.back();" >
+                        </td>
+                        <td width="60%" align="center" valign="middle">
+                            <DIV align="center">
+                                <div class="headerLabel">
+                                    Trading
+                                </div>
+                            </DIV>
+                        </td>
+                        <td width="20%" align="right" valign="middle">
+                            <INPUT id="menubutton"
+                                   type="button"
+                                   value="Menu"
+
+                                   class="menuButton"
+                                   onclick="displayMenu();"
+                                   >
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+        <HR>
+        <DIV id="cmbody">
+            <br>
+            <ul>
+                <li id="firstItem" style="padding:2px;height:35px;" onclick="setGetQuoteOption('menu');goToPage('getaquote.html');" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/Quote.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">Get a Quote</span>
+                </li>
+                <li onclick="goToPage('placeatrade.html');" style="padding:2px;height:35px;" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/Trade.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">Place a Trade</span>
+                </li>
+                <li onclick="goToPage('viewstockpositions.html');" style="padding:2px;height:35px;" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/Positions.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">View Positions</span>
+                </li>
+                <li onclick="goToPage('watchlist.html');" style="padding:2px;height:35px;" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/Watch.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">Watch List</span>
+                </li>
+                <li onclick="goToPage('recenttradestatus.html');" style="padding:2px;height:35px;" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/accept.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">Trade Status</span>
+                </li>
+                <li onclick="goToPage('markets.html');" style="padding:2px;height:35px;" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/Markets.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">Markets</span>
+                </li>
+                <li id="lastItem" onclick="goToPage('newspage.html');" style="padding:2px;height:35px;" onmousedown="linkOnMouseDown(this);" onmouseup="linkOnMouseUp(this);">
+                    <img src="../images/News.png" style="width:30px;height:30px;vertical-align:middle;margin:1px;padding:1px;padding-right:10px;">
+                    <span style="vertical-align:middle;">News/ Research</span>
+                </li>
+            </ul>
+            <br>
+            <DIV class="footer1" align="center">
+                <IMG border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </DIV>
+        </DIV>
+
+    </BODY>
+</HTML>

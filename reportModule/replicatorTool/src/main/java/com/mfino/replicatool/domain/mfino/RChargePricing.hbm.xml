@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:56 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.ChargePricing" optimistic-lock="version" table="charge_pricing" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_ChargePricing_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="ChargeDefinition" foreign-key="FK_ChargePricing_ChargeDefinition" class="com.mfino.domain.ChargeDefinition" fetch="select">
+<column name="ChargeDefinitionID" not-null="true"   />
+</many-to-one>
+<property name="MinAmount" type="big_decimal" >
+<column name="MinAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="MaxAmount" type="big_decimal" >
+<column name="MaxAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="ChargeInFixed" type="big_decimal" >
+<column name="ChargeInFixed"    sql-type="decimal(25,4)" />
+</property>
+<property name="ChargeInPercentage" type="big_decimal" >
+<column name="ChargeInPercentage"    sql-type="decimal(25,4)" />
+</property>
+<property name="IsDefault" type="java.lang.Boolean" >
+<column name="IsDefault"    sql-type="tinyint" />
+</property>
+</class>
+</hibernate-mapping>

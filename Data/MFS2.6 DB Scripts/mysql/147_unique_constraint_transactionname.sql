@@ -1,0 +1,1 @@
+alter table transaction_type add constraint unique_tt_name  unique(transactionname);

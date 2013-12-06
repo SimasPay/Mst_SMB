@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:integration xmlns:tns="http://www.mfino.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mfino.com IntegrationRequestResponse.xsd ">
+	<tns:message type="Inquiry">
+		<tns:requestOut>
+			<tns:field identifier="MessageID" param="{MessageID}" />
+			<tns:field identifier="TrxID" param="{MFSRefID}" />
+			<tns:field identifier="TrxTime" param="{TransactionTime}" />
+			<tns:field identifier="TerminalID" param="{TerminalID}" />
+			<tns:field identifier="ChannelID" param="{ChannelID}" />
+			<tns:field identifier="BillerID" param="{BillerID}" />
+			<tns:field identifier="BillerCategory" param="{BillerCategory}" />
+			<tns:field identifier="CustomerID" param="{CustomerID}" />
+			<tns:field identifier="TrxAmount" param="{Amount}" />
+		</tns:requestOut>
+		<tns:responseIn>
+			<tns:field identifier="MessageID" param="{MessageID}" />
+			<tns:field identifier="TrxID" param="{MFSRefID}" />
+			<tns:field identifier="TrxTime" param="{TransactionTime}" />
+			<tns:field identifier="TerminalID" param="{TerminalID}" />
+			<tns:field identifier="ChannelID" param="{ChannelID}" />
+			<tns:field identifier="BillerID" param="{BillerID}" />
+			<tns:field identifier="BillerCategory" param="{BillerCategory}" />
+			<tns:field identifier="ResponseCode" param="{InquiryResponseResponseCode}" />
+			<tns:field identifier="Remark" param="{InquiryResponseRemark}" />
+			<tns:field identifier="CustomerID" param="{CustomerID}" />
+			<tns:field identifier="TrxAmount" param="{Amount}" />
+			<tns:field identifier="CustomerName" param="{InquiryResponseCustomerName}" />
+			<tns:field identifier="BillInfo" param="{InquiryResponseBillInfo}" />
+		</tns:responseIn>
+	</tns:message>
+	<tns:message type="Payment">
+		<tns:requestOut>
+			<tns:field identifier="MessageID" param="{MessageID}" />
+			<tns:field identifier="TrxID" param="{MFSRefID}" />
+			<tns:field identifier="TrxTime" param="{TransactionTime}" />
+			<tns:field identifier="TerminalID" param="{TerminalID}" />
+			<tns:field identifier="ChannelID" param="{ChannelID}" />
+			<tns:field identifier="BillerID" param="{BillerID}" />
+			<tns:field identifier="BillerCategory" param="{BillerCategory}" />
+			<tns:field identifier="CustomerID" param="{CustomerID}" />
+			<tns:field identifier="TrxAmount" param="{Amount}" />
+			<tns:field identifier="CustomerName" param="{PRequestCustomerName}" />
+			<tns:field identifier="BillInfo" param="{PRequestBillInfo}" />
+		</tns:requestOut>
+		<tns:responseIn>
+			<tns:field identifier="MessageID" param="{MessageID}" />
+			<tns:field identifier="TrxID" param="{MFSRefID}" />
+			<tns:field identifier="TrxTime" param="{TransactionTime}" />
+			<tns:field identifier="TerminalID" param="{TerminalID}" />
+			<tns:field identifier="ChannelID" param="{ChannelID}" />
+			<tns:field identifier="BillerID" param="{BillerID}" />
+			<tns:field identifier="BillerCategory" param="{BillerCategory}" />
+			<tns:field identifier="ResponseCode" param="{PResponseResponseCode}" />
+			<tns:field identifier="Remark" param="{PResponseResponseRemark}" />
+			<tns:field identifier="CustomerID" param="{CustomerID}" />
+			<tns:field identifier="TrxAmount" param="{Amount}" />
+			<tns:field identifier="CustomerName" param="{PRequestCustomerName}" />
+			<tns:field identifier="BillInfo" param="{PRequestBillinfo}" />
+			<tns:field identifier="ReferenceID" param="{PResponseReferenceID}" />
+		</tns:responseIn>
+	</tns:message>
+	<tns:parameter name="MessageID" isSecure="false"
+		isPersistent="false">
+		<tns:value>{txn.sctlid}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="MFSRefID" isSecure="false"
+		isPersistent="false">
+		<tns:value>{txn.sctlid}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="TransactionTime" isSecure="false"
+		isPersistent="false">
+		<tns:value>{dynamic.transactiontime}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="TerminalID" isSecure="false"
+		isPersistent="false">
+		<tns:value>20012</tns:value>
+	</tns:parameter>
+	<tns:parameter name="ChannelID" isSecure="false"
+		isPersistent="false">
+		<tns:value>{integration.ChannelID}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="BillerID" isSecure="false"
+		isPersistent="false">
+		<tns:value>{integration.BillerID}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="BillerCategory" isSecure="false"
+		isPersistent="false">
+		<tns:value>{integration.BillerCategory}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="InquiryResponseResponseCode" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Inquiry.ResponseCode}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="InquiryResponseRemark" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Inquiry.Remark}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="CustomerID" isSecure="false"
+		isPersistent="false">
+		<tns:value>{txn.MDN}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="Amount" isSecure="false"
+		isPersistent="false">
+		<tns:value>{txn.Amount}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="InquiryResponseCustomerName" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Inquiry.CustomerName}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="InquiryResponseBillInfo" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Inquiry.BillInfo}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="PResponseResponseCode" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Payment.ResponseCode}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="PResponseResponseRemark" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Payment.Remark}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="PResponseReferenceID" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Payment.ReferenceID}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="PRequestCustomerName" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Inquiry.CustomerName}</tns:value>
+	</tns:parameter>
+	<tns:parameter name="PRequestBillInfo" isSecure="false"
+		isPersistent="true">
+		<tns:value>{Inquiry.BillInfo}</tns:value>
+	</tns:parameter>
+</tns:integration>

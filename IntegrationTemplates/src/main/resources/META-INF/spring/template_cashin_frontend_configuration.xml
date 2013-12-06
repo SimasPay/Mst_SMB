@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+				<value>file:mfino_conf/gt.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="brokerURL"
+			value="tcp://${jms.brokerURL.host}:${jms.brokerURL.port}" />
+	</bean>
+
+	<bean id="transformation" class="com.mfino.integration.cashin.XSLTTransformation">
+		<property name="requestXSLTFile" value="${requestXSLTfile}" />
+		<property name="responseXSLTFile" value="${responseXSLTFile}" />
+	</bean>
+	
+	<camel:endpoint id="mfinoJetty" uri="jetty:http://0.0.0.0:7777/"/>
+
+	<bean id="mfinoCashinRouter" class="com.mfino.integration.cashin.IntegrationCashinRouter">
+	<!-- 	<property name="host" value="0.0.0.0" />
+		<property name="port" value="7777" />  -->
+		<property name="xsltTransformation" ref="transformation" />
+		<property name="frontendID" value="125" />
+		<property name="backendResultOutQueue" value="jms:mfinoOutQueue?disableReplyTo=true" />
+		<property name="cashinInQueue" value="jms:CIQueue?disableReplyTo=true" />
+		<property name="jettyEndpoint" ref="mfinoJetty"/>
+	</bean>
+
+	<camelContext id="mfinoCashinContext" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<camel:routeBuilder ref="mfinoCashinRouter" />
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

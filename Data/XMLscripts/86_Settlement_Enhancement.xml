@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+ 	<property name="autoIncrement" value="true" dbms="mysql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+	<property name="INTUNSIGNED" value="INT UNSIGNED" dbms="mysql"/>
+	<property name="INTUNSIGNED" value="NUMBER(10,0)" dbms="oracle"/>
+	
+	<property name="UNSIGNEDBIGINT" value="BIGINT UNSIGNED" dbms="mysql"/>
+	<property name="UNSIGNEDBIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="LONGTEXT" value="LONGTEXT" dbms="mysql"/>
+	<property name="LONGTEXT" value="CLOB" dbms="oracle"/>
+
+	<property name="UNSIGNEDTINYINT " value="TINYINT UNSIGNED" dbms="mysql"/>
+	<property name="UNSIGNEDTINYINT " value="NUMBER(3,0)" dbms="oracle"/>
+	
+	<property name="BIGINT" value="BIGINT" dbms="mysql"/>
+	<property name="BIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="INT" value="INT" dbms="mysql"/>
+	<property name="INT" value="NUMBER(10,0)" dbms="oracle"/>
+	
+	<property name="TINYINT" value="TINYINT" dbms="mysql"/>
+	<property name="TINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+
+	<property name="DECIMAL" value="DECIMAL(25,4)" dbms="mysql"/>
+	<property name="DECIMAL" value="NUMBER(25,4)" dbms="oracle"/>
+	
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+		
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+    <changeSet author="MFS_MAIN" id="TABLE-SCHEDULETEMPLATE-126">
+        <createTable tableName="schedule_template">
+            <column autoIncrement="${autoIncrement}" name="ID" type="${BIGINT}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Version" type="${INT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastUpdateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Name" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+			<column name="ModeType" type="${VARCHAR}"/>
+            <column name="TimeType" type="${VARCHAR}"/>
+            <column name="DayOfWeek" type="${VARCHAR}"/>
+            <column name="DayOfMonth" type="${VARCHAR}"/>
+            <column name="Cron" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MSPID" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+         </createTable>
+		 <modifySql dbms="mysql"> 
+ 	 	 	 <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8" /> 
+		 </modifySql>
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" dbms="oracle" id="SEQUENCE-SCHEDULETEMPLATEID-118">
+        <createSequence  sequenceName="schedule_template_ID_SEQ"/>
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="TABLE-SCTLSETTLEMENTMAP-127">
+        <createTable tableName="sctl_settlement_map">
+            <column autoIncrement="${autoIncrement}" name="ID" type="${BIGINT}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Version" type="${INT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastUpdateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Amount" type="${DECIMAL}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Status" type="${INT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="StlID" type="${BIGINT}"/>
+            <column name="SctlId" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PartnerID" type="${BIGINT}"/>
+            <column name="ServiceID" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MSPID" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+		<modifySql dbms="mysql"> 
+ 	 	 	 <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8" /> 
+		</modifySql>
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" dbms="oracle" id="SEQUENCE-SCTLSETTLEMENTMAPIDSEQ-118">
+        <createSequence  sequenceName="sctl_settlement_map_ID_SEQ"/>
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-STLMTMAPSTLID-193">
+        <addForeignKeyConstraint baseColumnNames="STLID" baseTableName="SCTL_SETTLEMENT_MAP"  constraintName="FK_STLMTMAP_SCHEDULE_TEMPLATE"  referencedColumnNames="ID" referencedTableName="SETTLEMENT_TXN_LOG" />
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-STLMTMAPSCTLID-194">
+        <addForeignKeyConstraint baseColumnNames="SCTLID" baseTableName="SCTL_SETTLEMENT_MAP"  constraintName="FK_STLMTMAP_SCTL" referencedColumnNames="ID" referencedTableName="SERVICE_CHARGE_TXN_LOG" />
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-STLMTMAPPARTNERID-195">
+        <addForeignKeyConstraint baseColumnNames="PARTNERID" baseTableName="SCTL_SETTLEMENT_MAP"  constraintName="FK_STLMTMAP_PARTNER" referencedColumnNames="ID" referencedTableName="PARTNER" />
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-STLMTMAPSERVICEID-196">
+        <addForeignKeyConstraint baseColumnNames="SERVICEID" baseTableName="SCTL_SETTLEMENT_MAP"  constraintName="FK_STLMTMAP_SERVICE"  referencedColumnNames="ID" referencedTableName="SERVICE" />
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" id="TABLE-SETTLEMENTTXNSCTLMAP-128">
+        <createTable tableName="settlement_txn_sctl_map">
+            <column autoIncrement="${autoIncrement}" name="ID" type="${BIGINT}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="Version" type="${INT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastUpdateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreateTime" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedBy" type="${VARCHAR}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Status" type="${INT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SctlId" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="StlID" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MSPID" type="${BIGINT}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+		<modifySql dbms="mysql"> 
+ 	 	 	 <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8" /> 
+		</modifySql>
+    </changeSet>
+	
+	<changeSet author="MFS_MAIN" dbms="oracle" id="SEQUENCE-SETTLEMENTTXNSCTLMAPID-118">
+        <createSequence  sequenceName="settlement_txn_sctl_map_ID_SEQ"/>
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-STLMTSCTLMAPSTLID-197">
+        <addForeignKeyConstraint baseColumnNames="STLID" baseTableName="SETTLEMENT_TXN_SCTL_MAP"  constraintName="FK_STLMTSCTLMAP_STL"  referencedColumnNames="ID" referencedTableName="SETTLEMENT_TXN_LOG"  />
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-STLMTSCTLMAPSCTLID-198">
+        <addForeignKeyConstraint baseColumnNames="SCTLID" baseTableName="SETTLEMENT_TXN_SCTL_MAP"  constraintName="FK_STLMTSCTLMAP_SCTL"  referencedColumnNames="ID" referencedTableName="SERVICE_CHARGE_TXN_LOG" />
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" id="DATA-SCHEDULETEMPLATE-40">
+        <insert tableName="schedule_template">
+            <column name="ID" valueNumeric="1"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Name" value="Daily"/>
+            <column name="ModeType" value="Daily"/>
+            <column name="TimeType" type="Daily"/>
+			<column name="DayOfWeek" value="1"/>
+            <column name="DayOfMonth" value="3"/>
+            <column name="Cron" value="0 0/5 * * * ?"/>
+            <column name="MSPID" valueNumeric="1"/>
+        </insert>
+	</changeSet>
+
+ 	<changeSet author="MFS_MAIN" id="TABLE-SETTLEMENTTEMPLATE-129">
+        <addColumn tableName="settlement_template">
+			<column name="ScheduleTemplateID" type="${BIGINT}" defaultValue="1">
+				<constraints nullable="false"/>
+            </column>
+		</addColumn>
+    </changeSet>
+
+    <changeSet author="MFS_MAIN" id="FKC-setlmnt_tmplt_schdl-199">
+        <addForeignKeyConstraint baseColumnNames="ScheduleTemplateID" baseTableName="settlement_template"  constraintName="FK_setlmnt_tmplt_schdl"  referencedColumnNames="ID" referencedTableName="schedule_template"  />
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" id="TABLE-SETTLEMENTTXNLOG-130">
+        <addColumn tableName="settlement_txn_log">
+			<column name="Amount" type="${DECIMAL}" />
+            <column name="Description" type="${VARCHAR}"/>
+		</addColumn>
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" id="DATA-SETTLEMENTTEMPLATE-40">
+		<update tableName="settlement_template">
+			<column name="ScheduleTemplateID" value="1"/>
+		</update>
+    </changeSet>
+</databaseChangeLog>

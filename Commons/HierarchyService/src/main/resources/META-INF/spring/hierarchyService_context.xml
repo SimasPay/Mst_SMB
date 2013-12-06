@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/osgi
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/osgi-compendium
+       http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.jasypt.org/schema/encryption
+       http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+	<context:annotation-config />
+
+	<osgi:reference id="MfinoServiceImpl" interface="com.mfino.service.MfinoService"  context-class-loader="service-provider"/>
+	<osgi:reference id="TransactionTypeServiceImpl" interface="com.mfino.service.TransactionTypeService" context-class-loader="service-provider"/>
+	<osgi:reference id="PartnerServiceImpl" interface="com.mfino.service.PartnerService" context-class-loader="service-provider"/>
+	
+	<osgi:reference id="DCTRestrictionsServiceImpl" interface="com.mfino.service.DCTRestrictionsService"/>
+	<osgi:reference id="PartnerRestrictionsServiceImpl" interface="com.mfino.service.PartnerRestrictionsService"/>
+	<osgi:reference id="RelationshipServiceImpl" interface="com.mfino.service.RelationshipService"/>
+	<osgi:reference id="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" context-class-loader="service-provider"/>
+
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<context:component-scan base-package="com.mfino.commons.hierarchyservice.impl" />
+	
+	<osgi:service ref="HierarchyServiceImpl" interface="com.mfino.commons.hierarchyservice.HierarchyService" /> 
+
+	<tx:annotation-driven transaction-manager="txManager" />
+</beans>

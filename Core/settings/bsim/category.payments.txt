@@ -1,0 +1,202 @@
+{
+  "totalCount": 5,
+  "version": 2.6,
+  "success": true,
+  "paymentData": [
+    {
+      "productCategory": "installment",
+      "providers": [
+        {
+          "providerName": "Finance",
+          "products": [
+            {
+              "productName": "Simas Multi Finance",
+              "productCode": "300001"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productCategory": "Insurance",
+      "providers": [
+        {
+          "providerName": "Asuransi Simas",
+          "products": [
+            {
+              "productName": "Asuransi Simas",
+              "productCode": "040001"
+            }
+          ]
+        },
+        {
+          "providerName": "Asuransi Jiwa Sinarmas",
+          "products": [
+            {
+              "productName": "Asuransi Jiwa Sinarmas",
+              "productCode": "090001"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productCategory": "Mobile Phone",
+      "providers": [
+        {
+          "providerName": "Telkomsel",
+          "products": [
+            {
+              "productName": "Telkomsel(Halo)",
+              "productCode": "010001"
+            }
+          ]
+        },
+		{
+          "providerName": "XL",
+          "products": [
+            {
+              "productName": "XL Xplor",
+              "productCode": "013001"
+            }
+          ]
+        },
+		{
+          "providerName": "Bakrie Telecom",
+          "products": [
+            {
+              "productName": "Esia",
+              "productCode": "018001"
+            }
+          ]
+        },
+		{
+          "providerName": "Hutch",
+          "products": [
+            {
+              "productName": "Three",
+              "productCode": "012101"
+            }
+          ]
+        },
+		{
+          "providerName": "AXIS",
+          "products": [
+            {
+              "productName": "Axis",
+              "productCode": "013101"
+            }
+          ]
+        },
+		{
+          "providerName": "Smartfren Telco",
+          "products": [
+            {
+              "productName": "Smartfren",
+              "productCode": "019004"
+            }
+          ]
+        },
+		{
+          "providerName": "Telkom Grup",
+          "products": [
+            {
+              "productName": "Flexy",
+              "productCode": "017002"
+            }
+          ]
+        }
+      ]
+    },
+	{
+      "productCategory": "Other",
+      "providers": [
+        {
+          "providerName": "Telkom Grup",
+          "products": [
+            {
+              "productName": "Speedy",
+              "productCode": "017004"
+            }
+          ]
+        },
+		{
+          "providerName": "Baznas",
+          "products": [
+            {
+              "productName": "Baznas Zakat",
+              "productCode": "009901"
+            },
+			{
+              "productName": "Baznas Infaq",
+              "productCode": "009902"
+            }
+          ]
+        },
+		{
+          "providerName": "First Media",
+          "products": [
+            {
+              "productName": "First Media",
+              "productCode": "060301"
+            }
+          ]
+        },
+		{
+          "providerName": "IPL BSD",
+          "products": [
+            {
+              "productName": "IPL BSD",
+              "productCode": "710010"
+            }
+          ]
+        },
+		{
+          "providerName": "BSD Junction",
+          "products": [
+            {
+              "productName": "BSD Junction",
+              "productCode": "710111"
+            }
+          ]
+        },
+		{
+          "providerName": "ITC BSD & Malibu",
+          "products": [
+            {
+              "productName": "ITC BSD & Malibu",
+              "productCode": "710112"
+            }
+          ]
+        }
+      ]
+    },
+	{
+      "productCategory": "Public",
+      "providers": [
+        {
+          "providerName": "Telkom Grup",
+          "products": [
+            {
+              "productName": "PSTN",
+              "productCode": "017003"
+            }
+          ]
+        },
+        {
+          "providerName": "PLN",
+          "products": [
+            {
+              "productName": "PLN",
+              "productCode": "301211"
+            },
+			{
+              "productName": "PLN NonTaglis",
+              "productCode": "305111"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

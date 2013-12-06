@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+ 
+ 	
+	<property name="autoIncrement" value="true" dbms="mysql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+ 	
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+ 	<changeSet author="MFS_MAIN" id="TABLE-CHARGEPRICING-147">
+		<addColumn tableName="charge_pricing">
+			<column name="Charge" type="${VARCHAR}" defaultValue="NULL"/>
+			<column name="MinCharge" type="${VARCHAR}" defaultValue="NULL"/>
+			<column name="MaxCharge" type="${VARCHAR}" defaultValue="NULL"/>
+		</addColumn>
+	</changeSet>
+
+ 	<changeSet author="MFS_MAIN" id="TABLE-SHAREPARTNER-148">
+		<addColumn tableName="share_partner">
+			<column name="ActualSharePercentage" type="${VARCHAR}" defaultValue="NULL"/>
+			<column name="MinSharePercentage" type="${VARCHAR}" defaultValue="NULL"/>
+			<column name="MaxSharePercentage" type="${VARCHAR}" defaultValue="NULL"/>
+		</addColumn>
+	</changeSet>
+
+	<changeSet author="MFS_MAIN" id="DATA-Notification-79">
+		<delete tableName="notification">
+			<where>code='810'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="810"/>
+			<column name="CodeName" value="InvalidChargeDefinitionException"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Transaction failed due to Invalid charge definition."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="810"/>
+			<column name="CodeName" value="InvalidChargeDefinitionException"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Transaction failed due to Invalid charge definition."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+  		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="810"/>
+			<column name="CodeName" value="InvalidChargeDefinitionException"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Transaction failed due to Invalid charge definition."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="810"/>
+			<column name="CodeName" value="InvalidChargeDefinitionException"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Transaction failed due to Invalid charge definition."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="810"/>
+			<column name="CodeName" value="InvalidChargeDefinitionException"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Transaction failed due to Invalid charge definition."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>

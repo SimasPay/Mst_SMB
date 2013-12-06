@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:12:00 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.FundDistributionInfo" optimistic-lock="version" table="fund_distribution_info" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_FundDistributionInfo_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="UnRegisteredTxnInfoByFundAllocationId" foreign-key="FK_FundDistributionInfo_UnRegisteredTxnInfoByFundAllocationId" class="com.mfino.domain.UnRegisteredTxnInfo" fetch="select">
+<column name="FundAllocationId" not-null="true"   />
+</many-to-one>
+<property name="DistributedAmount" type="big_decimal" >
+<column name="DistributedAmount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="DistributionStatus" type="java.lang.Integer" >
+<column name="DistributionStatus" not-null="true"  sql-type="int" />
+</property>
+<property name="FailureReason" type="java.lang.String" >
+<column name="FailureReason"    sql-type="varchar(255)" />
+</property>
+<property name="FailureReasonCode" type="java.lang.Integer" >
+<column name="FailureReasonCode"    sql-type="int" />
+</property>
+<property name="TransferSCTLId" type="java.lang.Long" >
+<column name="TransferSCTLId" not-null="true"  sql-type="bigint" />
+</property>
+<property name="TransferCTId" type="java.lang.Long" >
+<column name="TransferCTId" not-null="true"  sql-type="bigint" />
+</property>
+<property name="DistributionType" type="java.lang.Integer" >
+<column name="DistributionType" not-null="true"  sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

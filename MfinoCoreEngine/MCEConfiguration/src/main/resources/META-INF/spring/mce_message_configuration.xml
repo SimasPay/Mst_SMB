@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:camel="http://camel.apache.org/schema/spring"  
+	   xmlns:broker="http://activemq.apache.org/schema/core" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"  
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<bean id="messageConf" class="com.mfino.mce.core.message.MessageConfigurationDefaultImpl">
+    	<constructor-arg>
+    		<map>
+    			<entry key="500">
+   					<bean class="com.mfino.mce.core.message.MCEMessage">
+   						<property name="description" value="Default Mail message for sending errors by MCE Processes"/>
+   						<property name="timeout" value="120000"/>
+   						<property name="priority" value="0"/>
+   						<property name="destinationServices">
+   							<list>
+   								<bean class="com.mfino.mce.core.message.MCEMessageServiceConf">
+   									<property name="serviceName" value=""/>
+   									<property name="responseRequired" value="false"/>
+   									<property name="ignoreResponse" value="false"/>
+   								</bean>
+   							</list>
+   						</property>
+    				</bean>
+    			</entry>
+    			<entry key="1000">
+   					<bean class="com.mfino.mce.core.message.MCEMessage">
+   						<property name="description" value="Subscriber Activation"/>
+   						<property name="timeout" value="120000"/>
+   						<property name="priority" value="0"/>
+   						<property name="destinationServices">
+   							<list>
+   								<bean class="com.mfino.mce.core.message.MCEMessageServiceConf">
+   									<property name="service" value="backendService"/>
+   									<property name="responseRequired" value="true"/>
+   									<property name="ignoreResponse" value="false"/>
+   								</bean>
+   							</list>
+   						</property>
+    				</bean>
+    			</entry>
+    			<entry key="1001">
+   					<bean class="com.mfino.mce.core.message.MCEMessage">
+   						<property name="description" value="Share Load"/>
+   						<property name="timeout" value="120000"/>
+   						<property name="priority" value="0"/>
+   						<property name="destinationServices">
+   							<list>
+   								<bean class="com.mfino.mce.core.message.MCEMessageServiceConf">
+   									<property name="service" value="backendService"/>
+   									<property name="responseRequired" value="true"/>
+   									<property name="ignoreResponse" value="false"/>
+   								</bean>
+   							</list>
+   						</property>
+    				</bean>
+    			</entry>
+    		</map>
+    	</constructor-arg>
+    </bean>
+    
+   <osgi:service ref="messageConf">
+		<osgi:interfaces>
+			<value>com.mfino.mce.core.message.MessageConfiguration</value>
+		</osgi:interfaces>
+	</osgi:service> 
+    
+<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+  <property name="traceOutExchanges" value="true" />
+</bean>
+
+<bean id="traceFormatter" class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+  <property name="showOutBody" value="true" />
+  <property name="showOutBodyType" value="true" />
+</bean>    
+ </beans>

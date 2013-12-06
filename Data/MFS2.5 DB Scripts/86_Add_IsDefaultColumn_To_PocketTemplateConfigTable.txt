@@ -1,0 +1,2 @@
+use mfino;
+ALTER TABLE mfino.pocket_template_config ADD IsDefault TINYINT(11) unsigned DEFAULT '0';

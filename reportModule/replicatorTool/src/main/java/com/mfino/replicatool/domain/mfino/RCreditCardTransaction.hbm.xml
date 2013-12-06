@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:52 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.CreditCardTransaction" optimistic-lock="version" table="credit_card_transaction" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" index="CreateTimeIndex">
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Subscriber" foreign-key="FK_CreditCardTransaction_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Pocket" foreign-key="FK_CreditCardTransaction_Pocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="PocketID" not-null="true"   />
+</many-to-one>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount"    sql-type="decimal(25,4)" />
+</property>
+<property name="PaymentMethod" type="java.lang.String" >
+<column name="PaymentMethod"    sql-type="varchar(255)" />
+</property>
+<property name="ErrCode" type="java.lang.String" >
+<column name="ErrCode"    sql-type="varchar(255)" />
+</property>
+<property name="UserCode" type="java.lang.String" >
+<column name="UserCode"    sql-type="varchar(255)" />
+</property>
+<property name="TransStatus" type="java.lang.String" >
+<column name="TransStatus"    sql-type="varchar(255)" />
+</property>
+<property name="CurrCode" type="java.lang.String" >
+<column name="CurrCode"    sql-type="varchar(255)" />
+</property>
+<property name="EUI" type="java.lang.String" >
+<column name="EUI"    sql-type="varchar(255)" />
+</property>
+<property name="TransactionDate" type="java.lang.String" >
+<column name="TransactionDate"    sql-type="varchar(255)" />
+</property>
+<property name="NSIATransCompletionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="NSIATransCompletionTime"   length="19" sql-type="datetime" />
+</property>
+<property name="TransType" type="java.lang.String" >
+<column name="TransType"    sql-type="varchar(255)" />
+</property>
+<property name="IsBlackListed" type="java.lang.String" >
+<column name="IsBlackListed"    sql-type="varchar(255)" />
+</property>
+<property name="FraudRiskLevel" type="java.lang.Integer" >
+<column name="FraudRiskLevel"    sql-type="int" />
+</property>
+<property name="FraudRiskScore" type="big_decimal" >
+<column name="FraudRiskScore"    sql-type="decimal(25,4)" />
+</property>
+<property name="ExceedHighRisk" type="java.lang.String" >
+<column name="ExceedHighRisk"    sql-type="varchar(255)" />
+</property>
+<property name="CardType" type="java.lang.String" >
+<column name="CardType"    sql-type="varchar(255)" />
+</property>
+<property name="CardNoPartial" type="java.lang.String" >
+<column name="CardNoPartial"    sql-type="varchar(255)" />
+</property>
+<property name="CardName" type="java.lang.String" >
+<column name="CardName"    sql-type="varchar(255)" />
+</property>
+<property name="AcquirerBank" type="java.lang.String" >
+<column name="AcquirerBank"    sql-type="varchar(255)" />
+</property>
+<property name="BankResCode" type="java.lang.String" >
+<column name="BankResCode"    sql-type="varchar(255)" />
+</property>
+<property name="BankResMsg" type="java.lang.String" >
+<column name="BankResMsg"    sql-type="varchar(255)" />
+</property>
+<property name="AuthID" type="java.lang.String" index="AuthIDIndex">
+<column name="AuthID"    sql-type="varchar(255)" />
+</property>
+<property name="BankReference" type="java.lang.String" index="BankReferenceIndex">
+<column name="BankReference"    sql-type="varchar(255)" />
+</property>
+<property name="WhiteListCard" type="java.lang.String" >
+<column name="WhiteListCard"    sql-type="varchar(255)" />
+</property>
+<property name="Operation" type="java.lang.String" >
+<column name="Operation"    sql-type="varchar(255)" />
+</property>
+<property name="MDN" type="java.lang.String" index="MDNIndex">
+<column name="MDN"    sql-type="varchar(255)" />
+</property>
+<property name="TransactionID" type="java.lang.Long" index="TransactionIDIndex">
+<column name="TransactionID"    sql-type="bigint" />
+</property>
+<property name="BillReferenceNumber" type="java.lang.Long" >
+<column name="BillReferenceNumber"    sql-type="bigint" />
+</property>
+<property name="CCFailureReason" type="java.lang.Integer" >
+<column name="CCFailureReason"    sql-type="int" />
+</property>
+<property name="SessionID" type="java.lang.String" >
+<column name="SessionID"    sql-type="varchar(255)" />
+</property>
+<property name="CCBucketType" type="java.lang.String" >
+<column name="CCBucketType"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Company" foreign-key="FK_CreditCardTransaction_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"  index="CreateTimeIndex" />
+</many-to-one>
+<property name="SourceIP" type="java.lang.String" >
+<column name="SourceIP"    sql-type="varchar(255)" />
+</property>
+<property name="PaymentGatewayEDU" type="java.lang.Boolean" >
+<column name="PaymentGatewayEDU"    sql-type="tinyint" />
+</property>
+<property name="IsVoid" type="java.lang.Boolean" >
+<column name="IsVoid"    sql-type="tinyint" />
+</property>
+<property name="VoidBy" type="java.lang.String" >
+<column name="VoidBy"    sql-type="varchar(255)" />
+</property>
+<property name="ProductIndicatorCode" type="java.lang.String" >
+<column name="ProductIndicatorCode"    sql-type="varchar(255)" />
+</property>
+<set name="CommodityTransferFromCreditCardTransactionID" inverse="true">
+<key>
+<column name="CreditCardTransactionID"    />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromCreditCardTransactionID" inverse="true">
+<key>
+<column name="CreditCardTransactionID"    />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+</class>
+</hibernate-mapping>

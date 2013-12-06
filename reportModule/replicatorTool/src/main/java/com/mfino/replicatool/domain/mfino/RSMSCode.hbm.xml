@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:51 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.SMSCode" optimistic-lock="version" table="sms_code" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SMSCodeText" type="java.lang.String" unique-key="SMSCodeText">
+<column name="SMSCodeText" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ServiceName" type="java.lang.String" >
+<column name="ServiceName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SMSCodeStatus" type="java.lang.Integer" >
+<column name="SMSCodeStatus" not-null="true"  sql-type="int" />
+</property>
+<many-to-one name="Brand" foreign-key="FK_SMSCode_Brand" class="com.mfino.domain.Brand" fetch="select">
+<column name="BrandID" not-null="true"   />
+</many-to-one>
+<property name="ShortCodes" type="java.lang.String" >
+<column name="ShortCodes"    sql-type="varchar(255)" />
+</property>
+</class>
+</hibernate-mapping>

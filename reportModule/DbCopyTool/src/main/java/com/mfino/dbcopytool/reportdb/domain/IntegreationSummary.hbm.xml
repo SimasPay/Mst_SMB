@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.IntegreationSummary" table="integreation_summary" catalog="report">
+        <id name="integreationSummaryId" type="string">
+            <column name="IntegreationSummaryId" />
+            <generator class="assigned" />
+        </id>
+        <property name="sctlId" type="string">
+            <column name="SctlId" />
+        </property>
+        <property name="integrationType" type="string">
+            <column name="IntegrationType" />
+        </property>
+        <property name="reconcilationID1" type="string">
+            <column name="ReconcilationID1" />
+        </property>
+        <property name="reconcilationID2" type="string">
+            <column name="ReconcilationID2" />
+        </property>
+        <property name="reconcilationID3" type="string">
+            <column name="ReconcilationID3" />
+        </property>
+      
+    </class>
+</hibernate-mapping>

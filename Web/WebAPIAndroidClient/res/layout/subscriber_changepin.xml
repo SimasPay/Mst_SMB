@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+<TableRow>
+<TextView 
+android:id="@+id/chTextView01" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourceMDN">
+</TextView>
+<EditText 
+android:id="@+id/chSourceMDNET"
+android:width="150.0px"
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/chTextView02" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="OldPIN">
+</TextView>
+<EditText
+android:id="@+id/chOldPINET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/chTextView03" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="NewPin">
+</TextView>
+<EditText
+android:id="@+id/chNewPinET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+
+<TableRow>
+<Button 
+android:id="@+id/chChangePinButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Change Pin">
+</Button>
+<Button 
+android:id="@+id/chBackButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Back" >
+</Button>
+</TableRow>
+
+</TableLayout>

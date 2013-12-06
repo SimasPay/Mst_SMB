@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+ 	<changeSet author="MFS_MAIN" dbms="mysql" id="DATA-DATAMIGRATION_SHAREPERCENTAGETOSHAREPARTNER-80">
+		<update tableName="share_partner">
+			<column name="actualsharepercentage" valueComputed="concat(truncate(sharepercentage, 2), '%')"/>
+			<column name="minsharepercentage" valueComputed="actualsharepercentage"/>
+			<column name="maxsharepercentage" valueComputed="actualsharepercentage"/>
+			<where>sharepercentage is not null</where>
+		</update>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="mysql" id="DATA-DATAMIGRATION_CHARGEINFIXEDTOCHARGEPRICING-81">
+		<update tableName="charge_pricing">
+			<column name="charge" valueComputed="chargeinfixed"/>
+			<column name="mincharge" valueComputed="chargeinfixed"/>
+			<column name="maxcharge" valueComputed="chargeinfixed"/>
+			<where>chargeinfixed is not null</where>
+		</update>
+		<update tableName="charge_pricing">
+			<column name="charge" valueComputed="concat(truncate(chargeinpercentage, 2), '%')"/>
+			<column name="mincharge" valueComputed="charge"/>
+			<column name="maxcharge" valueComputed="charge"/>
+			<where>chargeinfixed is not null</where>
+		</update>
+ 	</changeSet>
+	
+	<changeSet author="MFS_MAIN" dbms="oracle" id="DATA-DATAMIGRATION_SHAREPERCENTAGETOSHAREPARTNER-82">
+		<update tableName="share_partner">
+			<column name="actualsharepercentage" valueComputed="concat(trunc(sharepercentage, 2), '%')"/>
+			<column name="minsharepercentage" valueComputed="actualsharepercentage"/>
+			<column name="maxsharepercentage" valueComputed="actualsharepercentage"/>
+			<where>sharepercentage is not null</where>
+		</update>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" dbms="oracle" id="DATA-DATAMIGRATION_CHARGEINFIXEDTOCHARGEPRICING-83">
+		<update tableName="charge_pricing">
+			<column name="charge" valueComputed="chargeinfixed"/>
+			<column name="mincharge" valueComputed="charge"/>
+			<column name="maxcharge" valueComputed="charge"/>
+			<where>chargeinfixed is not null</where>
+		</update>
+		<update tableName="charge_pricing">
+			<column name="charge" valueComputed="concat(trunc(chargeinpercentage, 2), '%')"/>
+			<column name="mincharge" valueComputed="charge"/>
+			<column name="maxcharge" valueComputed="charge"/>
+			<where>chargeinfixed is not null</where>
+		</update>
+ 	</changeSet>
+</databaseChangeLog>

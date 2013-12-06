@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:tns="http://ws.orbit.techzultants.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.orbit.techzultants.com/">
+
+<xs:element name="fundsTransfer" type="tns:fundsTransfer"/>
+
+<xs:element name="fundsTransferResponse" type="tns:fundsTransferResponse"/>
+
+<xs:element name="getAccountBalance" type="tns:getAccountBalance"/>
+
+<xs:element name="getAccountBalanceResponse" type="tns:getAccountBalanceResponse"/>
+
+<xs:element name="getAccountDetails" type="tns:getAccountDetails"/>
+
+<xs:element name="getAccountDetailsResponse" type="tns:getAccountDetailsResponse"/>
+
+<xs:element name="getFTStatus" type="tns:getFTStatus"/>
+
+<xs:element name="getFTStatusResponse" type="tns:getFTStatusResponse"/>
+
+<xs:complexType name="getFTStatus">
+<xs:sequence>
+<xs:element name="referenceNumber" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getFTStatusResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:ftStatusBean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ftStatusBean">
+<xs:sequence>
+<xs:element name="responseCode" type="xs:string" minOccurs="0"/>
+<xs:element name="reversalFlag" type="xs:boolean"/>
+<xs:element name="transactionStatus" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="fundsTransfer">
+<xs:sequence>
+<xs:element name="ftRequestBean" type="tns:ftRequestBean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ftRequestBean">
+<xs:sequence>
+<xs:element name="amount" type="xs:decimal" minOccurs="0"/>
+<xs:element name="charges" type="xs:decimal" minOccurs="0"/>
+<xs:element name="creditAccount" type="xs:string" minOccurs="0"/>
+<xs:element name="debitAccount" type="xs:string" minOccurs="0"/>
+<xs:element name="hashValue" type="xs:string" minOccurs="0"/>
+<xs:element name="key" type="xs:string" minOccurs="0"/>
+<xs:element name="narration" type="xs:string" minOccurs="0"/>
+<xs:element name="originalReferenceNumber" type="xs:string" minOccurs="0"/>
+<xs:element name="referenceNumber" type="xs:string" minOccurs="0"/>
+<xs:element name="reversalFlag" type="xs:string" minOccurs="0"/>
+<xs:element name="tranDate" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="fundsTransferResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:ftResponseBean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ftResponseBean">
+<xs:sequence>
+<xs:element name="confirmationCode" type="xs:string" minOccurs="0"/>
+<xs:element name="referenceNumber" type="xs:string" minOccurs="0"/>
+<xs:element name="responseCode" type="xs:string" minOccurs="0"/>
+<xs:element name="responseCodeDescription" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getAccountBalance">
+<xs:sequence>
+<xs:element name="accountNumber" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getAccountBalanceResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:accountBalanceBean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="accountBalanceBean">
+<xs:sequence>
+<xs:element name="accountNumber" type="xs:string" minOccurs="0"/>
+<xs:element name="availableBalance" type="xs:decimal" minOccurs="0"/>
+<xs:element name="ledgerBalance" type="xs:decimal" minOccurs="0"/>
+<xs:element name="responseCode" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getAccountDetails">
+<xs:sequence>
+<xs:element name="accountNumber" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getAccountDetailsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:accountDetailsBean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="accountDetailsBean">
+<xs:complexContent>
+<xs:extension base="tns:baseBean">
+<xs:sequence>
+<xs:element name="accountName" type="xs:string" minOccurs="0"/>
+<xs:element name="accountNumber" type="xs:string" minOccurs="0"/>
+<xs:element name="accountType" type="xs:string" minOccurs="0"/>
+<xs:element name="applType" type="xs:string" minOccurs="0"/>
+<xs:element name="branchName" type="xs:string" minOccurs="0"/>
+<xs:element name="branchNo" type="xs:string" minOccurs="0"/>
+<xs:element name="currencyCode" type="xs:string" minOccurs="0"/>
+<xs:element name="rimNo" type="xs:long"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="baseBean">
+<xs:sequence>
+<xs:element name="channelCode" type="xs:int"/>
+<xs:element name="dailyLimit" type="xs:int"/>
+<xs:element name="responseCode" type="xs:string" minOccurs="0"/>
+<xs:element name="responseCodeDescription" type="xs:string" minOccurs="0"/>
+<xs:element name="status" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

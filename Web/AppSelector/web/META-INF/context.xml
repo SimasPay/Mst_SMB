@@ -1,0 +1,12 @@
+<Context docBase="AppSelector_ext" >
+ <Valve className="org.apache.catalina.valves.AccessLogValve"
+    prefix="iPracticeBuilder." 
+   suffix=".log"
+    pattern="common"/>
+ <Resource name="jdbc/videoshare" auth="Container"
+              type="javax.sql.DataSource" driverClassName="org.gjt.mm.mysql.Driver"
+              url="jdbc:mysql://localhost/iplanner"
+              username="root" password="mFino260" maxActive="20" maxIdle="10" defaultAutoCommit="false"
+              validationQuery="SELECT 1"
+              maxWait="-1"/>
+</Context>

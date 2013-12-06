@@ -1,0 +1,4 @@
+use mfino;
+INSERT IGNORE INTO `enum_text` (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',NOW(),'system',NOW(),'system','0','SCTLStatus','6089','16','Pending','Pending');
+UPDATE `notification` SET text = "Your transaction status on $(TransactionDateTime) with REF : $(TransferID) is fail. Transaction amount $(Amount) is refunded to your account. Info, call $(CustomerServiceShortCode)." where code = "292";
+UPDATE `notification` SET text = "Your transaction status on $(TransactionDateTime) with amount of $(Amount) and REF : $(TransferID) is success. Info, call $(CustomerServiceShortCode)." where code = "291";

@@ -1,0 +1,15 @@
+Steps for Mobile8 Merchant Pin Generation.
+1. Core.jar is the jar that is used for generation of the Merchants digested Pin.
+2. This jar file takes csv file as input with the mobile number and pin as first and second column respectively.
+3. Generates two files as output:
+   a.MerchantDigestedPINs.csv is a csv file same as input file with added column digestedpin.
+   b.MerchantDigestedPINsSQLScript.sql is a file with the sql statements for updates the respective merchants.
+
+Execution Steps
+copy Core.jar file to some folder (C:\abc)
+1. Running the file
+C:\abc>java -cp Core.jar com.mfino.application.MerchantsPIN <CompletePathOfInputFileName>
+   On the console you will be able to see the generated files locations as last statements. 
+2. open mysql and execute MerchantDigestedPINsSQLScript.sql file.
+
+NOTE: Please ensure that the csv file does not contain invalid MDNs or MDNs for which the Subscriber or Merchant status is PendingRetirement or Retired status.

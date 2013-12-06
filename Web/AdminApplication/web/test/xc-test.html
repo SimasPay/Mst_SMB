@@ -1,0 +1,78 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- CSS -->
+        <link type="text/css" href="../extjs/resources/css/ext-all.css" rel="stylesheet" />
+        <link type="text/css" href="../resources/css/app.css" rel="stylesheet" />
+        <link type="text/css" href="../resources/css/mfinostyles.css" rel="stylesheet" />
+        <link type="text/css" href="../js/ux/RowAction/css/Ext.ux.grid.RowActions.css" rel="stylesheet" />
+        <link type="text/css" href="../js/ux/form/FileUploadField.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Base -->
+        <script type="text/javascript" src="../extjs/adapter/ext/ext-base.js" ></script>
+        <script type="text/javascript" src="../extjs/ext-all.js" ></script>
+
+        <!-- Application -->
+        <script type="text/javascript" src="../js/init.js" ></script>
+        <script type="text/javascript" src="../js/message/msg.en.js"></script>
+        <script type="text/javascript" src="../js/ux/RowAction/js/Ext.ux.grid.RowActions.js">
+        </script>
+        <script type="text/javascript" src="../js/ux/RowAction/js/Ext.ux.Toast.js">
+        </script>
+        <script type="text/javascript" src="../js/fix/ExtJSFIXProxy.js">
+        </script>
+        <script type="text/javascript" src="../js/fix/ExtJSFIXReader.js">
+        </script>
+        <script type="text/javascript" src="../js/fix/ExtJSFIXWriter.js">
+        </script>
+        <script type="text/javascript" src="../js/fix/FIXMsg.js">
+        </script>
+        <script type="text/javascript" src="../js/fix/mFinoFIX.js">
+        </script>
+        <script type="text/javascript" src="../js/fix/ExtJSFIXStore.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/SubscriberForm.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/PocketGrid.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/SubscriberTab.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/EnumDropDown.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/RemoteDropDown.js">
+        </script>
+        <script type="text/javascript" src="../js/util/fix.js">
+        </script>
+        <script type="text/javascript" src="../js/ux/form/FileUploadField.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/BulkBankAccount.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/BulkBankAccountWindow.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/FormWindowLOP.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/BulkTransfer.js">
+        </script>
+        <script type="text/javascript" src="../js/widget/EnumDropDown.js">
+        </script>
+        <script type="text/javascript" src="../js/util/enumStoreFactory.js">
+        </script>
+        <script type="text/javascript" src="xc-test.js"></script>
+
+        <div id="main"></div>
+        <script type="text/javascript">
+            mFino.BASE_URL = "/AdminApplication/";
+            
+            Ext.onReady(function(){
+                mFino.xc();
+            });
+        </script>
+    </body>
+</html>

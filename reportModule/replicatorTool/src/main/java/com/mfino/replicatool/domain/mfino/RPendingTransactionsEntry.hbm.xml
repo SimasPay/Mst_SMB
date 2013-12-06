@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:51 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.PendingTransactionsEntry" optimistic-lock="version" table="pending_txns_entry" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="TransactionsFileID" type="java.lang.Long" unique-key="PendingTransactionsID">
+<column name="TransactionsFileID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="LineNumber" type="java.lang.Integer" unique-key="PendingTransactionsID">
+<column name="LineNumber" not-null="true"  sql-type="int" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  sql-type="int" />
+</property>
+<property name="ResolveFailureReason" type="java.lang.String" >
+<column name="ResolveFailureReason"    sql-type="varchar(255)" />
+</property>
+<property name="NotificationCode" type="java.lang.Integer" >
+<column name="NotificationCode"    sql-type="int" />
+</property>
+<property name="TransferID" type="java.lang.Long" >
+<column name="TransferID"    sql-type="bigint" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN"    sql-type="varchar(255)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+</class>
+</hibernate-mapping>

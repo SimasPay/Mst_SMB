@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:56 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Group" optimistic-lock="version" table="groups" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="GroupName" type="java.lang.String" >
+<column name="GroupName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="SystemGroup" type="java.lang.Boolean" >
+<column name="SystemGroup"    sql-type="tinyint" />
+</property>
+<set name="TransactionRuleFromSourceGroup" inverse="true">
+<key>
+<column name="SourceGroup"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionRule" />
+</set>
+<set name="TransactionRuleFromDestinationGroup" inverse="true">
+<key>
+<column name="DestinationGroup"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionRule" />
+</set>
+<set name="SubscriberGroupFromGroupID" inverse="true">
+<key>
+<column name="GroupID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SubscriberGroup" />
+</set>
+<set name="PTC_Group_MapFromGroupID" inverse="true">
+<key>
+<column name="GroupID"    />
+</key>
+<one-to-many class="com.mfino.domain.PTC_Group_Map" />
+</set>
+</class>
+</hibernate-mapping>

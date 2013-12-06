@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Edited by XMLSpy® -->
+<LabelConfig>
+	<Lang> ENGLISH </Lang>
+	<Label>
+		<AbsoluteLocked>Absolute Locked</AbsoluteLocked>
+		<AccumulatedLOPAmount>Accumulated LOP Amount</AccumulatedLOPAmount>
+		<ActualValue>Actual Value</ActualValue>
+		<ActualPaid>Actual Paid</ActualPaid>
+		<ActivationTime>Activation Time</ActivationTime>
+		<AdminComment>Admin Comment</AdminComment>
+		<AdministratorComment>Administrator Comment</AdministratorComment>
+		<AuthenticationPhoneNumber>Authentication Phone Number</AuthenticationPhoneNumber>
+		<AvailableforLOP>Available for LOP</AvailableforLOP>
+
+		<BankCode>Bank Code</BankCode>
+		<BankRejectReason>Bank Reject Reason</BankRejectReason>
+		<BucketType>Bucket Type</BucketType>
+		<Balance>Balance</Balance>
+		<Buy>Buy</Buy>
+		<CertOfIncorp>Cert. of Incorp.</CertOfIncorp>
+		<ChannelName>Channel Name</ChannelName>
+		<City>City</City>
+		<Comment>Comment</Comment>
+		<CompanyName>Company Name</CompanyName>
+		<ContactNumber>Contact Number</ContactNumber>
+		<Country>Country</Country>
+		<CreateDate>Create Date</CreateDate>
+		<CreatedBy>Created By</CreatedBy>
+		<CreationTime>Creation Time</CreationTime>
+		<CreditCheck>Credit Check</CreditCheck>
+		<Currency>Currency</Currency>
+
+		<Dated>Date</Dated>
+		<DateOfBirth>Date of Birth</DateOfBirth>
+		<DateOfExpiry>Date of Expire</DateOfExpiry>
+		<DateRange>Date Range</DateRange>
+		<DefaultBankAccountDebit>Default Bank Account-Debit</DefaultBankAccountDebit>
+		<Description>Description</Description>
+		<DestinationATMNo>Destination ATM No</DestinationATMNo>
+		<DestinationMDN>Destination MDN</DestinationMDN>
+		<DestinationPocketID>Destination PocketID</DestinationPocketID>
+		<DestinationPocketBalance>Destination Pocket Balance</DestinationPocketBalance>
+		<DestinationPocketType>Destination Pocket Type</DestinationPocketType>
+		<DestinationPocketDescription>Destination Pocket Description</DestinationPocketDescription>
+		<DestinationSubscriberName>Destination Subscriber Name</DestinationSubscriberName>
+		<DestinationRefNo>Destination Ref.No</DestinationRefNo>
+		<DestinationUsername>Destination Username</DestinationUsername>
+		<DestinationMDNID>Destination MDNID</DestinationMDNID>
+		<DestinationSubscriberID>Destination SubscriberID</DestinationSubscriberID>
+		<DistChainTemplate>Dist Chain Template</DistChainTemplate>
+
+
+		<Email>Email</Email>
+		<EmailAddress>Email Address</EmailAddress>
+		<EndTime>End Time</EndTime>
+		
+		<FailureReason>Failure Reason</FailureReason>
+		<Favorite>Favorite</Favorite>
+		<FaxNo>Fax No</FaxNo>
+		<FaxNumber>Fax Number</FaxNumber>
+		<FileType>File Type</FileType>
+		<FirstName>First Name</FirstName>
+
+		<GroupID>Group ID</GroupID>
+		<Giro>Giro</Giro>
+		<KYC>KYC</KYC>
+		<KinName>Kin Name</KinName>
+		<Language>Language</Language>
+		<LastName>Last Name</LastName>
+		<LastTransactionID>Last Transaction ID</LastTransactionID>
+		<LastTransactionTime>Last Transaction Time</LastTransactionTime>
+		<LastUpdateTime>Last Update Time</LastUpdateTime>
+		<Level>Level</Level>
+		<LineOfBusinesses>Line Of Businesses</LineOfBusinesses> 
+		<Line1>Line1</Line1>
+		<Line2>Line2</Line2>
+		<LOPCommission>LOP Commission</LOPCommission>
+		<LOPLimitPerTransaction>LOP Limit Per Transaction</LOPLimitPerTransaction>
+		<LOPID>LOP ID</LOPID>
+		<LOPStatus>LOP Status</LOPStatus>
+
+		<Mobile>MDN</Mobile>
+		<MoneySVA>Money SVA</MoneySVA>
+		<MerchantID>Merchant ID</MerchantID>
+		<MerchantCode>Merchant Code</MerchantCode>
+		<MDN>MDN</MDN>
+		
+		<Nationality>Nationality</Nationality>
+		<NotificationCode>Notification Code</NotificationCode>
+		<NumberofOutletlocations>Number of Outlet locations</NumberofOutletlocations>
+		
+		<IDType>ID Type</IDType>
+		<IDNumber>ID Number</IDNumber>
+		<Industries>Industries</Industries>
+		
+		<OperatorCode>Operator Code</OperatorCode>
+		<OperatorRejectReason>Operator Reject Reason</OperatorRejectReason>
+		<OperatorResponseTime>Operator Response Time</OperatorResponseTime>
+		<OutletClassification>Outlet Classification</OutletClassification>
+
+		<PaymentDetails>Payment Details</PaymentDetails>
+		<PocketDescription>Pocket Description</PocketDescription>
+		<Position>Position</Position>
+		<PostalCode>Postal Code</PostalCode>
+		<PANBankAccID>PAN Card Bank Acc. ID</PANBankAccID>
+		<Parent>Parent</Parent>
+		<ParentID>Parent ID</ParentID>
+		<PartnerType>Partner Type</PartnerType>
+		<Password>Password</Password>
+		<Permissions>Permissions</Permissions>
+		<PlaceOfBirth>Place Of Birth</PlaceOfBirth>
+		<PlotNumber>Plot Number</PlotNumber>
+		<ProoOfAddress>Proof of Add.</ProoOfAddress>		
+		<RefNumber>Ref Number</RefNumber>		
+		<ReferenceAccount>Reference Account</ReferenceAccount>
+		<ReferenceID>Reference ID</ReferenceID>
+		<RepresentativeName>Representative Name</RepresentativeName>
+		<RegionName>Region Name</RegionName>
+		<Restrictions>Restrictions</Restrictions>
+
+		<SecretAnswer>Secret Answer</SecretAnswer>
+		<SecretQuestion>Secret Question</SecretQuestion>
+		<SelfSuspended>Self Suspended</SelfSuspended>
+		<Sell>Sell</Sell>
+		<SecurityLocked>Security Locked</SecurityLocked>
+		<SMS>SMS</SMS>
+		<SourceIP>Source IP</SourceIP>
+		<SourceIPAddress>Source IP Address</SourceIPAddress>
+		<SourceMDN>Source MDN</SourceMDN>
+		<SourceMDNID>Source MDN ID</SourceMDNID>
+		<SourcePocketType>Source Pocket Type</SourcePocketType>
+		<SourceSubscriberName>Source Subscriber Name</SourceSubscriberName>
+		<SourceRefNo>Source Ref.No</SourceRefNo>
+		<SourceUsername>Source Username</SourceUsername>
+
+
+		<SourceMDNID>Source MDNID</SourceMDNID>
+		<SourcePocketID>Source PocketID</SourcePocketID>
+		<SourcePocketBalance>Source Pocket Balance</SourcePocketBalance>
+		<SourcePocketDescription>Source Pocket Description</SourcePocketDescription>
+		<SourceReferenceID>Source Reference ID</SourceReferenceID>
+		<SourceSubscriberID>Source Subscriber ID</SourceSubscriberID>
+				
+		<SourceATMNo>Source ATM No</SourceATMNo>
+		<StartTime>Start Time</StartTime>
+		<State>State</State>
+		<Status>Status</Status>
+		<StatusTime>Status Time</StatusTime>
+		<StreetName>Street Name</StreetName>
+		<StreetAddress>Street Address</StreetAddress>
+		<SubscriberDetails>Subscriber Details</SubscriberDetails>
+		<SubscriberID>Subscriber ID</SubscriberID>
+		<SubscriberType>Subscriber Type</SubscriberType>
+		<SubscriberSecretQuestion>Subscriber Secret Question</SubscriberSecretQuestion>
+		<SubscriberMobileCompany>Subscriber Mobile Company</SubscriberMobileCompany>
+		<Suspended>Suspended</Suspended>
+		<SubtotalBy>Subtotal By</SubtotalBy>
+		<SystemUpdatedBy>System Updated By</SystemUpdatedBy>
+
+		<TimeZone>Time Zone</TimeZone>
+
+		<TradeName>Trade Name</TradeName>
+		<Transaction>Transaction</Transaction>
+		<TransactionID>Transaction ID</TransactionID>
+		<TransactionType>Transaction Type</TransactionType>
+		<TransferDate>Transfer Date</TransferDate>
+		<TransferStatus>Transfer Status</TransferStatus>
+		<TypeOfBankAccount>Type of Bank Account</TypeOfBankAccount>
+		<TypeofOrg>Type of Org</TypeofOrg>
+		<TypeofOrganization>Type of Organization</TypeofOrganization>
+		
+		
+		<UpdatedBy>Updated By</UpdatedBy>
+		<Username>Username</Username>
+		
+		<YearEstablished>Year Established</YearEstablished>
+		<Website>Website</Website>
+		<WebSiteURL>WebSite URL</WebSiteURL>
+		<WeeklyLOPLimit>Weekly LOP Limit</WeeklyLOPLimit>
+
+	</Label>
+</LabelConfig>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:52 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.LOPHistory" optimistic-lock="version" table="lop_history" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="LOP" foreign-key="FK_LOPHistory_LOP" class="com.mfino.domain.LOP" fetch="select">
+<column name="LOPID" not-null="true"   />
+</many-to-one>
+<property name="OldDiscount" type="big_decimal" >
+<column name="OldDiscount"    sql-type="decimal(25,4)" />
+</property>
+<property name="NewDiscount" type="big_decimal" >
+<column name="NewDiscount"    sql-type="decimal(25,4)" />
+</property>
+<property name="DiscountChangedBy" type="java.lang.String" >
+<column name="DiscountChangedBy"    sql-type="varchar(255)" />
+</property>
+<property name="DiscountChangeTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="DiscountChangeTime"   length="19" sql-type="datetime" />
+</property>
+<property name="Comments" type="java.lang.String" >
+<column name="Comments"    sql-type="varchar(255)" />
+</property>
+</class>
+</hibernate-mapping>

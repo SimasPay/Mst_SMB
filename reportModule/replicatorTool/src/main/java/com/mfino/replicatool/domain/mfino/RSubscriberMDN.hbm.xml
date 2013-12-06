@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:46 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.SubscriberMDN" optimistic-lock="version" table="subscriber_mdn" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Subscriber" foreign-key="FK_SubscriberMDN_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID" not-null="true"   />
+</many-to-one>
+<property name="MDN" type="java.lang.String" unique-key="MDN">
+<column name="MDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="IMSI" type="java.lang.String" >
+<column name="IMSI"    sql-type="varchar(255)" />
+</property>
+<property name="MarketingCategory" type="java.lang.String" >
+<column name="MarketingCategory"    sql-type="varchar(255)" />
+</property>
+<property name="IDType" type="java.lang.String" >
+<column name="IDType"    sql-type="varchar(255)" />
+</property>
+<property name="IDNumber" type="java.lang.String" >
+<column name="IDNumber"    sql-type="varchar(255)" />
+</property>
+<property name="AuthenticationPhoneNumber" type="java.lang.String" >
+<column name="AuthenticationPhoneNumber"    sql-type="varchar(255)" />
+</property>
+<property name="Status" type="java.lang.Integer" index="Status">
+<column name="Status" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="AuthenticationPhrase" type="java.lang.String" >
+<column name="AuthenticationPhrase"    sql-type="varchar(255)" />
+</property>
+<property name="Restrictions" type="java.lang.Integer" >
+<column name="Restrictions" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="WrongPINCount" type="java.lang.Integer" >
+<column name="WrongPINCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="DigestedPIN" type="java.lang.String" >
+<column name="DigestedPIN"    sql-type="varchar(255)" />
+</property>
+<property name="MerchantDigestedPIN" type="java.lang.String" >
+<column name="MerchantDigestedPIN"    sql-type="varchar(255)" />
+</property>
+<property name="MDNBrand" type="java.lang.String" >
+<column name="MDNBrand"    sql-type="varchar(255)" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="ActivationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ActivationTime"   length="19" sql-type="datetime" />
+</property>
+<property name="LastTransactionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastTransactionTime"   length="19" sql-type="datetime" />
+</property>
+<property name="LastTransactionID" type="java.lang.Long" >
+<column name="LastTransactionID"    sql-type="bigint" />
+</property>
+<property name="H2HAllowedIP" type="java.lang.String" >
+<column name="H2HAllowedIP"    sql-type="varchar(255)" />
+</property>
+<property name="IsMDNRecycled" type="java.lang.Boolean" >
+<column name="IsMDNRecycled"    default="'0'"  sql-type="tinyint" />
+</property>
+<property name="ScrambleCode" type="java.lang.String" >
+<column name="ScrambleCode"    sql-type="varchar(255)" />
+</property>
+<property name="OTP" type="java.lang.String" >
+<column name="OTP"    sql-type="varchar(255)" />
+</property>
+<property name="OTPExpirationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="OTPExpirationTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ApplicationID" type="java.lang.String" >
+<column name="ApplicationID"    sql-type="varchar(255)" />
+</property>
+<property name="IsForceCloseRequested" type="java.lang.Boolean" >
+<column name="IsForceCloseRequested"    sql-type="tinyint" />
+</property>
+<set name="LOPFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.LOP" />
+</set>
+<set name="CommodityTransferFromSourceMDNID" inverse="true">
+<key>
+<column name="SourceMDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromSourceMDNID" inverse="true">
+<key>
+<column name="SourceMDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+<set name="PocketFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Pocket" />
+</set>
+<set name="BulkLOPFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkLOP" />
+</set>
+<set name="ChannelSessionManagementFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ChannelSessionManagement" />
+</set>
+<set name="UnRegisteredTxnInfoFromMDNID" inverse="true">
+<key>
+<column name="MDNID"    />
+</key>
+<one-to-many class="com.mfino.domain.UnRegisteredTxnInfo" />
+</set>
+<set name="ExcludeSubscriberLifeCycleFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ExcludeSubscriberLifeCycle" />
+</set>
+<set name="MoneyClearanceGravedFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MoneyClearanceGraved" />
+</set>
+<set name="MoneyClearanceGravedFromRefundMDNID" inverse="true">
+<key>
+<column name="RefundMDNID"    />
+</key>
+<one-to-many class="com.mfino.domain.MoneyClearanceGraved" />
+</set>
+<set name="ClosedAccountSettlementMDNFromMDNID" inverse="true">
+<key>
+<column name="MDNID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ClosedAccountSettlementMDN" />
+</set>
+</class>
+</hibernate-mapping>

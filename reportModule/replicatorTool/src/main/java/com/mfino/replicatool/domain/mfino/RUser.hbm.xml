@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:48 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.User" optimistic-lock="version" table="mfino_user" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_User_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"  unique-key="Name" />
+</many-to-one>
+<many-to-one name="Company" foreign-key="FK_User_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="Username" type="java.lang.String" unique-key="Name">
+<column name="Username"    sql-type="varchar(255)" />
+</property>
+<property name="Password" type="java.lang.String" >
+<column name="Password"    sql-type="varchar(255)" />
+</property>
+<property name="FirstName" type="java.lang.String" >
+<column name="FirstName"    sql-type="varchar(255)" />
+</property>
+<property name="LastName" type="java.lang.String" >
+<column name="LastName"    sql-type="varchar(255)" />
+</property>
+<property name="Email" type="java.lang.String" >
+<column name="Email"    sql-type="varchar(255)" />
+</property>
+<property name="Language" type="java.lang.Integer" >
+<column name="Language" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="Timezone" type="java.lang.String" >
+<column name="Timezone"    sql-type="varchar(255)" />
+</property>
+<property name="Restrictions" type="java.lang.Integer" >
+<column name="Restrictions" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="FailedLoginCount" type="java.lang.Integer" >
+<column name="FailedLoginCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="FirstTimeLogin" type="java.lang.Boolean" >
+<column name="FirstTimeLogin"    sql-type="tinyint" />
+</property>
+<property name="LastLoginTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastLoginTime"   length="19" sql-type="datetime" />
+</property>
+<property name="AdminComment" type="java.lang.String" >
+<column name="AdminComment"    sql-type="varchar(255)" />
+</property>
+<property name="Role" type="java.lang.Integer" >
+<column name="Role"    sql-type="int" />
+</property>
+<property name="SecurityQuestion" type="java.lang.String" >
+<column name="SecurityQuestion"    sql-type="varchar(255)" />
+</property>
+<property name="SecurityAnswer" type="java.lang.String" >
+<column name="SecurityAnswer"    sql-type="varchar(255)" />
+</property>
+<property name="ConfirmationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ConfirmationTime"   length="19" sql-type="datetime" />
+</property>
+<property name="UserActivationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="UserActivationTime"   length="19" sql-type="datetime" />
+</property>
+<property name="RejectionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="RejectionTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ExpirationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ExpirationTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ConfirmationCode" type="java.lang.String" >
+<column name="ConfirmationCode"    sql-type="varchar(255)" />
+</property>
+<property name="DateOfBirth" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="DateOfBirth"   length="19" sql-type="datetime" />
+</property>
+<property name="ForgotPasswordCode" type="java.lang.String" >
+<column name="ForgotPasswordCode"    sql-type="varchar(255)" />
+</property>
+<property name="HomePhone" type="java.lang.String" >
+<column name="HomePhone"    sql-type="varchar(255)" />
+</property>
+<property name="WorkPhone" type="java.lang.String" >
+<column name="WorkPhone"    sql-type="varchar(255)" />
+</property>
+<property name="OldHomePhone" type="java.lang.String" >
+<column name="OldHomePhone"    sql-type="varchar(255)" />
+</property>
+<property name="OldWorkPhone" type="java.lang.String" >
+<column name="OldWorkPhone"    sql-type="varchar(255)" />
+</property>
+<property name="OldSecurityQuestion" type="java.lang.String" >
+<column name="OldSecurityQuestion"    sql-type="varchar(255)" />
+</property>
+<property name="OldSecurityAnswer" type="java.lang.String" >
+<column name="OldSecurityAnswer"    sql-type="varchar(255)" />
+</property>
+<property name="OldFirstName" type="java.lang.String" >
+<column name="OldFirstName"    sql-type="varchar(255)" />
+</property>
+<property name="OldLastName" type="java.lang.String" >
+<column name="OldLastName"    sql-type="varchar(255)" />
+</property>
+<property name="LastPasswordChangeTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastPasswordChangeTime"   length="19" sql-type="datetime" />
+</property>
+<property name="PasswordHistory" type="java.lang.String" >
+<column name="PasswordHistory"    sql-type="varchar(255)" />
+</property>
+<property name="IsLoggedIn" type="java.lang.Boolean" >
+<column name="IsLoggedIn"    sql-type="tinyint" />
+</property>
+<set name="BulkUploadFromUserID" inverse="true">
+<key>
+<column name="UserID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkUpload" />
+</set>
+<set name="SubscriberFromUserID" inverse="true">
+<key>
+<column name="UserID"    />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+<set name="SubscriberFromSubscriberUserID" inverse="true">
+<key>
+<column name="SubscriberUserID"    />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+<set name="SMSPartnerFromUserID" inverse="true">
+<key>
+<column name="UserID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SMSPartner" />
+</set>
+<set name="BankAdminFromUserID" inverse="true">
+<key>
+<column name="UserID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BankAdmin" />
+</set>
+<set name="PartnerFromUserID" inverse="true">
+<key>
+<column name="UserID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Partner" />
+</set>
+</class>
+</hibernate-mapping>

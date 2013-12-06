@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>mFino platform DbCopyTool application</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+            /WEB-INF/applicationContext.xml
+        </param-value>
+	</context-param>
+	
+	<env-entry>
+	  <description>
+	  environment variable for calling the jndi name from the 
+	  tomcat context.xml to be used in spring to access the required properties file.
+	  </description> 
+     <env-entry-name>databaseConfig.Properties</env-entry-name> 
+     <env-entry-type>java.lang.String</env-entry-type> 
+     <env-entry-value>java:/comp/env/mfino.DB.databaseConfig.Properties</env-entry-value> 
+   </env-entry>
+   
+     <env-entry>
+	  <description>
+	  environment variable for calling the jndi name from the 
+	  tomcat context.xml to be used in spring to access the required properties file.
+	  </description> 
+     <env-entry-name>mfino.DB.databaseConfig.Properties</env-entry-name> 
+     <env-entry-type>java.lang.String</env-entry-type> 
+     <env-entry-value>classpath:database_config.properties</env-entry-value> 
+ 	</env-entry>
+   
+	<!--
+		Loads the root application context of this web app at startup. - The
+		application context is then available via -
+		WebApplicationContextUtils.getWebApplicationContext(servletContext).
+	-->
+	<listener>
+		<listener-class>
+			com.mfino.dbcopytool.listeners.MFinoServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>redirect.jsp</welcome-file>
+	</welcome-file-list>
+
+</web-app>

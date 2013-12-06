@@ -1,0 +1,35 @@
+
+@author pochadri 
+
+1. get servicemix from here:
+   http://repo.fusesource.com/nexus/content/repositories/releases/org/apache/servicemix/apache-servicemix/4.4.0-fuse-00-43/apache-servicemix-4.4.0-fuse-00-43.zip
+ or latest from fusesource site if you want to try a new one
+ 
+2. unzip the zip file that you have downloaded to the location you wanted
+
+3. go to SERVICEMIX_HOME\bin folder and run the servicemix.bat batch file/shell script(if on linux) 
+
+4. you will see the command prompt karaf>
+   
+5. run the following command on karaf prompt
+
+features:install spring spring-web spring-dm activemq-spring camel-spring camel-spring-integration camel-spring-security camel-guice camel-jetty camel-servlet camel-smpp jpa-hibernate camel-jasypt jasypt-encryption 
+
+6. shutdown servicemix by running the following command
+   osgi:shutdown
+
+7. copy the jars from the servicemix_conf\deploy_libs to deploy folder in servicemix
+
+8. copy the files etc folder to servicemix etc folder
+   -- these would define the branding and logging properties
+   
+9. Copy the jars from lib folder to servicemix lib folder.
+   -- esb_version.jar would define the branding of the servicemix   
+
+8. Copy backend jars
+	8.1 use the script MfinoCoreEngine\deployToServiceMix.bat to copy all the files to servicemix.
+		NOTE: make sure you set the path of servicemix in the script before running it.
+
+8.	restart the servicemix by following step 3.
+	NOTE: if you see any exceptions restart servicemix by using shutdown and start commands
+	

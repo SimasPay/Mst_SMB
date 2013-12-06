@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:55 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.ServiceChargeTransactionLog" optimistic-lock="version" table="service_charge_txn_log" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_ServiceChargeTransactionLog_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID"     />
+</many-to-one>
+<property name="TransactionID" type="java.lang.Long" >
+<column name="TransactionID"    sql-type="bigint" />
+</property>
+<property name="MFSBillerCode" type="java.lang.String" >
+<column name="MFSBillerCode"    sql-type="varchar(255)" />
+</property>
+<property name="SourcePartnerID" type="java.lang.Long" >
+<column name="SourcePartnerID"    sql-type="bigint" />
+</property>
+<property name="DestPartnerID" type="java.lang.Long" >
+<column name="DestPartnerID"    sql-type="bigint" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN"    sql-type="varchar(255)" />
+</property>
+<property name="DestMDN" type="java.lang.String" >
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+<property name="OnBeHalfOfMDN" type="java.lang.String" >
+<column name="OnBeHalfOfMDN"    sql-type="varchar(255)" />
+</property>
+<property name="ServiceID" type="java.lang.Long" >
+<column name="ServiceID"    sql-type="bigint" />
+</property>
+<property name="TransactionTypeID" type="java.lang.Long" >
+<column name="TransactionTypeID"    sql-type="bigint" />
+</property>
+<property name="ServiceProviderID" type="java.lang.Long" >
+<column name="ServiceProviderID"    sql-type="bigint" />
+</property>
+<property name="ChannelCodeID" type="java.lang.Long" >
+<column name="ChannelCodeID"    sql-type="bigint" />
+</property>
+<property name="TransactionAmount" type="big_decimal" >
+<column name="TransactionAmount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="TransactionMode" type="java.lang.String" >
+<column name="TransactionMode"    sql-type="varchar(255)" />
+</property>
+<property name="InvoiceNo" type="java.lang.String" >
+<column name="InvoiceNo"    sql-type="varchar(255)" />
+</property>
+<property name="TransactionRuleID" type="java.lang.Long" >
+<column name="TransactionRuleID"    sql-type="bigint" />
+</property>
+<property name="CalculatedCharge" type="big_decimal" >
+<column name="CalculatedCharge"    sql-type="decimal(25,4)" />
+</property>
+<property name="CommodityTransferID" type="java.lang.Long" >
+<column name="CommodityTransferID"    sql-type="bigint" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  sql-type="int" />
+</property>
+<property name="FailureReason" type="java.lang.String" >
+<column name="FailureReason"    sql-type="varchar(255)" />
+</property>
+<property name="ParentSCTLID" type="java.lang.Long" >
+<column name="ParentSCTLID"    sql-type="bigint" />
+</property>
+<property name="IsChargeDistributed" type="java.lang.Boolean" >
+<column name="IsChargeDistributed"    sql-type="tinyint" />
+</property>
+<property name="ReversalReason" type="java.lang.String" >
+<column name="ReversalReason"    sql-type="varchar(255)" />
+</property>
+<property name="IsTransactionReversed" type="java.lang.Boolean" >
+<column name="IsTransactionReversed"    sql-type="tinyint" />
+</property>
+<property name="AmtRevStatus" type="java.lang.Integer" >
+<column name="AmtRevStatus"    sql-type="int" />
+</property>
+<property name="ChrgRevStatus" type="java.lang.Integer" >
+<column name="ChrgRevStatus"    sql-type="int" />
+</property>
+<property name="IntegrationCode" type="java.lang.String" >
+<column name="IntegrationCode"    sql-type="varchar(255)" />
+</property>
+<property name="IntegrationTransactionID" type="java.lang.Long" >
+<column name="IntegrationTransactionID"    sql-type="bigint" />
+</property>
+<property name="Info1" type="java.lang.String" >
+<column name="Info1"    sql-type="varchar(255)" />
+</property>
+<set name="MoneyClearanceGravedFromSctlId" inverse="true">
+<key>
+<column name="SctlId" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MoneyClearanceGraved" />
+</set>
+<set name="MoneyClearanceGravedFromRefundSctlID" inverse="true">
+<key>
+<column name="RefundSctlID"    />
+</key>
+<one-to-many class="com.mfino.domain.MoneyClearanceGraved" />
+</set>
+</class>
+</hibernate-mapping>

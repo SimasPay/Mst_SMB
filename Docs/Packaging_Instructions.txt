@@ -1,0 +1,27 @@
+This section describes the intrsuctions for packaging the mFino mWallet product on dev.mfino.com
+
+STEP 0: Log on to ubuntu@dev.mfino.com 
+* cd dev/mfino/trunk
+
+STEP 1: stop multix and webapp
+$ sh /usr/local/mFinoMultiXTpmServer/StopMultiXTpm.sh
+$ sudo service tomcat6 stop
+
+STEP 2: update the source code
+$ svn update
+ 
+STEP 3: prepare the dist for webapp 
+$ ant mvn-dist -Dprofile=dev
+
+STEP 4: prepare the dist for backend
+$ cd mFinoMultiXTpmServer directory
+$ sh MakeRuntimeSmart.sh
+$ sh MakePackage.sh
+
+STEP 5: Connect to smart vpn if not already connected
+Open another terminal
+$ sh smartvpn.sh
+
+STEP 6: Copy the files to the SMART test servers
+$ cd ../Scripts folder
+$ sh deploy_smart_test.sh

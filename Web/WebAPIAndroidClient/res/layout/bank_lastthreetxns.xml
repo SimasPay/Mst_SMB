@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/bg1">
+
+	<TableRow>
+		<TextView android:id="@+id/baltTextView01"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="SourceMDN">
+		</TextView>
+		<EditText android:id="@+id/baltSourceMDNET" android:width="150.0px"
+			android:layout_height="wrap_content">
+		</EditText>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:id="@+id/baltTextView02"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="SourcePIN">
+		</TextView>
+		<EditText android:id="@+id/baltSourcePINET"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+		</EditText>
+	</TableRow>
+
+	<TableRow>
+		<TextView android:id="@+id/baltTextView03"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="BankID">
+		</TextView>
+		<EditText android:id="@+id/baltBankIDET"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+		</EditText>
+	</TableRow>
+
+	<TableRow>
+		<Button android:id="@+id/baltLastNTxnsButton"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Get History">
+		</Button>
+		<Button android:id="@+id/baltBackButton" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Back">
+		</Button>
+	</TableRow>
+
+</TableLayout>

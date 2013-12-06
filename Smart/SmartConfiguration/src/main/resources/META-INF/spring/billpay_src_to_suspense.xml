@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<context:annotation-config />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<tx:annotation-driven transaction-manager="txManager" />
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory" />
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory" />
+		<property name="concurrentConsumers" value="${concurrentConsumers}" />
+	</bean>
+
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig" />
+	</bean>
+
+	<osgi:reference id="bankService" interface="com.mfino.mce.backend.BankService"/>
+	<osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService"/>
+
+	<bean id="billPayMoneyTransferService" class="com.mfino.smart.gateway.impl.GatewayMoneyTransferServiceImpl">
+		<property name="reversalResponseQueue" value="jms:gatewaySuspenseAndChargesRRQueue?disableReplyTo=true"/>
+		<property name="sourceToSuspenseBankResponseQueue" value="jms:gatewayBpSourceToSuspenseBRQueue?disableReplyTo=true"/>
+		<property name="suspenseToDestBankResponseQueue" value="jms:gatewayBpSuspenseToDestBRQueue?disableReplyTo=true"/>
+		<property name="bankService" ref="bankService"/>
+		<property name="billPaymentsService" ref="billPaymentsService"/>
+	</bean>	
+
+	<osgi:reference id="billPayPendingResolveService"
+		interface="com.mfino.billpayments.service.BillPayPendingResolveService" />
+
+	<camelContext id="mfinoBillPaySourceToSuspense" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+
+		<route>
+			<from uri="jms:smartGatewayQ?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayInquiry'</simple> <!-- Inquiry Flow -->
+				<to
+					uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspense" />
+				<filter>
+					<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_INQ_TO_BANK</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- money transfer inquiry is completed, proceed to bill payment inquiry -->
+					<filter>
+						<simple>${body.response.result} == '0'</simple>
+						<setHeader headerName="eventContext">
+							<!-- <simple resultType="java.lang.String" >SRC_SUSPENSE_INQ_SUCCESS</simple> -->
+							<constant>SRC_SUSPENSE_INQ_SUCCESS</constant>
+						</setHeader>
+						<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+					<filter>
+						<simple>${body.response.result} != '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>SRC_SUSPENSE_INQ_FAILED</constant>
+						</setHeader>
+						<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+					</filter>
+				</filter>
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPay'</simple> <!-- Confirmation Flow -->
+				<to	uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSourceToSuspense" />
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+					<filter>
+						<simple>${body.response.result} == '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>
+						</setHeader>
+						<multicast>
+							<!-- needed? -->
+							<!-- <to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" 
+								/> -->
+							<to uri="jms:gatewayBillerInquiryQueue?disableReplyTo=true" />
+						</multicast>
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- money transfer inquiry is completed, proceed to bill payment inquiry -->
+					<filter>
+						<simple>${body.response.result} != '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>
+						</setHeader>
+						<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple> <!-- give this to front end as it needs to go to bank -->
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_CONFIRMATION_TO_BANK</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayPendingRequest'</simple> <!-- pending resolve Flow -->
+					<to	uri="bean:billPayPendingResolveService?method=resolvePendingTransaction" />
+					<filter>
+						<simple>${body.destinationQueue} == null</simple>
+						<to uri="jms:notificationQueue?disableReplyTo=true" />
+					</filter>
+					<filter>
+						<simple>${body.destinationQueue} != null</simple>
+						<recipientList>
+							<simple>${body.nextQueue},jms:notificationQueue?disableReplyTo=true</simple>
+						</recipientList>
+					</filter>
+				</filter>
+			</filter>
+		</route>
+
+		<!-- response from front end for source to suspense -->
+
+		<route>
+			<from uri="jms:gatewayBpSourceToSuspenseBRQueue?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+				<to	uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspenseCompleted" />
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_INQ_SUCCESS</constant>
+					</setHeader>
+					<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_INQ_FAILED</constant>
+					</setHeader>
+					<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+				<to	uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSourceToSuspenseCompleted" />
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>
+					</setHeader>
+					<multicast>
+						<!-- needed? -->
+						<!-- <to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" 
+							/> -->
+						<to uri="jms:gatewayBillerInquiryQueue?disableReplyTo=true" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>
+					</setHeader>
+					<to uri="jms:gatewayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+		</route>
+
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

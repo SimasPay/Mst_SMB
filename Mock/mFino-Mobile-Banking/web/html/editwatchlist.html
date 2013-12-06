@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.openmobileallianceorg.org/tech/DTD/xhtml-mobile10.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+        <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+        </SCRIPT>
+    </HEAD>
+    <body onload="loadWatchListToEdit();setTimeout('effects()',50);">
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0" >
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                        </td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%" valign="middle">
+                            <INPUT id="cancelbutton" type="button" value="Cancel" class="menuButton" onclick="goToPage('watchlist.html');">
+                        </td>
+                        <td width="60%">
+                            <DIV align="center"> Edit Watch List </DIV>
+                        </td>
+                        <td width="20%">
+                            <INPUT id="donebutton" type="button" value=" Done" class="menuButton" onclick="storeWatchList();goToPage('watchlist.html');">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+        <HR>
+        <DIV id="cmbody">
+            <table border="0" width="100%" cellpadding="0" style="background-color:black;height:40px;">
+                <tbody>
+                    <tr>
+                        <td width="35%" valign="middle">
+                            <DIV align="center" style="color:white;"> Ticker </DIV>
+                        </td>
+                        <td width="30%">
+                            <DIV align="left" style="color:white;"> Position </DIV>
+                        </td>
+                        <td width="30%">
+                            <DIV align="left" style="color:white;"> Price </DIV>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul>
+                <li id="firstItem" style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line11" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="">
+                        <INPUT id="line12" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="" readonly>
+                        <INPUT id="line13" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line11').value='';">
+                </li>
+                <li style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line21" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="">
+                        <INPUT id="line22" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="" readonly>
+                        <INPUT id="line23" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line21').value='';">
+                </li>
+                <li style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line31" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="">
+                        <INPUT id="line32" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="" readonly>
+                        <INPUT id="line33" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" value="" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line31').value='';">
+                </li>
+                <li style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line41" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10">
+                        <INPUT id="line42" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                        <INPUT id="line43" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line41').value='';">
+                </li>
+                <li style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line51" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10">
+                        <INPUT id="line52" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                        <INPUT id="line53" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line51').value='';">
+                </li>
+                <li style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line61" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10">
+                        <INPUT id="line62" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                        <INPUT id="line63" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line61').value='';">
+                </li>
+                <li style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line71" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10">
+                        <INPUT id="line72" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                        <INPUT id="line73" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line71').value='';">
+                </li>
+                <li id="lastItem" style="background:white;">
+                    <span style="display:inline;width:50%;">
+                        <INPUT id="line81" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10">
+                        <INPUT id="line82" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                        <INPUT id="line83" style="display:inline;text-align:center;border:1px solid gray;-webkit-border-radius: 5px;" type="textfield" size="10" readonly>
+                    </span>
+                    <IMG border="0" alt="" src="../images/delete.png" onclick="javascript:document.getElementById('line81').value='';">
+                </li>
+            </ul>
+            <DIV class="footer1" align="center" valign="middle">
+                <IMG border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </DIV>
+        </DIV>
+    </BODY>
+</HTML>

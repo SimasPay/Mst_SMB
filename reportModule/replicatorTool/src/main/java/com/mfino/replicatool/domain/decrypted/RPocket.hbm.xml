@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30/07/2012 21:44:43 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<typedef name="encryptedBigDecimal" class="org.jasypt.hibernate.type.EncryptedBigDecimalAsStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="encryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="uniqueencryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateUniqueStringEncryptor</param>
+</typedef>
+<class name="com.mfino.domain.Pocket" optimistic-lock="version" table="pocket" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="PocketTemplate" foreign-key="FK_Pocket_PocketTemplate" class="com.mfino.domain.PocketTemplate" fetch="select">
+<column name="PocketTemplateID" not-null="true"   />
+</many-to-one>
+<many-to-one name="SubscriberMDNByMDNID" foreign-key="FK_Pocket_SubscriberMDNByMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="MDNID" not-null="true"  index="MDN" />
+</many-to-one>
+<property name="LastTransactionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastTransactionTime"   length="19" sql-type="datetime" />
+</property>
+<property name="CurrentBalance" type="java.math.BigDecimal" >
+<column name="CurrentBalance"    sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentDailyExpenditure" type="big_decimal" >
+<column name="CurrentDailyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentWeeklyExpenditure" type="big_decimal" >
+<column name="CurrentWeeklyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentMonthlyExpenditure" type="big_decimal" >
+<column name="CurrentMonthlyExpenditure" not-null="true"  default="'0'"  sql-type="decimal(25,4)" />
+</property>
+<property name="CurrentDailyTxnsCount" type="java.lang.Integer" >
+<column name="CurrentDailyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="CurrentWeeklyTxnsCount" type="java.lang.Integer" >
+<column name="CurrentWeeklyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="CurrentMonthlyTxnsCount" type="java.lang.Integer" >
+<column name="CurrentMonthlyTxnsCount" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="LastBankResponseCode" type="java.lang.Integer" >
+<column name="LastBankResponseCode"    sql-type="int" />
+</property>
+<property name="LastBankAuthorizationCode" type="java.lang.String" >
+<column name="LastBankAuthorizationCode"    sql-type="varchar(255)" />
+</property>
+<property name="LastBankRequestCode" type="java.lang.Integer" >
+<column name="LastBankRequestCode"    sql-type="int" />
+</property>
+<property name="CardPAN" type="java.lang.String" >
+<column name="CardPAN"    sql-type="varchar(255)" />
+</property>
+<property name="Restrictions" type="java.lang.Integer" >
+<column name="Restrictions" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="IsDefault" type="java.lang.Boolean" >
+<column name="IsDefault"    sql-type="tinyint" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status" not-null="true"  default="'0'"  sql-type="int" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="ActivationTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ActivationTime"   length="19" sql-type="datetime" />
+</property>
+<many-to-one name="PocketTemplateByOldPocketTemplateID" foreign-key="FK_Pocket_PocketTemplateByOldPocketTemplateID" class="com.mfino.domain.PocketTemplate" fetch="select">
+<column name="OldPocketTemplateID"     />
+</many-to-one>
+<property name="PocketTemplateChangeTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="PocketTemplateChangeTime"   length="19" sql-type="datetime" />
+</property>
+<property name="PocketTemplateChangedBy" type="java.lang.String" >
+<column name="PocketTemplateChangedBy"    sql-type="varchar(255)" />
+</property>
+<property name="LowBalNotifType" type="java.lang.Integer" >
+<column name="LowBalNotifType"    sql-type="int" />
+</property>
+<property name="LowBalNotifTriggerTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LowBalNotifTriggerTime"   length="19" sql-type="datetime" />
+</property>
+<property name="LowBalNotifRegistered" type="java.lang.Integer" >
+<column name="LowBalNotifRegistered"    sql-type="int" />
+</property>
+<property name="LowBalNotifQueryTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LowBalNotifQueryTime"   length="19" sql-type="datetime" />
+</property>
+<many-to-one name="Company" foreign-key="FK_Pocket_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID"     />
+</many-to-one>
+<set name="CommodityTransferFromSourcePocketID" inverse="true">
+<key>
+<column name="SourcePocketID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromSourcePocketID" inverse="true">
+<key>
+<column name="SourcePocketID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+<set name="BulkUploadFromSourcePocket" inverse="true">
+<key>
+<column name="SourcePocket"    />
+</key>
+<one-to-many class="com.mfino.domain.BulkUpload" />
+</set>
+<set name="CardInfoFromPocketID" inverse="true">
+<key>
+<column name="PocketID"    />
+</key>
+<one-to-many class="com.mfino.domain.CardInfo" />
+</set>
+<set name="CreditCardTransactionFromPocketID" inverse="true">
+<key>
+<column name="PocketID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CreditCardTransaction" />
+</set>
+<set name="PartnerServicesFromCollectorPocket" inverse="true">
+<key>
+<column name="CollectorPocket" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PartnerServices" />
+</set>
+<set name="PartnerServicesFromSourcePocket" inverse="true">
+<key>
+<column name="SourcePocket"    />
+</key>
+<one-to-many class="com.mfino.domain.PartnerServices" />
+</set>
+<set name="PartnerServicesFromDestPocketID" inverse="true">
+<key>
+<column name="DestPocketID"    />
+</key>
+<one-to-many class="com.mfino.domain.PartnerServices" />
+</set>
+<set name="SettlementTemplateFromSettlementPocket" inverse="true">
+<key>
+<column name="SettlementPocket" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SettlementTemplate" />
+</set>
+<set name="ServiceSettlementConfigFromCollectorPocket" inverse="true">
+<key>
+<column name="CollectorPocket"    />
+</key>
+<one-to-many class="com.mfino.domain.ServiceSettlementConfig" />
+</set>
+<set name="TransactionAmountDistributionLogFromPocketID" inverse="true">
+<key>
+<column name="PocketID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionAmountDistributionLog" />
+</set>
+<set name="ChargeDefinitionFromPocketID" inverse="true">
+<key>
+<column name="PocketID"    />
+</key>
+<one-to-many class="com.mfino.domain.ChargeDefinition" />
+</set>
+<set name="MoneyClearanceGravedFromPocketID" inverse="true">
+<key>
+<column name="PocketID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MoneyClearanceGraved" />
+</set>
+<set name="MoneyClearanceGravedFromRefundPocketID" inverse="true">
+<key>
+<column name="RefundPocketID"    />
+</key>
+<one-to-many class="com.mfino.domain.MoneyClearanceGraved" />
+</set>
+</class>
+</hibernate-mapping>

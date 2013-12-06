@@ -1,0 +1,13 @@
+*SERVICEMIX_HOME
+@nosaltused
+\mfino_conf\mce.properties
+@saltused
+\mfino_conf\database_config.properties
+*TOMCAT_HOME
+@saltused
+\webapps\webapi\WEB-INF\classes\database_config.properties
+*CODEBASE
+\Core\settings\smart\database_config.properties
+\Core\settings\gtbank\database_config.properties
+\Core\settings\mfino\database_config.properties
+\Core\settings\zenithbank\database_config.properties

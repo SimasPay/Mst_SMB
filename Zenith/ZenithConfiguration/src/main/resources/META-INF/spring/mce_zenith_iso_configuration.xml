@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans.xsd	    
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<bean id="zenithISOUtil" class="com.mfino.zenith.iso8583.ZenithISOUtil">
+	</bean>
+	
+	<bean id="zenithFixToISOService" class="com.mfino.zenith.iso8583.ZenithFixToIsoProcessorFactory">
+		<property name="constantFieldsMap">
+			<map>
+				<entry key="SAVINGS_ACCOUNT" value="10" />
+				<entry key="CHECKING_ACCOUNT" value="20" />
+				<entry key="UNSPECIFIED_ACCOUNT" value="00" />
+				<entry key="ZERO_AMOUNT" value="000000000000"/>
+				<entry key="9" value="00000000" />				
+				<entry key="22" value="000" />
+				<entry key="23" value="001" />
+				<entry key="25" value="00" />
+				<entry key="26" value="12" />
+				<entry key="28" value="C00000000" />
+				<entry key="29" value="C00000000" />
+				<entry key="30" value="C00000000" />
+				<entry key="31" value="C00000000" />
+				<entry key="32" value="057" />
+				<entry key="33" value="360360" />
+				<entry key="41" value="40570005" />
+				<entry key="42" value="ZIB405700100001" />
+				<entry key="43" value="Zenith                     eaZymoneyLANG" />
+				<entry key="49" value="566" />
+				<entry key="56" value="1510" />
+				<entry key="98" value="360360" />
+				<entry key="100" value="360360" />
+				<entry key="123" value="610500613134021" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="zenithFrontendService" class="com.mfino.mce.frontend.impl.FrontendServiceDefaultImpl">
+		<property name="fixtoisoFactoryInstance" ref="zenithFixToISOService"/>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+    <!-- Start the jpos manager -->	    
+    <bean name="jposManager" class="com.mfino.mce.iso.jpos.JPOSManager" init-method="start" destroy-method="stop">
+    	<!-- deploy folder location where JPOS configuration files are defined-->
+    	<property name="deployFolder" value="jpos/deploy/"/>
+    	<property name="muxName" value="zenithmux"/>
+    	<property name="timeout" value="30000"/>
+    	<property name="sleepOnNoReply" value="10000"/>
+    	<property name="channelName" value="zenith"/>
+    	<property name="isoUtil" ref="zenithISOUtil"/>
+		<property name="echoInterval" value="300000" />
+    </bean>
+    	
+	<camel:endpoint id="isoResponseEndpoint" uri="vm:zenithIsoResponseQueue" />
+	<bean id="bankCommunicator" class="com.mfino.mce.iso.jpos.comm.JPOSProcessor">
+		<constructor-arg index="0" value="zenithmux" />
+		<constructor-arg index="1" ref="isoResponseEndpoint" />
+		<!-- this value and aggregator value need to be in sync -->
+		<constructor-arg index="2" value="30000" />
+	</bean>
+
+	<bean id="isotofixfactory" class="com.mfino.zenith.iso8583.ZenithIsoToFixProcessorFactory">
+	</bean>
+
+	<!-- Bean for aggregating the request and reponse when talking to iso server -->
+	<bean id="aggStrategy" class="com.mfino.mce.frontend.FrontendAggregationStragety">
+		<property name="isotofixFactoryInstance" ref="isotofixfactory" />
+	</bean>
+
+	<bean id="headerSetter" class="com.mfino.mce.frontend.FrontendSetHeader" />
+
+	<bean id="noIsoResponse" class="com.mfino.zenith.iso8583.NoISOResponseProcessor" />
+
+	<bean id="bankSimulator" class="com.mfino.zenith.iso8583.BankSimulator">
+		<constructor-arg index="0" ref="isoResponseEndpoint" />
+	</bean>
+
+	<bean id="jposCommuniator" class="com.mfino.zenith.iso8583.JPOSCommunicator">
+		<constructor-arg index="0" ref="bankCommunicator"/>
+		<constructor-arg index="1" ref="bankSimulator"/>
+		<constructor-arg index="2" ref="linkDown"/>
+		<constructor-arg index="3" value="zenithmux" />
+	</bean>
+
+	<bean id="linkDown" class="com.mfino.zenith.iso8583.BankLinkDownProcessor">
+		<constructor-arg index="0" ref="isoResponseEndpoint" />
+	</bean>
+
+	
+	<bean id="timeoutExp" class="com.mfino.zenith.iso8583.CompletionTimeoutExpression">
+	    <property name="timeout" value="30000"/>
+		<property name="reversalTimeout" value="200000"/>    
+	</bean>
+	
+	<camelContext id="zenithiso" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+    <onException>
+        <exception>com.mfino.mce.iso.jpos.NoISOResponseException</exception>
+        <redeliveryPolicy maximumRedeliveries="10"/>
+        <handled>
+            <constant>true</constant>
+        </handled>
+        <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>
+    </onException>
+    <onException>
+        <exception>com.mfino.zenith.iso8583.TimedoutISOException</exception>
+        <handled>
+            <constant>true</constant>
+        </handled>
+        <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>
+    </onException>
+    <route>
+        <from uri="jms:zenithISOQueue?disableReplyTo=true"/>
+        <multicast>
+            <to uri="direct:a"/>
+            <to uri="direct:b"/>
+        </multicast>
+    </route>
+    <route>
+        <from uri="direct:a"/>
+        <process ref="headerSetter"/>
+        <to uri="jms:zenithAggQueue?disableReplyTo=true"/>
+    </route>
+    <route>
+        <from uri="direct:b"/>
+        <threads threadName="Threads" poolSize="10">
+            <to uri="bean:zenithFrontendService?method=processMessage"/>
+            <bean method="processMessage" ref="jposCommuniator"/>
+        </threads>
+    </route>
+    <route>
+        <from ref="isoResponseEndpoint"/>
+        <threads threadName="Threads" poolSize="10">
+            <to uri="log:isoServerReply"/>
+            <process ref="headerSetter"/>
+            <to uri="jms:zenithAggQueue?disableReplyTo=true"/>
+        </threads>
+    </route>
+    <route>
+        <from uri="jms:zenithAggQueue?disableReplyTo=true"/>
+        <aggregate strategyRef="aggStrategy">
+            <description>&lt;header&gt;corr_id&lt;/header&gt;</description>
+            <correlationExpression>
+                <simple>header.corr_id</simple>
+            </correlationExpression>
+            <completionTimeout>
+                <method ref="timeoutExp"></method>
+            </completionTimeout>
+            <completionSize>
+                <constant>2</constant>
+            </completionSize>
+            <to uri="log:frontendreply]"/>
+            <removeHeader headerName="CamelSlipEndpoint">
+                <description>delayedReply header is set if the reply was delayed</description>
+            </removeHeader>
+            <to uri="bean:noIsoResponse?method=processMessage"/>
+            <to uri="jms:frontendResponseServiceQueue?disableReplyTo=true"/>
+        </aggregate>
+    </route>
+</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

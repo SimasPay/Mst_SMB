@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+<TableRow>
+<TextView 
+android:id="@+id/reTextView01" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourceMDN">
+</TextView>
+<EditText 
+android:id="@+id/reSourceMDNET"
+android:width="150.0px"
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+
+
+<TableRow>
+<TextView 
+android:id="@+id/reTextView03" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SecretAnswer">
+</TextView>
+<EditText
+android:id="@+id/reSecretAnswerET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/reTextView04" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="NewPin">
+</TextView>
+<EditText
+android:id="@+id/reNewPinET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<Button 
+android:id="@+id/reResetPinButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Reset Pin">
+</Button>
+<Button 
+android:id="@+id/reBackButton"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Back" >
+</Button>
+</TableRow>
+
+</TableLayout>

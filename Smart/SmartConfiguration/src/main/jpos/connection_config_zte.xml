@@ -1,0 +1,12 @@
+<channel-adaptor name='zte' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2_zte">
+  <channel class="org.jpos.iso.channel.ASCIIChannel" logger="Q2_zte" packager="org.jpos.iso.packager.GenericPackager">
+		<property name="host" value="10.17.85.13" />
+		<property name="port" value="8583" />
+		<property name="packager-logger" value="Q2_zte" />
+		<property name="packager-realm" value="mfino-debug" />
+		<property name="packager-config" value="jpos/jpos_cfg/iso87ascii-zte.xml" />
+	</channel>
+	<in>ztesend</in>
+	<out>ztereceive</out>
+	<reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>

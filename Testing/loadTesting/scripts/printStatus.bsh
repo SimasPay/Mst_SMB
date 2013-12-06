@@ -1,0 +1,213 @@
+
+import java.io.*;
+
+try{
+	// Create file 
+	new File(vars.get("BASEDIR")+"/output").mkdir();
+	FileOutputStream fstream = new FileOutputStream(vars.get("BASEDIR")+"/output/out.txt",true);
+	PrintStream out = new PrintStream(fstream);
+  
+	int day, month, year;
+    int second, minute, hour,milli_second;
+    GregorianCalendar date = new GregorianCalendar();
+ 
+    day = date.get(Calendar.DAY_OF_MONTH);
+    month = date.get(Calendar.MONTH);
+    year = date.get(Calendar.YEAR);
+ 
+    second = date.get(Calendar.SECOND);
+    minute = date.get(Calendar.MINUTE);
+    hour = date.get(Calendar.HOUR);
+	milli_second = date.get(Calendar.MILLISECOND);
+		
+	out.print("\n\nStartTime: " + vars.get("STARTTIME"));
+	out.print("," + vars.get("STARTTIMEMILLIS"));
+	
+	out.print("  EndTime: "+year+"/"+(month+1)+"/"+day+"|"+hour+":"+minute+":"+second+","+milli_second);
+	out.print("\t TXNNAME=" +  vars.get("TXNNAME"));
+	//out.print("\tPREVCODE_1=" + vars.get("PREVCODE_1"));
+	out.print("\tCODE=" + vars.get("CODE_1"));
+	
+	if(vars.get("TXNNAME").equals("subscriberLogin") || vars.get("TXNNAME").equals("agentLogin")){
+		if(vars.get("CODE_1").equals("630")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));			
+		}
+		else{
+			out.print("\tSTATUS=" + "Failure");			
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("EMoneyHistory")){
+		if(vars.get("CODE_1").equals("39") || vars.get("CODE_1").equals("38")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}
+	}
+
+	if(vars.get("TXNNAME").equals("EMoneyCheckBalance")){
+		if(vars.get("CODE_1").equals("274")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}
+	}
+	
+	if(vars.get("TXNNAME").equals("EMoney2EMoney")){
+		if(vars.get("CODE_1").equals("293")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}
+	}
+	
+	if(vars.get("TXNNAME").equals("SubscriberCashOut")){
+		if(vars.get("CODE_1").equals("298")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+ 
+	if(vars.get("TXNNAME").equals("TransactionHistory") ){
+		if(vars.get("CODE_1").equals("38") || vars.get("CODE_1").equals("67")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("Bank2EMoney")){
+		if(vars.get("CODE_1").equals("305")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}
+	}
+	
+	if(vars.get("TXNNAME").equals("BankCheckBalance")){
+		if(vars.get("CODE_1").equals("4")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("TransactionStatus")){
+		if(vars.get("CODE_1").equals("39")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("Buy")){
+		if(vars.get("CODE_1").equals("644")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("BillPayment")){
+		if(vars.get("CODE_1").equals("653")){
+			out.print("\tSTATUS=" + "Success" + "\n\n");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure" + "\n\n");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("subscriberRegistrationByAgent")){
+		if(vars.get("CODE_1").equals("624")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("agentCashIn")){
+		if(vars.get("CODE_1").equals("296")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}
+	}
+	
+	if(vars.get("TXNNAME").equals("agent2AgentTransfer")){
+		if(vars.get("CODE_1").equals("648")){
+			out.print("\tSTATUS=" + "Success" + "\n\n");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure" + "\n\n");
+			out.println("\nINQUIRY RESPONSE: " + vars.get("RESULT1_1"));
+			out.println("\nCONFIRM RESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}
+	
+	if(vars.get("TXNNAME").equals("SubscriberActivation") || vars.get("TXNNAME").equals("AgentActivation")){
+		if(vars.get("CODE_1").equals("52")){
+			out.print("\tSTATUS=" + "Success");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+		else{
+			out.print("\tSTATUS=" + "Failure");
+			out.println("\nRESPONSE: " + vars.get("RESULT2_1"));
+		}	
+	}	
+  	out.close();
+ 
+}catch (Exception e){//Catch exception if any
+	System.err.println("Error: " + e.getMessage());
+}

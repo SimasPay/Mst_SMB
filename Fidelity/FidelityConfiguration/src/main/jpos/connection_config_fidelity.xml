@@ -1,0 +1,13 @@
+<channel-adaptor name='fidelity' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2_fidelity">
+	<!--change channel-->
+	<channel class="org.jpos.iso.channel.PostChannel" logger="Q2_fidelity" packager="org.jpos.iso.packager.GenericPackager">
+		<property name="host" value="10.10.0.218" />
+		<property name="port" value="30228" />
+		<property name="packager-logger" value="Q2_fidelity" />
+		<property name="packager-realm" value="mfino-debug" />
+		<property name="packager-config" value="jpos_cfg/fidelity.xml" />
+	</channel>
+	<in>fidelitysend</in>
+	<out>fidelityreceive</out>
+	<reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<property name="autoIncrement" value="true" dbms="mysql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+	<property name="INTUNSIGNED" value="INT UNSIGNED" dbms="mysql"/>
+	<property name="INTUNSIGNED" value="NUMBER(10,0)" dbms="oracle"/>
+	
+	<property name="UNSIGNEDBIGINT" value="BIGINT UNSIGNED" dbms="mysql"/>
+	<property name="UNSIGNEDBIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="LONGTEXT" value="LONGTEXT" dbms="mysql"/>
+	<property name="LONGTEXT" value="CLOB" dbms="oracle"/>
+
+	<property name="UNSIGNEDTINYINT" value="TINYINT UNSIGNED" dbms="mysql"/>
+	<property name="UNSIGNEDTINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+	
+	<property name="BIGINT" value="BIGINT" dbms="mysql"/>
+	<property name="BIGINT" value="NUMBER(19,0)" dbms="oracle"/>
+	
+	<property name="INT" value="INT" dbms="mysql"/>
+	<property name="INT" value="NUMBER(10,0)" dbms="oracle"/>
+	
+	<property name="TINYINT" value="TINYINT" dbms="mysql"/>
+	<property name="TINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+
+	<property name="DECIMAL" value="DECIMAL(25,4)" dbms="mysql"/>
+	<property name="DECIMAL" value="NUMBER(25,4)" dbms="oracle"/>
+	
+	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+	<changeSet author="MFS_Main" id="TABLE-SCHEDULETEMPLATE-136">
+		<addColumn tableName="schedule_template">
+			<column name="Month" type="${INT}" value="NULL"/>
+			<column name="Description" type="${VARCHAR}" value="NULL"/>
+ 		</addColumn>
+  	</changeSet>
+	
+	<changeSet author="MFS_Main" id="FKC-SCHEDULETEMPLATE-200">
+		<dropForeignKeyConstraint constraintName="FK_setlmnt_tmplt_schdl" baseTableName="settlement_template"/>
+	</changeSet>
+
+	<changeSet author="MFS_Main" id="DATA-SCHEDULETEMPLATE-51">
+		<delete tableName="schedule_template"/>
+	</changeSet>
+
+	<changeSet author="MFS_Main" id="TABLE-SCHEDULETEMPLATE-137">
+ 		<modifyDataType tableName="schedule_template" columnName="DayOfWeek" newDataType="${VARCHAR}"/>
+	 	
+		<dropColumn tableName="schedule_template" columnName="TimeType"/>
+  	</changeSet>
+
+ 	<changeSet author="MFS_Main" id="Data-SETTLEMENTTEMPLATE-52">
+		<update tableName="settlement_template">
+			<column name="ScheduleTemplateID" value="1"/>
+ 			<where>SettlementType=1</where>
+		</update>
+		<update tableName="settlement_template">
+			<column name="ScheduleTemplateID" value="2"/>
+ 			<where>SettlementType=2</where>
+		</update>
+		<update tableName="settlement_template">
+			<column name="ScheduleTemplateID" value="3"/>
+ 			<where>SettlementType=3</where>
+		</update>
+		<update tableName="settlement_template">
+			<column name="ScheduleTemplateID" value="3"/>
+ 			<where>SettlementType=4</where>
+		</update>
+		<update tableName="settlement_template">
+			<column name="ScheduleTemplateID" value="1"/>
+ 			<where>SettlementType=5</where>
+		</update>
+	</changeSet>
+
+ 	<changeSet author="MFS_MAIN" id="Data-SCHEDULETEMPLATE-53">
+        <insert tableName="schedule_template">
+            <column name="ID" valueNumeric="1"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Name" value="Daily"/>
+            <column name="ModeType" value="3"/>
+ 			<column name="DayOfWeek" value="?"/>
+            <column name="DayOfMonth" value="*"/>
+            <column name="Cron" value="0 0 22 * * ? *"/>
+            <column name="MSPID" valueNumeric="1"/>
+        </insert>
+		<insert tableName="schedule_template">
+            <column name="ID" valueNumeric="2"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Name" value="Weekly"/>
+            <column name="ModeType" value="4"/>
+ 			<column name="DayOfWeek" value="FRI"/>
+            <column name="DayOfMonth" value="?"/>
+            <column name="Cron" value="0 0 22 ? * FRI *"/>
+            <column name="MSPID" valueNumeric="1"/>
+        </insert>
+		<insert tableName="schedule_template">
+            <column name="ID" valueNumeric="3"/>
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Name" value="Monthly"/>
+            <column name="ModeType" value="5"/>
+ 			<column name="DayOfWeek" value="?"/>
+            <column name="DayOfMonth" value="31"/>
+            <column name="Cron" value="0 0 22 31 1/1 ? *"/>
+            <column name="MSPID" valueNumeric="1"/>
+        </insert>
+	</changeSet>
+
+	<changeSet author="MFS_MAIN" id="FKC-SETLMNTTMPLTSCHDL-201">
+        <addForeignKeyConstraint baseColumnNames="ScheduleTemplateID" baseTableName="settlement_template" constraintName="FK_setlmnt_tmplt_schdl" referencedColumnNames="ID" referencedTableName="schedule_template" />
+    </changeSet>
+
+	<changeSet author="MFS_MAIN" id="Data-ENUMTEXT-54">
+		<delete tableName="enum_text">
+			<where>TagID=8031</where>
+		</delete>
+        <insert tableName="enum_text">
+           <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="ModeType"/>
+            <column name="TagID" valueNumeric="8031"/>
+            <column name="EnumCode" value="1"/>
+            <column name="EnumValue" value="Minutes"/>
+            <column name="DisplayText" value="Minutes"/>
+        </insert>
+		<insert tableName="enum_text">
+           <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="ModeType"/>
+            <column name="TagID" valueNumeric="8031"/>
+            <column name="EnumCode" value="2"/>
+            <column name="EnumValue" value="Hourly"/>
+            <column name="DisplayText" value="Hourly"/>
+        </insert>
+		<insert tableName="enum_text">
+           <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="ModeType"/>
+            <column name="TagID" valueNumeric="8031"/>
+            <column name="EnumCode" value="3"/>
+            <column name="EnumValue" value="Daily"/>
+            <column name="DisplayText" value="Daily"/>
+        </insert>
+		<insert tableName="enum_text">
+           <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="ModeType"/>
+            <column name="TagID" valueNumeric="8031"/>
+            <column name="EnumCode" value="4"/>
+            <column name="EnumValue" value="Weekly"/>
+            <column name="DisplayText" value="Weekly"/>
+        </insert>
+		<insert tableName="enum_text">
+           <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="ModeType"/>
+            <column name="TagID" valueNumeric="8031"/>
+            <column name="EnumCode" value="5"/>
+            <column name="EnumValue" value="Monthly"/>
+            <column name="DisplayText" value="Monthly"/>
+        </insert>
+		<insert tableName="enum_text">
+           <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="ModeType"/>
+            <column name="TagID" valueNumeric="8031"/>
+            <column name="EnumCode" value="6"/>
+            <column name="EnumValue" value="Advanced"/>
+            <column name="DisplayText" value="Advanced"/>
+        </insert>
+    </changeSet>
+
+	<changeSet author="MFS_Main" id="TABLE-SETTLEMENTTEMPLATE-138">
+		<addColumn tableName="settlement_template">
+ 			<column name="CutoffTime" type="${VARCHAR}" defaultValue="00:00"/>
+ 		</addColumn>
+   	</changeSet>
+
+	<changeSet author="MFS_Main" id="TABLE-SCHEDULETEMPLATE-139">
+ 		<dropColumn tableName="schedule_template" columnName="CutoffTime"/>
+  	</changeSet>
+
+	<changeSet author="MFS_Main" id="Data-PERMISSIONITEM-55">
+ 		<delete tableName="permission_item">
+			<where>Permission in (21101,21102,21103,21104,21105)</where>
+ 		</delete>
+ 		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21201"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="fundDefinitions"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21202"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="fundDefinitions.add"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21203"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="fundDefinitions.edit"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21204"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="purpose.add"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21205"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="expiry.add"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+	</changeSet>
+
+	<changeSet author="MFS_Main" id="Data-ROLEPERMISSION-56">
+ 		<delete tableName="role_permission">
+			<where>Permission in (21101,21102,21103,21104,21105)</where>
+ 		</delete>
+		<insert tableName="role_permission">
+ 				<column name="Version" valueNumeric="1"/>
+				<column name="LastUpdateTime" valueDate="${now}"/>
+				<column name="UpdatedBy" value="system"/>
+				<column name="CreateTime" valueDate="${now}"/>
+				<column name="CreatedBy" value="system"/>
+				<column name="Role" valueNumeric="1"/>
+				<column name="Permission" valueNumeric="21101"/>
+		</insert>
+		<insert tableName="role_permission">
+ 				<column name="Version" valueNumeric="1"/>
+				<column name="LastUpdateTime" valueDate="${now}"/>
+				<column name="UpdatedBy" value="system"/>
+				<column name="CreateTime" valueDate="${now}"/>
+				<column name="CreatedBy" value="system"/>
+				<column name="Role" valueNumeric="1"/>
+				<column name="Permission" valueNumeric="21102"/>
+		</insert>
+		<insert tableName="role_permission">
+ 				<column name="Version" valueNumeric="1"/>
+				<column name="LastUpdateTime" valueDate="${now}"/>
+				<column name="UpdatedBy" value="system"/>
+				<column name="CreateTime" valueDate="${now}"/>
+				<column name="CreatedBy" value="system"/>
+				<column name="Role" valueNumeric="1"/>
+				<column name="Permission" valueNumeric="21103"/>
+		</insert>
+		<insert tableName="role_permission">
+ 				<column name="Version" valueNumeric="1"/>
+				<column name="LastUpdateTime" valueDate="${now}"/>
+				<column name="UpdatedBy" value="system"/>
+				<column name="CreateTime" valueDate="${now}"/>
+				<column name="CreatedBy" value="system"/>
+				<column name="Role" valueNumeric="1"/>
+				<column name="Permission" valueNumeric="21104"/>
+		</insert>
+		<insert tableName="role_permission">
+ 				<column name="Version" valueNumeric="1"/>
+				<column name="LastUpdateTime" valueDate="${now}"/>
+				<column name="UpdatedBy" value="system"/>
+				<column name="CreateTime" valueDate="${now}"/>
+				<column name="CreatedBy" value="system"/>
+				<column name="Role" valueNumeric="1"/>
+				<column name="Permission" valueNumeric="21105"/>
+		</insert>
+ 	</changeSet>
+
+	</databaseChangeLog>

@@ -1,0 +1,22 @@
+<server name="xml-server" class="org.jpos.q2.iso.QServer" logger="Q2">
+<attr name="port" type="java.lang.Integer">9777</attr>
+<!-- optional server-socket-factory element
+<server-socket-factory class="org.jpos.iso.SunJSSESocketFactory" logger="Q2">
+<property name="keystore" value="/path/to/your/keystore.jks" />
+<property name="clientauth" value="true" />
+<property name="serverauth" value="true" />
+<property name="storepassword" value="secret" />
+<property name="keypassword" value="secret" />
+<property name="addEnabledCipherSuite" value="SSL_RSA_WITH_3DES_EDE_CBC_SHA" />
+<property name="addEnabledCipherSuite" value="TLS_DHE_DSS_WITH_AES_256_CBC_SHA" />
+</server-socket-factory>
+-->
+	<channel name="postillion.channel"
+		class="org.jpos.iso.channel.PostChannel"
+		packager="org.jpos.iso.packager.PostPackager" logger="Q2">
+	</channel>
+	<request-listener class="com.mfino.mce.iso.jpos.test.server.RequestListener" logger="Q2">
+		<!-- <property name="my-property" value="ABC" />
+		<property name="my-other-property" value="XYZ" />-->
+	</request-listener>
+</server>

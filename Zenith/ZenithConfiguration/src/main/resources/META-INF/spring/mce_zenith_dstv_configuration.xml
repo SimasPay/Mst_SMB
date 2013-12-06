@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd 
+	    http://camel.apache.org/schema/cxf
+		http://camel.apache.org/schema/cxf/camel-cxf.xsd ">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="dstvService" interface="com.mfino.zenith.dstv.DSTVService" />
+	<!-- <osgi:reference id="dstvWSCommService" interface="com.mfino.zenith.dstv.WSCommunicator"/> -->
+
+	<bean id="dstvParameters" class="com.mfino.zenith.dstv.DSTVParameters">
+		<property name="sWPAYTXNCODE" value="" />
+		<property name="merchantID" value="EAZYMONEY" />
+		<property name="terminalID" value="EAZYMONEY" />
+		<property name="responseCode" value="00" />
+		<property name="uID" value="millaine_anigbo" />
+		<property name="pWD" value="tenken" />
+		<property name="dateFormat" value="yyyy-MM-dd" />
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<bean id="classBasedDynamicRouter" class="com.mfino.mce.core.routing.ClassBasedDynamicRouter">
+		<constructor-arg>
+			<map>
+				<entry key="com.mfino.zenith.dstv.DSTVBackendResponse" value="jms:wsCommunicationQueue" />
+				<!-- any backend response need to go Notification service -->
+				<entry key="com.mfino.mce.core.util.BackendResponse" value="jms:notificationQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMDSTVTransferInquiryToBank" value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMDSTVMoneyTransferToBank" value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+			</map>
+		</constructor-arg>
+		<property name="defaultQueue" value="jms:DSTVQueue?disableReplyTo=true" />
+	</bean>
+	<!-- dev address, use this for testing in development -->
+	<!-- -->
+	<!-- production: address="https://www.eazypaynigeria.com/pos_txns/service.asmx" -->
+	<!-- -->
+	<cxf:cxfEndpoint id="dstvWebService"
+		address="http://${dstvWebService.address.host}:${dstvWebService.address.port}/MfinoMock/services/Service"
+		serviceClass="org.tempuri.pos_txns.type.ServiceSoap" endpointName="ServiceSoap" />
+	<bean id="dstvWSCommService"
+		class="com.mfino.zenith.dstv.impl.DSTVWSCommunicatorDefaultImpl">
+		<property name="dstvParameters" ref="dstvParameters" />
+		<property name="webServiceEndpointBean" value="dstvWebService" />
+	</bean>
+	<!-- wsdlURL="classpath:wsdl/Service.wsdl" -->
+
+	<camelContext id="dstv" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<threadPool id="dstvPool" threadName="DSTVThread" poolSize="2"
+			maxPoolSize="10" />
+		<threadPool id="dstvWSPool" threadName="DSTVWSThread"
+			poolSize="2" maxPoolSize="10" />
+		<route>
+			<from uri="jms:DSTVQueue?disableReplyTo=true" />
+			<!-- add login to send the notification messages to notification queue -->
+			<threads executorServiceRef="dstvPool">
+				<!-- this header need to be unset before we start the dynamic routing -->
+				<to uri="bean:dstvService?method=processMessage" />
+				<camel:removeHeader headerName="CamelSlipEndpoint" />
+				<camel:dynamicRouter>
+					<method ref="classBasedDynamicRouter" method="findDestination" />
+				</camel:dynamicRouter>
+			</threads>
+		</route>
+
+		<route>
+			<from uri="jms:wsCommunicationQueue" />
+			<process ref="dstvWSCommService" />
+			<!-- <to uri="bean:dstvService?method=processMessage"/> -->
+			<to uri="jms:DSTVQueue?disableReplyTo=true" />
+			<!-- <to uri="cxf:https://www.eazypaynigeria.com/pos_txns/service.asmx?portName={http://tempuri.org/POS_TXNS/type}ServiceSoap&amp;dataFormat=MESSAGE&amp;wsdlURL=file:///c:/code_new/Service.wsdl"/> -->
+		</route>
+
+		<route>
+			<from uri="jms:wsTestCommunication?disableReplyTo=true" />
+			<process ref="dstvWSCommService" />
+			<to uri="bean:dstvService?method=processMessage" />
+		</route>
+	</camelContext>
+	<!-- serviceName={http://tempuri.org/POS_TXNS/type}Service -->
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

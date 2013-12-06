@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	
+	<!-- <import resource="spring-datasource-beans.xml"/>  -->  
+   
+	
+	 <bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    <bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+    <context:component-scan base-package="com.mfino.replicatool" />
+
+   <!--  <bean id="contextHolder" class="com.mfino.web.ContextHolder"/>
+ -->
+    <!-- <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
+        <constructor-arg value="GMT" />
+    </bean> -->
+    	
+  
+    <bean id="replicatorTool" class="com.mfino.replicatool.replica.Replicator"> 
+       <!--  <property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>  -->
+    </bean>
+    <bean id="replicatorJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="replicatorTool" />
+        <property name="targetMethod" value="main" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <!-- <bean id="dbCopyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="dbCopyJob" />       
+		<property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 0 20 * * ?" />        
+    </bean> -->
+      <bean id="replicatorTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="replicatorJob" />
+        <property name="startDelay" value="20000" />
+        <property name="repeatInterval" value="300000" />
+    </bean>
+    
+	<!-- All triggers need to be added here to work -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+              	<ref bean="replicatorTrigger"/>  
+             	 
+            </list>
+        </property>
+    </bean>
+
+	<!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+</beans>

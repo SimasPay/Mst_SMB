@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='JG'> 
+	<field id='zpkunderlmk' type='A' length='16' />
+	<field id='pinblockformat' type='N' length='2' />
+	<field id='accountnumber' type='N' length='12' />
+	<field id='epin' type='N' length='5' />
+</schema> 

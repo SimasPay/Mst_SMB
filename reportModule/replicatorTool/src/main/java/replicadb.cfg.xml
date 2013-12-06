@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>    
+        <property name="hibernate.conncetion.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/replica</property>
+        <property name="hibernate.connection.username">mfino</property>
+        <property name="hibernate.connection.password">ENC(BV1Pld5yEn47oljN4ye/VQ==)</property>
+        <property name="hibernate.hbm2ddl.auto">update</property> 
+        <property name="show_sql">false</property>  
+        
+        <property name="connection.provider_class">org.jasypt.hibernate.connectionprovider.EncryptedPasswordC3P0ConnectionProvider</property>
+   		<property name="connection.encryptor_registered_name">dbPasswordEncryptor</property>
+
+        
+       
+       			<mapping resource="com/mfino/replicatool/domain/mfino/RSubscriberMDN.hbm.xml"/>
+       			
+				<mapping resource="com/mfino/replicatool/domain/mfino/RDbParam.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSubscriber.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMobileNetworkOperator.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPocketTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/REnumText.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RUser.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionsLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBank.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RNotification.hbm.xml"/>
+
+
+				<mapping resource="com/mfino/replicatool/domain/mfino/RmFinoServiceProvider.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPerson2Person.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RAddress.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RLOP.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMerchant.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBulkUpload.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBulkUploadEntry.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RDistributionChainTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RDistributionChainLevel.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RRolePermission.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBulkBankAccount.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSAPGroupID.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPermissionItems.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/ROfflineReport.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/ROfflineReportReceiver.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/ROfflineReportForCompany.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RActivitiesLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBulkUploadFile.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RRegion.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RCompany.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RProductIndicator.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMDNRange.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBrand.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSMSCode.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMerchantCode.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPendingTransactionsFile.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPendingTransactionsEntry.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBulkLOP.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RLOPHistory.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RCreditCardTransaction.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RCardInfo.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RChannelCode.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMerchantPrefixCode.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSMSC.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSMSPartner.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSMSTransactionsLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBiller.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBankAdmin.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RCreditCardDestinations.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RDenomination.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBillPaymentTransaction.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPartner.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPartnerServices.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RService.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RServiceTransaction.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionType.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSettlementTemplate.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RServiceSettlementConfig.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMFSBiller.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMFSBillerPartner.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSettlementTransactionLogs.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RServiceChargeTransactionLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionAmountDistributionLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSettlementSchedulerLogs.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RChargeType.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RChargeDefinition.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RChargePricing.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionRule.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionCharge.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSharePartner.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RAuthorizingPerson.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSubscribersAdditionalFields.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionChargeLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RKYCLevel.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RKYCFields.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSystemParameters.hbm.xml"/>
+			    <mapping resource="com/mfino/replicatool/domain/mfino/RServiceAudit.hbm.xml"/>
+
+
+				<mapping resource="com/mfino/replicatool/domain/mfino/RBillPayments.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RReportParameters.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RChargeTxnCommodityTransferMap.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RAirtimePurchase.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RVisafoneTxnGenerator.hbm.xml"/>
+
+				<mapping resource="com/mfino/replicatool/domain/mfino/RInterbankTransfer.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RInterBankCode.hbm.xml"/>							
+				<mapping resource="com/mfino/replicatool/domain/mfino/RSubscriberGroup.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RGroup.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPocketTemplateConfig.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RDCTRestrictions.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPartnerRestrictions.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RIntegrationPartnerMapping.hbm.xml"/>	
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMFSDenominations.hbm.xml"/>		
+				<mapping resource="com/mfino/replicatool/domain/mfino/RAutoReversals.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RIPMapping.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RExcludeSubscriberLifeCycle.hbm.xml"/>	
+				<mapping resource="com/mfino/replicatool/domain/mfino/RRole.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RIntegrationSummary.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPTC_Group_Map.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RPurpose.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RExpirationType.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RFundDefinition.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RFundDistributionInfo.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RFundEvents.hbm.xml"/>		
+				<mapping resource="com/mfino/replicatool/domain/mfino/RMoneyClearanceGraved.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RClosedAccountSettlementMDN.hbm.xml"/>				
+				<mapping resource="com/mfino/replicatool/domain/mfino/RNotificationLog.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/mfino/RTransactionPendingSummary.hbm.xml"/>
+
+				
+				<!-- Required to generate decrypted information -->
+				<mapping resource="com/mfino/replicatool/domain/decrypted/CopyInfo.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/decrypted/RPocket.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/decrypted/RChannelSessionManagement.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/decrypted/RLedger.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/decrypted/RCommodityTransfer.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/decrypted/RPendingCommodityTransfer.hbm.xml"/>
+				<mapping resource="com/mfino/replicatool/domain/decrypted/RUnRegisteredTxnInfo.hbm.xml"/>
+				
+	</session-factory>
+</hibernate-configuration>

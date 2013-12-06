@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:47 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.BulkUpload" optimistic-lock="version" table="bulk_upload" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_BulkUpload_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Company" foreign-key="FK_BulkUpload_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="Description" type="java.lang.String" >
+<column name="Description" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Subscriber" foreign-key="FK_BulkUpload_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID"    unique-key="PreventDuplicates" />
+</many-to-one>
+<many-to-one name="User" foreign-key="FK_BulkUpload_User" class="com.mfino.domain.User" fetch="select">
+<column name="UserID" not-null="true"   />
+</many-to-one>
+<property name="MDNID" type="java.lang.Long" >
+<column name="MDNID"    sql-type="bigint" />
+</property>
+<property name="UserName" type="java.lang.String" >
+<column name="UserName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="MDN" type="java.lang.String" >
+<column name="MDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="InFileName" type="java.lang.String" >
+<column name="InFileName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="InFileData" type="java.lang.String" >
+<column name="InFileData" not-null="true"  sql-type="LONGTEXT" />
+</property>
+<property name="InFileCreateDate" type="java.lang.String" unique-key="PreventDuplicates">
+<column name="InFileCreateDate" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="OutFileName" type="java.lang.String" >
+<column name="OutFileName"    sql-type="varchar(255)" />
+</property>
+<property name="OutFileData" type="java.lang.String" >
+<column name="OutFileData"    sql-type="LONGTEXT" />
+</property>
+<property name="ReportFileName" type="java.lang.String" >
+<column name="ReportFileName"    sql-type="varchar(255)" />
+</property>
+<property name="ReportFileData" type="java.lang.String" >
+<column name="ReportFileData"    sql-type="LONGTEXT" />
+</property>
+<property name="FileType" type="java.lang.Integer" unique-key="PreventDuplicates">
+<column name="FileType" not-null="true"  sql-type="int" />
+</property>
+<property name="DeliveryStatus" type="java.lang.Integer" index="Status">
+<column name="DeliveryStatus" not-null="true"  sql-type="int" />
+</property>
+<property name="DeliveryDate" type="com.mfino.hibernate.HibernateUTC$TimestampType" index="Status">
+<column name="DeliveryDate"   length="19" sql-type="datetime" />
+</property>
+<property name="FailedTransactionsCount" type="java.lang.Integer" >
+<column name="FailedTransactionsCount"    sql-type="int" />
+</property>
+<property name="TransactionsCount" type="java.lang.Integer" unique-key="PreventDuplicates">
+<column name="TransactionsCount" not-null="true"  sql-type="int" />
+</property>
+<property name="TotalAmount" type="big_decimal" unique-key="PreventDuplicates">
+<column name="TotalAmount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="SuccessAmount" type="big_decimal" >
+<column name="SuccessAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="VerificationChecksum" type="java.lang.Long" unique-key="PreventDuplicates">
+<column name="VerificationChecksum"    sql-type="bigint" />
+</property>
+<property name="DigitalSignature" type="java.lang.String" >
+<column name="DigitalSignature"    sql-type="varchar(255)" />
+</property>
+<property name="FileError" type="java.lang.Integer" >
+<column name="FileError"    sql-type="int" />
+</property>
+<property name="ProcessID" type="java.lang.Integer" >
+<column name="ProcessID"    sql-type="int" />
+</property>
+<property name="WebClientIP" type="java.lang.String" >
+<column name="WebClientIP"    sql-type="varchar(255)" />
+</property>
+<property name="BankUploadTryCounter" type="java.lang.Integer" >
+<column name="BankUploadTryCounter"    default="'0'"  sql-type="int" />
+</property>
+<property name="BankUploadLastTryDate" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="BankUploadLastTryDate"   length="19" sql-type="datetime" />
+</property>
+<property name="Pin" type="java.lang.String" >
+<column name="Pin"    sql-type="varchar(255)" />
+</property>
+<property name="PaymentDate" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="PaymentDate"   length="19" sql-type="datetime" />
+</property>
+<many-to-one name="PocketBySourcePocket" foreign-key="FK_BulkUpload_PocketBySourcePocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="SourcePocket"     />
+</many-to-one>
+<property name="ApproverComments" type="java.lang.String" >
+<column name="ApproverComments"    sql-type="varchar(255)" />
+</property>
+<property name="ServiceChargeTransactionLogID" type="java.lang.Long" >
+<column name="ServiceChargeTransactionLogID"    sql-type="bigint" />
+</property>
+<property name="QrtzJobId" type="java.lang.String" >
+<column name="QrtzJobId"    sql-type="varchar(255)" />
+</property>
+<property name="FailureReason" type="java.lang.String" >
+<column name="FailureReason"    sql-type="varchar(255)" />
+</property>
+<property name="ReverseSCTLID" type="java.lang.Long" >
+<column name="ReverseSCTLID"    sql-type="bigint" />
+</property>
+<property name="RevertAmount" type="big_decimal" >
+<column name="RevertAmount"    sql-type="decimal(25,4)" />
+</property>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.UserRoles" table="user_roles" catalog="report">
+        <id name="userId" type="string">
+            <column name="UserID" />
+            <generator class="assigned" />
+        </id>
+        <property name="userName" type="string">
+            <column name="UserName" />
+        </property>
+       <property name="role" type="string">
+            <column name="Role" />
+        </property>
+        <property name="status" type="string">
+            <column name="Status" />
+        </property>
+        <property name="lastUpdateTime" type="timestamp">
+            <column name="LastUpdateTime" length="19" />
+        </property>
+        <property name="updatedBy" type="string">
+            <column name="UpdatedBy" />
+        </property>
+        <property name="createTime" type="timestamp">
+            <column name="createTime" length="19" />
+        </property>
+
+    </class>
+</hibernate-mapping>

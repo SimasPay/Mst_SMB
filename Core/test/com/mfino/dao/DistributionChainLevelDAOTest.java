@@ -1,0 +1,96 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package com.mfino.dao;
+
+import com.mfino.dao.query.DistributionChainLevelQuery;
+import com.mfino.domain.DistributionChainLevel;
+import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.mFinoServiceProvider;
+
+import java.math.BigDecimal;
+import java.util.List;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author sandeepjs
+ */
+public class DistributionChainLevelDAOTest {
+
+    public DistributionChainLevelDAOTest() {
+    }
+
+    private DistributionChainTemplateDAO dctDao = new DistributionChainTemplateDAO();
+    private DistributionChainTemplate dctTemplate = new DistributionChainTemplate();
+    private MfinoServiceProviderDAO mspDao = new MfinoServiceProviderDAO();
+    private DistributionChainLevelQuery query = new DistributionChainLevelQuery();
+    private DistributionChainLevelDAO dclDao = new DistributionChainLevelDAO();
+    private DistributionChainLevel dcl = new DistributionChainLevel();
+
+
+
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    private void insertData() {
+
+        mFinoServiceProvider msp = new mFinoServiceProvider();
+
+        msp = mspDao.getById(1L);
+        System.out.println(msp.getCreatedBy());
+
+        dctTemplate.setmFinoServiceProviderByMSPID(msp);
+        dctTemplate.setDescription("description text ");
+        dctTemplate.setName(" Temaplate Name 1");
+        
+        dctDao.save(dctTemplate);
+
+
+        dcl.setCommission(new BigDecimal(1000));
+        dcl.setDistributionChainTemplateByTemplateID(dctTemplate);
+        dcl.setDistributionLevel(new Integer(1));
+        dcl.setPermissions(new Integer(1));
+
+        dclDao.save(dcl);
+        
+    }
+
+    @Test
+    public void testGetDCLByID() {
+        insertData();
+        query.setId(dcl.getID());
+        List results = dclDao.get(query);
+        assertTrue(results.size() == 1);
+    }
+
+    @Test
+    public void testGetDCLByDCT() {
+        insertData();
+        query.setDistributionChainTemplateID(dctTemplate.getID());
+        List results = dclDao.get(query);
+        assertTrue(results.size() == 1);
+    }
+
+}

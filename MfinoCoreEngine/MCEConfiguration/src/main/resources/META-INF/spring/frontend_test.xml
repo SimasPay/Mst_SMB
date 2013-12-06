@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:camel="http://camel.apache.org/schema/spring"  
+	   xmlns:broker="http://activemq.apache.org/schema/core" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"  
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+    <!-- <osgi:reference id="jms" interface="org.apache.camel.Component" />-->
+     
+	<osgi:reference id="frontendService" interface="com.mfino.mce.frontend.FrontendService"/>
+	<osgi:reference id="frontendListenerService" interface="com.mfino.mce.frontend.FrontendListenerService"/>
+	
+	
+	<bean id="byteEncoder" class="com.mfino.mce.core.comm.BytesEncoder" />
+	<bean id="byteDecoder" class="com.mfino.mce.core.comm.BytesDecoder" />
+	
+	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+  		<property name="brokerURL" value="tcp://${jms.brokerURL.host}:${jms.brokerURL.port}"/>
+	</bean>
+	
+	<!--  Iso server connection information -->
+	<!-- <camel:endpoint id="isoServer" uri="netty:tcp://localhost:9999?encoders=#byteEncoder&amp;decoders=byteDecoder&amp;sync=true"/>
+	-->
+	<camel:endpoint id="isoReplyQueue" uri="vm:isoResponseQueue"/>
+	
+	<bean id="isoServer" class="com.mfino.mce.component.iso.ISOClient" init-method="start" destroy-method="stop">
+		<!-- Host -->
+		<constructor-arg index="0" value="${fontend_test.isoServer.host}"/>
+		<!-- Port -->
+		<constructor-arg index="1" value="${fontend_test.isoServer.port}"/>
+		<!--  Read timeout in seconds Currently not used-->
+		<constructor-arg index="2" value="5"/>		
+		<!-- Timeout before trying a reconnect for the lost connection -->
+		<constructor-arg index="3" value="10"/>
+		<constructor-arg index="4" type="org.apache.camel.Endpoint" ref="isoReplyQueue"/>
+	</bean>
+	
+	
+	
+	<bean id="frontendRouter" class="com.mfino.mce.frontend.router.FrontendRouteBuilder">
+		<!-- Account number -->
+		<constructor-arg index="0" value="2020193315"/>
+		<!-- Account Type -->
+		<constructor-arg index="1" value="savings"/>
+		
+	</bean>
+	
+	
+	
+   	
+	
+	<!-- Bean for aggregating the request and reponse when talking to iso server -->
+	<bean id="aggStrategy" class="com.mfino.mce.frontend.FrontendAggregationStragety"/>
+	<!-- <bean id="corrCalc" class="com.mfino.mce.core.message.MCECorrelationCalculator"/>-->
+	
+	
+    
+     <bean id="headerSetter" class="com.mfino.mce.frontend.FrontendSetHeader"/>
+	
+  	<camel:camelContext  id="frontend" xmlns="http://camel.apache.org/schema/spring">
+  		<!-- <camel:routeBuilder ref="frontendRouter"/>-->
+  		<route>
+  			<from uri="jms:isoSendQueue"/>
+  			<!-- <multicast>
+  				<to uri="direct:a"/>
+  				<to uri="direct:b"/>
+  			</multicast>
+  		</route>
+  		 <route>
+  			<from uri="direct:a"/>
+  			<process ref="headerSetter"/>
+  			<to uri="vm:frontendServiceReplyAggQueue"/>
+  		</route>
+  		<route>
+  			<from uri="direct:b"/> -->
+  			<to uri="bean:frontendService?method=processMessage"/>
+	  		<process ref="isoServer"/>
+  		</route>
+  		<!-- Asynchronours communication on tcp, observe the sync=false -->
+  		 <route>
+  		 	<!-- <from ref="isoServer"/> -->
+  		 	<from uri="vm:isoResponseQueue"/>
+  		 	<to uri="log:isoresponse"/>
+  		 	<threads poolSize="10">
+  		 		<to uri="vm:frontendServiceReplyQueue"/>
+  		 	</threads>
+  		</route>
+  		<!-- <route>
+  			<from uri="vm:frontendServiceReplyQueue"/>
+  			<threads poolSize="10">
+  				<to uri="bean:frontendListenerService?method=processMessage"/>
+  				<process ref="headerSetter"/>
+  				<to uri="vm:frontendServiceReplyAggQueue"/>
+  			</threads>
+  		</route>
+  		<route>
+  			<from uri="vm:frontendServiceReplyAggQueue"/>
+  			<aggregate strategyRef="aggStrategy"
+                   completionTimeout="30000">
+            <correlationExpression>
+            <simple>header.corr_id</simple>
+               <header>corr_id</header>
+            </correlationExpression>
+             <completionSize>
+               <constant>2</constant>
+             </completionSize>
+            <to uri="log:frontendreply]"/>
+        </aggregate>
+  		</route> -->
+	</camel:camelContext>
+
+<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+  <property name="traceOutExchanges" value="true" />
+</bean>
+
+<bean id="traceFormatter" class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+  <property name="showOutBody" value="true" />
+  <property name="showOutBodyType" value="true" />
+</bean>
+
+<!-- <osgi:reference id="fixService"  interface="com.mfino.mce.fix.FixService"/>-->
+</beans>

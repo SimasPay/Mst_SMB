@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+	<context:annotation-config />
+	
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />	    
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES"/>
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<bean id="smsConf" class="com.mfino.mce.notification.conf.SMSConf">
+		<osgix:managed-properties persistent-id="com.mfino.mce.sms" />
+		<property name="from" value="${smsConf.from}" />
+	</bean>
+
+	<bean id="SMSNotificationService"
+		class="com.mfino.mce.notification.impl.SMSNotificationServiceDefaultImpl">
+		<property name="smsConf" ref="smsConf" />
+	</bean>
+	
+		   	<!-- Configuration for retrying sending sms -->
+	<bean id="smsErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
+		<property name="deadLetterUri" value="jms:SMSNotificationQueue.DLQ" />
+		<property name="redeliveryPolicy" ref="smsRedeliveryPolicyConfig" />
+	</bean>
+
+	<bean id="smsRedeliveryPolicyConfig" class="org.apache.camel.processor.RedeliveryPolicy">
+		<property name="maximumRedeliveries" value="2" />
+		<property name="redeliveryDelay" value="5000" />
+	</bean>
+	
+	<bean id="SMSSplitterService" class="com.mfino.mce.notification.impl.SMSSplitterServiceDefaultImpl">
+		<property name="maxSMSLength" value="150"/>
+		<property name="smsQueue" value="jms:SMSQueue?disableReplyTo=true" />
+	</bean>	
+    
+    	<!-- sms server connection information -->
+	<camel:endpoint id="smsServerLink" uri="${smsServerLink.uri}" />
+	
+	<camelContext id="sms" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+		<route>
+			<from uri="jms:SMSNotificationQueue?disableReplyTo=true" />
+			<process ref="SMSSplitterService" />
+		</route>
+	
+		<route errorHandlerRef="smsErrorHandler">
+			<from uri="jms:SMSQueue?disableReplyTo=true" />
+			<process ref="SMSNotificationService" />
+			<to ref="smsServerLink" />
+		</route>
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="txManager" />
+</beans>

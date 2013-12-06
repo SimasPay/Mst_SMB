@@ -1,0 +1,3850 @@
+<field AutoGen="N" Language="English,Bahasa" Map="Y" CompanyIDs="C1,C2" Method="SMS,Web,Mail,WebService" ReverseMap="y" name="NotificationCode" number="5055" type="INT32">
+  <value description="Failure" enum="0">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+  <value description="BankAccountBalanceDetails" enum="4">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>Your Bank Account Balance as on  $(CurrentDateTime) is $(BankAccountCurrency) $(BankAccountBalanceValue).</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>  
+  <value description="DBUpdateSubscriberPocketsFailed" enum="5">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+  <value description="RequiredParametersMissing" enum="6">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+  <value description="MDNIsNotActive" enum="7">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>ERROR: Account Inactive. Dear eaZyMoney User your account is currently Inactive. Activate your account or call Customer Care: $(CustomerServiceShortCode) to learn more.</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+  <value description="DefaultBankAccountPocketNotFound" enum="8">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. Your number is not registered in Dompet Service. Please do M-Commerce Activation to get this service. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+  <value description="BankAccountCardPANMissing" enum="9">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+  <value description="PocketTemplateBankCodeMissing" enum="10">
+	<C1>
+	  <English>
+		<SMS>
+		  <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+		</SMS>
+	  </English>
+	</C1>
+  </value>
+      <value description="MDNNotFound" enum="11">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Hi! You are currently not registered as a eaZyMoney user. Visit your nearest eaZyMoney Agent to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBGetMDNPocketsFailed" enum="12">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BOBPocketNotFound" enum="13">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your number is not registered in Share Load Service. Please do M-Commerce Activation to get this service. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBSubscriberRecordUpdateFailed" enum="14">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBUpdateSubscriberMDNRecordFailed" enum="15">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BalanceTooLow" enum="16">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Insufficient Funds. Dear Customer, please cash-in your eaZyMoney account and try again.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BalanceTooHigh" enum="17">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your transaction on $(TransactionDateTime) failed due to maximum balance on destination balance exceeded. Please retry using suitable amount. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AboveDailyTransactionsCountLimit" enum="18">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Maximum number of daily transactions is exceeded. Please retry next banking day. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AboveWeeklyTransactionsCountLimit" enum="19">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Maximum number of weekly transactions is exceeded. Please retry next week. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AboveMonthlyTransactionsCountLimit" enum="20">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Maximum number of monthly transactions is exceeded. Please retry next month. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AboveDailyExpenditureLimit" enum="21">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime)  failed. Maximum daily transaction amount is exceeded. Please retry next banking day. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AboveWeeklyExpenditureLimit" enum="22">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime)  failed. Maximum weekly transaction amount is exceeded. Please retry next week. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AboveMonthlyExpenditureLimit" enum="23">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime)  failed. Maximum monthly transaction amount is exceeded. Please retry next month. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBInsertPendingTransferRecordFailed" enum="24">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ChangePINCompleted" enum="26">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have successfully changed your MPIN number on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNIsRestricted" enum="27">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Account Blocked. Dear eaZyMoney user your account is currently blocked. Please call Customer Care: $(CustomerServiceShortCode) to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value FlashOnly="Y" description="BalanceInquiryCompleted" enum="28">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="WrongPINSpecified" enum="29">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Incorrect mPIN. Please try again. Tries left: $(NumberOfTriesLeft)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountPocketNotActive" enum="30">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. Your Dompet service is not active. To activate, go to Activate M-Commerce menu. Info, call $(ContactCenterNo). REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value FlashOnly="Y" description="BankAccountChangePinPending" enum="31">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="NoSVAPocketsWereFound" enum="32">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your $(PocketType) service is not yet activated. To activate, go to Activate M-Commerce menu. Info, call $(CustomerServiceShortCode). REF: $(TransactionID). </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="PocketTemplateOperatorCodeMissing" enum="33">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountGetTransactionsPending" enum="36">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="DBGetTransactionsFailed" enum="37">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NoCompletedTransactionsWereFound" enum="38">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(TransactionDateTime). No transaction recorded. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CommodityTransaferDetails" enum="39">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(TransactionID) $(TransactionDateTime) $(TransactionType) $(SenderMDN) to $(ReceiverMDN) $(Currency) $(Amount) $(TransferStatus)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="GetTransactionsCompleted" enum="40">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your request of last 3 transaction has been processed. Thank you.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountBalanceInquiryPending" enum="41">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="ResetPINCompleted" enum="47">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have successfully reset your  MPIN number on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="WrongAuthenticationPhraseSpecified" enum="49">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to reset MPIN on $(TransactionDateTime) failed. Your answer is incorrect. Please try again with correct answer. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="PocketStatusDoesNotEnableActivation" enum="50">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry,M-Commerce Activation failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="BOBPocketActivationCompleted" enum="52">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID $(TransactionID), Congratulations you have successfully activated your eaZyMoney account. Enjoy your experience.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="MDNActivationCompleted" enum="53">
+        <C1>
+          <English>
+            <SMS>
+              <Text>There is no service available for your number at the moment. To get M-Commerce service, please contact $(CustomerServiceShortCode) for more information.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNAlreadyActivated" enum="54">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Account is already activated. Info, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBGetSubscriberMDNFailed" enum="55">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="WrongCardPANSuffixSpecified" enum="56">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, you have entered wrong last 6 digit of ATM card number. You are not able to use SMART Dompet .  You can use your PIN only for share load.To use SMART Dompet, please reactivate using the correct last 6 digit of ATM card number. Info, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountActivationPending" enum="57">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountPocketAlreadyActivated" enum="58">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Account is already activated. Info, call $(ContactCenterNo)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="TransferRecordNotFound" enum="59">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferRecordChangedStatus" enum="60">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value FlashOnly="Y" description="BankAccountToBankAccountPending" enum="61">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountPinSetupRejectedByBank1" enum="62">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountActivationCompleted" enum="63">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName)  Welcome to M-Commerce Service. You can use your PIN for Smart Dompet and share load service. For info call $(ContactCenterNo)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountChangePinRejectedByBank1" enum="64">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountChangePinCompleted" enum="65">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) You have successfully changed your Dompet PIN on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountGetTransactionsRejectedByBank1" enum="66">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="BankAccountTransactionDetails" enum="67">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) $(BankAccountTransactionDate) $(BankAccountTransactionType) $(BankAccountCurrency) $(BankAccountTransactionAmount) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="BankAccountBalanceInquiryRejectedByBank1" enum="68">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="DBCommitTransactionFailed" enum="69">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBUpdatePendingTransferRecordFailed" enum="70">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountTransferInquiryRejectedByBank1" enum="71">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="BankAccountToBankAccountConfirmationPrompt" enum="72">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You requested to transfer $(Currency) $(Amount) to $(DestinationType) $(ReceiverMDN) and Service Charge $(Currency) $(serviceCharge)  ParentTransactionID $(ParentTransactionID) REF: $(TransferID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="DBGetPendingCommodityTransferFailed" enum="73">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToBankAccountCompletedToSenderMDN" enum="81">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). Dear Customer, you have successfully transferred $(Currency) $(Amount) to $(ReceiverMDN) and  Service Charge $(Currency) $(serviceCharge).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToBankAccountRejectedByBank1" enum="82">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountActivationFailed" enum="83">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName)  Sorry, Smart-Dompet Activation failed. Your request is rejected from bank. For more info, please contact Bank Sinar Mas Customer service on nearest location.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountChangePinFailed" enum="84">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, your request to change Dompet PIN on $(TransactionDateTime) failed.  Info, call $(ContactCenterNo).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountGetTransactionsFailed" enum="85">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="BankAccountBalanceInquiryFailed" enum="86">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, your request to check balance on $(CurrentDateTime) failed. Pls try again . For info, call $(ContactCenterNo).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountTransferInquiryFailed" enum="87">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountTopupFailed" enum="88">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your transaction is having a problem. To check the status of transaction, contact $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToBankAccountFailed" enum="89">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+      <value description="GetMDNInfoFromOperatorFailed" enum="91">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry,M-Commerce Activation failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="GetMDNInfoFromOperatorReturnInActive" enum="92">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBInsertPocketRecordFailed" enum="93">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBInsertSubscriberMDNRecordFailed" enum="94">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBInsertSubscriberRecordFailed" enum="95">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBBeginTransactionFailed" enum="96">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TopupNotAllowed" enum="97">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on  $(TransactionDateTime) failed. Your number is not registered to do this transaction  Info, call $(CustomerServiceShortCode). REF:$(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NotSubAgentDistributeNotAllowed" enum="98">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on  $(TransactionDateTime) failed. Destination number is not registered in your distribution area. Info, call $(CustomerServiceShortCode). REF:$(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SubscriberActivationFailedWrongPinLength" enum="99">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry,M-Commerce Actication failed. PIN must be $(PINMaximumDigit) digits long. Please try again. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferAmountAboveMaximumAllowed" enum="106">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your transaction on $(TransactionDateTime) failed.  Transaction amount is more than the maximum transaction limit. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferAmountBelowMinimumAllowed" enum="107">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Transaction amount is less than minimum transaction limit. Info, call $(CustomerServiceShortCode).REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SenderSVAPocketRestricted" enum="108">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your Merchant account service is temporarily suspended. To unlock, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ReceiverSVAPocketRestricted" enum="109">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Merchant Account service in your recepient number is temporarily suspended. REF :$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="RequestIsBeingProcessed" enum="110">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you, your transaction is being processed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ServiceNotAvailable" enum="111">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Service unavailable for the moment</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferIDDoesNotBelongToSourceMDN" enum="112">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, you are not allowed to see the detail of reference number. Please retry using correct number.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferIDNotFound" enum="113">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, the reference number you have entered is not exist. Please retry using correct number. </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBGetTransactionFailed" enum="114">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SubscriberStatusDoesNotEnableActivation" enum="121">
+        <C1>
+          <English>
+            <SMS>
+              <Text>There is no service available for your number at the moment. To get M-Commerce service, please contact $(CustomerServiceShortCode) for more information.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNStatusDoesNotEnableActivation" enum="122">
+        <C1>
+          <English>
+            <SMS>
+              <Text>There is no service available for your number at the moment. To get M-Commerce service, please contact $(CustomerServiceShortCode) for more information.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankChannelPaymentCompleted" enum="125">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Thank you for paying $(Currency) $(Amount)  to SMART Mobile No $(PostpaidMDN) on $(TransactionDateTime) through $(BankName) .REF:$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankChannelPaymentCompletedToReceiverMDN" enum="126">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you for paying $(Currency) $(Amount) to SMART on $(TransactionDateTime) for mobile number $(PostpaidMDN). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="DestinationMDNIsNotActive" enum="128">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Inactive Account. The customer account $(DestMDN) is currently inactive. Request customer to activate account.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationMDNIsRestricted" enum="129">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Blocked Account. The customer account $(DestMDN) is blocked. Request customer to contact Customer Care at: $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationDefaultBankAccountPocketNotFound" enum="132">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Dompet service in your recipients number is not exist. REF:$(TransactionID</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationBankAccountPocketNotActive" enum="133">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. Dompet service on destination number is not active. Info, call $(ContactCenterNo). REF:$(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationBankAccountCardPANMissing" enum="134">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. Dompet service in your recipients number is not exist. REF:$(TransactionID)  </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="DestinationPocketTemplateBankCodeMissing" enum="135">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF:$(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountChangePINRejected" enum="137">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, you are not allowed to do Change ATM PIN via handphone. Please change your PIN in the nearest Bank Sinarmas ATM. Info, call $(ContactCenterNo).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="PINResetRequired" enum="138">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Please reset your PIN for security reason</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToBankAccountCancelledBySubscriber" enum="145">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) You have cancelled your fund transfer request. Thank you. </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="SourceSVAPocketAlreadyEmpty" enum="150">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Airtime stock in this merchant account already empty.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EmptySVAPocketCompleted" enum="151">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your airtime balance is emptied. For temporary you can't perform any transaction. Info, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="BulkUploadFileTypeNotSupported" enum="152">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Invalid file type. Please retry using the correct file type.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BulkUploadFileFormatError" enum="153">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Invalid file format. Please retry using the correct file format</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BulkUploadFileSourceMDNInvalid" enum="154">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Source number in file is not exist. Please retry using the correct number</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BulkUploadDBInserFailed" enum="155">
+        <C1>
+          <English>
+            <SMS>
+              <Text>An error occurred while processing your request. Please retry</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BulkUploadDBUpdateFailed" enum="156">
+        <C1>
+          <English>
+            <SMS>
+              <Text>An error occurred while processing your request. Please retry</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BulkUploadCompleted" enum="157">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Bulk up transaction on $(TransactionDateTime)  is success.  REF : $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NoActionRequiredForPendingCommodityTransfer" enum="159">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidCSRActionForPendingCommodityTransfer" enum="160">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceMDNNotFoundForCSRAction" enum="161">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBInsertBulkUploadEntryRecordFailed" enum="162">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBUpdateBulkUploadEntryRecordFailed" enum="163">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CSRActionCompleted" enum="166">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have changed transaction REF: $(TransactionID)  to Resolved.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationMerchantBecameRetired" enum="167">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.  Merchant Account service on destination number is retired. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceMerchantBecameRetired" enum="168">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your Merchant Account service is Retired. Info, call $(CustomerServiceShortCode). REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MoneySVAPocketNotFound" enum="169">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your number is not registered in E-Money Service. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationMDNBecameRetired" enum="171">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime)  failed.  M-Commerce service on destination number is not retired. Info, call 881. REF:$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceMDNBecameRetired" enum="172">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your M-Commerce service is not retired.  Info, call $(CustomerServiceShortCode). REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="UnregisteredEMoneyIsNotAllowedToTransfer" enum="173">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your number is not registered in E-Money Service. Please do M-Commerce Activation to get this service. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DBGenericFailed" enum="174">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request.REF: $(TransactionID) </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BulkUploadDuplicateFile" enum="176">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, You have already uploaded this file. You cannot upload the same file again.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ChangeEPINCompleted" enum="202">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have successfully changed your E-PIN  on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetEPINCompleted" enum="203">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have successfully reset your E-PIN  on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ChangeEPINFailedInvalidPINLength" enum="204">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to change E-PIN on $(TransactionDateTime) failed. E-PIN must be $(PINMaximumDigit) digits long. Please try again.  For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ChangeEPINFailedInvalidConfirmPIN" enum="205">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to change E-PIN on $(TransactionDateTime) failed. New E-PIN must be the same as Confirm E-PIN. Please try again. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ChangeEPINFailedIndenticalCurrentPINEntered" enum="206">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to change E-PIN on $(TransactionDateTime) failed. New E-PIN cannot be identical to current E-PIN. Please try again. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetEPINFailedInvalidSecretAnswer" enum="207">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to reset E-PIN on $(TransactionDateTime) failed. Your answer is incorrect. Please try again with correct answer. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetEPINFailedInvalidPINLength" enum="208">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to reset E-PIN on $(TransactionDateTime) failed.E-PIN must be $(PINMaximumDigit) digits long. Please try again. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ChangeMPINFailed" enum="209">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to change MPIN on $(TransactionDateTime) failed. Pls try again . For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetMPINFailed" enum="210">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to reset MPIN on $(TransactionDateTime) failed. Pls try again . For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransactionFailedDueToTimeLimitTransactionReached" enum="211">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Minimum gap between transactions was not yet reached. Please retry later. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransactionFailedDueToInvalidAmount" enum="212">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry transaction on $(TransactionDateTime) failed due to invalid amount. Please retry with correct amount. Info, call $(CustomerServiceShortCode). REF: $(TransactionID). </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransactionFailedDueToDifferentGRC" enum="215">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Destination number $(ReceiverMDN) is not in your distribution area. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransactionFailedDueToInsufficientBalance" enum="216">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed due to insufficient airtime stock. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="GetLast5TransactionsFailed" enum="217">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to check last 5 transaction on $(TransactionDateTime) failed. Pls try again . For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AccountSecurityLockedDueToSecretAnswer" enum="218">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to reset E-PIN on $(TransactionDateTime) failed. This service is temporarily blocked because of too many secret answer retries. To unlock, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountPostpaidBillPaymentCompleted" enum="219">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you for paying $(Currency) $(Amount) to SMART on $(TransactionDateTime) for mobile number $(PostpaidMDN). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToBankAccountCompletedToReceiverMDN" enum="223">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). Dear Customer, you have received $(Currency) $(Amount) From $(SenderMDN) on  $(TransactionDateTime)</Text>
+            </SMS>
+          </English>
+        </C1>
+   	  </value>
+      <value description="AccountSuspendNotification" enum="225">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service is suspended on $(TransactionDateTime). To reactivate, call $(CustomerServiceShortCode). </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AccountSelfSuspendNotification" enum="226">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service is suspended on $(TransactionDateTime) per your request. To reactivate, go to Unsuspend menu. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SMSAlertActivation" enum="227">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank You. You have activated SMS Alerts service on $(TransactionDateTime). All SMS delivered to you will be charged.  For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SMSAlertDeactivation" enum="228">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank You. You have deactivated SMS Alerts service on $(TransactionDateTime). For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ReleaseSecurityLocked" enum="229">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service has been unlocked on $(TransactionDateTime).Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ReleaseAbsoluteLocked" enum="230">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service has been unlocked on $(TransactionDateTime). Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ReleaseSelfSuspension" enum="231">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you for reactivating your M-Commerce service on $(TransactionDateTime). Info, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SVABalanceDetailsFailed" enum="249">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to check balance on $(TransactionDateTime) failed. Pls try again . For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNActivationFailed" enum="250">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry,M-Commerce Activation failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ReleaseSuspension" enum="251">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service has been reactivated on $(TransactionDateTime).Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransactionFailedDueToAmountBelowMinimumSpendingLimitPerTransaction" enum="252">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Transaction amount is less than minimum transaction limit. Info, call $(CustomerServiceShortCode).REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransactionFailedDueToAmountExceedMaximumSpendingLimitPerTransaction" enum="253">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your transaction on $(TransactionDateTime) failed.  Transaction amount is more than the maximum transaction limit. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationMDNNotFound" enum="261">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Incorrect Mobile Number. Dear Customer the mobile number you are trying to credit $(DestMDN) is incorrect. Please verify and try again later.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="GeneralPendingMessage" enum="264">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you, your transaction is being processed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetEPINFailedInvalidConfirmPIN" enum="266">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, your request to reset E-PIN on $(TransactionDateTime) failed. New E-PIN must be the same as Confirm E-PIN. Please try again. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="E_Money_CheckBalance" enum="274">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransactionID). Your eaZyMoney money balance as on $(CurrentDateTime) is $(Currency) $(CommodityBalanceValue).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetPin_New_MPIN_ToSubscriber" enum="277">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your new M-PIN is $(SubscriberPIN). For security reason, please change your new PIN immediately using menu E-Pulsa &gt; Ubah MPIN.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNAccountSuspendNotification" enum="285">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service is suspended on $(TransactionDateTime). To reactivate, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNReleaseSuspension" enum="286">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your M-Commerce service has been reactivated on $(TransactionDateTime).Info, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="Activation_PINNotTheSameWithSubsPIN" enum="287">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry,Reactivation on M-Commerce failed because of invalid MPIN. Please retry again with the correct MPIN. Info hub $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="Resovle_Transaction_To_Success" enum="291">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your transaction status on $(TransactionDateTime) with amount of $(Amount) and REF : $(TransactionID) is success. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="Resovle_Transaction_To_Fail" enum="292">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your transaction status on $(TransactionDateTime) with REF : $(TransactionID) is fail. Transaction amount $(Amount) is refunded to your account. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneytoEMoneyCompleteToSender" enum="293">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). Dear Customer, you have successfully transferred $(Currency) $(Amount) to $(ReceiverMDN) and  Service Charge $(Currency) $(serviceCharge). Your balance as on $(TransactionDateTime) is $(Currency) $(CommodityBalanceValue).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneytoEMoneyCompleteToReceiver" enum="294">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). Dear Customer, you have received $(Currency) $(Amount) From $(SenderMDN). Your balance as on $(TransactionDateTime) is $(Currency) $(DestinationMDNBalance).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneytoEMoneyFailed_SelfTransfer" enum="295">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. You are not allowed to do self transfer. Please retry using valid destination number. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashInToEMoneyCompletedToSender" enum="296">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully Cashed-In Customer $(ReceiverMDN) with $(Currency) $(Amount) and  Service Charge $(Currency) $(serviceCharge). Your current balance is $(Currency) $(CommodityBalanceValue) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashInToEMoneyCompletedToReceiver" enum="297">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully Cashed-In from eaZyMoney agent $(SenderMDN) with $(Currency) $(Amount). Your current balance is $(Currency) $(DestinationMDNBalance) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutFromEMoneyCompletedToSender" enum="298">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully Cashed-Out from Agent $(PartnerCode) with $(Currency) $(Amount) and  Service Charge $(Currency) $(serviceCharge). Your current balance is $(Currency) $(CommodityBalanceValue) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutFromEMoneyCompletedToReceiver" enum="299">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully Cashed-Out to customer $(SenderMDN) with $(Currency) $(Amount). Your current balance is $(Currency) $(DestinationMDNBalance) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SenderEMoneyPocketIsRestricted" enum="300">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your E-Money service is temporarily suspended. To unlock, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationEMoneyPocketIsRestricted" enum="301">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. E-Money service in your recepient number is temporarily suspended. REF :$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationEMoneyPocketNotFound" enum="302">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. E-Money service in your recipients number is not exist. REF:$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyRestriction_Activate" enum="303">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your E-money service is suspended on $(TransactionDateTime). To reactivate, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyRestriction_Release" enum="304">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your E-money service has been reactivated on $(TransactionDateTime).Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToEMoneyCompletedToSender" enum="305">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). $(BankName) Thank you for E-money reload $(Amount) on $(TransactionDateTime) to $(ReceiverMDN) and  Service Charge $(Currency) $(serviceCharge).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountToEMoneyCompletedToReceiver" enum="306">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). $(BankName) You have received $(Currency) $(Amount) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyToBankAccountCompletedToSender" enum="307">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). $(BankName) Thank you for transferring $(Currency) $(Amount) to $(ReceiverMDN) on $(TransactionDateTime) and  Service Charge $(Currency) $(serviceCharge).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyToBankAccountCompletedToReceiver" enum="308">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). $(BankName) You have received $(Currency) $(Amount) from $(SenderMDN) on $(TransactionDateTime). </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyToBankAccountMerchantCompletedToSender" enum="309">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Thank you for transferring $(Currency) $(Amount) to $(ReceiverMDN) on $(TransactionDateTime). REF: $(TransferID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyToBankAccountMerchantCompletedToReceiver" enum="310">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) You have received $(Currency) $(Amount) from $(SenderMDN) on $(TransactionDateTime).  REF: $(TransferID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EmptySVAMoneyPocketCompleted" enum="311">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Smart Cash balance is emptied. For temporary you can't perform any transaction. Info, call $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="SourceSVAEMoneyPocketAlreadyEmpty" enum="312">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Smart Cash balance in this subscriber account is already empty.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceSVAEMoneyPocketNotFound" enum="313">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your number is not registered in Smart Cash Service. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="UpgradeEMoneyPocket" enum="314">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Smart Cash Cepat has been upgraded to Smart Cash Hebat. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DowngradeEMoneyPocket" enum="315">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Smart Cash Hebat has been changed to Smart Cash Cepat. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyPocketIsRetiredNotification" enum="316">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Smart Cash Service is deactivated. Thank you.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyLowBalanceNotification" enum="317">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Smart Cash Balance on $(TransactionDateTime) $(EmoneyBalanceValue) almost reached minimum balance. Please reload to continue this service. For info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_05_UnidentifedError" enum="322">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_12_ReversalCannotBeImplemented" enum="323">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your transaction is having a problem. To check the status of transaction, contact $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_14_MDNNotFoundInBillingSystem" enum="324">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry transaction on $(TransactionDateTime) failed. Destination number is not exist. Please retry. Info $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_30_InvalidISOMessage" enum="325">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_68_TimeOutFromBillingSystem" enum="326">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your transaction is having a problem. To check the status of transaction, contact $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_70_NoVoucherAvailable" enum="327">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your balance is not sufficient to do transaction using this nominal. REF: $(TransactionID). Info, hub $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_78_SourceMDNSuspended" enum="328">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry transaction on $(TransactionDateTime) failed. Your number is suspended. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_79_DestMDNSuspended" enum="329">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry transaction on $(TransactionDateTime) failed. Your destination number is suspended. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_88_BillAlreadyPaid" enum="330">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your bill has been paid.  Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_89_LinkFailedBetweenmFinoAndNBS" enum="331">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_91_DatabaseProblem" enum="332">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_96_SystemErrorOrMalfunction" enum="333">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_63_ReversalFailedDueToPaymentRequestIsNotReceivedByBillingSystem" enum="334">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NBS_RC_31_BankNotSupportedByBillingSystem" enum="335">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Our system is under maintenance. Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="RequiredSMSParametersMissing" enum="531">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NotDescendentNotification" enum="535">
+        <C1>
+          <English>
+            <SMS>
+              <Text>MDN $(ReceiverMDN) is not your descendent.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResetDescendentPINCompleted" enum="536">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have successfully reset $(ReceiverMDN)  MPIN number on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidSMSCommand" enum="537">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Invalid SMS Command specified. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ShareLoadPocketRestriction" enum="538">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Pocket type mismatch. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DifferentCompanyCode" enum="539">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime)  failed. Your destination number is not in the same corporate as yours. Please retry. REF:$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CheckDetailTransaction" enum="540">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(TransactionDateTime)  $(TransactionType) $(Amount)  from $(SenderMDN) to $(ReceiverMDN)  $(TransferStatus). REF.$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CheckDetailTransactionNotFound" enum="541">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(TransactionDateTime) No transaction found.REF.$(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SimilarTransactionFound" enum="542">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(TransactionDateTime) Similar transaction found.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="DownlineSVABalanceDetails" enum="543">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your downline's $(Commodity) balance on  $(CurrentDateTime) is $(AirtimeBalanceValue)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DownlineAirTimeSVAPocketNotActive" enum="544">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Downline Merchant Account service is not active. To activate, go to Activate M-Commerce menu. Info, call $(CustomerServiceShortCode). REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DownlineSVAPocketRestricted" enum="545">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Downline Merchant account service is temporarily suspended. To unlock, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidWebAPIRequest_ParameterMissing" enum="546">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Invalid WebAPI Request. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InterBankTransferNotAllowed" enum="551">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Maaf, Inter Bank Transfer is not allowed. Please retry using correct bank.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="SubscriberSettingsChangeComplete" enum="552">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Subscriber settings change successful</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NoValidEmailExistingForSubscriber" enum="553">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Subscriber doesn't have a valid emailID</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EMoneyTransferRequestCompleted" enum="554">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you for eMoney topping up $(Amount) on $(TransactionDateTime) to $(ReceiverMDN). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationMoneySVAPocketNotActive" enum="555">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.  Merchant Account service on destination number is not active. Info, call $(CustomerServiceShortCode). REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankCodeDoesNotMatch" enum="556">
+        <C1>
+          <English>
+            <SMS>
+              <Text>BankCode received does not match with the subscriber's bankcode</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="EMoneyReversalRequestCompleted" enum="557">
+        <C1>
+          <English>
+            <SMS>
+              <Text>eMoney Reversal of $(Amount) on $(TransactionDateTime) to $(ReceiverMDN). REF: $(TransactionID) is Successful</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="CommodityReversalRequestCompleted" enum="558">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Reversal of $(Amount) on $(TransactionDateTime) to $(ReceiverMDN). REF: $(TransactionID) is Successful</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidSMSAlertRequest_ParameterMissing" enum="559">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Invalid SMSAlert Request. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SMSMessageLength_Exceeded" enum="560">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. SMS Message Length Exceeded. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidSMSAlertRequest_ServerIP" enum="561">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Invalid SMSAlert Request ServerIP. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="PartnerID_ShortCode_NotFound" enum="562">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. PartnerID or ShortCode NotFound. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidSMSAlertRequest_Token" enum="563">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Invalid SMSAlert Request Token. Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SMSAlertRequest_Success" enum="564">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your SMSAlert Request submitted successfully on $(TransactionDateTime)  Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  
+	  <value description="BillPaymentInquiryDetails" enum="565">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your Bill Amount on $(CurrentDateTime) is Amount $(BillAmountValue) Bill Ref ID $(BillPaymentID). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="BillPaymentInquiryCompleted" enum="566">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+	  <value description="BillPaymentToBankCompleted" enum="567">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Thank you for paying $(BillAmountValue) on $(TransactionDateTime) Bill Ref ID $(BillPaymentID). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="BillPaymentInquiryToBankFailed" enum="568">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, your request to check bill amount on $(CurrentDateTime) failed. Pls try again . For info, call $(ContactCenterNo).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="BillPaymentToBankFailed" enum="569">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed. An error occurred while processing your request. Info, call $(ContactCenterNo). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="BillPaymentTopupCompleted" enum="570">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Thank you for topping up $(Amount) on $(TransactionDateTime) to $(CustomerID). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceMoneyPocketNotFound" enum="571">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.Requested $(PocketDescription) account with the given cardpan is not available.Info, call $(CustomerServiceShortCode). REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationMoneyPocketNotFound" enum="572">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.Requested $(PocketDescription) account with the given cardpan is not available with the destination subscriber.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceDefaultBankAccountPocketNotFound" enum="573">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.Requested default $(PocketDescription) account is not available.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SourceDefaultSVAMoneyPocketNotFound" enum="574">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.Requested $(PocketDescription) account with the given cardpan is not available.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountRetirementCompleted" enum="575">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your $(PocketDescription) account retirement completed successfully.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountRetirementFailed" enum="576">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your $(PocketDescription) account retirement failed.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EmoneyRetirementCompleted" enum="577">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your $(PocketDescription) account retirement completed successfully.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="EmoneyRetirementFailed" enum="578">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your $(PocketDescription) account retirement failed.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidNotificationMethodInChangeSettingsWebAPIRequest" enum="579">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Notification Method received as part of the webapi request is invalid</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidEmailInChangeSettingsWebAPIRequest" enum="580">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Email received as part of the webapi request is invalid</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidLanguageInChangeSettingsWebAPIRequest" enum="581">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Language received as part of the webapi request is invalid</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="ActivationFailedOneOrMoreUnretiredSVAEMoneyPockets" enum="583">
+		<C1>
+  		  <English>
+    		<SMS>
+      			<Text>$(PocketDescription) account activation failed.Please try again with Pocketcode.Info, call $(CustomerServiceShortCode).REF: $(TransactionID)</Text>
+    		</SMS>
+  		  </English>
+		</C1>
+	  </value>      
+      <value description="InvalidSourcePocketCode" enum="584">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Source PocketCode is not valid</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidDestinationPocketCode" enum="585">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Destination PocketCode is not valid</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SubscriberDoesNOTHavePocketOfThisType" enum="586">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You are not registered for $(PocketDescription) account services.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SVAEMoneyPocketCardPANMissing" enum="587">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Sorry, transaction on $(TransactionDateTime) failed.Your SVAEMoney account does not have a valid CardPAN.Info, call $(CustomerServiceShortCode). </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="SVAEMoneyPocketAlreadyActivated" enum="588">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The $(PocketDescription) account you have requested to be activated is already active.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SetDefaultMoneyPocketSuccessful" enum="589">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The $(PocketDescription) account is set default for all future transactions.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+    <value description="SetDefaultMoneyPocketFailed" enum="590">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Failed to set the $(PocketDescription) account as default.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="EMoneyActivationSuccessful" enum="591">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The $(PocketDescription) account has been activated successfully.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+    <value description="EMoneyActivationFailed" enum="592">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The $(PocketDescription) account activation has failed.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankAccountRetirementCompletedWithDefaultWarning" enum="593">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(PocketDescription) account retired successfully.Warning: Your retired account was default for all transaction involving this bank.Please select another account as default</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="SVAEMoneyAccountRetirementCompletedWithDefaultWarning" enum="594">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(PocketDescription) account retired successfully.Warning: Your retired account was default for all transaction involving this emoney partner.Please select another account as default</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="MoreThanOneUnretiredEMoneyPocketPocketcodeRequired" enum="595">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have more than one unretired emoney accounts.Pocketcode is required to process this request.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>     
+      <value description="GetEMoneyHistorySupportedOnlyForSMART" enum="597">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You can know the history of only Zenith Bank EMoney account.Other accounts are not supported.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>    
+      <value description="MoreThanOneDefaultEMoneyPocketsPocketCodeRequired" enum="599">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have more than one default emoney account.Pocketcode is required to process this request.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="DestinationDefaultSVAMoneyPocketNotFound" enum="600">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed.Requested $(PocketDescription) account with the given cardpan is not available with the destination sunscriber.Info, call $(CustomerServiceShortCode).REF: $(TransactionID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NotSVAEMoneyAccount" enum="601">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Requested $(PocketDescription) account is not an SVA-EMoney account.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="NotBankAccount" enum="602">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Requested $(PocketDescription) account is not a bank account.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="BillPaymentReversalCompleted" enum="603">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Reversal of $(Amount) on $(TransactionDateTime) to $(ReceiverMDN)) is Successful. REF: $(TransactionID</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>     
+      <value description="BillPaymentTopupReversalCompleted" enum="604">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Reversal of $(Amount) on $(TransactionDateTime) to $(ReceiverMDN) is Successful. REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BillPaymentTopupInquiryDetails" enum="605">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) Your requested to topup an Amount $(BillAmountValue) on $(CurrentDateTime) REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value FlashOnly="Y" description="BillPaymentTopupInquiryCompleted" enum="606">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Request has been processed. Please wait. Thank you</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+	  <value description="BillPaymentTopupInvalidDenomination" enum="607">
+        <C1>
+          <English>
+            <SMS>
+              <Text>$(BankName) The Denomination $(BillAmountValue) is invalid $(TransactionDateTime)  REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NotMoneyAccount" enum="608">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Requested $(PocketDescription) account is neither a bank account nor a svaEMoney account.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="CardPANMissingFromOneOfYourMoneyPockets" enum="609">
+        <C1>
+          <English>
+            <SMS>
+              <Text>One of your $(PocketDescription) accounts does not have a valid CardPAN.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="BillPayment_88_BillAlreadyPaid" enum="610">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your bill has been paid.  Info, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidBillerName" enum="616">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Invalid Biller Name. Contact $(CustomerServiceShortCode),for info.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	  <value description="BankAccountAlreadyRetired" enum="617">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your $(PocketDescription) account has already been retired.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="MoneyPocketNotActive" enum="618">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your $(PocketDescription) account is not active.Info, call $(CustomerServiceShortCode).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidBillerCode" enum="619">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Invalid Biller Code. Contact $(CustomerServiceShortCode),for info.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="PartnerNotFound" enum="620">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Partner not found for the given Biller Code. Contact $(CustomerServiceShortCode),for info.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="TransactionRuleNotFound" enum="621">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction Rule not found.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MobileShoppingPaymentInquiryDetails" enum="622">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your requested service will charge an Amount $(serviceCharge). And the Total amount is $(transactionAmount) REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MobileShoppingPaymentInquiryDetails_InclusiveServiceCharge" enum="623">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Total amount is $(transactionAmount) REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>        
+      <value description="SubscriberRegistrationSuccessfulToAgent" enum="624">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Agent, MDN $(DestMDN) registration is successful for eaZyMoney services.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>       
+      <value description="SubscriberRegistrationfailedToAgent" enum="625">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Agent, MDN $(DestMDN) registration is failed for eaZyMoney services.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="SubscriberRegistrationSuccessfulToSubscriber" enum="626">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Congratulations Dear Customer, You have been successfully registered for eaZyMoney services. Please use your Activation Code: $(OneTimePin) to activate your account.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>     
+      <value description="UpgradeSuccess" enum="627">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Congratulations Dear Customer, your eaZyMoney account has been successfully upgraded to $(KycLevel) status. Contact us or visit the nearest eaZyMoney agent to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>  
+      <value description="UpgradeFail" enum="628">
+        <C1>
+          <English>
+            <SMS>
+              <Text>your request for account upgration to $(KycLevel) rejected  </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>  
+       <value description="OTPExpired" enum="629">
+        <C1>
+          <English>
+            <SMS>
+              <Text> your one Time Password has Expired.  </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>                                                                                                                                  
+      <value description="WebapiLoginSuccessful" enum="630">
+        <C1>
+          <English>
+            <SMS>
+              <Text> You have successfully logged in.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>                                                                                                                                  
+      <value description="WebapiSessionTimedout" enum="631">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Please login again</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>                                      
+      <value description="WebapiLogoutSuccessful" enum="632">
+        <C1>
+          <English>
+            <SMS>
+              <Text> You have successfully logged out.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>                                                                                                                                  
+      <value description="WebapiLoginFailureDueToSystemError" enum="633">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Login failed.Please try after some time.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>                                                                                                                                  
+      <value description="WebapiLogoutFailure" enum="634">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Logout failed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>    
+       <value description="SubscriberRegistrationPendingToAgent" enum="635">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Registration of Subscriber with phonenumber$(DestMDN) is UnderProcessing </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>                                                                                                                                     
+	 <value description="ChargeDistributionCompleted" enum="636">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Charge Distribution Completed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="ServiceNOTAvailableForPartner" enum="637">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Dear Partner, you have not registered for this service. Please contact our customer care services at: $(CustomerServiceShortCode) or visit the nearest eaZyMoney agent.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+       <value description="SubscriberCashInConfirmationPrompt" enum="638">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You are requested to cashin $(transactionAmount) from agent $(PartnerCode) .</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="SubscriberCashInConfirmed" enum="639">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You are requested to cashin $(transactionAmount) from agent $(PartnerCode) and your TransactionID REF: $(TransactionID)  .</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+        <value description="SubscriberCashOutConfirmationPrompt" enum="640">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You are requested to cashout $(transactionAmount) to agent $(PartnerCode) .</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+       <value description="SubscriberCashOutConfirmed" enum="641">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You are requested to cashOut $(transactionAmount) to agent $(PartnerCode) and your TransactionID REF: $(TransactionID)  .</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="OnlyNumericPinAllowed" enum="642">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Only numeric keys are allowed</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="PurchaseFromEMoneyCompletedToSender" enum="644">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully paid to Merchant $(PartnerCode) with $(Currency) $(Amount) and  Service Charge $(Currency) $(serviceCharge). Your current balance is $(Currency) $(CommodityBalanceValue) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="PurchaseFromEMoneyCompletedToReceiver" enum="645">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have a successfull payment from customer $(SenderMDN) with $(Currency) $(Amount). Your current balance is $(Currency) $(DestinationMDNBalance) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="NotHTTPSRequest" enum="646">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Requests over http are not accepted on this url.Try using https</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+	  <value description="NotHTTPRequest" enum="647">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Requests over https are not accepted on this url.Try using http</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="AgentToAgentTransferCompletedToSender" enum="648">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully transferred to Agent $(PartnerCode) with $(Currency) $(Amount) and  Service Charge $(Currency) $(serviceCharge). Your current balance is $(Currency) $(CommodityBalanceValue) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AgentToAgentTransferCompletedToReceiver" enum="649">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have a successful transfer from customer $(SenderMDN) with $(Currency) $(Amount). Your current balance is $(Currency) $(DestinationMDNBalance) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="FeatureNotAvailable" enum="650">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you for trying our application. Will notify you once this service is available</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="TransactionNotAvailable" enum="651">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Thank you for trying our application. Will notify you once this feature is available</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>       	  
+      <value description="DependencyInjectionError" enum="652">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, unable to process request due to internal configuration issues.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value> 
+      <value description="BillPayCompletedToSender" enum="653">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully paid to Merchant $(PartnerCode) with $(Currency) $(Amount) and  Service Charge $(Currency) $(serviceCharge). Your current balance is $(Currency) $(CommodityBalanceValue) on $(TransactionDateTime).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BillPayCompletedToReceiver" enum="654">
+        <C1>
+          <English>
+            <SMS>
+              <Text>REF ID: $(TransferID). Received Payment from customer $(SenderMDN), $(InvoiceNumber) with $(Currency) $(Amount).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="New_OTP_Success" enum="655">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, your new otp is $(OneTimePin).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BillPayPending" enum="656">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, Your payment to biller $(BillerCode) towards invoice number $(InvoiceNumber) is pending. Confirmation will be sent in 24 hours.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>    
+      <value description="PartnerActivation" enum="657">
+        <C1>
+          <English>
+            <SMS>
+              <Text>To activate click link $(AppURL)/activation.htm?service=$(Service)&amp;userid=$(SourceMDN)&amp;otp=$(OneTimePin)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidDecoderNumber" enum="658">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The bill number must be a number of 10 digits.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>            
+      <value description="DSTVPaymentNotAllowedFromBank" enum="659">
+        <C1>
+          <English>
+            <SMS>
+              <Text>DSTV bill payment is not allowed from a bank account.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	<value description="AirtimePurchaseInquiry" enum="660">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>You requested to top up $(ReceiverMDN) from Visafone with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge). ParentTransactionID  $(ParentTransactionID) REF: $(TransferID)</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="AirtimePurchaseConfirmation" enum="661">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>REF ID: $(TransferID). Topup Successful for $(ReceiverMDN) from Visafone with $(Currency) $(Amount), ServiceCharge $(Currency)$(serviceCharge).</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="AirtimePurchaseFailed" enum="662">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Dear Customer, We are currently unable to recharge $(ReceiverMDN) from Visafone, Your amount will be reverted in 24 hours.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	 <value description="PinNotStrongEnough" enum="663">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your New pin is not strong enough.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+		<value description="AirtimePurchaseConfirmationReceiver" enum="664">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>REF ID: $(TransferID). Topup Successful for $(ReceiverMDN) from Visafone with $(Currency) $(Amount), ServiceCharge $(Currency)$(serviceCharge).</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="DSTVTransactionCannotBeCancelled" enum="665">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>REF ID: $(TransferID). DSTV transaction cannot be cancelled, Please contact your customer care for manual reconciliation.
+			  </Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="ReverseTransactionCompleteToSender" enum="666">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Transaction ID: $(TransferID). Dear Customer, you have been debited of $(Currency) $(Amount) as Reversal of Transaction $(OriginalTransferID).</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="ReverseTransactionCompleteToReceiver" enum="667">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Transaction ID: $(TransferID). Dear Customer, you have been credited of $(Currency) $(Amount) as Reversal of Transaction $(OriginalTransferID).</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="ReverseTransactionRequestInitiated" enum="668">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Dear Customer, Reversal of Transaction $(OriginalTransferID) is initiated.</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="ReverseTransactionRequestRejected" enum="669">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Dear Customer, Reversal of Transaction $(OriginalTransferID) is Rejected.</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="ReverseTransactionRequestFailed" enum="670">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Dear Customer, Reversal of Transaction $(OriginalTransferID) is Failed.</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>		
+      <value description="SubscriberNotRegistered" enum="671">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Dear Mobile User, MDN used is currently not registered as a eaZyMoney subscriber. Visit nearest Zenith branch to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SrcSubscriberNotRegistered" enum="672">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Dear Mobile User, Source $(SourceMDN) is currently not registered as a eaZyMoney subscriber. Visit nearest Zenith branch to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestSubscriberNotRegistered" enum="673">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Dear Mobile User, Destination $(DestMDN) is currently not registered as a eaZyMoney subscriber. Visit nearest Zenith branch to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="UnRegisteredPocketTemplateNotFound" enum="674">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Did not find Pocket Template for UnRegistered Emoney subscribers.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="IBTRestricted" enum="675">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, You will not be able to do inter bank transfer to $(BankName)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="TransferToUnRegisteredConfirmationPrompt" enum="676">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You requested to transfer $(Currency) $(Amount) to $(ReceiverMDN) and Charges $(Currency) $(serviceCharge).  ParentTransactionID $(ParentTransactionID) REF: $(TransferID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutToUnRegisteredConfirmationPrompt" enum="677">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You requested to CashOut $(Currency) $(Amount) from $(SenderMDN) and Charges $(Currency) $(serviceCharge). ParentTransactionID $(ParentTransactionID) REF: $(TransferID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferToUnRegisteredCompletedToSender" enum="678">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully transferred $(Currency) $(Amount) to $(ReceiverMDN) and Charges $(Currency) $(serviceCharge). Balance as on $(TransactionDateTime) is $(Currency) $(CommodityBalanceValue). Fund access code is $(OneTimePin)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="TransferToUnRegisteredCompletedToReceiver" enum="679">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have received $(Currency) $(Amount) from $(SenderMDN).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutToUnRegisteredCompletedToSender" enum="680">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully Cashed-Out from Agent $(PartnerCode) with $(Currency) $(Amount).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutToUnRegisteredCompletedToReceiver" enum="681">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). You have successfully Cashed-Out to customer $(SenderMDN) with $(Currency) $(Amount). Your balance as on $(TransactionDateTime) is $(Currency) $(DestinationMDNBalance).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="IBTPending" enum="682">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear customer, Inter Bank Transfer to Account Number: $(BankAccountNumber) is pending. Confirmation will be sent in 24 hours.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="IBTFailed" enum="683">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, Inter Bank Transfer to $(BankAccountNumber) could not be completed. Please try again later.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="IBTInquiry" enum="684">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You requested to transfer $(Currency) $(Amount) to $(BankAccountNumber) and Service Charge $(Currency) $(serviceCharge)  ParentTransactionID $(ParentTransactionID) REF: $(TransferID).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="IBTConfirmation" enum="685">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). Dear Customer, you have successfully transferred $(Currency) $(Amount) to $(BankAccountNumber) and  Service Charge $(Currency) $(serviceCharge).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="UnSupportedStatusForUnRegistered" enum="686">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, could not process your request for transfer to $(DestMDN), as the reciever status is invalid.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidInputsForUnRegistered" enum="687">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, please provide FirstName and LastName to process your request for transfer to $(DestMDN).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	<value description="TransactionCannotBeCancelled" enum="688">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>REF ID: $(TransferID). This transaction cannot be cancelled, Please contact your customer care for manual reconciliation.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="AirtimePurchaseReverted" enum="689">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Transaction ID: $(TransferID). Dear Customer, Airtime Top Up Failed, amount $(amount) and charges $(charges) have been reverted back to your account.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="AirtimePurchaseRevertFailed" enum="690">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Transaction ID: $(TransferID). Dear Customer, Airtime Top Up Failed, Please contact customer care for amount settlement.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>	  
+	<value description="BulkTransferCompletedToPartner" enum="691">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Transaction ID: $(TransferID). Dear Customer, Your Bulk Transfer Request $(BulkTransferID) Processed on $(TransactionDateTime).</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>	  	      
+	<value description="BulkTransferCompletedToSubscriber_Dummy" enum="692">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Transaction ID: $(TransferID). Dear Customer, Transfer Completed</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="BulkTransferCompletedToSubscriber" enum="693">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Transaction ID: $(TransferID). Dear Customer, you have been credited of $(Currency) $(Amount) as part of Bulk Transfer from $(ReceiverMDN). Your balance as on $(TransactionDateTime) is $(Currency) $(CommodityBalanceValue).</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="GetAvialableBalance" enum="694">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>$(BankAccountCurrency) $(BankAccountBalanceValue)</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="SendFundAccessCodeForNonRegisteredBulkTransfer" enum="695">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Your Fund access code is $(OneTimePin)</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="BulkTransferRequestFailedToPartner" enum="696">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Dear Customer, Your Bulk Transfer Request $(BulkTransferID) is failed.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="BillaySuccessfulToOnBehalfOfMDN" enum="697">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text><Text>REF ID: $(TransferID). Payment success to Biller $(BillerCode) $(InvoiceNumber) with $(Currency)$(Amount),ServiceCharge $(Currency)$(serviceCharge).</Text></Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="BillayPendingToOnBehalfOfMDN" enum="698">
+	<C1>
+	  <English>
+	    <SMS>
+		<Text>Dear Customer, Your payment to biller $(BillerCode) towards invoice number $(InvoiceNumber) is pending. Confirmation will be sent in 24 hours.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="InvalidAmount" enum="699">
+	<C1>
+	  <English>
+	    <SMS>
+		<Text>Invalid Amount, Amount should be between $(minAmount) $(Currency) and $(maxAmount) $(Currency).</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>	
+	<value description="BulkTransferRequestRejectedToPartner" enum="700">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Dear Customer, Your Bulk Transfer Request $(BulkTransferID) is Rejected.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="BulkTransferReverseCompletedToPartner" enum="701">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Dear Customer, Failed amount for Your Bulk Transfer Request $(BulkTransferID) is credited to souce pocket.</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="BulkTransferRequestPendingToPartner" enum="702">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Dear Customer, Your Bulk Transfer Request $(BulkTransferID) is in Pending state. Please call Customer Care: $(CustomerServiceShortCode) to resolve </Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+	<value description="TransferToBankAccountCompletedToSender" enum="703">
+	<C1>
+	  <English>
+	    <SMS>
+	      <Text>Transaction ID: $(TransferID). Dear Customer, you have successfully transferred $(Currency) $(Amount) to Account Number $(BankAccountNumber) and  Service Charge $(Currency) $(serviceCharge).</Text>
+	    </SMS>
+	  </English>
+	</C1>
+	</value>
+    <value description="TransferToBankAccountCompletedToReceiver" enum="704">
+    <C1>
+      <English>
+        <SMS>
+          <Text>Transaction ID: $(TransferID). Dear Customer, your Account Number $(BankAccountNumber) is credited $(Currency) $(Amount) From $(SenderMDN) on $(TransactionDateTime)</Text>
+        </SMS>
+      </English>
+    </C1>
+  	</value>	
+  	<value description="SubscriberRegistrationfailed" enum="705">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, your request for registering phonenumber $(DestMDN) could not be completed</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SubscriberRegistrationThroughWebSuccessfulToSubscriber" enum="706">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Congratulations Dear Customer, You have been successfully registered for eaZyMoney services. Activation code will be sent to your registered mobile number shortly.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ResendAccessCodeNotificationToSenderOfUnregisteredTransfer" enum="707">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Fund access code for the Transaction ID $(TransferID) is reset. You initiated a transaction of amount $(Currency) $(Amount) to $(ReceiverMDN). New Fund access code for the same is $(OneTimePin)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutAtATMConfirmationPrompt" enum="708">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You requested to cash out amount $(Currency) $(Amount) from ATM and Service Charge $(Currency) $(serviceCharge).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutAtATMConfirmedToSender" enum="709">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID: $(TransferID). Your Cash out Request for amount $(Currency) $(Amount) is successful with Service Charge $(Currency) $(serviceCharge). Please visit nearest ATM for cash out. And Fund access code for the same is $(OneTimePin)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="CashOutAtATMExpired" enum="710">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your Cash out request is expired. And the amount will be reverted to your Eoney wallet.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="SuccessfulCashOutFromATM" enum="711">
+        <C1>
+          <English>
+            <SMS>
+              <Text>You have succesfully cashed out amount $(Currency) $(Amount) from ATM</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="FailedCashOutFromATM" enum="712">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Cash out for amount $(Currency) $(Amount) from ATM has been failed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+		<value description="BillpaymentInquirySuccessful" enum="713">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>You requested to top up $(ReceiverMDN) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge). ParentTransactionID  $(ParentTransactionID) REF: $(TransferID)</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="BillpaymentFailed" enum="714">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Your request to top up $(ReceiverMDN) from $(BillerCode) with $(Currency) $(Amount) failed, Please try again later. ParentTransactionID  $(ParentTransactionID) REF: $(TransferID)</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>
+		<value description="BillpaymentConfirmationSuccessful" enum="715">
+		<C1>
+		  <English>
+			<SMS>
+			  <Text>Your top up request for $(ReceiverMDN) from $(BillerCode) with $(Currency) $(Amount) is successful, ServiceCharge $(Currency) $(serviceCharge). ParentTransactionID  $(ParentTransactionID) REF: $(TransferID)</Text>
+			</SMS>
+		  </English>
+		</C1>
+		</value>      
+      <value description="AutoReverseSuccess" enum="716">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Reversed the amount success.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AutoReverseFailed" enum="717">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Reversed the amount Failed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AutoReverseSuccessToSource" enum="718">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction ID $(TransferID) is Reversed and the amount $(Currency) $(Amount) is credited to your account. </Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="BankResponseDoNotHonor" enum="719">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Bank is not accepting the request $(TransferID) for your account.Please try again later</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+      <value description="BankResponseRequestInProgress" enum="720">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Your request $(TransferID) is being processed at the bank.Please check later</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+      <value description="BankResponseSuspectedMalfunction" enum="721">
+        <C1>
+          <English>
+            <SMS>
+              <Text>An error occured while processing your request $(TransferID).Please check later</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	  <value description="BankResponseRecordNotFound" enum="722">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Bank could not identify your request $(TransferID).Please try later</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseDuplicateRecord" enum="723">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction failed.The record with id $(TransferID) is duplicated at bank.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseFunctionNotSupported" enum="724">
+        <C1>
+          <English>
+            <SMS>
+              <Text>This type of transaction is not supported by bank.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseInsufficientFunds" enum="725">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Transaction $(TransferID) failed.Your bank account $(BankAccountNumber) doesn't have sufficient funds.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseNoCheckAccount" enum="726">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The bank account is not a check acccount.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseNoSavingAccount" enum="727">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The bank account is not a savings acccount.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseIncorrectPin" enum="728">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The bank pin you entered for account $(BankAccountNumber) is wrong.Please try again.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseSuspectedFraud" enum="729">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Please contact customer care</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	
+	<value description="BankResponseWithdrawlLimitExceeded" enum="730">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.The transaction amount $(Amount) exceeded the limit allowed by bank.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseRestrictedCard" enum="731">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Your account $(BankAccountNumber) has been restricted by bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	
+	<value description="BankResponseSecurityViolations" enum="732">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Security violations at bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseWithdrawlFrequencyExceeded" enum="733">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Your account $(BankAccountNumber) has exceeded withdrawl frequency.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponsePinTriesExceeded" enum="734">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.You have exceeded maximum pin tries for the account $(BankAccountNumber)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseRoutingError" enum="735">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.An error occured at the bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	
+	<value description="BankResponseViolationofLaw" enum="736">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Violation of law at the bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	
+	<value description="BankResponseDuplicatetransaction" enum="737">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Duplicate transaction found at bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	
+	<value description="BankResponseReconcileError" enum="738">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Reconciliation error occured at the bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseSystemMalfunction" enum="739">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.An error occured at the bank.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseExceedeCashLimit" enum="740">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Your account has exceeded cash limits at the bank</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseError" enum="741">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.An error occured at the bank. Please contact customer care</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseInvalidTransaction" enum="742">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.Bank is not allowing the transactions.Please contact customer care</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseInvalidAmount" enum="743">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.The bank is not accepting the amount.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseInvalidCardNumber" enum="744">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.The account $(BankAccountNumber) is invalid</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	
+	<value description="BankResponseAccountExpired" enum="745">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.The account $(BankAccountNumber) has expired</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+
+	<value description="BankResponseTransactionNotPermitted" enum="746">
+        <C1>
+          <English>
+            <SMS>
+              <Text>The transaction $(TransferID) failed.The bank does not allow the transaction on your account</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      
+      <value description="SenderBankPocketIsRestricted" enum="747">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your Bank service is temporarily suspended. To unlock, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	<value description="SuccessfulReversalFromATM" enum="748">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Cash out for amount $(Currency) $(Amount) from ATM has been Reversed.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	<value description="FailedReversalFromATM" enum="749">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Cash out for amount $(Currency) $(Amount) from ATM has not processed. Please Contact Administrator</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	<value description="MaxValueOfCashOutAtATM" enum="750">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, you can cash out from ATM only $(Currency) $(maxAmount).</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+	  
+	  <value description="InvalidData" enum="2000">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Invalid Data</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="InvalidKYCLevel" enum="2001">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Invalid KYC Level.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>      
+      <value description="MDNAlreadyRegistered_Source" enum="2002">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Agent, MDN $(DestMDN) already registered for eaZyMoney services.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="MDNAlreadyRegistered_Destination" enum="2003">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Dear Customer, you are already registered for eaZyMoney services. Contact customer care at:$(CustomerServiceShortCode) if you have forgotten your mPIN.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="ServiceNOTAvailableForAgent" enum="2004">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Dear Agent, you have not registered for this service. Please contact our customer care services at: $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AgentAccountInactive" enum="2005">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Account Inactive. Dear eaZyMoney Agent. Your account is currently inactive. Please activate using your Activation Code or contact Customer Care at: $(CustomerServiceShortCode)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AccountBlockedDueToMaximumPinTries" enum="2006">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Account Blocked. You have exceeded maximum number of mPIN tries. Please contact Customer Care at: $(CustomerServiceShortCode) to reset mPIN</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	  
+      <value description="AgentNotRegistered" enum="2007">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Not Registered. Dear Mobile User, you are currently not registered as a eaZyMoney Agent. Visit nearest Zenith branch to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="AgentAccountIsRestricted" enum="2008">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Account Blocked. Dear eaZyMoney Agent your account is currently blocked. Please call Customer Care: $(CustomerServiceShortCode) to learn more.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>            
+      <value description="NewPINConfirmPINDoNotMatch" enum="2009">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: mPIN do not match. Please enter same mPIN in both fields and retry.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="OTPInvalid" enum="2010">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Incorrect Activation Code. Please verify your Activation code and retry.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>     	  
+      <value description="DestinationAgentIsNotActive" enum="2011">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Inactive Account. The Agent $(PartnerCode) is currently inactive.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationAgentIsRestricted" enum="2012">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Blocked Account. The Agent $(PartnerCode) is blocked.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="DestinationAgentNotFound" enum="2013">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: Incorrect Agent Code. Dear Customer the agent code $(PartnerCode) is incorrect. Please verify and try again later.</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+      <value description="InvalidTopupDenomination" enum="2017">
+        <C1>
+          <English>
+            <SMS>
+              <Text>ERROR: The Denomination $(BillAmountValue) is invalid. Valid Denominations are $(ValidDenominations) $(TransactionDateTime)  REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>
+	<value description="SenderBankPocketIsRestricted" enum="747">
+        <C1>
+          <English>
+            <SMS>
+              <Text>Sorry, transaction on $(TransactionDateTime) failed. Your Bank service is temporarily suspended. To unlock, call $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+            </SMS>
+          </English>
+        </C1>
+      </value>	
+    <value description="InvalidUnregisteredCashout" enum="2025">
+		<C1>
+			<English>
+				<SMS>
+					<Text>ERROR: Registered Subscriber can not perform unregistered cashout</Text>
+				</SMS>
+			</English>
+		</C1>
+	</value>  
+	<value description="BillpaymentConfirmationSuccessfulToReceiver" enum="2029">
+		<C1>
+			<English>
+				<SMS>
+					<Text>$(BillerCode) received $(Currency) $(Amount) from $(SourceMDN), ServiceCharge $(Currency) $(serviceCharge). REF: $(TransferID)</Text>
+				</SMS>
+			</English>
+		</C1>
+	</value> 
+	<value description="BillpaymentConfirmationSuccess" enum="2030">
+		<C1>
+			<English>
+				<SMS>
+					<Text>Your top up request for $(InvoiceNumber) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)</Text>
+				</SMS>
+			</English>
+		</C1>
+	</value>		
+</field>

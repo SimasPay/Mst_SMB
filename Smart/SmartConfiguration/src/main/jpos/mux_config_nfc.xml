@@ -1,0 +1,7 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_nfc" name="nfcmux">
+	<key>11</key>
+	<in>nfcreceive</in>
+	<out>nfcsend</out>
+	<request-listener class="com.mfino.nfc.iso8583.NFCRequestListener" logger="Q2_nfc">
+	</request-listener>
+</mux>

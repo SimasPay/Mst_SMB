@@ -1,0 +1,22 @@
+<ButtonLabel>
+    <Login>Login</Login>
+    <Activation>New User-Activate</Activation>
+    <SelfTransfer>To Self</SelfTransfer>
+    <OthersTransfer>To Others</OthersTransfer>
+    <EmoneyToBank>mKuza to Bank</EmoneyToBank>
+    <BankToEmoney>Bank to mKuza</BankToEmoney>
+    <Frommkuza>From mKuza</Frommkuza>
+    <Frombank>From Bank</Frombank>
+    <Tophone>To Phone</Tophone>
+    <Tobankacc>To Bank Account</Tobankacc>
+    <ChangePIN>Change PIN</ChangePIN>
+    <CheckBalance>Balance Enquiry</CheckBalance>
+    <History>Last 3 transactions</History>
+    <CashOut>Cash Out</CashOut>
+    <Emoney>From mKuza</Emoney>
+    <bank>From Bank</bank>
+    <self>For Self</self>
+    <others> For Others</others>
+    <agent>From Agent</agent>
+    <atm>From ATM</atm>
+</ButtonLabel>

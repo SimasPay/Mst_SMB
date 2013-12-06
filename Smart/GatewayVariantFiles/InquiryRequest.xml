@@ -1,0 +1,15 @@
+<Inquiry>
+	<Header>
+		<MessageID>Value</MessageID>
+		<TrxID>Value</TrxID>
+		<TrxTime>Value</TrxTime>
+		<TerminalID>Value</TerminalID>
+		<ChannelID>Value</ChannelID>
+		<BillerID>Value</BillerID>
+		<BillerCategory>Value</BillerCategory>
+	</Header>
+	<Payload>
+		<CustomerID>Value</CustomerID>
+		<TrxAmount>value</TrxAmount>
+	</Payload>
+</Inquiry>

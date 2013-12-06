@@ -1,0 +1,15 @@
+ALTER TABLE unregistered_txn_info MODIFY MDNID NULL;
+
+DELETE FROM service_transaction where serviceid=(select id from service where servicename='Wallet') and transactiontypeid=(select id from transaction_type where transactionname='FundReversal');
+DELETE FROM transaction_type where TRANSACTIONNAME = 'FundReversal';
+INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,'FundReversal','Fund Reversal');
+INSERT INTO service_transaction  VALUES (service_transaction_id_seq.nextval,1,sysdate,'System',sysdate,'System',1, (select id from service where SERVICENAME = 'Wallet'), (select id from transaction_type where TRANSACTIONNAME = 'FundReversal'),0);
+
+Delete from notification where code = 801;
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,801,'ResendAccessCodeForFund',1,'Fund access code for the Transaction ID $(TransferID) is reset. New Fund access code for the same is $(OneTimePin)',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,801,'ResendAccessCodeForFund',2,'Fund access code for the Transaction ID $(TransferID) is reset. New Fund access code for the same is $(OneTimePin)',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,801,'ResendAccessCodeForFund',4,'Fund access code for the Transaction ID $(TransferID) is reset. New Fund access code for the same is $(OneTimePin)',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,801,'ResendAccessCodeForFund',8,'Fund access code for the Transaction ID $(TransferID) is reset. New Fund access code for the same is $(OneTimePin)',null,0,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,801,'ResendAccessCodeForFund',16,'Fund access code for the Transaction ID $(TransferID) is reset. New Fund access code for the same is $(OneTimePin)',null,0,0,sysdate,null,null,1);
+
+commit;

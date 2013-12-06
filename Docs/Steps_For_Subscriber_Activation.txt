@@ -1,0 +1,21 @@
+Steps for Mobile8 Subscriber and default BOB pocket:
+
+1. Core.jar is the jar that is used for Subscriber and his/her default BOB pocket activation.
+2. This jar file takes csv file as input with the subscriber mobile number and subscriber pin as first and second column respectively.
+3. Generates two files as output:
+   a.SubActivation.csv is a csv file same as input file with added column digestedpin.
+   b.SubActivationSQLScript.sql is a file with the sql statements to update the subscriber and respective default BOB pocket.
+
+
+Execution Steps:
+
+1. Copy Core.jar file to some folder (C:\abc)
+
+1. In the command line provide -
+C:\abc>java -cp Core.jar com.mfino.application.SubscriberActivation <CompletePathOfInputFileName>
+
+On the console you will see the generated files location.
+ 
+2. Open mysql and execute SubActivationSQLScript.sql file.
+
+NOTE: Please ensure that the csv file does not contain invalid MDNs or MDNs for which the Subscriber status is PendingRetirement or Retired status.

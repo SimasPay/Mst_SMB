@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:52 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.CardInfo" optimistic-lock="version" table="card_info" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="Subscriber" foreign-key="FK_CardInfo_Subscriber" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SubscriberID" not-null="true"   />
+</many-to-one>
+<property name="CardF6" type="java.lang.String" >
+<column name="CardF6"    sql-type="varchar(255)" />
+</property>
+<property name="CardL4" type="java.lang.String" >
+<column name="CardL4"    sql-type="varchar(255)" />
+</property>
+<property name="IssuerName" type="java.lang.String" >
+<column name="IssuerName"    sql-type="varchar(255)" />
+</property>
+<property name="NameOnCard" type="java.lang.String" >
+<column name="NameOnCard"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Address" foreign-key="FK_CardInfo_Address" class="com.mfino.domain.Address" fetch="select">
+<column name="AddressID"     />
+</many-to-one>
+<many-to-one name="AddressByBillingAddressID" foreign-key="FK_CardInfo_AddressByBillingAddressID" class="com.mfino.domain.Address" fetch="select">
+<column name="BillingAddressID"     />
+</many-to-one>
+<property name="OldCardF6" type="java.lang.String" >
+<column name="OldCardF6"    sql-type="varchar(255)" />
+</property>
+<property name="OldCardL4" type="java.lang.String" >
+<column name="OldCardL4"    sql-type="varchar(255)" />
+</property>
+<property name="OldIssuerName" type="java.lang.String" >
+<column name="OldIssuerName"    sql-type="varchar(255)" />
+</property>
+<property name="OldNameOnCard" type="java.lang.String" >
+<column name="OldNameOnCard"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="AddressByOldAddressID" foreign-key="FK_CardInfo_AddressByOldAddressID" class="com.mfino.domain.Address" fetch="select">
+<column name="OldAddressID"     />
+</many-to-one>
+<many-to-one name="AddressByOldBillingAddressID" foreign-key="FK_CardInfo_AddressByOldBillingAddressID" class="com.mfino.domain.Address" fetch="select">
+<column name="OldBillingAddressID"     />
+</many-to-one>
+<many-to-one name="Pocket" foreign-key="FK_CardInfo_Pocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="PocketID"     />
+</many-to-one>
+<property name="CardStatus" type="java.lang.Integer" >
+<column name="CardStatus" not-null="true"  sql-type="int" />
+</property>
+<property name="isConformationRequired" type="java.lang.Boolean" >
+<column name="isConformationRequired"    sql-type="tinyint" />
+</property>
+</class>
+</hibernate-mapping>

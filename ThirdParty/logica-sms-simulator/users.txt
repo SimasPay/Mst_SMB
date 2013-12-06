@@ -1,0 +1,40 @@
+# This is an example of user definition file used to authenticate bounding ESME.
+# User consists from attributes, each attribute is on one line,
+# each attribute has key and value; users are delimited by one or more
+# consecutive blank lines - next user is started by the next attribute after
+# first occurence of blank line.
+# Comment line can appear anywhere and it's ignored => it can't delimit
+# two users.
+# Format of attribute is <name>"="<value>
+#
+# The name and password attributes are compulsory for each user definition
+# as they are compared to the system_id and password parameters
+# in the incoming bound PDU.
+#
+# Note that timeout and bound attributes below are just exampples
+# of additional attributes and aren't really used by the simulator :-)
+# (future expansion?)
+# Also note that whitespaces aren't removed from neither attribute name
+# and it's value, i.e. "name=peter" and "name= peter" define two different users,
+# "peter" and " peter".
+
+
+# Pavel can bound for unlimited time as any type
+name=mfino
+password=mfino
+timeout=unlimited
+bound=t,r
+
+
+# Pochadri has time limited to 5 mins, then the connection is dropped
+# if enquire is unsuccessfull
+# Also, Pochadri can connect only as triansmitter or receiver, he can't
+# connect as transciever
+
+name=pochadri
+password=pochadri123
+# And this timeout is in minutes, bad luck, pochadri %^)
+timout=5
+bound=t,r
+
+

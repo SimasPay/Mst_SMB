@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="Service" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://demopayment.frscfinescollection.com.ng/Service.svc?xsd=xsd0" namespace="http://tempuri.org/"/>
+      <xsd:import schemaLocation="http://demopayment.frscfinescollection.com.ng/Service.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+      <xsd:import schemaLocation="http://demopayment.frscfinescollection.com.ng/Service.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/PaymentLibrary"/>
+      <xsd:import schemaLocation="http://demopayment.frscfinescollection.com.ng/Service.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses"/>
+      <xsd:import schemaLocation="http://demopayment.frscfinescollection.com.ng/Service.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Data"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IService_ClientActivation_InputMessage">
+    <wsdl:part name="parameters" element="tns:ClientActivation"/>
+  </wsdl:message>
+  <wsdl:message name="IService_ClientActivation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ClientActivationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IService_SystemSettings_InputMessage">
+    <wsdl:part name="parameters" element="tns:SystemSettings"/>
+  </wsdl:message>
+  <wsdl:message name="IService_SystemSettings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SystemSettingsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IService_AcceptPayment_InputMessage">
+    <wsdl:part name="parameters" element="tns:AcceptPayment"/>
+  </wsdl:message>
+  <wsdl:message name="IService_AcceptPayment_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AcceptPaymentResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IService_SingleCapture_InputMessage">
+    <wsdl:part name="parameters" element="tns:SingleCapture"/>
+  </wsdl:message>
+  <wsdl:message name="IService_SingleCapture_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SingleCaptureResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IService_BulkCapture_InputMessage">
+    <wsdl:part name="parameters" element="tns:BulkCapture"/>
+  </wsdl:message>
+  <wsdl:message name="IService_BulkCapture_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BulkCaptureResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="IService">
+    <wsdl:operation name="ClientActivation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService/ClientActivation" message="tns:IService_ClientActivation_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService/ClientActivationResponse" message="tns:IService_ClientActivation_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="SystemSettings">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService/SystemSettings" message="tns:IService_SystemSettings_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService/SystemSettingsResponse" message="tns:IService_SystemSettings_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="AcceptPayment">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService/AcceptPayment" message="tns:IService_AcceptPayment_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService/AcceptPaymentResponse" message="tns:IService_AcceptPayment_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="SingleCapture">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService/SingleCapture" message="tns:IService_SingleCapture_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService/SingleCaptureResponse" message="tns:IService_SingleCapture_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="BulkCapture">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService/BulkCapture" message="tns:IService_BulkCapture_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IService/BulkCaptureResponse" message="tns:IService_BulkCapture_OutputMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IService" type="tns:IService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ClientActivation">
+      <soap:operation soapAction="http://tempuri.org/IService/ClientActivation" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SystemSettings">
+      <soap:operation soapAction="http://tempuri.org/IService/SystemSettings" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AcceptPayment">
+      <soap:operation soapAction="http://tempuri.org/IService/AcceptPayment" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SingleCapture">
+      <soap:operation soapAction="http://tempuri.org/IService/SingleCapture" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BulkCapture">
+      <soap:operation soapAction="http://tempuri.org/IService/BulkCapture" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="BasicHttpBinding_IService" binding="tns:BasicHttpBinding_IService">
+      <soap:address location="http://demopayment.frscfinescollection.com.ng/Service.svc/Payment_WCF"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

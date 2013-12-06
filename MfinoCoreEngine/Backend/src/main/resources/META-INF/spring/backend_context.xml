@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+--><!-- Configures the Camel Context-->
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:camel="http://camel.apache.org/schema/spring"  
+	   xmlns:broker="http://activemq.apache.org/schema/core" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"  
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+	
+	<context:annotation-config />
+	
+	<!-- 
+		Import all osgi services for use in backend context
+	 -->
+	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+	<osgi:reference id="subscriberDAO" interface="com.mfino.dao.SubscriberDAO"/>
+    <osgi:reference id="subscriberMDNDAO" interface="com.mfino.dao.SubscriberMDNDAO"/>
+    <osgi:reference id="activitiesLogDAO" interface="com.mfino.dao.ActivitiesLogDAO"/>
+    <osgi:reference id="pocketDAO" interface="com.mfino.dao.PocketDAO"/>
+    <osgi:reference id="notificationDAO" interface="com.mfino.dao.NotificationDAO"/>
+    <osgi:reference id="mfinoServiceProviderDAO" interface="com.mfino.dao.MfinoServiceProviderDAO"/>
+    <osgi:reference id="pendingCommodityTransferDAO" interface="com.mfino.dao.PendingCommodityTransferDAO"/>
+    <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
+    <osgi:reference id="transactionLogDao" interface="com.mfino.dao.TransactionsLogDAO"/>
+    <osgi:reference id="systemParameterDao" interface="com.mfino.dao.SystemParametersDao"/>
+    <osgi:reference id="commodityTransferDao" interface="com.mfino.dao.CommodityTransferDAO"/>
+    <osgi:reference id="ledgerDao" interface="com.mfino.dao.LedgerDAO"/>
+    <osgi:reference id="pendingTransactionsEntryDAO" interface="com.mfino.dao.PendingTransactionsEntryDAO"/>
+    <osgi:reference id="pendingTransactionsFileDao" interface="com.mfino.dao.PendingTransactionsFileDAO"/>
+    <osgi:reference id="userDao" interface="com.mfino.dao.UserDAO" />
+    <osgi:reference id="sctlDao" interface="com.mfino.dao.ServiceChargeTransactionLogDAO" /> 
+    <osgi:reference id="commodityTransferNextIDDAO" interface="com.mfino.dao.CommodityTransferNextIDDAO" />
+	<osgi:reference id="unRegisteredTxnInfoDAO" interface="com.mfino.dao.UnRegisteredTxnInfoDAO" />
+	<osgi:reference id="chargeTxnCommodityTransferMapDAO" interface="com.mfino.dao.ChargeTxnCommodityTransferMapDAO" />
+	<osgi:reference id="fundDistributionInfoDAO" interface="com.mfino.dao.FundDistributionInfoDAO" />	
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+ 	<osgi:reference id="mfsLedgerDAO" interface="com.mfino.dao.MFSLedgerDAO"/>
+ 	<osgi:reference id="integrationSummaryDao" interface="com.mfino.dao.IntegrationSummaryDao"/>
+	<osgi:reference id="fundStorageServiceImpl" bean-name="FundStorageServiceImpl" interface="com.mfino.service.FundStorageService"/>
+	<osgi:reference id="notificationMessageParserServiceImpl" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService"/>
+	<osgi:reference id="unRegisteredTxnInfoServiceImpl" bean-name="UnRegisteredTxnInfoServiceImpl" interface="com.mfino.service.UnRegisteredTxnInfoService" />
+	<osgi:reference id="transactionPendingSummaryServiceImpl" bean-name="TransactionPendingSummaryServiceImpl" interface="com.mfino.service.TransactionPendingSummaryService" />
+	<osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" />
+	<osgi:reference id="transactionLogServiceCoreImpl" bean-name="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService"/>
+	<osgi:reference id="fundValidationServiceImpl" bean-name="FundValidationServiceImpl" interface="com.mfino.service.FundValidationService"/>
+	
+	<osgi:reference id="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
+	<osgi:reference id="moneyServiceImpl" bean-name="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>
+	<osgi:reference id="mfinoUtilServiceImpl" bean-name="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService"/>
+	<osgi:reference id="subscriberStatusEventServiceImpl" bean-name="SubscriberStatusEventServiceImpl" interface="com.mfino.service.SubscriberStatusEventService"/>
+	
+		
+	<context:component-scan base-package="com.mfino.webapi.services" />
+ 	<context:component-scan base-package="com.mfino.webapi.servlet" />
+    <context:component-scan base-package="com.mfino.service.impl" />
+    <context:component-scan base-package="com.mfino.transactionapi.service"/>
+    <context:component-scan base-package="com.mfino.transactionapi.handlers"/>
+    <context:component-scan base-package="com.mfino.service" />
+    
+	 <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="coreDataWrapper" class="com.mfino.mce.core.CoreDataWrapper">
+		<property name="subscriberDAO" ref="subscriberDAO"/>
+		<property name="subscriberMDNDAO" ref="subscriberMDNDAO"/>
+		<property name="transactionLogDao" ref="transactionLogDao"/>
+		<property name="activitiesLogDAO" ref="activitiesLogDAO"/>
+		<property name="pocketDAO" ref="pocketDAO"/>
+		<property name="notificationDAO" ref="notificationDAO"/>
+		<property name="mfinoServiceProviderDAO" ref="mfinoServiceProviderDAO"/>
+		<property name="pendingCommodityTransferDAO" ref="pendingCommodityTransferDAO"/>
+		<property name="systemParameterDao" ref="systemParameterDao"/>
+		<property name="commodityTransferDao" ref="commodityTransferDao"/>
+		<property name="ledgerDao" ref="ledgerDao"/>
+		<property name="pendingTransactionsEntryDAO" ref="pendingTransactionsEntryDAO"/>
+		<property name="pendingTransactionsFileDao" ref="pendingTransactionsFileDao"/>
+		<property name="userDAO" ref="userDao"/>
+		<property name="sctlDao" ref="sctlDao"/>
+		<property name="commodityTransferNextIDDAO" ref="commodityTransferNextIDDAO"/>
+		<property name="unRegisteredTxnInfoDAO" ref="unRegisteredTxnInfoDAO"/>
+		<property name="chargeTxnCommodityTransferMapDAO" ref="chargeTxnCommodityTransferMapDAO"/>
+		<property name="fundDistributionInfoDAO" ref="fundDistributionInfoDAO" />
+		<property name="mfsLedgerDAO" ref="mfsLedgerDAO"/>
+		<property name="integrationSummaryDao" ref="integrationSummaryDao" />
+		
+	</bean>
+	
+	<bean id="commodityTransferSequenceGeneratorImpl" class="com.mfino.mce.backend.impl.CommodityTransferSequenceGeneratorImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+	</bean>
+	
+	<bean id="commodityTransferServiceImpl" class="com.mfino.mce.backend.impl.CommodityTransferServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="timeout" value="${pct.timeout}"></property>
+		<property name="commodityTransferSequenceGenerator" ref="commodityTransferSequenceGeneratorImpl"></property>
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="transactionLogServiceImpl" class="com.mfino.mce.backend.impl.TransactionLogServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+	</bean>
+	<bean id="dfundServiceImpl" class="com.mfino.mce.backend.impl.FundServiceImpl">
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="coreDataWrapper" ref="coreDataWrapper"/> 
+		<property name="fundStorageService" ref="fundStorageServiceImpl"/>
+		<property name="fundValidationService" ref="fundValidationServiceImpl" />
+	</bean>
+	
+	<bean id="ledgerServiceImpl" class="com.mfino.mce.backend.impl.LedgerServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="moneyService" ref="moneyServiceImpl" />
+	</bean>
+
+	<bean id="validationServiceImpl" class="com.mfino.mce.backend.impl.ValidationServiceImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="mfinoUtilService" ref="mfinoUtilServiceImpl"/>
+		<property name="ledgerService" ref="ledgerServiceImpl" />
+		<property name="subscriberStatusEventService" ref="subscriberStatusEventServiceImpl"/>
+	</bean>
+	
+
+	<bean id="integrationSummaryService" class="com.mfino.mce.backend.impl.IntegrationSummaryServiceImpl">
+	<property name="coreDataWrapper" ref="coreDataWrapper"/>
+	</bean>
+	
+	<bean id="bankServiceDefaultImpl" class="com.mfino.mce.backend.impl.BankServiceDefaultImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="validationService" ref="validationServiceImpl" />
+		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
+		<property name="ledgerService" ref="ledgerServiceImpl" />
+		<property name="moneyService" ref="moneyServiceImpl" />
+		<property name="integrationSummaryService" ref="integrationSummaryService" />
+	</bean>
+	
+	<bean id="backendDefaultImpl" class="com.mfino.mce.backend.impl.BackendServiceDefaultImpl">
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="validationService" ref="validationServiceImpl" />
+		<property name="transactionLogService" ref="transactionLogServiceImpl" />
+		<property name="pendingClearanceService" ref="pendingClearanceServiceImpl" />
+		<property name="defaultFundServiceImpl" ref="dfundServiceImpl"/>
+		<property name="unRegisteredTxnInfoService"	ref="unRegisteredTxnInfoServiceImpl" />	
+		<property name="isOfflineBank" value="${offline.bank}"/>
+	</bean>
+	
+	<bean id="pendingClearanceServiceImpl" class="com.mfino.mce.backend.impl.PendingClearanceServiceDefaultImpl">
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
+		<property name="transactionPendingSummaryService" ref="transactionPendingSummaryServiceImpl"/>
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+	</bean>
+	
+	<bean id="autoReversalServiceDefaultImpl" class="com.mfino.mce.backend.impl.AutoReversalServiceImpl">
+		<property name="transactionLogService" ref="transactionLogServiceCoreImpl"/>	
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="sessionFactory" ref="sessionFactory"/>	
+	</bean>
+	
+	<bean id="autoReversalPendingResolveService" class="com.mfino.mce.backend.impl.AutoReversalPendingResolveServiceImpl">
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="autoReversalService" ref="autoReversalServiceDefaultImpl" />
+		<property name="sessionFactory" ref="sessionFactory"/>		
+	</bean>
+	
+	
+	<!--
+	  Create an osgi service from the bean created above
+	-->
+	<osgi:service ref="backendDefaultImpl">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.BackendService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	 
+	<osgi:service ref="pendingClearanceServiceImpl">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.PendingClearanceService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="coreDataWrapper">
+		<osgi:interfaces>
+			<value>com.mfino.mce.core.CoreDataWrapper</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="bankServiceDefaultImpl">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.BankService</value>
+		</osgi:interfaces>
+	</osgi:service>	
+	
+	<osgi:service ref="autoReversalServiceDefaultImpl">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.AutoReversalService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="autoReversalPendingResolveService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.AutoReversalPendingResolveService</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service ref="commodityTransferServiceImpl">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.CommodityTransferService</value>
+		</osgi:interfaces>
+	</osgi:service>
+	
+	<osgi:service ref="integrationSummaryService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.IntegrationSummaryService</value>
+		</osgi:interfaces>
+	</osgi:service>
+		
+	<tx:annotation-driven transaction-manager="txManager" />		
+</beans>

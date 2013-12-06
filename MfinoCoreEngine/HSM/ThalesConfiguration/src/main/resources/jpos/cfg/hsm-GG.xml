@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='GG'> 
+	<field id='firstzmk' type='A' length='33' />
+	<field id='secondzmk' type='A' length='33' />
+	<field id='thirdzmk' type='A' length='33' />
+</schema> 

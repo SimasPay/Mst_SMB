@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:50 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.PartnerRestrictions" optimistic-lock="version" table="partner_restrictions" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="DistributionChainTemplateByDCTID" foreign-key="FK_PartnerRestrictions_DistributionChainTemplateByDCTID" class="com.mfino.domain.DistributionChainTemplate" fetch="select">
+<column name="DCTID"     />
+</many-to-one>
+<many-to-one name="Partner" foreign-key="FK_PartnerRestrictions_Partner" class="com.mfino.domain.Partner" fetch="select">
+<column name="PartnerID"     />
+</many-to-one>
+<many-to-one name="TransactionType" foreign-key="FK_PartnerRestrictions_TransactionType" class="com.mfino.domain.TransactionType" fetch="select">
+<column name="TransactionTypeID"     />
+</many-to-one>
+<property name="IsAllowed" type="java.lang.Boolean" >
+<column name="IsAllowed"    sql-type="tinyint" />
+</property>
+<property name="IsValid" type="java.lang.Boolean" >
+<column name="IsValid"    sql-type="tinyint" />
+</property>
+<property name="RelationShipType" type="java.lang.Integer" >
+<column name="RelationShipType"    sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

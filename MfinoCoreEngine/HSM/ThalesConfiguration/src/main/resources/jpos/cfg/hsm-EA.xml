@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='EA'>
+<field id='zpkunderlmk'  type='A' length='16'/>
+<field id='pvkunderlmk' type='A' length='16'/>
+<field id='maxpinlength'  type='N' length='2'/>
+<field id='pinblock'  type='A' length='16'/>
+<field id='pinblockformat'  type='N' length='2'/>
+<field id='minpinlength'  type='N' length='2'/>
+<field id='accountnumber'  type='N' length='12'/>
+<field id='dt'  type='N' length='16'/>
+<field id='pvd'  type='A' length='12'/>
+<field id='offset'  type='A' length='12'/>
+</schema> 

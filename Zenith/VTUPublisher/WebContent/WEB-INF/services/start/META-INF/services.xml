@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST) -->
+<serviceGroup>
+    <service name="start">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="com.ucitech.neptune.StartMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">com.ucitech.neptune.StartSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="addCustomerProductsByMerchant" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/addCustomerProductsByMerchantRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/addCustomerProductsByMerchantResponse</outputActionMapping>
+        </operation>
+        <operation name="delCustomerProductByMerchant" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/delCustomerProductByMerchantRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/delCustomerProductByMerchantResponse</outputActionMapping>
+        </operation>
+        <operation name="queryCustomerByMerchant" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/queryCustomerByMerchantRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/queryCustomerByMerchantResponse</outputActionMapping>
+        </operation>
+        <operation name="delCustomerProductsByMerchant" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/delCustomerProductsByMerchantRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/delCustomerProductsByMerchantResponse</outputActionMapping>
+        </operation>
+        <operation name="login" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/loginRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/loginResponse</outputActionMapping>
+        </operation>
+        <operation name="addCustomerProductByMerchant" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/addCustomerProductByMerchantRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/addCustomerProductByMerchantResponse</outputActionMapping>
+        </operation>
+        <operation name="queryMerchants" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/queryMerchantsRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/queryMerchantsResponse</outputActionMapping>
+        </operation>
+        <operation name="queryMerchantProducts" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/queryMerchantProductsRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/queryMerchantProductsResponse</outputActionMapping>
+        </operation>
+        <operation name="queryMerchantTransaction" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://neptune.ucitech.com/">
+            <actionMapping>http://neptune.ucitech.com/start/queryMerchantTransactionRequest</actionMapping>
+            <outputActionMapping>http://neptune.ucitech.com/start/queryMerchantTransactionResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

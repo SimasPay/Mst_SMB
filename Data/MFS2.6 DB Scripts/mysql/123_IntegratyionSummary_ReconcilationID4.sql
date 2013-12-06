@@ -1,0 +1,1 @@
+ALTER TABLE `integration_summary` ADD COLUMN `ReconcilationID4` VARCHAR(225) NULL DEFAULT NULL  AFTER `ReconcilationID3` ;

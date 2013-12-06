@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.openmobileallianceorg.org/tech/DTD/xhtml-mobile10.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <HEAD>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <TITLE>National Mobile - Mobile Banking</TITLE>
+        <link type="text/css" href="../css/mfino.css" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="../images/desktop_logo.png"/>
+        <SCRIPT type="text/javascript" src="../js/mfino.js">
+        </SCRIPT>
+        <SCRIPT type="text/javascript" >
+            window.addEventListener('load', function(){ setTimeout(scrollTo, 0, 0, 1); }, false);
+        </SCRIPT>
+        <script type="text/javascript" src="http://www.google.com/jsapi">
+        </script>
+        <script src="http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" type="text/javascript">
+        </script>
+        <script type="text/javascript">
+
+            google.load("feeds", "1");
+
+            var feeds = [
+                {
+                    title: 'MarketWatch.com - Top Stories',
+                    url : 'http://feeds.marketwatch.com/marketwatch/topstories'
+                }
+                ,{
+                    title: '',
+                    url : ''
+                }
+                ,{
+                    title: '',
+                    url : ''
+                }
+            ];
+
+            var dynFeedsCtrl = null;
+
+            function LoadDynamicFeedControl() {
+                var options = {
+                    stacked : true,
+                    horizontal : false,
+                    numResults : 5,
+                    displayTime : 5000,
+                    fadeOutTime : 500,
+                    scrollOnFadeOut : true,
+                    linkTarget : google.feeds.LINK_TARGET_SELF,
+                    pauseOnHover : true
+                }
+                
+                loadNewsList();
+                dynFeedsCtrl = new GFdynamicFeedControl(feeds, 'feed-control', options);
+            }
+
+            google.setOnLoadCallback(LoadDynamicFeedControl);
+
+        </script>
+    </HEAD>
+    <body onload="setTimeout('effects()',50);" >
+
+        <DIV class="header1">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%">
+                        </td>
+                        <td width="60%">
+                            <a id="homeLink" href="desktop.html"><span style="display:none;">Home</span></a>
+                        </td>
+                        <td width="20%"  valign="bottom">
+                            <div style="height: 10px;">&nbsp;</div>
+                            <INPUT id="signoutbutton" type="button" value="Sign Out" class="sign_out" onclick="doSignOut();">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <hr>
+        <DIV class="header2">
+            <table border="0" width="100%" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td width="20%" valign="middle">
+                            <INPUT id="editbutton" type="button" value=" Edit" class="menuButton" onclick="goToPage('editnews.html');" >
+                        </td>
+                        <td width="60%">
+                            <DIV align="center"> News </DIV>
+                        </td>
+                        <td width="20%">
+                            <INPUT id="menubutton"
+                                   type="button"
+                                   value="Menu"
+
+                                   class="menuButton"
+                                   onclick="goToPage('trading.html');"
+                                   >
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </DIV>
+        <DIV id="TICKER" style="background-color:white;color:black;overflow:hidden;width:320px;"  onmouseover="TICKER_PAUSED=true" onmouseout="TICKER_PAUSED=false">
+               
+        </DIV>
+        <script type="text/javascript" src="../js/webticker_lib.js" language="javascript"></script>
+        <HR>
+        <DIV id="cmbody">
+            <div id="feed-control">
+                Loading ...
+            </div>
+            <DIV class="footer1" align="center" valign="middle">
+                <IMG border="0" alt="" src="../images/secure.png"> © 2009 mFino Inc. All rights reserved.
+            </DIV>
+        </DIV>
+    </BODY>
+</HTML>

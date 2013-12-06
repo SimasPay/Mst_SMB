@@ -1,0 +1,549 @@
+{
+  "totalCount": 5,
+  "version": 2.6,
+  "success": true,
+  "paymentData": [
+    {
+      "productCategory": "AIRLINES AND HOTEL PAYMENTS",
+      "providers": [
+        {
+          "providerName": "AEROBOOKONHOLD",
+          "products": [
+            {
+              "productName": "Book-On-Hold Payment",
+              "productCode": "215161"
+            }
+          ]
+        },
+		{
+          "providerName": "AERO MOBILE BOOK ON HOLD",
+          "products": [
+            {
+              "productName": "Aero Mobile booking payment",
+              "productCode": "915617"
+            }
+          ]
+        },
+		{
+          "providerName": "ARIK AIR BOOK ON HOLD",
+          "products": [
+            {
+              "productName": "Airline Ticket",
+              "productCode": "66701"
+            }
+          ]
+        },
+		{
+          "providerName": "SLIM TRADER",
+          "products": [
+            {
+              "productName": "Slim Trader Mobile Booking",
+              "productCode": "914550"
+            }
+          ]
+        },
+		{
+          "providerName": "TRAVEL START WEB LOGISTICS",
+          "products": [
+            {
+              "productName": "Flight Tickets",
+              "productCode": "13401"
+            },
+			{
+              "productName": "Hotel Accomodation",
+              "productCode": "13402"
+            },
+			{
+              "productName": "Travel Insurance",
+              "productCode": "13403"
+            },
+			{
+              "productName": "Travel Packages",
+              "productCode": "13404"
+            }
+          ]
+        },
+		{
+          "providerName": "WAKA NOW BOOK ON HOLD",
+          "products": [
+            {
+              "productName": "Waka Now Book-On-Hold",
+              "productCode": "123517"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productCategory": "BLACKBERRY",
+      "providers": [
+        {
+          "providerName": "AIRTEL BLACKBERRY",
+          "products": [
+            {
+              "productName": "Airtel blackberry",
+              "productCode": "12501"
+            }
+          ]
+        },
+        {
+          "providerName": "GLO BLACKBERRY PLANS",
+          "products": [
+            {
+              "productName": "GLO BLACKBERRY PLANS",
+              "productCode": "12620"
+            },
+			{
+              "productName": "BIS Month",
+              "productCode": "12601"
+            },
+			{
+              "productName": "BES Week",
+              "productCode": "12621"
+            },
+			{
+              "productName": "Complete Month",
+              "productCode": "12619"
+            },
+			{
+              "productName": "Social Month",
+              "productCode": "12616"
+            },
+			{
+              "productName": "BIS Week",
+              "productCode": "12613"
+            },
+			{
+              "productName": "Complete Week",
+              "productCode": "12618"
+            },
+			{
+              "productName": "BIS Day",
+              "productCode": "12612"
+            },
+			{
+              "productName": "Complete Day",
+              "productCode": "12617"
+            },
+			{
+              "productName": "Social Day",
+              "productCode": "12614"
+            }
+          ]
+        },
+		{
+          "providerName": "MTN BLACKBERRY",
+          "products": [
+            {
+              "productName": "MTN Blackberry",
+              "productCode": "12401"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productCategory": "CABLE TV BILLS",
+      "providers": [
+        {
+          "providerName": "DSTV SUBSCRIPTION",
+          "products": [
+            {
+              "productName": "ASIAN BOUQUET",
+              "productCode": "10417"
+            },
+			{
+              "productName": "ACCESS BOUQUET + PVR ACCESS",
+              "productCode": "10435"
+            },
+			{
+              "productName": "ACCESS BOUQUET + GERMAN",
+              "productCode": "10436"
+            },
+			{
+              "productName": "ACCESS BOUQUET + EXTRA VIEW",
+              "productCode": "10434"
+            },
+			{
+              "productName": "ACCESS BOUQUET + DUAL",
+              "productCode": "10429"
+            },
+			{
+              "productName": "ACCESS BOUQUET + ASIA",
+              "productCode": "10432"
+            },
+			{
+              "productName": "ACCESS BOUQUET",
+              "productCode": "10428"
+            },
+			{
+              "productName": "ACCESS BOUQUET + FRENCH",
+              "productCode": "10433"
+            },
+			{
+              "productName": "PREMIUM + PVR ACCESS",
+              "productCode": "10408"
+            },
+			{
+              "productName": "PREMIUM + GERMAN",
+              "productCode": "10421"
+            },
+			{
+              "productName": "PREMIUM + FRENCH + DUAL",
+              "productCode": "10427"
+            },
+			{
+              "productName": "PREMIUM + FRENCH + ASIA +GERMAN",
+              "productCode": "10455"
+            },
+			{
+              "productName": "PREMIUM + FRENCH + ASIA",
+              "productCode": "10454"
+            },
+			{
+              "productName": "PREMIUM + FRENCH",
+              "productCode": "10414"
+            },
+			{
+              "productName": "PREMIUM + EXTRA VIEW",
+              "productCode": "10456"
+            },
+			{
+              "productName": "PREMIUM + DUAL",
+              "productCode": "10402"
+            },
+			{
+              "productName": "PREMIUM + ASIA + PVR ACCESS",
+              "productCode": "10457"
+            },
+			{
+              "productName": "PREMIUM + ASIA + DUAL",
+              "productCode": "10426"
+            },
+			{
+              "productName": "PREMIUM",
+              "productCode": "10401"
+            },
+			{
+              "productName": "MINIASIA+ PVR ACCESS",
+              "productCode": "10464"
+            },
+			{
+              "productName": "MINI + PVR ACCESS",
+              "productCode": "10409"
+            },
+			{
+              "productName": "MINI + GERMAN",
+              "productCode": "10463"
+            },
+			{
+              "productName": "MINI + FRENCH",
+              "productCode": "10444"
+            },
+			{
+              "productName": "MINI + EXTRA VIEW",
+              "productCode": "10443"
+            },
+			{
+              "productName": "MINI + DUAL",
+              "productCode": "10423"
+            },
+			{
+              "productName": "MINI + DUAL",
+              "productCode": "10404"
+            },
+			{
+              "productName": "MINI + ASIA +GERMAN",
+              "productCode": "10442"
+            },
+			{
+              "productName": "MINI + ASIA + DUAL",
+              "productCode": "10462"
+            },
+			{
+              "productName": "MINI + ASIA",
+              "productCode": "10422"
+            },
+			{
+              "productName": "MINI",
+              "productCode": "10403"
+            },
+			{
+              "productName": "GERMAN ALONE",
+              "productCode": "10411"
+            },
+			{
+              "productName": "FRENCH ALONE",
+              "productCode": "10415"
+            },
+			{
+              "productName": "FAMILY BOUQUET",
+              "productCode": "10406"
+            },
+			{
+              "productName": "FAMILY + PVR ACCESS",
+              "productCode": "10410"
+            },
+			{
+              "productName": "FAMILY + GERMAN",
+              "productCode": "10438"
+            },
+			{
+              "productName": "FAMILY + FRENCH",
+              "productCode": "10439"
+            },
+			{
+              "productName": "FAMILY + EXTRA VIEW",
+              "productCode": "10440"
+            },
+			{
+              "productName": "FAMILY + DUAL",
+              "productCode": "10425"
+            },
+			{
+              "productName": "FAMILY + ASIA",
+              "productCode": "10437"
+            },
+			{
+              "productName": "COMPACT PLUS+ ASIA+PVR ACCESS",
+              "productCode": "10452"
+            },
+			{
+              "productName": "COMPACT PLUS BOUQUET",
+              "productCode": "10430"
+            },
+			{
+              "productName": "COMPACT PLUS + PVR ACCESS",
+              "productCode": "10451"
+            },
+			{
+              "productName": "COMPACT PLUS + GERMAN",
+              "productCode": "10447"
+            },
+			{
+              "productName": "COMPACT PLUS + EXTRA VIEW",
+              "productCode": "10450"
+            },
+			{
+              "productName": "COMPACT PLUS + FRENCH",
+              "productCode": "10448"
+            },
+			{
+              "productName": "COMPACT PLUS + ASIA + ZDF",
+              "productCode": "10446"
+            },
+			{
+              "productName": "COMPACT PLUS + ASIA + DUAL VIEW",
+              "productCode": "10453"
+            },
+			{
+              "productName": "COMPACT PLUS + ASIA",
+              "productCode": "10445"
+            },
+			{
+              "productName": "ASIAN BOUQUET + PVR ACCESS",
+              "productCode": "10460"
+            },
+			{
+              "productName": "ASIAN BOUQUET + EXTRA VIEW",
+              "productCode": "10459"
+            },
+			{
+              "productName": "ASIAN BOUQUET + DUAL",
+              "productCode": "10420"
+            },
+			{
+              "productName": "PREMIUM + ASIA",
+              "productCode": "10418"
+            },
+			{
+              "productName": "COMPACT PLUS + DUAL VIEW",
+              "productCode": "10449"
+            }
+          ]
+        },
+		{
+          "providerName": "GOtv",
+          "products": [
+            {
+              "productName": "GotV",
+              "productCode": "459112"
+            },
+			{
+              "productName": "Gotv Mobile",
+              "productCode": "459113"
+            },
+			{
+              "productName": "GOtvplus",
+              "productCode": "459111"
+            }
+          ]
+        },
+		{
+          "providerName": "INFINITY TV PAYMENTS",
+          "products": [
+            {
+              "productName": "Infinity Super Max",
+              "productCode": "308523"
+            },
+			{
+              "productName": "Infinity Max",
+              "productCode": "308516"
+            },
+			{
+              "productName": "Infinity Turbo Max",
+              "productCode": "308524"
+            },
+			{
+              "productName": "CEC Channel",          
+              "productCode": "308525"
+            }
+          ]
+        },
+		{
+          "providerName": "IROKO TV",
+          "products": [
+            {
+              "productName": "iROKOtv Plus Web Access",
+              "productCode": "97701"
+            }
+          ]
+        },
+		{
+          "providerName": "MYTV SUBSCRIPTION PAYMENT",
+          "products": [
+            {
+              "productName": "6 Months Subscription",
+              "productCode": "11251"
+            },
+			{
+              "productName": "3 Months Subscription",
+              "productCode": "11250"
+            },
+			{
+              "productName": "12 Months Subscription",
+              "productCode": "11252"
+            },
+			{
+              "productName": "1 Month Subscription",
+              "productCode": "11249"
+            }
+			
+          ]
+        },
+		{
+          "providerName": "STARTIMES",
+          "products": [
+            {
+              "productName": "Startimes Subscription",
+              "productCode": "240534"
+            }
+          ]
+        }
+		
+      ]
+    },
+	{
+      "productCategory": "DONATIONS",
+      "providers": [
+        {
+          "providerName": "ADAMS OSHIOMOLE CAMPAIGN 2012",
+          "products": [
+            {
+              "productName": "Donation",
+              "productCode": "39301"
+            }
+          ]
+        },
+		{
+          "providerName": "DAWAH NIGERIA",
+          "products": [
+            {
+              "productName": "Donation",
+              "productCode": "45644"
+            }
+          ]
+        },
+		{
+          "providerName": "FREEDOM FOUNDATION",
+          "products": [
+            {
+              "productName": "Women's Rehabilitation(Genesis House)",
+              "productCode": "211122"
+            },
+			{
+              "productName": "Vocational Training(Freedom Empowerment)",
+              "productCode": "211124"
+            },
+			{
+              "productName": "Men's Drug Rehabilitation(House of Refuge)",
+              "productCode": "211123"
+            },
+			{
+              "productName": "Children Education - Bethseda Child Support",
+              "productCode": "211121"
+            }
+          ]
+        },
+		{
+          "providerName": "NATIONAL CANCER PREVENTION PROGRAMME",
+          "products": [
+            {
+              "productName": "Focus on Cancer - ICPD 2011",
+              "productCode": "777526"
+            }
+          ]
+        },
+		{
+          "providerName": "RED CROSS SCOIETY OF NIGERIA",
+          "products": [
+            {
+              "productName": "Red Cross Donations",
+              "productCode": "218169"
+            }
+          ]
+        }
+      ]
+    },
+	{
+      "productCategory": "INVOICE PAYMENTS",
+      "providers": [
+        {
+          "providerName": "DEALDEY",
+          "products": [
+            {
+              "productName": "DealDey Credit",
+              "productCode": "305484"
+            }
+          ]
+        },
+        {
+          "providerName": "DHL SHIPPING PAYMENTS",
+          "products": [
+            {
+              "productName": "Courier Services",
+              "productCode": "312556"
+            }
+          ]
+        },
+		{
+          "providerName": "OANDO MARKETING LIMITED",
+          "products": [
+            {
+              "productName": "PMS	 AGO & Others",
+              "productCode": "20702"
+            },
+			{
+              "productName": "LPG",
+              "productCode": "20703"
+            },
+			{
+              "productName": "ATK",
+              "productCode": "20701"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

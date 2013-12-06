@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "org/apache/log4j/xml/log4j.dtd" > 
+<log4j:configuration>
+    <appender name="CONSOLEAPPENDER" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{MMM dd, HH:mm:ss.SSS.zzz}] %5p %c{1}:%L - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="warn" />
+        </filter>
+    </appender>
+    
+    <appender name="FILEAPPENDER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/var/log/mfino/bookingDatedValue.log"/>
+        <!--<param name="MaxFileSize" value="10MB"/>-->
+        <!--<param name="MaxBackupIndex" value="3"/>-->
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
+        <!-- 
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{MMM dd, HH:mm:ss.SSS.zzz}] %5p %c{1}:%L - %m%n"/>
+        </layout>
+         -->
+        <layout class="org.apache.log4j.TTCCLayout">
+        	<param name="ThreadPrinting" value="true"/>
+        	<param name="ContextPrinting" value="true"/>
+        	<param name="CategoryPrefixing" value="true"/>
+        	<param name="DateFormat" value="ABSOLUTE"/>
+        	<param name="TimeZone" value="GMT+1:00"/>
+        </layout> 
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="info" />
+        </filter>
+    </appender>
+   <!-- 
+    <appender name="EMAILAPPENDER" class="org.apache.log4j.net.SMTPAppender">
+        <param name="SMTPHost" value="mfinomailserver" />
+        <param name="Threshold" value="INFO" />
+        <param name="From" value="engr@mfino.com" />
+        <param name="To" value="engr@mfino.com" />
+        <param name="Subject" value="Error in Application (Smart)" />
+        <param name="LocationInfo" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{MMM dd, HH:mm:ss.SSS.zzz}] %5p %c{1}:%L - %m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="error" />
+        </filter>
+    </appender>
+    -->
+    <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="CONSOLEAPPENDER"/>
+        <appender-ref ref="FILEAPPENDER" />
+  		<!--<appender-ref ref="EMAILAPPENDER" />-->
+    </appender>
+
+    <root>
+        <appender-ref ref="ASYNC"/>
+    </root>
+</log4j:configuration>

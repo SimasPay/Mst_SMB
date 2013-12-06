@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:58 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.AirtimePurchase" optimistic-lock="version" table="airtime_purchase" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SctlId" type="java.lang.Long" >
+<column name="SctlId" not-null="true"  sql-type="bigint" />
+</property>
+<property name="PartnerCode" type="java.lang.String" >
+<column name="PartnerCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="INCode" type="java.lang.String" >
+<column name="INCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="RechargeMDN" type="java.lang.String" >
+<column name="RechargeMDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="Charges" type="big_decimal" >
+<column name="Charges" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="ResponseCode" type="java.lang.Integer" >
+<column name="ResponseCode"    sql-type="int" />
+</property>
+<property name="INTxnId" type="java.lang.String" >
+<column name="INTxnId"    sql-type="varchar(255)" />
+</property>
+<property name="INAccountType" type="java.lang.Integer" >
+<column name="INAccountType"    sql-type="int" />
+</property>
+<property name="AirtimePurchaseStatus" type="java.lang.Integer" >
+<column name="AirtimePurchaseStatus"    sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

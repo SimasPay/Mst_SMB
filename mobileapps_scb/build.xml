@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" basedir="." default="all">
+
+  <property name="profile" value="dev" />
+  <property name="build.dir"    location="build" />		
+	
+  <target name="clean" >	
+		 <delete dir="${build.dir}" />
+  </target>
+    
+<target name="package" depends="clean">
+    <manifest file="MANIFEST.MF" >
+    	<attribute name="url" value="${url}" />
+    </manifest>
+	
+	 <mkdir dir="${build.dir}"/>
+	
+	 <copy todir="${build.dir}">
+	    <fileset dir="./mobileapp/"/>
+	  </copy>
+     <copy file="MANIFEST.MF" tofile="${build.dir}/www/MANIFEST.MF" overwrite="true"/>
+    
+    <copy todir="${build.dir}/www" overwrite="true">
+      <fileset dir="./settings/${profile}/"/>
+    </copy>
+	<javac srcdir="Utils" destdir="Utils" debug="on" optimize="on" includeantruntime="true"/>  
+	<java fork="true" failonerror="yes" classname="MinimizeTool" classpath="Utils">  
+	   <arg value="${build.dir}/www/" />
+	   <arg value="${build.dir}/www/app.js" />
+	 </java>
+	
+	<move file="${build.dir}/www/index.html" tofile="${build.dir}/www/index-dev.html" />
+	<move file="${build.dir}/www/index-production.html" tofile="${build.dir}/www/index.html" />	  
+</target>
+
+   <target name="Blackberry">
+   		<copy todir="./Blackberry/" overwrite="true">
+   			    <fileset dir="${build.dir}/">
+   			    	<exclude name="**/js/**" />
+   			    	<exclude name="**/index-dev.html" />
+   				</fileset>
+   		</copy>
+        <ant dir="./Blackberry" target="build">
+        	<property name="subant.file"  value="blackberry.xml" />
+        </ant>
+   </target>
+	
+   <target name="Android">
+   	 <copy todir="./Android/assets/" overwrite="true">
+   		    <fileset dir="${build.dir}/">
+   		    	<exclude name="**/js/**" />
+   		    	<exclude name="**/index-dev.html" />
+   			</fileset>
+   		  </copy>
+           <ant dir="./Android" target="debug"/> 
+           <ant dir="./Android" target="installd"/>  
+  </target>
+	
+	<target name="all" depends="package" >	
+	<!--   <antcall target="Blackberry"/>  -->
+<antcall target="Android"/> 
+	  </target>	
+ </project>

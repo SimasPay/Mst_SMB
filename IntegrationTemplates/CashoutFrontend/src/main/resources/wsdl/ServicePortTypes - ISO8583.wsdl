@@ -1,0 +1,33 @@
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+xmlns:tns="http://techquest.interswitchng.com/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://techquest.interswitchng.com/"
+ xmlns:quic="http://techquest.interswitchng.com/quickteller/" xmlns:impos="http://techquest.interswitchng.com/impos/"
+ xmlns:scplite="http://techquest.interswitchng.com/scplite/" xmlns:ppn="http://techquest.interswitchng.com/paydirect/payment/notification/"
+ xmlns:apn="http://techquest.interswitchng.com/autopay/payment/notification/" xmlns:kimono="http://techquest.interswitchng.com/kimono/"	
+ xmlns:otp="http://techquest.interswitchng.com/otp/" xmlns:enrollment="http://techquest.interswitchng.com/smartid/"	
+ xmlns:iso8583="http://techquest.interswitchng.com/iso8583/" xmlns:xls="http://techquest.interswitchng.com/xls/"	
+ xmlns:auth="http://techquest.interswitchng.com/authenticate/" xmlns:email="http://techquest.interswitchng.com/email/"
+ xmlns:sms="http://techquest.interswitchng.com/sms/" xmlns:phcn="http://techquest.interswitchng.com/phcn/prepaid/" >
+	
+
+	<wsdl:import namespace="http://techquest.interswitchng.com/" location="InterswitchSchemas - ISO8583.wsdl"/>
+
+
+	<wsdl:message name="Iso8583PostXml">
+		<wsdl:part element="tns:Iso8583PostXml" name="parameters"/>
+	</wsdl:message>
+
+
+	<!-- ######################################################################## -->
+
+	<!-- ############## ISO8583 Service Port Type ###### -->
+	<wsdl:portType name="ISO8583ServicesPortType">
+		<wsdl:operation name="Iso8583PostXml">
+			<wsdl:input message="tns:Iso8583PostXml"/>
+			<wsdl:output message="tns:Iso8583PostXml"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<!-- ################################################# -->
+	
+</wsdl:definitions>

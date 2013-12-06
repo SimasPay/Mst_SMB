@@ -1,0 +1,3 @@
+RENAME TABLE transaction_amount_distribution_log TO txn_amount_distribution_log;
+
+RENAME TABLE service_charge_transaction_log TO service_charge_txn_log;

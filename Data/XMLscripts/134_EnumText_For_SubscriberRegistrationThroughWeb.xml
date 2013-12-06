@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+
+	<changeSet author="MFS_Main" id="DATA-ENUMTEXT-125">
+		<delete tableName="enum_text">
+			<where>TagID='6174'</where>
+		</delete>
+		<insert tableName="enum_text">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="Language" valueNumeric="0"/>
+            <column name="TagName" value="RegistrationMedium"/>
+            <column name="TagID" valueNumeric="6174"/>
+            <column name="EnumCode" value="4"/>
+            <column name="EnumValue" value="Web"/>
+            <column name="DisplayText" value="Web"/>
+		</insert>
+	</changeSet>
+	
+</databaseChangeLog>

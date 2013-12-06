@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:50 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.mFinoServiceProvider" optimistic-lock="version" table="mfino_service_provider" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Name" type="java.lang.String" >
+<column name="Name"    sql-type="varchar(255)" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="Status" type="java.lang.Integer" >
+<column name="Status"    sql-type="int" />
+</property>
+<property name="StatusTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="StatusTime"   length="19" sql-type="datetime" />
+</property>
+<set name="CommodityTransferFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.CommodityTransfer" />
+</set>
+<set name="PendingCommodityTransferFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PendingCommodityTransfer" />
+</set>
+<set name="TransactionsLogFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionsLog" />
+</set>
+<set name="PocketTemplateFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PocketTemplate" />
+</set>
+<set name="BulkUploadFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.BulkUpload" />
+</set>
+<set name="UserFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.User" />
+</set>
+<set name="NotificationFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Notification" />
+</set>
+<set name="Person2PersonFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Person2Person" />
+</set>
+<set name="BrandFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Brand" />
+</set>
+<set name="SubscriberFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+<set name="TransactionTypeFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionType" />
+</set>
+<set name="DistributionChainTemplateFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.DistributionChainTemplate" />
+</set>
+<set name="ServiceFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Service" />
+</set>
+<set name="ServiceTransactionFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ServiceTransaction" />
+</set>
+<set name="PartnerFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Partner" />
+</set>
+<set name="PartnerServicesFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PartnerServices" />
+</set>
+<set name="SettlementTemplateFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SettlementTemplate" />
+</set>
+<set name="ServiceSettlementConfigFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ServiceSettlementConfig" />
+</set>
+<set name="MFSBillerFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MFSBiller" />
+</set>
+<set name="MFSBillerPartnerFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MFSBillerPartner" />
+</set>
+<set name="ServiceChargeTransactionLogFromMSPID" inverse="true">
+<key>
+<column name="MSPID"    />
+</key>
+<one-to-many class="com.mfino.domain.ServiceChargeTransactionLog" />
+</set>
+<set name="TransactionChargeLogFromMSPID" inverse="true">
+<key>
+<column name="MSPID"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionChargeLog" />
+</set>
+<set name="TransactionAmountDistributionLogFromMSPID" inverse="true">
+<key>
+<column name="MSPID"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionAmountDistributionLog" />
+</set>
+<set name="AuthorizingPersonFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.AuthorizingPerson" />
+</set>
+<set name="ChargeTypeFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ChargeType" />
+</set>
+<set name="ChargeDefinitionFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ChargeDefinition" />
+</set>
+<set name="ChargePricingFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ChargePricing" />
+</set>
+<set name="TransactionRuleFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionRule" />
+</set>
+<set name="TransactionChargeFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionCharge" />
+</set>
+<set name="SharePartnerFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.SharePartner" />
+</set>
+<set name="PurposeFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Purpose" />
+</set>
+<set name="ExpirationTypeFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ExpirationType" />
+</set>
+<set name="FundDefinitionFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.FundDefinition" />
+</set>
+<set name="FundDistributionInfoFromMSPID" inverse="true">
+<key>
+<column name="MSPID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.FundDistributionInfo" />
+</set>
+</class>
+</hibernate-mapping>

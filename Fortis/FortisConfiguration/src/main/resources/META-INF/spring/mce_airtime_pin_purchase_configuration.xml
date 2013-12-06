@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd 
+	    http://camel.apache.org/schema/cxf
+		http://camel.apache.org/schema/cxf/camel-cxf.xsd ">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService" />
+
+	<osgi:reference id="billPayMoneyTransferService" interface="com.mfino.billpayments.service.impl.BillPayMoneyTransferServiceImpl" />
+
+	<osgi:reference id="billPayBillerIntegrationService" interface="com.mfino.billpayments.service.BillPayBillerIntegrationService" />
+
+	<osgi:reference id="billPaymentsSuspenceClearanceService" interface="com.mfino.billpayments.service.BillPaymentsSuspenceClearanceService"/>
+
+	<osgi:reference id="billPayPendingResolveService" interface="com.mfino.billpayments.service.BillPayPendingResolveService"/>
+
+	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+
+	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
+
+	<osgi:reference id="systemParametersServiceImpl" bean-name="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
+
+
+	<osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder" />
+
+	<bean id="mfinoHttpClient" class="com.mfino.atpp.service.MfinoHttpConnector">
+		<property name="timeout" value="${atpp_https_timeout}"/>
+	</bean>
+	<bean id="xmlOverHttpCommunicator" class="com.mfino.atpp.communicator.AtppHttpClient">
+		<property name="airtimePinPurchaseUrl" value="http://milesbreed.com/airtime/api/v1/order"/>
+		<property name="httpClient" ref="mfinoHttpClient"/>
+	</bean>	
+	
+
+	<bean id="atppBillPayEventProcessingService" class="com.mfino.atpp.AtppEventProcessingServiceImpl">
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+		<property name="sessionFactory" ref="sessionFactory"/>	
+		<property name="billPaymentsService" ref="billPaymentsService"/>	
+	</bean>	
+
+	<bean id="atppCommunicator" class="com.mfino.atpp.communicator.AtppCommunicatorImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="hibernateSessionHolder" ref="hibernateSessionHolder" />
+	 	<property name="billPaymentsService" ref="billPaymentsService"/>
+	 	<property name="xmlHttpCommunicator" ref="xmlOverHttpCommunicator"/>
+	 	<property name="subscriberService" ref="subscriberServiceImpl" />	
+	 	<property name="systemParametersService" ref="systemParametersServiceImpl" />    
+	</bean>	
+
+	<camelContext id="airtimePinPurchase" xmlns="http://camel.apache.org/schema/spring">
+
+		<!-- Starting point for mfino bill pay integrations -->
+
+		<route>
+			<from uri="jms:airtimePinPurchaseQueue?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayInquiry'</simple> <!-- Inquiry Flow -->
+				<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspense" />
+				<filter>
+					<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_INQ_TO_BANK</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- money transfer inquiry is completed, proceed to bill payment inquiry -->
+					<filter>
+						<simple>${body.response.result} == '0'</simple>
+						<setHeader headerName="eventContext">
+							<!-- <simple resultType="java.lang.String" >SRC_SUSPENSE_INQ_SUCCESS</simple> -->
+							<constant>SRC_SUSPENSE_INQ_SUCCESS</constant>
+						</setHeader>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+					<filter>
+						<simple>${body.response.result} != '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>SRC_SUSPENSE_INQ_FAILED</constant>
+						</setHeader>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+					</filter>
+				</filter>
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPay'</simple> <!-- Confirmation Flow -->
+				<to
+					uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSourceToSuspense" />
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+					<filter>
+						<simple>${body.response.result} == '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>
+						</setHeader>
+						<multicast>
+							<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+							<to uri="jms:atppBillerConfirmationQueue?disableReplyTo=true" />
+						</multicast>
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- money transfer inquiry is completed, proceed to bill payment inquiry -->
+					<filter>
+						<simple>${body.response.result} != '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>
+						</setHeader>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple> <!-- give this to front end as it needs to go to bank -->
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_CONFIRMATION_TO_BANK</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayPendingRequest'</simple> <!-- pending resolve Flow -->
+					<to uri="bean:billPayPendingResolveService?method=resolvePendingTransaction"/>
+					<filter>
+						<simple>${body.destinationQueue} == null</simple>
+						<to uri="jms:notificationQueue?disableReplyTo=true"/>
+					</filter>
+					<filter>
+						<simple>${body.destinationQueue} != null</simple>
+						<recipientList>
+							<simple>${body.nextQueue},jms:notificationQueue?disableReplyTo=true</simple>
+						</recipientList>
+					</filter>
+				</filter>
+			</filter>
+		</route>
+
+		<!-- response from front end for source to suspense -->
+
+		<route>
+			<from uri="jms:atppSourceToSuspenseBRQueue?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+				<to
+					uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspenseCompleted" />
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_INQ_SUCCESS</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_INQ_FAILED</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+				<to
+					uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSourceToSuspenseCompleted" />
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="jms:atppBillerConfirmationQueue?disableReplyTo=true" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+		</route>
+
+		<!-- response from front end for suspense to destination -->
+
+		<route>
+			<from uri="jms:atppSuspenseToDestBRQueue?disableReplyTo=true" />
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+				<to
+					uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySuspenceToDestinationCompleted" />
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_INQ_SUCCESS</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="direct:moneyTransferConfirmationSuspenseToDestination" />
+					</multicast>
+				</filter>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_INQ_FAILED</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+				<to
+					uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSuspenseToDestinationCompleted" />
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_CONFIRMATION_SUCCESS</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_CONFIRMATION_FAILED</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+		</route>
+
+		<!-- route for biller confirmation -->
+
+		<route>
+			<from uri="jms:atppBillerConfirmationQueue?disableReplyTo=true" />
+
+			<setHeader headerName="eventContext">
+				<constant>BILLER_CONFIRMATION_PENDING</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				<to uri="direct:atppBillerAdviceCommunicatorQueue" />
+			</multicast>
+		</route>
+
+		<!-- route for biller confirmation -->
+
+		<route>
+			<from uri="direct:atppBillerAdviceCommunicatorQueue" />
+			<to uri="bean:atppCommunicator?method=process"/>
+			<setHeader headerName="eventContext">
+				<constant>BILLER_CONFIRMATION_COMPLETED</constant>
+			</setHeader>
+			<multicast>
+				<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true"/>
+				<to uri="direct:billPayConfirmationResponseQueue"/>
+			</multicast>
+		</route>
+
+		<!-- Handle bill pay confirmation response -->
+		<route>
+			<from uri="direct:billPayConfirmationResponseQueue"/>
+			<to uri="bean:billPayBillerIntegrationService?method=handleBillPayConfirmationResponse"/>
+			<filter>
+				<simple>${body.response.result} == '00'</simple> <!-- check if response == CmFinoFIX.ResponseCode_Success -->
+				<setHeader headerName="eventContext">
+					<constant>BILLER_CONFIRMATION_SUCCESSFUL</constant>        
+				</setHeader>
+				<multicast>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true"/>			
+					<to uri="jms:atppMoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+				</multicast>
+			</filter>
+			<filter>
+				<simple>${body.response.result} == '1'</simple> <!-- check if response == CmFinoFIX.ResponseCode_Success -->
+				<!-- Amount should be reverted from suspense and charges to source and failure notification should be sent out, coming soon :) -->
+				<setHeader headerName="eventContext">
+					<constant>BILLER_CONFIRMATION_FAILED</constant>        
+				</setHeader>
+				<multicast>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:atppSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+				</multicast>			
+			</filter>		
+		</route>
+
+		<!-- route for money transfer inquiry (suspense to destination) -->
+
+		<route>
+			<from uri="jms:atppMoneyTransferInquirySuspenseToDestination?disableReplyTo=true" />
+			<to
+				uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySuspenseToDestination" />
+			<filter>
+				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_INQ_SUCCESS</constant>
+					</setHeader>
+					<multicast>
+						<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+						<to uri="direct:atppMoneyTransferConfirmationSuspenseToDestination" />
+					</multicast>
+				</filter>
+			</filter>
+			<filter>
+				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+				<setHeader headerName="eventContext">
+					<constant>SUSPENSE_DEST_INQ_TO_BANK</constant>
+				</setHeader>
+				<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+			</filter>
+			<!-- What if suspense to destination inquiry fails? -->
+			<filter>
+				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_INQ_FAILED</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+		</route>
+
+		<!-- route for money transfer confirmation (suspense to destination) -->
+		<route>
+			<from uri="direct:atppMoneyTransferConfirmationSuspenseToDestination" />
+			<to
+				uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSuspenseToDestination" />
+			<filter>
+				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_CONFIRMATION_SUCCESS</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+			<filter>
+				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+				<filter>
+					<simple>${body.response.result} != '0'</simple>
+					<setHeader headerName="eventContext">
+						<constant>SUSPENSE_DEST_CONFIRMATION_FAILED</constant>
+					</setHeader>
+					<to uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+				</filter>
+			</filter>
+			<filter>
+				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+				<setHeader headerName="eventContext">
+					<constant>SUSPENSE_DEST_CONFIRMATION_TO_BANK</constant>
+				</setHeader>
+				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+			</filter>
+		</route>
+
+		<route>
+			<from uri="jms:atppSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+			<to uri="bean:billPayMoneyTransferService?method=suspenseAndChargesToSourceReversal"/>
+			<to uri="jms:autoReversalQueue?disableReplyTo=true"/>
+		</route>
+
+		<route>
+			<from uri="jms:atppSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+			<log message="billpay_atpp#suspenseAndChargesRRQueue"/>
+			<filter>
+				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<to uri="jms:notificationQueue?disableReplyTo=true"/>
+				</filter>
+			</filter>
+		</route>
+
+		<!-- Batch process to handle failed suspense to destination transactions.-->
+		<!-- <route>
+			<from uri="timer://suspenceClearanceTimer?fixedRate=true&amp;period=24hours"/> Every 24 hours
+			<log message="billpay_atpp#fromuri=suspenceClearanceTimer"/>
+			<split>
+				<method bean="billPaymentsSuspenceClearanceService" method="clearSuspenceAccounts"/> should return list of mce messages
+				<filter>
+					<simple>${body.destinationQueue} != null</simple>
+					<recipientList>
+						<simple>${body.nextQueue}</simple>
+					</recipientList>
+				</filter>
+			</split>
+		</route> -->		
+
+		<!-- route for bill pay event processing queue begin -->
+		<!-- <route> <from uri="jms:atppBillPayEventProcessingQueue"/> <setHeader headerName="eventContext"> 
+			<simple>${in.header.eventContext}</simple> </setHeader> <to uri="bean:billPayEventProcessingService?method=processEvent"/> 
+			<filter> <simple>${body.response} != null</simple> <to uri="jms:notificationQueue?disableReplyTo=true"/> 
+			</filter> </route> -->
+		<!-- route for bill pay event processing queue end -->
+
+		<route>
+			<from uri="jms:atppBillPayEventProcessingQueue?disableReplyTo=true" />
+			<setHeader headerName="eventContext">
+				<simple>${in.header.eventContext}</simple>
+			</setHeader>
+
+			<filter>
+				<simple>${in.header.eventContext} == 'SRC_SUSPENSE_CONFIRMATION_FAILED'</simple>
+				<to
+					uri="bean:atppBillPayEventProcessingService?method=SRC_SUSPENSE_CONFIRMATION_FAILED" />
+				<to uri="jms:notificationQueue?disableReplyTo=true" />
+			</filter>
+
+			<filter>
+				<simple>${in.header.eventContext} == 'BILLER_CONFIRMATION_FAILED'</simple>
+				<to
+					uri="bean:atppBillPayEventProcessingService?method=BILLER_CONFIRMATION_FAILED" />
+				<to uri="jms:notificationQueue?disableReplyTo=true" />
+			</filter>
+
+			<filter>
+				<simple>${in.header.eventContext} == 'BILLER_CONFIRMATION_SUCCESSFUL'</simple>
+				<to
+					uri="bean:atppBillPayEventProcessingService?method=BILLER_CONFIRMATION_SUCCESSFUL" />
+				<to uri="jms:notificationQueue?disableReplyTo=true" />
+			</filter>
+			<filter>
+				<simple>${in.header.eventContext} == 'SRC_SUSPENSE_INQ_SUCCESS'</simple>
+				<to
+					uri="bean:atppBillPayEventProcessingService?method=SRC_SUSPENSE_INQ_SUCCESS" />
+				<to uri="jms:notificationQueue?disableReplyTo=true" />
+			</filter>
+			<filter>
+				<simple>${in.header.eventContext} == 'SRC_SUSPENSE_INQ_FAILED'</simple>
+				<to
+					uri="bean:atppBillPayEventProcessingService?method=SRC_SUSPENSE_INQ_FAILED" />
+				<to uri="jms:notificationQueue?disableReplyTo=true" />
+			</filter>
+		</route>
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+</beans>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:camel="http://camel.apache.org/schema/spring"  
+	   xmlns:broker="http://activemq.apache.org/schema/core" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"  
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+	
+    <!-- <osgi:reference id="jms" interface="org.apache.camel.Component" />-->
+     
+   	<context:annotation-config />
+
+   	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" /> 
+	<osgi:reference id="tellerService" interface="com.mfino.mce.bankteller.TellerService"/>	
+	<osgi:reference id="tellerPendingClearanceService" interface="com.mfino.mce.bankteller.TellerPendingClearanceService"/>
+	<osgi:reference id="tellerEmoneyTransferService" interface="com.mfino.mce.bankteller.TellerEmoneyTransferService"/>
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+	
+	<bean id="tellerDynamicRouter" class="com.mfino.mce.core.routing.ClassBasedDynamicRouter">
+		<constructor-arg>
+			<map>
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerTransferInquiryToBank" value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerMoneyTransferToBank" value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerCashIn" value="jms:bankTellerQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerCashInConfirm" value="jms:bankTellerQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerCashOut" value="jms:bankTellerQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerCashOutConfirm" value="jms:bankTellerQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.fix.CmFinoFIX$CMTellerPendingCommodityTransferRequest" value="jms:bankTellerQueue?disableReplyTo=true" />
+	    		<!-- <entry key="com.mfino.mce.bankteller.TellerBackendResponse"  value="vm:bankTellerFromBank" /> -->
+	    		<entry key="com.mfino.mce.bankteller.TellerBackendResponse"   value="jms:notificationQueue?disableReplyTo=true" />
+	    		<entry key="com.mfino.mce.core.util.BackendResponse"  value="jms:notificationQueue?disableReplyTo=true" />
+			</map>
+		</constructor-arg>
+		<property name="defaultQueue" value="jms:bankTellerQueue?disableReplyTo=true"/>
+	</bean>
+	
+  	<camelContext  id="bankTeller" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+  		<threadPool id="bankTellerPool" threadName="bankTellerThread"
+			poolSize="2" maxPoolSize="10" />
+  		<route>
+  			<from uri="jms:bankTellerQueue?disableReplyTo=true"/>
+  			<!-- add login to send the notification messages to notification queue -->
+  			<threads executorServiceRef="bankTellerPool">
+  				<!--
+  					this header need to be unset before we start the dynamic routing 
+  				 -->
+  				<to uri="bean:tellerService?method=processMessage"/>
+  				<camel:removeHeader headerName="CamelSlipEndpoint"/>
+  				<camel:dynamicRouter>
+  					<method ref="tellerDynamicRouter" method="findDestination"/>
+  				</camel:dynamicRouter>	
+  			</threads>
+  		</route>
+  		
+  		<route>
+  			<from uri="vm:bankTellerFromBank"/>
+  			<to uri="bean:tellerEmoneyTransferService?method=processMessage"/>
+  			<to uri="jms:bankTellerQueue?disableReplyTo=true"/>
+  		</route>
+	</camelContext>
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+	  <property name="traceOutExchanges" value="true" />
+	</bean>
+	
+	<bean id="traceFormatter" class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+	  <property name="showOutBody" value="true" />
+	  <property name="showOutBodyType" value="true" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />		
+<!-- <osgi:reference id="fixService"  interface="com.mfino.mce.fix.FixService"/>-->
+</beans>

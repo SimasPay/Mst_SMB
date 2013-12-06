@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://techquest.interswitchng.com/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://techquest.interswitchng.com/" xmlns:wsp="http://www.w3.org/ns/ws-policy"
+	xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+	<wsdl:types>
+		<xs:schema elementFormDefault="qualified"
+			targetNamespace="http://techquest.interswitchng.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:iswdata="http://techquest.interswitchng.com/">
+			<xs:element name="Iso8583PostXml" nillable="true">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MsgType" nillable="true" minOccurs="0"
+							maxOccurs="1" type="xs:string" />
+						<xs:element name="Fields" nillable="true" minOccurs="0"
+							maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Field_002" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_003" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_004" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_005" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_006" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_007" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_008" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_009" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_010" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_011" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_012" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_013" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_014" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_015" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_016" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_017" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_018" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_019" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_020" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_021" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_022" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_023" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_024" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_025" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_026" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_027" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_028" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_029" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_030" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_031" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_032" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_033" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_034" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_035" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_036" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_037" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_038" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_039" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_040" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_041" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_042" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_043" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_044" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_045" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_046" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_047" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_048" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_049" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_050" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_051" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_052" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_053" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_054" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_055" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_056" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_057" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_058" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_059" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_060" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_061" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_062" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_063" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_064" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_065" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_066" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_067" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_068" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_069" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_070" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_071" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_072" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_073" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_074" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_075" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_076" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_077" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_078" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_079" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_080" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_081" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_082" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_083" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_084" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_085" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_086" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_087" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_088" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_089" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_090" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_091" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_092" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_093" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_094" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_095" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_096" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_097" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_098" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_099" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_100" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_101" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_102" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_103" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_104" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_105" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_106" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_107" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_108" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_109" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_110" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_111" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_112" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_113" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_114" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_115" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_116" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_117" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_118" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_119" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_120" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_121" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_122" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_123" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_124" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_125" nillable="false"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_126" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_001" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_002" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_003" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_004" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_005" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_006" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_007" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_008" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_009" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_010" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_011" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_012" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_013" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_014" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_015" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_016" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_017" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_018" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_019" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_020" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_021" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_022" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_023" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_024" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_025" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_026" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_027" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_028" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_029" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_030" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_031" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_032" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_033" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_034" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_035" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_036" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_037" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_038" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+									<xs:element name="Field_127_039" nillable="true"
+										minOccurs="0" maxOccurs="1" type="xs:string" />
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</wsdl:types>			<!-- ######################### -->
+	<wsdl:message name="Iso8583PostXml">
+		<wsdl:part element="tns:Iso8583PostXml" name="parameters" />
+	</wsdl:message>			<!-- ######################################################################## -->			<!-- ############## ISO8583 Service Port Type ###### -->
+	<wsdl:portType name="ISO8583ServicesPortType">
+		<wsdl:operation name="Iso8583PostXml">
+			<wsdl:input message="tns:Iso8583PostXml" />
+			<wsdl:output message="tns:Iso8583PostXml" />
+		</wsdl:operation>
+	</wsdl:portType>			<!-- ################################################# -->			<!-- ######### ISO8583 Service Ports ############# -->
+	<wsdl:binding name="ISO8583ServicesSoap12Binding" type="tns:ISO8583ServicesPortType">
+		<soap12:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="Iso8583PostXml">
+			<soap12:operation soapAction="Iso8583PostXml" style="document" />
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>			<!-- ##################################### -->
+	<wsdl:service name="ISO8583ServicesPortTypeService">
+		<wsdl:port binding="tns:ISO8583ServicesSoap12Binding" name="ISO8583ServicesSoap12Endpoint">
+			<soap12:address location="http://localhost:9000/Iso8583PostXml" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions> 

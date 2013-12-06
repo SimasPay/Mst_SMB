@@ -1,0 +1,10 @@
+<HThales-adaptor name='thales-adaptor' class="com.mfino.hsm.thales.adaptor.ThalesAdaptor" logger="Q2_thales">
+	<host>localhost</host>
+	<port>9991</port>
+	<keep-alive>yes</keep-alive>
+	<keep-alive-interval>10000</keep-alive-interval>
+	<basepath>jpos/cfg/hsm-</basepath>
+	<in>hthales-send</in>
+	<out>hthales-receive</out>
+	<reconnect-delay>10000</reconnect-delay>
+</HThales-adaptor>

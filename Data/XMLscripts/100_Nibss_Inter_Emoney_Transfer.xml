@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+ 	
+	<changeSet author="MFS_MAIN" id="DATA-TRANSACTION_TYPE-71">
+		<insert tableName="transaction_type">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="MSPID" valueNumeric="1"/>
+            <column name="TransactionName" value="InterEmoneyTransfer"/>
+            <column name="DisplayName" value="Inter Emoney Transfer"/>
+        </insert>
+	</changeSet>
+    <changeSet author="MFS_MAIN" id="DATA-SERVICETRANSACTION-72">
+        <insert tableName="service_transaction">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="system"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="MSPID" valueNumeric="1"/>
+            <column name="ServiceID" valueComputed="(select id from service where SERVICENAME = 'Wallet')"/>
+            <column name="TransactionTypeID" valueComputed="(select id from transaction_type where TRANSACTIONNAME = 'InterEmoneyTransfer')"/>
+        </insert>
+	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-SYSTEMPARAMETERS-73">
+        <delete tableName="system_parameters">
+			<where>ParameterName = 'nibss.inter.emoney.transfer.code'</where>
+		</delete>
+		<insert tableName="system_parameters">
+            <column name="Version" valueNumeric="1"/>
+            <column name="LastUpdateTime" valueDate="${now}"/>
+            <column name="UpdatedBy" value="System"/>
+            <column name="CreateTime" valueDate="${now}"/>
+            <column name="CreatedBy" value="system"/>
+            <column name="ParameterName" value="otp.length"/>
+            <column name="ParameterValue" value="4"/>
+            <column name="Description" value="One Time Password Length"/>
+        </insert>
+	</changeSet>
+ 	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-74">
+		<delete tableName="notification">
+			<where>code='819'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="819"/>
+			<column name="CodeName" value="InvalidNIBSSCode"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Invalid Nibss code."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="819"/>
+			<column name="CodeName" value="InvalidNIBSSCode"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Invalid Nibss code."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="819"/>
+			<column name="CodeName" value="InvalidNIBSSCode"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Invalid Nibss code."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="819"/>
+			<column name="CodeName" value="InvalidNIBSSCode"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Invalid Nibss code."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="819"/>
+			<column name="CodeName" value="InvalidNIBSSCode"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Invalid Nibss code."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+ 		<rollback/>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-75">
+		<delete tableName="notification">
+			<where>code='820'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="820"/>
+			<column name="CodeName" value="InterEmoneyTransferInquirySuccessful"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You requested to transfer $(Currency) $(Amount) to $(ReceiverMDN), ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="820"/>
+			<column name="CodeName" value="InterEmoneyTransferInquirySuccessful"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You requested to transfer $(Currency) $(Amount) to $(ReceiverMDN), ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="820"/>
+			<column name="CodeName" value="InterEmoneyTransferInquirySuccessful"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You requested to transfer $(Currency) $(Amount) to $(ReceiverMDN), ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="820"/>
+			<column name="CodeName" value="InterEmoneyTransferInquirySuccessful"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You requested to transfer $(Currency) $(Amount) to $(ReceiverMDN), ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="820"/>
+			<column name="CodeName" value="InterEmoneyTransferInquirySuccessful"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You requested to transfer $(Currency) $(Amount) to $(ReceiverMDN), ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+  		<rollback/>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-76">
+		<delete tableName="notification">
+			<where>code='821'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="821"/>
+			<column name="CodeName" value="InterEmoneyTransferFailed"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) failed, Please try again later."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+			<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="821"/>
+			<column name="CodeName" value="InterEmoneyTransferFailed"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) failed, Please try again later."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="821"/>
+			<column name="CodeName" value="InterEmoneyTransferFailed"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) failed, Please try again later."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="821"/>
+			<column name="CodeName" value="InterEmoneyTransferFailed"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) failed, Please try again later."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="821"/>
+			<column name="CodeName" value="InterEmoneyTransferFailed"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) failed, Please try again later."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+   		<rollback/>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-77">
+		<delete tableName="notification">
+			<where>code='822'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="822"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessful"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) is successful, ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="822"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessful"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) is successful, ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="822"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessful"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) is successful, ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="822"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessful"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) is successful, ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="822"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessful"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Transaction ID: $(TransferID) Your request to transfer $(Currency) $(Amount) to $(ReceiverMDN) is successful, ServiceCharge $(Currency) $(serviceCharge)."/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+    	<rollback/>
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-NOTIFICATION-78">
+		<delete tableName="notification">
+			<where>code='823'</where>
+		</delete>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="823"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessfulToDestToDest"/>
+			<column name="NotificationMethod" valueNumeric="1"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You received  $(Currency) $(Amount) from $(SenderMDN). "/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="823"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessfulToDestToDest"/>
+			<column name="NotificationMethod" valueNumeric="2"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You received  $(Currency) $(Amount) from $(SenderMDN). "/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="823"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessfulToDestToDest"/>
+			<column name="NotificationMethod" valueNumeric="4"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You received  $(Currency) $(Amount) from $(SenderMDN). "/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="823"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessfulToDestToDest"/>
+			<column name="NotificationMethod" valueNumeric="8"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You received  $(Currency) $(Amount) from $(SenderMDN). "/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+		<insert tableName="notification">
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="System"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="System"/>
+			<column name="Version" valueNumeric="0"/>
+			<column name="MSPID" valueNumeric="1"/>
+			<column name="Code" valueNumeric="823"/>
+			<column name="CodeName" value="InterEmoneyTransferConfirmationSuccessfulToDestToDest"/>
+			<column name="NotificationMethod" valueNumeric="16"/>
+			<column name="Text" value="Transaction ID: $(TransferID) You received  $(Currency) $(Amount) from $(SenderMDN). "/>
+			<column name="STKML"/>
+			<column name="Language" valueNumeric="0"/>
+			<column name="Status" valueNumeric="0"/>
+			<column name="StatusTime" valueDate="${now}"/>
+			<column name="AccessCode"/>
+			<column name="SMSNotificationCode"/>
+			<column name="CompanyID" valueNumeric="1"/>
+			<column name="IsActive" valueNumeric="1"/>
+		</insert>
+    	<rollback/>
+ 	</changeSet>
+
+</databaseChangeLog>

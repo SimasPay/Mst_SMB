@@ -1,0 +1,87 @@
+<external-response-codes>
+  <response-code>
+   <code>111</code>
+   <description>Invalid ISO Message</description>
+   <notification-text>Invalid ISO Message</notification-text>
+  </response-code>
+  <response-code>
+   <code>114</code>
+   <description>Invalid Account Number</description>
+   <notification-text>Invalid Account Number</notification-text>
+  </response-code>
+  <response-code>
+   <code>115</code>
+   <description>Requested function not supported</description>
+   <notification-text>Requested function not supported</notification-text>
+  </response-code>
+  <response-code>
+   <code>116</code>
+   <description>Insufficient funds</description>
+   <notification-text>Insufficient funds</notification-text>
+  </response-code>
+ <response-code>
+   <code>119</code>
+   <description>Transaction not permitted to card holder</description>
+   <notification-text>Transaction not permitted to card holder</notification-text>
+  </response-code>
+  <response-code>
+   <code>121</code>
+   <description>Amount limit exceeded</description>
+   <notification-text>Amount limit exceeded</notification-text>
+  </response-code>
+  <response-code>
+   <code>180</code>
+   <description>Transfer Limit Exceeded </description>
+   <notification-text>Transfer Limit Exceeded </notification-text>
+  </response-code>
+  <response-code>
+   <code>184</code>
+   <description>Account is closed/frozen</description>
+   <notification-text>Account is closed/frozen</notification-text>
+  </response-code>
+  <response-code>
+   <code>185</code>
+   <description>Invalid Currency/Transaction Amount</description>
+   <notification-text>Invalid Currency/Transaction Amount</notification-text>
+  </response-code>
+  <response-code>
+   <code>188</code>
+   <description>Invalid Rate Currency Combination</description>
+   <notification-text>Invalid Rate Currency Combination</notification-text>
+  </response-code>
+  <response-code>
+   <code>904</code>
+   <description>Invalid ISO Message</description>
+   <notification-text>Invalid ISO Message</notification-text>
+  </response-code>
+  <response-code>
+   <code>902</code>
+   <description>Invalid transaction</description>
+   <notification-text>Invalid transaction</notification-text>
+  </response-code>
+  <response-code>
+   <code>906</code>
+   <description>Cut-over in Fidelity</description>
+   <notification-text>Cut-over in Fidelity</notification-text>
+  </response-code>
+  <response-code>
+   <code>907</code>
+   <description>Card issuer inoperative</description>
+   <notification-text>Card issuer inoperative</notification-text>
+  </response-code>
+  <response-code>
+   <code>909</code>
+   <description>Fidelity System malfunction</description>
+   <notification-text>Fidelity System malfunction</notification-text>
+  </response-code>
+  <response-code>
+   <code>911</code>
+   <description>timed out</description>
+   <notification-text>timed out</notification-text>
+  </response-code>
+  <response-code>
+   <code>913</code>
+   <description>Duplicate transmission</description>
+   <notification-text>Duplicate transmission</notification-text>
+  </response-code>
+</external-response-codes>

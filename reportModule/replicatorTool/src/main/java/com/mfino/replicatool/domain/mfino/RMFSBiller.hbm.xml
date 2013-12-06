@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:54 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.MFSBiller" optimistic-lock="version" table="mfs_biller" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_MFSBiller_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<property name="MFSBillerName" type="java.lang.String" >
+<column name="MFSBillerName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="MFSBillerCode" type="java.lang.String" >
+<column name="MFSBillerCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="MFSBillerType" type="java.lang.String" >
+<column name="MFSBillerType" not-null="true"  sql-type="varchar(255)" />
+</property>
+<set name="MFSBillerPartnerFromMFSBillerId" inverse="true">
+<key>
+<column name="MFSBillerId" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.MFSBillerPartner" />
+</set>
+<set name="IntegrationPartnerMappingFromMFSBillerId" inverse="true">
+<key>
+<column name="MFSBillerId"    />
+</key>
+<one-to-many class="com.mfino.domain.IntegrationPartnerMapping" />
+</set>
+</class>
+</hibernate-mapping>

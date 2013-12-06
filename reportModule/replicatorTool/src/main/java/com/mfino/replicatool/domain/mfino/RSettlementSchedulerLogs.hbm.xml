@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:55 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.SettlementSchedulerLogs" optimistic-lock="version" table="settlement_schedule_log" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="MSPID" type="java.lang.Long" >
+<column name="MSPID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="PartnerServicesID" type="java.lang.Long" >
+<column name="PartnerServicesID" not-null="true"  sql-type="bigint" />
+</property>
+<property name="ServiceSettlementConfigID" type="java.lang.Long" >
+<column name="ServiceSettlementConfigID"    sql-type="bigint" />
+</property>
+<property name="QrtzJobId" type="java.lang.String" >
+<column name="QrtzJobId"    sql-type="varchar(255)" />
+</property>
+<property name="IsScheduled" type="java.lang.Boolean" >
+<column name="IsScheduled"    sql-type="tinyint" />
+</property>
+<property name="ReasonText" type="java.lang.String" >
+<column name="ReasonText"    sql-type="varchar(255)" />
+</property>
+<property name="LastSettled" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastSettled"   length="19" sql-type="datetime" />
+</property>
+<property name="NextSettle" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="NextSettle"   length="19" sql-type="datetime" />
+</property>
+</class>
+</hibernate-mapping>

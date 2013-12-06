@@ -1,0 +1,207 @@
+<external-response-codes>
+  <response-code>
+   <code>M1</code>
+   <description>Invalid KCV Specified</description>
+   <notification-text>Invalid KCV Specified</notification-text>
+  </response-code>
+  <response-code>
+   <code>M2</code>
+   <description>Invalid Working Key Length</description>
+   <notification-text>Invalid Working Key Length</notification-text>
+  </response-code>
+  <response-code>
+   <code>M3</code>
+   <description>Invalid Master Key</description>
+   <notification-text>Invalid Master Key</notification-text>
+  </response-code>
+  <response-code>
+   <code>06</code>
+   <description>Service Unavailable</description>
+   <notification-text>Service Unavailable</notification-text>
+  </response-code>
+ <response-code>
+   <code>12</code>
+   <description>Invalid transaction request</description>
+   <notification-text>Invalid transaction request</notification-text>
+  </response-code>
+  <response-code>
+   <code>13</code>
+   <description>Invalid amount</description>
+   <notification-text>Invalid amount</notification-text>
+  </response-code>
+  <response-code>
+   <code>14</code>
+   <description>Invalid card number</description>
+   <notification-text>Invalid card number</notification-text>
+  </response-code>
+  <response-code>
+   <code>15</code>
+   <description>Customer Account Not Found</description>
+   <notification-text>Customer Account Not Found</notification-text>
+  </response-code>
+  <response-code>
+   <code>25</code>
+   <description>Invalid Destination Account</description>
+   <notification-text>Invalid Destination Account</notification-text>
+  </response-code>
+  <response-code>
+   <code>30</code>
+   <description>Invalid PIN Block</description>
+   <notification-text>Invalid PIN Block</notification-text>
+  </response-code>
+  <response-code>
+   <code>31</code>
+   <description>Bank Not Supported By Switch</description>
+   <notification-text>Bank Not Supported By Switch</notification-text>
+  </response-code>
+  <response-code>
+   <code>40</code>
+   <description>Request Function not supported</description>
+   <notification-text>Request Function not supported</notification-text>
+  </response-code>
+  <response-code>
+   <code>51</code>
+   <description>Not sufficient funds</description>
+   <notification-text>Not sufficient funds</notification-text>
+  </response-code>
+  <response-code>
+   <code>52</code>
+   <description>No check account</description>
+   <notification-text>No check account</notification-text>
+  </response-code>
+  <response-code>
+   <code>53</code>
+   <description>No savings account</description>
+   <notification-text>No savings account</notification-text>
+  </response-code>
+  <response-code>
+   <code>54</code>
+   <description>Expired card</description>
+   <notification-text>Expired card</notification-text>
+  </response-code>
+  <response-code>
+   <code>55</code>
+   <description>Incorrect PIN</description>
+   <notification-text>Incorrect PIN</notification-text>
+  </response-code>
+  <response-code>
+   <code>57</code>
+   <description>Transaction not permitted to cardholder</description>
+   <notification-text>Transaction not permitted to cardholder</notification-text>
+  </response-code>
+  <response-code>
+   <code>62</code>
+   <description>Restricted card</description>
+   <notification-text>Restricted card</notification-text>
+  </response-code>
+  <response-code>
+   <code>63</code>
+   <description>Security violation</description>
+   <notification-text>Security violation</notification-text>
+  </response-code>
+  <response-code>
+   <code>68</code>
+   <description>Response received too late</description>
+   <notification-text>Response received too late</notification-text>
+  </response-code>
+  <response-code>
+   <code>75</code>
+   <description>PIN tries exceeded</description>
+   <notification-text>PIN tries exceeded</notification-text>
+  </response-code>
+   <response-code>
+   <code>76</code>
+   <description>Destination Not Found</description>
+   <notification-text>Destination Not Found</notification-text>
+  </response-code>
+  <response-code>
+   <code>80</code>
+   <description>Customer Account Has Been Blocked</description>
+   <notification-text>Customer Account Has Been Blocked</notification-text>
+  </response-code>
+  <response-code>
+   <code>82</code>
+   <description>Customer Account Has Expired</description>
+   <notification-text>Customer Account Has Expired</notification-text>
+  </response-code>
+  <response-code>
+   <code>83</code>
+   <description>Referred Transcation Is In Pending State</description>
+   <notification-text>Referred Transcation Is In Pending State</notification-text>
+  </response-code>
+  <response-code>
+   <code>84</code>
+   <description>Referred Transaction was Failed</description>
+   <notification-text>Referred Transaction was Failed</notification-text>
+  </response-code>
+  <response-code>
+   <code>85</code>
+   <description>Referred Transaction Not Found</description>
+   <notification-text>Referred Transaction Not Found</notification-text>
+  </response-code>
+  <response-code>
+   <code>86</code>
+   <description>Reprint Request Exceed Max</description>
+   <notification-text>Reprint Request Exceed Max</notification-text>
+  </response-code>
+  <response-code>
+   <code>88</code>
+   <description>Bill Already Paid</description>
+   <notification-text>Bill Already Paid</notification-text>
+  </response-code>
+  <response-code>
+   <code>89</code>
+   <description>Bank Link Unavailable</description>
+   <notification-text>Bank Link Unavailable</notification-text>
+  </response-code>
+  <response-code>
+   <code>91</code>
+   <description>Destination Processor Not Available</description>
+   <notification-text>Destination Processor Not Available</notification-text>
+  </response-code>
+  <response-code>
+   <code>94</code>
+   <description>Duplicate Transmission</description>
+   <notification-text>Duplicate Transmission</notification-text>
+  </response-code>
+  <response-code>
+   <code>96</code>
+   <description>System error</description>
+   <notification-text>System error</notification-text>
+  </response-code>
+  <response-code>
+   <code>U1</code>
+   <description>PLN Prepaid Token Not Found</description>
+   <notification-text>PLN Prepaid Token Not Found</notification-text>
+  </response-code>
+  <response-code>
+   <code>U1</code>
+   <description>PLN Prepaid Token Not Found</description>
+   <notification-text>PLN Prepaid Token Not Found</notification-text>
+  </response-code>
+  <response-code>
+   <code>U2</code>
+   <description>KWH Over limit</description>
+   <notification-text>KWH Over limit</notification-text>
+  </response-code>
+  <response-code>
+   <code>T1</code>
+   <description>MDN Not Found</description>
+   <notification-text>MDN Not Found</notification-text>
+  </response-code>
+  <response-code>
+   <code>T2</code>
+   <description>Not Allowed For Prepaid MDN</description>
+   <notification-text>Not Allowed For Prepaid MDN</notification-text>
+  </response-code>
+  <response-code>
+   <code>T3</code>
+   <description>MDN Has Expired</description>
+   <notification-text>MDN Has Expired</notification-text>
+  </response-code>
+  <response-code>
+   <code>T4</code>
+   <description>MDN Has Been Blocked</description>
+   <notification-text>MDN Has Been Blocked</notification-text>
+  </response-code>
+</external-response-codes>

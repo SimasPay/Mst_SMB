@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mFino" default="deployTomcat">
+
+<property name="base.dir" value="." />
+<property name="profile" value="default" />
+<!--To set a default path specific to your system permanently set the default home of tomcat in the property below-->
+<property name="TOMCAT.DEFAULT.HOME" value="D:/apache-tomcat-6.0.33" />
+
+<condition property="profileCheck"> 
+<or>
+  <equals arg1="${profile}" arg2="gtbank"/> 
+  <equals arg1="${profile}" arg2="zenithbank"/> 
+  <equals arg1="${profile}" arg2="smart"/> 
+  </or>
+</condition> 
+<fail message="please enter a correct profile.available profiles:gtbank,zenithbank,smart "
+      unless="profileCheck"/>
+
+<input message="using default tomcat home ${TOMCAT.DEFAULT.HOME}.Press ENTER to continue with default else enter your tomcat path" addproperty="TOMCAT.HOME" defaultvalue="${TOMCAT.DEFAULT.HOME}"/>	  
+<target name="deployTomcat" description="deploy to Tomcat" if="profileCheck" >
+ <delete dir="${TOMCAT.HOME}/webapps/AdminApplication" />
+ <delete dir="${TOMCAT.HOME}/webapps/TransactionMonitorTool" />
+ <delete dir="${TOMCAT.HOME}/webapps/webapi" />
+ <delete dir="${TOMCAT.HOME}/webapps/ReportScheduler" />
+ <delete dir="${TOMCAT.HOME}/webapps/Scheduler" />
+ 
+<delete failonerror="false" verbose="true">
+<fileset file="${TOMCAT.HOME}/webapps/AdminApplication.war" />
+<fileset file="${TOMCAT.HOME}/webapps/TransactionMonitorTool.war" />
+<fileset file="${TOMCAT.HOME}/webapps/webapi.war" />
+<fileset file="${TOMCAT.HOME}/webapps/ReportScheduler.war" />
+<fileset file="${TOMCAT.HOME}/webapps/Scheduler.war" />
+</delete>
+
+<delete dir="${TOMCAT.HOME}/work" />
+<delete dir="${TOMCAT.HOME}/mfino_conf.backup" />
+<mkdir dir ="${TOMCAT.HOME}/mfino_conf.backup" />
+<move failonerror="false" file="${TOMCAT.HOME}/mfino_conf" tofile="${TOMCAT.HOME}/mfino_conf.backup"/>
+<delete dir="${TOMCAT.HOME}/mfino_conf" />
+
+<mkdir dir ="${TOMCAT.HOME}/mfino_conf" />
+<mkdir dir="${TOMCAT.HOME}/mfino_conf/AdminApplication" />
+<mkdir dir="${TOMCAT.HOME}/mfino_conf/TransactionMonitorTool" />
+<mkdir dir="${TOMCAT.HOME}/mfino_conf/webapi" />
+<mkdir dir="${TOMCAT.HOME}/mfino_conf/Scheduler" />
+<mkdir dir="${TOMCAT.HOME}/mfino_conf/ReportScheduler" />
+
+<echo message="copying war files for tomcat" />
+	<copy todir="${TOMCAT.HOME}/webapps" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/Web/AdminApplication/target/AdminApplication_Dist.war" />
+			<fileset file="${base.dir}/Web/TransactionMonitorTool/target/TransactionMonitorTool.war" />
+			<fileset file="${base.dir}/Web/webapi/target/webapi.war" />
+			<fileset file="${base.dir}/Web/Scheduler/target/Scheduler.war" />
+			<fileset file="${base.dir}/Web/ReportScheduler/target/ReportScheduler.war" />
+	</copy>
+	<move file="${TOMCAT.HOME}/webapps/AdminApplication_Dist.war" tofile="${TOMCAT.HOME}/webapps/AdminApplication.war" />
+
+<echo message="copying database config files" />
+	<copy todir="${TOMCAT.HOME}/mfino_conf/AdminApplication" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/Core/settings/${profile}/mfino.properties" />
+			<fileset file="${base.dir}/Core/settings/${profile}/database_config.properties" />
+	</copy>
+	<copy todir="${TOMCAT.HOME}/mfino_conf/TransactionMonitorTool" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/Core/settings/${profile}/mfino.properties" />
+			<fileset file="${base.dir}/Core/settings/${profile}/database_config.properties" />
+	</copy>
+	<copy todir="${TOMCAT.HOME}/mfino_conf/webapi" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/Core/settings/${profile}/mfino.properties" />
+			<fileset file="${base.dir}/Core/settings/${profile}/database_config.properties" />
+	</copy>
+	<copy todir="${TOMCAT.HOME}/mfino_conf/Scheduler" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/Core/settings/${profile}/mfino.properties" />
+			<fileset file="${base.dir}/Core/settings/${profile}/database_config.properties" />
+	</copy>
+	<copy todir="${TOMCAT.HOME}/mfino_conf/ReportScheduler" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/Core/settings/${profile}/mfino.properties" />
+			<fileset file="${base.dir}/Core/settings/${profile}/database_config.properties" />
+	</copy>
+<echo message="copying tomcat context.xml" />
+	<copy todir="${TOMCAT.HOME}/conf" overwrite="true" failonerror="false">
+			<fileset file="${base.dir}/tomcat_conf/context.xml" />
+			
+	</copy>
+</target>
+</project>

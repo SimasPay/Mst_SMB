@@ -1,0 +1,2 @@
+DELETE FROM system_parameters WHERE parametername='national.treasury.pocket';
+INSERT INTO system_parameters (version, lastupdatetime, updatedby, createtime, createdby, parametername, parametervalue, description) VALUES (1,now(),'System',now(),'system','national.treasury.partner.code','-1','Partner Code of Partner associated with National Treasury');

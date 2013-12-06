@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema id='DF'>
+<field id='offset' type='N' length='12'/>
+</schema> 

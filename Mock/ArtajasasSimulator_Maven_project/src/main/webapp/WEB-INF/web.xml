@@ -1,0 +1,46 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	
+	<listener>
+        <listener-class>
+        com.mfino.isorequests.listener.ContextListener
+        </listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>DefaultNoListing</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+	<servlet>
+		<servlet-name>RequestServlet</servlet-name>
+		<servlet-class>com.mfino.isorequests.servlet.RequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RequestServlet</servlet-name>
+		<url-pattern>/RequestServlet</url-pattern>
+	</servlet-mapping>
+	
+	<session-config>
+		<session-timeout>
+			30
+        </session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<welcome-file>Request.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>
+
+

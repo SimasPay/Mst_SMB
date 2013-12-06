@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<schema id='A4'> 
+<field id='number-of-components' type='N' length='1'/> 
+<field id='key-type' type='A' length='3'/>
+<field id='key-scheme-lmk' type='A' length='1'/>
+<field id='component1' type='A' length='33'/> 
+<field id='component2' type='A' length='33'/>
+<field id='component3' type='A' length='33'/>
+</schema> 

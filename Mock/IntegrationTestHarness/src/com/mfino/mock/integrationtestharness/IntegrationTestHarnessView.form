@@ -1,0 +1,2283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.7">
+  <NonVisualComponents>
+    <Container class="javax.swing.JPanel" name="mainPanel">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="mainPanel" noResource="true"/>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="IntTestHarnessTabbedPane" min="-2" pref="431" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="1"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="IntTestHarnessTabbedPane" min="-2" pref="342" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JTabbedPane" name="IntTestHarnessTabbedPane">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="apiChooser" noResource="true"/>
+          </Properties>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="apiChooserPanel">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="apiChooserPanel" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="apiChooserPanel">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="apiChooserPanel.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="ResetPinRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="subcriptionActivationRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="merchantMpinResetRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="checkBalanceRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="mobileAgentRechargeRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="getMcashTransactionsRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="mcashToMcashRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace pref="138" max="32767" attributes="0"/>
+                                  <Component id="frequencyTest" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="getTransactionsRadio" min="-2" max="-2" attributes="0"/>
+                              <Component id="mcashBalanceInquiryRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="shareLoadRadio" min="-2" max="-2" attributes="0"/>
+                              <Component id="changeMcashPinRadio" min="-2" max="-2" attributes="0"/>
+                              <Component id="mcashTopupRadio" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                                  <Component id="nextAPIButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="mobileAgentDistributeRadio" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="changepinRadio" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="52" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="changepinRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="getTransactionsRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="mcashTopupRadio" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                                          <Component id="changeMcashPinRadio" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="shareLoadRadio" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="mcashBalanceInquiryRadio" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="mobileAgentDistributeRadio" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="subcriptionActivationRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="ResetPinRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="mobileAgentRechargeRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="checkBalanceRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="merchantMpinResetRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="getMcashTransactionsRadio" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="mcashToMcashRadio" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="nextAPIButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="frequencyTest" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="34" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JRadioButton" name="subcriptionActivationRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" resourceKey="subsricption_activation.text"/>
+                    <Property name="name" type="java.lang.String" value="subsricption_activation" noResource="true"/>
+                  </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" resourceKey="subcriptionActivationRadio.AccessibleContext.accessibleName" postCode="subcriptionActivationRadio.setActionCommand(ITHConstants.SUBSRICPTION_ACTIVATION);"/>
+                  </AccessibilityProperties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="changepinRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="change_mpin.text"/>
+                    <Property name="name" type="java.lang.String" value="change_mpin" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="changepinRadio.setActionCommand(ITHConstants.CHANGE_PIN);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="ResetPinRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="mpin_reset.text"/>
+                    <Property name="name" type="java.lang.String" value="mpin_reset" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="ResetPinRadio.setActionCommand(ITHConstants.RESET_PIN);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="getTransactionsRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="last_3_transaction.text"/>
+                    <Property name="name" type="java.lang.String" value="last_3_transaction" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="getTransactionsRadio.setActionCommand(ITHConstants.GET_TRANSACTIONS);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="mobileAgentRechargeRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="topup.text"/>
+                    <Property name="name" type="java.lang.String" value="topup" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="mobileAgentRechargeRadio.setActionCommand(ITHConstants.MOBILE_AGENT_RECHARGE);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="mcashTopupRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="mcash_topup.text"/>
+                    <Property name="name" type="java.lang.String" value="mcash_topup" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="mcashTopupRadio.setActionCommand(ITHConstants.MCASH_TOPUP);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="changeMcashPinRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="change_mcash_Pin.text"/>
+                    <Property name="name" type="java.lang.String" value="change_mcash_Pin" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="changeMcashPinRadio.setActionCommand(ITHConstants.CHANGE_MCASH_PIN);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="checkBalanceRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="check_balance.text"/>
+                    <Property name="name" type="java.lang.String" value="check_balance" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="checkBalanceRadio.setActionCommand(ITHConstants.CHECK_BALANCE);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="merchantMpinResetRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="merchant_mpin_reset.text"/>
+                    <Property name="name" type="java.lang.String" value="merchant_mpin_reset" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="merchantMpinResetRadio.setActionCommand(ITHConstants.MERCHANT_MPIN_RESET);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="nextAPIButton">
+                  <Properties>
+                    <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                      <action class="com.mfino.mock.integrationtestharness.IntegrationTestHarnessView" id="showAPITabbedPane" methodName="showAPITabbedPane"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="Next.text"/>
+                    <Property name="name" type="java.lang.String" value="Next" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nextAPIButtonActionPerformed"/>
+                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nextAPIButtonKeyPressed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="mcashToMcashRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="mcash_to_mcash.text"/>
+                    <Property name="name" type="java.lang.String" value="mcash_to_mcash" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="mcashToMcashRadio.setActionCommand(ITHConstants.MCASH_TO_MCASH);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="getMcashTransactionsRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="get_mcash_transactions.text"/>
+                    <Property name="name" type="java.lang.String" value="get_mcash_transactions" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="getMcashTransactionsRadio.setActionCommand(ITHConstants.GET_MCASH_TRANSACTIONS);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="shareLoadRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="share_load.text"/>
+                    <Property name="name" type="java.lang.String" value="share_load" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="shareLoadRadio.setActionCommand(ITHConstants.SHARE_LOAD);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="mcashBalanceInquiryRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="mcash_balance_inquiry.text"/>
+                    <Property name="name" type="java.lang.String" value="mcash_balance_inquiry" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="mcashBalanceInquiryRadio.setActionCommand(ITHConstants.MCASH_BALANCE_INQUIRY);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="mobileAgentDistributeRadio">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="mobile_agent_distribute.text"/>
+                    <Property name="name" type="java.lang.String" value="mobile_agent_distribute" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="mobileAgentDistributeRadio.setActionCommand(ITHConstants.MOBILE_AGENT_DISTRIBUTE);"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="frequencyTest">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="buttonGroup1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="frequencyTest.text"/>
+                    <Property name="name" type="java.lang.String" value="frequencyTest" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="frequencyTest.setActionCommand(ITHConstants.FREQUENCY_TEST);"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="SubcriptionActivationPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="SubcriptionActivationPane" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Subscription_Activation">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="SubcriptionActivationPane.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SubmitSubsriptionActivation" alignment="1" min="-2" pref="82" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="SMSPinLabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSSecretAnswerLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSContactNumberLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSSourceMsisdnLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="SMSSourceMsisdnTextBox" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="SMSPinTextBox" alignment="0" pref="267" max="32767" attributes="1"/>
+                                      <Component id="SMSSecretAnswerTextBox" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="SMSContactNumberTextBox" alignment="0" pref="259" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="46" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSPinLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSPinTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSSourceMsisdnTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSSourceMsisdnLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSSecretAnswerTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSSecretAnswerLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSContactNumberTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSContactNumberLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                          <Component id="SubmitSubsriptionActivation" min="-2" pref="26" max="-2" attributes="0"/>
+                          <EmptySpace pref="77" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="SMSPinLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSPinLabel.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSPinLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="SMSPinTextBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSPinTextBox.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSPinTextBox" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="SMSSourceMsisdnTextBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSourceMsisdnTextBox.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSourceMsisdnTextBox" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="SMSSecretAnswerTextBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSecretAnswerTextBox.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSecretAnswerTextBox" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="SMSContactNumberTextBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSContactNumberTextBox.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSContactNumberTextBox" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSourceMsisdnLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSourceMsisdnLabel.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSourceMsisdnLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSecretAnswerLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSecretAnswerLabel.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSecretAnswerLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSContactNumberLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSContactNumberLabel.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSContactNumberLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="SubmitSubsriptionActivation">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitSubsriptionActivation.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitSubsriptionActivation" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitSubsriptionActivationActionPerformed"/>
+                  </Events>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="frequencyPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="frequencyPane" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="FrequencyTest">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="frequencyPane.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="CBChange_Pin" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CBSubcriptionActivation" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CBReset_Pin" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CBGet_Transactions" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CBMobile_Agent_Recharge" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CBMcash_Topup" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="CBMobile_Agent_Distribute" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="CBMerchant_Mpin_Reset" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="CBCheck_Balance" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="CBMcash_Mcash" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="CBGet_MCash_Transactions" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="CBShare_Load" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="CBMCash_Balance_Inquiry" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="SubmitFrequencyTest" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel29" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="requestPerMinTF" min="-2" pref="300" max="-2" attributes="1"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="21" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel29" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="requestPerMinTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="CBSubcriptionActivation" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CBCheck_Balance" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="CBChange_Pin" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CBMerchant_Mpin_Reset" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="CBReset_Pin" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CBMcash_Mcash" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="CBGet_Transactions" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CBGet_MCash_Transactions" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="CBMobile_Agent_Recharge" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CBShare_Load" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="CBMcash_Topup" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CBMCash_Balance_Inquiry" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="CBMobile_Agent_Distribute" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="SubmitFrequencyTest" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabel29">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel29.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel29" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="requestPerMinTF">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="requestPerMinTF.text"/>
+                    <Property name="name" type="java.lang.String" value="requestPerMinTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="SubmitFrequencyTest">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Submit.text"/>
+                    <Property name="name" type="java.lang.String" value="Submit" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitFrequencyTestActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBSubcriptionActivation">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="CBSubcriptionActivation.text"/>
+                    <Property name="name" type="java.lang.String" value="CBSubcriptionActivation" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBChange_Pin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Change_Pin.text"/>
+                    <Property name="name" type="java.lang.String" value="Change_Pin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBReset_Pin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Reset_Pin.text"/>
+                    <Property name="name" type="java.lang.String" value="Reset_Pin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBGet_Transactions">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Get_Transactions.text"/>
+                    <Property name="name" type="java.lang.String" value="Get_Transactions" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBMobile_Agent_Recharge">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Mobile_Agent_Recharge.text"/>
+                    <Property name="name" type="java.lang.String" value="Mobile_Agent_Recharge" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBMcash_Topup">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Mcash_Topup.text"/>
+                    <Property name="name" type="java.lang.String" value="Mcash_Topup" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBCheck_Balance">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Check_Balance.text"/>
+                    <Property name="name" type="java.lang.String" value="Check_Balance" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBMerchant_Mpin_Reset">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Merchant_Mpin_Reset.text"/>
+                    <Property name="name" type="java.lang.String" value="Merchant_Mpin_Reset" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBMcash_Mcash">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Mcash_Mcash.text"/>
+                    <Property name="name" type="java.lang.String" value="Mcash_Mcash" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBGet_MCash_Transactions">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Get_MCash_Transactions.text"/>
+                    <Property name="name" type="java.lang.String" value="Get_MCash_Transactions" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBShare_Load">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Share_Load.text"/>
+                    <Property name="name" type="java.lang.String" value="Share_Load" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBMCash_Balance_Inquiry">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="MCash_Balance_Inquiry.text"/>
+                    <Property name="name" type="java.lang.String" value="MCash_Balance_Inquiry" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="CBMobile_Agent_Distribute">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Mobile_Agent_Distribute.text"/>
+                    <Property name="name" type="java.lang.String" value="Mobile_Agent_Distribute" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="resetPinPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="reset_pin" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="reset_pin">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="reset_pin.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="mrSecretAnswerTF" alignment="0" pref="250" max="32767" attributes="1"/>
+                                      <Component id="mrSourceMsisdnTF" alignment="0" pref="250" max="32767" attributes="0"/>
+                                      <Component id="mrSMSNewPinTF" alignment="1" min="-2" pref="250" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace pref="321" max="32767" attributes="0"/>
+                                  <Component id="SubmitMpinReset" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="304" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mrSMSNewPinTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mrSecretAnswerTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mrSourceMsisdnTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+                          <Component id="SubmitMpinReset" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="68" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="SubmitMpinReset">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitMpinReset.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitMpinReset" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitMpinResetActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel2.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel2" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel3">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel3.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mrSMSNewPinTF">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mrSMSNewPinTF.text"/>
+                    <Property name="name" type="java.lang.String" value="mrSMSNewPinTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mrSecretAnswerTF">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mrSecretAnswerTF.text"/>
+                    <Property name="name" type="java.lang.String" value="mrSecretAnswerTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mrSourceMsisdnTF">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mrSourceMsisdnTF.text"/>
+                    <Property name="name" type="java.lang.String" value="mrSourceMsisdnTF" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="checkBalancePane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="check_balance" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="check_balance">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="check_balance.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SubmitCheckInventoryPane" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="SMSSourceMsisdnLabel1" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="ciSourceMsisdn" min="-2" pref="200" max="-2" attributes="1"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="1">
+                                      <Component id="SMSPinLabel1" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                      <Component id="ciSMSPin" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="72" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSPinLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="ciSMSPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SMSSourceMsisdnLabel1" min="-2" max="-2" attributes="0"/>
+                              <Component id="ciSourceMsisdn" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="SubmitCheckInventoryPane" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="88" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="SubmitCheckInventoryPane">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitCheckInventoryPane.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitCheckInventoryPane" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitCheckInventoryPaneActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSourceMsisdnLabel1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSourceMsisdnLabel1.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSourceMsisdnLabel1" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="ciSMSPin">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="ciSMSPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="ciSourceMsisdn">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="ciSourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSPinLabel1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSPinLabel1.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSPinLabel1" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="merchantMpinResetPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="merchant_mpin_reset" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="merchant_mpin_reset">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="merchant_mpin_reset.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SubmitMerchantMpinReset" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="SMSPinLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="SMSSecretAnswerLabel3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Component id="SMSContactNumberLabel3" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="mmrContactNumber" max="32767" attributes="1"/>
+                                      <Component id="mmrSecretAnswer" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="mmrNewPin" alignment="0" pref="259" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="21" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSPinLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mmrNewPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="mmrSecretAnswer" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSSecretAnswerLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="mmrContactNumber" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSContactNumberLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="SubmitMerchantMpinReset" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="85" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="SubmitMerchantMpinReset">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitMerchantMpinReset.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitMerchantMpinReset" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitMerchantMpinResetActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mmrContactNumber">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="mmrContactNumber" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mmrSecretAnswer">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="mmrSecretAnswer" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSecretAnswerLabel3">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSecretAnswerLabel3.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSecretAnswerLabel3" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mmrNewPin">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="mmrNewPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSContactNumberLabel3">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSContactNumberLabel3.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSContactNumberLabel3" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSPinLabel3">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSPinLabel3.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSPinLabel3" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="getTransactionsPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="get_Transactions" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="get_Transactions">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="get_Transactions.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SubmitLast3Transactions" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="l3tSMSSourceMsisdnTF1" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="l3tSMSPinTF" alignment="0" min="-2" pref="230" max="-2" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="53" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="85" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="l3tSMSPinTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="l3tSMSSourceMsisdnTF1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="SubmitLast3Transactions" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabel10">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel10.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel10" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="l3tSMSPinTF">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="l3tSMSPinTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="SubmitLast3Transactions">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitLast3Transactions.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitLast3Transactions" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitLast3TransactionsActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JTextField" name="l3tSMSSourceMsisdnTF1">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="l3tSMSSourceMsisdnTF1" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel11">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel11.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel11" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="mobileAgentRechargePane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="mobile_Agent_Recharge" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="mobile_Agent_Recharge">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="mobile_Agent_Recharge.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SubmitTopup" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="SMSSourceMsisdnLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSPinLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSSecretAnswerLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSContactNumberLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="topupSMSRechargeAmountTF" max="32767" attributes="1"/>
+                                      <Component id="topupSMSDestMsisdnTF" max="32767" attributes="1"/>
+                                      <Component id="topupSMSBucketTypeTF" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="topupSMSPinTF" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="topupSMSSourceMsisdnTF" alignment="0" min="-2" pref="267" max="-2" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="24" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSPinLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="topupSMSPinTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSSourceMsisdnLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="topupSMSSourceMsisdnTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSContactNumberLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="topupSMSBucketTypeTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSSecretAnswerLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="topupSMSDestMsisdnTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="topupSMSRechargeAmountTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                          <Component id="SubmitTopup" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="60" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JTextField" name="topupSMSSourceMsisdnTF">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="topupSMSSourceMsisdnTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="SubmitTopup">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitTopup.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitTopup" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitTopupActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSContactNumberLabel4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSContactNumberLabel4.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSContactNumberLabel4" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="topupSMSDestMsisdnTF">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="topupSMSDestMsisdnTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSPinLabel4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSPinLabel4.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSPinLabel4" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSourceMsisdnLabel4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSourceMsisdnLabel4.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSourceMsisdnLabel4" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="topupSMSBucketTypeTF">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="topupSMSBucketTypeTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSecretAnswerLabel4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSecretAnswerLabel4.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSecretAnswerLabel4" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="topupSMSPinTF">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="topupSMSPinTF" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel4.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="topupSMSRechargeAmountTF">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="topupSMSRechargeAmountTF.text"/>
+                    <Property name="name" type="java.lang.String" value="topupSMSRechargeAmountTF" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="changeMcashPinPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="change_mcash_Pin" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="change_mcash_Pin">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="change_mcash_Pin.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="SubmitChangeMerchantPin" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="SMSSecretAnswerLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSPinLabel2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSSourceMsisdnLabel2" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="cmpOldPin" max="32767" attributes="1"/>
+                                      <Component id="cmpSourceMsisdn" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="cmpNewPin" alignment="0" pref="281" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="32" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cmpOldPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="SMSPinLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSSourceMsisdnLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cmpNewPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="SMSSecretAnswerLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cmpSourceMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                          <Component id="SubmitChangeMerchantPin" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="65" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="SubmitChangeMerchantPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitChangeMerchantPin.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitChangeMerchantPin" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitChangeMerchantPinActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSourceMsisdnLabel2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSourceMsisdnLabel2.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSourceMsisdnLabel2" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="cmpSourceMsisdn">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="cmpSourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSSecretAnswerLabel2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSSecretAnswerLabel2.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSSecretAnswerLabel2" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="cmpOldPin">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="cmpOldPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="cmpNewPin">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="cmpNewPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSPinLabel2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSPinLabel2.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSPinLabel2" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="changePinPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="changePinPane" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Change_Pin">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="changePinPane.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="SubmitChangeMpin" min="-2" pref="67" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="cmpSMSSourceMsisdnLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSOldPinlabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="SMSNewPinLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="1">
+                                          <EmptySpace min="2" pref="2" max="2" attributes="0"/>
+                                          <Component id="cmSMSSourceMsisdn" pref="260" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="cmSMSOldPin" min="-2" pref="262" max="-2" attributes="1"/>
+                                      <Component id="cmSMSNewPin" alignment="0" pref="262" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cmSMSOldPin" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="SMSOldPinlabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="cmSMSNewPin" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="cmSMSSourceMsisdn" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="SMSNewPinLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="cmpSMSSourceMsisdnLabel" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="SubmitChangeMpin" min="-2" pref="23" max="-2" attributes="0"/>
+                          <EmptySpace pref="112" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="SubmitChangeMpin">
+                  <Properties>
+                    <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                      <action class="com.mfino.mock.integrationtestharness.IntegrationTestHarnessView" id="invokeSubcriptionActivation" methodName="invokeSubcriptionActivation"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" resourceKey="Submit.text"/>
+                    <Property name="name" type="java.lang.String" value="Submit" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitChangeMpinActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSOldPinlabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSOldPinlabel.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSOldPinlabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="SMSNewPinLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SMSNewPinLabel.text"/>
+                    <Property name="name" type="java.lang.String" value="SMSNewPinLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="cmpSMSSourceMsisdnLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="cmpSMSSourceMsisdnLabel.text"/>
+                    <Property name="name" type="java.lang.String" value="cmpSMSSourceMsisdnLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="cmSMSOldPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="cmSMSOldPin.text"/>
+                    <Property name="name" type="java.lang.String" value="cmSMSOldPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="cmSMSNewPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="cmSMSNewPin.text"/>
+                    <Property name="name" type="java.lang.String" value="cmSMSNewPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="cmSMSSourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="cmSMSSourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="cmSMSSourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="mCashTopupPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="mCash_Topup" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="mCash_Topup">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="mCash_Topup.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="SubmitTopupMerchant" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="tmSMSAmount" max="32767" attributes="1"/>
+                                      <Component id="tmDestMsisdn" alignment="1" max="32767" attributes="1"/>
+                                      <Component id="tmDistributeAmount" alignment="1" max="32767" attributes="1"/>
+                                      <Component id="tmSourceMsisdn" alignment="1" max="32767" attributes="1"/>
+                                      <Component id="tmSMSMcashPin" alignment="1" pref="255" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="305" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="tmSMSMcashPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="tmSourceMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="tmDistributeAmount" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="tmDestMsisdn" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                  <Component id="tmSMSAmount" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                                  <Component id="SubmitTopupMerchant" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="53" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="SubmitTopupMerchant">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="SubmitTopupMerchant.text"/>
+                    <Property name="name" type="java.lang.String" value="SubmitTopupMerchant" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitTopupMerchantActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel6">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel6.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel6" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel7">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel7.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel8">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel8.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel9">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel9.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel9" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="tmSMSMcashPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="tmSMSMcashPin.text"/>
+                    <Property name="name" type="java.lang.String" value="tmSMSMcashPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="tmSourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="tmSourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="tmSourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="tmDistributeAmount">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="tmDistributeAmount.text"/>
+                    <Property name="name" type="java.lang.String" value="tmDistributeAmount" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="tmDestMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="tmDestMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="tmDestMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="tmSMSAmount">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="tmSMSAmount.text"/>
+                    <Property name="name" type="java.lang.String" value="tmSMSAmount" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel5">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel5.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="getMcashTransactionsPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="get_mcash_transactions" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="get_mcash_transactions">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="get_mcash_transactions.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="submitMcashTransactions" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel24" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel23" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="gmtSMS_sourceMsisdn" min="-2" pref="236" max="-2" attributes="0"/>
+                                      <Component id="gmtSMS_mCashPin" alignment="0" min="-2" pref="236" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="55" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel23" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="gmtSMS_mCashPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="gmtSMS_sourceMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="submitMcashTransactions" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="88" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="submitMcashTransactions">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="submitMcashTransactions.text"/>
+                    <Property name="name" type="java.lang.String" value="submitMcashTransactions" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel23">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel23.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel23" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="gmtSMS_mCashPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="gmtSMS_mCashPin.text"/>
+                    <Property name="name" type="java.lang.String" value="gmtSMS_mCashPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel24">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel24.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel24" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="gmtSMS_sourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="gmtSMS_sourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="gmtSMS_sourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="mcashToMcashPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="mcash_to_mcash" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="mcash_to_mcash">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="mcash_to_mcash.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel17" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel20" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel19" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="m2mSMS_destMsisdn" alignment="0" pref="241" max="32767" attributes="0"/>
+                                      <Component id="m2mSMS_mCashMessage" alignment="0" pref="241" max="32767" attributes="0"/>
+                                      <Component id="m2mSMS_mCashPin" alignment="0" pref="241" max="32767" attributes="0"/>
+                                      <Component id="m2mSMS_SecretAnswer" alignment="0" pref="241" max="32767" attributes="0"/>
+                                      <Component id="m2mSMS_sourceMsisdn" alignment="0" min="-2" pref="241" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace pref="300" max="32767" attributes="0"/>
+                                  <Component id="mCashToMcashButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="325" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="m2mSMS_mCashPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="m2mSMS_SecretAnswer" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="m2mSMS_sourceMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="m2mSMS_destMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel20" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="m2mSMS_mCashMessage" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                          <Component id="mCashToMcashButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="30" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="mCashToMcashButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mCashToMcashButton.text"/>
+                    <Property name="name" type="java.lang.String" value="mCashToMcashButton" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mCashToMcashButtonActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel16">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel16.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel16" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel17">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel17.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel17" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel18">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel18.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel18" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel19">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel19.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel19" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel20">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel20.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel20" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="m2mSMS_mCashPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="m2mSMS_mCashPin.text"/>
+                    <Property name="name" type="java.lang.String" value="m2mSMS_mCashPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="m2mSMS_SecretAnswer">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="m2mSMS_SecretAnswer.text"/>
+                    <Property name="name" type="java.lang.String" value="m2mSMS_SecretAnswer" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="m2mSMS_sourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="m2mSMS_sourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="m2mSMS_sourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="m2mSMS_destMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="m2mSMS_destMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="m2mSMS_destMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="m2mSMS_mCashMessage">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="m2mSMS_mCashMessage.text"/>
+                    <Property name="name" type="java.lang.String" value="m2mSMS_mCashMessage" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="shareLoadPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="share_load" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="share_load">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="share_load.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="submitShareLoadButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel13" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel14" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel15" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="slSMSDestMsisdn" alignment="0" pref="255" max="32767" attributes="0"/>
+                                      <Component id="slSourceMsisdn" alignment="0" pref="255" max="32767" attributes="0"/>
+                                      <Component id="slSMSRechargeAmount" alignment="0" pref="255" max="32767" attributes="0"/>
+                                      <Component id="slSMSNewPin" alignment="0" min="-2" pref="255" max="-2" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="299" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="slSMSNewPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="slSMSRechargeAmount" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="slSourceMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="slSMSDestMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="submitShareLoadButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="53" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="submitShareLoadButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="Submit.text"/>
+                    <Property name="name" type="java.lang.String" value="Submit" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="submitShareLoadButtonActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel12">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel12.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel12" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel13">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel13.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel13" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel14">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel14.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel14" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel15">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel15.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel15" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="slSMSNewPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="slSMSNewPin.text"/>
+                    <Property name="name" type="java.lang.String" value="slSMSNewPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="slSMSRechargeAmount">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="slSMSRechargeAmount.text"/>
+                    <Property name="name" type="java.lang.String" value="slSMSRechargeAmount" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="slSourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="slSourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="slSourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="slSMSDestMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="slSMSDestMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="slSMSDestMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="mcashBalanceInquiryPane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="mcash_balance_inquiry" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="mcash_balance_inquiry">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="mcash_balance_inquiry.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="302" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="mCashBalaneInquiryButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel22" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="mbiSMS_sourceMsisdn" max="32767" attributes="1"/>
+                                      <Component id="mbiSMS_mCashPin" alignment="0" pref="255" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mbiSMS_mCashPin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel22" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mbiSMS_sourceMsisdn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="mCashBalaneInquiryButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="74" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="mCashBalaneInquiryButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mCashBalaneInquiryButton.text"/>
+                    <Property name="name" type="java.lang.String" value="mCashBalaneInquiryButton" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mCashBalaneInquiryButtonActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel21">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel21.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel21" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel22">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel22.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel22" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mbiSMS_mCashPin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mbiSMS_mCashPin.text"/>
+                    <Property name="name" type="java.lang.String" value="mbiSMS_mCashPin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="mbiSMS_sourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mbiSMS_sourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="mbiSMS_sourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="mobileAgentDistributePane">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="mobile_agent_distribute" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="mobile_agent_distribute">
+                    <Property name="tabTitle" type="java.lang.String" resourceKey="mobile_agent_distribute.TabConstraints.tabTitle"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="mobileAgentDistributeButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel28" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel25" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel26" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel27" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="madSMS_distributeAmount" max="32767" attributes="1"/>
+                                      <Component id="madSMS_destMsisdn" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="madSMS_sourceMsisdn" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="madSMS_Pin" alignment="0" pref="239" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="49" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jLabel26" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jLabel27" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Component id="madSMS_Pin" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="madSMS_sourceMsisdn" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="madSMS_destMsisdn" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="madSMS_distributeAmount" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="mobileAgentDistributeButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="69" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="mobileAgentDistributeButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="mobileAgentDistributeButton.text"/>
+                    <Property name="name" type="java.lang.String" value="mobileAgentDistributeButton" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel25">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel25.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel25" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel26">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel26.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel26" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel27">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel27.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel27" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel28">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel28.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel28" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="madSMS_Pin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="madSMS_Pin.text"/>
+                    <Property name="name" type="java.lang.String" value="madSMS_Pin" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="madSMS_sourceMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="madSMS_sourceMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="madSMS_sourceMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="madSMS_destMsisdn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="madSMS_destMsisdn.text"/>
+                    <Property name="name" type="java.lang.String" value="madSMS_destMsisdn" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="madSMS_distributeAmount">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="madSMS_distributeAmount.text"/>
+                    <Property name="name" type="java.lang.String" value="madSMS_distributeAmount" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="statusPanel">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="statusPanel" noResource="true"/>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="statusPanelSeparator" alignment="0" pref="451" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="statusMessageLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="431" max="32767" attributes="0"/>
+                  <Component id="statusAnimationLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="statusPanelSeparator" min="-2" pref="2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="statusMessageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="statusAnimationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JSeparator" name="statusPanelSeparator">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="statusPanelSeparator" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="statusMessageLabel">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="statusMessageLabel" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="statusAnimationLabel">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="2"/>
+            <Property name="name" type="java.lang.String" value="statusAnimationLabel" noResource="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+    </Component>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="component" type="javax.swing.JComponent" editor="org.netbeans.modules.form.ComponentChooserEditor">
+      <ComponentRef name="mainPanel"/>
+    </Property>
+    <Property name="statusBar" type="javax.swing.JComponent" editor="org.netbeans.modules.form.ComponentChooserEditor">
+      <ComponentRef name="statusPanel"/>
+    </Property>
+  </Properties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,108,0,0,1,-61"/>
+  </AuxValues>
+</Form>

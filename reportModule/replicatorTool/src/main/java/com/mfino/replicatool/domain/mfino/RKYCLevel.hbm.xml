@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:56 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.KYCLevel" optimistic-lock="version" table="kyc_level" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="KYCLevel" type="java.lang.Long" unique-key="unique_kyclevel">
+<column name="KYCLevel" not-null="true"  sql-type="bigint" />
+</property>
+<property name="KYCLevelName" type="java.lang.String" >
+<column name="KYCLevelName" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="PocketTemplate" foreign-key="FK_KYCLevel_PocketTemplate" class="com.mfino.domain.PocketTemplate" fetch="select">
+<column name="PocketTemplateID"     />
+</many-to-one>
+<property name="KYCLevelDescription" type="java.lang.String" >
+<column name="KYCLevelDescription"    sql-type="varchar(255)" />
+</property>
+<set name="PocketTemplateConfigFromKYCLevel" inverse="true">
+<key>
+<column name="KYCLevel" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.PocketTemplateConfig" />
+</set>
+<set name="SubscriberFromKYCLevel" inverse="true">
+<key>
+<column name="KYCLevel"    />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+<set name="TransactionRuleFromSourceKYC" inverse="true">
+<key>
+<column name="SourceKYC"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionRule" />
+</set>
+<set name="TransactionRuleFromDestKYC" inverse="true">
+<key>
+<column name="DestKYC"    />
+</key>
+<one-to-many class="com.mfino.domain.TransactionRule" />
+</set>
+<set name="KYCFieldsFromKYCFieldsLevelID" inverse="true">
+<key>
+<column name="KYCFieldsLevelID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.KYCFields" />
+</set>
+</class>
+</hibernate-mapping>

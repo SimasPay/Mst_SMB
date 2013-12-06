@@ -1,0 +1,1 @@
+UPDATE transaction_type set DisplayName='Settlement' WHERE TransactionName='ChargeSettlement';

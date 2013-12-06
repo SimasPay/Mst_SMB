@@ -1,0 +1,338 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30/07/2012 21:44:42 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<typedef name="encryptedBigDecimal" class="org.jasypt.hibernate.type.EncryptedBigDecimalAsStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="encryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="uniqueencryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateUniqueStringEncryptor</param>
+</typedef>
+<class name="com.mfino.domain.CommodityTransfer" optimistic-lock="version" table="commodity_transfer" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="TransactionsLogByTransactionID" foreign-key="FK_CommodityTransfer_TransactionsLogByTransactionID" class="com.mfino.domain.TransactionsLog" fetch="select">
+<column name="TransactionID" not-null="true"   />
+</many-to-one>
+<property name="MsgType" type="java.lang.Integer" >
+<column name="MsgType" not-null="true"  sql-type="int" />
+</property>
+<property name="UICategory" type="java.lang.Integer" index="UICategory">
+<column name="UICategory"    sql-type="int" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_CommodityTransfer_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Company" foreign-key="FK_CommodityTransfer_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID" not-null="true"   />
+</many-to-one>
+<property name="TransferStatus" type="java.lang.Integer" >
+<column name="TransferStatus" not-null="true"  sql-type="int" />
+</property>
+<property name="TransferFailureReason" type="java.lang.Integer" >
+<column name="TransferFailureReason"    sql-type="int" />
+</property>
+<property name="NotificationCode" type="java.lang.Integer" >
+<column name="NotificationCode"    sql-type="int" />
+</property>
+<property name="StartTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" index="DestMDN">
+<column name="StartTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="EndTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="EndTime"   length="19" sql-type="datetime" />
+</property>
+<property name="ExpirationTimeout" type="java.lang.Integer" >
+<column name="ExpirationTimeout" not-null="true"  default="'60000'"  sql-type="int" />
+</property>
+<property name="SourceIP" type="java.lang.String" >
+<column name="SourceIP"    sql-type="varchar(255)" />
+</property>
+<property name="SourceReferenceID" type="java.lang.String" >
+<column name="SourceReferenceID"    sql-type="varchar(255)" />
+</property>
+<property name="SourceTerminalID" type="java.lang.String" >
+<column name="SourceTerminalID"    sql-type="varchar(255)" />
+</property>
+<property name="SourceMDN" type="java.lang.String" >
+<column name="SourceMDN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="SubscriberMDNBySourceMDNID" foreign-key="FK_CommodityTransfer_SubscriberMDNBySourceMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="SourceMDNID" not-null="true"  index="SourceMDNID" />
+</many-to-one>
+<many-to-one name="LOP" foreign-key="FK_CommodityTransfer_LOP" class="com.mfino.domain.LOP" fetch="select">
+<column name="LOPID"     />
+</many-to-one>
+<many-to-one name="DistributionChainLevelByDCTLevelID" foreign-key="FK_CommodityTransfer_DistributionChainLevelByDCTLevelID" class="com.mfino.domain.DistributionChainLevel" fetch="select">
+<column name="DCTLevelID"     />
+</many-to-one>
+<property name="LevelPermissions" type="java.lang.Integer" >
+<column name="LevelPermissions"    sql-type="int" />
+</property>
+<many-to-one name="SubscriberBySourceSubscriberID" foreign-key="FK_CommodityTransfer_SubscriberBySourceSubscriberID" class="com.mfino.domain.Subscriber" fetch="select">
+<column name="SourceSubscriberID" not-null="true"   />
+</many-to-one>
+<property name="SourceSubscriberName" type="java.lang.String" >
+<column name="SourceSubscriberName"    sql-type="varchar(255)" />
+</property>
+<property name="SourcePocketAllowance" type="java.lang.Integer" >
+<column name="SourcePocketAllowance"    sql-type="int" />
+</property>
+<property name="SourcePocketType" type="java.lang.Integer" >
+<column name="SourcePocketType" not-null="true"  sql-type="int" />
+</property>
+<many-to-one name="PocketBySourcePocketID" foreign-key="FK_CommodityTransfer_PocketBySourcePocketID" class="com.mfino.domain.Pocket" fetch="select">
+<column name="SourcePocketID" not-null="true"   />
+</many-to-one>
+<property name="SourcePocketBalance" type="java.math.BigDecimal" >
+<column name="SourcePocketBalance"    sql-type="decimal(25,4)" />
+</property>
+<property name="SourceCardPAN" type="java.lang.String" >
+<column name="SourceCardPAN"    sql-type="varchar(255)" />
+</property>
+<property name="SourceMessage" type="java.lang.String" >
+<column name="SourceMessage"    sql-type="varchar(255)" />
+</property>
+<property name="DestMDN" type="java.lang.String" index="DestMDN">
+<column name="DestMDN"    sql-type="varchar(255)" />
+</property>
+<property name="DestMDNID" type="java.lang.Long" index="DestMDNID">
+<column name="DestMDNID"    sql-type="bigint" />
+</property>
+<property name="DestSubscriberID" type="java.lang.Long" >
+<column name="DestSubscriberID"    sql-type="bigint" />
+</property>
+<property name="DestSubscriberName" type="java.lang.String" >
+<column name="DestSubscriberName"    sql-type="varchar(255)" />
+</property>
+<property name="DestPocketAllowance" type="java.lang.Integer" >
+<column name="DestPocketAllowance"    sql-type="int" />
+</property>
+<property name="DestPocketType" type="java.lang.Integer" >
+<column name="DestPocketType"    sql-type="int" />
+</property>
+<property name="DestPocketID" type="java.lang.Long" index="DestPocketID">
+<column name="DestPocketID"    sql-type="bigint" />
+</property>
+<property name="DestPocketBalance" type="java.math.BigDecimal" >
+<column name="DestPocketBalance"    sql-type="decimal(25,4)" />
+</property>
+<property name="DestBankAccountName" type="java.lang.String" >
+<column name="DestBankAccountName"    sql-type="varchar(255)" />
+</property>
+<property name="DestCardPAN" type="java.lang.String" >
+<column name="DestCardPAN"    sql-type="varchar(255)" />
+</property>
+<property name="BillingType" type="java.lang.Integer" >
+<column name="BillingType"    sql-type="int" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="Charges" type="big_decimal" >
+<column name="Charges" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="TaxAmount" type="big_decimal" >
+<column name="TaxAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="Commodity" type="java.lang.Integer" >
+<column name="Commodity" not-null="true"  sql-type="int" />
+</property>
+<property name="BucketType" type="java.lang.String" >
+<column name="BucketType"    sql-type="varchar(255)" />
+</property>
+<property name="SourceApplication" type="java.lang.Integer" >
+<column name="SourceApplication" not-null="true"  sql-type="int" />
+</property>
+<property name="ServletPath" type="java.lang.String" >
+<column name="ServletPath"    sql-type="varchar(255)" />
+</property>
+<property name="Currency" type="java.lang.String" >
+<column name="Currency" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="BankCode" type="java.lang.Integer" >
+<column name="BankCode"    sql-type="int" />
+</property>
+<property name="OperatorCode" type="java.lang.Integer" >
+<column name="OperatorCode"    sql-type="int" />
+</property>
+<property name="OperatorResponseTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="OperatorResponseTime"   length="19" sql-type="datetime" />
+</property>
+<property name="OperatorResponseCode" type="java.lang.Integer" >
+<column name="OperatorResponseCode"    sql-type="int" />
+</property>
+<property name="OperatorRejectReason" type="java.lang.String" >
+<column name="OperatorRejectReason"    sql-type="varchar(255)" />
+</property>
+<property name="OperatorErrorText" type="java.lang.String" >
+<column name="OperatorErrorText"    sql-type="varchar(1000)" />
+</property>
+<property name="OperatorAuthorizationCode" type="java.lang.String" >
+<column name="OperatorAuthorizationCode"    sql-type="varchar(255)" />
+</property>
+<property name="OperatorReversalResponseTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="OperatorReversalResponseTime"   length="19" sql-type="datetime" />
+</property>
+<property name="OperatorReversalResponseCode" type="java.lang.Integer" >
+<column name="OperatorReversalResponseCode"    sql-type="int" />
+</property>
+<property name="OperatorReversalRejectReason" type="java.lang.String" >
+<column name="OperatorReversalRejectReason"    sql-type="varchar(255)" />
+</property>
+<property name="OperatorReversalErrorText" type="java.lang.String" >
+<column name="OperatorReversalErrorText"    sql-type="varchar(255)" />
+</property>
+<property name="OperatorReversalCount" type="java.lang.Integer" >
+<column name="OperatorReversalCount"    sql-type="int" />
+</property>
+<property name="OperatorLastReversalTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="OperatorLastReversalTime"   length="19" sql-type="datetime" />
+</property>
+<property name="TopupPeriod" type="java.lang.Long" >
+<column name="TopupPeriod"    sql-type="bigint" />
+</property>
+<property name="BankRetrievalReferenceNumber" type="java.lang.String" >
+<column name="BankRetrievalReferenceNumber"    sql-type="varchar(255)" />
+</property>
+<property name="BankSystemTraceAuditNumber" type="java.lang.String" >
+<column name="BankSystemTraceAuditNumber"    sql-type="varchar(255)" />
+</property>
+<property name="BankResponseTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="BankResponseTime"   length="19" sql-type="datetime" />
+</property>
+<property name="BankResponseCode" type="java.lang.Integer" >
+<column name="BankResponseCode"    sql-type="int" />
+</property>
+<property name="BankRejectReason" type="java.lang.String" >
+<column name="BankRejectReason"    sql-type="varchar(255)" />
+</property>
+<property name="BankErrorText" type="java.lang.String" >
+<column name="BankErrorText"    sql-type="varchar(3000)" />
+</property>
+<property name="BankAuthorizationCode" type="java.lang.String" >
+<column name="BankAuthorizationCode"    sql-type="varchar(255)" />
+</property>
+<property name="BankReversalResponseTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="BankReversalResponseTime"   length="19" sql-type="datetime" />
+</property>
+<property name="BankReversalResponseCode" type="java.lang.Integer" >
+<column name="BankReversalResponseCode"    sql-type="int" />
+</property>
+<property name="BankReversalRejectReason" type="java.lang.String" >
+<column name="BankReversalRejectReason"    sql-type="varchar(255)" />
+</property>
+<property name="BankReversalErrorText" type="java.lang.String" >
+<column name="BankReversalErrorText"    sql-type="varchar(3000)" />
+</property>
+<property name="BankReversalAuthorizationCode" type="java.lang.String" >
+<column name="BankReversalAuthorizationCode"    sql-type="varchar(255)" />
+</property>
+<property name="ReversalCount" type="java.lang.Integer" >
+<column name="ReversalCount"    sql-type="int" />
+</property>
+<property name="LastReversalTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastReversalTime"   length="19" sql-type="datetime" />
+</property>
+<property name="CSRAction" type="java.lang.Integer" >
+<column name="CSRAction"    sql-type="int" />
+</property>
+<property name="CSRActionTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CSRActionTime"   length="19" sql-type="datetime" />
+</property>
+<property name="CSRUserID" type="java.lang.Long" >
+<column name="CSRUserID"    sql-type="bigint" />
+</property>
+<property name="CSRUserName" type="java.lang.String" >
+<column name="CSRUserName"    sql-type="varchar(255)" />
+</property>
+<property name="CSRComment" type="java.lang.String" >
+<column name="CSRComment"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_ProcessingCode" type="java.lang.String" >
+<column name="ISO8583_ProcessingCode"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_PrimaryAccountNumber" type="java.lang.String" >
+<column name="ISO8583_PrimaryAccountNumber"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_SystemTraceAuditNumber" type="java.lang.String" >
+<column name="ISO8583_SystemTraceAuditNumber"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_LocalTxnTimeHhmmss" type="java.lang.String" >
+<column name="ISO8583_LocalTxnTimeHhmmss"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_MerchantType" type="java.lang.String" >
+<column name="ISO8583_MerchantType"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_AcquiringInstIdCode" type="java.lang.Integer" >
+<column name="ISO8583_AcquiringInstIdCode"    sql-type="int" />
+</property>
+<property name="ISO8583_RetrievalReferenceNum" type="java.lang.String" >
+<column name="ISO8583_RetrievalReferenceNum"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_CardAcceptorIdCode" type="java.lang.String" >
+<column name="ISO8583_CardAcceptorIdCode"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_Variant" type="java.lang.String" >
+<column name="ISO8583_Variant"    sql-type="varchar(255)" />
+</property>
+<property name="ISO8583_ResponseCode" type="java.lang.String" >
+<column name="ISO8583_ResponseCode"    sql-type="varchar(255)" />
+</property>
+<property name="BulkUploadID" type="java.lang.Long" unique-key="BulkUpload">
+<column name="BulkUploadID"    sql-type="bigint" />
+</property>
+<property name="BulkUploadLineNumber" type="java.lang.Integer" unique-key="BulkUpload">
+<column name="BulkUploadLineNumber"    sql-type="int" />
+</property>
+<property name="CopyToPermanentError" type="java.lang.String" >
+<column name="CopyToPermanentError"    sql-type="varchar(255)" />
+</property>
+<property name="WebClientIP" type="java.lang.String" >
+<column name="WebClientIP"    sql-type="varchar(255)" />
+</property>
+<property name="OperatorRRN" type="java.lang.String" >
+<column name="OperatorRRN"    sql-type="varchar(255)" />
+</property>
+<property name="OperatorSTAN" type="java.lang.String" >
+<column name="OperatorSTAN"    sql-type="varchar(255)" />
+</property>
+<property name="ProductIndicatorCode" type="java.lang.String" >
+<column name="ProductIndicatorCode"    sql-type="varchar(255)" />
+</property>
+<property name="Units" type="java.lang.Long" >
+<column name="Units"    sql-type="bigint" />
+</property>
+<property name="Denomination" type="java.lang.Long" >
+<column name="Denomination"    sql-type="bigint" />
+</property>
+<many-to-one name="CreditCardTransaction" foreign-key="FK_CommodityTransfer_CreditCardTransaction" class="com.mfino.domain.CreditCardTransaction" fetch="select">
+<column name="CreditCardTransactionID"     />
+</many-to-one>
+<property name="TransactionChargeID" type="java.lang.Long" >
+<column name="TransactionChargeID"    sql-type="bigint" />
+</property>
+<property name="IsPartOfSharedUpChain" type="java.lang.Boolean" >
+<column name="IsPartOfSharedUpChain"    sql-type="tinyint" />
+</property>
+</class>
+</hibernate-mapping>

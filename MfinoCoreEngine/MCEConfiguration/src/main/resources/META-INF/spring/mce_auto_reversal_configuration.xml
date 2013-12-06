@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	    http://www.springframework.org/schema/beans/spring-beans.xsd 
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd
+	    http://www.springframework.org/schema/osgi   
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+	    http://www.springframework.org/schema/osgi-compendium 
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+<osgi:reference id="autoReversalService" interface="com.mfino.mce.backend.AutoReversalService"/>
+
+<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+
+<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="locations">
+		<list>
+			<value>file:mfino_conf/mce.properties</value>
+		</list>
+	</property>
+</bean>
+
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+<bean id="autoReversalFailuresMonitoringService" class="com.mfino.mce.backend.impl.AutoReversalFailuresMonitoringServiceImpl">
+	<property name="autoReversalService" ref="autoReversalService" />
+	<property name="sessionFactory" ref="sessionFactory"/>		
+	<property name="integrationCodeToQueueMap">
+		<map>
+			<entry><key><value>QuickTeller</value></key><value>jms:suspenseAndChargesRRQueue?disableReplyTo=true</value></entry>
+			<entry><key><value>clickatell</value></key><value>jms:ClickatellbillpaymentsuspenseAndChargesRRQueue?disableReplyTo=true</value></entry>
+			
+		</map>
+	</property>
+</bean>	
+
+<camelContext id="autoReversal" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+	<!-- Route for auto reversals -->
+	<onException>
+        <exception>com.mfino.mce.backend.exception.DuplicateAutoReversalException</exception>
+        <handled>
+            <constant>true</constant>
+        </handled>
+        <to uri="jms:AutoReversaldeadLetterQueue?disableReplyTo=true"/>
+    </onException>
+    <route>
+        <from uri="jms:autoReversalQueue?disableReplyTo=true"/>
+        <to uri="bean:autoReversalService?method=doReversal"/>
+        <filter>
+            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+			<log message="mce_auto_reversal_configuration#1got backend response going to reversalRespojnseQueue"/>
+            <to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+        </filter>
+		<filter>
+			<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+			<log message="mce_auto_reversal_configuration#2got CMTransferInquiryToBank going to frontendservicerequestqueue"/>
+			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		</filter>
+		<filter>
+			<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+			<log message="mce_auto_reversal_configuration#3got CMMoneyTransferToBank going to frontendservicerequestqueue"/>
+			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		</filter>
+    </route>
+
+	<!-- destination to transit Inquiry -->
+    <route>
+        <from uri="jms:destinationToTransitInquiry?disableReplyTo=true"/>
+        <to uri="bean:autoReversalService?method=destinationToTransitInquiry"/>
+        <filter>
+            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+            <filter>
+                <simple>${body.response.result} == '0'</simple>
+                <to uri="jms:destinationToTransitConfirmation?disableReplyTo=true"/>
+                <filter>
+                    <simple>${body.response.result} != '0'</simple>
+                    <to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+                </filter>
+            </filter>
+        </filter>
+		<filter>
+			<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		</filter>
+    </route>
+
+	<!-- destination to transit Confirmation -->
+    <route>
+        <from uri="jms:destinationToTransitConfirmation?disableReplyTo=true"/>
+        <to uri="bean:autoReversalService?method=destinationToTransitConfirmation"/>
+        <filter>
+            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+			<filter>
+				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+				<filter>
+					<simple>${body.response.result} == '0'</simple>
+					<to uri="jms:transitToSourceInquiry?disableReplyTo=true"/>
+					<filter>
+						<simple>${body.response.result} != '0'</simple>
+						<to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+					</filter>
+				</filter>
+			</filter>
+        </filter>
+		<filter>
+			<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		</filter>
+    </route>
+	
+	<!-- Transit to Source Inquiry -->
+    <route>
+        <from uri="jms:transitToSourceInquiry?disableReplyTo=true"/>
+        <to uri="bean:autoReversalService?method=transitToSourceInquiry"/>
+        <filter>
+            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+            <filter>
+                <simple>${body.response.result} == '0'</simple>
+                <to uri="jms:transitToSourceConfirmation?disableReplyTo=true"/>
+                <filter>
+                    <simple>${body.response.result} != '0'</simple>
+                    <to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+                </filter>
+            </filter>
+        </filter>
+		<filter>
+			<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
+			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		</filter>
+    </route>
+
+	<!-- Transit to Source Confirmation -->
+    <route>
+        <from uri="jms:transitToSourceConfirmation?disableReplyTo=true"/>
+        <to uri="bean:autoReversalService?method=transitToSourceConfirmation"/>
+        <filter>
+            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+            <to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+        </filter>
+		<filter>
+			<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
+			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		</filter>
+    </route>
+
+	<!-- destination to transit bank response queue -->
+    <route>
+        <from uri="jms:destinationToTransitBRQueue?disableReplyTo=false"/>
+		<log message="mce_auto_reversal_configuration#destinationToTransitBRQueue"/>
+        <filter>
+            <description>inquiry response ?</description>
+            <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryFromBank'</simple>
+            <to uri="bean:autoReversalService?method=destinationToTransitInquiryFromBank"/>
+            <filter>
+                <simple>${body.response.result} != '0'</simple>
+                <to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+            </filter>
+			<filter>
+				<simple>${body.response.result} == '0'</simple>
+				<to uri="jms:destinationToTransitConfirmation?disableReplyTo=true"/>
+			</filter>
+        </filter>
+		<filter>
+			<description>confirmation response ?</description>
+			<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank' and ${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferFromBank'</simple>
+			<to uri="bean:autoReversalService?method=destinationToTransitConfirmationFromBank"/>
+			<filter>
+				<simple>${body.response.result} == '0'</simple>
+				<to uri="jms:transitToSourceInquiry?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${body.response.result} != '0'</simple>
+				<to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+			</filter>
+		</filter>
+    </route>
+
+	<!-- Transit to Source bank Response Queue -->
+    <route>
+        <from uri="jms:transitToSourceBRQueue?disableReplyTo=false"/>
+		<log message="mce_auto_reversal_configuration#transitToSourceBRQueue"/>
+        <filter>
+            <description>inquiry response ?</description>
+            <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryFromBank'</simple>
+            <to uri="bean:autoReversalService?method=transitToSourceInquiryFromBank"/>
+            <filter>
+                <simple>${body.response.result} != '0'</simple>
+                <to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+            </filter>
+			<filter>
+				<simple>${body.response.result} == '0'</simple>
+				<to uri="jms:transitToSourceConfirmation?disableReplyTo=true"/>
+			</filter>
+        </filter>
+		<filter>
+			<description>confirmation response ?</description>
+			<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank' and ${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferFromBank'</simple>
+			<to uri="bean:autoReversalService?method=transitToSourceConfirmationFromBank"/>
+			<to uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+		</filter>
+    </route>
+
+	<!-- Batch process to handle failed suspense to destination transactions.-->
+	<route>
+		<from uri="timer://autoReversalFailuresMonitoringServiceTimer?fixedRate=true&amp;period=24hours"/> <!-- Every 24 hours-->
+		<log message="mce_auto_recersal_configuration#fromUri=autoReversalFailuresMonitoringServiceTimer"/>
+		<split>
+			<method bean="autoReversalFailuresMonitoringService" method="handleAutoReversalFailures"/> <!-- should return list of mce messages -->
+			<throttle timePeriodMillis="15000">
+				<constant>1</constant>
+			<to uri="direct:autoReversalFailureRoutingQueue"/>
+			</throttle>
+		</split>
+	</route>
+
+	<!-- autoReversalFailureRoutingQueue -->
+	<route>
+		<from uri="direct:autoReversalFailureRoutingQueue"/>
+		<log message="mce_auto_recersal_configuration#autoReversalFailureRoutingQueue"/>
+        <filter>
+            <simple>${body.destinationQueue} != null</simple>
+            <recipientList>
+                <simple>${body.nextQueue}</simple>
+            </recipientList>
+        </filter>
+	</route>
+
+	<!-- Send Response back to originator -->
+    <route>
+        <description>Send response back to originator</description>
+        <from uri="jms:reversalResponseQueue?disableReplyTo=true"/>
+		<log message="mce_auto_reversal_configuration#reversalResponseQueue"/>
+		<filter>
+			<simple>${body.destinationQueue} == null</simple>
+			<to uri="jms:notificationQueue?disableReplyTo=true"/>
+		</filter>
+        <filter>
+            <simple>${body.destinationQueue} != null</simple>
+            <recipientList>
+                <simple>${body.nextQueue}</simple>
+            </recipientList>
+        </filter>
+    </route>
+</camelContext>
+
+</beans>

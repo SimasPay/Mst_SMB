@@ -1,0 +1,10 @@
+<encrypt major="2" minor="5">
+<!-- 
+	<records>
+		<record name="Pocket">
+			<field name="CurrentBalance"/>
+			<field name="CardPAN"/>
+		</record>
+	</records>
+-->
+</encrypt>

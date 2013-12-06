@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Core" default="codegen" basedir=".">
+	<!-- default settings -->
+	<property name="profile" value="developer" />
+	<property name="dbtype" value="mysql" />
+	<target name="codegen">
+		<echo message="Generating code from fixml file for ${os.name} " />
+		<exec osfamily="windows" executable="../FIXMLCodeGenerator.exe" resolveexecutable="true">
+			<arg value="Java" />
+			<arg value="src/com/mfino/fix/mFinoFixml.xml" />
+			<arg value="mFinoFIX" />
+			<arg value="src/com/mfino/fix" />
+			<arg value="settings/${profile}/mfino_encrypt_table_info.xml"/>	
+			<arg value="${dbtype}"/>
+		</exec>
+		<exec osfamily="windows" executable="../FIXMLCodeGenerator.exe" resolveexecutable="true">
+			<arg value="JavaScript" />
+			<arg value="src/com/mfino/fix/mFinoFixml.xml" />
+			<arg value="mFinoFIX" />
+			<arg value="../Web/AdminApplication/web/js/fix" />
+			<arg value="settings/${profile}/mfino_encrypt_table_info.xml"/>
+			<arg value="${dbtype}"/>
+		</exec>
+		<exec osfamily="unix" dir="" executable="mono" resolveexecutable="true">
+			<arg value="../FIXMLCodeGenerator.exe" />
+			<arg value="Java" />
+			<arg value="src/com/mfino/fix/mFinoFixml.xml" />
+			<arg value="mFinoFIX" />
+			<arg value="src/com/mfino/fix" />
+			<arg value="settings/${profile}/mfino_encrypt_table_info.xml"/>
+			<arg value="${dbtype}"/>
+		</exec>
+		<exec osfamily="unix" executable="mono" resolveexecutable="true">
+			<arg value="../FIXMLCodeGenerator.exe" />
+			<arg value="JavaScript" />
+			<arg value="src/com/mfino/fix/mFinoFixml.xml" />
+			<arg value="mFinoFIX" />
+			<arg value="../Web/AdminApplication/web/js/fix" />
+			<arg value="settings/${profile}/mfino_encrypt_table_info.xml"/>
+			<arg value="${dbtype}"/>
+		</exec>		
+		<move todir="src/com/mfino/domain">
+			<fileset dir="src/com/mfino/fix">
+				<include name="*.hbm.xml" />
+				<exclude name="mFinoFixml.xml" />
+			</fileset>
+		</move>
+	</target>
+
+
+</project>

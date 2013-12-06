@@ -1,0 +1,17 @@
+package com.mfino.zenith.iso8583.processor;
+
+import org.jpos.iso.ISOMsg;
+
+import com.mfino.fix.CmFinoFIX;
+
+public class ZenithBankISOMessage {
+
+	public ZenithBankISOMessage(ISOMsg isoMsg) {
+		//super(isoMsg);
+	}
+	private static final String ISOVariant = CmFinoFIX.ISO8583_Variant_Zenith_Bank_Interface;
+	public String getISOVariant() {
+		return ISOVariant;
+	}	
+
+}

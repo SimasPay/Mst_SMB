@@ -1,0 +1,151 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<%@include file="include.jspf" %>
+
+<div class="menu1" id="menu1">
+    <ul>
+        <li id="subscribers_tab" class="current"><a href="#" onclick="return false">Subscribers</a></li>
+        <li id="user_tab"><a href="#" onclick="return false">Users</a></li>
+        <li id="partners_tab" style="z-index:1000;"><a href="#" onclick="return false">Partners</a>
+            <table><tr><td>
+                        <ul>
+                            <li id="partner_tab"><a href="#" onclick="return false">All Partners</a></li>
+                            <li id="mfsBiller_tab"><a href="#" onclick="return false">Billers</a></li>
+                            <li id="agent_tab" ><a href="#" onclick="return false">Agent</a></li>  
+                            <li id="teller_tab" ><a href="#" onclick="return false">BankTeller</a></li>
+                            <li id="fundingForAgent_tab"><a href="#" onclick="return false">Approve Funding</a></li> 
+                        </ul>
+                    </td></tr></table>
+        </li>
+        <li id="transactionsMain_tab" style="z-index:1000;"><a href="#" onclick="return false">Transactions</a>
+            <table><tr><td>
+                        <ul>
+                            <li id="chargeTransactions_tab"><a href="#" onclick="return false">Details</a></li>
+                            <li id="adjustments_tab"><a href="#" onclick="return false">Adjustments</a></li>                          
+                        </ul>
+                    </td></tr></table>
+        </li>
+        <li id="settings_tab" style="z-index:1001;"><a href="#" onclick="return false">Settings</a>
+              <table><tr><td>
+                        <ul>
+                            <li id="mnoParams_tab"><a href="#" onclick="return false">MNO Parameters</a></li>
+                            <li id="bulkUpload_tab"><a href="#" onclick="return false">Bulk Registration</a></li>
+                            <li id="notification_tab"><a href="#" onclick="return false">Notification</a></li>                            
+                            <li id="groups_tab"><a href="#" onclick="return false">Groups</a></li>
+                            <li id="channelCodes_tab"><a href="#" onclick="return false">Channel Codes</a></li>
+							<li id="chargeType_tab"><a href="#" onclick="return false">Charge Types</a></li>
+							<li id="chargeDefinition_tab"><a href="#" onclick="return false">Charge Definitions</a></li>
+							<li id="transactionRule_tab"><a href="#" onclick="return false">Transaction Rules</a></li>
+							<li id="transactionCharge_tab"><a href="#" onclick="return false">Transaction Charges</a></li>
+                            <li id="pocketTemplate_tab"><a href="#" onclick="return false">Pocket Template</a></li>
+                            <li id="distributionTemplate_tab"><a href="#" onclick="return false">Distribution Template</a></li>
+                            <li id="pocketTemplateConfig_tab"><a href="#" onclick="return false">Pocket Template Configuration</a></li>
+                            <li id="systemParameters_tab"><a href="#" onclick="return false">System Parameters</a></li>
+                            <li id="integrations_tab"><a href="#" onclick="return false">Integrations</a></li>
+                            <li id="schedulerConfig_tab"><a href="#" onclick="return false">SchedulerConfig</a></li>
+                            <li id="fundDefinitions_tab"><a href="#" onclick="return false">FundDefintions</a></li>
+                            <li id="actorChannelMapping_tab"><a href="#" onclick="return false">Actor Channel Mapping</a></li>
+                        	<li id="appUploader_tab"><a href="#" onclick="return false">AppUploader</a></li>
+                        	<li id="permissions_tab"><a href="#" onclick="return false">Roles & Permissions</a></li>							                                                                              
+                        </ul>
+                        </td></tr></table>
+        </li>
+        <li id="hierarchies_tab" style="z-index:1000;"><a href="#" onclick="return false">Hierarchies</a>
+            <table><tr><td>
+                        <ul>
+                            <li id="distributionHierarchy_tab"><a href="#" onclick="return false">Distribution</a></li>
+                        </ul>
+                    </td></tr></table>
+        </li>         
+        <li id="reports_tab" style="z-index:1001;"><a href="#" onclick="return false">Reports</a>
+              <table><tr><td>
+                        <ul>
+                            <li id="report_tab"><a href="#" onclick="return false">Daily Reports</a></li>
+                            <li id="OLAP_tab"><a href="#" onclick="return false">Analytics</a></li>						                                                                              
+                        </ul>
+                        </td></tr></table>
+        </li>   
+        <li id="bulkTransfer_tab"><a href="#" onclick="return false">Bulk Payment</a></li>                        
+    </ul>
+</div>
+
+<script type="text/javascript">
+    Ext.onReady(function(){
+        var tab_holder = Ext.get("menu1");
+        tab_holder.setCurrent = function(itemName){
+            var allItems = Ext.query("li", "menu1");
+            Ext.each(allItems, function(item){
+                var el = Ext.get(item);
+                el.removeClass("current");
+            });           
+            Ext.get(itemName + "_tab").addClass("current");            
+        };
+
+        var menus = Ext.query("li", "menu1");
+
+        Ext.each(menus, function(item){
+            var el = Ext.get(item);
+            var itemName = this.id.substr(0, this.id.indexOf("_"));
+            if(!mFino.auth.isEnabledTab(itemName)){
+                el.remove();
+            }
+
+        });
+		
+		var olapWindow = null;
+		
+        Ext.each(menus, function(item){
+            var el = Ext.get(item);
+            el.on("click", function(){
+                var contentPanel = Ext.getCmp("contentPanel");
+                var itemName = this.id.substr(0, this.id.indexOf("_"));
+                //Handle not developed
+                if(itemName === "notyet"){
+                    Ext.ux.Toast.msg(_("Message"), _("To be delivered after PAC gate 1."));
+                    return;
+                }                              
+                if(itemName !== 'settings' && itemName !== 'partners' && itemName !== 'reports' && 
+                			itemName != 'hierarchies' && itemName != 'transactionsMain') { //begin if
+                        if(itemName == 'mnoParams' || itemName == 'bulkUpload' || itemName == 'notification' ||
+                                itemName == 'groups'|| itemName == 'channelCodes' || 
+                                	itemName == 'chargeType' || itemName == 'chargeDefinition' || itemName == 'transactionRule' || 
+                                		itemName == 'transactionCharge' || itemName == 'pocketTemplate' || itemName == 'distributionTemplate' ||
+                                			itemName == 'pocketTemplateConfig' || itemName == 'systemParameters' || itemName == 'integrations' || 
+                                				itemName == 'schedulerConfig' || itemName == 'fundDefinitions' || itemName == 'appUploader' ||
+                                					itemName == 'actorChannelMapping' || itemName == 'permissions')
+                            tab_holder.setCurrent('settings');
+                        else if(itemName == 'partner' || itemName == 'mfsBiller' || itemName == 'agent' || itemName == 'teller' || itemName == 'fundingForAgent')
+                            tab_holder.setCurrent('partners');
+                        else if(itemName == 'chargeTransactions' || itemName == 'adjustments' )
+                            tab_holder.setCurrent('transactionsMain');
+                        else if(itemName == 'report' || itemName == 'OLAP' )
+                            tab_holder.setCurrent('reports');
+						else if(itemName == 'distributionHierarchy')
+							tab_holder.setCurrent('hierarchies');
+                        else
+                            tab_holder.setCurrent(itemName);
+                        if(itemName=="OLAP"){
+							if ((olapWindow == null) || (olapWindow.closed)){
+								Ext.Ajax.request({
+									   url: 'olap.htm',
+									   success: function(response){
+									   var res = response.responseText.substring(1,response.responseText.length-1);
+									   var splitRes = res.split(",");
+									   var url = splitRes[1].substring(7,splitRes[1].length-1);
+									   olapWindow = window.open(url);
+									   },
+									   failure: function(response){
+									   },
+									   params: { userName: mFino.auth.getUsername() }
+									}); 
+							}else{
+							   olapWindow.focus();
+							}
+						} else {
+							contentPanel.layout.setActiveItem(itemName);
+						}
+                    } //end if
+                }); //end of el.on function               
+            });//end of Ext.each function
+        });
+</script>

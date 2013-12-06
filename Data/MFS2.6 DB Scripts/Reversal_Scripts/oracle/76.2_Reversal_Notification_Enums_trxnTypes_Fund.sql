@@ -1,0 +1,85 @@
+DELETE FROM service_transaction where serviceid=(select id from service where servicename='Wallet') and transactiontypeid=(select id from transaction_type where transactionname='FundAllocationInquiry');
+DELETE FROM transaction_type where TRANSACTIONNAME = 'FundAllocationInquiry';
+
+DELETE FROM service_transaction where serviceid=(select id from service where servicename='Wallet') and transactiontypeid=(select id from transaction_type where transactionname='FundAllocation');
+DELETE FROM transaction_type where TRANSACTIONNAME = 'FundAllocation';
+
+DELETE FROM service_transaction where serviceid=(select id from service where servicename='Wallet') and transactiontypeid=(select id from transaction_type where transactionname='FundWithdrawalInquiry');
+DELETE FROM transaction_type where TRANSACTIONNAME = 'FundWithdrawalInquiry';
+
+DELETE FROM service_transaction where serviceid=(select id from service where servicename='Wallet') and transactiontypeid=(select id from transaction_type where transactionname='FundWithdrawal');
+DELETE FROM transaction_type where TRANSACTIONNAME = 'FundWithdrawal';
+
+Delete from notification where code = 758;
+Delete from notification where code = 759;
+Delete from notification where code = 760;
+Delete from notification where code = 761;
+Delete from notification where code = 762;
+Delete from notification where code = 763;
+Delete from notification where code = 764;
+Delete from notification where code = 765;
+Delete from notification where code = 766;
+Delete from notification where code = 767;
+Delete from notification where code = 768;
+Delete from notification where code = 769;
+Delete from notification where code = 770;
+Delete from notification where code = 771;
+Delete from notification where code = 772;
+Delete from notification where code = 773;
+Delete from notification where code = 774;
+Delete from notification where code = 775;
+Delete from notification where code = 776;
+Delete from notification where code = 777;
+Delete from notification where code = 778;
+Delete from notification where code = 779;
+Delete from notification where code = 780;
+Delete from notification where code = 781;
+Delete from notification where code = 782;
+Delete from notification where code = 783;
+Delete from notification where code = 784;
+Delete from notification where code = 785;
+Delete from notification where code = 786;
+Delete from notification where code = 787;
+Delete from notification where code = 788;
+Delete from notification where code = 789;
+Delete from notification where code = 790;
+Delete from notification where code = 791;
+Delete from notification where code = 792;
+Delete from notification where code = 793;
+Delete from notification where code = 794;
+Delete from notification where code = 795;
+Delete from notification where code = 796;
+Delete from notification where code = 797;
+Delete from notification where code = 798;
+Delete from notification where code = 799;
+
+DELETE FROM enum_text where TAGID=5636 and ENUMCODE='54';
+DELETE FROM enum_text where TAGID=5636 and ENUMCODE='55';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='8';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='9';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='10';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='11';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='12';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='13';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='14';
+DELETE FROM enum_text where TAGID=6541 and ENUMCODE='15';
+DELETE FROM enum_text where TAGID=7091 and ENUMCODE='1';
+DELETE FROM enum_text where TAGID=7091 and ENUMCODE='2';
+DELETE FROM enum_text where TAGID=7091 and ENUMCODE='3';
+DELETE FROM enum_text where TAGID=7092 and ENUMCODE='1';
+DELETE FROM enum_text where TAGID=7092 and ENUMCODE='2';
+DELETE FROM enum_text where TAGID=7092 and ENUMCODE='3';
+DELETE FROM enum_text where TAGID=7092 and ENUMCODE='4';
+DELETE FROM enum_text where TAGID=7093 and ENUMCODE='1';
+DELETE FROM enum_text where TAGID=7093 and ENUMCODE='2';
+DELETE FROM enum_text where TAGID=8004 and ENUMCODE='1';
+DELETE FROM enum_text where TAGID=8004 and ENUMCODE='2';
+DELETE FROM enum_text where TAGID=8004 and ENUMCODE='3';
+DELETE FROM enum_text where TAGID=8005 and ENUMCODE='1';
+DELETE FROM enum_text where TAGID=8005 and ENUMCODE='2';
+DELETE FROM enum_text where TAGID=8008 and ENUMCODE='1';
+DELETE FROM enum_text where TAGID=8008 and ENUMCODE='2';
+DELETE FROM enum_text where TAGID=8008 and ENUMCODE='3';
+
+
+commit;

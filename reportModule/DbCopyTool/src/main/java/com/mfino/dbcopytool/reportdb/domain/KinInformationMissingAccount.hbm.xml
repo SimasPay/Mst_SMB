@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-Apr-2012 00:05:37 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="com.mfino.dbcopytool.reportdb.domain.KinInformationMissingAccount" table="kininformationmissingaccount" catalog="report">
+        <id name="subscriberId" type="string">
+            <column name="SubscriberID" />
+            <generator class="assigned" />
+        </id>      
+        <property name="firstName" type="string">
+            <column name="FirstName" />
+        </property>
+        <property name="subscriberMdn" type="string">
+            <column name="SubscriberMDN" />
+        </property> 
+        <property name="status" type="string">
+            <column name="Status" />
+        </property>
+        <property name="kyclevel" type="string">
+            <column name="KYCLevel" />
+        </property>
+    </class>
+</hibernate-mapping>

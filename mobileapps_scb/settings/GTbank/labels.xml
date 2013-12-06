@@ -1,0 +1,19 @@
+<Labels>
+        <sourceMDN>Mobile Number</sourceMDN>
+        <sourcePIN>PIN</sourcePIN>      
+        <newPIN>New PIN</newPIN>
+        <otp>ActivationPIN</otp>
+        <confirmPIN>Confirm PIN </confirmPIN> 
+        <destMDN>Phone Number</destMDN> 
+        <amount>Amount</amount>  
+        <oldPIN>Old PIN</oldPIN>
+        <secretAnswer>SecretAnswer</secretAnswer>      
+        <contactNumber>ContactNumber</contactNumber>
+        <email>Email</email>
+        <agentCode>Agent Code</agentCode> 
+        <authenticationString>PIN</authenticationString>      
+        <destBankAccount>Account no</destBankAccount>
+        <destBankCode>Bank Code</destBankCode> 
+        <dob>DOB(ddmmyyyy)</dob>   
+           
+</Labels>

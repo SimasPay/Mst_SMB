@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>MfinoCoreEngine</artifactId>
+    <groupId>com.mfino.mce</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.mfino.mce</groupId>
+  <artifactId>ISOComponent</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <name>mfino ISO Communication Component</name> 
+  <url>http://www.myorganization.org</url>
+  <properties>
+    <camel-version>2.7.1-fuse-00-43</camel-version>
+  </properties>
+  <dependencies>
+    <!-- <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+      <version>${camel-version}</version>
+    </dependency>
+     <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-spring</artifactId>
+      <version>${camel-version}</version>
+    </dependency>  -->
+    <dependency>
+      <groupId>org.jboss.netty</groupId>
+      <artifactId>netty</artifactId>
+      <version>3.2.5.Final</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+   <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>1.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+              <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+              <Bundle-Name>${project.artifactId}</Bundle-Name>
+              <Bundle-Version>1.0.0</Bundle-Version>
+              <Buildtime>${buildtime}</Buildtime>
+              <Release>${release}</Release>
+			        <Revision>${revision}</Revision>
+              <!-- <Bundle-Activator>com.mfino.mce.frontend.FrontendActivator</Bundle-Activator>-->
+               <Import-Package>org.osgi.framework,*;</Import-Package>
+              <Export-Package>com.mfino.mce.component.iso.*</Export-Package>
+          </instructions>
+      </configuration>
+  </plugin>
+  </plugins>
+  </build>
+</project>

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:56 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.TransactionRule" optimistic-lock="version" table="transaction_rule" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Name" type="java.lang.String" unique-key="unique_transaction_rule_name">
+<column name="Name" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_TransactionRule_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<many-to-one name="PartnerByServiceProviderID" foreign-key="FK_TransactionRule_PartnerByServiceProviderID" class="com.mfino.domain.Partner" fetch="select">
+<column name="ServiceProviderID" not-null="true"   />
+</many-to-one>
+<many-to-one name="Service" foreign-key="FK_TransactionRule_Service" class="com.mfino.domain.Service" fetch="select">
+<column name="ServiceID" not-null="true"   />
+</many-to-one>
+<many-to-one name="TransactionType" foreign-key="FK_TransactionRule_TransactionType" class="com.mfino.domain.TransactionType" fetch="select">
+<column name="TransactionTypeID" not-null="true"   />
+</many-to-one>
+<many-to-one name="ChannelCode" foreign-key="FK_TransactionRule_ChannelCode" class="com.mfino.domain.ChannelCode" fetch="select">
+<column name="ChannelCodeID" not-null="true"   />
+</many-to-one>
+<property name="ChargeMode" type="java.lang.Integer" >
+<column name="ChargeMode" not-null="true"  sql-type="int" />
+</property>
+<property name="SourceType" type="java.lang.Integer" >
+<column name="SourceType"    sql-type="int" />
+</property>
+<many-to-one name="KYCLevelBySourceKYC" foreign-key="FK_TransactionRule_KYCLevelBySourceKYC" class="com.mfino.domain.KYCLevel" fetch="select">
+<column name="SourceKYC"     />
+</many-to-one>
+<property name="DestType" type="java.lang.Integer" >
+<column name="DestType"    sql-type="int" />
+</property>
+<many-to-one name="KYCLevelByDestKYC" foreign-key="FK_TransactionRule_KYCLevelByDestKYC" class="com.mfino.domain.KYCLevel" fetch="select">
+<column name="DestKYC"     />
+</many-to-one>
+<many-to-one name="GroupBySourceGroup" foreign-key="FK_TransactionRule_GroupBySourceGroup" class="com.mfino.domain.Group" fetch="select">
+<column name="SourceGroup"     />
+</many-to-one>
+<many-to-one name="GroupByDestinationGroup" foreign-key="FK_TransactionRule_GroupByDestinationGroup" class="com.mfino.domain.Group" fetch="select">
+<column name="DestinationGroup"     />
+</many-to-one>
+<set name="TransactionChargeFromTransactionRuleID" inverse="true">
+<key>
+<column name="TransactionRuleID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionCharge" />
+</set>
+</class>
+</hibernate-mapping>

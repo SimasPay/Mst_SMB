@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://tempuri.org/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+	xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+	<wsdl:types>
+		<s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+			<s:element name="mmSMS">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="msg" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="gsmMob" type="s:string" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="mmSMSResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="mmSMSResult"
+							type="s:string" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+		</s:schema>
+	</wsdl:types>
+	<wsdl:message name="mmSMSSoapIn">
+		<wsdl:part name="parameters" element="tns:mmSMS" />
+	</wsdl:message>
+	<wsdl:message name="mmSMSSoapOut">
+		<wsdl:part name="parameters" element="tns:mmSMSResponse" />
+	</wsdl:message>
+	<wsdl:portType name="mmsmsSoap">
+		<wsdl:operation name="mmSMS">
+			<wsdl:input message="tns:mmSMSSoapIn" />
+			<wsdl:output message="tns:mmSMSSoapOut" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="mmsmsSoap" type="tns:mmsmsSoap">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="mmSMS">
+			<soap:operation soapAction="http://tempuri.org/mmSMS"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="mmsmsSoap12" type="tns:mmsmsSoap">
+		<soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="mmSMS">
+			<soap12:operation soapAction="http://tempuri.org/mmSMS"
+				style="document" />
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="mmSMS">
+		<wsdl:port name="mmsmsSoap" binding="tns:mmsmsSoap">
+			<soap:address location="http://epayments.sterlingbankng.com/mmSMS/mmsms.asmx" />
+		</wsdl:port>
+		<wsdl:port name="mmsmsSoap12" binding="tns:mmsmsSoap12">
+			<soap12:address
+				location="http://epayments.sterlingbankng.com/mmSMS/mmsms.asmx" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://com.zenithbank.alertz/notification/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://com.zenithbank.alertz/notification/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://com.zenithbank.alertz/notification/">
+      <s:element name="SendAlertz">
+        <s:complexType>
+          <s:sequence>
+            <s:element maxOccurs="1" minOccurs="0" name="reference" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="destinationAddress" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="message" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="account_no" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="sender" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendAlertzResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element maxOccurs="1" minOccurs="0" name="SendAlertzResult" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendAlertzNotification">
+        <s:complexType>
+          <s:sequence>
+            <s:element maxOccurs="1" minOccurs="0" name="reference" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="sender" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="destinationAddress" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="message" type="s:string"/>
+            <s:element maxOccurs="1" minOccurs="0" name="account_no" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendAlertzNotificationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element maxOccurs="1" minOccurs="0" name="SendAlertzNotificationResult" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SendAlertzSoapOut">
+    <wsdl:part name="parameters" element="tns:SendAlertzResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendAlertzNotificationSoapIn">
+    <wsdl:part name="parameters" element="tns:SendAlertzNotification">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendAlertzSoapIn">
+    <wsdl:part name="parameters" element="tns:SendAlertz">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendAlertzNotificationSoapOut">
+    <wsdl:part name="parameters" element="tns:SendAlertzNotificationResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="AlertzSoap">
+    <wsdl:operation name="SendAlertz">
+<wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Send notification</wsdl:documentation>
+      <wsdl:input message="tns:SendAlertzSoapIn">
+    </wsdl:input>
+      <wsdl:output message="tns:SendAlertzSoapOut">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendAlertzNotification">
+<wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Send alertz notification with source</wsdl:documentation>
+      <wsdl:input message="tns:SendAlertzNotificationSoapIn">
+    </wsdl:input>
+      <wsdl:output message="tns:SendAlertzNotificationSoapOut">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AlertzSoap12" type="tns:AlertzSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="SendAlertz">
+      <soap12:operation soapAction="http://com.zenithbank.alertz/notification/SendAlertz" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendAlertzNotification">
+      <soap12:operation soapAction="http://com.zenithbank.alertz/notification/SendAlertzNotification" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="AlertzSoap" type="tns:AlertzSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="SendAlertz">
+      <soap:operation soapAction="http://com.zenithbank.alertz/notification/SendAlertz" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendAlertzNotification">
+      <soap:operation soapAction="http://com.zenithbank.alertz/notification/SendAlertzNotification" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Alertz">
+    <wsdl:port name="AlertzSoap12" binding="tns:AlertzSoap12">
+      <soap12:address location="http://172.29.30.40/AlertZService/Alertz.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="AlertzSoap" binding="tns:AlertzSoap">
+      <soap:address location="http://172.29.30.40/AlertZService/Alertz.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

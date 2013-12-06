@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration for notification -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" 
+	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    
+	    http://www.springframework.org/schema/beans/spring-beans.xsd  
+	    http://camel.apache.org/schema/spring  
+	    http://camel.apache.org/schema/spring/camel-spring.xsd 
+	    http://www.springframework.org/schema/osgi    
+	    http://www.springframework.org/schema/osgi/spring-osgi.xsd  
+	    http://www.springframework.org/schema/osgi-compendium  
+	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd  
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://activemq.apache.org/schema/core 
+	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd
+	    http://www.jasypt.org/schema/encryption
+        http://www.jasypt.org/schema/encryption/jasypt-spring3-encryption-1.xsd">
+
+	<!-- <osgi:reference id="jms" interface="org.apache.camel.Component" /> -->
+
+	<context:annotation-config />
+	
+	<osgi:reference id="notificationService"
+		interface="com.mfino.mce.notification.NotificationService" />
+	<osgi:reference id="notificationSplitter"
+		interface="com.mfino.mce.notification.NotificationSplitterService" />
+	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+
+	<!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt"
+		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+		<property name="password" value="sysenv:ENCRYPTION_KEY" />
+		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
+	</bean>
+
+	<!-- define the camel properties component -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<!-- the properties file is in the classpath -->
+		<property name="location" value="file:mfino_conf/mce.properties" />
+		<!-- and let it leverage the jasypt parser -->
+		<property name="propertiesParser" ref="jasypt" />
+	</bean>
+
+	<bean id="config"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="passwordEnvName">
+			<value>ENCRYPTION_KEY</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+	</bean>
+
+	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<ref bean="config" />
+		</property>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="stringEncryptor" />
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="smsConf" class="com.mfino.mce.notification.conf.SMSConf">
+		<osgix:managed-properties persistent-id="com.mfino.mce.sms" />
+		<property name="from" value="${smsConf.from}" />
+	</bean>
+
+	<bean id="SMSNotificationService"
+		class="com.mfino.mce.notification.impl.SMSNotificationServiceDefaultImpl">
+		<property name="smsConf" ref="smsConf" />
+	</bean>
+	
+	<!-- <bean id="EmailNotificationService"
+		class="com.mfino.mce.notification.impl.EmailNotificationServiceDefaultImpl" />
+ -->
+
+	<bean id="jmsConfig" 
+		class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<property name="concurrentConsumers" value="${concurrentConsumers}"/>
+ 	</bean>
+ 
+	<bean id="jms" 
+		class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig"/>
+	</bean>
+
+	<!-- <camel:endpoint id="emailServerLink" uri="smtp://mfino@localhost:16255?password=mfino"/>  -->
+	<camel:camelContext xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+
+		<route>
+			<from uri="jms:notificationQueue?disableReplyTo=true" />
+			<threads maxPoolSize="10">
+				<to uri="bean:notificationService?method=processMessage" />
+				<process ref="notificationSplitter" />
+				<to uri="jms:FixReplyQueue?disableReplyTo=true" />
+			</threads>
+		</route>
+
+		<!-- <route> <from uri="jms:EmailNotificationQueue"/> <process ref="EmailNotificationService"/> 
+			<to ref="emailServerLink"/> </route>  -->
+	</camel:camelContext>
+
+	<!-- <bean id="notificationSplitter" class="com.mfino.mce.notification.NotificationSplitterDefaultImpl"> 
+		<constructor-arg index="0"> <map> -->
+	<!-- Add notification class and queue name here for all supported notifications 
+		Currently added for email and sms TODO: need to move all the queue names 
+		to a properties file -->
+	<!-- <entry key="com.mfino.mce.notification.SMSNotification" value="jms:SMSNotificationQueue" 
+		/> <entry key="com.mfino.mce.notification.EmailNotification" value="jms:EmailNotificationQueue" 
+		/> </map> </constructor-arg> </bean> -->
+
+	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
+		<property name="traceOutExchanges" value="true" />
+	</bean>
+
+	<bean id="traceFormatter"
+		class="org.apache.camel.processor.interceptor.DefaultTraceFormatter">
+		<property name="showOutBody" value="true" />
+		<property name="showOutBodyType" value="true" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="txManager" />
+</beans>

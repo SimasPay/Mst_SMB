@@ -1,0 +1,1 @@
+insert into system_parameters(Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) values(1, now(), 'System', now(), 'system', 'INCODE_1', '', 'partner code for IN');

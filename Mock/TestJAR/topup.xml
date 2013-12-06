@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : mFino.xml
+    Created on : June 21, 2010, 3:41 PM
+    Author     : Administrator
+    Description:
+        Purpose of the document follows.
+-->
+
+<iso8583>
+    <bit pos="2">0</bit>
+    <bit pos="3">180000</bit>
+	<bit pos="4">5000</bit>
+    <bit pos="18">6011</bit>
+    <bit pos="32">881</bit>
+    <bit pos="37">1085B1910200</bit>
+    <bit pos="42">000000000000000</bit>
+    <bit pos="48">1101088911111111 000000050000</bit>
+    <bit pos="49">360</bit>
+    <bit pos="63">110</bit>
+</iso8583>

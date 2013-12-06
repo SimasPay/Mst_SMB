@@ -1,0 +1,457 @@
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 114  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 139 
+msgid "Not Authorized to change the Pocket Status"
+msgstr "Not Authorized to change the Pocket Status"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UsernameCheckProcessor.java line number - 48 
+msgid "User Name Available"
+msgstr "User Name Available"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantCommissionProcessor.java line number - 31 
+msgid " is not Active"
+msgstr " is not Active"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantUsernameCheckProcessor.java line number - 60  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantUsernameCheckProcessor.java line number - 69 
+msgid "Merchant Name Available"
+msgstr "Merchant Name Available"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 69 
+msgid "Merchant Status"
+msgstr "Merchant Status"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UsernameCheckProcessor.java line number - 43 
+msgid "User exists"
+msgstr "User exists"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 205  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 205  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 205 
+msgid "Sorry, Invalid file: Entered date is not a valid format. Format is YYYYMMDD"
+msgstr "Sorry, Invalid file: Entered date is not a valid format. Format is YYYYMMDD"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\service\SubscriberService.java line number - 92 
+msgid "MDN suspended"
+msgstr "MDN suspended"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 935 
+msgid "Address Line1,City,State,Country,Zip Required"
+msgstr "Address Line1,City,State,Country,Zip Required"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 97 
+msgid "The new pocket template is not compatible with the old one."
+msgstr "The new pocket template is not compatible with the old one."
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 170  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 170  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 170 
+msgid "Sorry, File Type is not Specified in the Uploaded File"
+msgstr "Sorry, File Type is not Specified in the Uploaded File"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 154 
+msgid "Merchant Retire"
+msgstr "Merchant Retire"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 230  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 244 
+msgid "Not authorized to add this type of pocket"
+msgstr "Not authorized to add this type of pocket"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 201  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 201  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 201 
+msgid "but got "
+msgstr "but got "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 181  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 185  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 189  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 193  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 197  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 181  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 185  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 189  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 193  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 197  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 181  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 185  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 189  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 193  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 197 
+msgid " but got "
+msgstr " but got "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 45 
+msgid "Merchant Already Exists for this MDN"
+msgstr "Merchant Already Exists for this MDN"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\CheckBalanceForSubscriberProcessor.java line number - 61 
+msgid "You don't have a default SVA Money Pocket"
+msgstr "You don't have a default SVA Money Pocket"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\report\GeneratorSmartReports.java line number - 187 
+msgid "Here is the offline report "
+msgstr "Here is the offline report "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketTemplateCheckProcessor.java line number - 43 
+msgid "Pocket Template Name Available"
+msgstr "Pocket Template Name Available"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberProcessor.java line number - 159 
+msgid "Not Authorized to edit the Subscriber details"
+msgstr "Not Authorized to edit the Subscriber details"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 101  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 101  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 101 
+msgid " Please note down this ID and contact system administrator."
+msgstr " Please note down this ID and contact system administrator."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 303 
+msgid "Please refresh and try again."
+msgstr "Please refresh and try again."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\CheckBalanceForSubscriberProcessor.java line number - 25  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\CheckBalanceProcessor.java line number - 42  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 70  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 99  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 126  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 139  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 155  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 77  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 87  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 116  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 124  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 141  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 180  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 231  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 245  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UserProcessor.java line number - 73  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UserProcessor.java line number - 90  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UserProcessor.java line number - 104 
+msgid "Not allowed"
+msgstr "Not allowed"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 95  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 95  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 95 
+msgid "Cannot find MDN record for the given ID"
+msgstr "Cannot find MDN record for the given ID"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 122 
+msgid "Not Authorized to edit other fields"
+msgstr "Not Authorized to edit other fields"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantUsernameCheckProcessor.java line number - 52 
+msgid "Merchant Already Exists"
+msgstr "Merchant Already Exists"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\EmptySVAPocketProcessor.java line number - 41  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantResetPin.java line number - 45  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FixController.java line number - 293  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FixController.java line number - 293  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FixController.java line number - 293 
+msgid "You are not authorized to perform this operation."
+msgstr "You are not authorized to perform this operation."
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 189  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 189  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 189 
+msgid "Sorry, Invalid file: Total Amount does not match. Expecting "
+msgstr "Sorry, Invalid file: Total Amount does not match. Expecting "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\build\web\WEB-INF\jsp\changePassword.jsp line number - 51  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\build\web\WEB-INF\jsp\login.jsp line number - 49  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\web\WEB-INF\jsp\changePassword.jsp line number - 51  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\web\WEB-INF\jsp\login.jsp line number - 49 
+msgid "Warning"
+msgstr "Warning"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 134 
+msgid "Recursive Cycle found. Cannot set this Merchant ParentID."
+msgstr "Recursive Cycle found. Cannot set this Merchant ParentID."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\ResetPasswordProcessor.java line number - 62 
+msgid "Password reset successfully"
+msgstr "Password reset successfully"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 175 
+msgid "Cannot change it from being default"
+msgstr "Cannot change it from being default"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 61 
+msgid "Duplicaiton MDN"
+msgstr "Duplicaiton MDN"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\service\CustomUserDetailsService.java line number - 46  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\service\UserService.java line number - 181  
+// E:\mFinoCode\mfino\trunk\MBanking\MBankingWebApplication\src\main\java\com\mfino\service\CustomUserDetailsService.java line number - 68  
+// E:\mFinoCode\mfino\trunk\MBanking\MBankingWebApplication\src\main\java\com\mfino\service\UserService.java line number - 178 
+msgid "Invalid username or password"
+msgstr "Invalid username or password"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\tomcat\work\localEngine\localhost\AdminApplication\org\apache\jsp\WEB_002dINF\jsp\login_jsp.java line number - 216 
+msgid "Your current browser\"
+msgstr "Your current browser\"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 106  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 106  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 106 
+msgid "Sorry,  Your MDN has restrictions or status is not active, Please talk to customer support"
+msgstr "Sorry,  Your MDN has restrictions or status is not active, Please talk to customer support"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 75 
+msgid " Can't Change Status"
+msgstr " Can't Change Status"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 150 
+msgid "Cannot retire this merchant because it's children are not Retired"
+msgstr "Cannot retire this merchant because it's children are not Retired"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 65 
+msgid "Not Authorized to change the Merchant Status"
+msgstr "Not Authorized to change the Merchant Status"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\application\SmartOfflineReport.java line number - 121 
+msgid "Here is the offline report"
+msgstr "Here is the offline report"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FixController.java line number - 130  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\TreeController.java line number - 59  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FixController.java line number - 130  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\TreeController.java line number - 59  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FixController.java line number - 130  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\TreeController.java line number - 59 
+msgid "Bad message received by server."
+msgstr "Bad message received by server."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantTransferProcessor.java line number - 39 
+msgid "You are not authorized to distribute on behalf of other merchants"
+msgstr "You are not authorized to distribute on behalf of other merchants"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 181  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 181  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 181 
+msgid "Sorry, Invalid file: Total LineCount does not match. Expecting "
+msgstr "Sorry, Invalid file: Total LineCount does not match. Expecting "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UserProcessor.java line number - 103 
+msgid "Not authorized to edit other fields"
+msgstr "Not authorized to edit other fields"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantTransferProcessor.java line number - 115 
+msgid " error "
+msgstr " error "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\tomcat\work\localEngine\localhost\AdminApplication\org\apache\jsp\WEB_002dINF\jsp\login_jsp.java line number - 219 
+msgid "Warning\"
+msgstr "Warning\"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\CheckBalanceProcessor.java line number - 108 
+msgid "You don't have a default SVA Airtime Pocket"
+msgstr "You don't have a default SVA Airtime Pocket"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 116  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 116  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 116 
+msgid "Sorry, File Size is too high."
+msgstr "Sorry, File Size is too high."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 156  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 262 
+msgid "Card PAN already exists."
+msgstr "Card PAN already exists."
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 99  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 99  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 99 
+msgid "Sorry,  Your MDN has no username associated, Please talk to customer support to generate one"
+msgstr "Sorry,  Your MDN has no username associated, Please talk to customer support to generate one"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 193  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 193  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 193 
+msgid "Sorry, Invalid file: Entered Amount does not match. Expecting "
+msgstr "Sorry, Invalid file: Entered Amount does not match. Expecting "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\BaseFixProcessor.java line number - 22  
+// E:\mFinoCode\mfino\trunk\MBanking\MBankingCore\src\main\java\com\mfino\mbankingcore\processors\BaseFixProcessor.java line number - 18 
+msgid "You are working on stale Data"
+msgstr "You are working on stale Data"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 98 
+msgid "Merchant MDN"
+msgstr "Merchant MDN"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\LOPProcessor.java line number - 200 
+msgid "Merchant is not active. You can not approve the LOP"
+msgstr "Merchant is not active. You can not approve the LOP"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\DistributionChainLevelProcessor.java line number - 159 
+msgid "Invalid DistributionChainTemplate"
+msgstr "Invalid DistributionChainTemplate"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\EnumTextProcessor.java line number - 182  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\EnumTextProcessor.java line number - 186 
+msgid "Enum with same EnumCode, TagID and Language Already Exists"
+msgstr "Enum with same EnumCode, TagID and Language Already Exists"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\LOPDistributeProcessor.java line number - 41 
+msgid "Merchant is not active"
+msgstr "Merchant is not active"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantUsernameCheckProcessor.java line number - 55 
+msgid "Merchant exists"
+msgstr "Merchant exists"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 101  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 101  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 101 
+msgid "Data inconsistant with MDN record for the given ID"
+msgstr "Data inconsistant with MDN record for the given ID"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\dialects\MySQLBitwiseAndSQLFunction.java line number - 35 
+msgid "the function must be passed 2 arguments"
+msgstr "the function must be passed 2 arguments"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\CFIXGroup.java line number - 235 
+msgid "Bad Data"
+msgstr "Bad Data"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantCommissionProcessor.java line number - 59 
+msgid "is not authorized to generate LOP"
+msgstr "is not authorized to generate LOP"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 255  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 255  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 255 
+msgid "Sorry,"
+msgstr "Sorry,"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MDNCheckProcessor.java line number - 43 
+msgid "MDN Available"
+msgstr "MDN Available"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 147  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 152  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 147  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 152  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 147  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 152 
+msgid "Sorry, File contents are invalid"
+msgstr "Sorry, File contents are invalid"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 109 
+msgid "Can't Change Pocket Status"
+msgstr "Can't Change Pocket Status"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MDNCheckProcessor.java line number - 40 
+msgid "MDN already Exists in DB"
+msgstr "MDN already Exists in DB"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UserProcessor.java line number - 70 
+msgid "Not authorized to change the user restrictions"
+msgstr "Not authorized to change the user restrictions"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 65 
+msgid "Duplicate MDN"
+msgstr "Duplicate MDN"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\tomcat\work\localEngine\localhost\AdminApplication\org\apache\jsp\WEB_002dINF\jsp\index_jsp.java line number - 288 
+msgid "To be delivered after PAC gate 1.\"
+msgstr "To be delivered after PAC gate 1.\"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 55 
+msgid " NoSubscriberFound "
+msgstr " NoSubscriberFound "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 201  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 201  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 201 
+msgid "Sorry, Invalid file: Entered filetype does not match. Expecting"
+msgstr "Sorry, Invalid file: Entered filetype does not match. Expecting"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileBankAccountUploadController.java line number - 81  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileBankAccountUploadController.java line number - 81  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileBankAccountUploadController.java line number - 81 
+msgid "MB."
+msgstr "MB."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 53 
+msgid "No Subscriber Found"
+msgstr "No Subscriber Found"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\DCTNameCheckProcessor.java line number - 38 
+msgid "Template Name Already Exists in DB, Please select a different TemplateName"
+msgstr "Template Name Already Exists in DB, Please select a different TemplateName"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\web\WEB-INF\jsp\login.jsp line number - 46 
+msgid "Your current browser "
+msgstr "Your current browser "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\tomcat\work\localEngine\localhost\AdminApplication\org\apache\jsp\WEB_002dINF\jsp\index_jsp.java line number - 288 
+msgid "Message\"
+msgstr "Message\"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 361 
+msgid "Subscriber retirement failed. This subscriber is registered as an active merchant. MDN will be suspended to prevent merchant performing transactions."
+msgstr "Subscriber retirement failed. This subscriber is registered as an active merchant. MDN will be suspended to prevent merchant performing transactions."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantUsernameCheckProcessor.java line number - 72  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UsernameCheckProcessor.java line number - 51 
+msgid "User doesn't exists"
+msgstr "User doesn't exists"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 125  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 138 
+msgid "Merchant ParentID"
+msgstr "Merchant ParentID"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantUsernameCheckProcessor.java line number - 63 
+msgid "Merchant doesn't exists"
+msgstr "Merchant doesn't exists"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 197  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 197  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 197 
+msgid "Sorry, Invalid file: HashTotal does not match. Expecting "
+msgstr "Sorry, Invalid file: HashTotal does not match. Expecting "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 151  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 257 
+msgid "Card PAN already exists in the system. It has to be unique."
+msgstr "Card PAN already exists in the system. It has to be unique."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 309 
+msgid "Not a Valid Combination of Group and Parent ID"
+msgstr "Not a Valid Combination of Group and Parent ID"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantRechargeProcessor.java line number - 30 
+msgid "You are not authorized to recharge on behalf of other merchants"
+msgstr "You are not authorized to recharge on behalf of other merchants"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 75 
+msgid "Not Authorized to change the Pocket Restrictions"
+msgstr "Not Authorized to change the Pocket Restrictions"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\tomcat\work\localEngine\localhost\AdminApplication\org\apache\jsp\WEB_002dINF\jsp\login_jsp.java line number - 216 
+msgid " is not supported. <br>\\\n"
+msgstr " is not supported. <br>\\\n"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\LOPDistributeProcessor.java line number - 30 
+msgid "You are not authorized to Distribute LOP"
+msgstr "You are not authorized to Distribute LOP"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileUploadController.java line number - 185  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileUploadController.java line number - 185  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileUploadController.java line number - 185 
+msgid "Sorry, Invalid file: Entered LineCount does not match. Expecting "
+msgstr "Sorry, Invalid file: Entered LineCount does not match. Expecting "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\DCTNameCheckProcessor.java line number - 41 
+msgid "Template Name Available"
+msgstr "Template Name Available"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 47 
+msgid " MerchantAlreadyExistsForMDN "
+msgstr " MerchantAlreadyExistsForMDN "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FixController.java line number - 305  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\TreeController.java line number - 218  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FixController.java line number - 305  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\TreeController.java line number - 218  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FixController.java line number - 305  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\TreeController.java line number - 218 
+msgid "Server error: "
+msgstr "Server error: "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UsernameCheckProcessor.java line number - 40 
+msgid "User Name Already Exists in DB, Please Ener a Different UserName"
+msgstr "User Name Already Exists in DB, Please Ener a Different UserName"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MultixCommunicationHandler.java line number - 127 
+msgid "No Msg::Retunrned from Multix Server"
+msgstr "No Msg::Retunrned from Multix Server"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\service\UserService.java line number - 93  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\service\UserService.java line number - 156  
+// E:\mFinoCode\mfino\trunk\MBanking\MBankingWebApplication\src\main\java\com\mfino\service\UserService.java line number - 84  
+// E:\mFinoCode\mfino\trunk\MBanking\MBankingWebApplication\src\main\java\com\mfino\service\UserService.java line number - 152 
+msgid "No role for defined for user : "
+msgstr "No role for defined for user : "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\SubscriberMdnProcessor.java line number - 73 
+msgid "Can't Change Subscriber Status"
+msgstr "Can't Change Subscriber Status"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 50  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 111  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 50  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 111  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 50  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 111 
+msgid "Sorry, Invalid MDN or PIN"
+msgstr "Sorry, Invalid MDN or PIN"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 109 
+msgid "MDN Already exists in DB, Please Change"
+msgstr "MDN Already exists in DB, Please Change"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantTransferProcessor.java line number - 48 
+msgid "Destination merchant is not active. Can not receive airtime"
+msgstr "Destination merchant is not active. Can not receive airtime"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\BaseFixProcessor.java line number - 24  
+// E:\mFinoCode\mfino\trunk\MBanking\MBankingCore\src\main\java\com\mfino\mbankingcore\processors\BaseFixProcessor.java line number - 20 
+msgid " StaleData "
+msgstr " StaleData "
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketIssuerProcessor.java line number - 216  
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketProcessor.java line number - 85 
+msgid "Not Authorized to change the Pocket Template"
+msgstr "Not Authorized to change the Pocket Template"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 263 
+msgid "Unauthorized operation."
+msgstr "Unauthorized operation."
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 121 
+msgid "Not Authorized to change the Merchant ParentID"
+msgstr "Not Authorized to change the Merchant ParentID"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\FileBankAccountUploadController.java line number - 81  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\FileBankAccountUploadController.java line number - 81  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\FileBankAccountUploadController.java line number - 81 
+msgid "Sorry, file size exceeds the max limit"
+msgstr "Sorry, file size exceeds the max limit"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\CheckBalanceProcessor.java line number - 40 
+msgid "Not authorized to view merchant balance"
+msgstr "Not authorized to view merchant balance"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\PocketTemplateCheckProcessor.java line number - 40 
+msgid "Pocket Template Name Already Exists in DB, Please Ener a Different UserName"
+msgstr "Pocket Template Name Already Exists in DB, Please Ener a Different UserName"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\CheckBalanceForSubscriberProcessor.java line number - 23 
+msgid "Not authorized to view subscriber balance"
+msgstr "Not authorized to view subscriber balance"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\ParentGroupIDCheckProcessor.java line number - 41 
+msgid "Is not authorized to generate LOP"
+msgstr "Is not authorized to generate LOP"
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\ChangePasswordController.java line number - 66  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 67  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\ChangePasswordController.java line number - 66  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 67  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\ChangePasswordController.java line number - 66  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\MerchantRegistrationController.java line number - 67 
+msgid "Sorry, Username or Password cannot be Null"
+msgstr "Sorry, Username or Password cannot be Null"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\UserProcessor.java line number - 87 
+msgid "Not authorized to change the user role"
+msgstr "Not authorized to change the user role"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 937 
+msgid " AddressLine1Required "
+msgstr " AddressLine1Required "
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\src\java\com\mfino\web\admin\controller\ChangePasswordController.java line number - 75  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\classes\com\mfino\web\admin\controller\ChangePasswordController.java line number - 75  
+// E:\mFinoCode\mfino\trunk\Web\AdminApplication\target\test-classes\com\mfino\web\admin\controller\ChangePasswordController.java line number - 75 
+msgid "Your Password has been sucessfully set"
+msgstr "Your Password has been sucessfully set"
+// E:\mFinoCode\mfino\trunk\Core\src\com\mfino\fix\processor\MerchantProcessor.java line number - 94 
+msgid "Not Authorized to change the Merchant MDN"
+msgstr "Not Authorized to change the Merchant MDN"

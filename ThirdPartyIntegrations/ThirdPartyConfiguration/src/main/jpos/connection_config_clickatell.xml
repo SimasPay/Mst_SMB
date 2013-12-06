@@ -1,0 +1,14 @@
+<channel-adaptor name='clickatell' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2_clickatell">
+  <channel class="org.jpos.iso.channel.PostChannel" logger="Q2_clickatell" packager="org.jpos.iso.packager.GenericPackager">
+	<property name="host" value="196.43.208.13" /> 
+	     <property name="port" value="20006" />
+         <!-- <property name="host" value="localhost"/>
+          <property name="port" value="8582"/> -->
+		<property name="packager-logger" value="Q2_clickatell" />
+		<property name="packager-realm" value="mfino-debug" />
+		<property name="packager-config" value="jpos/jpos_cfg/iso87binary-clickatell.xml" />
+	</channel>
+	<in>clickatellsend</in>
+	<out>clickatellreceive</out>
+	<reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>

@@ -1,0 +1,5 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_clickatell" name="clickatellmux">
+	<in>clickatellreceive</in>
+	<out>clickatellsend</out>
+	<key>11</key>
+</mux>

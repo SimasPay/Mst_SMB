@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring-2.0.0.xsd">
+    <bean id="mceDynamicRouter" class="com.mfino.mce.core.MCEDynamicRouter"/>
+    <bean id="fixProc" class="com.mfino.mce.fix.FixProcessor" />
+    
+    <!-- define the jasypt properties parser with the given password to be used -->
+	<bean id="jasypt" class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+	    <property name="password" value="sysenv:ENCRYPTION_KEY"/>
+	</bean>
+	
+	<!-- define the camel properties component -->
+	<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+	    <!-- the properties file is in the classpath -->
+	    <property name="location" value="file:mfino_conf/mce.properties"/>
+	    <!-- and let it leverage the jasypt parser -->
+	    <property name="propertiesParser" ref="jasypt"/>
+	</bean>
+	
+    
+    <!-- <cm:property-placeholder id="blueprint.placeholder" persistent-id="camel.blueprint">-->
+        <!-- list some properties for this test -->
+        <!-- <cm:default-properties>
+            <cm:property name="host1" value="localhost"/>
+            <cm:property name="port1" value="6013"/>
+            <cm:property name="host2" value="localhost"/>
+            <cm:property name="port2" value="30013"/>
+            <cm:property name="host3" value="localhost"/>
+            <cm:property name="port3" value="30003"/>
+        </cm:default-properties>
+    </cm:property-placeholder>-->
+	
+
+   <camelContext xmlns="http://camel.apache.org/schema/spring">
+        <threadPool id="myPool" threadName="Cool"
+poolSize="5" maxPoolSize="15" maxQueueSize="250"/>
+
+        <!-- using Camel properties component and refer to the blueprint property placeholder by its id -->
+       <!--  <propertyPlaceholder id="properties" location="blueprint"/>-->
+
+        <!-- in the route we can use {{ }} placeholders which will lookup in blueprint -->
+        <route>
+            <from uri="jetty:http://{{fixRoute.fromUri.host}}:{{fixRoute.fromUri.port}}/"/>
+            <to uri="jms:queue:toFix"/>            
+        </route>
+        <!-- <route>
+            <from uri="jetty:http://{{host2}}:{{port2}}/"/>
+            <to uri="jms:queue:fix"/>            
+        </route>
+        <route>
+            <from uri="jetty:http://{{host3}}:{{port3}}/"/>
+            <to uri="jms:queue:fix"/>            
+        </route>-->
+        
+        <route>
+        	<from uri="jms:queue:toFix"/>
+        	<threads executorServiceRef="myPool" > 
+        		<process ref ="fixProc"/>
+        		<dynamicRouter>
+					<method ref="mceDynamicRouter" method="findDestQueue"/>
+				</dynamicRouter>
+			</threads>
+		</route>
+
+    </camelContext>
+    
+</beans>

@@ -1,0 +1,12 @@
+<channel-adaptor name='nfc' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2_nfc">
+    <channel class="org.jpos.iso.channel.ASCIIChannel" logger="Q2_nfc" packager="org.jpos.iso.packager.GenericPackager">
+        <property name="host" value="localhost" />
+        <property name="port" value="9977" />
+        <property name="packager-logger" value="Q2_nfc" />
+        <property name="packager-realm" value="mfino-debug" />
+        <property name="packager-config" value="jpos/jpos_cfg/iso87ascii-nfc.xml" />
+    </channel>
+    <in>nfcsend</in>
+    <out>nfcreceive</out>
+    <reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>

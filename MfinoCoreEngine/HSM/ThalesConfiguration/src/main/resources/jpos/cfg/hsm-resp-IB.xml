@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<schema id='IB'>
+<field id='zpkunderzmk' type='A' length='16'/> 
+<field id='zpkunderlmk' type='A' length='16'/> 
+<field id='checkvalue' type='A' length='16'/>
+</schema>

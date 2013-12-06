@@ -1,0 +1,30 @@
+<encrypt major="2" minor="5">
+	<records>
+		<record name="Pocket">
+			<field name="CurrentBalance"/>
+			<field name="CardPAN" unique="Yes"/>
+		</record>
+		<record name="ChannelSessionManagement">
+			<field name="SessionKey"/>
+		</record>
+		<record name="Ledger">
+			<field name="SourcePocketBalance"/>
+			<field name="DestPocketBalance"/>
+		</record>
+		<record name="CommodityTransfer">
+			<field name="SourcePocketBalance"/>
+			<field name="SourceCardPAN"/>
+			<field name="DestPocketBalance"/>
+			<field name="DestCardPAN"/>
+		</record>
+		<record name="PendingCommodityTransfer">
+			<field name="SourcePocketBalance"/>
+			<field name="SourceCardPAN"/>
+			<field name="DestPocketBalance"/>
+			<field name="DestCardPAN"/>
+		</record>
+		<record name="UnRegisteredTxnInfo">
+			<field name="DigestedPIN"/>
+		</record>
+	</records>
+</encrypt>

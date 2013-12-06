@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:58 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<typedef name="encryptedBigDecimal" class="org.jasypt.hibernate.type.EncryptedBigDecimalAsStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="encryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateStringEncryptor</param>
+</typedef>
+<typedef name="uniqueencryptedString" class="org.jasypt.hibernate.type.EncryptedStringType">
+<param name="encryptorRegisteredName">hibernateUniqueStringEncryptor</param>
+</typedef>
+<class name="com.mfino.domain.UnRegisteredTxnInfo" optimistic-lock="version" table="unregistered_txn_info" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="SubscriberMDNByMDNID" foreign-key="FK_UnRegisteredTxnInfo_SubscriberMDNByMDNID" class="com.mfino.domain.SubscriberMDN" fetch="select">
+<column name="MDNID"     />
+</many-to-one>
+<property name="TransferSCTLId" type="java.lang.Long" >
+<column name="TransferSCTLId" not-null="true"  sql-type="bigint" />
+</property>
+<property name="TransferCTId" type="java.lang.Long" >
+<column name="TransferCTId"    sql-type="bigint" />
+</property>
+<property name="CashoutSCTLId" type="java.lang.Long" >
+<column name="CashoutSCTLId"    sql-type="bigint" />
+</property>
+<property name="CashoutCTId" type="java.lang.Long" >
+<column name="CashoutCTId"    sql-type="bigint" />
+</property>
+<property name="DigestedPIN" type="java.lang.String" >
+<column name="DigestedPIN" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="UnRegisteredTxnStatus" type="java.lang.Integer" >
+<column name="UnRegisteredTxnStatus"    sql-type="int" />
+</property>
+<property name="TransactionName" type="java.lang.String" >
+<column name="TransactionName"    sql-type="varchar(255)" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount"    sql-type="decimal(25,4)" />
+</property>
+<property name="FailureReason" type="java.lang.String" >
+<column name="FailureReason"    sql-type="varchar(255)" />
+</property>
+<property name="FailureReasonCode" type="java.lang.Integer" >
+<column name="FailureReasonCode"    sql-type="int" />
+</property>
+<property name="ReversalReason" type="java.lang.String" >
+<column name="ReversalReason"    sql-type="varchar(255)" />
+</property>
+<property name="ExpiryTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="ExpiryTime"   length="19" sql-type="datetime" />
+</property>
+<many-to-one name="FundDefinition" foreign-key="FK_UnRegisteredTxnInfo_FundDefinition" class="com.mfino.domain.FundDefinition" fetch="select">
+<column name="FundDefinitionID"     />
+</many-to-one>
+<property name="AvailableAmount" type="big_decimal" >
+<column name="AvailableAmount"    sql-type="decimal(25,4)" />
+</property>
+<property name="WithdrawalMDN" type="java.lang.String" >
+<column name="WithdrawalMDN"    sql-type="varchar(255)" />
+</property>
+<property name="WithdrawalFailureAttempt" type="java.lang.Integer" >
+<column name="WithdrawalFailureAttempt"    sql-type="int" />
+</property>
+<property name="PartnerCode" type="java.lang.String" >
+<column name="PartnerCode"    sql-type="varchar(255)" />
+</property>
+<set name="FundDistributionInfoFromFundAllocationId" inverse="true">
+<key>
+<column name="FundAllocationId" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.FundDistributionInfo" />
+</set>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.mfino.com" xmlns:tns="http://www.mfino.com"
+	elementFormDefault="qualified">
+	<xs:element name="integration" type="tns:integration" />
+
+	<xs:complexType name="integration">
+		<xs:sequence>
+			<xs:element name="message" minOccurs="1" maxOccurs="unbounded"
+				type="tns:message" />
+			<xs:element name="parameter" minOccurs="0" maxOccurs="unbounded"
+				type="tns:parameter" />
+		</xs:sequence>
+		<xs:attribute name="code" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="message">
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="requestIn" type="tns:messageType" />
+				<xs:element name="responseOut" type="tns:messageType" />
+			</xs:sequence>
+			<xs:sequence>
+				<xs:element name="requestOut" type="tns:messageType" />
+				<xs:element name="responseIn" type="tns:messageType" />
+			</xs:sequence>
+		</xs:choice>
+		<xs:attribute name="type" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="messageType">
+		<xs:sequence>
+			<xs:element name="field" type="tns:field" minOccurs="1"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="field">
+		<xs:attribute name="identifier" type="xs:string" />
+		<xs:attribute name="param" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="parameter">
+		<xs:sequence>
+			<xs:element name="value" type="xs:string" />
+			<xs:element name="parserClass" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="isSecure" type="xs:boolean" />
+		<xs:attribute name="isPersistent" type="xs:boolean" />
+	</xs:complexType>
+
+	<xs:complexType name="valueType">
+		<xs:choice>
+			<xs:element name="constant" type="xs:string" />
+			<xs:element name="txnInfo" type="xs:string" />
+			<xs:element name="integrationInfo" type="xs:string" />
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

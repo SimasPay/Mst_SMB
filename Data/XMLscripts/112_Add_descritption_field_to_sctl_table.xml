@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    
+ 	<property name="VARCHAR" value="VARCHAR(255)" dbms="mysql"/>
+	<property name="VARCHAR" value="VARCHAR2(255 BYTE)" dbms="oracle"/>
+ 
+	<changeSet author="MFS_MAIN" id="TABLE-SERVICECHARGETXNLOG-155">
+		<addColumn tableName="service_charge_txn_log">
+			<column name="Description" type="${VARCHAR}"/>
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>

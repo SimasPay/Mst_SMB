@@ -1,0 +1,1 @@
+update notification set Text='Transaction ID: $(TransferID). You have successfully transferred $(Currency) $(Amount) to $(ReceiverMDN) and Charges $(Currency) $(serviceCharge). Balance as on $(TransactionDateTime) is $(Currency) $(CommodityBalanceValue)' where Code=678;

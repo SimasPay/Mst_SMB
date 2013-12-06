@@ -1,0 +1,14 @@
+<%@ page pageEncoding="UTF-8" %>
+
+
+        <%
+                   response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+                   response.setHeader("Cache-Control", "no-store"); // HTTP 1.1
+                   response.setDateHeader("Expires", 0);
+        %>
+        <Table align="center" border="0">
+            <TR>
+                <TD><img style="margin-right:90px;margin-top:10px;" alt="mFino" width="150" src="./images/mfino_logo.jpg"/> </TD>
+                <TD><img style="margin-left:90px;margin-top:10px;" width="150" alt="Smart-Telecom" src="./images/logo_smart.png"/> </TD>
+            </TR>
+        </Table>

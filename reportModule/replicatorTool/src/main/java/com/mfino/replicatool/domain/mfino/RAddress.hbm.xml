@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:50 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Address" optimistic-lock="version" table="address" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="Line1" type="java.lang.String" >
+<column name="Line1"    sql-type="varchar(255)" />
+</property>
+<property name="Line2" type="java.lang.String" >
+<column name="Line2"    sql-type="varchar(255)" />
+</property>
+<property name="City" type="java.lang.String" >
+<column name="City"    default="''"  sql-type="varchar(255)" />
+</property>
+<property name="State" type="java.lang.String" >
+<column name="State"    default="''"  sql-type="varchar(255)" />
+</property>
+<property name="ZipCode" type="java.lang.String" >
+<column name="ZipCode"    default="''"  sql-type="varchar(255)" />
+</property>
+<property name="Country" type="java.lang.String" >
+<column name="Country"    default="''"  sql-type="varchar(255)" />
+</property>
+<property name="RegionName" type="java.lang.String" >
+<column name="RegionName"    sql-type="varchar(255)" />
+</property>
+<set name="MerchantFromFranchiseOutletAddressID" inverse="true">
+<key>
+<column name="FranchiseOutletAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.Merchant" />
+</set>
+<set name="MerchantFromMerchantAddressID" inverse="true">
+<key>
+<column name="MerchantAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.Merchant" />
+</set>
+<set name="SubscriberFromSubscriberAddressID" inverse="true">
+<key>
+<column name="SubscriberAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.Subscriber" />
+</set>
+<set name="CardInfoFromAddressID" inverse="true">
+<key>
+<column name="AddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.CardInfo" />
+</set>
+<set name="CardInfoFromBillingAddressID" inverse="true">
+<key>
+<column name="BillingAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.CardInfo" />
+</set>
+<set name="CardInfoFromOldAddressID" inverse="true">
+<key>
+<column name="OldAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.CardInfo" />
+</set>
+<set name="CardInfoFromOldBillingAddressID" inverse="true">
+<key>
+<column name="OldBillingAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.CardInfo" />
+</set>
+<set name="PartnerFromFranchiseOutletAddressID" inverse="true">
+<key>
+<column name="FranchiseOutletAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.Partner" />
+</set>
+<set name="PartnerFromMerchantAddressID" inverse="true">
+<key>
+<column name="MerchantAddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.Partner" />
+</set>
+<set name="AuthorizingPersonFromAddressID" inverse="true">
+<key>
+<column name="AddressID"    />
+</key>
+<one-to-many class="com.mfino.domain.AuthorizingPerson" />
+</set>
+</class>
+</hibernate-mapping>

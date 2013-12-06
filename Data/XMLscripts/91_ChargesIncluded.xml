@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+ 
+ 	<property name="TINYINT" value="TINYINT" dbms="mysql"/>
+	<property name="TINYINT" value="NUMBER(3,0)" dbms="oracle"/>
+
+ 	<changeSet author="MFS_MAIN" id="TABLE-MFSBILLERPARTNERMAP-134">
+		<addColumn tableName="mfsbiller_partner_map">
+			<column name="ChargesIncluded" type="${TINYINT}"/>
+ 		</addColumn>
+	</changeSet>
+	<changeSet author="MFS_MAIN" id="TABLE-BILLPAYMENTS-135">
+		<addColumn tableName="bill_payments">
+			<column name="ChargesIncluded" type="${TINYINT}"/>
+ 		</addColumn>
+	</changeSet>
+</databaseChangeLog>

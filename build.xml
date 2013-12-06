@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mFino" default="build">
+
+	<path id="test.class.path">
+		<pathelement location="Core/build/classes"/>
+		<pathelement location="Core/build/test/classes"/>
+		<pathelement location="Web/AdminApplication/build/classes"/>
+		<pathelement location="Web/AdminApplication/build/test/classes"/>
+	</path>
+
+	<property environment="env"/>
+	<property name="FindBugsReport.dir" value="."/>
+	<property name="base.dir" value="."/>
+	<property name="build.dir" value="${base.dir}/build"/>
+	<property name="report.dir" value="${build.dir}/report"/>
+	<!-- default settings -->
+	<property name="profile" value="staging_main" />
+	<property name="dbtype" value="mysql" />
+	<property name="findbugs.skip" value="true"/>
+
+	
+        <condition property="isWindows">
+                <os family="windows" />
+        </condition>
+        <condition property="isUnix">
+                <os family="unix" />
+        </condition>
+
+	<target name="if_windows" if="isWindows">
+		<property name="mvn.exe" value="mvn.bat" />
+		
+	</target>
+	<target name="if_unix" if="isUnix" >
+		<property name="mvn.exe" value="mvn" />
+	</target>
+
+	<target name="pre" depends="if_windows, if_unix" >
+	</target>
+
+	<target name="mvn-clean" depends="pre">
+		<exec executable="${mvn.exe}" dir="${base.dir}">
+			<arg value="clean"/>
+		</exec>
+	</target>
+
+	<target name="mvn-test" depends="pre">
+		<exec executable="${mvn.exe}" dir="${base.dir}">
+			<arg value="test"/>
+		</exec>
+	</target>
+
+	<target name="mvn-dist" depends="pre">
+		<exec executable="${mvn.exe}" dir="${base.dir}">
+					<arg value="clean"/>
+		</exec>
+	    <tstamp>
+	        <format property="buildtime" pattern="yyyyMMdd_HHmmss" />
+	    </tstamp>
+		<delete file="MANIFEST.MF"/>
+	     <manifest file="MANIFEST.MF">
+	        <attribute name="release" value="${release}"/>
+	        <attribute name="revision" value="${revision}"/>
+	     	<attribute name="buildtime" value="${buildtime}"/>
+	    </manifest>
+		<touch file="Core/src/com/mfino/fix/mFinoFixml.xml"/>
+		<ant antfile="mvnbuild.xml" dir="${base.dir}/Core/" inheritall="false" inheritrefs="false">
+			<property name="profile" value="${profile}"/>
+			<property name="dbtype" value="${dbtype}"/>
+			<target name="codegen">
+				
+				</target>
+		</ant>
+		<exec executable="${mvn.exe}" dir="${base.dir}">
+			<arg value="package"/>
+			<arg value="install"/>
+			<arg value="-Dprofile=${profile}" />
+			<arg value="-DskipTests=true" />
+			<arg value="-Drelease=${release}" />
+			<arg value="-Drevision=${revision}" />
+			<arg value="-Dbuildtime=${buildtime}"/>
+			<arg value="-Dfindbugs.skip=${findbugs.skip}"/>
+		</exec>
+		
+		<!-- copy profile specific init.js file from profiles folder before generating mfino.js(concatenated file)-->
+		<copy todir="${base.dir}/Web/AdminApplication/target/AdminApplication/js" overwrite="true" failonerror="false">
+			<fileset dir="${base.dir}/profiles/${profile}" includes="*.js"/>
+		</copy>
+
+		<java jar="${base.dir}/Tools/JavaScriptFileConcatenationTool/target/com.mfino.application-JavaScriptFileConcatenationTool.jar" fork="true" failonerror="true">
+			<arg value="${base.dir}/Web/AdminApplication/target/AdminApplication/WEB-INF/jspf/footer.jspf"/>
+			<arg value="${base.dir}/Web/AdminApplication/target/AdminApplication/"/>
+			<arg value="${base.dir}/Web/AdminApplication/target/AdminApplication/js/mfino.js"/>
+		</java>
+
+		<move file="${base.dir}/Web/AdminApplication/target/AdminApplication/WEB-INF/jspf/footer.jspf" tofile="${base.dir}/Web/AdminApplication/target/AdminApplication/WEB-INF/jspf/footer-dev.jspf" />
+		<move file="${base.dir}/Web/AdminApplication/target/AdminApplication/WEB-INF/jspf/footer-dist.jspf" tofile="${base.dir}/Web/AdminApplication/target/AdminApplication/WEB-INF/jspf/footer.jspf" />
+		<copy file="${base.dir}/ThirdParty/JavaScript/ext/adapter/ext/ext-base.js" tofile="${base.dir}/Web/AdminApplication/target/AdminApplication/extjs/adapter/ext/ext-base.js" overwrite="true"/>
+		<copy file="${base.dir}/ThirdParty/JavaScript/ext/ext-all.js" tofile="${base.dir}/Web/AdminApplication/target/AdminApplication/extjs/ext-all.js" overwrite="true"/>
+		<copy todir="${base.dir}/Web/AdminApplication/target/AdminApplication/resources/images" overwrite="true" failonerror="false">
+			<fileset dir="${base.dir}/profiles/${profile}/images" includes="*.png,*.gif,*.jpeg"/>
+		</copy>	
+		<jar compress="true" jarfile="${base.dir}/Web/AdminApplication/target/AdminApplication_Dist.war"
+			manifest ="MANIFEST.MF">
+			<fileset dir="${base.dir}/Web/AdminApplication/target/AdminApplication"/>
+		</jar>
+		<!-- Copy profile specific files for Txn monitor tool and build war-->
+		<copy todir="${base.dir}/Web/TransactionMonitorTool/target/TransactionMonitorTool/resources/images" overwrite="true" failonerror="false">
+			<fileset dir="${base.dir}/profiles/${profile}/images" includes="*.png,*.gif,*.jpeg"/>
+		</copy>	
+		<jar compress="true" jarfile="${base.dir}/Web/TransactionMonitorTool/target/TransactionMonitorTool.war"
+			manifest ="MANIFEST.MF">
+			<fileset dir="${base.dir}/Web/TransactionMonitorTool/target/TransactionMonitorTool"/>
+		</jar>
+		<echo message="Running the reportCreator"/>
+
+		<java jar="${base.dir}/InternalTools/FindBugsReportCreator/target/FindBugsReportCreator-0.1-SNAPSHOT.jar " 
+				fork="true">
+			<arg line="${base.dir} ${FindBugsReport.dir} "/>
+		</java>
+    <!--
+		<exec executable="MakeRuntime.sh" dir="${base.dir}/mFinoMultiXTpmServer" resolveexecutable="true" osfamily="unix">
+		
+		</exec>
+		-->
+	</target>
+	
+	<property name="package.dir" value="/usr/local/mfino/package/last" />
+	<target name="package">
+		<delete dir="${package.dir}"/>
+		<mkdir dir="${package.dir}" />
+		<mkdir dir="${package.dir}/mFinoMultiXTpmServer" />
+		<mkdir dir="${package.dir}/mFinoMultiXTpmServer/runtime"/>
+		<mkdir dir="${package.dir}/mFinoMultiXTpmServer/LogFiles"/>
+		<copy todir="${package.dir}">
+		  <fileset dir="${base.dir}/Web/AdminApplication/target"
+			   includes="AdminApplication_Dist.war"
+		  />
+		</copy>
+		<copy todir="${package.dir}">
+		  <fileset dir="${base.dir}/Web/Scheduler/target"
+			   includes="Scheduler.war"
+		  />
+		</copy>
+		<exec executable="cp">
+			<arg value="-r"/> 
+			<arg value="${base.dir}/mFinoMultiXTpmServer/runtime/"/> 
+			<arg value="${package.dir}/mFinoMultiXTpmServer/"/>
+		</exec>
+		<exec executable="cp">
+			<arg value="-r"/> 
+			<arg value="${base.dir}/mFinoMultiXTpmServer/StartMultiXTpm.sh"/> 
+			<arg value="${package.dir}/mFinoMultiXTpmServer/"/>
+		</exec>
+		<exec executable="cp">
+			<arg value="-r"/> 
+			<arg value="${base.dir}/mFinoMultiXTpmServer/StopMultiXTpm.sh"/> 
+			<arg value="${package.dir}/mFinoMultiXTpmServer"/>
+		</exec>
+	</target>
+
+	<target name="deploy-dev">
+		<sshexec host="localhost" failonerror="false" timeout="40000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="/usr/local/mFinoMultiXTpmServer/StopMultiXTpm.sh"/>
+		
+		<sleep seconds="30" />
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="cp -r ${package.dir}/mFinoMultiXTpmServer/runtime/ /usr/local/mFinoMultiXTpmServer"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="cp ${package.dir}/mFinoMultiXTpmServer/*.sh /usr/local/mFinoMultiXTpmServer"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="cd /usr/local/mFinoMultiXTpmServer;/usr/local/mFinoMultiXTpmServer/StartMultiXTpm.sh"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="/etc/init.d/tomcat6 stop"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="rm -rf /var/lib/tomcat6/webapps/AdminApplication"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="cp ${package.dir}/AdminApplication_Dist.war /var/lib/tomcat6/webapps/AdminApplication.war"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="rm -rf /var/lib/tomcat6/webapps/Scheduler"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="cp ${package.dir}/Scheduler.war /var/lib/tomcat6/webapps/Scheduler.war"/>
+
+		<sshexec host="localhost" failonerror="false" timeout="30000"
+			username="root"
+			keyfile="${env.HOME}/.ssh/id_rsa_root"
+			command="/etc/init.d/tomcat6 start"/>
+	</target>
+
+	<target name="svn">
+		<!-- this is to work around hudson subversion problem -->
+		<exec executable="svn" dir="${base.dir}">
+			<arg value="update"/>
+			<arg value="--username"/>
+			<arg value="build"/>
+			<arg value="--password"/>
+			<arg value="build10"/>
+			<arg value="--no-auth-cache"/>
+			<arg value="--non-interactive"/>
+			<arg value="--trust-server-cert"/>
+		</exec>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+		<delete dir="${base.dir}/mFinoMultiXTpmServer/bin"/>
+		<delete dir="${base.dir}/mFinoMultiXTpmServer/Debug"/>
+		<delete file="${base.dir}/mFinoMultiXTpmServer/Release/FIXMLCodeGenerator.exe"/>
+		<delete includeemptydirs="true">
+			<fileset dir="${base.dir}" defaultexcludes="false">
+			   <include name="**/build/**" />
+			   <include name="**/dist/**" />
+			   <exclude name="**/SandBox/**" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="multixtpm">
+		<!-- takes too long
+		<delete dir="${base.dir}/mFinoMultiXTpmServer/bin" />
+		-->
+		<delete dir="${base.dir}/mFinoMultiXTpmServer/runtime" />
+		<exec osfamily="unix" executable="bash" dir="${base.dir}/mFinoMultiXTpmServer">
+			<arg value="MakeRuntimeEC2.sh"/>
+		</exec>
+		<exec osfamily="unix" executable="bash" dir="${base.dir}/mFinoMultiXTpmServer">
+			<arg value="MakePackage.sh"/>
+		</exec>
+	</target>
+
+	<target name="core">
+		<touch file="Core/src/com/mfino/fix/mFinoFixml.xml"/>
+		<ant antfile="build.xml" dir="${base.dir}/Core/" inheritall="false" inheritrefs="false">
+			<target name="jar" />
+			<target name="compile-test" />
+			<property name="no.deps" value="true" />
+		</ant>
+	</target>
+
+	<target name="tool">
+		<ant antfile="build.xml" dir="${base.dir}/Tools/SchemaChangeUpgradeTool/" inheritall="false" inheritrefs="false">
+			<target name="jar" />
+			<target name="compile-test" />
+			<property name="no.deps" value="true" />
+		</ant>
+		<ant antfile="build.xml" dir="${base.dir}/Tools/JavaScriptFileConcatenationTool/" inheritall="false" inheritrefs="false">
+			<target name="jar" />
+			<target name="compile-test" />
+			<property name="no.deps" value="true" />
+		</ant>
+		<ant antfile="build.xml" dir="${base.dir}/Tools/IntlStringsCollectorTool/" inheritall="false" inheritrefs="false">
+			<target name="jar" />
+			<target name="compile-test" />
+			<property name="no.deps" value="true" />
+		</ant>
+		<ant antfile="build.xml" dir="${base.dir}/Mock/IntegrationTestHarness/" inheritall="false" inheritrefs="false">
+			<target name="jar" />
+			<target name="compile-test" />
+			<property name="no.deps" value="true" />
+		</ant>
+	</target>
+
+	<target name="web">
+		<ant antfile="build.xml" dir="${base.dir}/Web/AdminApplication/" inheritall="false" inheritrefs="false">
+			<target name="dist" />
+			<target name="compile-test" />
+			<property name="no.deps" value="true" />
+		</ant>
+	</target>
+
+	<target name="junit" description="run all unit tests">
+		<mkdir dir="${report.dir}"/>
+		<junit haltonfailure="true" forkmode="once">
+			<jvmarg value="-Xms128m"/>
+			<jvmarg value="-Xmx128m"/>
+			<classpath>
+				<path refid="base.class.path"/>
+				<path refid="test.class.path"/>
+			</classpath>
+			<formatter type="xml"/>
+			<batchtest fork="yes" todir="${report.dir}">
+				<fileset dir="Core/test">
+					<include name="**/*.java"/>
+				</fileset>
+				<fileset dir="Web/AdminApplication/test">
+					<include name="**/*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="generate-reports" depends="junit" description="create JUnit test HTML reports">
+		<mkdir dir="${report.dir}"/>
+		<junitreport todir="${report.dir}">
+			<fileset dir="${report.dir}">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="${report.dir}"/>
+		</junitreport>
+		<zip destfile="${build.dir}/junit-report.zip" basedir="${report.dir}" />
+	</target>
+
+	<target name="update-schema">
+		<java classname="com.mfino.hibernate.SchemaUpdateRun" failonerror="true">
+			<classpath refid="base.class.path" />
+			<classpath refid="test.class.path" />
+			<arg value="Core/src/hibernate.cfg.xml"/>
+		</java>
+		<exec osfamily="windows" executable="FIXMLCodeGenerator.exe" resolveexecutable="true" >
+		    <arg value="Sql"/>
+			<arg value="Core/src/com/mfino/fix/mFinoFixml.xml"/>
+		    <arg value="mFinoFIX"/>
+		    <arg value="Data/mFino/Static"/>
+		</exec>
+		<exec osfamily="unix" dir="" executable="mono" resolveexecutable="true" >
+		    <arg value="FIXMLCodeGenerator.exe" />
+		    <arg value="Sql"/>
+				<arg value="Core/src/com/mfino/fix/mFinoFixml.xml"/>
+		    <arg value="mFinoFIX"/>
+		    <arg value="Data/mFino/Static"/>
+		</exec>
+		<sql
+			driver="com.mysql.jdbc.Driver"
+			url="jdbc:mysql://localhost:3306/mfino"
+			userid="root"
+			password="mFino260" 
+			classpathref="base.class.path"
+			src="Data/mFino/Static/StaticData.sql">
+		</sql>
+		<sql
+			driver="com.mysql.jdbc.Driver"
+			url="jdbc:mysql://localhost:3306/mfino"
+			userid="root"
+			password="mFino260" 
+			classpathref="base.class.path"
+			src="Data/mFino/Static/Extra.sql">
+		</sql>
+	</target>
+
+	<target name="drop-schema">
+		<sql
+			driver="com.mysql.jdbc.Driver"
+			url="jdbc:mysql://localhost:3306/mfino"
+			userid="root"
+			password="mFino260" classpathref="base.class.path" >
+			SET FOREIGN_KEY_CHECKS=0;
+			DROP TABLE IF EXISTS `mfino`.`bank`;
+			DROP TABLE IF EXISTS `mfino`.`commodity_transfer`;
+			DROP TABLE IF EXISTS `mfino`.`db_param`;
+			DROP TABLE IF EXISTS `mfino`.`enum_text`;
+			DROP TABLE IF EXISTS `mfino`.`letter_of_purchase`;
+			DROP TABLE IF EXISTS `mfino`.`mfino_service_provider`;
+			DROP TABLE IF EXISTS `mfino`.`mobile_network_operator`;
+			DROP TABLE IF EXISTS `mfino`.`notification`;
+			DROP TABLE IF EXISTS `mfino`.`pending_commodity_transfer`;
+			DROP TABLE IF EXISTS `mfino`.`person_2_person`;
+			DROP TABLE IF EXISTS `mfino`.`pocket`;
+			DROP TABLE IF EXISTS `mfino`.`pocket_template`;
+			DROP TABLE IF EXISTS `mfino`.`subscriber`;
+			DROP TABLE IF EXISTS `mfino`.`subscriber_mdn`;
+			DROP TABLE IF EXISTS `mfino`.`transaction_log`;
+			DROP TABLE IF EXISTS `mfino`.`user`;
+			DROP TABLE IF EXISTS `mfino`.`user_authority`;
+			SET FOREIGN_KEY_CHECKS=1;
+		</sql>
+	</target>
+
+	<target name="recreate-schema" depends="drop-schema,update-schema">
+	</target>
+
+	<target name="build" depends="clean,svn,update-schema,core,tool,web,multixtpm,generate-reports">
+	</target>
+
+		<target name="mfino-dist" depends="build">
+		<java jar="${base.dir}/Tools/JavaScriptFileConcatenationTool/dist/JavaScriptFileConcatenationTool.jar" fork="true" failonerror="true">
+			<arg value="${base.dir}/Web/AdminApplication/web/WEB-INF/jspf/footer.jspf"/>
+			<arg value="${base.dir}/Web/AdminApplication/web"/>
+			<arg value="${base.dir}/Web/AdminApplication/build/web/js/mfino.js"/>
+		</java>
+		<move file="${base.dir}/Web/AdminApplication/build/web/WEB-INF/jspf/footer.jspf" tofile="${base.dir}/Web/AdminApplication/build/web/WEB-INF/jspf/footer-dev.jspf" />
+		<move file="${base.dir}/Web/AdminApplication/build/web/WEB-INF/jspf/footer-dist.jspf" tofile="${base.dir}/Web/AdminApplication/build/web/WEB-INF/jspf/footer.jspf" />
+		<copy file="${base.dir}/ThirdParty/JavaScript/ext/adapter/ext/ext-base.js" tofile="${base.dir}/Web/AdminApplication/build/web/extjs/adapter/ext/ext-base.js" overwrite="true"/>
+		<copy file="${base.dir}/ThirdParty/JavaScript/ext/ext-all.js" tofile="${base.dir}/Web/AdminApplication/build/web/extjs/ext-all.js" overwrite="true"/>
+		<!--
+		<replace file="${base.dir}/Web/AdminApplication/build/web/WEB-INF/web.xml" token="/applicationContext-security.xml" value="/applicationContext-security-test.xml"/>
+		-->
+		<copy todir="${base.dir}/Web/AdminApplication/target/AdminApplication/resources/images" overwrite="true" failonerror="false">
+			<fileset dir="${base.dir}/profiles/${profile}/images" includes="*.png,*.gif,*.jpeg"/>
+		</copy>	
+		<jar compress="false" jarfile="${base.dir}/Web/AdminApplication/dist/AdminApplication_Dist.war" manifest="${base.dir}/Web/AdminApplication/build/web/META-INF/MANIFEST.MF">
+			<fileset dir="${base.dir}/Web/AdminApplication/build/web"/>
+		</jar>
+	</target>
+</project>

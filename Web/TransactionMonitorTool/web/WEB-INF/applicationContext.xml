@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    
+    <context:component-scan base-package="com.mfino.monitor.controllers"/>
+    <context:component-scan base-package="com.mfino.monitor.processor"/>
+    <context:component-scan base-package="com.mfino.uicore.security"/>
+	<context:component-scan base-package="com.mfino.uicore.fix.processor.impl"/>
+    <context:component-scan base-package="com.mfino.service"/>
+    <context:component-scan base-package="com.mfino.service.impl"/>
+    <context:component-scan base-package="com.mfino.transactionapi.service"/>
+    <context:component-scan base-package="com.mfino.transactionapi.handlers"/>
+    <context:component-scan base-package="com.mfino.commons.hierarchyservice.impl" />
+	
+    <bean id="contextHolder" class="com.mfino.web.ContextHolder"/>
+    
+    <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+    <bean id="customUserService" class="com.mfino.service.CustomUserDetailsService">
+    </bean>
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <constructor-arg value="1" />
+    </bean>
+    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="username"/>
+    </bean>
+     
+    <bean id="loginattemptlistener" class="com.mfino.uicore.security.AuthenticationAttemptListener"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="applicationResources"/>
+    </bean>
+    
+    <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+
+</beans>

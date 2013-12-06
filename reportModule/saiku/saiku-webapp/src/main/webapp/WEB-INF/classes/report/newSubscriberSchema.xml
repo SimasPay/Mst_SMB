@@ -1,0 +1,779 @@
+<?xml version="1.0"?>
+<Schema name="subscriberSchema">
+	
+	<Cube name="PocketCube">
+	    <Table name="pocket"/>
+		<Dimension name="Subscriber" foreignKey="SubscriberMDN">
+			<Hierarchy hasAll="true" primaryKey="mdn">
+				<Table name="subscribers"/>
+				<Level name="State" column="state" uniqueMembers="true"/>
+				<Level name="City" column="city" uniqueMembers="true"/>	
+				<Level name="Type" column="type" uniqueMembers="true"/>		
+				<Level name="Subtype" column="subtype" uniqueMembers="true"/>
+				<Level name="KycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="MDN" column="mdn" uniqueMembers="true"/>
+				<Level name="Code" column="code" uniqueMembers="true"/>
+				<Level name="FirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="LastName" column="lastname" uniqueMembers="true"/>	
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PocketType">
+			<Hierarchy hasAll="true" allMemberName="All PocketType" defaultMember="All PocketType">
+				<Level name="PocketType" column="PocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="CurrentBalance">
+			<Hierarchy hasAll="true" allMemberName="All CurrentBalance" defaultMember="All CurrentBalance">
+				<Level name="CurrentBalance" column="CurrentBalance" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Pockets" column="PocketID" aggregator="count" formatString="Standard"/>
+    </Cube>
+
+	<Cube name="TransactionCube">
+	    <Table name="sctltxn"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="weekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="dayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Hour">
+			<Hierarchy hasAll="true" allMemberName="All Hour" defaultMember="All Hour">
+				<Level name="Hour" column="hour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="Service">
+			<Hierarchy hasAll="true" allMemberName="All Service" defaultMember="All Service">
+				<Level name="Service" column="Service" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionType">
+			<Hierarchy hasAll="true" allMemberName="All TransactionType" defaultMember="All TransactionType">
+				<Level name="TransactionType" column="TransactionType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Channel">
+			<Hierarchy hasAll="true" allMemberName="All Channel" defaultMember="All Channel">
+				<Level name="Channel" column="Channel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Status">
+			<Hierarchy hasAll="true" allMemberName="All Status" defaultMember="All Status">
+				<Level name="Status" column="Status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="SourceMDN" foreignKey="SourceMDN">
+			<Hierarchy hasAll="true" primaryKey="mdn">
+				<Table name="subscribers"/>
+				<Level name="SourceState" column="state" uniqueMembers="true"/>
+				<Level name="SourceCity" column="city" uniqueMembers="true"/>	
+				<Level name="SourceType" column="type" uniqueMembers="true"/>		
+				<Level name="SourceSubtype" column="subtype" uniqueMembers="true"/>
+				<Level name="SourceKycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="SourceSourceMDN" column="mdn" uniqueMembers="true"/>
+				<Level name="SourceCode" column="code" uniqueMembers="true"/>
+				<Level name="SourceFirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="SourceLastName" column="lastname" uniqueMembers="true"/>				
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationMDN" foreignKey="DestMDN">
+			<Hierarchy hasAll="true" primaryKey="mdn">
+				<Table name="subscribers"/>
+				<Level name="DestinationState" column="state" uniqueMembers="true"/>
+				<Level name="DestinationCity" column="city" uniqueMembers="true"/>	
+				<Level name="DestinationType" column="type" uniqueMembers="true"/>		
+				<Level name="DestinationSubtype" column="subtype" uniqueMembers="true"/>
+				<Level name="DestinationKycLevel" column="kyclevel" uniqueMembers="true"/>
+				<Level name="DestinationDestinationMDN" column="mdn" uniqueMembers="true"/>
+				<Level name="DestinationCode" column="code" uniqueMembers="true"/>
+				<Level name="DestinationFirstName" column="firstname" uniqueMembers="true"/>
+				<Level name="DestinationLastName" column="lastname" uniqueMembers="true"/>				
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Transactions" column="SCTLID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="TransactionAmount" aggregator="sum" formatString="#,###.00"/>
+		<Measure name="Calculated Charge" column="CalculatedCharge" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+	
+	<Cube name="subscriberCube">
+	    <Table name="subscribers"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Weekday">
+			<Hierarchy hasAll="true" allMemberName="All Weekday" defaultMember="All Weekday">
+				<Level name="Weekday" column="weekday" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DayOfMonth">
+			<Hierarchy hasAll="true" allMemberName="All DayOfMonth" defaultMember="All DayOfMonth">
+				<Level name="DayOfMonth" column="dayofmonth" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Hour">
+			<Hierarchy hasAll="true" allMemberName="All Hour" defaultMember="All Hour">
+				<Level name="Hour" column="hour" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="State">
+			<Hierarchy hasAll="true" allMemberName="All State" defaultMember="All State">
+				<Level name="State" column="state" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="City">
+			<Hierarchy hasAll="true" allMemberName="All City" defaultMember="All City">
+				<Level name="City" column="city" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="KYCLevel">
+			<Hierarchy hasAll="true" allMemberName="All KYCLevel" defaultMember="All KYCLevel">
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Type">
+			<Hierarchy hasAll="true" allMemberName="All Type" defaultMember="All Type">
+				<Level name="Type" column="type" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubType">
+			<Hierarchy hasAll="true" allMemberName="All SubType" defaultMember="All SubType">
+				<Level name="SubType" column="subtype" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="Code">
+			<Hierarchy hasAll="true" allMemberName="All Code" defaultMember="All Code">
+				<Level name="Code" column="code" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MDN">
+			<Hierarchy hasAll="true" allMemberName="All MDN" defaultMember="All MDN">
+				<Level name="MDN" column="mdn" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="FirstName">
+			<Hierarchy hasAll="true" allMemberName="All FirstName" defaultMember="All FirstName">
+				<Level name="FirstName" column="firstname" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="LastName">
+			<Hierarchy hasAll="true" allMemberName="All LastName" defaultMember="All LastName">
+				<Level name="LastName" column="lastname" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+	
+		<Measure name="TotalCount" column="id" aggregator="count" />	
+    </Cube>
+
+	<Cube name="subscriberClassificationCube">
+	    <Table name="subscriber_classification"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MonthName">
+			<Hierarchy hasAll="true" allMemberName="All MonthName" defaultMember="All MonthName">
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="City">
+			<Hierarchy hasAll="true" allMemberName="All City" defaultMember="All City">
+				<Level name="City" column="City" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="KYCLevel">
+			<Hierarchy hasAll="true" allMemberName="All KYCLevel" defaultMember="All KYCLevel">
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="SubscriberID" aggregator="count" />
+	
+    </Cube>
+   <!--
+	<Cube name="subscriberClassificationCube">
+	    <Table name="subscriber_classification"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+				<Level name="City" column="City" uniqueMembers="true"/>
+				<Level name="KYCLevel" column="KYCLevel" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="SubscriberID" aggregator="count" formatString="Standard"/>
+		
+    </Cube>
+	-->
+	
+	<Cube name="agentClassificationCube">
+	    <Table name="agent_classification"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MonthName">
+			<Hierarchy hasAll="true" allMemberName="All MonthName" defaultMember="All MonthName">
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="City">
+			<Hierarchy hasAll="true" allMemberName="All City" defaultMember="All City">
+				<Level name="City" column="City" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="AgentType">
+			<Hierarchy hasAll="true" allMemberName="All AgentType" defaultMember="All AgentType">
+				<Level name="AgentType" column="AgentType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="SubscriberID" aggregator="count" formatString="Standard"/>
+		
+    </Cube>
+	
+	<Cube name="billerClassificationCube">
+	
+	    <Table name="biller_classification"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MonthName">
+			<Hierarchy hasAll="true" allMemberName="All MonthName" defaultMember="All MonthName">
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="City">
+			<Hierarchy hasAll="true" allMemberName="All City" defaultMember="All City">
+				<Level name="City" column="City" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="PartnerType">
+			<Hierarchy hasAll="true" allMemberName="All PartnerType" defaultMember="All PartnerType">
+				<Level name="PartnerType" column="PartnerType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="SubscriberID" aggregator="count" formatString="Standard"/>
+		
+    </Cube>
+	
+	<Cube name="UserRolesAndRightsCube">
+	    <Table name="user_roles"/>
+		<Dimension name="Role">
+			<Hierarchy hasAll="true" allMemberName="All Role" defaultMember="All Role">
+				<Level name="Role" column="Role" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="UserName">
+			<Hierarchy hasAll="true" allMemberName="All UserName" defaultMember="All UserName">
+				<Level name="UserName" column="UserName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="LastUpdateTime">
+			<Hierarchy hasAll="true" allMemberName="All LastUpdateTime" defaultMember="All LastUpdateTime">
+				<Level name="LastUpdateTime" column="LastUpdateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="UpdatedBy">
+			<Hierarchy hasAll="true" allMemberName="All UpdatedBy" defaultMember="All UpdatedBy">
+				<Level name="UpdatedBy" column="UpdatedBy" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="UserID" aggregator="count" formatString="Standard"/>
+	
+    </Cube>
+	
+	<Cube name="KinInformationMissingAccountCube">
+	    <Table name="kininformationmissingaccount"/>
+		<Dimension name="Subscriber MDN">
+			<Hierarchy hasAll="true" allMemberName="All Subscriber MDN" defaultMember="All Subscriber MDN">
+				<Level name="Subscriber MDN" column="SubscriberMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Account ID">
+			<Hierarchy hasAll="true" allMemberName="All Account ID" defaultMember="All Account ID">
+				<Level name="Account ID" column="SubscriberID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Account Type">
+			<Hierarchy hasAll="true" allMemberName="All Account Type" defaultMember="All Account Type">
+				<Level name="Account Type" column="AccountType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="Status">
+			<Hierarchy hasAll="true" allMemberName="All Status" defaultMember="All Status">
+				<Level name="Status" column="Status" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="TotalCount" column="SubscriberID" aggregator="count" formatString="Standard"/>
+    </Cube>
+	
+	<Cube name="transactionSummaryCube">
+	    <Table name="sctl"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MonthName">
+			<Hierarchy hasAll="true" allMemberName="All MonthName" defaultMember="All MonthName">
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Service">
+			<Hierarchy hasAll="true" allMemberName="All Service" defaultMember="All Service">
+				<Level name="Service" column="ServiceName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Measure name="No Of Transactions" column="SCTLID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="TransactionAmount" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+	
+	<Cube name="ConsolidatedSalesReportCube">
+	    <Table name="sctl"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MonthName">
+			<Hierarchy hasAll="true" allMemberName="All MonthName" defaultMember="All MonthName">
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Service">
+			<Hierarchy hasAll="true" allMemberName="All Service" defaultMember="All Service">
+				<Level name="Service" column="ServiceName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionType">
+			<Hierarchy hasAll="true" allMemberName="All TransactionType" defaultMember="All TransactionType">
+				<Level name="TransactionType" column="TransactionName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="AccessMedium">
+			<Hierarchy hasAll="true" allMemberName="All AccessMedium" defaultMember="All AccessMedium">
+				<Level name="AccessMedium" column="ChannelCodeID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Measure name="Distinct Channel MDN" column="SourceMDN" aggregator="distinct-count" formatString="Standard"/>
+		<Measure name="No Of Transactions" column="SCTLID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Funds Collected" column="CalculatedCharge" aggregator="sum" formatString="0.00"/>
+    </Cube>
+	
+	<Cube name="ServiceChargeCube">
+	    <Table name="sctl"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="MonthName">
+			<Hierarchy hasAll="true" allMemberName="All MonthName" defaultMember="All MonthName">
+				<Level name="MonthName" column="MonthName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Service">
+			<Hierarchy hasAll="true" allMemberName="All Service" defaultMember="All Service">
+				<Level name="Service" column="ServiceName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionType">
+			<Hierarchy hasAll="true" allMemberName="All TransactionType" defaultMember="All TransactionType">
+				<Level name="TransactionType" column="TransactionName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		
+		<Measure name="No Of Transactions" column="SCTLID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Charge" column="CalculatedCharge" aggregator="sum" formatString="#,###.00"/>
+	
+    </Cube>
+	
+	<Cube name="B2E2BCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberMDN">
+			<Hierarchy hasAll="true" allMemberName="All SubscriberMDN" defaultMember="All SubscriberMDN">
+				<Level name="SubscriberMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TranscationType" foreignKey="UICategory">
+			<Hierarchy hasAll="true" allMemberName="All TranscationType" primaryKey="UICategoryType" defaultMember="All TranscationType">
+				<InlineTable alias="UICategoryType">
+					<ColumnDefs>
+						<ColumnDef name="UICategoryType" type="Numeric"/>
+						<ColumnDef name="UICategoryTypeName" type="String"/>
+					</ColumnDefs>
+					<Rows>
+						<Row>
+							<Value column="UICategoryType">17</Value>
+							<Value column="UICategoryTypeName">Bank To Emoney</Value>
+						</Row>
+						<Row>
+							<Value column="UICategoryType">16</Value>
+							<Value column="UICategoryTypeName">Emoney To Bank</Value>
+						</Row>					
+					</Rows>
+				</InlineTable>
+				<Level name="Type" column="UICategoryTypeName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		
+		<Measure name="No Of Transactions" column="CommodityTransferID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="#,###.00"/>
+	
+    </Cube>
+	
+	<Cube name="RepeatedTransactionsPerTransactionTypeCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TranscationType">
+			<Hierarchy hasAll="true" allMemberName="All TranscationType" defaultMember="All TranscationType">
+				<Level name="TranscationType" column="UICategoryName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceMDN">
+			<Hierarchy hasAll="true" allMemberName="All SourceMDN" defaultMember="All SourceMDN">
+				<Level name="SourceMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationMDN">
+			<Hierarchy hasAll="true" allMemberName="All DestinationMDN" defaultMember="All DestinationMDN">
+				<Level name="DestinationMDN" column="DestMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Measure name="No Of Transactions" column="CommodityTransferID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="0.00"/>	
+    </Cube>
+	
+	<Cube name="MobileMoneyFailedTransaction">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Transfer Status">
+			<Hierarchy hasAll="true" allMemberName="All Transfer Status" defaultMember="All Transfer Status">
+				<Level name="Transfer Status" column="TransferStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>	
+		<Dimension name="DestinationMDN">
+			<Hierarchy hasAll="true" allMemberName="All DestinationMDN" defaultMember="All DestinationMDN">
+				<Level name="DestinationMDN" column="DestMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TranscationType">
+			<Hierarchy hasAll="true" allMemberName="All TranscationType" defaultMember="All TranscationType">
+				<Level name="TranscationType" column="UICategoryName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Ref ID">
+			<Hierarchy hasAll="true" allMemberName="All Ref ID" defaultMember="All Ref ID">
+				<Level name="Ref ID" column="CommodityTransferID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Time">
+			<Hierarchy hasAll="true" allMemberName="All Time" defaultMember="All Time">
+				<Level name="Time" column="CommodityTransferCreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Failure Reason">
+			<Hierarchy hasAll="true" allMemberName="All Failure Reason" defaultMember="All Failure Reason">
+				<Level name="Failure Reason" column="TransferFailureReasonName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="0.00"/>	
+    </Cube>
+	
+	<Cube name="MobileMoneyRepeatedTransactionsCube">
+	    <Table name="commodity_transfer"/>	
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberMDN">
+			<Hierarchy hasAll="true" allMemberName="All SubscriberMDN" defaultMember="All SubscriberMDN">
+				<Level name="SubscriberMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>		
+		<Dimension name="TranscationType">
+			<Hierarchy hasAll="true" allMemberName="All TranscationType" defaultMember="All TranscationType">
+				<Level name="TranscationType" column="UICategoryName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationMDN">
+			<Hierarchy hasAll="true" allMemberName="All DestinationMDN" defaultMember="All DestinationMDN">
+				<Level name="DestinationMDN" column="DestMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Time">
+			<Hierarchy hasAll="true" allMemberName="All Time" defaultMember="All Time">
+				<Level name="Time" column="CommodityTransferCreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Transfer Status">
+			<Hierarchy hasAll="true" allMemberName="All Transfer Status" defaultMember="All Transfer Status">
+				<Level name="Transfer Status" column="TransferStatus" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<!--
+		<Dimension name="Transfer Status" foreignKey="TransferStatus">
+			<Hierarchy hasAll="true" allMemberName="All Transfer Status"  primarykey="TransferStatus" primaryKeyTable="TransferStatus" defaultMember="All Transfer Status">
+				<InlineTable alias="TransferStatus">
+					<ColumnDefs>
+						<ColumnDef name="TransferStatus" type="Numeric"/>
+						<ColumnDef name="TransferStatusName" type="String"/>
+					</ColumnDefs>
+					<Rows>
+						<Row>
+							<Value column="TransferStatus">1</Value>
+							<Value column="TransferStatusName">Successfull</Value>
+						</Row>
+						<Row>
+							<Value column="TransferStatus">2</Value>
+							<Value column="TransferStatusName">Failed</Value>
+						</Row>					
+					</Rows>
+				</InlineTable>
+				<Level name="Transfer Status" column="TransferStatusName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		-->
+
+		<Measure name="Transaction Amount" column="Amount" aggregator="sum" formatString="0.00"/>
+		<Measure name="Charge" column="Charges" aggregator="sum" formatString="0.00"/>	
+    </Cube>
+	
+	<Cube name="AggregatevalueAndTransactionsperSubscriberCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberMDN">
+			<Hierarchy hasAll="true" allMemberName="All SubscriberMDN" defaultMember="All SubscriberMDN">
+				<Level name="SubscriberMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Measure name="No Of Transactions" column="CommodityTransferID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="0.00"/>	
+    </Cube>
+	
+	<Cube name="PartnerSettelmentCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="PartnerCode" foreignKey="SourceSubscriberID">
+			<Hierarchy hasAll="true" allMemberName="All PartnerCode" primaryKey="SubscriberID" defaultMember="All PartnerCode">
+				<Table name="biller_classification"/>
+				<Level name="PartnerCode" column="PartnerCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceWalletID">
+			<Hierarchy hasAll="true" allMemberName="All SourceWalletID" defaultMember="All SourceWalletID">
+				<Level name="SourceWalletID" column="SourcePocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceWalletType" foreignKey="SourcePocketID">
+			<Hierarchy hasAll="true" allMemberName="All SourceWalletType" primaryKey="PocketID" defaultMember="All SourceWalletType">
+				<Table name="biller_pocket"/>
+				<Level name="SourceWalletType" column="PocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationWalletID">
+			<Hierarchy hasAll="true" allMemberName="All DestinationWalletID" defaultMember="All DestinationWalletID">
+				<Level name="DestinationWalletID" column="DestPocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="DestinationWalletType" foreignKey="DestPocketID">
+			<Hierarchy hasAll="true" allMemberName="All DestinationWalletType" primaryKey="PocketID" defaultMember="All DestinationWalletType">
+				<Table name="biller_pocket"/>
+				<Level name="DestinationWalletType" column="PocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="0.00"/>	
+    </Cube>
+	
+	<Cube name="AgentSettelmentCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="AgentCode" foreignKey="SourceSubscriberID">
+			<Hierarchy hasAll="true" allMemberName="All AgentCode" primaryKey="SubscriberID" defaultMember="All AgentCode">
+				<Table name="agent_classification"/>
+				<Level name="AgentCode" column="AgentCode" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceWalletID">
+			<Hierarchy hasAll="true" allMemberName="All SourceWalletID" defaultMember="All SourceWalletID">
+				<Level name="SourceWalletID" column="SourcePocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SourceWalletType" foreignKey="SourcePocketID">
+			<Hierarchy hasAll="true" allMemberName="All SourceWalletType" primaryKey="PocketID" defaultMember="All SourceWalletType">
+				<Table name="agent_pocket"/>
+				<Level name="SourceWalletType" column="PocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="DestinationWalletID">
+			<Hierarchy hasAll="true" allMemberName="All DestinationWalletID" defaultMember="All DestinationWalletID">
+				<Level name="DestinationWalletID" column="DestPocketID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Dimension name="DestinationWalletType" foreignKey="DestPocketID">
+			<Hierarchy hasAll="true" allMemberName="All DestinationWalletType" primaryKey="PocketID" defaultMember="All DestinationWalletType">
+				<Table name="agent_pocket"/>
+				<Level name="DestinationWalletType" column="PocketType" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="0.00"/>	
+    </Cube>
+	
+	<Cube name="ResolvedTransactionCube">
+	    <Table name="commodity_transfer"/>
+		<Dimension name="Year">
+			<Hierarchy hasAll="true" allMemberName="All Year" defaultMember="All Year">
+				<Level name="Year" column="Year" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Month">
+			<Hierarchy hasAll="true" allMemberName="All Month" defaultMember="All Month">
+				<Level name="Month" column="Month" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberMDN">
+			<Hierarchy hasAll="true" allMemberName="All SubscriberMDN" defaultMember="All SubscriberMDN">
+				<Level name="SubscriberMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="SubscriberMDN">
+			<Hierarchy hasAll="true" allMemberName="All SubscriberMDN" defaultMember="All SubscriberMDN">
+				<Level name="SubscriberMDN" column="SourceMDN" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionType">
+			<Hierarchy hasAll="true" allMemberName="All TransactionType" defaultMember="All TransactionType">
+				<Level name="TransactionType" column="UICategoryName" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="Ref ID">
+			<Hierarchy hasAll="true" allMemberName="All Ref ID" defaultMember="All Ref ID">
+				<Level name="Ref ID" column="CommodityTransferID" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="TransactionTime">
+			<Hierarchy hasAll="true" allMemberName="All TransactionTime" defaultMember="All TransactionTime">
+				<Level name="TransactionTime" column="CommodityTransferCreateTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ResolvedTime">
+			<Hierarchy hasAll="true" allMemberName="All ResolvedTime" defaultMember="All ResolvedTime">
+				<Level name="ResolvedTime" column="CSRActionTime" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		<Dimension name="ResolvedAs">
+			<Hierarchy hasAll="true" allMemberName="All ResolvedAs" defaultMember="All ResolvedAs">
+				<Level name="ResolvedAs" column="CSRAction" uniqueMembers="true"/>
+			</Hierarchy>
+		</Dimension>
+		
+		<Measure name="No Of Transactions" column="CommodityTransferID" aggregator="count" formatString="Standard"/>
+		<Measure name="Total Amount" column="Amount" aggregator="sum" formatString="#,###.00"/>
+		<Measure name="Total Charges" column="Charges" aggregator="sum" formatString="#,###.00"/>
+	
+    </Cube>
+	
+</Schema>

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:56 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.ChargeDefinition" optimistic-lock="version" table="charge_definition" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="mFinoServiceProviderByMSPID" foreign-key="FK_ChargeDefinition_mFinoServiceProviderByMSPID" class="com.mfino.domain.mFinoServiceProvider" fetch="select">
+<column name="MSPID" not-null="true"   />
+</many-to-one>
+<property name="Name" type="java.lang.String" unique-key="unique_charge_definition_name">
+<column name="Name" not-null="true"  sql-type="varchar(255)" />
+</property>
+<many-to-one name="ChargeType" foreign-key="FK_ChargeDefinition_ChargeType" class="com.mfino.domain.ChargeType" fetch="select">
+<column name="ChargeTypeID" not-null="true"   />
+</many-to-one>
+<property name="IsChargeFromCustomer" type="java.lang.Boolean" >
+<column name="IsChargeFromCustomer" not-null="true"  sql-type="tinyint" />
+</property>
+<many-to-one name="ChargeTypeByDependantChargeTypeID" foreign-key="FK_ChargeDefinition_ChargeTypeByDependantChargeTypeID" class="com.mfino.domain.ChargeType" fetch="select">
+<column name="DependantChargeTypeID"     />
+</many-to-one>
+<many-to-one name="PartnerByFundingPartnerID" foreign-key="FK_ChargeDefinition_PartnerByFundingPartnerID" class="com.mfino.domain.Partner" fetch="select">
+<column name="FundingPartnerID"     />
+</many-to-one>
+<many-to-one name="Pocket" foreign-key="FK_ChargeDefinition_Pocket" class="com.mfino.domain.Pocket" fetch="select">
+<column name="PocketID"     />
+</many-to-one>
+<property name="Description" type="java.lang.String" >
+<column name="Description"    sql-type="varchar(255)" />
+</property>
+<property name="CalculationType" type="java.lang.Integer" >
+<column name="CalculationType" not-null="true"  sql-type="int" />
+</property>
+<property name="IsTaxable" type="java.lang.Boolean" >
+<column name="IsTaxable" not-null="true"  sql-type="tinyint" />
+</property>
+<set name="ChargePricingFromChargeDefinitionID" inverse="true">
+<key>
+<column name="ChargeDefinitionID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.ChargePricing" />
+</set>
+<set name="TransactionChargeFromChargeDefinitionID" inverse="true">
+<key>
+<column name="ChargeDefinitionID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.TransactionCharge" />
+</set>
+</class>
+</hibernate-mapping>

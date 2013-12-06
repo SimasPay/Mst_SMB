@@ -1,0 +1,6 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_bsm" name="bsmmux">
+	<in>bsmreceive</in>
+	<out>bsmsend</out>
+	<request-listener class="com.mfino.bsim.iso8583.BSIMRequestListener" logger="Q2_bsm">
+	</request-listener>
+</mux>

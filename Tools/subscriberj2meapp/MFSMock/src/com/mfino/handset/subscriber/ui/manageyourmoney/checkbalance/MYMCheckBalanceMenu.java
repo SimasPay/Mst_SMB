@@ -1,0 +1,66 @@
+package com.mfino.handset.subscriber.ui.manageyourmoney.checkbalance;
+
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Form;
+
+import com.mfino.handset.subscriber.ui.AbstractMfinoConfig;
+import com.mfino.handset.subscriber.util.ConfigurationUtil;
+import com.mfino.handset.subscriber.util.MfinoConfigData;
+
+/**
+ * @author sasidhar
+ */
+public class MYMCheckBalanceMenu extends AbstractMfinoConfig implements CommandListener{
+	
+	private Displayable parent;
+    private Display display;
+    private Form manageYourMoneyForm;
+    private ChoiceGroup choiceGroup;
+    
+	private static final String E_MONEY = "E-Money";
+    private static final String BANK = "Bank";
+    
+    private static final String[] yourAccountMenu = {E_MONEY, BANK};
+    
+	public MYMCheckBalanceMenu(MfinoConfigData mFinoConfigData, Displayable parent){
+		super(mFinoConfigData);
+		this.parent = parent;
+        display = Display.getDisplay(mFinoConfigData.getMobileBankingMidlet());
+        
+        manageYourMoneyForm = new Form("Select Account");
+        choiceGroup = new ChoiceGroup("Select one", Choice.EXCLUSIVE, yourAccountMenu, null);
+        manageYourMoneyForm.append(choiceGroup);
+        manageYourMoneyForm.addCommand(mFinoConfigData.backCommand);
+        manageYourMoneyForm.addCommand(mFinoConfigData.nextCommand);
+        manageYourMoneyForm.setCommandListener(this);
+        display.setCurrent(manageYourMoneyForm);
+	}
+	
+	public void commandAction(Command command, Displayable displayable) {
+		if(command == super.mFinoConfigData.backCommand){
+			display.setCurrent(parent);
+		}
+		else if(command == super.mFinoConfigData.nextCommand){
+            String name = choiceGroup.getString(choiceGroup.getSelectedIndex());
+
+            if (name.equals(E_MONEY)) {
+            	mFinoConfigData.setServiceName("svaemoneycheckBalance");
+            	mFinoConfigData.setSourcePocketCode(ConfigurationUtil.POCKET_CODE_EMONEY);
+            	new MYMCheckBalancePinForm(mFinoConfigData, displayable);
+            } else if (name.equals(BANK)) {
+            	mFinoConfigData.setServiceName("bankCheckBalance");
+            	mFinoConfigData.setSourcePocketCode(ConfigurationUtil.POCKET_CODE_BANK);
+            	new MYMCheckBalancePinForm(mFinoConfigData, displayable);
+            } 
+		}
+		else if(command == super.mFinoConfigData.exitCommand){
+			mFinoConfigData.getMobileBankingMidlet().destroyApp(true);
+			mFinoConfigData.getMobileBankingMidlet().notifyDestroyed();
+		}
+	}
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:48 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.OfflineReport" optimistic-lock="version" table="offline_report" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Name" type="java.lang.String" >
+<column name="Name" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="ReportSql" type="java.lang.String" >
+<column name="ReportSql"    sql-type="LONGTEXT" />
+</property>
+<property name="ReportClass" type="java.lang.String" >
+<column name="ReportClass"    sql-type="varchar(255)" />
+</property>
+<property name="TriggerEnable" type="java.lang.Boolean" >
+<column name="TriggerEnable"    sql-type="tinyint" />
+</property>
+<set name="OfflineReportForCompanyFromReportID" inverse="true">
+<key>
+<column name="ReportID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.OfflineReportForCompany" />
+</set>
+<set name="OfflineReportReceiverFromReportID" inverse="true">
+<key>
+<column name="ReportID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.OfflineReportReceiver" />
+</set>
+</class>
+</hibernate-mapping>

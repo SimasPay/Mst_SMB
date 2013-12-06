@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:53 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.Biller" optimistic-lock="version" table="biller" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="BankCode" type="java.lang.Integer" unique-key="BillerCodeIndex">
+<column name="BankCode" not-null="true"  sql-type="int" />
+</property>
+<property name="BillerCode" type="java.lang.String" unique-key="BillerCodeIndex">
+<column name="BillerCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="BillerName" type="java.lang.String" unique-key="BillerNameIndex">
+<column name="BillerName"    sql-type="varchar(255)" />
+</property>
+<property name="BillerType" type="java.lang.String" >
+<column name="BillerType"    sql-type="varchar(255)" />
+</property>
+<many-to-one name="Company" foreign-key="FK_Biller_Company" class="com.mfino.domain.Company" fetch="select">
+<column name="CompanyID"     />
+</many-to-one>
+<property name="TransactionFee" type="big_decimal" >
+<column name="TransactionFee"    sql-type="decimal(25,4)" />
+</property>
+<property name="BillRefOffSet" type="java.lang.Integer" >
+<column name="BillRefOffSet" not-null="true"  sql-type="int" />
+</property>
+<set name="DenominationFromBillerID" inverse="true">
+<key>
+<column name="BillerID" not-null="true"  />
+</key>
+<one-to-many class="com.mfino.domain.Denomination" />
+</set>
+</class>
+</hibernate-mapping>

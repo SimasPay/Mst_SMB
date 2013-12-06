@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2013 18:11:58 by mFino FIXMLCodeGenerator -->
+<hibernate-mapping>
+<class name="com.mfino.domain.InterbankTransfer" optimistic-lock="version" table="interbank_transfers" >
+<id name="ID" type="java.lang.Long">
+<column name="ID" />
+<generator class="assigned" />
+
+
+</id>
+<version name="Version" type="java.lang.Integer">
+<column name="Version" not-null="true"  />
+</version>
+<property name="LastUpdateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="LastUpdateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="UpdatedBy" type="java.lang.String" >
+<column name="UpdatedBy" not-null="true"  default="' '"  sql-type="varchar(255)" />
+</property>
+<property name="CreateTime" type="com.mfino.hibernate.HibernateUTC$TimestampType" >
+<column name="CreateTime" not-null="true" length="19" sql-type="datetime" />
+</property>
+<property name="CreatedBy" type="java.lang.String" >
+<column name="CreatedBy" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="TerminalID" type="java.lang.String" >
+<column name="TerminalID" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="DestBankCode" type="java.lang.String" >
+<column name="DestBankCode" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="SourceAccountName" type="java.lang.String" >
+<column name="SourceAccountName"    sql-type="varchar(255)" />
+</property>
+<property name="DestAccountName" type="java.lang.String" >
+<column name="DestAccountName"    sql-type="varchar(255)" />
+</property>
+<property name="SourceAccountNumber" type="java.lang.String" >
+<column name="SourceAccountNumber" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="DestAccountNumber" type="java.lang.String" >
+<column name="DestAccountNumber" not-null="true"  sql-type="varchar(255)" />
+</property>
+<property name="Amount" type="big_decimal" >
+<column name="Amount" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="Charges" type="big_decimal" >
+<column name="Charges" not-null="true"  sql-type="decimal(25,4)" />
+</property>
+<property name="TransferID" type="java.lang.Long" >
+<column name="TransferID"    sql-type="bigint" />
+</property>
+<property name="SctlId" type="java.lang.Long" >
+<column name="SctlId"    sql-type="bigint" />
+</property>
+<property name="SessionID" type="java.lang.String" >
+<column name="SessionID"    sql-type="varchar(255)" />
+</property>
+<property name="Narration" type="java.lang.String" >
+<column name="Narration"    sql-type="varchar(255)" />
+</property>
+<property name="PaymentReference" type="java.lang.String" >
+<column name="PaymentReference"    sql-type="varchar(255)" />
+</property>
+<property name="NIBResponseCode" type="java.lang.String" >
+<column name="NIBResponseCode"    sql-type="varchar(255)" />
+</property>
+<property name="IBTStatus" type="java.lang.Integer" >
+<column name="IBTStatus"    sql-type="int" />
+</property>
+</class>
+</hibernate-mapping>

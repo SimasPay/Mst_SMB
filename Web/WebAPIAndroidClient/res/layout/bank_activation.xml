@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+<TableRow>
+<TextView 
+android:id="@+id/baacTextView01" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourceMDN">
+</TextView>
+<EditText 
+android:id="@+id/baacSourceMDNET"
+android:layout_height="wrap_content" 
+android:width="150.0px">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/baacTextView02" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="SourcePIN">
+</TextView>
+<EditText
+android:id="@+id/baacSourcePINET" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/baacTextView03" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Card Pan Suffix">
+</TextView>
+<EditText
+android:id="@+id/baacCardPanSuffixET" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content">
+</EditText>
+</TableRow>
+
+<TableRow>
+<TextView 
+android:id="@+id/baacTextView04" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Bank ID">
+</TextView>
+<EditText
+android:id="@+id/baacBankIDET" 
+android:layout_height="wrap_content"
+android:layout_width="wrap_content">
+</EditText>
+</TableRow>
+<TableLayout>
+<TableRow>
+<Button 
+android:id="@+id/baacActivationButton"
+android:layout_height="wrap_content" 
+android:text="Activate"
+android:width="100.0px">
+</Button>
+<Button 
+android:id="@+id/baacBackButton"
+android:layout_height="wrap_content" 
+android:text="Back" 
+android:width="100.0px">
+</Button>
+</TableRow>
+</TableLayout>
+</TableLayout>

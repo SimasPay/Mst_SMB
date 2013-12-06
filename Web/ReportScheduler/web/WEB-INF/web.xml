@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>mFino platform admin web application</display-name>
+	<env-entry> 
+		<description>
+		environment variable for setting the war type to be used in the java code
+		(ConfigurationUtil) to use the corresponding properties file.
+		</description>
+    	<env-entry-name>mfino.Properties</env-entry-name>
+    	<env-entry-type>java.lang.String</env-entry-type> 
+    	<env-entry-value>ReportScheduler</env-entry-value> 
+	</env-entry>
+    <env-entry>
+    	<description>
+		environment variable for calling the jndi name from the 
+		tomcat context.xml to be used in spring to access the required properties file.
+		</description> 
+    	<env-entry-name>databaseConfig.Properties</env-entry-name> 
+    	<env-entry-type>java.lang.String</env-entry-type> 
+    	<env-entry-value>java:/comp/env/mfino.ReportScheduler.databaseConfig.Properties</env-entry-value> 
+	</env-entry>	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+            /WEB-INF/applicationContext.xml
+        </param-value>
+	</context-param>
+
+	<!--
+		Loads the root application context of this web app at startup. - The
+		application context is then available via -
+		WebApplicationContextUtils.getWebApplicationContext(servletContext).
+	-->
+	<listener>
+		<listener-class>
+			com.mfino.report.listeners.MFinoServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ReportServlet</servlet-name>
+		<servlet-class>com.mfino.report.servlet.ReportServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReportServlet</servlet-name>
+		<url-pattern>/Report</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>AdminReportServlet</servlet-name>
+		<servlet-class>com.mfino.report.servlet.AdminReportServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminReportServlet</servlet-name>
+		<url-pattern>/AdminReport</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>redirect.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<!--
+	  Filters and listeners for monitoring 
+	  START
+	 -->
+	 <filter>
+		<filter-name>monitoring</filter-name>
+        <filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+     </filter>
+     <filter-mapping>
+        <filter-name>monitoring</filter-name>
+        <url-pattern>/*</url-pattern>
+     </filter-mapping>
+     <listener>
+        <listener-class>net.bull.javamelody.SessionListener</listener-class>
+     </listener>
+	 <!--
+	    END
+	  -->
+	  
+	  <!--
+	    Security for monitoring 
+	    START 
+	   -->
+	   <login-config>
+                <auth-method>BASIC</auth-method>
+                <realm-name>Monitoring</realm-name>
+        </login-config>
+        <security-role>
+                <role-name>monitoring</role-name>
+        </security-role>
+        <security-constraint>
+                <web-resource-collection>
+                        <web-resource-name>Monitoring</web-resource-name>
+                        <url-pattern>/monitoring</url-pattern>
+                </web-resource-collection>
+                <auth-constraint>
+                        <role-name>monitoring</role-name>
+                </auth-constraint>
+                <!-- if SSL enabled (SSL and certificate must then be configured in the server)
+                <user-data-constraint>
+                        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+                </user-data-constraint> 
+                -->
+        </security-constraint>
+        
+	   <!--END 
+	    -->
+
+</web-app>

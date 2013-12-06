@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<camel-version>2.7.1-fuse-00-43</camel-version>
+		<log4j-version>1.2.16</log4j-version>
+		<jaxb-api-version>2.1</jaxb-api-version>
+		<jaxb-impl-version>2.1.13</jaxb-impl-version>
+	</properties>
+
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.mfino.application</groupId>
+		<artifactId>root</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>Hub</artifactId>
+	<packaging>pom</packaging>
+	<name>Hub Modules</name>
+	<url>http://www.mfino.com</url>
+
+	<modules>
+		<module>HubConfiguration</module>
+		<module>HubMocks</module>
+		<module>HubXMLRPC</module>
+		<!--<module>XMLRPCDefinitions</module>-->
+    </modules>	
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.mfino.mce</groupId>
+			<artifactId>MCECore</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jasypt</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-camel</artifactId>
+			<version>5.5.0-fuse-00-43</version>
+		</dependency>
+	</dependencies>
+
+</project>

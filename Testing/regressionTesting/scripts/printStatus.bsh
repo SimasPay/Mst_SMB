@@ -1,0 +1,150 @@
+
+import java.io.*;
+
+try{
+	// Create file 
+	new File(vars.get("BASEDIR")+"/output").mkdir();
+	FileOutputStream fstream = new FileOutputStream(vars.get("BASEDIR")+"/output/out.txt",true);
+	PrintStream out = new PrintStream(fstream);
+  
+	int day, month, year;
+      	int second, minute, hour;
+      	GregorianCalendar date = new GregorianCalendar();
+ 
+      	day = date.get(Calendar.DAY_OF_MONTH);
+      	month = date.get(Calendar.MONTH);
+      	year = date.get(Calendar.YEAR);
+ 
+      	second = date.get(Calendar.SECOND);
+      	minute = date.get(Calendar.MINUTE);
+      	hour = date.get(Calendar.HOUR);
+	out.print("\n"+year+"/"+(month+1)+"/"+day+":"+hour+":"+minute+":"+second);
+	out.print("\t TXNNAME=" +  vars.get("TXNNAME"));
+	//out.print("\tPREVCODE=" + vars.get("PREVCODE"));
+	out.print("\tCODE=" + vars.get("CODE"));
+	
+	if(vars.get("TXNNAME").equals("subscriberLogin") || vars.get("TXNNAME").equals("agentLogin")){
+		if(vars.get("CODE").equals("630"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("EMoneyHistory")){
+		if(vars.get("CODE").equals("39") || vars.get("CODE").equals("38"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+
+	if(vars.get("TXNNAME").equals("EMoneyCheckBalance")){
+		if(vars.get("CODE").equals("274"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("EMoney2EMoney")){
+		if(vars.get("CODE").equals("293"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("SubscriberCashOut")){
+		if(vars.get("CODE").equals("298"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+ 
+	if(vars.get("TXNNAME").equals("TransactionHistory") ){
+		if(vars.get("CODE").equals("38") || vars.get("CODE").equals("67"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("Bank2EMoney")){
+		if(vars.get("CODE").equals("305"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("BankCheckBalance")){
+		if(vars.get("CODE").equals("4"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("TransactionStatus")){
+		if(vars.get("CODE").equals("39"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("Buy")){
+		if(vars.get("CODE").equals("644"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("BillPayment")){
+		if(vars.get("CODE").equals("653"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	if(vars.get("TXNNAME").equals("AirtimePurchaseThroughEmoney")){
+		if(vars.get("CODE").equals("661") || vars.get("CODE").equals("664"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	if(vars.get("TXNNAME").equals("SubscriberCashOutAtATM")){
+		if(vars.get("CODE").equals("709"))
+			out.print("\tSTATUS=" + "Success" + "\n\n");
+		else
+			out.print("\tSTATUS=" + "Failure" + "\n\n");
+	}
+	
+	if(vars.get("TXNNAME").equals("subscriberRegistrationByAgent")){
+		if(vars.get("CODE").equals("624"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("agentCashIn")){
+		if(vars.get("CODE").equals("296"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	if(vars.get("TXNNAME").equals("agent2AgentTransfer")){
+		if(vars.get("CODE").equals("648"))
+			out.print("\tSTATUS=" + "Success" + "\n\n");
+		else
+			out.print("\tSTATUS=" + "Failure" + "\n\n");
+	}
+	
+	if(vars.get("TXNNAME").equals("SubscriberActivation") || vars.get("TXNNAME").equals("AgentActivation")){
+		if(vars.get("CODE").equals("52"))
+			out.print("\tSTATUS=" + "Success");
+		else
+			out.print("\tSTATUS=" + "Failure");
+	}
+	
+	
+	
+	
+  	out.close();
+ 
+}catch (Exception e){//Catch exception if any
+	System.err.println("Error: " + e.getMessage());
+}

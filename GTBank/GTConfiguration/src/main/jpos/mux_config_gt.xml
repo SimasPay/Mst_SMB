@@ -1,0 +1,4 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2" name="gtmux">
+	<in>gtreceive</in>
+	<out>gtsend</out>
+</mux>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	<property name="now" value="sysdate" dbms="oracle"/>
+	<property name="now" value="now()" dbms="mysql"/>
+	
+	<changeSet author="MFS_MAIN" id="DATA-PERMISSIONITEM-113">
+ 		<delete tableName="permission_item">
+			<where>permission='21901'</where>
+		 </delete>
+		 <delete tableName="permission_item">
+			<where>permission='21902'</where>
+		 </delete>
+		 <delete tableName="permission_item">
+			<where>permission='21903'</where>
+		 </delete>
+ 		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21901"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="adjustments"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21902"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="adjustments.apply"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		<insert tableName="permission_item">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Permission" valueNumeric="21903"/>
+			<column name="ItemType" valueNumeric="1"/>
+			<column name="ItemID" value="adjustments.approve"/>
+			<column name="FieldID" value="default"/>
+			<column name="Action" value="default"/>
+		</insert>
+		
+ 	</changeSet>
+	<changeSet author="MFS_MAIN" id="DATA-ROLEPERMISSION-114">
+ 		<delete tableName="role_permission">
+ 			<where>permission='21901'</where>
+ 		</delete>
+		<delete tableName="role_permission">
+ 			<where>permission='21902'</where>
+ 		</delete>
+		<delete tableName="role_permission">
+ 			<where>permission='21903'</where>
+ 		</delete>
+		<insert tableName="role_permission">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Role" valueNumeric="1"/>
+			<column name="Permission" valueNumeric="21901"/>
+		</insert>
+		<insert tableName="role_permission">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Role" valueNumeric="25"/>
+			<column name="Permission" valueNumeric="21901"/>
+		</insert>
+		<insert tableName="role_permission">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Role" valueNumeric="1"/>
+			<column name="Permission" valueNumeric="21902"/>
+		</insert>
+		<insert tableName="role_permission">
+			<column name="Version" valueNumeric="1"/>
+			<column name="LastUpdateTime" valueDate="${now}"/>
+			<column name="UpdatedBy" value="system"/>
+			<column name="CreateTime" valueDate="${now}"/>
+			<column name="CreatedBy" value="system"/>
+			<column name="Role" valueNumeric="25"/>
+			<column name="Permission" valueNumeric="21903"/>
+		</insert>
+  	</changeSet>
+
+</databaseChangeLog>
