@@ -726,6 +726,7 @@
 				<field name="ParentID" required="N" />
 				<field name="FirstName" required="N" />
 				<field name="LastName" required="N" />
+				<field name="Nickname" required="N" />
 				<field name="Email" required="N" />
 				<field name="NotificationMethod" required="N" />
 				<field name="Language" required="N" />
@@ -780,6 +781,7 @@
 				<!--	<field name="ParentID" required="N" /> -->
 				<field name="FirstName" required="N" />
 				<field name="LastName" required="N" />
+				<field name="Nickname" required="N" />
 				<field name="Email" required="N" />
 				<field name="NotificationMethod" required="N" />
 				<field name="Language" required="N" />

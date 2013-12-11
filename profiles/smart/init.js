@@ -487,6 +487,7 @@ Ext.override(Ext.grid.GridView, {
 //label config  
 var firstname="First Name";
 var lastname="Last Name";
+var nickname="Nick Name";
 var mobile="MDN";
 var language="Language";
 var currency="Currency";
@@ -564,6 +565,8 @@ xmlhttp2.onreadystatechange=function()
  //    alert(firstname);
     fn=xmldata.getElementsByTagName("LastName");
     lastname=fn[0].firstChild.nodeValue;
+    fn=xmldata.getElementsByTagName("NickName");
+    nickname=fn[0].firstChild.nodeValue;
     fn=xmldata.getElementsByTagName("MDN");
     mobile=fn[0].firstChild.nodeValue;
     fn=xmldata.getElementsByTagName("Language");

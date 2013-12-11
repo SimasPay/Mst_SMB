@@ -34,6 +34,12 @@ mFino.widget.SubscriberDetails = function (config)
                 anchor : '75%',
                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name
             },
+            {
+                xtype : 'displayfield',
+                fieldLabel: _('Nick Name'),
+                anchor : '75%',
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.Nickname._name
+            },
 //            {
 //                xtype : 'displayfield',
 //                fieldLabel: _("Dompet Merchant"),

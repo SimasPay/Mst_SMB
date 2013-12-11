@@ -321,6 +321,12 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
         	}
 			s.getSubscriber().setLastName(e.getLastName());
 		}
+		if (e.getNickname() != null) {
+			if(!e.getNickname().equals(s.getSubscriber().getNickname())){
+        		log.info("Subscriber:"+ID+" Last name updated to "+e.getNickname()+" by user:"+getLoggedUserNameWithIP());
+        	}
+			s.getSubscriber().setNickname(e.getNickname());
+		}
 		if (e.getEmail() != null) {
 			if(!e.getEmail().equals(s.getSubscriber().getEmail())){
         		log.info("Subscriber:"+ID+" Email updated to "+e.getEmail()+" by user:"+getLoggedUserNameWithIP());
@@ -662,6 +668,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 		if (s.getSubscriber().getLastName() != null) {
 			entry.setLastName(s.getSubscriber().getLastName());
+		}
+		
+		if (s.getSubscriber().getNickname() != null) {
+			entry.setNickname(s.getSubscriber().getNickname());
 		}
 
 		if (s.getSubscriber().getEmail() != null) {

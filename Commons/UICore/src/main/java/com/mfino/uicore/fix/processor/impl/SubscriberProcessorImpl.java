@@ -52,6 +52,12 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         	}
             s.setLastName(e.getLastName());
         }
+        if (e.getNickname() != null) {
+        	if(!e.getNickname().equals(s.getNickname())){
+        		log.info("Subscriber:"+ID+" Last name updated to "+e.getNickname()+" by user:"+getLoggedUserNameWithIP());
+        	}
+            s.setNickname(e.getNickname());
+        }
         if (e.getEmail() != null) {
         	if(!e.getEmail().equals(s.getEmail())){
         		log.info("Subscriber:"+ID+" Email updated to "+e.getEmail()+" by user:"+getLoggedUserNameWithIP());
@@ -130,6 +136,9 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         }
         if (s.getLastName() != null) {
             entry.setLastName(s.getLastName());
+        }
+        if (s.getNickname() != null) {
+            entry.setNickname(s.getNickname());
         }
 
         if (s.getEmail() != null) {

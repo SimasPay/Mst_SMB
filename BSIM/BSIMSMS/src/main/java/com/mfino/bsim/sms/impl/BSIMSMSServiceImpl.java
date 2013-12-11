@@ -64,7 +64,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 	private String message;
 
 	@SuppressWarnings("unchecked")
-	@Transactional(readOnly=false,propagation=Propagation.REQUIRED,isolation=Isolation.SERIALIZABLE) 
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRED) 
 	public void process(Exchange httpExchange) {
 		
 		log.debug("BSIMSMSServiceImpl :: process() BEGIN");
