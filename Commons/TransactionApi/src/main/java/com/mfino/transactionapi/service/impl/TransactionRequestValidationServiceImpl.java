@@ -868,7 +868,8 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	}
 	
 	public void validateNFCCardBalanceDetails(TransactionDetails transactionDetails) throws InvalidDataException {
-		//validateCardPanAndAlias(transactionDetails);
+		validateCardPAN(transactionDetails);
+		validateCardAlias(transactionDetails);
 		validateSourcePin(transactionDetails);
 		validatechannelCode(transactionDetails);
 	}
