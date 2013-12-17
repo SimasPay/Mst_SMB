@@ -145,7 +145,7 @@ public class NFCAPIServiceImpl extends BaseAPIService implements NFCAPIService{
 			xmlResult = (XMLResult) checkBalanceHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_MODIFY_NFC_CARD_ALIAS.equalsIgnoreCase(transactionName)) {
-			transactionRequestValidationService.validateNFCCardBalanceDetails(transactionDetails);
+			transactionRequestValidationService.validateModifyNFCCardAliasDetails(transactionDetails);
 			transactionDetails.setSourcePocketCode(CmFinoFIX.PocketType_NFC.toString());			
 			xmlResult = (XMLResult) modifyNFCCardAliasHandlerImpl.handle(transactionDetails);
 		}

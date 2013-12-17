@@ -8,6 +8,7 @@ import org.jpos.iso.ISOMsg;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
+import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromNFC;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.iso8583.definitions.exceptions.InvalidIsoElementException;
 import com.mfino.nfc.iso8583.GetConstantCodes;
@@ -20,7 +21,7 @@ public class BalanceInquiryFromBankProcessor implements NFCISOtoFixProcessor {
 	@Override
 	public CFIXMsg process(ISOMsg isoMsg, CFIXMsg request) throws InvalidIsoElementException{
 
-		CMBalanceInquiryFromBank fromBank = new CMBalanceInquiryFromBank();
+		CMBalanceInquiryFromNFC fromBank = new CMBalanceInquiryFromNFC();
 		CMBalanceInquiryToBank toBank = (CMBalanceInquiryToBank) request;
 
 		fromBank.copy(toBank);
@@ -38,13 +39,13 @@ public class BalanceInquiryFromBankProcessor implements NFCISOtoFixProcessor {
 			//int balances_length = balances.length()/entrySize;
 			String nofLinkedCards = balances.substring(0,2);
 			Integer balances_length = Integer.parseInt(nofLinkedCards);
-			CMBalanceInquiryFromBank.CGEntries[] entries = fromBank.allocateEntries(balances_length);
+			CMBalanceInquiryFromNFC.CGEntries[] entries = fromBank.allocateEntries(balances_length);
 			int index=0;
 			balances = balances.substring(2);
 			while(balances.length()>0&&index < fromBank.getEntries().length) {
 				String cmsBalance  = balances.substring(0	, entrySize);
 				balances = balances.substring(entrySize);
-				entries[index] = new CMBalanceInquiryFromBank.CGEntries();
+				entries[index] = new CMBalanceInquiryFromNFC.CGEntries();
 				entries[index].setBankAccountType(CmFinoFIX.BankAccountType_NFCCard);
 				entries[index].setSourceCardPAN(cmsBalance.substring(0,16));
 				entries[index].setCurrency(cmsBalance.substring(16,19));

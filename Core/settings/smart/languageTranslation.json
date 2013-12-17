@@ -19,7 +19,9 @@
    "Auto Reverse" : "Pengembalian ",
    "Transfer From" : "Transfer dari ",
    "Transfer To" : "Transfer ke ",
-   "Not Available" : "Tidak Tersedia"   
+   "Not Available" : "Tidak Tersedia",
+   "Cash Out" : "Penarikan dari ",
+   "Cash In" : "Setoran di "
     },
  "0" : {
    "language" : "English",
@@ -41,6 +43,8 @@
    "Auto Reverse" : "Auto Reverse ",
    "Transfer From" : "Transfer from ",
    "Transfer To" : "Transfer to ",
-   "Not Available" : "Not Available"
+   "Not Available" : "Not Available",
+   "Cash Out" : "Cash Out ",
+   "Cash In" : "Cash In "
     }
 }

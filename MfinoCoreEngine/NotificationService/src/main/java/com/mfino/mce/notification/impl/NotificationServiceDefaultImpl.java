@@ -30,6 +30,7 @@ import com.mfino.domain.TransactionRule;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
+import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromNFC;
 import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
@@ -442,7 +443,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			webResponse = mceMessage.getRequest();
 			log.info("Got the Response for Transaction History from Bank --> " + webResponse.DumpFields());
 		}
-		else if (mceMessage.getRequest() instanceof CMBalanceInquiryFromBank) {
+		else if (mceMessage.getRequest() instanceof CMBalanceInquiryFromNFC) {
 			webResponse = mceMessage.getRequest();
 			log.info("Got the Response for Balance Inquiry from Bank --> " + webResponse.DumpFields());
 		}

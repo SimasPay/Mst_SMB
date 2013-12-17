@@ -365,7 +365,11 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}else if(sourceMsg.equalsIgnoreCase("Auto Reverse")){
 			//txnType = "Pengembalian ";
 			txnType = LanguageTranslator.translate(language, "Auto Reverse");
-		}else{
+		}else if(sourceMsg.equalsIgnoreCase("Cash Out")){
+			txnType = LanguageTranslator.translate(language, "Cash Out")+ct.getDestSubscriberName();
+		}else if(sourceMsg.equalsIgnoreCase("Cash In")){
+			txnType = LanguageTranslator.translate(language, "Cash In")+ct.getSourceSubscriberName();
+		}else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);
 		}
 		return txnType;

@@ -4891,6 +4891,8 @@
 		<field name="DateOfBirth" required="N" />
 		<field name="Email" required="N" />
 	</message>
+	<message name="BalanceInquiryFromNFC" msgtype="1741" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BalanceInquiryFromBank">
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -7386,6 +7388,7 @@
 			<value enum="1601" description="ValidateOTP"/>
 			<value enum="1731" description="JSMoneyTransfer"/>
 			<value enum="1732" description="ModifyNFCCardAlias"/>
+			<value enum="1741" description="BalanceInquiryFromNFC"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
