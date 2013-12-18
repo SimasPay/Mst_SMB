@@ -51,6 +51,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.result.XMLResult;
+import com.mfino.service.TransactionIdentifierService;
 import com.mfino.service.impl.TransactionIdentifierServiceImpl;
 import com.mfino.transactionapi.handlers.interswitch.CashinReversalHandler;
 import com.mfino.transactionapi.handlers.interswitch.impl.InterswitchCashinStatusHandlerImpl;
@@ -85,10 +86,41 @@ public class CashinMessageListener implements Processor {
 	public static final String	TEXT_REFERENCE_NUMBER	= "ReferenceNumber";
  	public static final String	TEXT_PAYMENT_CURRENCY	= "PaymentCurrency";
  
- 	@Autowired
-	@Qualifier("CashinReversalHandlerImpl")
+ 	/*@Autowired
+	@Qualifier("CashinReversalHandlerImpl")*/
 	private CashinReversalHandler cashinReversalHandler;
+	
+	private CashinHandler cashinHandler;
+	
+ 	public CashinHandler getCashinHandler() {
+		return cashinHandler;
+	}
+
+	public void setCashinHandler(CashinHandler cashinHandler) {
+		this.cashinHandler = cashinHandler;
+	}
+
+	/*@Autowired
+	@Qualifier("TransactionIdentifierServiceImpl")*/
+	private TransactionIdentifierService transactionIdentifierService;
  	
+	public TransactionIdentifierService getTransactionIdentifierService() {
+		return transactionIdentifierService;
+	}
+
+	public void setTransactionIdentifierService(
+			TransactionIdentifierService transactionIdentifierService) {
+		this.transactionIdentifierService = transactionIdentifierService;
+	}
+
+	public void setCashinReversalHandler(CashinReversalHandler cashinReversalHandler){
+		this.cashinReversalHandler = cashinReversalHandler;
+	}
+	
+	public CashinReversalHandler getCashinReversalHandler(){
+		return cashinReversalHandler;
+	}
+	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void process(Exchange exchange) throws Exception {
@@ -103,7 +135,7 @@ public class CashinMessageListener implements Processor {
 		//getting the sourceMDN from the request to create the transactionIdentifier at start
 		String mdnTag = getMdnTag(request);
 		String uniqueIdMDN = getCustomerMDN(request,mdnTag);
-		TransactionIdentifierServiceImpl transactionIdentifierService = new TransactionIdentifierServiceImpl();
+		//TransactionIdentifierServiceImpl transactionIdentifierService = new TransactionIdentifierServiceImpl();
 		String trxnIdentifier = transactionIdentifierService.generateTransactionIdentifier(uniqueIdMDN);
 		MCEUtil.setBreadCrumbId(headers, trxnIdentifier);
 		log.info("Transaction Identifier created in Smart CashinMessageListener with ID -->"+trxnIdentifier);
@@ -323,11 +355,11 @@ public class CashinMessageListener implements Processor {
 
 					ChannelCode cc = DAOFactory.getInstance().getChannelCodeDao().getByChannelCode(cashIn.getChannelCode());
 
-					FIXMessageHandler handler = null;
+					//FIXMessageHandler handler = null;
 					if (cashIn.getAmount().compareTo(new BigDecimal(0)) > 0) {
-						log.info("As the amount is >0 , trating this as a cashin request");
-						handler = new CashinHandler(cashIn, cc,(String)exchange.getIn().getHeader(MCEUtil.BREADCRUMB_ID));
-						XMLResult result = (XMLResult) handler.handle();
+						log.info("As the amount is >0 , trating this as a cashin request");						
+						//handler = new CashinHandler(cashIn, cc,(String)exchange.getIn().getHeader(MCEUtil.BREADCRUMB_ID));
+						XMLResult result = (XMLResult) cashinHandler.handle(cashIn, cc,(String)exchange.getIn().getHeader(MCEUtil.BREADCRUMB_ID));
 						log.info("got the response from BSMCashinHandler.notificationcode=" + result.getCode());
 						String finalXML = constructReponseXML(cashIn, result);
 						log.info("API XML output ----> " + finalXML);
