@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.billpayments.beans.BillPayResponse;
-import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.domain.IntegrationSummary;
@@ -17,9 +16,10 @@ import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
 import com.mfino.fix.CmFinoFIX.CMCommodityTransferFromOperator;
 import com.mfino.fix.CmFinoFIX.CMCommodityTransferToOperator;
+import com.mfino.mce.core.CoreDataWrapper;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.service.impl.SubscriberServiceImpl;
+import com.mfino.service.SubscriberService;
 
 /**
  * 
@@ -29,8 +29,12 @@ import com.mfino.service.impl.SubscriberServiceImpl;
 public class BillPaymentProcessor implements ZteProcessor {
 
 	private Logger	log	= LoggerFactory.getLogger(this.getClass());
+	
+	private SubscriberService subscriberService;
+	
+	private CoreDataWrapper coreDataWrapper;
 
- 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage) {
 		log.info("BillPaymentProcessor :: constructRequestMessage() BEGIN mceMessage=" + mceMessage);
 		MCEMessage replyMessage = new MCEMessage();
@@ -40,9 +44,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 		BackendResponse backendResponse = (BackendResponse) mceMessage.getResponse();
 		CMCommodityTransferToOperator toOperator = new CMCommodityTransferToOperator();
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
-		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
-
-		toOperator.setDestMDN(subscriberServiceImpl.normalizeMDN(requestFix.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(requestFix.getInvoiceNumber()));
 		toOperator.setPaymentInquiryDetails(backendResponse.getPaymentInquiryDetails());
 		// FIXME set this for postpaid and topup properly
 		Integer billerPartnerType = requestFix.getBillerPartnerType();
@@ -137,8 +139,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 		//	hibernateSessionHolder.setSession(session);
 		//	DAOFactory.getInstance().setHibernateSessionHolder(hibernateSessionHolder);
 
-			IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
-
+			IntegrationSummaryDao isdao = getCoreDataWrapper().getIntegrationSummaryDao();
 			IntegrationSummary isummary = new IntegrationSummary();
 			isummary.setSctlId(sctlID);
 			isummary.setReconcilationID1(transactionID);
@@ -160,27 +161,44 @@ public class BillPaymentProcessor implements ZteProcessor {
 		DAOFactory.getInstance().setHibernateSessionHolder(hibernateSessionHolder);*/
 	/*	try
 		{*/
-			IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
-			IntegrationSummaryQuery query = new IntegrationSummaryQuery();
-			query.setSctlID(sctlId);
-			List<IntegrationSummary> iSummaryList = integrationSummaryDao.get(query);
-			
-			IntegrationSummary iSummary = null;
-			if((null != iSummaryList)&&(iSummaryList.size() > 0)){
-				iSummary = iSummaryList.get(0);
-				iSummary.setReconcilationID2(de39);
-			}
-			else{
-				iSummary = new IntegrationSummary();
-				iSummary.setSctlId(sctlId);
-				iSummary.setReconcilationID2(de39);
-			}
-			
-			integrationSummaryDao.save(iSummary);
+		IntegrationSummaryDao integrationSummaryDao = getCoreDataWrapper().getIntegrationSummaryDao();
+		IntegrationSummaryQuery query = new IntegrationSummaryQuery();
+		query.setSctlID(sctlId);
+		List<IntegrationSummary> iSummaryList = integrationSummaryDao.get(query);
+
+		IntegrationSummary iSummary = null;
+		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
+			iSummary = iSummaryList.get(0);
+			iSummary.setReconcilationID2(de39);
 		}
+		else{
+			iSummary = new IntegrationSummary();
+			iSummary.setSctlId(sctlId);
+			iSummary.setReconcilationID2(de39);
+		}
+
+		integrationSummaryDao.save(iSummary);
+	}
 		/*finally{
 			if (session != null && session.isOpen())
 				session.close();
 		}*/
 	//}
+	
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
+
+	public CoreDataWrapper getCoreDataWrapper() {
+		return coreDataWrapper;
+	}
+
+	public void setCoreDataWrapper(CoreDataWrapper coreDataWrapper) {
+		this.coreDataWrapper = coreDataWrapper;
+	}	
+	
 }

@@ -75,6 +75,8 @@
 		<property name="configuration" ref="jmsConfig"/>
 	</bean>
 
+	<osgi:reference id="coreDataWrapper" interface="com.mfino.mce.core.CoreDataWrapper"/>
+	
 	<osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService"/>
 	
 	 <osgi:reference id="billPayNotificationService" interface="com.mfino.billpayments.service.BillPayNotificationService"/>
@@ -93,19 +95,27 @@
 	
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
 	
+	<osgi:reference id="subscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	
+	
 	<bean id="billpaymentsPendingClearanceService" class="com.mfino.billpayments.service.impl.BillpaymentsPendingClearanceServiceImpl">
 		<property name="billPaymentsService" ref="billPaymentsService" />
 		 		
 	</bean>	
 	
 	<bean id="zteBillInquiry" class="com.mfino.billpayments.zte.BillInquiryProcessor">
+		<property name="subscriberService" ref="subscriberServiceImpl"/>
  	</bean>	
 
 	<bean id="zteBillPayInquiry" class="com.mfino.billpayments.zte.BillPayInquiryProcessor">
  	 	<property name="billPaymentsService" ref="billPaymentsService"/>
+ 	 	<property name="subscriberService" ref="subscriberServiceImpl"/>
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>
 	</bean>	
 	
 	<bean id="zteBillPay" class="com.mfino.billpayments.zte.BillPaymentProcessor">
+		<property name="subscriberService" ref="subscriberServiceImpl"/>
+		<property name="coreDataWrapper" ref="coreDataWrapper"/>		
  	</bean>	
 	
 	

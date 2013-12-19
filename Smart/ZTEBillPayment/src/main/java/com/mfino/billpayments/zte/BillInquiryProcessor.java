@@ -14,7 +14,7 @@ import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsToOperator;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.NotificationCodes;
-import com.mfino.service.impl.SubscriberServiceImpl;
+import com.mfino.service.SubscriberService;
 
 /**
  * 
@@ -24,6 +24,9 @@ import com.mfino.service.impl.SubscriberServiceImpl;
 public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements ZteProcessor {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private SubscriberService subscriberService;
+
 	@Override
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage){
 		log.info("BillInquiryProcessor :: constructRequestMessage() BEGIN mceMessage="+mceMessage);
@@ -34,9 +37,8 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		
 		CMGetMDNBillDebtsToOperator toOperator = new CMGetMDNBillDebtsToOperator();
 		toOperator.setSourceMDN(requestFix.getSourceMDN());
-		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
 
-		toOperator.setDestMDN(subscriberServiceImpl.normalizeMDN(requestFix.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(requestFix.getInvoiceNumber()));
 		toOperator.setTransactionID(requestFix.getTransactionID());//FIXME is it transferid or transactionid
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
 		toOperator.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
@@ -86,7 +88,14 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		}
 		return NotificationCodes.GetBillDetailsFailed.getInternalErrorCode();
 	}
-	
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
 	
 	
 }

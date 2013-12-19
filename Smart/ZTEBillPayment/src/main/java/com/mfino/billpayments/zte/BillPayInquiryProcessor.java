@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
 import com.mfino.billpayments.service.BillPaymentsService;
-import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.domain.BillPayments;
@@ -19,9 +18,10 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsFromOperator;
 import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsToOperator;
+import com.mfino.mce.core.CoreDataWrapper;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.service.impl.SubscriberServiceImpl;
+import com.mfino.service.SubscriberService;
 
 /**
  * 
@@ -34,6 +34,12 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 	
 	private BillPaymentsService billPaymentsService;
 	
+	private SubscriberService subscriberService;
+	
+	private CoreDataWrapper coreDataWrapper;
+
+
+	
 	@Override
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage){
 		log.info("BillPayInquiryProcessor :: constructRequestMessage() BEGIN mceMessage="+mceMessage);
@@ -45,8 +51,7 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(requestFix.getServiceChargeTransactionLogID());
-		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
-		toOperator.setDestMDN(subscriberServiceImpl.normalizeMDN(billPayments.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(billPayments.getInvoiceNumber()));
 		
 		toOperator.setTransactionID(backendResponse.getTransferID());//FIXME is it transferid or transactionid
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
@@ -128,7 +133,8 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 		 * ZTE specific req (smart ticket #1024) to display the DE39 value in both Admin Application and offline reports.
 		 * Save this value to ReconcillationId2 in integration_summary table, and the same is synched across. 
 		 */
-		IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
+		IntegrationSummaryDao integrationSummaryDao = getCoreDataWrapper().getIntegrationSummaryDao();
+		
 		IntegrationSummaryQuery query = new IntegrationSummaryQuery();
 		query.setSctlID(sctlId);
 		List<IntegrationSummary> iSummaryList = integrationSummaryDao.get(query);
@@ -153,5 +159,21 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 
 	public void setBillPaymentsService(BillPaymentsService billPaymentsService) {
 		this.billPaymentsService = billPaymentsService;
+	}
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
+	
+	public CoreDataWrapper getCoreDataWrapper() {
+		return coreDataWrapper;
+	}
+
+	public void setCoreDataWrapper(CoreDataWrapper coreDataWrapper) {
+		this.coreDataWrapper = coreDataWrapper;
 	}
 }
