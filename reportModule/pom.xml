@@ -18,8 +18,8 @@
 	<url>http://www.mfino.com</url>
 
 	<modules>
-	<!--	<module>DbCopyTool</module>
-		<module>saiku</module> -->
+	<module>DbCopyTool</module>
+		<!--<module>saiku</module> -->
 		<module>RTScheduler</module>		
 	</modules>
 </project>
