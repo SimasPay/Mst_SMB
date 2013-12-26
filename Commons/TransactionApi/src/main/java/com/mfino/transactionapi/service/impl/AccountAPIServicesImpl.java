@@ -385,8 +385,11 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN_INQUIRY.equals(transactionName)) {			
 
 			xmlResult = (XMLResult) forgotPinInquiryHandler.handle(transactionDetails);
-		}
-		else if(ServiceAndTransactionConstants.TRANSACTION_RESEND_OTP.equals(transactionName)){
+		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN.equals(transactionName)) {
+			validationService.validateResetPinByOTPDetails(transactionDetails);
+			xmlResult = (XMLResult) resetPinByOTPHandler.handle(transactionDetails);
+			
+		}else if(ServiceAndTransactionConstants.TRANSACTION_RESEND_OTP.equals(transactionName)){
 			
 			xmlResult = (XMLResult) resendOtp.handle(transactionDetails);
 

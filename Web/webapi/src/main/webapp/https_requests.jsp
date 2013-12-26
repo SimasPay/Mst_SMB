@@ -488,6 +488,16 @@
 			<a href="jsp/s_settings_changenickname.jsp">Change Nickname</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_settings_forgotpin_inquiry.jsp">Forgot Pin Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_settings_forgotpin_confirm.jsp">Forgot Pin confirm</a>
+		</td>
+	</tr>	
 	</table></td></tr>
 	<tr><td><table>
 	<tr>

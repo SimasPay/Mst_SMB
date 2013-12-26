@@ -170,11 +170,12 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
     	notificationWrapper.setOneTimePin(otp);
     	notificationWrapper.setLanguage(subscriber.getLanguage());
     	
-        String smsMessage = smsParser.buildMessage();
+        String smsMessage = smsParser.buildMessage(notificationWrapper, true);
         log.info("smsMessage -> " + smsMessage);
 
         smsService.setDestinationMDN(mdn); 
         smsService.setMessage(smsMessage);
+        smsService.setNotificationCode(notificationWrapper.getCode());
         smsService.asyncSendSMS();
         log.info("Successfully generated OTP for "+ forgotPinInquiry.getSourceMDN() + " and sent sms to MDN:" + mdn);
 		if (sctl != null) {

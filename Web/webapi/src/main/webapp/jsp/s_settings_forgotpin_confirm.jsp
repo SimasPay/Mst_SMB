@@ -11,7 +11,7 @@
 <h1>Forgot Pin Confirm</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Account" name="service" /> 
-<input type="hidden" value="ResetPinByOTP"	name="txnName" /> 
+<input type="hidden" value="ForgotPin"	name="txnName" /> 
 <table>
 	<tr>
 		<td>Institution ID*</td>
