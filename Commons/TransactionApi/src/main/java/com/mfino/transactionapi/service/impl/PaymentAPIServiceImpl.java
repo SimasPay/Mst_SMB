@@ -88,6 +88,7 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 				if (StringUtils.isBlank(sourceMessage)) {
 					sourceMessage = ServiceAndTransactionConstants.MESSAGE_BILL_PAY;
 				}
+				transactionDetails.setSourceMessage(sourceMessage);
 				transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY);
 				if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && (CmFinoFIX.PaymentMode_ZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) 
 						|| CmFinoFIX.PaymentMode_PackageType.equalsIgnoreCase(transactionDetails.getPaymentMode()))){
