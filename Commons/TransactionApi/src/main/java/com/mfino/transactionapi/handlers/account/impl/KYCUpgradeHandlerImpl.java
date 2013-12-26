@@ -34,6 +34,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.EnumTextService;
 import com.mfino.service.KYCLevelService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberGroupService;
@@ -74,11 +75,14 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 	@Qualifier("SubscriberGroupServiceImpl")
 	private SubscriberGroupService subscriberGroupService ;
 	 
-	
-	
 	@Autowired
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
+	
+	@Autowired
+	@Qualifier("EnumTextServiceImpl")
+	private EnumTextService enumTextService;
+
 
 	public Result handle(TransactionDetails transactionDetails) {
 		String sourceMdn = transactionDetails.getSourceMDN();
@@ -132,6 +136,8 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		KYCLevel subCurKycLevel = srcSub.getKYCLevelByKYCLevel();
 		if(!subCurKycLevel.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
 			log.info("KYCUpgrade: Failed as the current KycLevel is not NoKyc, Corresponding to MDN:"+sourceMdn);
+			String status = enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberStatus, CmFinoFIX.Language_English, srcSub.getStatus());
+			result.setStatus(status);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberStatusNotValidForKYCUpgrade);
 			return result;
 		}
