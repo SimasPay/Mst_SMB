@@ -3,8 +3,6 @@
  */
 package com.mfino.transactionapi.result.xmlresulttypes.subscriber;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.mfino.result.XMLResult;
 
 /**
@@ -22,11 +20,6 @@ public class KYCUpgradeInquiryXMLResult extends XMLResult {
 
 		super.render();
 		
-		if (getResponseStatus() != null) {
-			getXmlWriter().writeStartElement("responseCode");
-			getXmlWriter().writeCharacters(getResponseStatus(),true);
-			getXmlWriter().writeEndElement();
-		}
 		writeEndOfDocument();
 	}
 
