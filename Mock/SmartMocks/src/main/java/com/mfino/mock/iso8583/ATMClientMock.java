@@ -1,5 +1,7 @@
 package com.mfino.mock.iso8583;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.Socket;
@@ -202,31 +204,39 @@ public class ATMClientMock implements Runnable {
 		}
 		//eMoney - CreditTransferRequest
 		private void sendEMoneyTransferCreditRequest() throws IOException {
-			BigDecimal amount = new BigDecimal(2000000);
+			//Reading from file the input values
+			BufferedReader reader = new BufferedReader(new FileReader("va-input.txt"));
+			String mdn = reader.readLine();
+			String amount = reader.readLine();
+			String stan = reader.readLine();
+			String integrationCode = reader.readLine();
+			
+			//BigDecimal amount = new BigDecimal(300000);
 			IsoMessage trasferCreditReq = mfact.newMessage(0x200);
-			trasferCreditReq.setValue(2, "628910068", IsoType.LLVAR, 19);
+			trasferCreditReq.setValue(2, mdn, IsoType.LLVAR, 19);
 			trasferCreditReq.setValue(3, "471000", IsoType.NUMERIC, 6);
 			trasferCreditReq.setValue(4, amount, IsoType.NUMERIC, 18);
 			trasferCreditReq.setValue(7, "0405140820", IsoType.DATE10, 10);
-			trasferCreditReq.setValue(11, "000037", IsoType.NUMERIC, 6);
+			trasferCreditReq.setValue(11, stan, IsoType.NUMERIC, 6);
 			trasferCreditReq.setValue(12, "132720", IsoType.TIME, 6);
-			trasferCreditReq.setValue(13, "0401", IsoType.DATE4, 4);
-			trasferCreditReq.setValue(15, "0401", IsoType.DATE4, 4);
+			trasferCreditReq.setValue(13, "0331", IsoType.DATE4, 4);
+			trasferCreditReq.setValue(15, "0331", IsoType.DATE4, 4);
 			trasferCreditReq.setValue(18, "6011", IsoType.NUMERIC, 4);
-			trasferCreditReq.setValue(32, "100", IsoType.LLVAR, 11);
-			trasferCreditReq.setValue(33, "100", IsoType.LLVAR, 11);			
-			trasferCreditReq.setValue(37, "000000000037", IsoType.ALPHA, 12);
+			trasferCreditReq.setValue(32, "881", IsoType.LLVAR, 11);
+			trasferCreditReq.setValue(33, "153", IsoType.LLVAR, 11);			
+			trasferCreditReq.setValue(37, stan, IsoType.ALPHA, 12);
 			trasferCreditReq.setValue(41, "00011098", IsoType.ALPHA, 8);
 			trasferCreditReq.setValue(48, "SMART EMONEY QQ TARAKA PODURU 88818910006                               SMART E-MONEY                 10", IsoType.LLLVAR, 108);//addtional data
 			trasferCreditReq.setValue(49, "360", IsoType.NUMERIC, 3);
-			trasferCreditReq.setValue(100, "100", IsoType.LLVAR, 11);
+			trasferCreditReq.setValue(100, integrationCode, IsoType.LLVAR, 11);
 			trasferCreditReq.setValue(102, "0011234567", IsoType.LLVAR, 28);//from A/c
-			trasferCreditReq.setValue(103, "8884628910068", IsoType.LLVAR, 28);//to A/c
+			trasferCreditReq.setValue(103, "8881"+mdn, IsoType.LLVAR, 28);//to A/c
 			System.out.println("eMoney Transfer REQUEST:");
 			System.out.println("------------------------------");
 			System.out.println(new String(trasferCreditReq.writeData()));
 			System.out.println("------------------------------");
 			System.out.println();
+			reader.close();
 
 			trasferCreditReq.write(sock.getOutputStream(), 4, false);
 		}
@@ -577,7 +587,7 @@ public class ATMClientMock implements Runnable {
 				ATMClientMock client = null;
 				try {
 					log.debug("Connecting to server");
-					sock = new Socket("localhost", 9991);
+					sock = new Socket("localhost", 8881);
 					client = new ATMClientMock(sock);
 				} catch (IOException e) {
 					log.error("Failed to set up client socket", e);
