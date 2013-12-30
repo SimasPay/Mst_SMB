@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
@@ -88,7 +89,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 		
 		log.info("Handling Subscriber ResetPin By OTP webapi request");
 		XMLResult result = new ResetPinByOTPXMLResult();
-
+		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResetPinByOTP, resetPin.DumpFields());
 		resetPin.setTransactionID(transactionLog.getID());
 
@@ -214,6 +215,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 			transactionChargingService.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ChangePINCompleted);
+		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		return result;
 
 	}

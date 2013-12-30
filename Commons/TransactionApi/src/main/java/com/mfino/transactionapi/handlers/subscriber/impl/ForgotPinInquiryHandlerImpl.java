@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
@@ -88,6 +89,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		forgotPinInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());				
 		log.info("Handling Forgot pin inquiry webapi request");
 		XMLResult result = new ChangeEmailXMLResult();
+		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 
 		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ForgotPinInquiry, forgotPinInquiry.DumpFields());
 		forgotPinInquiry.setTransactionID(transactionLog.getID());
@@ -183,7 +185,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 			tcs.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryCompleted);
-
+		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		return result;
 	}
 }
