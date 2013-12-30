@@ -275,7 +275,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				result.setFilePath(filePath);
 				createPDF(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath, sctl.getID());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
-				String downloadURL = "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
+				String downloadURL = "Emoney_Txn_History" + File.separatorChar + fileName;
 				result.setDownloadURL(downloadURL);
 			}
 			else

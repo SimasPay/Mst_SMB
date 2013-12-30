@@ -257,7 +257,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 						result.setFilePath(filePath);
 						createPDF(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath, sctl.getID());
 						result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
-						String downloadURL = "webapi" +  File.separatorChar + "NFC_Txn_History" + File.separatorChar + fileName;
+						String downloadURL = "NFC_Txn_History" + File.separatorChar + fileName;
 						result.setDownloadURL(downloadURL);
 					}
 					else
