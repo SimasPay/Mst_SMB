@@ -34,7 +34,8 @@ public class PostpaidBillPaymentFromZTEProcessor implements ZTEISOtoFixProcessor
 		
 		if((null != responseData) && (responseData.length() >= 37))
 			billAmount = responseData.substring(25, 37);
-		fromOperator.setPaymentVoucherPeriodYYYYMMDD(Long.parseLong(billReferenceID));
+		//fromOperator.setPaymentVoucherPeriodYYYYMMDD(Long.parseLong(billReferenceID));
+		fromOperator.setBillPaymentReferenceID(billReferenceID.trim());
 		
 		fromOperator.header().setSendingTime(DateTimeUtil.getLocalTime());
 		fromOperator.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
