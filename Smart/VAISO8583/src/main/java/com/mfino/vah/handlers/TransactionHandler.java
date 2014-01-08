@@ -30,14 +30,14 @@ public class TransactionHandler implements Runnable {
 	private ISOSource	             source;
 	private QueueChannel	         channel;
 	private IsoToFixConverterFactory	isoToFixConverterFactory;
-
+	
 	public TransactionHandler(ISOMsg msg, ISOSource source) throws JMSException {
 		this.msg = msg;
 		this.source = source;
 		this.channel = new QueueChannel("CIQueue", "smartCashinOutQueue");
 		this.isoToFixConverterFactory = IsoToFixConverterFactory.getInstance();
 	}
-
+	
 	@Override
 	public void run() {
 		String element39 = ResponseCode.VAH_ERROR;
@@ -84,9 +84,9 @@ public class TransactionHandler implements Runnable {
 			catch (InquiryRequestException ex) {
 				log.info("setting inquiry successful response");
 
-				InquiryHandler handler = new InquiryHandler(msg);
+				//InquiryHandler handler = new InquiryHandler(msg);
 				try {
-					String de48 = handler.getInquiryResponseElement48();
+					String de48 = InquiryHandler.getInstance().getInquiryResponseElement48(msg);
 					msg.set(48, de48);
 					element39 = ResponseCode.APPROVED;	
 					response = "success";
@@ -131,6 +131,43 @@ public class TransactionHandler implements Runnable {
 		}
 
 	}
+	
+	/*public String getInquiryResponseElement48() throws InvalidRequestException {
+
+		String result = null;
+
+		try {
+
+			String oMdn = msg.getValue(103).toString();
+			if (!oMdn.startsWith("8881")){
+				log.warn("received a request other than 8881");
+				throw new InvalidRequestException();
+			}
+			
+			
+			String mdn = subscriberService.normalizeMDN(oMdn.substring(4));
+			log.info("normalized mdn="+mdn);
+			SubscriberMDNDAO dao = DAOFactory.getInstance().getSubscriberMdnDAO();
+			SubscriberMDN subMdn = dao.getByMDN(mdn);
+			Subscriber subscriber = subMdn.getSubscriber();
+
+			String firstName = subscriber.getFirstName();
+			String lastName = subscriber.getLastName();
+
+			result = String.format("%-30s%-16s%-30s%-30s%s", "SMEM QQ " + firstName + " " + lastName, oMdn, "", "SMART E-MONEY", "10");
+			
+			log.info("Inquiry response DE-48="+result);
+			
+		}
+		catch (ISOException ex) {
+
+		}finally{
+			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
+			SessionFactoryUtils.closeSession(sessionHolder.getSession());
+		}
+
+		return result;
+	}*/
 
 	private String getResponseCode(String response) {
 		if(null == response) return null;
@@ -153,9 +190,9 @@ public class TransactionHandler implements Runnable {
 
 		ISOMsg msg = new ISOMsg();
 		msg.set(103, "80019876543210");
-		InquiryHandler p = new InquiryHandler(msg);
+		//InquiryHandler p = new InquiryHandler(msg);
 
-		System.out.println(p.getInquiryResponseElement48());
+		//System.out.println(p.getInquiryResponseElement48());
 
 	}
 

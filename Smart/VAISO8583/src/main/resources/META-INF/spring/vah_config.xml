@@ -23,9 +23,12 @@
 
 	<context:annotation-config />
 
-	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
-	<osgi:reference id="hibernateSessionHolder"
-		interface="com.mfino.hibernate.session.HibernateSessionHolder" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	
+	<bean id="inquiryHandler" class="com.mfino.vah.handlers.inqury.InquiryHandler" factory-method="createInstance">
+		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="htm" ref="txManager" />
+	</bean>
 
-	<tx:annotation-driven transaction-manager="txManager" />
 </beans>

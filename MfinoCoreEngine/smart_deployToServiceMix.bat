@@ -8,7 +8,7 @@ goto End
 
 :Process
 @echo on
-set SERVICEMIX_HOME=D:\apache-servicemix-4.4.1-fuse-01-13
+set SERVICEMIX_HOME=D:\hub_code\branches\MFS_main\build
 
 echo "deleting config files"
 del %SERVICEMIX_HOME%\deploy\mce_iso_jpos_configuration.xml
@@ -66,22 +66,26 @@ echo "copying jar files"
 mkdir %SERVICEMIX_HOME%\deploy\
 mkdir %SERVICEMIX_HOME%\mfino_conf\
 
-copy ..\Core\target\com.mfino.application-Core.jar %SERVICEMIX_HOME%\deploy
-copy ..\Commons\TransactionApi\target\TransactionApi-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy ..\Commons\HierarchyService\target\HierarchyService-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy MCECore\target\MCECore-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy FIXServer\target\FIXServer-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
 copy Backend\target\Backend-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy NotificationService\target\NotificationService-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy JPOSComponent\target\JPOSComponent-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-
-copy ..\Smart\ZTEISO8583\target\ZTEISO8583-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy ..\Smart\BSMISO8583\target\BSMISO8583-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy ..\Smart\ZTEBillPayment\target\ZTEBillPayment-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-
-copy Frontend\target\Frontend-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy ISODefinitions\target\ISODefinitions-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
 copy ..\GTBank\BillPayments\target\BillPayments-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Core\target\com.mfino.application-Core.jar %SERVICEMIX_HOME%\deploy
+copy FIXServer\target\FIXServer-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy Frontend\target\Frontend-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Commons\HierarchyService\target\HierarchyService-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy IntegrationInterfaces\target\IntegrationInterfaces-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\ISO8583API\target\ISO8583API-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ISOComponent\target\ISOComponent-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ISODefinitions\target\ISODefinitions-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy JPOSComponent\target\JPOSComponent-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy MCECore\target\MCECore-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy NotificationService\target\NotificationService-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Commons\TransactionApi\target\TransactionApi-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+
+copy CashinIntegration\target\CashinIntegration-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Smart\BSMISO8583\target\BSMISO8583-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Smart\VAISO8583\target\VAISO8583-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Smart\ZTEBillPayment\target\ZTEBillPayment-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+copy ..\Smart\ZTEISO8583\target\ZTEISO8583-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
 
 echo "copying database config files"
 copy ..\Core\settings\%1\database_config.properties %SERVICEMIX_HOME%\mfino_conf\
@@ -97,32 +101,34 @@ mkdir %SERVICEMIX_HOME%\jpos\jpos_cfg
 copy ..\Smart\SmartConfiguration\src\main\jpos_cfg\* %SERVICEMIX_HOME%\jpos\jpos_cfg\
 
 echo "copying config files"
-copy MCEConfiguration\src\main\resources\META-INF\spring\mce_fix_configuration.xml %SERVICEMIX_HOME%\deploy\
-copy MCEConfiguration\src\main\resources\META-INF\spring\mce_newfrontend_configuration.xml %SERVICEMIX_HOME%\deploy\
-copy MCEConfiguration\src\main\resources\META-INF\spring\mce_backend_configuration.xml %SERVICEMIX_HOME%\deploy\
-copy MCEConfiguration\src\main\resources\META-INF\spring\mce_notification_configuration.xml %SERVICEMIX_HOME%\deploy\
-copy MCEConfiguration\src\main\resources\META-INF\spring\mce_iso_jpos_configuration.xml %SERVICEMIX_HOME%\deploy\
-copy MCEConfiguration\src\main\resources\META-INF\spring\mce_scheduler_configuration.xml %SERVICEMIX_HOME%\deploy\
 copy MCEConfiguration\src\main\resources\META-INF\spring\mce_auto_reversal_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_backend_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\smart_billpay_router.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_fix_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_iso_jpos_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_newfrontend_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_notification_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_scheduler_configuration.xml %SERVICEMIX_HOME%\deploy\
 
+copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_smart_sms_configuration.xml %SERVICEMIX_HOME%\deploy\
+copy MCEConfiguration\src\main\resources\META-INF\spring\mce_integration_cashin_configuration.xml %SERVICEMIX_HOME%\deploy\
 copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_bsm_iso_configuration.xml %SERVICEMIX_HOME%\deploy\
 copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_zte_iso_configuration.xml %SERVICEMIX_HOME%\deploy\
-copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_billpay_configuration.xml %SERVICEMIX_HOME%\deploy\
 copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_zte_billpay_configuration.xml %SERVICEMIX_HOME%\deploy\
 
-echo "copying integration framework jar files"
-copy ..\Commons\IntegrationFramework\target\IntegrationFramework-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy ..\Smart\SmartBillerGatewayService\target\SmartBillerGatewayService-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
-copy ..\Smart\BillerGatewayTestServer\target\BillerGatewayTestServer-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+rem echo "copying integration framework jar files"
+REM copy ..\Commons\IntegrationFramework\target\IntegrationFramework-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+REM copy ..\Smart\SmartBillerGatewayService\target\SmartBillerGatewayService-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
+REM copy ..\Smart\BillerGatewayTestServer\target\BillerGatewayTestServer-0.1-SNAPSHOT.jar %SERVICEMIX_HOME%\deploy
 
-echo "copying smart gateway variant files"
-copy ..\Smart\GatewayVariantFiles\* %SERVICEMIX_HOME%\mfino_conf\
+REM echo "copying smart gateway variant files"
+REM copy ..\Smart\GatewayVariantFiles\* %SERVICEMIX_HOME%\mfino_conf\
 
-echo "copying smart gateway xml files"
-copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_event_processing.xml %SERVICEMIX_HOME%\deploy\
-copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_integration_calls.xml %SERVICEMIX_HOME%\deploy\
-copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_reversals.xml %SERVICEMIX_HOME%\deploy\
-copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_src_to_suspense.xml %SERVICEMIX_HOME%\deploy\
-copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_susp_to_dest.xml %SERVICEMIX_HOME%\deploy\
+REM echo "copying smart gateway xml files"
+REM copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_event_processing.xml %SERVICEMIX_HOME%\deploy\
+REM copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_integration_calls.xml %SERVICEMIX_HOME%\deploy\
+REM copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_reversals.xml %SERVICEMIX_HOME%\deploy\
+REM copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_src_to_suspense.xml %SERVICEMIX_HOME%\deploy\
+REM copy ..\Smart\SmartConfiguration\src\main\resources\META-INF\spring\billpay_susp_to_dest.xml %SERVICEMIX_HOME%\deploy\
 
 :End
