@@ -20,6 +20,7 @@ import com.mfino.fix.CmFinoFIX.CMCashIn;
 import com.mfino.fix.CmFinoFIX.CMInterswitchCashin;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.service.CommodityTransferService;
+import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.interswitch.IntegrationCashinConfirmHandler;
@@ -51,6 +52,10 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
  	@Autowired
  	@Qualifier("TransactionLogServiceImpl")
  	private TransactionLogService transactionLogService;
+ 	
+	@Autowired
+	@Qualifier("SubscriberMdnServiceImpl")
+	private SubscriberMdnService subscriberMdnService;
 
 
 	
@@ -68,7 +73,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		}
 		result.setMultixResponse(response);
 		Long transferId = transactionDetailsContainer.getTransferID();
-		SubscriberMDN destMDN = transactionDetailsContainer.getDestinationMDN();
+		SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetailsContainer.getDestinationMDN().getMDN());
 		// Changing the Service_charge_transaction_log status based on the
 		// response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
