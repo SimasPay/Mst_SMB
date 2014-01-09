@@ -31,7 +31,8 @@ public class PostpaidBillPayment implements INBSISOtoFIXProcessor {
 		String billAmount = "000000000000";
 		if (responseData.length() >= 37)
 			billAmount = responseData.substring(25, 37);
-		fromOperator.setPaymentVoucherPeriodYYYYMMDD(Long.parseLong(billReferenceID));
+		//fromOperator.setPaymentVoucherPeriodYYYYMMDD(Long.parseLong(billReferenceID));
+		fromOperator.setBillPaymentReferenceID(billReferenceID.trim());
 
 		return fromOperator;
 	}

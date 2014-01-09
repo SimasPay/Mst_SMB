@@ -12,6 +12,7 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 
 import com.mfino.bsm.iso8583.nm.NMRequestHandler;
+import com.mfino.mce.iso.jpos.nm.StatusRegistrar;
 
 /**
  * @author Sasi
@@ -36,11 +37,11 @@ public class BSMRequestListener implements ISORequestListener {
 				this.ntMgmtService.execute(new NMRequestHandler(m, source));
 			}
 			else {
-				log.info("BSMRequestListener iso mti="+mti+" is not for BSMRequestListener - Redirecting message to bsmmux-bsmreceive");
-				
-				Space sp = SpaceFactory.getSpace();
-				sp.out ("bsmreceive", m); 
-		        return true; 
+				log.info("BSMRequestListener iso mti="+mti+" de-39="+m.getString(39)+",de-11="+m.getString(11)+",de-70"+m.getString(70)+" is not for BSMRequestListener - Ignoring the message");
+				log.info("echo status "+StatusRegistrar.getEchoStatus("bsmmux"));
+				//Space sp = SpaceFactory.getSpace();
+				//sp.out ("bsmreceive", m); 
+		        //return true;
 			}
 		}
 		catch (Exception ex) {
