@@ -59,19 +59,19 @@ public class NMRequestHandler implements Runnable {
 				if (status.equals(NMStatus.Successful)) {
 					log.info("Sign-on has been completed, processing key exchange");
 					try {
-						KeyExchangeHandler handler = new KeyExchangeHandler(msg.getValue(48).toString());
-						handler.handle();
+//						KeyExchangeHandler handler = new KeyExchangeHandler(msg.getValue(48).toString());
+//						handler.handle();
 						msg.set(39, "00");
 						StatusRegistrar.setKeyExchangeStatus(muxName, NMStatus.Successful);
 					}
-					catch (KcvValidationFailedException ex) {
-						log.error("kcv validation failed.Sending M1 as error code", ex);
-						msg.set(39, "M1");
-					}
-					catch (InvalidWorkingKeyException ex) {
-						log.error("working key calculation failed.sending M2 as error code", ex);
-						msg.set(39, "M2");
-					}
+//					catch (KcvValidationFailedException ex) {
+//						log.error("kcv validation failed.Sending M1 as error code", ex);
+//						msg.set(39, "M1");
+//					}
+//					catch (InvalidWorkingKeyException ex) {
+//						log.error("working key calculation failed.sending M2 as error code", ex);
+//						msg.set(39, "M2");
+//					}
 					catch (Exception ex) {
 						log.error("Exception occured while handling the key exchange.", ex);
 						msg.set(39, "06");
