@@ -47,6 +47,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.mfino.commons</groupId>
+			<artifactId>TransactionApi</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.mfino.mce</groupId>
 			<artifactId>ISODefinitions</artifactId>
 			<version>${project.version}</version>

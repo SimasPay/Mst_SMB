@@ -25,9 +25,13 @@
 
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
 	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	<osgi:reference id="transactionApiValidationServiceImpl" bean-name="TransactionApiValidationServiceImpl" interface="com.mfino.transactionapi.service.TransactionApiValidationService" />
+	<osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />
 	
 	<bean id="inquiryHandler" class="com.mfino.vah.handlers.inqury.InquiryHandler" factory-method="createInstance">
 		<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="transactionApiValidationService" ref="transactionApiValidationServiceImpl" />
+		<property name="pocketService" ref="pocketServiceImpl" />
 		<property name="htm" ref="txManager" />
 	</bean>
 

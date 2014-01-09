@@ -86,10 +86,10 @@ public class TransactionHandler implements Runnable {
 
 				//InquiryHandler handler = new InquiryHandler(msg);
 				try {
+					response = "success";
 					String de48 = InquiryHandler.getInstance().getInquiryResponseElement48(msg);
 					msg.set(48, de48);
-					element39 = ResponseCode.APPROVED;	
-					response = "success";
+					element39 = ResponseCode.APPROVED;
 				}
 				catch (InvalidRequestException ex1) {
 					log.warn("requests other than 8881 are not supported", ex1);
