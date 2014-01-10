@@ -6,6 +6,7 @@ package com.mfino.dao;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -487,6 +488,86 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 		List<Long> countList = sqlQuery.list();
 		Long srcRowCnt = countList.get(0);
     	return srcRowCnt;
+    }
+    
+    public List<CommodityTransfer> getTxnHistory(CommodityTransferQuery query)
+    {
+    	if (query.getSourceDestnPocket() != null 
+    			&& query.getLimit() != ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
+
+    		String selectString = "select distinct ct, ctmap.SctlId from CommodityTransfer ct, ChargeTxnCommodityTransferMap ctmap, ServiceChargeTransactionLog sctl ";
+    		String orderString = " order by sctl.ID desc, ct.ID desc ";
+    		String queryString = " where ( ct.PocketBySourcePocketID = :sourcePocket" 
+    				+ " or ct.DestPocketID = :destPocketID )"
+    				+ " and ctmap.CommodityTransferID = ct.ID "
+    				+ " and sctl.ID = ctmap.SctlId "  ;
+
+    		boolean requiresSuccfullTxns = ConfigurationUtil.getRequiresSuccessfullTransactionsInEmoneyHistory();
+    		if(requiresSuccfullTxns){
+    			queryString = queryString +" and sctl.Status in ( :transferStatus )";
+    		}
+
+    		if (query.getStartTimeGE() != null) {
+    			queryString = queryString +" and sctl.CreateTime >= :startTimeGE" ;
+    		}
+
+    		if (query.getStartTimeLT() != null) {
+    			queryString = queryString +" and sctl.CreateTime < :startTimeLT";
+    		}
+
+    		Query newQuery = getSession().createQuery(selectString + queryString + orderString); 
+    		if (query.getStart() != null && query.getLimit() != null) 
+    		{
+    			newQuery.setMaxResults(query.getLimit());
+    			newQuery.setFirstResult(query.getStart());
+    		}
+    		if (query.getSourceDestnPocket() != null)
+    		{
+    			newQuery.setParameter("sourcePocket" , query.getSourceDestnPocket());
+    			newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getID());
+    		}
+    		if(requiresSuccfullTxns){
+    			List<Integer> statusList = Arrays.asList( 
+    					CmFinoFIX.SCTLStatus_Confirmed,	
+    					CmFinoFIX.SCTLStatus_Distribution_Started,
+    					CmFinoFIX.SCTLStatus_Distribution_Completed,	
+    					CmFinoFIX.SCTLStatus_Distribution_Failed,
+    					CmFinoFIX.SCTLStatus_Reverse_Requested,
+    					CmFinoFIX.SCTLStatus_Reverse_Initiated,
+    					CmFinoFIX.SCTLStatus_Reverse_Approved,
+    					CmFinoFIX.SCTLStatus_Reverse_Rejected,
+    					CmFinoFIX.SCTLStatus_Reverse_Start,
+    					CmFinoFIX.SCTLStatus_Reverse_Processing,
+    					CmFinoFIX.SCTLStatus_Reverse_Success,
+    					CmFinoFIX.SCTLStatus_Reversed,
+    					CmFinoFIX.SCTLStatus_Reverse_Failed
+    			);
+    			newQuery.setParameterList("transferStatus",  statusList);
+    		}    		
+
+    		if (query.getStartTimeGE() != null) {
+    			newQuery.setParameter("startTimeGE", query.getStartTimeGE());
+    		}
+
+    		if (query.getStartTimeLT() != null) {
+    			newQuery.setParameter("startTimeLT", query.getStartTimeLT());
+    		}
+
+    		List list = newQuery.list();
+
+    		List<CommodityTransfer> ctList = new ArrayList<CommodityTransfer>();
+    		log.info("The size of the ctList is: "+list.size());
+    		for(int i=0;i<list.size();i++) 
+    		{
+    			Object[] data = (Object[])list.get(i);
+    			CommodityTransfer ct = (CommodityTransfer)data[0];			
+    			long sctlId = (Long)data[1];
+    			ct.setSctlId(sctlId);
+    			ctList.add(ct);
+    		}
+    		return ctList;    		
+    	}
+    	return null;
     }
 
     public List<CommodityTransfer> get(CommodityTransferQuery query) throws Exception {

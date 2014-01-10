@@ -153,17 +153,8 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 			ctq.setLimit(transactionsHistory.getMaxCount()); 
 			log.info(String.format("CommodityTransferServiceImpl::getTranscationsHistory()-- Start:%s, limit:%s",0,transactionsHistory.getMaxCount())); 
 		}
-		List<CommodityTransfer> list = ctd.get(ctq);
-
-		log.info("The size of the ctList is: "+list.size());
-		for(int i=0;i<list.size();i++) {
-			CommodityTransfer ct = list.get(i);
-			long sctlId = ctMapDao.getSCTLIdByCommodityTransferId(ct.getID());
-			ct.setSctlId(sctlId);
-			if(!(pocket.getID().equals(ct.getPocketBySourcePocketID().getID())||
-					pocket.getID().equals(ct.getDestPocketID()))) 
-				list.remove(i);
-		}
+		//List<CommodityTransfer> list = ctd.get(ctq);
+		List<CommodityTransfer> list = ctd.getTxnHistory(ctq);
 		return list;
 	}
 
