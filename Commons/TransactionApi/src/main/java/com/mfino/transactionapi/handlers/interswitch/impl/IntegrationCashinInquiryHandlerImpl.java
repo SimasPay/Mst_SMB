@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.PartnerDAO;
+import com.mfino.dao.PocketDAO;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.IntegrationPartnerMapping;
@@ -33,13 +37,14 @@ import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMInterswitchCashin;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.service.IntegrationPartnerMappingService;
+import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-
 import com.mfino.transactionapi.handlers.interswitch.IntegrationCashinInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -90,6 +95,14 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 	@Autowired
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParameterService;
+	
+	@Autowired
+	@Qualifier("PartnerServiceImpl")
+	private PartnerService partnerService;
 
 	/**
 	 * To be called first in this handler before communicate or postprocess
@@ -155,7 +168,10 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			result.setCode(CmFinoFIX.NotificationCode_PartnerNotFound.toString());
 			return result;
 		}
-		Partner cashinPartner = ipm.getPartner();
+		
+		String pIdStr = systemParameterService.getString(SystemParameterKeys.SERVICE_PARTNER__ID_KEY);
+		Partner cashinPartner = partnerService.getPartnerById(Long.parseLong(pIdStr));
+		//Partner cashinPartner = ipm.getPartner();
 
 		Integer validationResult = transactionApiValidationService.validatePartnerByPartnerType(cashinPartner);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -220,7 +236,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		sc.setChannelCodeId(channel.getID());
 		sc.setDestMDN(destinationMDN.getMDN());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
-		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHIN);
+		sc.setTransactionTypeName(cashinDetails.getPaymentMethod());
 		sc.setSourceMDN(sourceMDN.getMDN());
 		sc.setTransactionAmount(cashinDetails.getAmount());
 		// sc.setMfsBillerCode(cashinDetails.getPartnerCode());
@@ -240,13 +256,15 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		log.info("getting the partner's agent service pocket");
 		Pocket partnerPocket;
 		try {
-			PartnerServices partnerService = transactionChargingService.getPartnerService(sc);
+			/*PartnerServices partnerService = transactionChargingService.getPartnerService(sc);
 			if (partnerService == null) {
 				log.info("agentservice is not available for the partner.");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 				return result;
 			}
-			partnerPocket = partnerService.getPocketBySourcePocket();
+			partnerPocket = partnerService.getPocketBySourcePocket();*/
+			String ppid = systemParameterService.getString(SystemParameterKeys.GLOBAL_SVA_POCKET_ID_KEY);
+			partnerPocket = pocketService.getById(Long.parseLong(ppid));
 			validationResult = transactionApiValidationService.validateSourcePocket(partnerPocket);
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 				log.error("Source pocket with id "+(partnerPocket!=null? partnerPocket.getID():null)+" has failed validations");
@@ -255,9 +273,9 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			}	
 
 		}
-		catch (InvalidServiceException e) {
+		catch (Exception e) {
 			log.error("Exception occured in getting Source Pocket", e);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 			return result;
 		}
 		
