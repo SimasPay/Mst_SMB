@@ -279,8 +279,9 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				result.setDownloadURL(downloadURL);
 			}
 			else
-			{
-				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
+			{	
+				log.info("SMS for history is not sending as this is not required");
+				//sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
 			}
 		}
 		catch (Exception ex) {
