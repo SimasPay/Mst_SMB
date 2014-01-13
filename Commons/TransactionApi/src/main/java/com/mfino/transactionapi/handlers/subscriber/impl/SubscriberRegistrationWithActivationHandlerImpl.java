@@ -102,6 +102,7 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		subscriberRegistration.setIDNumber(txnDetails.getIdNumber());
 		subscriberRegistration.setPin(txnDetails.getNewPIN());
 		subscriberRegistration.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
+		subscriberRegistration.setOtherMDN(txnDetails.getOtherMdn());
 		TransactionsLog transactionsLog = null;
 		log.info("Handling subscriber services Registration with activation webapi request");
 		XMLResult result = new RegistrationXMLResult();
