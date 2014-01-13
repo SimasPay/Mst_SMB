@@ -24,7 +24,6 @@
     <module>ISO8583Mock</module>
  
 		<module>ArtajasasSimulator_Maven_project</module>
-	 -->     
-	 <module>SmartMocks</module> 
+	 -->      
 	</modules>
 </project>

@@ -585,8 +585,7 @@ public class NBSISO8583Mock implements Runnable {
 				log.info("Setting up server socket...");
 				ServerSocket server;
 				try {
-					//server = new ServerSocket(9998);
-					server = new ServerSocket(8583);
+					server = new ServerSocket(9998);
 				} catch (IOException e) {
 					log.error("Failed to set up server socket", e);
 					return;

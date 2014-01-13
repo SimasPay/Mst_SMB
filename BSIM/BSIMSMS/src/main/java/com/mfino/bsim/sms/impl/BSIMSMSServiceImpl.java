@@ -83,7 +83,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		Object obj = null;
 		String responseCode;
 		
-		String url = "http://sms.ssdindia.in/API/WebSMS/Http/v1.0a/index.php" + "?";
+		String url = getUrl() + "?";
 		CamelContext camelContext = httpExchange.getContext();
 		
 		try{
@@ -142,11 +142,12 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 	}
 	
 	private String getQueryString() throws UnsupportedEncodingException {
-		String queryString = "username=lokkum&password=rand260&sender=demo&to={1}&message={2}&reqid=1&format=json";
-		String mdn = getToAddress();
-		String message = URLEncoder.encode( getMessage(), "UTF-8" );
-		queryString = queryString.replace("{1}", mdn);
-		queryString = queryString.replace("{2}", message);
+		String queryString = "";
+		queryString = queryString + KEY_PARTNER_ID + "=" + getPartnerID();
+		queryString = queryString + "&" +  KEY_API_TOKEN + "=" + getApiToken();
+		queryString = queryString + "&" +  KEY_SHORT_CODE + "=" + getShortcode();
+		queryString = queryString + "&" +  KEY_TO_ADDRESS + "=" + getToAddress();
+		queryString = queryString + "&" +  KEY_MESSAGE + "=" + URLEncoder.encode( getMessage(), "UTF-8" );
 		return queryString;
 	}
 

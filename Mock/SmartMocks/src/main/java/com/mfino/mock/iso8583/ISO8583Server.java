@@ -427,8 +427,7 @@ public class ISO8583Server implements Runnable {
 				System.out.println("Setting up server socket...");
 				ServerSocket server;
 				try {
-					//server = new ServerSocket(9998);
-					server = new ServerSocket(31532);
+					server = new ServerSocket(9998);
 				} catch (IOException e) {
 					System.out.println("Failed to set up server socket");
 					return;

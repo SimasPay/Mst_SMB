@@ -80,14 +80,10 @@
 		<property name="shortcode" value="988012"/>	
 	</bean>
 	
-	<bean id="TestBSIMSMSService" class="com.mfino.testbsim.sms.impl.TestBSIMSMSServiceImpl">
-		<property name="bsimSMSService" ref="BSIMSMSService"/>
-	</bean>
-	
 	<camelContext id="BSIMSMS" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 		<route>
 			<from uri="jms:SMSNotificationQueue?disableReplyTo=true" />
-			<to uri="bean:TestBSIMSMSService?method=process" />
+			<to uri="bean:BSIMSMSService?method=process" />
 		</route>
 	</camelContext>
 
