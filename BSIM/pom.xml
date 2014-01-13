@@ -27,6 +27,7 @@
 		<module>BSIMConfiguration</module>
 		<module>BSIMInterBankTransfer</module>
 		<module>BSIMSMS</module>
+		<module>TestBSIMSMS</module>
 		<module>BSIMBillPayment</module>
     </modules>	
 	

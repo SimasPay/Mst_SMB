@@ -21,9 +21,9 @@
     <module>Tools</module>
 	<module>ISO8583API</module>	
     <module>MfinoCoreEngine</module>
-<!-- 	<module>Zenith</module>
+<!-- 	<module>Zenith</module> -->
 	<module>GTBank</module>
-	<module>Fortis</module>
+<!-- 	<module>Fortis</module>
 	<module>Sterling</module> -->
 	<!-- <module>IntegrationTemplates</module> -->
 	<module>Smart</module>
