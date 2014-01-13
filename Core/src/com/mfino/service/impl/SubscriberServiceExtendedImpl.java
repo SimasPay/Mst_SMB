@@ -696,10 +696,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setmFinoServiceProviderByMSPID(mfinoServiceProviderDAO
 					.getById(1));
 		}
-		if (subscriber.getLanguage() == null) {
-			//subscriber.setLanguage(CmFinoFIX.Language_English);
-			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
-		}
+		subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 		if (subscriber.getCurrency() == null) {
 			subscriber.setCurrency(systemParametersService
 					.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
