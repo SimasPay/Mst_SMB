@@ -1,8 +1,5 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
-import java.math.BigDecimal;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,18 +8,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
-import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.exceptions.InvalidChargeDefinitionException;
-import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMForgotPinInquiry;
 import com.mfino.handlers.FIXMessageHandler;
@@ -33,7 +23,6 @@ import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
-import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.subscriber.ForgotPinInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ChangeEmailXMLResult;
@@ -63,10 +52,6 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
 	
-	@Autowired
-	@Qualifier("TransactionChargingServiceImpl")
-	private TransactionChargingService tcs ;
-
 	@Autowired
 	@Qualifier("NotificationMessageParserServiceImpl")
 	private  NotificationMessageParserService smsParser ;
@@ -129,41 +114,12 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 			}			
 		}		
 			
-		Transaction transaction = null;
-		ServiceCharge sc = new ServiceCharge();
-		sc.setSourceMDN(forgotPinInquiry.getSourceMDN());
-		sc.setDestMDN(null);
-		sc.setChannelCodeId(StringUtils.isNotBlank(forgotPinInquiry.getChannelCode()) ? Long.valueOf(forgotPinInquiry.getChannelCode()) : null);
-		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
-		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN);
-		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(forgotPinInquiry.getTransactionID());
-		sc.setTransactionIdentifier(forgotPinInquiry.getTransactionIdentifier());
-
-		try{
-			transaction =tcs.getCharge(sc);
-		}catch (InvalidServiceException e) {
-			log.error("Exception occured in getting charges",e);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
- 			return result;
-		} catch (InvalidChargeDefinitionException e) {
-			log.error(e.getMessage());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
- 			return result;
-		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());	
-        String name = subscriber.getFirstName();
-        if(name == null){
-        	Set<Partner> partner = subscriber.getPartnerFromSubscriberID();
-        	name = partner!=null&&(!partner.isEmpty())?partner.iterator().next().getTradeName():" ";
-        }       
         int otpLength = systemParametersService.getOTPLength();
  		String otp = MfinoUtil.generateOTP(otpLength);
  		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), otp);
  		subscriberMDN.setOTP(digestPin1);
- 		subscriberMDN.setDigestedPIN(null);
- 		subscriberMDN.setAuthorizationToken(null); 		
+// 		subscriberMDN.setDigestedPIN(null);
+// 		subscriberMDN.setAuthorizationToken(null); 		
  		subscriberMdnService.saveSubscriberMDN(subscriberMDN);
  		//Building notification message
     	NotificationWrapper notificationWrapper = new NotificationWrapper();
@@ -172,7 +128,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
     	notificationWrapper.setOneTimePin(otp);
     	notificationWrapper.setLanguage(subscriber.getLanguage());
     	
-        String smsMessage = smsParser.buildMessage(notificationWrapper, true);
+        String smsMessage = smsParser.buildMessage(notificationWrapper, false);
         log.info("smsMessage -> " + smsMessage);
 
         smsService.setDestinationMDN(mdn); 
@@ -180,10 +136,6 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
         smsService.setNotificationCode(notificationWrapper.getCode());
         smsService.asyncSendSMS();
         log.info("Successfully generated OTP for "+ forgotPinInquiry.getSourceMDN() + " and sent sms to MDN:" + mdn);
-		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
-			tcs.completeTheTransaction(sctl);
-		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryCompleted);
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		return result;

@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,10 @@ import org.springframework.stereotype.Service;
 import com.lowagie.text.DocumentException;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
@@ -41,16 +44,14 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.MailService;
 import com.mfino.service.NotificationMessageParserService;
-import com.mfino.service.PartnerService;
+import com.mfino.service.NotificationService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
-import com.mfino.service.SubscriberServiceExtended;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
@@ -102,14 +103,6 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	private PocketService pocketService;
 	
 	@Autowired
-	@Qualifier("SubscriberServiceExtendedImpl")
-	private SubscriberServiceExtended subscriberServiceExtended;
-	
-	@Autowired
-	@Qualifier("PartnerServiceImpl")
-	private PartnerService partnerService;
-	
-	@Autowired
 	@Qualifier("MailServiceImpl")
 	private MailService mailService;
 	
@@ -120,6 +113,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	@Autowired
 	@Qualifier("SMSServiceImpl")
 	private SMSService smsService;
+	
+	@Autowired
+	@Qualifier("NotificationServiceImpl")
+	private NotificationService notificationService;
 	
 	private static final int DEFAULT_PAGE_NO = 0;
 	private static final int MAX_DURATION_TO_FETCH_HISTORY = 90;
@@ -280,8 +277,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			}
 			else
 			{	
-				log.info("SMS for history is not sending as this is not required");
-				//sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
+				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
 			}
 		}
 		catch (Exception ex) {
@@ -380,25 +376,35 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	/*
 	 * sends emoney transaction history as sms
 	 */
-	private void sendSms(SubscriberMDN subscriberMDN, List<CommodityTransfer> transactionHistoryList, Long sctlId) 
-	{		
-		NotificationWrapper notificationWrapper = new NotificationWrapper();
-		notificationWrapper.setCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
+	private void sendSms(SubscriberMDN subscriberMDN, List<CommodityTransfer> transactionHistoryList, Long sctlId) {
 		Integer language = subscriberMDN.getSubscriber().getLanguage();
-		notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-		notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());
-		notificationWrapper.setLanguage(language);
-		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-		StringBuilder messageBuilder = new StringBuilder();
-		for (CommodityTransfer commodityTransfer : transactionHistoryList) {
-			notificationWrapper.setCommodityTransfer(commodityTransfer);
-			messageBuilder.append(notificationMessageParserService.buildMessage(notificationWrapper,false));
-			messageBuilder.append("\r\n");
+		NotificationQuery query = new NotificationQuery();
+		query.setNotificationCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
+		query.setLanguage(language);
+		query.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+		List<Notification> notifications = notificationService.getLanguageBasedNotificationsByQuery(query);
+
+		if(CollectionUtils.isNotEmpty(notifications) && (!notifications.get(0).getIsActive()) ){
+			log.info("SMS notification is not active, so not sending the SMS for the E-money history transaction.") ;
+		} 
+		else {
+			NotificationWrapper notificationWrapper = new NotificationWrapper(notifications.get(0));
+			notificationWrapper.setCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
+			notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
+			notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());
+			notificationWrapper.setLanguage(language);
+			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			StringBuilder messageBuilder = new StringBuilder();
+			for (CommodityTransfer commodityTransfer : transactionHistoryList) {
+				notificationWrapper.setCommodityTransfer(commodityTransfer);
+				messageBuilder.append(notificationMessageParserService.buildMessage(notificationWrapper,false));
+				messageBuilder.append("\r\n");
+			}
+			smsService.setDestinationMDN(subscriberMDN.getMDN());
+			smsService.setMessage(messageBuilder.toString());
+			smsService.setNotificationCode(notificationWrapper.getCode());
+			smsService.setSctlId(sctlId);
+			smsService.asyncSendSMS();
 		}
-		smsService.setDestinationMDN(subscriberMDN.getMDN());
-		smsService.setMessage(messageBuilder.toString());
-		smsService.setNotificationCode(notificationWrapper.getCode());
-		smsService.setSctlId(sctlId);
-		smsService.asyncSendSMS();
 	}
 }

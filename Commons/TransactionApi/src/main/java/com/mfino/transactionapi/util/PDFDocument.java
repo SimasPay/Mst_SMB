@@ -70,7 +70,7 @@ public class PDFDocument {
 			
 			this.document.setMargins(0, 0, 0, 36);
 			
-			HeaderFooter headerFooter = new HeaderFooter(new Phrase("\u00a9 2013 PT Digital Money Indonesia. All Rights reserved"), false);
+			HeaderFooter headerFooter = new HeaderFooter(new Phrase("\u00a9 2013 PT Smartfren Telecom. All Rights reserved"), false);
 			headerFooter.setAlignment(Element.ALIGN_CENTER);
 			headerFooter.setBorder(0);
 			this.document.setFooter(headerFooter);

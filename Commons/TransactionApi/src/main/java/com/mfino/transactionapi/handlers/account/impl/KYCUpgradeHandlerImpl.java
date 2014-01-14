@@ -2,7 +2,9 @@ package com.mfino.transactionapi.handlers.account.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Group;
 import com.mfino.domain.KYCLevel;
+import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
@@ -32,11 +36,15 @@ import com.mfino.fix.CmFinoFIX.CMKYCUpgrade;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
+import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.KYCLevelService;
+import com.mfino.service.NotificationMessageParserService;
+import com.mfino.service.NotificationService;
 import com.mfino.service.PocketService;
+import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberGroupService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
@@ -82,7 +90,19 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
 	private EnumTextService enumTextService;
-
+	
+	@Autowired
+	@Qualifier("SMSServiceImpl")
+	private SMSService smsService;
+	
+	@Autowired
+	@Qualifier("NotificationMessageParserServiceImpl")
+	private NotificationMessageParserService notificationMessageParserService;
+	
+	@Autowired
+	@Qualifier("NotificationServiceImpl")
+	private NotificationService notificationService;
+	
 
 	public Result handle(TransactionDetails transactionDetails) {
 		String sourceMdn = transactionDetails.getSourceMDN();
@@ -116,7 +136,6 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		result.setTransactionID(transactionsLog.getID());
 		result.setTransID(transID);
 		result.setSourceMDN(sourceMdn);
-		result.setKycLevel(kycType);
 		
 		KYCLevel kycLevel = kycLevelService.getByKycLevel(new Long(kycType));
 		if(kycLevel == null){
@@ -124,6 +143,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
 			return result;
 		}
+		result.setKycLevel(kycLevel.getKYCLevelName());
 		SubscriberMDN srcMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		
 		if(srcMDN == null){
@@ -225,6 +245,40 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		result.setNotificationCode(CmFinoFIX.NotificationCode_KYCUpgradeSuccess);
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		log.info(String.format("KycUpgrade is success for MDN:%s with KycLevel:%s ", sourceMdn, kycType));
+		// Send SMS for KYC upgrade transaction
+		sendSms(result, srcSub);
 		return result;
+	}
+	
+	/*
+	 * Notifies the Subscriber after successful upgradtion by sending an SMS
+	 */
+	private void sendSms(XMLResult result, Subscriber subscriber) {
+		NotificationQuery query = new NotificationQuery();
+		query.setNotificationCode(result.getNotificationCode());
+		query.setLanguage(subscriber.getLanguage());
+		query.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+		List<Notification> notifications = notificationService.getLanguageBasedNotificationsByQuery(query);
+
+		if(CollectionUtils.isNotEmpty(notifications) && (!notifications.get(0).getIsActive()) ){
+			log.info("SMS notification is not active, so not sending the SMS for the KYC upgrade transaction.") ;
+		} 
+		else {
+			NotificationWrapper notificationWrapper = new NotificationWrapper(notifications.get(0));
+			notificationWrapper.setCode(result.getNotificationCode());
+			notificationWrapper.setFirstName(subscriber.getFirstName());
+			notificationWrapper.setLastName(subscriber.getLastName());
+			notificationWrapper.setLanguage(subscriber.getLanguage());
+			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			notificationWrapper.setReceiverMDN(result.getSourceMDN());
+			notificationWrapper.setSourceMDN(result.getSourceMDN());
+			notificationWrapper.setKycLevel(result.getKycLevel());
+			String msg = notificationMessageParserService.buildMessage(notificationWrapper,false);
+			smsService.setDestinationMDN(result.getSourceMDN());
+			smsService.setMessage(msg);
+			smsService.setNotificationCode(notificationWrapper.getCode());
+			smsService.setSctlId(result.getSctlID());
+			smsService.asyncSendSMS();
+		}
 	}
 }
