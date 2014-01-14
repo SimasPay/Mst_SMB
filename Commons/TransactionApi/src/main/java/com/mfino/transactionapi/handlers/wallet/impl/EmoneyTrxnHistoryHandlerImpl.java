@@ -301,8 +301,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		String to = subscriber.getFirstName() + subscriber.getLastName();
 
 		createPDF(txnDetails, subscriberMDN, srcPocket, transactionHistoryList, filepath, sctlId);
-		String subject = "Smartfren Uangku: DIMO Electronic Statement";
-		String body = "Thank you for using DIMO E-Statements Services. Please find your requested DIMO Transaction History for your selected time period.";
+		String subject = "Smartfren Uangku Electronic Statement";
+		String body = "Thank you for using Uangku E-Statements Services. Please find your requested Uangku Transaction History for your selected time period. Enter your Uangku PIN to view the document."; 
 		mailService.asyncSendEmailWithAttachment(email, to, subject, body, filepath);
 	}
 	
