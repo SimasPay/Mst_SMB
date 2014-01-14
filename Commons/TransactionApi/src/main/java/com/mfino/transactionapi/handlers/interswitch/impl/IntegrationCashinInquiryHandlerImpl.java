@@ -325,7 +325,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		cashIn.setSourcePocketID(cashinDataConatiner.getSourcePocketID());
 		cashIn.setDestPocketID(cashinDataConatiner.getDestPocketID());
 		cashIn.setSourceApplication(cashinDetails.getSourceApplication());
-		cashIn.setSourceMessage(channel.getChannelName());
+		cashIn.setSourceMessage("from BSM");
 		cashIn.setServletPath(cashinDetails.getServletPath());
 		cashIn.setServiceChargeTransactionLogID(sctl.getID());
 		cashIn.setIsSystemIntiatedTransaction(true);

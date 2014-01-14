@@ -21,7 +21,10 @@
    "Transfer To" : "Transfer ke ",
    "Not Available" : "Tidak Tersedia",
    "Cash Out" : "Penarikan dari ",
-   "Cash In" : "Setoran di "
+   "Cash In" : "Setoran di ",
+   "from BSM" : "Setoran via ATM (BSM)",
+   "Purchase" : "Pembelian ",
+   "Bill Pay" : "Pembayaran "
     },
  "0" : {
    "language" : "English",
@@ -45,6 +48,9 @@
    "Transfer To" : "Transfer to ",
    "Not Available" : "Not Available",
    "Cash Out" : "Cash Out ",
-   "Cash In" : "Cash In "
+   "Cash In" : "Cash In ",
+   "from BSM" : "Deposit via ATM (BSM)",
+   "Purchase" : "Purchase ",
+    "Bill Pay" : "Payment "
     }
 }

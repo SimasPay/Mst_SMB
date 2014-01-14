@@ -366,12 +366,17 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			txnType = LanguageTranslator.translate(language, "Cash Out")+ct.getDestSubscriberName();
 		}else if(sourceMsg.equalsIgnoreCase("Cash In")){
 			txnType = LanguageTranslator.translate(language, "Cash In")+ct.getSourceSubscriberName();
+		}else if(sourceMsg.equalsIgnoreCase("from BSM")){
+			txnType = LanguageTranslator.translate(language, "from BSM");
+		}else if(sourceMsg.equalsIgnoreCase("Purchase")){
+			txnType = LanguageTranslator.translate(language, "Purchase") + ct.getSourceSubscriberName();
+		}else if(sourceMsg.equalsIgnoreCase("Bill Pay")){
+			txnType = LanguageTranslator.translate(language, "Bill Pay");
 		}else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);
 		}
 		return txnType;
 	}
-
 
 	/*
 	 * sends emoney transaction history as sms
