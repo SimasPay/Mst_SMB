@@ -61,6 +61,7 @@ import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.util.LanguageTranslator;
 import com.mfino.transactionapi.util.PDFDocument;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
 /*
@@ -120,6 +121,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	
 	private static final int DEFAULT_PAGE_NO = 0;
 	private static final int MAX_DURATION_TO_FETCH_HISTORY = 90;
+	
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");	
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
@@ -301,8 +304,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		String to = subscriber.getFirstName() + subscriber.getLastName();
 
 		createPDF(txnDetails, subscriberMDN, srcPocket, transactionHistoryList, filepath, sctlId);
-		String subject = "Smartfren Uangku Electronic Statement";
-		String body = "Thank you for using Uangku E-Statements Services. Please find your requested Uangku Transaction History for your selected time period. Enter your Uangku PIN to view the document."; 
+		String subject = ConfigurationUtil.getEmailPdfHistorySubject();
+		subject = subject.replace("$(FromDate)", dateFormat.format(txnDetails.getFromDate()));
+		subject = subject.replace("$(ToDate)", dateFormat.format(txnDetails.getToDate()));
+		String body = ConfigurationUtil.getEmailPdfHistoryBody();
 		mailService.asyncSendEmailWithAttachment(email, to, subject, body, filepath);
 	}
 	
@@ -315,7 +320,6 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		pdfDocument.addSubscriberDetailsTable(txnDetails, subscriberMDN, pocket);
 		pdfDocument.addHeaderRow(headerRow);
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Iterator<CommodityTransfer> it = transactionHistoryList.iterator();
 		while(it.hasNext())
 		{
