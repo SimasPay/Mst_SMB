@@ -125,26 +125,6 @@
 							</resources>
 						</configuration>
 					</execution>
-					<execution>
-						<id>copy-images</id>
-						<!-- here the phase you need -->
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/webapi/images</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/../../profiles/${profile}/images</directory>
-									<includes>
-										<include>pdf_header_logo.png</include>
-									</includes>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>

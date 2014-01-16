@@ -304,11 +304,7 @@ public class ConfigurationUtil {
 		KYCUpgradeEmailMessage("mfino.kycupgrade.email.message", "Successfully processed the kyc upgrade request"),
 		CurrencyFormatLocale("mfino.currency.format.locale", "us"),
 		UseRealHSM("mfino.use.real.hsm","false"),
-		RequiresSuccessfullTransactionsInEmoneyHistory("mfino.requires.successful.transactions.in.emoney.history","false"),
-		PdfHistoryFooter("mfino.pdf.history.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved"),
-		EmailPdfHistorySubject("mfino.email.pdf.history.subject","Smartfren Uangku Electronic Statement"),
-		EmailPdfHistoryBody("mfino.email.pdf.history.body","Thank you for using Uangku E-Statements Services. Please find your requested Uangku Transaction History for your selected time period.   Enter your Uangku PIN to view the document.");
-		
+		RequiresSuccessfullTransactionsInEmoneyHistory("mfino.requires.successful.transactions.in.emoney.history","false");
 		
 		private final String key;
 		private final String defaultValue;
@@ -1215,17 +1211,5 @@ public class ConfigurationUtil {
 	
 	public static boolean getRequiresSuccessfullTransactionsInEmoneyHistory() { 
 	 	return getBoolean(ConfigurationKey.RequiresSuccessfullTransactionsInEmoneyHistory); 
-	 } 
-	
-	public static String getPdfHistoryFooter() { 
-	 	return get(ConfigurationKey.PdfHistoryFooter); 
-	 } 
-	
-	public static String getEmailPdfHistorySubject() { 
-	 	return get(ConfigurationKey.EmailPdfHistorySubject); 
-	 }
-	
-	public static String getEmailPdfHistoryBody() { 
-	 	return get(ConfigurationKey.EmailPdfHistoryBody); 
 	 } 
 }
