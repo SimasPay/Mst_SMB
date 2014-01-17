@@ -289,18 +289,20 @@ public class WebApiRequestController {
 				
 				//Not allowing any money transactions for non-kyc subscriber
 				SubscriberMDN srcMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
-				if(srcMDN == null){
-					webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_MDNNotFound, servletOutputWriter, sourceMDN, "Error occured");
-					return;
+				if(transactionDetails.getAmount() != null && transactionDetails.getAmount().intValue() > 0){
+					if(srcMDN == null){
+						webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_MDNNotFound, servletOutputWriter, sourceMDN, "Error occured");
+						return;
+					}
+					Subscriber srcSub = srcMDN.getSubscriber();
+					KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
+					if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
+						log.info(String.format("MoneyTransfer is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
+						webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed, servletOutputWriter, sourceMDN, "Error occured");
+						return;
+					}
 				}
-				Subscriber srcSub = srcMDN.getSubscriber();
-				KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
-				if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc)) && transactionDetails.getAmount() != null && transactionDetails.getAmount().intValue() > 0){
-					log.info(String.format("MoneyTransfer is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
-					webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed, servletOutputWriter, sourceMDN, "Error occured");
-					return;
-				}
-				
+								
 				//actor channel mapping
 				boolean isTransactionApproved = actorChannelValidationService.validateTransaction(transactionDetails);
 			
