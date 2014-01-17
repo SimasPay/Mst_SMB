@@ -37,13 +37,27 @@
        <property name="timeZone" ref="timeZone" />
         <property name="cronExpression" value="0 0 2 * * ?" />
     </bean>
+
+    <bean id="amlReport" class="com.mfino.rtscheduler.schedule.AMLReport"> 
+    </bean>
+    <bean id="amlReportJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="amlReport" />
+        <property name="targetMethod" value="generateAMLReport" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="amlReportTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="amlReportJob" />
+       <property name="timeZone" ref="timeZone" />
+       <!-- Cron expression for every month 1st at 2 AM -->
+        <property name="cronExpression" value="0 0 2 1 1/1 ? *" />
+    </bean>
     
 	<!-- All triggers need to be added here to work -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
               	<ref bean="dailyReportGeneratorJobTrigger"/>  
-             	 
+             	<ref bean="amlReportTrigger"/>
             </list>
         </property>
     </bean>
