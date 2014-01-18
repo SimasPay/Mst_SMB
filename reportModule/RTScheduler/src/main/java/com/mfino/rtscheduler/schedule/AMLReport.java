@@ -89,7 +89,7 @@ public class AMLReport {
 			int rowNum = 0;
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			HSSFSheet sheet = workbook.createSheet("AML Report");
-			sheet.setDefaultColumnWidth(6);
+//			sheet.setDefaultColumnWidth(6);
 			HSSFRow row = sheet.createRow(rowNum++);
 			HSSFCell hcell0 = row.createCell(0);
 			hcell0.setCellValue("KTP ID");
