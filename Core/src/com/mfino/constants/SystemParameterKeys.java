@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.mfino.constants;
 
@@ -8,17 +8,17 @@ package com.mfino.constants;
  *
  */
 public class SystemParameterKeys {
-	
+
 	  //Before Correcting errors reported by Findbugs:
 		//none of the fiels were final
-	
+
 	  //After Correcting the errors reported by Findbugs
 		//all fields are final
 	public static final String COUNTRY_CODE = "country.code";
 	public static final String SUSPENSE_POCKET_ID_KEY = "suspense.pocket.id";
 	public static final String CHARGES_POCKET_ID_KEY = "charges.pocket.id";
 	public static final String PLATFORM_DUMMY_MDN_KEY = "platform.dummy.mdn";
-	
+
 	public static final String PIN_LENGTH = "pin.length";
 	public static final String OTP_LENGTH = "otp.length";
 	public static final String DEFAULT_CURRENCY_CODE = "default.currency.code";
@@ -48,7 +48,7 @@ public class SystemParameterKeys {
 	public static final String AGENTAPP_URL_KEY = "agentapp.url";
 	public static final String PLATFORM_DUMMY_SUBSCRIBER_MDN = "platform.dummy.subscriber.mdn";
 	public static final String DEFAULT_LANGUAGE_OF_SUBSCRIBER = "default.language.of.subscriber";
-	
+
 	public static final String CHARGE_REVERSAL_FUNDING_POCKET = "charge.reversal.funding.pocket";
 	public static final String THIRDPARTY_PARTNER_MDN = "thirdparty.partner.mdn";
 	public static final String FAC_PREFIX_VALUE = "fac.prefix.value";
@@ -99,4 +99,5 @@ public class SystemParameterKeys {
 	public static final String PARTNER_REGISTER_THROUGHAPI_APPROVAL = "partner.register.throughapi.approvalrequired";
 	public static final String STARTIMES_BILLER_CODE = "startimes.biller.code";
 	public static final String RESTRICT_BANKPOCKET_TOBUY_AIRTIME = "restrict.bankpocket.tobuy.airtime";
+	public static final String MAX_DURATION_TO_FETCH_TXN_HISTORY = "max.duration.to.fetch.txn.history";
 }

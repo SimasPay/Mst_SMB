@@ -61,6 +61,7 @@ import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.util.LanguageTranslator;
 import com.mfino.transactionapi.util.PDFDocument;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
 /*
@@ -119,7 +120,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	private NotificationService notificationService;
 	
 	private static final int DEFAULT_PAGE_NO = 0;
-	private static final int MAX_DURATION_TO_FETCH_HISTORY = 90;
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(ConfigurationUtil.getPdfHistoryDateFormat());	
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
@@ -134,11 +135,11 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		
 		LastNTxnsXMLResult result = new LastNTxnsXMLResult();
 		result.setEnumTextService(enumTextService);
-		
+		int maxDurationToFetchTxnHistory = systemParametersService.getInteger(SystemParameterKeys.MAX_DURATION_TO_FETCH_TXN_HISTORY);
 		if(transactionDetails.getFromDate() != null && transactionDetails.getToDate() != null)
 		{
 			int diffInDays = (int)( (transactionDetails.getToDate().getTime() - transactionDetails.getFromDate().getTime()) / (1000 * 60 * 60 * 24) );
-			if(transactionDetails.getToDate().before(transactionDetails.getFromDate()) || diffInDays > MAX_DURATION_TO_FETCH_HISTORY)
+			if(transactionDetails.getToDate().before(transactionDetails.getFromDate()) || diffInDays > maxDurationToFetchTxnHistory)
 			{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidDateRange);
 				return result;
@@ -258,7 +259,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			}
 			result.setNotificationCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
 			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = sdf.format(new Date());
 			String fileName =  srcSubscriberMDN.getMDN() + "_" + dateString + ".pdf";
 			String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
@@ -276,7 +277,9 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				result.setDownloadURL(downloadURL);
 			}
 			else
-			{	
+			{
+				Long txnCount = commodityTransferService.getTranscationsCount(srcPocket, srcSubscriberMDN,transactionsHistory);
+				result.setTotalTxnCount(txnCount);
 				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
 			}
 		}
@@ -301,8 +304,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		String to = subscriber.getFirstName() + subscriber.getLastName();
 
 		createPDF(txnDetails, subscriberMDN, srcPocket, transactionHistoryList, filepath, sctlId);
-		String subject = "Smartfren Uangku Electronic Statement";
-		String body = "Thank you for using Uangku E-Statements Services. Please find your requested Uangku Transaction History for your selected time period. Enter your Uangku PIN to view the document."; 
+		String subject = ConfigurationUtil.getEmailPdfHistorySubject();
+		subject = subject.replace("$(FromDate)", dateFormat.format(txnDetails.getFromDate()));
+		subject = subject.replace("$(ToDate)", dateFormat.format(txnDetails.getToDate()));
+		String body = ConfigurationUtil.getEmailPdfHistoryBody();
 		mailService.asyncSendEmailWithAttachment(email, to, subject, body, filepath);
 	}
 	
@@ -310,17 +315,18 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	{
 		File file = new File(filePath);
 		PDFDocument pdfDocument = new PDFDocument(file, txnDetails.getSourcePIN());
-		String headerRow = "Tanggal | Transaksi | Jumlah";
+		Integer language = subscriberMDN.getSubscriber().getLanguage();
+		//String headerRow = "Tanggal | Transaksi | Jumlah";
+		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transactions") + " | " + LanguageTranslator.translate(language, "Amount");
 		pdfDocument.addLogo();
 		pdfDocument.addSubscriberDetailsTable(txnDetails, subscriberMDN, pocket);
 		pdfDocument.addHeaderRow(headerRow);
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Iterator<CommodityTransfer> it = transactionHistoryList.iterator();
 		while(it.hasNext())
 		{
 			CommodityTransfer ct = it.next();
-			String txnType = getTxnType(ct, pocket, subscriberMDN.getSubscriber().getLanguage());
+			String txnType = getTxnType(ct, pocket, language);
 			String rowContent = dateFormat.format(ct.getStartTime())
 								+ "|"+ txnType
 								+ "|"+ "Rp. " + MfinoUtil.getNumberFormat().format(ct.getAmount())  + (ct.getPocketBySourcePocketID().getID().equals(pocket.getID())?"(-)":"(+)");

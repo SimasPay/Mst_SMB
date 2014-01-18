@@ -157,6 +157,40 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 		List<CommodityTransfer> list = ctd.getTxnHistory(ctq);
 		return list;
 	}
+	
+	
+	/**
+	 * Returns a list of ct entries to create the transaction history.The no of items of list is based on a system paramter
+	 * Max_txn_count_in_history
+	 * @param pocket
+	 * @param subscriberMDN
+	 * @param transactionsHistory
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
+	public Long getTranscationsCount(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception {
+		log.info("getting the transaction Count for SubscriberMDN: "+(subscriberMDN!=null?subscriberMDN.getMDN():null)+
+				"and on pocket with id: "+(pocket!=null?pocket.getID():null));
+		CommodityTransferDAO ctd = DAOFactory.getInstance().getCommodityTransferDAO();
+		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();
+		CommodityTransferQuery ctq = new CommodityTransferQuery();
+		int maxCount = systemParametersService.getInteger(SystemParameterKeys.MAX_TXN_COUNT_IN_HISTORY);
+		log.info("The system parameter 'max.txn.count.in.history' is set to: "+maxCount);
+		if (maxCount != -1) {
+			transactionsHistory.setMaxCount(maxCount);
+		}
+		ctq.setSourceDestnPocket(pocket);
+		ctq.setSourceDestnMDN(subscriberMDN.getMDN());
+		if(transactionsHistory.getFromDate() != null && transactionsHistory.getToDate() !=  null)
+		{
+			ctq.setStartTimeGE(transactionsHistory.getFromDate());
+			ctq.setStartTimeLT(transactionsHistory.getToDate());
+		}
+
+		//List<CommodityTransfer> list = ctd.get(ctq);
+		return ctd.getTxnCount(ctq);
+	}
 
 	/**
 	 * Gets the Commodity transfer record by the commodity transfer id

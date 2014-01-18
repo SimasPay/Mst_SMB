@@ -31,6 +31,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
 /**
@@ -70,7 +71,7 @@ public class PDFDocument {
 			
 			this.document.setMargins(0, 0, 0, 36);
 			
-			HeaderFooter headerFooter = new HeaderFooter(new Phrase("\u00a9 2013 PT Smartfren Telecom. All Rights reserved"), false);
+			HeaderFooter headerFooter = new HeaderFooter(new Phrase(ConfigurationUtil.getPdfHistoryFooter()), false);
 			headerFooter.setAlignment(Element.ALIGN_CENTER);
 			headerFooter.setBorder(0);
 			this.document.setFooter(headerFooter);
@@ -88,7 +89,8 @@ public class PDFDocument {
 			
 			//PdfPTable logoTable = new PdfPTable(1);			
 			
-			InputStream is = this.getClass().getResourceAsStream("/logo.png");
+			//InputStream is = this.getClass().getResourceAsStream("/logo.png");
+			InputStream is = this.getClass().getResourceAsStream("/../../images/pdf_header_logo.png");
 			byte[] bytes = IOUtils.toByteArray(is);
 			Image image = Image.getInstance(bytes);
 			image.scaleAbsolute(100, 0);
@@ -285,9 +287,9 @@ public class PDFDocument {
 		period = "Period";
 		transactionDetails = "Transaction Details" ;
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(ConfigurationUtil.getPdfHistoryDateFormat());
 		String dateVal = dateFormat.format(new Date());
-		String periodVal = dateFormat.format(txnDetails.getFromDate()) + " - " + dateFormat.format(txnDetails.getToDate());
+		String periodVal = dateFormat.format(txnDetails.getFromDate()) + " to " + dateFormat.format(txnDetails.getToDate());
 		
 		if(txnDetails.getServiceName().equals(ServiceAndTransactionConstants.SERVICE_NFC))
 		{

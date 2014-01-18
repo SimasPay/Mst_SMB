@@ -1,7 +1,7 @@
 {
  "1" : { 
    "language" : "Bahasa",
-   "Uangku E-Statement" : "Transaksi Uangku",
+   "Uangku E-Statement" : "Transaksi Dimo",
    "NFC Card Transactions" : "Transaksi Kartu NFC",
    "Name" : "Nama",
    "Card Name" : "Nama Kartu",
@@ -31,7 +31,7 @@
     },
  "0" : {
    "language" : "English",
-   "Uangku E-Statement" : "Uangku E-Statement",
+   "Uangku E-Statement" : "Dimo E-Statement",
    "NFC Card Transactions" : "NFC Card Transactions",
    "Name" : "Name",
    "Card Name" : "Card Name";

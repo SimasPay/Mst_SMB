@@ -527,21 +527,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     			newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getID());
     		}
     		if(requiresSuccfullTxns){
-    			List<Integer> statusList = Arrays.asList( 
-    					CmFinoFIX.SCTLStatus_Confirmed,	
-    					CmFinoFIX.SCTLStatus_Distribution_Started,
-    					CmFinoFIX.SCTLStatus_Distribution_Completed,	
-    					CmFinoFIX.SCTLStatus_Distribution_Failed,
-    					CmFinoFIX.SCTLStatus_Reverse_Requested,
-    					CmFinoFIX.SCTLStatus_Reverse_Initiated,
-    					CmFinoFIX.SCTLStatus_Reverse_Approved,
-    					CmFinoFIX.SCTLStatus_Reverse_Rejected,
-    					CmFinoFIX.SCTLStatus_Reverse_Start,
-    					CmFinoFIX.SCTLStatus_Reverse_Processing,
-    					CmFinoFIX.SCTLStatus_Reverse_Success,
-    					CmFinoFIX.SCTLStatus_Reversed,
-    					CmFinoFIX.SCTLStatus_Reverse_Failed
-    			);
+    			List<Integer> statusList = getListOfSuccessTransferStatus();
     			newQuery.setParameterList("transferStatus",  statusList);
     		}    		
 
@@ -569,6 +555,72 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	}
     	return null;
     }
+    
+    
+    public Long getTxnCount(CommodityTransferQuery query)
+    {
+    	String selectString = "select distinct count(*) from CommodityTransfer ct, ChargeTxnCommodityTransferMap ctmap, ServiceChargeTransactionLog sctl ";
+    	String orderString = " order by sctl.ID desc, ct.ID desc ";
+    	String queryString = " where ( ct.PocketBySourcePocketID = :sourcePocket" 
+    			+ " or ct.DestPocketID = :destPocketID )"
+    			+ " and ctmap.CommodityTransferID = ct.ID "
+    			+ " and sctl.ID = ctmap.SctlId "  ;
+
+    	boolean requiresSuccfullTxns = ConfigurationUtil.getRequiresSuccessfullTransactionsInEmoneyHistory();
+    	if(requiresSuccfullTxns){
+    		queryString = queryString +" and sctl.Status in ( :transferStatus )";
+    	}
+
+    	if (query.getStartTimeGE() != null) {
+    		queryString = queryString +" and sctl.CreateTime >= :startTimeGE" ;
+    	}
+
+    	if (query.getStartTimeLT() != null) {
+    		queryString = queryString +" and sctl.CreateTime < :startTimeLT";
+    	}
+
+    	Query newQuery = getSession().createQuery(selectString + queryString + orderString); 
+    	if (query.getSourceDestnPocket() != null)
+    	{
+    		newQuery.setParameter("sourcePocket" , query.getSourceDestnPocket());
+    		newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getID());
+    	}
+    	if(requiresSuccfullTxns){
+    		List<Integer> statusList = getListOfSuccessTransferStatus();
+    		newQuery.setParameterList("transferStatus",  statusList);
+    	}    		
+
+    	if (query.getStartTimeGE() != null) {
+    		newQuery.setParameter("startTimeGE", query.getStartTimeGE());
+    	}
+
+    	if (query.getStartTimeLT() != null) {
+    		newQuery.setParameter("startTimeLT", query.getStartTimeLT());
+    	}
+
+    	return (Long) newQuery.list().get(0);
+    }
+    
+    private List<Integer> getListOfSuccessTransferStatus()
+    {
+    	List<Integer> statusList = Arrays.asList( 
+				CmFinoFIX.SCTLStatus_Confirmed,	
+				CmFinoFIX.SCTLStatus_Distribution_Started,
+				CmFinoFIX.SCTLStatus_Distribution_Completed,	
+				CmFinoFIX.SCTLStatus_Distribution_Failed,
+				CmFinoFIX.SCTLStatus_Reverse_Requested,
+				CmFinoFIX.SCTLStatus_Reverse_Initiated,
+				CmFinoFIX.SCTLStatus_Reverse_Approved,
+				CmFinoFIX.SCTLStatus_Reverse_Rejected,
+				CmFinoFIX.SCTLStatus_Reverse_Start,
+				CmFinoFIX.SCTLStatus_Reverse_Processing,
+				CmFinoFIX.SCTLStatus_Reverse_Success,
+				CmFinoFIX.SCTLStatus_Reversed,
+				CmFinoFIX.SCTLStatus_Reverse_Failed
+		);
+    	return statusList;
+    }
+    
 
     public List<CommodityTransfer> get(CommodityTransferQuery query) throws Exception {
     	if (query.getSourceDestnPocket() != null 

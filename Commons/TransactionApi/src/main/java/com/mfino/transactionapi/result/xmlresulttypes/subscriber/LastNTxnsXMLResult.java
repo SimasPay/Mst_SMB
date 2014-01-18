@@ -23,6 +23,7 @@ public class LastNTxnsXMLResult extends XMLResult {
 	private static final String TRANSACTION_FLAG_DEBIT = "D";
 	private NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 	private String downloadURL;
+	private Long totalTxnCount;
 	
 	public LastNTxnsXMLResult() {
 		super();
@@ -40,6 +41,12 @@ public class LastNTxnsXMLResult extends XMLResult {
 			getXmlWriter().writeEndElement();
 		}
 
+		if(getTotalTxnCount() != null)
+		{
+			getXmlWriter().writeStartElement("totalTxnCount");
+			getXmlWriter().writeCharacters(String.valueOf(getTotalTxnCount()),false);
+			getXmlWriter().writeEndElement();
+		}
 		getXmlWriter().writeStartElement("Name");
 		getXmlWriter().writeCharacters((getFirstName() != null ? getFirstName() + " ": "") + (getLastName() != null ? getLastName(): "") ,false);
 		getXmlWriter().writeEndElement();
@@ -238,6 +245,14 @@ public class LastNTxnsXMLResult extends XMLResult {
 
 	public void setDownloadURL(String downloadURL) {
 		this.downloadURL = downloadURL;
+	}
+
+	public Long getTotalTxnCount() {
+		return totalTxnCount;
+	}
+
+	public void setTotalTxnCount(Long totalTxnCount) {
+		this.totalTxnCount = totalTxnCount;
 	}
 }
 

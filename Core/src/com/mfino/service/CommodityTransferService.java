@@ -46,6 +46,16 @@ public interface CommodityTransferService {
 	public List<CommodityTransfer> getTranscationsHistory(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception;
 
 	/**
+	 * 
+	 * @param pocket
+	 * @param subscriberMDN
+	 * @param transactionsHistory
+	 * @return
+	 * @throws Exception
+	 */
+	public Long getTranscationsCount(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception;
+
+	/**
 	 * Gets the Commodity transfer record by the commodity transfer id
 	 * @param commodityTransferId
 	 * @return
@@ -53,5 +63,7 @@ public interface CommodityTransferService {
 	public CommodityTransfer getCommodityTransferById(Long commodityTransferId);
 	
 	public List<CommodityTransfer>  get(CommodityTransferQuery query) throws Exception;
+
+	
 
 }
