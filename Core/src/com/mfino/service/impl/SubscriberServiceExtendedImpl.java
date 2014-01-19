@@ -316,7 +316,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			CMSubscriberRegistrationThroughWeb subscriberRegistration) {
 		SubscriberMDN existingSubscriberMDN = subscriberMdnDao
 				.getByMDN(subscriberRegistration.getSourceMDN());
-				
+		
+		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
+		
 		if (existingSubscriberMDN == null || existingSubscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered)) {
 			Subscriber subscriber = new Subscriber();
 			SubscriberMDN subscriberMDN = new SubscriberMDN();
@@ -441,10 +443,28 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			{
 				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
 			}
+			
 			PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 			
-			pocketService.createPocket(svaPocketTemplate, subscriberMDN,
-					CmFinoFIX.PocketStatus_Active, true, cardPan);
+			if (isUnRegistered) {
+				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+				// ideally there should be only one pocket
+				if (pockets.size() == 1) {
+					Pocket pocket = pockets.iterator().next();
+					if (pocket != null) {
+						pocket.setPocketTemplate(svaPocketTemplate);
+						pocket.setStatus(CmFinoFIX.PocketStatus_Active);
+						pocketDao.save(pocket);
+						return CmFinoFIX.ResponseCode_Success;
+					}
+				}
+				return CmFinoFIX.NotificationCode_MoneySVAPocketNotFound;
+			}
+			else
+			{
+				pocketService.createPocket(svaPocketTemplate, subscriberMDN,
+						CmFinoFIX.PocketStatus_Active, true, cardPan);
+			}
 
 			return CmFinoFIX.ResponseCode_Success;
 		}
