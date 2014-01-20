@@ -75,8 +75,11 @@ public class AMLReport {
 			
 			Query curr_mon_query = session.createSQLQuery(sqlQuery);
 			Calendar cal = Calendar.getInstance();
-			int currMonth = cal.get(Calendar.MONTH)+1;
-			int currYear = cal.get(Calendar.YEAR);
+			int calMonth = cal.get(Calendar.MONTH)+1;
+			int calYear = cal.get(Calendar.YEAR);
+			
+			int currMonth = (calMonth == 1) ? 12 : (calMonth - 1);
+			int currYear = (calMonth == 1) ? (calYear -1) : calYear;
 			curr_mon_query.setParameter("month", currMonth);
 			curr_mon_query.setParameter("year", currYear);
 			
