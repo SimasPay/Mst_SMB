@@ -117,35 +117,74 @@ public class ServiceChargeTransactionExcelView extends AbstractExcelView {
         
         HSSFCell header25 = getCell(sheet, currentRow, 24);
         setText(header25, "Operator Response Code");
-        
+
     }
 
     private void fillPartnerCells(CMJSServiceChargeTransactions.CGEntries jsSCTL, HSSFRow row) {
-    	row.createCell(0).setCellValue(jsSCTL.getID());
-    	row.createCell(1).setCellValue(jsSCTL.getTransactionName());
-    	row.createCell(2).setCellValue(jsSCTL.getTransactionAmount().doubleValue());
-    	row.createCell(3).setCellValue(jsSCTL.getCalculatedCharge().doubleValue());
-    	row.createCell(4).setCellValue(jsSCTL.getChargeModeText());
-    	row.createCell(5).setCellValue(jsSCTL.getTransferStatusText());
-    	row.createCell(6).setCellValue(jsSCTL.getFailureReason());
-    	row.createCell(7).setCellValue(jsSCTL.getSourceMDN());
-    	row.createCell(8).setCellValue(jsSCTL.getDestMDN());
-    	row.createCell(9).setCellValue(jsSCTL.getSourcePartnerCode());
-    	row.createCell(10).setCellValue(jsSCTL.getDestPartnerCode());
-    	row.createCell(11).setCellValue(jsSCTL.getMFSBillerCode());
-    	row.createCell(12).setCellValue(jsSCTL.getBankRetrievalReferenceNumber());
-    	row.createCell(13).setCellValue(jsSCTL.getServiceName());
-    	row.createCell(14).setCellValue(df.format(jsSCTL.getTransactionTime()));
-    	row.createCell(15).setCellValue(jsSCTL.getAccessMethodText());    	
-    	row.createCell(16).setCellValue(jsSCTL.getAdditionalInfo());
-    	row.createCell(17).setCellValue(jsSCTL.getInfo1());
-    	row.createCell(18).setCellValue(jsSCTL.getIntegrationType());
-    	row.createCell(19).setCellValue(jsSCTL.getReconcilationID1());
-    	row.createCell(20).setCellValue(jsSCTL.getReconcilationID2());
-    	row.createCell(21).setCellValue(jsSCTL.getReconcilationID3());
-    	row.createCell(22).setCellValue(jsSCTL.getInvoiceNo());
-    	row.createCell(23).setCellValue(jsSCTL.getDescription());
-    	row.createCell(24).setCellValue(jsSCTL.getOperatorResponseCode());
+    	
+    	if(jsSCTL.getID() != null)
+    	{
+    		row.createCell(0).setCellValue(jsSCTL.getID());
+    	}
+    	else
+    	{
+    		row.createCell(0).setCellValue("");
+    	}
+    	row.createCell(1).setCellValue(safeString(jsSCTL.getTransactionName()));
+    	if(jsSCTL.getTransactionAmount() != null)
+    	{
+    		row.createCell(2).setCellValue(jsSCTL.getTransactionAmount().doubleValue());
+    	}
+    	else
+    	{
+    		row.createCell(2).setCellValue("");
+    	}
+    	
+    	if(jsSCTL.getCalculatedCharge() != null)
+    	{
+    		row.createCell(3).setCellValue(jsSCTL.getCalculatedCharge().doubleValue());
+    	}
+    	else
+    	{
+    		row.createCell(3).setCellValue("");
+    	}
+    	row.createCell(4).setCellValue(safeString(jsSCTL.getChargeModeText()));
+    	row.createCell(5).setCellValue(safeString(jsSCTL.getTransferStatusText()));
+    	row.createCell(6).setCellValue(safeString(jsSCTL.getFailureReason()));
+    	row.createCell(7).setCellValue(safeString(jsSCTL.getSourceMDN()));
+    	row.createCell(8).setCellValue(safeString(jsSCTL.getDestMDN()));
+    	row.createCell(9).setCellValue(safeString(jsSCTL.getSourcePartnerCode()));
+    	row.createCell(10).setCellValue(safeString(jsSCTL.getDestPartnerCode()));
+    	row.createCell(11).setCellValue(safeString(jsSCTL.getMFSBillerCode()));
+    	row.createCell(12).setCellValue(safeString(jsSCTL.getBankRetrievalReferenceNumber()));
+    	row.createCell(13).setCellValue(safeString(jsSCTL.getServiceName()));
+    	
+    	if(jsSCTL.getTransactionTime() != null)
+    	{
+    		row.createCell(14).setCellValue(df.format(jsSCTL.getTransactionTime()));
+    	}
+    	else
+    	{
+    		row.createCell(14).setCellValue("");
+    	}
+    	row.createCell(15).setCellValue(safeString(jsSCTL.getAccessMethodText()));    	
+    	row.createCell(16).setCellValue(safeString(jsSCTL.getAdditionalInfo()));
+    	row.createCell(17).setCellValue(safeString(jsSCTL.getInfo1()));
+    	row.createCell(18).setCellValue(safeString(jsSCTL.getIntegrationType()));
+    	row.createCell(19).setCellValue(safeString(jsSCTL.getReconcilationID1()));
+    	row.createCell(20).setCellValue(safeString(jsSCTL.getReconcilationID2()));
+    	row.createCell(21).setCellValue(safeString(jsSCTL.getReconcilationID3()));
+    	row.createCell(22).setCellValue(safeString(jsSCTL.getInvoiceNo()));
+    	row.createCell(23).setCellValue(safeString(jsSCTL.getDescription()));
+    	
+    	if(jsSCTL.getOperatorResponseCode() != null)
+    	{
+    		row.createCell(24).setCellValue(jsSCTL.getOperatorResponseCode());
+    	}
+    	else
+    	{
+    		row.createCell(24).setCellValue("");
+    	}
     }
 
     @SuppressWarnings("rawtypes")
@@ -259,4 +298,10 @@ public class ServiceChargeTransactionExcelView extends AbstractExcelView {
             log.error("Error in Transactions Excel Dowload ::",error);
         }
     }
+    
+    public String safeString(String str)
+    {
+		if((null != str)) return str;	
+		return "";
+	}
 }
