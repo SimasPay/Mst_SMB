@@ -209,7 +209,9 @@ public class UserDataToTxnDetailsConverter {
 		if(StringUtils.isNotBlank(userDataContainer.getToDate())){
 			txnDetails.setToDate(getDate(userDataContainer.getToDate(), ApiConstants.PARAMETER_TO_DATE));
 		}
-		
+		txnDetails.setAddressLine1(userDataContainer.getAddressLine1());
+		txnDetails.setZipCode(userDataContainer.getZipCode());
+		txnDetails.setState(userDataContainer.getState());
 		return txnDetails;
 	}
 	

@@ -110,18 +110,24 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		String lastName = transactionDetails.getLastName();
 		String kycType = transactionDetails.getKycType();
 		String city = transactionDetails.getCity();
-		String transID = transactionDetails.getTransID();
+		String idNumber = transactionDetails.getIdNumber();
 		Date dob = transactionDetails.getDateOfBirth();
 		
-		log.info(String.format("Handling UpgradeKyc request for MDN:%s, KycType:%s, FirstName:%s, LastName:%s, City:%s, TransID:%s, dob:%s",sourceMdn, kycType, firstName, lastName, city, transID, dob.toString()));
+		log.info(String.format("Handling UpgradeKyc request for MDN:%s, KycType:%s, FirstName:%s, LastName:%s, AddressLine1:%s, City:%s, State:%S, " +
+				"ZipCode:%s, IDType:%S, IDNumber:%s, dob:%s",
+				sourceMdn, kycType, firstName, lastName, transactionDetails.getAddressLine1(),city, transactionDetails.getState(), 
+				transactionDetails.getZipCode(), transactionDetails.getIdType(), idNumber, dob.toString()));
 		
 		XMLResult result = new KYCUpgradeXMLResult();
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		CMKYCUpgrade kycUpgrade = new CMKYCUpgrade();
 		ChannelCode	cc = transactionDetails.getCc();
+		kycUpgrade.setSourceMDN(sourceMdn);
 		kycUpgrade.setFirstName(firstName);
 		kycUpgrade.setLastName(lastName);
 		kycUpgrade.setKYCLevel(new Long(kycType));
+		kycUpgrade.setIDType(transactionDetails.getIdType());
+		kycUpgrade.setIDNumber(idNumber);
 		kycUpgrade.setCity(city);
 		if(dob != null){
 			kycUpgrade.setDateOfBirth(new Timestamp(dob));
@@ -134,7 +140,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		result.setSourceMessage(kycUpgrade);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		result.setTransactionID(transactionsLog.getID());
-		result.setTransID(transID);
+		result.setIdNumber(idNumber);
 		result.setSourceMDN(sourceMdn);
 		
 		KYCLevel kycLevel = kycLevelService.getByKycLevel(new Long(kycType));
@@ -226,17 +232,19 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		if(address == null){
 			address = new Address();
 		}
+		address.setLine1(transactionDetails.getAddressLine1());
 		address.setCity(city);
+		address.setState(transactionDetails.getState());
+		address.setZipCode(transactionDetails.getZipCode());
 		srcSub.setKYCLevelByKYCLevel(kycLevel);
 		srcSub.setFirstName(firstName);
 		srcSub.setLastName(lastName);
 		srcSub.setDateOfBirth(new Timestamp(dob));
 		srcSub.setAddressBySubscriberAddressID(address);
+		srcMDN.setIDType(transactionDetails.getIdType());
+		srcMDN.setIDNumber(idNumber);
 		srcPocket.setPocketTemplate(pkTem);
 		
-		if (StringUtils.isNotBlank(transID)) {
-			sctl.setIntegrationTransactionID(new Long(transID));
-		}
 		sctl.setCalculatedCharge(BigDecimal.ZERO);
 		transactionChargingService.completeTheTransaction(sctl);
 		subscriberMdnService.saveSubscriberMDN(srcMDN);

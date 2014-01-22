@@ -203,6 +203,26 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 					ApiConstants.PARAMETER_CITY);
 		}		
 	}
+
+	public void validateAddressLine1(TransactionDetails transactionDetails)  throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getAddressLine1())) {
+			throw new InvalidDataException("Invalid Address Line1", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_ADDRESS_LINE_1);
+		}		
+	}
+	
+	public void validateZipCode(TransactionDetails transactionDetails)  throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getZipCode())) {
+			throw new InvalidDataException("Invalid Zip Code", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_ZIP_CODE);
+		}		
+	}
+	public void validateState(TransactionDetails transactionDetails)  throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getState())) {
+			throw new InvalidDataException("Invalid State", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_STATE);
+		}		
+	}
 	
 	public void validateKycType(TransactionDetails transactionDetails)  throws InvalidDataException {
 		if (StringUtils.isBlank(transactionDetails.getKycType())) {
@@ -963,10 +983,14 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	
 	@Override
 	public void validateKYCUpgrade(TransactionDetails transactionDetails)throws InvalidDataException {
-		validateTransID(transactionDetails);
+		validateIdType(transactionDetails);
+		validateIdNumber(transactionDetails);
 		validateFirstName(transactionDetails);
 		validateLastName(transactionDetails);
+		validateAddressLine1(transactionDetails);
 		validateCity(transactionDetails);
+		validateState(transactionDetails);
+		validateZipCode(transactionDetails);
 		validateDateOfBirth(transactionDetails);
 		validateKycType(transactionDetails);
 		validatechannelCode(transactionDetails);

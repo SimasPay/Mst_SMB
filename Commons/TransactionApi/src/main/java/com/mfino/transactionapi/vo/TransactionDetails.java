@@ -151,8 +151,9 @@ public class TransactionDetails {
 	private Date fromDate;
 	private Date toDate;
 	private String paymentMode;
-	
-	
+	private String addressLine1;
+	private String zipCode;
+	private String state;
 	
 	public String getTransactionTypeName() {
 		return transactionTypeName;
@@ -991,5 +992,23 @@ public class TransactionDetails {
 	}
 	public void setToDate(Date toDate) {
 		this.toDate = toDate;
+	}
+	public String getAddressLine1() {
+		return addressLine1;
+	}
+	public void setAddressLine1(String addressLine1) {
+		this.addressLine1 = addressLine1;
+	}
+	public String getZipCode() {
+		return zipCode;
+	}
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
 	}
 }

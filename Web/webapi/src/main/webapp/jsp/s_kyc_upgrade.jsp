@@ -46,12 +46,28 @@
 		<td><input type="text" name="dob" value="" /><em>ddMMyyyy</em></td>
 	</tr>
 	<tr>
+		<td>Address Line1*</td>
+		<td><input type="text" name="addressLine1" value="" /></td>
+	</tr>
+	<tr>
 		<td>City*</td>
 		<td><input type="text" name="city" value="" /></td>
 	</tr>
 	<tr>
-		<td>Trans ID*</td>
-		<td><input type="text" name="transID" value="" /></td>
+		<td>State*</td>
+		<td><input type="text" name="state" value="" /></td>
+	</tr>
+	<tr>
+		<td>Zip code*</td>
+		<td><input type="text" name="zipCode" value="" /></td>
+	</tr>
+	<tr>
+		<td>ID Type*</td>
+		<td><input type="text" name=idType value="" /></td>
+	</tr>	
+	<tr>
+		<td>ID Number*</td>
+		<td><input type="text" name="idNumber" value="" /></td>
 	</tr>
 	
 	<tr>

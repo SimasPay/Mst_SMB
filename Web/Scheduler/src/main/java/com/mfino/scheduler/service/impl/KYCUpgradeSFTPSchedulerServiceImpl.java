@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.scheduler.service.KYCUpgradeSFTPSchedulerService;
 import com.mfino.service.MailService;
-import com.mfino.transactionapi.service.impl.KYCUpgradeServiceImpl;
+import com.mfino.transactionapi.service.KYCUpgradeService;
 import com.mfino.util.ConfigurationUtil;
 
 /**
@@ -36,7 +36,7 @@ public class KYCUpgradeSFTPSchedulerServiceImpl implements KYCUpgradeSFTPSchedul
 
 	@Autowired
 	@Qualifier("KYCUpgradeServiceImpl")
-	private KYCUpgradeServiceImpl kycUpgradeServiceImpl;
+	private KYCUpgradeService kycUpgradeServiceImpl;
 	
 	@Autowired
 	@Qualifier("MailServiceImpl")

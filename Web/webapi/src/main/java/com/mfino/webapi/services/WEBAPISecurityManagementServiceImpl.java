@@ -313,7 +313,10 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String	authorizedFaxNumber = request.getParameter(ApiConstants.PARAMETER_AUTHORIZED_FAX_NUMBER);
 		String  paymentMode = request.getParameter(ApiConstants.PARAMETER_PAYMENT_MODE);
 		String  fromDate = request.getParameter(ApiConstants.PARAMETER_FROM_DATE);
-		String toDate = request.getParameter(ApiConstants.PARAMETER_TO_DATE);;
+		String toDate = request.getParameter(ApiConstants.PARAMETER_TO_DATE);
+		String addressLine1 = request.getParameter(ApiConstants.PARAMETER_ADDRESS_LINE_1);
+		String zipCode = request.getParameter(ApiConstants.PARAMETER_ZIP_CODE);
+		String state = request.getParameter(ApiConstants.PARAMETER_STATE);
 		
 		sourceMDN = subscriberService.normalizeMDN(sourceMDN);
 		if (! (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName) || 
@@ -440,6 +443,9 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setPaymentMode(paymentMode);
 		rudContainer.setFromDate(fromDate);
 		rudContainer.setToDate(toDate);
+		rudContainer.setAddressLine1(addressLine1);
+		rudContainer.setZipCode(zipCode);
+		rudContainer.setState(state);
 		log.info("initUserDataContainer: End");
 		return rudContainer;
 	}

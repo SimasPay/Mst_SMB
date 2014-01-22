@@ -279,6 +279,12 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_PAYMENT_MODE = "paymentMode";
 	
+	public static final String PARAMETER_ADDRESS_LINE_1 = "addressLine1";
+	
+	public static final String PARAMETER_ZIP_CODE = "zipCode";
+	
+	public static final String PARAMETER_STATE = "state";
+	
 	public static final String	DUMMY_BANK_ID	                    = "Not Yet";
 
 	public static final String	CONSTANT_VALUE_ZERO	                = "0";

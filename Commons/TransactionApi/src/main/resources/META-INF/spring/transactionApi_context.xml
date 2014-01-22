@@ -118,6 +118,7 @@
 		<osgi:service ref="InterswitchCashinStatusHandlerImpl" interface="com.mfino.transactionapi.handlers.interswitch.InterswitchCashinStatusHandler" />
 		<osgi:service ref="ReversalFromATMHandlerImpl" interface="com.mfino.transactionapi.handlers.wallet.ReversalFromATMHandler" />
 		<osgi:service ref="WithdrawFromATMHandlerImpl" interface="com.mfino.transactionapi.handlers.wallet.WithdrawFromATMHandler" />
+		<osgi:service ref="KYCUpgradeServiceImpl" interface="com.mfino.transactionapi.service.KYCUpgradeService" />
 
 		<tx:annotation-driven transaction-manager="txManager" />
 </beans>

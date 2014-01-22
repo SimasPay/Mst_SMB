@@ -812,4 +812,19 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 	public String getToDate() {
 		return this.container.getToDate();
 	}
+	
+	@Override
+	public String getAddressLine1() {
+		return this.container.getAddressLine1();
+	}
+	
+	@Override
+	public String getZipCode() {
+		return this.container.getZipCode();
+	}
+	
+	@Override
+	public String getState() {
+		return this.container.getState();
+	}	
 }

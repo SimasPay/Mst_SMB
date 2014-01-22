@@ -335,4 +335,7 @@ public interface IUserDataContainer {
 	public abstract String  getPaymentMode();
 	public abstract String  getFromDate();
 	public abstract String  getToDate();
+	public abstract String getAddressLine1();
+	public abstract String getZipCode();
+	public abstract String getState();
 }

@@ -11,4 +11,5 @@ package com.mfino.transactionapi.service;
 public interface KYCUpgradeService {
 
 	public boolean processKYCUpgradeFile(String filePath);
+	public String generateFilePath(String filePath, String extraString);
 }

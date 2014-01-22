@@ -21,15 +21,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.result.XMLResult;
 import com.mfino.service.ChannelCodeService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
+import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.account.impl.KYCUpgradeHandlerImpl;
 import com.mfino.transactionapi.service.KYCUpgradeService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.DateUtil;
 
 /**
  * @author Bala Sunku
@@ -51,7 +55,11 @@ public class KYCUpgradeServiceImpl implements KYCUpgradeService {
 	
 	@Autowired
 	@Qualifier("SubscriberServiceImpl")
-	private SubscriberService subscriberService;	
+	private SubscriberService subscriberService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;	
 
 	/**
 	 * Process the Kyc upgrade file at the given path
@@ -115,22 +123,37 @@ public class KYCUpgradeServiceImpl implements KYCUpgradeService {
 
 		try {
 			lineData = line.split(filedSeperator);
+			if (lineData.length < 11) {
+				throw new InvalidDataException("Invalid Complete Record");
+			}
 			String sourceMDN = lineData[0];
 			String firstName = lineData[1];
 			String lastName = lineData[2];
 			String dob = lineData[3];
-			String city = lineData[4];
-			String kycType = lineData[5];
+			String addressLine1 = lineData[4];
+			String city = lineData[5];
+			String state = lineData[6];
+			String zipCode = lineData[7];
+			String idType = lineData[8];
+			String idNumber = lineData[9];
+			String kycType = lineData[10];
 			if (StringUtils.isBlank(sourceMDN) || StringUtils.isBlank(firstName) || StringUtils.isBlank(lastName) ||
-					StringUtils.isBlank(dob) || StringUtils.isBlank(city) || StringUtils.isBlank(kycType)) {
-				throw new InvalidDataException("Invalid Data");
+					StringUtils.isBlank(dob) || StringUtils.isBlank(addressLine1) || StringUtils.isBlank(city) || 
+					StringUtils.isBlank(zipCode) || StringUtils.isBlank(idType) || StringUtils.isBlank(idNumber) || 
+					StringUtils.isBlank(kycType) || StringUtils.isBlank(state)) {
+				throw new InvalidDataException("Invalid Data: Some of the fields are empty");
 			}
 			transactionDetails = new TransactionDetails();
 			transactionDetails.setSourceMDN(subscriberService.normalizeMDN(sourceMDN));
 			transactionDetails.setFirstName(firstName);
 			transactionDetails.setLastName(lastName);
 			transactionDetails.setDateOfBirth(getDate(dob));
+			transactionDetails.setAddressLine1(addressLine1);
 			transactionDetails.setCity(city);
+			transactionDetails.setState(state);
+			transactionDetails.setZipCode(zipCode);
+			transactionDetails.setIdType(idType);
+			transactionDetails.setIdNumber(idNumber);
 			transactionDetails.setKycType(kycType);
 			transactionDetails.setCc(channelCode);
 			
@@ -190,6 +213,15 @@ public class KYCUpgradeServiceImpl implements KYCUpgradeService {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 			dateFormat.setLenient(false);
 			dateOfBirth = dateFormat.parse(dateStr);
+			int minAge = systemParametersService.getInteger(SystemParameterKeys.MIN_REGISTRATION_AGE);
+			Date minAgeDate = DateUtil.addYears(new Date(), -(minAge));
+			if(minAgeDate.before(dateOfBirth)){
+				throw new InvalidDataException("Invalid Date of birth. Minimum age is: "+ minAge);
+			}
+			Date maxAgeDate = DateUtil.addYears(new Date(), -100);
+			if(maxAgeDate.after(dateOfBirth)) {
+				throw new InvalidDataException("Invalid Date of birth. Maximum age is: "+ minAge);
+			}
 		} catch (ParseException e) {
 			log.error("Error: Exception in Registration, Invalid Date:" + dateStr, e);
 			throw new InvalidDataException("Invalid Date format: " + dateStr);
