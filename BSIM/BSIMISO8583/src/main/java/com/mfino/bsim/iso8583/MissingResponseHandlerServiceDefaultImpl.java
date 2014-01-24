@@ -1,8 +1,14 @@
 package com.mfino.bsim.iso8583;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.InterBankTransfersDao;
+import com.mfino.dao.query.InterBankTransfersQuery;
+import com.mfino.domain.InterbankTransfer;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferReversalFromBank;
@@ -67,6 +73,19 @@ public class MissingResponseHandlerServiceDefaultImpl {
 			reversalFixMsg.setBankSystemTraceAuditNumber((moneyTransferToBank.getTransactionID() % 1000000) + "");
 			reversalFixMsg.setTransactionID(reversalFixMsg.getTransactionID() + 1);
 			reversalFixMsg.setBankRetrievalReferenceNumber(reversalFixMsg.getTransactionID() + "");
+			
+			// Setting DestBankCode separately as it is not part of MoneyTransferToBank - Hence would not copy from original message
+			InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
+			InterBankTransfersQuery query = new InterBankTransfersQuery();
+			query.setSctlId(moneyTransferToBank.getServiceChargeTransactionLogID());
+			List<InterbankTransfer> ibtList = interBankTransferDao.get(query);
+			
+			if(ibtList!=null && !ibtList.isEmpty())
+			{
+				//Only there should be one record for a given sctld
+				reversalFixMsg.setDestBankCode(ibtList.get(0).getDestBankCode());
+			}
+						
 			mesg.setResponse(reversalFixMsg);
 		}
 		// no response for reversal also

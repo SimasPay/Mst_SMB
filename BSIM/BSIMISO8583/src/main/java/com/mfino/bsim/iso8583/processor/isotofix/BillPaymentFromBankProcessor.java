@@ -50,7 +50,7 @@ public class BillPaymentFromBankProcessor implements BSIMISOtoFixProcessor{
 			for(int i=0; i<totalRows;i++){
 				if(response.length() >= 38){
 					if(StringUtils.isNotBlank(response.trim())){
-						DE62 = DE62+"|"+response.substring(0,38);
+						DE62 = DE62+"|"+response.substring(0,38).trim();
 					}	
 					response = response.substring(38);
 				}

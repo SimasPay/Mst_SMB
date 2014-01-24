@@ -358,6 +358,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		}else{
 			billPayrevtobank.setProcessingCode("50");
 		}
+		billPayrevtobank.setSourceCardPAN(billPayrevToBank.getSourceCardPAN());
 		log.info("BillPaymentServiceImpl :: set prefix processing code :" + billPayrevtobank.getProcessingCode());
 		mceMessage.setResponse(billPayrevtobank);
 		mceMessage.setDestinationQueue(reversalQueue);
