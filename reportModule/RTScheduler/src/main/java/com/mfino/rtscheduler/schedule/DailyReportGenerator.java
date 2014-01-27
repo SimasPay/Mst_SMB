@@ -63,7 +63,7 @@ public class DailyReportGenerator {
 	protected static HibernateSessionHolder hibernateSessionHolder = null;
 	private int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 	private Properties prop = new Properties();
-	private String oneDayFileNameContent = "OneDay";
+	private String oneDayFileNameContent = "Daily";
 	static {
 		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("..//spring-datasource-beans.xml");
 		//ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("com\\mfino\\rtscheduler\\schedule\\spring.xml");
@@ -249,8 +249,8 @@ public class DailyReportGenerator {
 		sb.append(File.separator);
 		sb.append(inputFileName.replace(".prpt", ""));
 		sb.append("_");
-		sb.append(start);
-		sb.append("-");
+		//sb.append(start);
+		//sb.append("-");
 		sb.append(end);
 		//System.out.println(sb);
 		return sb.toString();
