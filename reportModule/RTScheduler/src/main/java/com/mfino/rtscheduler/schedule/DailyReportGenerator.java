@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mfino.hibernate.session.HibernateSessionHolder;
+import com.mfino.util.ConfigurationUtil;
 
 public class DailyReportGenerator {
 
@@ -57,6 +58,7 @@ public class DailyReportGenerator {
 	private Date startTime;
 	private String yesterdayStart;
 	private Date endTime;
+	private String footerMessage;
    
 	protected static HibernateSessionHolder hibernateSessionHolder = null;
 	private int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
@@ -72,6 +74,7 @@ public class DailyReportGenerator {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 		yesterdayEnd = fmt.format(System.currentTimeMillis());
 		endTime = fmt.parse(yesterdayEnd);
+		footerMessage = ConfigurationUtil.getReportFooter();
 		yesterdayStart = fmt.format(endTime.getTime() - MILLIS_IN_DAY);
 		startTime = fmt.parse(yesterdayStart);
 		log.info("StartTime : "+startTime.toString());
@@ -335,6 +338,7 @@ public class DailyReportGenerator {
 			MasterReport report = (MasterReport) res.getResource();
 			report.getParameterValues().put("StartTime", startTime);
 			report.getParameterValues().put("EndTime", endTime);
+			report.getParameterValues().put("FooterMessage", footerMessage);
 			PdfReportUtil.createPDF(report, outputFileName + ".pdf");
 			log.info("Generated PDF report : " + outputFileName + ".pdf");
 			ExcelReportUtil.createXLS(report, outputFileName + ".xls");
@@ -356,6 +360,7 @@ public class DailyReportGenerator {
 			MasterReport report = (MasterReport) res.getResource();
 			report.getParameterValues().put("StartTime", startTime);
 			report.getParameterValues().put("EndTime", endTime);
+			report.getParameterValues().put("FooterMessage", footerMessage);
 			PdfReportUtil.createPDF(report, outputFileName + ".pdf");
 			log.info("Generated PDF report : " + outputFileName + ".pdf");
 			ExcelReportUtil.createXLS(report, outputFileName + ".xls");
@@ -376,6 +381,7 @@ public class DailyReportGenerator {
 			MasterReport report = (MasterReport) res.getResource();
 			report.getParameterValues().put("StartTime", startTime);
 			report.getParameterValues().put("EndTime", endTime);
+			report.getParameterValues().put("FooterMessage", footerMessage);
 			PdfReportUtil.createPDF(report, outputFileName + ".pdf");
 			log.info("Generated PDF report : " + outputFileName + ".pdf");
 			ExcelReportUtil.createXLS(report, outputFileName + ".xls");

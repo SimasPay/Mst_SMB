@@ -308,7 +308,8 @@ public class ConfigurationUtil {
 		PdfHistoryFooter("mfino.pdf.history.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved"),
 		EmailPdfHistorySubject("mfino.email.pdf.history.subject","Smartfren Uangku Electronic Statement"),
 		EmailPdfHistoryBody("mfino.email.pdf.history.body","Thank you for using Uangku E-Statements Services. Please find your requested Uangku Transaction History for your selected time period.   Enter your Uangku PIN to view the document."),
-		pdfHistoryDateFormat("mfino.transaction.history.pdf.datetime.format","dd/MM/yyyy");
+		pdfHistoryDateFormat("mfino.transaction.history.pdf.datetime.format","dd/MM/yyyy"),
+		ReportFooter("mfino.report.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved");
 		
 		
 		private final String key;
@@ -1233,4 +1234,9 @@ public class ConfigurationUtil {
 	public static String getPdfHistoryDateFormat() { 
 	 	return get(ConfigurationKey.pdfHistoryDateFormat); 
 	 } 
+	
+	public static String getReportFooter() { 
+	 	return get(ConfigurationKey.ReportFooter); 
+	 }
+	
 }
