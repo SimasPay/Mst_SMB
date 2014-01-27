@@ -447,6 +447,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 			
 			if (isUnRegistered) {
+				log.info("Updating the Unregistered transfers status as Subscriver Active and changing the pocket status to Active");
+				updateUnRegisteredTxnInfoToActivated(subscriberMDN);
 				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
 				// ideally there should be only one pocket
 				if (pockets.size() == 1) {
@@ -1197,6 +1199,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				.getInstance().getUnRegisteredTxnInfoDAO();
 		UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
 		txnInfoQuery.setSubscriberMDNID(subscriberMDN.getID());
+		Integer[] status = new Integer[2];
+		status[0] = CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED;
+		status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
+		txnInfoQuery.setMultiStatus(status);
 		List<UnRegisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
 				.get(txnInfoQuery);
 		for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
