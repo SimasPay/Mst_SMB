@@ -61,7 +61,7 @@ copy Smart\SmartConfiguration\src\main\jpos\mux_config_nfc.xml %1\servicemix\jpo
 copy Smart\SmartConfiguration\src\main\jpos_cfg\iso87ascii-nfc.xml %1\servicemix\jpos\jpos_cfg\
 
 rem Hub Bill payment
-
+copy GTBank\BillPayments\target\BillPayments-0.1-SNAPSHOT.jar %1\servicemix\
 copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_billpay_configuration.xml %1\servicemix
 copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_hub_xml_configuration.xml %1\servicemix
 copy Hub\HubXMLRPC\target\HubXMLRPC-0.1-SNAPSHOT.jar %1\servicemix
