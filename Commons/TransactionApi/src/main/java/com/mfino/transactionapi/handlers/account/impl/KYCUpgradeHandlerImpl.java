@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,6 +148,13 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
 			return result;
 		}
+		
+		if (!(CmFinoFIX.SubscriberKYCLevel_UnBanked.equals(kycLevel.getKYCLevel())) ){
+			log.info("KYCUpgrade: Failed to upgrade the KYC level to:"+kycType);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
+			return result;
+		}
+		
 		result.setKycLevel(kycLevel.getKYCLevelName());
 		SubscriberMDN srcMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		

@@ -30,9 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.KYCLevel;
-import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
 import com.mfino.exceptions.CoreException;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.exceptions.InvalidMDNException;
@@ -43,7 +40,6 @@ import com.mfino.service.MfinoService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.NotificationService;
 import com.mfino.service.PartnerService;
-import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
@@ -147,10 +143,6 @@ public class WebApiRequestController {
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
-	
-	@Autowired
-	@Qualifier("SubscriberMdnServiceImpl")
-	private SubscriberMdnService subscriberMdnService;
 	
 	@RequestMapping(value = "/sdynamic", method = {RequestMethod.GET, RequestMethod.POST})
 	public void getHttpsRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -285,24 +277,7 @@ public class WebApiRequestController {
 					// Not a valid mode provided by the requester.
 					throw new InvalidDataException("InvalidService", CmFinoFIX.NotificationCode_FeatureNotAvailable,transactionDetails.getServiceName());
 				}
-				
-				
-				//Not allowing any money transactions for non-kyc subscriber
-				SubscriberMDN srcMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
-				if(transactionDetails.getAmount() != null && transactionDetails.getAmount().intValue() > 0){
-					if(srcMDN == null){
-						webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_MDNNotFound, servletOutputWriter, sourceMDN, "Error occured");
-						return;
-					}
-					Subscriber srcSub = srcMDN.getSubscriber();
-					KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
-					if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
-						log.info(String.format("MoneyTransfer is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
-						webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed, servletOutputWriter, sourceMDN, "Error occured");
-						return;
-					}
-				}
-								
+
 				//actor channel mapping
 				boolean isTransactionApproved = actorChannelValidationService.validateTransaction(transactionDetails);
 			

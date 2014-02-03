@@ -17,11 +17,13 @@ import org.springframework.stereotype.Service;
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
@@ -116,6 +118,14 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 			result.setNotificationCode(validationResult);
 			return result;
 		}
+		
+		Subscriber srcSub = srcSubscriberMDN.getSubscriber();
+		KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
+		if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
+			log.info(String.format("Cash-out transaction is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
+			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);
+			return result;
+		}		
 		
 		Pocket srcSubscriberPocket = pocketService.getDefaultPocket(srcSubscriberMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
