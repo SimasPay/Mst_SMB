@@ -17,10 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.mfino.constants.ReportParameterKeys;
-import com.mfino.module.DefaultModule;
 import com.mfino.rtscheduler.schedule.DailyReportGenerator;
 import com.mfino.util.DateUtil;
 
@@ -46,11 +43,10 @@ public class AdminReportServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		
 		
-		Injector injector = Guice.createInjector(new DefaultModule());;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		String reportName=request.getParameter(ReportParameterKeys.REPORT_PARAMETER_NAME);
-		String reportClass=request.getParameter(ReportParameterKeys.REPORT_PARAMETER_CLASSNAME);
-		
+		String generatedFileName = request.getParameter(ReportParameterKeys.REPORT_PARAMETER_GENERATEDFILENAME);
+		String userName = request.getParameter(ReportParameterKeys.REPORT_PARAMETER_USERNAME);
 		Date enddate = new Date();
 		Date startdate = null;
 		try {
@@ -65,7 +61,7 @@ public class AdminReportServlet extends HttpServlet {
 			}
 		DailyReportGenerator report = new DailyReportGenerator();
 		
-		report.generateReportsOnDemand(startdate,enddate,reportName);
+		report.generateReportsOnDemand(startdate,enddate,reportName,generatedFileName, userName);
 		
 			
 	    }catch (Exception e) {

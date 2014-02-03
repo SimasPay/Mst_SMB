@@ -38,6 +38,8 @@ public class ReportParameterKeys {
 	public static final String REPORT_PARAMETER_CLASSNAME ="reportClassName";
 	public static final String REPORT_PARAMETER_STARTDATE ="startDate";
 	public static final String REPORT_PARAMETER_ENDDATE ="endDate";
+	public static final String REPORT_PARAMETER_GENERATEDFILENAME = "generatedReportFileName";
+	public static final String REPORT_PARAMETER_USERNAME = "userName";
 	public static final String REPORT_BALANCESHEET = "MFSBalanceSheet";
 	public static final String REPORT_CASHFLOW = "CashFlowStatement";
 	public static final String REPORT_INCOME = "MFSIncomeReport";

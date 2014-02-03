@@ -28,6 +28,7 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
+import jxl.read.biff.BiffException;
 
 import org.apache.commons.io.FileUtils;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
@@ -40,8 +41,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.mfino.domain.User;
 import com.mfino.hibernate.session.HibernateSessionHolder;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.ReportUtil;
 
 public class DailyReportGenerator {
 
@@ -59,6 +62,7 @@ public class DailyReportGenerator {
 	private String yesterdayStart;
 	private Date endTime;
 	private String footerMessage;
+	private SimpleDateFormat dateFormatForReports = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
    
 	protected static HibernateSessionHolder hibernateSessionHolder = null;
 	private int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
@@ -74,7 +78,6 @@ public class DailyReportGenerator {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 		yesterdayEnd = fmt.format(System.currentTimeMillis());
 		endTime = fmt.parse(yesterdayEnd);
-		footerMessage = ConfigurationUtil.getReportFooter();
 		yesterdayStart = fmt.format(endTime.getTime() - MILLIS_IN_DAY);
 		startTime = fmt.parse(yesterdayStart);
 		log.info("StartTime : "+startTime.toString());
@@ -92,6 +95,7 @@ public class DailyReportGenerator {
 		dailyReportsInputDir = prop.getProperty("dailyReportsInputDir");
 		dailyReportsOutputDir = prop.getProperty("dailyReportsOutputDir");
 		emailRecipients = prop.getProperty("email.recipient.list");
+		footerMessage = ConfigurationUtil.getReportFooter();
 		log.info("dailyReportsInputDir :" + dailyReportsInputDir);
 		log.info("dailyReportsOutputDir :" + dailyReportsOutputDir);
 		//log.info("emailRecipients :" + emailRecipients);
@@ -179,42 +183,112 @@ public class DailyReportGenerator {
 		}
 		log.info("Scheduler Trigered, for the generation of Daily Reports has completed");
 	}
-	public void generateReportsOnDemand(Date StartTime,Date EndTime,String ReportName) throws IOException, ParseException{
-		log.info("Report generation on demand has stared");
+	public void generateReportsOnDemand(Date StartTime,Date EndTime,String ReportName, String generatedReportFileName, String userName)
+			throws IOException, ParseException{
+		log.info("Begin: generateReportsOnDemand");
 		loadProperties();
-		initaliseTimes();
 		startTime=StartTime;
 		endTime=EndTime;
-		generateReport(ReportName);
-		setZipDirs();
-		zipOutputDir = zipFiles(zipInputDir,zipOutputDir+"_pdf",".pdf");
-		if(zipOutputDir != null){
-		    if(emailRecipients!=null)
-			sendMail(emailRecipients,"DailyReports_Pdf_"+yesterdayEnd.replace("-", ""), "Attached Daily Reports Zip File", zipOutputDir);
-		}else{
-			log.info("Not able to zip the input directory "+zipInputDir+" and hence not sending mail");
+		
+	    genOnDemandReport("file:" + dailyReportsInputDir + File.separator +ReportName+".prpt", generatedReportFileName, userName);
+	    generateCSVFromXLS(generatedReportFileName+ReportUtil.EXCEL_EXTENTION);
+
+	    String zipFile = generatedReportFileName + ReportUtil.ZIP_EXTENTION;
+		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(zipFile)));
+		
+		if (new File(generatedReportFileName + ReportUtil.PDF_EXTENTION).exists()) 
+			addFileToZipFile(zos, generatedReportFileName + ReportUtil.PDF_EXTENTION);
+		if (new File(generatedReportFileName + ReportUtil.EXCEL_EXTENTION).exists())
+			addFileToZipFile(zos, generatedReportFileName + ReportUtil.EXCEL_EXTENTION);
+		if (new File(generatedReportFileName + ReportUtil.CSV_EXTENTION).exists())
+			addFileToZipFile(zos, generatedReportFileName + ReportUtil.CSV_EXTENTION);
+		
+		zos.flush();
+		zos.close();   
+		
+		if(emailRecipients!=null) {
+			String formatStartDate = dateFormatForReports.format(StartTime);
+			String formatEndDate = dateFormatForReports.format(EndTime);
+			String subject = ReportName + " for period: " + formatStartDate + " to " + formatEndDate;
+			String message = "Attached " + ReportName + " for period: " + formatStartDate + " to " + formatEndDate; 
+			sendMail(emailRecipients, subject, message, zipFile);
 		}
-		setZipDirs();
-		zipOutputDir = zipFiles(zipInputDir,zipOutputDir+"_xls",".xls");
-		if(zipOutputDir != null){
-		    if(emailRecipients!=null)
-			sendMail(emailRecipients,"DailyReports_xls_"+yesterdayEnd.replace("-", ""), "Attached Daily Reports Zip File", zipOutputDir);
-		}else{
-			log.info("Not able to zip the input directory "+zipInputDir+" and hence not sending mail");
-		}
-		setZipDirs();
-		zipOutputDir = zipFiles(zipInputDir,zipOutputDir+"_csv",".csv");
-		if(zipOutputDir != null){
-		    if(emailRecipients!=null)
-			sendMail(emailRecipients,"DailyReports_csv_"+yesterdayEnd.replace("-", ""), "Attached Daily Reports Zip File", zipOutputDir);
-		}else{
-			log.info("Not able to zip the input directory "+zipInputDir+" and hence not sending mail");
+		log.info("End: generateReportsOnDemand");
+	}
+	
+	private void addFileToZipFile(ZipOutputStream zos, String fileName) {
+		log.info("Zipping the file : "+ fileName );
+		byte[] buffer = new byte[1024];
+		
+		try {
+			zos.putNextEntry(new ZipEntry(fileName.substring(fileName.lastIndexOf(File.separator)+1)));
+			FileInputStream in = new FileInputStream(fileName);
+			int read;
+			while ((read=in.read(buffer)) > 0) {
+				zos.write(buffer, 0, read);
+			}
+			zos.closeEntry();
+			in.close();
+			log.info("Successfully zipped the file : "+ fileName);
+		} catch (FileNotFoundException e) {
+			log.error("Error: FileNotFoundException While zipping the report file:" + fileName);
+		} catch (IOException e) {
+			log.error("Error: IOException While zipping the report file:" + fileName);
 		}
 	}
+	
+	
+	private void generateCSVFromXLS(String xlsFilePath) {
+		log.info("Begin: generateCSVFromXLS for file: " + xlsFilePath);
+		try {
+			String encoding = "UTF8";
+			String csvFileName = xlsFilePath.substring(0, xlsFilePath.lastIndexOf(".")) + ReportUtil.CSV_EXTENTION;
+			OutputStream os = (OutputStream) new FileOutputStream(new File(csvFileName));
+			OutputStreamWriter osw = new OutputStreamWriter(os, encoding);
+			BufferedWriter bw = new BufferedWriter(osw);
 
+			WorkbookSettings ws = new WorkbookSettings();
+			ws.setLocale(new Locale("en", "EN"));
+			Workbook w = Workbook.getWorkbook(new File(xlsFilePath), ws);
+
+			log.info("Getting sheets from the worksheet");
+			for (int s = 0; s < w.getNumberOfSheets(); s++) {
+				Sheet sheet = w.getSheet(s);
+				Cell[] row = null;
+
+				log.info("Getting cells from the Sheet");
+				for (int r = 0; r < sheet.getRows(); r++) {
+					row = sheet.getRow(r);
+
+					if (row.length > 0) {
+						bw.write(row[0].getContents());
+						for (int c = 1; c < row.length; c++) {
+							bw.write(',');
+							bw.write(row[c].getContents());
+						}
+					}
+					bw.newLine();
+				}
+			}
+			bw.flush();
+			bw.close();
+			os.close();
+		} catch (FileNotFoundException e) {
+			log.error("Error: FileNotFoundException While generationg the CSV from XLS file:"+ xlsFilePath, e);
+		} catch (UnsupportedEncodingException e) {
+			log.error("Error: UnsupportedEncodingException While generationg the CSV from XLS file:"+ xlsFilePath, e);
+		} catch (BiffException e) {
+			log.error("Error: BiffException While generationg the CSV from XLS file:"+ xlsFilePath, e);
+		} catch (IndexOutOfBoundsException e) {
+			log.error("Error: IndexOutOfBoundsException While generationg the CSV from XLS file:"+ xlsFilePath, e);
+		} catch (IOException e) {
+			log.error("Error: IOException While generationg the CSV from XLS file:"+ xlsFilePath, e);
+		}
+		log.info("End: generateCSVFromXLS for file: " + xlsFilePath);
+	}
 	
 	private void sendMail(String emailRecipients,String subject, String message, String attachmentFileName){
-		log.info("sendMail function statred");
+		log.info("sending mail with reports as an attachment : " + attachmentFileName);
 		try{
 			String[] emailRecipientsList = emailRecipients.split(",");
 			File attachmentFile = new File(attachmentFileName);
@@ -305,20 +379,6 @@ public class DailyReportGenerator {
 		log.info("generateReports function finished");
 	}
 	
-	private void generateReport(String ReportName) throws FileNotFoundException, UnsupportedEncodingException {
-		log.info("generateReports function started");
-		String tillNowOutputFileName = genTillNowOutputFileName(ReportName);
-		/*if(ReportName.equals("NDICReport1")){
-			NDICReportGenerator form = new NDICReportGenerator();
-			form.NDICReportGeneration();
-		}*/
-		    genOnDemandReport("file:" + dailyReportsInputDir + File.separator
-						+ReportName+".prpt", tillNowOutputFileName);
-			csvConversion();
-		log.info("generateReports function finished");
-	}
-
-
 	private boolean isOneDayReport(String fileName) {
 		if (fileName.toLowerCase()
 				.contains(oneDayFileNameContent.toLowerCase())) {
@@ -336,9 +396,14 @@ public class DailyReportGenerator {
 			Resource res = manager.createDirectly(new URL(inputfileName),
 					MasterReport.class);
 			MasterReport report = (MasterReport) res.getResource();
-			report.getParameterValues().put("StartTime", startTime);
-			report.getParameterValues().put("EndTime", endTime);
-			report.getParameterValues().put("FooterMessage", footerMessage);
+			report.getParameterValues().put(ReportConstants.PARAMETER_QUERY_START_TIME, startTime);
+			report.getParameterValues().put(ReportConstants.PARAMETER_QUERY_END_TIME, endTime);
+			report.getParameterValues().put(ReportConstants.PARAMETER_FOOTER_MESSAGE, footerMessage);
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_TYPE, "Daily");
+			report.getParameterValues().put(ReportConstants.PARAMETER_DISPLAY_START_TIME, dateFormatForReports.format(startTime));
+			report.getParameterValues().put(ReportConstants.PARAMETER_DISPLAY_END_TIME, dateFormatForReports.format(endTime));
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_GENERATED_BY, "Scheduled Job");
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_GENERATED_TIME, dateFormatForReports.format(new Date()));			
 			PdfReportUtil.createPDF(report, outputFileName + ".pdf");
 			log.info("Generated PDF report : " + outputFileName + ".pdf");
 			ExcelReportUtil.createXLS(report, outputFileName + ".xls");
@@ -358,9 +423,14 @@ public class DailyReportGenerator {
 			Resource res = manager.createDirectly(new URL(inputfileName),
 					MasterReport.class);
 			MasterReport report = (MasterReport) res.getResource();
-			report.getParameterValues().put("StartTime", startTime);
-			report.getParameterValues().put("EndTime", endTime);
-			report.getParameterValues().put("FooterMessage", footerMessage);
+			report.getParameterValues().put(ReportConstants.PARAMETER_QUERY_START_TIME, startTime);
+			report.getParameterValues().put(ReportConstants.PARAMETER_QUERY_END_TIME, endTime);
+			report.getParameterValues().put(ReportConstants.PARAMETER_FOOTER_MESSAGE, footerMessage);
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_TYPE, "All");
+			report.getParameterValues().put(ReportConstants.PARAMETER_DISPLAY_START_TIME, dateFormatForReports.format(startTime));
+			report.getParameterValues().put(ReportConstants.PARAMETER_DISPLAY_END_TIME, dateFormatForReports.format(endTime));
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_GENERATED_BY, "Scheduled Job");
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_GENERATED_TIME, dateFormatForReports.format(new Date()));				
 			PdfReportUtil.createPDF(report, outputFileName + ".pdf");
 			log.info("Generated PDF report : " + outputFileName + ".pdf");
 			ExcelReportUtil.createXLS(report, outputFileName + ".xls");
@@ -370,7 +440,7 @@ public class DailyReportGenerator {
 			log.error("Error occured while generating report and the input file name  is "+inputfileName, e);
 		}
 	}
-	private void genOnDemandReport(String ReportName, String outputFileName) {
+	private void genOnDemandReport(String ReportName, String outputFileName, String userName) {
 		ClassicEngineBoot.getInstance().start();
 		ResourceManager manager = new ResourceManager();
 		manager.registerDefaults();
@@ -379,9 +449,15 @@ public class DailyReportGenerator {
 			Resource res = manager.createDirectly(new URL(ReportName),
 					MasterReport.class);
 			MasterReport report = (MasterReport) res.getResource();
-			report.getParameterValues().put("StartTime", startTime);
-			report.getParameterValues().put("EndTime", endTime);
-			report.getParameterValues().put("FooterMessage", footerMessage);
+			report.getParameterValues().put(ReportConstants.PARAMETER_QUERY_START_TIME, startTime);
+			report.getParameterValues().put(ReportConstants.PARAMETER_QUERY_END_TIME, endTime);
+			report.getParameterValues().put(ReportConstants.PARAMETER_FOOTER_MESSAGE, footerMessage);
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_TYPE, "On Demand");
+			report.getParameterValues().put(ReportConstants.PARAMETER_DISPLAY_START_TIME, dateFormatForReports.format(startTime));
+			report.getParameterValues().put(ReportConstants.PARAMETER_DISPLAY_END_TIME, dateFormatForReports.format(endTime));
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_GENERATED_BY, userName);
+			report.getParameterValues().put(ReportConstants.PARAMETER_REPORT_GENERATED_TIME, dateFormatForReports.format(new Date()));
+			
 			PdfReportUtil.createPDF(report, outputFileName + ".pdf");
 			log.info("Generated PDF report : " + outputFileName + ".pdf");
 			ExcelReportUtil.createXLS(report, outputFileName + ".xls");

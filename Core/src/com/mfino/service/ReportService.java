@@ -4,10 +4,7 @@
 package com.mfino.service;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,9 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.constants.ReportParameterKeys;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.OfflineReportDAO;
-import com.mfino.domain.OfflineReport;
 import com.mfino.util.ConfigurationUtil;
 
 
@@ -36,6 +30,10 @@ import com.mfino.util.ConfigurationUtil;
 public class ReportService  {
 	
 	private String reportName;
+	
+	private String generatedReportName;
+	
+	private String userName;
 	
 	private String startDate;
 	
@@ -59,10 +57,8 @@ public class ReportService  {
 		HttpClient httpclient = new DefaultHttpClient();
 		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_NAME, reportName));
-		
-		OfflineReportDAO offlineReportDAO = DAOFactory.getInstance().getOfflineReportDAO();
-		OfflineReport report = offlineReportDAO.getByReportName(reportName);		
-		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_CLASSNAME, report.getReportClass()));
+		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_GENERATEDFILENAME, generatedReportName));
+		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_USERNAME, userName));
 		if(StringUtils.isNotBlank(startDate)){
 		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_STARTDATE, startDate));
 		}
@@ -110,6 +106,30 @@ public class ReportService  {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+
+
+	public String getGeneratedReportName() {
+		return generatedReportName;
+	}
+
+
+
+	public void setGeneratedReportName(String generatedReportName) {
+		this.generatedReportName = generatedReportName;
+	}
+
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 }

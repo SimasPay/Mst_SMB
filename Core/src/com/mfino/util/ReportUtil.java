@@ -25,29 +25,12 @@ public class ReportUtil {
 
 	private static DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
-	public static File getReportFilePath(String reportName, Date date,
-			String extension) {
-		File reportDir = new File(ConfigurationUtil.getReportDir(),
-				df.format(date));
+	public static String generateReportFilePath(String reportName,Date start,Date end) {
+		File reportDir = new File(ConfigurationUtil.getReportDir(), df.format(start)+"-"+df.format(end));
 		if (!reportDir.exists() || !reportDir.isDirectory()) {
 			reportDir.mkdir();
 		}
-		File reportFile = new File(reportDir.getPath(), reportName
-				+"_"+ new SimpleDateFormat("yyyyMMdd").format(date) + extension);
-		return reportFile;
-	}
-	
-	public static File getReportFilePath(String reportName,Date start,Date end,
-			String extension) {
-	    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-	    String	date = fmt.format(System.currentTimeMillis());
-		File reportDir = new File(ConfigurationUtil.getReportDir(),
-				(date));
-		if (!reportDir.exists() || !reportDir.isDirectory()) {
-			reportDir.mkdir();
-		}
-		File reportFile = new File(reportDir.getPath(), reportName +"_"+ new SimpleDateFormat("yyyyMMdd").format(start)
-				+"-"+ new SimpleDateFormat("yyyyMMdd").format(end) + extension);
+		String reportFile = reportDir.getPath() + File.separator + reportName +"_"+ df.format(start) +"-"+ df.format(end);
 		return reportFile;
 	}
 
@@ -76,17 +59,17 @@ public class ReportUtil {
 		return cal.getTime();
 	}
 
-	public static File getReportFilePath(String reportName, Date start, Date end) {
-		File reportDir = new File(ConfigurationUtil.getReportDir(),
-				df.format(end));
-		if (!reportDir.exists() || !reportDir.isDirectory()) {
-			reportDir.mkdir();
-		}
-		File reportFile = new File(reportDir.getPath(), reportName
-				+ df.format(start) + "_" + df.format(end)
-				+ ReportUtil.EXCEL_EXTENTION);
-		return reportFile;
-	}
+//	public static File getReportFilePath(String reportName, Date start, Date end) {
+//		File reportDir = new File(ConfigurationUtil.getReportDir(),
+//				df.format(end));
+//		if (!reportDir.exists() || !reportDir.isDirectory()) {
+//			reportDir.mkdir();
+//		}
+//		File reportFile = new File(reportDir.getPath(), reportName
+//				+ df.format(start) + "_" + df.format(end)
+//				+ ReportUtil.EXCEL_EXTENTION);
+//		return reportFile;
+//	}
 
 	public static File getPdfReportFilePath(String reportName, Date start,
 			Date end) {
