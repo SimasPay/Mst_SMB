@@ -24,6 +24,7 @@ import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.service.TransactionRequestValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
 
 /**
@@ -48,10 +49,10 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 					ApiConstants.PARAMETER_CONFIRM_PIN);
 		}
 		
-//		if (!transactionDetails.getConfirmPIN().equals(transactionDetails.getNewPIN())) {
-//			throw new InvalidDataException("New Pin and Confirm Pin not match", CmFinoFIX.NotificationCode_NewPINConfirmPINDoNotMatch, 
-//					ApiConstants.PARAMETER_CONFIRM_PIN);
-//		}
+		if (!ConfigurationUtil.getuseRSA() && !transactionDetails.getConfirmPIN().equals(transactionDetails.getNewPIN())) {
+			throw new InvalidDataException("New Pin and Confirm Pin not match", CmFinoFIX.NotificationCode_NewPINConfirmPINDoNotMatch, 
+					ApiConstants.PARAMETER_CONFIRM_PIN);
+		}
 	}
 
 	public void validateNewPin(TransactionDetails transactionDetails) throws InvalidDataException {
@@ -60,10 +61,10 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 					ApiConstants.PARAMETER_NEW_PIN);
 		}
 		
-//		if (systemParametersService.getPinLength() != transactionDetails.getNewPIN().length() && transactionDetails.isHttps() && !transactionDetails.isHashedPin()) {
-//			throw new InvalidDataException("Invalid New Pin", CmFinoFIX.NotificationCode_ChangeEPINFailedInvalidPINLength, 
-//					ApiConstants.PARAMETER_NEW_PIN);
-//		}
+		if (!ConfigurationUtil.getuseRSA() && systemParametersService.getPinLength() != transactionDetails.getNewPIN().length() ) {
+			throw new InvalidDataException("Invalid New Pin", CmFinoFIX.NotificationCode_ChangeEPINFailedInvalidPINLength, 
+					ApiConstants.PARAMETER_NEW_PIN);
+		}
 	}
 	
 	public void validateSourcePin(TransactionDetails transactionDetails) throws InvalidDataException {
