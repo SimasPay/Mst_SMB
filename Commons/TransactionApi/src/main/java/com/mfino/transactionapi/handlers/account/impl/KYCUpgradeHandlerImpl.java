@@ -149,7 +149,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 			return result;
 		}
 		
-		if (!(CmFinoFIX.SubscriberKYCLevel_UnBanked.equals(kycLevel.getKYCLevel())) ){
+		if (CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue() != kycLevel.getKYCLevel().intValue()){
 			log.info("KYCUpgrade: Failed to upgrade the KYC level to:"+kycType);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
 			return result;
