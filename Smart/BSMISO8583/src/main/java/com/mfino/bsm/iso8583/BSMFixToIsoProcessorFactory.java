@@ -2,6 +2,8 @@ package com.mfino.bsm.iso8583;
 
 import java.util.Map;
 
+import com.mfino.bsm.iso8583.processor.fixtoiso.InterBankMoneyTransferToBankProcessor;
+import com.mfino.bsm.iso8583.processor.fixtoiso.InterBankTransferInquiryToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.BalanceInquiryToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.GetLastTrxnsToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.MoneyTransferReversalToBankProcessor;
@@ -10,6 +12,8 @@ import com.mfino.bsm.iso8583.processor.fixtoiso.TransferInquiryToBankProcessor;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
@@ -30,7 +34,11 @@ public class BSMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 	@Override
 	public IFixToIsoProcessor getProcessor(CFIXMsg request) throws ProcessorNotAvailableException {
 		IFixToIsoProcessor processor = null;
-		if (request instanceof CMTransferInquiryToBank)
+		if (request instanceof CMInterBankTransferInquiryToBank)
+			processor = new InterBankTransferInquiryToBankProcessor();
+		else if(request instanceof CMInterBankMoneyTransferToBank)
+			processor = new InterBankMoneyTransferToBankProcessor();	
+		else if (request instanceof CMTransferInquiryToBank)
 			processor = new TransferInquiryToBankProcessor();
 		else if (request instanceof CMBalanceInquiryToBank)
 			processor = new BalanceInquiryToBankProcessor();

@@ -308,6 +308,18 @@ public class ISO8583Server implements Runnable {
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
+					// Inter Bank Transfer
+					else if ("491000".equals(incoming.getObjectValue(3)) ||
+							"492000".equals(incoming.getObjectValue(3))) {
+						
+						response.setValue(38, "654321", IsoType.ALPHA, 6);
+						response.setValue(39, "00", IsoType.ALPHA, 2);
+						//response.setValue(48, "MOCH FARDIAN RIZMAN HADI",IsoType.LLLVAR, 0);
+						/*if("011".equals(incoming.getObjectValue(22))) {
+							response.setValue(35, "6396879950000022=311299164783845385", IsoType.LLVAR, 0);
+							response.setValue(98, "106001                   ", IsoType.ALPHA, 25);
+						}*/
+					}
 					else {
 						System.out.println("Unrecognonized message type");
 					}
@@ -427,7 +439,7 @@ public class ISO8583Server implements Runnable {
 				System.out.println("Setting up server socket...");
 				ServerSocket server;
 				try {
-					server = new ServerSocket(9998);
+					server = new ServerSocket(7777);
 				} catch (IOException e) {
 					System.out.println("Failed to set up server socket");
 					return;

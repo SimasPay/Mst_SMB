@@ -1,11 +1,7 @@
 package com.mfino.interbank.bsim.impl;
 
-import static com.mfino.interbank.bsim.impl.IBTConstants.MFINO_CHANNEL_CODE;
-import static com.mfino.interbank.bsim.impl.IBTConstants.NARRATION;
-
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,13 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
-import com.mfino.dao.InterBankTransfersDao;
-import com.mfino.dao.InterbankCodesDao;
 import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.query.IntegrationSummaryQuery;
-import com.mfino.dao.query.InterBankCodesQuery;
-import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.InterBankCode;
 import com.mfino.domain.InterbankTransfer;

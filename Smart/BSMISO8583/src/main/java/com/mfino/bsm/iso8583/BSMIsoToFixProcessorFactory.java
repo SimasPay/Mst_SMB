@@ -1,5 +1,7 @@
 package com.mfino.bsm.iso8583;
 
+import com.mfino.bsm.iso8583.processor.isotofix.InterBankMoneyTransferFromBankProcessor;
+import com.mfino.bsm.iso8583.processor.isotofix.InterBankTransferInquiryFromBankProcessor;
 import com.mfino.bsm.iso8583.processor.isotofix.BalanceInquiryFromBankProcessor;
 import com.mfino.bsm.iso8583.processor.isotofix.GetLastTrxnsFromBankProcessor;
 import com.mfino.bsm.iso8583.processor.isotofix.MoneyTransferFromBankProcessor;
@@ -16,6 +18,8 @@ import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMEchoTestResponseToBank;
 import com.mfino.fix.CmFinoFIX.CMEchoTestToBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMSignOffResponseToBank;
@@ -39,9 +43,17 @@ public class BSMIsoToFixProcessorFactory implements IIsoToFixProcessorFactory {
 		if(requestFixMsg instanceof CMBalanceInquiryToBank){
 			processor = new BalanceInquiryFromBankProcessor();
 		}
+		if (requestFixMsg instanceof CMInterBankTransferInquiryToBank)
+			processor = new  InterBankTransferInquiryFromBankProcessor();
+		else if (requestFixMsg instanceof CMInterBankMoneyTransferToBank)
+			processor = new InterBankMoneyTransferFromBankProcessor();
 		else if(requestFixMsg instanceof CMMoneyTransferReversalToBank)
 			processor = new MoneyTransferReversalFromBankProcessor();
 		else if (requestFixMsg instanceof CMMoneyTransferToBank) 
+			processor = new MoneyTransferFromBankProcessor();
+		else if (requestFixMsg instanceof CMInterBankTransferInquiryToBank)
+			processor = new TransferInquiryFromBankProcessor();
+		else if (requestFixMsg instanceof CMInterBankMoneyTransferToBank) 
 			processor = new MoneyTransferFromBankProcessor();
 		else if (requestFixMsg instanceof CMTransferInquiryToBank)
 			processor = new TransferInquiryFromBankProcessor();
