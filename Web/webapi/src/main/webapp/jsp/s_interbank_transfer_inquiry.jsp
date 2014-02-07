@@ -51,7 +51,7 @@
 	</tr>
 	<tr>
 		<td>SourcePocketCode</td>
-		<td><input type="hidden" name="sourcePocketCode" value="2"/>2</td>
+		<td><input type="text" name="sourcePocketCode" value=""/><em>1-emoney, 2-bank</em></td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>

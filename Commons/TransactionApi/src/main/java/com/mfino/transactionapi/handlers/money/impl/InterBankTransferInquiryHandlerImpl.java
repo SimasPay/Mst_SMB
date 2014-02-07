@@ -110,10 +110,13 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		if(!srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
-			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidSourcePocketCode);
-			return result;
-		}
+		/*
+		 * Commented the below code to allow interbank transfer from an e-money pocket
+		 */
+		//if(!srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+		//	result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidSourcePocketCode);
+		//	return result;
+		//}
 		
 		String destinationMDN = systemParametersService.getString(SystemParameterKeys.INTERBANK_PARTNER_MDN_KEY);
 		transactionDetails.setDestMDN(destinationMDN);
