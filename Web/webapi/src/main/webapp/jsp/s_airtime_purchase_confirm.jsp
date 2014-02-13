@@ -26,20 +26,20 @@
 		<td><input type="text" name="sourceMDN" value="" /></td>
 	</tr>
 	<tr>
-		<td>Recharge Phone Number</td>
-		<td><input type="text" name="destMDN" value="" /></td>
-	</tr> 
+		<td>BillerCode</td>
+		<td><input type="text" name="billerCode" value="" /></td>
+	</tr>
 	<tr>
-		<td>Company ID</td>
-		<td><input type="text" name="companyID" value="" /></td>
+		<td>RechargeMDN/Invoice</td>
+		<td><input type="text" name="billNo" value="" /></td>
 	</tr>	
 	<tr>
 		<td>ParentTransferId</td>
 		<td><input type="text" name="parentTxnID" value="" /></td>
 	</tr>
 	<tr> 
- 			<td>PaymentMode(optional)</td> 
- 			<td><input type="text" name="paymentMode" value="" /></td> 
+		<td>PaymentMode(optional)</td> 
+		<td><input type="text" name="paymentMode" value="" /></td> 
  	</tr>
 	<tr>
 		<td>Amount</td>

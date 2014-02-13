@@ -666,7 +666,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	public void validateAirtimePurchaseInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateAmount(transactionDetails);
 		//validateAmountForAirtimePurchase(transactionDetails);
-		validateDesttinationMDN(transactionDetails);
+		//validateDesttinationMDN(transactionDetails);
 		validateSourcePin(transactionDetails);
 		//channelCode, sourceMessage, sourceMDN, destMDN, sourcePIN, amount, srcPocketCode, partnerCode, inCode
 //		validatePartnerCode(transactionDetails);

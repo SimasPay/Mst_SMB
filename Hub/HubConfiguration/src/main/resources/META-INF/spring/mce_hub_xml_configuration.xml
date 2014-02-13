@@ -59,17 +59,6 @@
 		<property name="httpClient" ref="mfinoHttpClient" /> 
 	</bean>
 	
-	<!--modify these specific to hub xmlrpc elements  -->
-	<!--  <bean id="xmlRpcMsg" class="com.mfino.hub.xmlrpc.CXMLRPCMsg">
-		<property name="xmlConstantFieldsMap">			
-		<map>	    
-			<entry key="agent" value="12345" />
-			<entry key="caid" value="121000" />
-			<entry key="passcode" value="123456" />
-		</map>
-		</property>
-	</bean>-->
-	
 	<bean id="mfinoHttpClient" class="com.mfino.hub.xmlrpc.service.HubHttpConnector">
 		<property name="timeout" value="30000" />
 	</bean>
@@ -301,8 +290,7 @@
           		<constant>BILLER_INQUIRY_COMPLETED</constant>
        			</setHeader>
            		<to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-       	</filter>
-       	
+       	</filter>      	
     </route>
    
     <route>
@@ -352,6 +340,17 @@
                 <to uri="jms:hubmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
             </multicast>
         </filter>
+        <filter>
+            <simple>${body.response.result} == '68'</simple>
+            <setHeader headerName="eventContext">
+                <!--check if response == CmFinoFIX.ResponseCode_Success-->
+                <constant>BILLER_CONFIRMATION_TIMEOUT</constant>
+            </setHeader>
+            <multicast>
+                <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
+                <to uri="bean:hubBillPayReversalCommunicator?method=process"/>
+            </multicast>
+        </filter>
 		<filter>
                 <simple>${body.response.result} != '0'</simple>
                 <setHeader headerName="eventContext">
@@ -362,7 +361,7 @@ Amount should be reverted from suspense and charges to source and failure notifi
                 <multicast>
                     <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
                     <to uri="jms:hubsuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
-					<to uri="bean:hubBillPayReversalCommunicator?method=process"/>
+					<!-- <to uri="bean:hubBillPayReversalCommunicator?method=process"/> -->
                 </multicast>
         </filter>        
     </route>
@@ -445,7 +444,7 @@ Amount should be reverted from suspense and charges to source and failure notifi
 			<!--<to uri="bean:hubBillPayReversalCommunicator?method=process"/>-->
         </multicast>
     </route>
-	
+	<!-- Reversal response is handled in this queue. Based on response being success/fail/timeout handle accordingly -->
 	<route>
         <from uri="jms:hubSuspenseAndChargesRRQueue?disableReplyTo=true"/>
         <log message="mce_hub_xml_configuration#suspenseAndChargesRRQueue"/>

@@ -55,29 +55,6 @@ public class BuyAPIServiceImpl extends BaseAPIService implements BuyAPIService{
 		String sourceMessage = transactionDetails.getSourceMDN();
 		String transactionName = transactionDetails.getTransactionName();
 		
-		String inCode = transactionDetails.getCompanyID();
-
-	
-		log.info("BuyApiService handleRequest() inCode = "+inCode);
-	
-		String IN_ID = SystemParameterKeys.IN_PARTNER_SUFFIX + inCode;
-		IntegrationPartnerMapping partnerMap = integrationPartnerMappingService.getByInstitutionID(IN_ID);
-		MFSBiller biller = null;
-		String billerCode = null;
-
-		if(partnerMap == null){
-			log.error("Institution ID " + IN_ID + " doesn't exist.");
-			xmlResult = new XMLResult();
-			xmlResult.setInstitutionID(IN_ID);
-			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_Integration_InvalidInstituionID);
-			return xmlResult;	
-		}
-		
-		biller = partnerMap.getMFSBiller();
-		billerCode = biller.getMFSBillerCode();
-		transactionDetails.setBillerCode(billerCode);
-		
-		log.info("BuyApiService handleRequest() partnerCode="+billerCode);
 		transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);
 		if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateAirtimePurchaseInquiryDetails(transactionDetails);
@@ -86,7 +63,6 @@ public class BuyAPIServiceImpl extends BaseAPIService implements BuyAPIService{
 				sourceMessage = ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE;
 			}
 
-			log.info("BuyAPIService :: handleRequest() TRANSACTION_AIRTIME_PURCHASE_INQUIRY partnerCode="+billerCode);
 			transactionDetails.setOnBehalfOfMDN(transactionDetails.getBillNum());//changes done as per ticket NUM 3396
 			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
 		}
@@ -96,8 +72,6 @@ public class BuyAPIServiceImpl extends BaseAPIService implements BuyAPIService{
 			if (StringUtils.isBlank(sourceMessage)) {
 				sourceMessage = ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE;
 			}
-
-			log.info("BuyAPIService :: handleRequest() TRANSACTION_AIRTIME_PURCHASE partnerCode="+billerCode);
 
 			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
 		}

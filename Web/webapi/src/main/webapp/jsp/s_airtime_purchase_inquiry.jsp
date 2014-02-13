@@ -31,12 +31,16 @@
 		<td><input type="text" name="sourcePIN" value="" /></td>
 	</tr>
 	<tr>
-		<td>Company ID</td>
-		<td><input type="text" name="companyID" value="" /></td>
+		<td>BillerCode</td>
+		<td><input type="text" name="billerCode" value="" /></td>
+	</tr>
+	<tr>
+		<td>RechargeMDN/Invoice</td>
+		<td><input type="text" name="billNo" value="" /></td>
 	</tr>
 	<tr> 
- 			<td>PaymentMode(optional)</td> 
- 			<td><input type="text" name="paymentMode" value="" /></td> 
+		<td>PaymentMode(optional)</td> 
+		<td><input type="text" name="paymentMode" value="" /></td> 
  	</tr> 
 	<tr>
 		<td>Amount</td>
@@ -49,10 +53,6 @@
 	<tr>
 		<td>PocketCode</td>
 		<td><input type="text" name="sourcePocketCode" />(Emoney-1 ,Bank-2)</td>
-	</tr>
-	<tr>
-		<td>Recharge MDN</td>
-		<td><input type="text" name="destMDN" /></td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
