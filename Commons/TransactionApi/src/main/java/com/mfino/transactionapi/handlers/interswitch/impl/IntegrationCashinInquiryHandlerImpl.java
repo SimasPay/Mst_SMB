@@ -15,11 +15,13 @@ import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.IntegrationSummaryDao;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -315,6 +317,10 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		log.info("building CMCashinInquiry object for processing -->");
 		CMCashInInquiry cashIn = new CMCashInInquiry();
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) cashinDataConatiner.getMsg();
+		
+		//Saving integration details 
+		saveIntegrationSummary(sctl, cashinDetails);
+		
 		cashIn.setSourceMDN(cashinDataConatiner.getPartnerMDN().getMDN());
 		cashIn.setDestMDN(cashinDataConatiner.getDestinationMDN().getMDN());
 		cashIn.setAmount(cashinDetails.getAmount());
@@ -375,5 +381,17 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		
 		return result;
 	}
+	
+	/** Saving integration details separately. Can be used in report requirements etc. */
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	private void saveIntegrationSummary(ServiceChargeTransactionLog sctl, CMInterswitchCashin cashinDetails) {
+		IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
+		IntegrationSummary isummary = new IntegrationSummary();
+		isummary.setSctlId(sctl.getID());
+		isummary.setReconcilationID1(sctl.getDestMDN());
+		isummary.setReconcilationID2(cashinDetails.getReceiptNo());
+		isummary.setReconcilationID3(cashinDetails.getPaymentLogID());
+		isdao.save(isummary);
+    }
 
 }
