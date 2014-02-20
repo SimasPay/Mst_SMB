@@ -42,7 +42,7 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 					getXmlWriter().writeStartElement("transactionDetail");
 
 					getXmlWriter().writeStartElement("refID");
-					getXmlWriter().writeCharacters(String.valueOf(entry.getBankTransactionReferenceNumber()),true);
+					getXmlWriter().writeCharacters(String.valueOf(entry.getBankTransactionReferenceNumber()),false);
 					getXmlWriter().writeEndElement();
 					
 					getXmlWriter().writeStartElement("sourceMDN");
@@ -58,7 +58,7 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 					getXmlWriter().writeEndElement();
 
 					getXmlWriter().writeStartElement("amount");
-					getXmlWriter().writeCharacters(String.valueOf(entry.getAmount()),true);
+					getXmlWriter().writeCharacters(String.valueOf(entry.getAmount()),false);
 					getXmlWriter().writeEndElement();
 
 					getXmlWriter().writeStartElement("Merchant");
