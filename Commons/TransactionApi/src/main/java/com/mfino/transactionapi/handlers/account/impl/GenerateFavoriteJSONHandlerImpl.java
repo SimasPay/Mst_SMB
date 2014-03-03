@@ -109,6 +109,7 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 	private JSONObject toJson(SubscriberFavorite favorite) {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(ApiConstants.PARAMETER_SUBSCRIBER_FAVORITE_ID, favorite.getID());
+		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CODE, favorite.getFavoriteCode());
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_LABEL, favorite.getFavoriteLabel());
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_VALUE, favorite.getFavoriteValue());
 		return jsonObject;

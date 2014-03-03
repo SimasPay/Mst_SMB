@@ -85,6 +85,7 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		favoriteMessage.setPin(transactionDetails.getSourcePIN());
 		favoriteMessage.setSourceMDN(transactionDetails.getSourceMDN());
 		favoriteMessage.setFavoriteCategoryID(favoriteCategoryID);
+		favoriteMessage.setFavoriteCode(transactionDetails.getFavoriteCode());
 		favoriteMessage.setFavoriteLabel(transactionDetails.getFavoriteLabel());
 		favoriteMessage.setFavoriteValue(transactionDetails.getFavoriteValue());
 		favoriteMessage.setSourceApplication(cc.getChannelSourceApplication());
@@ -125,7 +126,7 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
  		//Check if max favorites per category count reached or not
  		if(transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE)) {
  			int favoriteCount = subscriberFavoriteService.getFavoriteCountUnderCategory(subscriberID, Long.valueOf(favoriteCategoryID));
- 	 		log.info("No of favorites existing under category " + favoriteCategoryID + " is " + favoriteCount);
+ 	 		log.info("Number of favorites existing under category " + favoriteCategoryID + " is " + favoriteCount);
  	 		if(favoriteCount == systemParametersService.getInteger(SystemParameterKeys.MAX_FAVORITES_PER_CATEGORY)) {
  	 			log.error("Cannot add favorites as max value " + favoriteCount + " reached for category " + favoriteCategoryID);
  	 			result.setNotificationCode(CmFinoFIX.NotificationCode_MaxFavoritesPerCategoryCountReached);
@@ -193,6 +194,7 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 				SubscriberFavorite subscriberFavorite = new SubscriberFavorite();
 				subscriberFavorite.setSubscriber(subscriberMDN.getSubscriber());
 				subscriberFavorite.setFavoriteCategory(favoriteCategory);
+				subscriberFavorite.setFavoriteCode(transactionDetails.getFavoriteCode());
 				subscriberFavorite.setFavoriteLabel(transactionDetails.getFavoriteLabel());
 				subscriberFavorite.setFavoriteValue(transactionDetails.getFavoriteValue());
 				subscriberFavoriteService.saveSubscriberFavorite(subscriberFavorite);

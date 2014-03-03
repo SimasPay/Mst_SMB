@@ -34,6 +34,10 @@
 		<td><input type="text" name="favoriteCategoryID" value="" /></td>
 	</tr>
 	<tr>
+		<td>Code</td>
+		<td><input type="text" name="favoriteCode" value="" /></td>
+	</tr>	
+	<tr>
 		<td>Label</td>
 		<td><input type="text" name="favoriteLabel" value="" /></td>
 	</tr>

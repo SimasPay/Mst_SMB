@@ -8,352 +8,352 @@
       "code": "002"
     },
     {
-      "name": " Mandiri ",
-      "code": " 008 "
+      "name": "Mandiri",
+      "code": "008"
     },
     {
-      "name": " Negara Indonesia  ",
-      "code": " 009 "
+      "name": "Negara Indonesia ",
+      "code": "009"
     },
     {
-      "name": " Bank Danamon ",
-      "code": " 011 "
+      "name": "Bank Danamon",
+      "code": "011"
     },
     {
-      "name": " Bank Permata ",
-      "code": " 013 "
+      "name": "Bank Permata",
+      "code": "013"
     },
     {
-      "name": " Central Asia ",
-      "code": " 014 "
+      "name": "Central Asia",
+      "code": "014"
     },
     {
-      "name": " Bank Internasional Indonesia ",
-      "code": " 016 "
+      "name": "Bank Internasional Indonesia",
+      "code": "016"
     },
     {
-      "name": " Panin ",
-      "code": " 019 "
+      "name": "Panin",
+      "code": "019"
     },
     {
-      "name": " CIMB Niaga ",
-      "code": " 022 "
+      "name": "CIMB Niaga",
+      "code": "022"
     },
     {
-      "name": " Bank UOB BUANA ",
-      "code": " 023 "
+      "name": "Bank UOB BUANA",
+      "code": "023"
     },
     {
-      "name": " Bank OCBC NISP ",
-      "code": " 028 "
+      "name": "Bank OCBC NISP",
+      "code": "028"
     },
     {
-      "name": " Citibank ",
-      "code": " 031 "
+      "name": "Citibank",
+      "code": "031"
     },
     {
-      "name": " Bank Windu Kentjana International ",
-      "code": " 036 "
+      "name": "Bank Windu Kentjana International",
+      "code": "036"
     },
     {
-      "name": " ARTHA GRAHA ",
-      "code": " 037 "
+      "name": "ARTHA GRAHA",
+      "code": "037"
     },
     {
-      "name": " Bank HSBC ",
-      "code": " 041 "
+      "name": "Bank HSBC",
+      "code": "041"
     },
     {
-      "name": " Bank Of Tokyo_Mitsubishi UFJ ",
-      "code": " 042 "
+      "name": "Bank Of Tokyo_Mitsubishi UFJ",
+      "code": "042"
     },
     {
-      "name": " DBS ",
-      "code": " 046 "
+      "name": "DBS",
+      "code": "046"
     },
     {
-      "name": " Standard Chartered Bank ",
-      "code": " 050 "
+      "name": "Standard Chartered Bank",
+      "code": "050"
     },
     {
-      "name": " Capital ",
-      "code": " 054 "
+      "name": "Capital",
+      "code": "054"
     },
     {
-      "name": " ANZ Panin Bank ",
-      "code": " 061 "
+      "name": "ANZ Panin Bank",
+      "code": "061"
     },
     {
-      "name": " Bumi Arta ",
-      "code": " 076 "
+      "name": "Bumi Arta",
+      "code": "076"
     },
     {
-      "name": " Ekonomi Raharja ",
-      "code": " 087 "
+      "name": "Ekonomi Raharja",
+      "code": "087"
     },
     {
-      "name": " Antar Daerah ",
-      "code": " 088 "
+      "name": "Antar Daerah",
+      "code": "088"
     },
     {
-      "name": " Rabo Bank Internasional ",
-      "code": " 089 "
+      "name": "Rabo Bank Internasional",
+      "code": "089"
     },
     {
-      "name": " Mutiara ",
-      "code": " 095 "
+      "name": "Mutiara",
+      "code": "095"
     },
     {
-      "name": " Jabar Banten ",
-      "code": " 110 "
+      "name": "Jabar Banten",
+      "code": "110"
     },
     {
-      "name": " DKI ",
-      "code": " 111 "
+      "name": "DKI",
+      "code": "111"
     },
     {
-      "name": " BPD DIY ",
-      "code": " 112 "
+      "name": "BPD DIY",
+      "code": "112"
     },
     {
-      "name": " JATENG ",
-      "code": " 113 "
+      "name": "JATENG",
+      "code": "113"
     },
     {
-      "name": " Jatim ",
-      "code": " 114 "
+      "name": "Jatim",
+      "code": "114"
     },
     {
-      "name": " BPD Jambi ",
-      "code": " 115 "
+      "name": "BPD Jambi",
+      "code": "115"
     },
     {
-      "name": " BPD Aceh ",
-      "code": " 116 "
+      "name": "BPD Aceh",
+      "code": "116"
     },
     {
-      "name": " Sumatra Utara ",
-      "code": " 117 "
+      "name": "Sumatra Utara",
+      "code": "117"
     },
     {
-      "name": " Bank Nagari ",
-      "code": " 118 "
+      "name": "Bank Nagari",
+      "code": "118"
     },
     {
-      "name": " Bank RIAU ",
-      "code": " 119 "
+      "name": "Bank RIAU",
+      "code": "119"
     },
     {
-      "name": " Bank Sumselbabel ",
-      "code": " 120 "
+      "name": "Bank Sumselbabel",
+      "code": "120"
     },
     {
-      "name": " Lampung ",
-      "code": " 121 "
+      "name": "Lampung",
+      "code": "121"
     },
     {
-      "name": " BPD Kalimantan Selatan ",
-      "code": " 122 "
+      "name": "BPD Kalimantan Selatan",
+      "code": "122"
     },
     {
-      "name": " BPD Kalimantan Barat ",
-      "code": " 123 "
+      "name": "BPD Kalimantan Barat",
+      "code": "123"
     },
     {
-      "name": " BPD Kaltim ",
-      "code": " 124 "
+      "name": "BPD Kaltim",
+      "code": "124"
     },
     {
-      "name": " BPD Kalteng ",
-      "code": " 125 "
+      "name": "BPD Kalteng",
+      "code": "125"
     },
     {
-      "name": " BPD Sulsel dan Sulbar ",
-      "code": " 126 "
+      "name": "BPD Sulsel dan Sulbar",
+      "code": "126"
     },
     {
-      "name": " BPD Sulawesi Utara ",
-      "code": " 127 "
+      "name": "BPD Sulawesi Utara",
+      "code": "127"
     },
     {
-      "name": " Nusa Tenggara Barat ",
-      "code": " 128 "
+      "name": "Nusa Tenggara Barat",
+      "code": "128"
     },
     {
-      "name": " BPD Bali ",
-      "code": " 129 "
+      "name": "BPD Bali",
+      "code": "129"
     },
     {
-      "name": " Nusa Tenggara Timur ",
-      "code": " 130 "
+      "name": "Nusa Tenggara Timur",
+      "code": "130"
     },
     {
-      "name": " Maluku ",
-      "code": " 131 "
+      "name": "Maluku",
+      "code": "131"
     },
     {
-      "name": " Bank PAPUA ",
-      "code": " 132 "
+      "name": "Bank PAPUA",
+      "code": "132"
     },
     {
-      "name": " Bengkulu ",
-      "code": " 133 "
+      "name": "Bengkulu",
+      "code": "133"
     },
     {
-      "name": " BPD Sulteng ",
-      "code": " 134 "
+      "name": "BPD Sulteng",
+      "code": "134"
     },
     {
-      "name": " Bank Nusantara Parahyangan ",
-      "code": " 145 "
+      "name": "Bank Nusantara Parahyangan",
+      "code": "145"
     },
     {
-      "name": " Bank Swadesi ",
-      "code": " 146 "
+      "name": "Bank Swadesi",
+      "code": "146"
     },
     {
-      "name": " Muamalat ",
-      "code": " 147 "
+      "name": "Muamalat",
+      "code": "147"
     },
     {
-      "name": " Mestika ",
-      "code": " 151 "
+      "name": "Mestika",
+      "code": "151"
     },
     {
-      "name": " *Bank Sinarmas ",
-      "code": " 153 "
+      "name": "*Bank Sinarmas",
+      "code": "153"
     },
     {
-      "name": " Maspion Indonesia ",
-      "code": " 157 "
+      "name": "Maspion Indonesia",
+      "code": "157"
     },
     {
-      "name": " Ganesha ",
-      "code": " 161 "
+      "name": "Ganesha",
+      "code": "161"
     },
     {
-      "name": " Bank Kesawan ",
-      "code": " 167 "
+      "name": "Bank Kesawan",
+      "code": "167"
     },
     {
-      "name": " Bank BTN ",
-      "code": " 200 "
+      "name": "Bank BTN",
+      "code": "200"
     },
     {
-      "name": " Bank Tabungan Pensiunan Nasional ",
-      "code": " 213 "
+      "name": "Bank Tabungan Pensiunan Nasional",
+      "code": "213"
     },
     {
-      "name": " BRI Syariah ",
-      "code": " 422 "
+      "name": "BRI Syariah",
+      "code": "422"
     },
     {
-      "name": " Jabar Banten Syariah ",
-      "code": " 425 "
+      "name": "Jabar Banten Syariah",
+      "code": "425"
     },
     {
-      "name": " Mega ",
-      "code": " 426 "
+      "name": "Mega",
+      "code": "426"
     },
     {
-      "name": " Bank Bukopin ",
-      "code": " 441 "
+      "name": "Bank Bukopin",
+      "code": "441"
     },
     {
-      "name": " Bank Syariah Mandiri ",
-      "code": " 451 "
+      "name": "Bank Syariah Mandiri",
+      "code": "451"
     },
     {
-      "name": " Jasa Jakarta ",
-      "code": " 472 "
+      "name": "Jasa Jakarta",
+      "code": "472"
     },
     {
-      "name": " Bank Hana ",
-      "code": " 484 "
+      "name": "Bank Hana",
+      "code": "484"
     },
     {
-      "name": " Bank Bumiputera Indonesia ",
-      "code": " 485 "
+      "name": "Bank Bumiputera Indonesia",
+      "code": "485"
     },
     {
-      "name": " Agroniaga Bank ",
-      "code": " 494 "
+      "name": "Agroniaga Bank",
+      "code": "494"
     },
     {
-      "name": " Bank SBI Indonesia ",
-      "code": " 498 "
+      "name": "Bank SBI Indonesia",
+      "code": "498"
     },
     {
-      "name": " Bank Royal ",
-      "code": " 501 "
+      "name": "Bank Royal",
+      "code": "501"
     },
     {
-      "name": " Bank NationalNobu ",
-      "code": " 503 "
+      "name": "Bank NationalNobu",
+      "code": "503"
     },
     {
-      "name": " Mega Syariah ",
-      "code": " 506 "
+      "name": "Mega Syariah",
+      "code": "506"
     },
     {
-      "name": " INA Perdania ",
-      "code": " 513 "
+      "name": "INA Perdania",
+      "code": "513"
     },
     {
-      "name": " BKE ",
-      "code": " 535 "
+      "name": "BKE",
+      "code": "535"
     },
     {
-      "name": " BCA Syariah ",
-      "code": " 536 "
+      "name": "BCA Syariah",
+      "code": "536"
     },
     {
-      "name": " Artos Indonesia ",
-      "code": " 542 "
+      "name": "Artos Indonesia",
+      "code": "542"
     },
     {
-      "name": " Mayora ",
-      "code": " 553 "
+      "name": "Mayora",
+      "code": "553 "
     },
     {
-      "name": " Bank Index ",
-      "code": " 555 "
+      "name": "Bank Index",
+      "code": "555"
     },
     {
-      "name": " Bank Pundi Indonesia ",
-      "code": " 558 "
+      "name": "Bank Pundi Indonesia",
+      "code": "558"
     },
     {
-      "name": " Bank CNB ",
-      "code": " 559 "
+      "name": "Bank CNB",
+      "code": "559"
     },
     {
-      "name": " Bank Victoria International ",
-      "code": " 566 "
+      "name": "Bank Victoria International",
+      "code": "566"
     },
     {
-      "name": " Harda ",
-      "code": " 567 "
+      "name": "Harda",
+      "code": "567"
     },
     {
-      "name": " BPR Eka ",
-      "code": " 867 "
+      "name": "BPR Eka",
+      "code": "867"
     },
     {
-      "name": " BPR KS ",
-      "code": " 889 "
+      "name": "BPR KS",
+      "code": "889"
     },
     {
-      "name": " Bank Agris ",
-      "code": " 945 "
+      "name": "Bank Agris",
+      "code": "945"
     },
     {
-      "name": " COMMONWEALTH Bank ",
-      "code": " 950 "
+      "name": "COMMONWEALTH Bank",
+      "code": "950"
     },
     {
-      "name": " ATM PRIMA ",
-      "code": " 998 "
+      "name": "ATM PRIMA",
+      "code": "998"
     }
     
   ]

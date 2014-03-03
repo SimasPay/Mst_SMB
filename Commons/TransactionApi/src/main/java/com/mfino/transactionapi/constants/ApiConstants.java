@@ -134,6 +134,8 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String	PARAMETER_FAVORITE_VALUE = "favoriteValue";
 	
+	public static final String PARAMETER_FAVORITE_CODE = "favoriteCode";
+	
 	public static final String PARAMETER_NEXT_OF_KIN = "nextOfKin";
 	
 	public static final String PARAMETER_NEXT_OF_KIN_NO = "nextOfKinNo";

@@ -125,6 +125,7 @@ public class TransactionDetails {
 	private String favoriteCategoryID;
 	private String favoriteLabel;
 	private String favoriteValue;
+	private String favoriteCode;
 	
 	private Integer	partnerType;
 	private String	tradeName;
@@ -1010,5 +1011,11 @@ public class TransactionDetails {
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	public String getFavoriteCode() {
+		return favoriteCode;
+	}
+	public void setFavoriteCode(String favoriteCode) {
+		this.favoriteCode = favoriteCode;
 	}
 }

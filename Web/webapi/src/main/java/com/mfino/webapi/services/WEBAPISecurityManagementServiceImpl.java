@@ -288,7 +288,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String favoriteCategoryID = request.getParameter(ApiConstants.PARAMETER_FAVORITE_CATEGORY_ID);
 		String favoriteLabel = request.getParameter(ApiConstants.PARAMETER_FAVORITE_LABEL);
 		String favoriteValue = request.getParameter(ApiConstants.PARAMETER_FAVORITE_VALUE);
-				
+		String favoriteCode = request.getParameter(ApiConstants.PARAMETER_FAVORITE_CODE);		
 		String	partnerType = request.getParameter(ApiConstants.PARAMETER_PARTNER_TYPE);
 		String	tradeName = request.getParameter(ApiConstants.PARAMETER_TRADE_NAME);
 		String	postalCode = request.getParameter(ApiConstants.PARAMETER_POSTAL_CODE);
@@ -418,6 +418,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setFavoriteCategoryID(favoriteCategoryID);
 		rudContainer.setFavoriteLabel(favoriteLabel);
 		rudContainer.setFavoriteValue(favoriteValue);
+		rudContainer.setFavoriteCode(favoriteCode);
 		rudContainer.setPartnerType(partnerType);
 		rudContainer.setTradeName(tradeName);
 		rudContainer.setPostalCode(postalCode);

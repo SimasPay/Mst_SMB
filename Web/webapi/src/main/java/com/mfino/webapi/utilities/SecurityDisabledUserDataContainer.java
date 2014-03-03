@@ -712,6 +712,11 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 	public String getFavoriteValue() {
 		return this.container.getFavoriteValue();
 	}
+	
+	@Override
+	public String getFavoriteCode() {
+		return this.container.getFavoriteCode();
+	}
 
 	@Override
 	public String getPartnerType() {

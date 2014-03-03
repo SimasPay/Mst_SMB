@@ -310,6 +310,8 @@ public interface IUserDataContainer {
 	
 	public abstract String getFavoriteValue();
 	
+	public abstract String getFavoriteCode();
+	
 	public abstract String	getPartnerType();
 	public abstract String	getTradeName();
 	public abstract String	getPostalCode();

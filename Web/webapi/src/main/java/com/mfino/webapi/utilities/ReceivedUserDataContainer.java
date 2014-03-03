@@ -105,6 +105,7 @@ public class ReceivedUserDataContainer {
 	private String favoriteCategoryID;
 	private String favoriteLabel;
 	private String favoriteValue;
+	private String favoriteCode;
 	
 	private String	partnerType;
 	private String	tradeName;
@@ -1208,5 +1209,13 @@ public class ReceivedUserDataContainer {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getFavoriteCode() {
+		return favoriteCode;
+	}
+
+	public void setFavoriteCode(String favoriteCode) {
+		this.favoriteCode = favoriteCode;
 	}
 }

@@ -4826,6 +4826,7 @@
 	</message>
 	<message name="FavoriteMessage" msgtype="1725" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 		<field name="FavoriteCategoryID" required="Y"/>
+		<field name="FavoriteCode" required="N"/>
 		<field name="FavoriteLabel" required="Y"/>
 		<field name="FavoriteValue" required="Y"/>
 		<field name="Pin" required="Y" isSecure="Y"/>
@@ -6680,6 +6681,7 @@
 	     	<field name="FavoriteCategoryID" required="Y" References="FavoriteCategory"/>
 	     	<field name="FavoriteLabel" required="Y"/>
 	     	<field name="FavoriteValue" required="Y"/>
+	     	<field name="FavoriteCode"	required="N"/>
      	</record>
      	<record name="TransactionRuleAddnInfo" ExtendsRecord="Base" Java="Y" SQLTable="txn_rule_addn_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 	     	<field name="TransactionRuleID" required="Y" References="TransactionRule" />	     	
@@ -22021,6 +22023,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="108" description="FavoriteValue"/>
 			<value enum="109" description="SubscriberStatus"/>
 			<value enum="110" description="OldCardAlias"/>
+			<value enum="111" description="FavoriteCode"/>
 			
 		</field>
 		<field number="5142" name="MSPID" type="RecordID" />
@@ -25223,6 +25226,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8161" name="FromDate" type="UTCTIMESTAMP" />
 	<field number="8162" name="ToDate" type="UTCTIMESTAMP" />
 	<field number="8163" name="BillData" type="BLOB" />
+	<field number="8164" name="FavoriteCode" type="STRING"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">

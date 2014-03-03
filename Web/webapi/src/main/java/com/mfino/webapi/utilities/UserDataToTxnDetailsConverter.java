@@ -155,6 +155,7 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setFavoriteCategoryID(userDataContainer.getFavoriteCategoryID());
 		txnDetails.setFavoriteLabel(userDataContainer.getFavoriteLabel());
 		txnDetails.setFavoriteValue(userDataContainer.getFavoriteValue());
+		txnDetails.setFavoriteCode(userDataContainer.getFavoriteCode());
 		if(StringUtils.isNotBlank(userDataContainer.getPartnerType())){
 			try{
 				txnDetails.setPartnerType(Integer.parseInt(userDataContainer.getPartnerType()));
