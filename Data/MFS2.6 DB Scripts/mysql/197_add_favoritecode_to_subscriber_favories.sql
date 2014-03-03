@@ -1,1 +1,1 @@
-ALTER TABLE subscriber_favorite ADD COLUMN FavoriteCode VARCHAR(45);
+﻿ALTER TABLE subscriber_favorite ADD COLUMN FavoriteCode VARCHAR(45) default '';
