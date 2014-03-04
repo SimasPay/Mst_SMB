@@ -1,37 +1,12 @@
 {
-  "totalCount": 6,
+  "totalCount": 1,
   "version": 1.0,
   "success": true,
   "prepaidData": [
     {
       "name": "Indosat Pulsa",
-      "code": "010002"
+      "code": "Postpaid",
       "Denom": "50000 100000 150000"
-    },
-    {
-      "name": "XL Pusla",
-      "code": "010003"
-      "Denom": "25000 50000 100000 200000"
-    },
-    {
-      "name": "XL data",
-      "code": "013002"
-      "Denom": "25000 49000 59000"
-    },
-    {
-      "name": "Esia Pulsa",
-      "code": "018001"
-      "Denom": "25000 50000 100000 150000 250000"
-    },
-    {
-      "name": "Tri Pulsa",
-      "code": "012102"
-      "Denom": "30000 40000 50000 75000 100000 150000 300000 500000"
-    },
-    {
-      "name": "Telkom Flexy Pulsa",
-      "code": "017001"
-      "Denom": "20000 50000 100000 150000 200000 250000 300000 350000 500000"
-    }  
+    } 
   ]
 }
