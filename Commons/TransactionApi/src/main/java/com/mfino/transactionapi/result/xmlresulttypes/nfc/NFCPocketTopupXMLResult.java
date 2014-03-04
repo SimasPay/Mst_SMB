@@ -1,9 +1,12 @@
 package com.mfino.transactionapi.result.xmlresulttypes.nfc;
 
+import java.text.NumberFormat;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.mfino.constants.XMLResultConstants;
 import com.mfino.result.XMLResult;
+import com.mfino.util.MfinoUtil;
 
 /**
  * 
@@ -21,21 +24,24 @@ public class NFCPocketTopupXMLResult extends XMLResult {
 	public void render() throws Exception {
 		
 		writeStartOfDocument();
-		
+		NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 		super.render();
 		
-		getXmlWriter().writeStartElement(XMLResultConstants.DEBIT_AMOUNT);
-		getXmlWriter().writeCharacters(String.valueOf(getDebitAmount()),true);
-		getXmlWriter().writeEndElement();
-
-		getXmlWriter().writeStartElement(XMLResultConstants.CREDIT_AMOUNT);
-		getXmlWriter().writeCharacters(String.valueOf(getCreditAmount()),true);
-		getXmlWriter().writeEndElement();
-		
-		getXmlWriter().writeStartElement(XMLResultConstants.CHARGES);
-		getXmlWriter().writeCharacters(String.valueOf(getServiceCharge()),true);
-		getXmlWriter().writeEndElement();
-		
+		if (getDebitAmount() != null) {
+			getXmlWriter().writeStartElement(XMLResultConstants.DEBIT_AMOUNT);
+			getXmlWriter().writeCharacters(numberFormat.format(getDebitAmount()),true);
+			getXmlWriter().writeEndElement();
+		}
+		if (getCreditAmount() != null) {
+			getXmlWriter().writeStartElement(XMLResultConstants.CREDIT_AMOUNT);
+			getXmlWriter().writeCharacters(numberFormat.format(getCreditAmount()),true);
+			getXmlWriter().writeEndElement();
+		}
+		if (getServiceCharge() != null) {
+			getXmlWriter().writeStartElement(XMLResultConstants.CHARGES);
+			getXmlWriter().writeCharacters(numberFormat.format(getServiceCharge()),true);
+			getXmlWriter().writeEndElement();
+		}
 		if(getDetailsOfPresentTransaction()!=null)
 		{
 		    getXmlWriter().writeStartElement("refID");

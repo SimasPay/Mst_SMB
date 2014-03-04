@@ -1,10 +1,12 @@
 package com.mfino.transactionapi.result.xmlresulttypes.nfc;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank.CGEntries;
 import com.mfino.result.XMLResult;
+import com.mfino.util.MfinoUtil;
 
 /**
  * 
@@ -26,7 +28,7 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 		writeStartOfDocument();
 
 		super.render();
-		
+		NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 		if(getDownloadURL() != null)
 		{
 			getXmlWriter().writeStartElement("downloadURL");
@@ -57,10 +59,12 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 					getXmlWriter().writeCharacters(entry.getBankTransactionDate(),false);
 					getXmlWriter().writeEndElement();
 
-					getXmlWriter().writeStartElement("amount");
-					getXmlWriter().writeCharacters(String.valueOf(entry.getAmount()),false);
-					getXmlWriter().writeEndElement();
-
+					if (entry.getAmount() != null) {
+						getXmlWriter().writeStartElement("amount");
+						getXmlWriter().writeCharacters(numberFormat.format(entry.getAmount()),false);
+						getXmlWriter().writeEndElement();
+					}
+					
 					getXmlWriter().writeStartElement("Merchant");
 					getXmlWriter().writeCharacters(entry.getMerchantName(),false);
 					getXmlWriter().writeEndElement();
