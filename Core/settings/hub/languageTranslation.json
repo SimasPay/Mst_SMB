@@ -25,6 +25,7 @@
    "from BSM" : "Setoran via ATM (BSM)",
    "Purchase" : "Pembelian ",
    "Bill Pay" : "Pembayaran ",
+   "InterBank Transfer" : "Transfer ke ",
    "Date" : "Tanggal",
    "Transactions" : "Transaksi",
    "Amount" : "Jumlah"
@@ -55,6 +56,7 @@
    "from BSM" : "Deposit via ATM (BSM)",
    "Purchase" : "Purchase ",
    "Bill Pay" : "Payment ",
+   "InterBank Transfer" : "Transfer to ",
    "Date" : "Date",
    "Transactions" : "Transactions",
    "Amount" : "Amount"

@@ -378,6 +378,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			txnType = LanguageTranslator.translate(language, "Purchase") + ct.getSourceSubscriberName();
 		}else if(sourceMsg.equalsIgnoreCase("Bill Pay")){
 			txnType = LanguageTranslator.translate(language, "Bill Pay");
+		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
+			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + ct.getDestCardPAN();
 		}else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);
 		}

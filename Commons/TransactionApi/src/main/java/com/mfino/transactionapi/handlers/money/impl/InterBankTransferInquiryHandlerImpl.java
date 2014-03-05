@@ -135,7 +135,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		interBankTransferInquiry.setDestAccountNumber(transactionDetails.getDestAccountNumber());
 		interBankTransferInquiry.setDestinationBankAccountNo(transactionDetails.getDestAccountNumber());
 		interBankTransferInquiry.setDestBankCode(transactionDetails.getDestBankCode());
-		interBankTransferInquiry.setSourceMessage("InterBank Transfer");
+		interBankTransferInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER);
 		interBankTransferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_InterBank_Transfer);
 		
  		SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
