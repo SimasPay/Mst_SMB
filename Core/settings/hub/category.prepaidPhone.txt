@@ -5,7 +5,7 @@
   "prepaidData": [
     {
       "name": "Indosat Pulsa",
-      "code": "Postpaid",
+      "code": "PRPHONE001",
       "Denom": "50000 100000 150000"
     } 
   ]

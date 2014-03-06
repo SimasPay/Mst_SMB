@@ -5,7 +5,7 @@
   "postpaidData": [
     {
       "name": "Matrix",
-      "code": "Postpaid"
+      "code": "PSPLN001"
     }  
   ]
 }

@@ -5,7 +5,7 @@
   "postpaidData": [
     {
       "name": "Halo",
-      "code": "Postpaid"
+      "code": "PSPHONE001"
     } 
   ]
 }

@@ -5,7 +5,7 @@
   "prepaidData": [
     {
       "name": "XL Pusla",
-      "code": "Postpaid",
+      "code": "PRPLN001",
       "Denom": "25000 50000 100000 200000"
     } 
   ]
