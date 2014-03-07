@@ -85,6 +85,12 @@ public class BillPayBillerIntegrationServiceImpl extends BillPaymentsBaseService
 		
 		Long sctlId = response.getServiceChargeTransactionLogID();
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
+		// Update amount in SCTL
+		ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(sctlId);
+		if(sctl != null && response.getAmount() != null){
+			sctl.setTransactionAmount(response.getAmount());
+			serviceChargeTransactionLogService.save(sctl);
+		}
 		if(SERVICE_TIME_OUT.equals(response.getInResponseCode())){
 			billPayments.setINResponseCode(SERVICE_TIME_OUT);
 			billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_PENDING);
