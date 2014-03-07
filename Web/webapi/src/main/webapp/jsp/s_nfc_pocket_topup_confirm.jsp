@@ -30,10 +30,6 @@
 		<td><input type="text" name="cardPan" value="" /></td>
 	</tr>
 	<tr>
-		<td>Amount</td>
-		<td><input type="text" name="amount" value="" /></td>
-	</tr>
-	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID" value="" /></td>
 	</tr>	

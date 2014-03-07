@@ -977,7 +977,6 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	public void validateNFCPocketTopup(TransactionDetails transactionDetails)throws InvalidDataException {
 		validateCardPAN(transactionDetails);
 		validatechannelCode(transactionDetails);
-		validateAmount(transactionDetails);
 		validateTransferId(transactionDetails);
 		validateParentTxnId(transactionDetails);
 	}
