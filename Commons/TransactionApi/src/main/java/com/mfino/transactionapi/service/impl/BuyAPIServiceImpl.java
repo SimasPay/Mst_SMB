@@ -52,7 +52,7 @@ public class BuyAPIServiceImpl extends BaseAPIService implements BuyAPIService{
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		log.info("BuyAPIService :: handleRequest BEGIN");
 		XMLResult xmlResult = null;
-		String sourceMessage = transactionDetails.getSourceMDN();
+		String sourceMessage = transactionDetails.getSourceMessage();
 		String transactionName = transactionDetails.getTransactionName();
 		
 		transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);

@@ -24,8 +24,9 @@
    "Cash In" : "Setoran di ",
    "from BSM" : "Setoran via ATM (BSM)",
    "Purchase" : "Pembelian ",
-   "Bill Pay" : "Pembayaran ",
+   "Bill Pay" : "Pembayaran ke ",
    "InterBank Transfer" : "Transfer ke ",
+   "Airtime Purchase" : "Isi Ulang ke ",
    "Date" : "Tanggal",
    "Transactions" : "Transaksi",
    "Amount" : "Jumlah"
@@ -55,8 +56,9 @@
    "Cash In" : "Cash In ",
    "from BSM" : "Deposit via ATM (BSM)",
    "Purchase" : "Purchase ",
-   "Bill Pay" : "Payment ",
+   "Bill Pay" : "Payment to ",
    "InterBank Transfer" : "Transfer to ",
+   "Airtime Purchase" : "Refill to ",
    "Date" : "Date",
    "Transactions" : "Transactions",
    "Amount" : "Amount"

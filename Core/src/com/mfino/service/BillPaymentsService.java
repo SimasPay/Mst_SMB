@@ -25,5 +25,12 @@ public interface BillPaymentsService {
 	 * @param bp
 	 */
 	public void save(BillPayments bp);
+	
+	/**
+	 * Gets the Bill Payments entry for the given SCTL ID
+	 * @param sctlID
+	 * @return
+	 */
+	public BillPayments getBySctlId(long sctlID);
 
 }
