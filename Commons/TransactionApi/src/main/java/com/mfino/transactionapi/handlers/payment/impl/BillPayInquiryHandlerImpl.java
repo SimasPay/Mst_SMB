@@ -310,6 +310,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			
 			sctl.setTransactionID(transactionResponse.getTransactionId());
 			sctl.setCommodityTransferID(transactionResponse.getTransferId());
+			sctl.setTransactionAmount(transactionResponse.getAmount());
 			billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -324,8 +325,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		
 		result.setSctlID(sctl.getID());
 		result.setMultixResponse(response);
-		result.setDebitAmount(transaction.getAmountToDebit());
-		result.setCreditAmount(transaction.getAmountToCredit());
+		result.setDebitAmount(sctl.getTransactionAmount());
+		result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
 		result.setServiceCharge(transaction.getAmountTowardsCharges());
 		addCompanyANDLanguageToResult(sourceMDN,result);
 		result.setParentTransactionID(transactionResponse.getTransactionId());
