@@ -23,13 +23,14 @@
 	<url>http://www.mfino.com</url>
 
 	<modules>
-		<module>GTISO8583</module>
+	<module>BillPayments</module>
+<!--		<module>GTISO8583</module>
 		<module>GTConfiguration</module>
     	<module>GTSMS</module>		
 		<module>InterswitchCashInMock</module>		
-    	<module>BillPayments</module>
+    	
     	<module>NIBSS</module>
-    	<module>FEPISO8583</module>
+    	<module>FEPISO8583</module>-->
 	</modules>
 	<dependencies>
 		<dependency>
