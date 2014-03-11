@@ -94,6 +94,10 @@
 				    value="jms:nfcISOQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMNFCCardStatusFromCMS"
 			    	value="jms:nfcCMSQueue?disableReplyTo=true" />
+			    	
+			    <!--  This comes when there is no response for payment acknowledgement from bank has to continously send requests -->
+					<entry key="com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementToBank"
+					value="jms:flashizISOQueue?disableReplyTo=true" />
 			</map>
 		</constructor-arg>
 		<property name="defaultQueue" value="jms:backendServiceQueue?disableReplyTo=true" />

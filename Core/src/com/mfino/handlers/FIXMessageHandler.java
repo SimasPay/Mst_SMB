@@ -64,7 +64,7 @@ public abstract class FIXMessageHandler extends MultixCommunicationHandler {
 	}
 
 	public CFIXMsg handleResponse(CFIXMsg pMsg) {
-		if (pMsg instanceof CmFinoFIX.CMGetLastTransactionsFromBank || pMsg instanceof CmFinoFIX.CMBankResponse) {
+		if (pMsg instanceof CmFinoFIX.CMGetLastTransactionsFromBank || pMsg instanceof CmFinoFIX.CMBankResponse  || pMsg instanceof CmFinoFIX.CMGetUserAPIKeyFromBank) {
 			return pMsg;
 		}
 		else if (pMsg instanceof CmFinoFIX.CMSubscriberNotification) {

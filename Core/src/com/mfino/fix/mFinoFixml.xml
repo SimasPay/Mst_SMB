@@ -4894,6 +4894,43 @@
 	</message>
 	<message name="BalanceInquiryFromNFC" msgtype="1741" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BalanceInquiryFromBank">
 	</message>
+	<message name="GetUserAPIKey" msgtype="1742" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+	<field name="SourceMDN" required="Y"/>
+	</message>
+	<message name="GetUserAPIKeyToBank" msgtype="1743" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankRequest">
+	</message>
+	<message name="GetUserAPIKeyFromBank" msgtype="1744" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankResponse">  
+	<field name="UserAPIKey" required="N"/>
+	<field name="ResponseCodeString" required="N"/>
+	</message>
+	<message name="PaymentAcknowledgementToBank" msgtype="1745" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="OperatorRequest">
+	<field name="ResponseCodeString" required="N"/>
+	<field name="UserAPIKey" required="N"/>
+	<field name="MerchantData" required="N"/>
+	<field name="ProductIndicatorCode" required="N"/>
+	<field name="Amount" required="N" />
+	<field name="InvoiceNo" required="N"/>
+	<field name="BillerCode" required="N"/>
+	</message>
+	<message name="PaymentAcknowledgementFromBank" msgtype="1746" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="OperatorResponse">
+	<field name="INTxnId" required="N"/>
+	</message>
+	<message name="QRPaymentInquiry" msgtype="1747" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPayInquiry">
+	</message>
+	<message name="QRPayment" msgtype="1748" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPay">
+			<field name="BillerCode" required="Y"/>
+			<field name="InvoiceNumber" required="Y"/>
+			<field name="BillerPartnerType" required="N"/>
+			<field name="OnBeHalfOfMDN" required="N"/>
+			<field name="Email" required="N"/>
+			<field name="IntegrationCode" required="N"/>
+			<field name="PartnerBillerCode" required="N"/>
+			<field name="BenOpCode" required="N"/>
+			<field name="Narration" required="N"/>
+			<field name="PaymentMode" required="N"/>
+			<field name="UserAPIKey" required="N"/>
+			<field name="MerchantData" required="N"/>
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -5283,6 +5320,7 @@
 			<field name="ApplicationID" required="N" />
 			<field name="IsForceCloseRequested" required="N"/>
 			<field name="OtherMDN" required="N"/>
+			<field name="UserAPIKey" required="N"/>
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -7400,6 +7438,7 @@
 		<field number="4000" name="ModifiedField" type="STRING" unused="Y" />
 		<field number="5000" name="OperatorCodeForRouting" type="INT32">
 			<value enum="881" description="CBOSS" />
+			<value enum="9995" description="FLASHIZ" />
 		</field>
 		<field number="5001" name="ServiceName" type="STRING">
 			<value enum="subscriber_activation" description="SUBSCRIBER_ACTIVATION" />
@@ -21709,6 +21748,24 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="GetUserAPIKeyFailed" enum="2102">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Failed to get User API Key</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="GetUserAPIKeySuccess" enum="2103">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Success in getting User API Key</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -25227,6 +25284,8 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8162" name="ToDate" type="UTCTIMESTAMP" />
 	<field number="8163" name="BillData" type="BLOB" />
 	<field number="8164" name="FavoriteCode" type="STRING"/>
+	<field number="8165" name="UserAPIKey" type="STRING"/>
+	<field number="8166" name="MerchantData" type="STRING"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">

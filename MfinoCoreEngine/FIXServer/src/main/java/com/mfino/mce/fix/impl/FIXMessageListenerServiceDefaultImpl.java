@@ -21,10 +21,13 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillInquiry;
 import com.mfino.fix.CmFinoFIX.CMBillPayPendingRequest;
+import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyToBank;
 import com.mfino.fix.CmFinoFIX.CMNFCCardLinkToCMS;
 import com.mfino.fix.CmFinoFIX.CMNFCCardStatusToCMS;
 import com.mfino.fix.CmFinoFIX.CMNFCCardUnlinkReversalToCMS;
 import com.mfino.fix.CmFinoFIX.CMNFCCardUnlinkToCMS;
+import com.mfino.fix.CmFinoFIX.CMQRPayment;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiry;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.mce.fix.FIXMessageListenerService;
@@ -106,7 +109,7 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 
 	public static final String ACTIVEMQ_QUEUE_BILL_PAY = "jms:billPayQueue?disableReplyTo=true";
 	
-	
+	public static final String ACTIVEMQ_QUEUE_FLASHIZ_QR_PAYMENT = "jms:flashizBillPayQueue?disableReplyTo=true";
 	//jms queue for adjustments through ui
 	public static final String ACTIVEMQ_QUEUE_TRANSACTION_ADJUSTMENTS = "jms:adjustmentsQueue?disableReplyTo=true";
 	
@@ -121,7 +124,7 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 	//hsm queue
 	private static final String ACTIVEMQ_QUEUE_HSM ="jms:hsmQueue?disableReplyTo=true";
 	private static final String ACTIVEMQ_QUEUE_NFC_CMS = "jms:nfcISOQueue?disableReplyTo=true";
-	
+	private static final String ACTIVEMQ_QUEUE_FLASHIZ ="jms:flashizISOQueue?disableReplyTo=true";
 	/*
 	 * Process HttpServletRequests received by JETTY or SERVLET component of Apache Camel. 
 	 */
@@ -185,7 +188,10 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 		//TODO: need to move this code to a better manage
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
 		producerTemplate.start();
-		if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest || fixMesg instanceof CMBillInquiry){
+		if(fixMesg instanceof CmFinoFIX.CMQRPaymentInquiry || fixMesg instanceof CmFinoFIX.CMQRPayment){
+			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_FLASHIZ_QR_PAYMENT, mceMessage, header);
+		}
+		else if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest){
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_BILL_PAY, mceMessage, header);
 		}
 		else if(fixMesg instanceof CmFinoFIX.CMSMSNotification )
@@ -244,6 +250,11 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 			responseObject.copy((CmFinoFIX.CMNFCCardStatus) fixMesg);
 			mceMessage.setResponse(responseObject);
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_NFC_CMS, mceMessage, header);
+		}else if(fixMesg instanceof CmFinoFIX.CMGetUserAPIKey){
+			CMGetUserAPIKeyToBank responseObject = new CMGetUserAPIKeyToBank();
+			responseObject.copy((CmFinoFIX.CMGetUserAPIKey) fixMesg);
+			mceMessage.setResponse(responseObject);
+			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_FLASHIZ, mceMessage, header);
 		}
 		else
 		{

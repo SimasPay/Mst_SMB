@@ -21,6 +21,8 @@ import com.mfino.transactionapi.handlers.payment.BillInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.GetThirdPartyDataHandler;
+import com.mfino.transactionapi.handlers.payment.QRPaymentConfirmHandler;
+import com.mfino.transactionapi.handlers.payment.QRPaymentInquiryHandler;
 import com.mfino.transactionapi.service.BaseAPIService;
 import com.mfino.transactionapi.service.PaymentAPIService;
 import com.mfino.transactionapi.service.TransactionRequestValidationService;
@@ -63,6 +65,14 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
+	
+	@Autowired
+	@Qualifier("QRPaymentInquiryHandlerImpl")
+	private QRPaymentInquiryHandler qrPaymentInquiryHandler;
+
+	@Autowired
+	@Qualifier("QRPaymentConfirmHandlerImpl")
+	private QRPaymentConfirmHandler qrPaymentConfirmHandler;
 
 	private String serviceName = ServiceAndTransactionConstants.SERVICE_PAYMENT;
 
@@ -135,6 +145,15 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 			String frscCode = systemParametersService.getString(SystemParameterKeys.FRSC_PAYMENT_CODE);
 			transactionDetails.setBillerCode(frscCode);
 			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
+		}else if (ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT_INQUIRY.equalsIgnoreCase(transactionName)) {
+			transactionRequestValidationService.validateBillPayInquiryDetails(transactionDetails);
+			sourceMessage = ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT;
+			transactionDetails.setSourceMessage(sourceMessage);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT);
+			xmlResult = (XMLResult) qrPaymentInquiryHandler.handle(transactionDetails);
+		}else if (ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT.equalsIgnoreCase(transactionName)) {
+			transactionRequestValidationService.validateBillPayConfirmDetails(transactionDetails);
+			xmlResult = (XMLResult) qrPaymentConfirmHandler.handle(transactionDetails);
 		}
 		else if(ServiceAndTransactionConstants.TRANSACTION_GET_THIRD_PARTY_DATA.equals(transactionName)){
 

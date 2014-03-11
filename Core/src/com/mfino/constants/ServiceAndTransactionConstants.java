@@ -248,6 +248,12 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_DOWNLOAD_HISTORY_AS_PDF = "DownloadHistoryAsPDF";
 	
+	public static final String TRANSACTION_GET_USER_API_KEY			= "GetUserAPIKey";
+	
+	public static final String TRANSACTION_QR_PAYMENT_INQUIRY = "QRPaymentInquiry";
+	
+	public static final String TRANSACTION_QR_PAYMENT = "QRPayment";
+
 	// Messages
 	
 	public static final String	MESSAGE_MOBILE_TRANSFER	            = "Mobile Transfer";
@@ -319,4 +325,6 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_REGISTRATION_WITH_ACTIVATION_HUB = "RegistrationWithActivationForHub";
 	
 	public static final String MESSAGE_STARTIMES_PAYMENT = "StarTimes Payment";
+	
+	public static final String MESSAGE_QR_PAYMENT 			=	"QR Payment";
 }

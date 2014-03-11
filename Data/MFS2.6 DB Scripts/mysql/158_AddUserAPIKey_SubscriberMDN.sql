@@ -1,0 +1,1 @@
+ALTER TABLE subscriber_mdn ADD UserAPIKey VARCHAR(255) DEFAULT NULL;

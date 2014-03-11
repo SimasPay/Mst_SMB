@@ -34,6 +34,7 @@ import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromNFC;
 import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
+import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyFromBank;
 import com.mfino.fix.CmFinoFIX.CMSMSNotification;
 import com.mfino.fix.CmFinoFIX.CMSubscriberNotification;
 import com.mfino.hibernate.Timestamp;
@@ -446,6 +447,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 		else if (mceMessage.getRequest() instanceof CMBalanceInquiryFromNFC) {
 			webResponse = mceMessage.getRequest();
 			log.info("Got the Response for Balance Inquiry from Bank --> " + webResponse.DumpFields());
+		} else if(mceMessage.getRequest() instanceof CMGetUserAPIKeyFromBank){
+			webResponse = mceMessage.getRequest();
+			log.info("Got the UserAPIKey from Flashiz --> " + webResponse.DumpFields());
 		}
 		else 
 		{

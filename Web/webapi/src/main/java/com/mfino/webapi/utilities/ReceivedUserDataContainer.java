@@ -135,7 +135,9 @@ public class ReceivedUserDataContainer {
 	private String addressLine1;
 	private String zipCode;
 	private String state;
-
+	private String merchantData;
+	private String userAPIKey;
+	
 	public String getAppVersion() {
     	return appVersion;
     }
@@ -1217,5 +1219,20 @@ public class ReceivedUserDataContainer {
 
 	public void setFavoriteCode(String favoriteCode) {
 		this.favoriteCode = favoriteCode;
+	}
+	public String getMerchantData() {
+		return merchantData;
+	}
+
+	public void setMerchantData(String merchantData) {
+		this.merchantData = merchantData;
+	}
+
+	public String getUserAPIKey() {
+		return userAPIKey;
+	}
+
+	public void setUserAPIKey(String userAPIKey) {
+		this.userAPIKey = userAPIKey;
 	}
 }

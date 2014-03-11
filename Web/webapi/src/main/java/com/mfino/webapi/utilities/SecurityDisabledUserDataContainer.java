@@ -859,4 +859,15 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 	public String getState() {
 		return this.container.getState();
 	}
+	
+	@Override
+	public String getMerchantData() {
+		return this.container.getMerchantData();
+	}
+
+	@Override
+	public String getUserAPIKey() {
+		// TODO Auto-generated method stub
+		return this.container.getUserAPIKey();
+	}
 }

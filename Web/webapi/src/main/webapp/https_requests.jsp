@@ -263,6 +263,21 @@
 			<a href="jsp/s_frsc_payment_confirm.jsp"> FRSCPaymentConfirm</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/get_user_api_key.jsp">Get User API Key</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_qr_payment_inquiry.jsp">QR Payment Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_qr_payment_confirm.jsp">QR Payment Confirm</a>
+		</td>
+	</tr>
 	</table></td>
 	
 	</tr>

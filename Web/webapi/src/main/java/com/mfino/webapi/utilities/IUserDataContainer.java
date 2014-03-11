@@ -340,4 +340,6 @@ public interface IUserDataContainer {
 	public abstract String getAddressLine1();
 	public abstract String getZipCode();
 	public abstract String getState();
+	public abstract String getMerchantData();
+	public abstract String getUserAPIKey();
 }

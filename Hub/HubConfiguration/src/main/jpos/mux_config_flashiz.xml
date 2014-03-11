@@ -1,0 +1,4 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_flashiz" name="flashizmux">
+	<in>flashizreceive</in>
+	<out>flashizsend</out>
+</mux>

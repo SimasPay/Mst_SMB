@@ -249,7 +249,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setAuthentication(hexEncodedEncZeroes);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_WebapiLoginSuccessful);
 			result.setSubscriberType(srcSubscriberMDN.getSubscriber().getType());
-
+			result.setUserAPIKey(srcSubscriberMDN.getUserAPIKey());
 			log.info("setting wrong pin count to 0, and saving subscribermdn status");
 			srcSubscriberMDN.setWrongPINCount(0);
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);

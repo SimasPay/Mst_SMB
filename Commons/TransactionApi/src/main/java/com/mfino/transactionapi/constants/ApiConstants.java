@@ -319,6 +319,10 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 
 	public static final String BILL_INQUIRY = "billInquiry";
 	
+	public static final String PARAMETER_MERCHANT_DATA = "merchantData";
+	
+	public static final String PARAMETER_USER_API_KEY = "userAPIKey";
+	
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;
 		if(PARAMETER_ACTIVATION_CONFIRMPIN.equals(parameterName) ||

@@ -63,6 +63,8 @@ public class BackendResponse extends CMBase {
 	private String AdditionalInfo;
 	private String DestinationUserName;
 	private String rechargePin;
+	private String userAPIKey;
+
 	@Override
 	public boolean checkRequiredFields() {
 		return true;
@@ -521,5 +523,12 @@ public class BackendResponse extends CMBase {
 
 	public void setNfcCardBalanceCGEntries(CMBalanceInquiryFromBank.CGEntries[] nfcCardBalanceCGEntries) {
 		this.nfcCardBalanceCGEntries = nfcCardBalanceCGEntries;
+	}
+	public String getUserAPIKey() {
+		return userAPIKey;
+	}
+
+	public void setUserAPIKey(String userAPIKey) {
+		this.userAPIKey = userAPIKey;
 	}
 }

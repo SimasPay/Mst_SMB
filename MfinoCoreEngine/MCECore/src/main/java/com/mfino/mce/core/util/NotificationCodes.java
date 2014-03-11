@@ -572,6 +572,8 @@ public enum NotificationCodes {
 	NFCPocketTopupSuccess(10842,842,true),
 	NFCCardActive(10843,843,false),
 	NFCCardNotActive(10844,844,false),
+	GetUserAPIKeyFailed(12102,2102,false),
+	GetUserAPIKeySuccess(12103,2103,false),
 	QueryBalanceDetails(12095,2095,false);
 	
 	private static Map<Integer,NotificationCodes> nofificationCodeMap = null;

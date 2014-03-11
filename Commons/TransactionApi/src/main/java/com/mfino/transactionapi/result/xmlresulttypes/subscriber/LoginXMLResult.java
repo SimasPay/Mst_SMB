@@ -12,6 +12,7 @@ public class LoginXMLResult extends XMLResult {
 	private String	newAppURL;
 	private Integer	subscriberType;
 	private boolean isValidVersion;
+	private String userAPIKey;
 	
 	public String getNewAppURL() {
     	return newAppURL;
@@ -49,6 +50,12 @@ public class LoginXMLResult extends XMLResult {
 	public void setValidVersion(boolean isValidVersion) {
 		this.isValidVersion = isValidVersion;
 	}
+	public String getUserAPIKey() {
+		return userAPIKey;
+	}
+	public void setUserAPIKey(String userAPIKey) {
+		this.userAPIKey = userAPIKey;
+	}
 	public void render() throws Exception{
 		writeStartOfDocument();
 		
@@ -75,6 +82,11 @@ public class LoginXMLResult extends XMLResult {
 		if(!StringUtils.isBlank(newAppURL)){
 			getXmlWriter().writeStartElement("url");
 			getXmlWriter().writeCharacters(newAppURL,false);
+			getXmlWriter().writeEndElement();
+		}
+		if(!StringUtils.isBlank(userAPIKey)){
+			getXmlWriter().writeStartElement("userAPIKey");
+			getXmlWriter().writeCharacters(userAPIKey,false);
 			getXmlWriter().writeEndElement();
 		}
 		if(subscriberType!=null){

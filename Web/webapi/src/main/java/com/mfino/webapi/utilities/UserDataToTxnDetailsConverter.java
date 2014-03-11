@@ -213,6 +213,8 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setAddressLine1(userDataContainer.getAddressLine1());
 		txnDetails.setZipCode(userDataContainer.getZipCode());
 		txnDetails.setState(userDataContainer.getState());
+		txnDetails.setMerchantData(userDataContainer.getMerchantData());
+		txnDetails.setUserAPIKey(userDataContainer.getUserAPIKey());
 		return txnDetails;
 	}
 	

@@ -155,6 +155,8 @@ public class TransactionDetails {
 	private String addressLine1;
 	private String zipCode;
 	private String state;
+	private String userAPIKey;
+	private String merchantData;
 	
 	public String getTransactionTypeName() {
 		return transactionTypeName;
@@ -1017,5 +1019,17 @@ public class TransactionDetails {
 	}
 	public void setFavoriteCode(String favoriteCode) {
 		this.favoriteCode = favoriteCode;
+	}
+	public String getUserAPIKey() {
+		return userAPIKey;
+	}
+	public void setUserAPIKey(String userAPIKey) {
+		this.userAPIKey = userAPIKey;
+	}
+	public String getMerchantData() {
+		return merchantData;
+	}
+	public void setMerchantData(String merchantData) {
+		this.merchantData = merchantData;
 	}
 }

@@ -32,6 +32,7 @@ import com.mfino.transactionapi.handlers.account.ExistingSubscriberReactivationH
 import com.mfino.transactionapi.handlers.account.FavoriteHandler;
 import com.mfino.transactionapi.handlers.account.GenerateFavoriteJSONHandler;
 import com.mfino.transactionapi.handlers.account.GetRegistrationMediumHandler;
+import com.mfino.transactionapi.handlers.account.GetUserAPIKeyHandler;
 import com.mfino.transactionapi.handlers.account.KYCUpgradeHandler;
 import com.mfino.transactionapi.handlers.account.MFAExistingSubscriberReactivationHandler;
 import com.mfino.transactionapi.handlers.account.MFASubscriberActivationHandler;
@@ -217,7 +218,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("KYCUpgradeHandlerImpl")
 	private KYCUpgradeHandler kycUpgradeHandler;
-	
+
+	@Autowired
+	@Qualifier("GetUserAPIKeyHandlerImpl")
+	private GetUserAPIKeyHandler getUserAPIKeyHandler;
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		
@@ -437,6 +441,8 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		}else if (ServiceAndTransactionConstants.TRANSACTION_KYCUpgrade.equals(transactionName)) {
 			validationService.validateKYCUpgrade(transactionDetails);
 			xmlResult = (XMLResult) kycUpgradeHandler.handle(transactionDetails);			
+		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_USER_API_KEY.equals(transactionName)){
+			xmlResult = (XMLResult) getUserAPIKeyHandler.handle(transactionDetails);
 		}else {
 			xmlResult = new XMLError();
 			xmlResult.setLanguage(CmFinoFIX.Language_English);

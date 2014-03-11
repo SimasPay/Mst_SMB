@@ -317,6 +317,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String addressLine1 = request.getParameter(ApiConstants.PARAMETER_ADDRESS_LINE_1);
 		String zipCode = request.getParameter(ApiConstants.PARAMETER_ZIP_CODE);
 		String state = request.getParameter(ApiConstants.PARAMETER_STATE);
+		String merchantData = request.getParameter(ApiConstants.PARAMETER_MERCHANT_DATA);
+		String userAPIKey = request.getParameter(ApiConstants.PARAMETER_USER_API_KEY);
 		
 		sourceMDN = subscriberService.normalizeMDN(sourceMDN);
 		if (! (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName) || 
@@ -447,6 +449,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setAddressLine1(addressLine1);
 		rudContainer.setZipCode(zipCode);
 		rudContainer.setState(state);
+		rudContainer.setMerchantData(merchantData);
+		rudContainer.setUserAPIKey(userAPIKey);
 		log.info("initUserDataContainer: End");
 		return rudContainer;
 	}
