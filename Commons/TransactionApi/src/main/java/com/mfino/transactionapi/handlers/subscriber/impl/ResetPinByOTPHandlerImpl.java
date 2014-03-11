@@ -163,7 +163,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
 			return result;
 		}
-		
+		srcSubscriberMDN.setOTP(null); // reseting the OTP to null as the OTP is used for new pin generation.
 		
 		log.info("OTP validation Successfull");
 		

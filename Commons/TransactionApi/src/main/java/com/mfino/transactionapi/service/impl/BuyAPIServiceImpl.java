@@ -62,7 +62,7 @@ public class BuyAPIServiceImpl extends BaseAPIService implements BuyAPIService{
 			if (StringUtils.isBlank(sourceMessage)) {
 				sourceMessage = ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE;
 			}
-
+			transactionDetails.setSourceMessage(sourceMessage);
 			transactionDetails.setOnBehalfOfMDN(transactionDetails.getBillNum());//changes done as per ticket NUM 3396
 			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
 		}

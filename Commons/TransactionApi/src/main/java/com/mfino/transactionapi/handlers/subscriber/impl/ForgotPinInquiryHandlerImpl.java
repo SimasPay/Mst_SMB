@@ -72,7 +72,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		forgotPinInquiry.setSourceApplication(cc.getChannelSourceApplication());
 		forgotPinInquiry.setChannelCode(cc.getChannelCode());
 		forgotPinInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());				
-		log.info("Handling Forgot pin inquiry webapi request");
+		log.info("Handling Forgot pin inquiry webapi request for MDN: " +  forgotPinInquiry.getSourceMDN());
 		XMLResult result = new ChangeEmailXMLResult();
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 
@@ -84,8 +84,6 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		result.setTransactionID(transactionLog.getID());
 		
 		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(forgotPinInquiry.getSourceMDN());
-		log.info("Subscriber MDN: " + subscriberMDN.getID() + " : new OTP generated for subscriber:" + subscriberMDN.getSubscriber().getID());
-
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has failed validations");
