@@ -127,7 +127,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	
 	private static final int DEFAULT_PAGE_NO = 0;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(ConfigurationUtil.getPdfHistoryDateFormat());	
-	
+	Integer language = 0;	// Default language set as Bahasa.
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
 		String pocketCode= transactionDetails.getSourcePocketCode();
@@ -252,7 +252,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 					return ((int) (ct2.getID() - ct1.getID()));
 				}
 			});
-
+			language = srcSubscriberMDN.getSubscriber().getLanguage();
 			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()))
 			{
 				result.setTransactionList(transactionHistoryList);
@@ -262,6 +262,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 					Pocket dtPk = pocketService.getById(ct.getDestPocketID());
 					ct.setDestCardPAN(dtPk.getCardPAN());
 				}
+				ct.setGeneratedTxnDescription(getTxnType(ct, srcPocket, language));
 			}
 			result.setNotificationCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
 			
@@ -321,7 +322,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	{
 		File file = new File(filePath);
 		PDFDocument pdfDocument = new PDFDocument(file, txnDetails.getSourcePIN());
-		Integer language = subscriberMDN.getSubscriber().getLanguage();
+		
 		//String headerRow = "Tanggal | Transaksi | Jumlah";
 		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transactions") + " | " + LanguageTranslator.translate(language, "Amount");
 		pdfDocument.addLogo();
@@ -332,7 +333,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		while(it.hasNext())
 		{
 			CommodityTransfer ct = it.next();
-			String txnType = getTxnType(ct, pocket, language);
+			String txnType = ct.getGeneratedTxnDescription();
 			String rowContent = dateFormat.format(ct.getStartTime())
 								+ "|"+ txnType
 								+ "|"+ "Rp. " + MfinoUtil.getNumberFormat().format(ct.getAmount())  + (ct.getPocketBySourcePocketID().getID().equals(pocket.getID())?"(-)":"(+)");

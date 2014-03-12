@@ -18,8 +18,17 @@ public class CommodityTransfer extends CmFinoFIX.CRCommodityTransfer {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private Long sctlId;
+	private String generatedTxnDescription;
 	
 	
+	public String getGeneratedTxnDescription() {
+		return generatedTxnDescription;
+	}
+
+	public void setGeneratedTxnDescription(String generatedTxnDescription) {
+		this.generatedTxnDescription = generatedTxnDescription;
+	}
+
 	public Long getSctlId() {
 		return sctlId;
 	}
