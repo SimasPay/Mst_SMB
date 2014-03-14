@@ -13,7 +13,6 @@ import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
 import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyToBank;
-import com.mfino.flashiz.iso8583.AdditionalAmounts;
 import com.mfino.flashiz.iso8583.GetConstantCodes;
 import com.mfino.flashiz.iso8583.processor.FlashizISOtoFixProcessor;
 import com.mfino.flashiz.iso8583.utils.DateTimeFormatter;

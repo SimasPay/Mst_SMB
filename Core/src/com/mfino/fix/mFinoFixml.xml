@@ -4001,7 +4001,8 @@
 			<field name="BenOpCode" required="N"/>
 			<field name="Narration" required="N"/>			
 			<field name="PaymentMode" required="N"/>
-			<field name="BillData" required="N"/>			
+			<field name="BillData" required="N"/>
+			<field name="MerchantData" required="N"/>	
 		</message>
 		<message name="BillPay" msgtype="1370" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
 			<field name="BillerCode" required="Y"/>

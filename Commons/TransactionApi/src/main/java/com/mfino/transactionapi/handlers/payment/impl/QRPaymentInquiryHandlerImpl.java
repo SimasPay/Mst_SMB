@@ -134,7 +134,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 		qrPaymentInquiry.setBenOpCode(transactionDetails.getBenOpCode());
 		qrPaymentInquiry.setNarration(transactionDetails.getNarration());
 		qrPaymentInquiry.setParentTransactionID(0L);
-		
+		qrPaymentInquiry.setMerchantData(transactionDetails.getMerchantData());
 		srcpocketcode=transactionDetails.getSourcePocketCode();
         qrPaymentInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
         qrPaymentInquiry.setPaymentMode(transactionDetails.getPaymentMode());

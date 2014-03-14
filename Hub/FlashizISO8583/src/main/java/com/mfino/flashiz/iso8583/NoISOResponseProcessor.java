@@ -24,7 +24,6 @@ import com.mfino.util.UniqueNumberGen;
 public class NoISOResponseProcessor {
 
 	Log	log	= LogFactory.getLog(NoISOResponseProcessor.class);
-	protected String reversalQueue = "jms:bsimISOQueue";
 
 	public MCEMessage processMessage(MCEMessage msg) {
 
@@ -33,7 +32,7 @@ public class NoISOResponseProcessor {
 		log.info("MCERequest--> " + msg.getRequest().getClass());//to
 		log.info("MCEResponse-->" + msg.getResponse().getClass());//from
 		
-		if (msg.getRequest() instanceof CMPaymentAcknowledgementToBank || msg.getRequest() instanceof CMGetUserAPIKeyToBank)
+		if (msg.getRequest() instanceof CMPaymentAcknowledgementToBank || msg.getRequest() instanceof CMGetUserAPIKeyToBank || msg.getResponse() instanceof CMGetUserAPIKeyToBank)
 			return msg;
 		CMPaymentAcknowledgementToBank isoRequest = (CMPaymentAcknowledgementToBank) msg.getResponse();
         NoISOResponseMsg noResponse = new NoISOResponseMsg();

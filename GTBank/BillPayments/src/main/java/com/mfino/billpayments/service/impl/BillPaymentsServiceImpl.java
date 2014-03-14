@@ -64,6 +64,10 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		else if (StringUtils.isNotBlank(billPayInquiry.getOnBeHalfOfMDN())) {
 			billPayments.setInfo1(billPayInquiry.getOnBeHalfOfMDN());
 		}
+		// Merchant Data is for Flashiz QR Payment .Store merchant data in Info1 of billPayments table
+		else if (StringUtils.isNotBlank(billPayInquiry.getMerchantData())) {
+			billPayments.setInfo1(billPayInquiry.getMerchantData());
+		}
 		billPayments.setInfo2(billPayInquiry.getNarration());
 		BillPaymentsDAO billPayDAO = DAOFactory.getInstance().getBillPaymentDAO();
 		billPayDAO.save(billPayments);
