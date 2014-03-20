@@ -278,7 +278,7 @@
       class="org.jpos.iso.IFA_NUMERIC"/>
   <isofield
       id="54"
-      length="120"
+      length="999"
       name="ADDITIONAL AMOUNTS"
       class="org.jpos.iso.IFA_LLLCHAR"/>
   <isofield
