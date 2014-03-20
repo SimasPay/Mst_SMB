@@ -156,7 +156,6 @@ public class ISO8583Server implements Runnable {
 						else if("500000".equals(incoming.getObjectValue(3))){
 							response.setValue(38, "654321", IsoType.ALPHA, 6);
 							response.setValue(39, "00", IsoType.ALPHA, 2);
-							Thread.sleep(50000);
 						}
 					else {
 						log.error("Unrecognonized message type");
