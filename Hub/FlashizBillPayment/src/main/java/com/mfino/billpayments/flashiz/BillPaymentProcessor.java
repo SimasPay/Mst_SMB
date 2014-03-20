@@ -51,7 +51,6 @@ public class BillPaymentProcessor implements FlashizProcessor {
 		toOperator.setAmount(backendResponse.getAmount());
 		toOperator.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
 		//toOperator.setTransferID(backendResponse.getTransferID());
-		//toOperator.setTransferID(sctlId);
 		toOperator.setTransactionID(sctlId);
 		toOperator.setParentTransactionID(sctlId);
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
@@ -61,6 +60,7 @@ public class BillPaymentProcessor implements FlashizProcessor {
 		toOperator.setUserAPIKey(((CMQRPayment) requestFix).getUserAPIKey());
 		toOperator.setMerchantData(((CMQRPayment) requestFix).getMerchantData());
 		toOperator.setInvoiceNo(((CMQRPayment) requestFix).getInvoiceNumber());
+		toOperator.setBillerCode(((CMQRPayment) requestFix).getBillerCode());
 		replyMessage.setRequest(mceMessage.getRequest());
 		replyMessage.setResponse(toOperator);
 		replyMessage.setDestinationQueue("jms:flashizBillPaymentResponseQueue?disableReplyTo=true");

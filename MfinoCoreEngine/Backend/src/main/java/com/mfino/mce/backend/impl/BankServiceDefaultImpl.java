@@ -390,7 +390,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	public CFIXMsg onTransferInquiryFromBank(CMTransferInquiryToBank toBank,
 			CMTransferInquiryFromBank fromBank) {
 
-		log.debug("BankServiceDefaultImpl :: onTransferInquiryFromBank() begin**");
+		log.info("BankServiceDefaultImpl :: onTransferInquiryFromBank() begin**");
 		log.info("BankServiceDefaultImpl :: onTransferInquiryFromBank() toBank.DumpFields() :: "
 				+ toBank.DumpFields());
 		log.info("BankServiceDefaultImpl :: onTransferInquiryFromBank() fromBank.DumpFields() :: "
@@ -568,7 +568,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				requestFix.getPin(), true, false, false, false,
 				isSystemInitiatedTransaction);
 
-		log.debug("BankServiceDefaultImpl :: after validating source subscriber returnFix.getInternalErrorCode()="
+		log.info("BankServiceDefaultImpl :: after validating source subscriber returnFix.getInternalErrorCode()="
 				+ returnFix.getInternalErrorCode());
 
 		if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -576,7 +576,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					objDestSubscriber, objDestSubMdn, objDestPocket, "", false,
 					false, false, false, isSystemInitiatedTransaction);
 
-			log.debug("BankServiceDefaultImpl :: after validating destination subscriber returnFix.getInternalErrorCode#()="
+			log.info("BankServiceDefaultImpl :: after validating destination subscriber returnFix.getInternalErrorCode#()="
 					+ returnFix.getInternalErrorCode());
 
 			if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -905,7 +905,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					subscriberMdn, toBankPocket, toBank.getPin(), true, false,
 					false, false);
 
-			log.debug("BankServiceDefaultServiceImpl : onBalanceInquiryFromBank : validateBankAccountSubscriber "
+			log.info("BankServiceDefaultServiceImpl : onBalanceInquiryFromBank : validateBankAccountSubscriber "
 					+ returnFix.getInternalErrorCode());
 
 			if (!isNullorZero(returnFix.getInternalErrorCode())) {
@@ -922,7 +922,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				&& !((toBank.getSourceCardPAN().equals(toBankPocket
 						.getCardPAN())))) {
 			// error only log
-			log.debug("BankServiceDefaultImpl : onBalanceInquiryFromBank : account number mismatch");
+			log.info("BankServiceDefaultImpl : onBalanceInquiryFromBank : account number mismatch");
 			returnFix
 					.setInternalErrorCode(NotificationCodes.InternalSystemError
 							.getInternalErrorCode());
@@ -999,7 +999,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	    toBankFix.setSourceMDN(requestFix.getSourceMDN());
 	    toBankFix.setSourceCardPAN(requestFix.getSourceCardPAN());
 	    toBankFix.setInfo2(mdngen);
-		log.debug("BankServiceDefaultIpl : onNewSubscriberActivation with transactionid="
+		log.info("BankServiceDefaultIpl : onNewSubscriberActivation with transactionid="
 				+ requestFix.getTransactionID());
 		toBankFix.setTransactionID(requestFix.getTransactionID());
 		toBankFix.setParentTransactionID(requestFix.getParentTransactionID());
@@ -1136,7 +1136,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	    toBankFix.setSourceMDN(requestFix.getSourceMDN());
 	    toBankFix.setInfo2(mdngen);
 	    toBankFix.setPin(requestFix.getPin());
-		log.debug("BankServiceDefaultIpl : onExistingSubscriberReactivation with transactionid="
+		log.info("BankServiceDefaultIpl : onExistingSubscriberReactivation with transactionid="
 				+ requestFix.getTransactionID());
 		toBankFix.setTransactionID(requestFix.getTransactionID());
 		toBankFix.setSourceCardPAN(requestFix.getSourceCardPAN());
@@ -1202,7 +1202,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					subscriber, subscriberMdn, moneyPocket, requestFix.getPin(),
 					true, false, false, false, isSystemInitiatedTransaction);
 
-			log.debug("BankServiceDefaultImpl:onBalanceInquiry(): Source subscriber validation ErrorCode="
+			log.info("BankServiceDefaultImpl:onBalanceInquiry(): Source subscriber validation ErrorCode="
 					+ responseFix.getInternalErrorCode());
 			log.debug("BankServiceDefaultImpl:onBalanceInquiry(): Source Subscriber Pocket Type="
 					+ moneyPocket.getPocketTemplate().getType());
@@ -1210,7 +1210,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		else
 		{
 			responseFix = validationService.validateSubscriberPin(subscriber, subscriberMdn, requestFix.getPin(), true, isSystemInitiatedTransaction);
-			log.debug("BankServiceDefaultImpl:onBalanceInquiry(): Source subscriber pin validation ErrorCode="
+			log.info("BankServiceDefaultImpl:onBalanceInquiry(): Source subscriber pin validation ErrorCode="
 					+ responseFix.getInternalErrorCode());
 		}
 		if (isNullorZero(responseFix.getInternalErrorCode())) {
@@ -1260,7 +1260,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				toBankFix.setTransactionTypeName(requestFix.getTransactionTypeName());
 				toBankFix.setSourceCardPAN(moneyPocket.getCardPAN());
 				toBankFix.setPocketID(requestFix.getPocketID());
-				log.debug("BankServiceDefaultIpl : balanceinquiry :* transactionid="
+				log.info("BankServiceDefaultIpl : balanceinquiry :* transactionid="
 						+ requestFix.getTransactionID());
 				toBankFix.setTransactionID(requestFix.getTransactionID());
 
@@ -1322,7 +1322,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							.getInternalErrorCode()));
 		}
 
-		log.debug("BankServiceDefaultImpl:onBalanceInquiry() **");
+		log.info("BankServiceDefaultImpl:onBalanceInquiry() **");
 
 		responseFix.setSourceMDN(requestFix.getSourceMDN());
 		responseFix.setLanguage(subscriber.getLanguage());
@@ -1432,7 +1432,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				objSourceSubscriber, objSrcSubMdn, objSrcPocket, "mFino260",
 				true, false, false, false, isSystemInitiatedTransaction);
 
-		log.debug("BankServiceDefaultImpl:onTransferConfirmationToBank: Source subcriber validated ErrorCode="
+		log.info("BankServiceDefaultImpl:onTransferConfirmationToBank: Source subcriber validated ErrorCode="
 				+ returnFix.getInternalErrorCode());
 
 		if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -1440,7 +1440,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					objDestSubscriber, objDestSubMdn, objDestPocket, "", false,
 					false, false, false, isSystemInitiatedTransaction);
 
-			log.debug("BankServiceDefaultImpl:onTransferConfirmationToBank: Dest subcriber validated ErrorCode="
+			log.info("BankServiceDefaultImpl:onTransferConfirmationToBank: Dest subcriber validated ErrorCode="
 					+ returnFix.getInternalErrorCode());
 
 			if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -2119,7 +2119,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //			taxPocket.setCurrentBalance(BigDecimal.ZERO);
 //		}
 
-		log.debug("BankServiceDefaultImpl :: onChargeDistribution sourceSubscriber="
+		log.info("BankServiceDefaultImpl :: onChargeDistribution sourceSubscriber="
 				+ sourceSubscriber
 				+ ", destinationSubscriber="
 				+ destinationSubscriber
@@ -2146,7 +2146,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					sourceSubscriber, sourceSubcriberMdn, sourcePocket,
 					"mFino260", true, false, false, false);
 
-			log.debug("BankServiceDefaultImpl:onChargeDistribution: Source subcriber validated ErrorCode="
+			log.info("BankServiceDefaultImpl:onChargeDistribution: Source subcriber validated ErrorCode="
 					+ returnFix.getInternalErrorCode());
 
 			if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -2154,7 +2154,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						destinationSubscriber, destinationSubcriberMdn,
 						destinationPocket, "", false, false, false, false);
 
-				log.debug("BankServiceDefaultImpl:onChargeDistribution: Dest subcriber validated ErrorCode="
+				log.info("BankServiceDefaultImpl:onChargeDistribution: Dest subcriber validated ErrorCode="
 						+ returnFix.getInternalErrorCode());
 
 				if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -2356,7 +2356,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		PendingCommodityTransfer pct = null;
 		CFIXMsg isoFix = null;
 
-		log.debug("BankServiceDefaultImpl :: onSettlementOfCharge sourceSubscriber="
+		log.info("BankServiceDefaultImpl :: onSettlementOfCharge sourceSubscriber="
 				+ sourceSubscriber
 				+ ", destinationSubscriber="
 				+ destinationSubscriber
@@ -2380,7 +2380,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					sourceSubscriber, sourceSubcriberMdn, sourcePocket,
 					"mFino260", true, false, false, false);
 
-			log.debug("BankServiceDefaultImpl:onSettlementOfCharge: Source subcriber validated ErrorCode="
+			log.info("BankServiceDefaultImpl:onSettlementOfCharge: Source subcriber validated ErrorCode="
 					+ returnFix.getInternalErrorCode());
 
 			if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -2388,7 +2388,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						destinationSubscriber, destinationSubcriberMdn,
 						destinationPocket, "", false, false, false, false);
 
-				log.debug("BankServiceDefaultImpl:onSettlementOfCharge: Dest subcriber validated ErrorCode="
+				log.info("BankServiceDefaultImpl:onSettlementOfCharge: Dest subcriber validated ErrorCode="
 						+ returnFix.getInternalErrorCode());
 
 				if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -3171,7 +3171,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				subscriber, subscriberMdn, moneyPocket,
 				getBankAccountTransations.getPin(), true, false, false, false);
 
-		log.debug("BankServiceDefaultImpl:onGetBankHistory(): Source subscriber validation ErrorCode="
+		log.info("BankServiceDefaultImpl:onGetBankHistory(): Source subscriber validation ErrorCode="
 				+ responseFix.getInternalErrorCode());
 		log.debug("BankServiceDefaultImpl:onGetBankHistory(): Source Subscriber Pocket Type="
 				+ moneyPocket.getPocketTemplate().getType());
@@ -3228,7 +3228,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							.getInternalErrorCode()));
 		}
 
-		log.debug("BankServiceDefaultImpl:onGetBankHistory **");
+		log.info("BankServiceDefaultImpl:onGetBankHistory **");
 
 		responseFix.setSourceMDN(getBankAccountTransations.getSourceMDN());
 		responseFix.setLanguage(subscriber.getLanguage());
@@ -3304,7 +3304,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				subscriberMdn, toBankPocket, toBank.getPin(), true, false,
 				false, false);
 
-		log.debug("BankServiceDefaultServiceImpl : onGetBankHistoryFromBank : validateBankAccountSubscriber "
+		log.info("BankServiceDefaultServiceImpl : onGetBankHistoryFromBank : validateBankAccountSubscriber "
 				+ returnFix.getInternalErrorCode());
 
 		if (!isNullorZero(returnFix.getInternalErrorCode())) {
@@ -3316,7 +3316,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				&& !((toBank.getSourceCardPAN().equals(toBankPocket
 						.getCardPAN())))) {
 			// error only log
-			log.debug("BankServiceDefaultImpl : onGetBankHistoryFromBank : account number mismatch");
+			log.info("BankServiceDefaultImpl : onGetBankHistoryFromBank : account number mismatch");
 			returnFix
 					.setInternalErrorCode(NotificationCodes.InternalSystemError
 							.getInternalErrorCode());
@@ -3794,7 +3794,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg onTransactionReversal(
 			CMTransactionReversal transactionReversal) {
-		log.debug("BankServiceDefaultImpl :: onTransactionReversal() BEGIN");
+		log.info("BankServiceDefaultImpl :: onTransactionReversal() BEGIN");
 
 		BackendResponse returnFix = createResponseObject();
 
@@ -3844,7 +3844,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						false, false, false, false,
 						isSystemInitiatedTransaction);
 
-				log.debug("BankServiceDefaultImpl:onTransferConfirmationToBank: Dest subcriber validated ErrorCode="
+				log.info("BankServiceDefaultImpl:onTransferConfirmationToBank: Dest subcriber validated ErrorCode="
 						+ returnFix.getInternalErrorCode());
 
 				if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -3938,7 +3938,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		returnFix.setServiceChargeTransactionLogID(transactionReversal
 				.getServiceChargeTransactionLogID());
 
-		log.debug("BankServiceDefaultImpl :: onTransactionReversal() END");
+		log.info("BankServiceDefaultImpl :: onTransactionReversal() END");
 		return returnFix;
 	}
 	

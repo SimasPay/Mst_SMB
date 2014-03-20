@@ -141,12 +141,23 @@ public class ISO8583Server implements Runnable {
 					break;
 
 				case 0x220:
-						if("500000".equals(incoming.getObjectValue(3))){
+						//negative response
+						if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("15000")){
 					    response.setValue(38, "654321", IsoType.ALPHA, 6);
 						response.setValue(39, "98", IsoType.ALPHA, 2);
-						//Thread.sleep(50000);
 						}
-
+						//no response
+						else if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("20000")){
+							response.setValue(38, "654321", IsoType.ALPHA, 6);
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+							Thread.sleep(50000);
+						}
+						//positive response
+						else if("500000".equals(incoming.getObjectValue(3))){
+							response.setValue(38, "654321", IsoType.ALPHA, 6);
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+							Thread.sleep(50000);
+						}
 					else {
 						log.error("Unrecognonized message type");
 					}
