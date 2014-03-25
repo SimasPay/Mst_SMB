@@ -6,6 +6,8 @@
 	xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xmlns:cxf="http://camel.apache.org/schema/cxf" 
 	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans   
 	    http://www.springframework.org/schema/beans/spring-beans.xsd 
 	    http://camel.apache.org/schema/spring  
@@ -15,13 +17,18 @@
 	    http://www.springframework.org/schema/osgi-compendium 
 	    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
 	    http://www.springframework.org/schema/context 
-	    http://www.springframework.org/schema/context/spring-context.xsd 
+	    http://www.springframework.org/schema/context/spring-context.xsd
+	    http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd		
 	    http://activemq.apache.org/schema/core 
 	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
+
+<context:annotation-config />
 
 <osgi:reference id="autoReversalService" interface="com.mfino.mce.backend.AutoReversalService"/>
 
 <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
 
 <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	<property name="locations">
@@ -263,5 +270,5 @@
         </filter>
     </route>
 </camelContext>
-
+<tx:annotation-driven transaction-manager="txManager" />
 </beans>
