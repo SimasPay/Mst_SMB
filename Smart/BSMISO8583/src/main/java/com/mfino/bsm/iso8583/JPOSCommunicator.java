@@ -51,18 +51,18 @@ public class JPOSCommunicator {
 			log.info("echo status is " + signonStatus + ". Have to fail the transaction");
 			fail = true;
 		}
-		if (!NMStatus.Successful.equals(keyexStatus)) {
-			log.info("key exchange status is " + signonStatus + ". Have to fail the transaction");
-			fail = true;
-		}
-
-		Timestamp presentTime = new Timestamp();
-		Timestamp lastKETime = TimestampRegistrar.getLastKeyExchangeTime(muxName);
-		if (lastKETime == null || presentTime.getTime() - lastKETime.getTime() > this.keyExchangeValidDurationInMillis) {
-			log.info("last key exchange was done at " + lastKETime + ".and it has been more than " + this.keyExchangeValidDurationInMillis
-			        + " milliseconds");
-			fail = true;
-		}
+//		if (!NMStatus.Successful.equals(keyexStatus)) {
+//			log.info("key exchange status is " + signonStatus + ". Have to fail the transaction");
+//			fail = true;
+//		}
+//
+//		Timestamp presentTime = new Timestamp();
+//		Timestamp lastKETime = TimestampRegistrar.getLastKeyExchangeTime(muxName);
+//		if (lastKETime == null || presentTime.getTime() - lastKETime.getTime() > this.keyExchangeValidDurationInMillis) {
+//			log.info("last key exchange was done at " + lastKETime + ".and it has been more than " + this.keyExchangeValidDurationInMillis
+//			        + " milliseconds");
+//			fail = true;
+//		}
 
 		if (!fail) {
 
