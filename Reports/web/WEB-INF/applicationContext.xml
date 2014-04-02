@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	
+	<!--  <import resource="spring-datasource-beans.xml"/> -->
+     
+	 <bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    <bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+    <context:component-scan base-package="com.dimo.fuse.reports" />
+
+   <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
+        <constructor-arg value="GMT" />
+    </bean>  
+  
+    <bean id="dailyReportScheduler" class="com.dimo.fuse.reports.scheduler.DailyReportScheduler"> 
+    </bean>
+    <bean id="dailyReportSchedulerJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="dailyReportScheduler" />
+        <property name="targetMethod" value="generate" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="dailyReportSchedulerJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="dailyReportSchedulerJob" />
+       <property name="timeZone" ref="timeZone" />
+        <!-- <property name="cronExpression" value="0 0 2 * * ?" /> -->
+        <property name="cronExpression" value="0 0/1 * * * ?" />
+    </bean>
+    
+    
+    
+     <bean id="monthlyReportScheduler" class="com.dimo.fuse.reports.scheduler.MonthlyReportScheduler"> 
+    </bean>
+    <bean id="monthlyReportSchedulerJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="monthlyReportScheduler" />
+        <property name="targetMethod" value="generate" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="monthlyReportSchedulerJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="monthlyReportSchedulerJob" />
+       <property name="timeZone" ref="timeZone" />
+        <!-- <property name="cronExpression" value="0 0 2 * * ?" /> -->
+        <property name="cronExpression" value="0 0/1 * * * ?" />
+    </bean>
+    
+	<!-- All triggers need to be added here to work -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+              	<ref bean="dailyReportSchedulerJobTrigger"/>
+              	<ref bean="monthlyReportSchedulerJobTrigger"/>  
+            </list>
+        </property>
+    </bean>
+</beans>

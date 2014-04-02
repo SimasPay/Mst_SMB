@@ -1,0 +1,28 @@
+{
+    "HeaderLogo" : "",
+    
+    "PageHeaderText" : "",
+    
+    "PageFooterText" : "\u00a9 2013 PT Smartfren Telecom. All Rights Reserved",
+
+    "ReportHeader" : [ 
+                           [ "Report Description" ,"Subscriber Report" ],
+                           [ "Report Type" , "All" ],
+                           [ "Date Range From" , "${StartTime}", "To" , "${EndTime}" ]
+                          ],
+    
+    "ReportFooter" : [ 
+                           [ "Report Generation Date" , "${ReportGenerationDate}", "Accessed By" , "${UserName}" ]
+                          ],
+        
+    "ReportType" : ["pdf", "xls", "csv"],
+    
+    "NullValueReplacementText" : "",
+    
+    "CSVDelimiter" : "," ,
+
+    "DateFormat" : "dd/MM/yyyy",
+    
+    "DateTimeFormatOfDataFromDB" : "%Y-%m-%d %H:%i:%s"
+    
+}

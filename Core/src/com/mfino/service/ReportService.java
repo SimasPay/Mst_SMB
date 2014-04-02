@@ -20,6 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.constants.ReportParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.fix.CmFinoFIX;
+import com.mfino.fix.CmFinoFIX.CMJSReport;
+import com.mfino.service.impl.EnumTextServiceImpl;
 import com.mfino.util.ConfigurationUtil;
 
 
@@ -31,19 +35,21 @@ public class ReportService  {
 	
 	private String reportName;
 	
-	private String generatedReportName;
-	
-	private String userName;
+	private String userName;	
 	
 	private String startDate;
 	
 	private String endDate;
+	
+	private CMJSReport reportParameters;
 	
 	private static final String ENCODING = "UTF-8";
 	
 	public static final String	REPORT_URL	= ConfigurationUtil.getReportURL();
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private EnumTextService entumTextService = new EnumTextServiceImpl();
 	
 	
 	/**
@@ -55,17 +61,7 @@ public class ReportService  {
 	public HttpResponse send(){
 		HttpResponse httpResponse = null;
 		HttpClient httpclient = new DefaultHttpClient();
-		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_NAME, reportName));
-		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_GENERATEDFILENAME, generatedReportName));
-		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_USERNAME, userName));
-		if(StringUtils.isNotBlank(startDate)){
-		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_STARTDATE, startDate));
-		}
-		if(StringUtils.isNotBlank(endDate)){
-		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_ENDDATE, endDate));
-		}
-		HttpGet httpget = new HttpGet(REPORT_URL +"/AdminReport"+ "?" + URLEncodedUtils.format(qparams, ENCODING));
+		HttpGet httpget = new HttpGet(REPORT_URL +"/AdminReport"+ "?" + URLEncodedUtils.format(getParameters(), ENCODING));
 		try {
 			log.info("Sending Request to generate Report:"+reportName + "to "+httpget.getURI() );
 			httpResponse = httpclient.execute(httpget);
@@ -75,6 +71,90 @@ public class ReportService  {
 			log.error("Error sending http request for report", ioEx);
 		}
 		return httpResponse;
+	}
+	
+	private List<NameValuePair> getParameters()
+	{
+		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_NAME, reportParameters.getReportName()));
+		//qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_GENERATEDFILENAME, generatedReportName));
+		qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_USERNAME, userName));
+		
+		if(StringUtils.isNotBlank(reportParameters.getReportStartDate())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_STARTDATE, reportParameters.getReportStartDate()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getReportEndDate())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_ENDDATE, reportParameters.getReportEndDate()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getFromUpdatedTime())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_FROMUPDATEDDATE, reportParameters.getFromUpdatedTime()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getToUpdatedTime())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TOUPDATEDDATE, reportParameters.getToUpdatedTime()));
+		}
+		if(reportParameters.getSubscriberStatus() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SUBSCRIBERSTATUSID, reportParameters.getSubscriberStatus().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SUBSCRIBERSTATUSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberStatus, CmFinoFIX.Language_English, reportParameters.getSubscriberStatus())));
+		}
+		if(reportParameters.getPocketTemplateID() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_POCKETTEMPLATEID, reportParameters.getPocketTemplateID().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_POCKETTEMPLATEDESCRIPTION, DAOFactory.getInstance().getPocketTemplateDao().getById(reportParameters.getPocketTemplateID()).getDescription()));
+		}
+		if(reportParameters.getSubscriberRestrictions() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SUBSCRIBERRESTRICTIONS, reportParameters.getSubscriberRestrictions().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SUBSCRIBERRESTRICTIONSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberRestrictions, CmFinoFIX.Language_English, reportParameters.getSubscriberRestrictions())));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getSourceMDN())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SOURCEMDN, reportParameters.getSourceMDN()));
+		}
+		if(reportParameters.getTransactionTypeID() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONTYPEID, reportParameters.getTransactionTypeID().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONTYPETEXT, DAOFactory.getInstance().getTransactionTypeDAO().getById(reportParameters.getTransactionTypeID()).getTransactionName()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getTransactionStatus())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONSTATUSID, reportParameters.getTransactionStatus()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONSTATUSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionsTransferStatus, CmFinoFIX.Language_English, reportParameters.getTransactionStatus())));
+		}
+		if(reportParameters.getDestinationPocketStatus() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_DESTINATIONPOCKETSTATUSID, reportParameters.getDestinationPocketStatus().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_DESTINATIONPOCKETSTATUSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketStatus, CmFinoFIX.Language_English, reportParameters.getDestinationPocketStatus())));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getDestMDN())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_DESTMDN, reportParameters.getDestMDN()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getPartnerCode())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_PARTNERCODE, reportParameters.getPartnerCode()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getBillerCode())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_BILLERCODE, reportParameters.getBillerCode()));
+		}
+		if(reportParameters.getPartnerType() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_PARTNERTYPEID, reportParameters.getPartnerType().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_PARTNERTYPETEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerType, CmFinoFIX.Language_English, reportParameters.getPartnerType())));
+		}
+		if(reportParameters.getSettlementStatus() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SETTLEMENTSTATUSID, reportParameters.getSettlementStatus().toString()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_SETTLEMENTSTATUSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_SettlementStatus, CmFinoFIX.Language_English, reportParameters.getSettlementStatus())));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getCSRUserName())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_CSRUSERNAME, reportParameters.getCSRUserName()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getIDNumber())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_IDNO, reportParameters.getIDNumber()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getMDN())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_MDN, reportParameters.getMDN()));
+		}
+		if(reportParameters.getMerchantID() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_MERCHANTID, reportParameters.getMerchantID().toString()));
+		}
+		if(StringUtils.isNotBlank(reportParameters.getMerchantAccount())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_MERCHANTACCOUNT, reportParameters.getMerchantAccount()));
+		}
+		if(reportParameters.getReferenceNumber() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_REFERENCENUMBER, reportParameters.getReferenceNumber().toString()));
+		}
+		return qparams;
 	}
 	
 	
@@ -109,24 +189,13 @@ public class ReportService  {
 	}
 
 
-
-	public String getGeneratedReportName() {
-		return generatedReportName;
+	public void setReportParameters(CMJSReport realMsg) {
+		reportParameters = realMsg;		
 	}
-
-
-
-	public void setGeneratedReportName(String generatedReportName) {
-		this.generatedReportName = generatedReportName;
-	}
-
-
 
 	public String getUserName() {
 		return userName;
 	}
-
-
 
 	public void setUserName(String userName) {
 		this.userName = userName;

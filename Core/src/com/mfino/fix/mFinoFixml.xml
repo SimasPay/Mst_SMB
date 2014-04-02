@@ -3644,7 +3644,29 @@
 			<field name="ReportName" required="Y" />  
 			<field name="ReportStartDate" required="N" />
 			<field name="ReportEndDate" required="N" />
+			<field name="FromUpdatedTime" required="N" />
+			<field name="ToUpdatedTime" required="N" />
 			<field name="IsActive" required="N" />      
+			<field name="SubscriberStatus" required="N" />
+			<field name="PocketTemplateDescription" required="N" />
+			<field name="PocketTemplateID" required="N" />
+			<field name="SubscriberRestrictions" required="N" />
+			<field name="SourceMDN" required="N" />
+			<field name="TransactionType" required="N" />
+			<field name="TransactionTypeID" required="N" />
+			<field name="TransactionStatus" required="N" />
+			<field name="DestinationPocketStatus" required="N" />
+			<field name="DestMDN" required="N" />
+			<field name="PartnerCode" required="N" />
+			<field name="BillerCode" required="N" />
+			<field name="PartnerType" required="N" />
+			<field name="SettlementStatus" required="N" />
+			<field name="CSRUserName" required="N" />
+			<field name="IDNumber" required="N" />
+			<field name="MDN" required="N" />
+			<field name="MerchantID" required="N" />
+			<field name="MerchantAccount" required="N" />
+			<field name="ReferenceNumber" required="N" />			
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="Lable" required="N"/> 
 				<field name="Index" required="N"/> 
@@ -5518,6 +5540,8 @@
 			<field name="ReportSql" required="N" />
 			<field name="ReportClass" required="N" />
 			<field name="IsActive" id="TriggerEnable" required="N" />
+			<field name="IsDaily" required="N" />
+			<field name="IsMonthly" required="N" />
 		</record>
 		<record name="OfflineReportForCompany" ExtendsRecord="Base" Java="Y" SQLTable="offline_report_company">
 			<field name="ReportID" required="Y" References="OfflineReport" />
@@ -25287,6 +25311,12 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8164" name="FavoriteCode" type="STRING"/>
 	<field number="8165" name="UserAPIKey" type="STRING"/>
 	<field number="8166" name="MerchantData" type="STRING"/>
+	<field number="8167" name="DestinationPocketStatus" type="PocketStatus" />
+	<field number="8168" name="MerchantAccount" type="STRING" />
+	<field number="8169" name="FromUpdatedTime" type="STRING" />
+	<field number="8170" name="ToUpdatedTime" type="STRING" />	
+	<field number="8171" name="IsDaily" type="BOOLEAN" />
+	<field number="8172" name="IsMonthly" type="BOOLEAN" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">

@@ -16,6 +16,29 @@ mFino.page.report = function(config){
 	    	msg.m_pReportName = values.ReportName;
 	    	msg.m_pReportStartDate = values.ReportStartDate;
 	    	msg.m_pReportEndDate = values.ReportEndDate;
+	    	msg.m_pFromUpdatedTime = values.FromUpdatedTime;
+	    	msg.m_pToUpdatedTime = values.ToUpdatedTime;
+	    	
+	    	msg.m_pSubscriberStatus = values.SubscriberStatus;
+	    	//msg.m_pPocketTemplateDescription = values.PocketTemplateDescription;
+	    	msg.m_pPocketTemplateID = values.PocketTemplateID;
+	    	msg.m_pSubscriberRestrictions = values.SubscriberRestrictions;
+	    	msg.m_pSourceMDN = values.SourceMDN;
+	    	//msg.m_pTransactionType = values.TransactionType;
+	    	msg.m_pTransactionTypeID = values.TransactionTypeID;
+	    	msg.m_pTransactionStatus = values.TransactionStatus;
+	    	msg.m_pDestinationPocketStatus = values.DestinationPocketStatus;
+	    	msg.m_pDestMDN = values.DestMDN;
+	    	msg.m_pPartnerCode = values.PartnerCode;
+	    	msg.m_pBillerCode = values.BillerCode;
+	    	msg.m_pPartnerType = values.PartnerType;
+	    	msg.m_pSettlementStatus = values.SettlementStatus;
+	    	msg.m_pCSRUserName = values.CSRUserName;
+	    	msg.m_pIDNumber = values.IDNumber;
+	    	msg.m_pMDN = values.MDN;
+	    	msg.m_pMerchantID = values.MerchantID;
+	    	msg.m_pMerchantAccount = values.MerchantAccount;
+	    	msg.m_pReferenceNumber = values.ReferenceNumber;
             var params = {
                     success : function(response){
                     	if(response.m_psuccess){

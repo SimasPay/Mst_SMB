@@ -17,7 +17,7 @@
     <module>Core</module>
     <module>Commons</module>
     <module>Web</module>
-	<module>reportModule</module>
+	<module>Reports</module>
     <module>Tools</module>
 	<module>ISO8583API</module>	
     <module>MfinoCoreEngine</module>
