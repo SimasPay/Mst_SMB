@@ -272,6 +272,12 @@ public class ReportTool {
 			query = query.replace("${ReferenceNo}", "'%%'");
 		}
 		
+		if (reportParameters.getIdNumber() != null) {
+			query = query.replace("${IDCardNo}", "'" + reportParameters.getIdNumber() + "'");
+		} else {
+			query = query.replace("${IDCardNo}", "'%%'");
+		}
+		
 		
 
 		return query;

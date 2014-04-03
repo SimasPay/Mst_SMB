@@ -69,8 +69,7 @@
 					 AND sctl.CreateTime >= ${StartTime}
 					 AND sctl.CreateTime < ${EndTime}
 					 AND bp.PartnerBillerCode like ${PartnerCode} 
-					 AND bp.BillerCode like ${BillerCode}
-					 
+					 AND bp.BillerCode like ${BillerCode}					 
 				ORDER BY
 				     sctl.CreateTime ASC  ",
     

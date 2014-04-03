@@ -37,7 +37,13 @@
 			    	WHEN s.status<=6 THEN 'InActive'
 			    	ELSE 'Non-Registered'
 			   	END,
-			   	s.Restrictions,
+			   	CASE
+			      	WHEN s.Restrictions=0 THEN 'None'
+					WHEN s.Restrictions=1 THEN 'SelfSuspended'
+			      	WHEN s.Restrictions=2 THEN 'Suspended'
+			    	WHEN s.Restrictions=4 THEN 'SecurityLocked'
+			    	WHEN s.Restrictions=8 THEN 'AbsoluteLocked'
+			  	END,
 			   	pt.Description,
 			   	CASE
 			    	WHEN p.status<=0 THEN 'Initialized'

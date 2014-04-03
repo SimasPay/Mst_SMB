@@ -157,7 +157,7 @@ public abstract class ReportGenerator {
 		
 		cellContent = cellContent.replace("${CSRUserName}", StringUtils.isNotBlank(getReportParameters().getCsrUserName()) ? getReportParameters().getCsrUserName() : "");
 		
-		cellContent = cellContent.replace("${IDNumber}", StringUtils.isNotBlank(getReportParameters().getIdNumber()) ? getReportParameters().getIdNumber() : "");
+		cellContent = cellContent.replace("${IDCardNo}", StringUtils.isNotBlank(getReportParameters().getIdNumber()) ? getReportParameters().getIdNumber() : "");
 		
 		cellContent = cellContent.replace("${MDN}", StringUtils.isNotBlank(getReportParameters().getMdn()) ? getReportParameters().getMdn() : "");
 		
