@@ -141,6 +141,11 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			transactionRequestValidationService.validateTransactionHistoryDetails(transactionDetails);			
 			xmlResult = (XMLResult) emoneyTrxnHistoryHandler.handle(transactionDetails);
 		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionName)) {
+
+			transactionRequestValidationService.validateTransactionHistoryDetailedStmtDetails(transactionDetails);
+			xmlResult = (XMLResult) emoneyTrxnHistoryHandler.handle(transactionDetails);
+		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionName)) {
 
 			transactionRequestValidationService.validateEmailTxnHistoryAsPDFDetails(transactionDetails);	

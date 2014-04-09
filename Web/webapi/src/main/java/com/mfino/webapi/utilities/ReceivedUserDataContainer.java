@@ -137,6 +137,7 @@ public class ReceivedUserDataContainer {
 	private String state;
 	private String merchantData;
 	private String userAPIKey;
+	private String sctlId;
 	
 	public String getAppVersion() {
     	return appVersion;
@@ -1234,5 +1235,13 @@ public class ReceivedUserDataContainer {
 
 	public void setUserAPIKey(String userAPIKey) {
 		this.userAPIKey = userAPIKey;
+	}
+
+	public String getSctlId() {
+		return sctlId;
+	}
+
+	public void setSctlId(String sctlId) {
+		this.sctlId = sctlId;
 	}
 }

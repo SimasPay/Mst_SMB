@@ -4,14 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Emoney Account txn history</title>
+<title>Emoney Account Txn History Detailed Stmt</title>
 </head>
 <body>
 <center>
-<h1>Emoney Account txn history</h1>
+<h1>Emoney Account Txn History Detailed Stmt</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Wallet" name="service" /> 
-<input type="hidden" value="History" name="txnName" />
+<input type="hidden" value="DetailedStatement" name="txnName" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -38,8 +38,24 @@
 		<td><input type="hidden" name="sourcePocketCode"  value="1"/>1</td>
 	</tr>
 	<tr>
+		<td>From Date</td>
+		<td><input type="text" name="fromDate"/><em>ddMMyyyy</em></td>
+	</tr>
+	<tr>
+		<td>To Date</td>
+		<td><input type="text" name="toDate"/><em>ddMMyyyy</em></td>
+	</tr>
+	<tr>
+		<td>PageNumber</td>
+		<td><input type="text" name="pageNumber" /></td>
+	</tr>
+	<tr>
 		<td>No. of Records</td>
 		<td><input type="text" name="numRecords" /></td>
+	</tr>
+	<tr>
+		<td>Sctl ID</td>
+		<td><input type="text" name="sctlId" /></td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>

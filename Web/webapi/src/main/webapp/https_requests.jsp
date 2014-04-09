@@ -147,6 +147,11 @@
 	</tr>
 	<tr>
 		<td>
+			<a href="jsp/s_emoney_txnhistory_detailed_statement.jsp">Detailed Emoney History</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			<a href="jsp/s_emoney_txnhistory_as_pdf_email.jsp">Email Emoney Txn History</a>
 		</td>
 	</tr>

@@ -323,6 +323,8 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_USER_API_KEY = "userAPIKey";
 	
+	public static final String PARAMETER_SCTL_ID = "sctlId";
+	
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;
 		if(PARAMETER_ACTIVATION_CONFIRMPIN.equals(parameterName) ||

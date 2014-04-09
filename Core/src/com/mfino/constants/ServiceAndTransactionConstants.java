@@ -244,6 +244,8 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_MODIFY_NFC_CARD_ALIAS="ModifyNFCCardAlias";
 	
+	public static final String TRANSACTION_HISTORY_DETAILED_STATEMENT = "DetailedStatement";
+	
 	public static final String TRANSACTION_EMAIL_HISTORY_AS_PDF = "EmailHistoryAsPDF";
 	
 	public static final String TRANSACTION_DOWNLOAD_HISTORY_AS_PDF = "DownloadHistoryAsPDF";

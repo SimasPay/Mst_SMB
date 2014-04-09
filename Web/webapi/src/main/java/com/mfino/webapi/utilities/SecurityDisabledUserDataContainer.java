@@ -870,4 +870,10 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 		// TODO Auto-generated method stub
 		return this.container.getUserAPIKey();
 	}
+
+	@Override
+	public String getSctlId() {
+		// TODO Auto-generated method stub
+		return this.container.getSctlId();
+	}
 }

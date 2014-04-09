@@ -419,6 +419,12 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateRegisteringMDN(transactionDetails.getSourceMDN());
 	}
 	
+	public void validateTransactionHistoryDetailedStmtDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateSourcePin(transactionDetails);
+		validateRegisteringMDN(transactionDetails.getSourceMDN());
+		validateFromAndToDates(transactionDetails);
+	}
+	
 	public void validateEmailTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateSourcePin(transactionDetails);
 		validateEmail(transactionDetails);

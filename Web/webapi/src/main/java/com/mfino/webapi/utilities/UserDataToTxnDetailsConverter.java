@@ -215,6 +215,9 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setState(userDataContainer.getState());
 		txnDetails.setMerchantData(userDataContainer.getMerchantData());
 		txnDetails.setUserAPIKey(userDataContainer.getUserAPIKey());
+		if(StringUtils.isNotBlank(userDataContainer.getSctlId())){
+			txnDetails.setSctlId(getSctlId(userDataContainer.getSctlId()));
+		}
 		return txnDetails;
 	}
 	
@@ -267,5 +270,17 @@ public class UserDataToTxnDetailsConverter {
 			throw new InvalidDataException("Invalid Date", CmFinoFIX.NotificationCode_InvalidData, parameterName);
 		}		
 		return dateOfBirth;
+	}
+	
+	public long getSctlId(String sctlIdStr) throws InvalidDataException { 
+		long sctlId = -1L;
+		try {
+			sctlId = Long.parseLong(sctlIdStr);
+		}
+		catch (NumberFormatException ex) {
+			log.error("Error parsing Sctl Id string", ex);
+			throw new InvalidDataException("Invalid Sctl Id", CmFinoFIX.NotificationCode_InvalidData, ApiConstants.PARAMETER_SCTL_ID);
+		}		
+		return sctlId;
 	}
 }

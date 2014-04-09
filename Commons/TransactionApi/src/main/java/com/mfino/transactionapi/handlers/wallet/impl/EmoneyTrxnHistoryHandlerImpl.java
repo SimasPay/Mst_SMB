@@ -52,6 +52,7 @@ import com.mfino.service.MailService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.NotificationService;
 import com.mfino.service.PocketService;
+import com.mfino.service.SCTLService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
@@ -124,6 +125,11 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	@Autowired
 	@Qualifier("BillPaymentsServiceImpl")
 	private BillPaymentsService billPaymentsService;	
+	
+	@Autowired
+	@Qualifier("SCTLServiceImpl")
+	private SCTLService sctlService;
+
 	
 	private static final int DEFAULT_PAGE_NO = 0;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(ConfigurationUtil.getPdfHistoryDateFormat());	
@@ -206,39 +212,55 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			return result;
 		}
 
-		// Calculate the Service Charge
-
-		log.info("creating the serviceCharge object....");
+		
+		ServiceChargeTransactionLog sctl;
 		Transaction transaction = null;
-		ServiceCharge sc = new ServiceCharge();
-		sc.setSourceMDN(transactionsHistory.getSourceMDN());
-		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
-		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
-		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_HISTORY);
-		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
-		sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
-
-		try{
-			transaction =transactionChargingService.getCharge(sc);
-		}catch (InvalidServiceException e) {
-			log.error("Exception occured in getting charges",e);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
-			return result;
-		} catch (InvalidChargeDefinitionException e) {
-			log.error(e.getMessage());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
-			return result;
+		if(transactionDetails.getSctlId() != null)
+		{
+			sctl = sctlService.getBySCTLID(transactionDetails.getSctlId());
+			if(sctl == null)
+			{
+				log.error("Invalid sctl ID " + transactionDetails.getSctlId());
+				result.setSctlID(transactionDetails.getSctlId());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidSctlId);
+				return result;
+			}
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		else
+		{
+			// Calculate the Service Charge
+			log.info("creating the serviceCharge object....");
+			ServiceCharge sc = new ServiceCharge();
+			sc.setSourceMDN(transactionsHistory.getSourceMDN());
+			sc.setDestMDN(null);
+			sc.setChannelCodeId(cc.getID());
+			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+			sc.setTransactionTypeName(transactionDetails.getTransactionName());
+			sc.setTransactionAmount(BigDecimal.ZERO);
+			sc.setTransactionLogId(transactionsLog.getID());
+			sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
 
+			try{
+				transaction =transactionChargingService.getCharge(sc);
+			}catch (InvalidServiceException e) {
+				log.error("Exception occured in getting charges",e);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
+				return result;
+			} catch (InvalidChargeDefinitionException e) {
+				log.error(e.getMessage());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
+				return result;
+			}
+			sctl = transaction.getServiceChargeTransactionLog();
+		}
+		
 		transactionsHistory.setServiceChargeTransactionLogID(sctl.getID());
 		List<CommodityTransfer> transactionHistoryList = new ArrayList<CommodityTransfer>();
 		try {
 			transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
-			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+			if(transaction != null)	{
+				//sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedCharge(transaction.getAmountTowardsCharges());
 				transactionChargingService.completeTheTransaction(sctl);
 			}
 			if (transactionHistoryList.size() == 0) {
@@ -253,7 +275,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				}
 			});
 			language = srcSubscriberMDN.getSubscriber().getLanguage();
-			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()))
+			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()) ||
+					ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionDetails.getTransactionName()) )
 			{
 				result.setTransactionList(transactionHistoryList);
 			}
@@ -283,11 +306,14 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				String downloadURL = "Emoney_Txn_History" + File.separatorChar + fileName;
 				result.setDownloadURL(downloadURL);
 			}
+			else if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()))
+			{
+				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
+			}
 			else
 			{
 				Long txnCount = commodityTransferService.getTranscationsCount(srcPocket, srcSubscriberMDN,transactionsHistory);
 				result.setTotalTxnCount(txnCount);
-				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
 			}
 		}
 		catch (Exception ex) {

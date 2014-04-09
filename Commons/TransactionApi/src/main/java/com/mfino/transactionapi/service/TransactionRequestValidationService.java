@@ -99,6 +99,8 @@ public interface TransactionRequestValidationService {
 	
 	public void validateTransactionHistoryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
+	public void validateTransactionHistoryDetailedStmtDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 	public void validateEmailTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateDownloadTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException;

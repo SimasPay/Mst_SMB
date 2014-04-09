@@ -319,6 +319,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String state = request.getParameter(ApiConstants.PARAMETER_STATE);
 		String merchantData = request.getParameter(ApiConstants.PARAMETER_MERCHANT_DATA);
 		String userAPIKey = request.getParameter(ApiConstants.PARAMETER_USER_API_KEY);
+		String sctlId = request.getParameter(ApiConstants.PARAMETER_SCTL_ID);
 		
 		sourceMDN = subscriberService.normalizeMDN(sourceMDN);
 		if (! (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName) || 
@@ -451,6 +452,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setState(state);
 		rudContainer.setMerchantData(merchantData);
 		rudContainer.setUserAPIKey(userAPIKey);
+		rudContainer.setSctlId(sctlId);
 		log.info("initUserDataContainer: End");
 		return rudContainer;
 	}

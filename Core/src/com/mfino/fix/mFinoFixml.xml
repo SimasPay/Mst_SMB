@@ -21791,6 +21791,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="InvalidSctlId" enum="2104">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Invalid SctlId</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
