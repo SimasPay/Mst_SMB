@@ -40,20 +40,17 @@
 		<td><input type="text" name="cardAlias" value="" /></td>
 	</tr>
 	<tr>
-		<td>From Date</td>
-		<td><input type="text" name="fromDate"/><em>ddMMyyyy</em></td>
-	</tr>
-	<tr>
-		<td>To Date</td>
-		<td><input type="text" name="toDate"/><em>ddMMyyyy</em></td>
-	</tr>
-	<tr>
 		<td>PageNumber</td>
 		<td><input type="text" name="pageNumber" /></td>
 	</tr>
+	
 	<tr>
 		<td>No. of Records</td>
 		<td><input type="text" name="numRecords" /></td>
+	</tr>
+	<tr>
+		<td>Sctl ID</td>
+		<td><input type="text" name="sctlId" /></td>
 	</tr>
 	<tr>
 		<td>channelId</td>

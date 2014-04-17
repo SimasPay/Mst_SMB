@@ -120,7 +120,7 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Qualifier("TransactionRequestValidationServiceImpl")
 	private TransactionRequestValidationService transactionRequestValidationService;
 	
-	private static final String MAX_NO_OF_RECORDS = "1000";
+	private static final String MAX_NO_OF_RECORDS = "15000";
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;

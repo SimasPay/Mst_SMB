@@ -224,6 +224,8 @@ public interface TransactionRequestValidationService {
 	
 	public void validateNFCTransactionHistoryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
+	public void validateNFCTxnHistoryDetailedStmtDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+		
 	public void validateEmailNFCTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateDownloadNFCTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException;

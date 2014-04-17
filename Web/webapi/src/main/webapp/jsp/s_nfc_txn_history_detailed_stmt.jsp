@@ -4,14 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Emoney Account txn history</title>
+<title>NFC Transaction History Detailed Statement</title>
 </head>
 <body>
 <center>
-<h1>Emoney Account txn history</h1>
+<h1>NFC Transaction History Detailed Statement</h1>
 <form action="../sdynamic" method="POST">
-<input type="hidden" value="Wallet" name="service" /> 
-<input type="hidden" value="History" name="txnName" />
+<input type="hidden" value=NFCService name="service" /> 
+<input type="hidden" value="DetailedStatement" name="txnName" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -22,20 +22,30 @@
 		<td><input type="text" name="authenticationKey" value="" /></td>
 	</tr>
 	<tr>
-		<td>SourceMDN</td>
+		<td>Source MDN</td>
 		<td><input type="text" name="sourceMDN"/></td>
 	</tr>
 	<tr>
-		<td>SourcePIN</td>
+		<td>PIN</td>
 		<td><input type="text" name="sourcePIN"/></td>
 	</tr>
 	<tr>
-		<td>channelId</td>
-		<td><input type="text" name="channelID"/></td>
+		<td>Enter either of the below fields</td>
 	</tr>
 	<tr>
-		<td>sourcePocketCode</td>
-		<td><input type="hidden" name="sourcePocketCode"  value="1"/>1</td>
+		<td>Card PAN</td>
+		<td><input type="text" name="cardPan" value="" /></td>
+	
+		<td>Card Alias </td>
+		<td><input type="text" name="cardAlias" value="" /></td>
+	</tr>
+	<tr>
+		<td>From Date</td>
+		<td><input type="text" name="fromDate"/><em>ddMMyyyy</em></td>
+	</tr>
+	<tr>
+		<td>To Date</td>
+		<td><input type="text" name="toDate"/><em>ddMMyyyy</em></td>
 	</tr>
 	<tr>
 		<td>PageNumber</td>
@@ -49,6 +59,10 @@
 		<td>Sctl ID</td>
 		<td><input type="text" name="sctlId" /></td>
 	</tr>
+	<tr>
+		<td>channelId</td>
+		<td><input type="text" name="channelID" value="" /></td>
+	</tr>	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

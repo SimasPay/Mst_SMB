@@ -159,6 +159,7 @@
 			<field name="CardAlias" required="N" comment="Used by NFC Transaction History. User can enter either of CardPAN or CardAlias"/>
 			<field name="FromDate" required="N" />
 			<field name="ToDate" required="N" />
+			<field name="PageNumber" required="N" />
 		</message>
 		<message name="SMSNotification" msgtype="1013" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="To" required="N" />
@@ -204,11 +205,15 @@
 			<field name="SourceBankAccountType" required="N" />
 			<field name="MaxTransactionsCount" id="MaxCount" required="N" />
 			<field name="CardAlias" required="N" />
+			<field name="ToDate" required="N" />
+			<field name="FromDate" required="N" />
+			<field name="PageNumber" required="N" />
 		</message>
 		<message name="GetLastTransactionsFromBank" msgtype="1017" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankResponse">
 			<field name="TransactionHistory" required="Y"/>
 			<field name="PocketID" required="N"/>
 			<field name="Amount" required="N"/>
+			<field name="MoreRecordsAvailable" required="N"/>
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="BankName" required="N"/>
 				<field name="BankTransactionDate" required="N" />
@@ -21800,6 +21805,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="NofRecordsExceededMaxLimit" enum="2105">
+				<C1>
+					<English>
+						<SMS>
+							<Text>No of records exceeded the limit given by ISO Provider</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -25326,6 +25340,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8170" name="ToUpdatedTime" type="STRING" />	
 	<field number="8171" name="IsDaily" type="BOOLEAN" />
 	<field number="8172" name="IsMonthly" type="BOOLEAN" />
+	<field number="8173" name="MoreRecordsAvailable" type="BOOLEAN" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">

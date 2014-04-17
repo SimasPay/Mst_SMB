@@ -881,7 +881,16 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validatechannelCode(transactionDetails);
 	}
 	
+	public void validateNFCTxnHistoryDetailedStmtDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateCardPanAndAlias(transactionDetails);
+		validateSourcePin(transactionDetails);
+		validateRegisteringMDN(transactionDetails.getSourceMDN());
+		validatechannelCode(transactionDetails);
+		validateFromAndToDates(transactionDetails);
+	}
+	
 	public void validateEmailNFCTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateCardPanAndAlias(transactionDetails);
 		validateSourcePin(transactionDetails);
 		validateEmail(transactionDetails);
 		validateRegisteringMDN(transactionDetails.getSourceMDN());
@@ -889,6 +898,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	}
 	
 	public void validateDownloadNFCTxnHistoryAsPDFDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateCardPanAndAlias(transactionDetails);
 		validateSourcePin(transactionDetails);
 		validateRegisteringMDN(transactionDetails.getSourceMDN());
 //		validateFromAndToDates(transactionDetails);

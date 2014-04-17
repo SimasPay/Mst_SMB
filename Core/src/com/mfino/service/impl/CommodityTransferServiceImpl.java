@@ -130,11 +130,11 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 		CommodityTransferDAO ctd = DAOFactory.getInstance().getCommodityTransferDAO();
 		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();
 		CommodityTransferQuery ctq = new CommodityTransferQuery();
-		int maxCount = systemParametersService.getInteger(SystemParameterKeys.MAX_TXN_COUNT_IN_HISTORY);
-		log.info("The system parameter 'max.txn.count.in.history' is set to: "+maxCount);
-		if (maxCount != -1) {
-			transactionsHistory.setMaxCount(maxCount);
-		}
+//		int maxCount = systemParametersService.getInteger(SystemParameterKeys.MAX_TXN_COUNT_IN_HISTORY);
+//		log.info("The system parameter 'max.txn.count.in.history' is set to: "+maxCount);
+//		if (maxCount != -1) {
+//			transactionsHistory.setMaxCount(maxCount);
+//		}
 
 		ctq.setSourceDestnPocket(pocket);
 		ctq.setSourceDestnMDN(subscriberMDN.getMDN());

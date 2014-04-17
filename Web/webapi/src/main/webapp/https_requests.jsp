@@ -559,6 +559,13 @@
 			<a href="jsp/s_nfc_card_topup_reversal.jsp"> NFC Card Topup Reversal</a>
 		</td>
 	</tr>
+	
+	<tr>
+		<td>
+			<a href="jsp/s_nfc_txn_history_detailed_stmt.jsp"> NFC Transaction History Detailed Stmt</a>
+		</td>
+	</tr>
+	
 	<tr>
 		<td>
 			<a href="jsp/s_nfc_txn_history_as_pdf_email.jsp"> Email NFC Txn History</a>

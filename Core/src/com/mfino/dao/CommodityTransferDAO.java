@@ -493,7 +493,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     public List<CommodityTransfer> getTxnHistory(CommodityTransferQuery query)
     {
     	if (query.getSourceDestnPocket() != null 
-    			&& query.getLimit() != ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
+    			&& query.getLimit() <= ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
 
     		String selectString = "select distinct ct, ctmap.SctlId from CommodityTransfer ct, ChargeTxnCommodityTransferMap ctmap, ServiceChargeTransactionLog sctl ";
     		String orderString = " order by sctl.ID desc, ct.ID desc ";

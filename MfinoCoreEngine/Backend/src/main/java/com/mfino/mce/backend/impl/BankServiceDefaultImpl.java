@@ -3192,6 +3192,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				toBankFix.setCardAlias(moneyPocket.getCardAlias());
 				toBankFix.setPocketID(getBankAccountTransations.getPocketID());
 				toBankFix.setMaxCount(getBankAccountTransations.getMaxCount());
+				toBankFix.setFromDate(getBankAccountTransations.getFromDate());
+				toBankFix.setToDate(getBankAccountTransations.getToDate());
+				toBankFix.setPageNumber(getBankAccountTransations.getPageNumber());
+				
 				log.debug("BankServiceDefaultIpl : balanceinquiry :* transactionid="
 						+ getBankAccountTransations.getTransactionID());
 				toBankFix.setTransactionID(getBankAccountTransations

@@ -63,7 +63,14 @@ public class GetLastTrxnsToBankProcessor extends NFCRequestProcessor {
 			isoMsg.set(42, StringUtilities.rightPadWithCharacter(msg.getSourceMDN(),15,""));
 			isoMsg.set(43, StringUtilities.rightPadWithCharacter( constantFieldsMap.get("43"),40," "));
 			isoMsg.set(48, msg.getSourceMDN());	
-			
+			if(msg.getFromDate() != null && msg.getToDate() != null)
+			{
+				isoMsg.set(61, DateTimeFormatter.getYYYYMMDD(msg.getFromDate())+DateTimeFormatter.getYYYYMMDD(msg.getToDate())+"0"+StringUtilities.leftPadWithCharacter(msg.getPageNumber().toString(), 3, "0"));
+			}
+			else
+			{
+				isoMsg.set(61, "00000000"+"00000000"+"0"+StringUtilities.leftPadWithCharacter(msg.getPageNumber().toString(), 3, "0"));
+			}
 		}
 		catch (ISOException ex) {
 

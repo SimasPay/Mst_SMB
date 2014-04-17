@@ -121,6 +121,11 @@ public class NFCAPIServiceImpl extends BaseAPIService implements NFCAPIService{
 			transactionDetails.setSourcePocketCode(CmFinoFIX.PocketType_NFC.toString());			
 			xmlResult = (XMLResult) nfcTransactionsHistoryHandlerImpl.handle(transactionDetails);
 		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equalsIgnoreCase(transactionName)) {
+			transactionRequestValidationService.validateNFCTxnHistoryDetailedStmtDetails(transactionDetails);
+			transactionDetails.setSourcePocketCode(CmFinoFIX.PocketType_NFC.toString());			
+			xmlResult = (XMLResult) nfcTransactionsHistoryHandlerImpl.handle(transactionDetails);
+		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateEmailNFCTxnHistoryAsPDFDetails(transactionDetails);
 			transactionDetails.setSourcePocketCode(CmFinoFIX.PocketType_NFC.toString());			

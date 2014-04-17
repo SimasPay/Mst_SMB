@@ -19,6 +19,7 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 	private String	SourceMDN;
 	private static final char TRANSACTION_FLAG_CREDIT = 'C';
 	private String downloadURL;
+	private Boolean moreRecordsAvailable;
 		
 	public NFCTransactionHistoryXMLResult() {
 		super();
@@ -33,6 +34,12 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 		{
 			getXmlWriter().writeStartElement("downloadURL");
 			getXmlWriter().writeCharacters(getDownloadURL(),false);
+			getXmlWriter().writeEndElement();
+		}
+		if(getMoreRecordsAvailable() != null)
+		{
+			getXmlWriter().writeStartElement("MoreRecordsAvailable");
+			getXmlWriter().writeCharacters(String.valueOf(getMoreRecordsAvailable()),false);
 			getXmlWriter().writeEndElement();
 		}
 
@@ -112,6 +119,14 @@ public class NFCTransactionHistoryXMLResult extends XMLResult {
 
 	public void setDownloadURL(String downloadURL) {
 		this.downloadURL = downloadURL;
+	}
+
+	public Boolean getMoreRecordsAvailable() {
+		return moreRecordsAvailable;
+	}
+
+	public void setMoreRecordsAvailable(Boolean moreRecordsAvailable) {
+		this.moreRecordsAvailable = moreRecordsAvailable;
 	}
 	
 }

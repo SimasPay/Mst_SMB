@@ -32,6 +32,12 @@ public class DateTimeFormatter {
 		return formatDateTime(str, timeStamp);
 	}
 	
+	public static String getYYYYMMDD(Timestamp timeStamp) {
+		//String str="%Ty%<Tm%<Td";
+		String str="%1$tY%1$tm%1$td";
+		return formatDateTime(str, timeStamp);
+	}
+	
 	public static void main(String... args){
 		Timestamp ts = new Timestamp();
 		System.out.println(getYYMMDD(ts));

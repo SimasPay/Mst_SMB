@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.service.MailService;
 import com.mfino.service.PocketService;
+import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
@@ -90,9 +92,15 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 	@Autowired
 	@Qualifier("MailServiceImpl")
 	private MailService mailService;
+	
+	@Autowired
+	@Qualifier("SCTLServiceImpl")
+	private SCTLService sctlService;
 		
 	private static final int MAX_DURATION_TO_FETCH_HISTORY = 90;
 	private static final char TRANSACTION_FLAG_CREDIT = 'C';
+	private static final int DEFAULT_PAGE_NO = 1;
+	private static final int LIMIT_ON_NO_OF_RECORDS = 56;
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		
@@ -105,10 +113,9 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		CMGetBankAccountTransactions transactionsHistory = new CMGetBankAccountTransactions();
 		transactionsHistory.setSourceMDN(transactionDetails.getSourceMDN());
 		transactionsHistory.setPin(transactionDetails.getSourcePIN());
-		transactionsHistory.setMaxCount(maxCount);
 		transactionsHistory.setSourceApplication(cc.getChannelSourceApplication());
 		transactionsHistory.setChannelCode(cc.getChannelCode());
-		transactionsHistory.setServletPath(CmFinoFIX.ServletPath_BankAccount);
+		transactionsHistory.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transactionsHistory.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		transactionsHistory.setCardPAN(transactionDetails.getCardPAN());
 		transactionsHistory.setCardAlias(transactionDetails.getCardAlias());
@@ -127,6 +134,39 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			
 			transactionsHistory.setFromDate(new Timestamp(transactionDetails.getFromDate()));
 			transactionsHistory.setToDate(new Timestamp(transactionDetails.getToDate()));			
+		}
+		
+		if(NumberUtils.isDigits(transactionDetails.getNumRecords())){
+			int nofRecords = Integer.parseInt(transactionDetails.getNumRecords());
+			if(nofRecords > LIMIT_ON_NO_OF_RECORDS)
+			{
+				log.error("No of records exceeded the limit given by NFC ISO Provider");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_NofRecordsExceededMaxLimit);
+				return result;
+			}
+			transactionsHistory.setMaxCount(nofRecords);
+		}
+		else
+		{
+			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()) || 
+					ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionDetails.getTransactionName()))
+			{
+				transactionsHistory.setMaxCount(maxCount);
+			}
+			//For email an download nofRecords is not mentioned and hence is set to Max limit provided by ISO.
+			else
+			{
+				transactionsHistory.setMaxCount(LIMIT_ON_NO_OF_RECORDS);
+			}
+			
+		}
+		
+		if(NumberUtils.isDigits(transactionDetails.getPageNumber())){
+			transactionsHistory.setPageNumber(Integer.parseInt(transactionDetails.getPageNumber()) + 1);
+		}
+		else
+		{
+			transactionsHistory.setPageNumber(DEFAULT_PAGE_NO);
 		}
 		
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
@@ -192,104 +232,123 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		log.info("Pocket Type = " + sourcePocket.getPocketTemplate().getType());
 		result.setPocketDescription(sourcePocket.getPocketTemplate().getDescription());
 
+		ServiceChargeTransactionLog sctl;
 		Transaction transaction = null;
-		ServiceCharge sc = new ServiceCharge();
-		sc.setSourceMDN(transactionsHistory.getSourceMDN());
-		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
-		sc.setServiceName(transactionDetails.getServiceName());
-		sc.setTransactionTypeName(transactionDetails.getTransactionName());
-		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
-		sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
-
-		try{
-			transaction =transactionChargingService.getCharge(sc);
-		}catch (InvalidServiceException e) {
-			log.error("Exception occured in getting charges",e);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
- 			return result;
-		} catch (InvalidChargeDefinitionException e) {
-			log.error(e.getMessage());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
- 			return result;
+		if(transactionDetails.getSctlId() != null)
+		{
+			sctl = sctlService.getBySCTLID(transactionDetails.getSctlId());
+			if(sctl == null)
+			{
+				log.error("Invalid sctl ID " + transactionDetails.getSctlId());
+				result.setSctlID(transactionDetails.getSctlId());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidSctlId);
+				return result;
+			}
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		else
+		{
+			//Transaction transaction = null;
+			ServiceCharge sc = new ServiceCharge();
+			sc.setSourceMDN(transactionsHistory.getSourceMDN());
+			sc.setDestMDN(null);
+			sc.setChannelCodeId(cc.getID());
+			sc.setServiceName(transactionDetails.getServiceName());
+			sc.setTransactionTypeName(transactionDetails.getTransactionName());
+			sc.setTransactionAmount(BigDecimal.ZERO);
+			sc.setTransactionLogId(transactionsLog.getID());
+			sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
 
-		transactionsHistory.setPocketID(sourcePocket.getID());
-		CMGetBankAccountTransactions bankTransactionsReq = new CMGetBankAccountTransactions();
-		bankTransactionsReq.setSourceMDN(transactionsHistory.getSourceMDN());
-		bankTransactionsReq.setPin(transactionsHistory.getPin());
-		bankTransactionsReq.setSourceApplication(transactionsHistory.getSourceApplication());
-		bankTransactionsReq.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		bankTransactionsReq.setBankCode(sourcePocket.getPocketTemplate().getBankCode());
-		bankTransactionsReq.setPocketID(sourcePocket.getID());
-		bankTransactionsReq.setTransactionID(transactionsLog.getID());
-		bankTransactionsReq.setServiceChargeTransactionLogID(sctl.getID());
-		bankTransactionsReq.setMaxCount(transactionsHistory.getMaxCount());
+			try{
+				transaction =transactionChargingService.getCharge(sc);
+			}catch (InvalidServiceException e) {
+				log.error("Exception occured in getting charges",e);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
+				return result;
+			} catch (InvalidChargeDefinitionException e) {
+				log.error(e.getMessage());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
+				return result;
+			}
+			sctl = transaction.getServiceChargeTransactionLog();
+		}
 		
-		CFIXMsg response = super.process(bankTransactionsReq);
-
+		transactionsHistory.setPocketID(sourcePocket.getID());
+		transactionsHistory.setBankCode(sourcePocket.getPocketTemplate().getBankCode());
+		transactionsHistory.setServiceChargeTransactionLogID(sctl.getID());
+				
 		try {
+			boolean moreRecordsAvailable = false;
+			List<CMGetLastTransactionsFromBank.CGEntries> nfcTransactionHistory = new ArrayList<CMGetLastTransactionsFromBank.CGEntries>();
+			do{
+				CFIXMsg response = super.process(transactionsHistory);
 
-			if (response instanceof CmFinoFIX.CMGetLastTransactionsFromBank) {
-				log.info("Got the Bank Transaction Histroy from Bank.");
-				if (sctl != null) {
-					sctl.setCalculatedCharge(BigDecimal.ZERO);
-					transactionChargingService.completeTheTransaction(sctl);				
-				}
-				CmFinoFIX.CMGetLastTransactionsFromBank bankResponse = (CmFinoFIX.CMGetLastTransactionsFromBank) response;
-				result.setNotificationCode(CmFinoFIX.NotificationCode_NFCTransactionDetails);
-				List<CMGetLastTransactionsFromBank.CGEntries> nfcTransactionHistory = constructLastTransactionHistoryFromBank(bankResponse.getEntries());
-				if (CollectionUtils.isNotEmpty(nfcTransactionHistory)) {
+				if (response instanceof CmFinoFIX.CMGetLastTransactionsFromBank) {
+					log.info("Got Transaction Histroy from NFC");
+					if(transaction != null)	{
+						//sctl.setCalculatedCharge(BigDecimal.ZERO);
+						sctl.setCalculatedCharge(transaction.getAmountTowardsCharges());
+						transactionChargingService.completeTheTransaction(sctl);				
+					}
+					CmFinoFIX.CMGetLastTransactionsFromBank bankResponse = (CmFinoFIX.CMGetLastTransactionsFromBank) response;
 					transactionDetails.setAmount(bankResponse.getAmount());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
-					String dateString = sdf.format(new Date());
-					String fileName =  sourcePocket.getCardPAN() + "_" + dateString + ".pdf";
-					String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "NFC_Txn_History" + File.separatorChar + fileName;
-					if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
-					{
-						createPDFAndSendEmail(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath,sctl.getID());
-						result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryEmailWasSent);
+					result.setNotificationCode(CmFinoFIX.NotificationCode_NFCTransactionDetails);
+					nfcTransactionHistory.addAll(constructLastTransactionHistoryFromBank(bankResponse.getEntries()));
+					if( (ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()) || 
+							ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()) ) &&
+								bankResponse.getMoreRecordsAvailable() != null ){
+						moreRecordsAvailable = bankResponse.getMoreRecordsAvailable();
+						transactionsHistory.setPageNumber(transactionsHistory.getPageNumber() + 1);
 					}
-					else if(ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
-					{
-						result.setFilePath(filePath);
-						createPDF(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath, sctl.getID());
-						result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
-						String downloadURL = "NFC_Txn_History" + File.separatorChar + fileName;
-						result.setDownloadURL(downloadURL);
-					}
-					else
-					{
-						if (nfcTransactionHistory.size() > bankTransactionsReq.getMaxCount()) {
-							result.setNfcTransactionHistory(nfcTransactionHistory.subList(0, bankTransactionsReq.getMaxCount()));
-						} else {
-							result.setNfcTransactionHistory(nfcTransactionHistory);
-						}
-					}
-				} else {
-					result.setNotificationCode(CmFinoFIX.NotificationCode_NoCompletedTransactionsWereFound);
 				}
-			}
-			else {
-				log.info("Error: While gettiong the Bank Transactions history");
-				result.setNotificationCode(CmFinoFIX.NotificationCode_BankAccountGetTransactionsFailed);
-				if(sctl!=null){
-					transactionChargingService.failTheTransaction(sctl, MessageText._("Error: While gettiong the Bank Transactions history"));
+				else {
+					log.info("Error: While gettiong the NFC Transactions history");
+					result.setNotificationCode(CmFinoFIX.NotificationCode_BankAccountGetTransactionsFailed);
+					if(sctl!=null){
+						transactionChargingService.failTheTransaction(sctl, MessageText._("Error: While gettiong the Bank Transactions history"));
+					}
 				}
+				
 			}
-
-
+			while(moreRecordsAvailable);
+			
+			if (CollectionUtils.isNotEmpty(nfcTransactionHistory)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
+				String dateString = sdf.format(new Date());
+				String fileName =  sourcePocket.getCardPAN() + "_" + dateString + ".pdf";
+				String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "NFC_Txn_History" + File.separatorChar + fileName;
+				if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
+				{
+					createPDFAndSendEmail(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath,sctl.getID());
+					result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryEmailWasSent);
+				}
+				else if(ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
+				{
+					result.setFilePath(filePath);
+					createPDF(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath, sctl.getID());
+					result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
+					String downloadURL = "NFC_Txn_History" + File.separatorChar + fileName;
+					result.setDownloadURL(downloadURL);
+				}
+				else
+				{
+					if (nfcTransactionHistory.size() > transactionsHistory.getMaxCount()) {
+						result.setNfcTransactionHistory(nfcTransactionHistory.subList(0, transactionsHistory.getMaxCount()));
+					} else {
+						result.setNfcTransactionHistory(nfcTransactionHistory);
+					}
+					result.setMoreRecordsAvailable(moreRecordsAvailable);
+				}
+			} else {
+				result.setNotificationCode(CmFinoFIX.NotificationCode_NoCompletedTransactionsWereFound);
+			}
 		}
 		catch (Exception ex) {
-			log.error("Exception occured while getting transactions history", ex);
+			log.error("Exception occured while getting NFC transactions history", ex);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_Failure);
 			transactionChargingService.failTheTransaction(sctl, MessageText._("Exception occured while getting transactions history"));
 			return result;
 		}
-
-
+		
 		result.setSctlID(sctl.getID());
  		return result;
 	}

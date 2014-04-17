@@ -24,6 +24,8 @@ public class LastNTxnsXMLResult extends XMLResult {
 	private NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 	private String downloadURL;
 	private Long totalTxnCount;
+	private Boolean moreRecordsAvailable;
+	
 	
 	public LastNTxnsXMLResult() {
 		super();
@@ -45,6 +47,12 @@ public class LastNTxnsXMLResult extends XMLResult {
 		{
 			getXmlWriter().writeStartElement("totalTxnCount");
 			getXmlWriter().writeCharacters(String.valueOf(getTotalTxnCount()),false);
+			getXmlWriter().writeEndElement();
+		}
+		if(getMoreRecordsAvailable() != null)
+		{
+			getXmlWriter().writeStartElement("MoreRecordsAvailable");
+			getXmlWriter().writeCharacters(String.valueOf(getMoreRecordsAvailable()),false);
 			getXmlWriter().writeEndElement();
 		}
 		getXmlWriter().writeStartElement("Name");
@@ -257,6 +265,14 @@ public class LastNTxnsXMLResult extends XMLResult {
 
 	public void setTotalTxnCount(Long totalTxnCount) {
 		this.totalTxnCount = totalTxnCount;
+	}
+
+	public Boolean getMoreRecordsAvailable() {
+		return moreRecordsAvailable;
+	}
+
+	public void setMoreRecordsAvailable(Boolean moreRecordsAvailable) {
+		this.moreRecordsAvailable = moreRecordsAvailable;
 	}
 }
 

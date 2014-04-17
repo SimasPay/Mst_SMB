@@ -134,6 +134,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	private static final int DEFAULT_PAGE_NO = 0;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(ConfigurationUtil.getPdfHistoryDateFormat());	
 	Integer language = 0;	// Default language set as Bahasa.
+	
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
 		String pocketCode= transactionDetails.getSourcePocketCode();
@@ -176,6 +177,15 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}
 		if(NumberUtils.isDigits(transactionDetails.getNumRecords())){
 			transactionsHistory.setNumRecords(Integer.parseInt(transactionDetails.getNumRecords()));
+		}
+		else if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()) ||
+				ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionDetails.getTransactionName()) )
+		{
+			int nofRecords = systemParametersService.getInteger(SystemParameterKeys.MAX_TXN_COUNT_IN_HISTORY);
+			log.info("The system parameter 'max.txn.count.in.history' is set to: " + nofRecords);
+			if (nofRecords != -1) {
+				transactionsHistory.setNumRecords(nofRecords);
+			}
 		}
 		log.info("Handling emoney transactions history webapi request");
 		
@@ -306,15 +316,22 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				String downloadURL = "Emoney_Txn_History" + File.separatorChar + fileName;
 				result.setDownloadURL(downloadURL);
 			}
-			else if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()))
-			{
-				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
-			}
 			else
 			{
 				Long txnCount = commodityTransferService.getTranscationsCount(srcPocket, srcSubscriberMDN,transactionsHistory);
 				result.setTotalTxnCount(txnCount);
-			}
+				if(txnCount > (transactionsHistory.getPageNumber() + 1) * transactionsHistory.getNumRecords()){
+					result.setMoreRecordsAvailable(true);
+				}
+				else{
+					result.setMoreRecordsAvailable(false);
+				}
+			}		
+			
+//			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()))
+//			{
+//				sendSms(srcSubscriberMDN, transactionHistoryList, sctl.getID());
+//			}
 		}
 		catch (Exception ex) {
 			log.error("Exception occured while getting transactions history", ex);
@@ -426,35 +443,35 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	/*
 	 * sends emoney transaction history as sms
 	 */
-	private void sendSms(SubscriberMDN subscriberMDN, List<CommodityTransfer> transactionHistoryList, Long sctlId) {
-		Integer language = subscriberMDN.getSubscriber().getLanguage();
-		NotificationQuery query = new NotificationQuery();
-		query.setNotificationCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
-		query.setLanguage(language);
-		query.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-		List<Notification> notifications = notificationService.getLanguageBasedNotificationsByQuery(query);
-
-		if(CollectionUtils.isNotEmpty(notifications) && (!notifications.get(0).getIsActive()) ){
-			log.info("SMS notification is not active, so not sending the SMS for the E-money history transaction.") ;
-		} 
-		else {
-			NotificationWrapper notificationWrapper = new NotificationWrapper(notifications.get(0));
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
-			notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());
-			notificationWrapper.setLanguage(language);
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			StringBuilder messageBuilder = new StringBuilder();
-			for (CommodityTransfer commodityTransfer : transactionHistoryList) {
-				notificationWrapper.setCommodityTransfer(commodityTransfer);
-				messageBuilder.append(notificationMessageParserService.buildMessage(notificationWrapper,false));
-				messageBuilder.append("\r\n");
-			}
-			smsService.setDestinationMDN(subscriberMDN.getMDN());
-			smsService.setMessage(messageBuilder.toString());
-			smsService.setNotificationCode(notificationWrapper.getCode());
-			smsService.setSctlId(sctlId);
-			smsService.asyncSendSMS();
-		}
-	}
+//	private void sendSms(SubscriberMDN subscriberMDN, List<CommodityTransfer> transactionHistoryList, Long sctlId) {
+//		Integer language = subscriberMDN.getSubscriber().getLanguage();
+//		NotificationQuery query = new NotificationQuery();
+//		query.setNotificationCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
+//		query.setLanguage(language);
+//		query.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+//		List<Notification> notifications = notificationService.getLanguageBasedNotificationsByQuery(query);
+//
+//		if(CollectionUtils.isNotEmpty(notifications) && (!notifications.get(0).getIsActive()) ){
+//			log.info("SMS notification is not active, so not sending the SMS for the E-money history transaction.") ;
+//		} 
+//		else {
+//			NotificationWrapper notificationWrapper = new NotificationWrapper(notifications.get(0));
+//			notificationWrapper.setCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
+//			notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
+//			notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());
+//			notificationWrapper.setLanguage(language);
+//			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+//			StringBuilder messageBuilder = new StringBuilder();
+//			for (CommodityTransfer commodityTransfer : transactionHistoryList) {
+//				notificationWrapper.setCommodityTransfer(commodityTransfer);
+//				messageBuilder.append(notificationMessageParserService.buildMessage(notificationWrapper,false));
+//				messageBuilder.append("\r\n");
+//			}
+//			smsService.setDestinationMDN(subscriberMDN.getMDN());
+//			smsService.setMessage(messageBuilder.toString());
+//			smsService.setNotificationCode(notificationWrapper.getCode());
+//			smsService.setSctlId(sctlId);
+//			smsService.asyncSendSMS();
+//		}
+//	}
 }
