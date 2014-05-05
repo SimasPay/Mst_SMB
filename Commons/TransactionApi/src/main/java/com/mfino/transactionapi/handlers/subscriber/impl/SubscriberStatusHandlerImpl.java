@@ -3,6 +3,14 @@
  */
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,15 +63,48 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 		
 		log.info("Subscriber status Validation Result for "+txnDetails.getSourceMDN()+" is "+validationResult);
 		
-		
-		if(validationResult.equals(CmFinoFIX.ResponseCode_Success))
-		{
-			Subscriber subscriber = srcSubscriberMDN.getSubscriber();
+		Subscriber subscriber = srcSubscriberMDN!=null ? srcSubscriberMDN.getSubscriber() : null;
+		if(subscriber != null) {
 			result.setFirstName(subscriber.getFirstName());
 			result.setLastName(subscriber.getLastName());
+			String kycLevel = subscriber.getKYCLevelByKYCLevel().getKYCLevel().toString();
+			result.setKycLevel(kycLevel);
+			String txnList = "All";
+			if (CmFinoFIX.SubscriberKYCLevel_NoKyc.toString().equals(kycLevel)) {
+				txnList = getAllowedTxnList(kycLevel);
+			}
+			result.setAllowedTxns(txnList);
 		}
 		
 		log.info("Subscriber Status request: END");
 		return result;
+	}
+	
+	/**
+	 * Returns the allowed txns list for the given KYC level.
+	 * @param kycLevel
+	 * @return
+	 */
+	private String getAllowedTxnList(String kycLevel) {
+		String allowedTxns = null;
+		try {
+			StringBuilder sb = new StringBuilder();
+			BufferedReader br = new BufferedReader(new FileReader(new File("../mfino_conf", "kyc_txn_list.json")));
+			String curLine = null;
+			while((curLine=br.readLine()) != null){
+				sb.append(curLine);
+			}
+			br.close();
+			JSONObject jsonObject =  new JSONObject(sb.toString());
+			JSONObject kycJson = jsonObject.getJSONObject(kycLevel);
+			allowedTxns = kycJson.getString("allowedTxns");
+		} catch (FileNotFoundException e) {
+			log.error("Error: FileNotFoundException While reading kyc_txn_list.json file");
+		} catch (IOException e) {
+			log.error("Error: IOException While reading kyc_txn_list.json file");
+		} catch (JSONException e) {
+			log.error("Error: JSONException While reading kyc_txn_list.json file");
+		}
+		return allowedTxns;
 	}
 }

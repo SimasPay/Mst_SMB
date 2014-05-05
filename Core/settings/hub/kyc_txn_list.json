@@ -1,0 +1,7 @@
+{
+	"0":{
+			"kycName":"No KYC",
+			"_comment": "Use | to separate the transaction names in the allowed transactions list. Use Transaction names as per the name in transaction_type table",
+			"allowedTxns":"Transfer|CashOut|CheckBalance"
+		}
+}

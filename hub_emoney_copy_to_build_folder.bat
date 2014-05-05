@@ -26,6 +26,7 @@ rem copy Web\ReportScheduler\target\ReportScheduler.war %1\tomcat\
 rem copy Web\TransactionMonitorTool\target\TransactionMonitorTool.war %1\tomcat\
 copy Core\settings\hub\mfino.properties %1\tomcat\mfino_conf\
 copy Core\settings\hub\languageTranslation.json %1\tomcat\mfino_conf\
+copy Core\settings\hub\kyc_txn_list.json %1\tomcat\mfino_conf\
 
 copy Commons\HierarchyService\target\HierarchyService-0.1-SNAPSHOT.jar %1\servicemix
 copy Commons\TransactionApi\target\TransactionApi-0.1-SNAPSHOT.jar %1\servicemix

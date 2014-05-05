@@ -115,6 +115,7 @@
 										<include>category.prepaidPLN.txt</include>
 										<include>defaultJson.txt</include>
 										<include>errorJson.txt</include>
+										<include>category.help.txt</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>

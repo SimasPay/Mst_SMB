@@ -8,6 +8,8 @@ public class SubscriberStatusXMLResult extends XMLResult {
 
 	private String status;
 	
+	private String allowedTxns;
+	
 	public SubscriberStatusXMLResult() {
 		super();
 	}
@@ -34,6 +36,14 @@ public class SubscriberStatusXMLResult extends XMLResult {
 		getXmlWriter().writeCharacters(getStatus(),false);
 		getXmlWriter().writeEndElement();
 		
+		getXmlWriter().writeStartElement("kycLevel");
+		getXmlWriter().writeCharacters(getKycLevel(),false);
+		getXmlWriter().writeEndElement();
+		
+		getXmlWriter().writeStartElement("allowedTxns");
+		getXmlWriter().writeCharacters(getAllowedTxns(),false);
+		getXmlWriter().writeEndElement();
+		
 		getXmlWriter().writeEndElement();
 
 		writeEndOfDocument();
@@ -53,6 +63,14 @@ public class SubscriberStatusXMLResult extends XMLResult {
 
 	public String getStatus() {
 		return status;
+	}
+
+	public String getAllowedTxns() {
+		return allowedTxns;
+	}
+
+	public void setAllowedTxns(String allowedTxns) {
+		this.allowedTxns = allowedTxns;
 	}
 	
 

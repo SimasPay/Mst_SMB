@@ -91,7 +91,8 @@ public class SystemParameterKeys {
 	public static final String CATEGORY_PREPAIDPLN = "category.prepaidPLN";
 	public static final String CATEGORY_POSTPAIDPLN = "category.postpaidPLN";	
 	public static final String CATEGORY_PREPAIDPHONE = "category.prepaidPhone";
-	public static final String CATEGORY_POSTPAIDPHONE = "category.postpaidPhone";		
+	public static final String CATEGORY_POSTPAIDPHONE = "category.postpaidPhone";
+	public static final String CATEGORY_HELP = "category.help";
 	public static final String ACTIVATION_SMS_INTERVAL_BULKUPLOAD="sms.interval.inactive.bulkupload";
     public static final String MAX_TXN_COUNT_IN_HISTORY = "max.txn.count.in.history";
 	public static final String CASHOUT_AT_ATM_FAC_AS_PIN = "cashout.atm.fac.as.pin";
