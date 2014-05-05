@@ -434,6 +434,9 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoiceNumber() : "");
+		}else if(ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT.equalsIgnoreCase(sourceMsg)){
+			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
+			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInfo1() : "");
 		}else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);
 		}
