@@ -517,6 +517,11 @@
 		<td>
 			<a href="jsp/s_settings_forgotpin_confirm.jsp">Forgot Pin confirm</a>
 		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_get_promo_image_path.jsp">Get Promo Image</a>
+		</td>
 	</tr>	
 	</table></td></tr>
 	<tr><td><table>

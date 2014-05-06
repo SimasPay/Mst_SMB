@@ -66,7 +66,8 @@ public class RequestValidationServiceImpl implements RequestValidationService{
 		
 		if (StringUtils.isBlank(sourceMDN) && 
 				!((serviceName.equals(ServiceAndTransactionConstants.SERVICE_ACCOUNT) && (transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBER_REGISTRATION_THROUGH_WEB)||
-						transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_PARTNER_REGISTRATION_THROUGH_API) || transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_GET_PUBLIC_KEY)))||
+						transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_PARTNER_REGISTRATION_THROUGH_API) || transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_GET_PUBLIC_KEY)
+						|| transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_GET_PROMO_IMAGE) ))||
 						(serviceName.equals(ServiceAndTransactionConstants.SERVICE_PAYMENT) && transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_GET_THIRD_PARTY_DATA)))	) {
 			webAPIUtilsService.sendError(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, writer, sourceMDN, ApiConstants.PARAMETER_SOURCE_MDN);
 			return false;

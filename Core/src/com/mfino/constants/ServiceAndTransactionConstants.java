@@ -252,6 +252,8 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_GET_USER_API_KEY			= "GetUserAPIKey";
 	
+	public static final String TRANSACTION_GET_PROMO_IMAGE			= "GetPromoImage";
+	
 	public static final String TRANSACTION_QR_PAYMENT_INQUIRY = "QRPaymentInquiry";
 	
 	public static final String TRANSACTION_QR_PAYMENT = "QRPayment";

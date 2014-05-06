@@ -21814,6 +21814,25 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="PromoImageNotFound" enum="2106">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Promo Image not Found</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="GetPromoImageSuccessful" enum="2107">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Successful in getting Promo Image path</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -23408,6 +23427,7 @@ ERROR:Mismatch of  mdn type and app type
 	        <!-- Permissions -->
 	        <value enum="22001" description="Permissions" />
 	        <value enum="22002" description="Permissions_Save" />
+	        <value enum="23001" description="Promos" />
 		</field>
 		<field number="5495" name="NotificationMethodText" type="STRING" unused="Y" />
 		<field number="5496" name="AllowedForLOP" type="BOOLEAN" unused="Y" />
