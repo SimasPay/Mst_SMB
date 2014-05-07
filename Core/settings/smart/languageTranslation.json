@@ -1,7 +1,7 @@
 {
  "1" : { 
    "language" : "Bahasa",
-   "Uangku E-Statement" : "Transaksi Uangku",
+   "Uangku E-Statement" : "Transaksi Dimo",
    "NFC Card Transactions" : "Transaksi Kartu NFC",
    "Name" : "Nama",
    "Card Name" : "Nama Kartu",
@@ -24,14 +24,17 @@
    "Cash In" : "Setoran di ",
    "from BSM" : "Setoran via ATM (BSM)",
    "Purchase" : "Pembelian ",
-   "Bill Pay" : "Pembayaran ",
+   "Bill Pay" : "Pembayaran ke ",
+   "InterBank Transfer" : "Transfer ke rekening ",
+   "Airtime Purchase" : "Isi Ulang ke ",
+   "QR Payment" : "Flashiz QR di ",
    "Date" : "Tanggal",
    "Transactions" : "Transaksi",
    "Amount" : "Jumlah"
     },
  "0" : {
    "language" : "English",
-   "Uangku E-Statement" : "Uangku E-Statement",
+   "Uangku E-Statement" : "Dimo E-Statement",
    "NFC Card Transactions" : "NFC Card Transactions",
    "Name" : "Name",
    "Card Name" : "Card Name";
@@ -54,7 +57,10 @@
    "Cash In" : "Cash In ",
    "from BSM" : "Deposit via ATM (BSM)",
    "Purchase" : "Purchase ",
-   "Bill Pay" : "Payment ",
+   "Bill Pay" : "Payment to ",
+   "InterBank Transfer" : "Transfer to account ",
+   "Airtime Purchase" : "Refill to ",
+   "QR Payment" : "QR Flashiz ",
    "Date" : "Date",
    "Transactions" : "Transactions",
    "Amount" : "Amount"

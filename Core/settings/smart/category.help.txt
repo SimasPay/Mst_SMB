@@ -1,0 +1,16 @@
+{
+  "totalCount": 2,
+  "version": 0.1,
+  "success": true,
+  "_comment": "Use | to separate the each line of description"
+  "helpContent": [
+    {
+      "topic": "Registration",
+      "description": "Registration|Download APP|Enter Mobile number"
+    },
+    {
+      "topic": "Cashin",
+      "description": "Cash in|Visit nearest ATM|Do cash-in"
+    }   
+  ]
+}

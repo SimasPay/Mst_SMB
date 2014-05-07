@@ -1,0 +1,31 @@
+{
+  "totalCount": 1,
+  "version": 1.0,
+  "success": true,
+  "postpaidData": [
+    {
+      "name": "Telkomsel - Halo",
+      "code": "PSPHONE001"
+    },
+    {
+      "name": "XL - Xplore",
+      "code": "PSPHONE002"
+    },
+    {
+      "name": "Indosat - Matrix",
+      "code": "PSPHONE003"
+    }, 
+    {
+      "name": "Telkom",
+      "code": "PSPHONE004"
+    }, 
+    {
+      "name": "Smartfren",
+      "code": "PSPHONE005"
+    },
+    {
+      "name": "Esia",
+      "code": "PSPHONE006"
+    }          
+  ]
+}
