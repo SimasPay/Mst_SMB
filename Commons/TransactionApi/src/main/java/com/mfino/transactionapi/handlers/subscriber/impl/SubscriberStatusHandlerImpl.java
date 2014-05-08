@@ -70,10 +70,14 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 			String kycLevel = subscriber.getKYCLevelByKYCLevel().getKYCLevel().toString();
 			result.setKycLevel(kycLevel);
 			String txnList = "All";
+			String alertMsg = "";
 			if (CmFinoFIX.SubscriberKYCLevel_NoKyc.toString().equals(kycLevel)) {
-				txnList = getAllowedTxnList(kycLevel);
+				String allowedTxnList[] = getAllowedTxnList(kycLevel);
+				txnList = allowedTxnList[0];
+				alertMsg = allowedTxnList[1];
 			}
 			result.setAllowedTxns(txnList);
+			result.setMessage(alertMsg);
 		}
 		
 		log.info("Subscriber Status request: END");
@@ -85,8 +89,8 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 	 * @param kycLevel
 	 * @return
 	 */
-	private String getAllowedTxnList(String kycLevel) {
-		String allowedTxns = null;
+	private String[] getAllowedTxnList(String kycLevel) {
+		String result[] = new String[2];
 		try {
 			StringBuilder sb = new StringBuilder();
 			BufferedReader br = new BufferedReader(new FileReader(new File("../mfino_conf", "kyc_txn_list.json")));
@@ -97,7 +101,8 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 			br.close();
 			JSONObject jsonObject =  new JSONObject(sb.toString());
 			JSONObject kycJson = jsonObject.getJSONObject(kycLevel);
-			allowedTxns = kycJson.getString("allowedTxns");
+			result[0] = kycJson.getString("allowedTxns");
+			result[1] = kycJson.getString("alertMessage");
 		} catch (FileNotFoundException e) {
 			log.error("Error: FileNotFoundException While reading kyc_txn_list.json file");
 		} catch (IOException e) {
@@ -105,6 +110,6 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 		} catch (JSONException e) {
 			log.error("Error: JSONException While reading kyc_txn_list.json file");
 		}
-		return allowedTxns;
+		return result;
 	}
 }

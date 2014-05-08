@@ -44,6 +44,10 @@ public class SubscriberStatusXMLResult extends XMLResult {
 		getXmlWriter().writeCharacters(getAllowedTxns(),false);
 		getXmlWriter().writeEndElement();
 		
+		getXmlWriter().writeStartElement("alertMessage");
+		getXmlWriter().writeCharacters(getMessage(),false);
+		getXmlWriter().writeEndElement();
+		
 		getXmlWriter().writeEndElement();
 
 		writeEndOfDocument();

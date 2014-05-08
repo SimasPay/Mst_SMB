@@ -27,7 +27,7 @@
    "Bill Pay" : "Pembayaran ke ",
    "InterBank Transfer" : "Transfer ke rekening ",
    "Airtime Purchase" : "Isi Ulang ke ",
-   "QR Payment" : "Flashiz QR ke ",
+   "QR Payment" : "Flashiz QR di ",
    "Date" : "Tanggal",
    "Transactions" : "Transaksi",
    "Amount" : "Jumlah"
@@ -60,7 +60,7 @@
    "Bill Pay" : "Payment to ",
    "InterBank Transfer" : "Transfer to account ",
    "Airtime Purchase" : "Refill to ",
-   "QR Payment" : "QR Flashiz to ",
+   "QR Payment" : "QR Flashiz ",
    "Date" : "Date",
    "Transactions" : "Transactions",
    "Amount" : "Amount"
