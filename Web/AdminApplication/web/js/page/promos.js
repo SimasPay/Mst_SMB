@@ -12,28 +12,36 @@ mFino.page.promos = function(config) {
 				bodyPadding : 5,
 				buttonAlign : 'center',
 				// width : 500,
-				height : '50%',
+				//height : '50%',
 				frame : true,
+				labelWidth : 120,
 				items : [
 				         {
 				        	 xtype : 'fileuploadfield',
 				        	 allowBlank : false,
-				        	 emptyText : 'Select a file for uploading..',
-				        	 labelWidth : 50,
+				        	 emptyText : 'Select a jpg/png/gif file for uploading..',
 				        	 msgTarget : 'side',
-				        	 anchor : '60%',
+				        	 anchor : '50%',
 				        	 fieldLabel : 'Promo Image File path',
 				        	 buttonText : 'Browse',
 				        	 name : 'PromoImage',
-				        	 id : 'filepath',
-				        	 itemId : 'upload.filePath',
+				        	 id : 'promoImagefilepath',
+				        	 itemId : 'promoimage.upload.filePath',
 				        	 disabled : true
 				         },
-
 				         {
+						  xtype : 'container',
+						  layout : 'absolute',
+						  items : 
+						  { 							 
 				        	 xtype : 'button',
-				        	 text : _('submit'),
-				        	 anchor : '60%',
+				        	 text : _('Submit'),
+							 x : 120,
+							 y : 30,
+							 margin : 150,
+							 centered : true,
+						     width : 70,
+							 left : 300,							 
 				        	 handler : function() {
 
 				        		 if (this.findParentByType('form').getForm()
@@ -52,9 +60,9 @@ mFino.page.promos = function(config) {
 				        							 reset : false,
 				        							 success : function(
 				        									 fp, action) {
-				        								 var msg = 'Success, Uploaded '
+				        								 var msg = 'Successfully uploaded '
 				        									 + action.result.file
-				        									 + ' the file to the server ';
+				        									 + ' to the server ';
 				        								 Ext.Msg
 				        								 .show({
 				        									 title : _('Info'),
@@ -79,15 +87,26 @@ mFino.page.promos = function(config) {
 				        				 return;
 				        			 }
 				        		 }
-
+								}
 				        	 }
-				         }, {
+				         }, 
+						 {
+						  xtype : 'container',
+						  layout : 'absolute',
+						  items : 
+						  { 	
 				        	 xtype : 'button',
 				        	 text : _('Reset'),
-				        	 anchor : '60%',
+							 x : 200,
+					         y : 30,
+	        		         margin : 150,
+							 centered : true,
+							 width : 70,
+							 left : 300,
 				        	 handler : function() {
 				        		 this.findParentByType('form').getForm().reset()
 				        	 }
+						  }
 				         } ]
 			}
 

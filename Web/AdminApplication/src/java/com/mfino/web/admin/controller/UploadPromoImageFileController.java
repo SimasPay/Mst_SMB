@@ -54,7 +54,7 @@ public class UploadPromoImageFileController {
 						String fileName = (String) fileNames.next();
 						MultipartFile file = multipartRequest.getFile(fileName);
 						if (file == null || file.getSize() == 0) {
-							responseMap.put("Error", "");
+							responseMap.put("Error", MessageText._("Either file name is empty or file size is zero"));
 						}else if(!isValidFileFormat(file)){
 							responseMap.put("Error", MessageText._("Please upload a file with valid format"));
 						} else if (file.getSize() > maxFileSize) {
@@ -84,7 +84,7 @@ public class UploadPromoImageFileController {
 	private boolean isValidFileFormat(MultipartFile file)
 	{
 		String fileName = file.getOriginalFilename().toLowerCase();
-		if(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".gif") || fileName.endsWith(".tif"))
+		if(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".gif") || fileName.endsWith(".tif"))
 			return true;
 		return false;
 	}

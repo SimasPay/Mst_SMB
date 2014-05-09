@@ -105,7 +105,7 @@ mFino.page.subscriber = function(config){
                 handler : function(){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
-                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)==CmFinoFIX.SubscriberStatus.NotRegistered){
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)==CmFinoFIX.SubscriberStatus.NotRegistered){
                     	 Ext.MessageBox.alert(_("Info"), _("Unregistered Subscriber not allowed to edit"));
                     }else{
                         gridEditForm.setTitle( _("Edit Subscriber"));

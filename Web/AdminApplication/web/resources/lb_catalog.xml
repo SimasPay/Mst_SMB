@@ -61,7 +61,7 @@
 		<FaxNumber>Fax Number</FaxNumber>
 		<FileType>File Type</FileType>
 		<FirstName>First Name</FirstName>
-
+		<NickName>Nick Name</NickName>
 		<GroupID>Group ID</GroupID>
 		<Giro>Giro</Giro>
 		<KYC>KYC</KYC>
