@@ -46,3 +46,16 @@ INSERT INTO `notification` (`LastUpdateTime`,`UpdatedBy`,`CreateTime`,`CreatedBy
 
 
 
+DELETE FROM role_permission WHERE Permission in ('23001');
+
+DELETE FROM permission_item WHERE Permission = '23001';
+
+DELETE FROM permission_group WHERE ID = '37';
+
+
+INSERT INTO permission_group (ID, Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy,PermissionGroupName) VALUES(37, '1', now(), 'system', now(), 'system', 'Promos');
+
+INSERT INTO permission_item (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy,Permission,ItemType,ItemID,FieldID,Action,PermissionGroupID,Description) VALUES('1', now(), 'system', now(), 'system', 23001,1,'promos','default','default',37,'View Promo Image Uploader Tab');
+
+INSERT INTO role_permission (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, Role, Permission) VALUES('1', NOW(), 'system', NOW(), 'system', '1','23001');
+

@@ -52,7 +52,8 @@ mFino.page.main = function(config){
 		"actorChannelMapping" :mFino.page.actorChannelMapping,
 		"appUploader":mFino.page.appUploader,
 		"adjustments":mFino.page.adjustments,
-		"permissions":mFino.page.permissions
+		"permissions":mFino.page.permissions,
+		"promos":mFino.page.promos
     };
 
     var center = new Ext.Panel({
@@ -249,6 +250,10 @@ mFino.page.main = function(config){
         },
         { 
             id: 'permissions', 
+		    layout : "fit"
+        },
+        { 
+            id: 'promos', 
 		    layout : "fit"
         }
         ]

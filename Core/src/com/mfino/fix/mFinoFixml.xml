@@ -23427,6 +23427,7 @@ ERROR:Mismatch of  mdn type and app type
 	        <!-- Permissions -->
 	        <value enum="22001" description="Permissions" />
 	        <value enum="22002" description="Permissions_Save" />
+	        <!-- Promos -->
 	        <value enum="23001" description="Promos" />
 		</field>
 		<field number="5495" name="NotificationMethodText" type="STRING" unused="Y" />

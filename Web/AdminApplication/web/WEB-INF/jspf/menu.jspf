@@ -46,8 +46,9 @@
                             <li id="fundDefinitions_tab"><a href="#" onclick="return false">FundDefintions</a></li>
                             <li id="actorChannelMapping_tab"><a href="#" onclick="return false">Actor Channel Mapping</a></li>
                         	<li id="appUploader_tab"><a href="#" onclick="return false">AppUploader</a></li>
-                        	<li id="permissions_tab"><a href="#" onclick="return false">Roles & Permissions</a></li>							                                                                              
-                        </ul>
+                        	<li id="permissions_tab"><a href="#" onclick="return false">Roles & Permissions</a></li>	
+                        	<li id="promos_tab"><a href="#" onclick="return false">Promos</a></li>
+					</ul>
                         </td></tr></table>
         </li>
         <li id="hierarchies_tab" style="z-index:1000;"><a href="#" onclick="return false">Hierarchies</a>
@@ -112,7 +113,7 @@
                                 		itemName == 'transactionCharge' || itemName == 'pocketTemplate' || itemName == 'distributionTemplate' ||
                                 			itemName == 'pocketTemplateConfig' || itemName == 'systemParameters' || itemName == 'integrations' || 
                                 				itemName == 'schedulerConfig' || itemName == 'fundDefinitions' || itemName == 'appUploader' ||
-                                					itemName == 'actorChannelMapping' || itemName == 'permissions')
+                                					itemName == 'actorChannelMapping' || itemName == 'permissions' || itemName == 'promos' )
                             tab_holder.setCurrent('settings');
                         else if(itemName == 'partner' || itemName == 'mfsBiller' || itemName == 'agent' || itemName == 'teller' || itemName == 'fundingForAgent')
                             tab_holder.setCurrent('partners');

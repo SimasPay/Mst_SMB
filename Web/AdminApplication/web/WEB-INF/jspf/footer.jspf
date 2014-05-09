@@ -837,6 +837,11 @@
 <script type="text/javascript" src="<c:url value="/js/page/appUploader.js" />">
 </script>
 
+<!-- Promo Image -->
+<script type="text/javascript" src="<c:url value="/js/page/promos.js" />">
+</script>
+
+
 <!-- Adjustments -->
 <script type="text/javascript" src="<c:url value="/js/page/adjustments.js" />">
 </script>

@@ -101,6 +101,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private static final String APPUPLOADER_TAB="appUploader";
     private static final String ADJUSTMENTS_TAB="adjustments";
     private static final String PERMISSIONS_TAB="permissions";
+    private static final String PROMOS_TAB="promos";
     
 
 	@Autowired
@@ -274,7 +275,9 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         jsBuf.append(getCodeForSingleTabEnabled(ADJUSTMENTS_TAB));
         jsBuf.append(ELSE);
         jsBuf.append(getCodeForSingleTabEnabled(PERMISSIONS_TAB));
-        jsBuf.append("};");
+        jsBuf.append(ELSE);
+        jsBuf.append(getCodeForSingleTabEnabled(PROMOS_TAB));
+		jsBuf.append("};");
         return jsBuf.toString();
     }
 
@@ -312,7 +315,8 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
             																	authorizationService.isAuthorized(CmFinoFIX.Permission_FundDefinitions) ||
             																		authorizationService.isAuthorized(CmFinoFIX.Permission_ActorChannelMapping) ||
             																			authorizationService.isAuthorized(CmFinoFIX.Permission_AppUploader) ||
-            																				authorizationService.isAuthorized(CmFinoFIX.Permission_Permissions)); 
+            																				authorizationService.isAuthorized(CmFinoFIX.Permission_Permissions)||
+                																				authorizationService.isAuthorized(CmFinoFIX.Permission_Promos)); 
         } else if (tabName.equals(Channel_CODES_TAB)) {
             return authorizationService.isAuthorized(CmFinoFIX.Permission_Channel_Codes_View);
         }else if (tabName.equals(MNO_PARAMS_TAB)) {
@@ -378,6 +382,8 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         	return Authorization.isAuthorized(CmFinoFIX.Permission_TransactionMonitor);
         } */else if(tabName.equals(APPUPLOADER_TAB)){
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_AppUploader);
+        } else if(tabName.equals(PROMOS_TAB)){
+            return authorizationService.isAuthorized(CmFinoFIX.Permission_Promos);
         } else if(tabName.equals(ACTOR_CHANNEL_MAPPING_TAB)){
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_ActorChannelMapping);
         } else if(tabName.equals(ADJUSTMENTS_TAB)){
