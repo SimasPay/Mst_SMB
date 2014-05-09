@@ -133,6 +133,12 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billPaymentInquiry.setNarration(transactionDetails.getNarration());
 		billPaymentInquiry.setParentTransactionID(0L);
 		
+		//For Bayar.Net BillPayments
+		if(transactionDetails.getDenomCode()!=null)
+			billPaymentInquiry.setDenominationCode(transactionDetails.getDenomCode());
+		if(transactionDetails.getNetPrice()!=null)
+			billPaymentInquiry.setNetPrice(transactionDetails.getNetPrice());
+		
 		srcpocketcode=transactionDetails.getSourcePocketCode();
         billPaymentInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
         billPaymentInquiry.setPaymentMode(transactionDetails.getPaymentMode());

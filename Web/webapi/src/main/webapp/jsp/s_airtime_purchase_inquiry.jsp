@@ -47,6 +47,14 @@
 		<td><input type="text" name="amount" value="" /></td>
 	</tr>
 	<tr>
+		<td>DenominationCode</td>
+		<td><input type="text" name="denomCode" value="" /></td>
+	</tr>
+	<tr>
+		<td>Net Price</td>
+		<td><input type="text" name="netPrice" value="" /></td>
+	</tr>
+	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID" value="" /></td>
 	</tr>

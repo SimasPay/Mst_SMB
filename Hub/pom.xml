@@ -25,7 +25,7 @@
 	<modules>
 		<module>HubConfiguration</module>
 		<module>HubMocks</module>
-		<module>HubXMLRPC</module>
+		<module>BayarBillPayments</module>
 		<module>FlashizISO8583</module>
 		<module>FlashizBillPayment</module>
 		<!--<module>XMLRPCDefinitions</module>-->

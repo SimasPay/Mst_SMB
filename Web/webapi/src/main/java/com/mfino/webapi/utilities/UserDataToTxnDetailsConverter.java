@@ -214,6 +214,10 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setZipCode(userDataContainer.getZipCode());
 		txnDetails.setState(userDataContainer.getState());
 		txnDetails.setMerchantData(userDataContainer.getMerchantData());
+		txnDetails.setDenomCode(userDataContainer.getDenomCode());
+		if(StringUtils.isNotBlank(userDataContainer.getNetPrice())){
+			txnDetails.setNetPrice(getAmount(userDataContainer.getNetPrice()));
+		}
 		txnDetails.setUserAPIKey(userDataContainer.getUserAPIKey());
 		if(StringUtils.isNotBlank(userDataContainer.getSctlId())){
 			txnDetails.setSctlId(getSctlId(userDataContainer.getSctlId()));

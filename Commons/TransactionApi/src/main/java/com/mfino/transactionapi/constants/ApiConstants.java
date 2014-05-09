@@ -321,6 +321,10 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_MERCHANT_DATA = "merchantData";
 	
+	public static final String PARAMETER_DENOM_CODE = "denomCode";
+	
+	public static final String PARAMETER_NET_PRICE = "netPrice";
+	
 	public static final String PARAMETER_USER_API_KEY = "userAPIKey";
 	
 	public static final String PARAMETER_SCTL_ID = "sctlId";

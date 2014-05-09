@@ -157,6 +157,8 @@ public class TransactionDetails {
 	private String state;
 	private String userAPIKey;
 	private String merchantData;
+	private String denomCode;
+	private BigDecimal netPrice;
 	
 	public String getTransactionTypeName() {
 		return transactionTypeName;
@@ -1031,5 +1033,17 @@ public class TransactionDetails {
 	}
 	public void setMerchantData(String merchantData) {
 		this.merchantData = merchantData;
+	}
+	public String getDenomCode() {
+		return denomCode;
+	}
+	public void setDenomCode(String denomCode) {
+		this.denomCode = denomCode;
+	}
+	public BigDecimal getNetPrice() {
+		return netPrice;
+	}
+	public void setNetPrice(BigDecimal netPrice) {
+		this.netPrice = netPrice;
 	}
 }

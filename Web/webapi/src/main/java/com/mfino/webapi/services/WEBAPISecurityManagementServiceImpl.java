@@ -318,6 +318,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String zipCode = request.getParameter(ApiConstants.PARAMETER_ZIP_CODE);
 		String state = request.getParameter(ApiConstants.PARAMETER_STATE);
 		String merchantData = request.getParameter(ApiConstants.PARAMETER_MERCHANT_DATA);
+		String denomCode = request.getParameter(ApiConstants.PARAMETER_DENOM_CODE);
+		String netPrice = request.getParameter(ApiConstants.PARAMETER_NET_PRICE);
 		String userAPIKey = request.getParameter(ApiConstants.PARAMETER_USER_API_KEY);
 		String sctlId = request.getParameter(ApiConstants.PARAMETER_SCTL_ID);
 		
@@ -451,6 +453,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setZipCode(zipCode);
 		rudContainer.setState(state);
 		rudContainer.setMerchantData(merchantData);
+		rudContainer.setDenomCode(denomCode);
+		rudContainer.setNetPrice(netPrice);
 		rudContainer.setUserAPIKey(userAPIKey);
 		rudContainer.setSctlId(sctlId);
 		log.info("initUserDataContainer: End");

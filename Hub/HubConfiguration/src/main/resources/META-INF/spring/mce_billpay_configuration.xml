@@ -67,8 +67,19 @@
 	<camelContext id="billpay" xmlns="http://camel.apache.org/schema/spring">
 		<route>
 			<from uri="jms:billPayQueue" />
-			<to uri="jms:hubBillPayQueue?disableReplyTo=true"/>
-	    </route>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'bayar'</simple>
+				<to uri="jms:bayarBillPayQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
+				<to uri="jms:zteBillPayQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'sgtwy'</simple>
+				<to uri="jms:smartGatewayQ?disableReplyTo=true"/>
+			</filter>
+		</route>
    </camelContext>
 
 	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">

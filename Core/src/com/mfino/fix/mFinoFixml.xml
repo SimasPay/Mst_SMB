@@ -4029,7 +4029,9 @@
 			<field name="Narration" required="N"/>			
 			<field name="PaymentMode" required="N"/>
 			<field name="BillData" required="N"/>
-			<field name="MerchantData" required="N"/>	
+			<field name="MerchantData" required="N"/>
+			<field name="DenominationCode" required="N"/>
+			<field name="NetPrice" required="N"/>	
 		</message>
 		<message name="BillPay" msgtype="1370" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
 			<field name="BillerCode" required="Y"/>
@@ -4644,6 +4646,7 @@
 	</message>    
 	<message name="BSIMBillPayInquiry" msgtype="1431" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPayInquiry">
 	    <field name="SourceBankAccountType" required="N" />
+	    <field name="DenominationCode" required="N" />
 	</message>
 	<message name="BSIMGetAmountToBiller" msgtype="1432" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentInquiryToBank">
 	    <field name="Charges" required="N"/>
@@ -25362,6 +25365,8 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8171" name="IsDaily" type="BOOLEAN" />
 	<field number="8172" name="IsMonthly" type="BOOLEAN" />
 	<field number="8173" name="MoreRecordsAvailable" type="BOOLEAN" />
+	<field number="8174" name="DenominationCode" type="STRING"/>
+	<field number="8175" name="NetPrice" type="Amount"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">

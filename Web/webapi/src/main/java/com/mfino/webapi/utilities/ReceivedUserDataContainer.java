@@ -136,6 +136,8 @@ public class ReceivedUserDataContainer {
 	private String zipCode;
 	private String state;
 	private String merchantData;
+	private String denomCode;
+	private String netPrice;
 	private String userAPIKey;
 	private String sctlId;
 	
@@ -1243,5 +1245,21 @@ public class ReceivedUserDataContainer {
 
 	public void setSctlId(String sctlId) {
 		this.sctlId = sctlId;
+	}
+
+	public String getDenomCode() {
+		return denomCode;
+	}
+
+	public void setDenomCode(String denomCode) {
+		this.denomCode = denomCode;
+	}
+
+	public String getNetPrice() {
+		return netPrice;
+	}
+
+	public void setNetPrice(String netPrice) {
+		this.netPrice = netPrice;
 	}
 }

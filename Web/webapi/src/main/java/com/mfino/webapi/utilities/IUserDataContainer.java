@@ -341,6 +341,8 @@ public interface IUserDataContainer {
 	public abstract String getZipCode();
 	public abstract String getState();
 	public abstract String getMerchantData();
+	public abstract String getDenomCode();
+	public abstract String getNetPrice();
 	public abstract String getUserAPIKey();
 	public abstract String getSctlId();
 }

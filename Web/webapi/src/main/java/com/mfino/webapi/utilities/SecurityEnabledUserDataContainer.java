@@ -837,6 +837,16 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 	public String getMerchantData() {
 		return this.container.getMerchantData();
 	}
+	
+	@Override
+	public String getDenomCode() {
+		return this.container.getDenomCode();
+	}
+	
+	@Override
+	public String getNetPrice() {
+		return this.container.getNetPrice();
+	}
 
 	@Override
 	public String getUserAPIKey() {
