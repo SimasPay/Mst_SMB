@@ -21,29 +21,23 @@ import com.mfino.util.UniqueNumberGen;
  * @author Vishal
  *
  */
-public class BayarBillPayCommunicator extends BayarHttpCommunicator {
+public class BayarTopupCommunicator extends BayarHttpCommunicator {
 
-	private String billdataMsg;
 	
 	@Override
 	public Object createBayarHttpRequest(MCEMessage mceMessage) {
-		log.info("BayarBillPayCommunicator :: createBayarHttpRequest mceMessage="+mceMessage);
+		log.info("BayarTopupCommunicator :: createBayarHttpRequest mceMessage="+mceMessage);
 		
 		List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 		
- 		CMBase requestFix = (CMBase)mceMessage.getRequest();
-		Long sctlId = requestFix.getServiceChargeTransactionLogID();		
-		
-		CMBillPay request = (CMBillPay) requestFix;
+		CMBillPay request = (CMBillPay)mceMessage.getRequest();
+		Long sctlId = request.getServiceChargeTransactionLogID();
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-		if( billPayments != null && billPayments.getBillData() != null)
-			billdataMsg = billPayments.getBillData();
-
-		billPayments.setNoOfRetries(0);
-		billPaymentsService.saveBillPayment(billPayments);
 		
-		requestParams.add(new BasicNameValuePair("payment_code", billdataMsg));
+		requestParams.add(new BasicNameValuePair("product_code", request.getBillerCode()));
+		requestParams.add(new BasicNameValuePair("bill_number", request.getDestMDN()));
+		requestParams.add(new BasicNameValuePair("voucher_denomination", billPayments.getAmount().toString()));
 		requestParams.add(new BasicNameValuePair("reference_id", request.getTransactionID().toString()));
 		
 		return requestParams;
@@ -55,24 +49,21 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		HashMap<String,Object> wsResponseElement = (HashMap<String,Object>)response;
 		BillPayResponse billPayResponse = new BillPayResponse();
 		
-		log.info("BayarBillPayCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
+		log.info("BayarTopupCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
 		
-		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
-		
-		if(wsResponseElement.get("status") != null && wsResponseElement.get("status").equals("0")){
-
+		if(wsResponseElement != null && wsResponseElement.get("status") != null && wsResponseElement.get("status").equals("0")){
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
+			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
 			billPayResponse.setInResponseCode(wsResponseElement.get("status").toString());
-			billPayResponse.setInTxnId(wsResponseElement.get("transaction_id").toString());
-			billPayResponse.setServiceChargeTransactionLogID(sctlId);
-
-			log.info("BayarBillPayCommunicator :: constructReplyMessage Status="+wsResponseElement.get("status"));
+			if(wsResponseElement.get("transaction_id") != null){
+				billPayResponse.setInTxnId(wsResponseElement.get("transaction_id").toString());
+			}
+			log.info("HubBillPayReversalCommunicator :: constructReplyMessage Status="+wsResponseElement.get("status"));
 		}else{	
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Failure);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
-
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
 		return billPayResponse;
@@ -80,7 +71,6 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 	
 	@Override
 	public String getMethodName(MCEMessage mceMessage) {
-		
-		return constantFieldsMap.get("billpay");
+		return constantFieldsMap.get("topup");
 	}
 }

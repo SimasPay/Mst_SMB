@@ -88,43 +88,36 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 		this.constantFieldsMap = map;
 	}
 
-	public abstract CXMLRPCMsg createHubWebServiceRequest(MCEMessage mceMessage);
+	public abstract Object createBayarHttpRequest(MCEMessage mceMessage);
 	
 	public abstract CFIXMsg constructReplyMessage(Object response, CFIXMsg requestFixMessage);
 	
 	public abstract String getMethodName(MCEMessage mceMessage);
 	
-	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage process(Exchange exchange)
 	{
 		MCEMessage mceMessage = exchange.getIn().getBody(MCEMessage.class);
-		log.info("HubWebServiceCommunicator :: process() BEGIN mceMessage="+mceMessage);
+		log.info("BayarHttpCommunicator :: process() BEGIN mceMessage="+mceMessage);
 		MCEMessage replyMessage = new MCEMessage();
 		Object responseFromWS = new Object();
-		CXMLRPCMsg hubWebServiceRequest = null;
-		String method = "Biller.TopUp";
+		Object httpRequestParams = null;
+		String method = constantFieldsMap.get("billpay");
 		
 		try
 		{
-			hubWebServiceRequest = createHubWebServiceRequest(mceMessage);
-			log.info("HubWebServiceCommunicator :: hubWebServiceRequest="+hubWebServiceRequest);
+			httpRequestParams = createBayarHttpRequest(mceMessage);
+			log.info("BayarHttpCommunicator :: httpRequestParams="+httpRequestParams);
 			method = getMethodName(mceMessage);
 	
-			if(hubWebServiceRequest != null)
+			if(httpRequestParams != null)
 			{
-				responseFromWS = httpClient.sendHttpRequest(url, hubWebServiceRequest, method);
-//				ProducerTemplate template = exchange.getContext().createProducerTemplate();
-//				template.start();
-//				Map<String,Object> headersMap = new HashMap<String,Object>();
-//				headersMap.put("operationName",WEBSERVICE_OPERATION_NAME);
-//				MCEUtil.setMandatoryHeaders(exchange.getIn().getHeaders(), headersMap);
-//				responseFromWS = (Object)template.requestBodyAndHeaders("cxf:bean:"+webServiceEndpointBean,hubWebServiceRequest,headersMap);								
-//				template.stop();
+				responseFromWS = httpClient.sendHttpRequest(method,(Object)httpRequestParams);
+
 			}			
 		}
 		catch(Exception e){
-			log.error("HubWebServiceCommunicator :: Exception e=",e);
+			log.error("BayarHttpCommunicator :: Exception e=",e);
 			responseFromWS = handleHttpCommunicationException(e);
 		}
 		CFIXMsg requestFixMessage = mceMessage.getRequest();
@@ -136,11 +129,11 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 		replyMessage.setDestinationQueues(mceMessage.getDestinationQueues());
 		
 		//Handling reversal response; Based on this status will be changed
-		if(method.equalsIgnoreCase("Biller.Reverse")){
+		/*if(method.equalsIgnoreCase("Biller.Reverse")){
 			replyMessage.setDestinationQueue(getReversalResponseQueue());
-		}
+		}*/
 		
-		log.info("HubWebServiceCommunicator :: process() END");
+		log.info("BayarHttpCommunicator :: process() END");
 		return replyMessage;
 	}
 	
@@ -152,30 +145,5 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 			wsResponseElement.put("status", MCEUtil.SERVICE_UNAVAILABLE) ;
 		return wsResponseElement;
 	}
-
-
-	
-	/**
-	 * returns a fixed length string containing 7 digits. If the length of the string is less that 7 digits, '0's are prefixed.
-	 * If its length exceeds 7 digits, last 7 digits are returned.
-	 * 
-	 * @param sctlID
-	 * @return
-	 */
-	public String normalize(Long sctlID)
-	{
-		Long id = sctlID;
-		id = id % 10000000 ;
-		String referenceNo = id.toString();
-		StringBuilder prefix =  new StringBuilder();
-		for(int i = 0; i < 7 - referenceNo.length() ; i++)
-		{
-			prefix = prefix.append("0");
-		}
-		referenceNo = prefix.toString() + referenceNo;
-		return referenceNo;
-	}
-
-	
 
 }

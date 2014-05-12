@@ -1,66 +1,43 @@
 package com.mfino.bayar.communicator;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
-import com.mfino.bayar.CBillDataMsg;
-import com.mfino.bayar.CXMLRPCMsg;
-import com.mfino.bayar.utils.GenerateSignature;
-import com.mfino.bayar.utils.StringUtilities;
 import com.mfino.billpayments.beans.BillPayResponse;
-import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.domain.BillPayments;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentInquiryFromBank;
-import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.MCEMessage;
-import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
 
 /**
- * @author Amar
+ * @author Vishal
  *
  */
 public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
-
-	public static final String BANK_NAME = "HubXMLRPC";
-	private CBillDataMsg billdataMsg = new CBillDataMsg();
 	
 	@Override
-	public CXMLRPCMsg createHubWebServiceRequest(MCEMessage mceMessage) {
-		log.info("HubBillPayInquiryCommunicator :: createHubWebServiceRequest mceMessage="+mceMessage);
+	public Object createBayarHttpRequest(MCEMessage mceMessage) {
+		log.info("BayarBillPayInquiryCommunicator :: createBayarHttpRequest mceMessage="+mceMessage);
 		
-		CXMLRPCMsg hubWebServiceRequest = new CXMLRPCMsg();
+		List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 		
  		CMBase requestFix = (CMBase)mceMessage.getRequest();
-		
 		CMBillPayInquiry request = (CMBillPayInquiry) requestFix;
 		billPaymentsService.createBillPayments(request);
-		Timestamp ts = request.getReceiveTime();
-		Long amount = 0L;
-		String trxnID = StringUtilities.getLastNChars(request.getTransactionID().toString(),6);
 		
-		hubWebServiceRequest.setRqtime(ts);
-		hubWebServiceRequest.setRqid(trxnID);
-		hubWebServiceRequest.setBillid(request.getInvoiceNumber());
-		hubWebServiceRequest.setProduct(request.getBillerCode());
-		hubWebServiceRequest.setAmount(request.getAmount().toString());
-		hubWebServiceRequest.setTerminal(request.getSourceMDN());
-		hubWebServiceRequest.setAgent(constantFieldsMap.get("agent"));
-		hubWebServiceRequest.setCaid(constantFieldsMap.get("caid"));
-	    
-	    String sign = GenerateSignature.getRequestSign(constantFieldsMap.get("caid"), constantFieldsMap.get("passcode"), trxnID, ts, request.getInvoiceNumber(), amount);
-	    log.info("HubBillPayInquiryCommunicator :: createHubWebServiceRequest Signature="+sign);
-	    hubWebServiceRequest.setSign(sign);
+		requestParams.add(new BasicNameValuePair("product_code", request.getBillerCode()));
+		requestParams.add(new BasicNameValuePair("bill_number", request.getInvoiceNumber()));
+		requestParams.add(new BasicNameValuePair("reference_id", request.getTransactionID().toString()));
 		
-		return hubWebServiceRequest;
+		return requestParams;
 	}
 
 	@Override
@@ -70,29 +47,24 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		BillPayResponse billPayResponse = new BillPayResponse();
 		BillPayments billPayments = null;
 		
-		log.info("HubBillPayInquiryCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
+		log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
 			
-		if(wsResponseElement != null && wsResponseElement.get("status") != null && wsResponseElement.get("status").equals("00")){
+		if(wsResponseElement != null && wsResponseElement.get("status") != null && wsResponseElement.get("status").equals("0")){
 			
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
-			log.info("HubBillPayInquiryCommunicator :: constructReplyMessage Status="+wsResponseElement.get("status"));
+			log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage Status="+wsResponseElement.get("status"));
 			
 			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
 			billPayResponse.setInResponseCode(wsResponseElement.get("status").toString());
-			billPayResponse.setAmount(BigDecimal.valueOf(Long.valueOf(wsResponseElement.get("amount").toString())));
-			if(StringUtils.isNotBlank(wsResponseElement.get("reffno").toString()))
-				billPayResponse.setOriginalReferenceID(Long.parseLong((String) wsResponseElement.get("reffno")));
-
-			if(wsResponseElement.get("billdata") != null)
-				billdataMsg.setXmlMsg((HashMap<String,Object>)wsResponseElement.get("billdata"));
 			
 			Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
 			billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-			log.info("HubBillPayInquiryCommunicator :: billdata ="+billdataMsg.toString());
-			billPayments.setBillData(billdataMsg.toString());
-			billPayments.setAmount(billPayResponse.getAmount());
-			((CMBillPayInquiry) requestFixMessage).setAmount(billPayResponse.getAmount());
+			
+			if(wsResponseElement.get("payment_code") != null)
+				billPayments.setBillData(wsResponseElement.get("payment_code").toString());
+			log.info("BayarBillPayInquiryCommunicator :: payment_code ="+wsResponseElement.get("payment_code"));
+			
 			billPaymentsService.saveBillPayment(billPayments);
 			
 		}else{
@@ -107,6 +79,6 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 	
 	@Override
 	public String getMethodName(MCEMessage mceMessage) {
-		return "Biller.BillInq";
+		return constantFieldsMap.get("billpay_inquiry");
 	}
 }

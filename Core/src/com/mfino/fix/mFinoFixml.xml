@@ -6593,6 +6593,7 @@
 			<field name="Info2" required="N"/>
 			<field name="Info3" required="N"/>
 			<field name="BillData" required="N"/>
+			<field name="NetPrice" required="N"/>
 		</record>
      	
 		<record name="ReportParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="report_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">

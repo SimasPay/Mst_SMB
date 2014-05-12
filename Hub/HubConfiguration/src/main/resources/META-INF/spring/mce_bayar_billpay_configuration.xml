@@ -49,10 +49,10 @@
 		<property name="transactionLogService" ref="transactionLogServiceCoreImpl"/>
 		<property name="constantFieldsMap">
 			<map>
-			    <!--modify these specific to hub xmlrpc constants  -->
-				<entry key="partner_id" value="smartfren" />
-				<entry key="api_key" value="1D02640903DF5E9126EDB9FC46C6FB70" />
-				<entry key="output" value="json" />
+			    <!--modify these specific to bayar.net constants  -->
+				<entry key="topup" value="buy_voucher" />
+				<entry key="billpay_inquiry" value="inquiry_bill" />
+				<entry key="billpay" value="pay_bill" />
 			</map>
 		</property>				
 		<property name="url" value="https://202.51.252.110/demo/h2h/" />
@@ -61,6 +61,14 @@
 	
 	<bean id="bayarHttpClient" class="com.mfino.bayar.service.BayarHttpConnector">
 		<property name="timeout" value="30000" />
+		<property name="constantFieldsMap">
+			<map>
+			    <!--modify these specific to bayar.net constants  -->
+				<entry key="partner_id" value="smartfren" />
+				<entry key="api_key" value="1D02640903DF5E9126EDB9FC46C6FB70" />
+				<entry key="output" value="json" />
+			</map>
+		</property>	
 	</bean>
 		
 	<bean id="bayarTopupCommunicator"

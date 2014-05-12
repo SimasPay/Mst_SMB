@@ -68,6 +68,15 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		else if (StringUtils.isNotBlank(billPayInquiry.getMerchantData())) {
 			billPayments.setInfo1(billPayInquiry.getMerchantData());
 		}
+		
+		// Data specific to Bayar.Net
+		if(billPayInquiry.getDenominationCode()!=null) {
+			billPayments.setInfo1(billPayInquiry.getDenominationCode());
+		}
+		if(billPayInquiry.getNetPrice()!=null) {
+			billPayments.setNetPrice(billPayInquiry.getNetPrice());
+		}
+		
 		billPayments.setInfo2(billPayInquiry.getNarration());
 		BillPaymentsDAO billPayDAO = DAOFactory.getInstance().getBillPaymentDAO();
 		billPayDAO.save(billPayments);
