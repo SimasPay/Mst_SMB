@@ -61,7 +61,7 @@
 	
 	<bean id="bayarHttpClient" class="com.mfino.bayar.service.BayarHttpConnector">
 		<property name="timeout" value="30000" />
-		<property name="constantFieldsMap">
+		<property name="params">
 			<map>
 			    <!--modify these specific to bayar.net constants  -->
 				<entry key="partner_id" value="smartfren" />
@@ -69,6 +69,7 @@
 				<entry key="output" value="json" />
 			</map>
 		</property>	
+		<property name="url" value="http://202.51.252.110/demo/h2h/" />	
 	</bean>
 		
 	<bean id="bayarTopupCommunicator"

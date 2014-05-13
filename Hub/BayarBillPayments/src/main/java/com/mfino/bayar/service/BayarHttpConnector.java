@@ -1,9 +1,29 @@
 package com.mfino.bayar.service;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.xmlrpc.XmlRpcException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,33 +37,78 @@ public class BayarHttpConnector {
 	private static final Logger log = LoggerFactory.getLogger(BayarHttpConnector.class);
 
 	private String timeout;
-	private Object result;
+	private String url;
+	private Map<String,String> params;
+	BayarWebServiceResponse bayarWSResponse = null;
 	
-	protected Map<String, String>	constantFieldsMap;
+	//public BayarWebServiceResponse sendHttpRequest(String method, List<NameValuePair> parameters) throws XmlRpcException, MalformedURLException, SocketTimeoutException {
+	public BayarWebServiceResponse sendHttpRequest(String method, Object parameters) throws XmlRpcException, MalformedURLException, SocketTimeoutException {
+				
+		log.info("Http client has got the request: "+parameters+" and the loginUrl is: " + url);
 
-	public void setConstantFieldsMap(Map<String, String> map) {
-		this.constantFieldsMap = map;
-	}
-
-	public Object sendHttpRequest(String method, Object params) throws MalformedURLException, SocketTimeoutException {
+		HttpClient httpclient = new DefaultHttpClient();
+		if(url.charAt(url.length() - 1) == '/')
+		{
+			url = url.substring(0, url.length() - 1);
+		}
+		url = url + "/" + method;
+		HttpPost httpPost = new HttpPost(url);
+		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+		
+		StringBuilder buffer = new StringBuilder();
+		String responseString = null;;
+				
+		Iterator<String> it = params.keySet().iterator();
+		while(it.hasNext())
+		{
+			String key = it.next();
+			qparams.add(new BasicNameValuePair(key, params.get(key)));
+		}
+		
+		for(NameValuePair parameter : (List<NameValuePair>)parameters)
+		{
+			qparams.add(parameter);
+		}
+		try {
+			httpPost.setEntity(new UrlEncodedFormEntity(qparams, HTTP.UTF_8));
+			httpclient.getParams().setIntParameter("http.connection.timeout", Integer.parseInt(timeout));
+			HttpResponse response = httpclient.execute(httpPost);
+			HttpEntity resEntity = response.getEntity();
 			
-
-			result = null;
-
-			constantFieldsMap.get("partner_id");
-			constantFieldsMap.get("api_key");
-			constantFieldsMap.get("output");
-			
-			
-			if (result == null)
-			{
-				log.info("The result is NULL ");
-				throw new SocketTimeoutException();
+			log.info("statusline>> " + response.getStatusLine());
+			if (resEntity != null) {
+				log.info("Response content length: "
+						+ resEntity.getContentLength());
+				buffer = new StringBuilder();
+				InputStreamReader reader = new InputStreamReader(response
+						.getEntity().getContent());
+				try {
+					char[] tmp = new char[1024];
+					int l;
+					while ((l = reader.read(tmp)) != -1) {
+						buffer.append(tmp, 0, l);
+					}
+				} finally {
+					reader.close();
+				}
 			}
-			else
-				log.info("The result is: ");
-
-		return result;
+			
+			responseString = buffer.toString();
+			log.info("responseString: " + responseString);
+			
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		bayarWSResponse = BayarWebServiceReponseParser.getBayarWebServiceResponse(responseString);
+		return bayarWSResponse;
 	}
 
 	public String getTimeout() {
@@ -52,6 +117,22 @@ public class BayarHttpConnector {
 
 	public void setTimeout(String timeout) {
 		this.timeout = timeout;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Map<String,String> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String,String> params) {
+		this.params = params;
 	}
 
 }
