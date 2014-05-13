@@ -219,7 +219,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			response.setDestPocketID(confirmResponse.getDestPocketID());
 			response.setPin(confirmResponse.getPin());
 		    response.setDestAccountName(iSummary.getReconcilationID2());
-			response.setSourceCardPAN(ibt.getSourceAccountNumber());
+			response.setSourceCardPAN(confirmResponse.getSourceCardPAN());
 			response.setDestCardPAN(ibt.getDestAccountNumber());
 			response.setLanguage(confirmResponse.getLanguage());
 			response.setTransferID(confirmResponse.getTransferID());

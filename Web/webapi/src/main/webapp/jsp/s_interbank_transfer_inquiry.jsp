@@ -10,9 +10,18 @@
 <center>
 <h1>Inter Bank Transfer Inquiry</h1>
 <form action="../sdynamic" method="POST">
-<input type="hidden" value="Bank" name="service" /> 
 <input type="hidden" value="InterBankTransferInquiry" name="txnName" />
 <table>
+	<tr>
+		<td>Service*</td>
+		<td>
+			<select name="service" id="service" > 
+				<option value="">Choose Service</option> 
+				<option value="Wallet">Wallet</option> 
+				<option value="Bank">Bank</option>
+			</select> 
+		</td>
+	</tr>
 	<tr>
 		<td>Institution ID*</td>
 		<td><input type="text" name="institutionID" value="" /><em>Required if the request is from an Integration</em></td>

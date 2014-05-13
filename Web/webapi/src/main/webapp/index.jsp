@@ -11,13 +11,13 @@
 	<a href="https_requests.jsp">HTTPS WebAPI</a>
 	</td>
 	</tr>
-	
+	<!--	
 	<tr>
 		<td>
 			<a href="http_requests.jsp">HTTP WebAPI</a>
 		</td>
 	</tr>
-	
+	-->
 	
 	</table></td>
 	

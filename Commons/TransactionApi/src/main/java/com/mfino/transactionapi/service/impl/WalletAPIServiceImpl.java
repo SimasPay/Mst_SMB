@@ -13,6 +13,8 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
 import com.mfino.service.SubscriberService;
+import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
+import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
@@ -119,6 +121,14 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Autowired
 	@Qualifier("TransactionRequestValidationServiceImpl")
 	private TransactionRequestValidationService transactionRequestValidationService;
+	
+	@Autowired
+	@Qualifier("InterBankTransferInquiryHandlerImpl")
+	private InterBankTransferInquiryHandler interBankTransferInquiryHandler;
+	
+	@Autowired
+	@Qualifier("InterBankTransferHandlerImpl")
+	private InterBankTransferHandler interBankTransferHandler;
 	
 	private static final String MAX_NO_OF_RECORDS = "15000";
 
@@ -255,7 +265,21 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			
 			transactionRequestValidationService.validateFundWithdrawalConfirmDetails(transactionDetails);
 			xmlResult = (XMLResult) fundWithdrawalConfirmHandler.handle(transactionDetails);
-		}	
+		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateInterBankTransferInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER;
+				transactionDetails.setSourceMessage(sourceMessage);
+			}
+			xmlResult = (XMLResult) interBankTransferInquiryHandler.handle(transactionDetails);
+		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateInterBankTransferConfirmDetails(transactionDetails);
+			xmlResult = (XMLResult) interBankTransferHandler.handle(transactionDetails);			
+		}		
 		else
 		{
 			xmlResult = new XMLResult();
