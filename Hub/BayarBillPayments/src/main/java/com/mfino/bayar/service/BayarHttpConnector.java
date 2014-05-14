@@ -47,8 +47,7 @@ public class BayarHttpConnector {
 		{
 			url = url.substring(0, url.length() - 1);
 		}
-		url = url + "/" + method;
-		HttpPost httpPost = new HttpPost(url);
+		HttpPost httpPost = new HttpPost(url + "/" + method);
 		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 		
 		StringBuilder buffer = new StringBuilder();
@@ -94,19 +93,16 @@ public class BayarHttpConnector {
 			log.info("responseString: " + responseString);
 			
 			
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			responseString = "{\"status\":998,\"message\":\"MFS Internal Error\"}";
+			log.error(e.getMessage(), e);
+			//e.printStackTrace();
 		}
+		
 		bayarWSResponse = BayarWebServiceReponseParser.getBayarWebServiceResponse(responseString);
 		return bayarWSResponse;
 	}
+	
 
 	public String getTimeout() {
 		return timeout;

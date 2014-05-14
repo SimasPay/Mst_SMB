@@ -20,39 +20,87 @@ public class BayarWebServiceReponseParser {
 		//JSONObject jsonResponse = null;
 		try {
 			JSONObject jsonResponse = new JSONObject(responseString);
-			response.setStatus(jsonResponse.getInt("status"));
-			response.setMessage(jsonResponse.getString("message"));
+			if(jsonResponse.has("status")){
+				response.setStatus(jsonResponse.getInt("status"));
+			}
+			if(jsonResponse.has("message")){
+				response.setMessage(jsonResponse.getString("message"));
+			}
 
-			JSONObject data = jsonResponse.getJSONObject("data");
+			if(jsonResponse.has("data"))
+			{
+				JSONObject data = jsonResponse.getJSONObject("data");
 
-			if(data != null){
+				if(data != null){
+					if(data.has("customer_data")){
 
-				JSONObject customerData = data.getJSONObject("customer_data");
-				if(customerData != null){
-					response.setBillNo(customerData.getString("bill_number"));
-					response.setBillName(customerData.getString("bill_name"));
+						JSONObject customerData = data.getJSONObject("customer_data");
+						if(customerData != null){
+							if(customerData.has("bill_number")){
+								response.setBillNo(customerData.getString("bill_number"));
+							}
+							if(customerData.has("bill_name")){
+								response.setBillName(customerData.getString("bill_name"));
+							}
+						}
+					}
+
+					if(data.has("bill_data")){
+
+						JSONObject billData = data.getJSONObject("bill_data");
+						if(billData != null){
+							if(billData.has("bill_reference")){
+								response.setBillReference(billData.getString("bill_reference"));
+							}
+							if(billData.has("total_amount")){
+								response.setTotalAmount(billData.getInt("total_amount"));
+							}
+							if(billData.has("fee")){
+								response.setFee(billData.getInt("fee"));
+							}
+							if(billData.has("late_fee")){
+								response.setLateFee(billData.getInt("late_fee"));
+							}
+							if(billData.has("grand_total")){
+								response.setGrandTotal(billData.getInt("grand_total"));	
+							}
+						}
+					}
+
+					if(data.has("reference_id")){
+						response.setReferenceId(data.getString("reference_id"));
+					}
+					if(data.has("payment_code")){
+						response.setPaymentCode(data.getString("payment_code"));
+					}
+					if(data.has("product_code")){
+						response.setProductCode(data.getString("product_code"));
+					}
+					if(data.has("message")){
+						response.setDataMesssage(data.getString("message"));
+					}
+					if(data.has("voucher_token")){
+						response.setVoucherToken(data.getString("voucher_token"));
+					}
+					if(data.has("voucher_number")){
+						response.setVoucherNo(data.getString("voucher_number"));
+					}
+					if(data.has("voucher_denomination")){
+						response.setVoucherDenomination(data.getInt("voucher_denomination"));
+					}
+					if(data.has("balance_deducted")){
+						response.setBalanceDeducted(data.getInt("balance_deducted"));	
+					}
+					if(data.has("current_balance")){
+						response.setCurrentBalance(data.getInt("current_balance"));	
+					}
+					if(data.has("remaining_credit_limit")){
+						response.setRemainingCreditLimit(data.getInt("remaining_credit_limit"));
+					}
+					if(data.has("transaction_id")){
+						response.setTransactionId(data.getInt("transaction_id"));	
+					}
 				}
-				
-				JSONObject billData = data.getJSONObject("bill_data");
-				if(billData != null){
-					response.setBillReference(billData.getString("bill_reference"));
-					response.setTotalAmount(billData.getInt("total_amount"));
-					response.setFee(billData.getInt("fee"));
-					response.setLateFee(billData.getInt("late_fee"));
-					response.setGrandTotal(billData.getInt("grand_total"));	
-				}
-
-				response.setReferenceId(data.getString("reference_id"));
-				response.setPaymentCode(data.getString("payment_code"));
-				response.setProductCode(data.getString("product_code"));
-				response.setDataMesssage(data.getString("message"));
-				response.setVoucherToken(data.getString("voucher_token"));
-				response.setVoucherNo(data.getString("voucher_number"));
-				response.setVoucherDenomination(data.getInt("voucher_denomination"));
-				response.setBalanceDeducted(data.getInt("balance_deducted"));	
-				response.setCurrentBalance(data.getInt("current_balance"));	
-				response.setRemainingCreditLimit(data.getInt("remaining_credit_limit"));	
-				response.setTransactionId(data.getInt("transaction_id"));	
 			}
 
 		} catch (JSONException e) {
