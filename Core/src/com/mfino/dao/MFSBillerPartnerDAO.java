@@ -76,5 +76,22 @@ public class MFSBillerPartnerDAO extends BaseDAO<MFSBillerPartner> {
     	
     	return lstPartner;
     }
+    
+    public MFSBillerPartner getByBillerCode(String billerCode) {
+		Criteria criteria = createCriteria();
+		
+		if(billerCode != null){
+			criteria.createAlias(CmFinoFIX.CRMFSBillerPartner.FieldName_MFSBiller, "mb1");
+			criteria.add(Restrictions.eq("mb1." + CmFinoFIX.CRMFSBiller.FieldName_MFSBillerCode, billerCode).ignoreCase());
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<MFSBillerPartner> lst = criteria.list();
+		
+		if (CollectionUtils.isNotEmpty(lst)) {
+			return lst.get(0);
+		}
+		return null;
+	}
 
 }

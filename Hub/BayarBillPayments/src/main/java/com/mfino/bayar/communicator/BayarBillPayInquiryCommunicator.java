@@ -1,5 +1,6 @@
 package com.mfino.bayar.communicator;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.mfino.bayar.service.BayarWebServiceResponse;
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.domain.BillPayments;
 import com.mfino.fix.CFIXMsg;
@@ -33,7 +35,7 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		CMBillPayInquiry request = (CMBillPayInquiry) requestFix;
 		billPaymentsService.createBillPayments(request);
 		
-		requestParams.add(new BasicNameValuePair("product_code", request.getBillerCode()));
+		requestParams.add(new BasicNameValuePair("product_code", request.getDenominationCode()));
 		requestParams.add(new BasicNameValuePair("bill_number", request.getInvoiceNumber()));
 		requestParams.add(new BasicNameValuePair("reference_id", request.getTransactionID().toString()));
 		
@@ -43,27 +45,30 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 	@Override
 	public CFIXMsg constructReplyMessage(Object response, CFIXMsg requestFixMessage) {
 		
-		HashMap<String,Object> wsResponseElement = (HashMap<String,Object>)response;
+		BayarWebServiceResponse wsResponseElement = (BayarWebServiceResponse)response;
 		BillPayResponse billPayResponse = new BillPayResponse();
 		BillPayments billPayments = null;
 		
 		log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
 			
-		if(wsResponseElement != null && wsResponseElement.get("status") != null && wsResponseElement.get("status").equals("0")){
+		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 			
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
-			log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage Status="+wsResponseElement.get("status"));
+			log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 			
 			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
-			billPayResponse.setInResponseCode(wsResponseElement.get("status").toString());
+			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
+			if(wsResponseElement.getGrandTotal() != null)
+				billPayResponse.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
 			
 			Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
 			billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 			
-			if(wsResponseElement.get("payment_code") != null)
-				billPayments.setBillData(wsResponseElement.get("payment_code").toString());
-			log.info("BayarBillPayInquiryCommunicator :: payment_code ="+wsResponseElement.get("payment_code"));
+			if(wsResponseElement.getPaymentCode() != null)
+				billPayments.setBillData(wsResponseElement.getPaymentCode().toString());
+			billPayments.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
+			log.info("BayarBillPayInquiryCommunicator :: payment_code ="+wsResponseElement.getPaymentCode());
 			
 			billPaymentsService.saveBillPayment(billPayments);
 			

@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,9 +20,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.apache.xmlrpc.XmlRpcException;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +38,7 @@ public class BayarHttpConnector {
 	BayarWebServiceResponse bayarWSResponse = null;
 	
 	//public BayarWebServiceResponse sendHttpRequest(String method, List<NameValuePair> parameters) throws XmlRpcException, MalformedURLException, SocketTimeoutException {
-	public BayarWebServiceResponse sendHttpRequest(String method, Object parameters) throws XmlRpcException, MalformedURLException, SocketTimeoutException {
+	public BayarWebServiceResponse sendHttpRequest(String method, Object parameters) throws MalformedURLException, SocketTimeoutException {
 				
 		log.info("Http client has got the request: "+parameters+" and the loginUrl is: " + url);
 
@@ -71,6 +67,7 @@ public class BayarHttpConnector {
 		}
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(qparams, HTTP.UTF_8));
+			log.info("URI : " + httpPost.getURI()  + " Entity : " + httpPost.getEntity() + " params : " + httpPost.getParams());
 			httpclient.getParams().setIntParameter("http.connection.timeout", Integer.parseInt(timeout));
 			HttpResponse response = httpclient.execute(httpPost);
 			HttpEntity resEntity = response.getEntity();

@@ -313,9 +313,31 @@
         <setHeader headerName="eventContext">
             <constant>BILLER_CONFIRMATION_PENDING</constant>
         </setHeader>
+		<filter>
+			<simple>${in.body.request.getPaymentMode} == 'HubFullAmount'</simple>
+			<multicast>
+	   			 <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
+	  			  <to uri="direct:bayarTopupCommunicatorQueue"/>
+			</multicast>
+       	</filter>
+       	<filter>
+			<simple>${in.body.request.getPaymentMode} != 'HubFullAmount'</simple>
+   			<multicast>
+       			 <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
+      			  <to uri="direct:bayarBillerCommunicatorQueue"/>
+   			</multicast>
+       	</filter>
+    </route>
+    <route>
+        <!--route for biller confirmation-->
+        <from uri="direct:bayarTopupCommunicatorQueue"/>
+        <to uri="bean:bayarTopupCommunicator?method=process"/>
+        <setHeader headerName="eventContext">
+            <constant>BILLER_CONFIRMATION_COMPLETED</constant>
+        </setHeader>
         <multicast>
             <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-            <to uri="direct:bayarBillerCommunicatorQueue"/>
+            <to uri="direct:billPayConfirmationResponseQueue"/>
         </multicast>
     </route>
     <route>

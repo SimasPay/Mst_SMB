@@ -130,9 +130,6 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		result.setSourceMessage(billInquiry);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		
-		//For Bayar.Net BillPayments
-		if(transDetails.getDenomCode()!=null)
-			billInquiry.setDenominationCode(transDetails.getDenomCode());
 
 		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(billInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);

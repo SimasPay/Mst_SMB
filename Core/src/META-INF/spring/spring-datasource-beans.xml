@@ -498,6 +498,7 @@
 	<osgi:service ref ="MDNRangeServiceImpl" interface="com.mfino.service.MDNRangeService"/>
 	<osgi:service ref ="MfinoUtilServiceImpl" interface= "com.mfino.service.MfinoUtilService" />
 	<osgi:service ref ="MFSBillerServiceImpl" interface="com.mfino.service.MFSBillerService"/>
+	<osgi:service ref ="MFSBillerPartnerMapServiceImpl" interface="com.mfino.service.MFSBillerPartnerMapService"/>
 	<osgi:service ref ="MFSDenominationsServiceImpl" interface="com.mfino.service.MFSDenominationsService"/>
 	<osgi:service ref ="MoneyClearanceGravedServiceImpl" interface="com.mfino.service.MoneyClearanceGravedService"/>
 	<osgi:service ref ="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>

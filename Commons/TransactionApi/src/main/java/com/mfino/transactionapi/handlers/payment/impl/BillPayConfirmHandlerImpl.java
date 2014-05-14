@@ -36,6 +36,7 @@ import com.mfino.service.BillPaymentsService;
 import com.mfino.service.BillerService;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.MFAService;
+import com.mfino.service.MFSBillerPartnerMapService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
@@ -68,6 +69,9 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
 	
+	@Autowired
+	@Qualifier("MFSBillerPartnerMapServiceImpl")
+	private MFSBillerPartnerMapService mfsBillerPartnerMapService;
 	
 	@Autowired
 	@Qualifier("BillerServiceImpl")
@@ -138,6 +142,12 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
 				return result;
 			}
+		}
+		
+		//For Integration Code
+		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPay.getBillerCode());
+		if (mfsBillerPartner != null){
+			billPay.setIntegrationCode(mfsBillerPartner.getIntegrationCode());
 		}
 
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillPay,billPay.DumpFields(),billPay.getParentTransactionID());

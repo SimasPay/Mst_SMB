@@ -46,6 +46,7 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.BillPaymentsService;
 import com.mfino.service.BillerService;
 import com.mfino.service.MFAService;
+import com.mfino.service.MFSBillerPartnerMapService;
 import com.mfino.service.MFSBillerService;
 import com.mfino.service.MFSDenominationsService;
 import com.mfino.service.PocketService;
@@ -82,6 +83,10 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 	@Autowired
 	@Qualifier("MFSBillerServiceImpl")
 	private MFSBillerService mfsBillerService;
+	
+	@Autowired
+	@Qualifier("MFSBillerPartnerMapServiceImpl")
+	private MFSBillerPartnerMapService mfsBillerPartnerMapService;
 	
 	@Autowired
 	@Qualifier("BillPaymentsServiceImpl")
@@ -169,6 +174,13 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidBillerCode);
 			return result;
 		}
+		
+		//For Integration Code
+		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPaymentInquiry.getBillerCode());
+		if (mfsBillerPartner != null){
+			billPaymentInquiry.setIntegrationCode(mfsBillerPartner.getIntegrationCode());
+		}
+		
 		Pocket subPocket = pocketService.getDefaultPocket(sourceMDN, srcpocketcode);
 		validationResult = transactionApiValidationService.validateSourcePocket(subPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {

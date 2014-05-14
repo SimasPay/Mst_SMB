@@ -54,6 +54,7 @@
 		<osgi:reference id="MDNRangeServiceImpl" interface="com.mfino.service.MDNRangeService"/>
 		<osgi:reference id="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService" />
 		<osgi:reference id="MFSBillerServiceImpl" interface="com.mfino.service.MFSBillerService" context-class-loader="service-provider"/>
+		<osgi:reference id="MFSBillerPartnerMapServiceImpl" interface="com.mfino.service.MFSBillerPartnerMapService" context-class-loader="service-provider"/>
 		<osgi:reference id="MFSDenominationsServiceImpl" interface="com.mfino.service.MFSDenominationsService"/>
 		<osgi:reference id="MoneyClearanceGravedServiceImpl" interface="com.mfino.service.MoneyClearanceGravedService"/>
 		<osgi:reference id="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>

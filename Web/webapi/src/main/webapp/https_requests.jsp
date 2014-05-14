@@ -493,6 +493,27 @@
 	<tr><td><table>
 	<tr>
 		<th>
+			Bayar.NET
+		</th>
+	</tr>
+
+	<tr>
+		<td>
+			<a href="jsp/s_bayarnet_product.jsp">Product List</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<td>
+			<a href="jsp/s_bayarnet_price.jsp">Price List</a>
+		</td>
+	</tr>
+
+	</table></td></tr>
+	
+	<tr><td><table>
+	<tr>
+		<th>
 			Settings
 		</th>
 	</tr>
