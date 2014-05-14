@@ -540,6 +540,7 @@
 	<osgi:service ref ="SubscriberFavoriteServiceImpl" interface="com.mfino.service.SubscriberFavoriteService"/>
     <osgi:service ref ="FavoriteCategoryServiceImpl" interface="com.mfino.service.FavoriteCategoryService"/>
     <osgi:service ref ="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
+    <osgi:service ref ="IBTServiceImpl" interface="com.mfino.service.IBTService"/>
     <osgi:service ref="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
     
 </beans>

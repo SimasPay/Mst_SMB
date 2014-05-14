@@ -28,6 +28,8 @@ import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.InterBankCode;
+import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
@@ -48,6 +50,7 @@ import com.mfino.result.Result;
 import com.mfino.service.BillPaymentsService;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.EnumTextService;
+import com.mfino.service.IBTService;
 import com.mfino.service.MailService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.NotificationService;
@@ -130,6 +133,9 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	@Qualifier("SCTLServiceImpl")
 	private SCTLService sctlService;
 
+	@Autowired
+	@Qualifier("IBTServiceImpl")
+	private IBTService ibtService;
 	
 	private static final int DEFAULT_PAGE_NO = 0;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(ConfigurationUtil.getPdfHistoryDateFormat());	
@@ -430,7 +436,14 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoiceNumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
-			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + ct.getDestCardPAN();
+			InterbankTransfer ibt = ibtService.getBySctlId(ct.getSctlId());
+			String acctNum = null;
+			String acctName = null;
+			if (ibt != null) {
+				acctName = ibt.getDestAccountName();
+				acctNum = ibt.getDestAccountNumber();
+			}
+			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + acctNum + " , " + acctName; 
 		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoiceNumber() : "");

@@ -6653,6 +6653,7 @@
 		<record name="InterbankTransfer" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="interbank_transfers" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="TerminalID" required="N"/>
 			<field name="DestBankCode" required="Y"/>
+			<field name="DestBankName" required="N"/>
 			<field name="SourceAccountName" required="N"/>
 			<field name="DestAccountName" required="N"/>
 			<field name="SourceAccountNumber" required="Y"/>
@@ -25092,6 +25093,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="7102" name="LedgerType" type="STRING"/>
 	<field number="7103" name="LedgerStatus" type="STRING"/>
 	<field number="7104" name="PinBlock" type="STRING"/>
+	<field number="7105" name="DestBankName" type="STRING"/>
 	<field number="8000" name="GenerationOfOTPOnFailure" type="RecordID"/>
 	<field number="8001" name="ExpiryID" type="RecordID" />
 	<field number="8002" name="FundAllocationId" type="RecordID"/>

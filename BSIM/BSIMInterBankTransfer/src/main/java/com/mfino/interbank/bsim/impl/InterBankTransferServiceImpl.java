@@ -79,7 +79,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		}
 		
 		Pocket sourcePocket = getPocketFromId(interBankFundsTransferInquiry.getSourcePocketID());
-		InterbankTransfer ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, sourcePocket);
+		InterbankTransfer ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, sourcePocket, interBankCode);
 		
 		interBankFundsTransferInquiry.setDestPocketID(destinationPocket.getID());
 		interBankFundsTransferInquiry.setMessageType(CmFinoFIX.MsgType_InterBankFundsTransferInquiry);
@@ -143,16 +143,26 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		CMInterBankTransferInquiryToBank interBankTransferInquiryToBank = (CMInterBankTransferInquiryToBank)mceMessage.getRequest();
 		CMInterBankTransferInquiryFromBank interbankTransferInquiryFromBank = (CMInterBankTransferInquiryFromBank)mceMessage.getResponse();
 		
-		//InterbankTransfer ibt = interbankService.getIBT(interBankTransferInquiryToBank.getServiceChargeTransactionLogID());
+		InterbankTransfer ibt = interbankService.getIBT(interBankTransferInquiryToBank.getServiceChargeTransactionLogID());
 		BackendResponse inquiryResponse;
 		try {
-		inquiryResponse = (BackendResponse) bankService.onTransferInquiryFromBank(interBankTransferInquiryToBank,interbankTransferInquiryFromBank);
+			inquiryResponse = (BackendResponse) bankService.onTransferInquiryFromBank(interBankTransferInquiryToBank,interbankTransferInquiryFromBank);
+			if (CmFinoFIX.ISO8583_ResponseCode_Success.equals(interbankTransferInquiryFromBank.getResponseCode())) {
+				// updating the destination account name in interbank transfer table
+				ibt.setDestAccountName(inquiryResponse.getDestinationUserName());
+				interbankService.updateIBT(ibt);
+			} 
+			else {
+				ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
+			}
 		} catch(Exception e){
 			log.error(e.getMessage());
 			inquiryResponse = new BackendResponse();
 			((BackendResponse) inquiryResponse).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) inquiryResponse).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
+			ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
 		}
+		interbankService.updateIBT(ibt);
 		 //processingCode = interbankTransferInquiryFromBank.getProcessingCode();
 		//sourceAccount = interbankTransferInquiryFromBank.getSourceAccountDE102();
 		//AdditionalInfo48 = interbankTransferInquiryFromBank.getAdditionalInfo();
@@ -160,7 +170,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		
 		//ibt.setAdditionalInfo(interbankTransferInquiryFromBank.getAdditionalInfo());
 		//interbankService.updateIBT(ibt);
-		InterbankTransfer ibt = interbankService.getIBT(interBankTransferInquiryToBank.getServiceChargeTransactionLogID());
+		
 		if(null != ibt){
 			InterBankCode interBankCode = interbankService.getBankCode(ibt.getDestBankCode());
 			if(null != interBankCode){
@@ -181,6 +191,9 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		
 		CMInterBankFundsTransfer interBankFundsTransfer = (CMInterBankFundsTransfer)mceMessage.getRequest();
 		InterbankTransfer ibt = interbankService.getIBT(interBankFundsTransfer.getServiceChargeTransactionLogID());
+		// update the IBT status to processing
+		ibt.setIBTStatus(CmFinoFIX.IBTStatus_PROCESSING);
+		interbankService.updateIBT(ibt);
 		
 		PendingCommodityTransfer pct = getPCT(interBankFundsTransfer.getTransferID());
 		IntegrationSummary iSummary = getIntegrationSummary(interBankFundsTransfer.getServiceChargeTransactionLogID(),pct.getID());
@@ -257,13 +270,22 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		CFIXMsg response;
 		try {
 		response = bankService.onTransferConfirmationFromBank(interBankFundsTransferToBank,interBankFundsTransferFromBank);
+		if (CmFinoFIX.ISO8583_ResponseCode_Success.equals(interBankFundsTransferFromBank.getResponseCode())) {
+			ibt.setIBTStatus(CmFinoFIX.IBTStatus_COMPLETED);
+		}
+		else {
+			ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
+		}
 		} catch(Exception e){
 			log.error(e.getMessage());
 			response = new BackendResponse();
 			((BackendResponse) response).copy(interBankFundsTransferToBank);
 			((BackendResponse) response).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) response).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
+			ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
 		}
+		//Updating the IBT status after processing the bank response code.
+		interbankService.updateIBT(ibt);
 		CFIXMsg request = (CMMoneyTransferFromBank)interBankFundsTransferFromBank;
 		
 		((BackendResponse)response).setDestinationType("Account");

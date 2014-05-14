@@ -41,8 +41,8 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 				processingCode = "37" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
 			isoMsg.set(3, processingCode);// TODO: need to check the processing code for interbank transfer
 
-			long amount = msg.getAmount().longValue()*(100);
-			isoMsg.set(4, StringUtilities.leftPadWithCharacter(amount + "", 18, "0")); // 4
+			long amount = msg.getAmount().longValue();
+			isoMsg.set(4, amount + ""); // 4
 			isoMsg.set(7, DateTimeFormatter.getMMDDHHMMSS(ts)); // 7
 			Long transactionID = msg.getTransactionID();
 			transactionID = transactionID % 1000000;

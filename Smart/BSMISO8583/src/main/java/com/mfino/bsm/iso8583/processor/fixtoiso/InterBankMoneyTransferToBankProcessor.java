@@ -55,8 +55,8 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 				}
 			}
 			isoMsg.set(3, processingCode);
-			Long amount = msg.getAmount().longValue()*(100);
-			isoMsg.set(4, amount.longValue() + "");
+			long amount = msg.getAmount().longValue();
+			isoMsg.set(4, amount + "");
 			isoMsg.set(7, DateTimeFormatter.getMMDDHHMMSS(ts)); // 7
 			Long transactionID = msg.getTransactionID();
 			transactionID = transactionID % 1000000;

@@ -66,7 +66,7 @@ public class JPOSCommunicator {
 
 		if (!fail) {
 
-			if (isoMsg.getMTI().equals("0200") && isoMsg.getString(3).substring(0, 2).equals("37")) {
+			if (isoMsg.getMTI().equals("0200") && isoMsg.getString(3).substring(0, 2).equals("00")) {
 				log.info("isoMsg with rrn=" + isoMsg.getString(37) + " going for simulation");
 				this.simulator.process(exchange);
 			}

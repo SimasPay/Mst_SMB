@@ -96,6 +96,8 @@
 		<osgi:reference id="SubscriberFavoriteServiceImpl" interface="com.mfino.service.SubscriberFavoriteService"/>
 		<osgi:reference id="FavoriteCategoryServiceImpl" interface="com.mfino.service.FavoriteCategoryService"/>
 		<osgi:reference id="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
+		<osgi:reference id="IBTServiceImpl" interface="com.mfino.service.IBTService"/>
+		
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.impl"/>
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.interswitch.impl"/>
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.wallet.impl"/>
