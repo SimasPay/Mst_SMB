@@ -40,7 +40,8 @@ public class BayernetHttpClientTest {
 			parameters.add(new BasicNameValuePair("bill_number", "6576587"));
 			parameters.add(new BasicNameValuePair("reference_id", ""));
 			mfinoHttpConnector.setParams(new HashMap<String,String>());
-			response = mfinoHttpConnector.sendHttpsRequest(method, parameters);
+			//String urlParams = "partner_id=smartfren&api_key=1D02640903DF5E9126EDB9FC46C6FB70&product_code=TAG031&bill_number=6576587";
+			response = mfinoHttpConnector.sendHttpsRequest(method, parameters);	
 			
 //			parameters = new ArrayList <NameValuePair>();
 //			parameters.add(new BasicNameValuePair("partner_id", "smartfren"));
@@ -50,12 +51,12 @@ public class BayernetHttpClientTest {
 //			response = mfinoHttpConnector.sendHttpRequest("pay_bill", parameters);
 			
 			
-		} catch (SocketTimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//		} catch (SocketTimeoutException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 		} 
 		catch (Exception e) {
 			// TODO Auto-generated catch block

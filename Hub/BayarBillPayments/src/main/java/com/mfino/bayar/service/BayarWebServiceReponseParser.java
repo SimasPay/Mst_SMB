@@ -14,7 +14,7 @@ public class BayarWebServiceReponseParser {
 	private static Log log = LogFactory.getLog(BayarWebServiceReponseParser.class);
 
 	public static BayarWebServiceResponse getBayarWebServiceResponse(String responseString){
-		log.info("BayarWebServiceReponseParser getBayarWebServiceResponse xml="+responseString);
+		log.info("BayarWebServiceReponseParser getBayarWebServiceResponse responseString="+responseString);
 		BayarWebServiceResponse response = new BayarWebServiceResponse();
 
 		//JSONObject jsonResponse = null;
