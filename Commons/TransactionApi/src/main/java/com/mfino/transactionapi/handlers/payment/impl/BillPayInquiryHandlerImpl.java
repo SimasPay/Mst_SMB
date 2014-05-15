@@ -141,8 +141,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		//For Bayar.Net BillPayments
 		if(transactionDetails.getDenomCode()!=null)
 			billPaymentInquiry.setDenominationCode(transactionDetails.getDenomCode());
-		if(transactionDetails.getNetPrice()!=null)
-			billPaymentInquiry.setNetPrice(transactionDetails.getNetPrice());
+		if(transactionDetails.getNominalAmount()!=null)
+			billPaymentInquiry.setNominalAmount(transactionDetails.getNominalAmount());
 		
 		srcpocketcode=transactionDetails.getSourcePocketCode();
         billPaymentInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -351,6 +351,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
+		result.setNominalAmount(billPaymentInquiry.getNominalAmount());
 
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){

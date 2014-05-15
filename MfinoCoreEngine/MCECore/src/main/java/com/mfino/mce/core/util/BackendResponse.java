@@ -64,6 +64,7 @@ public class BackendResponse extends CMBase {
 	private String DestinationUserName;
 	private String rechargePin;
 	private String userAPIKey;
+	private BigDecimal nominalAmount;
 
 	@Override
 	public boolean checkRequiredFields() {
@@ -530,5 +531,13 @@ public class BackendResponse extends CMBase {
 
 	public void setUserAPIKey(String userAPIKey) {
 		this.userAPIKey = userAPIKey;
+	}
+
+	public BigDecimal getNominalAmount() {
+		return nominalAmount;
+	}
+
+	public void setNominalAmount(BigDecimal nominalAmount) {
+		this.nominalAmount = nominalAmount;
 	}
 }

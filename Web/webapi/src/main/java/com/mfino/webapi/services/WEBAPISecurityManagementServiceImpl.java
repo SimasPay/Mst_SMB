@@ -319,7 +319,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String state = request.getParameter(ApiConstants.PARAMETER_STATE);
 		String merchantData = request.getParameter(ApiConstants.PARAMETER_MERCHANT_DATA);
 		String denomCode = request.getParameter(ApiConstants.PARAMETER_DENOM_CODE);
-		String netPrice = request.getParameter(ApiConstants.PARAMETER_NET_PRICE);
+		String nominalAmount = request.getParameter(ApiConstants.PARAMETER_NOMINAL_AMOUNT);
 		String userAPIKey = request.getParameter(ApiConstants.PARAMETER_USER_API_KEY);
 		String sctlId = request.getParameter(ApiConstants.PARAMETER_SCTL_ID);
 		
@@ -454,7 +454,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setState(state);
 		rudContainer.setMerchantData(merchantData);
 		rudContainer.setDenomCode(denomCode);
-		rudContainer.setNetPrice(netPrice);
+		rudContainer.setNominalAmount(nominalAmount);
 		rudContainer.setUserAPIKey(userAPIKey);
 		rudContainer.setSctlId(sctlId);
 		log.info("initUserDataContainer: End");

@@ -302,10 +302,26 @@
         <!--route for biller inquiry-->
         <from uri="direct:bayarBillerInquiryCommunicatorQueue"/>
         <to uri="bean:bayarBillPayInquiryCommunicator?method=process"/>
-        <multicast>
-            <to uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse"/>
-            <to uri="jms:postCommunicationBillerQueue?disableReplyTo=true"/>
-        </multicast>
+		<filter>
+			<simple>${body.response.result} == '0'</simple>
+			<setHeader headerName="eventContext">
+				<constant>BILLER_INQUIRY_COMPLETED</constant>
+			</setHeader>
+			<multicast>
+				<to	uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse" />
+				<to uri="jms:postCommunicationBillerQueue?disableReplyTo=true" />
+			</multicast>
+		</filter>
+		<filter>	
+			<simple>${body.response.result} != '0'</simple>
+			<setHeader headerName="eventContext">
+				<constant>SRC_SUSPENSE_INQ_FAILED</constant>
+			</setHeader>
+			<multicast>
+				<to	uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse" />
+				<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true" />
+			</multicast>
+		</filter> 
     </route>
     <route>
         <!--route for biller confirmation-->

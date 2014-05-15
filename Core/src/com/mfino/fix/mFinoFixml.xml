@@ -381,6 +381,7 @@
 			<field name="AdditionalInfo" required="N"/>
 			<field name="DestinationUserName" required="N"/>
 			<field name="Amount" required="N"/>
+			<field name="NominalAmount" required="N"/>
 		</message>
 		<message name="ForwardNotificationRequest" msgtype="1092" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="DestMDN" required="Y" />
@@ -651,6 +652,7 @@
 			<field name="AdditionalInfo" required="N"/>
 			<field name="DestinationUserName" required="N"/>
 			<field name="Amount" required="N"/>
+			<field name="NominalAmount" required="N"/>
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="ErrorName" required="Y" />
 				<field name="ErrorDescription" required="Y" />        
@@ -4031,7 +4033,7 @@
 			<field name="BillData" required="N"/>
 			<field name="MerchantData" required="N"/>
 			<field name="DenominationCode" required="N"/>
-			<field name="NetPrice" required="N"/>	
+			<field name="NominalAmount" required="N"/>	
 		</message>
 		<message name="BillPay" msgtype="1370" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
 			<field name="BillerCode" required="Y"/>
@@ -6593,7 +6595,7 @@
 			<field name="Info2" required="N"/>
 			<field name="Info3" required="N"/>
 			<field name="BillData" required="N"/>
-			<field name="NetPrice" required="N"/>
+			<field name="NominalAmount" required="N"/>
 		</record>
      	
 		<record name="ReportParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="report_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -25369,7 +25371,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8172" name="IsMonthly" type="BOOLEAN" />
 	<field number="8173" name="MoreRecordsAvailable" type="BOOLEAN" />
 	<field number="8174" name="DenominationCode" type="STRING"/>
-	<field number="8175" name="NetPrice" type="Amount"/>
+	<field number="8175" name="NominalAmount" type="Amount"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">

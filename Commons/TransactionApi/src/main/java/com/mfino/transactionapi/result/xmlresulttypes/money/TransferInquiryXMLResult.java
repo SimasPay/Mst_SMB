@@ -123,6 +123,12 @@ public class TransferInquiryXMLResult extends XMLResult {
 				 getXmlWriter().writeCharacters(getMfaMode(),false);
 				 getXmlWriter().writeEndElement();
 			}
+			
+			if (getNominalAmount() != null) {
+				getXmlWriter().writeStartElement(XMLResultConstants.NOMINAL_AMOUNT);
+				getXmlWriter().writeCharacters(numberFormat.format(getNominalAmount()),true);
+				getXmlWriter().writeEndElement();
+			}
 
 		}
 		else

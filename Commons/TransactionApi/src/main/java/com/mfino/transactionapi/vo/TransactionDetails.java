@@ -158,7 +158,7 @@ public class TransactionDetails {
 	private String userAPIKey;
 	private String merchantData;
 	private String denomCode;
-	private BigDecimal netPrice;
+	private BigDecimal nominalAmount;
 	
 	public String getTransactionTypeName() {
 		return transactionTypeName;
@@ -1040,10 +1040,10 @@ public class TransactionDetails {
 	public void setDenomCode(String denomCode) {
 		this.denomCode = denomCode;
 	}
-	public BigDecimal getNetPrice() {
-		return netPrice;
+	public BigDecimal getNominalAmount() {
+		return nominalAmount;
 	}
-	public void setNetPrice(BigDecimal netPrice) {
-		this.netPrice = netPrice;
+	public void setNominalAmount(BigDecimal nominalAmount) {
+		this.nominalAmount = nominalAmount;
 	}
 }

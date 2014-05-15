@@ -474,6 +474,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			response.setBankName(backendResponse.getBankName());
 			response.setDestinationUserName(backendResponse.getDestinationUserName());
 			response.setAdditionalInfo(backendResponse.getAdditionalInfo());
+			response.setNominalAmount(backendResponse.getNominalAmount());
 			response.setPaymentInquiryDetails(backendResponse.getPaymentInquiryDetails());
 			if(backendResponse.getAmount() != null)
 				response.setAmount(backendResponse.getAmount());

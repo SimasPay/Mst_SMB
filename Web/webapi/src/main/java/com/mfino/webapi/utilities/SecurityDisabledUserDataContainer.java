@@ -871,8 +871,8 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 	}
 	
 	@Override
-	public String getNetPrice() {
-		return this.container.getNetPrice();
+	public String getNominalAmount() {
+		return this.container.getNominalAmount();
 	}
 
 	@Override

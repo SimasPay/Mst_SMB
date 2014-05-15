@@ -51,8 +51,8 @@
 		<td><input type="text" name="denomCode" value="" /></td>
 	</tr>
 	<tr>
-		<td>Net Price</td>
-		<td><input type="text" name="netPrice" value="" /></td>
+		<td>Nominal Amount</td>
+		<td><input type="text" name="nominalAmount" value="" /></td>
 	</tr>
 	<tr>
 		<td>channelId</td>

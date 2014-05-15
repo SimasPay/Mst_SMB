@@ -66,4 +66,6 @@ public class XMLResultConstants
 	
 	public static final String RECEIVER_ACCOUNT_NAME = "ReceiverAccountName";
 	
+	public static final String NOMINAL_AMOUNT = "nominalamt";
+	
 }

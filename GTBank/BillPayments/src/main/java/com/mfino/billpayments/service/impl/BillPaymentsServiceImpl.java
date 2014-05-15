@@ -73,8 +73,8 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		if(billPayInquiry.getDenominationCode()!=null) {
 			billPayments.setInfo1(billPayInquiry.getDenominationCode());
 		}
-		if(billPayInquiry.getNetPrice()!=null) {
-			billPayments.setNetPrice(billPayInquiry.getNetPrice());
+		if(billPayInquiry.getNominalAmount()!=null) {
+			billPayments.setNominalAmount(billPayInquiry.getNominalAmount());
 		}
 		
 		billPayments.setInfo2(billPayInquiry.getNarration());

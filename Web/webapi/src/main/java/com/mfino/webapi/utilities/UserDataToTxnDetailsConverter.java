@@ -215,8 +215,8 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setState(userDataContainer.getState());
 		txnDetails.setMerchantData(userDataContainer.getMerchantData());
 		txnDetails.setDenomCode(userDataContainer.getDenomCode());
-		if(StringUtils.isNotBlank(userDataContainer.getNetPrice())){
-			txnDetails.setNetPrice(getAmount(userDataContainer.getNetPrice()));
+		if(StringUtils.isNotBlank(userDataContainer.getNominalAmount())){
+			txnDetails.setNominalAmount(getAmount(userDataContainer.getNominalAmount()));
 		}
 		txnDetails.setUserAPIKey(userDataContainer.getUserAPIKey());
 		if(StringUtils.isNotBlank(userDataContainer.getSctlId())){

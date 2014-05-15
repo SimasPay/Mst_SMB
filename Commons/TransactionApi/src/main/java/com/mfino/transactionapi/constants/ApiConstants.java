@@ -323,7 +323,7 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_DENOM_CODE = "denomCode";
 	
-	public static final String PARAMETER_NET_PRICE = "netPrice";
+	public static final String PARAMETER_NOMINAL_AMOUNT = "nominalAmount";
 	
 	public static final String PARAMETER_USER_API_KEY = "userAPIKey";
 	

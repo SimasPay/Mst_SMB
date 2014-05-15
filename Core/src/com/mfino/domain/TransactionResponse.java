@@ -23,6 +23,7 @@ public class TransactionResponse {
 	private String AdditionalInfo;
 	private String DestinationUserName;
 	private BigDecimal amount;
+	private BigDecimal nominalAmount;
 	
 	public BigDecimal getAmount() {
 		return amount;
@@ -97,5 +98,11 @@ public class TransactionResponse {
 	}
 	public void setDestinationUserName(String DestinationUserName) {
 		this.DestinationUserName = DestinationUserName;
+	}
+	public BigDecimal getNominalAmount() {
+		return nominalAmount;
+	}
+	public void setNominalAmount(BigDecimal nominalAmount) {
+		this.nominalAmount = nominalAmount;
 	}
 }

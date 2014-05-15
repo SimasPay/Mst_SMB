@@ -151,6 +151,9 @@ public class MultixCommunicationHandler implements IFixProcessor {
 			if (response.getAmount() != null) {
 				transactionResponse.setAmount(response.getAmount());
 			}
+			if (response.getNominalAmount() != null) {
+				transactionResponse.setNominalAmount(response.getNominalAmount());
+			}
 			log.info("Core Engine Response status = " + status);
 			if(response.getCode() != null)
 			{

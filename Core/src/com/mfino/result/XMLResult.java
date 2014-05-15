@@ -130,6 +130,7 @@ public class XMLResult extends Result {
 	
 	private String publicKeyModulus;
 	private String idNumber;
+	private BigDecimal nominalAmount;
 	
 	public String getPublicKeyExponent() {
 		return publicKeyExponent;
@@ -941,6 +942,14 @@ public class XMLResult extends Result {
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
+	}
+
+	public BigDecimal getNominalAmount() {
+		return nominalAmount;
+	}
+
+	public void setNominalAmount(BigDecimal nominalAmount) {
+		this.nominalAmount = nominalAmount;
 	}
 
 }

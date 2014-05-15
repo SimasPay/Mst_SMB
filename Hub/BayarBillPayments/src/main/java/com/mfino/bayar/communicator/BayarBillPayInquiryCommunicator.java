@@ -59,15 +59,17 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 			
 			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
-			if(wsResponseElement.getGrandTotal() != null)
-				billPayResponse.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
-			
+						
 			Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
 			billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 			
 			if(wsResponseElement.getPaymentCode() != null)
 				billPayments.setBillData(wsResponseElement.getPaymentCode().toString());
-			billPayments.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
+			if(wsResponseElement.getGrandTotal() != null){
+				billPayResponse.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
+				billPayments.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
+				((CMBillPayInquiry) requestFixMessage).setAmount(billPayResponse.getAmount());
+			}
 			log.info("BayarBillPayInquiryCommunicator :: payment_code ="+wsResponseElement.getPaymentCode());
 			
 			billPaymentsService.saveBillPayment(billPayments);
