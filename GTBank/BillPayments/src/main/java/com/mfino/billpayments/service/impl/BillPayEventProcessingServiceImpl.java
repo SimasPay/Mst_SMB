@@ -145,7 +145,10 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			response.setTransferID(response.getTransferID());
 			response.setParentTransactionID(response.getParentTransactionID());
 			response.setServiceChargeTransactionLogID(sctl.getID());
-			response.setNominalAmount(billPaymentsRecord.getNominalAmount());
+			if(billPaymentsRecord.getNominalAmount()!=null)
+				response.setNominalAmount(billPaymentsRecord.getNominalAmount());
+			if(billPaymentsRecord.getInfo3()!=null)
+				response.setAdditionalInfo(billPaymentsRecord.getInfo3());
 		}
 
 		return mceMessage;

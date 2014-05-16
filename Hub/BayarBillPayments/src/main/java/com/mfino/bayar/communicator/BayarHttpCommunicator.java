@@ -111,7 +111,7 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 	
 			if(httpRequestParams != null)
 			{
-				responseFromWS = httpClient.sendHttpRequest(method,(Object)httpRequestParams);
+				responseFromWS = httpClient.sendHttpsRequest(method,(Object)httpRequestParams);
 
 			}			
 		}

@@ -11,7 +11,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.mfino.bayar.service.BayarHttpConnector;
 import com.mfino.bayar.service.BayarWebServiceResponse;
-import com.mfino.bayar.service.SecondaryBayarHttpConnector;
 
 
 /**

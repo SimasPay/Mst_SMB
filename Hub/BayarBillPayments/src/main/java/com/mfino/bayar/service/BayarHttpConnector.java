@@ -17,6 +17,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.httpclient.HttpsURL;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -181,6 +182,7 @@ public class BayarHttpConnector {
 
 		URL url = new URL(this.url + "/"+ method);
 		HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+		//HttpsURLConnection con = new HttpsURLConnection(new HttpsURL(this.url + "/"+ method));
 		con.setRequestMethod("POST");
 		con.setReadTimeout(Integer.parseInt(timeout));
 		con.setDoOutput(true);
