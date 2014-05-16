@@ -1,31 +1,49 @@
 {
-  "totalCount": 1,
+  "totalCount": 7,
   "version": 1.0,
   "success": true,
   "postpaidData": [
     {
-      "name": "Telkomsel - Halo",
-      "code": "PSPHONE001"
+				"name": "PLN Pascabayar",
+				"code": "TAG",
+				"denomCode":"TAG001",
+			    "paymentMode": "HubZeroAmount"
     },
     {
-      "name": "XL - Xplore",
-      "code": "PSPHONE002"
+				"name": "Telkom",
+				"code": "TAG",
+				"denomCode":"TAG002",
+			    "paymentMode": "HubZeroAmount"
     },
     {
-      "name": "Indosat - Matrix",
-      "code": "PSPHONE003"
+			    "name": "Telkomsel Postpaid (Halo)",
+			    "code": "TAG",
+			    "denomCode":"TAG006",
+			    "paymentMode": "HubZeroAmount"
     }, 
     {
-      "name": "Telkom",
-      "code": "PSPHONE004"
+				"name": "Indosat Postpaid (Matrix)",
+				"code": "TAG",
+				"denomCode":"TAG007",
+			    "paymentMode": "HubZeroAmount"
     }, 
     {
-      "name": "Smartfren",
-      "code": "PSPHONE005"
+				"name": "XL Postpaid (XPLOR)",
+				"code": "TAG",
+				"denomCode":"TAG008",
+			    "paymentMode": "HubZeroAmount"
     },
     {
-      "name": "Esia",
-      "code": "PSPHONE006"
-    }          
+				"name": "Esia Postpaid",
+				"code": "TAG",
+				"denomCode":"TAG009",
+			    "paymentMode": "HubZeroAmount"
+    },
+    {
+				"name": "Smartfren Postpaid",
+				"code": "ztepost",
+				"denomCode":"",
+			    "paymentMode": "HubZeroAmount"
+    }        
   ]
 }

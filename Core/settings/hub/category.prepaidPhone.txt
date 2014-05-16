@@ -1,57 +1,87 @@
 {
-  "totalCount": 1,
+  "totalCount": 10,
   "version": 1.0,
   "success": true,
   "prepaidData": [
     {
-      "name": "Telkomsel - AS",
-      "code": "PRPHONE001",
-      "Denom": "5,000 10,000 20,000 25,000 50,000 100,000"
+              "name": "KARTU AS",
+			  "code": "PAS",
+			  "denom": "20,000 25,000 50,000 100,000",
+			  "denomCode": "PAS020 PAS025 PAS050 PAS100",
+			  "amount": "20600 25800 49600 97500",
+			  "paymentMode": "HubFullAmount"
     },
 	{
-      "name": "Telkomsel - Simpati",
-      "code": "PRPHONE002",
-      "Denom": "5,000 10,000 20,000 25,000 50,000 100,000"
+			  "name": "AXIS",
+			  "code": "PAX",
+			  "denom": "20,000 25,000 50,000 100,000",
+			  "denomCode": "PAX020 PAX025 PAX050 PAX100",
+			  "amount": "20300 25200 49400 100500",
+			  "paymentMode": "HubFullAmount"
     },
 	{
-      "name": "XL - Xplor",
-      "code": "PRPHONE003",
-      "Denom": "5,000 10,000 25,000 50,000 100,000 200,000"
+			  "name": "Esia",
+			  "code": "PES",
+			  "denom": "20,000 25,000 50,000 100,000",
+			  "denomCode": "PES020 PES025 PES050 PES100",
+			  "amount": "19900 2460048800 97400",
+			  "paymentMode": "HubFullAmount"
     }, 
-             	{
-      "name": "Indosat - Mentari",
-      "code": "PRPHONE004",
-      "Denom": "5,000 10,000 12,000 25,000 50,000 100,000"
-    }, 
-	{
-      "name": "Indosat - IM3",
-      "code": "PRPHONE005",
-      "Denom": "5,000 10,000 12,000 25,000 50,000 100,000"
-    }, 
-        	{
-      "name": "Smartfren",
-      "code": "PRPHONE006",
-      "Denom": "50000 100000 150000"
+    {
+				"name": "Flexi",
+				"code": "PFL",
+				"denom": "20,000 25,000 50,000 100,000 150,000 250,000",
+				"denomCode": "PFL020 PFL025 PFL050 PFL100 PFL150 PFL250",
+				"amount": "19600 24350 48500 97000 145200 242000",
+				"paymentMode": "HubFullAmount"
     }, 
 	{
-      "name": "Esia",
-      "code": "PRPHONE007",
-      "Denom": "1,000 5,000 10,000 11,000 15,000 20,000 25,000 50,000 100,000"
+				"name": "IM3",
+				"code": "PIM",
+				"denom": "25,000 50,000 100,000",
+				"denomCode": "PIM025 PIM050 PIM100",
+				"amount": "24800 49300 98000",
+			    "paymentMode": "HubFullAmount"
     }, 
-        	{
-      "name": "Axis",
-      "code": "PRPHONE008",
-      "Denom": "1,000 5,000 10,000 20,000 25,000 50,000 100,000"
+    {
+				"name": "MENTARI",
+				"code": "PMT",
+				"denom": "25,000 50,000 100,000",
+				"denomCode": "PMT025 PMT050 PMT100",
+				"amount": "24800 49300 98000",
+			    "paymentMode": "HubFullAmount"
     }, 
 	{
-      "name": "Three",
-      "code": "PRPHONE009",
-      "Denom": "1,000 5,000 10,000 20,000 30,000 50,000 100,000"
+				"name": "SIMPATI",
+				"code": "PSI",
+				"denom": "20,000 25,000 50,000 100,000",
+				"denomCode": "PSI020 PSI025 PSI050 PSI100",
+				"amount": "20600 25800 49600 97500",
+			    "paymentMode": "HubFullAmount"
     }, 
-        	{
-      "name": "Telkom Flexi",
-      "code": "PRPHONE010",
-      "Denom": "5,000 10,000 20,000 25,000 50,000 100,000 150,000 250,000"
+    {
+				"name": "THREE",
+				"code": "PTR",
+				"denom": "20,000 30,000 50,000 100,000",
+				"denomCode": "PTR020 PTR030 PTR050 PTR100",
+				"amount": "19950 29800 49500 99000",
+			    "paymentMode": "HubFullAmount"
+    }, 
+	{
+				"name": "XL",
+				"code": "PXL",
+				"denom": "25,000 50,000 100,000 200,000",
+				"denomCode": "PXL025 PXL050 PXL100 PXL200",
+				"amount": "25100 49800 99300 198200",
+			    "paymentMode": "HubFullAmount"
+    }, 
+    {
+				"name": "Smartfren",
+				"code": "ztetopup",
+				"denom": "20,000 30,000 50,000 100,000",
+				"denomCode": "",
+				"amount": "",
+			    "paymentMode": "HubFullAmount"
     }
   ]
 }

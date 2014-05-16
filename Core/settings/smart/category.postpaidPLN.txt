@@ -4,8 +4,10 @@
   "success": true,
   "postpaidData": [
     {
-      "name": "Matrix",
-      "code": "PSPLN001"
+				"name": "PLN Pascabayar",
+				"code": "TAG",
+				"denomCode":"TAG001",
+			    "paymentMode": "HubZeroAmount"
     }  
   ]
 }
