@@ -497,7 +497,7 @@ public enum NotificationCodes {
 	BankResponseCardExpired(11054,745,true),
 	BankResponseTransactionNotPermitted(11057,746,true),
 	BillDetails(12021,2021,false),
-	GetBillDetailsFailed(12021,2021,false),
+	GetBillDetailsFailed(12022,2022,false),
 	SenderBankPocketIsRestricted(10747, 747, false),
 	BillpaymentConfirmationSuccessfulToDest(102027,2027,true),
 	FundAllocationConfirmationPrompt(10758,758,false),

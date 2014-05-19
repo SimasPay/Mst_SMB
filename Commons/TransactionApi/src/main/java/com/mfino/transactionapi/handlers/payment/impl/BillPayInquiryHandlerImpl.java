@@ -5,6 +5,7 @@
 
 package com.mfino.transactionapi.handlers.payment.impl;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
@@ -39,6 +39,7 @@ import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
+import com.mfino.fix.CmFinoFIX.CMBillInquiry;
 import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
@@ -54,7 +55,6 @@ import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -119,7 +119,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 	private static Logger log = LoggerFactory.getLogger(BillPayInquiryHandlerImpl.class);
 	
 	public Result handle(TransactionDetails transactionDetails){
-		
+		CFIXMsg response = null;
+		TransactionResponse transactionResponse = null;
 		String srcpocketcode;
 		CMBillPayInquiry billPaymentInquiry= new CMBillPayInquiry();
 		ChannelCode cc = transactionDetails.getCc();
@@ -137,6 +138,12 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billPaymentInquiry.setBenOpCode(transactionDetails.getBenOpCode());
 		billPaymentInquiry.setNarration(transactionDetails.getNarration());
 		billPaymentInquiry.setParentTransactionID(0L);
+		if (ServiceAndTransactionConstants.MESSAGE_BILL_PAY.equals(transactionDetails.getSourceMessage())) {
+			billPaymentInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment);
+		} 
+		else {
+			billPaymentInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment_Topup);
+		}
 		
 		//For Bayar.Net BillPayments
 		if(transactionDetails.getDenomCode()!=null)
@@ -233,7 +240,19 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				}
 			}
 		}
-		
+		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && 
+				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()))) {
+			billPaymentInquiry.setNarration("online");
+			// Getting the Bill amount for the given online transaction.
+			if ("ZTE".equalsIgnoreCase(billPaymentInquiry.getIntegrationCode())) {
+				response = doBillInquiry(billPaymentInquiry); 
+				transactionResponse = checkBackEndResponse(response);
+				
+				if(transactionResponse != null && transactionResponse.isResult()) {
+					billPaymentInquiry.setAmount(transactionResponse.getAmount());
+				}
+			}
+		}		
 		// add service charge to amount
 
 		ServiceCharge serviceCharge=new ServiceCharge();
@@ -242,7 +261,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		serviceCharge.setServiceName(transactionDetails.getServiceName());//change to service
 		serviceCharge.setTransactionTypeName(transactionDetails.getTransactionTypeName());
 		serviceCharge.setSourceMDN(sourceMDN.getMDN());
-		serviceCharge.setTransactionAmount(billPaymentInquiry.getAmount());
+		serviceCharge.setTransactionAmount(billPaymentInquiry.getAmount()!=null ? billPaymentInquiry.getAmount() : BigDecimal.ZERO);
 		serviceCharge.setMfsBillerCode(billPaymentInquiry.getBillerCode());
 		serviceCharge.setTransactionLogId(billPaymentInquiry.getTransactionID());
 		serviceCharge.setInvoiceNo(billPaymentInquiry.getInvoiceNumber());
@@ -316,30 +335,32 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billPaymentInquiry.setDestPocketID(agentPocket.getID());
 		billPaymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
 		
-		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && (CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode())))
-		{
-			billPaymentInquiry.setNarration("online");
-		}
-		CFIXMsg response = super.process(billPaymentInquiry);
-
-		// Saves the Transaction Id returned from Back End		
-		TransactionResponse transactionResponse = checkBackEndResponse(response);
-		if (transactionResponse.getTransactionId()!=null) {
-			
-			sctl.setTransactionID(transactionResponse.getTransactionId());
-			sctl.setCommodityTransferID(transactionResponse.getTransferId());
-			sctl.setTransactionAmount(transactionResponse.getAmount());
-			billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
-			result.setTransactionID(transactionResponse.getTransactionId());
-			transactionChargingService.saveServiceTransactionLog(sctl);
-		}
-		if (!transactionResponse.isResult() && sctl!=null){
-			
+		if(transactionResponse != null && !transactionResponse.isResult()){
 			String errorMsg = transactionResponse.getMessage();
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
+		else {
+			response = super.process(billPaymentInquiry);
 
-		transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
+			// Saves the Transaction Id returned from Back End		
+			transactionResponse = checkBackEndResponse(response);
+			if (transactionResponse.getTransactionId()!=null) {
+				
+				sctl.setTransactionID(transactionResponse.getTransactionId());
+				sctl.setCommodityTransferID(transactionResponse.getTransferId());
+				sctl.setTransactionAmount(transactionResponse.getAmount());
+				billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
+				result.setTransactionID(transactionResponse.getTransactionId());
+				transactionChargingService.saveServiceTransactionLog(sctl);
+			}
+			if (!transactionResponse.isResult() && sctl!=null){
+				
+				String errorMsg = transactionResponse.getMessage();
+				transactionChargingService.failTheTransaction(sctl, errorMsg);	
+			}
+
+			transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
+		}
 		
 		result.setSctlID(sctl.getID());
 		result.setMultixResponse(response);
@@ -363,4 +384,22 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		return result;
 	}
 
+	private CFIXMsg doBillInquiry(CMBillPayInquiry billPayInquiry) {
+		log.info("BillpayInquiryHandler:: doBillInquiry :: Begin");
+		CMBillInquiry billInquiry = new CMBillInquiry();
+		billInquiry.setSourceMDN(billPayInquiry.getSourceMDN());
+		billInquiry.setSourceApplication(billPayInquiry.getSourceApplication());
+		billInquiry.setChannelCode(billPayInquiry.getChannelCode());
+		billInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
+		billInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Inquiry);
+		billInquiry.setInvoiceNumber(billPayInquiry.getInvoiceNumber());
+		billInquiry.setBillerCode(billPayInquiry.getBillerCode());
+		billInquiry.setTransactionIdentifier(billPayInquiry.getTransactionIdentifier());
+		billInquiry.setTransactionID(billPayInquiry.getTransactionID());
+		billInquiry.setIntegrationCode(billPayInquiry.getIntegrationCode());
+		
+		CFIXMsg response = super.process(billInquiry);
+		log.info("BillpayInquiryHandler:: doBillInquiry :: End");
+		return response;
+	}
 }

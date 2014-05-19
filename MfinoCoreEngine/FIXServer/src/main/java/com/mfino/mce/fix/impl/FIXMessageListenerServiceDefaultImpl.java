@@ -191,7 +191,7 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 		if(fixMesg instanceof CmFinoFIX.CMQRPaymentInquiry || fixMesg instanceof CmFinoFIX.CMQRPayment){
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_FLASHIZ_QR_PAYMENT, mceMessage, header);
 		}
-		else if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest){
+		else if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest || fixMesg instanceof CMBillInquiry){
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_BILL_PAY, mceMessage, header);
 		}
 		else if(fixMesg instanceof CmFinoFIX.CMSMSNotification )

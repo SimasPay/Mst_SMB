@@ -52,8 +52,11 @@ public class AccountInquiryFromZTEProcessor implements ZTEISOtoFixProcessor {
 		if(StringUtils.isNotBlank(billPaymentDate))
 		fromOperator.setLastBillPaymentDateYYYYMMDD(Long.parseLong(billPaymentDate.trim()));
 		
-		if(StringUtils.isNotBlank(totalBillDebts))
-		fromOperator.setTotalBillDebts(new BigDecimal(totalBillDebts.trim()));
+		if(StringUtils.isNotBlank(totalBillDebts)) {
+			fromOperator.setTotalBillDebts(new BigDecimal(totalBillDebts.trim()));
+		} else {
+			fromOperator.setTotalBillDebts(BigDecimal.ZERO);
+		}
 		
 		fromOperator.setPayerName(subName);
 

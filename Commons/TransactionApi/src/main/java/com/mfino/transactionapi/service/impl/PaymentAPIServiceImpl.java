@@ -104,9 +104,10 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 						|| CmFinoFIX.PaymentMode_PackageType.equalsIgnoreCase(transactionDetails.getPaymentMode()))){
 					xmlResult = (XMLResult) bsimBillInquiryHandler.handle(transactionDetails);
 					return xmlResult;
-				}else{
-					transactionDetails.setOnBehalfOfMDN(transactionDetails.getBillNum());//changes done as per ticket NUM 3396					
 				}
+//				else{
+//					transactionDetails.setOnBehalfOfMDN(transactionDetails.getBillNum());//changes done as per ticket NUM 3396					
+//				}
 			}
 			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
 		}
