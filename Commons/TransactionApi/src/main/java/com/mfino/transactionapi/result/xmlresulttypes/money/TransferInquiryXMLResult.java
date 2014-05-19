@@ -129,7 +129,18 @@ public class TransferInquiryXMLResult extends XMLResult {
 				getXmlWriter().writeCharacters(numberFormat.format(getNominalAmount()),true);
 				getXmlWriter().writeEndElement();
 			}
-
+			
+			if (getBillDate() != null) {
+				getXmlWriter().writeStartElement("billDate");
+				getXmlWriter().writeCharacters(getBillDate(),false);
+				getXmlWriter().writeEndElement();
+			}
+			
+			if (getInvoiceNo() != null) {
+				getXmlWriter().writeStartElement("invoiceNo");
+				getXmlWriter().writeCharacters(getInvoiceNo(),false);
+				getXmlWriter().writeEndElement();
+			}
 		}
 		else
 		{

@@ -131,7 +131,25 @@ public class XMLResult extends Result {
 	private String publicKeyModulus;
 	private String idNumber;
 	private BigDecimal nominalAmount;
+	private String billDate;
+	private String invoiceNo;
 	
+	public String getBillDate() {
+		return billDate;
+	}
+
+	public void setBillDate(String billDate) {
+		this.billDate = billDate;
+	}
+
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
+
 	public String getPublicKeyExponent() {
 		return publicKeyExponent;
 	}

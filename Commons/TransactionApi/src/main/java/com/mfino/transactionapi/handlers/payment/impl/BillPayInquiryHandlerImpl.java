@@ -7,7 +7,10 @@ package com.mfino.transactionapi.handlers.payment.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -121,6 +124,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 	public Result handle(TransactionDetails transactionDetails){
 		CFIXMsg response = null;
 		TransactionResponse transactionResponse = null;
+		String paymentRequestDetails = null;
 		String srcpocketcode;
 		CMBillPayInquiry billPaymentInquiry= new CMBillPayInquiry();
 		ChannelCode cc = transactionDetails.getCc();
@@ -250,6 +254,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				
 				if(transactionResponse != null && transactionResponse.isResult()) {
 					billPaymentInquiry.setAmount(transactionResponse.getAmount());
+					paymentRequestDetails = transactionResponse.getPaymentInquiryDetails();
 				}
 			}
 		}		
@@ -361,7 +366,12 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 
 			transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
 		}
-		
+		if (StringUtils.isNotBlank(paymentRequestDetails) && paymentRequestDetails.length()>=183) {
+			
+			result.setBillDate(formatBillDate(paymentRequestDetails.substring(151, 159), "yyyyMMdd"));
+			result.setDestinationName(paymentRequestDetails.substring(109, 139));
+		}
+		result.setInvoiceNo(billPaymentInquiry.getInvoiceNumber());
 		result.setSctlID(sctl.getID());
 		result.setMultixResponse(response);
 		result.setDebitAmount(sctl.getTransactionAmount());
@@ -401,5 +411,19 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		CFIXMsg response = super.process(billInquiry);
 		log.info("BillpayInquiryHandler:: doBillInquiry :: End");
 		return response;
+	}
+	
+	private String formatBillDate(String billDate, String inputDateFormat) {
+		String result = billDate;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(inputDateFormat);
+			sdf.setLenient(false);
+			Date day  = sdf.parse(billDate);
+			SimpleDateFormat newsdf = new SimpleDateFormat("MMMM yyyy");
+			result = newsdf.format(day);
+		} catch (ParseException e) {
+			log.error("Error while decrypting the Bill Date: "+ billDate);
+		}
+		return result;
 	}
 }
