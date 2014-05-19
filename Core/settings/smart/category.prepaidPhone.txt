@@ -6,81 +6,81 @@
     {
               "name": "KARTU AS",
 			  "code": "PAS",
-			  "denom": "20,000 25,000 50,000 100,000",
 			  "denomCode": "PAS020 PAS025 PAS050 PAS100",
-			  "amount": "20600 25800 49600 97500",
+			  "amount": "20600 25800 49600 97500",			  
+			  "nominalAmount": "20,000 25,000 50,000 100,000",
 			  "paymentMode": "HubFullAmount"
     },
 	{
 			  "name": "AXIS",
 			  "code": "PAX",
-			  "denom": "20,000 25,000 50,000 100,000",
 			  "denomCode": "PAX020 PAX025 PAX050 PAX100",
-			  "amount": "20300 25200 49400 100500",
+			  "amount": "20300 25200 49400 100500",			  
+			  "nominalAmount": "20,000 25,000 50,000 100,000",
 			  "paymentMode": "HubFullAmount"
     },
 	{
 			  "name": "Esia",
 			  "code": "PES",
-			  "denom": "20,000 25,000 50,000 100,000",
 			  "denomCode": "PES020 PES025 PES050 PES100",
-			  "amount": "19900 2460048800 97400",
+			  "amount": "19900 24600 48800 97400",			  
+			  "nominalAmount": "20,000 25,000 50,000 100,000",
 			  "paymentMode": "HubFullAmount"
     }, 
     {
 				"name": "Flexi",
 				"code": "PFL",
-				"denom": "20,000 25,000 50,000 100,000 150,000 250,000",
 				"denomCode": "PFL020 PFL025 PFL050 PFL100 PFL150 PFL250",
 				"amount": "19600 24350 48500 97000 145200 242000",
+				"nominalAmount": "20,000 25,000 50,000 100,000 150,000 250,000",
 				"paymentMode": "HubFullAmount"
     }, 
 	{
 				"name": "IM3",
 				"code": "PIM",
-				"denom": "25,000 50,000 100,000",
 				"denomCode": "PIM025 PIM050 PIM100",
 				"amount": "24800 49300 98000",
+				"nominalAmount": "25,000 50,000 100,000",
 			    "paymentMode": "HubFullAmount"
     }, 
     {
 				"name": "MENTARI",
 				"code": "PMT",
-				"denom": "25,000 50,000 100,000",
 				"denomCode": "PMT025 PMT050 PMT100",
 				"amount": "24800 49300 98000",
+				"nominalAmount": "25,000 50,000 100,000",
 			    "paymentMode": "HubFullAmount"
     }, 
 	{
 				"name": "SIMPATI",
 				"code": "PSI",
-				"denom": "20,000 25,000 50,000 100,000",
 				"denomCode": "PSI020 PSI025 PSI050 PSI100",
 				"amount": "20600 25800 49600 97500",
+				"nominalAmount": "20,000 25,000 50,000 100,000",
 			    "paymentMode": "HubFullAmount"
     }, 
     {
 				"name": "THREE",
 				"code": "PTR",
-				"denom": "20,000 30,000 50,000 100,000",
 				"denomCode": "PTR020 PTR030 PTR050 PTR100",
 				"amount": "19950 29800 49500 99000",
+				"nominalAmount": "20,000 30,000 50,000 100,000",
 			    "paymentMode": "HubFullAmount"
     }, 
 	{
 				"name": "XL",
 				"code": "PXL",
-				"denom": "25,000 50,000 100,000 200,000",
 				"denomCode": "PXL025 PXL050 PXL100 PXL200",
 				"amount": "25100 49800 99300 198200",
+				"nominalAmount": "25,000 50,000 100,000 200,000",
 			    "paymentMode": "HubFullAmount"
     }, 
     {
 				"name": "Smartfren",
 				"code": "ztetopup",
-				"denom": "20,000 30,000 50,000 100,000",
 				"denomCode": "",
 				"amount": "",
+				"nominalAmount": "20,000 30,000 50,000 100,000",
 			    "paymentMode": "HubFullAmount"
     }
   ]

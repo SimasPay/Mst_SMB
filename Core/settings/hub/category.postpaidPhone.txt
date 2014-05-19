@@ -1,14 +1,8 @@
 {
-  "totalCount": 7,
+  "totalCount": 6,
   "version": 1.0,
   "success": true,
   "postpaidData": [
-    {
-				"name": "PLN Pascabayar",
-				"code": "TAG",
-				"denomCode":"TAG001",
-			    "paymentMode": "HubZeroAmount"
-    },
     {
 				"name": "Telkom",
 				"code": "TAG",
