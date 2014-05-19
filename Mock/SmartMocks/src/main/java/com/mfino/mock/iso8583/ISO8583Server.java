@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -205,7 +206,12 @@ public class ISO8583Server implements Runnable {
 					//  Transfer_Inquiry
 					else if ("370000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if ((rand.nextInt() % 2) == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
@@ -243,7 +249,12 @@ public class ISO8583Server implements Runnable {
 				//  Transfer_CashOut_Inquiry
 					else if ("372000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if ((rand.nextInt() % 2) == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						} else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
@@ -257,7 +268,12 @@ public class ISO8583Server implements Runnable {
 					// D. Transfer to other SMART
 					else if ("490000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if (rand.nextInt() % 2 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						} else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
@@ -283,7 +299,12 @@ public class ISO8583Server implements Runnable {
 					// Transfer_CashIn
 					else if ("490020".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if (rand.nextInt() % 2 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						} else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
@@ -297,7 +318,12 @@ public class ISO8583Server implements Runnable {
 					// Transfer_CashOut
 					else if ("492000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if ((rand.nextInt() % 2) == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						} else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
@@ -436,10 +462,10 @@ public class ISO8583Server implements Runnable {
 					System.out.println("Failed to parse the config file");
 					return;
 				}
-				System.out.println("Setting up server socket...");
+				System.out.println("Setting up server socket... on port 7778");
 				ServerSocket server;
 				try {
-					server = new ServerSocket(7777);
+					server = new ServerSocket(7778);
 				} catch (IOException e) {
 					System.out.println("Failed to set up server socket");
 					return;

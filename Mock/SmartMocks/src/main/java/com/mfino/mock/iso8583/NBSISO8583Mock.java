@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -131,7 +132,13 @@ public class NBSISO8583Mock implements Runnable {
 						String amount = (String) incoming.getObjectValue(4);
 						String rrn = (String)incoming.getObjectValue(37);
 					    String element62 = mdn+ amount + "20071223" + rrn;
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+					    Random rand = new Random();
+					    if (rand.nextInt() % 2 == 0) {
+					    	response.setValue(39, "00", IsoType.ALPHA, 2);
+					    }
+					    else {
+					    	response.setValue(39, "06", IsoType.ALPHA, 2);
+					    }
 						response.setValue(62, element62, IsoType.LLLVAR, 999);
 //						
 						// Negative Response 
@@ -246,7 +253,13 @@ public class NBSISO8583Mock implements Runnable {
 						String amount = (String) incoming.getObjectValue(4);
 						// Now this element61 is the MDN we need to use. :)					
 						String element62 = element61 + "130424877812 " +  amount;
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if (rand.nextInt() % 2 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}
+						else { 
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(62, element62, IsoType.LLLVAR, 999);
 						
 					//	String element62Error = element61 + amount;
@@ -316,7 +329,7 @@ public class NBSISO8583Mock implements Runnable {
 						String lastbill = "111222333   ";
 						String billdate = "20100803";
 						String billref = (String) incoming.getObjectValue(37);
-						String cummamt = "000004012301";
+						String cummamt = "000000002301";
 						String expdate = "20100831";
 						String bal = "540000      ";
 						String usgamt = "000005000000";
@@ -325,8 +338,14 @@ public class NBSISO8583Mock implements Runnable {
 						String prevsta = "01";
 						String changedate = "20100819";
 						String floflag = "1";
-						String element62Successful = mdn + mdn1 + imsi + esn + subtype + cos + mktg + substatus + name + lastbill + billdate + billref + cummamt + expdate + bal + usgamt + credit + lastbal + prevsta +changedate +floflag; 
-    					response.setValue(39, "00", IsoType.ALPHA, 2);
+						String element62Successful = mdn + mdn1 + imsi + esn + subtype + cos + mktg + substatus + name + lastbill + billdate + billref + cummamt + expdate + bal + usgamt + credit + lastbal + prevsta +changedate +floflag;
+						Random rand = new Random();
+						if (rand.nextInt() % 2 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "07", IsoType.ALPHA, 2);
+						}
 						response.setValue(62, element62Successful, IsoType.LLLVAR, 999);
 						
 						// Error Cases.
@@ -374,7 +393,12 @@ public class NBSISO8583Mock implements Runnable {
 						String mdn = (String) incoming.getObjectValue(61);
 						String amount = (String) incoming.getObjectValue(4);
 						String element62 = mdn+ amount + "20071223" + "A1331212111211";
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if (rand.nextInt() % 2 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						} else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(62, element62, IsoType.LLLVAR, 999);
 //						
 						// Negative Response 
@@ -489,7 +513,12 @@ public class NBSISO8583Mock implements Runnable {
 						String amount = (String) incoming.getObjectValue(4);
 						// Now this element61 is the MDN we need to use. :)					
 						String element62 = element61 + "130424877812 " +  amount;
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random rand = new Random();
+						if (rand.nextInt() % 2 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						} else {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
 						response.setValue(62, element62, IsoType.LLLVAR, 999);
 		//Error scenarios				
 //						String element62Error = element61 + amount;
@@ -550,7 +579,7 @@ public class NBSISO8583Mock implements Runnable {
 					break;
 				}
 
-				log.info("Sending response ISO message:\n" + response.toDebugString());
+				System.out.println("Sending response ISO message:\n" + response.toDebugString());
 				response.write(sock.getOutputStream(), 4, false);
 			} catch (ParseException ex) {
 				log.error("Error parsing incoming message", ex);
@@ -582,15 +611,15 @@ public class NBSISO8583Mock implements Runnable {
 					log.error("Failed to parse the config file", e);
 					return;
 				}
-				log.info("Setting up server socket...");
+				System.out.println("Setting up server socket... 6668");
 				ServerSocket server;
 				try {
-					server = new ServerSocket(9998);
+					server = new ServerSocket(6668);
 				} catch (IOException e) {
 					log.error("Failed to set up server socket", e);
 					return;
 				}
-				log.info("Waiting for connections...");
+				System.out.println("Waiting for connections...");
 				
 				while (true) {
 					Socket sock;
@@ -600,7 +629,7 @@ public class NBSISO8583Mock implements Runnable {
 						log.error("Failed to accept socket connection", e);
 						break;
 					}
-					log.info(String.format("New connection from %s:%s", 
+					System.out.println(String.format("New connection from %s:%s", 
 							sock.getInetAddress(), 
 							sock.getPort()));
 					
