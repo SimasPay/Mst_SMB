@@ -1,6 +1,8 @@
 
-
+Delete FROM permission_item where Permission = '13504';
 INSERT INTO `permission_item` (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy,Permission,ItemType,ItemID,FieldID,Action) VALUES('1', NOW(), 'system', NOW(), 'system', 13504,1,'chargeTransaction.resendAccessCode','default','default');
+
+Delete FROM role_permission where Permission = '13504' and Role = '1';
 
 INSERT INTO `role_permission` (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, Role, Permission) VALUES('1', NOW(), 'system', NOW(), 'system', '1','13504');
 

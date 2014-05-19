@@ -27,7 +27,8 @@ CREATE TABLE `ip_mapping` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
-
+delete from permission_item where Permission in (19101, 19102, 19103, 19104, 19105);
+delete from role_permission where Permission in (19101, 19102, 19103, 19104, 19105);
 INSERT INTO `permission_item` (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy,Permission,ItemType,ItemID,FieldID,Action) VALUES('1', NOW(), 'system', NOW(), 'system', 19101,1,'integrations','default','default');
 
 INSERT INTO `role_permission` (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, Role, Permission) VALUES('1', NOW(), 'system', NOW(), 'system', '1','19101');
