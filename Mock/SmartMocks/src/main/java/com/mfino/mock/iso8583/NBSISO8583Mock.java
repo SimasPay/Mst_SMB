@@ -344,7 +344,8 @@ public class NBSISO8583Mock implements Runnable {
 							response.setValue(39, "00", IsoType.ALPHA, 2);
 						}
 						else {
-							response.setValue(39, "07", IsoType.ALPHA, 2);
+							response.setValue(39, "05", IsoType.ALPHA, 2);
+							element62Successful = mdn;
 						}
 						response.setValue(62, element62Successful, IsoType.LLLVAR, 999);
 						
