@@ -328,13 +328,14 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			validationService.validateOTPValidationDetails(transactionDetails);
 			xmlResult = (XMLResult) validateOTPHandler.handle(transactionDetails);
 		}else if (ApiConstants.TRANSACTION_REGISTRATION_WITH_ACTIVATION_HUB.equalsIgnoreCase(transactionName)) {
-			if (checkIfActiveSubscribersReachedLimit()) {
-				xmlResult = new XMLError();
-				xmlResult.setLanguage(CmFinoFIX.Language_English);
-				xmlResult.setTransactionTime(new Timestamp());
-				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_ActiveSubscribersReachedMaxLimit);
-				return xmlResult;
-			}
+// Commented as there is no such requirement for HUB (Bala Sunku)			
+//			if (checkIfActiveSubscribersReachedLimit()) {
+//				xmlResult = new XMLError();
+//				xmlResult.setLanguage(CmFinoFIX.Language_English);
+//				xmlResult.setTransactionTime(new Timestamp());
+//				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_ActiveSubscribersReachedMaxLimit);
+//				return xmlResult;
+//			}
 			validationService.validateSubscriberRegistrationWithActivationForHub(transactionDetails);
 			xmlResult = (XMLResult) subRegistrationWithActivationHandler.handle(transactionDetails);
 		}		
