@@ -307,6 +307,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 	 * To be called after preprocess only
 	 * @return
 	 */
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public CFIXMsg communicate(TransactionDataContainerImpl cashinDataConatiner,ChannelCode channel) {
 		if(cashinDataConatiner==null || channel==null){
 			log.error("Input data is null.cashinDataConatiner:"+cashinDataConatiner+"channel:"+channel);
