@@ -653,9 +653,9 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 		var bankTemplate = this.find('itemId','sub.form.bankPocketTemplate')[0];
 		if(isVisible) {
 			accNo.show();
-			accNo.enable();
+			//accNo.enable();
 			bankTemplate.show();
-			bankTemplate.enable();
+			//bankTemplate.enable();
 			accNo.getEl().up('.x-form-item').setDisplayed(true);
 			bankTemplate.getEl().up('.x-form-item').setDisplayed(true);
 		} else {
