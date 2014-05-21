@@ -49,6 +49,10 @@ public class BayarWebServiceResponse {
 	
 	private String dataMesssage;
 	
+	private String billInfo;
+	
+	private Integer totalBill;
+	
 	
 	public String getBillReference() {
 		return billReference;
@@ -208,6 +212,22 @@ public class BayarWebServiceResponse {
 
 	public void setVoucherDenomination(Integer voucherDenomination) {
 		this.voucherDenomination = voucherDenomination;
+	}
+
+	public String getBillInfo() {
+		return billInfo;
+	}
+
+	public void setBillInfo(String billInfo) {
+		this.billInfo = billInfo;
+	}
+
+	public Integer getTotalBill() {
+		return totalBill;
+	}
+
+	public void setTotalBill(Integer totalBill) {
+		this.totalBill = totalBill;
 	}
 	
 }

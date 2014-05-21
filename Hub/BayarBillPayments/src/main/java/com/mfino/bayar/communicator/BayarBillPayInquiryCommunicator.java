@@ -70,6 +70,10 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 				billPayments.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
 				((CMBillPayInquiry) requestFixMessage).setAmount(billPayResponse.getAmount());
 			}
+			if(wsResponseElement.getBillName() != null)
+				billPayments.setInfo2(wsResponseElement.getBillName());
+			if(wsResponseElement.getBillInfo() != null)
+				billPayments.setInfo4(wsResponseElement.getBillInfo());
 			log.info("BayarBillPayInquiryCommunicator :: payment_code ="+wsResponseElement.getPaymentCode());
 			
 			billPaymentsService.saveBillPayment(billPayments);

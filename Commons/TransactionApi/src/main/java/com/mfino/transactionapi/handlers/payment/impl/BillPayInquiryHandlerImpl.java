@@ -370,6 +370,13 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			
 			result.setBillDate(formatBillDate(paymentRequestDetails.substring(151, 159), "yyyyMMdd"));
 			result.setDestinationName(paymentRequestDetails.substring(109, 139));
+		}else{
+			billPayments = billPaymentsService.get(query);
+			if(billPayments != null && billPayments.size() > 0){
+				BillPayments billPayment = billPayments.get(0);
+				result.setBillDate(formatBillDate(billPayment.getInfo4(), "yyyyMM"));
+				result.setDestinationName(billPayment.getInfo2());
+			}
 		}
 		result.setInvoiceNo(billPaymentInquiry.getInvoiceNumber());
 		result.setSctlID(sctl.getID());

@@ -64,6 +64,18 @@ public class BayarWebServiceReponseParser {
 							if(billData.has("grand_total")){
 								response.setGrandTotal(billData.getInt("grand_total"));	
 							}
+							
+							if(billData.has("total_bill")){
+								response.setTotalBill(billData.getInt("total_bill"));
+							}
+							if(billData.has("bills")){
+								JSONObject bills = billData.getJSONArray("bills").getJSONObject(response.getTotalBill() - 1);
+								if(bills != null){
+									if(bills.has("bill_info") && bills.getString("bill_info").trim().length() >=6 ){
+										response.setBillInfo(bills.getString("bill_info").trim().substring(0, 6));
+									}
+								}
+							}
 						}
 					}
 

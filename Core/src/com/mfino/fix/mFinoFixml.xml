@@ -6594,6 +6594,7 @@
 			<field name="Info1" required="N"/>
 			<field name="Info2" required="N"/>
 			<field name="Info3" required="N"/>
+			<field name="Info4" required="N"/>
 			<field name="BillData" required="N"/>
 			<field name="NominalAmount" required="N"/>
 		</record>
@@ -25372,6 +25373,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8173" name="MoreRecordsAvailable" type="BOOLEAN" />
 	<field number="8174" name="DenominationCode" type="STRING"/>
 	<field number="8175" name="NominalAmount" type="Amount"/>
+	<field number="8176" name="Info4" type="STRING"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">
