@@ -267,6 +267,14 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 				transactionChargingService.failTheTransaction(sctl, errorMsg);
 			}
 		}
+		
+		BillPayments billPayments = null;
+		if(sctl != null){
+			billPayments = billPaymentsService.getBySctlId(sctl.getID());
+			if(billPayments != null){
+				result.setResponseMessage(billPayments.getOperatorMessage());
+			}
+		}
 
 		return result;
 	}

@@ -1,7 +1,6 @@
 package com.mfino.bayar.communicator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -57,19 +56,17 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		log.info("BayarBillPayCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
 		
 		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
+		billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 		
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
-			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 			billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
 			billPayResponse.setServiceChargeTransactionLogID(sctlId);
 			
-			if(wsResponseElement.getVoucherToken() != null){
-				billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
+			if(wsResponseElement.getVoucherToken() != null)				
 				billPayments.setInfo3(wsResponseElement.getVoucherToken());//In case of PLN prepaid Token
-			}
 
 			log.info("BayarBillPayCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 		}else{	
@@ -77,6 +74,12 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
 
+		if(wsResponseElement.getStatus() != null)
+			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
+		if(wsResponseElement.getMessage() != null)
+			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+		billPaymentsService.saveBillPayment(billPayments);
+		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
 		return billPayResponse;

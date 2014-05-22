@@ -54,9 +54,11 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			
 			if(BillPayConstants.SRC_SUSPENSE_INQ_FAILED.equals(eventContext)){
 				sendNotification = true;
+				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
 			}
 			else if(BillPayConstants.SRC_SUSPENSE_CONFIRMATION_FAILED.equals(eventContext)){
 				sendNotification = true;
+				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
 			}
 			else if(BillPayConstants.SRC_SUSPENSE_INQ_SUCCESS.equals(eventContext)){
 				sendNotification = true;

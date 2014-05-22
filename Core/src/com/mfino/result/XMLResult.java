@@ -133,6 +133,7 @@ public class XMLResult extends Result {
 	private BigDecimal nominalAmount;
 	private String billDate;
 	private String invoiceNo;
+	private String responseMessage;
 	
 	public String getBillDate() {
 		return billDate;
@@ -968,6 +969,14 @@ public class XMLResult extends Result {
 
 	public void setNominalAmount(BigDecimal nominalAmount) {
 		this.nominalAmount = nominalAmount;
+	}
+
+	public String getResponseMessage() {
+		return responseMessage;
+	}
+
+	public void setResponseMessage(String responseMessage) {
+		this.responseMessage = responseMessage;
 	}
 
 }

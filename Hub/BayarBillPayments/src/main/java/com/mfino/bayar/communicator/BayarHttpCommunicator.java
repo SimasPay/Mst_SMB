@@ -127,15 +127,10 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 		replyMessage.setResponse(responseFixMsg);
 		replyMessage.setDestinationQueues(mceMessage.getDestinationQueues());
 		
-		//Handling reversal response; Based on this status will be changed
-		/*if(method.equalsIgnoreCase("Biller.Reverse")){
-			replyMessage.setDestinationQueue(getReversalResponseQueue());
-		}*/
-		
 		log.info("BayarHttpCommunicator :: process() END");
 		return replyMessage;
 	}
-	
+
 	public Object handleHttpCommunicationException(Exception e){
 		HashMap<String,Object> wsResponseElement = new HashMap<String,Object> ();
 		if( e instanceof SocketTimeoutException)

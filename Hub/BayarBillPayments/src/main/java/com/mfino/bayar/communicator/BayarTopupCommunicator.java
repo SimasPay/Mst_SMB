@@ -1,7 +1,6 @@
 package com.mfino.bayar.communicator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -14,7 +13,6 @@ import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
-import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
@@ -53,24 +51,32 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 		BillPayments billPayments = null;
 		
 		log.info("BayarTopupCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
+		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
+		billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 		
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
-			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 			if(wsResponseElement.getTransactionId() != null){
 				billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
 			}
-			Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
-			billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
+
 			if(wsResponseElement.getVoucherNo() != null)
 				billPayments.setBillData(wsResponseElement.getVoucherNo());
 			log.info("HubBillPayReversalCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
+			
 		}else{	
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Failure);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
+
+		if(wsResponseElement.getStatus() != null)
+			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
+		if(wsResponseElement.getMessage() != null)
+			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+		billPaymentsService.saveBillPayment(billPayments);
+		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
 		return billPayResponse;

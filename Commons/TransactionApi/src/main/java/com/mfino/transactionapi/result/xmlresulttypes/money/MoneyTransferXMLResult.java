@@ -59,6 +59,13 @@ public class MoneyTransferXMLResult extends XMLResult
 	    getXmlWriter().writeEndElement();
 	}
 	
+	if(getResponseMessage()!=null)
+	{
+	    getXmlWriter().writeStartElement("ResponseMessage");
+	    getXmlWriter().writeCharacters(getResponseMessage(),false);
+	    getXmlWriter().writeEndElement();
+	}
+	
 	writeEndOfDocument();
     }
 

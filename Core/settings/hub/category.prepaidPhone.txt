@@ -8,7 +8,7 @@
 			  "code": "PAS",
 			  "denomCode": "PAS020 PAS025 PAS050 PAS100",
 			  "amount": "20600 25800 49600 97500",			  
-			  "nominalAmount": "20,000 25,000 50,000 100,000",
+			  "nominalAmount": "20000 25000 50000 100000",
 			  "paymentMode": "HubFullAmount"
     },
 	{
@@ -16,7 +16,7 @@
 			  "code": "PAX",
 			  "denomCode": "PAX020 PAX025 PAX050 PAX100",
 			  "amount": "20300 25200 49400 100500",			  
-			  "nominalAmount": "20,000 25,000 50,000 100,000",
+			  "nominalAmount": "20000 25000 50000 100000",
 			  "paymentMode": "HubFullAmount"
     },
 	{
@@ -24,7 +24,7 @@
 			  "code": "PES",
 			  "denomCode": "PES020 PES025 PES050 PES100",
 			  "amount": "19900 24600 48800 97400",			  
-			  "nominalAmount": "20,000 25,000 50,000 100,000",
+			  "nominalAmount": "20000 25000 50000 100000",
 			  "paymentMode": "HubFullAmount"
     }, 
     {
@@ -32,7 +32,7 @@
 				"code": "PFL",
 				"denomCode": "PFL020 PFL025 PFL050 PFL100 PFL150 PFL250",
 				"amount": "19600 24350 48500 97000 145200 242000",
-				"nominalAmount": "20,000 25,000 50,000 100,000 150,000 250,000",
+				"nominalAmount": "20000 25000 50000 100000 150000 250000",
 				"paymentMode": "HubFullAmount"
     }, 
 	{
@@ -40,7 +40,7 @@
 				"code": "PIM",
 				"denomCode": "PIM025 PIM050 PIM100",
 				"amount": "24800 49300 98000",
-				"nominalAmount": "25,000 50,000 100,000",
+				"nominalAmount": "25000 50000 100000",
 			    "paymentMode": "HubFullAmount"
     }, 
     {
@@ -48,7 +48,7 @@
 				"code": "PMT",
 				"denomCode": "PMT025 PMT050 PMT100",
 				"amount": "24800 49300 98000",
-				"nominalAmount": "25,000 50,000 100,000",
+				"nominalAmount": "25000 50000 100000",
 			    "paymentMode": "HubFullAmount"
     }, 
 	{
@@ -56,7 +56,7 @@
 				"code": "PSI",
 				"denomCode": "PSI020 PSI025 PSI050 PSI100",
 				"amount": "20600 25800 49600 97500",
-				"nominalAmount": "20,000 25,000 50,000 100,000",
+				"nominalAmount": "20000 25000 50000 100000",
 			    "paymentMode": "HubFullAmount"
     }, 
     {
@@ -64,7 +64,7 @@
 				"code": "PTR",
 				"denomCode": "PTR020 PTR030 PTR050 PTR100",
 				"amount": "19950 29800 49500 99000",
-				"nominalAmount": "20,000 30,000 50,000 100,000",
+				"nominalAmount": "20000 30000 50000 100000",
 			    "paymentMode": "HubFullAmount"
     }, 
 	{
@@ -72,7 +72,7 @@
 				"code": "PXL",
 				"denomCode": "PXL025 PXL050 PXL100 PXL200",
 				"amount": "25100 49800 99300 198200",
-				"nominalAmount": "25,000 50,000 100,000 200,000",
+				"nominalAmount": "25000 50000 100000 200000",
 			    "paymentMode": "HubFullAmount"
     }, 
     {
@@ -80,7 +80,7 @@
 				"code": "ztetopup",
 				"denomCode": "",
 				"amount": "",
-				"nominalAmount": "20,000 30,000 50,000 100,000",
+				"nominalAmount": "20000 30000 50000 100000",
 			    "paymentMode": "HubFullAmount"
     }
   ]

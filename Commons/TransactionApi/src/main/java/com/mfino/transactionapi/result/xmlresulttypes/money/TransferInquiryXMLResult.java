@@ -100,6 +100,13 @@ public class TransferInquiryXMLResult extends XMLResult {
 			    getXmlWriter().writeCharacters(getAdditionalInfo(),false);
 			    getXmlWriter().writeEndElement();
 			}
+			
+			if(getResponseMessage()!=null)
+			{
+			    getXmlWriter().writeStartElement("ResponseMessage");
+			    getXmlWriter().writeCharacters(getResponseMessage(),false);
+			    getXmlWriter().writeEndElement();
+			}
 
 			String success = getXMlelements().get("success");
 			if (!StringUtils.isBlank(transferID) && success.equals("0")) {

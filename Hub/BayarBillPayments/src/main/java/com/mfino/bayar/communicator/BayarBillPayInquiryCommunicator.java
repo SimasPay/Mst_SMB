@@ -2,7 +2,6 @@ package com.mfino.bayar.communicator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -50,6 +49,8 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		BillPayments billPayments = null;
 		
 		log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
+		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
+		billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 			
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 			
@@ -58,10 +59,6 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 			log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 			
 			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
-			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
-						
-			Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
-			billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 			
 			if(wsResponseElement.getPaymentCode() != null)
 				billPayments.setBillData(wsResponseElement.getPaymentCode().toString());
@@ -76,12 +73,16 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 				billPayments.setInfo4(wsResponseElement.getBillInfo());
 			log.info("BayarBillPayInquiryCommunicator :: payment_code ="+wsResponseElement.getPaymentCode());
 			
-			billPaymentsService.saveBillPayment(billPayments);
-			
 		}else{
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Failure);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
+		
+		if(wsResponseElement.getStatus() != null)
+			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
+		if(wsResponseElement.getMessage() != null)
+			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+		billPaymentsService.saveBillPayment(billPayments);
 		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
