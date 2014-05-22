@@ -1,12 +1,12 @@
 {
  "1" : { 
    "language" : "Bahasa",
-   "Uangku E-Statement" : "Transaksi Dimo",
+   "Uangku E-Statement" : "Transaksi Uangku",
    "NFC Card Transactions" : "Transaksi Kartu NFC",
    "Name" : "Nama",
    "Card Name" : "Nama Kartu",
    "Current Balance" : "Saldo Saat ini",
-   "Mobile No" : "Nomor Ponsel",
+   "Mobile No" : "Nomor Handphone",
    "Print Date" : "Tangal Cetak",
    "Period" : "Periode",
    "Transaction Details" : "Rincian Transaksi",
@@ -34,12 +34,12 @@
     },
  "0" : {
    "language" : "English",
-   "Uangku E-Statement" : "Dimo E-Statement",
+   "Uangku E-Statement" : "Uangku E-Statement",
    "NFC Card Transactions" : "NFC Card Transactions",
    "Name" : "Name",
    "Card Name" : "Card Name";
    "Current Balance" : "Current Balance",
-   "Mobile No" : "Mobile No",
+   "Mobile No" : "Mobile Number",
    "Print Date" : "Print Date",
    "Period" : "Period",
    "Transaction Details" : "Transaction Details",
