@@ -256,7 +256,7 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 			billPayInquiry.setBillerCode(billPayments.getBillerCode());
 			billPayInquiry.setIntegrationCode(billPayments.getIntegrationCode());
 			billPayInquiry.setPartnerBillerCode(billPayments.getPartnerBillerCode());
-			billPayInquiry.setAmount(billPayments.getOperatorAmount());
+			billPayInquiry.setAmount(billPayments.getAmount()); // Bala: Changed as it is confusing the Charges part
 			log.info("Amount:BillPayMoneyTransferServiceImpl"+billPayments.getOperatorAmount());
 			
 			billPayInquiry.setCharges(BigDecimal.ZERO);

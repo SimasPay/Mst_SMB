@@ -1,8 +1,12 @@
 package com.mfino.mce.core.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,6 +17,7 @@ import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMFIXResponse;
 import com.mfino.fix.CmFinoFIX.CMHSMPINValidationResponse;
 import com.mfino.handlers.hsm.HSMHandler;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -113,6 +118,17 @@ public class MCEUtil
 		
 		return -1;
 	}
+	
+	/**
+	 * Returns the Current date time according the format given in mfino.properties file
+	 * @return
+	 */
+	public static String getCurrentDateTime(){
+    	DateFormat df = new SimpleDateFormat(ConfigurationUtil.getTransactionDateTimeFormat());
+        TimeZone zone = ConfigurationUtil.getLocalTimeZone();
+        df.setTimeZone(zone);
+        return df.format(new Timestamp());
+    }
 	
 	/**
 	 * copy headers from sourceMap to destMap.presently copying only the breadcrumbId header using for identifying transactions

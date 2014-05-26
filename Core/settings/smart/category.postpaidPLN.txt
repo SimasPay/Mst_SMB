@@ -5,7 +5,7 @@
   "postpaidData": [
     {
 				"name": "PLN Pascabayar",
-				"code": "TAG",
+				"code": "TAG001",
 				"denomCode":"TAG001",
 			    "paymentMode": "HubZeroAmount"
     }  

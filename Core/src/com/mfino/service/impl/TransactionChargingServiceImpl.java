@@ -514,7 +514,11 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 					maxWeight = (Integer)ruleWeight.get(tRule.getID());
 					finalRule = tRule;
 				}
-			}		
+			}
+			// Filters the rules based on the source group and destination group as there is no weightage given to any rule.
+			if (finalRule == null && maxWeight == 0) {
+				finalRule = filterRules(lst, sourceGroup, destinationGroup);
+			}
 		}		
 		
 		return finalRule;
@@ -581,13 +585,13 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 				
 				if(txnRuleKey.equalsIgnoreCase("Channel")){
 					if(tRule.getChannelCode().getID().equals(sc.getChannelCodeId()) &&
-							!(tRule.getChannelCode().getID().equals(ConfigurationUtil.ANY_GROUP_ID))){
+							!(tRule.getChannelCode().getID().equals(ConfigurationUtil.DEFAULT_CHANNEL_ID))){
 						newLst.add(tRule);
 						Integer curWeight = (Integer)ruleWeight.get(tRule.getID());
 						int newWeight = (curWeight == null ? weight : curWeight+weight);
 						ruleWeight.put(tRule.getID(), newWeight);								
 					}
-					if(tRule.getChannelCode().getID().equals(ConfigurationUtil.ANY_GROUP_ID)){
+					if(tRule.getChannelCode().getID().equals(ConfigurationUtil.DEFAULT_CHANNEL_ID)){
 						newLst.add(tRule);
 					}
 				}
@@ -597,6 +601,52 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			return lst;}
 		return newLst;
 	}
+	
+	/**
+	 * Filters the rules based on the source group and destination group
+	 * @param lst
+	 * @param sourceGroup
+	 * @param destinationGroup
+	 * @return
+	 */
+	private TransactionRule filterRules(List<TransactionRule> lst, Long sourceGroup, Long destinationGroup) {
+		TransactionRule tr = null;
+
+		if (CollectionUtils.isNotEmpty(lst)) {
+			for(TransactionRule tRule: lst){
+				if((tRule.getGroupBySourceGroup().getID().equals(sourceGroup)) && (tRule.getGroupByDestinationGroup().getID().equals(destinationGroup))){
+					tr = tRule;
+					break;
+				}
+			}
+			
+			if(tr == null){
+				for(TransactionRule tRule: lst){
+					if(((tRule.getGroupBySourceGroup().getID().equals(sourceGroup)) && (tRule.getGroupByDestinationGroup().getID().equals(ConfigurationUtil.ANY_GROUP_ID))) ||
+							((tRule.getGroupBySourceGroup().getID().equals(ConfigurationUtil.ANY_GROUP_ID)) && (tRule.getGroupByDestinationGroup().getID().equals(destinationGroup)))){
+
+						tr = tRule;
+						break;
+					}
+				}
+			}
+			
+			if(tr == null){
+				for(TransactionRule tRule: lst){
+					if((tRule.getGroupBySourceGroup().getID().equals(ConfigurationUtil.ANY_GROUP_ID)) && (tRule.getGroupByDestinationGroup().getID().equals(ConfigurationUtil.ANY_GROUP_ID)))
+					{
+
+						tr = tRule;
+						break;
+					}
+				}
+			}
+		}
+		
+		return tr;
+
+	}
+	
 	/**
 	 * Gets the Transaction rule for the given details
 	 * @param serviceProviderId

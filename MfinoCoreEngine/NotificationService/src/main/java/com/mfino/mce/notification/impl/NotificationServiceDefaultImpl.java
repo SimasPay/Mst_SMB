@@ -2,6 +2,7 @@ package com.mfino.mce.notification.impl;
 
 import static com.mfino.mce.core.util.MCEUtil.isNullOrEmpty;
 import static com.mfino.mce.core.util.MCEUtil.safeString;
+import static com.mfino.mce.core.util.MCEUtil.getCurrentDateTime;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -163,19 +164,19 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 					}
 					backendResponse.setLanguage(language);
 				}
-
-				if(backendResponse.getCharges() != null && backendResponse.getServiceChargeTransactionLogID()!=null)
-				{
-					ServiceChargeTransactionLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(backendResponse.getServiceChargeTransactionLogID().longValue());
-					if (sctl.getTransactionRuleID() != null) {
-						TransactionRule transactionRule = DAOFactory.getInstance().getTransactionRuleDAO().getById(sctl.getTransactionRuleID());
-						if (CmFinoFIX.ServiceChargeType_Inclusive.equals(transactionRule.getChargeMode())) {
-							BigDecimal Amount = backendResponse.getAmount().add(backendResponse.getCharges());
-							backendResponse.setCharges(null);
-							backendResponse.setAmount(Amount);
-						}
-					}
-			     }
+// Bala: Commented this as it not required for Hub.
+//				if(backendResponse.getCharges() != null && backendResponse.getServiceChargeTransactionLogID()!=null)
+//				{
+//					ServiceChargeTransactionLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(backendResponse.getServiceChargeTransactionLogID().longValue());
+//					if (sctl.getTransactionRuleID() != null) {
+//						TransactionRule transactionRule = DAOFactory.getInstance().getTransactionRuleDAO().getById(sctl.getTransactionRuleID());
+//						if (CmFinoFIX.ServiceChargeType_Inclusive.equals(transactionRule.getChargeMode())) {
+//							BigDecimal Amount = backendResponse.getAmount().add(backendResponse.getCharges());
+//							backendResponse.setCharges(null);
+//							backendResponse.setAmount(Amount);
+//						}
+//					}
+//			     }
 
 				log.info("NotificationServiceDefaultImpl :: notificationCode="+notificationCode);
 				log.info("NotificationServiceDefaultImpl :: fixResponse.getLanguage()="+backendResponse.getLanguage());
@@ -560,7 +561,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 		try
 		{
 			if(rawNotificationText.contains("$(CurrentDateTime)")){
-				rawNotificationText = rawNotificationText.replace("$(CurrentDateTime)", new Timestamp().toLocaleString());
+				rawNotificationText = rawNotificationText.replace("$(CurrentDateTime)", getCurrentDateTime());
 			}
 
 			if(rawNotificationText.contains("$(CommodityBalanceValue)")){
@@ -605,7 +606,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			}
 
 			if(rawNotificationText.contains("$(TransactionDateTime)")){
-				rawNotificationText = rawNotificationText.replace("$(TransactionDateTime)", new Timestamp().toLocaleString());
+				rawNotificationText = rawNotificationText.replace("$(TransactionDateTime)", getCurrentDateTime());
 			}
 
 			if(rawNotificationText.contains("$(TransactionID)")){

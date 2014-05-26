@@ -32,6 +32,7 @@ public class ConfigurationUtil {
 	private static boolean isUnixLike = false;
 	
 	public static final Long ANY_GROUP_ID = 1L;
+	public static final Long DEFAULT_CHANNEL_ID = 7L;
 	
 	enum ConfigurationKey {
 
