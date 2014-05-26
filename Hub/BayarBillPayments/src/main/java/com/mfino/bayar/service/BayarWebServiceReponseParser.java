@@ -71,8 +71,8 @@ public class BayarWebServiceReponseParser {
 							if(billData.has("bills")){
 								JSONObject bills = billData.getJSONArray("bills").getJSONObject(response.getTotalBill() - 1);
 								if(bills != null){
-									if(bills.has("bill_info") && bills.getString("bill_info").trim().length() >=6 ){
-										response.setBillInfo(bills.getString("bill_info").trim().substring(0, 6));
+									if(bills.has("bill_info")){
+										response.setBillInfo(bills.getString("bill_info"));
 									}
 								}
 							}

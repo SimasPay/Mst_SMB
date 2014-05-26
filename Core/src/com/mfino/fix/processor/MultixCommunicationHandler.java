@@ -132,6 +132,10 @@ public class MultixCommunicationHandler implements IFixProcessor {
 			{
 				transactionResponse.setPaymentInquiryDetails(response.getPaymentInquiryDetails());
 			}
+			if(StringUtils.isNotBlank(response.getBillPaymentReferenceID()))
+			{
+				transactionResponse.setBillPaymentReferenceID(response.getBillPaymentReferenceID());
+			}
 			if(StringUtils.isNotBlank(response.getDestinationType()))
 			{
 				transactionResponse.setDestinationType(response.getDestinationType());
@@ -153,6 +157,12 @@ public class MultixCommunicationHandler implements IFixProcessor {
 			}
 			if (response.getNominalAmount() != null) {
 				transactionResponse.setNominalAmount(response.getNominalAmount());
+			}
+			if (response.getOperatorCharges() != null) {
+				transactionResponse.setCharges(response.getOperatorCharges());
+			}
+			if (response.getOperatorMessage() != null) {
+				transactionResponse.setOperatorMsg(response.getOperatorMessage());
 			}
 			log.info("Core Engine Response status = " + status);
 			if(response.getCode() != null)

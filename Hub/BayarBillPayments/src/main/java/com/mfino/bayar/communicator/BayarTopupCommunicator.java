@@ -38,7 +38,7 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 		requestParams.add(new BasicNameValuePair("product_code", billPayments.getInfo1()));
 		requestParams.add(new BasicNameValuePair("bill_number", request.getInvoiceNumber()));
 		requestParams.add(new BasicNameValuePair("voucher_denomination", billPayments.getNominalAmount().toBigInteger().toString()));
-		requestParams.add(new BasicNameValuePair("reference_id", request.getTransactionID().toString()));
+		requestParams.add(new BasicNameValuePair("reference_id", request.getServiceChargeTransactionLogID().toString()));
 		
 		return requestParams;
 	}

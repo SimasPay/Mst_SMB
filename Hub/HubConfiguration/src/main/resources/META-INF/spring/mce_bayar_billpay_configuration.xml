@@ -54,8 +54,7 @@
 				<entry key="billpay_inquiry" value="inquiry_bill" />
 				<entry key="billpay" value="pay_bill" />
 			</map>
-		</property>				
-		<property name="url" value="https://202.51.252.110/demo/h2h/" />
+		</property>
 		<property name="httpClient" ref="bayarHttpClient" /> 
 	</bean>
 	
@@ -69,7 +68,7 @@
 				<entry key="output" value="json" />
 			</map>
 		</property>	
-		<property name="url" value="https://202.51.252.110/demo/h2h/" />	
+		<property name="url" value="https://202.51.252.110/demo/h2h/" />
 	</bean>
 		
 	<bean id="bayarTopupCommunicator"
@@ -110,14 +109,15 @@
         <from uri="jms:bayarBillPayQueue?disableReplyTo=true"/>
         <filter>
         	<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayInquiry'</simple>
-        	<filter>
-        	    <simple>${in.body.request.getNarration} != 'online'</simple>
             	<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspense"/>
             	<filter>
             		<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
                 	<filter>
                 	<!--money transfer inquiry is completed, proceed to bill payment inquiry-->
                     <simple>${body.response.result} == '0'</simple>
+                    <setHeader headerName="eventContext">
+				        <constant>SRC_SUSPENSE_INQ_SUCCESS</constant>
+			        </setHeader>
 					<to uri="jms:bayarBillerInquiryQueue?disableReplyTo=true"/>
   					</filter>
 				</filter>
@@ -131,11 +131,7 @@
 			        <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
 		        	</filter>
 				</filter>
-			</filter>
-			<filter>
-        	    <simple>${in.body.request.getNarration} == 'online'</simple>
-				<to uri="jms:bayarBillerInquiryQueue?disableReplyTo=true"/>
-			</filter>
+
  		</filter>
 		
         <filter>
@@ -164,144 +160,29 @@
                 	</setHeader>
                 		<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
                 </filter>
-			</filter>
-            
-         <!-- <filter>
-	            <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
-                <setHeader headerName="eventContext">                       
-	                <constant>SRC_SUSPENSE_CONFIRMATION_TO_BANK</constant>
-                </setHeader>
-                <multicast>
-	                <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-                    <to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
-                </multicast>
-            </filter>    -->            
-		
+			</filter>		
+		</filter>
+		<filter>
+			<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillInquiry'</simple> <!-- billInquiry Flow -->
+			<to uri="bean:bayarBillPayInquiryCommunicator?method=process"/>
+			<to uri="jms:notificationQueue?disableReplyTo=true"/>
 		</filter>          
     </route>
-   <!--  <route>
-        <from uri="jms:hubSourceToSuspenseBRQueue?disableReplyTo=true"/>
-        <filter>
-            <simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
-            <to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspenseCompleted"/>
-			
-			<filter>
-                <simple>${body.response.result} == '0'</simple>
-                <setHeader headerName="eventContext">
-                    <constant>BILLER_INQUIRY_COMPLETED</constant>
-                </setHeader>
-                <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-			</filter>
-			
-		    <filter>
-				<simple>${body.response.result} != '0'</simple>
-					<setHeader headerName="eventContext">
-                        <constant>SRC_SUSPENSE_INQ_FAILED</constant>
-                    </setHeader>
-                    <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-            </filter>
-        </filter>
-        
-        <filter>
-            <simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank' and ${body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferFromBank'</simple>
-            <to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSourceToSuspenseCompleted"/>
-            <filter>
-                <simple>${body.response.result} == '0'</simple>
-                <setHeader headerName="eventContext">
-                    <constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>
-                </setHeader>
-                <multicast>
-                    <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-                    <to uri="jms:hubBillerConfirmationQueue?disableReplyTo=true"/>
-                </multicast>
-            </filter>
-             
-            <filter>
-            	<simple>${body.response.result} != '0'</simple>
-                <setHeader headerName="eventContext">
-                	<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>
-				</setHeader>
-                <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-            </filter>
-        </filter>        
-    </route>-->
-
-     <!--  <route>
-        <from uri="jms:hubSuspenseToDestBRQueue?disableReplyTo=true"/>
-        <filter>
-            <simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
-            <to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySuspenceToDestinationCompleted"/>
-            <filter>
-            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
-				<filter>
-                <simple>${body.response.result} == '0'</simple>
-                <setHeader headerName="eventContext">
-                    <constant>SUSPENSE_DEST_INQ_SUCCESS</constant>
-                </setHeader>
-                <multicast>
-                    <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-                    <to uri="direct:moneyTransferConfirmationSuspenseToDestination"/>
-                </multicast>
-          	</filter>
-            </filter>
-            <filter>
-            <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>			
-            <filter>
-                    <simple>${body.response.result} != '0'</simple>
-                    <setHeader headerName="eventContext">
-                        <constant>SUSPENSE_DEST_INQ_FAILED</constant>
-                    </setHeader>
-                    <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-            </filter>
-			</filter>
-        </filter>
-        <filter>
-            <simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
-            <to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSuspenseToDestinationCompleted"/>
-        
-            <filter>
-                <simple>${body.response.result} == '0'</simple>
-                <setHeader headerName="eventContext">
-                    <constant>SUSPENSE_DEST_CONFIRMATION_SUCCESS</constant>
-                </setHeader>
-                <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-             </filter>
-        
-             <filter>
-                    <simple>${body.response.result} != '0'</simple>
-                    <setHeader headerName="eventContext">
-                        <constant>SUSPENSE_DEST_CONFIRMATION_FAILED</constant>
-                    </setHeader>
-                    <to uri="jms:hubBillPayEventProcessingQueue?disableReplyTo=true"/>
-             </filter>
-		</filter>        
-    </route>-->
    
     <route>
         <from uri="jms:bayarBillerInquiryQueue?disableReplyTo=true"/> 
-        <filter>
-				<simple>${in.body.request.getNarration} == 'online'</simple>
-       			<setHeader headerName="eventContext">
-          		<constant>BILLER_INQUIRY_PENDING</constant>
-       			</setHeader>
-       			<multicast>
-           			 <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-          			  <to uri="direct:bayarBillerInquiryCommunicatorQueue"/>
-       			</multicast>
-       	</filter>
-       	<filter>
-				<simple>${in.body.request.getNarration} != 'online'</simple>
-       			<setHeader headerName="eventContext">
-          		<constant>BILLER_INQUIRY_COMPLETED</constant>
-       			</setHeader>
-           		<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-       	</filter>      	
+		<setHeader headerName="eventContext">
+  			<constant>BILLER_INQUIRY_PENDING</constant>
+		</setHeader>
+		<multicast>   			 
+  			 <to uri="direct:bayarBillerInquiryCommunicatorQueue"/>
+  			 <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
+		</multicast>
     </route>
    
     <route>
         <!--route for biller inquiry-->
         <from uri="direct:bayarBillerInquiryCommunicatorQueue"/>
-        <to uri="bean:bayarBillPayInquiryCommunicator?method=process"/>
 		<filter>
 			<simple>${body.response.result} == '0'</simple>
 			<setHeader headerName="eventContext">

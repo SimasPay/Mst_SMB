@@ -24,6 +24,9 @@ public class TransactionResponse {
 	private String DestinationUserName;
 	private BigDecimal amount;
 	private BigDecimal nominalAmount;
+	private String billPaymentReferenceID;
+	private BigDecimal charges;
+	private String operatorMsg;
 	
 	public BigDecimal getAmount() {
 		return amount;
@@ -104,5 +107,23 @@ public class TransactionResponse {
 	}
 	public void setNominalAmount(BigDecimal nominalAmount) {
 		this.nominalAmount = nominalAmount;
+	}
+	public String getBillPaymentReferenceID() {
+		return billPaymentReferenceID;
+	}
+	public void setBillPaymentReferenceID(String billPaymentReferenceID) {
+		this.billPaymentReferenceID = billPaymentReferenceID;
+	}
+	public BigDecimal getCharges() {
+		return charges;
+	}
+	public void setCharges(BigDecimal charges) {
+		this.charges = charges;
+	}
+	public String getOperatorMsg() {
+		return operatorMsg;
+	}
+	public void setOperatorMsg(String operatorMsg) {
+		this.operatorMsg = operatorMsg;
 	}
 }

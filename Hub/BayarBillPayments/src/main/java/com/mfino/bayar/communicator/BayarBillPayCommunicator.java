@@ -41,7 +41,7 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 			billdataMsg = billPayments.getBillData();
 		
 		requestParams.add(new BasicNameValuePair("payment_code", billdataMsg));
-		requestParams.add(new BasicNameValuePair("reference_id", request.getTransactionID().toString()));
+		requestParams.add(new BasicNameValuePair("reference_id", request.getServiceChargeTransactionLogID().toString()));
 		
 		return requestParams;
 	}

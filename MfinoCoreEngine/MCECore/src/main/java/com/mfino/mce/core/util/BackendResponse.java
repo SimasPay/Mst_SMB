@@ -65,6 +65,7 @@ public class BackendResponse extends CMBase {
 	private String rechargePin;
 	private String userAPIKey;
 	private BigDecimal nominalAmount;
+	private String operatorMessage;
 
 	@Override
 	public boolean checkRequiredFields() {
@@ -539,5 +540,13 @@ public class BackendResponse extends CMBase {
 
 	public void setNominalAmount(BigDecimal nominalAmount) {
 		this.nominalAmount = nominalAmount;
+	}
+
+	public String getOperatorMessage() {
+		return operatorMessage;
+	}
+
+	public void setOperatorMessage(String operatorMessage) {
+		this.operatorMessage = operatorMessage;
 	}
 }

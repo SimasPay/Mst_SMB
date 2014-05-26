@@ -48,8 +48,8 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		billPayments.setIntegrationCode(billPayInquiry.getIntegrationCode());
 		billPayments.setChargesIncluded(billPayInquiry.getChargesIncluded());
 		billPayments.setInvoiceNumber(billPayInquiry.getInvoiceNumber());
-		billPayments.setOriginalINTxnId(billPayInquiry.getTransactionID().toString());
-		billPayments.setINTxnId(billPayInquiry.getTransactionID().toString());
+		//billPayments.setOriginalINTxnId(billPayInquiry.getTransactionID().toString()); // OriginalTxnId to used with InTxnId in case of reversal
+		//billPayments.setINTxnId(billPayInquiry.getTransactionID().toString());//INTxnId is from the third party 
 		billPayments.setPartnerBillerCode(billPayInquiry.getPartnerBillerCode());
 		billPayments.setPartnerBillerCode(billPayInquiry.getPartnerBillerCode());
 		billPayments.setSctlId(billPayInquiry.getServiceChargeTransactionLogID());

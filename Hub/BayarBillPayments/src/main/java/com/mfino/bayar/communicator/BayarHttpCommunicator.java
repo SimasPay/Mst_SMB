@@ -32,7 +32,6 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 	protected BillPaymentsService billPaymentsService;
 	protected TransactionLogService transactionLogService;
 	private BayarHttpConnector httpClient;
-	private String url;
 	protected String reversalResponseQueue = "jms:suspenseAndChargesRRQueue?disableReplyTo=true";
 	
 	public String getWebServiceEndpointBean() {
@@ -49,13 +48,6 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 
 	public void setBillPaymentsService(BillPaymentsService billPaymentsService) {
 		this.billPaymentsService = billPaymentsService;
-	}
-	
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
 	}
 	
 	public BayarHttpConnector getHttpClient() {

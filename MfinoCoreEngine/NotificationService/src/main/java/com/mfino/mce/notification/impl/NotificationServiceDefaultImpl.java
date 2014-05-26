@@ -479,6 +479,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			response.setPaymentInquiryDetails(backendResponse.getPaymentInquiryDetails());
 			if(backendResponse.getAmount() != null)
 				response.setAmount(backendResponse.getAmount());
+			response.setBillPaymentReferenceID(backendResponse.getBillPaymentReferenceID());
+			response.setOperatorCharges(backendResponse.getCharges());
+			response.setOperatorMessage(backendResponse.getOperatorMessage());
 			log.info("NotificationServiceDefaultImpl: getWebResponse()==> "+response.DumpFields());
 			webResponse = response;
 		}

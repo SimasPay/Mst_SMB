@@ -114,7 +114,7 @@ public class BayarHttpConnector {
 	
 	public BayarWebServiceResponse sendHttpsRequest(String method, Object parameters) {
 
-		log.info("Https client has got the request: "+parameters+" and the loginUrl is: " + url);
+		
 
 		StringBuilder response = new StringBuilder();
 		
@@ -182,7 +182,7 @@ public class BayarHttpConnector {
 
 		URL url = new URL(this.url + "/"+ method);
 		HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-		//HttpsURLConnection con = new HttpsURLConnection(new HttpsURL(this.url + "/"+ method));
+		log.info("Https client has got the request: "+parameters+" and the loginUrl is: " + url.toString());
 		con.setRequestMethod("POST");
 		con.setReadTimeout(Integer.parseInt(timeout));
 		con.setDoOutput(true);

@@ -382,6 +382,9 @@
 			<field name="DestinationUserName" required="N"/>
 			<field name="Amount" required="N"/>
 			<field name="NominalAmount" required="N"/>
+			<field name="OperatorCharges"  required="N" />
+			<field name="Info4"  required="N" />
+			<field name="OperatorMessage"  required="N" />
 		</message>
 		<message name="ForwardNotificationRequest" msgtype="1092" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="DestMDN" required="Y" />
@@ -653,6 +656,8 @@
 			<field name="DestinationUserName" required="N"/>
 			<field name="Amount" required="N"/>
 			<field name="NominalAmount" required="N"/>
+			<field name="OperatorCharges" required="N"/>
+			<field name="OperatorMessage" required="N"/>
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="ErrorName" required="Y" />
 				<field name="ErrorDescription" required="Y" />        
@@ -4207,6 +4212,8 @@
 			<field name="Email" required="N"/>
 			<field name="IntegrationCode" required="N"/>
 			<field name="PartnerBillerCode" required="N"/>
+			<field name="DenominationCode" required="N"/>
+			<field name="NominalAmount" required="N"/>
 	</message>
 	
 	<message name="CommodityAdjustmentInquiry" msgtype="1388" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
@@ -6599,6 +6606,7 @@
 			<field name="OperatorMessage" required="N"/>
 			<field name="BillData" required="N"/>
 			<field name="NominalAmount" required="N"/>
+			<field name="OperatorCharges" required="N"/>
 		</record>
      	
 		<record name="ReportParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="report_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -25378,6 +25386,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8176" name="Info4" type="STRING"/>
 	<field number="8177" name="Info5" type="STRING"/>
 	<field number="8178" name="OperatorMessage" type="STRING"/>
+	<field number="8179" name="OperatorCharges" type="NEWAMT"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">

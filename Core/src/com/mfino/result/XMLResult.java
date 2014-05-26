@@ -134,6 +134,7 @@ public class XMLResult extends Result {
 	private String billDate;
 	private String invoiceNo;
 	private String responseMessage;
+	private BigDecimal operatorCharges;
 	
 	public String getBillDate() {
 		return billDate;
@@ -977,6 +978,14 @@ public class XMLResult extends Result {
 
 	public void setResponseMessage(String responseMessage) {
 		this.responseMessage = responseMessage;
+	}
+
+	public BigDecimal getOperatorCharges() {
+		return operatorCharges;
+	}
+
+	public void setOperatorCharges(BigDecimal operatorCharges) {
+		this.operatorCharges = operatorCharges;
 	}
 
 }

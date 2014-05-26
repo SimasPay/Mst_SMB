@@ -124,7 +124,9 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 	public Result handle(TransactionDetails transactionDetails){
 		CFIXMsg response = null;
 		TransactionResponse transactionResponse = null;
-		String paymentRequestDetails = null;
+		String paymentRequestDetails = null, operatorMsg = null;
+		String destUserName = null, additionalInfo = null, billPayRefID = null;
+		BigDecimal operatorChgs = null;
 		String srcpocketcode;
 		CMBillPayInquiry billPaymentInquiry= new CMBillPayInquiry();
 		ChannelCode cc = transactionDetails.getCc();
@@ -248,15 +250,25 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()))) {
 			billPaymentInquiry.setNarration("online");
 			// Getting the Bill amount for the given online transaction.
-			if ("ZTE".equalsIgnoreCase(billPaymentInquiry.getIntegrationCode())) {
+			//if ("ZTE".equalsIgnoreCase(billPaymentInquiry.getIntegrationCode())) {
 				response = doBillInquiry(billPaymentInquiry); 
 				transactionResponse = checkBackEndResponse(response);
 				
 				if(transactionResponse != null && transactionResponse.isResult()) {
 					billPaymentInquiry.setAmount(transactionResponse.getAmount());
 					paymentRequestDetails = transactionResponse.getPaymentInquiryDetails();
+					if(transactionResponse.getCharges() != null)
+						operatorChgs = transactionResponse.getCharges();
+					if(transactionResponse.getDestinationUserName() != null)
+						destUserName = transactionResponse.getDestinationUserName();
+					if(transactionResponse.getAdditionalInfo() != null)
+						additionalInfo = transactionResponse.getAdditionalInfo();
+					if(transactionResponse.getBillPaymentReferenceID() != null)
+						billPayRefID = transactionResponse.getBillPaymentReferenceID();
+					if(transactionResponse.getOperatorMsg() != null)
+						operatorMsg = transactionResponse.getOperatorMsg();
 				}
-			}
+			//}
 		}		
 		// add service charge to amount
 
@@ -374,11 +386,30 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			billPayments = billPaymentsService.get(query);
 			if(billPayments != null && billPayments.size() > 0){
 				BillPayments billPayment = billPayments.get(0);
-				if(billPayment.getInfo4() != null)
-					result.setBillDate(formatBillDate(billPayment.getInfo4(), "yyyyMM"));
-				result.setDestinationName(billPayment.getInfo2());
-				result.setResponseMessage(billPayment.getOperatorMessage());
+	
+				//Saving bayar.net paramters
+				if(operatorChgs != null){
+					billPayment.setOperatorCharges(operatorChgs);
+					result.setOperatorCharges(operatorChgs);
+				}
+				if(destUserName != null){
+					billPayment.setInfo2(destUserName);
+					result.setDestinationName(billPayment.getInfo2());
+				}
+				if(additionalInfo != null){
+					billPayment.setInfo4(additionalInfo);
+					result.setBillDate(formatBillDate(billPayment.getInfo4().trim().substring(0, 6), "yyyyMM"));
+				}
+				if(billPayRefID != null)
+					billPayment.setBillData(billPayRefID);
+				if(operatorMsg != null){
+					billPayment.setOperatorMessage(operatorMsg);
+					result.setResponseMessage(operatorMsg);
+				}
+				
+				billPaymentsService.save(billPayment);
 			}
+				
 		}
 		result.setInvoiceNo(billPaymentInquiry.getInvoiceNumber());
 		result.setSctlID(sctl.getID());
@@ -416,6 +447,11 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billInquiry.setTransactionIdentifier(billPayInquiry.getTransactionIdentifier());
 		billInquiry.setTransactionID(billPayInquiry.getTransactionID());
 		billInquiry.setIntegrationCode(billPayInquiry.getIntegrationCode());
+		//For Bayar.Net BillPayments
+		if(billPayInquiry.getDenominationCode()!=null)
+			billInquiry.setDenominationCode(billPayInquiry.getDenominationCode());
+		if(billPayInquiry.getNominalAmount()!=null)
+			billInquiry.setNominalAmount(billPayInquiry.getNominalAmount());
 		
 		CFIXMsg response = super.process(billInquiry);
 		log.info("BillpayInquiryHandler:: doBillInquiry :: End");
