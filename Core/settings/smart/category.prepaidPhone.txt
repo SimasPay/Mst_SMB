@@ -79,7 +79,7 @@
 				"name": "Smartfren",
 				"code": "ztetopup",
 				"denomCode": "",
-				"amount": "",
+				"amount": "20000 30000 50000 100000",
 				"nominalAmount": "20000 30000 50000 100000",
 			    "paymentMode": "HubFullAmount"
     }

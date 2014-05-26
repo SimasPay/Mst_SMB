@@ -77,11 +77,13 @@ Ext.extend(mFino.widget.MFSBillerPartnerForm, Ext.FormPanel, {
 		            	  }
 		            },
 		            {
-		                xtype : 'textfield',
+		                xtype : 'enumdropdown',
 		                fieldLabel: _("Integration Code"),
 		                labelSeparator:':',
 		                anchor : '95%',
-		                maxLength : 25,
+						allowBlank: false,
+		                itemId : 'mbp.form.integrationCode',
+		                enumId: CmFinoFIX.TagID.IntegrationCode,
 		                name: CmFinoFIX.message.JSMFSBillerPartner.Entries.IntegrationCode._name
 		            },
 		            {
