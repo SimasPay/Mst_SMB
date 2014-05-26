@@ -15,6 +15,12 @@
       "header": "CARA MENGISI SALDO E-MONEY `UANGKU` (CASH-IN)",
       "body": "Saldo rekening e-Money UANGKU dapat diisi dengan dengan opsi-opsi sebagai berikut:|1. Via jaringan ATM Bersama, ALTO, PRIMA gunakan menu transfer ke bank lain dengan tujuan virtual account Bank Sinarmas : kode bank (153) + 8881 + nomor handphone.|2. Setor di cabang Bank Sinarmas  ke rekening : 8881 + nomor handphone.|3. Transfer ke sesama rekening Bank Sinarmas yaitu ke rekening : 8881 + nomor handphone.|4. Transfer antar bank ke Bank Sinarmas ke rekening : 8881 + nomor handphone.",
       "footer": "Ketentuan besarnya dan batasan jumlah pengisian saldo mengacu kepada syarat dan ketentuan umum e-Money UANGKU. Pengguna dapat dikenakan biaya administrasi atau biaya lainnya sesuai dengan ketentuan yang berlaku pada bank pengirim."
-    }   
+    },
+    {
+      "topic": "Flashiz Belanja QR",
+      "header": "",
+      "body": "",
+      "footer": ""
+    }       
   ]
 }
