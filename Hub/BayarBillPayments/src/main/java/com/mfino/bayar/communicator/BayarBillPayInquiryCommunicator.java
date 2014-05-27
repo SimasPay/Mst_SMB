@@ -14,6 +14,7 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillInquiry;
 import com.mfino.mce.core.MCEMessage;
+import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
@@ -90,6 +91,28 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
 		return billPayResponse;
+	}
+	
+	public MCEMessage constructResponseMessage(MCEMessage mceMceMessage) {
+		
+		log.info("BayarBillPayInquiryCommunicator :: constructResponseMessage() BEGIN mceMessage="+mceMceMessage);
+		
+		MCEMessage responseMceMessage = new MCEMessage();
+		
+		CMBase requestFix = (CMBase)mceMceMessage.getRequest();
+		BillPayResponse billPayResponse = new BillPayResponse();
+		BackendResponse backendResponse = (BackendResponse) mceMceMessage.getResponse();
+		billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
+		billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
+		billPayResponse.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
+		billPayResponse.setInResponseCode("0");
+		billPayResponse.setParentTransactionID(backendResponse.getParentTransactionID());
+		billPayResponse.setTransferID(backendResponse.getTransferID());
+		responseMceMessage.setRequest(mceMceMessage.getRequest());
+		responseMceMessage.setResponse(billPayResponse);
+		
+		log.info("BayarBillPayInquiryCommunicator :: constructResponseMessage() END");
+		return responseMceMessage;
 	}
 	
 	@Override

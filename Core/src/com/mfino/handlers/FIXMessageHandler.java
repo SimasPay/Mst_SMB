@@ -88,6 +88,8 @@ public abstract class FIXMessageHandler extends MultixCommunicationHandler {
 			errorMsg.setCode(((CmFinoFIX.CMSubscriberNotification) pMsg).getCode());
 			errorMsg.setSourceCardPAN(((CmFinoFIX.CMSubscriberNotification) pMsg).getSourceCardPAN());
 			errorMsg.setAmount(errMsg.getAmount());
+			errorMsg.setOperatorCharges(((CmFinoFIX.CMSubscriberNotification) pMsg).getOperatorCharges());
+			errorMsg.setOperatorMessage(((CmFinoFIX.CMSubscriberNotification) pMsg).getOperatorMessage());
 			return errorMsg;
 
 		}

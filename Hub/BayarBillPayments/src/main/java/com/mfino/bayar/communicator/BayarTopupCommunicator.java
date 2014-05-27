@@ -86,4 +86,10 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 	public String getMethodName(MCEMessage mceMessage) {
 		return constantFieldsMap.get("topup");
 	}
+
+	@Override
+	public MCEMessage constructResponseMessage(MCEMessage mceMceMessage) {
+		
+		return null;
+	}
 }

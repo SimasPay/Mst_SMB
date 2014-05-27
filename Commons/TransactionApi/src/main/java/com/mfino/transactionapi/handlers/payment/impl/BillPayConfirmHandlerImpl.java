@@ -250,6 +250,14 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
+		BillPayments billPayments = null;
+		if(sctl != null){
+			billPayments = billPaymentsService.getBySctlId(sctl.getID());
+			if(billPayments != null){
+				result.setResponseMessage(billPayments.getOperatorMessage());
+			}
+		}
+		
 		if (!("Your request is queued. Please check after sometime.".equals(transactionResponse.getMessage()))) {
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, billPay.getTransferID());
@@ -257,7 +265,10 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 				result.setDebitAmount(sctl.getTransactionAmount());
 				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
 				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				if(billPayments != null && billPayments.getOperatorCharges() != null){
+					result.setServiceCharge(sctl.getCalculatedCharge().add(billPayments.getOperatorCharges()));
+					result.setNominalAmount(billPayments.getNominalAmount());
+				}
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -268,13 +279,6 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 			}
 		}
 		
-		BillPayments billPayments = null;
-		if(sctl != null){
-			billPayments = billPaymentsService.getBySctlId(sctl.getID());
-			if(billPayments != null){
-				result.setResponseMessage(billPayments.getOperatorMessage());
-			}
-		}
 
 		return result;
 	}

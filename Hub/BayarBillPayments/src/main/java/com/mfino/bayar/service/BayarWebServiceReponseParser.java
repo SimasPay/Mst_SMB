@@ -57,6 +57,8 @@ public class BayarWebServiceReponseParser {
 							}
 							if(billData.has("fee")){
 								response.setFee(billData.getInt("fee"));
+								if(response.getFee() == 0)
+									response.setFee(new Integer(billData.getString("fee")));
 							}
 							if(billData.has("late_fee")){
 								response.setLateFee(billData.getInt("late_fee"));

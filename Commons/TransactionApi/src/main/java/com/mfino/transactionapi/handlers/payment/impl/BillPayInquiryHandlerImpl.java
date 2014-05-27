@@ -126,7 +126,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		TransactionResponse transactionResponse = null;
 		String paymentRequestDetails = null, operatorMsg = null;
 		String destUserName = null, additionalInfo = null, billPayRefID = null;
-		BigDecimal operatorChgs = null;
+		BigDecimal operatorChgs = BigDecimal.ZERO;
 		String srcpocketcode;
 		CMBillPayInquiry billPaymentInquiry= new CMBillPayInquiry();
 		ChannelCode cc = transactionDetails.getCc();
@@ -267,9 +267,14 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 						billPayRefID = transactionResponse.getBillPaymentReferenceID();
 					if(transactionResponse.getOperatorMsg() != null)
 						operatorMsg = transactionResponse.getOperatorMsg();
+					billPaymentInquiry.setNominalAmount(billPaymentInquiry.getAmount().subtract(operatorChgs));
 				}
 			//}
-		}		
+		}
+		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && 
+				(CmFinoFIX.PaymentMode_HubFullAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()))) {
+			operatorChgs = billPaymentInquiry.getAmount().subtract(billPaymentInquiry.getNominalAmount());
+		}
 		// add service charge to amount
 
 		ServiceCharge serviceCharge=new ServiceCharge();
@@ -333,7 +338,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 		sctl.setIntegrationCode(billPaymentInquiry.getIntegrationCode());
 		
-		BillPaymentsQuery query = new BillPaymentsQuery();
+		//This part of code is never called for existing bill payments in dimo/hub
+/*		BillPaymentsQuery query = new BillPaymentsQuery();
 		query.setSctlID(sctl.getID());
 		List<BillPayments> billPayments = billPaymentsService.get(query);
 		if(billPayments != null && billPayments.size() > 0){
@@ -342,7 +348,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			log.info("Check for ChargesInclusion"+results.getChargesIncluded());
 		    billPayment.setChargesIncluded(results.getChargesIncluded());
 		    billPaymentsService.save(billPayment);
-		}
+		}*/
 		
 		billPaymentInquiry.setServiceChargeTransactionLogID(sctl.getID());
 		billPaymentInquiry.setDestMDN(partnerMDN.getMDN());
@@ -365,7 +371,6 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				
 				sctl.setTransactionID(transactionResponse.getTransactionId());
 				sctl.setCommodityTransferID(transactionResponse.getTransferId());
-				sctl.setTransactionAmount(transactionResponse.getAmount());
 				billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 				result.setTransactionID(transactionResponse.getTransactionId());
 				transactionChargingService.saveServiceTransactionLog(sctl);
@@ -378,12 +383,15 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 
 			transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
 		}
-		if (StringUtils.isNotBlank(paymentRequestDetails) && paymentRequestDetails.length()>=183) {
-			
-			result.setBillDate(formatBillDate(paymentRequestDetails.substring(151, 159), "yyyyMMdd"));
-			result.setDestinationName(paymentRequestDetails.substring(109, 139));
+		if ("ZTE".equalsIgnoreCase(billPaymentInquiry.getIntegrationCode())) {
+			if (StringUtils.isNotBlank(paymentRequestDetails) && paymentRequestDetails.length()>=183) {
+				result.setBillDate(formatBillDate(paymentRequestDetails.substring(151, 159), "yyyyMMdd"));
+				result.setDestinationName(paymentRequestDetails.substring(109, 139));
+			}
 		}else{
-			billPayments = billPaymentsService.get(query);
+			BillPaymentsQuery query = new BillPaymentsQuery();
+			query.setSctlID(sctl.getID());
+			List<BillPayments> billPayments = billPaymentsService.get(query);
 			if(billPayments != null && billPayments.size() > 0){
 				BillPayments billPayment = billPayments.get(0);
 	
@@ -416,7 +424,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		result.setMultixResponse(response);
 		result.setDebitAmount(sctl.getTransactionAmount());
 		result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-		result.setServiceCharge(transaction.getAmountTowardsCharges());
+		result.setServiceCharge(sctl.getCalculatedCharge().add(operatorChgs));
 		addCompanyANDLanguageToResult(sourceMDN,result);
 		result.setParentTransactionID(transactionResponse.getTransactionId());
 		result.setTransferID(transactionResponse.getTransferId());

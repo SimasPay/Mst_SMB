@@ -90,4 +90,10 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		
 		return constantFieldsMap.get("billpay");
 	}
+
+	@Override
+	public MCEMessage constructResponseMessage(MCEMessage mceMceMessage) {
+		
+		return null;
+	}
 }

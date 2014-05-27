@@ -183,27 +183,16 @@
     <route>
         <!--route for biller inquiry-->
         <from uri="direct:bayarBillerInquiryCommunicatorQueue"/>
-		<filter>
-			<simple>${body.response.result} == '0'</simple>
-			<setHeader headerName="eventContext">
+        <to uri="bean:bayarBillPayInquiryCommunicator?method=constructResponseMessage"/>
+		<setHeader headerName="eventContext">
 				<constant>BILLER_INQUIRY_COMPLETED</constant>
-			</setHeader>
-			<multicast>
-				<to	uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse" />
-				<to uri="jms:postCommunicationBillerQueue?disableReplyTo=true" />
-			</multicast>
-		</filter>
-		<filter>	
-			<simple>${body.response.result} != '0'</simple>
-			<setHeader headerName="eventContext">
-				<constant>SRC_SUSPENSE_INQ_FAILED</constant>
-			</setHeader>
-			<multicast>
-				<to	uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse" />
-				<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true" />
-			</multicast>
-		</filter> 
+		</setHeader>
+		<multicast>
+			<to	uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse" />
+			<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true" />
+		</multicast>
     </route>
+    
     <route>
         <!--route for biller confirmation-->
         <from uri="jms:bayarBillerConfirmationQueue?disableReplyTo=true"/>
@@ -434,31 +423,7 @@ Amount should be reverted from suspense and charges to source and failure notifi
 		    <from uri="jms:bpSuspenseToDestBRQueue?disableReplyTo=true" />
 			<to uri="jms:bayarSuspenseToDestBRQueue?disableReplyTo=true"/>
 	</route>
-	<route>
-		<from uri="jms:postCommunicationBillerQueue?disableReplyTo=true" />
-		<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspense" />
-			<filter>
-				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
-				<filter>
-				<!--money transfer inquiry is completed, proceed to bill payment inquiry-->
-				<simple>${body.response.result} == '0'</simple>
-				<setHeader headerName="eventContext">
-					<constant>BILLER_INQUIRY_COMPLETED</constant>
-				</setHeader>
-				<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-			</filter>
-			<filter>
-				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
-				<filter>
-				<simple>${body.response.result} != '0'</simple>
-				<setHeader headerName="eventContext">
-					<constant>SRC_SUSPENSE_INQ_FAILED</constant>
-				</setHeader>
-				<to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-			</filter>
-	</route>
+
 	</camelContext>
 	
 	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">

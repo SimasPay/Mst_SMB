@@ -83,6 +83,8 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 	
 	public abstract CFIXMsg constructReplyMessage(Object response, CFIXMsg requestFixMessage);
 	
+	public abstract MCEMessage constructResponseMessage(MCEMessage mceMceMessage);
+	
 	public abstract String getMethodName(MCEMessage mceMessage);
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)

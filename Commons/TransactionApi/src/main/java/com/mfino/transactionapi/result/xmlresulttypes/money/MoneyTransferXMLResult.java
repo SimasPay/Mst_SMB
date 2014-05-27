@@ -66,6 +66,12 @@ public class MoneyTransferXMLResult extends XMLResult
 	    getXmlWriter().writeEndElement();
 	}
 	
+	if (getNominalAmount() != null) {
+		getXmlWriter().writeStartElement(XMLResultConstants.NOMINAL_AMOUNT);
+		getXmlWriter().writeCharacters(numberFormat.format(getNominalAmount()),true);
+		getXmlWriter().writeEndElement();
+	}
+	
 	writeEndOfDocument();
     }
 
