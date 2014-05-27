@@ -267,14 +267,14 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 						billPayRefID = transactionResponse.getBillPaymentReferenceID();
 					if(transactionResponse.getOperatorMsg() != null)
 						operatorMsg = transactionResponse.getOperatorMsg();
-					billPaymentInquiry.setNominalAmount(billPaymentInquiry.getAmount().subtract(operatorChgs));
 				}
 			//}
 		}
-		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && 
-				(CmFinoFIX.PaymentMode_HubFullAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()))) {
+		if(CmFinoFIX.PaymentMode_HubFullAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) &&
+				billPaymentInquiry.getNominalAmount() != null)  {
 			operatorChgs = billPaymentInquiry.getAmount().subtract(billPaymentInquiry.getNominalAmount());
 		}
+		billPaymentInquiry.setNominalAmount(billPaymentInquiry.getAmount().subtract(operatorChgs));
 		// add service charge to amount
 
 		ServiceCharge serviceCharge=new ServiceCharge();
