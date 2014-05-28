@@ -65,8 +65,10 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 			billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
 			billPayResponse.setServiceChargeTransactionLogID(sctlId);
 			
-			if(wsResponseElement.getVoucherToken() != null)				
+			if(wsResponseElement.getVoucherToken() != null)	{			
 				billPayments.setInfo3(wsResponseElement.getVoucherToken());//In case of PLN prepaid Token
+				billPayResponse.setRechargePin(wsResponseElement.getVoucherToken());
+			}
 
 			log.info("BayarBillPayCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 		}else{	

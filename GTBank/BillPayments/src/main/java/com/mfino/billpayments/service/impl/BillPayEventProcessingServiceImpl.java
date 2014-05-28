@@ -54,7 +54,8 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			
 			if(BillPayConstants.SRC_SUSPENSE_INQ_FAILED.equals(eventContext)){
 				sendNotification = true;
-				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
+				//below statement commented as part of bayar.net bill payments to include proper reason for internal failure
+				//backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
 			}
 			else if(BillPayConstants.SRC_SUSPENSE_CONFIRMATION_FAILED.equals(eventContext)){
 				sendNotification = true;
@@ -151,6 +152,8 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 				response.setNominalAmount(billPaymentsRecord.getNominalAmount());
 			if(billPaymentsRecord.getInfo3()!=null)
 				response.setAdditionalInfo(billPaymentsRecord.getInfo3());
+			if(billPaymentsRecord.getOperatorCharges() !=null)
+				response.setCharges(sctl.getCalculatedCharge().add(billPaymentsRecord.getOperatorCharges()));
 		}
 
 		return mceMessage;

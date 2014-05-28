@@ -581,6 +581,11 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			if(rawNotificationText.contains("$(Amount)")){
 				rawNotificationText = rawNotificationText.replace("$(Amount)", (backendResponse.getAmount() != null ? numberFormat.format(backendResponse.getAmount()) : ""));
 			}
+			
+			//For Bill Payment to separate out actual bill amount and the third party fee, if any
+			if(rawNotificationText.contains("$(NominalAmount)")){
+				rawNotificationText = rawNotificationText.replace("$(NominalAmount)", (backendResponse.getNominalAmount() != null ? numberFormat.format(backendResponse.getNominalAmount()) : ""));
+			}
 
 			if(rawNotificationText.contains("$(ReceiverMDN)")){
 				rawNotificationText = rawNotificationText.replace("$(ReceiverMDN)", safeString(backendResponse.getReceiverMDN()));
@@ -763,10 +768,14 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			if (rawNotificationText.contains("$(DestinationCardAlias)")) {
 				rawNotificationText = rawNotificationText.replace("$(DestinationCardAlias)", safeString(destPocket != null ?destPocket.getCardAlias() : ""));
 			}
-			if (rawNotificationText.contains("$(RechargePin)") && StringUtils.isNotBlank(backendResponse.getRechargePin())) {
-				rawNotificationText = rawNotificationText.replace("$(RechargePin)", " And RechargePin is " + safeString(backendResponse.getRechargePin()));
+			//RechargePin variable is being used to populate VoucherToken which we get as part of PLN transaction for bill payments
+			if (rawNotificationText.contains("$(VoucherToken)") && StringUtils.isNotBlank(backendResponse.getRechargePin())) {
+				rawNotificationText = rawNotificationText.replace("$(VoucherToken)", " Voucher Token - " + safeString(backendResponse.getRechargePin()));
 			} else {
-				rawNotificationText = rawNotificationText.replace("$(RechargePin)", "");
+				rawNotificationText = rawNotificationText.replace("$(VoucherToken)", "");
+			}
+			if (rawNotificationText.contains("$(OperatorMessage)")) {
+				rawNotificationText = rawNotificationText.replace("$(OperatorMessage)", safeString(backendResponse.getOperatorMessage()));
 			}
 			if (rawNotificationText.contains("$(NotificationCode)")) {
 				StringBuilder NotificationCode = new StringBuilder();
