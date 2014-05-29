@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.result.xmlresulttypes.subscriber;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -167,12 +168,6 @@ public class LastNTxnsXMLResult extends XMLResult {
 					getXmlWriter().writeCharacters(ct.getGeneratedTxnDescription(),false);
 					getXmlWriter().writeEndElement();
 
-					if (ct.getAmount() != null) {
-						getXmlWriter().writeStartElement("amount");
-						getXmlWriter().writeCharacters(numberFormat.format(ct.getAmount()),false);
-						getXmlWriter().writeEndElement();
-					}
-					
 					getXmlWriter().writeStartElement("isCredit");
 					boolean isCredit ;
 					if(ct.getPocketBySourcePocketID().getID().equals(getSourcePocket().getID())){
@@ -183,6 +178,16 @@ public class LastNTxnsXMLResult extends XMLResult {
 					}
 					getXmlWriter().writeCharacters(String.valueOf(isCredit),false);
 					getXmlWriter().writeEndElement();
+					
+					if (ct.getAmount() != null) {
+						BigDecimal txnAmount = ct.getAmount();
+						if (!isCredit) {
+							txnAmount = txnAmount.add(ct.getCharges());
+						}
+						getXmlWriter().writeStartElement("amount");
+						getXmlWriter().writeCharacters(numberFormat.format(txnAmount),false);
+						getXmlWriter().writeEndElement();
+					}
 
 					getXmlWriter().writeEndElement();
 				}

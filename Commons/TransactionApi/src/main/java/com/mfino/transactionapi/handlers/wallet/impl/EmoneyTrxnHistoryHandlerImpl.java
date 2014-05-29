@@ -383,9 +383,20 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		{
 			CommodityTransfer ct = it.next();
 			String txnType = ct.getGeneratedTxnDescription();
+			boolean isCredit ;
+			if (ct.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+				isCredit = false;
+			}
+			else{
+				isCredit = true;
+			}
+			BigDecimal txnAmount = ct.getAmount();
+			if (!isCredit) {
+				txnAmount = txnAmount.add(ct.getCharges());
+			}
 			String rowContent = dateFormat.format(ct.getStartTime())
 								+ "|"+ txnType
-								+ "|"+ "Rp. " + MfinoUtil.getNumberFormat().format(ct.getAmount())  + (ct.getPocketBySourcePocketID().getID().equals(pocket.getID())?"(-)":"(+)");
+								+ "|"+ "Rp. " + MfinoUtil.getNumberFormat().format(txnAmount)  + (! isCredit ? "(-)" : "(+)");
 			pdfDocument.addRowContent(rowContent);
 		}
 		pdfDocument.closePdfReport();		
@@ -449,7 +460,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoiceNumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInfo1() : "");
+			txnType = LanguageTranslator.translate(language, "QR Payment") + ((bp != null) ? bp.getInfo1() : "");
 		}else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);
 		}
