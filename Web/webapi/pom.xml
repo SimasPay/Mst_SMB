@@ -116,6 +116,7 @@
 										<include>defaultJson.txt</include>
 										<include>errorJson.txt</include>
 										<include>category.help.txt</include>
+										<include>category.addressList.txt</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>

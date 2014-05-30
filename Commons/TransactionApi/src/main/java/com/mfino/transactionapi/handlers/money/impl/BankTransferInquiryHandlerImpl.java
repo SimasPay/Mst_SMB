@@ -130,6 +130,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());
 		sc.setTransactionLogId(transactionsLog.getID());
 		sc.setTransactionIdentifier(bankAccountToBankAccount.getTransactionIdentifier());
+		sc.setDescription(transactionDetails.getDescription());
 		
 		if(transactionDetails.getDestinationBankAccountNo() != null){
 			sc.setOnBeHalfOfMDN(transactionDetails.getDestinationBankAccountNo());

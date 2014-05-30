@@ -1,0 +1,84 @@
+{
+  "totalCount": 2,
+  "version": 0.1,
+  "success": true,
+  "addressList": [
+    {
+		 "provision": "provision 1",
+		 "areas": [
+		 	{
+		 		"areaName": "area 1",
+		 		"locations": [
+		 			{
+		 				"location": {
+		 					"addressLine1": "Address Line 1",
+		 					"addressLine2": "Address Line 2",
+		 					"addressLine3": "Address Line 3",
+		 					"galleryCode": "123",
+		 					"businessHours": {
+		 						"weekDays": "9 to 6",
+		 						"saturday": "9 to 1",
+		 						"sunday": "Off"
+		 					}
+	 					}
+		 			},
+		 			{
+		 				"location": {
+		 					"addressLine1": "Address Line 12",
+		 					"addressLine2": "Address Line 22",
+		 					"addressLine3": "Address Line 32",
+		 					"galleryCode": "234",
+		 					"businessHours": {
+		 						"weekDays": "9 to 6",
+		 						"saturday": "9 to 1",
+		 						"sunday": "Off"
+		 					}
+	 					}
+		 			}					
+		 		]
+		 	}
+		 ]
+    },
+    {
+		 "provision": "provision 2",
+		 "areas": [
+		 	{
+		 		"areaName": "area 2",
+		 		"locations": [
+		 			{
+		 				"location": {
+		 					"addressLine1": "Address Line 21",
+		 					"addressLine2": "Address Line 22",
+		 					"addressLine3": "Address Line 23",
+		 					"galleryCode": "567",
+		 					"businessHours": {
+		 						"weekDays": "9.30 to 6.30",
+		 						"saturday": "9.30 to 1.30",
+		 						"sunday": "10 to 1"
+		 					}
+	 					}
+		 			}					
+		 		]
+		 	},
+		 	{
+		 		"areaName": "area 3",
+		 		"locations": [
+		 			{
+		 				"location": {
+		 					"addressLine1": "Address Line 31",
+		 					"addressLine2": "Address Line 32",
+		 					"addressLine3": "Address Line 33",
+		 					"galleryCode": "5678",
+		 					"businessHours": {
+								"weekDays": "9 to 6.30",
+		 						"saturday": "9 to 1.30",
+		 						"sunday": "Off"
+		 					}
+	 					}
+		 			}					
+		 		]
+		 	}			
+		 ]
+    } 	
+  ]
+}

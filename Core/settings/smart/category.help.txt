@@ -1,6 +1,6 @@
 {
-  "totalCount": 3,
-  "version": 0.2,
+  "totalCount": 4,
+  "version": 0.1,
   "success": true,
   "_comment": "Use | to separate the each line of description",
   "helpContent": [
@@ -21,6 +21,12 @@
       "header": "",
       "body": "",
       "footer": ""
-    }       
+    },
+    {
+      "topic": "Cash out",
+      "header": "",
+      "body": "",
+      "footer": ""
+    }        
   ]
 }

@@ -234,6 +234,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		sc.setTransactionAmount(transferInquiry.getAmount());
 		sc.setTransactionLogId(transactionsLog.getID());
 		sc.setTransactionIdentifier(transferInquiry.getTransactionIdentifier());
+		sc.setDescription(transactionDetails.getDescription());
 		
 		try{
 			transaction =transactionChargingService.getCharge(sc);

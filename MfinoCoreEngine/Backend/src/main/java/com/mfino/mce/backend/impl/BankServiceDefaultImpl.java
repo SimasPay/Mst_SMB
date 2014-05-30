@@ -2213,10 +2213,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								pct.setISO8583_MerchantType(CmFinoFIX.ISO8583_Mobile_Operator_Merchant_Type_Other);
 							}
 								coreDataWrapper.save(sourceSubcriberMdn);
-							
-								coreDataWrapper.save(sourcePocket);
-							
-								coreDataWrapper.save(destinationPocket);
+								
+								if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+									coreDataWrapper.save(sourcePocket);
+								}
+								if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+									coreDataWrapper.save(destinationPocket);
+								}								
 							
 								coreDataWrapper.save(pct);
 							
@@ -2242,9 +2245,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											.getNotificationCode());
 
 									coreDataWrapper.save(pct);
-									coreDataWrapper.save(sourcePocket);
+									if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+										coreDataWrapper.save(sourcePocket);
+									}
+									if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+										coreDataWrapper.save(destinationPocket);
+									}
 //									coreDataWrapper.save(suspensePocket);
-									coreDataWrapper.save(destinationPocket);
 //									coreDataWrapper.save(taxPocket);
 									handlePCTonSuccess(pct);
 									sctlStlmtMap

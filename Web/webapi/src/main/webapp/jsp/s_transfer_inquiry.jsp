@@ -60,6 +60,10 @@
 		<td><input type="text" name="destPocketCode" />(Emoney-1 ,Bank-2)</td>
 	</tr>
 	<tr>
+		<td>Description</td>
+		<td><input type="text" name="description" /></td>
+	</tr>	
+	<tr>
 		<td>Destination First Name</td>
 		<td><input type="text" name="subFirstName" value="" /></td>
 	</tr>
