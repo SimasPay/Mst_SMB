@@ -105,7 +105,8 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 	private void sendSMS(String mdn, String oneTimePin, String otpExpirationTime, Long tokenID) {
 		SMSServiceImpl smsService = new SMSServiceImpl();
 		//smsService.setSctlId(mdnOtp.getServiceChargeTransactionLogID());		
-		String message = "<st>" + tokenID + "###" + oneTimePin + "</st>";
+//		String message = "<st>" + tokenID + "###" + oneTimePin + "</st>";
+		String message = "Kode verifikasi Uangku anda adalah " + oneTimePin + " (no ref: " + tokenID + ")";
 		smsService.setDestinationMDN(mdn);
 		smsService.setMessage(message);
 		smsService.send();

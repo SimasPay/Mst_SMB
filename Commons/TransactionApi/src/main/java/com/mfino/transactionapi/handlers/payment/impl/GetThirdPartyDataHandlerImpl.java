@@ -115,7 +115,7 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 				|| SystemParameterKeys.CATEGORY_POSTPAID.equals(dataCategory) || SystemParameterKeys.CATEGORY_PREPAIDPLN.equals(dataCategory)
 				|| SystemParameterKeys.CATEGORY_POSTPAIDPLN.equals(dataCategory) || SystemParameterKeys.CATEGORY_PREPAIDPHONE.equals(dataCategory)
 				|| SystemParameterKeys.CATEGORY_POSTPAIDPHONE.equals(dataCategory) || SystemParameterKeys.CATEGORY_HELP.equals(dataCategory)
-				|| SystemParameterKeys.CATEGORY_ADDRESSLIST.equals(dataCategory)){
+				|| SystemParameterKeys.CATEGORY_UPGRADE_ADDRESSLIST.equals(dataCategory) || SystemParameterKeys.CATEGORY_CASHOUT_ADDRESSLIST.equals(dataCategory)){
 			return true;
 		}
 		return isSystemParameterExists;
