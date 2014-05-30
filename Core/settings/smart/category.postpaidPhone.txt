@@ -28,7 +28,7 @@
 			    "paymentMode": "HubZeroAmount"
     },
     {
-				"name": "ESIA Pascabayar",
+				"name": "Esia Pascabayar",
 				"code": "TAG009",
 				"denomCode":"TAG009",
 			    "paymentMode": "HubZeroAmount"
