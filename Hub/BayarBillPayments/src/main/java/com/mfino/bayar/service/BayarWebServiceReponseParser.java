@@ -114,6 +114,12 @@ public class BayarWebServiceReponseParser {
 					if(data.has("transaction_id")){
 						response.setTransactionId(data.getInt("transaction_id"));	
 					}
+					if(data.has("transaction_status")){
+						response.setTrxnStatus(data.getString("transaction_status"));
+					}
+					if(data.has("transaction_date")){
+						response.setTrxnDate(data.getString("transaction_date"));
+					}
 				}
 			}
 

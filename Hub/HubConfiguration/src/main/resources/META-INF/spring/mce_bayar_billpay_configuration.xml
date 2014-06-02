@@ -43,6 +43,12 @@
 	<osgi:reference id="transactionLogServiceCoreImpl" bean-name="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService"/>
 		
 	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+	
+	<bean id="billpaymentsPendingClearanceService" class="com.mfino.billpayments.service.impl.BillpaymentsPendingClearanceServiceImpl">
+		<property name="billPaymentsService" ref="billPaymentsService" />
+		<property name="sessionFactory" ref="sessionFactory"/>		
+		<property name="integrationCode" value="bayar"/>
+	</bean>
 		
 	<bean id="bayarHttpCommunicator" class="com.mfino.bayar.communicator.BayarHttpCommunicator" abstract="true">
 		<property name="billPaymentsService" ref="billPaymentsService"/>
@@ -53,6 +59,7 @@
 				<entry key="topup" value="buy_voucher" />
 				<entry key="billpay_inquiry" value="inquiry_bill" />
 				<entry key="billpay" value="pay_bill" />
+				<entry key="check_transaction" value="check_transaction" />
 			</map>
 		</property>
 		<property name="httpClient" ref="bayarHttpClient" /> 
@@ -81,6 +88,10 @@
 		
 	<bean id="bayarBillPayCommunicator"
 		class="com.mfino.bayar.communicator.BayarBillPayCommunicator" 
+		parent="bayarHttpCommunicator" />
+		
+	<bean id="bayarChkTrxnCommunicator"
+		class="com.mfino.bayar.communicator.BayarCheckTransactionCommunicator" 
 		parent="bayarHttpCommunicator" />
 	
 	<bean id="propertyConfigurer"
@@ -163,6 +174,20 @@
 			</filter>		
 		</filter>
 		<filter>
+			<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayPendingRequest'</simple> <!-- pending resolve Flow -->
+			<to uri="bean:billPayPendingResolveService?method=resolvePendingTransaction"/>
+			<filter>
+				<simple>${body.destinationQueue} == null</simple>
+				<to uri="jms:notificationQueue?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${body.destinationQueue} != null</simple>
+				<recipientList>
+					<simple>${body.nextQueue},jms:notificationQueue?disableReplyTo=true</simple>
+				</recipientList>
+			</filter>
+		</filter>
+		<filter>
 			<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillInquiry'</simple> <!-- billInquiry Flow -->
 			<to uri="bean:bayarBillPayInquiryCommunicator?method=process"/>
 			<to uri="jms:notificationQueue?disableReplyTo=true"/>
@@ -239,6 +264,19 @@
         </multicast>
     </route>
     <route>
+        <!--route for biller confirmation-->
+        <from uri="direct:bayarChkTrxnCommunicatorQueue"/>
+        <to uri="bean:bayarChkTrxnCommunicator?method=process"/>
+        <setHeader headerName="eventContext">
+            <constant>BILLER_CONFIRMATION_COMPLETED</constant>
+        </setHeader>
+        <multicast>
+            <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
+            <to uri="direct:billPayConfirmationResponseQueue"/>
+        </multicast>
+    </route>
+    
+    <route>
         <!--Handle bill pay confirmation response-->
         <from uri="direct:billPayConfirmationResponseQueue"/>
         <to uri="bean:billPayBillerIntegrationService?method=handleBillPayConfirmationResponse"/>
@@ -254,7 +292,7 @@
             </multicast>
         </filter>
         <filter>
-            <simple>${body.response.result} == '68'</simple>
+            <simple>${body.response.result} == '8888'</simple>
             <setHeader headerName="eventContext">
                 <!--check if response == CmFinoFIX.ResponseCode_Success-->
                 <constant>BILLER_CONFIRMATION_TIMEOUT</constant>
@@ -266,7 +304,7 @@
             </multicast>
         </filter>
 		<filter>
-                <simple>${body.response.result} != '0'</simple>
+                <simple>${body.response.result} == '2' || ${body.response.result} != '0'</simple>
                 <setHeader headerName="eventContext">
                     <!--check if response == CmFinoFIX.ResponseCode_Success
 Amount should be reverted from suspense and charges to source and failure notification should be sent out, coming soon :)-->
@@ -371,6 +409,21 @@ Amount should be reverted from suspense and charges to source and failure notifi
         </filter>
     </route>
 	
+	<route>
+	    <from uri="timer://bayarPendingBillPayClearTimer?fixedRate=true&amp;period={{quickteller_billers_fetch_time}}"/>
+        <log message="mce_bayar_billpay_configuration#fromuri=bayarPendingBillPayClearTimer"/>
+        <delay>
+        	<!-- Delays the PendingBillPayClearTimer by 600 seconds after restarting the XML-->
+            <constant>600000</constant>
+        </delay>
+        <split>
+            <method method="clearBillerConfirmationPendingTransactions" bean="billpaymentsPendingClearanceService"></method>
+			<throttle timePeriodMillis="15000">
+				<constant>1</constant>	            
+                <to uri="direct:bayarChkTrxnCommunicatorQueue"/>
+	        </throttle>
+        </split>
+    </route>
     <route>
         <from uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
         <setHeader headerName="eventContext">

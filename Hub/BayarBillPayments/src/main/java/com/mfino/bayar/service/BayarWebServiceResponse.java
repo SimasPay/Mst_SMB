@@ -53,6 +53,10 @@ public class BayarWebServiceResponse {
 	
 	private Integer totalBill;
 	
+	private String trxnStatus;
+	
+	private String trxnDate;
+	
 	
 	public String getBillReference() {
 		return billReference;
@@ -228,6 +232,22 @@ public class BayarWebServiceResponse {
 
 	public void setTotalBill(Integer totalBill) {
 		this.totalBill = totalBill;
+	}
+
+	public String getTrxnStatus() {
+		return trxnStatus;
+	}
+
+	public void setTrxnStatus(String trxnStatus) {
+		this.trxnStatus = trxnStatus;
+	}
+
+	public String getTrxnDate() {
+		return trxnDate;
+	}
+
+	public void setTrxnDate(String trxnDate) {
+		this.trxnDate = trxnDate;
 	}
 	
 }
