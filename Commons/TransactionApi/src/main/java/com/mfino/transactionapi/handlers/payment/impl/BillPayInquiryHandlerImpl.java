@@ -246,29 +246,34 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				}
 			}
 		}
+		addCompanyANDLanguageToResult(sourceMDN, result);
 		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && 
 				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()))) {
 			billPaymentInquiry.setNarration("online");
 			// Getting the Bill amount for the given online transaction.
-			//if ("ZTE".equalsIgnoreCase(billPaymentInquiry.getIntegrationCode())) {
-				response = doBillInquiry(billPaymentInquiry); 
-				transactionResponse = checkBackEndResponse(response);
-				
-				if(transactionResponse != null && transactionResponse.isResult()) {
-					billPaymentInquiry.setAmount(transactionResponse.getAmount());
-					paymentRequestDetails = transactionResponse.getPaymentInquiryDetails();
-					if(transactionResponse.getCharges() != null)
-						operatorChgs = transactionResponse.getCharges();
-					if(transactionResponse.getDestinationUserName() != null)
-						destUserName = transactionResponse.getDestinationUserName();
-					if(transactionResponse.getAdditionalInfo() != null)
-						additionalInfo = transactionResponse.getAdditionalInfo();
-					if(transactionResponse.getBillPaymentReferenceID() != null)
-						billPayRefID = transactionResponse.getBillPaymentReferenceID();
-					if(transactionResponse.getOperatorMsg() != null)
-						operatorMsg = transactionResponse.getOperatorMsg();
-				}
-			//}
+			response = doBillInquiry(billPaymentInquiry); 
+			transactionResponse = checkBackEndResponse(response);
+			
+			if(transactionResponse != null && transactionResponse.isResult()) {
+				billPaymentInquiry.setAmount(transactionResponse.getAmount());
+				paymentRequestDetails = transactionResponse.getPaymentInquiryDetails();
+				if(transactionResponse.getCharges() != null)
+					operatorChgs = transactionResponse.getCharges();
+				if(transactionResponse.getDestinationUserName() != null)
+					destUserName = transactionResponse.getDestinationUserName();
+				if(transactionResponse.getAdditionalInfo() != null)
+					additionalInfo = transactionResponse.getAdditionalInfo();
+				if(transactionResponse.getBillPaymentReferenceID() != null)
+					billPayRefID = transactionResponse.getBillPaymentReferenceID();
+				if(transactionResponse.getOperatorMsg() != null)
+					operatorMsg = transactionResponse.getOperatorMsg();
+			}
+			else {
+				result.setCode(transactionResponse.getCode());
+				result.setMessage(transactionResponse.getMessage());
+				result.setMultixResponse(response);
+				return result;
+			}
 		}
 		if(CmFinoFIX.PaymentMode_HubFullAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) &&
 				billPaymentInquiry.getNominalAmount() != null)  {
@@ -425,7 +430,6 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		result.setDebitAmount(sctl.getTransactionAmount());
 		result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
 		result.setServiceCharge(sctl.getCalculatedCharge().add(operatorChgs));
-		addCompanyANDLanguageToResult(sourceMDN,result);
 		result.setParentTransactionID(transactionResponse.getTransactionId());
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
