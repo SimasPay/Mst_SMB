@@ -31,7 +31,7 @@
 	</tr>
 	<tr>
 		<td>CategoryId</td>
-		<td><input type="text" name="favoriteCategoryID" value="" /></td>
+		<td><input type="text" name="favoriteCategoryID" value="" /> Use ',' to give multiple favorite category details</td>
 	</tr>
 	<tr>
 		<td>channelId</td>

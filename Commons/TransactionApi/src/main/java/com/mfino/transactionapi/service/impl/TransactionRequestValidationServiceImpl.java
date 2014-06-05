@@ -1020,7 +1020,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 			invalidParam = ApiConstants.PARAMETER_SOURCE_PIN;
 		} else if(StringUtils.isBlank(transactionDetails.getChannelCode())) {
 			invalidParam = ApiConstants.PARAMETER_CHANNEL_ID;
-		} else if(StringUtils.isBlank(transactionDetails.getFavoriteCategoryID()) || !StringUtils.isNumeric(transactionDetails.getFavoriteCategoryID())) {
+		} else if(StringUtils.isBlank(transactionDetails.getFavoriteCategoryID())) {
 			invalidParam = ApiConstants.PARAMETER_FAVORITE_CATEGORY_ID;
 		} else if(!transactionDetails.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON)
 				&& StringUtils.isBlank(transactionDetails.getFavoriteValue())) {

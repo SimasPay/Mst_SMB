@@ -1,6 +1,5 @@
 package com.mfino.transactionapi.handlers.account.impl;
 
-import java.io.PrintWriter;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -14,13 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.SubscriberFavoriteQuery;
-import com.mfino.domain.FavoriteCategory;
 import com.mfino.domain.SubscriberFavorite;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.XMLResult;
-import com.mfino.service.FavoriteCategoryService;
 import com.mfino.service.SubscriberFavoriteService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
@@ -48,10 +45,6 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 	private SubscriberFavoriteService subscriberFavoriteService;
 	
 	@Autowired
-	@Qualifier("FavoriteCategoryServiceImpl")
-	private FavoriteCategoryService favoriteCategoryService;
-	
-	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
 	
@@ -63,7 +56,7 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 	public XMLResult handle(TransactionDetails transactionDetails) {		
 		log.info("Handling Generate Favorite JSON webapi request");		
 		String favCategoryID = transactionDetails.getFavoriteCategoryID();
- 		Long favoriteCategoryID = Long.valueOf(favCategoryID);		
+		String[] favCategories = favCategoryID.split(",");
  				
 		XMLResult result = new ChangeEmailXMLResult();
 		
@@ -85,29 +78,37 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 		}
  		addCompanyANDLanguageToResult(subscriberMDN, result);
  		Long subscriberID = subscriberMDN.getSubscriber().getID();
- 		//Check if the favorite category exists 		
- 		FavoriteCategory favoriteCategory = favoriteCategoryService.getByID(favoriteCategoryID);
- 		if(favoriteCategory == null) {
- 			log.error("Fav category with the ID: " + favoriteCategoryID + " not exists");
- 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing); 			
- 			return result;
+
+ 		JSONArray totalJsonFavoriteArray = new JSONArray();
+ 		Long fcId = 0l;
+ 		for (int i=0; i<favCategories.length; i++) {
+ 			try {
+				fcId = Long.valueOf(favCategories[i]);
+			} catch (NumberFormatException e) {
+	 			log.error("Invalid Fav category with the ID: " + favCategories[i]);
+	 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing); 			
+	 			return result;
+			}
+ 	 		getSubFavByFavoriteCategory(fcId, subscriberID, totalJsonFavoriteArray);
  		}
-		
- 		SubscriberFavoriteQuery subscriberFavoriteQuery = new SubscriberFavoriteQuery();
+ 		result.setMessage(totalJsonFavoriteArray.toString());
+ 		return result;
+	}
+
+	private void getSubFavByFavoriteCategory(Long favoriteCategoryID, Long subscriberID, JSONArray jsonFavoriteArray) {
+		SubscriberFavoriteQuery subscriberFavoriteQuery = new SubscriberFavoriteQuery();
  		subscriberFavoriteQuery.setFavoriteCategoryID(favoriteCategoryID);
  		subscriberFavoriteQuery.setSubscriberID(subscriberID);
  		List<SubscriberFavorite> list = subscriberFavoriteService.getSubscriberFavoriteByQuery(subscriberFavoriteQuery);
- 		JSONArray jsonFavoriteArray = new JSONArray();
  		for(SubscriberFavorite favorite: list) {
- 			JSONObject jsonFavoriteNode = toJson(favorite);
+ 			JSONObject jsonFavoriteNode = toJson(favorite, favoriteCategoryID);
  			jsonFavoriteArray.add(jsonFavoriteNode);
  		}
- 		result.setMessage(jsonFavoriteArray.toString());
- 		return result;
 	}
 	
-	private JSONObject toJson(SubscriberFavorite favorite) {
+	private JSONObject toJson(SubscriberFavorite favorite, Long favoriteCategoryID) {
 		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CATEGORY_ID,	favoriteCategoryID);
 		jsonObject.put(ApiConstants.PARAMETER_SUBSCRIBER_FAVORITE_ID, favorite.getID());
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CODE, favorite.getFavoriteCode());
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_LABEL, favorite.getFavoriteLabel());
