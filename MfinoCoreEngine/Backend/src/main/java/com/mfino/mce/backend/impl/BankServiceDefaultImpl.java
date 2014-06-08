@@ -2446,9 +2446,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							}
 								coreDataWrapper.save(sourceSubcriberMdn);
 
-								coreDataWrapper.save(sourcePocket);
-							
-								coreDataWrapper.save(destinationPocket);
+								if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+									coreDataWrapper.save(sourcePocket);
+								}
+								if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+									coreDataWrapper.save(destinationPocket);
+								}							
 							
 								coreDataWrapper.save(pct);
 							
@@ -2480,16 +2483,19 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												.getNotificationCode());
 
 										coreDataWrapper.save(pct);
-										coreDataWrapper.save(sourcePocket);
-//										coreDataWrapper.save(suspensePocket);
-										coreDataWrapper.save(destinationPocket);
+										if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+											coreDataWrapper.save(sourcePocket);
+										}
+										if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+											coreDataWrapper.save(destinationPocket);
+										}										
 
 										returnFix
 												.setResult(CmFinoFIX.ResponseCode_Success);
 
 										handlePCTonSuccess(pct);
 									
-
+									returnFix.setTransferID(pct.getID());
 									returnFix.setSourceMDNBalance(moneyService.round(sourcePocket.getCurrentBalance()));
 									returnFix.setDestinationMDNBalance(moneyService.round(destinationPocket.getCurrentBalance()));
 									returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyCompleteToSender.getInternalErrorCode());
@@ -2525,9 +2531,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									integrationSummaryService.logIntegrationSummary(settlementOfCharge.getServiceChargeTransactionLogID(), pct.getID(), "BANK", settlementOfCharge.getTransactionID().toString(), null, null, null,settlementOfCharge.getReceiveTime());
 
 										coreDataWrapper.save(pct);
-
-										coreDataWrapper.save(sourcePocket);
-//										coreDataWrapper.save(suspensePocket);
+										if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+											coreDataWrapper.save(sourcePocket);
+										}										
 
 										/*
 										 * Send ISO message to transfer amount,
