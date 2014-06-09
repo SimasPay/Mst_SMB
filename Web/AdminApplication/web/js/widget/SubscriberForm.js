@@ -313,7 +313,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     	   this.store.insert(0,record);
        },
     onStatusDropdown : function(status){
-    	 var items = ['sub.form.KYCLevel','sub.form.firstname','sub.form.lastname','sub.form.nickname','sub.form.dateofbirth','sub.form.city','sub.form.email','sub.form.applicationid','sub.form.plotno','sub.form.streetaddress','sub.form.regionname','sub.form.country','sub.form.idtype','sub.form.idnumber','sub.form.expirationtime','sub.form.proofofaddress','sub.form.typeofbankaccount','sub.form.bankaccid','SMS','Email1','Suspended','SecurityLocked','AbsoluteLocked','NoFundMovement','sub.form.securityquestion','sub.form.secretanswer','sub.form.birthplace','sub.form.nationality','sub.form.companyname','sub.form.subscribermobilecompany','sub.form.coi','sub.form.authofirstname','sub.form.authofirstname','sub.form.autholastname','sub.form.authorizingpersonid','sub.form.authodateofbirth','sub.form.authoiddescription','sub.form.status','sub.form.language','sub.form.currency','sub.form.timezone','sub.form.kinname','sub.form.kinmdn','sub.form.streetname','sub.form.group','sub.form.accountnumber','sub.form.bankPocketTemplate'];
+    	 var items = ['sub.form.KYCLevel','sub.form.firstname','sub.form.lastname','sub.form.nickname','sub.form.dateofbirth','sub.form.city','sub.form.email','sub.form.applicationid','sub.form.plotno','sub.form.streetaddress','sub.form.regionname','sub.form.country','sub.form.idtype','sub.form.idnumber','sub.form.expirationtime','sub.form.proofofaddress','sub.form.typeofbankaccount','sub.form.bankaccid','SMS','Email1','Suspended','SecurityLocked','AbsoluteLocked','NoFundMovement','sub.form.securityquestion','sub.form.secretanswer','sub.form.birthplace','sub.form.nationality','sub.form.companyname','sub.form.subscribermobilecompany','sub.form.coi','sub.form.authofirstname','sub.form.authofirstname','sub.form.autholastname','sub.form.authorizingpersonid','sub.form.authodateofbirth','sub.form.authoiddescription','sub.form.status','sub.form.language','sub.form.currency','sub.form.timezone','sub.form.kinname','sub.form.kinmdn','sub.form.streetname','sub.form.group','sub.form.accountnumber','sub.form.bankPocketTemplate','sub.form.otherMDN'];
 
     	if(status == CmFinoFIX.MDNStatus.PendingRetirement || status==CmFinoFIX.MDNStatus.Retired){
             for(var i=0;i<items.length;i++){
@@ -1123,6 +1123,16 @@ var subsBasicDetail = {
 	displayField: CmFinoFIX.message.JSPocketTemplateConfig.Entries.PocketTemplateDescription._name,
 	valueField : CmFinoFIX.message.JSPocketTemplateConfig.Entries.ID._name,
 	name: CmFinoFIX.message.JSSubscriberMDN.Entries.PocketTemplateConfigID._name
+},
+{
+    xtype : 'textfield',
+    fieldLabel: _("Other MDN:"),
+    itemId : 'sub.form.otherMDN',
+    vtype:'smarttelcophoneAdd',
+    labelSeparator : '',
+    anchor : '100%',
+    disabled: false,
+    name: CmFinoFIX.message.JSSubscriberMDN.Entries.OtherMDN._name            
 }
 ]
 };

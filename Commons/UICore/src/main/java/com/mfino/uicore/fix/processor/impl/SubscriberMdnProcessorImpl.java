@@ -439,7 +439,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		// s.getSubscriber().setIDExiparetionTime();
 		if(e.getReferenceAccount()!=null){
 			if(!e.getReferenceAccount().equals(s.getSubscriber().getReferenceAccount())){
-        		log.info("Subscriber:"+ID+" Birth Place updated to "+e.getReferenceAccount()+" by user:"+getLoggedUserNameWithIP());
+        		log.info("Subscriber:"+ID+" Reference No updated to "+e.getReferenceAccount()+" by user:"+getLoggedUserNameWithIP());
         	}
 			s.getSubscriber().setReferenceAccount(e.getReferenceAccount());
 		}
@@ -466,7 +466,14 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		// if (e.getDompetMerchant() != null) {
 		// s.getSubscriber().setDompetMerchant(e.getDompetMerchant());
 		// }
-
+		
+		if(e.getOtherMDN()!=null){
+			if(!e.getOtherMDN().equals(s.getOtherMDN())){
+        		log.info("SubscriberMDN:"+ID+" Other MDN updated to "+e.getOtherMDN()+" by user:"+getLoggedUserNameWithIP());
+        	}
+			s.setOtherMDN(e.getOtherMDN());
+		}
+		
 		if((null != e.getGroupID()) && !("".equals(e.getGroupID()))){
 
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
@@ -693,6 +700,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 
 		entry.setSubscriberRestrictions(s.getSubscriber().getRestrictions());
+		
+		if(s.getOtherMDN() != null){
+			entry.setOtherMDN(s.getOtherMDN());
+		}
 
 		// @XC, Teja: Do we still need this?
 				if (s.getSubscriber().getStatus() != null) {

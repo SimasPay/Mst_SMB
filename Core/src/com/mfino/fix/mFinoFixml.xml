@@ -866,6 +866,7 @@
 				<field name="GroupName" required="N"/>
 				<field name="AccountNumber" required="N"/>
 				<field name="PocketTemplateConfigID" required="N" />
+				<field name="OtherMDN" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplate" msgtype="1040" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">

@@ -188,6 +188,12 @@ mFino.widget.SubscriberDetails = function (config)
             {
                 xtype : 'displayfield',
                 anchor : '90%',
+                fieldLabel : _('Other MDN'),
+                name : CmFinoFIX.message.JSSubscriberMDN.Entries.OtherMDN._name
+            },
+            {
+                xtype : 'displayfield',
+                anchor : '90%',
                 fieldLabel : _('Last Transaction ID'),
                 name : CmFinoFIX.message.JSSubscriberMDN.Entries.LastTransactionID._name
             },
