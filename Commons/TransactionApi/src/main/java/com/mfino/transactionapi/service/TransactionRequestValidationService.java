@@ -91,6 +91,8 @@ public interface TransactionRequestValidationService {
 	
 	public void validateResetPinByOTPDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
+	public void validateForgotPinDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 	public void validateTransactionStatusDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateChangePinDetails(TransactionDetails transactionDetails) throws InvalidDataException;
@@ -211,6 +213,8 @@ public interface TransactionRequestValidationService {
 	public void validateChangeEmailDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 
 	public void validateChangeNicknameDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateChangeOtherMDNDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 
 	public void validateNFCPocketBalanceDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	

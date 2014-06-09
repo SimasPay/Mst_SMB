@@ -161,7 +161,15 @@ public interface TransactionApiValidationService {
 	 */
 	public Date getDate(String dateOfExpiry) throws InvalidDataException;
 
-	
-
 	public Integer validateSubscriberAsDestinationString(String mdn);
+	
+	/**
+	 * Validates the given subscriber mdn details for reset pin request. It returns failure result only in case of
+	 * a. MDN not found
+	 * b. Mdn is absolutely locked(Absloute restriction)
+	 * c. MDN in Not registered or Retired or Garve status
+	 * @param subscriberMDN
+	 * @return
+	 */
+	public Integer validateSubscriberForResetPinRequest(SubscriberMDN subscriberMDN);
 }

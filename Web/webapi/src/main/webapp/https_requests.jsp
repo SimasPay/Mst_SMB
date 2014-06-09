@@ -531,6 +531,11 @@
 	</tr>
 	<tr>
 		<td>
+			<a href="jsp/s_settings_changeothermdn.jsp">Change Other MDN</a>
+		</td>
+	</tr>	
+	<tr>
+		<td>
 			<a href="jsp/s_settings_forgotpin_inquiry.jsp">Forgot Pin Inquiry</a>
 		</td>
 	</tr>

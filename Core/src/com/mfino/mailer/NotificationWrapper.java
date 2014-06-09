@@ -82,6 +82,8 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
     
     private String sourceMDN;
     
+    private String otherMDN;
+    
     private String service;
     
     private String appURL;
@@ -780,5 +782,13 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public String getOtherMDN() {
+		return otherMDN;
+	}
+
+	public void setOtherMDN(String otherMDN) {
+		this.otherMDN = otherMDN;
 	}
 }

@@ -4725,8 +4725,11 @@
 		<field name="MDN" required="Y" />
 		<field name="OTP" required="Y" isSecure="Y"/>
 	</message>
+	<message name="ChangeOtherMDN" msgtype="1602" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="OtherMDN" required="Y"/>		
+		<field name="Pin" required="Y" isSecure="Y"/> 
+	</message>
    
-    
     <message name="HSMBase" msgtype="1700" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
     </message>
     
@@ -21851,7 +21854,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
-			
+			<value description="ChangeOtherMDNCompleted" enum="2108">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Successfully updated the Other MDN value</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>			
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -22167,6 +22178,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="109" description="SubscriberStatus"/>
 			<value enum="110" description="OldCardAlias"/>
 			<value enum="111" description="FavoriteCode"/>
+			<value enum="112" description="OtherMDN"/>
 			
 		</field>
 		<field number="5142" name="MSPID" type="RecordID" />

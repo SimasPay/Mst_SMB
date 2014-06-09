@@ -31,7 +31,6 @@ import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
-import com.mfino.util.MfinoUtil;
 /**
  * This class is used for all source and destination pocket ,mdn and partner validations for
  * the all the handlers.There should be no db calls in this class
@@ -595,5 +594,27 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		}
 	}
 
-	
+	/**
+	 * Validates the given subscriber mdn details for reset pin request. It returns failure result only in case of
+	 * a. MDN not found
+	 * b. Mdn is absolutely locked(Absloute restriction)
+	 * c. MDN in Not registered or Retired or Garve status
+	 * @param subscriberMDN
+	 * @return
+	 */
+	public Integer validateSubscriberForResetPinRequest(SubscriberMDN subscriberMDN) {
+		if(subscriberMDN == null){
+			log.error("SourceMDN is null");
+			return CmFinoFIX.NotificationCode_MDNNotFound;
+		}
+		
+		if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN.getStatus()) ||
+				CmFinoFIX.SubscriberStatus_PendingRetirement.equals(subscriberMDN.getStatus()) ||
+				CmFinoFIX.SubscriberStatus_Retired.equals(subscriberMDN.getStatus()) ||
+				CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(subscriberMDN.getRestrictions()))  {
+			log.error("Source Subscriber status : " + subscriberMDN.getStatus());
+			return CmFinoFIX.NotificationCode_MDNIsRestricted;
+		}
+		return CmFinoFIX.ResponseCode_Success;
+	}
 }

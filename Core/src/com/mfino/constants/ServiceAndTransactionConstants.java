@@ -208,6 +208,8 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_CHANGENICKNAME="ChangeNickname";
 	
+	public static final String TRANSACTION_CHANGEOTHERMDN = "ChangeOtherMDN";
+	
 	public static final String TRANSACTION_FRSC_PAYMENT="FRSCPayment";
 
 	public static final String TRANSACTION_NFC_POCKET_BALANCE = "NFCPocketBalance";

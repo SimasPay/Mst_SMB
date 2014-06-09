@@ -80,6 +80,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 					ApiConstants.PARAMETER_OTP);
 		}
 	}
+
+	public void validateSctlId(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isNotBlank(transactionDetails.getSctlId().toString()) && !StringUtils.isNumeric(transactionDetails.getSctlId().toString())) {
+			throw new InvalidDataException("Invalid Activation Key", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_SCTL_ID);
+		}
+	}	
 	
 	public void validateAmount(TransactionDetails transactionDetails) throws InvalidDataException {
 		if (transactionDetails.getAmount()==null) {
@@ -397,6 +404,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateOTP(transactionDetails);
 		validateNewPin(transactionDetails);
 		validateConfirmPin(transactionDetails);
+	}
+	
+	public void validateForgotPinDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateOTP(transactionDetails);
+		validateNewPin(transactionDetails);
+		validateConfirmPin(transactionDetails);
+		validateSctlId(transactionDetails);
 	}
 	
 	public void validateTransactionStatusDetails(TransactionDetails transactionDetails) throws InvalidDataException {
@@ -829,6 +843,12 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateNickname(transactionDetails);		
 		validateSourcePin(transactionDetails);
 	}
+	
+	public void validateChangeOtherMDNDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateSourcePin(transactionDetails);
+		validateOtherMDN(transactionDetails);
+	}
+	
 	private void validateNewEmail(TransactionDetails transactionDetails) throws InvalidDataException {
 		EmailValidator validator = EmailValidator.getInstance();
 		if (!validator.isValid(transactionDetails.getNewEmail())) {

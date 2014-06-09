@@ -135,7 +135,16 @@ public class XMLResult extends Result {
 	private String invoiceNo;
 	private String responseMessage;
 	private BigDecimal operatorCharges;
+	private String otherMDN;
 	
+	public String getOtherMDN() {
+		return otherMDN;
+	}
+
+	public void setOtherMDN(String otherMDN) {
+		this.otherMDN = otherMDN;
+	}
+
 	public String getBillDate() {
 		return billDate;
 	}
@@ -333,6 +342,7 @@ public class XMLResult extends Result {
 			notificationWrapper.setOldCardAlias(getOldCardAlias());
 			notificationWrapper.setSubscriberStatus(getStatus());
 			notificationWrapper.setNickName(getNickName());
+			notificationWrapper.setOtherMDN(getOtherMDN());
 			
 			if (getSCTLList() != null) {
 					notificationWrapper.setServiceChargeTransactionLog(getSCTLList());

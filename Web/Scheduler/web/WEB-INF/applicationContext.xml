@@ -443,28 +443,28 @@
             <list>
             <!-- 
             	<ref bean="settlementConfigUpdateTrigger"/>
+            	<ref bean="baseBulkUploadTrigger"/>
+            	<ref bean="fundReimburseTrigger"/>
+            	<ref bean="updateSubscriberOTPStatusTrigger"/>
+            	<ref bean="processBulkTransferTrigger"/>
+                <ref bean="tellerEMoneyClearanceTrigger"/>
+                <ref bean="reverseFundsTrigger"/>
+                <ref bean="activationMsgTrigger"/>  
              -->
-            	<ref bean="baseBulkUploadTrigger"/>  
+            	
                 <ref bean="partnerServiceSettlementTrigger"/>
                 <ref bean="distributeTransactionAmountTrigger"/>
                 <ref bean="updateCollectorPocketsTrigger"/>
                 <ref bean="retryCollectorPocketsTrigger"/>
                 <ref bean="retryFailedCollectorPocketsTrigger"/>
                 <ref bean="clearTheSCTLTrigger"/> 
-                <!-- <ref bean="fundReimburseTrigger"/> -->
                 <ref bean="updateSubscriberStatusTrigger"/>
-				<ref bean="updateSubscriberOTPStatusTrigger"/> 				
-                <ref bean="processBulkTransferTrigger"/>
-                <ref bean="tellerEMoneyClearanceTrigger"/>
                 <ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
-                <ref bean="reverseFundsTrigger"/>
                 <ref bean="retirePocketsTrigger"/>
-                <ref bean="activationMsgTrigger"/>
                 <ref bean="forceGraveTrigger"/>
                 <ref bean="updatePocketBalancesFromLedgerTrigger"/>
                 <ref bean="bdvTrigger"/>
                 <ref bean="processKYCUpgradeTrigger"/>
-                
             <!--                            
                 <ref bean="bulkPendingResolveToolTrigger"/>		
             -->		

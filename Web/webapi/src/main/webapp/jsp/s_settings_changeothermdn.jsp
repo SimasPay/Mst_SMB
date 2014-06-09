@@ -4,14 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>ForgotPinConfirm</title>
+<title>Change Other MDN</title>
 </head>
 <body>
 <center>
-<h1>Forgot Pin Confirm</h1>
+<h1>Change Other MDN</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Account" name="service" /> 
-<input type="hidden" value="ForgotPin"	name="txnName" /> 
+<input type="hidden" value="ChangeOtherMDN"	name="txnName" /> 
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -26,25 +26,17 @@
 		<td><input type="text" name="sourceMDN" value="" /></td>
 	</tr>
 	<tr>
-		<td>OneTimePin</td>
-		<td><input type="text" name="otp" value="" /></td>
+		<td>Pin</td>
+		<td><input type="text" name="sourcePIN" value="" /></td>
 	</tr>
 	<tr>
-		<td>newPin</td>
-		<td><input type="text" name="newPIN" value="" /></td>
-	</tr>
-	<tr>
-		<td>confirmPin</td>
-		<td><input type="text" name="confirmPIN" value="" /></td>
-	</tr>
-	<tr>
-		<td>SCTL Id</td>
-		<td><input type="text" name="sctlId" value="" /></td>
+		<td>New Other MDN</td>
+		<td><input type="text" name="otherMDN" value="" /></td>
 	</tr>
 	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID" value="" /></td>
-	</tr>
+	</tr>	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

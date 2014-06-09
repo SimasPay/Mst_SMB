@@ -162,6 +162,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
 	    notificationVariablesMap.put("FavoriteValue", CmFinoFIX.NotificationVariables_FavoriteValue);
 	    notificationVariablesMap.put("FavoriteLabel", CmFinoFIX.NotificationVariables_FavoriteLabel);
 	    notificationVariablesMap.put("SubscriberStatus", CmFinoFIX.NotificationVariables_SubscriberStatus);
+	    notificationVariablesMap.put("OtherMDN",CmFinoFIX.NotificationVariables_OtherMDN);
     }
 
     public NotificationMessageParserServiceImpl(NotificationWrapper notificationWrapper) {
@@ -570,7 +571,11 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 else if(CmFinoFIX.NotificationVariables_SubscriberStatus.equals(notificationVariable)){
                 	notificationBuilder.append(notificationWrapper.getSubscriberStatus());
                 }
-				else {//if (CmFinoFIX.NotificationVariables_PayerMDN.equals(notificationVariable) || CmFinoFIX.NotificationVariables_PocketType.equals(notificationVariable)) {
+                else if(CmFinoFIX.NotificationVariables_OtherMDN.equals(notificationVariable)){
+                	String otherMDN = notificationWrapper.getOtherMDN();
+                	notificationBuilder.append(otherMDN.substring(0, otherMDN.length()-3) + "***"); 
+                }
+                else {//if (CmFinoFIX.NotificationVariables_PayerMDN.equals(notificationVariable) || CmFinoFIX.NotificationVariables_PocketType.equals(notificationVariable)) {
                     notificationBuilder.append(textPart.text);
                 }
             } else {

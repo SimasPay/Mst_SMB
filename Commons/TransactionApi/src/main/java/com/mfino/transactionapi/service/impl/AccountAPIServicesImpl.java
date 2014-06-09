@@ -44,9 +44,12 @@ import com.mfino.transactionapi.handlers.account.SubscriberActivationHandler;
 import com.mfino.transactionapi.handlers.account.TransactionStatusHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangeEmailHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangeNicknameHandler;
+import com.mfino.transactionapi.handlers.subscriber.ChangeOtherMDNHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangePinHandler;
+import com.mfino.transactionapi.handlers.subscriber.ForgotPinHandler;
 import com.mfino.transactionapi.handlers.subscriber.ForgotPinInquiryHandler;
 import com.mfino.transactionapi.handlers.subscriber.GenerateOTPHandler;
+import com.mfino.transactionapi.handlers.subscriber.KYCUpgradeInquiryHandler;
 import com.mfino.transactionapi.handlers.subscriber.LoginHandler;
 import com.mfino.transactionapi.handlers.subscriber.LogoutHandler;
 import com.mfino.transactionapi.handlers.subscriber.MFAChangePinHandler;
@@ -57,7 +60,6 @@ import com.mfino.transactionapi.handlers.subscriber.SubscriberDetailsHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationThroughWebHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithActivationHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberStatusHandler;
-import com.mfino.transactionapi.handlers.subscriber.KYCUpgradeInquiryHandler;
 import com.mfino.transactionapi.handlers.subscriber.ValidateOTPHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.XMLError;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.PublicKeyXMLResult;
@@ -188,8 +190,16 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	private ChangeNicknameHandler changeNicknameHandler;
 	
 	@Autowired
+	@Qualifier("ChangeOtherMDNHandlerImpl")
+	private ChangeOtherMDNHandler changeOtherMDNHandler;
+	
+	@Autowired
 	@Qualifier("ForgotPinInquiryHandlerImpl")
 	private ForgotPinInquiryHandler forgotPinInquiryHandler;
+
+	@Autowired
+	@Qualifier("ForgotPinHandlerImpl")
+	private ForgotPinHandler forgotPinHandler;
 
 	@Autowired
 	@Qualifier("FavoriteHandlerImpl")
@@ -392,12 +402,16 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 
 			xmlResult = (XMLResult) changeNicknameHandler.handle(transactionDetails);
 		
+		}else if (ServiceAndTransactionConstants.TRANSACTION_CHANGEOTHERMDN.equals(transactionName)) {
+			validationService.validateChangeOtherMDNDetails(transactionDetails);
+			xmlResult = (XMLResult) changeOtherMDNHandler.handle(transactionDetails);
+		
 		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN_INQUIRY.equals(transactionName)) {			
 
 			xmlResult = (XMLResult) forgotPinInquiryHandler.handle(transactionDetails);
 		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN.equals(transactionName)) {
-			validationService.validateResetPinByOTPDetails(transactionDetails);
-			xmlResult = (XMLResult) resetPinByOTPHandler.handle(transactionDetails);
+			validationService.validateForgotPinDetails(transactionDetails);
+			xmlResult = (XMLResult) forgotPinHandler.handle(transactionDetails);
 			
 		}else if(ServiceAndTransactionConstants.TRANSACTION_RESEND_OTP.equals(transactionName)){
 			
