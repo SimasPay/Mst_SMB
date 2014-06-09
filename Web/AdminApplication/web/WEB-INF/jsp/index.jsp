@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="box_middle_bottom"></div>
-            <div id="footer">Copyright © 2013 mFino Ltd. All rights reserved. Build MAIN</div>
+            <div id="footer">Copyright © 2014 mFino Ltd. All rights reserved.</div>
         </div>
 
         <!-- Insert I18N java script link -->
