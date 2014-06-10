@@ -34,6 +34,19 @@ public class NoISOResponseProcessor {
 		
 		if (msg.getRequest() instanceof CMPaymentAcknowledgementToBank || msg.getRequest() instanceof CMGetUserAPIKeyToBank || msg.getResponse() instanceof CMGetUserAPIKeyToBank)
 			return msg;
+		else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBank.class)) && (!(StatusRegistrar.getSignonStatus("flashizmux").equals(NMStatus.Successful)) || !(StatusRegistrar.getEchoStatus("flashizmux").equals(NMStatus.Successful))))
+		{
+			CMPaymentAcknowledgementFromBank ackFromBank = new CMPaymentAcknowledgementFromBank();
+			CMPaymentAcknowledgementToBank ackToBank = (CMPaymentAcknowledgementToBank) msg.getResponse();
+			ackFromBank.copy(ackToBank);
+			ackFromBank.setResponseCode(98);
+			ackFromBank.header().setSendingTime(DateTimeUtil.getLocalTime());
+			ackFromBank.m_pHeader.setMsgSeqNum(UniqueNumberGen.getNextNum());
+			msg.setResponse(ackFromBank);
+			msg.setRequest(ackToBank);
+			msg.setDestinationQueue("jms:flashizBillPaymentResponseQueue");
+			return msg;
+		}
 		CMPaymentAcknowledgementToBank isoRequest = (CMPaymentAcknowledgementToBank) msg.getResponse();
         NoISOResponseMsg noResponse = new NoISOResponseMsg();
 		noResponse.copy(isoRequest);
