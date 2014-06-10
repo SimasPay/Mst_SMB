@@ -45,8 +45,9 @@
     <context:annotation-config />
     <bean id="contextHolder" class="com.mfino.web.ContextHolder"/>
 
+	<!--  Need to update the time zone value according the Clients time zone -->
     <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
-        <constructor-arg value="GMT" />
+        <constructor-arg value="WIB" />
     </bean>
     	
    
@@ -145,7 +146,6 @@
     <bean id="retryCollectorPocketsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="retryCollectorPockets" />       
 		<property name="timeZone" ref="timeZone" />
-		<!-- runs every day at 4 AM  -->
         <property name="cronExpression" value="0 0/5 * * * ?" />        
     </bean>   
     
@@ -158,7 +158,7 @@
     <bean id="retryFailedCollectorPocketsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="retryFailedCollectorPockets" />       
 		<property name="timeZone" ref="timeZone" />
-		<!-- runs every day at 8 PM  -->
+		<!-- runs every day at 7 PM  -->
         <property name="cronExpression" value="0 0 19 * * ?" />        
     </bean>  
     
@@ -264,8 +264,7 @@
     <bean id="updateSubscriberStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="updateSubscriberStatus" />       
 		<property name="timeZone" ref="timeZone" />
-		<!-- runs for every 10 minutes  -->
-        <property name="cronExpression" value="0 * 23 * * ?" />        
+        <property name="cronExpression" value="0 0 2 * * ?" />        
     </bean>
 	
 	 <!-- for Update Subscriber Status based on OTP -->
@@ -334,7 +333,7 @@
     <bean id="checkExpirationOfTransferToUnRegisteredTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="checkExpirationOfTransferToUnRegistered" />       
 		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0 19 * * ?" />        
+		<property name="cronExpression" value="0 0/5 * * * ?" />        
     </bean>  
         	<!-- for reversing expired and failed funds and unfinished withdrawals -->
     <bean id="reverseFundsService" class="com.mfino.scheduler.service.impl.ReverseFundsServiceImpl"> 
@@ -418,7 +417,7 @@
     <bean id="bdvTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="bdvJob" />       
 		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0 7 * * ?" />     
+		<property name="cronExpression" value="0 0 1 * * ?" />     
     </bean>
     
     <!-- for KYC Upgrade -->
