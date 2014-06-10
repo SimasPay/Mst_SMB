@@ -96,7 +96,9 @@
 	
 	<osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
 	 -->
-
+	<osgi:reference id="sctlServiceImpl" bean-name="SCTLServiceImpl" interface="com.mfino.service.SCTLService"/>
+	<osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService"/>
+ 	
 	
 	<bean id="billpaymentsPendingClearanceService" class="com.mfino.billpayments.service.impl.BillpaymentsPendingClearanceServiceImpl">
 		<property name="billPaymentsService" ref="billPaymentsService" />
@@ -120,6 +122,8 @@
 	<bean id="flashizBillPay" class="com.mfino.billpayments.flashiz.BillPaymentProcessor">
 	 	<property name="billPaymentsService" ref="billPaymentsService"/>
 	 	<property name="subscriberService" ref="subscriberServiceImpl" />
+		<property name="sctlService" ref="sctlServiceImpl" />
+	 	<property name="transactionChargingService" ref="transactionChargingServiceImpl"/>
 	</bean>	
 	
 
@@ -351,8 +355,8 @@
 					</multicast>
 			</filter>
 			<filter>
-				<simple>${body.response} is 'com.mfino.domain.NoISOResponseMsg'</simple> 
-				<log message="mce_flashiz_payment_xml_configuration NoISOResponseMsg: Do Nothing as this request need to be processing state."/>
+			<simple>${body.response} is 'com.mfino.domain.NoISOResponseMsg'</simple> 
+			<to uri="bean:flashizBillPay?method=setSCTLStatusToPending"/>
 			</filter>
 		</route>
 		

@@ -27,7 +27,7 @@ public class FailTheRequestProcessor implements Processor{
 		log.info("Have to fail the request. " +exchange.getIn().getBody());
 		ISOMsg mesg = exchange.getIn().getBody(ISOMsg.class);
 		
-		if (mesg.getMTI().equals("0200"))
+		if (mesg.getMTI().equals("0200") || mesg.getMTI().equals("0220"))
 		{
 			mesg.setResponseMTI();
 			mesg.set(39,"06");

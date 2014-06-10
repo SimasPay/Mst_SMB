@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.domain.BillPayments;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMCommodityTransferFromOperator;
@@ -16,7 +17,9 @@ import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPayment;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
+import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.TransactionChargingService;
 import com.mfino.service.impl.SubscriberServiceImpl;
 
 public class BillPaymentProcessor implements FlashizProcessor {
@@ -24,6 +27,22 @@ public class BillPaymentProcessor implements FlashizProcessor {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	private BillPaymentsService billPaymentsService;
 	private SubscriberService subscriberService ;
+	private TransactionChargingService transactionChargingService;
+	public TransactionChargingService getTransactionChargingService() {
+		return transactionChargingService;
+	}
+	public void setTransactionChargingService(
+			TransactionChargingService transactionChargingService) {
+		this.transactionChargingService = transactionChargingService;
+	}
+	public SCTLService getSctlService() {
+		return sctlService;
+	}
+	public void setSctlService(SCTLService sctlService) {
+		this.sctlService = sctlService;
+	}
+
+	private SCTLService sctlService;
 	
 	public SubscriberService getSubscriberService() {
 		return subscriberService;
@@ -97,6 +116,12 @@ public class BillPaymentProcessor implements FlashizProcessor {
 		
 		return responseMceMessage;
 	}
+	public void setSCTLStatusToPending(MCEMessage mceMceMessage) {
+				log.info("BillPaymentProcessor :: setSCTLStatusToPending() BEGIN mceMessage="+mceMceMessage);
+				CMBase requestFix = (CMBase)mceMceMessage.getRequest();
+				ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
+				transactionChargingService.changeStatusToPending(sctl);
+			}
 
 	public BillPaymentsService getBillPaymentsService() {
 		return billPaymentsService;

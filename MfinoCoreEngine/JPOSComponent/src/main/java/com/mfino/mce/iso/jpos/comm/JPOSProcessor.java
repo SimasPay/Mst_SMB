@@ -109,6 +109,11 @@ public class JPOSProcessor implements Processor {
 			}
 			else {
 				log.info(muxName+" Got reply for message " + replyMsg);
+				//If there is 68 in de-39 field for Flashiz , Have to send repeated requests 
+				if(replyMsg.getMTI().equals("0230") && replyMsg.getString("3").startsWith("50") && replyMsg.getString("39").equals("68")){
+					log.info("Got de-39 "+replyMsg.getString("39")+" Message MTI is "+ replyMsg.getMTI() + " , throwing NoISOResponseException so that onException takes over "+muxName);
+					throw new NoISOResponseException(muxName+" no response for isomsg ");
+				}
 				ProducerTemplate template = exchange.getContext().createProducerTemplate();
 				template.start();
 				Map<String,Object> headersMap = MCEUtil.generateMandatoryHeaders(exchange.getIn().getHeaders());
