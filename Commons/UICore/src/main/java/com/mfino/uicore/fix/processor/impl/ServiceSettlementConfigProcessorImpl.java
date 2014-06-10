@@ -12,6 +12,7 @@ import com.mfino.dao.PartnerServicesDAO;
 import com.mfino.dao.ServiceSettlementConfigDAO;
 import com.mfino.dao.SettlementTemplateDAO;
 import com.mfino.dao.query.ServiceSettlementConfigQuery;
+import com.mfino.domain.PartnerServices;
 import com.mfino.domain.ServiceSettlementConfig;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -36,7 +37,9 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 			if(sc.getPartnerServicesByPartnerServiceID()==null || !e.getPartnerServicesID().equals(sc.getPartnerServicesByPartnerServiceID().getID())){
         		log.info("Service Settlement Config:" + sc.getID() + " Partner Services by Partnerr Service ID updated to " + e.getPartnerServicesID() + " by user:"+getLoggedUserNameWithIP());
         	}
-			sc.setPartnerServicesByPartnerServiceID(psDAO.getById(e.getPartnerServicesID()));
+			PartnerServices partnerServices = psDAO.getById(e.getPartnerServicesID());
+			sc.setPartnerServicesByPartnerServiceID(partnerServices);
+			sc.setPocketByCollectorPocket(partnerServices.getPocketByCollectorPocket());
 		}
 		
 		if (e.getIsDefault() != null) {
