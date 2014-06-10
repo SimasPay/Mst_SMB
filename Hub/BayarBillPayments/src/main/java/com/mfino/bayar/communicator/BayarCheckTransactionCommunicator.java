@@ -21,8 +21,6 @@ import com.mfino.util.UniqueNumberGen;
  *
  */
 public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
-
-	private String intTrxnID;
 	
 	@Override
 	public Object createBayarHttpRequest(MCEMessage mceMessage) {
@@ -33,11 +31,7 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
  		CMBase requestFix = (CMBase)mceMessage.getRequest();
 		Long sctlId = requestFix.getServiceChargeTransactionLogID();		
 		
-		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-		if( billPayments != null && billPayments.getINTxnId() != null)
-			intTrxnID = billPayments.getINTxnId();
-		
-		requestParams.add(new BasicNameValuePair("transaction_id", intTrxnID));
+		requestParams.add(new BasicNameValuePair("reference_id", sctlId.toString()));
 		
 		return requestParams;
 	}

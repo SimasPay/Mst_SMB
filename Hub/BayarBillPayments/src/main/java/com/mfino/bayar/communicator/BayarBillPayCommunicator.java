@@ -57,25 +57,30 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		
 		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
 		billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
+		billPayResponse.setServiceChargeTransactionLogID(sctlId);
+		if(wsResponseElement.getTransactionId() != null){
+			billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
+		}
 		
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
-			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
-			billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
-			billPayResponse.setServiceChargeTransactionLogID(sctlId);
+			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);			
 			
 			if(wsResponseElement.getVoucherToken() != null)	{			
 				billPayments.setInfo3(wsResponseElement.getVoucherToken());//In case of PLN prepaid Token
 				billPayResponse.setRechargePin(wsResponseElement.getVoucherToken());
 			}
-
 			log.info("BayarBillPayCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 		}else{	
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Failure);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
 
+		if(wsResponseElement.getStatus() != null && wsResponseElement.getStatus().equals(SERVICE_TIME_OUT_FROM_BAYAR)){
+			billPayResponse.setResponse(SERVICE_TIME_OUT);
+			billPayResponse.setResult(SERVICE_TIME_OUT);
+		}
 		if(wsResponseElement.getStatus() != null)
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 		if(wsResponseElement.getMessage() != null)

@@ -22,7 +22,6 @@ import com.mfino.util.UniqueNumberGen;
  *
  */
 public class BayarTopupCommunicator extends BayarHttpCommunicator {
-
 	
 	@Override
 	public Object createBayarHttpRequest(MCEMessage mceMessage) {
@@ -53,14 +52,14 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 		log.info("BayarTopupCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
 		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
 		billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
+		billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
+		if(wsResponseElement.getTransactionId() != null){
+			billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
+		}
 		
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
-			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
-			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
-			if(wsResponseElement.getTransactionId() != null){
-				billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
-			}
+			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);			
 
 			if(wsResponseElement.getVoucherNo() != null)
 				billPayments.setBillData(wsResponseElement.getVoucherNo());
@@ -71,6 +70,11 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
 
+		if(wsResponseElement.getStatus() != null && wsResponseElement.getStatus().equals(SERVICE_TIME_OUT_FROM_BAYAR)){
+			billPayResponse.setResponse(SERVICE_TIME_OUT);
+			billPayResponse.setResult(SERVICE_TIME_OUT);
+		}
+		
 		if(wsResponseElement.getStatus() != null)
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 		if(wsResponseElement.getMessage() != null)

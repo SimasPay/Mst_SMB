@@ -33,11 +33,9 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		
  		CMBase requestFix = (CMBase)mceMessage.getRequest();
 		CMBillInquiry request = (CMBillInquiry) requestFix;
-//		billPaymentsService.createBillPayments(request);
 		
 		requestParams.add(new BasicNameValuePair("product_code", request.getDenominationCode()));
 		requestParams.add(new BasicNameValuePair("bill_number", request.getInvoiceNumber()));
-//		requestParams.add(new BasicNameValuePair("reference_id", request.getTransactionID().toString()));
 		
 		return requestParams;
 	}
@@ -47,26 +45,18 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		
 		BayarWebServiceResponse wsResponseElement = (BayarWebServiceResponse)response;
 		BillPayResponse billPayResponse = new BillPayResponse();
-//		BillPayments billPayments = null;
 		
 		log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
-//		Long sctlId = ((CMBase) requestFixMessage).getServiceChargeTransactionLogID();
-//		billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 			
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 			
-			//billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
 			log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
-			
-//			billPayResponse.setServiceChargeTransactionLogID(((CMBase) requestFixMessage).getServiceChargeTransactionLogID());
 			
 			if(wsResponseElement.getPaymentCode() != null)
 				billPayResponse.setBillPaymentReferenceID(wsResponseElement.getPaymentCode().toString());
 			if(wsResponseElement.getGrandTotal() != null){
 				billPayResponse.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
-//				billPayments.setAmount(new BigDecimal(wsResponseElement.getGrandTotal()));
-//				((CMBillPayInquiry) requestFixMessage).setAmount(billPayResponse.getAmount());
 			}
 			if(wsResponseElement.getFee() != null)
 				billPayResponse.setCharges(new BigDecimal(wsResponseElement.getFee()));
@@ -86,7 +76,6 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		billPayResponse.setInternalErrorCode(getInternalErrorCode(billPayResponse.getResult()));
 		if(wsResponseElement.getMessage() != null)
 			billPayResponse.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
-//		billPaymentsService.saveBillPayment(billPayments);
 		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());

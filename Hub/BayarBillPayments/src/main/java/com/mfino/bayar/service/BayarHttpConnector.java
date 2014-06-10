@@ -102,7 +102,7 @@ public class BayarHttpConnector {
 
 
 		} catch (Exception e) {
-			responseString = "{\"status\":998,\"message\":\"MFS Internal Error\"}";
+			responseString = "{\"status\":8888,\"message\":\"MFS Internal Error\"}";
 			log.error(e.getMessage(), e);
 			//e.printStackTrace();
 		}
@@ -198,7 +198,7 @@ public class BayarHttpConnector {
 		in.close();
 		}
 		catch (Exception e) {
-			response = new StringBuilder("{\"status\":998,\"message\":\"MFS Internal Error\"}");
+			response = new StringBuilder("{\"status\":8888,\"message\":\"MFS Internal Error\"}");
 			log.error(e.getMessage(), e);
 			//e.printStackTrace();
 		}

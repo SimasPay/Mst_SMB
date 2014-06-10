@@ -27,6 +27,8 @@ public abstract class BayarHttpCommunicator extends BaseServiceImpl{
 	public static final Logger log = LoggerFactory.getLogger(BayarHttpCommunicator.class);
 	
 	public static final String WEBSERVICE_OPERATION_NAME = "IBSBridge";
+	public static Integer SERVICE_TIME_OUT = 8;
+	public static Integer SERVICE_TIME_OUT_FROM_BAYAR = 8888;
 	
 	private String webServiceEndpointBean;
 	protected BillPaymentsService billPaymentsService;
