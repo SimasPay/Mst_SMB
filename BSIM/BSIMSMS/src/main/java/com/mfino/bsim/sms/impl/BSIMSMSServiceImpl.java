@@ -19,6 +19,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Isolation;
@@ -60,6 +61,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 	private String partnerID;
 	private String apiToken;
 	private String shortcode;
+	private String intPrefixCode;
 	private String toAddress;
 	private String message;
 
@@ -70,7 +72,11 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		log.debug("BSIMSMSServiceImpl :: process() BEGIN");
 		SMSNotification smsNotification = httpExchange.getIn().getBody(SMSNotification.class);
 		message = smsNotification.getContent();
-		toAddress = smsNotification.getMdn();
+		if (smsNotification.getMdn().startsWith("62")) {
+			toAddress = smsNotification.getMdn();
+		} else {
+			toAddress = StringUtils.isNotBlank(getIntPrefixCode()) ? getIntPrefixCode() +  smsNotification.getMdn() : smsNotification.getMdn();
+		}
 		
 		Long notificationLogDetailsID = smsNotification.getNotificationLogDetailsID();
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
@@ -189,6 +195,14 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getIntPrefixCode() {
+		return intPrefixCode;
+	}
+
+	public void setIntPrefixCode(String intPrefixCode) {
+		this.intPrefixCode = intPrefixCode;
 	}
 	
 }

@@ -77,7 +77,8 @@
 		<property name="url" value="http://localhost:8080/SMSMock/SMSService"/>
 		<property name="partnerID" value="11"/>
 		<property name="apiToken" value="qwerty12345"/>
-		<property name="shortcode" value="988012"/>	
+		<property name="shortcode" value="988012"/>
+		<property name="intPrefixCode" value="01033"/>
 	</bean>
 	
 	<camelContext id="BSIMSMS" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
