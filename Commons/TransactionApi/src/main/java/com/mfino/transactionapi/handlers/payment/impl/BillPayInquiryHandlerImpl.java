@@ -279,7 +279,9 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				billPaymentInquiry.getNominalAmount() != null)  {
 			operatorChgs = billPaymentInquiry.getAmount().subtract(billPaymentInquiry.getNominalAmount());
 		}
-		billPaymentInquiry.setNominalAmount(billPaymentInquiry.getAmount().subtract(operatorChgs));
+		
+		if( (transactionDetails.getNominalAmount()==null) || (transactionDetails.getNominalAmount()!=null && transactionDetails.getNominalAmount().compareTo(BigDecimal.ZERO) <1) )
+			billPaymentInquiry.setNominalAmount(billPaymentInquiry.getAmount().subtract(operatorChgs));
 		// add service charge to amount
 
 		ServiceCharge serviceCharge=new ServiceCharge();
