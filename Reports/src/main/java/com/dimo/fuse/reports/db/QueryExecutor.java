@@ -98,8 +98,8 @@ public class QueryExecutor {
 			if (encryptedFields != null) {
 				for (int j = 0; j < encryptedFields.length(); j++) {
 					try {
-						rowContent[encryptedFields.getInt(j)] = StringEncryptorDecryptor
-								.decrypt(rowContent[encryptedFields.getInt(j)]);
+						rowContent[encryptedFields.getInt(j) - 1] = StringEncryptorDecryptor
+								.decrypt(rowContent[encryptedFields.getInt(j) - 1]);
 					} catch (EncryptionOperationNotPossibleException e) {
 						log.warn("Invalid String. Either the string is not encrypted properly or is encrypted with different algorithm and/or key");
 					} catch (JSONException e) {

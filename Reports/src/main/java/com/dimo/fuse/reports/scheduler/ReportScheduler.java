@@ -138,13 +138,30 @@ public abstract class ReportScheduler {
 				initaliseTimes();
 				generateReports();
 				setZipDirs();
-				zipFile = zipFiles(outputDirectory,zipFile+"_pdf",".pdf");
-				if(zipFile != null){
-				    if(ReportSchedulerProperties.getEmailRecipients()!=null)
-				    	sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled PDF Reports", "Attached Scheduled Reports Zip File", zipFile);
-				}else{
-					log.info("Not able to zip the input directory "+outputDirectory+" and hence not sending mail");
-				}
+
+				if(ReportSchedulerProperties.getEmailRecipients()!=null){
+					String pdfZipFile = zipFiles(outputDirectory,zipFile+"_pdf",".pdf");
+					if(pdfZipFile != null){
+						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled PDF Reports", "Attached Scheduled Reports Zip File", pdfZipFile);
+					}else{
+						log.info("Unable to zip the pdf files from input directory "+outputDirectory+" and hence not sending mail");
+					}
+					
+					String xlsZipFile = zipFiles(outputDirectory,zipFile+"_xls",".xls");
+					if(xlsZipFile != null){
+						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled XLS Reports", "Attached Scheduled Reports Zip File", xlsZipFile);
+					}else{
+						log.info("Unable to zip the xls files from input directory "+outputDirectory+" and hence not sending mail");
+					}
+					
+					String csvZipFile = zipFiles(outputDirectory,zipFile+"_csv",".csv");
+					if(csvZipFile != null){
+						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled PDF Reports", "Attached Scheduled Reports Zip File", csvZipFile);
+					}else{
+						log.info("Unable to zip the cls files from input directory "+outputDirectory+" and hence not sending mail");
+					}					
+				}			
+				
 			}else{
 				log.info("No Input *.json files exist to generate reports");
 			}

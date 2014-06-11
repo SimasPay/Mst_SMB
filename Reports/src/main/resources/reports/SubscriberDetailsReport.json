@@ -16,7 +16,7 @@
     
     "HeaderColumnsWidth" : [1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
-    "EncryptedColumnIndices" : [16],
+    "EncryptedColumnIndices" : [17],
         
     "Query" : "	SELECT
 				 smdn.mdn,

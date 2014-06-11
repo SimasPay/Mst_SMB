@@ -50,7 +50,7 @@
 					 DATE_FORMAT(sctl.LastUpdateTime, ${DateTimeFormat}),
 					 tt.TransactionName,
 					 sctl.SourceMDN,
-					 srcPkTemp.Description,
+					 srcpkTemp.Description,
 					 et3.EnumValue,					 
 					 sctl.DestMDN,
 					 destpkTemp.Description,

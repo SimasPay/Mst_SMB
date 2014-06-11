@@ -93,9 +93,11 @@ public class ReportTool {
 					+ e.getMessage());
 
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		} finally {
-			qe.closeConnection();
+			if(qe != null){
+				qe.closeConnection();
+			}
 		}
 
 	}
