@@ -3,6 +3,6 @@
 			"kycName": "No KYC",
 			"_comment": "Use | to separate the transaction names in the allowed transactions list. Use Transaction names as per the name in transaction_type table",
 			"allowedTxns": "ChangePIN|ChangeEmail|ChangeNickname|ForgotPin|CheckBalance|History|EmailHistoryAsPDF|DownloadHistoryAsPDF|DetailedStatement|BillPay|AirtimePurchase|QRPayment",
-			"alertMessage": "Anda harus mendaftarkan Uangku Anda untuk dapat menggunakan layanan ini.Buka Menu Bantuan >> Registrasi Uangku untuk informasi pendaftaran."
+			"alertMessage": "Anda harus mendaftarkan Uangku untuk dapat menggunakan layanan ini. Lihat informasi perdaftaran di Menu Bantuan > Registrasi Uangku."
 		}
 }

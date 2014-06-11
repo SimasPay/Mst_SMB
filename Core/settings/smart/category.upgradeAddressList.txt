@@ -30,7 +30,7 @@
 		 			{
 		 				"location": {
 		 					"addressLine1": "Mall Ambasador Lt. 3 No. 35",
-		 					"addressLine2": "JI. Prof. Dr.Satrio No.14,Kuningan Setiabudi",
+		 					"addressLine2": "JI. Prof. Dr.Satrio No.14,Kuningan",
 		 					"addressLine3": "",
 		 					"galleryCode": "",
 		 					"businessHours": {
