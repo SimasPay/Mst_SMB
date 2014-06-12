@@ -105,7 +105,7 @@
 		<!-- deploy folder location where JPOS configuration files are defined -->
 		<property name="deployFolder" value="jpos/deploy/" />
 		<property name="muxName" value="flashizmux" />
-		<property name="timeout" value="2000" />
+		<property name="timeout" value="10000" />
 		<property name="sleepOnNoReply" value="10000" />
 		<property name="channelName" value="flashiz" />
 		<property name="isoUtil" ref="flashizISOUtil" />
@@ -117,7 +117,7 @@
 	<bean id="bankCommunicator" class="com.mfino.mce.iso.jpos.comm.JPOSProcessor">
 		<constructor-arg index="0" value="flashizmux" />		
 		<constructor-arg index="1" ref="falshizIsoResponseEndpoint" />
-		<constructor-arg index="2" value="2000" />
+		<constructor-arg index="2" value="10000" />
 	</bean>
 
 	<bean id="isotofixfactory" class="com.mfino.flashiz.iso8583.FlashizIsoToFixProcessorFactory">
@@ -151,7 +151,7 @@
 	</bean>
 	
 	<bean id="timeoutExp" class="com.mfino.flashiz.iso8583.CompletionTimeoutExpression">
-		<property name="timeout" value="2000"/>
+		<property name="timeout" value="10000"/>
 		<property name="reversalTimeout" value="200000"/>    
 	</bean>
 	
@@ -161,7 +161,7 @@
 	<camelContext id="flashiziso" xmlns="http://camel.apache.org/schema/spring">
     <onException>
         <exception>com.mfino.mce.iso.jpos.NoISOResponseException</exception>
-        <redeliveryPolicy maximumRedeliveries="10"/>
+        <redeliveryPolicy maximumRedeliveries="3"/>
         <handled>
             <constant>true</constant>
         </handled>
