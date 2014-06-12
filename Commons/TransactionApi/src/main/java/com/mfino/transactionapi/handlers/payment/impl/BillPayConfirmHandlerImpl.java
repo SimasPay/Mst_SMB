@@ -128,6 +128,10 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 billPay.setBillerCode(transactionDetails.getBillerCode());
 		 billPay.setNarration(transactionDetails.getNarration());
 		 billPay.setPaymentMode(transactionDetails.getPaymentMode());
+		if (ServiceAndTransactionConstants.MESSAGE_BILL_PAY.equals(transactionDetails.getSourceMessage()))
+			billPay.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment);
+		else
+			billPay.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment_Topup);
 		 
 		if (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionDetails.getTransactionName())) {
             String nibssCode = systemParametersService.getString(SystemParameterKeys.NIBSS_INTER_EMONEY_TRANSFER_CODE);		
@@ -251,12 +255,14 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
 		BillPayments billPayments = null;
-		if(sctl != null){
-			billPayments = billPaymentsService.getBySctlId(sctl.getID());
-			if(billPayments != null){
-				result.setResponseMessage(billPayments.getOperatorMessage());
-			}
+		BillPaymentsQuery query = new BillPaymentsQuery();
+		query.setSctlID(sctl.getID());
+		List<BillPayments> billLst = billPaymentsService.get(query);
+		if(billLst != null && billLst.size() > 0){
+			billPayments = billLst.get(0);
 		}
+		result.setResponseMessage(transactionResponse.getOperatorMsg());
+
 		
 		if (!("Your request is queued. Please check after sometime.".equals(transactionResponse.getMessage()))) {
 			if (transactionResponse.isResult()) {
@@ -264,7 +270,7 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 				commodityTransferService.addCommodityTransferToResult(result, billPay.getTransferID());
 				result.setDebitAmount(sctl.getTransactionAmount());
 				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());
+				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());				
 				if(billPayments != null && billPayments.getOperatorCharges() != null){
 					result.setServiceCharge(sctl.getCalculatedCharge().add(billPayments.getOperatorCharges()));
 				} else {

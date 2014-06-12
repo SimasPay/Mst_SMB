@@ -66,16 +66,16 @@
 	</bean>
 	
 	<bean id="bayarHttpClient" class="com.mfino.bayar.service.BayarHttpConnector">
-		<property name="timeout" value="30000" />
+		<property name="timeout" value="${bayar_https_timeout}" />
 		<property name="params">
 			<map>
 			    <!--modify these specific to bayar.net constants  -->
-				<entry key="partner_id" value="smartfren" />
-				<entry key="api_key" value="1D02640903DF5E9126EDB9FC46C6FB70" />
-				<entry key="output" value="json" />
+				<entry key="partner_id" value="${bayar_partner_id}" />
+				<entry key="api_key" value="${bayar_api_key}" />
+				<entry key="output" value="${bayar_output}" />
 			</map>
 		</property>	
-		<property name="url" value="https://202.51.252.110/demo/h2h/" />
+		<property name="url" value="${bayar_bank_web_service_url}" />
 	</bean>
 		
 	<bean id="bayarTopupCommunicator"

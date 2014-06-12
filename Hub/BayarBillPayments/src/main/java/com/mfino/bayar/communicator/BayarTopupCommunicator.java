@@ -77,8 +77,10 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 		
 		if(wsResponseElement.getStatus() != null)
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
-		if(wsResponseElement.getMessage() != null)
+		if(wsResponseElement.getMessage() != null){
 			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+			billPayResponse.setOperatorMessage(wsResponseElement.getMessage());
+		}
 		billPaymentsService.saveBillPayment(billPayments);
 		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());

@@ -112,6 +112,7 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
 		}
 		else if(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(transactionName)) {
+			transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_BILL_PAY);
 			transactionRequestValidationService.validateBillPayConfirmDetails(transactionDetails);
 			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
 
