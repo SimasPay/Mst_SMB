@@ -20,6 +20,27 @@
             /WEB-INF/applicationContext.xml
         </param-value>
 	</context-param>
+	
+	<env-entry> 
+		<description>
+		environment variable for setting the war type to be used in the java code
+		(PropertiesFileReaderTool) to use the corresponding properties file.
+		</description>
+    	<env-entry-name>mfino.properties</env-entry-name>
+    	<env-entry-type>java.lang.String</env-entry-type> 
+    	<env-entry-value>Reports</env-entry-value> 
+	</env-entry>
+	
+	<env-entry>
+    	<description>
+		environment variable for calling the jndi name from the 
+		tomcat context.xml to be used in spring to access the required properties file.
+		</description> 
+    	<env-entry-name>database_config.properties</env-entry-name> 
+    	<env-entry-type>java.lang.String</env-entry-type> 
+    	<env-entry-value>Reports</env-entry-value> 
+	</env-entry>
+	
     <listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

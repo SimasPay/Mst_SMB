@@ -37,7 +37,7 @@ public class DailyReportScheduler extends ReportScheduler{
 	protected String getOutputDirectory()
 	{
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-		return ReportSchedulerProperties.getDailyReportsOutputDir() + File.separator + fmt.format(endTime);
+		return ReportSchedulerProperties.getScheduledReportsOutputDir() + File.separator + fmt.format(endTime);
 	}
 	
 	protected String getQuery()

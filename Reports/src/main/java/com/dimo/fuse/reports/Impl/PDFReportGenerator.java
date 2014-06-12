@@ -95,7 +95,7 @@ public class PDFReportGenerator extends ReportGenerator {
 			image.scalePercent(60);
 			this.document.add(image);
 		} catch (Exception e) {
-			log.error("Failed to load Logo. " + e.getMessage());
+			log.warn("Failed to load Logo. " + e.getMessage());
 		}
 
 	}

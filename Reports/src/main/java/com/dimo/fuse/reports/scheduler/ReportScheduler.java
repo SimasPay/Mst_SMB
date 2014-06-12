@@ -132,7 +132,7 @@ public abstract class ReportScheduler {
 	public void generate() {
 		log.debug("Scheduler Trigered, for the generation of Daily Reports has started");
 		try{			
-			inputFileNames = getFilesListFromDirectory(ReportSchedulerProperties.getDailyReportsInputDir(),".json");
+			inputFileNames = getFilesListFromDirectory(ReportSchedulerProperties.getReportsInputDir(),".json");
 			if(inputFileNames != null && inputFileNames.length > 0){
 				inputFileNames = FilterInputFilesBasedOnDBSchedulerTimings(inputFileNames);
 				initaliseTimes();
@@ -156,7 +156,7 @@ public abstract class ReportScheduler {
 					
 					String csvZipFile = zipFiles(outputDirectory,zipFile+"_csv",".csv");
 					if(csvZipFile != null){
-						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled PDF Reports", "Attached Scheduled Reports Zip File", csvZipFile);
+						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled CSV Reports", "Attached Scheduled Reports Zip File", csvZipFile);
 					}else{
 						log.info("Unable to zip the cls files from input directory "+outputDirectory+" and hence not sending mail");
 					}					
@@ -205,7 +205,7 @@ public abstract class ReportScheduler {
 			reportparams.setUserName("System");
 			reportparams.setScheduledReport(true);
 			reportparams.setDestinationFolder(outputDirectory);
-			ReportTool.generateReports(ReportSchedulerProperties.getDailyReportsInputDir() + File.separator + inputFileNames[i], reportparams);
+			ReportTool.generateReports(ReportSchedulerProperties.getReportsInputDir() + File.separator + inputFileNames[i], reportparams);
 		}
 		log.debug("generateReports function finished");
 	}

@@ -1,14 +1,13 @@
 package com.dimo.fuse.reports.db;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.dimo.fuse.reports.util.PropertiesFileReaderTool;
 
 /**
  * 
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
 public class DBProperties {
 
 	private static Logger log = LoggerFactory.getLogger(DBProperties.class);
-	private static String _dbPropertiesFileName = "/database_config.properties";
+	private static String _dbPropertiesFileName = "database_config.properties";
 	private static Properties dbProperties;
 	private static String encryptionKey;
 	private static StandardPBEStringEncryptor stringEncryptor;
@@ -35,19 +34,9 @@ public class DBProperties {
 		}
 	}
 
+	
 	public static void readDBProperties() {
-		dbProperties = new Properties();
-		try {
-			InputStream ins = DBProperties.class.getClassLoader()
-					.getResourceAsStream(_dbPropertiesFileName);
-			dbProperties.load(ins);
-		} catch (FileNotFoundException e) {
-			log.error("file " + _dbPropertiesFileName + "not found");
-			e.printStackTrace();
-		} catch (IOException e) {
-			log.error("Failed to load configuration file.\n", e);
-			e.printStackTrace();
-		}
+		dbProperties = PropertiesFileReaderTool.readProperties(_dbPropertiesFileName);
 	}
 
 	public static String getJDBCDriver() {
@@ -69,7 +58,7 @@ public class DBProperties {
 
 	public static String getDBEncryptionPassword() {
 		return decryptProperty(dbProperties
-				.getProperty("mfino.dbEncryption.password"));
+				.getProperty("mfino.hibernateStringEncryptor.password"));
 	}
 
 	public static String getDBEncryptionSalt() {

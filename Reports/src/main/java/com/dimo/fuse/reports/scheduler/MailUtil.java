@@ -1,8 +1,6 @@
 package com.dimo.fuse.reports.scheduler;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.Properties;
 
 import javax.mail.internet.InternetAddress;
 
@@ -23,7 +21,6 @@ public class MailUtil {
 
   private static Logger log = LoggerFactory.getLogger("MailUtil");	
   private static final String MAIL_SMTP_SOCKET_FACTORY_CLASS = "javax.net.ssl.SSLSocketFactory";
-  private Properties prop = new Properties();
   private String mailServer = "smtp.gmail.com";
   private String mailServerPort = "465";
   private String mailServerAuthName = "mfinoemailtest@gmail.com";
@@ -35,25 +32,22 @@ public class MailUtil {
   public MailUtil(){
 	  loadProperties();
   }
-  
+   
   private void loadProperties() {
 	  log.info("loading mail properties started");
-		try {
-			  InputStream ins = this.getClass().getResourceAsStream("/reportScheduler.properties");
-			  prop.load(ins);
-			  ins.close();
-			  mailServer = prop.getProperty("dimo.mail.server");
-			  mailServerPort = prop.getProperty("dimo.mail.server.port");
-			  mailServerAuthName = prop.getProperty("dimo.mail.server.auth_name");
-			  mailServerAuthPassword = prop.getProperty("dimo.mail.server.auth_password");
-			  mailServerFromName = prop.getProperty("dimo.mail.server.from_name");
-			  mailServerRequireAuth = prop.getProperty("dimo.mail.server.require_auth");
-			  mailServerRequireSSL = prop.getProperty("dimo.mail.server.require_ssl");
-		} catch (Exception e) {
-			log.error("Error while loading Email Proeprties",e);
-		}
-		log.info("loading mail properties finished");
-	}
+	  try {
+		  mailServer = ReportSchedulerProperties.getProperty("mfino.mail.server");
+		  mailServerPort = ReportSchedulerProperties.getProperty("mfino.mail.server.port");
+		  mailServerAuthName = ReportSchedulerProperties.getProperty("mfino.mail.server.auth_name");
+		  mailServerAuthPassword = ReportSchedulerProperties.getProperty("mfino.mail.server.auth_password");
+		  mailServerFromName = ReportSchedulerProperties.getProperty("mfino.mail.server.from_name");
+		  mailServerRequireAuth = ReportSchedulerProperties.getProperty("mfino.mail.server.require_auth");
+		  mailServerRequireSSL = ReportSchedulerProperties.getProperty("mfino.mail.server.require_ssl");
+	  } catch (Exception e) {
+		  log.error("Error while loading Email Proeprties",e);
+	  }
+	  log.info("loading mail properties finished");
+  }
 
  
   public  void sendMail(String toAddress, String toName, String subject, String message){

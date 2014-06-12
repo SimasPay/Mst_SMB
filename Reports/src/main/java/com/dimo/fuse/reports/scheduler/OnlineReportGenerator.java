@@ -51,7 +51,7 @@ public class OnlineReportGenerator {
 		}
 		reportParams.setUserName("System");
 		reportParams.setDestinationFolder(outputDirectory);
-		ReportTool.generateReports(ReportSchedulerProperties.getDailyReportsInputDir() + File.separator + reportName + ".json", reportParams);
+		ReportTool.generateReports(ReportSchedulerProperties.getReportsInputDir() + File.separator + reportName + ".json", reportParams);
 		log.info("generateReport function finished");
 		
 		if(ReportSchedulerProperties.getEmailRecipients()!=null)

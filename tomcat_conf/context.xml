@@ -43,7 +43,11 @@
 	<Environment name="mfino.ReportScheduler.mfino.Properties" value="file:../mfino_conf/ReportScheduler/mfino.properties"  
          type="java.lang.String" override="false"/>
 	<Environment name="mfino.ReportScheduler.databaseConfig.Properties" value="file:../mfino_conf/ReportScheduler/database_config.properties"  
-         type="java.lang.String" override="false"/> 
+         type="java.lang.String" override="false"/>
+    <Environment name="mfino.Reports.mfino.properties" value="file:../mfino_conf/Reports/mfino.properties"  
+         type="java.lang.String" override="false"/>		 
+	<Environment name="mfino.Reports.database_config.properties" value="file:../mfino_conf/Reports/database_config.properties"  
+         type="java.lang.String" override="false"/>	
 	<Environment name="mfino.webapi.languageTranslation.json" value="file:../mfino_conf/webapi/languageTranslation.json"  
          type="java.lang.String" override="false"/>
 

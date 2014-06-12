@@ -1,11 +1,11 @@
 package com.dimo.fuse.reports.scheduler;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.dimo.fuse.reports.util.PropertiesFileReaderTool;
 
 /**
  * 
@@ -14,43 +14,39 @@ import org.slf4j.LoggerFactory;
  */
 public class ReportSchedulerProperties {
 
-	private static Logger log = LoggerFactory.getLogger("DailyReportGenerator");
+	private static Logger log = LoggerFactory.getLogger("ReportSchedulerProperties");
 	
-	private static String dailyReportsInputDir = null;
-	private static String dailyReportsOutputDir = null;
+	private static String reportsInputDir = null;
+	private static String scheduledReportsOutputDir = null;
 	private static String otherReportsOutputDir = null;
 	private static Properties schedulerProperties = new Properties();
 	private static String emailRecipients = "";
+	private static String _propertiesFileName = "mfino.properties";
 	
 	
 	static{
 		loadProperties();
-	}
+	}	
 	
-	public static void loadProperties() /*throws IOException*/ {
+	public static void loadProperties() {
 		log.info("Loading Report Scheduler properties");
-		InputStream ins = ReportSchedulerProperties.class.getClassLoader().getResourceAsStream("/reportScheduler.properties");
-		try {
-			schedulerProperties.load(ins);
-			ins.close();
-			dailyReportsInputDir = schedulerProperties.getProperty("dailyReportsInputDir");
-			dailyReportsOutputDir = schedulerProperties.getProperty("dailyReportsOutputDir");
-			otherReportsOutputDir = schedulerProperties.getProperty("otherReportsOutputDir");
-			emailRecipients = schedulerProperties.getProperty("email.recipient.list");
-			log.info("dailyReportsInputDir :" + dailyReportsInputDir);
-			log.info("dailyReportsOutputDir :" + dailyReportsOutputDir);
-			log.info("emailRecipients :" + emailRecipients);
-		} catch (IOException e) {
-			log.error("Error loading report scheduler properties", e);
-		}		
+		schedulerProperties = PropertiesFileReaderTool.readProperties(_propertiesFileName);
+		reportsInputDir = schedulerProperties.getProperty("reportsInputDir");
+		scheduledReportsOutputDir = schedulerProperties.getProperty("scheduledReportsOutputDir");
+		otherReportsOutputDir = schedulerProperties.getProperty("mfino.report.directory");
+		emailRecipients = schedulerProperties.getProperty("email.recipient.list");
+		log.info("reportsInputDir :" + reportsInputDir);
+		log.info("scheduledReportsOutputDir :" + scheduledReportsOutputDir);
+		log.info("otherReportsOutputDir :" + otherReportsOutputDir);
+		log.info("emailRecipients :" + emailRecipients);
 	}
 
-	public static String getDailyReportsInputDir() {
-		return dailyReportsInputDir;
+	public static String getReportsInputDir() {
+		return reportsInputDir;
 	}
 
-	public static String getDailyReportsOutputDir() {
-		return dailyReportsOutputDir;
+	public static String getScheduledReportsOutputDir() {
+		return scheduledReportsOutputDir;
 	}
 
 	public static String getEmailRecipients() {
@@ -59,6 +55,10 @@ public class ReportSchedulerProperties {
 
 	public static String getOtherReportsOutputDir() {
 		return otherReportsOutputDir;
+	}
+	
+	public static String getProperty(String propertyName) {
+		return schedulerProperties.getProperty(propertyName);
 	}
 	
 }
