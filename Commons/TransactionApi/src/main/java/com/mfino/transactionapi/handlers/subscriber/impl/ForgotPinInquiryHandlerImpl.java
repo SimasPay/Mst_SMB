@@ -163,6 +163,8 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
  		subscriberMDN.setAuthorizationToken(null);
  		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
  		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+		subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
+ 		subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
  		subscriberService.saveSubscriber(subscriber);
  		subscriberMdnService.saveSubscriberMDN(subscriberMDN);
  		//Building notification message
