@@ -72,7 +72,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		log.debug("BSIMSMSServiceImpl :: process() BEGIN");
 		SMSNotification smsNotification = httpExchange.getIn().getBody(SMSNotification.class);
 		message = smsNotification.getContent();
-		if (smsNotification.getMdn().startsWith("62")) {
+		if (smsNotification.getMdn().startsWith("62") || smsNotification.getMdn().startsWith("0")) {
 			toAddress = smsNotification.getMdn();
 		} else {
 			toAddress = StringUtils.isNotBlank(getIntPrefixCode()) ? getIntPrefixCode() +  smsNotification.getMdn() : smsNotification.getMdn();
