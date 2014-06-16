@@ -1,8 +1,11 @@
 package com.mfino.uicore.fix.processor.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -53,7 +56,6 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.ServiceChargeTransactionLogProcessor;
 
@@ -67,8 +69,10 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	private ServiceDAO serviceDao = daoFactory.getServiceDAO();
 	private PendingCommodityTransferDAO pctDao = daoFactory.getPendingCommodityTransferDAO();
 	private CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
+	private IntegrationSummaryDao integrationSummaryDao = daoFactory.getIntegrationSummaryDao();
+	private BillPaymentsDAO billPaymentsDao = daoFactory.getBillPaymentDAO();
 
-	private int maxNoOfDaysToReverseTxn;
+	//private int maxNoOfDaysToReverseTxn;
 
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
@@ -165,14 +169,35 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			query.setStart(realMsg.getstart());
 			query.setLimit(realMsg.getlimit());
 			query.setIDOrdered(true); 
+			
 			List<ServiceChargeTransactionLog> results = sctlDao.get(query);
+			List<Long> sctlList = getSctlList(results);
+
+			List<IntegrationSummary> integrationSummaryLst ;//= integrationSummaryDao.getBySctlList(sctlList);
+			Map<Long,IntegrationSummary> sctlIsMap = null ;//= getSctlIsMap(integrationSummaryLst);
+
+			List<BillPayments> billPaymentsLst ;//= billPaymentsDao.getBySctlList(sctlList);
+			Map<Long,BillPayments> sctlBpMap = null ;//= getSctlBpMap(billPaymentsLst);
+			
+			int maxNoOfDaysToReverseTxn = systemParametersService.getInteger(SystemParameterKeys.MAX_NO_OF_DAYS_TO_REVERSE_TXN);
+			int batchSize = 10000;
+			int startIndex = 0;
 
 			if (results != null) {
 				realMsg.allocateEntries(results.size());
 				for (int i = 0; i <results.size(); i++) {
+					if( i%batchSize == 0 ) {
+						int endIndex = startIndex+batchSize-1 < results.size() ? startIndex+batchSize-1 : results.size()-1;
+						integrationSummaryLst = integrationSummaryDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
+						sctlIsMap = getSctlIsMap(integrationSummaryLst);
+
+						billPaymentsLst = billPaymentsDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
+						sctlBpMap = getSctlBpMap(billPaymentsLst);
+						startIndex = startIndex + batchSize;
+					}
 					ServiceChargeTransactionLog sctl = results.get(i);
 					CMJSServiceChargeTransactions.CGEntries entry = new CMJSServiceChargeTransactions.CGEntries();
-					updateMessage(sctl,entry,realMsg);
+					updateMessage(sctl,entry,realMsg, maxNoOfDaysToReverseTxn,sctlIsMap,sctlBpMap);
 					realMsg.getEntries()[i] = entry;
 				}
 			}
@@ -182,6 +207,30 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		}
 
 		return realMsg;
+	}
+
+	private Map<Long, BillPayments> getSctlBpMap(List<BillPayments> billPaymentsLst) {
+		Map<Long, BillPayments> sctlBpMap = new HashMap<Long, BillPayments>();
+		for(BillPayments bp : billPaymentsLst) {
+			sctlBpMap.put(bp.getSctlId(), bp);
+		}
+		return sctlBpMap;
+	}
+
+	private Map<Long, IntegrationSummary> getSctlIsMap(List<IntegrationSummary> integrationSummaryLst) {
+		Map<Long, IntegrationSummary> sctlIsMap = new HashMap<Long, IntegrationSummary>();
+		for(IntegrationSummary is : integrationSummaryLst) {
+			sctlIsMap.put(is.getSctlId(), is);
+		}
+		return sctlIsMap;
+	}
+
+	private List<Long> getSctlList(List<ServiceChargeTransactionLog> results) {
+		List<Long> sctlList = new ArrayList<Long>();
+		for(ServiceChargeTransactionLog sctl : results) {
+			sctlList.add(sctl.getID());
+		}
+		return sctlList;
 	}
 
 	private Long getSCTLID(String bankRetrievalReferenceNumber) {
@@ -222,7 +271,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		return null;
 	}
 
-	private void updateMessage(ServiceChargeTransactionLog sctl, CGEntries entry, CMJSServiceChargeTransactions realMsg) {
+	private void updateMessage(ServiceChargeTransactionLog sctl, CGEntries entry, CMJSServiceChargeTransactions realMsg, int maxNoOfDaysToReverseTxn, Map<Long, IntegrationSummary> sctlIsMap, Map<Long, BillPayments> sctlBpMap) {
 		TransactionType transactionType=null;
 		Service service=null;
 		if(sctl.getCalculatedCharge()!=null){
@@ -358,9 +407,9 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		if(sctl.getDescription() != null){
 			entry.setDescription(sctl.getDescription());
 		}
-		setAdditionanInfo(entry,sctl,transactionType,service);
-		setIntegrationSummaryInfo(entry,sctl);
-		entry.setIsReverseAllowed(checkIsTxnReverseAllowed(sctl, transactionType));
+		setAdditionanInfo(entry,sctl,transactionType,service, sctlBpMap);
+		setIntegrationSummaryInfo(entry,sctl, transactionType, sctlIsMap);
+		entry.setIsReverseAllowed(checkIsTxnReverseAllowed(sctl, transactionType, maxNoOfDaysToReverseTxn));
 	}
 
 	/**
@@ -374,14 +423,13 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	// Check whether the Reverse of transaction is allowed or not.
-	private boolean checkIsTxnReverseAllowed(ServiceChargeTransactionLog sctl, TransactionType transactionType) {
+	private boolean checkIsTxnReverseAllowed(ServiceChargeTransactionLog sctl, TransactionType transactionType, int maxNoOfDaysToReverseTxn) {
 		boolean isReverseAllowed = false;
 
 		Timestamp txnTime = sctl.getCreateTime();
 		Timestamp currentTime = new Timestamp();
 
 		long days_old = (currentTime.getTime() - txnTime.getTime()) / (24 * 60  *60 * 1000);
-		maxNoOfDaysToReverseTxn = systemParametersService.getInteger(SystemParameterKeys.MAX_NO_OF_DAYS_TO_REVERSE_TXN);
 		if ( (days_old <= maxNoOfDaysToReverseTxn) && 
 				((sctl.getParentSCTLID() == null) &&
 						(sctl.getTransactionAmount().compareTo(BigDecimal.ZERO) > 0) && 
@@ -422,24 +470,17 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		return isReverseAllowed;
 	}
 
-	private void setAdditionanInfo(CGEntries entry,
-			ServiceChargeTransactionLog sctl, TransactionType transactionType,
-			Service service) {
-
-		BillPaymentsDAO billPaymentsDao = daoFactory.getBillPaymentDAO();
-		BillPaymentsQuery query = new BillPaymentsQuery();
-		query.setSctlID(sctl.getID());
-		List<BillPayments> lstBillPayments = billPaymentsDao.get(query);
-		BillPayments billPayment = null;
+	private void setAdditionanInfo(CGEntries entry, ServiceChargeTransactionLog sctl, TransactionType transactionType, Service service, Map<Long, BillPayments> sctlBpMap) {
+		BillPayments billPayment = sctlBpMap.get(sctl.getID());
 		entry.setAdditionalInfo("");
-
-		if (CollectionUtils.isNotEmpty(lstBillPayments)) {
-			billPayment = lstBillPayments.get(0);
-			entry.setAdditionalInfo(billPayment.getInvoiceNumber());
+		if(billPayment!=null) {
+			String invoiceNumber = billPayment.getInvoiceNumber();
+			String inRespCode = billPayment.getINResponseCode();
+			entry.setAdditionalInfo(invoiceNumber);
 
 			if (CmFinoFIX.SCTLStatus_Failed.equals(sctl.getStatus()) && 
 					ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equals(transactionType.getTransactionName())) {
-				entry.setFailureReason(billPayment.getINResponseCode());
+				entry.setFailureReason(inRespCode);//
 			}
 		}
 		else if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(transactionType.getTransactionName())){
@@ -459,14 +500,27 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 
 	}
 
-	private void setIntegrationSummaryInfo(CGEntries entry,
-			ServiceChargeTransactionLog sctl){
-		IntegrationSummaryDao integrationSummaryDao = daoFactory.getIntegrationSummaryDao();
-		IntegrationSummaryQuery query = new IntegrationSummaryQuery();
-		query.setSctlID(sctl.getID());
-		List<IntegrationSummary> integrationSummaryResults = integrationSummaryDao.get(query);
-		if(integrationSummaryResults!= null && integrationSummaryResults.size() > 0){
-			IntegrationSummary integrationSummary = integrationSummaryResults.get(0);
+//	private boolean isBillpaymentTxn(TransactionType transactionType) {
+//		String txnName = transactionType.getTransactionName();
+//		if(txnName.equals(ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT) || txnName.equals(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY) || 
+//				txnName.equals(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE)) {
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	private boolean isDataExistInIntegrationSummary(TransactionType transactionType) {
+//		String txnName = transactionType.getTransactionName();
+//		if(txnName.equals(ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT) || txnName.equals(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY) || 
+//				txnName.equals(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE) || txnName.equals(ServiceAndTransactionConstants.TRANSACTION_CHARGE_SETTLEMENT)) {
+//			return true;
+//		}
+//		return false;
+//	}
+
+	private void setIntegrationSummaryInfo(CGEntries entry, ServiceChargeTransactionLog sctl, TransactionType transactionType, Map<Long, IntegrationSummary> sctlIsMap){
+		IntegrationSummary integrationSummary = sctlIsMap.get(sctl.getID());
+		if(integrationSummary!=null){
 			entry.setIntegrationType(integrationSummary.getIntegrationType());
 			entry.setReconcilationID1(integrationSummary.getReconcilationID1());
 			entry.setReconcilationID2(integrationSummary.getReconcilationID2());

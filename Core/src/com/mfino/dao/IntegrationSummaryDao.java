@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.IntegrationSummaryQuery;
@@ -16,6 +17,17 @@ import com.mfino.hibernate.Timestamp;
  * @author Srikanth
  */
 public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
+	
+	public List<IntegrationSummary> getBySctlList(List<Long> sctlLst) {        
+		Criteria criteria = createCriteria();
+		if (sctlLst != null) {
+			criteria.add(Restrictions.in(CmFinoFIX.CRIntegrationSummary.FieldName_SctlId, sctlLst));
+		}
+		@SuppressWarnings("unchecked")
+		List<IntegrationSummary> results = criteria.list();
+		return results;
+	}
+	
 	public List<IntegrationSummary> get(IntegrationSummaryQuery query) {
 		Criteria criteria = createCriteria();
 		if (query.getSctlID() != null) {

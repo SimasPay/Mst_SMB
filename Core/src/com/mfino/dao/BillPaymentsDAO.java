@@ -9,10 +9,12 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
+import com.mfino.domain.IntegrationSummary;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CRBillPayments;
 
@@ -21,6 +23,16 @@ import com.mfino.fix.CmFinoFIX.CRBillPayments;
  * @author Maruthi
  */
 public class BillPaymentsDAO extends BaseDAO<BillPayments> {
+	
+	public List<BillPayments> getBySctlList(List<Long> sctlLst) {        
+		Criteria criteria = createCriteria();
+		if (sctlLst != null) {
+			criteria.add(Restrictions.in(CmFinoFIX.CRBillPayments.FieldName_SctlId, sctlLst));
+		}
+		@SuppressWarnings("unchecked")
+		List<BillPayments> results = criteria.list();
+		return results;
+	}
 	
 	 public List<BillPayments> get(BillPaymentsQuery query) {
 		 Criteria criteria = createCriteria();
