@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -263,13 +265,18 @@ public class PDFDocument {
 		String 	name = "Name";
 		String mdn = "Mobile No";
 		
-		String firstName = subscriberMDN.getSubscriber().getFirstName();
-		String lastName = subscriberMDN.getSubscriber().getLastName();
-		String nameVal = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
-//		if(StringUtils.isBlank(nameVal))
-//		{
-//			nameVal = subscriberMDN.getSubscriber().getNickname() != null ? subscriberMDN.getSubscriber().getNickname() : "";
-//		}
+		Subscriber subscriber = subscriberMDN.getSubscriber();
+		String nameVal = StringUtils.EMPTY;
+		if (subscriber.getKYCLevelByKYCLevel().getKYCLevel() != null && 
+				CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue() == (subscriber.getKYCLevelByKYCLevel().getKYCLevel().intValue())) {
+			nameVal = subscriber.getNickname();
+		}
+		else {
+			String firstName = subscriber.getFirstName();
+			String lastName = subscriber.getLastName();
+			nameVal = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+		}
+
 		String currentBalanceVal = "Rp. ";
 		currentBalanceVal += MfinoUtil.getNumberFormat().format(pocket.getCurrentBalance());
 					
