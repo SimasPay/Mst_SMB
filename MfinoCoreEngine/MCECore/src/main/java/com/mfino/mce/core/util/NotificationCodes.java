@@ -574,7 +574,11 @@ public enum NotificationCodes {
 	NFCCardNotActive(10844,844,false),
 	GetUserAPIKeyFailed(12102,2102,false),
 	GetUserAPIKeySuccess(12103,2103,false),
-	QueryBalanceDetails(12095,2095,false);
+	QueryBalanceDetails(12095,2095,false),
+	QRpaymentInquirySuccessful(12109,2109,false),
+	QRpaymentFailed(12110,2110,true),
+	QRpaymentConfirmationSuccessful(12111,2111,true),
+	QRPaymentCompletedToReceiver(12112,2112,true);
 	
 	private static Map<Integer,NotificationCodes> nofificationCodeMap = null;
 	private static Map<Integer, Integer> notificationCodetoInternalErroCodeMap = null;
@@ -667,7 +671,7 @@ public enum NotificationCodes {
         receiverNofificationCodeMap.put(BillpaymentConfirmationSuccess.getInternalErrorCode(), BillpaymentConfirmationSuccessfulToReceiver);
         receiverNofificationCodeMap.put(FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode(), FundCompleteWithdrawalConfirmedToMerchant);
         receiverNofificationCodeMap.put(FundAllocationReversalToSender.getInternalErrorCode(), FundAllocationReversalToReceiver);
-
+        receiverNofificationCodeMap.put(QRpaymentConfirmationSuccessful.getInternalErrorCode(),QRPaymentCompletedToReceiver);
 
 		onBehalfOfNotificationCodeMap.put(BillPayCompletedToSender.getInternalErrorCode(),BillaySuccessfulToOnBehalfOfMDN);
 		onBehalfOfNotificationCodeMap.put(BillPayPending.getInternalErrorCode(),BillayPendingToOnBehalfOfMDN);

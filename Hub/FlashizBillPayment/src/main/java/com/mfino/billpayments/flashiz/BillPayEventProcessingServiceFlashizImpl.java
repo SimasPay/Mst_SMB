@@ -67,29 +67,29 @@ public class BillPayEventProcessingServiceFlashizImpl extends BillPaymentsBaseSe
 			else if(BillPayConstants.SRC_SUSPENSE_INQ_SUCCESS.equals(eventContext)){
 				sendNotification = true;
 				if(CmFinoFIX.ResponseCode_Success.equals(backendResponse.getResult())){
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.QRpaymentInquirySuccessful.getInternalErrorCode());
 				}
 				else{
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 				}
 			}
 			else if(BillPayConstants.BILLER_INQUIRY_COMPLETED.equals(eventContext)){
 				sendNotification = true;
 				if(CmFinoFIX.ResponseCode_Success.equals(backendResponse.getResult())){
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.QRpaymentInquirySuccessful.getInternalErrorCode());
 				}
 				else{
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 				}
 			}
 			else if(BillPayConstants.BILLER_CONFIRMATION_FAILED.equals(eventContext)){
 				sendNotification = true;
-				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
+				backendResponse.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 			}
 			
 			else if(BillPayConstants.BILLER_CONFIRMATION_SUCCESSFUL.equals(eventContext)){
 				sendNotification = true;
-				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccessful.getInternalErrorCode());
+				backendResponse.setInternalErrorCode(NotificationCodes.QRpaymentConfirmationSuccessful.getInternalErrorCode());
 			}
 			else if(BillPayConstants.SUSPENSE_DEST_CONFIRMATION_FAILED.equals(eventContext)){
 				//sendNotification = true;
@@ -142,11 +142,11 @@ public class BillPayEventProcessingServiceFlashizImpl extends BillPaymentsBaseSe
 			}
 			
 			response.setSourceMDN(sctl.getSourceMDN());
-			response.setReceiverMDN(billPaymentsRecord.getInvoiceNumber());
+			response.setReceiverMDN(sctl.getDestMDN());
 
-			if(!(subscriberService.normalizeMDN(sctl.getSourceMDN()).equals(subscriberService.normalizeMDN(billPaymentsRecord.getInvoiceNumber())))){
-				response.setOnBehalfOfMDN(billPaymentsRecord.getInvoiceNumber());	
-			}
+//			if(!(subscriberService.normalizeMDN(sctl.getSourceMDN()).equals(subscriberService.normalizeMDN(billPaymentsRecord.getInvoiceNumber())))){
+//				response.setOnBehalfOfMDN(billPaymentsRecord.getInvoiceNumber());	
+//			}
 			
 			response.setTransferID(response.getTransferID());
 			response.setParentTransactionID(response.getParentTransactionID());

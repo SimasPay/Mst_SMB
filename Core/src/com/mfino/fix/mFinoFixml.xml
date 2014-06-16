@@ -21862,7 +21862,43 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</English>
 				</C1>				
-			</value>			
+			</value>
+			<value description="QRpaymentInquirySuccessful" enum="2109">
+				<C1>
+					<English>
+						<SMS>
+							<Text>You requested to top up $(ReceiverMDN) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge). ParentTransactionID  $(ParentTransactionID) REF: $(TransferID)</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="QRpaymentFailed" enum="2110">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your request to top up $(ReceiverMDN) from $(BillerCode) with $(Currency) $(Amount) failed, Please try again later. ParentTransactionID  $(ParentTransactionID) REF: $(TransferID)</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="QRpaymentConfirmationSuccessful" enum="2111">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your top up request for $(ReceiverMDN) from $(BillerCode) with $(Currency) $(Amount), ServiceCharge $(Currency) $(serviceCharge) is successful. REF: $(TransferID)</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="QRPaymentCompletedToReceiver" enum="2112">
+				<C1>
+					<English>
+						<SMS>
+							<Text>REF ID: $(TransferID). Received Payment from customer $(SenderMDN), $(InvoiceNumber) with $(Currency) $(Amount).</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
