@@ -30,10 +30,8 @@ import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.ServiceTransactionDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
-import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.dao.query.CommodityTransferQuery;
-import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Adjustments;
@@ -71,6 +69,8 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	private CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
 	private IntegrationSummaryDao integrationSummaryDao = daoFactory.getIntegrationSummaryDao();
 	private BillPaymentsDAO billPaymentsDao = daoFactory.getBillPaymentDAO();
+	private final Integer BACTH_SIZE = 10000;
+
 
 	//private int maxNoOfDaysToReverseTxn;
 
@@ -180,20 +180,19 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			Map<Long,BillPayments> sctlBpMap = null ;//= getSctlBpMap(billPaymentsLst);
 			
 			int maxNoOfDaysToReverseTxn = systemParametersService.getInteger(SystemParameterKeys.MAX_NO_OF_DAYS_TO_REVERSE_TXN);
-			int batchSize = 10000;
 			int startIndex = 0;
 
 			if (results != null) {
 				realMsg.allocateEntries(results.size());
 				for (int i = 0; i <results.size(); i++) {
-					if( i%batchSize == 0 ) {
-						int endIndex = startIndex+batchSize-1 < results.size() ? startIndex+batchSize-1 : results.size()-1;
+					if( i%BACTH_SIZE == 0 ) {
+						int endIndex = startIndex+BACTH_SIZE-1 < results.size() ? startIndex+BACTH_SIZE-1 : results.size()-1;
 						integrationSummaryLst = integrationSummaryDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
 						sctlIsMap = getSctlIsMap(integrationSummaryLst);
 
 						billPaymentsLst = billPaymentsDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
 						sctlBpMap = getSctlBpMap(billPaymentsLst);
-						startIndex = startIndex + batchSize;
+						startIndex = startIndex + BACTH_SIZE;
 					}
 					ServiceChargeTransactionLog sctl = results.get(i);
 					CMJSServiceChargeTransactions.CGEntries entry = new CMJSServiceChargeTransactions.CGEntries();
