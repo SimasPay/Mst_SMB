@@ -272,6 +272,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				result.setCode(transactionResponse.getCode());
 				result.setMessage(transactionResponse.getMessage());
 				result.setMultixResponse(response);
+				if(transactionResponse.getOperatorMsg() != null)
+					result.setResponseMessage(transactionResponse.getOperatorMsg());
 				return result;
 			}
 		}
@@ -413,7 +415,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				}
 				if(additionalInfo != null){
 					billPayment.setInfo4(additionalInfo);
-					result.setBillDate(formatBillDate(billPayment.getInfo4().trim().substring(0, 6), "yyyyMM"));
+					if(billPayment.getInfo4() != null && billPayment.getInfo4().trim().length() >=6 )
+						result.setBillDate(formatBillDate(billPayment.getInfo4().trim().substring(0, 6), "yyyyMM"));
 				}
 				if(billPayRefID != null)
 					billPayment.setBillData(billPayRefID);

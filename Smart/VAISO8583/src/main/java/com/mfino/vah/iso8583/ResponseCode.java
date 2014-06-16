@@ -5,6 +5,7 @@ public class ResponseCode {
 	public static final String APPROVED = "00";
 //	public static final String ERROR = "06";
 	public static final String INVALID_TRANSACTION="12";
+	public static final String AMOUNT_OFF_LIMITS = "13";
 	public static final String INVALID_RECORD="25";
 	public static final String FORMAT_ERROR = "30";
 	public static final String INVALID_BANKID = "31";

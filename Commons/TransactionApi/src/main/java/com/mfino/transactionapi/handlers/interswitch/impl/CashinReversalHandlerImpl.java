@@ -24,6 +24,7 @@ import com.mfino.result.Result;
 import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.TransactionLogService;
 import com.mfino.service.impl.TransactionIdentifierServiceImpl;
 import com.mfino.service.impl.TransactionLogServiceImpl;
 import com.mfino.transactionapi.handlers.interswitch.CashinReversalHandler;
@@ -50,6 +51,10 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 	@Autowired
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
+	
+	@Autowired
+	@Qualifier("TransactionLogServiceImpl")
+	private TransactionLogService transactionLogService;
 	 
    	public Result handle(CMInterswitchCashin cashinDetails, ChannelCode cc,String transactionIdentifier) {
 
@@ -57,8 +62,7 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 
 		log.info("creating transaction log ...");
 	
-		TransactionLogServiceImpl transactionLogServiceImpl = new TransactionLogServiceImpl();
-		TransactionsLog tLog  = transactionLogServiceImpl.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, cashinDetails.DumpFields());
+		TransactionsLog tLog  = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, cashinDetails.DumpFields());
 
  		cashinDetails.setTransactionID(tLog.getID());
  

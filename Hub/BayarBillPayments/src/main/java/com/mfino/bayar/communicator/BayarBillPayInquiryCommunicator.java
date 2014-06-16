@@ -45,6 +45,7 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 		
 		BayarWebServiceResponse wsResponseElement = (BayarWebServiceResponse)response;
 		BillPayResponse billPayResponse = new BillPayResponse();
+		CMBase requestFix = (CMBase)requestFixMessage;
 		
 		log.info("BayarBillPayInquiryCommunicator :: constructReplyMessage wsResponseElement="+wsResponseElement+" requestFixMessage="+requestFixMessage);
 			
@@ -74,6 +75,7 @@ public class BayarBillPayInquiryCommunicator extends BayarHttpCommunicator {
 //		if(wsResponseElement.getStatus() != null)
 //			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 		billPayResponse.setInternalErrorCode(getInternalErrorCode(billPayResponse.getResult()));
+		billPayResponse.setSourceMDN(requestFix.getSourceMDN());
 		if(wsResponseElement.getMessage() != null)
 			billPayResponse.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
 		

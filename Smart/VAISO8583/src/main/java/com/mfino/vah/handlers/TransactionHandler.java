@@ -176,6 +176,10 @@ public class TransactionHandler implements Runnable {
 			log.info("response containts the string >100<.So successful");
 			return "00";
 		}
+		else if (response.contains(">13<")) {
+			log.info("response contains the string >13<. So failure because of amount limits");
+			return ResponseCode.AMOUNT_OFF_LIMITS;
+		}
 		else if (response.contains(">112<")) {
 			log.info("response contains the string >112<. So failure");
 			return ResponseCode.VAH_ERROR;

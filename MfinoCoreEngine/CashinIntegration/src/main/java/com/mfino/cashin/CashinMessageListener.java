@@ -258,11 +258,11 @@ public class CashinMessageListener implements Processor {
 					description.appendChild(doc.createTextNode("Invalid Service for the integration partner"));				
 				}
 				else if(CmFinoFIX.NotificationCode_TransferAmountBelowMinimumAllowed.toString().equals(result.getCode())){
-					code.appendChild(doc.createTextNode("109"));
+					code.appendChild(doc.createTextNode("13"));
 					description.appendChild(doc.createTextNode("Transaction amount is less than minimum transaction limit"));				
 				}
 				else if(CmFinoFIX.NotificationCode_TransactionFailedDueToInvalidAmount.toString().equals(result.getCode())){
-					code.appendChild(doc.createTextNode("109"));
+					code.appendChild(doc.createTextNode("13"));
 					description.appendChild(doc.createTextNode("Transaction amount is not valid"));				
 				}
 				else if(CmFinoFIX.NotificationCode_TransactionFailedDueToTimeLimitTransactionReached.toString().equals(result.getCode())){
@@ -270,7 +270,7 @@ public class CashinMessageListener implements Processor {
 					description.appendChild(doc.createTextNode("Transaction failed as time limit on transaction reached"));				
 				}
 				else if(CmFinoFIX.NotificationCode_TransferAmountAboveMaximumAllowed.toString().equals(result.getCode())){
-					code.appendChild(doc.createTextNode("110"));
+					code.appendChild(doc.createTextNode("13"));
 					description.appendChild(doc.createTextNode("Transaction amount is above maximum amount allowed"));				
 				}
 				else if(CmFinoFIX.NotificationCode_AboveDailyTransactionsCountLimit.toString().equals(result.getCode())){
@@ -285,16 +285,20 @@ public class CashinMessageListener implements Processor {
 					code.appendChild(doc.createTextNode("110"));
 					description.appendChild(doc.createTextNode("Monthly transactions count exceeded for the integration partner"));				
 				}
+				else if(CmFinoFIX.NotificationCode_BalanceTooHigh.toString().equals(result.getCode())){
+					code.appendChild(doc.createTextNode("13"));
+					description.appendChild(doc.createTextNode("Balance too high after the cashin"));				
+				}
 				else if(CmFinoFIX.NotificationCode_AboveDailyExpenditureLimit.toString().equals(result.getCode())){
-					code.appendChild(doc.createTextNode("110"));
+					code.appendChild(doc.createTextNode("13"));
 					description.appendChild(doc.createTextNode("Exceeded daily expenditure limit for the integration partner"));				
 				}
 				else if(CmFinoFIX.NotificationCode_AboveWeeklyExpenditureLimit.toString().equals(result.getCode())){
-					code.appendChild(doc.createTextNode("110"));
+					code.appendChild(doc.createTextNode("13"));
 					description.appendChild(doc.createTextNode("Exceeded weekly expenditure limit for the integration partner"));				
 				}
 				else if(CmFinoFIX.NotificationCode_AboveMonthlyExpenditureLimit.toString().equals(result.getCode())){
-					code.appendChild(doc.createTextNode("110"));
+					code.appendChild(doc.createTextNode("13"));
 					description.appendChild(doc.createTextNode("Exceeded monthly expenditure limit for the integration partner"));				
 				}
 				else{

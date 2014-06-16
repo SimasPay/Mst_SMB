@@ -138,8 +138,13 @@ public class InquiryHandler {
 			Subscriber subscriber = subMdn.getSubscriber();
 			String firstName = subscriber.getFirstName();
 			String lastName = subscriber.getLastName();
+			String name = null;
+			if(subscriber.getKYCLevelByKYCLevel().getKYCLevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc)
+				name = subscriber.getNickname();
+			else
+				name = firstName + " " + lastName;
 
-			result = String.format("%-30s%-16s%-30s%-30s%s", "SMEM QQ " + firstName + " " + lastName, oMdn, "", "SMART E-MONEY", "10");
+			result = String.format("%-30s%-16s%-30s%-30s%s", "SMEM QQ " + name, oMdn, "", "SMART E-MONEY", "10");
 			
 			log.info("Inquiry response DE-48="+result);
 			
