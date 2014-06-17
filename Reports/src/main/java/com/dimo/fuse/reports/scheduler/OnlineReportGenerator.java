@@ -45,7 +45,9 @@ public class OnlineReportGenerator {
 	public void generateReportsOnDemand(String reportName, ReportParameters reportParams) throws IOException, ParseException{
 		log.info("Report generation on demand has stared");
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-		outputDirectory = ReportSchedulerProperties.getOtherReportsOutputDir() + File.separator + fmt.format(reportParams.getStartTime()) + "-"  + fmt.format(reportParams.getEndTime());
+		String startDate = fmt.format(reportParams.getStartTime());
+		String endDate = fmt.format(reportParams.getEndTime());
+		outputDirectory = ReportSchedulerProperties.getOtherReportsOutputDir() + File.separator + startDate + "-"  + endDate;
 		if (!new File(outputDirectory).exists()) {
 			createDir(outputDirectory);
 		}
@@ -55,7 +57,7 @@ public class OnlineReportGenerator {
 		log.info("generateReport function finished");
 		
 		if(ReportSchedulerProperties.getEmailRecipients()!=null)
-			sendMail(ReportSchedulerProperties.getEmailRecipients(), reportName, "", outputDirectory + File.separator + reportName + ".pdf");
+			sendMail(ReportSchedulerProperties.getEmailRecipients(), reportName, "", outputDirectory + File.separator + reportName + "_"+ startDate +"-" + endDate + ".pdf");
 		
 	}	
 
