@@ -259,18 +259,23 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 				if((receiverNotificationCode != null) && (receiverNotificationCode.getIsNotificationRequired()) && (!isNullOrEmpty(backendResponse.getReceiverMDN())))
 				{
 					if(!(backendResponse.getReceiverMDN().equals(backendResponse.getSourceMDN()))){
-					log.info("receiverNotificationCode="+notificationCode.getNotificationCode() + ", language="+backendResponse.getLanguage() + ", notificationMethod="+CmFinoFIX.NotificationMethod_SMS);
-					com.mfino.domain.Notification smsReceiverNotification = coreDataWrapper.getNotification(receiverNotificationCode.getNotificationCode(), backendResponse.getLanguage(), CmFinoFIX.NotificationMethod_SMS);
-					com.mfino.domain.Notification emailReceiverNotification = coreDataWrapper.getNotification(receiverNotificationCode.getNotificationCode(), backendResponse.getLanguage(), CmFinoFIX.NotificationMethod_Email);
 
 					SubscriberMDN subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getReceiverMDN());
 					Subscriber subscriber = null;
+					Integer receiverNotficationLanguage = backendResponse.getLanguage();
 					if (subscriberMDN != null) {
 						subscriber = subscriberMDN.getSubscriber();
 						backendResponse.setFirstName(subscriber.getFirstName());
 						backendResponse.setLastName(subscriber.getLastName());
+						receiverNotficationLanguage = subscriber.getLanguage();
 					}
+					
 
+					log.info("receiverNotificationCode="+notificationCode.getNotificationCode() + ", language="+receiverNotficationLanguage + ", notificationMethod="+CmFinoFIX.NotificationMethod_SMS);
+					com.mfino.domain.Notification smsReceiverNotification = coreDataWrapper.getNotification(receiverNotificationCode.getNotificationCode(), receiverNotficationLanguage, CmFinoFIX.NotificationMethod_SMS);
+					com.mfino.domain.Notification emailReceiverNotification = coreDataWrapper.getNotification(receiverNotificationCode.getNotificationCode(), receiverNotficationLanguage, CmFinoFIX.NotificationMethod_Email);
+
+					
 					if (! (CmFinoFIX.SourceApplication_ATM.equals(((CMBase)mesg.getRequest()).getSourceApplication()))) {
 						if((smsReceiverNotification != null) && ( smsReceiverNotification.getIsActive())){
 							log.info("constructing notification for mdn="+backendResponse.getReceiverMDN());
