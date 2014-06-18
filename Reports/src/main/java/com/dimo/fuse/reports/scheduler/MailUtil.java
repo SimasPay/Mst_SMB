@@ -1,6 +1,8 @@
 package com.dimo.fuse.reports.scheduler;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.mail.internet.InternetAddress;
 
@@ -110,6 +112,48 @@ public class MailUtil {
 		    log.info("Successfully Sent Reports Mail to "+toAddress+" and the attachment file name is "+attachmentFile.getName());
 	  }catch(Exception e){
 		  log.error("Error while sending mail to "+toAddress+"and the attachment file name is "+attachmentFile.getName() ,e);
+	  }
+	  log.info("sendMail function finished");
+  }
+  
+  public  void sendMail(String toAddress, String toName, String subject, String message, List<File> attachments) {
+	  log.info("Sending Reports Mail to " + toAddress);
+	  try{
+			MultiPartEmail email = new MultiPartEmail();
+			email.setHostName(mailServer);
+			email.setSmtpPort(Integer.parseInt(mailServerPort));
+		    if (mailServerRequireAuth.equalsIgnoreCase("true")) {
+		      email.setAuthenticator(new DefaultAuthenticator(mailServerAuthName, mailServerAuthPassword));
+		    }
+		    email.setFrom(mailServerAuthName, mailServerFromName);
+		    if (mailServerRequireSSL.equalsIgnoreCase("true")) {
+		      email.setTLS(true);
+		      email.getMailSession().getProperties().put("mail.smtp.socketFactory.class", MAIL_SMTP_SOCKET_FACTORY_CLASS);
+		    }
+		    email.addTo(toAddress, toName);
+		    if(StringUtils.isNotBlank(subject)){
+		    	email.setSubject(subject);
+		    }
+		    if(StringUtils.isNotBlank(message)){
+		    	email.setMsg(message);
+		    }
+		    Iterator<File> it = attachments.iterator();
+		    while(it.hasNext()){
+		    	File attachmentFile = it.next();
+		    	if (attachmentFile.exists()) {
+		    		log.info("Attaching file " + attachmentFile.getName());
+		    		EmailAttachment attachment = new EmailAttachment();
+		    		attachment.setPath(attachmentFile.getAbsolutePath());
+		    		attachment.setDisposition(EmailAttachment.ATTACHMENT);
+		    		attachment.setDescription(attachmentFile.getName());
+		    		attachment.setName(attachmentFile.getName());
+		    		email.attach(attachment);
+		    	}
+		    }
+		    email.send();
+		    log.info("Successfully Sent Reports Mail to " + toAddress );
+	  }catch(Exception e){
+		  log.error("Error while sending mail to " + toAddress ,e);
 	  }
 	  log.info("sendMail function finished");
   }

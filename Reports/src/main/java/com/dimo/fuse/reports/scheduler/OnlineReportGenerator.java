@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,20 +22,20 @@ public class OnlineReportGenerator {
 
 	private static Logger log = LoggerFactory.getLogger("OnlineReportGenerator");	
 	private String outputDirectory;	
+	static String[] REPORT_FILE_EXTENSIONS = { "pdf", "xls", "csv" };
 
 	private boolean createDir(String dirPath) {
 		return new File(dirPath).mkdirs();
 	}
 	
-	private void sendMail(String emailRecipients,String subject, String message, String attachmentFileName){
+	private void sendMail(String emailRecipients,String subject, String message, List<File> attachments){
 		log.info("sending mail to " + emailRecipients);
 		try{
-			String[] emailRecipientsList = emailRecipients.split(",");
-			File attachmentFile = new File(attachmentFileName);
+			String[] emailRecipientsList = emailRecipients.split(",");			
 			MailUtil mailUtil = new MailUtil();
 			for(int i=0; i< emailRecipientsList.length; i++){
 				if(mailUtil.isValidEmailAddress(emailRecipientsList[i])){
-					mailUtil.sendMail(emailRecipientsList[i], "", subject, message, attachmentFile);
+					mailUtil.sendMail(emailRecipientsList[i], "", subject, message, attachments);
 				}
 			}
 		}catch(Exception e){
@@ -56,9 +58,14 @@ public class OnlineReportGenerator {
 		ReportTool.generateReports(ReportSchedulerProperties.getReportsInputDir() + File.separator + reportName + ".json", reportParams);
 		log.info("generateReport function finished");
 		
-		if(ReportSchedulerProperties.getEmailRecipients()!=null)
-			sendMail(ReportSchedulerProperties.getEmailRecipients(), reportName, "", outputDirectory + File.separator + reportName + "_"+ startDate +"-" + endDate + ".pdf");
-		
+		if(ReportSchedulerProperties.getEmailRecipients()!=null){
+			String fileNameWithoutExtension = outputDirectory + File.separator + reportName + "_"+ startDate +"-" + endDate;
+			List<File> attachments = new ArrayList<File>();
+			for(String extension : REPORT_FILE_EXTENSIONS){
+				attachments.add(new File(fileNameWithoutExtension + "." + extension));
+			}
+			sendMail(ReportSchedulerProperties.getEmailRecipients(), reportName, "", attachments);
+		}		
 	}	
 
 }
