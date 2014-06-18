@@ -176,6 +176,8 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 				response.setCharges(sctl.getCalculatedCharge().add(billPaymentsRecord.getOperatorCharges()));
 			if(billPaymentsRecord.getInvoiceNumber() !=null)
 				response.setInvoiceNumber(billPaymentsRecord.getInvoiceNumber());
+			if(billPaymentsRecord.getOperatorMessage() !=null)
+				response.setOperatorMessage(billPaymentsRecord.getOperatorMessage());
 		}
 
 		return mceMessage;
