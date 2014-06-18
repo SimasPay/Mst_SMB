@@ -281,10 +281,11 @@ public class PartnerServiceImpl implements PartnerService {
 			return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
 		}
 		Partner partner=subscriberMDN.getSubscriber().getPartnerFromSubscriberID().iterator().next();
-		
-		if(isAgentType(partner.getBusinessPartnerType())){
-			return CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner;
-		}
+
+// [Bala] Commented this as we dont have Agent App to activet the agent. So we will the Agent also like partner flow for Registration and activation.		
+//		if(isAgentType(partner.getBusinessPartnerType())){
+//			return CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner;
+//		}
 		if(!(CmFinoFIX.SubscriberStatus_Registered.equals(partner.getPartnerStatus())
 				||CmFinoFIX.SubscriberStatus_Initialized.equals(partner.getPartnerStatus()))){
 			return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
@@ -584,15 +585,16 @@ public class PartnerServiceImpl implements PartnerService {
 	public NotificationWrapper genratePartnerOTPMessage(Partner partner, String oneTimePin, String mdn, Integer notificationMethod) {
 		Integer language = CmFinoFIX.Language_English;
 		language = partner.getSubscriber().getLanguage();
-		if (isAgentType(partner.getBusinessPartnerType())) {
-			 NotificationWrapper notificationWrapper =  subscriberServiceExtended.generateOTPMessage(oneTimePin, notificationMethod);
-			 notificationWrapper.setLanguage(language);
-			 notificationWrapper.setFirstName(partner.getSubscriber().getFirstName());
-			 notificationWrapper.setLastName(partner.getSubscriber().getLastName());
-			 notificationWrapper.setPartnerCode(partner.getPartnerCode());
-			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_PromptForActivation);
-			 return notificationWrapper;
-		}
+// [Bala] Commented this as we dont have Agent App to activet the agent. So we will the Agent also like partner flow for Registration and activation.		
+//		if (isAgentType(partner.getBusinessPartnerType())) {
+//			 NotificationWrapper notificationWrapper =  subscriberServiceExtended.generateOTPMessage(oneTimePin, notificationMethod);
+//			 notificationWrapper.setLanguage(language);
+//			 notificationWrapper.setFirstName(partner.getSubscriber().getFirstName());
+//			 notificationWrapper.setLastName(partner.getSubscriber().getLastName());
+//			 notificationWrapper.setPartnerCode(partner.getPartnerCode());
+//			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_PromptForActivation);
+//			 return notificationWrapper;
+//		}
 
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		notificationWrapper.setNotificationMethod(notificationMethod);
