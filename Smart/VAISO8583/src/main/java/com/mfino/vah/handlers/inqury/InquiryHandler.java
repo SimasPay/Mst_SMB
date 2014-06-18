@@ -144,7 +144,7 @@ public class InquiryHandler {
 			else
 				name = firstName + " " + lastName;
 
-			result = String.format("%-30s%-16s%-30s%-30s%s", "SMEM QQ " + name, oMdn, "", "SMART E-MONEY", "10");
+			result = String.format("%-30s%-16s%-30s%-30s%s", "UANG QQ " + name, oMdn, "", "SMART E-MONEY", "10");
 			
 			log.info("Inquiry response DE-48="+result);
 			
