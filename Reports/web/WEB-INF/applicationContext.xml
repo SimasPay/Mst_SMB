@@ -22,7 +22,7 @@
     <context:component-scan base-package="com.dimo.fuse.reports" />
 
    <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
-        <constructor-arg value="GMT" />
+        <constructor-arg value="GMT+7" />
     </bean>  
   
     <bean id="dailyReportScheduler" class="com.dimo.fuse.reports.scheduler.DailyReportScheduler"> 
@@ -36,7 +36,7 @@
         <property name="jobDetail" ref="dailyReportSchedulerJob" />
        <property name="timeZone" ref="timeZone" />
         <!-- <property name="cronExpression" value="0 0 2 * * ?" /> -->
-        <property name="cronExpression" value="0 0/1 * * * ?" />
+        <property name="cronExpression" value="0 0 2 1/1 * ? *" />
     </bean>
     
     
@@ -52,7 +52,7 @@
         <property name="jobDetail" ref="monthlyReportSchedulerJob" />
        <property name="timeZone" ref="timeZone" />
         <!-- <property name="cronExpression" value="0 0 2 * * ?" /> -->
-        <property name="cronExpression" value="0 0/1 * * * ?" />
+        <property name="cronExpression" value="0 0 2 1 1/1 ? *" />
     </bean>
     
 	<!-- All triggers need to be added here to work -->
