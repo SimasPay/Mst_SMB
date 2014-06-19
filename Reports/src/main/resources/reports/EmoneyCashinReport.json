@@ -30,10 +30,11 @@
     					"Integration Type", 
     					"Reconciliation ID1", 
     					"Reconciliation ID2", 
-    					"Reconciliation ID3"
+    					"Reconciliation ID3",
+    					"Institution ID"
     					],
     
-    "HeaderColumnsWidth" : [2,2,2,3,3,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2],
+    "HeaderColumnsWidth" : [2,2,2,3,3,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
 
     "EncryptedColumnIndices" : [],
         
@@ -58,7 +59,8 @@
 				     integration_summary.IntegrationType,
 				     integration_summary.ReconcilationID1,
 				     integration_summary.ReconcilationID2,
-				     integration_summary.ReconcilationID3     
+				     integration_summary.ReconcilationID3,
+				     integration_summary.InstitutionID     
 				FROM
 				     enum_text et1,enum_text et2,commodity_transfer ct INNER JOIN pocket srcPocket ON ct.SourcePocketID = srcPocket.ID
 					 INNER JOIN pocket destPocket ON ct.DestPocketID = destPocket.ID

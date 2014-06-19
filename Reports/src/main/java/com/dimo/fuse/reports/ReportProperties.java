@@ -1,9 +1,6 @@
 package com.dimo.fuse.reports;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dimo.fuse.commonlib.util.FileReaderUtil;
-import com.dimo.fuse.reports.db.DBProperties;
+import com.dimo.fuse.reports.scheduler.ReportSchedulerProperties;
 
 /**
  * 
@@ -23,8 +20,6 @@ public class ReportProperties {
 	private JSONObject reportProperties;
 	private static JSONObject commonReportProperties;
 	public static final String COMMON_REPORT_PROPERTIES_FILE_PATH = "common.report.properties.filepath";
-	private static Properties schedulerProperties = new Properties();
-
 	private static Logger log = LoggerFactory.getLogger("ReportProperties");
 
 	static {
@@ -32,19 +27,15 @@ public class ReportProperties {
 	}
 
 	public static void readCommonReportProperties() {
-		try {
-			InputStream ins = DBProperties.class.getClassLoader()
-					.getResourceAsStream("/reportScheduler.properties");
-			schedulerProperties.load(ins);
-			ins.close();
-		} catch (IOException e) {
-			log.error("Error loading report scheduler properties", e);
-		}
-
-		String commonReportPropsFilePath = schedulerProperties
+		String commonReportPropsFilePath = ReportSchedulerProperties
 				.getProperty(COMMON_REPORT_PROPERTIES_FILE_PATH);
 		commonReportProperties = FileReaderUtil
 				.readFileContAsJsonObj(commonReportPropsFilePath);
+		if(StringUtils.isNotBlank(commonReportPropsFilePath)){
+			log.info("common report properties file located @" + commonReportPropsFilePath);
+		} else{
+			log.error("common report properties file not found @" + commonReportPropsFilePath);
+		}
 	}
 
 	public ReportProperties(String ReportPropertiesFilePath) {
