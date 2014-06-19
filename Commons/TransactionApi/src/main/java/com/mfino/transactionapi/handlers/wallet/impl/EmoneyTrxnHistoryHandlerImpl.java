@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +24,10 @@ import org.springframework.stereotype.Service;
 import com.lowagie.text.DocumentException;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
-import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.InterBankCode;
 import com.mfino.domain.InterbankTransfer;
-import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
@@ -45,7 +42,6 @@ import com.mfino.fix.CmFinoFIX.CMGetTransactions;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
-import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.service.BillPaymentsService;
 import com.mfino.service.CommodityTransferService;
@@ -357,7 +353,16 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	{
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		String email = txnDetails.getEmail();
-		String to = subscriber.getFirstName() + subscriber.getLastName();
+		String to = StringUtils.EMPTY;
+		if (subscriber.getKYCLevelByKYCLevel().getKYCLevel() != null && 
+				CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue() == (subscriber.getKYCLevelByKYCLevel().getKYCLevel().intValue())) {
+			to = subscriber.getNickname();
+		}
+		else {
+			String firstName = subscriber.getFirstName();
+			String lastName = subscriber.getLastName();
+			to = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+		}
 
 		createPDF(txnDetails, subscriberMDN, srcPocket, transactionHistoryList, filepath, sctlId);
 		String subject = ConfigurationUtil.getEmailPdfHistorySubject();
