@@ -6820,6 +6820,7 @@
 			<field name="ReconcilationID2" required="N" />
 			<field name="ReconcilationID3" required="N" />		
 			<field name="ReconcilationID4" required="N" />
+			<field name="InstitutionID" required="N"  />
 		</record>
 		
 		<record name="ClosedAccountSettlementMDN" ExtendsRecord="Base" Java="Y" SQLTable="close_acct_setl_mdn" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">

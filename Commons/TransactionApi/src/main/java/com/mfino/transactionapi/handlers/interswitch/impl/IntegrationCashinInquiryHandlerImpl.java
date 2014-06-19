@@ -392,6 +392,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		isummary.setReconcilationID1(sctl.getDestMDN());
 		isummary.setReconcilationID2(cashinDetails.getReceiptNo());
 		isummary.setReconcilationID3(cashinDetails.getPaymentLogID());
+		isummary.setInstitutionID(cashinDetails.getInstitutionID());
 		isdao.save(isummary);
     }
 
