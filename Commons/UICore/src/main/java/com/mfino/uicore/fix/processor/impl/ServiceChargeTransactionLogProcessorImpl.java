@@ -186,7 +186,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 				realMsg.allocateEntries(results.size());
 				for (int i = 0; i <results.size(); i++) {
 					if( i%BACTH_SIZE == 0 ) {
-						int endIndex = startIndex+BACTH_SIZE-1 < results.size() ? startIndex+BACTH_SIZE-1 : results.size()-1;
+						int endIndex = startIndex+BACTH_SIZE < results.size() ? startIndex+BACTH_SIZE : results.size();
 						integrationSummaryLst = integrationSummaryDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
 						sctlIsMap = getSctlIsMap(integrationSummaryLst);
 
