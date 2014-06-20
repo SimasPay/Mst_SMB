@@ -1,6 +1,7 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
@@ -158,19 +160,35 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		{
 			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
 		}
-		
+
+		String originalOTP = srcSubscriberMDN.getOTP();
+
 		//Validate OTP 
+		if(originalOTP!=null && isOtpExpired(srcSubscriberMDN)){
+			log.error("The otp entered has expired for mdn:"+ resetPin.getSourceMDN());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
+			return result;
+		}
 		
 		String receivedOTP=MfinoUtil.calculateDigestPin(resetPin.getSourceMDN(), resetPin.getOTP());
-		String originalOTP = srcSubscriberMDN.getOTP();
 		if(!(receivedOTP.equals(originalOTP)))
 		{
-			log.info("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
+			srcSubscriberMDN.setOtpRetryCount(srcSubscriberMDN.getOtpRetryCount()+1);
+			log.error("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+			if(isMaxRetryExceededForOtp(srcSubscriberMDN)) {
+				absoluteLockSubscriber(subscriber, srcSubscriberMDN);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_MDNIsRestricted);
+				log.error("Account locked for mdn: "+ resetPin.getSourceMDN());
+			}
+			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 			return result;
 		}
 		srcSubscriberMDN.setOTP(null); // reseting the OTP to null as the OTP is used for new pin generation.
-		
+		srcSubscriberMDN.setOtpRetryCount(0);
+		srcSubscriberMDN.setOTPExpirationTime(null);
+
+
 		log.info("OTP validation Successfull");
 
 		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(transDetails.getSctlId());
@@ -200,5 +218,30 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		return result;
 
+	}
+
+	private void absoluteLockSubscriber(Subscriber subscriber, SubscriberMDN srcSubscriberMDN) {
+		subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
+		subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
+		srcSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_InActive);
+		srcSubscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
+		srcSubscriberMDN.setDigestedPIN(null);
+		subscriberService.saveSubscriber(subscriber);
+	}
+
+	private boolean isMaxRetryExceededForOtp(SubscriberMDN srcSubscriberMDN) {
+		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
+		int currentOtpTrials = srcSubscriberMDN.getOtpRetryCount();
+		if( currentOtpTrials <= maxOtpTrials) {
+			return false;
+		}
+		return true;		
+	}
+
+	private boolean isOtpExpired(SubscriberMDN srcSubscriberMDN) {
+		if(srcSubscriberMDN.getOTPExpirationTime().after(new Date())) {
+			return false;
+		}
+		return true;
 	}
 }

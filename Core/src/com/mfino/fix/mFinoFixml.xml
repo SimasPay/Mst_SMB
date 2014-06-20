@@ -5365,6 +5365,7 @@
 			<field name="IsForceCloseRequested" required="N"/>
 			<field name="OtherMDN" required="N"/>
 			<field name="UserAPIKey" required="N"/>
+			<field name="OtpRetryCount" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -6986,6 +6987,7 @@
 			<field name="OTPStatus" id="Status" required="Y" default="0"  />
 			<field name="OTP" required="Y" />
 			<field name="OTPExpirationTime" required="Y" />		
+			<field name="OtpRetryCount" required="N" />
 		</record>
 		<record name="MFSLedger" ExtendsRecord="Base" Java="Y" SQLTable="mfs_ledger" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="SctlId" required="Y"/>
@@ -25437,6 +25439,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8177" name="Info5" type="STRING"/>
 	<field number="8178" name="OperatorMessage" type="STRING"/>
 	<field number="8179" name="OperatorCharges" type="NEWAMT"/>
+	<field number="8180" name="OtpRetryCount" type="INT32" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">

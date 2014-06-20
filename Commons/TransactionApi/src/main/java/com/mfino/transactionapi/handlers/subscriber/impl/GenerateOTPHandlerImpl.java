@@ -89,6 +89,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		mdnOtp.setOTP(digestPin);
 		mdnOtp.setStatus(CmFinoFIX.OTPStatus_Initialized);
 		mdnOtp.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.REGISTRATION_OTP_TIMEOUT_DURATION))));
+		mdnOtp.setOtpRetryCount(0);
 		mdnOtpDao.save(mdnOtp);
 		result.setActivityStatus(false);
 		result.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);

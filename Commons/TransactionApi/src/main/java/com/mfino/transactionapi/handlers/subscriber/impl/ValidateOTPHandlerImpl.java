@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MdnOtpDAO;
 import com.mfino.domain.ChannelCode;
@@ -22,6 +23,7 @@ import com.mfino.fix.CmFinoFIX.CMValidateOTP;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.XMLResult;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.subscriber.ValidateOTPHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ValidateOtpXMLResult;
@@ -44,6 +46,10 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService;
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public XMLResult handle(TransactionDetails txnDetails) {
@@ -94,7 +100,11 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 				}
 				else
 				{
-					mdnOtp.setStatus(CmFinoFIX.OTPStatus_FailedOrExpired);
+					int currentOtpTrials = mdnOtp.getOtpRetryCount();
+					mdnOtp.setOtpRetryCount(currentOtpTrials+1);
+					if(!isMaxOtpTrialsExceeded(mdnOtp)){
+						mdnOtp.setStatus(CmFinoFIX.OTPStatus_FailedOrExpired);
+					}
 					mdnOtpDao.save(mdnOtp);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
 					log.info("OTP expired for MDN " + validateOTP.getMDN());					
@@ -115,5 +125,14 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 			log.info("MDN " +  validateOTP.getMDN() + "doesn't exist");
 		}
 		return result;
+	}
+
+	private boolean isMaxOtpTrialsExceeded(MdnOtp mdnOtp) {
+		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
+		int currentOtpTrials = mdnOtp.getOtpRetryCount();
+		if( currentOtpTrials <= maxOtpTrials ) {
+			return false;
+		}
+		return true;
 	}
 }

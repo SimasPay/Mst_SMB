@@ -1,6 +1,7 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMForgotPinInquiry;
 import com.mfino.handlers.FIXMessageHandler;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
@@ -38,6 +40,7 @@ import com.mfino.transactionapi.handlers.subscriber.ForgotPinInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ChangeEmailXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 
 /**
@@ -158,6 +161,8 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
  		String otp = MfinoUtil.generateOTP(otpLength);
  		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), otp);
  		subscriberMDN.setOTP(digestPin1);
+ 		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+ 		subscriberMDN.setOtpRetryCount(0);
  		
  		subscriberMDN.setDigestedPIN(null);
  		subscriberMDN.setAuthorizationToken(null);

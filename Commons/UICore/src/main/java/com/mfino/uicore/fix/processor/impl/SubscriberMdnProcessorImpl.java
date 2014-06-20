@@ -1136,12 +1136,16 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					if(sendOTPOnIntialized){
 						generateAndSendOTP(mdnDao, s, CmFinoFIX.NotificationCode_New_OTP_Success);
 						log.info("new OTP is generated for the subscriber" + s.getID() + "as the status is changed from Suspend to Initialise or Inactive to Initialise");
-					}else{
+					}
+					/*
+					 * Commented as per requirement for hub
+					else{
 						//no otp so activate subscriber
 						s.setStatus(CmFinoFIX.SubscriberStatus_Active);
 						sub.setStatus(CmFinoFIX.SubscriberStatus_Active);
 						subscriberStatusEventService.upsertNextPickupDateForStatusChange(sub,true);
 					}
+					*/
 				}
 				subscriberDao.save(sub);
 				log.info("updated subscriber: " + sub.getID());

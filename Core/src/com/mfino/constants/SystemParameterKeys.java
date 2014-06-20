@@ -110,4 +110,5 @@ public class SystemParameterKeys {
 	public static final String RESTRICT_BANKPOCKET_TOBUY_AIRTIME = "restrict.bankpocket.tobuy.airtime";
 	public static final String MAX_DURATION_TO_FETCH_TXN_HISTORY = "max.duration.to.fetch.txn.history";
 	public static final String FLASHIZ_BILLER_CODE = "flashiz.biller.code";
+	public static final String MAX_OTP_TRAILS = "max.otp.trials";
 }
