@@ -24,8 +24,9 @@ copy Web\Scheduler\target\Scheduler.war %1\tomcat\
 copy Web\webapi\target\webapi.war %1\tomcat\
 rem copy Web\ReportScheduler\target\ReportScheduler.war %1\tomcat\
 rem copy Web\TransactionMonitorTool\target\TransactionMonitorTool.war %1\tomcat\
-copy reportModule\DbCopyTool\target\DbCopyTool.war %1\tomcat
-copy reportModule\RTScheduler\target\RTScheduler.war %1\tomcat 
+rem copy reportModule\DbCopyTool\target\DbCopyTool.war %1\tomcat
+rem copy reportModule\RTScheduler\target\RTScheduler.war %1\tomcat
+copy Reports\target\Reports.war %1\tomcat  
 
 copy Core\settings\smart\mfino.properties %1\tomcat\mfino_conf\
 copy Core\settings\smart\languageTranslation.json %1\tomcat\mfino_conf\
