@@ -274,6 +274,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				result.setMultixResponse(response);
 				if(transactionResponse.getOperatorMsg() != null)
 					result.setResponseMessage(transactionResponse.getOperatorMsg());
+					result.setMessage(transactionResponse.getOperatorMsg());
 				return result;
 			}
 		}
