@@ -98,6 +98,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		transferInquiry.setChannelCode(channelCode.getChannelCode());
 		transferInquiry.setServiceName(transactionDetails.getServiceName());
 		transferInquiry.setSourcePocketID(transactionDetails.getSrcPocketId());
+		transferInquiry.setRemarks(transactionDetails.getDescription());
 		transferInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		XMLResult result = new TransferInquiryXMLResult();

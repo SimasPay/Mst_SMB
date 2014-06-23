@@ -179,7 +179,7 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
 			return result;
 		}
-		
+		transferConfirmation.setRemarks(sctl.getDescription());
 		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
 			
 		CFIXMsg response = super.process(transferConfirmation);

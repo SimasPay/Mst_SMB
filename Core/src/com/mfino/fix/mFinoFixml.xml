@@ -39,6 +39,7 @@
 			<field name="TerminalID" required="N"/>
 			<field name="TransactionIdentifier" required="N" />
 			<field name="IntegrationCode" required="N"/>
+			<field name="Remarks" required="N"/>
 		</message> 
 		<message name="JSBase" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y">
 			<component name="JSParams" required="N" />
@@ -22218,6 +22219,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="110" description="OldCardAlias"/>
 			<value enum="111" description="FavoriteCode"/>
 			<value enum="112" description="OtherMDN"/>
+			<value enum="113" description="Remarks"/>
 			
 		</field>
 		<field number="5142" name="MSPID" type="RecordID" />
@@ -25159,6 +25161,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="7103" name="LedgerStatus" type="STRING"/>
 	<field number="7104" name="PinBlock" type="STRING"/>
 	<field number="7105" name="DestBankName" type="STRING"/>
+	<field number="7106" name="Remarks" type="STRING"/>
 	<field number="8000" name="GenerationOfOTPOnFailure" type="RecordID"/>
 	<field number="8001" name="ExpiryID" type="RecordID" />
 	<field number="8002" name="FundAllocationId" type="RecordID"/>

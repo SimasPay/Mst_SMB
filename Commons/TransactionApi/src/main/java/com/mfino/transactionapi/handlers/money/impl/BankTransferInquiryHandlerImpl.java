@@ -86,6 +86,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		bankAccountToBankAccount.setSourceMessage(transactionDetails.getSourceMessage());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
+		bankAccountToBankAccount.setRemarks(transactionDetails.getDescription());
 		bankAccountToBankAccount.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
 			bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Cash_In_To_Agent);

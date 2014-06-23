@@ -139,6 +139,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// The amount received from bank is deducted in this account to note the
 		// liability
 //		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocketWithLock();
+		returnFix.setRemarks(toBank.getRemarks());
 		returnFix.setSourceMDN(objSrcSubMdn.getMDN());
 		returnFix.setSenderMDN(objSrcSubMdn.getMDN());
 		returnFix.setLanguage(objSourceSubscriber.getLanguage());
@@ -398,6 +399,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 
 		BackendResponse returnFix = createResponseObject();
+		returnFix.setRemarks(toBank.getRemarks());
 
 		PendingCommodityTransfer pct = coreDataWrapper.getPCTById(toBank
 				.getTransferID());
@@ -706,6 +708,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										.getID());
 								returnFix
 										.setDestPocketId(objDestPocket.getID());
+								returnFix.setRemarks(requestFix.getRemarks());
 
 								pct.setTransferStatus(CmFinoFIX.TransferStatus_ConfirmationPromptSentToSubscriber);
 								pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_Inititalized);
@@ -722,6 +725,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								inquiryToBank.setBankCode(pct.getBankCode());
 								inquiryToBank.setDestMDN(pct.getDestMDN());
 								inquiryToBank.setLanguage(objSourceSubscriber.getLanguage());
+								inquiryToBank.setRemarks(requestFix.getRemarks());
 								inquiryToBank.setParentTransactionID(pct
 										.getTransactionsLogByTransactionID()
 										.getID());
@@ -1520,6 +1524,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 													.intValue() || isNFCPocketType(objDestPocket))) {
 										returnFix.setSourcePocketId(objSrcPocket.getID());
 										returnFix.setDestPocketId(objDestPocket.getID());
+										returnFix.setRemarks(confirmationToBank.getRemarks());
 										pct.setDestPocketBalance(objDestPocket
 												.getCurrentBalance());
 										pct.setSourcePocketBalance(objSrcPocket
@@ -1675,6 +1680,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											moneyTransferToBank
 													.copy(confirmationToBank);
 											moneyTransferToBank.setSourceMDN(confirmationToBank.getSourceMDN());
+											moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
 											moneyTransferToBank
 													.setSourceMDNToUseForBank(coreDataWrapper
 															.getPlatformMdn());
@@ -1799,6 +1805,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											}
 											moneyTransferToBank
 													.copy(confirmationToBank);
+											moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
                                             moneyTransferToBank.setLanguage(objSourceSubscriber.getLanguage());
 											moneyTransferToBank
 													.setAmount(transferAmountWithCharges);
@@ -1904,6 +1911,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										}
 										moneyTransferToBank
 												.copy(confirmationToBank);
+										moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
                                         moneyTransferToBank.setLanguage(objSourceSubscriber.getLanguage());
 										moneyTransferToBank.setAmount(pct
 												.getAmount());

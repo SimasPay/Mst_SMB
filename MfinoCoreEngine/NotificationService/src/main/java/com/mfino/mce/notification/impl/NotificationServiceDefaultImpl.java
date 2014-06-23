@@ -782,6 +782,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			if (rawNotificationText.contains("$(OperatorMessage)")) {
 				rawNotificationText = rawNotificationText.replace("$(OperatorMessage)", safeString(backendResponse.getOperatorMessage()));
 			}
+			if (rawNotificationText.contains("$(Remarks)")) {
+				rawNotificationText = rawNotificationText.replace("$(Remarks)", safeString(backendResponse.getRemarks()));
+			}			
 			if (rawNotificationText.contains("$(NotificationCode)")) {
 				StringBuilder NotificationCode = new StringBuilder();
 				NotificationCode.append("(");
