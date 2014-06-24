@@ -194,7 +194,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 					com.mfino.domain.Notification objWebNotification = coreDataWrapper.getNotification(notificationCode.getNotificationCode(), backendResponse.getLanguage(), CmFinoFIX.NotificationMethod_Web);
 					log.info("Web Notification from DB = "+objWebNotification);
 
-					if((objWebNotification != null) && (objWebNotification.getIsActive()))
+					if((objWebNotification != null))
 					{
 						notificationWrapper.setWebResponse(getWebResponse(mesg, objWebNotification));
 					}					
