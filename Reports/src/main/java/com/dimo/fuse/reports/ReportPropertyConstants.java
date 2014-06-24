@@ -9,6 +9,7 @@ public class ReportPropertyConstants {
 	
 	public static final String NAME_OF_THE_REPORT = "ReportName";
 	public static final String HEADER_LOGO = "HeaderLogo";
+	public static final String HEADER_LOGO_ALIGNMENT = "HeaderLogoAlignment";
 	public static final String REPORT_HEADER_TEXT = "ReportHeaderText";
 	public static final String HEADER_COLUMNS = "HeaderColumns";
 	public static final String REPORT_HEADER = "ReportHeader";

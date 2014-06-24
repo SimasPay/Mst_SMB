@@ -23,8 +23,9 @@ public class ReportUtil {
 	public static final String CSV_EXTENTION = ".csv";
 	public static final String ZIP_EXTENTION = ".zip";
 
-	private static DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
+	private static DateFormat df = new SimpleDateFormat(ConfigurationUtil.getDateFormatInReportFileNames());
+	
 	public static String generateReportFilePath(String reportName,Date start,Date end) {
 		File reportDir = new File(ConfigurationUtil.getReportDir(), df.format(start)+"-"+df.format(end));
 		if (!reportDir.exists() || !reportDir.isDirectory()) {

@@ -45,10 +45,10 @@
 						WHEN s.Restrictions=8 THEN 'AbsoluteLocked'
 					END,
 					count(*),
-					sum(b.openingBalance),
-					sum(b.TotalCredit),
-					sum(b.TotalDebit),
-					sum(b.ClosingBalance)
+					round(sum(b.openingBalance), 2),
+					round(sum(b.TotalCredit),2),
+					round(sum(b.TotalDebit),2),
+					round(sum(b.ClosingBalance),2)
 				FROM
 				   subscriber s
 				   INNER JOIN subscriber_mdn sm ON sm.subscriberID = s.ID

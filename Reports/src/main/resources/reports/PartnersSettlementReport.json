@@ -33,9 +33,9 @@
     "Query" : " SELECT
 				     sctl.ID,
 					 p.PartnerCode,
-					 round(sctl.TransactionAmount, 2),
+					 round(sctl.TransactionAmount-sctl.CalculatedCharge, 2),
 				     round(sctl.CalculatedCharge, 2),
-				     round(sctl.TransactionAmount+sctl.CalculatedCharge, 2),
+				     round(sctl.TransactionAmount, 2),
 					 et1.EnumValue,
 					 ct.NotificationCode,
 					 ct.DestCardPAN,

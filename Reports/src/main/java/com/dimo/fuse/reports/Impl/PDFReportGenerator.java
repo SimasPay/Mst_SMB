@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dimo.fuse.reports.ReportGenerator;
 import com.dimo.fuse.reports.ReportParameters;
+import com.dimo.fuse.reports.ReportProperties;
 import com.dimo.fuse.reports.ReportPropertyConstants;
 import com.dimo.fuse.reports.ReportTool;
 import com.lowagie.text.Chunk;
@@ -50,6 +51,8 @@ public class PDFReportGenerator extends ReportGenerator {
 			.getLogger(PDFReportGenerator.class);
 
 	private final Rectangle DEFAULT_PAGE_SIZE = PageSize.A2;
+	
+	private final int DEFAULT_HEADER_LOGO_ALIGNMENT = Element.ALIGN_CENTER;
 
 	@Override
 	public void createDocument() {
@@ -93,11 +96,26 @@ public class PDFReportGenerator extends ReportGenerator {
 			Image image = Image.getInstance(bytes);
 			image.scaleAbsolute(100, 0);
 			image.scalePercent(60);
+			int headerLogoAlignment = getHeaderLogoAlignment();
+			image.setAlignment(headerLogoAlignment);			
 			this.document.add(image);
 		} catch (Exception e) {
 			log.warn("Failed to load Logo. " + e.getMessage());
 		}
 
+	}
+
+	private int getHeaderLogoAlignment() {
+		String alignment = reportProperties.getProperty(ReportPropertyConstants.HEADER_LOGO_ALIGNMENT);
+		if(alignment.equalsIgnoreCase("center") || alignment.equalsIgnoreCase("centre")){
+			return Element.ALIGN_CENTER;
+		} else if(alignment.equalsIgnoreCase("left")){
+			return Element.ALIGN_LEFT;
+		} else if(alignment.equalsIgnoreCase("right")){
+			return Element.ALIGN_RIGHT;
+		} else{
+			return DEFAULT_HEADER_LOGO_ALIGNMENT;
+		}
 	}
 
 	@Override

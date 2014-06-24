@@ -27,7 +27,7 @@
 				    p.PartnerCode,
 				    b.MFSBillerCode,
 				    count(*),
-				    sum(ct.Amount)
+				    round(sum(ct.Amount),2)
 				FROM				
 				    service_charge_txn_log sctl
 				    INNER JOIN commodity_transfer ct ON ct.ID = sctl.CommodityTransferID

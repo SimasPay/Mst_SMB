@@ -1,5 +1,7 @@
 {
-    "HeaderLogo" : "",
+    "HeaderLogo" : "/../../images/mfino_logo.png",
+    
+    "HeaderLogoAlignment" : "right",
     
     "PageHeaderText" : "",
     

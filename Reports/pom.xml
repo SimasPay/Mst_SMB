@@ -173,6 +173,13 @@
 									</includes>	
 								</resource> -->
 								<resource>
+									<targetPath>${basedir}/target/Reports/images</targetPath>
+									<directory>${basedir}/../profiles/${profile}/images</directory>
+									 <includes>
+										<include>mfino_logo.png</include>
+									</includes> 	
+								</resource>
+								<resource>
 									<targetPath>${basedir}/target/Reports/WEB-INF/resources/reports</targetPath>
 									<directory>src/main/resources/reports</directory>
 									<includes>
@@ -181,6 +188,7 @@
 								</resource>	
 							</resources>
 						</configuration>
+						
 					</execution>
 				</executions>
 			</plugin>

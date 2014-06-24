@@ -5565,6 +5565,7 @@
 			<field name="IsActive" id="TriggerEnable" required="N" />
 			<field name="IsDaily" required="N" />
 			<field name="IsMonthly" required="N" />
+			<field name="IsOnlineReport" required="N" />
 		</record>
 		<record name="OfflineReportForCompany" ExtendsRecord="Base" Java="Y" SQLTable="offline_report_company">
 			<field name="ReportID" required="Y" References="OfflineReport" />
@@ -25443,6 +25444,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8178" name="OperatorMessage" type="STRING"/>
 	<field number="8179" name="OperatorCharges" type="NEWAMT"/>
 	<field number="8180" name="OtpRetryCount" type="INT32" />
+	<field number="8181" name="IsOnlineReport" type="BOOLEAN" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">

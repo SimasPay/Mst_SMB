@@ -35,7 +35,7 @@ public class OfflineReportProcessorImpl extends BaseFixProcessor implements Offl
     	CMJSOfflineReport realMsg = (CMJSOfflineReport) msg;
     	if (CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
     		OfflineReportDAO offlineReportDAO = DAOFactory.getInstance().getOfflineReportDAO();
-    		List<OfflineReport> reports = offlineReportDAO.getAll();
+    		List<OfflineReport> reports = offlineReportDAO.getOnlineReports();
     		realMsg.allocateEntries(reports.size());
     		for(int i=0;i<reports.size();i++){
     			CMJSOfflineReport.CGEntries entry = new CMJSOfflineReport.CGEntries();

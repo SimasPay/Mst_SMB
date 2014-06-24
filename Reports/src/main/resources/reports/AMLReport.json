@@ -25,9 +25,9 @@
     "Query" : "	SELECT 
 					sm.IDNumber, 
 					count(distinct(sm.MDN)), 
-					@currentTotal := sum(sctl.TransactionAmount),
+					@currentTotal := round(sum(sctl.TransactionAmount),2),
 					@previousTotal := ( SELECT 
-											sum(sctl2.TransactionAmount)
+											round(sum(sctl2.TransactionAmount),2)
 										FROM 
 											subscriber_mdn sm2, 
 											service_charge_txn_log sctl2, 
@@ -42,11 +42,11 @@
 											AND sm2.IDNumber = sm.IDNumber ),
 
 					CASE
-						WHEN @currentTotal > 100000000 THEN 'true'
+						WHEN @currentTotal >= 100000000 THEN 'true'
 						ELSE 'false'
 					END,
 					CASE
-						WHEN ( @currentTotal <= 50000000 AND @previousTotal > 50000000) THEN 'true'
+						WHEN ( @currentTotal >= 50000000 AND @previousTotal < 50000000) THEN 'true'
 						ELSE 'false'
 					END
 				FROM 

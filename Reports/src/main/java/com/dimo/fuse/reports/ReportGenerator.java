@@ -47,10 +47,11 @@ public abstract class ReportGenerator {
 	public void openDocAndCreateHeaders() {
 		try {
 			createDocument();
+			openDocument();
 			addLogo();
 			addPageHeader();
 			addPageFooter();
-			openDocument();
+			//openDocument();
 			addReportHeader();
 			addColumnHeaders();
 		} catch (Exception e) {

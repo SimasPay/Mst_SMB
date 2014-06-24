@@ -39,7 +39,7 @@ public class MonthlyReportScheduler extends ReportScheduler{
 	protected String getOutputDirectory()
 	{
 		SimpleDateFormat fmt = new SimpleDateFormat("MMM-yyyy");
-		return ReportSchedulerProperties.getOtherReportsOutputDir() + File.separator + fmt.format(endTime);
+		return ReportSchedulerProperties.getScheduledReportsOutputDir() + File.separator + fmt.format(endTime);
 	}
 	
 	protected String getQuery()

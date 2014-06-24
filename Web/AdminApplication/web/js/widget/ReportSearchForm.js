@@ -672,9 +672,9 @@ Ext
 						} else if (value === "OmnibusTransactionReport") {
 							// this.find('itemId','fromDate')[0].show();
 							// this.find('itemId','toDate')[0].show();
-							this.find('itemId', 'merchantID')[0].show();
-							this.find('itemId', 'merchantAccount')[0].show();
-							this.find('itemId', 'referenceNo')[0].show();
+							//this.find('itemId', 'merchantID')[0].show();
+							//this.find('itemId', 'merchantAccount')[0].show();
+							//this.find('itemId', 'referenceNo')[0].show();
 						} else if (value === "EmoneyMovementReport-L1SummaryPerStatus"
 								|| value === "EmoneyMovementReport-L1SummaryPerSubscriber") {
 							this.find('itemId', 'subscriberStatus')[0].show();

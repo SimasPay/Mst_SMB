@@ -60,7 +60,7 @@ public class ReportProcessorImpl extends BaseFixProcessor implements ReportProce
 			try{
 				file = new FileInputStream(report.getPath());
 			}catch (FileNotFoundException ex) {
-				log.error("File not Found "+ex.getMessage());
+				log.info("File not Found "+ex.getMessage());
 				sendRequest(realMsg);
 			}
 			finally{

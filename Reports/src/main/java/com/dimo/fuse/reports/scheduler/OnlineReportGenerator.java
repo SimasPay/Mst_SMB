@@ -46,7 +46,7 @@ public class OnlineReportGenerator {
 	
 	public void generateReportsOnDemand(String reportName, ReportParameters reportParams) throws IOException, ParseException{
 		log.info("Report generation on demand has stared");
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat fmt = new SimpleDateFormat(ReportSchedulerProperties.getProperty("dateFormatInReportFileNames"));
 		String startDate = fmt.format(reportParams.getStartTime());
 		String endDate = fmt.format(reportParams.getEndTime());
 		outputDirectory = ReportSchedulerProperties.getOtherReportsOutputDir() + File.separator + startDate + "-"  + endDate;

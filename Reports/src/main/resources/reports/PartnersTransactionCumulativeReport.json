@@ -24,7 +24,7 @@
 				    sm.MDN,
 				    p.PartnerCode,
 				    count(*),
-				    sum(ct.Amount)
+				    round(sum(ct.Amount),2)
 				FROM
 				
 				    service_charge_txn_log sctl

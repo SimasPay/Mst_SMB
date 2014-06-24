@@ -47,10 +47,10 @@
 						WHEN s.Restrictions=4 THEN 'SecurityLocked'
 						WHEN s.Restrictions=8 THEN 'AbsoluteLocked'
 					END,
-					b.openingBalance,
-					b.TotalCredit,
-					b.TotalDebit,
-					b.ClosingBalance
+					round(b.openingBalance,2),
+					round(b.TotalCredit,2),
+					round(b.TotalDebit,2),
+					round(b.ClosingBalance,2)
 				FROM
 				   subscriber s
 				   INNER JOIN subscriber_mdn sm ON sm.subscriberID = s.ID
