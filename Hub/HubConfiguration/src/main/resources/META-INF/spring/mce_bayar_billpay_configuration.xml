@@ -295,7 +295,7 @@
             <simple>${body.response.result} == '8'</simple>
             <setHeader headerName="eventContext">
                 <!--check if response == CmFinoFIX.ResponseCode_Success-->
-                <constant>BILLER_CONFIRMATION_TIMEOUT</constant>
+                <constant>BILLER_CONFIRMATION_PENDING</constant>
             </setHeader>
             <multicast>
                 <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
@@ -452,6 +452,11 @@ Amount should be reverted from suspense and charges to source and failure notifi
 		<filter>
             <simple>${in.header.eventContext} == 'BILLER_CONFIRMATION_SUCCESSFUL'</simple>
             <to uri="bean:billPayEventProcessingService?method=BILLER_CONFIRMATION_SUCCESSFUL"/>
+            <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		</filter>
+		<filter>
+            <simple>${in.header.eventContext} == 'BILLER_CONFIRMATION_PENDING'</simple>
+            <to uri="bean:billPayEventProcessingService?method=BILLER_CONFIRMATION_PENDING"/>
             <to uri="jms:notificationQueue?disableReplyTo=true"/>
 		</filter>
     </route>

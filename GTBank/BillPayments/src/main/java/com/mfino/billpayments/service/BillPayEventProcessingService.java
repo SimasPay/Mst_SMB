@@ -27,4 +27,8 @@ public interface BillPayEventProcessingService {
 	public MCEMessage BILLER_CONFIRMATION_SUCCESSFUL(MCEMessage mceMessage);
 	
 	public MCEMessage SRC_SUSPENSE_INQ_SUCCESS(MCEMessage mceMessage);
+	
+	public MCEMessage BILLER_CONFIRMATION_PENDING(MCEMessage mceMessage);
+	
+	public MCEMessage BILLER_INQUIRY_PENDING(MCEMessage mceMessage);
 }

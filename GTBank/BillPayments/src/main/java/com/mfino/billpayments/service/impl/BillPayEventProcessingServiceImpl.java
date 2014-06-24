@@ -116,10 +116,12 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 //				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccessful.getInternalErrorCode());
 			}
 			else if(BillPayConstants.BILLER_CONFIRMATION_PENDING.equals(eventContext)){
-				//TODO update bill pay status to BILLER_CONFIRMATION_PENDING
+				sendNotification = true;
+				backendResponse.setInternalErrorCode(NotificationCodes.BillPayPending.getInternalErrorCode());
 			}
 			else if(BillPayConstants.BILLER_INQUIRY_PENDING.equals(eventContext)){
-				//TODO update bill pay status BILLER_INQUIRY_PENDING
+				sendNotification = true;
+				backendResponse.setInternalErrorCode(NotificationCodes.BillPayPending.getInternalErrorCode());
 			}
 		}
 		
@@ -227,11 +229,14 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 	    return processEvent(mceMessage, "SRC_SUSPENSE_INQ_SUCCESS");
     }
 
-	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public MCEMessage BILLER_CONFIRMATION_PENDING(MCEMessage mceMessage){
 		return processEvent(mceMessage, "BILLER_CONFIRMATION_PENDING");
 	}
 	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public MCEMessage BILLER_INQUIRY_PENDING(MCEMessage mceMessage){
 		return processEvent(mceMessage, "BILLER_INQUIRY_PENDING");
 	}
