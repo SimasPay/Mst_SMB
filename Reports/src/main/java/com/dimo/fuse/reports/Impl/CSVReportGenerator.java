@@ -123,7 +123,7 @@ public class CSVReportGenerator extends ReportGenerator {
 
 	}
 
-	private String getCsvDelimiter() {
+	protected String getCsvDelimiter() {
 		String delimiter = reportProperties
 				.getProperty(ReportPropertyConstants.CSV_DELIMITER);
 		if (StringUtils.isNotBlank(delimiter)) {

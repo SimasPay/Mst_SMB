@@ -16,11 +16,6 @@
 	
   <dependencies>
   		<dependency>
-			<groupId>com.dimo.fuse</groupId>
-			<artifactId>commonlib</artifactId>
-			<version>${fuse-version}</version>
-		</dependency>
-  	   <dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20090211</version>

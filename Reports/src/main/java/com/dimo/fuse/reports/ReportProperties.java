@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dimo.fuse.commonlib.util.FileReaderUtil;
+import com.dimo.fuse.reports.util.FileReaderUtil;
 import com.dimo.fuse.reports.scheduler.ReportSchedulerProperties;
 
 /**

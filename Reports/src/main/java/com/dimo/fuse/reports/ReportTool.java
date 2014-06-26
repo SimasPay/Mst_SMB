@@ -13,10 +13,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dimo.fuse.commonlib.util.FileReaderUtil;
+import com.dimo.fuse.reports.util.FileReaderUtil;
 import com.dimo.fuse.reports.Impl.CSVReportGenerator;
 import com.dimo.fuse.reports.Impl.ExcelReportGenerator;
 import com.dimo.fuse.reports.Impl.PDFReportGenerator;
+import com.dimo.fuse.reports.Impl.TextReportGenerator;
 import com.dimo.fuse.reports.db.QueryExecutor;
 
 /**
@@ -113,6 +114,8 @@ public class ReportTool {
 			reportGenerator = new ExcelReportGenerator();
 		} else if (reportType.equalsIgnoreCase("csv")) {
 			reportGenerator = new CSVReportGenerator();
+		} else if (reportType.equalsIgnoreCase("txt")) {
+			reportGenerator = new TextReportGenerator();
 		} else {
 			log.error("Invalid Report Type:" + reportType);
 			throw new Exception("Invalid Report Type:" + reportType);
