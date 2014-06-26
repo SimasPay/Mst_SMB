@@ -118,10 +118,17 @@
 			</filter>	
 		</route>
 		
-        <route>
+       <route>
             <from uri="jms:sourceToDestIBTInquiryQueue?disableReplyTo=true" />
-            <to uri="bean:interBankTransferService?method=ibtInquiryCompletionSourceToDestination"/>
-            <to uri="jms:notificationQueue?disableReplyTo=true"/>
+            <filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMInterBankTransferInquiryFromBank'</simple>
+		            <to uri="bean:interBankTransferService?method=ibtInquiryCompletionSourceToDestination"/>
+					<to uri="jms:notificationQueue?disableReplyTo=true"/>
+			</filter>
+			 <filter>
+					<simple>${in.body.response} is 'com.mfino.fix.CmFinoFIX$CMInterBankTransferInquiryToBank'</simple>
+					<to uri="jms:notificationQueue?disableReplyTo=true"/>
+			</filter>
         </route>
         
          <route>
