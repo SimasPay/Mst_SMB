@@ -410,7 +410,7 @@ Amount should be reverted from suspense and charges to source and failure notifi
     </route>
 	
 	<route>
-	    <from uri="timer://bayarPendingBillPayClearTimer?fixedRate=true&amp;period=10000"/>
+	    <from uri="timer://bayarPendingBillPayClearTimer?fixedRate=true&amp;period={{bayar_txn_pending_clear_timer}}"/>
         <log message="mce_bayar_billpay_configuration#fromuri=bayarPendingBillPayClearTimer"/>
         <delay>
         	<!-- Delays the PendingBillPayClearTimer by 600 seconds after restarting the XML-->
