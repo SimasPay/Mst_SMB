@@ -21904,6 +21904,24 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="OtpGenerationBlocked" enum="2113">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Dear customer , please try to generate new otp after ${RemainingBlockTime} minutes.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="OtpGenBlockedForLockedAccount" enum="2114">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your account has been blocked.Please try again after ${RemainingBlockTime} minutes.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -22220,8 +22238,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="110" description="OldCardAlias"/>
 			<value enum="111" description="FavoriteCode"/>
 			<value enum="112" description="OtherMDN"/>
-			<value enum="113" description="Remarks"/>
-			
+			<value enum="113" description="Remarks"/>			
+			<value enum="114" description="RemainingBlockTime" />
 		</field>
 		<field number="5142" name="MSPID" type="RecordID" />
 		<field number="5143" name="MSPName" type="STRING" />

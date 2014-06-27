@@ -83,7 +83,11 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 			String receivedOTP = validateOTP.getOTP();
 			String receivedOTPDigest = MfinoUtil.calculateDigestPin(validateOTP.getMDN(), receivedOTP);
 
-			if (mdnOtp.getOTPExpirationTime().after(new Date()) ) {
+			if(CmFinoFIX.OTPStatus_FailedOrExpired.equals(mdnOtp.getStatus())) {
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
+				log.info("OTP validation failed for MDN " + validateOTP.getMDN());
+			}
+			else if (mdnOtp.getOTPExpirationTime().after(new Date()) ) {
 				if(mdnOtp.getOTP().equals(receivedOTPDigest))
 				{
 					mdnOtp.setStatus(CmFinoFIX.OTPStatus_Validated);
@@ -100,14 +104,18 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 				}
 				else
 				{
-					int currentOtpTrials = mdnOtp.getOtpRetryCount();
-					mdnOtp.setOtpRetryCount(currentOtpTrials+1);
-					if(!isMaxOtpTrialsExceeded(mdnOtp)){
+					int currentOtpTrials = mdnOtp.getOtpRetryCount()+1;
+					mdnOtp.setOtpRetryCount(currentOtpTrials);
+					int remainingTrials = getNumberOfRemainingTrials(currentOtpTrials);
+					result.setNumberOfTriesLeft(remainingTrials);
+					result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+					if(remainingTrials < 0){
 						mdnOtp.setStatus(CmFinoFIX.OTPStatus_FailedOrExpired);
+						result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
+						log.info("OTP expired for MDN " + validateOTP.getMDN());					
 					}
 					mdnOtpDao.save(mdnOtp);
-					result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
-					log.info("OTP expired for MDN " + validateOTP.getMDN());					
+					log.info("Invalid OTP for MDN " + validateOTP.getMDN());					
 				}
 			}
 			else
@@ -127,12 +135,9 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 		return result;
 	}
 
-	private boolean isMaxOtpTrialsExceeded(MdnOtp mdnOtp) {
+	private int getNumberOfRemainingTrials(int currentOtpTrials) {
 		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
-		int currentOtpTrials = mdnOtp.getOtpRetryCount();
-		if( currentOtpTrials <= maxOtpTrials ) {
-			return false;
-		}
-		return true;
+		return (maxOtpTrials-currentOtpTrials);
 	}
+
 }

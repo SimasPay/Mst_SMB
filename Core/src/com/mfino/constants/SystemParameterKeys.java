@@ -111,4 +111,8 @@ public class SystemParameterKeys {
 	public static final String MAX_DURATION_TO_FETCH_TXN_HISTORY = "max.duration.to.fetch.txn.history";
 	public static final String FLASHIZ_BILLER_CODE = "flashiz.biller.code";
 	public static final String MAX_OTP_TRAILS = "max.otp.trials";
+	
+	public static final String RESEND_OTP_BLOCK_DURATION_MINUTES = "resend.otp.block.duration.minutes";
+	public static final String ABSOLUTE_LOCK_DURATION_HOURS = "absolute.lock.duration.hours";
+	public static final String OTP_TIMEOUT_DURATION_MINUTES = "otp.timeout.duration.minutes";
 }

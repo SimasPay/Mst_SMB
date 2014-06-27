@@ -1,8 +1,11 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,7 @@ import com.mfino.util.MfinoUtil;
 @Service("GenerateOTPHandlerImpl")
 public class GenerateOTPHandlerImpl extends FIXMessageHandler implements GenerateOTPHandler{
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private MdnOtpDAO mdnOtpDao = DAOFactory.getInstance().getMdnOtpDAO();
 
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -70,7 +74,8 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		result.setTransactionID(transactionsLog.getID());
 		generateOTP.setTransactionID(transactionsLog.getID());
 		result.setActivityStatus(false);
-		SubscriberMDN subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(txnDetails.getSourceMDN());
+		String sourceMdn = txnDetails.getSourceMDN();
+		SubscriberMDN subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sourceMdn);
 		if(subscriberMDN != null && !subscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered))
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source);
@@ -79,7 +84,13 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 			result.setNickName(subscriberMDN.getSubscriber().getNickname());
 			return result;
 		}
-		MdnOtpDAO mdnOtpDao = DAOFactory.getInstance().getMdnOtpDAO();
+		List<MdnOtp> existingRecords = mdnOtpDao.getByMdn(sourceMdn);
+		
+		boolean genNewOtp = isNewOtpGenRequired(existingRecords, result);
+		if(!genNewOtp) {
+			return result;
+		}
+		
 		MdnOtp mdnOtp = new MdnOtp();
 		mdnOtp.setMDN(subscriberService.normalizeMDN(generateOTP.getMDN()));
 
@@ -100,6 +111,64 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		log.info("OTP generation successful for MDN " + generateOTP.getMDN());
 		return result;
 
+	}
+ 	
+	private boolean isNewOtpGenRequired(List<MdnOtp> existingRecords, XMLResult result) {
+		if(CollectionUtils.isEmpty(existingRecords)){
+			return true;
+		}
+		MdnOtp latestRecord = existingRecords.get(0);
+		
+		if(isOtpExpired(latestRecord)){
+			Long remainingTime = getRemainingTimeToUnblockOtp(latestRecord.getCreateTime()); 
+			if(remainingTime<=0) {
+				deleteOldEntries(existingRecords);
+				return true;
+			}
+			else{
+				result.setRemainingBlockTime(remainingTime.toString());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationBlocked);
+				return false;
+			}
+		}
+		else if(hasExceededMaxTrials(latestRecord)) {
+			Long remainingTime = getRemainingTimeToUnblockOtp(latestRecord.getLastUpdateTime());
+			if(remainingTime<=0) {
+				deleteOldEntries(existingRecords);
+				return true;
+			}
+			else{
+				result.setRemainingBlockTime(remainingTime.toString());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationBlocked);
+				return false;
+			}
+		}
+		deleteOldEntries(existingRecords);
+		return true;
+	}
+
+	private Long getRemainingTimeToUnblockOtp(Timestamp timerStartTime) {
+		Timestamp blockTimeEnd = new Timestamp(DateUtil.addMinutes(timerStartTime, systemParametersService.getInteger(SystemParameterKeys.RESEND_OTP_BLOCK_DURATION_MINUTES)));
+		Long remainingTime = (blockTimeEnd.getTime() - new Date().getTime()) / (1000*60);
+		return remainingTime;
+	}
+
+	private boolean hasExceededMaxTrials(MdnOtp latestRecord) {
+		if(CmFinoFIX.OTPStatus_FailedOrExpired.equals(latestRecord.getStatus())){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isOtpExpired(MdnOtp mdnOtp) {
+		if(mdnOtp.getOTPExpirationTime().after(new Date())) {
+			return false;
+		}
+		return true;
+	}
+	
+	public void deleteOldEntries(List<MdnOtp> existingRecords){
+		mdnOtpDao.delete(existingRecords);
 	}
 
 

@@ -172,4 +172,7 @@ public interface TransactionApiValidationService {
 	 * @return
 	 */
 	public Integer validateSubscriberForResetPinRequest(SubscriberMDN subscriberMDN);
+	
+	public Integer validateSubscriberForResetPinInquiryRequest(SubscriberMDN subscriberMDN);
+
 }

@@ -26,6 +26,7 @@ import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMResetPinByOTP;
 import com.mfino.handlers.FIXMessageHandler;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
@@ -41,6 +42,7 @@ import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ResetPinByOTPXM
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 
 /**
@@ -126,6 +128,14 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+resetPin.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);
+			if(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(srcSubscriberMDN.getRestrictions())){
+				Timestamp blockTimeEnd = new Timestamp(DateUtil.addMinutes(srcSubscriberMDN.getStatusTime(), systemParametersService.getInteger(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS)));
+				Long remainingTime = (blockTimeEnd.getTime() - new Date().getTime()) / (1000*60);
+				remainingTime = remainingTime/60 + (remainingTime%60==0?0L:1L);
+				if(remainingTime > 0) {
+					result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
+				}
+			}
 			return result;
 
 		}
@@ -165,7 +175,7 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 
 		//Validate OTP 
 		if(originalOTP!=null && isOtpExpired(srcSubscriberMDN)){
-			log.error("The otp entered has expired for mdn:"+ resetPin.getSourceMDN());
+			log.info("The otp entered has expired for mdn:"+ resetPin.getSourceMDN());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
 			return result;
 		}
@@ -173,12 +183,16 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		String receivedOTP=MfinoUtil.calculateDigestPin(resetPin.getSourceMDN(), resetPin.getOTP());
 		if(!(receivedOTP.equals(originalOTP)))
 		{
-			srcSubscriberMDN.setOtpRetryCount(srcSubscriberMDN.getOtpRetryCount()+1);
+			int retryCount = srcSubscriberMDN.getOtpRetryCount()+1;
+			srcSubscriberMDN.setOtpRetryCount(retryCount);
 			log.error("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
+			result.setNumberOfTriesLeft(retryCount);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
 			if(isMaxRetryExceededForOtp(srcSubscriberMDN)) {
 				absoluteLockSubscriber(subscriber, srcSubscriberMDN);
-				result.setNotificationCode(CmFinoFIX.NotificationCode_MDNIsRestricted);
+				String remainingHours = systemParametersService.getString(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS);
+				result.setRemainingBlockTime(remainingHours);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
 				log.error("Account locked for mdn: "+ resetPin.getSourceMDN());
 			}
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);

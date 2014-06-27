@@ -136,6 +136,7 @@ public class XMLResult extends Result {
 	private String responseMessage;
 	private BigDecimal operatorCharges;
 	private String otherMDN;
+	private String remainingBlockTime;
 	
 	public String getOtherMDN() {
 		return otherMDN;
@@ -343,6 +344,7 @@ public class XMLResult extends Result {
 			notificationWrapper.setSubscriberStatus(getStatus());
 			notificationWrapper.setNickName(getNickName());
 			notificationWrapper.setOtherMDN(getOtherMDN());
+			notificationWrapper.setRemainingBlockTime(getRemainingBlockTime());
 			
 			if (getSCTLList() != null) {
 					notificationWrapper.setServiceChargeTransactionLog(getSCTLList());
@@ -996,6 +998,14 @@ public class XMLResult extends Result {
 
 	public void setOperatorCharges(BigDecimal operatorCharges) {
 		this.operatorCharges = operatorCharges;
+	}
+
+	public String getRemainingBlockTime() {
+		return remainingBlockTime;
+	}
+
+	public void setRemainingBlockTime(String remainingBlockTime) {
+		this.remainingBlockTime = remainingBlockTime;
 	}
 
 }

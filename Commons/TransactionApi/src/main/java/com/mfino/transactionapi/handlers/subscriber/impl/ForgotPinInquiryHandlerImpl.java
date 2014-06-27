@@ -2,7 +2,9 @@ package com.mfino.transactionapi.handlers.subscriber.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.MdnOtp;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
@@ -105,7 +108,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		result.setTransactionID(transactionLog.getID());
 		
 		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(forgotPinInquiry.getSourceMDN());
-		Integer validationResult = transactionApiValidationService.validateSubscriberForResetPinRequest(subscriberMDN);
+		Integer validationResult = transactionApiValidationService.validateSubscriberForResetPinInquiryRequest(subscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);
@@ -131,6 +134,10 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 				return result;
 			}			
 		}		
+		
+		if(!isNewOtpGenRequired(subscriberMDN, result)) {
+			return result;
+		}
 			
 		Transaction transaction = null;
 		ServiceCharge sc = new ServiceCharge();
@@ -161,13 +168,14 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
  		String otp = MfinoUtil.generateOTP(otpLength);
  		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), otp);
  		subscriberMDN.setOTP(digestPin1);
- 		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+ 		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addMinutes(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION_MINUTES))));
  		subscriberMDN.setOtpRetryCount(0);
  		
  		subscriberMDN.setDigestedPIN(null);
  		subscriberMDN.setAuthorizationToken(null);
  		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
  		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+ 		subscriberMDN.setStatusTime(new Timestamp());
 		subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
  		subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
  		subscriberService.saveSubscriber(subscriber);
@@ -189,5 +197,58 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryCompleted);
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		return result;
+	}
+	
+	
+	private boolean isNewOtpGenRequired(SubscriberMDN subscriberMDN, XMLResult result) {
+		if(subscriberMDN.getOTP()==null){
+			return true;
+		}
+		
+		if(isOtpExpired(subscriberMDN)){
+			Timestamp blockTimeEnd = new Timestamp(DateUtil.addMinutes(subscriberMDN.getStatusTime(), systemParametersService.getInteger(SystemParameterKeys.RESEND_OTP_BLOCK_DURATION_MINUTES)));
+			Long remainingTime = getRemainingMinutesToUnblockOtp(blockTimeEnd); 
+			if(remainingTime <= 0) {
+				return true;
+			}
+			else{
+				result.setRemainingBlockTime(remainingTime.toString());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationBlocked);
+				return false;
+			}
+		}
+		else if(hasExceededMaxTrials(subscriberMDN)) {
+			Timestamp blockTimeEnd = new Timestamp(DateUtil.addHours(subscriberMDN.getStatusTime(), systemParametersService.getInteger(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS)));
+			Long remainingTime = getRemainingMinutesToUnblockOtp(blockTimeEnd); 
+			if(remainingTime <= 0 ) {
+				return true;
+			}
+			else{
+				remainingTime = remainingTime/60 + (remainingTime%60==0?0L:1L);
+				result.setRemainingBlockTime(remainingTime.toString());
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private Long getRemainingMinutesToUnblockOtp(Timestamp blockTimeEnd) {
+		Long remainingTime = (blockTimeEnd.getTime() - new Date().getTime()) / (1000*60);
+		return remainingTime;
+	}
+
+	private boolean hasExceededMaxTrials(SubscriberMDN subscriberMDN) {
+		if(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(subscriberMDN.getRestrictions())){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isOtpExpired(SubscriberMDN subscriberMDN) {
+		if(subscriberMDN.getOTPExpirationTime().after(new Date())) {
+			return false;
+		}
+		return true;
 	}
 }

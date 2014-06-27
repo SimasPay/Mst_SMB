@@ -46,6 +46,12 @@ public class GenerateOtpXMLResult extends XMLResult {
 		getXmlWriter().writeEndElement();
 	}
 	
+	if (StringUtils.isNotBlank(getRemainingBlockTime())) {
+		getXmlWriter().writeStartElement("RemainingBlockTime");
+		getXmlWriter().writeCharacters(getRemainingBlockTime(), false);
+		getXmlWriter().writeEndElement();
+	}
+	
 	writeEndOfDocument();
 	
     }

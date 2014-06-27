@@ -45,6 +45,15 @@ public class MdnOtpDAO extends BaseDAO<MdnOtp>{
         return results;
     }
     
+    @SuppressWarnings("unchecked")
+	public List<MdnOtp> getByMdn(String Mdn) {
+    	Criteria criteria = createCriteria();
+    	criteria.add(Restrictions.eq(CmFinoFIX.CRMdnOtp.FieldName_MDN, Mdn));
+    	criteria.addOrder(Order.desc(CmFinoFIX.CRMdnOtp.FieldName_RecordID));
+    	List<MdnOtp> mdnList = criteria.list();
+   		return mdnList;
+    }
+    
     
     @SuppressWarnings("unchecked")
 	public MdnOtp getByMDNAndId(String MDN,Long id) {
