@@ -4,6 +4,24 @@
   "success": true,
   "postpaidData": [
     {
+				"name": "Esia Pascabayar",
+				"code": "TAG009",
+				"denomCode":"TAG009",
+			    "paymentMode": "HubZeroAmount"
+    },
+    {
+				"name": "Indosat Pascabayar (Matrix)",
+				"code": "TAG007",
+				"denomCode":"TAG007",
+			    "paymentMode": "HubZeroAmount"
+    }, 
+    {
+				"name": "Smartfren Pascabayar",
+				"code": "ztepost",
+				"denomCode":"",
+			    "paymentMode": "HubZeroAmount"
+    },        
+    {
 				"name": "Telkom PSTN",
 				"code": "TAG002",
 				"denomCode":"TAG002",
@@ -16,28 +34,10 @@
 			    "paymentMode": "HubZeroAmount"
     }, 
     {
-				"name": "Indosat Pascabayar (Matrix)",
-				"code": "TAG007",
-				"denomCode":"TAG007",
-			    "paymentMode": "HubZeroAmount"
-    }, 
-    {
 				"name": "XL Pascabayar (XPLOR)",
 				"code": "TAG008",
 				"denomCode":"TAG008",
 			    "paymentMode": "HubZeroAmount"
-    },
-    {
-				"name": "Esia Pascabayar",
-				"code": "TAG009",
-				"denomCode":"TAG009",
-			    "paymentMode": "HubZeroAmount"
-    },
-    {
-				"name": "Smartfren Pascabayar",
-				"code": "ztepost",
-				"denomCode":"",
-			    "paymentMode": "HubZeroAmount"
-    }        
+    }
   ]
 }

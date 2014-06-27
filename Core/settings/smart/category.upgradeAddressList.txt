@@ -4,37 +4,20 @@
   "success": true,
   "addressList": [
     {
-		 "provision": "DKI Jakarta",
+		 "provision": "-",
 		 "areas": [
+		 	
 		 	{
-		 		"areaName": "Jakarta Pusat",
+		 		"areaName": "-",
 		 		"locations": [
 		 			{
 		 				"location": {
-		 					"addressLine1": "JI H. Agus Salim no.45",
+		 					"addressLine1": "Galeri belum tersedia saat ini",
 		 					"addressLine2": "",
 		 					"addressLine3": "",
 		 					"galleryCode": "",
 		 					"businessHours": {
-		 						"weekDays": "Senin - Jumat : 08.30 - 18.30",
-		 						"saturday": "Sabtu : 08.30 - 12.30",
-		 						"sunday": ""
-		 					}
-	 					}
-		 			}					
-		 		]
-		 	},
-		 	{
-		 		"areaName": "Jakarta Selatan",
-		 		"locations": [
-		 			{
-		 				"location": {
-		 					"addressLine1": "Mall Ambasador Lt. 3 No. 35",
-		 					"addressLine2": "JI. Prof. Dr.Satrio No.14,Kuningan",
-		 					"addressLine3": "",
-		 					"galleryCode": "",
-		 					"businessHours": {
-								"weekDays": "Senin - Minggu: 10.00 - 20.30",
+								"weekDays": "",
 		 						"saturday": "",
 		 						"sunday": ""
 		 					}

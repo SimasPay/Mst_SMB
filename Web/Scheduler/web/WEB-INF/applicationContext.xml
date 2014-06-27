@@ -47,7 +47,7 @@
 
 	<!--  Need to update the time zone value according the Clients time zone -->
     <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
-        <constructor-arg value="WIB" />
+        <constructor-arg value="GMT+7" />
     </bean>
     	
    
