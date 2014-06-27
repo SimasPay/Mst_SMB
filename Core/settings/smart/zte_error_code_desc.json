@@ -1,0 +1,108 @@
+{
+	"_comment": "0 represents the English version of the text and 1 represents the Bahasa version of the text",
+	"0": {
+		"description": "Transaction Approved",
+		"0": "Transaction Approved",
+		"1": "Transaction Approved"
+	},
+	"5": {
+		"description": "Undefined error code",
+		"0": "Undefined error code",
+		"1": "Undefined error code"
+	},
+	"12": {
+		"description": "claim cancellation payment",
+		"0": "claim cancellation payment",
+		"1": "claim cancellation payment"
+	},
+	"13": {
+		"description": "Voucher denomination not available",
+		"0": "Voucher denomination not available",
+		"1": "Voucher denomination not available"
+	},	
+	"14": {
+		"description": "Mobile Number not found in NBS Database",
+		"0": "Mobile Number not found in NBS Database",
+		"1": "Mobile Number not found in NBS Database"
+	},
+	"30": {
+		"description": "Invalid ISO8583 message",
+		"0": "Invalid ISO8583 message",
+		"1": "Invalid ISO8583 message"
+	},	
+	"31": {
+		"description": "Bank/Collecting agent not supported by switch / billing system",
+		"0": "Bank/Collecting agent not supported by switch / billing system",
+		"1": "Bank/Collecting agent not supported by switch / billing system"
+	},	
+	"47": {
+		"description": "Insufficient Balance",
+		"0": "Insufficient Balance",
+		"1": "Insufficient Balance"
+	},	
+	"48": {
+		"description": "Fund receiver’s is not a prepaid account",
+		"0": "Fund receiver’s is not a prepaid account",
+		"1": "Fund receiver’s is not a prepaid account"
+	},	
+	"49": {
+		"description": "Attempt Transfer to Self Account",
+		"0": "Attempt Transfer to Self Account",
+		"1": "Attempt Transfer to Self Account"
+	},	
+	"63": {
+		"description": "Reversal message can’t be implemented",
+		"0": "Reversal message can’t be implemented",
+		"1": "Reversal message can’t be implemented"
+	},	
+	"68": {
+		"description": "Time-out while awaiting a response",
+		"0": "Time-out while awaiting a response",
+		"1": "Time-out while awaiting a response"
+	},	
+	"70": {
+		"description": "No Voucher / E-Load available",
+		"0": "No Voucher / E-Load available",
+		"1": "No Voucher / E-Load available"
+	},	
+	"78": {
+		"description": "Source Mobile Number suspended / blocked",
+		"0": "Source Mobile Number suspended / blocked",
+		"1": "Source Mobile Number suspended / blocked"
+	},	
+	"79": {
+		"description": "Mobile Number suspended / blocked",
+		"0": "Mobile Number suspended / blocked",
+		"1": "Mobile Number suspended / blocked"
+	},	
+	"84": {
+		"description": "Mobile Number already expired / terminated",
+		"0": "Mobile Number already expired / terminated",
+		"1": "Mobile Number already expired / terminated"
+	},	
+	"88": {
+		"description": "Telephone billing has been paid",
+		"0": "Telephone billing has been paid",
+		"1": "Telephone billing has been paid"
+	},	
+	"89": {
+		"description": "Link between mFino and NBS disconnected",
+		"0": "Link between mFino and NBS disconnected",
+		"1": "Link between mFino and NBS disconnected"
+	},	
+	"91": {
+		"description": "Database Problem",
+		"0": "Database Problem",
+		"1": "Database Problem"
+	},	
+	"94": {
+		"description": "Previous reversal already successful",
+		"0": "Previous reversal already successful",
+		"1": "Previous reversal already successful"
+	},	
+	"96": {
+		"description": "System Error / Malfunction",
+		"0": "System Error / Malfunction",
+		"1": "System Error / Malfunction"
+	}	
+}

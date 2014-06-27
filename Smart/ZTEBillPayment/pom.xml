@@ -54,6 +54,11 @@
         <version>${camel-version}</version>
     </dependency>
 	<dependency>
+	 	<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20090211</version>
+	</dependency>    
+	<dependency>
 		<groupId>com.mfino.application</groupId>
 		<artifactId>BillPayments</artifactId>
 		<version>0.1-SNAPSHOT</version>

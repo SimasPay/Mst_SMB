@@ -97,6 +97,8 @@
 	
 	<osgi:reference id="subscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
 	
+	<osgi:reference id="subscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />
+	
 	
 	<bean id="billpaymentsPendingClearanceService" class="com.mfino.billpayments.service.impl.BillpaymentsPendingClearanceServiceImpl">
 		<property name="billPaymentsService" ref="billPaymentsService" />
@@ -105,6 +107,7 @@
 	
 	<bean id="zteBillInquiry" class="com.mfino.billpayments.zte.BillInquiryProcessor">
 		<property name="subscriberService" ref="subscriberServiceImpl"/>
+		<property name="subscriberMdnService" ref="subscriberMdnServiceImpl"/>
  	</bean>	
 
 	<bean id="zteBillPayInquiry" class="com.mfino.billpayments.zte.BillPayInquiryProcessor">
@@ -115,6 +118,7 @@
 	
 	<bean id="zteBillPay" class="com.mfino.billpayments.zte.BillPaymentProcessor">
 		<property name="subscriberService" ref="subscriberServiceImpl"/>
+		<property name="subscriberMdnService" ref="subscriberMdnServiceImpl"/>
 		<property name="coreDataWrapper" ref="coreDataWrapper"/>		
  	</bean>	
 	

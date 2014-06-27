@@ -13,6 +13,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -401,9 +402,12 @@ public class XMLResult extends Result {
 		}
 		else {
 			CMJSError response = (CMJSError) getMultixResponse();
-			message = response.getErrorDescription();
-
-			message = message.trim();
+			if (StringUtils.isBlank(getMessage())) {
+				message = response.getErrorDescription();
+				message = message.trim();				
+			} else {
+				message = getMessage();
+			}
 			
 			getXMlelements().put("success", response.getErrorCode().toString());
 

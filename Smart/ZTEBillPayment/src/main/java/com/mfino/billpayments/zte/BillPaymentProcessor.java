@@ -11,6 +11,7 @@ import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.dao.IntegrationSummaryDao;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.domain.IntegrationSummary;
+import com.mfino.domain.Subscriber;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
@@ -19,6 +20,7 @@ import com.mfino.fix.CmFinoFIX.CMCommodityTransferToOperator;
 import com.mfino.mce.core.CoreDataWrapper;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
+import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 
 /**
@@ -31,7 +33,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 	private Logger	log	= LoggerFactory.getLogger(this.getClass());
 	
 	private SubscriberService subscriberService;
-	
+	private SubscriberMdnService subscriberMdnService;
 	private CoreDataWrapper coreDataWrapper;
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -43,6 +45,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 
 		BackendResponse backendResponse = (BackendResponse) mceMessage.getResponse();
 		CMCommodityTransferToOperator toOperator = new CMCommodityTransferToOperator();
+		toOperator.setUICategory(requestFix.getUICategory());
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
 		toOperator.setDestMDN(subscriberService.normalizeMDN(requestFix.getInvoiceNumber()));
 		toOperator.setPaymentInquiryDetails(backendResponse.getPaymentInquiryDetails());
@@ -93,7 +96,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 		billPayResponse.setInResponseCode(response.getResponseCode().toString());
 		billPayResponse.setParentTransactionID(response.getParentTransactionID());
 		billPayResponse.setTransferID(response.getTransferID());
-
+		billPayResponse.setOperatorMessage(getOperatorDescription(response.getResponseCode(), requestFix.getSourceMDN()));
 		recordOperatorResponseCode(requestFix.getServiceChargeTransactionLogID(), response.getResponseCode().toString());
 		
 		if (CmFinoFIX.ISO8583_Mobile_Operator_Response_Code_Success.equals(response.getResponseCode())) {
@@ -184,6 +187,16 @@ public class BillPaymentProcessor implements ZteProcessor {
 				session.close();
 		}*/
 	//}
+	private String getOperatorDescription(Integer responseCode, String mdn) {
+		Subscriber subscriber = subscriberMdnService.getSubscriberFromMDN(mdn);
+		String result = null;
+		if (subscriber != null) {
+			result = JSONUtil.getOperatorDescription(responseCode.toString(), subscriber.getLanguage());
+		} else {
+			result = JSONUtil.getOperatorDescription(responseCode.toString(), 0);
+		}
+		return result;
+	}
 	
 	public SubscriberService getSubscriberService() {
 		return subscriberService;
@@ -199,6 +212,14 @@ public class BillPaymentProcessor implements ZteProcessor {
 
 	public void setCoreDataWrapper(CoreDataWrapper coreDataWrapper) {
 		this.coreDataWrapper = coreDataWrapper;
+	}
+
+	public SubscriberMdnService getSubscriberMdnService() {
+		return subscriberMdnService;
+	}
+
+	public void setSubscriberMdnService(SubscriberMdnService subscriberMdnService) {
+		this.subscriberMdnService = subscriberMdnService;
 	}	
 	
 }

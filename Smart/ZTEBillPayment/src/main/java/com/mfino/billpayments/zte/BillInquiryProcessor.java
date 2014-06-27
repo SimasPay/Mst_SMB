@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
+import com.mfino.domain.Subscriber;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillInquiry;
@@ -14,6 +15,7 @@ import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsToOperator;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.NotificationCodes;
+import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 
 /**
@@ -26,6 +28,7 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private SubscriberService subscriberService;
+	private SubscriberMdnService subscriberMdnService;
 
 	@Override
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage){
@@ -76,6 +79,7 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		
 		billResponse.setResult(response.getResponseCode());
 		billResponse.setInternalErrorCode(getInternalErrorCode(response.getResponseCode()));
+		billResponse.setOperatorMessage(getOperatorDescription(response.getResponseCode(), response.getSourceMDN()));
 		responseMceMessage.setRequest(mceMceMessage.getRequest());
 		responseMceMessage.setResponse(billResponse);
 		
@@ -89,6 +93,17 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		}
 		return NotificationCodes.GetBillDetailsFailed.getInternalErrorCode();
 	}
+	
+	private String getOperatorDescription(Integer responseCode, String mdn) {
+		Subscriber subscriber = subscriberMdnService.getSubscriberFromMDN(mdn);
+		String result = null;
+		if (subscriber != null) {
+			result = JSONUtil.getOperatorDescription(responseCode.toString(), subscriber.getLanguage());
+		} else {
+			result = JSONUtil.getOperatorDescription(responseCode.toString(), 0);
+		}
+		return result;
+	}
 
 	public SubscriberService getSubscriberService() {
 		return subscriberService;
@@ -97,6 +112,12 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 	public void setSubscriberService(SubscriberService subscriberService) {
 		this.subscriberService = subscriberService;
 	}
-	
-	
+
+	public SubscriberMdnService getSubscriberMdnService() {
+		return subscriberMdnService;
+	}
+
+	public void setSubscriberMdnService(SubscriberMdnService subscriberMdnService) {
+		this.subscriberMdnService = subscriberMdnService;
+	}
 }
