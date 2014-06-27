@@ -30,10 +30,10 @@
     	<module>ZTEISO8583</module>
     	<module>ZTEBillPayment</module>
     	<module>VAISO8583</module>    	
-		<module>CashinIntegrationSmart</module>
+		<!--module>CashinIntegrationSmart</module>
 		<module>SmartBillerGatewayService</module>
 		<module>BillerGatewayTestServer</module>
-		<module>ZTEDataPush</module>
+		<module>ZTEDataPush</module-->
 		<module>NFCISO8583</module>
 	</modules>	
 	
