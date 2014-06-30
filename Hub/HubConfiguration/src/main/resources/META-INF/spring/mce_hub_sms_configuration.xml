@@ -72,18 +72,25 @@
 		<property name="configuration" ref="jmsConfig"/>
 	</bean>
 
-	<bean id="HubSMSService" class="com.mfino.hub.sms.impl.HubSMSServiceImpl">
+	<!-- <bean id="HubSMSService" class="com.mfino.hub.sms.impl.HubSMSServiceImpl">
 		<property name="url" value="https://uangku.smartfren.com/h2h/smartfren-h2h.php"/>
 		<property name="uid" value="test"/>
 		<property name="pwd" value="test"/>
 		<property name="dest" value="3020008"/>
 		<property name="intPrefixCode" value="01033"/>
+	</bean> -->
+
+	<bean id="UangkuSMSService" class="com.mfino.hub.sms.impl.UangkuSMSServiceImpl">
+		<property name="url" value="${sms.http.url}"/>
+		<property name="shortcode" value="${sms.shortCode}"/>
+		<property name="apitoken" value="${sms.apiToken}"/>
+		<property name="intPrefixCode" value="${sms.intPrefixCode}"/>
 	</bean>
 	
 	<camelContext id="HubSMS" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 		<route>
 			<from uri="jms:SMSNotificationQueue?disableReplyTo=true" />
-			<to uri="bean:HubSMSService?method=process" />
+			<to uri="bean:UangkuSMSService?method=process" />
 		</route>
 	</camelContext>
 
