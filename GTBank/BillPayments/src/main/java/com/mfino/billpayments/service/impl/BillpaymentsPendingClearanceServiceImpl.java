@@ -51,6 +51,11 @@ public class BillpaymentsPendingClearanceServiceImpl extends BillPaymentsBaseSer
 				MCEMessage mceMessage = new MCEMessage();
 				CMBillPayment cmBillPay = new CMBillPayment();
 				cmBillPay.setServiceChargeTransactionLogID(billPayment.getSctlId());
+				if(billPayment.getInfo4() != null)
+					cmBillPay.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment);
+				else 
+					cmBillPay.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment_Topup);
+
 				mceMessage.setRequest(cmBillPay);
 				pendingMessages.add(mceMessage);
 			}

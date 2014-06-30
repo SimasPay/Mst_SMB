@@ -304,7 +304,7 @@
             </multicast>
         </filter>
 		<filter>
-                <simple>${body.response.result} == '2' || ${body.response.result} == '1'</simple>
+                <simple>${body.response.result} != '0' and ${body.response.result} != '8'</simple>
                 <setHeader headerName="eventContext">
                     <!--check if response == CmFinoFIX.ResponseCode_Success
 Amount should be reverted from suspense and charges to source and failure notification should be sent out, coming soon :)-->
