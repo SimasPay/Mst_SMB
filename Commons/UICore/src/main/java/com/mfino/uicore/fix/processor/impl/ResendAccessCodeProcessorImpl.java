@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
@@ -30,6 +31,7 @@ import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.FundStorageService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SMSService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.UnRegisteredTxnInfoService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.ResendAccessCodeProcessor;
@@ -56,6 +58,10 @@ public class ResendAccessCodeProcessorImpl extends BaseFixProcessor implements R
 	@Autowired
 	@Qualifier("SMSServiceImpl")
 	private SMSService smsService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) {
@@ -109,7 +115,7 @@ public class ResendAccessCodeProcessorImpl extends BaseFixProcessor implements R
 				String digestedCode = MfinoUtil.calculateDigestPin(receiverMDN, code);
 				unRegisteredTxnInfo.setDigestedPIN(digestedCode);
 				unRegisteredTxnInfoDAO.save(unRegisteredTxnInfo);
-				Integer language = CmFinoFIX.Language_English;
+				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 				NotificationWrapper wrapper = new NotificationWrapper();
 				SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(senderMDN);
 				if(smdn != null)

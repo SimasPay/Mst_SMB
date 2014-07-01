@@ -749,11 +749,6 @@ public class ConfigurationUtil {
 		return get(ConfigurationKey.DataPushPassword);
 	}
 
-	public static Integer getDefaultLanguage() {
-		return NumberUtils.toInt(get(ConfigurationKey.DefaultLanguage),
-				CmFinoFIX.Language_English);
-	}
-
 	public static String getAppURL() {
 		return get(ConfigurationKey.ApplicationURL);
 	}

@@ -36,10 +36,6 @@ public class NotificationDAO extends BaseDAO<Notification> {
         if (query.getLanguage() != null) {
             dis.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, query.getLanguage()));
         }
-        else
-        {
-        	dis.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, CmFinoFIX.Language_English));
-        }
         if (query.getNotificationCode() != null) {
             criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, query.getNotificationCode()));
         }
@@ -136,6 +132,24 @@ public class NotificationDAO extends BaseDAO<Notification> {
         criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, code));
         criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationMethod, CmFinoFIX.NotificationMethod_Web));
         criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, CmFinoFIX.Language_English));
+        return (Notification) criteria.uniqueResult();
+    }
+    
+    /**
+     * 
+     * @param code
+     * @return Notification based on notification code and language for web notification method.
+     */
+    public Notification getByNotificationCodeAndLang(Integer code, Integer lang) 
+    {
+    	if(code == null)
+    	{
+    		return null;
+    	}
+        Criteria criteria = createCriteria();
+        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, code));
+        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationMethod, CmFinoFIX.NotificationMethod_Web));
+        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, lang));
         return (Notification) criteria.uniqueResult();
     }
 

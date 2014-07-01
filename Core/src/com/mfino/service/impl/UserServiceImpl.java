@@ -341,7 +341,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public  Integer getNativeLanguageCode(){
-        int language=CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName =(auth != null) ? auth.getName() : " ";
         UserQuery query = new UserQuery();

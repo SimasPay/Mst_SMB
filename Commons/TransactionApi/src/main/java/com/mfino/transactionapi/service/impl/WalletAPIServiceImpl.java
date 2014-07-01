@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
 import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
@@ -129,6 +131,10 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Autowired
 	@Qualifier("InterBankTransferHandlerImpl")
 	private InterBankTransferHandler interBankTransferHandler;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
 	private static final String MAX_NO_OF_RECORDS = "15000";
 
@@ -283,7 +289,8 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 		else
 		{
 			xmlResult = new XMLResult();
-			xmlResult.setLanguage(CmFinoFIX.Language_English);
+			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			xmlResult.setLanguage(language);
 			xmlResult.setTransactionTime(new Timestamp());
 			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
 		}

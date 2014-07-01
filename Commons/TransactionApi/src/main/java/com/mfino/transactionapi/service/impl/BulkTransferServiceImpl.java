@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
@@ -43,6 +44,7 @@ import com.mfino.service.SMSService;
 import com.mfino.service.ServiceChargeTransactionLogService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
@@ -106,6 +108,10 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	@Autowired
 	@Qualifier("ServiceChargeTransactionLogServiceImpl")
 	private ServiceChargeTransactionLogService serviceChargeTransactionLogService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
 	/**
 	 * Read the Bulk transfer data line by line and Transfers the amount to Destination pockets with out Service Charge.
@@ -252,7 +258,8 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 
 		String mdn = bulkupload.getMDN();
 		NotificationWrapper notification = new NotificationWrapper();
-		notification.setLanguage(CmFinoFIX.Language_English);
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		notification.setLanguage(language);
 		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		notification.setCode(notificationCode);
 		notification.setBulkTransferId(bulkupload.getID());

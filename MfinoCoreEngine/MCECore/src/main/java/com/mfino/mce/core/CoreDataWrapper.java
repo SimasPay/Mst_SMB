@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.ActivitiesLogDAO;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.CommodityTransferDAO;
@@ -308,6 +309,10 @@ public class CoreDataWrapper
 	public Notification getNotification(Integer notificationCode, Integer language, Integer notificationMethod){
 		NotificationQuery query = new NotificationQuery();
 		query.setNotificationCode(notificationCode);
+		if(language == null) {
+			SystemParameters langSysparam = systemParameterDao.getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			language = Integer.parseInt(langSysparam.getParameterValue());
+		}
 		query.setLanguage(language);
 		query.setNotificationMethod(notificationMethod);
 

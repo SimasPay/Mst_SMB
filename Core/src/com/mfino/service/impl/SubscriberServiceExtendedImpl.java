@@ -1168,7 +1168,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 	public NotificationWrapper generateOTPMessage(String oneTimePin, Integer notificationMethod) {
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
-		notificationWrapper.setLanguage(CmFinoFIX.Language_English);
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		notificationWrapper.setLanguage(language);
 		notificationWrapper
 				.setNotificationMethod(notificationMethod);
 		notificationWrapper

@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.handlers.mobileshopping.PurchaseConfirmHandler;
 import com.mfino.transactionapi.handlers.mobileshopping.PurchaseInquiryHandler;
 import com.mfino.transactionapi.service.BaseAPIService;
@@ -42,6 +44,10 @@ public class MShoppingAPIServiceImpl extends BaseAPIService implements MShopping
 	@Autowired
 	@Qualifier("TransactionRequestValidationServiceImpl")
 	private TransactionRequestValidationService transactionRequestValidationService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
@@ -68,7 +74,8 @@ public class MShoppingAPIServiceImpl extends BaseAPIService implements MShopping
 		else
 		{
 			xmlResult = new XMLResult();
-			xmlResult.setLanguage(CmFinoFIX.Language_English);
+			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			xmlResult.setLanguage(language);
 			xmlResult.setTransactionTime(new Timestamp());
 			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
 		}

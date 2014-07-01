@@ -3,20 +3,25 @@ package com.mfino.uicore.fix.processor.impl;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDAO;
 import com.mfino.dao.query.NotificationLogDetailsQuery;
 import com.mfino.dao.query.NotificationLogQuery;
+import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.Notification;
 import com.mfino.domain.NotificationLog;
 import com.mfino.domain.NotificationLogDetails;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSNotificationLog;
+import com.mfino.service.SystemParametersService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.NotificationLogProcessor;
 import com.mfino.uicore.web.WebContextError;
@@ -28,6 +33,10 @@ import com.mfino.util.EncryptionUtil;
  */
 @Service("NotificationLogProcessorImpl")
 public class NotificationLogProcessorImpl extends BaseFixProcessor implements NotificationLogProcessor{
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 
 	//@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -192,7 +201,11 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 			e.setText(EncryptionUtil.getDecryptedString(notificationLog.getText()));
 		}
 		e.setNotificationCode(notificationLog.getCode());
-		Notification notification = DAOFactory.getInstance().getNotificationDAO().getByNotificationCode(notificationLog.getCode());
+		
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+
+		
+		Notification notification = DAOFactory.getInstance().getNotificationDAO().getByNotificationCodeAndLang(notificationLog.getCode(), language);
 		if(notification != null)
 		{
 			e.setNotificationCodeName(notification.getCodeName());

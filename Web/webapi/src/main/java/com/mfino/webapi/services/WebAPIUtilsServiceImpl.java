@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.GeneralConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Company;
@@ -32,6 +33,7 @@ import com.mfino.service.MfinoService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.NotificationService;
 import com.mfino.service.PartnerService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.result.xmlresulttypes.XMLError;
 
 /**
@@ -60,6 +62,11 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 	@Qualifier("NotificationMessageParserServiceImpl")
 	private NotificationMessageParserService notificationMessageParserService;
 
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
+	
 	/**
 	 * 
 	 */
@@ -67,7 +74,7 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 	public void sendError(Integer notificationCode, ServletOutputStream writer, String SourceMDN, String MissingParam) {
 		XMLResult xmlResult = new XMLError();
 		setServicesForXMLResult(xmlResult);
-		Integer language = CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		if (StringUtils.isNotBlank(SourceMDN)) {
 			SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 			SubscriberMDN smdn = smdnDAO.getByMDN(SourceMDN);
@@ -104,7 +111,7 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 	@Transactional(readOnly=true, propagation = Propagation.REQUIRED)
 	public void sendIntegrationValidationError(XMLResult xmlResult, ServletOutputStream writer) {
 		setServicesForXMLResult(xmlResult);
-		Integer language = CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		String institutionID = xmlResult.getInstitutionID();
 		IntegrationPartnerMapping  integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(institutionID);
 		if(integrationPartnerMapping != null)
@@ -146,7 +153,7 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 	public void sendSessionTimeoutError(ServletOutputStream writer, String SourceMDN) {
 		XMLResult xmlResult = new XMLError();
 		setServicesForXMLResult(xmlResult);
-		Integer language = CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		if (StringUtils.isNotBlank(SourceMDN)) {
 			SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 			SubscriberMDN smdn = smdnDAO.getByMDN(SourceMDN);

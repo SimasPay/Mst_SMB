@@ -290,7 +290,8 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 
 		else {
 			xmlResult = new XMLResult();
-			xmlResult.setLanguage(CmFinoFIX.Language_English);
+			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			xmlResult.setLanguage(language);
 			xmlResult.setTransactionTime(new Timestamp());
 			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
 		}

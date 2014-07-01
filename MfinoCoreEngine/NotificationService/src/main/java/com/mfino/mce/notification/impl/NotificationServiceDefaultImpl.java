@@ -27,6 +27,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SystemParameters;
 import com.mfino.domain.TransactionRule;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -152,7 +153,8 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 
 				if(backendResponse.getLanguage() == null)
 				{
-					Integer language = CmFinoFIX.Language_English;
+                    SystemParameters langSystemParam = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+                    Integer language = Integer.parseInt(langSystemParam.getParameterValue());
 					SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
 					if(smdn == null)
 					{

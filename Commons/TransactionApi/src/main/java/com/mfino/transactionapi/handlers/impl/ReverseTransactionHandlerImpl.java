@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.BulkUploadEntry;
@@ -355,7 +356,7 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 	private void sendNotification(ServiceChargeTransactionLog parentSCTL, Integer notificationCode) {
 
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
-		Integer language = CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		String mdn = parentSCTL.getSourceMDN();
 		SubscriberMDN smdn = subscriberMdnService.getByMDN(mdn);
 		if(smdn != null)

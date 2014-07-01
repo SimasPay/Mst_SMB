@@ -236,7 +236,7 @@ public class PartnerServiceImpl implements PartnerService {
 		try {
 			//add notifications
 			NotificationWrapper notificationWrapper = new NotificationWrapper();
-			Integer language = CmFinoFIX.Language_English;
+			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 			SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(mdn);
 			if(smdn != null)
 			{
@@ -583,7 +583,7 @@ public class PartnerServiceImpl implements PartnerService {
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public NotificationWrapper genratePartnerOTPMessage(Partner partner, String oneTimePin, String mdn, Integer notificationMethod) {
-		Integer language = CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		language = partner.getSubscriber().getLanguage();
 // [Bala] Commented this as we dont have Agent App to activet the agent. So we will the Agent also like partner flow for Registration and activation.		
 //		if (isAgentType(partner.getBusinessPartnerType())) {
@@ -721,8 +721,10 @@ public class PartnerServiceImpl implements PartnerService {
 				partnerRegistration.setTimezone(systemParametersService.getString(SystemParameterKeys.TIME_ZONE));
 			}
 		}
-		if(partnerRegistration.getLanguage()==null)
-			partnerRegistration.setLanguage(CmFinoFIX.Language_English);
+		if(partnerRegistration.getLanguage()==null) {
+			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			partnerRegistration.setLanguage(language);
+		}
 		if(partnerRegistration.getGroupID()==null){
 			Group defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
 			partnerRegistration.setGroupID(defaultGroup.getID().toString());

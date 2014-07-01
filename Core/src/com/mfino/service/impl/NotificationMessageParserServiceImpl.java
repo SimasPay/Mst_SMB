@@ -44,6 +44,7 @@ import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -66,6 +67,10 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
 	@Autowired
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
     private static Logger log = LoggerFactory.getLogger(NotificationMessageParserServiceImpl.class);
     static {
@@ -187,7 +192,11 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
         query.setNotificationCode(notificationWrapper.getCode());
         query.setNotificationMethod(notificationWrapper.getNotificationMethod());
         query.setCompany(notificationWrapper.getCompany());
-        query.setLanguage(notificationWrapper.getLanguage());
+        Integer language = notificationWrapper.getLanguage();
+        if(language == null) {
+        	language = systemParametersServiceImpl.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+        }
+        query.setLanguage(language);
         List<Notification> list = notificationDAO.getLanguageBasedNotifications(query);
         if (list.size() == 0) {
             log.error("No notification method found so returning null");

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.domain.ServiceChargeTransactionLog;
@@ -20,6 +21,7 @@ import com.mfino.i18n.MessageText;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SMSService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.ReverseTransactionConfirmProcessor;
 
@@ -36,6 +38,10 @@ public class ReverseTransactionConfirmProcessorImpl extends BaseFixProcessor imp
 	@Autowired
 	@Qualifier("SMSServiceImpl")
 	private SMSService smsService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -120,7 +126,7 @@ public class ReverseTransactionConfirmProcessorImpl extends BaseFixProcessor imp
 	private void sendNotification(ServiceChargeTransactionLog parentSCTL, BigDecimal reversalAmount, BigDecimal serviceCharge, Integer notificationCode) {
 
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
-		Integer language = CmFinoFIX.Language_English;
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(parentSCTL.getSourceMDN());
 		if(smdn != null)
 		{

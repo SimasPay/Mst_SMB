@@ -250,16 +250,16 @@ public class MultixCommunicationHandler implements IFixProcessor {
                 if ((errorMsg.getErrorDescription()) == null) {
                     errorMsg.setErrorDescription(notificationService.getNotificationText(
                             CmFinoFIX.NotificationCode_Multix_Comm_Unknown_Error,
-                            CmFinoFIX.Language_English));
+                            null));
                 }
             } else if (CmFinoFIX.ResponseCode_Success.equals(errorMsg.getErrorCode()) && (errorMsg.getErrorDescription()) == null) {
                 errorMsg.setErrorDescription(notificationService.getNotificationText(
                         CmFinoFIX.NotificationCode_Multix_Comm_Completed_Susccesfully,
-                        CmFinoFIX.Language_English));
+                        null));
             } else if (!CmFinoFIX.ResponseCode_Success.equals(errorMsg.getErrorCode()) && (errorMsg.getErrorDescription()) == null) {
                 errorMsg.setErrorDescription(notificationService.getNotificationText(
                         CmFinoFIX.NotificationCode_Multix_Comm_Failure_Message,
-                        CmFinoFIX.Language_English));
+                        null));
             }
         } else {
             log.info(MessageText._("No response from backend server"));

@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationDAO;
 import com.mfino.dao.query.NotificationQuery;
@@ -15,11 +18,16 @@ import com.mfino.domain.Company;
 import com.mfino.domain.Notification;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.NotificationService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.util.ConfigurationUtil;
 
 @Service("NotificationServiceImpl")
 public class NotificationServiceImpl implements NotificationService{
 	private static Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public String getNotificationText(Integer notificationCode, Integer lang) 
@@ -45,7 +53,8 @@ public class NotificationServiceImpl implements NotificationService{
             query.setNotificationMethod(notificationMethod);
         }
         if(lang == null){
-            query.setLanguage(ConfigurationUtil.getDefaultLanguage());
+			lang = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+            query.setLanguage(lang);
         }else{
             query.setLanguage(lang);
         }
@@ -93,6 +102,11 @@ public class NotificationServiceImpl implements NotificationService{
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public List<Notification> getLanguageBasedNotificationsByQuery(NotificationQuery notificationQuery){
+		Integer language = notificationQuery.getLanguage();
+		if(language == null) {
+			language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			notificationQuery.setLanguage(language);
+		}
 		List<Notification> notification = DAOFactory.getInstance().getNotificationDAO().getLanguageBasedNotifications(notificationQuery);
 		return notification;
 	}

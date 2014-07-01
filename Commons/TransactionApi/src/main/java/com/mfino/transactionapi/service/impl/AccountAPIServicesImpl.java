@@ -244,7 +244,8 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		ChannelCode channelCode = transactionDetails.getCc();
 
 		String transactionName = transactionDetails.getTransactionName();
-		
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+
 		if (ServiceAndTransactionConstants.TRANSACTION_ACTIVATION.equals(transactionName)) {
 			
 			validationService.validateSubscriberActivationDetails(transactionDetails);
@@ -321,7 +322,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		} else if (ApiConstants.TRANSACTION_REGISTRATION_WITH_ACTIVATION.equalsIgnoreCase(transactionName)) {
 			if (checkIfActiveSubscribersReachedLimit()) {
 				xmlResult = new XMLError();
-				xmlResult.setLanguage(CmFinoFIX.Language_English);
+				xmlResult.setLanguage(language);
 				xmlResult.setTransactionTime(new Timestamp());
 				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_ActiveSubscribersReachedMaxLimit);
 				return xmlResult;
@@ -467,7 +468,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult) getPromoImageHandler.handle(transactionDetails);
 		}else {
 			xmlResult = new XMLError();
-			xmlResult.setLanguage(CmFinoFIX.Language_English);
+			xmlResult.setLanguage(language);
 			xmlResult.setTransactionTime(new Timestamp());
 			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
 		}

@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.BulkUploadDAO;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.DAOFactory;
@@ -14,6 +15,7 @@ import com.mfino.domain.BulkUpload;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SystemParameters;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
@@ -210,7 +212,8 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 					// Send Pending Notification to Partner
 					NotificationWrapper notification = new NotificationWrapper();
 					String mdn = bulkUpload.getMDN();
-					Integer language = CmFinoFIX.Language_English;
+                    SystemParameters langSystemParam = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+                    Integer language = Integer.parseInt(langSystemParam.getParameterValue());
 					SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(mdn);
 					if(smdn != null)
 					{

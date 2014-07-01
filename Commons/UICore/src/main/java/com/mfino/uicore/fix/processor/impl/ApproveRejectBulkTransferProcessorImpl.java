@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.BulkUploadDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.BulkUpload;
@@ -27,6 +28,7 @@ import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.handlers.money.BulkTransferHandler;
 import com.mfino.transactionapi.handlers.money.BulkTransferInquiryHandler;
 import com.mfino.transactionapi.service.BulkTransferService;
@@ -77,6 +79,10 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
 	@Override
  	public CFIXMsg process(CFIXMsg msg) throws Exception {
@@ -240,7 +246,8 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 
 		String mdn = bulkupload.getMDN();
 		NotificationWrapper notification = new NotificationWrapper();
-		notification.setLanguage(CmFinoFIX.Language_English);
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		notification.setLanguage(language);
 		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		notification.setCode(notificationCode);
 		notification.setBulkTransferId(bulkupload.getID());
