@@ -135,6 +135,10 @@ public abstract class ReportScheduler {
 			inputFileNames = getFilesListFromDirectory(ReportSchedulerProperties.getReportsInputDir(),".json");
 			if(inputFileNames != null && inputFileNames.length > 0){
 				inputFileNames = FilterInputFilesBasedOnDBSchedulerTimings(inputFileNames);
+				if(inputFileNames.length == 0){
+					log.info("No Reports are scheduled to run at this time.");
+					return;
+				}
 				initaliseTimes();
 				generateReports();
 				setZipDirs();
