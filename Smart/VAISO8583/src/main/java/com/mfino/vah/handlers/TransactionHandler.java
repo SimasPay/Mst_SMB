@@ -1,6 +1,7 @@
 package com.mfino.vah.handlers;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.jms.JMSException;
 
@@ -11,7 +12,11 @@ import org.jpos.iso.packager.XMLPackager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
+import com.mfino.service.SCTLService;
+import com.mfino.service.TransactionChargingService;
 import com.mfino.vah.converters.IsoToNativeTransformer;
 import com.mfino.vah.converters.TransformationException;
 import com.mfino.vah.handlers.inqury.InquiryHandler;
@@ -30,6 +35,26 @@ public class TransactionHandler implements Runnable {
 	private ISOSource	             source;
 	private QueueChannel	         channel;
 	private IsoToFixConverterFactory	isoToFixConverterFactory;
+	private SCTLService sctlService;
+	
+	public SCTLService getSctlService() {
+		return sctlService;
+	}
+
+	public void setSctlService(SCTLService sctlService) {
+		this.sctlService = sctlService;
+	}
+
+	public TransactionChargingService getTransactionChargingService() {
+		return transactionChargingService;
+	}
+
+	public void setTransactionChargingService(
+			TransactionChargingService transactionChargingService) {
+		this.transactionChargingService = transactionChargingService;
+	}
+
+	private TransactionChargingService transactionChargingService;
 	
 	public TransactionHandler(ISOMsg msg, ISOSource source) throws JMSException {
 		this.msg = msg;
@@ -112,6 +137,25 @@ public class TransactionHandler implements Runnable {
 					XMLPackager packager = new XMLPackager();
 					log.info("response isomsg-->" + new String(packager.pack(msg)));
 					source.send(msg);
+				}else{
+					// response will be null in timeout cases where CashIn, fix or other modules did not reply in-time. We will send generic error in such cases
+					log.info("response is null. Failing the transaction and sending generic error as response");
+					String paymentLogid = msg.getValue(11).toString();
+					ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
+					sctlQuery.setIntegrationTxnID(Long.parseLong(paymentLogid));
+					List<ServiceChargeTransactionLog> sctlList = sctlService.getByQuery(sctlQuery);
+					
+					ServiceChargeTransactionLog sctl = null;
+					if(!sctlList.isEmpty()){
+						sctl = sctlList.get(0); // Only one match would be there as we do not allow duplicate entry
+						transactionChargingService.failTheTransaction(sctl, "Transaction Timed Out");
+					}
+								
+					msg.set(39, ResponseCode.VAH_ERROR);
+					msg.setResponseMTI();
+					XMLPackager packager = new XMLPackager();
+					log.info("response isomsg-->" + new String(packager.pack(msg)));
+					source.send(msg);
 				}
 				
 				try {
@@ -169,6 +213,7 @@ public class TransactionHandler implements Runnable {
 		return result;
 	}*/
 
+	
 	private String getResponseCode(String response) {
 		if(null == response) return null;
 		

@@ -27,6 +27,8 @@
 	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
 	<osgi:reference id="transactionApiValidationServiceImpl" bean-name="TransactionApiValidationServiceImpl" interface="com.mfino.transactionapi.service.TransactionApiValidationService" />
 	<osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />
+	<osgi:reference id="sctlService" interface="com.mfino.service.SCTLService" />
+	<osgi:reference id="transactionChargingService" interface="com.mfino.service.TransactionChargingService" />
 	
 	<bean id="inquiryHandler" class="com.mfino.vah.handlers.inqury.InquiryHandler" factory-method="createInstance">
 		<property name="subscriberService" ref="subscriberServiceImpl" />
