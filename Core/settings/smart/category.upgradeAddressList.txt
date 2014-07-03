@@ -4,21 +4,20 @@
   "success": true,
   "addressList": [
     {
-		 "provision": "-",
+		 "provision": "DKI Jakarta",
 		 "areas": [
-		 	
 		 	{
-		 		"areaName": "-",
+		 		"areaName": "Jakarta Pusat",
 		 		"locations": [
 		 			{
 		 				"location": {
-		 					"addressLine1": "Galeri belum tersedia saat ini",
+		 					"addressLine1": "JI H. Agus Salim no.45",
 		 					"addressLine2": "",
 		 					"addressLine3": "",
 		 					"galleryCode": "",
 		 					"businessHours": {
-								"weekDays": "",
-		 						"saturday": "",
+		 						"weekDays": "Senin - Jumat : 08.30 - 18.30",
+		 						"saturday": "Sabtu : 08.30 - 12.30",
 		 						"sunday": ""
 		 					}
 	 					}
