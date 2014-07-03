@@ -137,7 +137,8 @@ public class XMLResult extends Result {
 	private String responseMessage;
 	private BigDecimal operatorCharges;
 	private String otherMDN;
-	private String remainingBlockTime;
+	private String remainingBlockTimeMinutes;
+	private String remainingBlockTimeHours;
 	
 	public String getOtherMDN() {
 		return otherMDN;
@@ -345,7 +346,8 @@ public class XMLResult extends Result {
 			notificationWrapper.setSubscriberStatus(getStatus());
 			notificationWrapper.setNickName(getNickName());
 			notificationWrapper.setOtherMDN(getOtherMDN());
-			notificationWrapper.setRemainingBlockTime(getRemainingBlockTime());
+			notificationWrapper.setRemainingBlockTimeMinutes(getRemainingBlockTimeMinutes());
+			notificationWrapper.setRemainingBlockTimeHours(getRemainingBlockTimeHours());
 			
 			if (getSCTLList() != null) {
 					notificationWrapper.setServiceChargeTransactionLog(getSCTLList());
@@ -1004,12 +1006,20 @@ public class XMLResult extends Result {
 		this.operatorCharges = operatorCharges;
 	}
 
-	public String getRemainingBlockTime() {
-		return remainingBlockTime;
+	public String getRemainingBlockTimeMinutes() {
+		return remainingBlockTimeMinutes;
 	}
 
-	public void setRemainingBlockTime(String remainingBlockTime) {
-		this.remainingBlockTime = remainingBlockTime;
+	public void setRemainingBlockTimeMinutes(String remainingBlockTime) {
+		this.remainingBlockTimeMinutes = remainingBlockTime;
+	}
+
+	public String getRemainingBlockTimeHours() {
+		return remainingBlockTimeHours;
+	}
+
+	public void setRemainingBlockTimeHours(String remainingBlockTimeHours) {
+		this.remainingBlockTimeHours = remainingBlockTimeHours;
 	}
 
 }

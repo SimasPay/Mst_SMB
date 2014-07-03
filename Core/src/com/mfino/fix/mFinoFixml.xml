@@ -21908,7 +21908,7 @@ ERROR:Mismatch of  mdn type and app type
 				<C1>
 					<English>
 						<SMS>
-							<Text>Dear customer , please try to generate new otp after ${RemainingBlockTime} minutes.</Text>
+							<Text>Dear customer , please try to generate new otp after $(RemainingBlockTimeMinutes) minutes.</Text>
 						</SMS>
 					</English>
 				</C1>
@@ -21917,7 +21917,7 @@ ERROR:Mismatch of  mdn type and app type
 				<C1>
 					<English>
 						<SMS>
-							<Text>Your account has been blocked.Please try again after ${RemainingBlockTime} minutes.</Text>
+							<Text>Your account has been blocked.Please try again after $(RemainingBlockTimeHours) hours (RemainingBlockTimeMinutes) minutes.</Text>
 						</SMS>
 					</English>
 				</C1>
@@ -22239,7 +22239,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="111" description="FavoriteCode"/>
 			<value enum="112" description="OtherMDN"/>
 			<value enum="113" description="Remarks"/>			
-			<value enum="114" description="RemainingBlockTime" />
+			<value enum="114" description="RemainingBlockTimeMinutes" />
+			<value enum="115" description="RemainingBlockTimeHours" />
 		</field>
 		<field number="5142" name="MSPID" type="RecordID" />
 		<field number="5143" name="MSPName" type="STRING" />

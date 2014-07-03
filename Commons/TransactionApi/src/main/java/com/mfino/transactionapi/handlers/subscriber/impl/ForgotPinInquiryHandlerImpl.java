@@ -212,7 +212,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 				return true;
 			}
 			else{
-				result.setRemainingBlockTime(remainingTime.toString());
+				result.setRemainingBlockTimeMinutes(remainingTime.toString());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationBlocked);
 				return false;
 			}
@@ -224,8 +224,10 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 				return true;
 			}
 			else{
-				remainingTime = remainingTime/60 + (remainingTime%60==0?0L:1L);
-				result.setRemainingBlockTime(remainingTime.toString());
+				Long remainingTimeMin = remainingTime%60;
+				Long remainingTimeHours = remainingTime/60;
+				result.setRemainingBlockTimeMinutes(remainingTimeMin.toString());
+				result.setRemainingBlockTimeHours(remainingTimeHours.toString());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
 				return false;
 			}

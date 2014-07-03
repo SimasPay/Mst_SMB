@@ -168,7 +168,8 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
 	    notificationVariablesMap.put("FavoriteLabel", CmFinoFIX.NotificationVariables_FavoriteLabel);
 	    notificationVariablesMap.put("SubscriberStatus", CmFinoFIX.NotificationVariables_SubscriberStatus);
 	    notificationVariablesMap.put("OtherMDN",CmFinoFIX.NotificationVariables_OtherMDN);
-	    notificationVariablesMap.put("RemainingBlockTime",CmFinoFIX.NotificationVariables_RemainingBlockTime);
+	    notificationVariablesMap.put("RemainingBlockTimeMinutes",CmFinoFIX.NotificationVariables_RemainingBlockTimeMinutes);
+	    notificationVariablesMap.put("RemainingBlockTimeHours",CmFinoFIX.NotificationVariables_RemainingBlockTimeHours);
     }
 
     public NotificationMessageParserServiceImpl(NotificationWrapper notificationWrapper) {
@@ -585,8 +586,11 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 	String otherMDN = notificationWrapper.getOtherMDN();
                 	notificationBuilder.append(otherMDN.substring(0, otherMDN.length()-3) + "***"); 
                 }
-                else if(CmFinoFIX.NotificationVariables_RemainingBlockTime.equals(notificationVariable)){
-                	notificationBuilder.append(notificationWrapper.getRemainingBlockTime()); 
+                else if(CmFinoFIX.NotificationVariables_RemainingBlockTimeMinutes.equals(notificationVariable)){
+                	notificationBuilder.append(notificationWrapper.getRemainingBlockTimeMinutes()); 
+                }
+                else if(CmFinoFIX.NotificationVariables_RemainingBlockTimeHours.equals(notificationVariable)){
+                	notificationBuilder.append(notificationWrapper.getRemainingBlockTimeHours()); 
                 }
                 else {//if (CmFinoFIX.NotificationVariables_PayerMDN.equals(notificationVariable) || CmFinoFIX.NotificationVariables_PocketType.equals(notificationVariable)) {
                     notificationBuilder.append(textPart.text);

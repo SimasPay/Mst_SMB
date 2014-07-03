@@ -126,7 +126,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 				return true;
 			}
 			else{
-				result.setRemainingBlockTime(remainingTime.toString());
+				result.setRemainingBlockTimeMinutes(remainingTime.toString());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationBlocked);
 				return false;
 			}
@@ -138,7 +138,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 				return true;
 			}
 			else{
-				result.setRemainingBlockTime(remainingTime.toString());
+				result.setRemainingBlockTimeMinutes(remainingTime.toString());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationBlocked);
 				return false;
 			}

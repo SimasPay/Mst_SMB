@@ -152,7 +152,9 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
     
     private String nickName;
     
-    private String remainingBlockTime;
+    private String remainingBlockTimeMinutes;
+    
+    private String remainingBlockTimeHours;
     
 	public String getValidDenominations() {
 		
@@ -794,11 +796,19 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 		this.otherMDN = otherMDN;
 	}
 
-	public String getRemainingBlockTime() {
-		return remainingBlockTime;
+	public String getRemainingBlockTimeMinutes() {
+		return remainingBlockTimeMinutes;
 	}
 
-	public void setRemainingBlockTime(String remainingBlockTime) {
-		this.remainingBlockTime = remainingBlockTime;
+	public void setRemainingBlockTimeMinutes(String remainingBlockTimeMinutes) {
+		this.remainingBlockTimeMinutes = remainingBlockTimeMinutes;
+	}
+
+	public String getRemainingBlockTimeHours() {
+		return remainingBlockTimeHours;
+	}
+
+	public void setRemainingBlockTimeHours(String remainingBlockTimeHours) {
+		this.remainingBlockTimeHours = remainingBlockTimeHours;
 	}
 }

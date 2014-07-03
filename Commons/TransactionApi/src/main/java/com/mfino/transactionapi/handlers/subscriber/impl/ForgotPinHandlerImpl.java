@@ -129,9 +129,12 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 			log.error("Subscriber with mdn : "+resetPin.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			if(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(srcSubscriberMDN.getRestrictions())){
-				Timestamp blockTimeEnd = new Timestamp(DateUtil.addMinutes(srcSubscriberMDN.getStatusTime(), systemParametersService.getInteger(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS)));
+				Timestamp blockTimeEnd = new Timestamp(DateUtil.addHours(srcSubscriberMDN.getStatusTime(), systemParametersService.getInteger(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS)));
 				Long remainingTime = (blockTimeEnd.getTime() - new Date().getTime()) / (1000*60);
-				remainingTime = remainingTime/60 + (remainingTime%60==0?0L:1L);
+				Long remainingTimeMin = remainingTime%60;
+				Long remainingTimeHours = remainingTime/60;
+				result.setRemainingBlockTimeMinutes(remainingTimeMin.toString());
+				result.setRemainingBlockTimeHours(remainingTimeHours.toString());
 				if(remainingTime > 0) {
 					result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
 				}
@@ -186,12 +189,14 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 			int retryCount = srcSubscriberMDN.getOtpRetryCount()+1;
 			srcSubscriberMDN.setOtpRetryCount(retryCount);
 			log.error("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
-			result.setNumberOfTriesLeft(retryCount);
+			int remainingTrials = getNumberOfRemainingTrials(retryCount);
+			result.setNumberOfTriesLeft(remainingTrials);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
-			if(isMaxRetryExceededForOtp(srcSubscriberMDN)) {
+			if(remainingTrials < 0) {
 				absoluteLockSubscriber(subscriber, srcSubscriberMDN);
 				String remainingHours = systemParametersService.getString(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS);
-				result.setRemainingBlockTime(remainingHours);
+				result.setRemainingBlockTimeHours(remainingHours);
+				result.setRemainingBlockTimeMinutes("00");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
 				log.error("Account locked for mdn: "+ resetPin.getSourceMDN());
 			}
@@ -242,14 +247,10 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		srcSubscriberMDN.setDigestedPIN(null);
 		subscriberService.saveSubscriber(subscriber);
 	}
-
-	private boolean isMaxRetryExceededForOtp(SubscriberMDN srcSubscriberMDN) {
+	
+	private int getNumberOfRemainingTrials(int currentOtpTrials) {
 		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
-		int currentOtpTrials = srcSubscriberMDN.getOtpRetryCount();
-		if( currentOtpTrials <= maxOtpTrials) {
-			return false;
-		}
-		return true;		
+		return (maxOtpTrials-currentOtpTrials);
 	}
 
 	private boolean isOtpExpired(SubscriberMDN srcSubscriberMDN) {
