@@ -140,7 +140,7 @@ public class TransactionHandler implements Runnable {
 				}else{
 					// response will be null in timeout cases where CashIn, fix or other modules did not reply in-time. We will send generic error in such cases
 					log.info("response is null. Failing the transaction and sending generic error as response");
-					String paymentLogid = msg.getValue(11).toString();
+					/*String paymentLogid = msg.getValue(11).toString();
 					ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 					sctlQuery.setIntegrationTxnID(Long.parseLong(paymentLogid));
 					List<ServiceChargeTransactionLog> sctlList = sctlService.getByQuery(sctlQuery);
@@ -149,7 +149,7 @@ public class TransactionHandler implements Runnable {
 					if(!sctlList.isEmpty()){
 						sctl = sctlList.get(0); // Only one match would be there as we do not allow duplicate entry
 						transactionChargingService.failTheTransaction(sctl, "Transaction Timed Out");
-					}
+					}*/
 								
 					msg.set(39, ResponseCode.VAH_ERROR);
 					msg.setResponseMTI();
