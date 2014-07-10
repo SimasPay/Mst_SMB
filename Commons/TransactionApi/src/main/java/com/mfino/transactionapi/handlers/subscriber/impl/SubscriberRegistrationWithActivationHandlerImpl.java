@@ -39,6 +39,7 @@ import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithAc
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.RegistrationXMLResult;
 import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.MfinoUtil;
 
 /*
  *
@@ -116,7 +117,12 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		subscriberRegistration.setTransactionID(transactionsLog.getID());
 
 		result.setActivityStatus(false);
-
+		
+		if(!MfinoUtil.isPinStrongEnough(subscriberRegistration.getPin())){
+		   log.info("The pin is not strong enough for subscribermdn "+subscriberRegistration.getSourceMDN() );
+		   result.setNotificationCode(CmFinoFIX.NotificationCode_PinNotStrongEnough);
+		   return result;
+		}
 
 		Transaction transactionDetails = null;
 		ServiceCharge sc = new ServiceCharge();

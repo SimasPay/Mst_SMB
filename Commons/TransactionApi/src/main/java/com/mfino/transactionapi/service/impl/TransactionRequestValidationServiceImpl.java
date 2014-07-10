@@ -44,12 +44,8 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	private SubscriberService subscriberService;
 
 	public void validateConfirmPin(TransactionDetails transactionDetails) throws InvalidDataException {
-		if (StringUtils.isBlank(transactionDetails.getConfirmPIN())) {
-			throw new InvalidDataException("Invalid Confirm Pin", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-					ApiConstants.PARAMETER_CONFIRM_PIN);
-		}
-		
-		if (!ConfigurationUtil.getuseRSA() && !transactionDetails.getConfirmPIN().equals(transactionDetails.getNewPIN())) {
+		if (!ConfigurationUtil.getuseRSA() && StringUtils.isNotBlank(transactionDetails.getConfirmPIN()) 
+				&& !transactionDetails.getConfirmPIN().equals(transactionDetails.getNewPIN())) {
 			throw new InvalidDataException("New Pin and Confirm Pin not match", CmFinoFIX.NotificationCode_NewPINConfirmPINDoNotMatch, 
 					ApiConstants.PARAMETER_CONFIRM_PIN);
 		}
@@ -858,12 +854,8 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	}
 	
 	private void validateConfirmEmail(TransactionDetails transactionDetails) throws InvalidDataException {
-		if (StringUtils.isBlank(transactionDetails.getConfirmEmail())) {
-			throw new InvalidDataException("Invalid Confirm Email", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-					ApiConstants.PARAMETER_CONFIRM_EMAIL);
-		}
-		
-		if (!transactionDetails.getConfirmEmail().equals(transactionDetails.getNewEmail())) {
+		if (StringUtils.isNotBlank(transactionDetails.getConfirmEmail()) 
+				&& !transactionDetails.getConfirmEmail().equalsIgnoreCase(transactionDetails.getNewEmail())) {
 			throw new InvalidDataException("New Email and Confirm Email not match", CmFinoFIX.NotificationCode_NewEmailConfirmEmailDoNotMatch, 
 					ApiConstants.PARAMETER_CONFIRM_EMAIL);
 		}
