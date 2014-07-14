@@ -67,6 +67,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 	private long EXPIRATION_TIME = 600000;// 10mins
 	private BigDecimal cashOutExpiryTime = new BigDecimal(-1);
 	private long cashOutAtATM_Id = 0l;
+	private long unregCashoutTTId = 0l;
 	
 	private static Service tellerService =null;
 	private TransactionType cashOutAtATM = null;
@@ -160,7 +161,8 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 			Integer[] status = new Integer[2];
 			status[0] = CmFinoFIX.SCTLStatus_Inquiry;
 			status[1] = CmFinoFIX.SCTLStatus_Processing;
-		    unregCashout = transactionChargingService.getTransactionType(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED);			
+		    unregCashout = transactionChargingService.getTransactionType(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED);
+		    unregCashoutTTId = unregCashout != null ? unregCashout.getID() : 0l;
 		    Timestamp currentTime = new Timestamp();
 			
 			if(tellerService==null){
@@ -394,7 +396,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 		
 		List<ChargeTxnCommodityTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 		
-		if(sctl.getTransactionTypeID().equals(unregCashout.getID())){
+		if(sctl.getTransactionTypeID().equals(unregCashoutTTId)){
 			UnRegisteredTxnInfoQuery unregquery = new UnRegisteredTxnInfoQuery();
 			unregquery.setCashoutSCTLId(sctl.getID());	
 			List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(unregquery);
@@ -477,7 +479,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 	
 	
 	private void handleUnregisteredTxn(ServiceChargeTransactionLog sctl) {
-		if(sctl.getTransactionTypeID().equals(unregCashout.getID())){
+		if(sctl.getTransactionTypeID().equals(unregCashoutTTId)){
 			UnRegisteredTxnInfo txnInfo =null;
 			UnRegisteredTxnInfoQuery unregquery = new UnRegisteredTxnInfoQuery();
 			unregquery.setCashoutSCTLId(sctl.getID());	
