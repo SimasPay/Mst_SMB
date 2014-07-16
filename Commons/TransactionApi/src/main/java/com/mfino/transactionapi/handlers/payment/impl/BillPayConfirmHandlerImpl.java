@@ -174,6 +174,7 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 			result.setNotificationCode(validationResult);
 			return result;
 		}
+		billPay.setSourceBankAccountNo(subPocket.getCardPAN());
 		
 		List<Pocket> pocketList = new ArrayList<Pocket>();
 		pocketList.add(subPocket);

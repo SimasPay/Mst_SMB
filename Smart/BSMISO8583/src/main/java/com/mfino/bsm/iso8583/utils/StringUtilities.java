@@ -68,4 +68,13 @@ public class StringUtilities {
 		
 		return str;
 	}
+	
+	public static String replaceNthBlock(String str, char c, int n, String newBlock, int blockSize) {
+	    int startPos = str.indexOf(c, 0);
+	    while (n-- > 1 && startPos != -1)
+	        startPos = str.indexOf(c, startPos+1);
+	    StringBuilder sb = new StringBuilder(str);
+	    sb.replace(startPos, startPos+blockSize, newBlock);
+	    return sb.toString();
+	}
 }

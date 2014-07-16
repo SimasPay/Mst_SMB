@@ -265,6 +265,17 @@ public class ISO8583Server implements Runnable {
 						response.setValue(48, "MOCH FARDIAN RIZMAN HADI",
 								IsoType.LLLVAR, 0);
 					}
+				//  BillPayment_Inquiry
+					else if("381000".equals(incoming.getObjectValue(3))){
+					    //response.setValue(3, "381010", IsoType.NUMERIC, 6);
+						response.setValue(38, "654321", IsoType.ALPHA, 6);
+						response.setValue(39, "00", IsoType.ALPHA, 2);
+						//response.setValue(39, "88", IsoType.ALPHA, 2); // Failure case
+						response.setValue(48, "TABUNGANKU B",
+								IsoType.LLLVAR, 0);
+						response.setValue(62,"08PAYMENT    : Axis Postpaid            IDPEL      : 628382244000             NAME       : ARIEF SUSANTO MULAWARMAN BILLING AMT: RP. 11.111               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 11.111                                                                                           628382244000                    11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000000000002708    000000011111000000000000000000000000ARIEF SUSANTO MULAWARMAN                          ", IsoType.LLLVAR, 0);
+						response.setValue(4, "000000000000", IsoType.NUMERIC, 12);
+					}
 					// D. Transfer to other SMART
 					else if ("490000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
@@ -345,6 +356,24 @@ public class ISO8583Server implements Runnable {
 							response.setValue(35, "6396879950000022=311299164783845385", IsoType.LLVAR, 0);
 							response.setValue(98, "106001                   ", IsoType.ALPHA, 25);
 						}*/
+					}
+					// BillPayment Confirmation
+					else if("501000".equals(incoming.getObjectValue(3))){
+					    response.setValue(38, "654321", IsoType.ALPHA, 6);
+						response.setValue(39, "00", IsoType.ALPHA, 2);
+						response.setValue(48, "TABUNGANKU B",
+								IsoType.LLLVAR, 0);
+						response.setValue(62,"14       STRUK NON TAGIHAN LISTRIK      TRANSAKSI  : Keluhan                  NO REGISTRASI : 1844167125686         TGL REGISTRASI: 20140120              NAMA       : DU'MMY-GSP-00000000023   IDPEL      : 182410000023             BIAYA PLN  : RP. 654.676              NO REF     : 015310780C3808E2C245A18F4  PLN menyatakan struk ini sbg bukti           pembayaran yang sah.         ADMIN BANK : RP. 3.000                TOTAL BAYAR: RP. 657.676                Informasi Hubungi Call Center : 123       Atau Hub PLN Terdekat: 123      ",
+								IsoType.LLLVAR, 0);
+						
+					}
+					// BillPayment-Topup Confirmation
+					else if("561000".equals(incoming.getObjectValue(3))){
+					    response.setValue(38, "654321", IsoType.ALPHA, 6);
+						response.setValue(39, "00", IsoType.ALPHA, 2);
+						response.setValue(62,"14       STRUK NON TAGIHAN LISTRIK      TRANSAKSI  : Keluhan                  NO REGISTRASI : 1844167125686         TGL REGISTRASI: 20140120              NAMA       : DU'MMY-GSP-00000000023   IDPEL      : 182410000023             BIAYA PLN  : RP. 654.676              NO REF     : 015310780C3808E2C245A18F4  PLN menyatakan struk ini sbg bukti           pembayaran yang sah.         ADMIN BANK : RP. 3.000                TOTAL BAYAR: RP. 657.676                Informasi Hubungi Call Center : 123       Atau Hub PLN Terdekat: 123      ",
+								IsoType.LLLVAR, 0);
+						
 					}
 					else {
 						System.out.println("Unrecognonized message type");
@@ -462,10 +491,10 @@ public class ISO8583Server implements Runnable {
 					System.out.println("Failed to parse the config file");
 					return;
 				}
-				System.out.println("Setting up server socket... on port 7778");
+				System.out.println("Setting up server socket... on port 7777");
 				ServerSocket server;
 				try {
-					server = new ServerSocket(7778);
+					server = new ServerSocket(7777);
 				} catch (IOException e) {
 					System.out.println("Failed to set up server socket");
 					return;

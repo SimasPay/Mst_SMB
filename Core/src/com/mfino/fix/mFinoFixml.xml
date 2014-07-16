@@ -4216,6 +4216,8 @@
 			<field name="PartnerBillerCode" required="N"/>
 			<field name="DenominationCode" required="N"/>
 			<field name="NominalAmount" required="N"/>
+			<field name="SourceCardPAN" required="N"/>
+			<field name="Amount" required="Y" />
 	</message>
 	
 	<message name="CommodityAdjustmentInquiry" msgtype="1388" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
@@ -7494,6 +7496,7 @@
 		<field number="93" name="SignatureLength" type="INT" />
 		<field number="4000" name="ModifiedField" type="STRING" unused="Y" />
 		<field number="5000" name="OperatorCodeForRouting" type="INT32">
+			<value enum="153" description="BSM" />
 			<value enum="881" description="CBOSS" />
 			<value enum="9995" description="FLASHIZ" />
 		</field>
@@ -25442,6 +25445,7 @@ ERROR:Mismatch of  mdn type and app type
  	    <value enum="PackageType" description="PackageType" /> 
  	    <value enum="HubFullAmount" description="HubFullAmount" />
  	    <value enum="HubZeroAmount" description="HubZeroAmount" />
+		<value enum="HubFreeAmount" description="HubFreeAmount" />
  	</field> 
 	<field number="8161" name="FromDate" type="UTCTIMESTAMP" />
 	<field number="8162" name="ToDate" type="UTCTIMESTAMP" />

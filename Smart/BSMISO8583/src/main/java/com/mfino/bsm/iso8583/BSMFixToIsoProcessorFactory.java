@@ -2,6 +2,8 @@ package com.mfino.bsm.iso8583;
 
 import java.util.Map;
 
+import com.mfino.bsm.iso8583.processor.fixtoiso.BillPaymentToBankProcessor;
+import com.mfino.bsm.iso8583.processor.fixtoiso.BillPaymentAmountInquiryToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.InterBankMoneyTransferToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.InterBankTransferInquiryToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.BalanceInquiryToBankProcessor;
@@ -11,7 +13,9 @@ import com.mfino.bsm.iso8583.processor.fixtoiso.MoneyTransferToBankProcessor;
 import com.mfino.bsm.iso8583.processor.fixtoiso.TransferInquiryToBankProcessor;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
+import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
 import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
@@ -34,7 +38,11 @@ public class BSMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 	@Override
 	public IFixToIsoProcessor getProcessor(CFIXMsg request) throws ProcessorNotAvailableException {
 		IFixToIsoProcessor processor = null;
-		if (request instanceof CMInterBankTransferInquiryToBank)
+		if (request instanceof CMBSIMGetAmountToBiller)
+			processor = new BillPaymentAmountInquiryToBankProcessor();
+		else if (request instanceof CMBSIMBillPaymentToBank)
+			processor = new BillPaymentToBankProcessor();
+		else if (request instanceof CMInterBankTransferInquiryToBank)
 			processor = new InterBankTransferInquiryToBankProcessor();
 		else if(request instanceof CMInterBankMoneyTransferToBank)
 			processor = new InterBankMoneyTransferToBankProcessor();	
@@ -47,7 +55,7 @@ public class BSMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 		else if (request instanceof CMMoneyTransferToBank)
 			processor = new MoneyTransferToBankProcessor();
 		else if (request instanceof CMGetLastTransactionsToBank)
-			processor = new GetLastTrxnsToBankProcessor();
+			processor = new GetLastTrxnsToBankProcessor();		
 		else
 			throw new ProcessorNotAvailableException();
 

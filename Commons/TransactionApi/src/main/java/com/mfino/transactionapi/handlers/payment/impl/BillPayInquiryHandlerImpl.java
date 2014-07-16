@@ -201,6 +201,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			result.setNotificationCode(validationResult);
 			return result;
 		}
+		billPaymentInquiry.setSourceBankAccountNo(subPocket.getCardPAN()); // Storing SourceCardPAN in SourceBankAccNo to be used later while sending request to BSM
 		
 		List<Pocket> pocketList = new ArrayList<Pocket>();
 		pocketList.add(subPocket);
@@ -248,7 +249,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		}
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && 
-				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()))) {
+				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) || CmFinoFIX.PaymentMode_HubFreeAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) )) {
 			billPaymentInquiry.setNarration("online");
 			// Getting the Bill amount for the given online transaction.
 			response = doBillInquiry(billPaymentInquiry); 
@@ -466,6 +467,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billInquiry.setTransactionIdentifier(billPayInquiry.getTransactionIdentifier());
 		billInquiry.setTransactionID(billPayInquiry.getTransactionID());
 		billInquiry.setIntegrationCode(billPayInquiry.getIntegrationCode());
+		billInquiry.setSourceCardPAN(billPayInquiry.getSourceBankAccountNo());
+		billInquiry.setAmount(billPayInquiry.getAmount());
 		//For Bayar.Net BillPayments
 		if(billPayInquiry.getDenominationCode()!=null)
 			billInquiry.setDenominationCode(billPayInquiry.getDenominationCode());

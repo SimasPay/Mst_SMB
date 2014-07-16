@@ -76,8 +76,8 @@
 				<to uri="jms:zteBillPayQueue?disableReplyTo=true"/>
 			</filter>
 			<filter>
-				<simple>${in.body.request.getIntegrationCode} == 'sgtwy'</simple>
-				<to uri="jms:smartGatewayQ?disableReplyTo=true"/>
+				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
+				<to uri="jms:bsmBillPayQueue?disableReplyTo=true"/>
 			</filter>
 		</route>
    </camelContext>

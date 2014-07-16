@@ -1,5 +1,7 @@
 package com.mfino.bsm.iso8583;
 
+import com.mfino.bsm.iso8583.processor.isotofix.BillPaymentAmountInquiryFromBankProcessor;
+import com.mfino.bsm.iso8583.processor.isotofix.BillPaymentFromBankProcessor;
 import com.mfino.bsm.iso8583.processor.isotofix.InterBankMoneyTransferFromBankProcessor;
 import com.mfino.bsm.iso8583.processor.isotofix.InterBankTransferInquiryFromBankProcessor;
 import com.mfino.bsm.iso8583.processor.isotofix.BalanceInquiryFromBankProcessor;
@@ -15,9 +17,11 @@ import com.mfino.bsm.iso8583.processor.isotofix.networkmanagement.SignOn;
 import com.mfino.bsm.iso8583.processor.isotofix.networkmanagement.SignOnResponse;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
+import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMEchoTestResponseToBank;
 import com.mfino.fix.CmFinoFIX.CMEchoTestToBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
 import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
@@ -40,10 +44,14 @@ public class BSMIsoToFixProcessorFactory implements IIsoToFixProcessorFactory {
 
 		IIsoToFixProcessor processor = null;
 		
-		if(requestFixMsg instanceof CMBalanceInquiryToBank){
+
+		if(requestFixMsg instanceof CMBalanceInquiryToBank)
 			processor = new BalanceInquiryFromBankProcessor();
-		}
-		if (requestFixMsg instanceof CMInterBankTransferInquiryToBank)
+		if (requestFixMsg instanceof CMBSIMGetAmountToBiller)
+			processor = new BillPaymentAmountInquiryFromBankProcessor();
+		else if (requestFixMsg instanceof CMBSIMBillPaymentToBank)
+			processor = new BillPaymentFromBankProcessor();
+		else if (requestFixMsg instanceof CMInterBankTransferInquiryToBank)
 			processor = new  InterBankTransferInquiryFromBankProcessor();
 		else if (requestFixMsg instanceof CMInterBankMoneyTransferToBank)
 			processor = new InterBankMoneyTransferFromBankProcessor();
