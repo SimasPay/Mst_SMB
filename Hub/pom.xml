@@ -26,6 +26,7 @@
 		<module>HubConfiguration</module>
 		<!--module>HubMocks</module-->
 		<module>BayarBillPayments</module>
+		<module>BSMUangkuBillPayments</module>
 		<module>FlashizISO8583</module>
 		<module>FlashizBillPayment</module>
 		<module>HubSMS</module>
