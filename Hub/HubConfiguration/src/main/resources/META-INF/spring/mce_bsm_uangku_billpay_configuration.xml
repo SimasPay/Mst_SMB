@@ -140,7 +140,7 @@
 						<constant>SRC_SUSPENSE_INQ_TO_BANK</constant>        
 					</setHeader>
 					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+						<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
 					</multicast>
 				</filter>
@@ -153,7 +153,7 @@
 						<constant>SRC_SUSPENSE_INQ_SUCCESS</constant> 
 					</setHeader>
 					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+						<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 						<to uri="jms:bsmBillInquiryQueue?disableReplyTo=true"/>
 					</multicast>
 					</filter>
@@ -165,7 +165,7 @@
 					<setHeader headerName="eventContext">
 						<constant>SRC_SUSPENSE_INQ_FAILED</constant>        
 					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 					</filter>
 				</filter>
 			</filter>
@@ -180,7 +180,7 @@
 							<constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>        
 						</setHeader>
 						<multicast>
-							<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+							<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 							<to uri="jms:bsmBillPayConfirmationQueue?disableReplyTo=true"/>
 						</multicast>
 					</filter>
@@ -192,7 +192,7 @@
 						<setHeader headerName="eventContext">
 							<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>        
 						</setHeader>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+						<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 					</filter>
 				</filter>
 				<filter>
@@ -201,7 +201,7 @@
 						<constant>SRC_SUSPENSE_CONFIRMATION_TO_BANK</constant>        
 					</setHeader>
 					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+						<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
 					</multicast>					
 				</filter>
@@ -227,97 +227,6 @@
 			</filter>
 			
 		</route>
-		
-		<!-- response from front end for source to suspense-->
-		<route> 
-			<from uri="jms:bpSourceToSuspenseBRQueue"/>
-			<filter>
-				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
-				<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySourceToSuspenseCompleted"/>
-				<filter>
-					<simple>${body.response.result} == '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SRC_SUSPENSE_INQ_SUCCESS</constant>        
-					</setHeader>
-					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-						<to uri="jms:zteBillInquiryQueue?disableReplyTo=true"/>
-					</multicast>
-				</filter>
-				<filter>
-					<simple>${body.response.result} != '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SRC_SUSPENSE_INQ_FAILED</constant>        
-					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-			</filter>
-			<filter>
-				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank' and {body.response} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferFromBank'</simple>
-				<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSourceToSuspenseCompleted"/>
-				<filter>
-					<simple>${body.response.result} == '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SRC_SUSPENSE_CONFIRMATION_SUCCESS</constant>        
-					</setHeader>
-					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-						<to uri="jms:zteBillPayConfirmationQueue?disableReplyTo=true"/>
-					</multicast>
-				</filter>
-				<filter>
-					<simple>${body.response.result} != '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SRC_SUSPENSE_CONFIRMATION_FAILED</constant>        
-					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-			</filter>			
-		</route>
-
-		<!-- response from front end for suspense to destination -->
-		<route> 
-			<from uri="jms:bpSuspenseToDestBRQueue"/>
-			<filter>
-				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple>
-				<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferInquirySuspenceToDestinationCompleted"/>
-				<filter>
-					<simple>${body.response.result} == '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SUSPENSE_DEST_INQ_SUCCESS</constant>        
-					</setHeader>
-					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-						<to uri="direct:moneyTransferConfirmationSuspenseToDestination"/>
-					</multicast>
-				</filter>
-				<filter>
-					<simple>${body.response.result} != '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SUSPENSE_DEST_INQ_FAILED</constant>        
-					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-			</filter>
-			<filter>
-				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank'</simple>
-				<to uri="bean:billPayMoneyTransferService?method=billPayMoneyTransferConfirmationSuspenseToDestinationCompleted"/>
-				<filter>
-					<simple>${body.response.result} == '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SUSPENSE_DEST_CONFIRMATION_SUCCESS</constant>        
-					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-				<filter>
-					<simple>${body.response.result} != '0'</simple> 
-					<setHeader headerName="eventContext">
-						<constant>SUSPENSE_DEST_CONFIRMATION_FAILED</constant>        
-					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
-				</filter>
-			</filter>			
-		</route>
 
 		<!-- route for bill inquiry -->		
 		<route> 
@@ -327,7 +236,7 @@
 				<constant>BILLER_INQUIRY_PENDING</constant>        
 			</setHeader>
 			<multicast>
-				<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+				<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 				<to uri="direct:bsmBillPayInquiryProcessorQueue"/>
 			</multicast>
 		</route>
@@ -340,7 +249,7 @@
 				<constant>BILLER_INQUIRY_COMPLETED</constant>        
 			</setHeader>
 			<multicast>
-				<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+				<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 				<to uri="bean:billPayBillerIntegrationService?method=handleBillPayInquiryResponse"/>
 			</multicast>
 		</route>
@@ -361,7 +270,7 @@
 				<constant>BILLER_CONFIRMATION_PENDING</constant>        
 			</setHeader>
 			<multicast>
-				<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+				<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 				<to uri="direct:bsmBillPaymentQueue"/>	
 			</multicast>
 		</route>
@@ -384,7 +293,7 @@
 						<constant>BILLER_CONFIRMATION_COMPLETED</constant>        
 					</setHeader>
 					<multicast>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+						<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 						<to uri="direct:bsmBillPayConfirmationResponseQueue"/>
 					</multicast>
 			</filter>
@@ -404,7 +313,7 @@
 					<constant>BILLER_CONFIRMATION_SUCCESSFUL</constant>
 				</setHeader>
 				<multicast>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 					<to uri="direct:bsmmoneyTransferInquirySuspenseToDestination"/>
 				</multicast>
 			</filter>
@@ -415,7 +324,7 @@
 					<constant>BILLER_CONFIRMATION_FAILED</constant>        
 				</setHeader>
 				<multicast>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 					<to uri="direct:bsmSuspenseAndChargesToSourceReversal"/>
 				</multicast>			
 			</filter>		
@@ -435,7 +344,7 @@
 							<constant>SUSPENSE_DEST_INQ_SUCCESS</constant>        
 						</setHeader>
 						<multicast>
-							<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+							<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 							<to uri="direct:moneyTransferConfirmationSuspenseToDestination"/>
 						</multicast>
 					</filter>
@@ -445,7 +354,7 @@
 					<setHeader headerName="eventContext">
 						<constant>SUSPENSE_DEST_INQ_TO_BANK</constant>        
 					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 					<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
 				</filter>
 				<!-- What if suspense to destination inquiry fails?	-->
@@ -456,7 +365,7 @@
 						<setHeader headerName="eventContext">
 							<constant>SUSPENSE_DEST_INQ_FAILED</constant>        
 						</setHeader>
-						<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+						<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 					</filter>
 				</filter>
 		</route>
@@ -472,7 +381,7 @@
 					<setHeader headerName="eventContext">
 						<constant>SUSPENSE_DEST_CONFIRMATION_SUCCESS</constant>        
 					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 				</filter>
 			</filter>
 			<filter>
@@ -482,7 +391,7 @@
 					<setHeader headerName="eventContext">
 						<constant>SUSPENSE_DEST_CONFIRMATION_FAILED</constant>        
 					</setHeader>
-					<to uri="jms:billPayEventProcessingQueue?disableReplyTo=true"/>
+					<to uri="jms:bsmBillPayEventProcessingQueue?disableReplyTo=true"/>
 				</filter>
 			</filter>
 			<filter>
@@ -514,7 +423,7 @@
 
 		<!-- route for bill pay event processing queue end -->
 		<route>
-			<from uri="jms:billPayEventProcessingQueue"/>
+			<from uri="jms:bsmBillPayEventProcessingQueue"/>
 			<setHeader headerName="eventContext">
 				<simple>${in.header.eventContext}</simple>
 			</setHeader>
@@ -546,38 +455,10 @@
 			<filter>
 				<simple>${in.header.eventContext} == 'BILLER_CONFIRMATION_SUCCESSFUL'</simple>
 				<to uri="bean:billPayEventProcessingService?method=BILLER_CONFIRMATION_SUCCESSFUL"/>
-				<to uri="jms:notificationQueue?disableReplyTo=true"/>
-				<!-- 
-				<multicast>
-					<to uri="jms:notificationQueue?disableReplyTo=true"/>
-					<to uri="jms:notificationToDestinationQueue?disableReplyTo=true"/>
-					<to uri="jms:notificationToBillerQueue?disableReplyTo=true"/>
-				</multicast>
-				 -->
+				<to uri="jms:notificationQueue?disableReplyTo=true"/>				
 			</filter>
 		</route>
 		
-		<!-- notification to destination -->
-		<!-- 
-		<route> 
-			<from uri="jms:notificationToDestinationQueue"/>
-					<to uri="bean:billPayNotificationService?method=notificationToDestination"/>
-					<filter>
-						<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMSMSNotification'</simple>
-						<to uri="jms:notificationQueue?disableReplyTo=true"/>				
-					</filter>
-		</route>
-		 -->
-		 
-		<!--notification to biller -->
-		<!-- <route>
-			<from uri="jms:notificationToBillerQueue"/>
-				 <filter>
-					<simple>${body.response.ReceiverMDN} !=null</simple>
-					<to uri="bean:billPayNotificationService?method=notificationToBiller"/>
-					<to uri="jms:notificationQueue?disableReplyTo=true"/>
-				</filter>
-		</route> -->
 	</camelContext>
 
 	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
