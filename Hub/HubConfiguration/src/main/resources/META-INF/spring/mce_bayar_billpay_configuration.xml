@@ -76,6 +76,7 @@
 			</map>
 		</property>	
 		<property name="url" value="${bayar_bank_web_service_url}" />
+		<property name="errorMsg" value="${bayar_bank_web_error_message}" />
 	</bean>
 		
 	<bean id="bayarTopupCommunicator"
@@ -268,7 +269,7 @@
         </setHeader>
         <multicast>
             <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-            <to uri="direct:billPayConfirmationResponseQueue"/>
+            <to uri="direct:bayarBillPayConfirmationResponseQueue"/>
         </multicast>
     </route>
     <route>
@@ -280,7 +281,7 @@
         </setHeader>
         <multicast>
             <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-            <to uri="direct:billPayConfirmationResponseQueue"/>
+            <to uri="direct:bayarBillPayConfirmationResponseQueue"/>
         </multicast>
     </route>
     <route>
@@ -292,13 +293,13 @@
         </setHeader>
         <multicast>
             <to uri="jms:bayarBillPayEventProcessingQueue?disableReplyTo=true"/>
-            <to uri="direct:billPayConfirmationResponseQueue"/>
+            <to uri="direct:bayarBillPayConfirmationResponseQueue"/>
         </multicast>
     </route>
     
     <route>
         <!--Handle bill pay confirmation response-->
-        <from uri="direct:billPayConfirmationResponseQueue"/>
+        <from uri="direct:bayarBillPayConfirmationResponseQueue"/>
         <to uri="bean:billPayBillerIntegrationService?method=handleBillPayConfirmationResponse"/>
         <filter>
             <simple>${body.response.result} == '0'</simple>

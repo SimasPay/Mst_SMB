@@ -42,6 +42,7 @@ public class BayarHttpConnector {
 	private String timeout;
 	private String url;
 	private String trustStoreFile;
+	private String errorMsg;
 	private Map<String,String> params;
 	BayarWebServiceResponse bayarWSResponse = null;
 
@@ -198,7 +199,7 @@ public class BayarHttpConnector {
 		in.close();
 		}
 		catch (Exception e) {
-			response = new StringBuilder("{\"status\":8888,\"message\":\"MFS Internal Error\"}");
+			response = new StringBuilder("{\"status\":8888,\"message\":\"" + getErrorMsg() + "\"}");
 			log.error(e.getMessage(), e);
 			//e.printStackTrace();
 		}
@@ -237,6 +238,14 @@ public class BayarHttpConnector {
 
 	public void setTrustStoreFile(String trustStoreFile) {
 		this.trustStoreFile = trustStoreFile;
+	}
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
 
