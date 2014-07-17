@@ -93,7 +93,11 @@
 			<filter>
 				<simple>${in.body.request.getIntegrationCode} == 'QRFLASHIZ'</simple>
 				<to uri="jms:flashizmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
-		   </filter>		   
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
+				<to uri="jms:bsmmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>		   		   
 		</route>
 		
 		<route>
@@ -109,7 +113,11 @@
 			<filter>
 				<simple>${in.body.request.getIntegrationCode} == 'QRFLASHIZ'</simple>
 				<to uri="jms:flashizsuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
-		   </filter>		   
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
+				<to uri="jms:bsmSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+		   </filter>			   		   
 		</route>
 
 		<route>
@@ -121,7 +129,11 @@
 		    <filter>
 				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
 				<to uri="jms:ztesuspenseAndChargesRRQueue?disableReplyTo=true"/>		
-			</filter>			
+			</filter>
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
+				<to uri="jms:bsmsuspenseAndChargesRRQueue?disableReplyTo=true"/>		
+			</filter>						
 		</route>
 
 		<route>
@@ -133,7 +145,11 @@
 		    <filter>
 				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
 				<to uri="jms:ztebpSourceToSuspenseBRQueue?disableReplyTo=true"/>
-			</filter>			
+			</filter>
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
+				<to uri="jms:bsmbpSourceToSuspenseBRQueue?disableReplyTo=true"/>
+			</filter>						
 		</route>
 
 		<route>
@@ -145,7 +161,11 @@
 		    <filter>
 				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
 				<to uri="jms:ztebpSuspenseToDestBRQueue?disableReplyTo=true"/>
-			</filter>			
+			</filter>
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
+				<to uri="jms:bsmbpSuspenseToDestBRQueue?disableReplyTo=true"/>
+			</filter>						
 		</route>		
 		
    </camelContext>
