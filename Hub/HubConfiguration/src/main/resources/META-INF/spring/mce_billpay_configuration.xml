@@ -80,6 +80,74 @@
 				<to uri="jms:bsmBillPayQueue?disableReplyTo=true"/>
 			</filter>
 		</route>
+		<route>
+		    <from uri="jms:moneyTransferInquirySuspenseToDestination?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'bayar'</simple>
+				<to uri="jms:bayarmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
+				<to uri="jms:ztemoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QRFLASHIZ'</simple>
+				<to uri="jms:flashizmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>		   
+		</route>
+		
+		<route>
+		    <from uri="jms:suspenseAndChargesToSourceReversal?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'bayar'</simple>
+				<to uri="jms:bayarsuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
+				<to uri="jms:ztesuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'QRFLASHIZ'</simple>
+				<to uri="jms:flashizsuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+		   </filter>		   
+		</route>
+
+		<route>
+		    <from uri="jms:suspenseAndChargesRRQueue?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'bayar'</simple>
+				<to uri="jms:bayarSuspenseAndChargesRRQueue?disableReplyTo=true"/>		
+			</filter>
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
+				<to uri="jms:ztesuspenseAndChargesRRQueue?disableReplyTo=true"/>		
+			</filter>			
+		</route>
+
+		<route>
+		    <from uri="jms:bpSourceToSuspenseBRQueue?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'bayar'</simple>
+				<to uri="jms:bayarSourceToSuspenseBRQueue?disableReplyTo=true"/>
+			</filter>
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
+				<to uri="jms:ztebpSourceToSuspenseBRQueue?disableReplyTo=true"/>
+			</filter>			
+		</route>
+
+		<route>
+		    <from uri="jms:bpSuspenseToDestBRQueue?disableReplyTo=true" />
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'bayar'</simple>
+				<to uri="jms:bayarSuspenseToDestBRQueue?disableReplyTo=true"/>
+			</filter>
+		    <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'ZTE'</simple>
+				<to uri="jms:ztebpSuspenseToDestBRQueue?disableReplyTo=true"/>
+			</filter>			
+		</route>		
+		
    </camelContext>
 
 	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">

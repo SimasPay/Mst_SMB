@@ -13,15 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
+import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionResponse;
@@ -32,24 +30,21 @@ import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPayPendingRequest;
-import com.mfino.fix.CmFinoFIX.CMDSTVPendingCommodityTransferRequest;
-import com.mfino.fix.CmFinoFIX.CMInterBankPendingCommodityTransferRequest;
 import com.mfino.fix.CmFinoFIX.CMJSPendingCommodityTransferRequest;
 import com.mfino.fix.CmFinoFIX.CMPendingCommodityTransferRequest;
-import com.mfino.fix.CmFinoFIX.CMTellerPendingCommodityTransferRequest;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentPendingRequest;
 import com.mfino.fix.processor.MultixCommunicationHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.BulkUploadEntryService;
 import com.mfino.service.BulkUploadService;
+import com.mfino.service.CommodityTransferService;
 import com.mfino.service.MfinoService;
 import com.mfino.service.ServiceChargeTransactionLogService;
-import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionTypeService;
 import com.mfino.service.UnRegisteredTxnInfoService;
 import com.mfino.service.UserService;
-import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.service.BulkTransferService;
 import com.mfino.uicore.fix.processor.PendingCommodityTransferRequestProcessor;
  
@@ -63,10 +58,6 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 	@Autowired
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
-	
-	@Autowired
-	@Qualifier("SystemParametersServiceImpl")
-	private SystemParametersService systemParametersService;
 
 	@Autowired
 	@Qualifier("BulkTransferServiceImpl")
@@ -99,6 +90,10 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 	@Autowired
 	@Qualifier("UserServiceImpl")
 	private UserService userService;
+	
+	@Autowired
+	@Qualifier("CommodityTransferServiceImpl")
+	private CommodityTransferService commodityTransferService;
 
 
 	 public CFIXMsg process(CFIXMsg msg) {
@@ -127,8 +122,9 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 	        CFIXMsg response = handleRequestResponse( buildMsg(newMsg,sctl));
 	        
 	     // Check if the Transaction is related to Bulk Transfer then do the changes in BulkUpload table also
+/*	Commented as this methos not required in Dimo / Hub         
 			updateBulkTransfer(sctl, response);
-			
+			*/
 	        return response;
 	    }
 
@@ -223,63 +219,51 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
     	
     	Service service=mfinoService.getByServiceID(sctl.getServiceID());
         TransactionType transactionType = transactionTypeService.getTransactionTypeById(sctl.getTransactionTypeID());
-        //FIXME : currently assuming DSTV for any Bill Pay
-        /*if((sctl.getT.equals(CmFinoFIX.MessageType_DSTVPaymentInquiry)) || (sctl.getMsgType().equals(CmFinoFIX.MessageType_DSTVPayment))){
-        	CMDSTVPendingCommodityTransferRequest dstvPendingRequest = new CMDSTVPendingCommodityTransferRequest();
-        	dstvPendingRequest.copy(newMsg);
-        	newMsg = dstvPendingRequest;
-        }*/
-        if(ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equals(transactionType.getTransactionName())){
-        	//FIXME : if profile is zenith send DSTVRequest otherwise send normal BillPayPending Request
-        	if(ApiConstants.PROFILE_ZENITHBANK.equals(systemParametersService.getString(SystemParameterKeys.PROFILE))){
-	        	CMDSTVPendingCommodityTransferRequest dstvPendingRequest = new CMDSTVPendingCommodityTransferRequest();
-	        	dstvPendingRequest.copy(newMsg);
-	        	newMsg = dstvPendingRequest;
-        	}else{
-        		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
-        		billPayPendingRequest.copy(newMsg);
-				billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
-	        	newMsg = billPayPendingRequest;
-        	}
+
+        if (ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServiceName())
+        		&&ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equals(transactionType.getTransactionName())) {
+    		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
+    		billPayPendingRequest.copy(newMsg);
+			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+        	newMsg = billPayPendingRequest;
         }
-        /*else if((sctl.getMsgType().equals(CmFinoFIX.MessageType_VisafoneAirtimePurchaseInquiry)) || (sctl.getMsgType().equals(CmFinoFIX.MessageType_VisafoneAirtimePurchase))){
-        	CMVisafoneAirtimePendingCommodityTransferRequest visafoneAirtimePendingRequest = new CMVisafoneAirtimePendingCommodityTransferRequest();
-        	visafoneAirtimePendingRequest.copy(newMsg);
-        	newMsg = visafoneAirtimePendingRequest;
-        }*/
-        else if(ServiceAndTransactionConstants.SERVICE_BUY.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equals(transactionType.getTransactionName())){
-        	
-        	CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
+        else if (ServiceAndTransactionConstants.SERVICE_BUY.equals(service.getServiceName())
+                &&ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equals(transactionType.getTransactionName())) {
+    		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
+    		billPayPendingRequest.copy(newMsg);
+			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+			CommodityTransfer ct = commodityTransferService.getCommodityTransferById(sctl.getCommodityTransferID());
+			if (ct != null) {
+				billPayPendingRequest.setUICategory(ct.getUICategory());
+			}
+        	newMsg = billPayPendingRequest;
+        }                
+        else if (ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServiceName())
+        		&&ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT.equals(transactionType.getTransactionName())) {
+        	CMQRPaymentPendingRequest billPayPendingRequest = new CMQRPaymentPendingRequest();
         	billPayPendingRequest.copy(newMsg);
         	billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
         	newMsg = billPayPendingRequest;
         }
-        else if(ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equals(transactionType.getTransactionName())){
-        	
-        	CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
-        	billPayPendingRequest.copy(newMsg);
-        	billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
-        	newMsg = billPayPendingRequest;
-        }        
-        /*else if((sctl.getMsgType().equals(CmFinoFIX.MessageType_InterBankFundsTransferInquiry)) || (sctl.getMsgType().equals(CmFinoFIX.MessageType_InterBankFundsTransfer))){
-        	CMInterBankPendingCommodityTransferRequest interBankPendingRequest = new CMInterBankPendingCommodityTransferRequest();
-        	interBankPendingRequest.copy(newMsg);
-        	newMsg = interBankPendingRequest;
-        }*/
-        else if(ServiceAndTransactionConstants.SERVICE_BANK.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equals(transactionType.getTransactionName())){
-        	CMInterBankPendingCommodityTransferRequest interBankPendingRequest = new CMInterBankPendingCommodityTransferRequest();
-        	interBankPendingRequest.copy(newMsg);
-        	newMsg = interBankPendingRequest;
-        }
-        else if(ServiceAndTransactionConstants.SERVICE_TELLER.equals(service.getServiceName())){
-        	CMTellerPendingCommodityTransferRequest tellerPendingRequest = new CMTellerPendingCommodityTransferRequest();
-        	tellerPendingRequest.copy(newMsg);
-        	newMsg = tellerPendingRequest;
-        }
+//        else if(ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServiceName())
+//        		&&ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equals(transactionType.getTransactionName())){
+//        	
+//        	CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
+//        	billPayPendingRequest.copy(newMsg);
+//        	billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+//        	newMsg = billPayPendingRequest;
+//        }        
+//        else if(ServiceAndTransactionConstants.SERVICE_BANK.equals(service.getServiceName())
+//        		&&ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equals(transactionType.getTransactionName())){
+//        	CMInterBankPendingCommodityTransferRequest interBankPendingRequest = new CMInterBankPendingCommodityTransferRequest();
+//        	interBankPendingRequest.copy(newMsg);
+//        	newMsg = interBankPendingRequest;
+//        }
+//        else if(ServiceAndTransactionConstants.SERVICE_TELLER.equals(service.getServiceName())){
+//        	CMTellerPendingCommodityTransferRequest tellerPendingRequest = new CMTellerPendingCommodityTransferRequest();
+//        	tellerPendingRequest.copy(newMsg);
+//        	newMsg = tellerPendingRequest;
+//        }
 		
         return newMsg;
 		

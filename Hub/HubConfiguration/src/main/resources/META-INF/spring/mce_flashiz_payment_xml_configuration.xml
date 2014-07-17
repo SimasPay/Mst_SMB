@@ -214,7 +214,7 @@
 				</filter>
 			</filter>
 			<filter>
-				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayPendingRequest'</simple> <!-- pending resolve Flow -->
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentPendingRequest'</simple> <!-- Manual pending resolve Flow -->
 				<to uri="bean:billPayPendingResolveService?method=resolvePendingTransaction"/>
 				<filter>
 					<simple>${body.destinationQueue} == null</simple>
@@ -222,12 +222,29 @@
 				</filter>
 				<filter>
 					<simple>${body.destinationQueue} != null</simple>
+					<filter>
+						<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+						<filter>
+							<simple>${body.response.result} != '0'</simple> <!--  transaction is resolved as failure -->
+							<setHeader headerName="eventContext">
+								<constant>BILLER_CONFIRMATION_FAILED</constant>        
+							</setHeader>
+						</filter>
+					</filter>
+					<filter>
+						<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- transaction is resolved as success -->
+						<filter>
+							<simple>${body.response.result} == '0'</simple>
+							<setHeader headerName="eventContext">
+								<constant>BILLER_CONFIRMATION_SUCCESSFUL</constant>        
+							</setHeader>
+						</filter>
+					</filter>					
 					<recipientList>
-						<simple>${body.nextQueue},jms:notificationQueue?disableReplyTo=true</simple>
-					</recipientList>
-				</filter>
+						<simple>${body.nextQueue},jms:FlashizbillPayEventProcessingQueue?disableReplyTo=true</simple>
+					</recipientList>	
+				</filter>				
 			</filter>
-			
 		</route>
 		
 		<!-- response from front end for source to suspense-->

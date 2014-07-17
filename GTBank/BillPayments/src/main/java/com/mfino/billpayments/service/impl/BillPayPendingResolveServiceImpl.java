@@ -64,24 +64,20 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 		log.info("BillPayPendingResolveServiceImpl :: resolvePendingTransaction BEGIN mceMessage="+mceMessage);
 		
 		CFIXMsg response = null;
-		
 		CMBillPayPendingRequest pendingRequest = (CMBillPayPendingRequest)mceMessage.getRequest();
-		
-		
-		log.info("BillPayPendingResolveServiceImpl :: pendingRequest.getCSRAction()="+pendingRequest.getCSRAction());
+		log.info("PendingRequest: "+ pendingRequest.getServiceChargeTransactionLogID() + " CSR Action: " + pendingRequest.getCSRAction());
 		
 		Long sctlId = pendingRequest.getServiceChargeTransactionLogID();
-		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
 
 		PendingCommodityTransfer pct = getPendingCommodityTransfer(sctl);
 		
 		if((sctl==null) || ((!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus())) && (pct != null))){
-			log.error("sctl is null or sctl status is not pending @@"+sctl);
+			log.error("sctl is null or sctl status is not pending @@"+sctlId);
 
 			response = new BackendResponse();
-			String message = "No PendingTransaction record found for ID: "+sctl;
+			String message = "No PendingTransaction record found for ID: "+sctlId;
 			((BackendResponse)response).setInternalErrorCode(CmFinoFIX.ErrorCode_Generic);
 			((BackendResponse)response).setDescription(message);
 		}
@@ -108,8 +104,10 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 				}
 				else
 				{
-					if((null != billPayments.getBillPayStatus()) && (CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_PENDING.equals(billPayments.getBillPayStatus()))){
-						log.info("BillPayPendingResolveServiceImpl :: BillPayStatus_MT_SRC_TO_SUSPENSE_PENDING");
+					log.info("BillPayPendingResolveServiceImpl :: BillPayStatus: "+ billPayments.getBillPayStatus());
+					if((null != billPayments.getBillPayStatus()) && 
+							(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_PENDING.equals(billPayments.getBillPayStatus()))){
+						
 						if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
 							response = bankService.onRevertOfTransferConfirmation(pct, true);
 							((BackendResponse)response).setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
@@ -135,8 +133,9 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
 						sctlDao.save(sctl);
 					}
-					else if((null != billPayments.getBillPayStatus()) && (CmFinoFIX.BillPayStatus_MT_SUSPENSE_TO_DEST_PENDING.equals(billPayments.getBillPayStatus()))){
-						log.info("BillPayPendingResolveServiceImpl :: BillPayStatus_MT_SUSPENSE_TO_DEST_PENDING");
+					else if((null != billPayments.getBillPayStatus()) && 
+							(CmFinoFIX.BillPayStatus_MT_SUSPENSE_TO_DEST_PENDING.equals(billPayments.getBillPayStatus()))){
+
 						//if notification not required, set internalError code to null here.
 						if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
 							response = bankService.onRevertOfTransferConfirmation(pct, true);
@@ -155,13 +154,16 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
 						sctlDao.save(sctl);
 					}
-					else if((null != billPayments.getBillPayStatus()) && (CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING.equals(billPayments.getBillPayStatus()))){
-						log.info("BillPayPendingResolveServiceImpl :: BillPayStatus_BILLER_CONFIRMATION_PENDING");
+					else if((null != billPayments.getBillPayStatus()) && 
+							(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING.equals(billPayments.getBillPayStatus()))){
+
 						//if notification not required, set internalError code to null here.
 						if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
 							response = new BackendResponse();
 							((BackendResponse)response).setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
 							((BackendResponse)response).setServiceChargeTransactionLogID(pendingRequest.getServiceChargeTransactionLogID());
+							((BackendResponse)response).setResult(CmFinoFIX.ResponseCode_Failure);
+							((BackendResponse)response).setUICategory(pendingRequest.getUICategory());
 							billPaymentsService.updateBillPayStatus(sctlId, CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_FAILED);
 							/*
 							 * after reversal is done message will be routed to suspenseAndChargesRRQueue (bill pay reversal response)
@@ -177,7 +179,10 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 						}
 						else if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Complete)){
 							response = new BackendResponse();
+							((BackendResponse)response).setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccessful.getInternalErrorCode());
 							((BackendResponse)response).setServiceChargeTransactionLogID(pendingRequest.getServiceChargeTransactionLogID());
+							((BackendResponse)response).setResult(CmFinoFIX.ResponseCode_Success);
+							((BackendResponse)response).setUICategory(pendingRequest.getUICategory());
 							billPaymentsService.updateBillPayStatus(sctlId, CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_COMPLETED);
 							/*
 							 * transaction completed so initiate suspense to destination transfer
@@ -191,12 +196,10 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 							}
 							sctl.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
 						}
-						
-						
 						sctlDao.save(sctl);
 					}
 					else{
-						log.error("BillPayPendingResolveServiceImpl :: bug in code, should not come here");
+						log.error("BillPayPendingResolveServiceImpl :: ************ bug in code, should not come here ************");
 					}
 				}
 			}

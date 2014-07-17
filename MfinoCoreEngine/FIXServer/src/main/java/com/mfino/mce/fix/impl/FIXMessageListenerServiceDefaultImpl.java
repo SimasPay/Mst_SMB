@@ -14,7 +14,6 @@ import org.apache.log4j.MDC;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CMultiXBuffer;
 import com.mfino.fix.CmFinoFIX;
@@ -26,12 +25,10 @@ import com.mfino.fix.CmFinoFIX.CMNFCCardLinkToCMS;
 import com.mfino.fix.CmFinoFIX.CMNFCCardStatusToCMS;
 import com.mfino.fix.CmFinoFIX.CMNFCCardUnlinkReversalToCMS;
 import com.mfino.fix.CmFinoFIX.CMNFCCardUnlinkToCMS;
-import com.mfino.fix.CmFinoFIX.CMQRPayment;
-import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiry;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentPendingRequest;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.mce.fix.FIXMessageListenerService;
-import com.mfino.service.impl.SystemParametersServiceImpl;
 import com.mfino.util.EncryptionUtil;
 
 public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerService
@@ -188,7 +185,7 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 		//TODO: need to move this code to a better manage
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
 		producerTemplate.start();
-		if(fixMesg instanceof CmFinoFIX.CMQRPaymentInquiry || fixMesg instanceof CmFinoFIX.CMQRPayment){
+		if(fixMesg instanceof CmFinoFIX.CMQRPaymentInquiry || fixMesg instanceof CmFinoFIX.CMQRPayment || fixMesg instanceof CMQRPaymentPendingRequest){
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_FLASHIZ_QR_PAYMENT, mceMessage, header);
 		}
 		else if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest || fixMesg instanceof CMBillInquiry){

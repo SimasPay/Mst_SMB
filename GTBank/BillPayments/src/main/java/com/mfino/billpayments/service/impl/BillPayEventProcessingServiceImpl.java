@@ -49,6 +49,7 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 		log.info("BillPayEventProcessingServiceImpl : processEvent BEGIN eventContext=" + eventContext + "mceMessage="+mceMessage);
 		boolean sendNotification = false;
 		CMBase requestFix = (CMBase)mceMessage.getRequest();
+		int uiCategory = requestFix.getUICategory() != null ? requestFix.getUICategory() : 0;
 
 		if(mceMessage.getResponse() instanceof BackendResponse){
 			BackendResponse backendResponse = (BackendResponse)mceMessage.getResponse();
@@ -60,14 +61,14 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			}
 			else if(BillPayConstants.SRC_SUSPENSE_CONFIRMATION_FAILED.equals(eventContext)){
 				sendNotification = true;				
-				if (requestFix.getUICategory() == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue())
+				if (uiCategory == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue())
 					backendResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseFailed.getNotificationCode());
 				else
 					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
 			}
 			else if(BillPayConstants.SRC_SUSPENSE_INQ_SUCCESS.equals(eventContext)){
 				sendNotification = true;
-				if (requestFix.getUICategory() == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue()){
+				if (uiCategory == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue()){
 					if(CmFinoFIX.ResponseCode_Success.equals(backendResponse.getResult()))
 						backendResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseInquiry.getInternalErrorCode());
 					else
@@ -81,7 +82,7 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			}
 			else if(BillPayConstants.BILLER_INQUIRY_COMPLETED.equals(eventContext)){
 				sendNotification = true;
-				if (requestFix.getUICategory() == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue()){
+				if (uiCategory == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue()){
 					if(CmFinoFIX.ResponseCode_Success.equals(backendResponse.getResult()))
 						backendResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseInquiry.getInternalErrorCode());
 					else
@@ -95,14 +96,14 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			}
 			else if(BillPayConstants.BILLER_CONFIRMATION_FAILED.equals(eventContext)){
 				sendNotification = true;
-				if (requestFix.getUICategory() == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue())
+				if (uiCategory == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue())
 					backendResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseFailed.getInternalErrorCode());
 				else
 					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
 			}
 			else if(BillPayConstants.BILLER_CONFIRMATION_SUCCESSFUL.equals(eventContext)){
 				sendNotification = true;
-				if (requestFix.getUICategory() == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue())
+				if (uiCategory == CmFinoFIX.TransactionUICategory_Bill_Payment_Topup.intValue())
 					backendResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseConfirmation.getInternalErrorCode());
 				else
 					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccessful.getInternalErrorCode());

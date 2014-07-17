@@ -4978,6 +4978,8 @@
 			<field name="UserAPIKey" required="N"/>
 			<field name="MerchantData" required="N"/>
 	</message>
+	<message name="QRPaymentPendingRequest" msgtype="1749" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPayPendingRequest">
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">

@@ -173,8 +173,9 @@
                 </filter>
 			</filter>		
 		</filter>
+		
 		<filter>
-			<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayPendingRequest'</simple> <!-- pending resolve Flow -->
+			<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayPendingRequest'</simple> <!-- Manual pending resolve Flow -->
 			<to uri="bean:billPayPendingResolveService?method=resolvePendingTransaction"/>
 			<filter>
 				<simple>${body.destinationQueue} == null</simple>
@@ -182,11 +183,30 @@
 			</filter>
 			<filter>
 				<simple>${body.destinationQueue} != null</simple>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+					<filter>
+						<simple>${body.response.result} != '0'</simple> <!--  transaction is resolved as failure -->
+						<setHeader headerName="eventContext">
+							<constant>BILLER_CONFIRMATION_FAILED</constant>        
+						</setHeader>
+					</filter>
+				</filter>
+				<filter>
+					<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- transaction is resolved as success -->
+					<filter>
+						<simple>${body.response.result} == '0'</simple>
+						<setHeader headerName="eventContext">
+							<constant>BILLER_CONFIRMATION_SUCCESSFUL</constant>        
+						</setHeader>
+					</filter>
+				</filter>					
 				<recipientList>
-					<simple>${body.nextQueue},jms:notificationQueue?disableReplyTo=true</simple>
-				</recipientList>
-			</filter>
-		</filter>
+					<simple>${body.nextQueue},jms:bayarBillPayEventProcessingQueue?disableReplyTo=true</simple>
+				</recipientList>	
+			</filter>				
+		</filter>		
+
 		<filter>
 			<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillInquiry'</simple> <!-- billInquiry Flow -->
 			<to uri="bean:bayarBillPayInquiryCommunicator?method=process"/>
@@ -460,28 +480,6 @@ Amount should be reverted from suspense and charges to source and failure notifi
             <to uri="jms:notificationQueue?disableReplyTo=true"/>
 		</filter>
     </route>
-    <route>
-		    <from uri="jms:moneyTransferInquirySuspenseToDestination?disableReplyTo=true" />
-			<to uri="jms:bayarmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
-	</route>
-	<route>
-		    <from uri="jms:suspenseAndChargesToSourceReversal?disableReplyTo=true" />
-			<to uri="jms:bayarsuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
-	</route>
-	<route>
-		    <from uri="jms:suspenseAndChargesRRQueue?disableReplyTo=true" />
-			<to uri="jms:bayarSuspenseAndChargesRRQueue?disableReplyTo=true"/>		
-	</route>
-
-	<route>
-		    <from uri="jms:bpSourceToSuspenseBRQueue?disableReplyTo=true" />
-			<to uri="jms:bayarSourceToSuspenseBRQueue?disableReplyTo=true"/>
-	</route>
-	<route>
-		    <from uri="jms:bpSuspenseToDestBRQueue?disableReplyTo=true" />
-			<to uri="jms:bayarSuspenseToDestBRQueue?disableReplyTo=true"/>
-	</route>
-
 	</camelContext>
 	
 	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">
