@@ -7,6 +7,7 @@ import org.jpos.iso.ISOMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.vah.iso8583.DateTimeFormatter;
 
@@ -22,7 +23,6 @@ public class IsoToCashin implements IsoToNativeTransformer {
 	public String transform(ISOMsg msg) throws TransformationException {
 		StringBuilder retStr = null;
 		String ChannelName = "ATM";
-		String InstitutionID = "HUB";
 		String initiatorMDN = "019";
 
 		try {
@@ -57,7 +57,7 @@ public class IsoToCashin implements IsoToNativeTransformer {
 			String paymentDate = msg.getValue(7).toString();
 			String receiptNo = msg.getValue(37).toString();
 			String instName = msg.getValue(32).toString();
-			String instCode = msg.getValue(100).toString();
+			String instCode = msg.getValue(32).toString();
 
 			if (StringUtils.isBlank(paymentReference) || StringUtils.isBlank(paymentLogid) || StringUtils.isBlank(targetMDN)
 			        || StringUtils.isBlank(amount) || StringUtils.isBlank(tfName) || StringUtils.isBlank(tlName)
@@ -87,7 +87,7 @@ public class IsoToCashin implements IsoToNativeTransformer {
 			retStr = retStr.append("<PaymentReference>").append(paymentReference).append("</PaymentReference>");
 			retStr = retStr.append("<TerminalId>").append(termID).append("</TerminalId>");
 			retStr = retStr.append("<ChannelName>").append(ChannelName).append("</ChannelName>");
-			retStr = retStr.append("<ChannelId>").append("4").append("</ChannelId>");
+			retStr = retStr.append("<ChannelId>").append(CmFinoFIX.SourceApplication_Interswitch).append("</ChannelId>");
 			retStr = retStr.append("<PaymentDate>").append(timeStr).append("</PaymentDate>");
 			retStr = retStr.append("<InstitutionId>").append(instCode).append("</InstitutionId>");
 			retStr = retStr.append("<InstitutionName>").append(instName).append("</InstitutionName>");

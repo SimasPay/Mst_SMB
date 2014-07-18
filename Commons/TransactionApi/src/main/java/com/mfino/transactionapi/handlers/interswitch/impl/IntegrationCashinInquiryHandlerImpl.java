@@ -1,7 +1,6 @@
 package com.mfino.transactionapi.handlers.interswitch.impl;
 
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +15,10 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
-import com.mfino.dao.PartnerDAO;
-import com.mfino.dao.PocketDAO;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.Partner;
-import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
@@ -162,14 +157,15 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			log.info("not a duplicate paymentlogid");
 		}
 
-		log.info("retrieving integration partner for institutioid" + cashinDetails.getInstitutionID());
+		log.info("retrieving integration partner for institutionID" + cashinDetails.getInstitutionID());
 		
-		IntegrationPartnerMapping ipm = integrationPartnerMappingService.getByInstitutionID(cashinDetails.getInstitutionID());
+		//Removed the check as per request
+		/*IntegrationPartnerMapping ipm = integrationPartnerMappingService.getByInstitutionID(cashinDetails.getInstitutionID());
 		if (ipm == null) {
 			log.info("integration partner is not available for the given institutionId" + cashinDetails.getInstitutionID());
 			result.setCode(CmFinoFIX.NotificationCode_PartnerNotFound.toString());
 			return result;
-		}
+		}*/
 		
 		String pIdStr = systemParameterService.getString(SystemParameterKeys.SERVICE_PARTNER__ID_KEY);
 		Partner cashinPartner = partnerService.getPartnerById(Long.parseLong(pIdStr));
@@ -183,7 +179,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		}
 
 		log.info("getting the partner mdn and setting it as sourcemdn in cashindetails object");
-		Set<SubscriberMDN> set = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID();
+		//Set<SubscriberMDN> set = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID();
  		SubscriberMDN sourceMDN = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
  		cashinDetails.setSourceMDN(sourceMDN.getMDN());
 		addCompanyANDLanguageToResult(sourceMDN,result);
