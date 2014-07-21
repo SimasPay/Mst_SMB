@@ -53,7 +53,7 @@
 				<!--<div class="box_middle_bottom_login"></div>
 				--><!-- <div style="margin-bottom:20px;"></div> -->
 				<div id="footer_login">
-					<br>Copyright © 2013 mFino Ltd. All rights reserved. Build	2.6
+					<br>Copyright © 2014 mFino Ltd. All rights reserved.
 				</div>
 
 			</div>
