@@ -38,6 +38,12 @@
 				"code": "TAG008",
 				"denomCode":"TAG008",
 			    "paymentMode": "HubZeroAmount"
+    }, 
+    {
+				"name": "FirstMedia",
+				"code": "BSM001",
+				"denomCode":"",
+			    "paymentMode": "HubFreeAmount"
     }
   ]
 }
