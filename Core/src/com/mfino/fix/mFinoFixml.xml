@@ -21091,6 +21091,24 @@
 					</English>
 				</C1>
 			</value>
+			<value description="DonationCompleteToSender" enum="849">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Thank you for transferring $(Currency) $(Amount) as Donation to $(ReceiverTradeName) on $(TransactionDateTime). REF: $(TransactionID)</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="DonationCompleteToReceiver" enum="850">
+				<C1>
+					<English>
+						<SMS>
+							<Text>You have received $(Currency) $(Amount) as donation from $(SenderMDN) $(SenderFirstName) $(SenderLastName) on $(TransactionDateTime). REF: $(TransactionID)</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>			
 			<value description="InvalidData" enum="2000">
 				<C1>
 					<English>
@@ -23668,6 +23686,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="57" description="NFC_Card_Topup"/>
 			<value enum="58" description="NFC_Card_Topup_Reversal"/>
 			<value enum="59" description="NFC_Pocket_Topup"/>
+			<value enum="60" description="Donation"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />

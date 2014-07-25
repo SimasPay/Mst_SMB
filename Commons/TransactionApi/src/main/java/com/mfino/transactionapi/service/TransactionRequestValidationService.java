@@ -252,4 +252,8 @@ public interface TransactionRequestValidationService {
 	public void validateStarTimesPaymentInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateStarTimesPaymentConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateDonationInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateDonationConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 }

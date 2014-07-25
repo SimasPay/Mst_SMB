@@ -1555,7 +1555,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											if(confirmationToBank.getUICategory() != null && confirmationToBank.getUICategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup)){
 												pct.setNotificationCode(NotificationCodes.NFCPocketTopupSuccess
 														.getNotificationCode());
-											}else{
+											}
+											else if(confirmationToBank.getUICategory() != null && confirmationToBank.getUICategory().equals(CmFinoFIX.TransactionUICategory_Donation)){
+												pct.setNotificationCode(NotificationCodes.DonationCompleteToSender
+														.getNotificationCode());
+											}
+											else{
 												pct.setNotificationCode(NotificationCodes.EMoneytoEMoneyCompleteToSender
 														.getNotificationCode());
 											}
@@ -1606,6 +1611,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											returnFix
 													.setInternalErrorCode(NotificationCodes.FundingOfAgentSuccessToSender
 															.getInternalErrorCode());
+										}
+										else if (CmFinoFIX.TransactionUICategory_Donation.equals(pct.getUICategory())) {
+											returnFix.setInternalErrorCode(NotificationCodes.DonationCompleteToSender.getInternalErrorCode());
 										}
 
 										// Changing the Notification code in

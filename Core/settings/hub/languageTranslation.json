@@ -28,6 +28,7 @@
    "InterBank Transfer" : "Transfer ke rekening ",
    "Airtime Purchase" : "Isi Ulang ke ",
    "QR Payment" : "Flashiz QR di ",
+   "Donation" : "Donasi",    
    "Date" : "Tanggal",
    "Transactions" : "Transaksi",
    "Amount" : "Jumlah"
@@ -61,6 +62,7 @@
    "InterBank Transfer" : "Transfer to account ",
    "Airtime Purchase" : "Refill to ",
    "QR Payment" : "QR Flashiz ",
+   "Donation" : "Donation",    
    "Date" : "Date",
    "Transactions" : "Transactions",
    "Amount" : "Amount"

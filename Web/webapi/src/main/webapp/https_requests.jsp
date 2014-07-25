@@ -283,6 +283,17 @@
 			<a href="jsp/s_qr_payment_confirm.jsp">QR Payment Confirm</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_donation_inquiry.jsp">Donation Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_donation_confirm.jsp">Donation Confirm</a>
+		</td>
+	</tr>
+	
 	</table></td>
 	
 	</tr>

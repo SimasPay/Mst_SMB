@@ -572,6 +572,8 @@ public enum NotificationCodes {
 	NFCPocketTopupSuccess(10842,842,true),
 	NFCCardActive(10843,843,false),
 	NFCCardNotActive(10844,844,false),
+	DonationCompleteToSender(10849,849,true),
+	DonationCompleteToReceiver(10850,850,true),
 	GetUserAPIKeyFailed(12102,2102,false),
 	GetUserAPIKeySuccess(12103,2103,false),
 	QueryBalanceDetails(12095,2095,false),
@@ -672,6 +674,7 @@ public enum NotificationCodes {
         receiverNofificationCodeMap.put(FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode(), FundCompleteWithdrawalConfirmedToMerchant);
         receiverNofificationCodeMap.put(FundAllocationReversalToSender.getInternalErrorCode(), FundAllocationReversalToReceiver);
         receiverNofificationCodeMap.put(QRpaymentConfirmationSuccessful.getInternalErrorCode(),QRPaymentCompletedToReceiver);
+        receiverNofificationCodeMap.put(DonationCompleteToSender.getInternalErrorCode(),DonationCompleteToReceiver);
 
 		onBehalfOfNotificationCodeMap.put(BillPayCompletedToSender.getInternalErrorCode(),BillaySuccessfulToOnBehalfOfMDN);
 		onBehalfOfNotificationCodeMap.put(BillPayPending.getInternalErrorCode(),BillayPendingToOnBehalfOfMDN);

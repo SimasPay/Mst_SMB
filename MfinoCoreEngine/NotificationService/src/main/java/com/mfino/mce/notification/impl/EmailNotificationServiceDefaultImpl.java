@@ -5,7 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.SimpleEmail;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class EmailNotificationServiceDefaultImpl implements
 	private Log log = LogFactory.getLog(EmailNotificationServiceDefaultImpl.class);
 	
 	@Override
-	@Transactional(readOnly=false,propagation=Propagation.REQUIRED,isolation=Isolation.SERIALIZABLE) 
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRED) 
 	public void process(Exchange exchange) throws Exception {
 		
 		EmailNotification emailNotification = exchange.getIn().getBody(EmailNotification.class);

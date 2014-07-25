@@ -1,11 +1,10 @@
 package com.mfino.mce.notification.impl;
 
+import static com.mfino.mce.core.util.MCEUtil.getCurrentDateTime;
 import static com.mfino.mce.core.util.MCEUtil.isNullOrEmpty;
 import static com.mfino.mce.core.util.MCEUtil.safeString;
-import static com.mfino.mce.core.util.MCEUtil.getCurrentDateTime;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +23,11 @@ import com.mfino.dao.MFSBillerDAO;
 import com.mfino.domain.MFSBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SystemParameters;
-import com.mfino.domain.TransactionRule;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromNFC;
 import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBase;
@@ -39,7 +35,6 @@ import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyFromBank;
 import com.mfino.fix.CmFinoFIX.CMSMSNotification;
 import com.mfino.fix.CmFinoFIX.CMSubscriberNotification;
-import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.CoreDataWrapper;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
@@ -273,7 +268,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 					}
 					
 
-					log.info("receiverNotificationCode="+notificationCode.getNotificationCode() + ", language="+receiverNotficationLanguage + ", notificationMethod="+CmFinoFIX.NotificationMethod_SMS);
+					log.info("receiverNotificationCode="+receiverNotificationCode.getNotificationCode() + ", language="+receiverNotficationLanguage + ", notificationMethod="+CmFinoFIX.NotificationMethod_SMS);
 					com.mfino.domain.Notification smsReceiverNotification = coreDataWrapper.getNotification(receiverNotificationCode.getNotificationCode(), receiverNotficationLanguage, CmFinoFIX.NotificationMethod_SMS);
 					com.mfino.domain.Notification emailReceiverNotification = coreDataWrapper.getNotification(receiverNotificationCode.getNotificationCode(), receiverNotficationLanguage, CmFinoFIX.NotificationMethod_Email);
 
@@ -302,7 +297,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 								EmailNotification emailNotification = new EmailNotification();
 								String[] recipients = {subscriber.getEmail()};
 								emailNotification.setToRecipents(recipients);
-								emailNotification.setNotificationCode(notificationCode.getNotificationCode());
+								emailNotification.setNotificationCode(receiverNotificationCode.getNotificationCode());
 								emailNotification.setContent(getNotificationText(backendResponse, emailReceiverNotification));
 								emailNotification.setSubject(receiverNotificationCode.name());
 								notifications.add(emailNotification);
@@ -354,7 +349,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 							EmailNotification emailNotification = new EmailNotification();
 							String[] recipients = {subscriber.getEmail()};
 							emailNotification.setToRecipents(recipients);
-							emailNotification.setNotificationCode(notificationCode.getNotificationCode());
+							emailNotification.setNotificationCode(onBehalfOfNotificationCode.getNotificationCode());
 							emailNotification.setContent(getNotificationText(backendResponse, onBehalfOfEmailNotification));
 							emailNotification.setSubject(onBehalfOfNotificationCode.name());
 							notifications.add(emailNotification);

@@ -959,6 +959,17 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateParentTransID(transactionDetails);		
 	}
 	
+	public void validateDonationInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException{
+		validateSourcePin(transactionDetails);
+		validateAmount(transactionDetails);
+	}
+	
+	public void validateDonationConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateconfirmString(transactionDetails);
+		validateTransferId(transactionDetails);
+		validateParentTxnId(transactionDetails);
+	}
+	
 	private void validateParentTransID(TransactionDetails transactionDetails) throws InvalidDataException {
 		if (StringUtils.isBlank(transactionDetails.getParentTransID())) {
 			throw new InvalidDataException("Invalid Parent Transaction ID", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 

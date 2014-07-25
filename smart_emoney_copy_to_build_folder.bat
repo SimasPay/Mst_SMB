@@ -61,6 +61,9 @@ copy MfinoCoreEngine\mfino_conf\externalcodedescriptions.xml %1\servicemix\mfino
 copy MfinoCoreEngine\mfino_conf\mce.properties %1\servicemix\mfino_conf\
 copy Core\settings\smart\mfino.properties %1\servicemix\mfino_conf\
 
+rem Email service
+copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_email_configuration.xml %1\servicemix\
+
 rem SMS service
 rem copy Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_smart_sms_configuration.xml %1\servicemix\
 copy BSIM\BSIMSMS\target\BSIMSMS-0.1-SNAPSHOT.jar %1\servicemix\

@@ -259,6 +259,10 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_QR_PAYMENT_INQUIRY = "QRPaymentInquiry";
 	
 	public static final String TRANSACTION_QR_PAYMENT = "QRPayment";
+	
+	public static final String TRANSACTION_DONATION_INQUIRY = "DonationInquiry";
+	
+	public static final String TRANSACTION_DONATION = "Donation";
 
 	// Messages
 	
@@ -333,4 +337,6 @@ public class ServiceAndTransactionConstants {
 	public static final String MESSAGE_STARTIMES_PAYMENT = "StarTimes Payment";
 	
 	public static final String MESSAGE_QR_PAYMENT 			=	"QR Payment";
+	
+	public static final String MESSAGE_DONATION = "Donation";
 }

@@ -33,6 +33,8 @@ import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMConfirmHan
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutInquiryHandler;
+import com.mfino.transactionapi.handlers.wallet.impl.SubscriberDonationConfirmHandlerImpl;
+import com.mfino.transactionapi.handlers.wallet.impl.SubscriberDonationInquiryHandlerImpl;
 import com.mfino.transactionapi.service.BaseAPIService;
 import com.mfino.transactionapi.service.TransactionRequestValidationService;
 import com.mfino.transactionapi.service.WalletAPIService;
@@ -131,6 +133,14 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Autowired
 	@Qualifier("NewInterBankTransferHandlerImpl")
 	private InterBankTransferHandler interBankTransferHandler;
+	
+	@Autowired
+	@Qualifier("SubscriberDonationInquiryHandlerImpl")
+	private SubscriberDonationInquiryHandlerImpl donationInquiryHandler;
+	
+	@Autowired
+	@Qualifier("SubscriberDonationConfirmHandlerImpl")
+	private SubscriberDonationConfirmHandlerImpl donationConfirmHandler;	
 	
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -288,6 +298,20 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
 			xmlResult = (XMLResult) interBankTransferHandler.handle(transactionDetails);			
 		}		
+		else if (ServiceAndTransactionConstants.TRANSACTION_DONATION_INQUIRY.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateDonationInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_DONATION;
+				transactionDetails.setSourceMessage(sourceMessage);
+			}
+			xmlResult = (XMLResult) donationInquiryHandler.handle(transactionDetails);
+		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_DONATION.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateDonationConfirmDetails(transactionDetails);
+			xmlResult = (XMLResult) donationConfirmHandler.handle(transactionDetails);			
+		}
 		else
 		{
 			xmlResult = new XMLResult();
