@@ -452,12 +452,12 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoiceNumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
-			InterbankTransfer ibt = ibtService.getBySctlId(ct.getSctlId());
+			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			String acctNum = null;
 			String acctName = null;
-			if (ibt != null) {
-				acctName = ibt.getDestAccountName();
-				acctNum = ibt.getDestAccountNumber();
+			if (bp != null) {
+				acctName = bp.getInfo3();
+				acctNum = bp.getInvoiceNumber();
 			}
 			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + acctNum + " , " + acctName; 
 		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){

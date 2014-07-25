@@ -30,6 +30,7 @@
 		<module>FlashizISO8583</module>
 		<module>FlashizBillPayment</module>
 		<module>HubSMS</module>
+		<module>UangkuInterBank</module>
 		<!--<module>XMLRPCDefinitions</module>-->
     </modules>	
 	

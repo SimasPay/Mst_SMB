@@ -79,6 +79,10 @@
 				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
 				<to uri="jms:bsmBillPayQueue?disableReplyTo=true"/>
 			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
+				<to uri="jms:IBTQueue?disableReplyTo=true"/>
+		   </filter>	
 		</route>
 		<route>
 		    <from uri="jms:moneyTransferInquirySuspenseToDestination?disableReplyTo=true" />
@@ -97,6 +101,10 @@
 			<filter>
 				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
 				<to uri="jms:bsmmoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
+		   </filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
+				<to uri="jms:ibtMoneyTransferInquirySuspenseToDestination?disableReplyTo=true"/>
 		   </filter>		   		   
 		</route>
 		
@@ -117,6 +125,10 @@
 			<filter>
 				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
 				<to uri="jms:bsmSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
+		   </filter>
+		   <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
+				<to uri="jms:ibtSuspenseAndChargesToSourceReversal?disableReplyTo=true"/>
 		   </filter>			   		   
 		</route>
 
@@ -133,7 +145,11 @@
 		    <filter>
 				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
 				<to uri="jms:bsmsuspenseAndChargesRRQueue?disableReplyTo=true"/>		
-			</filter>						
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
+				<to uri="jms:ibtSuspenseAndChargesRRQueue?disableReplyTo=true"/>
+		   </filter>						
 		</route>
 
 		<route>

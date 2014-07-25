@@ -447,6 +447,17 @@
 			<a href="jsp/s_interbank_transfer.jsp"> Inter Bank Transfer Confirmation</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_uangku_interbank_transfer_inquiry.jsp">Uangku Inter Bank Transfer Inquiry</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<td>
+			<a href="jsp/s_uangku_interbank_transfer.jsp">Uangku Inter Bank Transfer Confirmation</a>
+		</td>
+	</tr>
 	
 	</table></td></tr>
 

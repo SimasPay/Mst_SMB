@@ -54,7 +54,7 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 					processingCode = "49" + constantFieldsMap.get("CHECKING_ACCOUNT")+msg.getProcessingCode();
 				}
 			}
-			isoMsg.set(3, processingCode);
+			isoMsg.set(3, "490000");
 			long amount = msg.getAmount().longValue();
 			isoMsg.set(4, amount + "");
 			isoMsg.set(7, DateTimeFormatter.getMMDDHHMMSS(ts)); // 7
@@ -64,7 +64,7 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 			isoMsg.set(12, DateTimeFormatter.getHHMMSS(localTS)); // 12
 			isoMsg.set(13, DateTimeFormatter.getMMDD(localTS)); // 13
 			isoMsg.set(15, DateTimeFormatter.getMMDD(ts)); // 15
-			isoMsg.set(18, CmFinoFIX.ISO8583_MerchantType_Delivery_Channel_For_Mobile_Phone); // 18
+			isoMsg.set(18, CmFinoFIX.ISO8583_MerchantType_Delivery_Channel_For_IBT); // 18
 			isoMsg.set(22, constantFieldsMap.get("22")); // 18
 			isoMsg.set(25, constantFieldsMap.get("25")); // 18
 			isoMsg.set(26, constantFieldsMap.get("26")); // 18

@@ -22527,6 +22527,7 @@ ERROR:Mismatch of  mdn type and app type
 		<field number="5230" name="ISO8583_LocalTransactionDateMMDD" type="STRING" ElementID="13" unused="Y" />
 		<field number="5231" name="ISO8583_MerchantType" type="STRING" ElementID="18">
 			<value enum="6017" description="Delivery_Channel_For_Mobile_Phone" />
+			<value enum="6019" description="Delivery_Channel_For_IBT" />
 		</field>
 		<field number="5232" name="ISO8583_AuthorizationIdentificationResponseLength" type="INT" ElementID="27" unused="Y">
 			<value enum="6" description="Sinarmas" />

@@ -125,11 +125,11 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	private TransactionRequestValidationService transactionRequestValidationService;
 	
 	@Autowired
-	@Qualifier("InterBankTransferInquiryHandlerImpl")
+	@Qualifier("NewInterBankTransferInquiryHandlerImpl")
 	private InterBankTransferInquiryHandler interBankTransferInquiryHandler;
 	
 	@Autowired
-	@Qualifier("InterBankTransferHandlerImpl")
+	@Qualifier("NewInterBankTransferHandlerImpl")
 	private InterBankTransferHandler interBankTransferHandler;
 	
 	@Autowired
@@ -279,11 +279,13 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 				sourceMessage = ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER;
 				transactionDetails.setSourceMessage(sourceMessage);
 			}
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
 			xmlResult = (XMLResult) interBankTransferInquiryHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equalsIgnoreCase(transactionName)){
 
 			transactionRequestValidationService.validateInterBankTransferConfirmDetails(transactionDetails);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
 			xmlResult = (XMLResult) interBankTransferHandler.handle(transactionDetails);			
 		}		
 		else

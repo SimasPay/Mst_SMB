@@ -39,8 +39,7 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 				processingCode = "37" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(msg.getSourceBankAccountType()))
 				processingCode = "37" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			isoMsg.set(3, processingCode);// TODO: need to check the processing code for interbank transfer
-
+			isoMsg.set(3, "370000");// TODO: need to check the processing code for interbank transfer
 			long amount = msg.getAmount().longValue();
 			isoMsg.set(4, amount + ""); // 4
 			isoMsg.set(7, DateTimeFormatter.getMMDDHHMMSS(ts)); // 7
@@ -50,7 +49,7 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 			isoMsg.set(12, DateTimeFormatter.getHHMMSS(localTS)); // 12
 			isoMsg.set(13, DateTimeFormatter.getMMDD(localTS)); // 13
 			isoMsg.set(15, DateTimeFormatter.getMMDD(ts)); // 15
-			isoMsg.set(18, CmFinoFIX.ISO8583_MerchantType_Delivery_Channel_For_Mobile_Phone); // 18
+			isoMsg.set(18, CmFinoFIX.ISO8583_MerchantType_Delivery_Channel_For_IBT); // 18
 			isoMsg.set(22, constantFieldsMap.get("22")); // 18
 			isoMsg.set(25, constantFieldsMap.get("25")); // 18
 			isoMsg.set(26, constantFieldsMap.get("26")); // 18

@@ -28,7 +28,8 @@ public class InterBankMoneyTransferFromBankProcessor implements BSMISOtoFixProce
 			fromBank.setAIR(isoMsg.getString(38));
 		if(isoMsg.hasField(39))
 			fromBank.setResponseCode(isoMsg.getString(39));
-		
+		if(isoMsg.hasField(37))
+			fromBank.setBillPaymentReferenceID(isoMsg.getString(37));
 		fromBank.header().setSendingTime(DateTimeUtil.getLocalTime());
 		fromBank.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
 		
