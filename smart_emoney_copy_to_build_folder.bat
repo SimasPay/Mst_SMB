@@ -98,8 +98,8 @@ copy Smart\SmartConfiguration\src\main\jpos\mux_config_bsm.xml %1\servicemix\jpo
 
 rem Interbank transfer
 copy MfinoCoreEngine\InterBankService\target\InterBankService-0.1-SNAPSHOT.jar %1\servicemix\
-copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_interbanktransfer_configuration.xml %1\servicemix\
-copy BSIM\BSIMInterBankTransfer\target\BSIMInterBankTransfer-0.1-SNAPSHOT.jar %1\servicemix\
+copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_new_uangku_interbank_configuration.xml %1\servicemix\
+copy Hub\UangkuInterBank\target\UangkuInterBank-0.1-SNAPSHOT.jar %1\servicemix\
 
 rem Flashiz Related Files
 copy Hub\FlashizISO8583\target\FlashizISO8583-0.1-SNAPSHOT.jar %1\servicemix

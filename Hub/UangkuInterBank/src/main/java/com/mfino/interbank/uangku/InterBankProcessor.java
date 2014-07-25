@@ -50,7 +50,7 @@ public class InterBankProcessor implements IInterBankProcessor {
 		toBank.setLanguage(backendResponse.getLanguage());
 		toBank.setAmount(backendResponse.getAmount());
 		toBank.setBankCode(CmFinoFIX.OperatorCodeForRouting_BSM);
-		toBank.setSourceCardPAN(backendResponse.getSourceCardPAN());
+		toBank.setSourceCardPAN(request.getSourceBankAccountNo());
 		toBank.setDestCardPAN(request.getDestinationBankAccountNo());
 		toBank.setTransactionID(backendResponse.getTransactionID());
 		toBank.setPin(requestFix.getPassword());
