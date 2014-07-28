@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.domain.BillPayments;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
@@ -18,7 +19,9 @@ import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
+import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.TransactionChargingService;
 import com.mfino.service.impl.SubscriberServiceImpl;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
@@ -32,6 +35,23 @@ public class InterBankProcessor implements IInterBankProcessor {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private TransactionChargingService transactionChargingService;
+	public TransactionChargingService getTransactionChargingService() {
+		return transactionChargingService;
+	}
+	public void setTransactionChargingService(
+			TransactionChargingService transactionChargingService) {
+		this.transactionChargingService = transactionChargingService;
+	}
+	public SCTLService getSctlService() {
+		return sctlService;
+	}
+	public void setSctlService(SCTLService sctlService) {
+		this.sctlService = sctlService;
+	}
+
+	private SCTLService sctlService;
+	
 	@Override
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage){
 		log.info("InterBankProcessor :: constructRequestMessage() BEGIN mceMessage="+mceMessage);
@@ -96,4 +116,10 @@ public class InterBankProcessor implements IInterBankProcessor {
 		return responseMceMessage;
 	}
 
+	public void setSCTLStatusToPending(MCEMessage mceMceMessage) {
+		log.info("BillPaymentProcessor :: setSCTLStatusToPending() BEGIN mceMessage="+mceMceMessage);
+		CMBase requestFix = (CMBase)mceMceMessage.getRequest();
+		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
+		transactionChargingService.changeStatusToPending(sctl);
+	}
 }

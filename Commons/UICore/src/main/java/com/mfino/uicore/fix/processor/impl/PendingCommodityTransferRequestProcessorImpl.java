@@ -245,6 +245,13 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
         	billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
         	newMsg = billPayPendingRequest;
         }
+        else if (ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServiceName())
+        		&&ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equals(transactionType.getTransactionName())) {
+    		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
+    		billPayPendingRequest.copy(newMsg);
+			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+        	newMsg = billPayPendingRequest;
+        }
 //        else if(ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServiceName())
 //        		&&ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equals(transactionType.getTransactionName())){
 //        	

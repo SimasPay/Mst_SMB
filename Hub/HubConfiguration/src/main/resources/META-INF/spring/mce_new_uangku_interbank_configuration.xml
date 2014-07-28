@@ -92,6 +92,10 @@
 
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
 	
+	<osgi:reference id="sctlServiceImpl" bean-name="SCTLServiceImpl" interface="com.mfino.service.SCTLService"/>
+	
+	<osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService"/>
+ 	
 <!-- 	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
 	
 	<osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
@@ -120,6 +124,8 @@
 	</bean>	
 	
 	<bean id="ibtProcessor" class="com.mfino.interbank.uangku.InterBankProcessor">
+	    <property name="sctlService" ref="sctlServiceImpl" />
+	 	<property name="transactionChargingService" ref="transactionChargingServiceImpl"/>
 	</bean>	
 	
 	<camelContext id="ibtContext" xmlns="http://camel.apache.org/schema/spring">
@@ -211,8 +217,26 @@
 				</filter>
 				<filter>
 					<simple>${body.destinationQueue} != null</simple>
+					<filter>
+						<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+						<filter>
+							<simple>${body.response.result} != '0'</simple> <!--  transaction is resolved as failure -->
+							<setHeader headerName="eventContext">
+								<constant>BILLER_CONFIRMATION_FAILED</constant>        
+							</setHeader>
+						</filter>
+					</filter>
+					<filter>
+						<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple> <!-- transaction is resolved as success -->
+						<filter>
+							<simple>${body.response.result} == '0'</simple>
+							<setHeader headerName="eventContext">
+								<constant>BILLER_CONFIRMATION_SUCCESSFUL</constant>        
+							</setHeader>
+						</filter>
+					</filter>
 					<recipientList>
-						<simple>${body.nextQueue},jms:notificationQueue?disableReplyTo=true</simple>
+						<simple>${body.nextQueue},jms:InterBankEventProcessingQueue?disableReplyTo=true</simple>
 					</recipientList>
 				</filter>
 			</filter>
@@ -384,7 +408,7 @@
 			</filter>
 			<filter>
 				<simple>${body.response} is 'com.mfino.domain.NoISOResponseMsg'</simple> 
-				<log message="mce_new_uangku_interbank_configuration NoISOResponseMsg: Do Nothing as this request need to be processing state."/>
+					<to uri="bean:ibtProcessor?method=setSCTLStatusToPending"/>
 			</filter>
 		</route>
 		

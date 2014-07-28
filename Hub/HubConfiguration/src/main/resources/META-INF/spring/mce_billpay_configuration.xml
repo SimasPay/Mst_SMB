@@ -165,7 +165,11 @@
 		    <filter>
 				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
 				<to uri="jms:bsmbpSourceToSuspenseBRQueue?disableReplyTo=true"/>
-			</filter>						
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
+				<to uri="jms:ibtSourceToSuspenseBRQueue?disableReplyTo=true"/>		
+			</filter>			
 		</route>
 
 		<route>
@@ -181,7 +185,11 @@
 		    <filter>
 				<simple>${in.body.request.getIntegrationCode} == 'BSM'</simple>
 				<to uri="jms:bsmbpSuspenseToDestBRQueue?disableReplyTo=true"/>
-			</filter>						
+			</filter>
+			<filter>
+				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
+		    	<to uri="jms:ibtSuspenseToDestBRQueue?disableReplyTo=true"/>
+		    </filter>					
 		</route>		
 		
    </camelContext>

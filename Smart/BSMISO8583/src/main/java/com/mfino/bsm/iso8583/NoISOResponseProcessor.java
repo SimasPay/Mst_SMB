@@ -6,6 +6,7 @@ import org.jpos.iso.ISOMsg;
 
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;
+import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.mce.core.MCEMessage;
@@ -27,7 +28,7 @@ public class NoISOResponseProcessor {
 			return msg;
 
 		if(!( msg.getResponse().getClass().equals(CMMoneyTransferToBank.class) || 
-				msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class)))
+				msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class) || msg.getResponse().getClass().equals(CMInterBankMoneyTransferToBank.class)))
 			return msg;
 		
 		CMBankRequest isoRequest = (CMBankRequest) msg.getResponse();
