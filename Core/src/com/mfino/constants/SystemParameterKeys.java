@@ -115,4 +115,5 @@ public class SystemParameterKeys {
 	public static final String RESEND_OTP_BLOCK_DURATION_MINUTES = "resend.otp.block.duration.minutes";
 	public static final String ABSOLUTE_LOCK_DURATION_HOURS = "absolute.lock.duration.hours";
 	public static final String OTP_TIMEOUT_DURATION_MINUTES = "otp.timeout.duration.minutes";
+	public static final String UANGKU_IBT_BILLER_CODE = "uangku.ibt.biller.code";
 }

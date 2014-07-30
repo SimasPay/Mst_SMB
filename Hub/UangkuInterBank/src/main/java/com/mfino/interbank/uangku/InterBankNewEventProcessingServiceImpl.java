@@ -72,29 +72,29 @@ public class InterBankNewEventProcessingServiceImpl extends BillPaymentsBaseServ
 			else if(BillPayConstants.SRC_SUSPENSE_INQ_SUCCESS.equals(eventContext)){
 				sendNotification = true;
 				if(CmFinoFIX.ResponseCode_Success.equals(backendResponse.getResult())){
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.IBTInquiry.getInternalErrorCode());
 				}
 				else{
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.IBTFailed.getInternalErrorCode());
 				}
 			}
 			else if(BillPayConstants.BILLER_INQUIRY_COMPLETED.equals(eventContext)){
 				sendNotification = true;
 				if(CmFinoFIX.ResponseCode_Success.equals(backendResponse.getResult())){
-					backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.IBTInquiry.getInternalErrorCode());
 				}
 				else{
-					backendResponse.setInternalErrorCode(NotificationCodes.BillPaymentInquiryToBankFailed.getInternalErrorCode());
+					backendResponse.setInternalErrorCode(NotificationCodes.IBTFailed.getInternalErrorCode());
 				}
 			}
 			else if(BillPayConstants.BILLER_CONFIRMATION_FAILED.equals(eventContext)){
 				sendNotification = true;
-				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentFailed.getInternalErrorCode());
+				backendResponse.setInternalErrorCode(NotificationCodes.IBTFailed.getInternalErrorCode());
 			}
 			
 			else if(BillPayConstants.BILLER_CONFIRMATION_SUCCESSFUL.equals(eventContext)){
 				sendNotification = true;
-				backendResponse.setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccessful.getInternalErrorCode());
+				backendResponse.setInternalErrorCode(NotificationCodes.IBTConfirmation.getInternalErrorCode());
 			}
 			else if(BillPayConstants.SUSPENSE_DEST_CONFIRMATION_FAILED.equals(eventContext)){
 				//sendNotification = true;

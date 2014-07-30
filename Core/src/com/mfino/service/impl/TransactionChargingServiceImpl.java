@@ -1700,6 +1700,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		successNotificationCodes.add(CmFinoFIX.NotificationCode_InterEmoneyTransferInquirySuccessful.toString());
 		successNotificationCodes.add(CmFinoFIX.NotificationCode_NFCPocketTopupInquirySuccess.toString());
 		successNotificationCodes.add(CmFinoFIX.NotificationCode_QRpaymentInquirySuccessful.toString());
+		successNotificationCodes.add(CmFinoFIX.NotificationCode_IBTInquiry.toString());
 		if(successNotificationCodes.contains(transactionResponse.getCode())){
 			flag = true;
 		}

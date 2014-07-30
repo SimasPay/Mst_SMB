@@ -123,7 +123,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		CMBillPayInquiry ibtInquiry= new CMBillPayInquiry();
 		ChannelCode cc = transactionDetails.getCc();
 		//set biller code from sys parameters ibt
-		String ibtPartnerBillerCode = systemParametersService.getString(SystemParameterKeys.INTERBANK_PARTNER_MDN_KEY);
+		String ibtPartnerBillerCode = systemParametersService.getString(SystemParameterKeys.UANGKU_IBT_BILLER_CODE);
 		transactionDetails.setBillerCode(ibtPartnerBillerCode);
 
 		ibtInquiry.setSourceMDN(transactionDetails.getSourceMDN());
