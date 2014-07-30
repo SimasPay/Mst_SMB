@@ -128,7 +128,7 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		 ibtConfirm.setChannelCode(cc.getChannelCode());
 		 ibtConfirm.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		 //set biller code from sys parameters ibt
-		 String ibtPartnerBillerCode = systemParametersService.getString(SystemParameterKeys.INTERBANK_PARTNER_MDN_KEY);
+		 String ibtPartnerBillerCode = systemParametersService.getString(SystemParameterKeys.UANGKU_IBT_BILLER_CODE);
 		 transactionDetails.setBillerCode(ibtPartnerBillerCode);
 		 ibtConfirm.setUICategory(CmFinoFIX.TransactionUICategory_InterBank_Transfer);
 		log.info("Handling Subscriber interbank confirmation WebAPI request");
