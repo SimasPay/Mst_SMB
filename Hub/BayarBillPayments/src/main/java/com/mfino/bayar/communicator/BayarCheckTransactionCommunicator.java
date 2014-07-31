@@ -50,14 +50,15 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 		
 		if(wsResponseElement != null && wsResponseElement.getStatus() != null && wsResponseElement.getStatus().intValue() == 0){
 
-			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
-			//billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setInTxnId(wsResponseElement.getTransactionId().toString());
 			billPayResponse.setServiceChargeTransactionLogID(sctlId);
 			
 			if(wsResponseElement.getTrxnStatus() != null)	{
 				billPayments.setINResponseCode(wsResponseElement.getTrxnStatus());
 				billPayResponse.setInResponseCode(wsResponseElement.getTrxnStatus());
+				
+				billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
+				billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
 			}
 			if(wsResponseElement.getVoucherToken() != null)	{			
 				billPayments.setInfo3(wsResponseElement.getVoucherToken());//In case of PLN prepaid Token
@@ -67,13 +68,15 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 				billPayments.setBillData(wsResponseElement.getVoucherNo());
 
 			log.info("BayarCheckTransactionCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
-		}else{	
-			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Failure);
-			//billPayResponse.setResult(CmFinoFIX.ResponseCode_Failure);
 		}
 
 		if(wsResponseElement.getTrxnStatus() != null)
 			billPayResponse.setResult(new Integer(wsResponseElement.getTrxnStatus()));
+		if(wsResponseElement.getStatus() != null && wsResponseElement.getStatus().equals(SERVICE_TIME_OUT_FROM_BAYAR)){
+			billPayResponse.setResponse(SERVICE_TIME_OUT_FROM_BAYAR);
+			billPayResponse.setResult(SERVICE_TIME_OUT_FROM_BAYAR);
+			billPayResponse.setInResponseCode(SERVICE_TIME_OUT);
+		}
 		if(wsResponseElement.getMessage() != null)
 			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
 		billPaymentsService.saveBillPayment(billPayments);

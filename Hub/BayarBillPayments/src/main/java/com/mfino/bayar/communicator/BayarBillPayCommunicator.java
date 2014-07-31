@@ -78,8 +78,9 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		}
 
 		if(wsResponseElement.getStatus() != null && wsResponseElement.getStatus().equals(SERVICE_TIME_OUT_FROM_BAYAR)){
-			billPayResponse.setResponse(SERVICE_TIME_OUT);
-			billPayResponse.setResult(SERVICE_TIME_OUT);
+			billPayResponse.setResponse(SERVICE_TIME_OUT_FROM_BAYAR);
+			billPayResponse.setResult(SERVICE_TIME_OUT_FROM_BAYAR);
+			billPayResponse.setInResponseCode(SERVICE_TIME_OUT);
 		}
 		if(wsResponseElement.getStatus() != null)
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());

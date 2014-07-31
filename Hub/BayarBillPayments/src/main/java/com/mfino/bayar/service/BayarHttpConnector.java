@@ -3,6 +3,8 @@ package com.mfino.bayar.service;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -198,10 +200,18 @@ public class BayarHttpConnector {
 		}
 		in.close();
 		}
-		catch (Exception e) {
+		catch (SocketTimeoutException e) {
+			log.info("HTTPSConnector failed - SocketTimeoutException");
+			response = new StringBuilder("{\"status\":8,\"message\":\"" + getErrorMsg() + "\"}");
+			log.error(e.getMessage(), e);
+		}catch (SocketException e) {
+			log.info("HTTPSConnector failed - SocketException");
 			response = new StringBuilder("{\"status\":8888,\"message\":\"" + getErrorMsg() + "\"}");
 			log.error(e.getMessage(), e);
-			//e.printStackTrace();
+		}catch (Exception e) {
+			log.info("HTTPSConnector failed - Generic Exception");
+			response = new StringBuilder("{\"status\":8888,\"message\":\"" + getErrorMsg() + "\"}");
+			log.error(e.getMessage(), e);
 		}
 		
 		bayarWSResponse = BayarWebServiceReponseParser.getBayarWebServiceResponse(response.toString());
