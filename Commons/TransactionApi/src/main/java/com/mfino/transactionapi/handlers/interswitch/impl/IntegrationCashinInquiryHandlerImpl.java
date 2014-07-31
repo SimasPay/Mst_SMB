@@ -118,7 +118,8 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		result.setSourceMessage(cashinDetails);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		result.setDestinationMDN(cashinDetails.getDestMDN());
-
+		
+		
 		try{
 			log.info("validating for duplicate paymentlogid");
 			if(cashinDetails.getPaymentLogID().isEmpty()){
@@ -157,6 +158,41 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			log.info("not a duplicate paymentlogid");
 		}
 
+		String pIdStr = systemParameterService.getString(SystemParameterKeys.SERVICE_PARTNER__ID_KEY);
+		Partner cashinPartner = partnerService.getPartnerById(Long.parseLong(pIdStr));
+ 		SubscriberMDN sourceMDN = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+
+		log.info("transactionchargingservice -->");
+		ServiceCharge sc = new ServiceCharge();
+		sc.setChannelCodeId(channel.getID());
+		sc.setDestMDN(cashinDetails.getDestMDN());
+		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
+		sc.setTransactionTypeName(cashinDetails.getPaymentMethod());
+		sc.setSourceMDN(sourceMDN.getMDN());
+		sc.setTransactionAmount(cashinDetails.getAmount());
+		// sc.setMfsBillerCode(cashinDetails.getPartnerCode());
+		sc.setTransactionLogId(cashinDetails.getTransactionID());
+		sc.setIntegrationTxnID(Long.parseLong(cashinDetails.getPaymentLogID()));
+		sc.setTransactionIdentifier(cashinDetails.getTransactionIdentifier());
+		
+		Transaction transDetails = null;
+
+		try {
+			log.info("getting charge from charging service");
+			transDetails = transactionChargingService.getChargeDetails(sc);
+			
+		} catch (InvalidServiceException e) {
+			log.error("Exception occured in getting charges", e);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
+			return result;
+		} catch (InvalidChargeDefinitionException e) {
+			log.error(e.getMessage());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
+			return result;
+		}
+
+		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
+		
 		log.info("retrieving integration partner for institutionID" + cashinDetails.getInstitutionID());
 		
 		//Removed the check as per request
@@ -166,27 +202,24 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			result.setCode(CmFinoFIX.NotificationCode_PartnerNotFound.toString());
 			return result;
 		}*/
-		
-		String pIdStr = systemParameterService.getString(SystemParameterKeys.SERVICE_PARTNER__ID_KEY);
-		Partner cashinPartner = partnerService.getPartnerById(Long.parseLong(pIdStr));
-		//Partner cashinPartner = ipm.getPartner();
 
 		Integer validationResult = transactionApiValidationService.validatePartnerByPartnerType(cashinPartner);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.info("Institution Partner is not Active");
 			result.setNotificationCode(validationResult);
+			transactionChargingService.failTheTransaction(sctl, "Institution Partner is not Active. Error code " + validationResult);
 			return result;
 		}
 
 		log.info("getting the partner mdn and setting it as sourcemdn in cashindetails object");
 		//Set<SubscriberMDN> set = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID();
- 		SubscriberMDN sourceMDN = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
  		cashinDetails.setSourceMDN(sourceMDN.getMDN());
 		addCompanyANDLanguageToResult(sourceMDN,result);
 
 		validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!validationResult.equals(CmFinoFIX.ResponseCode_Success)){
 			result.setNotificationCode(validationResult);
+			transactionChargingService.failTheTransaction(sctl, "validateSubscriberAsSource failed. Error code " + validationResult);
 			return result;
 		}
 
@@ -199,6 +232,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			log.info("partner validation failed.result=" + validationResult);
 			validationResult = processValidationResultForPartner(validationResult);
 			result.setCode(validationResult.toString());
+			transactionChargingService.failTheTransaction(sctl, "validatePartner failed. Error code " + validationResult);
 			return result;
 		}
 
@@ -212,6 +246,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		if (!CmFinoFIX.ResponseCode_Success.equals(validationResult)) {
 			log.info("dest mdn validation failed.result" + validationResult);
 			result.setCode(validationResult.toString());
+			transactionChargingService.failTheTransaction(sctl, "validateSubscriberAsDestination failed. Error code " + validationResult);
 			return result;
 		}
 
@@ -224,23 +259,13 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Source pocket with id "+(subPocket!=null? subPocket.getID():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
+			transactionChargingService.failTheTransaction(sctl, "validateSourcePocket failed. Error code " + validationResult);
 			return result;
-		}		
+		}
 
 		log.info("default emoney pocket for destmdn=" + destinationMDN + " is " + subPocket.getID());
 
-		log.info("transactionchargingservice -->");
-		ServiceCharge sc = new ServiceCharge();
-		sc.setChannelCodeId(channel.getID());
-		sc.setDestMDN(destinationMDN.getMDN());
-		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
-		sc.setTransactionTypeName(cashinDetails.getPaymentMethod());
-		sc.setSourceMDN(sourceMDN.getMDN());
-		sc.setTransactionAmount(cashinDetails.getAmount());
-		// sc.setMfsBillerCode(cashinDetails.getPartnerCode());
-		sc.setTransactionLogId(cashinDetails.getTransactionID());
-		sc.setIntegrationTxnID(Long.parseLong(cashinDetails.getPaymentLogID()));
-		sc.setTransactionIdentifier(cashinDetails.getTransactionIdentifier());
+		
 
 		log.info("hierarchy service -->");
 		validationResult = hierarchyService.validate(sourceMDN.getSubscriber(), destinationMDN.getSubscriber(), sc.getServiceName(),
@@ -248,6 +273,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		if (!CmFinoFIX.ResponseCode_Success.equals(validationResult)) {
 			log.info("hierarchy services validation failed.result=" + validationResult);
 			result.setNotificationCode(validationResult);
+			transactionChargingService.failTheTransaction(sctl, "Hierarchy services validation failed. Error code " + validationResult);
 			return result;
 		}
 		
@@ -267,6 +293,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 				log.error("Source pocket with id "+(partnerPocket!=null? partnerPocket.getID():null)+" has failed validations");
 				result.setNotificationCode(validationResult);
+				transactionChargingService.failTheTransaction(sctl, "validateSourcePocket for Partner failed. Error code " + validationResult);
 				return result;
 			}	
 
@@ -277,21 +304,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			return result;
 		}
 		
-		Transaction transDetails = null;
-
-		try {
-			log.info("getting charge from charging service");
-			transDetails = transactionChargingService.getChargeDetails(sc);
-			
-		} catch (InvalidServiceException e) {
-			log.error("Exception occured in getting charges", e);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
-			return result;
-		} catch (InvalidChargeDefinitionException e) {
-			log.error(e.getMessage());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
-			return result;
-		}
+		
 		cashinDataConatiner.setTransDetails(transDetails);
 
 		cashinDataConatiner.setSourcePocketID(partnerPocket.getID());
