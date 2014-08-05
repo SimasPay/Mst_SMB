@@ -40,6 +40,7 @@
 	<osgi:reference id="billerServiceImpl" bean-name="BillerServiceImpl" interface="com.mfino.service.BillerService"/>
 	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
 	<osgi:reference id="systemParametersServiceImpl" bean-name="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
+	<osgi:reference id="subscriberMdnServiceImpl" bean-name="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />
 	
 	<!-- define the jasypt properties parser with the given password to be used -->
 	<bean id="jasypt"
@@ -102,7 +103,7 @@
 	
 	<bean id="billpaymentsPendingClearanceService" class="com.mfino.billpayments.service.impl.BillpaymentsPendingClearanceServiceImpl">
 		<property name="billPaymentsService" ref="billPaymentsService" />
-		<property name="integrationCode" value="flashiz"/>
+		<property name="integrationCode" value="QRFLASHIZ"/>
 	</bean>	
 	
 	<bean id="billPayEventProcessingService" class="com.mfino.billpayments.flashiz.BillPayEventProcessingServiceFlashizImpl">
@@ -127,10 +128,11 @@
 	</bean>	
 	
 
-	<!-- <bean id="flashizBillPayClear" class="com.mfino.billpayments.flashiz.BillPaymentPendingClearProcessor">
+	<bean id="flashizBillPayClear" class="com.mfino.billpayments.flashiz.BillPaymentPendingClearProcessor">
 	 	<property name="billPaymentsService" ref="billPaymentsService"/>
 	 	<property name="subscriberService" ref="subscriberServiceImpl" />
-	</bean>	-->
+	 	<property name="subscriberMdnService" ref="subscriberMdnServiceImpl" />
+	</bean>
 	
 	
 	<camelContext id="flashizContext" xmlns="http://camel.apache.org/schema/spring">
@@ -499,9 +501,9 @@
       <!-- Batch process to query and resolve pending transactions -->
 		
 		
-		<!--<route>
-			<from uri="timer://clickatellPendingBillPayClearTimer?fixedRate=true&amp;period={{clickatell_pending_fetch_time}}"/>
-	        <log message="mce_smart_clickatell_billpay_configuration#fromuri=clickatellPendingBillPayClearTimer"/>
+		<route>
+			<from uri="timer://flashizPendingBillPayClearTimer?fixedRate=true&amp;period={{flashiz_pending_fetch_time}}"/>
+	        <log message="mce_flashiz_payment_xml_configuration#fromuri=flashizPendingBillPayClearTimer"/>
 	        <delay>
 	            <constant>600000</constant>
 	        </delay>
@@ -509,15 +511,15 @@
 	            <method method="clearBillerConfirmationPendingTransactions" bean="billpaymentsPendingClearanceService"></method>
 				<throttle timePeriodMillis="15000">
 					<constant>1</constant>	            
-		            <to uri="direct:clickatellQueryTransactionCommunicatorQueue"/>
+		            <to uri="direct:flashizQueryTransactionCommunicatorQueue"/>
 		        </throttle>
 	        </split>
 	    </route>
 	    <route>
-			<from uri="direct:clickatellQueryTransactionCommunicatorQueue"/>
-			<to uri="bean:clickatellBillPayClear?method=constructRequestMessage"/>
+			<from uri="direct:flashizQueryTransactionCommunicatorQueue"/>
+			<to uri="bean:flashizBillPayClear?method=constructRequestMessage"/>
 			<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
-		</route> -->
+		</route> 
 
 		<!-- route for bill pay event processing queue end -->		
 

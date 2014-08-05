@@ -4958,6 +4958,7 @@
 	<field name="Amount" required="N" />
 	<field name="InvoiceNo" required="N"/>
 	<field name="BillerCode" required="N"/>
+	<field name="IsAdvice" required="N"/>
 	</message>
 	<message name="PaymentAcknowledgementFromBank" msgtype="1746" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="OperatorResponse">
 	<field name="INTxnId" required="N"/>
@@ -25490,6 +25491,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8179" name="OperatorCharges" type="NEWAMT"/>
 	<field number="8180" name="OtpRetryCount" type="INT32" />
 	<field number="8181" name="IsOnlineReport" type="BOOLEAN" />
+	<field number="8182" name="IsAdvice" type="BOOLEAN" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">
