@@ -276,8 +276,11 @@
 		<!-- route for bill inquiry Response -->
 		<route>
 			<from uri="jms:bsmBillInquiryResponseQueue"/>
-			<to uri="bean:bsmBillInquiry?method=constructReplyMessage"/>
-			<to uri="jms:notificationQueue?disableReplyTo=true"/>
+			<filter>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMGetAmountFromBiller'</simple>
+				<to uri="bean:bsmBillInquiry?method=constructReplyMessage"/>
+				<to uri="jms:notificationQueue?disableReplyTo=true"/>
+			</filter>
 		</route>
 		
 		<!-- route for bill confirmation -->
