@@ -14,7 +14,12 @@ import com.mfino.vah.iso8583.DateTimeFormatter;
 public class IsoToCashin implements IsoToNativeTransformer {
 
 	private static Logger	log	= LoggerFactory.getLogger(IsoToCashin.class);
+	private static final String TELLER_CASHIN = "6010";
 	private static final String ATM_CASHIN = "6011";
+	private static final String POS_CASHIN = "6012";
+	private static final String AUTODEBIT_CASHIN = "6013";
+	private static final String KIOSK_CASHIN = "6015";
+	private static final String PBANKING_CASHIN = "6016";
 	private static final String MOBILE_CASHIN = "6017";
 	private static final String IBANKING_CASHIN = "6014";
 
@@ -38,16 +43,31 @@ public class IsoToCashin implements IsoToNativeTransformer {
 			if(paymentMethod.equals(ATM_CASHIN)){
 				log.info("DE18="+paymentMethod+".So txntype is "+ATM_CASHIN);
 				paymentMethod = Constants.VA_CASHIN;
-			}
-			else if(paymentMethod.equals(MOBILE_CASHIN)){
+			}else if(paymentMethod.equals(MOBILE_CASHIN)){
 				log.info("DE18="+paymentMethod+".So txntype is "+MOBILE_CASHIN);
 				paymentMethod = Constants.DOMPET_CASHIN;
-			}
-			else if(paymentMethod.equals(IBANKING_CASHIN)){
+			}else if(paymentMethod.equals(IBANKING_CASHIN)){
 				log.info("DE18="+paymentMethod+".So txntype is "+IBANKING_CASHIN);
 				paymentMethod = Constants.IB_CASHIN;
-			}
-			else{
+			}else if(paymentMethod.equals(TELLER_CASHIN)){
+				log.info("DE18="+paymentMethod+".So txntype is "+TELLER_CASHIN);
+				paymentMethod = Constants.TELLER_CASHIN;
+			}else if(paymentMethod.equals(POS_CASHIN)){
+				log.info("DE18="+paymentMethod+".So txntype is "+POS_CASHIN);
+				paymentMethod = Constants.POS_CASHIN;
+			}else if(paymentMethod.equals(AUTODEBIT_CASHIN)){
+				log.info("DE18="+paymentMethod+".So txntype is "+AUTODEBIT_CASHIN);
+				paymentMethod = Constants.AUTODEBIT_CASHIN;
+			}else if(paymentMethod.equals(KIOSK_CASHIN)){
+				log.info("DE18="+paymentMethod+".So txntype is "+KIOSK_CASHIN);
+				paymentMethod = Constants.KIOSK_CASHIN;
+			}else if(paymentMethod.equals(PBANKING_CASHIN)){
+				log.info("DE18="+paymentMethod+".So txntype is "+PBANKING_CASHIN);
+				paymentMethod = Constants.PBANKING_CASHIN;
+			}else if(paymentMethod.equals(IBANKING_CASHIN)){
+				log.info("DE18="+paymentMethod+".So txntype is "+IBANKING_CASHIN);
+				paymentMethod = Constants.IB_CASHIN;
+			}else{
 				log.error("DE 18 is invalid.received "+paymentMethod);
 				throw new Exception("invalid de18 received");
 			}
