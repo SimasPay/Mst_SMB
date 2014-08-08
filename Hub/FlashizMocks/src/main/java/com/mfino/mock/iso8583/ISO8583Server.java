@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
+
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -142,18 +144,41 @@ public class ISO8583Server implements Runnable {
 
 				case 0x220:
 						//negative response
-						if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("15000")){
+						if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("150000")){
 					    response.setValue(38, "654321", IsoType.ALPHA, 6);
 						response.setValue(39, "98", IsoType.ALPHA, 2);
 						}
 						//no response
-						else if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("20000")){
+						else if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("200000")){
 							response.setValue(38, "654321", IsoType.ALPHA, 6);
 							response.setValue(39, "00", IsoType.ALPHA, 2);
 							Thread.sleep(50000);
+						}else if("500000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("250000")){
+							response.setValue(38, "654321", IsoType.ALPHA, 6);
+							response.setValue(39, "68", IsoType.ALPHA, 2);
 						}
 						//positive response
 						else if("500000".equals(incoming.getObjectValue(3))){
+							response.setValue(38, "654321", IsoType.ALPHA, 6);
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}
+						
+						//negative response
+						if("510000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("150000")){
+					    response.setValue(38, "654321", IsoType.ALPHA, 6);
+						response.setValue(39, "98", IsoType.ALPHA, 2);
+						}
+						//no response
+						else if("510000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("200000")){
+							response.setValue(38, "654321", IsoType.ALPHA, 6);
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+							Thread.sleep(50000);
+						}else if("510000".equals(incoming.getObjectValue(3)) && incoming.getObjectValue(4).toString().endsWith("250000")){
+							response.setValue(38, "654321", IsoType.ALPHA, 6);
+							response.setValue(39, "68", IsoType.ALPHA, 2);
+						}
+						//positive response
+						else if("510000".equals(incoming.getObjectValue(3))){
 							response.setValue(38, "654321", IsoType.ALPHA, 6);
 							response.setValue(39, "00", IsoType.ALPHA, 2);
 						}
@@ -212,13 +237,15 @@ public class ISO8583Server implements Runnable {
 				log.info("Setting up server socket...");
 				ServerSocket server;
 				try {
-					server = new ServerSocket(3000);
+					int port = 3000;
+					server = new ServerSocket(port);
+					log.info("Connection port number : "+port);
+					System.out.println("Connection port number : "+port);
 				} catch (IOException e) {
 					log.error("Failed to set up server socket", e);
 					return;
 				}
 				log.info("Waiting for connections...");
-				
 				while (true) {
 					Socket sock;
 					try {
@@ -252,6 +279,7 @@ public class ISO8583Server implements Runnable {
 			}
 		}
 	}
+	
 	
 	private static String createRandomInteger(int aStart, long aEnd, Random aRandom){
 	    if ( aStart > aEnd ) {
