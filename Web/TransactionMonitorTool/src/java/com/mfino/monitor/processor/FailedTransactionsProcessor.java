@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.dao.query.TransactionTypeQuery;
 import com.mfino.domain.ChannelCode;
@@ -11,13 +13,15 @@ import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.monitor.model.FailedTransactionsResult;
+import com.mfino.monitor.processor.Interface.FailedTransactionsProcessorI;
 
 /**
  * @author Satya
  * 
  */
-
-public class FailedTransactionsProcessor extends BaseProcessor {
+@Service("FailedTransactionsProcessor")
+public class FailedTransactionsProcessor extends BaseProcessor implements FailedTransactionsProcessorI{
+	
 	public List<FailedTransactionsResult> process() {
 		List<FailedTransactionsResult> results = new ArrayList<FailedTransactionsResult>();
 		ServiceChargeTransactionsLogQuery query = new ServiceChargeTransactionsLogQuery();
@@ -46,6 +50,7 @@ public class FailedTransactionsProcessor extends BaseProcessor {
 			ftr.setRefID(sctl.getID());
 			ftr.setChannelName(cc != null ? cc.getChannelName() : "");
 			ftr.setTransactionType(transactionType);
+			ftr.setTxnDateTime(sctl.getCreateTime().toString());
 			results.add(ftr);
 		}
 		return results;

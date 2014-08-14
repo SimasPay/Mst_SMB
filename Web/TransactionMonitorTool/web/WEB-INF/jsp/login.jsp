@@ -114,7 +114,7 @@
 			<%--<img style="float:right; margin-right:20px;margin-top:-225px;"alt="smart" src="<c:url value="/resources/images/background-5.jpg"/>"/>--%>
 			<div style="margin-bottom: 20px;"></div>
 			<div id="footer_login">
-				<br>Copyright © 2013 mFino, Inc. All rights reserved. Build Main
+				<br>Copyright © 2014 mFino Ltd. All rights reserved.
 			</div>
 		</div>
 	</div>

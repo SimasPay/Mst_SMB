@@ -3,25 +3,27 @@ package com.mfino.monitor.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.fix.CmFinoFIX;
 import com.mfino.monitor.model.TransactionSummaryResult;
+import com.mfino.monitor.processor.Interface.TransactionSummaryProcessorI;
 import com.mfino.monitor.service.TransactionService;
 
 /**
  * @author Satya
  * 
  */
-
-public class TransactionSummaryProcessor extends BaseProcessor {
+@Service("TransactionSummaryProcessor")
+public class TransactionSummaryProcessor extends BaseProcessor implements TransactionSummaryProcessorI{
 	public List<TransactionSummaryResult> process() {
 		List<TransactionSummaryResult> results = new ArrayList<TransactionSummaryResult>();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 		int successCount, pendingCount, failedCount, processingCount, reversalsCount, intermediateCount;
 		TransactionSummaryResult transactionSummaryResult = null;
 		// set monitoringPeriod time
-		sctlQuery.setLastUpdateTimeGE(lastUpdateTimeGE);
+		//sctlQuery.setLastUpdateTimeGE(lastUpdateTimeGE);
+		sctlQuery.setCreateTimeGE(lastUpdateTimeGE);
 
 		// Get Total Successful Transactions
 		successCount = TransactionService.getSuccessfulCount(sctlQuery);

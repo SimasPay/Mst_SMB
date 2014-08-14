@@ -19,7 +19,7 @@
 
 	<modules>
 		<module>AdminApplication</module>
-		<!-- <module>TransactionMonitorTool</module> -->
+		<module>TransactionMonitorTool</module>
 		<module>Scheduler</module>
 		<!-- <module>ReportScheduler</module> -->
 		<module>webapi</module>

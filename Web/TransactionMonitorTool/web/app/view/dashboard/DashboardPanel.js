@@ -60,7 +60,8 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                     frame: false,
                     height: 60,
                     items: Ext.create('Mfino.view.portlet.BalancePortlet')
-                },{
+                },
+                {
                     id: 'FailedTransactionsPortlet',
                     title: 'Last 5 Failed Transactions',
                     items: Ext.create('Mfino.view.portlet.FailedTransactionsPortlet')
@@ -75,5 +76,13 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
         });
                 
         this.callParent(arguments);
+    },
+    beforeRender: function(){
+    	this.callParent(arguments);
+    	if(!mFino.auth.isEnabledItem('transactionMonitor.viewFloatBalance')){
+    		var col2 = this.getComponent('col-2');
+    		var floatPortlet = col2.getComponent('BalancePortlet');
+    		floatPortlet.hide();    	
+    	}    	
     }
 });

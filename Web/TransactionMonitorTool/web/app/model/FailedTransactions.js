@@ -5,5 +5,6 @@ Ext.define('Mfino.model.FailedTransactions', {
 			{name:"amount"},
 			{name:"transactionType"},
 			{name:"channelName"},
+			{name:"txnDateTime"},
 			{name:"reason"}]
 });

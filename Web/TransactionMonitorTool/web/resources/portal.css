@@ -213,7 +213,7 @@ div#logout {
 }
 
 #failed-transactions-grid {
-	left: 30px;
+	left: 10px;
 	top: 10px;
 }
 
@@ -274,7 +274,7 @@ span.summary-transactions-link,span.channel-transactions-link,span.service-trans
 #PerChannelTransactionsPortlet .x-column-header-inner,
 #FailedTransactionsPortlet .x-column-header-inner {
     line-height: 18px;
-    padding: 4px 15px 3px;
+    padding: 4px 5px 3px;
     color: #5f5f5f;
 	font-family: arial;
 	font-size: 11px;
@@ -297,7 +297,7 @@ span.summary-transactions-link,span.channel-transactions-link,span.service-trans
 #PerChannelTransactionsPortlet .x-grid-with-row-lines .x-grid-cell-inner,
 #FailedTransactionsPortlet .x-grid-with-row-lines .x-grid-cell-inner {
 	line-height: 18px;	
-	padding: 4px 15px 3px;
+	padding: 4px 5px 3px;
 	color: #5f5f5f;
 }
 

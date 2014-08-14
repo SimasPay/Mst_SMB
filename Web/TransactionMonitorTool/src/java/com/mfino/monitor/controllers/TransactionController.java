@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,11 +35,11 @@ import com.mfino.monitor.model.Transaction;
 import com.mfino.monitor.model.TransactionSummaryResult;
 import com.mfino.monitor.processor.ChannelTransactionsProcessor;
 import com.mfino.monitor.processor.FailedTransactionsProcessor;
-import com.mfino.monitor.processor.FloatBalanceProcessor;
-import com.mfino.monitor.processor.FloatWalletTransactionProcessor;
 import com.mfino.monitor.processor.ServiceTransactionsProcessor;
-import com.mfino.monitor.processor.TransactionSearchProcessor;
 import com.mfino.monitor.processor.TransactionSummaryProcessor;
+import com.mfino.monitor.processor.Interface.FloatBalanceProcessorI;
+import com.mfino.monitor.processor.Interface.FloatWalletTransactionProcessorI;
+import com.mfino.monitor.processor.Interface.TransactionSearchProcessorI;
 import com.mfino.service.impl.SystemParametersServiceImpl;
 import com.mfino.util.DateTimeUtil;
 
@@ -49,12 +51,24 @@ import com.mfino.util.DateTimeUtil;
 @Controller("TransactionController")
 public class TransactionController {
 
+    @Autowired
+    @Qualifier("FloatBalanceProcessor")
+	private FloatBalanceProcessorI floatBalanceProcessor ;
+    
+    @Autowired
+    @Qualifier("FloatWalletTransactionProcessor")
+	private FloatWalletTransactionProcessorI floatWalletTransactionProcessor ;
+
+    @Autowired
+    @Qualifier("TransactionSearchProcessor")
+	TransactionSearchProcessorI transactionSearchProcessor;
+
 	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private PartnerDAO partnerDao = daoFactory.getPartnerDAO();
 	private Logger log = Logger.getLogger(TransactionController.class);
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"yyyyMMdd-HH:mm:ss:SSS");
-
+	
 	@RequestMapping("/getTransactions.htm")
 	public ModelAndView activation(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -90,8 +104,8 @@ public class TransactionController {
 			model.put("results", results);
 			return new ModelAndView("failedTransactionsResults", "model", model);
 		} else if (portletName.equalsIgnoreCase("floatBalance")) {
-			FloatBalanceProcessor fbp = new FloatBalanceProcessor();
-			FloatBalanceResult result = fbp.process();
+			
+			FloatBalanceResult result = floatBalanceProcessor.process();
 			model.put("result", result);
 			return new ModelAndView("floatBalanceResults", "model", model);
 		} else if (portletName.equalsIgnoreCase("channelTransactions")) {
@@ -104,17 +118,15 @@ public class TransactionController {
 					model);
 		} else if (portletName.equalsIgnoreCase("transactionSearch")) {
 			List<Transaction> results;
-			TransactionSearchProcessor tsp = new TransactionSearchProcessor();
 			Transaction searchBean = buildSearchBean(request);
-			results = tsp.process(searchBean);
+			results = transactionSearchProcessor.process(searchBean);
 			model.put("results", results);
 			model.put("total", searchBean.getTotal());
 			return new ModelAndView("transactionSearchResults", "model", model);
 		} else if (portletName.equalsIgnoreCase("floatWalletTransactions")) {
 			List<FloatWalletTransaction> results;
-			FloatWalletTransactionProcessor fwtp = new FloatWalletTransactionProcessor();
 			FloatWalletTransaction searchBean = buildFloatWalletSearchBean(request);
-			results = fwtp.process(searchBean);
+			results = floatWalletTransactionProcessor.process(searchBean);
 			model.put("results", results);
 			model.put("total", searchBean.getTotal());
 			return new ModelAndView("floatWalletTransactionsResults", "model",

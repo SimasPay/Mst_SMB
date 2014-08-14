@@ -1,6 +1,5 @@
 package com.mfino.monitor.model;
 
-import java.math.BigDecimal;
 
 
 /**
@@ -8,13 +7,13 @@ import java.math.BigDecimal;
  * 
  */
 public class FloatBalanceResult {
-	BigDecimal currentBalance;
+	String currentBalance;
 
-	public BigDecimal getCurrentBalance() {
+	public String getCurrentBalance() {
 		return currentBalance;
 	}
 
-	public void setCurrentBalance(BigDecimal currentBalance) {
+	public void setCurrentBalance(String currentBalance) {
 		this.currentBalance = currentBalance;
 	}
 }

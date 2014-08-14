@@ -9,14 +9,16 @@ import com.mfino.dao.query.ServiceQuery;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.monitor.model.ServiceTransactionsResult;
+import com.mfino.monitor.processor.Interface.ServiceTransactionsProcessorI;
 import com.mfino.monitor.service.TransactionService;
 
 /**
  * @author Satya
  * 
  */
-
-public class ServiceTransactionsProcessor extends BaseProcessor {
+@org.springframework.stereotype.Service("ServiceTransactionsProcessor")
+public class ServiceTransactionsProcessor extends BaseProcessor implements ServiceTransactionsProcessorI{
+	
 	public List<ServiceTransactionsResult> process() {
 		List<ServiceTransactionsResult> results = new ArrayList<ServiceTransactionsResult>();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
@@ -26,7 +28,8 @@ public class ServiceTransactionsProcessor extends BaseProcessor {
 		Iterator<Service> iterator = serviceRes.iterator();
 		int count, successCount, pendingCount, failedCount, processingCount, reversalsCount, intermediateCount;
 		// set monitoringPeriod time
-		sctlQuery.setLastUpdateTimeGE(lastUpdateTimeGE);
+		//sctlQuery.setLastUpdateTimeGE(lastUpdateTimeGE);
+		sctlQuery.setCreateTimeGE(lastUpdateTimeGE);
 		while (iterator.hasNext()) {
 			Service service = iterator.next();			
 

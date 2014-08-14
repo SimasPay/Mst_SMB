@@ -11,6 +11,7 @@
 			<json:property name="amount" value="${result.amount}" />
 			<json:property name="transactionType" value="${result.transactionType}" />
 			<json:property name="channelName" value="${result.channelName}" />
+			<json:property name="txnDateTime" value="${result.txnDateTime}" />
 			<json:property name="reason" value="${result.reason}" />	
 		</json:object>
 	</json:array>

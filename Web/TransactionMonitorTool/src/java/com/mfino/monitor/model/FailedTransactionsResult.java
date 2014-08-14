@@ -13,6 +13,7 @@ public class FailedTransactionsResult {
 	private String transactionType;
 	private String channelName;
 	private String reason;
+	private String txnDateTime;
 
 	public FailedTransactionsResult() {
 		super();
@@ -64,6 +65,14 @@ public class FailedTransactionsResult {
 
 	public void setChannelName(String channelName) {
 		this.channelName = channelName;
+	}
+
+	public String getTxnDateTime() {
+		return txnDateTime;
+	}
+
+	public void setTxnDateTime(String txnDateTime) {
+		this.txnDateTime = txnDateTime;
 	}
 
 }

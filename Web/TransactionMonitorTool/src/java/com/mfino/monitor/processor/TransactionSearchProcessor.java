@@ -14,14 +14,15 @@ import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.monitor.model.Transaction;
+import com.mfino.monitor.processor.Interface.TransactionSearchProcessorI;
 import com.mfino.service.EnumTextService;
 
 /**
  * @author Srikanth
  * 
  */
-
-public class TransactionSearchProcessor extends BaseProcessor {
+@org.springframework.stereotype.Service("TransactionSearchProcessor")
+public class TransactionSearchProcessor extends BaseProcessor implements TransactionSearchProcessorI{
 	
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
@@ -34,8 +35,12 @@ public class TransactionSearchProcessor extends BaseProcessor {
 		sctlQuery.setDestMdn(searchBean.getDestMDN());
 		sctlQuery.setDestPartnerID(searchBean.getDestPartnerID());
 		sctlQuery.setId(searchBean.getID());
-		sctlQuery.setLastUpdateTimeGE(searchBean.getUpdateTimeGE());
-		sctlQuery.setLastUpdateTimeLT(searchBean.getUpdateTimeLT());
+		//sctlQuery.setLastUpdateTimeGE(searchBean.getUpdateTimeGE());
+		//sctlQuery.setLastUpdateTimeLT(searchBean.getUpdateTimeLT());
+		
+		sctlQuery.setCreateTimeGE(searchBean.getUpdateTimeGE());
+		sctlQuery.setCreateTimeLT(searchBean.getUpdateTimeLT());
+		
 		sctlQuery.setSourceMdn(searchBean.getSourceMDN());
 		sctlQuery.setSourcePartnerID(searchBean.getSourcePartnerID());
 		sctlQuery.setServiceID(searchBean.getServiceID());

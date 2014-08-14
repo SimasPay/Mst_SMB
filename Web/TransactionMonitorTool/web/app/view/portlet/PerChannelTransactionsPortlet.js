@@ -2,7 +2,7 @@ Ext.define('Mfino.view.portlet.PerChannelTransactionsPortlet', {
 
     extend: 'Ext.panel.Panel',
     alias: 'widget.perChannelTransactionsPortlet', 
-    height: 600,
+    height: 750,
     
     requires: [
                'Mfino.store.PerChannelTransactions', 'Mfino.ux.grid.HeaderToolTip'             
@@ -17,8 +17,9 @@ Ext.define('Mfino.view.portlet.PerChannelTransactionsPortlet', {
             items: [{
             	xtype: 'panel',
             	id: 'channel-chart-panel',
-            	height: 250,
+            	height: 300,
             	layout: 'fit',
+            	border : false,
             	items: [{
 	                    xtype: 'chart',
 	                    id: 'channel-chart',
@@ -61,14 +62,15 @@ Ext.define('Mfino.view.portlet.PerChannelTransactionsPortlet', {
 	                }]
             },{
             	xtype: 'grid',
+            	autoScroll : true,
+            	width : 550,
+            	height : 400,
             	id: 'channel-bottom-grid',
             	plugins: ['headertooltip'],
-            	width: 550,            	
+            	forceFit : true,
             	store: channelStore,
-                stripeRows:true,
-    			columnLines:true,
     			columns:[
-    				{text:"Channel",flex:1,sortable:false,dataIndex:"channelName",hideable: false, 
+    				{text:"Channel",width:70,flex:1,sortable:false,dataIndex:"channelName",hideable: false, 
     					renderer: function(val, p, record){
     						return '<span class="channel-transactions-link" linkChannel="'+record.data.channelSourceApplication+'" linkStatus="count">'+val+'</span>';
     					}

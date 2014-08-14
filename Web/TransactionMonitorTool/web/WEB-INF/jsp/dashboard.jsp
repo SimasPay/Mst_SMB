@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Transaction Monitor Tool</title>
+	<title>mFino | Transaction Monitor Tool</title>
 
 	<!-- Ext JS Files -->
 	<link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all.css">
@@ -9,6 +9,8 @@
     <!-- App Files -->
     <link rel="stylesheet" type="text/css" href="resources/portal.css">
     <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="${authFileName}" >
+    </script>
     
 </head>
 <body>	
