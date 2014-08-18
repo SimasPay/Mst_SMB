@@ -89,12 +89,12 @@ copy Smart\SmartConfiguration\src\main\jpos\mux_config_zte.xml %1\servicemix\jpo
 copy Smart\SmartConfiguration\src\main\jpos_cfg\iso87ascii-zte.xml %1\servicemix\jpos\jpos_cfg\
 
 rem BSM integration (bank)
-copy Smart\BSMISO8583\target\BSMISO8583-0.1-SNAPSHOT.jar %1\servicemix
-copy Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_bsm_iso_configuration.xml %1\servicemix\
-copy Smart\SmartConfiguration\src\main\jpos_cfg\iso87ascii-bsm.xml %1\servicemix\jpos\jpos_cfg\
-copy Smart\SmartConfiguration\src\main\jpos\connection_config_bsm.xml %1\servicemix\jpos\deploy\
-copy Smart\SmartConfiguration\src\main\jpos\jpos_config_bsm.xml %1\servicemix\jpos\deploy\
-copy Smart\SmartConfiguration\src\main\jpos\mux_config_bsm.xml %1\servicemix\jpos\deploy\
+rem copy Smart\BSMISO8583\target\BSMISO8583-0.1-SNAPSHOT.jar %1\servicemix
+rem copy Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_bsm_iso_configuration.xml %1\servicemix\
+rem copy Smart\SmartConfiguration\src\main\jpos_cfg\iso87ascii-bsm.xml %1\servicemix\jpos\jpos_cfg\
+rem copy Smart\SmartConfiguration\src\main\jpos\connection_config_bsm.xml %1\servicemix\jpos\deploy\
+rem copy Smart\SmartConfiguration\src\main\jpos\jpos_config_bsm.xml %1\servicemix\jpos\deploy\
+rem copy Smart\SmartConfiguration\src\main\jpos\mux_config_bsm.xml %1\servicemix\jpos\deploy\
 
 rem Interbank transfer
 copy MfinoCoreEngine\InterBankService\target\InterBankService-0.1-SNAPSHOT.jar %1\servicemix\
@@ -123,5 +123,13 @@ copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_bsm_uangku_bill
 copy Hub\BSMUangkuBillPayments\target\BSMUangkuBillPayments-0.1-SNAPSHOT.jar %1\servicemix
 rem copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_hub_xml_configuration.xml %1\servicemix
 rem copy Hub\HubXMLRPC\target\HubXMLRPC-0.1-SNAPSHOT.jar %1\servicemix
+
+rem BSM Uangku integration (bank & bill payments)
+copy Smart\BSMUangkuISO8583\target\BSMUangkuISO8583-0.1-SNAPSHOT.jar %1\servicemix
+copy Smart\SmartConfiguration\src\main\resources\META-INF\spring\mce_bsm_uangku_iso_configuration.xml %1\servicemix\
+copy Smart\SmartConfiguration\src\main\jpos_cfg\iso87ascii-bsm-uangku.xml %1\servicemix\jpos\jpos_cfg\
+copy Smart\SmartConfiguration\src\main\jpos\connection_config_bsm_uangku.xml %1\servicemix\jpos\deploy\
+copy Smart\SmartConfiguration\src\main\jpos\jpos_config_bsm_uangku.xml %1\servicemix\jpos\deploy\
+copy Smart\SmartConfiguration\src\main\jpos\mux_config_bsm_uangku.xml %1\servicemix\jpos\deploy\
 
 :End

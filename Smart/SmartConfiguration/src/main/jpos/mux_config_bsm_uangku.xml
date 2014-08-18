@@ -1,0 +1,4 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2_bsm" name="bsmmux">
+	<in>bsmreceive</in>
+	<out>bsmsend</out>
+</mux>
