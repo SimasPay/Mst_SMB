@@ -274,7 +274,7 @@ public class ISO8583Server implements Runnable {
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 						response.setValue(62,"08PAYMENT    : Axis Postpaid            IDPEL      : 628382244000             NAME       : ARIEF SUSANTO MULAWARMAN BILLING AMT: RP. 11.111               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 11.111                                                                                           628382244000                    11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000000000002708    000000011111000000000000000000000000ARIEF SUSANTO MULAWARMAN                          ", IsoType.LLLVAR, 0);
-						response.setValue(4, "000000000000", IsoType.NUMERIC, 12);
+						//response.setValue(4, "000000000000", IsoType.NUMERIC, 12);
 					}
 					// D. Transfer to other SMART
 					else if ("490000".equals(incoming.getObjectValue(3))) {
