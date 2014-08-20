@@ -65,7 +65,7 @@
 	<parse type="0200">
 		<field num="2" type="LLVAR" />
 		<field num="3" type="NUMERIC" length="6"/>
-		<field num="4" type="ALPHA" length="12" />
+		<field num="4" type="ALPHA" length="18" />
 		<field num="7" type="DATE10" />
 		<field num="11" type="NUMERIC" length="6" />
 		<field num="12" type="TIME" />
