@@ -27,13 +27,14 @@
 		<!--<module>CreditCardPayment</module>-->
 		<module>SmartConfiguration</module>
     	<module>BSMISO8583</module>
+		<module>BSMUangkuISO8583</module>
     	<module>ZTEISO8583</module>
     	<module>ZTEBillPayment</module>
     	<module>VAISO8583</module>    	
-		<!--module>CashinIntegrationSmart</module>
-		<module>SmartBillerGatewayService</module>
+		<module>CashinIntegrationSmart</module>
+		<!--<module>SmartBillerGatewayService</module>
 		<module>BillerGatewayTestServer</module>
-		<module>ZTEDataPush</module-->
+		<module>ZTEDataPush</module>-->
 		<module>NFCISO8583</module>
 	</modules>	
 	
