@@ -294,7 +294,6 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 				transactionChargingService.failTheTransaction(sctl, errorMsg);	
 			}
 		transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
-		result.setInvoiceNo(ibtInquiry.getInvoiceNumber());
 		result.setSctlID(sctl.getID());
 		result.setMultixResponse(response);
 		result.setDebitAmount(sctl.getTransactionAmount());
@@ -305,7 +304,9 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
 		result.setNominalAmount(ibtInquiry.getNominalAmount());
-
+		result.setDestinationName(transactionResponse.getDestinationUserName());
+		result.setDestinationAccountNumber(transactionDetails.getDestAccountNumber());
+		result.setBankName(transactionResponse.getBankName());
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
 			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionTypeName(), cc.getID()) == true){

@@ -77,7 +77,8 @@ public class InterBankInquiryProcessor implements IInterBankProcessor {
 		billPayResponse.setTransferID(request.getTransferID());
 		//Destination name is stored in Info3
 		billPayResponse.setInfo3(response.getDestinationUserName());
-		
+		billPayResponse.setDestinationUserName(response.getDestinationUserName());
+		billPayResponse.setBankName(response.getBankName());
 		if("00".equals(response.getResponseCode())){
 			billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);
