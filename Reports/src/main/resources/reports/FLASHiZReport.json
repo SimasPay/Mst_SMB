@@ -22,10 +22,7 @@
     "Query" : " SELECT
 				    DATE_FORMAT(sctl.CreateTime, ${DateTimeFormat}),
 					Format(sctl.TransactionAmount, 2),
-					CASE
-						WHEN ct.OperatorRRN THEN LPAD(ct.OperatorRRN, 12, '0')
-					    ELSE '000000000000'
-					END,
+					concat('BPAY-', LPAD(sctl.id, 12, '0')),
 					LPAD(sctl.InvoiceNo, 12, '0')
 				FROM
 					commodity_transfer ct
@@ -46,7 +43,7 @@
     
     "DateTimeFormatOfDataFromDB" : "%y%m%d%H%i",
     
-    "ReportType" : ["pdf", "xls", "csv", "txt"],
+    "ReportType" : ["pdf", "xls", "txt"],
     
     "PageSize" : "A4",
 

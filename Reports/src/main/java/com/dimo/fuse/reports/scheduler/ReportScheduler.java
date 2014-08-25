@@ -162,7 +162,14 @@ public abstract class ReportScheduler {
 					if(csvZipFile != null){
 						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled CSV Reports", "Attached Scheduled Reports Zip File", csvZipFile);
 					}else{
-						log.info("Unable to zip the cls files from input directory "+outputDirectory+" and hence not sending mail");
+						log.info("Unable to zip the csv files from input directory "+outputDirectory+" and hence not sending mail");
+					}
+					
+					String txtZipFile = zipFiles(outputDirectory,zipFile+"_txt",".txt");
+					if(txtZipFile != null){
+						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled TXT Reports", "Attached Scheduled Reports Zip File", txtZipFile);
+					}else{
+						log.info("Unable to zip the txt files from input directory "+outputDirectory+" and hence not sending mail");
 					}					
 				}			
 				
