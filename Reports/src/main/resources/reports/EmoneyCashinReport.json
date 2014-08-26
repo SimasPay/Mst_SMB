@@ -60,7 +60,7 @@
 				     integration_summary.ReconcilationID1,
 				     integration_summary.ReconcilationID2,
 				     integration_summary.ReconcilationID3,
-				     SELECT IFNULL((SELECT ipm.IntegrationName FROM integration_partner_map ipm where ipm.InstitutionID = integration_summary.InstitutionID) ,'Others')   
+				     (SELECT IFNULL((SELECT ipm.IntegrationName FROM integration_partner_map ipm where ipm.InstitutionID = integration_summary.InstitutionID) ,'Others'))   
 				FROM
 				     enum_text et1,enum_text et2,commodity_transfer ct INNER JOIN pocket srcPocket ON ct.SourcePocketID = srcPocket.ID
 					 INNER JOIN pocket destPocket ON ct.DestPocketID = destPocket.ID
@@ -69,7 +69,7 @@
 					 LEFT OUTER JOIN integration_summary ON sctl.ID = integration_summary.SctlId
 					 INNER JOIN pocket_template destpkTemp ON destpkTemp.ID = destPocket.PocketTemplateId
 				WHERE
-					 sctl.TransactionTypeID IN (select ID from transaction_type where transaction_type.TransactionName in ('VACashin','IBCashIn','DompetCashin'))
+					 sctl.TransactionTypeID IN (select ID from transaction_type where transaction_type.TransactionName like '%Cashin')
 				     AND sctl.TransactionTypeID= tt.ID
 					 AND et1.TagID=6089 AND sctl.status=et1.EnumCode
 					 AND et2.TagID=5051 AND destPocket.status=et2.EnumCode
