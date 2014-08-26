@@ -87,10 +87,15 @@ public abstract class ReportScheduler {
 		log.info("zipFiles Input Directory Path: " + zipInputDir);
 		log.info("zipFiles Output Directory Path: " + zipOutputDir);
 		try {
+			String files[] = getFilesListFromDirectory(zipInputDir, extension);
+			if (files.length <= 0) {
+				log.info("there are no files of type "+ extension + " to make zip file");
+				return null;
+			}
 			File inFolder = new File(zipInputDir);
 			File zipFile = new File(zipOutputDir + ".zip");
 			ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
-			String files[] = getFilesListFromDirectory(zipInputDir, extension);
+			
 			BufferedInputStream in = null;
 			byte[] data = new byte[1000];
 			
