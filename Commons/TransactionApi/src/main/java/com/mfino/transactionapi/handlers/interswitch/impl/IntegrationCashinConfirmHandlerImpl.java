@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.domain.CashinFirstTime;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMDN;
@@ -23,6 +24,7 @@ import com.mfino.service.CommodityTransferService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
+import com.mfino.service.CashinFirstTimeService;
 import com.mfino.transactionapi.handlers.interswitch.IntegrationCashinConfirmHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.wallet.WalletConfirmXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -57,6 +59,9 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
 
+	@Autowired
+	@Qualifier("CashinFirstTimeServiceImpl")
+	private CashinFirstTimeService cashinFirstTimeService;
 
 	
 	/**
@@ -91,6 +96,20 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 				result.setServiceCharge(sctl.getCalculatedCharge());
 
 				transactionApiValidationService.checkAndChangeStatus(destMDN);
+				//Updating records for First-time CashIn
+				if(destMDN != null && destMDN.getCashinFirstTimeID()==null){
+					log.info("Cashin First Time for MDN: "+destMDN.getMDN());
+					CashinFirstTime cft = new CashinFirstTime();
+					cft.setSubscriberMDNByMDNID(destMDN);
+					cft.setMDN(destMDN.getMDN());
+					cft.setSctlId(sctl.getID());
+					cft.setTransactionAmount(sctl.getTransactionAmount());
+					cashinFirstTimeService.saveCashinFirstTime(cft);
+					
+					cft = cashinFirstTimeService.getByMDN(destMDN.getMDN());
+					destMDN.setCashinFirstTimeID(cft.getID());
+					subscriberMdnService.saveSubscriberMDN(destMDN);
+				}
 			}
 			else {
 				String errorMsg = transactionResponse.getMessage();

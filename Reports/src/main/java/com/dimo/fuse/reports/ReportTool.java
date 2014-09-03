@@ -56,6 +56,8 @@ public class ReportTool {
 			List<ReportGenerator> reportsList = new ArrayList<ReportGenerator>();
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			String reportName = reportProperties
+			.getProperty(ReportPropertyConstants.NAME_OF_THE_REPORT);
 
 			for (int index = 0; index < listOfReportTypes.length(); index++) {
 				String reportType = listOfReportTypes.getString(index);
@@ -82,7 +84,13 @@ public class ReportTool {
 			while (rs.next()) {
 				String[] rowContent = qe.fetchNextRowData(rs);
 				for (ReportGenerator report : reportsList) {
-					report.addRowContent(rowContent);
+					if(reportName.equalsIgnoreCase("BIReport")){ // if report BIReport; Needs to write in cleaner way
+						for(int i=0; i< rowContent.length ; i+=2){
+							String[] newRowContent = new String[]{rowContent[i],rowContent[i+1]};							
+							report.addRowContent(newRowContent);
+						}
+					}else
+						report.addRowContent(rowContent);
 				}
 			}
 			for (ReportGenerator report : reportsList) {

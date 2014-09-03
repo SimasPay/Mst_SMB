@@ -5372,6 +5372,7 @@
 			<field name="OtherMDN" required="N"/>
 			<field name="UserAPIKey" required="N"/>
 			<field name="OtpRetryCount" required="N" />
+			<field name="CashinFirstTimeID" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -7062,6 +7063,12 @@
 		<record name="PartnerDefaultServices" ExtendsRecord="Base" Java="Y" SQLTable="partner_default_services" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="BusinessPartnerType" required="Y" />
 			<field name="ServiceDefaultConfigurationID" required="Y" References="ServiceDefaultConfiguration" />
+		</record>
+		<record name="CashinFirstTime" ExtendsRecord="Base" Java="Y" SQLTable="cashin_first_time" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="MDNID" required="N" References="SubscriberMDN"/>
+			<field name="MDN" required="N" />
+			<field name="SctlId" required="N" />
+			<field name="TransactionAmount" required="N" />
 		</record>
 	 
 	</records>
@@ -25492,6 +25499,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8180" name="OtpRetryCount" type="INT32" />
 	<field number="8181" name="IsOnlineReport" type="BOOLEAN" />
 	<field number="8182" name="IsAdvice" type="BOOLEAN" />
+	<field number="8183" name="CashinFirstTimeID" type="RecordID" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">

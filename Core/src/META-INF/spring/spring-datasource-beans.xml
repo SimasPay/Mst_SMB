@@ -317,6 +317,7 @@
 				<value>com/mfino/domain/RSubscriberFavorite.hbm.xml</value>
 				<value>com/mfino/domain/RPartnerDefaultServices.hbm.xml</value>
 				<value>com/mfino/domain/RServiceDefaultConfiguration.hbm.xml</value>
+				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
 			</list>
 		</property>
 
@@ -545,6 +546,7 @@
     <osgi:service ref ="FavoriteCategoryServiceImpl" interface="com.mfino.service.FavoriteCategoryService"/>
     <osgi:service ref ="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
     <osgi:service ref ="IBTServiceImpl" interface="com.mfino.service.IBTService"/>
+    <osgi:service ref ="CashinFirstTimeServiceImpl" interface="com.mfino.service.CashinFirstTimeService"/>
     <osgi:service ref="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
     
 </beans>

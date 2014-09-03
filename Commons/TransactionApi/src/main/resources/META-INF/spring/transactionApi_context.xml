@@ -98,6 +98,7 @@
 		<osgi:reference id="FavoriteCategoryServiceImpl" interface="com.mfino.service.FavoriteCategoryService"/>
 		<osgi:reference id="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
 		<osgi:reference id="IBTServiceImpl" interface="com.mfino.service.IBTService"/>
+		<osgi:reference id="CashinFirstTimeServiceImpl" interface="com.mfino.service.CashinFirstTimeService" context-class-loader="service-provider"/>
 		
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.impl"/>
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.interswitch.impl"/>

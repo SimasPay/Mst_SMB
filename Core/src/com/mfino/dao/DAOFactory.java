@@ -291,6 +291,8 @@ public class DAOFactory {
 	
 	private ServiceDefaultConfigurationDAO serviceDefaultConfigurationDAO;
 	
+	private CashinFirstTimeDAO cftDAO;
+	
 
 	private SubscriberFavoriteDAO subscriberFavoriteDAO;
 	
@@ -1234,4 +1236,10 @@ public class DAOFactory {
 		serviceDefaultConfigurationDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return serviceDefaultConfigurationDAO;
 		}
+	
+	public CashinFirstTimeDAO getCashinFirstTimeDAO() {
+		cftDAO = new CashinFirstTimeDAO();
+		cftDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return cftDAO;
+	}
 }
