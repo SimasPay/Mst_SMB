@@ -19,62 +19,62 @@
         
     "Query" : "		SELECT
     				
-    				'Number of total Uangku active',(SELECT  count(*) FROM subscriber_mdn sm	WHERE sm.Status = 1 AND sm.CreateTime < ${EndTime}),
-    				'Number of new activated Uangku',(SELECT  count(*) FROM subscriber_mdn sm	WHERE sm.Status = 1 AND sm.CreateTime < ${EndTime} 
+    				'Jumlah Total Kartu',(SELECT  count(*) FROM subscriber_mdn sm	WHERE sm.Status = 1 AND sm.CreateTime < ${EndTime}),
+    				'Jumlah Kartu Baru',(SELECT  count(*) FROM subscriber_mdn sm	WHERE sm.Status = 1 AND sm.CreateTime < ${EndTime} 
     				AND sm.CreateTime >= ${StartTime}),
-					'Number of closed Uangku',(SELECT  count(*)	FROM subscriber_mdn sm	WHERE sm.Status = 3 AND sm.CreateTime < ${EndTime}
+					'Jumlah Kartu yang Ditutup',(SELECT  count(*)	FROM subscriber_mdn sm	WHERE sm.Status = 3 AND sm.CreateTime < ${EndTime}
 			     	AND sm.CreateTime >= ${StartTime}),
-			     	'Number of total Uangku Registered',(SELECT  count(*) FROM subscriber s WHERE s.KYCLevel = 3 AND s.CreateTime < ${EndTime}
+			     	'Jumlah Registered',(SELECT  count(*) FROM subscriber s WHERE s.KYCLevel = 3 AND s.CreateTime < ${EndTime}
 			     	AND s.CreateTime >= ${StartTime}),
-					'Number of total Uangku UnRegistered',(SELECT  count(*) FROM subscriber s WHERE s.KYCLevel = 1 AND s.CreateTime < ${EndTime}
+					'Jumlah Unregistered',(SELECT  count(*) FROM subscriber s WHERE s.KYCLevel = 1 AND s.CreateTime < ${EndTime}
 			     	AND s.CreateTime >= ${StartTime}),
-			     	'Number of money float on Omnibus',(SELECT CurrentBalance from pocket where ID IN 
+			     	'Nominal Dana Float',(SELECT CurrentBalance from pocket where ID IN 
 			     	(select ParameterValue from system_parameters where ParameterName='global.sva.pocket.id')),
 			     	
-			     	'Number of merchant and bill payment transactions',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Volume Transaksi belanja domestik (interchange)',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
 			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}),
 			     	
-			     	'Number of money transfer transactions',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Volume Transfer antar uang elektronik',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
 			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','InterEmoneyTransfer')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}),
 			     	
-			     	'Number of first time CashIn transactions',(select count(*) from cashin_first_time cft where cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
+			     	'Volume Initial (Isi pertama kali)',(select count(*) from cashin_first_time cft where cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
 			     	
-			     	'Number of reload transactions',   (select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Volume Reload/Top up',   (select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName like '%cashin%') 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}) - (select count(*) from cashin_first_time cft where cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}) ,
 			     	
-			     	'Number of cashout transactions',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Volume Tarik tunai ',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName like '%cashout%')
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}),
 			     	
-			     	'Number of redeem transactions',(select count(*) from money_clearance_graved mcg where mcg.MCStatus=1 
+			     	'Volume Reedem',(select count(*) from money_clearance_graved mcg where mcg.MCStatus=1 
 			     	AND mcg.CreateTime < ${EndTime} AND mcg.CreateTime >= ${StartTime}),
 			     	
-			     				     	'Amount of merchant and bill payment transactions',(select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     				     	'Nominal Transaksi belanja domestik (interchange)',(select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
 			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}),
 			     	
-			     	'Amount of money transfer transactions',(select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Nominal Transfer antar uang elektronik',(select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
 			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','InterEmoneyTransfer')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}),
 			     	
-			     	'Amount of first time CashIn transactions',(select COALESCE(SUM(cft.TransactionAmount),0) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
+			     	'Nominal Initial (Isi pertama kali)',(select COALESCE(SUM(cft.TransactionAmount),0) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
 			     	
-			     	'Amount of reload transactions',  (select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Nominal Reload/Top up',  (select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName like '%cashin%') 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}) -  (select COALESCE(SUM(cft.TransactionAmount),0) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime})  ,
 			     	
-			     	'Amount of cashout transactions',(select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Nominal Tarik tunai',(select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName like '%cashout%')
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime}),
 			     	
-			     	'Amount of redeem transactions',(select COALESCE(SUM(mcg.Amount),0) from money_clearance_graved mcg where mcg.MCStatus=1 
+			     	'Nominal Reedem',(select COALESCE(SUM(mcg.Amount),0) from money_clearance_graved mcg where mcg.MCStatus=1 
 			     	AND mcg.CreateTime < ${EndTime} AND mcg.CreateTime >= ${StartTime})
 			     	
 			     	
