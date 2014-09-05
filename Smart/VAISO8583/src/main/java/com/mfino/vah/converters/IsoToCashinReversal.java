@@ -26,15 +26,15 @@ public class IsoToCashinReversal implements IsoToNativeTransformer {
 			String targetMDN = msg.getValue(103).toString();
 			String amount = msg.getValue(4).toString();
 			
-			String de48 = (msg.getValue(48) != null) ? msg.getValue(48).toString() : null;
+			//String de48 = (msg.getValue(48) != null) ? msg.getValue(48).toString() : null;
 			
 			String tfName ="_F",tlName="L_";
 			
-			if((null != de48) && (!("".equals(de48.toString())))){
+			/*if((null != de48) && (!("".equals(de48.toString())))){
 				tfName = msg.getValue(48).toString().substring(0, msg.getValue(48).toString().length() / 2).trim();
 				tlName = msg.getValue(48).toString().substring(msg.getValue(48).toString().length() / 2, msg.getValue(48).toString().length())
 			        .trim();
-			}
+			}*/
 			
 			String paymentMethod = msg.getValue(18).toString();
 			String paymentReference = msg.getValue(37).toString() + "|" + msg.getValue(41).toString() + "|ATM";

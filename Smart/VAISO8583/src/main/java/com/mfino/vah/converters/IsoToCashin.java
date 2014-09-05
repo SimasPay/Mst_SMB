@@ -34,9 +34,9 @@ public class IsoToCashin implements IsoToNativeTransformer {
 			String paymentLogid = msg.getValue(11).toString();
 			String targetMDN = msg.getValue(103).toString();
 			String amount = msg.getValue(4).toString();
-			String tfName = msg.getValue(48).toString().substring(0, msg.getValue(48).toString().length() / 2).trim();
-			String tlName = msg.getValue(48).toString().substring(msg.getValue(48).toString().length() / 2, msg.getValue(48).toString().length())
-			        .trim();
+			//String tfName = msg.getValue(48).toString().substring(0, msg.getValue(48).toString().length() / 2).trim();
+			//String tlName = msg.getValue(48).toString().substring(msg.getValue(48).toString().length() / 2, msg.getValue(48).toString().length())
+			//      .trim();
 			
 			String paymentMethod = msg.getValue(18).toString();
 			
@@ -80,8 +80,7 @@ public class IsoToCashin implements IsoToNativeTransformer {
 			String instCode = msg.getValue(32).toString();
 
 			if (StringUtils.isBlank(paymentReference) || StringUtils.isBlank(paymentLogid) || StringUtils.isBlank(targetMDN)
-			        || StringUtils.isBlank(amount) || StringUtils.isBlank(tfName) || StringUtils.isBlank(tlName)
-			        || StringUtils.isBlank(paymentMethod) || StringUtils.isBlank(termID) || StringUtils.isBlank(paymentDate)
+			        || StringUtils.isBlank(amount) || StringUtils.isBlank(paymentMethod) || StringUtils.isBlank(termID) || StringUtils.isBlank(paymentDate)
 			        || StringUtils.isBlank(receiptNo)) {
 
 				log.error("One are more required fields are blank.");
@@ -100,8 +99,8 @@ public class IsoToCashin implements IsoToNativeTransformer {
 			retStr = new StringBuilder("<CashInRequest>");
 			retStr = retStr.append("<PaymentLogId>").append(paymentLogid).append("</PaymentLogId>");
 			retStr = retStr.append("<TargetMdn>").append(targetMDN).append("</TargetMdn>");
-			retStr = retStr.append("<TargetFirstName>").append(tfName).append("</TargetFirstName>");
-			retStr = retStr.append("<TargetLastName>").append(tlName).append("</TargetLastName>");
+			//retStr = retStr.append("<TargetFirstName>").append(tfName).append("</TargetFirstName>");
+			//retStr = retStr.append("<TargetLastName>").append(tlName).append("</TargetLastName>");
 			retStr = retStr.append("<Amount>").append(amount).append("</Amount>");
 			retStr = retStr.append("<PaymentMethod>").append(paymentMethod).append("</PaymentMethod>");
 			retStr = retStr.append("<PaymentReference>").append(paymentReference).append("</PaymentReference>");
