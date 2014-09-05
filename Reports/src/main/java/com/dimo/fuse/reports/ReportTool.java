@@ -84,7 +84,7 @@ public class ReportTool {
 			while (rs.next()) {
 				String[] rowContent = qe.fetchNextRowData(rs);
 				for (ReportGenerator report : reportsList) {
-					if(reportName.equalsIgnoreCase("BIReport")){ // if report BIReport; Needs to write in cleaner way
+					if(reportName.equalsIgnoreCase("BIReport") || reportName.equalsIgnoreCase("BIMonthlyOnlineReport")){ // if report BIReport OR BIMonthlyReport; Needs to write in cleaner way
 						for(int i=0; i< rowContent.length ; i+=2){
 							String[] newRowContent = new String[]{rowContent[i],rowContent[i+1]};							
 							report.addRowContent(newRowContent);

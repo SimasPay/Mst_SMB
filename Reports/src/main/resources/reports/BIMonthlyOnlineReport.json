@@ -1,7 +1,7 @@
 {
-    "ReportName" : "BIReport",
+    "ReportName" : "BIMonthlyOnlineReport",
     
-    "ReportHeaderText" : "BI Report",
+    "ReportHeaderText" : "BI Monthly Online Report",
                             
     "ReportHeader" : [ 
                            [ "Date Range From" , "${StartTime}", "To" , "${EndTime}" ]
@@ -17,19 +17,7 @@
 
     "EncryptedColumnIndices" : [12],
         
-    "Query" : "		SELECT
-    				
-    				'Jumlah Total Kartu',(SELECT  count(*) FROM subscriber_mdn sm	WHERE sm.Status = 1 AND sm.CreateTime < ${EndTime}),
-    				'Jumlah Kartu Baru',(SELECT  count(*) FROM subscriber_mdn sm	WHERE sm.Status = 1 AND sm.CreateTime < ${EndTime} 
-    				AND sm.CreateTime >= ${StartTime}),
-					'Jumlah Kartu yang Ditutup',(SELECT  count(*)	FROM subscriber_mdn sm	WHERE sm.Status = 3 AND sm.CreateTime < ${EndTime}
-			     	AND sm.CreateTime >= ${StartTime}),
-			     	'Jumlah Registered',(SELECT  count(*) FROM subscriber s WHERE s.KYCLevel = 3 AND s.CreateTime < ${EndTime}
-			     	AND s.CreateTime >= ${StartTime}),
-					'Jumlah Unregistered',(SELECT  count(*) FROM subscriber s WHERE s.KYCLevel = 1 AND s.CreateTime < ${EndTime}
-			     	AND s.CreateTime >= ${StartTime}),
-			     	'Nominal Dana Float',(SELECT CurrentBalance from pocket where ID IN 
-			     	(select ParameterValue from system_parameters where ParameterName='global.sva.pocket.id')),
+    "Query" : "		SELECT    				
 			     	
 			     	'Volume Transaksi belanja domestik (interchange)',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
