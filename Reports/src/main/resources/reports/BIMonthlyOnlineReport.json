@@ -21,12 +21,12 @@
 			     	
 			     	'Volume Transaksi belanja domestik (interchange)',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
-			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment')) 
+			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment','Donation')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
 			     	'Volume Transfer antar uang elektronik',(select count(*) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
-			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','InterEmoneyTransfer')) 
+			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','TransferToUnRegistered','InterEmoneyTransfer')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
 			     	'Volume Initial (Isi pertama kali)',(select count(*) from cashin_first_time cft where cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
@@ -44,12 +44,12 @@
 			     	
 			     				     	'Nominal Transaksi belanja domestik (interchange)',(select FORMAT(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
-			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment')) 
+			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment','Donation')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
 			     	'Nominal Transfer antar uang elektronik',(select FORMAT(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
-			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','InterEmoneyTransfer')) 
+			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','TransferToUnRegistered','InterEmoneyTransfer')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
 			     	'Nominal Initial (Isi pertama kali)',(select FORMAT(COALESCE(SUM(cft.TransactionAmount),0),2) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
