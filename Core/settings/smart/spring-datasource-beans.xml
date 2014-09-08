@@ -321,6 +321,7 @@
 				<value>com/mfino/domain/RSubscriberFavorite.hbm.xml</value>
 				<value>com/mfino/domain/RPartnerDefaultServices.hbm.xml</value>
 				<value>com/mfino/domain/RServiceDefaultConfiguration.hbm.xml</value>
+				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
 			</list>
 		</property>
 

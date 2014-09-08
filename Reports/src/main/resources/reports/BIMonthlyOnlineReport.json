@@ -42,27 +42,27 @@
 			     	'Volume Reedem',(select count(*) from money_clearance_graved mcg where mcg.MCStatus=1 
 			     	AND mcg.CreateTime < ${EndTime} AND mcg.CreateTime >= ${StartTime}),
 			     	
-			     				     	'Nominal Transaksi belanja domestik (interchange)',(select ROUND(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     				     	'Nominal Transaksi belanja domestik (interchange)',(select FORMAT(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
 			     	('Purchase','BillPay','AirtimePurchase','AirtimePinPurchase','NFCCardTopup','NFCPocketTopup','QRPayment')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
-			     	'Nominal Transfer antar uang elektronik',(select ROUND(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Nominal Transfer antar uang elektronik',(select FORMAT(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName IN 
 			     	('Transfer','AgentToAgentTransfer','InterBankTransfer','InterEmoneyTransfer')) 
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
-			     	'Nominal Initial (Isi pertama kali)',(select ROUND(COALESCE(SUM(cft.TransactionAmount),0),2) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
+			     	'Nominal Initial (Isi pertama kali)',(select FORMAT(COALESCE(SUM(cft.TransactionAmount),0),2) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),
 			     	
-			     	'Nominal Reload/Top up',  (select ROUND(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Nominal Reload/Top up',  (FORMAT((select COALESCE(SUM(sctl.TransactionAmount),0) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName like '%cashin%') 
-			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4) -  (select ROUND(COALESCE(SUM(cft.TransactionAmount),0),2) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime})  ,
+			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4) -  (select COALESCE(SUM(cft.TransactionAmount),0) from cashin_first_time cft where  cft.CreateTime < ${EndTime} AND cft.CreateTime >= ${StartTime}),2))  ,
 			     	
-			     	'Nominal Tarik tunai',(select ROUND(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
+			     	'Nominal Tarik tunai',(select FORMAT(COALESCE(SUM(sctl.TransactionAmount),0),2) from service_charge_txn_log sctl where sctl.TransactionTypeID IN 
 			     	(select ID from transaction_type tt where tt.TransactionName like '%cashout%')
 			     	AND sctl.CreateTime < ${EndTime} AND sctl.CreateTime >= ${StartTime} AND sctl.Status = 4),
 			     	
-			     	'Nominal Reedem',(select ROUND(COALESCE(SUM(mcg.Amount),0),2) from money_clearance_graved mcg where mcg.MCStatus=1 
+			     	'Nominal Reedem',(select FORMAT(COALESCE(SUM(mcg.Amount),0),2) from money_clearance_graved mcg where mcg.MCStatus=1 
 			     	AND mcg.CreateTime < ${EndTime} AND mcg.CreateTime >= ${StartTime})
 			     	
 			     	
