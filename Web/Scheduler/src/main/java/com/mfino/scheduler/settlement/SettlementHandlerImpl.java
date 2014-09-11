@@ -511,7 +511,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			log.info("CutoffTime : "+cutoff+"PartnerID : "+partnerId);
 			
 			for(SCTLSettlementMap sctl : sctlSMList){
-				pendingAmount = pendingAmount.add(sctl.getAmount());
+//				pendingAmount = pendingAmount.add(sctl.getAmount());
 				sctl.setStatus(CmFinoFIX.SettlementStatus_Settled);
 				sctl.setStlID(stlID);
 				sCTLSettlementMapService.save(sctl);
