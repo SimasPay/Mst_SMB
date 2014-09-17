@@ -3538,6 +3538,9 @@
 				<field name="AdjustmentsLogID" required="N"/>
 				<field name="AdjustmentStatus" required="N"/>
 				<field name="AdjustmentStatusText" required="N"/>
+				<field name="SourceAccountNumber" required="N"/>
+				<field name="DestBankCode" required="N"/>
+				
 			</group>
 		</message>
 		<message name="MoneyTransferReversalFromBank" msgtype="1289" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">
@@ -3820,6 +3823,8 @@
 			<field name="NIBResponseCode" required="N"/>
 		<field name="ProcessingCode" required="N"/>
 			<field name="MPan" required="N"/>
+			<field name="ServiceChargeAmount" required="N"/>
+			<field name="TaxAmount" required="N"/>
 			<field name="ServiceChargeDE63" required="N"/>
 		</message>
 		<message name="InterBankMoneyTransferFromBank" msgtype="1344" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">
@@ -4218,6 +4223,12 @@
 			<field name="NominalAmount" required="N"/>
 			<field name="SourceCardPAN" required="N"/>
 			<field name="Amount" required="Y" />
+			<field name="Narration" required="N"/>
+			<field name="PaymentMode" required="N"/>
+			<field name="SourceBankAccountNo" required="N"/>
+			<field name="SourcePocketID" required="N"/>
+			<field name="SourceBankAccountType" required="N" />
+	
 	</message>
 	
 	<message name="CommodityAdjustmentInquiry" msgtype="1388" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
@@ -4228,8 +4239,11 @@
 	
 	<message name="JSRole" msgtype="1390" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 		<field name="RoleID" required="N" />    	
-		<field name="DisplayText" required="N"/>  
+		<field name="DisplayText" required="N"/>
+		<field name="EnumCode" required="N" />  
     	<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+			<field name="EnumCode" required="N" />
+        	<field name="EnumValue" required="N"  />
     		<field name="RoleID" id="ID" required="N" />    		
 			<field name="DisplayText" required="N"/>
 			<field name="IsSystemUser" required="N" />
@@ -4569,6 +4583,7 @@
 		<field name="Info3" required="N"/>
 		<field name="ProcessingCodeDE3" required="N"/>
 		<field name="ServiceChargeDE63" required="N"/>	
+		<field name="PaymentMode" required="N"/>
 	</message>
 	<message name="BSIMBillPaymentToBank" msgtype="1423" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferToBank">
 	    <field name="ProcessingCodeDE3" required="N"/>
@@ -4579,10 +4594,15 @@
 		<field name="BillerCode" required="N"/>
 		<field name="InvoiceNo" required="N"/>
 		<field name="ServiceChargeDE63" required="N"/>
+		<field name="ServiceChargeAmount" required="N"/>
+		<field name="TaxAmount" required="N"/>
 		<field name="PaymentMode" required="N"/>
+		<field name="UserAPIKey" required="N"/>
+		<field name="MerchantData" required="N"/>
 	</message>
 	<message name="BSIMBillPaymentFromBank" msgtype="1424" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">
-	    <field name="Info1" required="N"/>			
+	    <field name="Info1" required="N"/>		
+	    <field name="PaymentMode" required="N"/>	
 	</message>	
 	<message name="JSAdjustments" msgtype="1425" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 		<field name="AdjustmentsLogID" id="ID" required="N" />
@@ -4709,7 +4729,11 @@
 	</message> 
 	<message name="KYCUpgradeInquiry" msgtype="1439" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 	</message>
-	
+	<message name="QRPaymentReversalToBank" msgtype="1440" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalToBank">
+        	<field name="BillerCode" required="N"/>
+	</message>
+	<message name="QRPaymentReversalFromBank" msgtype="1441" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalFromBank">
+	</message>
     <message name="JSShowBalanceDetails" msgtype="1500" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="StartTime" required="N"/>
 			<field name="EndTime" required="N"/>
@@ -4964,6 +4988,7 @@
 	<field name="INTxnId" required="N"/>
 	</message>
 	<message name="QRPaymentInquiry" msgtype="1747" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPayInquiry">
+	<field name="MerchantData" required="N"/>
 	</message>
 	<message name="QRPayment" msgtype="1748" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPay">
 			<field name="BillerCode" required="Y"/>
@@ -4980,6 +5005,52 @@
 			<field name="MerchantData" required="N"/>
 	</message>
 	<message name="QRPaymentPendingRequest" msgtype="1749" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BillPayPendingRequest">
+	</message>
+	<message name="QRPaymentToBank" msgtype="1750" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferToBank">
+		 <field name="ProcessingCodeDE3" required="N"/>
+		<field name="Info1" required="N"/>	
+		<field name="Info2" required="N"/>
+		<field name="Info3" required="N"/>
+		<field name="BillerPartnerType" required="N"/>
+		<field name="BillerCode" required="N"/>
+		<field name="InvoiceNo" required="N"/>
+		<field name="ServiceChargeAmount" required="N"/>
+		<field name="TaxAmount" required="N"/>
+		<field name="PaymentMode" required="N"/>
+		<field name="UserAPIKey" required="N"/>
+		<field name="MerchantData" required="N"/>
+	</message>	
+	<message name="QRPaymentFromBank" msgtype="1751" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">
+	 	<field name="Info1" required="N"/>		
+	    <field name="PaymentMode" required="N"/>
+	</message>
+		<message name="BankAccountAdvice" msgtype="1752" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="BankAccountPin" id="Pin" required="Y" isSecure="Y"/>
+		<field name="PocketID" required="Y" />
+		<field name="MessageType" required="N" default="1752"/>
+		<field name="BillerCode" required="Y"/>		
+		<field name="MerchantData" required="N"/> <!-- IDPEL -->
+		<field name="InvoiceNumber" required="Y"/><!-- MLPO Reff   -->
+		<field name="IntegrationCode" required="N"/>
+		<field name="ChargesIncluded" required="N" />
+	</message>
+	<message name="AdviceInquiryToBank" msgtype="1753" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankRequest">
+		<field name="PocketID" required="Y"/>
+		<!--The below field is applicable only to Zenith Bank.Takes values of Enum-BankAccountType -->
+		<field name="SourceBankAccountType" required="N" />
+		<field name="BillerCode" required="N"/>
+		<field name="InvoiceNo" required="N"/>
+		<field name="MerchantData" required="N"/>
+	</message>
+	<message name="AdviceInquiryFromBank" msgtype="1754" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankResponse">
+		<field name="BankAccountName" required="N" />
+		<field name="DestinationUserName" required="N" />
+		<field name="AdditionalInfo" required="N"/>
+		<field name="BankName" required="N"/>
+		<field name="Info1" required="N" />
+		<field name="Info3" required="N" />
+		<field name="ProcessingCodeDE3" required="N" />
+		<field name="ServiceChargeDE63" required="N" />
 	</message>
 </messages>
 	<records>
@@ -7492,7 +7563,9 @@
 			<value enum="1431" description="BSIMBillPayInquiry"/>
 			<value enum="1432" description="BSIMGetAmountToBiller"/>
 			<value enum="1433" description="BSIMGetAmountFromBiller"/>
-			<value enum="1434" description="ResetPinByOTP"/>
+			<value enum="1434" description="ResetPinByOTP"/>			
+			<value enum="1440" description="QRPaymentReversalToBank"/>
+			<value enum="1441" description="QRPaymentReversalFromBank"/>			
 			<value enum="1600" description="GenerateOTP"/>
 			<value enum="1601" description="ValidateOTP"/>
 			<value enum="1731" description="JSMoneyTransfer"/>
@@ -24703,6 +24776,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="2" description="Agent" />
 			<value enum="3" description="Self"/>
 			<value enum="4" description="Web"/>
+			<value enum="5" description="ATM"/>
 		</field>
 		<field number="6175" name="RegisteringPartnerCommision" type="NEWAMT"/>
 		<field number="6176" name="FundingPartnerID" type="RecordID" />
