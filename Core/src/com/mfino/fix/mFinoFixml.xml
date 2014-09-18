@@ -22026,6 +22026,96 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="PLNWrongIDPELID" enum="2115">
+				<C1>
+					<English>
+						<SMS>
+							<Text>IDPEL YANG ANDA MASUKKAN SALAH, MOHON TELITI KEMBALI</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNWrongMeterID" enum="2116">
+				<C1>
+					<English>
+						<SMS>
+							<Text>METER YANG ANDA MASUKKAN SALAH, MOHON TELITI KEMBALI</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNBillPending" enum="2117">
+				<C1>
+					<English>
+						<SMS>
+							<Text>PELANGGAN IDPEL DIBLOKIR HUBUNGI PLN</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNUnderPurchase" enum="2118">
+				<C1>
+					<English>
+						<SMS>
+							<Text>PEMBELIAN MINIMAL RP.20 RIBU</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNOverPurchase" enum="2119">
+				<C1>
+					<English>
+						<SMS>
+							<Text>TOTAL KWH MELEBIHI BATAS MAKSIMUM</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNRegNoExpired" enum="2120">
+				<C1>
+					<English>
+						<SMS>
+							<Text>NOMOR REGISTRASI KAWALUWARSA, MOHON HUBUNGI PLN</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNBillAlreadyPaid" enum="2121">
+				<C1>
+					<English>
+						<SMS>
+							<Text>TAGIHAN SUDAH TERBAYAR</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNLatestBillNA" enum="2122">
+				<C1>
+					<English>
+						<SMS>
+							<Text>TAGIHAN BULAN BELUM TERSEDIA</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNSuccess" enum="2123">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Transaction ID: $(TransferID) $(AdditionalInfo)</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="PLNTimeout" enum="2124">
+				<C1>
+					<English>
+						<SMS>
+							<Text>TRANSAKSI MENGALAMI GANGGUAN</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
