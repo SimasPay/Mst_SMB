@@ -70,9 +70,10 @@ public class KeyExchangeHandler {
 			//this should go to hsm if usehsm is true
 			if(ConfigurationUtil.getuseHSM()) {
 				HSMHandler handler  = new HSMHandler();
-				String encryptComponentsResponse = handler.generateEncryptedComponents(); 
-				String response = handler.handleKeyExchangeRequest(encryptedKey);
+				String encryptComponentsResponse = handler.generateEncryptedComponents();
+				String response = handler.handleKeyExchangeRequest(encryptedKey); 
 				//As HSM Simulator not supporting double length keys added a parameter to differentiate between real hsm and hsm simulator.
+				
 				if(ConfigurationUtil.getUseRealHSM()){
 					if(StringUtils.isNotBlank(response)){
 						if(response.startsWith("U") || response.startsWith("X") || response.startsWith("T") || response.startsWith("Y")){
@@ -87,6 +88,7 @@ public class KeyExchangeHandler {
 					zpkUnderLmk = response.substring(0,16);
 					calculateKCV = response.substring(16, 32);
 				}
+				
 				//kcv validation in hsm
 				if(sixteenDigitReceivedKCV.equalsIgnoreCase(calculateKCV)){
 					log.info("kcv validation from hsm success");

@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 
 import com.mfino.bsim.iso8583.GetConstantCodes;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
+import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.iso.jpos.nm.NMStatus;
@@ -68,7 +71,7 @@ public class TransactionHandler implements Runnable {
 					//String de24=msg.getString(24);
 					String mti = msg.getMTI();
 					log.info("mti=" + mti + " processingCode=" + processingCode);
-					//for atm registration processing code 98xxxx
+					
 					try {
 						if(processingCode.startsWith("98")){
 						ATMRequestHandler.getInstance().handle(msg);
@@ -99,7 +102,7 @@ public class TransactionHandler implements Runnable {
 					XMLPackager packager = new XMLPackager();
 					log.info("response isomsg-->" + new String(packager.pack(msg)));
 					source.send(msg);
-					// to get Subscriber Details by sending iso msg to cbs
+					//try to get Subscriber Details by sending iso msg to cbs
 					if(GetConstantCodes.SUCCESS.equals(msg.getString(39)))
 					{
 						log.info("TransactionHandler :: run() ATM Transaction Successful Sending msg to CBS to get Subscriber Details");

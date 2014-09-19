@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
-import com.mfino.bsim.iso8583.utils.FixToISOUtil;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.dao.DAOFactory;

@@ -48,18 +48,8 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.setMTI("0420");
 		}
 		catch (ISOException ex) {
-			log.error(ex);
+			ex.printStackTrace();
 		}
-	}
-	
-	private SubscriberService subscriberService;
-	
-	public SubscriberService getSubscriberService() {
-		return subscriberService;
-	}
-
-	public void setSubscriberService(SubscriberService subscriberService) {
-		this.subscriberService = subscriberService;
 	}
 
 	
@@ -78,7 +68,7 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			String mpan = MfinoUtil.CheckDigitCalculation(msg.getSourceMDN());
             isoMsg.set(2, mpan);
             String defaultDE3=ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-            Pocket sourcePocket = subscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+            Pocket sourcePocket = SubscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
             PocketTemplate pocketTemplate = null;
             Integer pocketTempType = null;
             if(sourcePocket!=null){
@@ -164,7 +154,7 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(32, constantFieldsMap.get("32"));
 			isoMsg.set(33, constantFieldsMap.get("32"));// 33
 			//isoMsg.set(34, msg.getSourceCardPAN());//trac data
-			isoMsg.set(37,StringUtilities.leftPadWithCharacter(msg.getBankSystemTraceAuditNumber(), 12, "0"));
+			isoMsg.set(37,StringUtilities.leftPadWithCharacter( msg.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, msg.getSourceMDN());
 			isoMsg.set(43, constantFieldsMap.get("43"));

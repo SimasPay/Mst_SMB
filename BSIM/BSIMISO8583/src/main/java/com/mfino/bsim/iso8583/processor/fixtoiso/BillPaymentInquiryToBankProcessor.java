@@ -1,6 +1,5 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.jpos.iso.ISOMsg;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
 import com.mfino.dao.DAOFactory;
@@ -21,9 +19,6 @@ import com.mfino.domain.TransactionChargeLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentBankRequest;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.util.DateTimeUtil;
 
@@ -46,6 +41,7 @@ public class BillPaymentInquiryToBankProcessor extends BankRequestProcessor{
 		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		Long transactionID = request.getTransactionID();
+		transactionID = transactionID % 1000000;
 		String fieldDE63 = constructDE63(request);
 		try
 		{

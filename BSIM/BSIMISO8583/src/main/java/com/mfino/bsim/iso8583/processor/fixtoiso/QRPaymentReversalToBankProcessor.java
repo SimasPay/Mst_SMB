@@ -31,17 +31,18 @@ import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
 import com.mfino.service.SubscriberService;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
 
-public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
+public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 
 	public Log log = LogFactory.getLog(this.getClass());
 	
-	public BillPaymentReversalToBankProcessor() {
+	public QRPaymentReversalToBankProcessor() {
 		try {
 			isoMsg.setMTI("0420");
 		}
@@ -54,7 +55,7 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
 	@Override
 	public ISOMsg process(CFIXMsg fixmsg) throws AllElementsNotAvailableException {
 		
-		CMBSIMBillPaymentReversalToBank msg = (CMBSIMBillPaymentReversalToBank)fixmsg;
+		CMQRPaymentReversalToBank msg = (CMQRPaymentReversalToBank)fixmsg;
 
 		// use the MDN of the global account
 		String mdn = msg.getSourceMDNToUseForBank();
@@ -68,8 +69,8 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
             Pocket sourcePocket = SubscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
             PocketTemplate pocketTemplate = null;
             Integer pocketTempType = null;
-            String processingCodePrefix = msg.getProcessingCode();
-            log.info("BillPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
+            String processingCodePrefix = "50";
+            log.info("QRPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
             if(sourcePocket!=null){
             pocketTemplate = sourcePocket.getPocketTemplate();
 			pocketTempType = pocketTemplate.getBankAccountCardType();
@@ -80,7 +81,7 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
 			}
             }
             isoMsg.set(3,defaultDE3);//default de-3 will be overwritten depending on dest a/c type
-            log.info("BillPaymentReversalToBankProcessor :: process default "+ defaultDE3);
+            log.info("QRPaymentReversalToBankProcessor :: process default "+ defaultDE3);
             String processingCode=null;
             IntegrationSummaryDao isDAO  = DAOFactory.getInstance().getIntegrationSummaryDao();
             IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
@@ -92,21 +93,21 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
             String reconciliationID1 = null;
             if(transferID!=null){
             	sctlQuery.setTransferID(transferID);
-            	log.info("BillPaymentReversalToBankProcessor :: process Transfer ID :"+transferID);
+            	log.info("QRPaymentReversalToBankProcessor :: process Transfer ID :"+transferID);
             	List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
             	if(CollectionUtils.isNotEmpty(list)){
             		sctl = list.get(0);
             		sctlID = sctl.getID();
-            		log.info("BillPaymentReversalToBankProcessor :: process Sctl ID :"+sctlID);
+            		log.info("QRPaymentReversalToBankProcessor :: process Sctl ID :"+sctlID);
             		isQuery.setSctlID(sctlID);
             		List<IntegrationSummary> isList = isDAO.get(isQuery);
             		if(CollectionUtils.isNotEmpty(isList)){
             			IntegrationSummary iSummary = isList.get(0);
             			reconciliationID1 = iSummary.getReconcilationID1();
-            			log.info("BillPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
-            			log.info("BillPaymentReversalToBankProcessor :: Dumping message fields :" + msg.DumpFields());
-            			log.info("BillPaymentReversalToBankProcessor :: SourceMDN " + msg.getSourceMDN());
-            			log.info("BillPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
+            			log.info("QRPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
+            			log.info("QRPaymentReversalToBankProcessor :: Dumping message fields :" + msg.DumpFields());
+            			log.info("QRPaymentReversalToBankProcessor :: SourceMDN " + msg.getSourceMDN());
+            			log.info("QRPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
             			
             			if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
             				{
@@ -118,7 +119,7 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
             				}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
             					processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+reconciliationID1;
             				}
-            				log.info("BillPaymentReversalToBankProcessor :: process Setting ProcessingCode :"+processingCode+" in DE-3");
+            				log.info("QRPaymentReversalToBankProcessor :: process Setting ProcessingCode :"+processingCode+" in DE-3");
             				isoMsg.set(3,processingCode);
             			}
                 		
@@ -158,10 +159,10 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(47, msg.getTransactionID().toString());
 			isoMsg.set(48, msg.getTransactionID().toString());*/
 			isoMsg.set(49,constantFieldsMap.get("49"));
-			isoMsg.set(60,constantFieldsMap.get("60"));
+			isoMsg.set(60, "No bank response");
 			String reversalInfoStr = "0200" + paddedSTAN;
 			reversalInfoStr = reversalInfoStr+ DateTimeFormatter.getMMDDHHMMSS(msg.getTransferTime());
-			log.info("BillPaymentReversalToBankProcessor :: process originaltransfertime = in de-90 "+ DateTimeFormatter.getMMDDHHMMSS(msg.getTransferTime()));
+			log.info("QRPaymentReversalToBankProcessor :: process originaltransfertime = in de-90 "+ DateTimeFormatter.getMMDDHHMMSS(msg.getTransferTime()));
 			reversalInfoStr = reversalInfoStr + FixToISOUtil.padOnLeft(constantFieldsMap.get("32"), '0', 11);
 			reversalInfoStr = reversalInfoStr + FixToISOUtil.padOnLeft(constantFieldsMap.get("32"), '0', 11);
 			isoMsg.set(90, reversalInfoStr);
@@ -176,9 +177,9 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
 			
 		}
 		catch (ISOException ex) {
-			log.error("MoneyTransferReversalToBankProcessor :: process ", ex);
+			log.error("QRPaymentReversalToBankProcessor :: process ", ex);
 		}catch (Exception e) {
-			log.error("MoneyTransferReversalToBankProcessor :: process ", e);
+			log.error("QRPaymentReversalToBankProcessor :: process ", e);
 		}
 		return isoMsg;
 	}

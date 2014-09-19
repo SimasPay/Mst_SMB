@@ -32,6 +32,7 @@ public class TopUpBillPaymentInquiryToBankProcessor extends BankRequestProcessor
 		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		Long transactionID = request.getTransactionID();
+		transactionID = transactionID % 1000000;
 		try
 		{
 			isoMsg.set(2,request.getSourceCardPAN());

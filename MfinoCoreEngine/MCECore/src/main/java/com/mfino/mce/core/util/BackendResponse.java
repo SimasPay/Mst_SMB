@@ -66,6 +66,7 @@ public class BackendResponse extends CMBase {
 	private String userAPIKey;
 	private BigDecimal nominalAmount;
 	private String operatorMessage;
+	private String AdditionalInfoAsSMS;
 
 	@Override
 	public boolean checkRequiredFields() {
@@ -548,5 +549,13 @@ public class BackendResponse extends CMBase {
 
 	public void setOperatorMessage(String operatorMessage) {
 		this.operatorMessage = operatorMessage;
+	}
+
+	public String getAdditionalInfoAsSMS() {
+		return AdditionalInfoAsSMS;
+	}
+
+	public void setAdditionalInfoAsSMS(String additionalInfoAsSMS) {
+		AdditionalInfoAsSMS = additionalInfoAsSMS;
 	}
 }

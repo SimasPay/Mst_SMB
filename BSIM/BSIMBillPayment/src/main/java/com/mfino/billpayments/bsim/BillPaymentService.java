@@ -22,4 +22,20 @@ public interface BillPaymentService {
 	
 	public MCEMessage billPayReversalFromBank(MCEMessage mceMessage);
 	
+	public MCEMessage qrPaymentMoneyTransferSourceToDestination(MCEMessage mceMessage);
+	
+	public MCEMessage qrPaymentMoneyTransferCompletionSourceToDestination(MCEMessage mceMessage);
+
+	public MCEMessage qrPaymentMoneyTransferInquiryCompletionSourceToDestination(
+			MCEMessage mceMessage);
+
+	public MCEMessage qrPaymentMoneyTransferInquirySourceToDestination(
+			MCEMessage mceMessage);
+	
+	public MCEMessage qrPaymentReversalToBank(MCEMessage mceMessage);
+		
+	public MCEMessage qrPaymentReversalFromBank(MCEMessage mceMessage);
+
+
+	
 }

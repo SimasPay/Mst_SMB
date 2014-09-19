@@ -4,12 +4,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOMsg;
 
+import com.mfino.bsim.iso8583.utils.SyncProducer;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;
+import com.mfino.fix.CmFinoFIX.CMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
@@ -30,7 +34,7 @@ public class NoISOResponseProcessor {
 
 		if(!( msg.getResponse().getClass().equals(CMMoneyTransferToBank.class) ||  msg.getResponse().getClass().equals(CMBSIMBillPaymentToBank.class) 
 				|| msg.getResponse().getClass().equals(CMInterBankMoneyTransferToBank.class) ||
-				msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class)))
+				msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class) ||  msg.getResponse().getClass().equals(CMQRPaymentToBank.class)))
 			return msg;
 		
 		CMBankRequest isoRequest = (CMBankRequest) msg.getResponse();

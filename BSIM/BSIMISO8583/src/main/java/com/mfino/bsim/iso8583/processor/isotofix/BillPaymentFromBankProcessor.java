@@ -31,7 +31,7 @@ public class BillPaymentFromBankProcessor implements BSIMISOtoFixProcessor{
 			fromBank.setResponseCode(isoMsg.getString(39));
 		if(isoMsg.hasField(48))
 			fromBank.setBankAccountName(isoMsg.getString(48));
-		if(isoMsg.hasField(62))
+		if(isoMsg.hasField(62) && fromBank.getResponseCode()!= null && fromBank.getResponseCode().equals("00"))
 		{
 			
 			String response = "";
@@ -64,6 +64,13 @@ public class BillPaymentFromBankProcessor implements BSIMISOtoFixProcessor{
 			
 			fromBank.setInfo1(DE62);
 		}
+		else
+		{	if(isoMsg.hasField(62))
+			{
+				fromBank.setInfo1(isoMsg.getString(62));
+			}
+		}
+		
 		fromBank.header().setSendingTime(DateTimeUtil.getLocalTime());
 		fromBank.m_pHeader.setMsgSeqNum(UniqueNumberGen.getNextNum());
 		return fromBank;

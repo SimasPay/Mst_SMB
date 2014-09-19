@@ -21,18 +21,19 @@ import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsFromOperator;
 import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsToOperator;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.service.impl.SubscriberServiceImpl;
+import com.mfino.service.SubscriberService;
 
 /**
  * 
  * @author Maruthi
  *
  */
-public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl implements bsimProcessor {
+public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl implements BSIMProcessor {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private BillPaymentsService billPaymentsService;
+	private SubscriberService subscriberService;
 	
 	@Override
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage){
@@ -44,8 +45,7 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(requestFix.getServiceChargeTransactionLogID());
-		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
-		toOperator.setDestMDN(subscriberServiceImpl.normalizeMDN(billPayments.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(billPayments.getInvoiceNumber()));
 		toOperator.setTransactionID(backendResponse.getTransferID());//FIXME is it transferid or transactionid
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
 		toOperator.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
@@ -151,5 +151,13 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 
 	public void setBillPaymentsService(BillPaymentsService billPaymentsService) {
 		this.billPaymentsService = billPaymentsService;
+	}
+	
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
 	}
 }

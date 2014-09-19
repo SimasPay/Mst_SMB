@@ -7,47 +7,46 @@ import org.slf4j.LoggerFactory;
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBase;
+import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountFromBiller;
+import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
 import com.mfino.fix.CmFinoFIX.CMBillInquiry;
-import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsFromOperator;
-import com.mfino.fix.CmFinoFIX.CMGetMDNBillDebtsToOperator;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.NotificationCodes;
-import com.mfino.service.impl.SubscriberServiceImpl;
-import com.mfino.util.MfinoUtil;
+import com.mfino.service.SubscriberService;
 
 /**
  * 
  * @author Maruthi
  *
  */
-public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements bsimProcessor {
+public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements BSIMProcessor {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private SubscriberService subscriberService;
+	
 	@Override
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage){
 		log.info("BillInquiryProcessor :: constructRequestMessage() BEGIN mceMessage="+mceMessage);
 		
-		
 		MCEMessage replyMessage = new MCEMessage(); 
 		CMBillInquiry requestFix = (CMBillInquiry)mceMessage.getRequest();
 		
-		CMGetMDNBillDebtsToOperator toOperator = new CMGetMDNBillDebtsToOperator();
+		CMBSIMGetAmountToBiller toOperator = new CMBSIMGetAmountToBiller();
+		toOperator.setInfo2(requestFix.getSourceBankAccountNo());
 		toOperator.setSourceMDN(requestFix.getSourceMDN());
-		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
-		toOperator.setDestMDN(subscriberServiceImpl.normalizeMDN(requestFix.getInvoiceNumber()));
-		toOperator.setTransactionID(requestFix.getTransactionID());//FIXME is it transferid or transactionid
+		toOperator.setDestMDN(subscriberService.normalizeMDN(requestFix.getInvoiceNumber()));
+		toOperator.setTransactionID(requestFix.getTransactionID());
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
-		toOperator.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
-		toOperator.setParentTransactionID(requestFix.getTransactionID());
-		toOperator.setOperatorCode(CmFinoFIX.OperatorCodeForRouting_CBOSS);//routing code for bsim
+		toOperator.setSourceCardPAN(requestFix.getSourceBankAccountNo());
+		toOperator.setBillerCode(requestFix.getBillerCode());
+		toOperator.setInvoiceNo(requestFix.getInvoiceNumber());
+		toOperator.setSourceBankAccountType(requestFix.getSourceBankAccountType());
 		
 		replyMessage.setRequest(mceMessage.getRequest());
 		replyMessage.setResponse(toOperator);
-		replyMessage.setDestinationQueue("jms:bsimBillInquiryResponseQueue?disableReplyTo=true");
+		replyMessage.setDestinationQueue("jms:bsimBillInquiryResponseQueue");
 		log.info("BillInquiryProcessor :: constructRequestMessage() END");
-		
 		
 		return replyMessage;
 	}
@@ -58,21 +57,20 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		log.info("BillInquiryProcessor :: constructReplyMessage() BEGIN mceMessage="+mceMceMessage);
 		MCEMessage responseMceMessage = new MCEMessage();
 		
-		CMBase requestFix = (CMBase)mceMceMessage.getRequest();
-		CMGetMDNBillDebtsFromOperator response  = (CMGetMDNBillDebtsFromOperator) mceMceMessage.getResponse();
+		CMBSIMGetAmountFromBiller response  = (CMBSIMGetAmountFromBiller) mceMceMessage.getResponse();
 		log.info("bsimBillPayInquiry Response for BillInquiry = "+response.getResponseCode());
 		
 		BackendResponse billResponse = new BillPayResponse();
-		billResponse.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
 		billResponse.setParentTransactionID(response.getParentTransactionID());
 		billResponse.setTransactionID(response.getTransactionID());
-		billResponse.setPaymentInquiryDetails(response.getPaymentInquiryDetails());
+		billResponse.setPaymentInquiryDetails(response.getAmount().toString());
+		billResponse.setAdditionalInfo(response.getInfo3());
 		
-		if(response.getTotalBillDebts()!=null)
-		billResponse.setAmount(response.getTotalBillDebts());
+		if(response.getAmount() != null)
+			billResponse.setAmount(response.getAmount());
 		
-		billResponse.setResult(response.getResponseCode());
-		billResponse.setInternalErrorCode(getInternalErrorCode(response.getResponseCode()));
+		billResponse.setResult(new Integer(response.getResponseCode()));
+		billResponse.setInternalErrorCode(getInternalErrorCode(new Integer(response.getResponseCode())));
 		responseMceMessage.setRequest(mceMceMessage.getRequest());
 		responseMceMessage.setResponse(billResponse);
 		
@@ -87,6 +85,12 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		return NotificationCodes.GetBillDetailsFailed.getInternalErrorCode();
 	}
 	
-	
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
 	
 }

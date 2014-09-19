@@ -1,15 +1,11 @@
 package com.mfino.bsim.iso8583;
 
-import java.util.Map;
-
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOMsg;
-
-import com.mfino.mce.core.util.MCEUtil;
 
 
 public class BankSimulator implements Processor
@@ -38,14 +34,6 @@ public class BankSimulator implements Processor
 			mesg.set(39,"00");
 			mesg.set(38,"123456");
 			exchange.getOut().setBody(mesg);
-			/*
-			 * setting the transactionIdentifier in the camel breadcrumbId header and sending
-			 * both the header and body to next endpoint.The transactionIdentifer is used for identifying the transaction 
-			 * in logs
-			 */
-			/*Map<String, Object> headersMap = MCEUtil.generateMandatoryHeaders(exchange.getIn().getHeaders());
-			exchange.getContext().createProducerTemplate().sendBodyAndHeaders(replyEndpoint,headersMap);*/
-			
 			exchange.getContext().createProducerTemplate().sendBody(replyEndpoint, mesg);
 		}
 		else

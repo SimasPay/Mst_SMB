@@ -7,6 +7,7 @@ import org.jpos.iso.ISOMsg;
 
 import com.mfino.bsim.iso8583.processor.BSIMISOtoFixProcessor;
 import com.mfino.fix.CFIXMsg;
+import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryFromBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
@@ -52,7 +53,7 @@ public class BillPaymentAmountInquiryFromBankProcessor implements BSIMISOtoFixPr
 			}*/
 		
 		
-		if(isoMsg.hasField(62))
+		if(isoMsg.hasField(62) && fromBank.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success))
 		{
 			
 			String response = "";

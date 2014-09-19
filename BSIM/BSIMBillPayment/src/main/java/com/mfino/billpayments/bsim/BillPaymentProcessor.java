@@ -19,18 +19,19 @@ import com.mfino.fix.CmFinoFIX.CMCommodityTransferFromOperator;
 import com.mfino.fix.CmFinoFIX.CMCommodityTransferToOperator;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.service.impl.SubscriberServiceImpl;
+import com.mfino.service.SubscriberService;
 
 /**
  * 
  * @author Maruthi
  * 
  */
-public class BillPaymentProcessor implements bsimProcessor {
+public class BillPaymentProcessor implements BSIMProcessor {
 
 	private Logger	log	= LoggerFactory.getLogger(this.getClass());
+	private SubscriberService subscriberService;
 
- 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+ 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage constructRequestMessage(MCEMessage mceMessage) {
 		log.info("BillPaymentProcessor :: constructRequestMessage() BEGIN mceMessage=" + mceMessage);
 		MCEMessage replyMessage = new MCEMessage();
@@ -40,8 +41,7 @@ public class BillPaymentProcessor implements bsimProcessor {
 		BackendResponse backendResponse = (BackendResponse) mceMessage.getResponse();
 		CMCommodityTransferToOperator toOperator = new CMCommodityTransferToOperator();
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
-		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
-		toOperator.setDestMDN(subscriberServiceImpl.normalizeMDN(requestFix.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(requestFix.getInvoiceNumber()));
 		toOperator.setPaymentInquiryDetails(backendResponse.getPaymentInquiryDetails());
 		// FIXME set this for postpaid and topup properly
 		Integer billerPartnerType = requestFix.getBillerPartnerType();
@@ -76,7 +76,7 @@ public class BillPaymentProcessor implements bsimProcessor {
 		return replyMessage;
 	}
 
- 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+ 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage constructReplyMessage(MCEMessage mceMceMessage) {
 		log.info("BillPaymentProcessor :: constructReplyMessage() BEGIN mceMessage=" + mceMceMessage);
 		MCEMessage responseMceMessage = new MCEMessage();
@@ -109,77 +109,44 @@ public class BillPaymentProcessor implements bsimProcessor {
 		return responseMceMessage;
 	}
 
-	/*protected HibernateSessionHolder	hibernateSessionHolder;
+ 	private void saveIntegrationSummary(String transactionID, Long sctlID) {
 
-	protected SessionFactory	     sessionFactory;
+ 		IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
 
-	public HibernateSessionHolder getHibernateSessionHolder() {
-		return hibernateSessionHolder;
-	}
+ 		IntegrationSummary isummary = new IntegrationSummary();
+ 		isummary.setSctlId(sctlID);
+ 		isummary.setReconcilationID1(transactionID);
+ 		isdao.save(isummary);
+ 	}
 
-	public void setHibernateSessionHolder(HibernateSessionHolder hibernateSessionHolder) {
-		this.hibernateSessionHolder = hibernateSessionHolder;
-	}
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}*/
-
-	private void saveIntegrationSummary(String transactionID, Long sctlID) {
-
-	//	Session session = sessionFactory.openSession();
-	//	try {
-		//	hibernateSessionHolder.setSession(session);
-		//	DAOFactory.getInstance().setHibernateSessionHolder(hibernateSessionHolder);
-
-			IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
-
-			IntegrationSummary isummary = new IntegrationSummary();
-			isummary.setSctlId(sctlID);
-			isummary.setReconcilationID1(transactionID);
-			isdao.save(isummary);
-		}
-		/*finally {
-			if (session != null && session.isOpen())
-				session.close();
-		}*/
-//	}
 
 	private void recordOperatorResponseCode(Long sctlId, String de39){
-		/*
-		 * ZTE specific req (smart ticket #1024) to display the DE39 value in both Admin Application and offline reports.
-		 * Save this value to ReconcillationId2 in integration_summary table, and the same is synched across. 
-		 */
-		/*Session session = sessionFactory.openSession();
-		hibernateSessionHolder.setSession(session);
-		DAOFactory.getInstance().setHibernateSessionHolder(hibernateSessionHolder);*/
-	/*	try
-		{*/
-			IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
-			IntegrationSummaryQuery query = new IntegrationSummaryQuery();
-			query.setSctlID(sctlId);
-			List<IntegrationSummary> iSummaryList = integrationSummaryDao.get(query);
-			
-			IntegrationSummary iSummary = null;
-			if((null != iSummaryList)&&(iSummaryList.size() > 0)){
-				iSummary = iSummaryList.get(0);
-				iSummary.setReconcilationID2(de39);
-			}
-			else{
-				iSummary = new IntegrationSummary();
-				iSummary.setSctlId(sctlId);
-				iSummary.setReconcilationID2(de39);
-			}
-			
-			integrationSummaryDao.save(iSummary);
+
+		IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
+		IntegrationSummaryQuery query = new IntegrationSummaryQuery();
+		query.setSctlID(sctlId);
+		List<IntegrationSummary> iSummaryList = integrationSummaryDao.get(query);
+
+		IntegrationSummary iSummary = null;
+		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
+			iSummary = iSummaryList.get(0);
+			iSummary.setReconcilationID2(de39);
 		}
-		/*finally{
-			if (session != null && session.isOpen())
-				session.close();
-		}*/
-	//}
+		else{
+			iSummary = new IntegrationSummary();
+			iSummary.setSctlId(sctlId);
+			iSummary.setReconcilationID2(de39);
+		}
+
+		integrationSummaryDao.save(iSummary);
+	}
+	
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
+
 }

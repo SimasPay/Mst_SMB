@@ -3,9 +3,9 @@ package com.mfino.bsim.iso8583;
 import java.util.Map;
 import java.util.Set;
 
+import com.mfino.bsim.iso8583.processor.fixtoiso.AdviceInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BalanceInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentInquiryToBankProcessor;
-
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentAmountInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentReversalToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentToBankProcessor;
@@ -17,14 +17,15 @@ import com.mfino.bsim.iso8583.processor.fixtoiso.InterBankTransferInquiryToBankP
 import com.mfino.bsim.iso8583.processor.fixtoiso.MoneyTransferReversalToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.MoneyTransferToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.NewSubscriberActivationToBankProcessor;
+import com.mfino.bsim.iso8583.processor.fixtoiso.QRPaymentReversalToBankProcessor;
+import com.mfino.bsim.iso8583.processor.fixtoiso.QRPaymentToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.TransferInquiryToBankProcessor;
 import com.mfino.fix.CFIXMsg;
+import com.mfino.fix.CmFinoFIX.CMAdviceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBillPaymentInquiryToBank;
-
 import com.mfino.fix.CmFinoFIX.CMBillPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMBillPaymentToBank;
-
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
@@ -37,6 +38,8 @@ import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMNewSubscriberActivationToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
 import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
 import com.mfino.iso8583.definitions.fixtoiso.IFixToIsoProcessor;
@@ -61,9 +64,14 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 			processor = new InterBankTransferInquiryToBankProcessor();
 		else if(request instanceof CMInterBankMoneyTransferToBank){
 			processor = new InterBankMoneyTransferToBankProcessor();
-		}		
+		}
+		else if(request instanceof CMQRPaymentToBank){
+			processor = new QRPaymentToBankProcessor();
+		}
 		else if(request instanceof CMBSIMGetAmountToBiller)
 			processor = new BillPaymentAmountInquiryToBankProcessor();
+		else if(request instanceof CMQRPaymentReversalToBank)
+			processor = new QRPaymentReversalToBankProcessor();
 		else if (request instanceof CMBSIMBillPaymentReversalToBank)
 			processor = new BillPaymentReversalToBankProcessor();
 		else if (request instanceof CMBSIMBillPaymentInquiryToBank){
@@ -77,6 +85,8 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 			processor = new TransferInquiryToBankProcessor();
 		else if (request instanceof CMBalanceInquiryToBank)
 			processor = new BalanceInquiryToBankProcessor();
+		else if (request instanceof CMAdviceInquiryToBank)
+			processor = new AdviceInquiryToBankProcessor();
 		else if (request instanceof CMMoneyTransferReversalToBank)
 			processor = new MoneyTransferReversalToBankProcessor();
 		else if (request instanceof CMMoneyTransferToBank)

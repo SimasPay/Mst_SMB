@@ -23,6 +23,8 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
+import com.mfino.service.CoreServiceFactory;
+import com.mfino.service.MoneyService;
 import com.mfino.util.DateTimeUtil;
 
 public class InterBankTransferInquiryToBankProcessor extends BankRequestProcessor {
@@ -39,7 +41,12 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 			throws AllElementsNotAvailableException {
 		CMInterBankTransferInquiryToBank msg = (CMInterBankTransferInquiryToBank) fixmsg;
 		Timestamp ts = DateTimeUtil.getGMTTime();
-		Timestamp localTS = DateTimeUtil.getLocalTime(); 
+		Timestamp localTS = DateTimeUtil.getLocalTime();
+		log.info("Standard Timestamp" + DateTimeUtil.getTimeGMT());
+		log.info("Long Timestamp" + DateTimeUtil.getGMTTimeLong());
+		log.info("GMTTime Date String" + DateTimeUtil.getGMTTimeString());
+		log.info("GMTTime Date" + DateTimeUtil.getGMTTimeDate());
+		log.info("GMTTime AddHrs Date DateTimeUtil.getGMTTimeDate()" + DateTimeUtil.addHours(DateTimeUtil.getGMTTimeDate(), -7));
 		String fieldDE63 = constructDE63(msg);
 		try {
 			String processingCode=null;
@@ -49,10 +56,12 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(msg.getSourceBankAccountType()))
 				processingCode = "37" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
 			isoMsg.set(3, processingCode);// TODO: need to check the processing code for interbank transfer
-
-			long amount = msg.getAmount().longValue()*(100);
+			MoneyService ms = CoreServiceFactory.getInstance().getMoneyService();
+			BigDecimal amountWithoutCharge = ms.subtract(msg.getAmount(), msg.getServiceChargeAmount());
+			long amount = amountWithoutCharge.longValue()*(100);
 			isoMsg.set(4, StringUtilities.leftPadWithCharacter(amount + "", 18, "0")); // 4
 			isoMsg.set(7, DateTimeFormatter.getMMDDHHMMSS(ts)); // 7
+			log.info("After setting --> Timestamp" + DateTimeFormatter.getMMDDHHMMSS(ts));
 			Long transactionID = msg.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(11, StringUtilities.leftPadWithCharacter(transactionID.toString(), 6, "0"));// 11

@@ -3,6 +3,8 @@ package com.mfino.billpayments.bsim.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.billpayments.bsim.BillPaymentService;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
+import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
@@ -27,6 +30,9 @@ import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.Transaction;
+import com.mfino.exceptions.InvalidChargeDefinitionException;
+import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPayInquiry;
@@ -43,6 +49,11 @@ import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPayment;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentFromBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalFromBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryFromBank;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
 import com.mfino.hibernate.Timestamp;
@@ -61,8 +72,38 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	protected BankService bankService;
-	protected  CMMoneyTransferToBank inquiryResponse;
-	protected TransactionChargingService transactionChargingService;
+	protected BillPaymentsService billPaymentsService;
+	private TransactionChargingService transactionChargingService ;
+	private Set<String> plnPrepaidBillers;
+	private Set<String> plnPostpaidBillers;
+	private Set<String> plnNonTaglisBillers;
+	
+	private Map<String,String> plnPrepaidSMSKeyValues;
+	private Map<String,String> plnpostPaidSMSKeyValues;
+	private Map<String,String> plnNonTaglisSMSKeyValues;
+	
+	
+	private Set<String> keywords;
+	
+	public Set<String> getKeywords() {
+		return keywords;
+	}
+		
+	private List<String> plnPrepaidSMSKeyWords;
+	private List<String> plnPostpaidSMSKeyWords;
+	private List<String> plnNonTaglisSMSKeyWords;
+
+	public void setKeywords(Set<String> keywords) {
+		this.keywords = keywords;
+	}
+	
+	public BillPaymentsService getBillPaymentsService() {
+		return billPaymentsService;
+	}
+
+	public void setBillPaymentsService(BillPaymentsService billPaymentsService) {
+		this.billPaymentsService = billPaymentsService;
+	}
 
 	public TransactionChargingService getTransactionChargingService() {
 		return transactionChargingService;
@@ -73,14 +114,17 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		this.transactionChargingService = transactionChargingService;
 	}
 
+	protected  CMMoneyTransferToBank inquiryResponse;
+	
+	
 	protected String sourceToDestInquiryQueue = "jms:bsimsourceToDestInquiryQueue?disableReplyTo=true";
 	protected String sourceToDestQueue = "jms:bsimsourceToDestQueue?disableReplyTo=true";
 	protected String reversalQueue = "jms:bsimreversalQueue";
 	protected String AmountFromBankQueue = "jms:bsimAmountFromBankQueue";
-
+	
 	
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayMoneyTransferInquirySourceToDestination(MCEMessage mceMessage)
 	{
 		log.info("BillPaymentServiceImpl :: billPayMoneyTransferInquirySourceToDestination mceMessage="+mceMessage);
@@ -154,7 +198,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	}
 
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayMoneyTransferInquiryCompletionSourceToDestination(MCEMessage mceMessage)
 	{
 		log.info("BillPaymentServiceImpl :: billPayMoneyTransferInquiryCompletionSourceToDestination mceMessage="+mceMessage);
@@ -196,7 +240,150 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 				inquiryResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseInquiry.getInternalErrorCode());
 			}else{
 				inquiryResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
+			}			
+		}
+		
+		// Handle Notifications for PLN Billers separately, setting only for failure case
+		
+		//if(billPayInquiryToBank.getBillerCode() != null && plnBillers.contains(billPayInquiryToBank.getBillerCode())){
+		if(billPayInquiryToBank.getBillerCode() != null && isPlnBiller(billPayInquiryToBank.getBillerCode())){
+			if(inquiryResponse.getResult().equals(CmFinoFIX.ResponseCode_Failure)){
+				inquiryResponse.setInternalErrorCode(getPLNErrorCode(inquiryResponse.getResult(), billPayInquiryfromBank.getResponseCode()));
 			}
+			inquiryResponse.setExternalResponseCode(null);//Setting ExternalResponseCode to null to compulsorily use InternalErrorCode
+		}
+		
+		mceMessage.setRequest(request);
+		mceMessage.setResponse(inquiryResponse);
+
+		return mceMessage;
+
+	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentMoneyTransferInquirySourceToDestination(MCEMessage mceMessage)
+	{
+		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferInquirySourceToDestination mceMessage="+mceMessage);
+		
+        CMBillPayInquiry billPayInquiry = (CMBillPayInquiry)mceMessage.getRequest();
+        billPaymentsService.createBillPayments(billPayInquiry);
+		CFIXMsg bankInqres;
+		try{
+			bankInqres = bankService.onTransferInquiryToBank(billPayInquiry);
+		}catch(Exception e){
+			log.error(e.getMessage());
+			bankInqres = new BackendResponse();
+			((BackendResponse) bankInqres).setResult(CmFinoFIX.ResponseCode_Failure);
+			((BackendResponse) bankInqres).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
+		}
+		if(bankInqres instanceof CMTransferInquiryToBank){
+		mceMessage.setRequest(billPayInquiry);
+		CMTransferInquiryToBank inquiryResponse = (CMTransferInquiryToBank)bankInqres;
+		mceMessage.setDestinationQueue(sourceToDestInquiryQueue);
+		CMBSIMBillPaymentInquiryToBank response = new CMBSIMBillPaymentInquiryToBank();
+		response.setAmount(inquiryResponse.getAmount());
+		String mdn = StringUtilities.leftPadWithCharacter(billPayInquiry.getSourceMDN(), 13, "0");
+		String mdngen = MfinoUtil.CheckDigitCalculation(mdn);
+		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
+		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
+		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
+		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		if(results.size() > 0){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
+			}else {
+				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
+			}
+			
+		}
+		else{
+			response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
+		}
+		//billerPartnertype = response.getBillerPartnerType();
+		response.setSourceMDN(billPayInquiry.getSourceMDN());
+		response.setInfo2(mdngen);
+		response.setBankCode(inquiryResponse.getBankCode());
+		response.setDestMDN(inquiryResponse.getDestMDN());
+		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
+		response.setUICategory(inquiryResponse.getUICategory());
+		response.setSourcePocketID(inquiryResponse.getSourcePocketID());
+		response.setDestPocketID(inquiryResponse.getDestPocketID());
+		response.setSourceCardPAN(inquiryResponse.getSourceCardPAN());
+		response.setDestCardPAN(inquiryResponse.getDestCardPAN());
+		response.setDestinationBankAccountNo(inquiryResponse.getDestinationBankAccountNo());
+		response.setTransferID(inquiryResponse.getTransferID());
+		response.setTransactionID(inquiryResponse.getTransactionID());
+		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
+		response.setSourceBankAccountType(inquiryResponse.getSourceBankAccountType());
+		response.setDestinationBankAccountType(inquiryResponse.getDestinationBankAccountType());
+		response.setServiceChargeTransactionLogID(inquiryResponse.getServiceChargeTransactionLogID());
+		response.setPin(inquiryResponse.getPin());
+		response.setLanguage(inquiryResponse.getLanguage());
+		response.setTransferID(inquiryResponse.getTransferID());
+        response.setBillerCode(billPayInquiry.getBillerCode());
+        response.setInvoiceNo(billPayInquiry.getInvoiceNumber());
+        response.setPaymentMode(billPayInquiry.getPaymentMode());
+		mceMessage.setResponse(response);
+		}
+		else if(bankInqres instanceof BackendResponse){
+			mceMessage.setResponse(bankInqres);
+	    }
+		return mceMessage;
+
+	}
+
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentMoneyTransferInquiryCompletionSourceToDestination(MCEMessage mceMessage)
+	{
+		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferInquiryCompletionSourceToDestination mceMessage="+mceMessage);
+		CMBSIMBillPaymentInquiryToBank billPayInquiryToBank = (CMBSIMBillPaymentInquiryToBank)mceMessage.getRequest();
+		CMBSIMBillPaymentInquiryFromBank billPayInquiryfromBank = (CMBSIMBillPaymentInquiryFromBank)mceMessage.getResponse();
+		BackendResponse inquiryResponse;
+		try{
+			inquiryResponse= (BackendResponse)bankService.onTransferInquiryFromBank(billPayInquiryToBank,billPayInquiryfromBank);
+		}catch(Exception e){
+			log.error(e.getMessage());
+			inquiryResponse = new BackendResponse();
+			((BackendResponse) inquiryResponse).setResult(CmFinoFIX.ResponseCode_Failure);
+			((BackendResponse) inquiryResponse).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
+		}
+		CFIXMsg request = (CMTransferInquiryFromBank)billPayInquiryfromBank;
+		inquiryResponse.setBillerCode(billPayInquiryToBank.getBillerCode());
+		inquiryResponse.setReceiverMDN(billPayInquiryToBank.getInvoiceNo());
+		//inquiryResponse.setAdditionalInfo(billPayInquiryfromBank.getInfo3());
+		if(inquiryResponse.getResult().equals(CmFinoFIX.ResponseCode_Success))
+		{
+
+			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
+			sctlQuery.setId(inquiryResponse.getServiceChargeTransactionLogID());
+			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			Long ttID = null;
+			if(CollectionUtils.isNotEmpty(list))
+			{
+			ttID=list.get(0).getTransactionTypeID();
+			}
+			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
+			String txnName=null;
+			if(null!=ttDAO.getById(ttID))
+			{
+			txnName = ttDAO.getById(ttID).getTransactionName();
+			}
+			if((StringUtils.isNotBlank(txnName)) && (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(txnName) || ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(txnName)))
+			{
+				inquiryResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseInquiry.getInternalErrorCode());
+			}else{
+				inquiryResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
+			}			
+		}
+		if(((BackendResponse)inquiryResponse).getResult() == CmFinoFIX.ResponseCode_Success){
+			billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_INQUIRY_COMPLETED);
+		}else {
+			billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_INQUIRY_FAILED);
 		}
 		mceMessage.setRequest(request);
 		mceMessage.setResponse(inquiryResponse);
@@ -204,8 +391,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		return mceMessage;
 
 	}
+	
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayMoneyTransferSourceToDestination(MCEMessage mceMessage)
 	{
 		log.info("BillPaymentServiceImpl :: billPayMoneyTransferSourceToDestination mceMessage="+mceMessage);
@@ -284,7 +472,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayMoneyTransferCompletionSourceToDestination(MCEMessage mceMessage)
 	{
 
@@ -293,7 +481,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		CMBSIMBillPaymentFromBank billPayfromBank = (CMBSIMBillPaymentFromBank)mceMessage.getResponse();
 		BackendResponse Response;
 		try {
-		Response = (BackendResponse)bankService.onTransferConfirmationFromBank((CMMoneyTransferToBank)inquiryResponse,billPayfromBank);
+		Response = (BackendResponse)bankService.onTransferConfirmationFromBank((CMMoneyTransferToBank)billPayToBank,billPayfromBank);
 		} catch(Exception e){
 			log.error(e.getMessage());
 			Response = createResponseObject();
@@ -330,13 +518,225 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			}
 		
 			}
+		
+		// Handle Notifications for PLN Billers separately
+		//if(billPayToBank.getBillerCode() != null && plnBillers.contains(billPayToBank.getBillerCode())){
+		if(billPayToBank.getBillerCode() != null && isPlnBiller(billPayToBank.getBillerCode())){
+					//Setting the parameters as per PLN format
+			if(Response.getResult().equals(CmFinoFIX.ResponseCode_Success)){
+				String webNotification = "Transaction Date time " + billPayToBank.getTransferTime().toString();
+				String[] DE62 = billPayfromBank.getInfo1().split("\\|");
+				
+				for(String string : DE62){
+					for (String substring : keywords) {
+						if(string.matches("(?i).*"+substring+".*")){
+							webNotification = webNotification + "|" + string;
+							break;
+						}
+					}
+				}
+				
+				String smsNotification = billPayToBank.getTransferTime().toString();
+				
+				if(plnPrepaidBillers.contains(billPayToBank.getBillerCode()))
+				{
+					for (String key : plnPrepaidSMSKeyWords) {
+						for(String string : DE62){
+							if(string.matches("(?i).*"+key+".*")){
+								String value = string.substring(string.indexOf(":") + 1).trim();
+								smsNotification = smsNotification + "|" + plnPrepaidSMSKeyValues.get(key) + value;
+								break;
+							}
+						}	
+					}
+				} 
+				else if(plnPostpaidBillers.contains(billPayToBank.getBillerCode()))
+				{
+					for (String key : plnPostpaidSMSKeyWords) {
+						for(String string : DE62){
+							if(string.matches("(?i).*"+key+".*")){
+								String value = string.substring(string.indexOf(":") + 1).trim();
+								smsNotification = smsNotification + "|" + plnpostPaidSMSKeyValues.get(key) + value;
+								break;
+							}
+						}	
+					}
+				}
+				else if(plnNonTaglisBillers.contains(billPayToBank.getBillerCode()))
+				{
+					for (String key : plnNonTaglisSMSKeyWords) {
+						for(String string : DE62){
+							if(string.matches("(?i).*"+key+".*")){
+								String value = string.substring(string.indexOf(":") + 1).trim();
+								smsNotification = smsNotification + "|" + plnNonTaglisSMSKeyValues.get(key) + value;
+								break;
+							}
+						}	
+					}
+				}
+	
+				Response.setAdditionalInfo(webNotification);
+				Response.setAdditionalInfoAsSMS(smsNotification + "|" +  "SUKSES");
+				Response.setInvoiceNumber(billPayToBank.getInvoiceNo());
+			}
+			else {	
+				Response.setAdditionalInfo(billPayfromBank.getInfo1());
+				Response.setAdditionalInfoAsSMS(billPayfromBank.getInfo1());
+			}
+			Response.setInternalErrorCode(getPLNErrorCode(Response.getResult(), billPayfromBank.getResponseCode()));
+			Response.setExternalResponseCode(null);//Setting ExternalResponseCode to null to compulsorily use InternalErrorCode
+		}
+				
 		mceMessage.setRequest(request);
 		mceMessage.setResponse(Response);
         return mceMessage;
 
 	}
+	
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentMoneyTransferSourceToDestination(MCEMessage mceMessage)
+	{
+		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferSourceToDestination mceMessage="+mceMessage);
+		CMQRPayment qrPayment = (CMQRPayment)mceMessage.getRequest();
+		try {
+		inquiryResponse = (CMMoneyTransferToBank)bankService.onTransferConfirmationToBank(qrPayment);
+		} catch(Exception e){
+		log.error(e.getMessage());
+		//handle exception here <---
+		}
+		CMQRPaymentToBank response = new CMQRPaymentToBank();
+		response.setAmount(inquiryResponse.getAmount());
+		response.setBankCode(inquiryResponse.getBankCode());
+		response.setDestCardPAN(inquiryResponse.getDestCardPAN());
+		response.setDestMDN(inquiryResponse.getDestMDN());
+		String mdn = StringUtilities.leftPadWithCharacter(qrPayment.getSourceMDN(), 13, "0");
+		String mdngen = MfinoUtil.CheckDigitCalculation(mdn);
+		response.setProcessingCodeDE3(inquiryResponse.getProcessingCode());
+		response.setSourceMDN(qrPayment.getSourceMDN());
+		response.setInfo2(mdngen);
+		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
+		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
+		mbpquery.setBillerCode(qrPayment.getBillerCode());
+		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		if(results.size() > 0){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
+			}else {
+				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
+			}
+			
+		}
+		else{
+			response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
+		}
+		
+		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
+		response.setUICategory(inquiryResponse.getUICategory());
+		response.setSourcePocketID(inquiryResponse.getSourcePocketID());
+		response.setDestPocketID(inquiryResponse.getDestPocketID());
+		response.setPin(inquiryResponse.getPin());
+		response.setSourceCardPAN(inquiryResponse.getSourceCardPAN());
+		response.setTransferID(inquiryResponse.getTransferID());
+		response.setTransactionID(inquiryResponse.getTransactionID());
+		//response.setTransferTime(inquiryResponse.getTransferTime());
+		Timestamp ts = DateTimeUtil.getGMTTime();
+		response.setTransferTime(ts);
+		response.setDestCardPAN(inquiryResponse.getDestCardPAN());
+		response.setDestinationBankAccountType(inquiryResponse.getDestinationBankAccountType());
+		response.setOriginalReferenceID(inquiryResponse.getOriginalReferenceID());
+		response.setSourceBankAccountType(inquiryResponse.getSourceBankAccountType());
+		response.setDestinationBankAccountType(inquiryResponse.getDestinationBankAccountType());
+		response.setServiceChargeTransactionLogID(inquiryResponse.getServiceChargeTransactionLogID());
+		response.setLanguage(inquiryResponse.getLanguage());
+		response.setBillerCode(qrPayment.getBillerCode());
+		response.setInvoiceNo(qrPayment.getInvoiceNumber());
+		response.setPaymentMode(qrPayment.getPaymentMode());
+		response.setUserAPIKey(qrPayment.getUserAPIKey());
+		response.setMerchantData(qrPayment.getMerchantData());
+		mceMessage.setRequest(qrPayment);
+		mceMessage.setDestinationQueue(sourceToDestQueue);
+		response.setInfo1(qrPayment.getInvoiceNumber());
+		IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
+		IntegrationSummaryQuery query = new IntegrationSummaryQuery();
+		query.setSctlID(inquiryResponse.getServiceChargeTransactionLogID());
+		List<IntegrationSummary> iSummaryList = integrationSummaryDao.get(query);
+		IntegrationSummary iSummary = null;
+		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
+			iSummary = iSummaryList.get(0);
+			log.info("Processing code"+iSummary.getReconcilationID1());
+			response.setInfo3(iSummary.getReconcilationID2());
+		}
+		billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_REQUESTED);
+		mceMessage.setResponse(response);
+
+		return mceMessage;
+
+	}
+
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentMoneyTransferCompletionSourceToDestination(MCEMessage mceMessage)
+	{
+
+		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferCompletionSourceToDestination mceMessage="+mceMessage);
+		CMQRPaymentToBank qrPayToBank = (CMQRPaymentToBank)mceMessage.getRequest();
+		CMQRPaymentFromBank qrPayFromBank = (CMQRPaymentFromBank)mceMessage.getResponse();
+		BackendResponse Response;
+
+		//make destination queue null so that it will be picked up from class based dynamic router ***
+		mceMessage.setDestinationQueue(null);
+		try {
+		Response = (BackendResponse)bankService.onTransferConfirmationFromBank((CMMoneyTransferToBank)qrPayToBank,qrPayFromBank);
+		} catch(Exception e){
+			log.error(e.getMessage());
+			Response = createResponseObject();
+			((BackendResponse) Response).copy(inquiryResponse);
+			((BackendResponse) Response).setResult(CmFinoFIX.ResponseCode_Failure);
+			((BackendResponse) Response).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
+		}
+		Response.setAdditionalInfo(qrPayFromBank.getInfo1());
+		CFIXMsg request = (CMMoneyTransferFromBank)qrPayFromBank;
+		
+		Response.setBillerCode(qrPayToBank.getBillerCode());
+		Response.setInvoiceNumber(qrPayToBank.getInvoiceNo());
+		if(Response.getResult().equals(CmFinoFIX.ResponseCode_Success)){
+			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
+			sctlQuery.setId(Response.getServiceChargeTransactionLogID());
+			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			Long ttID = null;
+			if(CollectionUtils.isNotEmpty(list))
+			{
+			ttID=list.get(0).getTransactionTypeID();
+			}
+			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
+			String txnName=null;
+			if(null!=ttDAO.getById(ttID))
+			{
+			txnName = ttDAO.getById(ttID).getTransactionName();
+			}
+			if((StringUtils.isNotBlank(txnName)) && (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(txnName) || ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(txnName)))
+			{
+				Response.setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccess.getInternalErrorCode());
+			}else{
+				Response.setInternalErrorCode(NotificationCodes.BillPayCompletedToSender.getInternalErrorCode());
+			}
+			}
+		if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
+			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_COMPLETED);
+		}else {
+			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_FAILED);
+		}
+		mceMessage.setRequest(request);
+		mceMessage.setResponse(Response);
+        return mceMessage;
+	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayReversalToBank(MCEMessage mceMessage){
 		CMBSIMBillPaymentToBank billPayrevToBank = (CMBSIMBillPaymentToBank)mceMessage.getRequest();
 		NoISOResponseMsg NoISORes = (NoISOResponseMsg)mceMessage.getResponse();
@@ -366,7 +766,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 	}
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayReversalFromBank(MCEMessage mceMessage){
 		CMBSIMBillPaymentReversalToBank billPayrevToBank = (CMBSIMBillPaymentReversalToBank)mceMessage.getRequest();
 		CMBSIMBillPaymentReversalFromBank billPayrevFromBank = (CMBSIMBillPaymentReversalFromBank)mceMessage.getResponse();
@@ -375,6 +775,55 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mceMessage.setResponse(Response);
 		return mceMessage;
 		
+	}
+	
+
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentReversalToBank(MCEMessage mceMessage){
+		CMQRPaymentToBank billPayrevToBank = (CMQRPaymentToBank)mceMessage.getRequest();
+		NoISOResponseMsg NoISORes = (NoISOResponseMsg)mceMessage.getResponse();
+		CMMoneyTransferReversalToBank billPayrev = (CMMoneyTransferReversalToBank)bankService.onTransferReversalToBank(billPayrevToBank,NoISORes);
+		mceMessage.setRequest(NoISORes);
+		CMQRPaymentReversalToBank billPayrevtobank = new CMQRPaymentReversalToBank();
+		billPayrevtobank.setBankSystemTraceAuditNumber(billPayrev.getBankSystemTraceAuditNumber());
+		billPayrevtobank.setTransactionID(NoISORes.getTransactionID());
+		billPayrevtobank.setBillerCode(billPayrevToBank.getBillerCode());
+		billPayrevtobank.setBankRetrievalReferenceNumber(billPayrev.getBankRetrievalReferenceNumber());
+		billPayrevtobank.setBankCode(inquiryResponse.getBankCode());
+		billPayrevtobank.setAmount(billPayrev.getAmount());
+		billPayrevtobank.setSourceMDN(billPayrev.getSourceMDN());
+		billPayrevtobank.setTransferID(billPayrev.getTransferID());
+		billPayrevtobank.setTransferTime(billPayrev.getTransferTime());
+		billPayrevtobank.setLanguage(inquiryResponse.getLanguage());
+		if(billPayrevToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || billPayrevToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)){
+			billPayrevtobank.setProcessingCode("56");
+		}else{
+			billPayrevtobank.setProcessingCode("50");
+		}
+		billPayrevtobank.setSourceCardPAN(billPayrevToBank.getSourceCardPAN());
+		log.info("BillPaymentServiceImpl :: set prefix processing code :" + billPayrevtobank.getProcessingCode());
+		billPaymentsService.updateBillPayStatus(billPayrev.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_REVERSAL_REQUESTED);
+		mceMessage.setResponse(billPayrevtobank);
+		mceMessage.setDestinationQueue(reversalQueue);
+		return mceMessage;
+
+	}
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentReversalFromBank(MCEMessage mceMessage){
+		CMQRPaymentReversalToBank billPayrevToBank = (CMQRPaymentReversalToBank)mceMessage.getRequest();
+		CMQRPaymentReversalFromBank billPayrevFromBank = (CMQRPaymentReversalFromBank)mceMessage.getResponse();
+		BackendResponse Response = (BackendResponse)bankService.onTransferReversalFromBank(billPayrevToBank,billPayrevFromBank);
+		if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
+			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_REVERSAL_COMPLETED);
+		}else {
+			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_REVERSAL_FAILED);
+		}
+		mceMessage.setRequest(billPayrevFromBank);
+		mceMessage.setResponse(Response);
+		return mceMessage;
+
 	}
 
 	public BankService getBankService() {
@@ -387,7 +836,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	}
 
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayAmountInquiry(MCEMessage mceMessage) {
 		CMBSIMBillPayInquiry billPayInquiry = (CMBSIMBillPayInquiry)mceMessage.getRequest();
 		mceMessage.setDestinationQueue(AmountFromBankQueue);
@@ -426,18 +875,20 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
         response.setInvoiceNo(billPayInquiry.getInvoiceNumber());
         response.setServiceChargeTransactionLogID(billPayInquiry.getServiceChargeTransactionLogID());
         response.setPaymentMode(billPayInquiry.getPaymentMode());
- 		if(StringUtils.isNotBlank(billPayInquiry.getAmount().toString()) && CmFinoFIX.PaymentMode_PackageType.equalsIgnoreCase(billPayInquiry.getPaymentMode())) 
- 		{ 
- 			response.setAmount(billPayInquiry.getAmount()); 
- 		} 
- 		response.setCharges(billPayInquiry.getCharges());
-		mceMessage.setRequest(billPayInquiry);
+        if(billPayInquiry.getAmount()!=null)
+        	response.setAmount(billPayInquiry.getAmount());
+        if(StringUtils.isNotBlank(billPayInquiry.getAmount().toString()) && CmFinoFIX.PaymentMode_PackageType.equalsIgnoreCase(billPayInquiry.getPaymentMode()))
+        {
+        response.setAmount(billPayInquiry.getAmount());
+        }
+        response.setCharges(billPayInquiry.getCharges());
+        mceMessage.setRequest(billPayInquiry);
         mceMessage.setResponse(response);
 		return mceMessage;
 	}
 
 	@Override
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayAmountInquiryFromBank(MCEMessage mceMessage) {
 		log.info("BillPaymentServiceImpl :: billPayAmountInquiryFromBank mceMessage="+mceMessage);
 		CMBSIMGetAmountToBiller billPayInquiryToBank = (CMBSIMGetAmountToBiller)mceMessage.getRequest();
@@ -450,6 +901,15 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		
 		Subscriber agentsub = partner.getSubscriber();
 		SubscriberMDN agentmdn = agentsub.getSubscriberMDNFromSubscriberID().iterator().next();	*/
+		
+		/*
+		 * for pln billers amount returned by ISO message will be zero and hence we get it from billPayInquiryToBank
+		 */
+		//if(plnBillers.contains(billPayInquiryToBank.getBillerCode())){
+		if(isPlnBiller(billPayInquiryToBank.getBillerCode())){
+			billPayInquiryfromBank.setAmount(billPayInquiryToBank.getAmount());
+		}
+		
 		ServiceCharge sc=new ServiceCharge();
 		sc.setChannelCodeId(billPayInquiryToBank.getTransactionID());
 		sc.setDestMDN(billPayInquiryToBank.getDestMDN());
@@ -461,9 +921,24 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		sc.setTransactionLogId(billPayInquiryToBank.getTransactionID());
 		sc.setInvoiceNo(billPayInquiryToBank.getInvoiceNo());
 		sc.setTransactionIdentifier(billPayInquiryToBank.getTransactionIdentifier());
+		sc.setSctlId(billPayInquiryToBank.getServiceChargeTransactionLogID());
 		Long sctlID = billPayInquiryToBank.getServiceChargeTransactionLogID();
+		//Updating amount and charges after getting pending amount
+		Transaction transaction=null;
+		BigDecimal charges = BigDecimal.ZERO;
+		try{
+			transaction = transactionChargingService.getCharge(sc);
+		}catch (InvalidServiceException e) {
+			log.error("Exception occured in getting charges",e);
+		} catch (InvalidChargeDefinitionException e) {
+			log.error(e.getMessage());
+		}
+
+		if(transaction != null && transaction.getAmountTowardsCharges() != null)
+			charges = transaction.getAmountTowardsCharges();
+		log.info("BillPaymentServiceImpl :: billPayAmountInquiryFromBank updating 'online' payment amount="+sc.getTransactionAmount()+" charges="+charges);
 		updateAmount(sctlID,sc.getTransactionAmount());
-		billPayInquiryToBank.setServiceChargeTransactionLogID(sctlID);
+		updateCharges(sctlID, charges);
 		CMBillPayInquiry billPayInquiry = new CMBillPayInquiry();
 		billPayInquiry.setCharges(billPayInquiryToBank.getCharges());
 		billPayInquiry.setAmount(billPayInquiryfromBank.getAmount());
@@ -536,12 +1011,20 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			response.setInternalErrorCode(rs.getInternalErrorCode());
 			response.setPaymentInquiryDetails(sctlID.toString());
 			
+			// Handle Notifications for PLN Billers separately, setting only for failure case
+			//if(billPayInquiryToBank.getBillerCode() != null && plnBillers.contains(billPayInquiryToBank.getBillerCode())){
+			if(billPayInquiryToBank.getBillerCode() != null && isPlnBiller(billPayInquiryToBank.getBillerCode())){
+				response.setInternalErrorCode(getPLNErrorCode(CmFinoFIX.ResponseCode_Failure, billPayInquiryfromBank.getResponseCode()));
+				response.setExternalResponseCode(null);
+			}
+			
 			mceMessage.setRequest(billPayInquiryfromBank);
 			mceMessage.setResponse(response);
 		}
 		
 		return mceMessage;
 	}
+	
 	
 	private void updateCharges(Long sctlID, BigDecimal charges) {
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
@@ -569,5 +1052,112 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			sctlDAO.save(sctl);
 		}
 		
+	}
+	
+	public boolean isPlnBiller(String billerCode){
+		if(plnPrepaidBillers.contains(billerCode) || plnPostpaidBillers.contains(billerCode) || plnNonTaglisBillers.contains(billerCode)){	
+			return true;
+		}
+		return false;
+	}
+	
+	private Integer getPLNErrorCode(Integer result, String responseCode) {
+		if(result.equals(CmFinoFIX.ResponseCode_Success)){
+			return NotificationCodes.PLNSuccess.getInternalErrorCode();
+		}else if(result.equals(CmFinoFIX.ResponseCode_Failure)){
+			if(responseCode.equals("14"))
+				return NotificationCodes.PLNWrongIDPELID.getInternalErrorCode();
+			else if(responseCode.equals("15"))
+				return NotificationCodes.PLNWrongMeterID.getInternalErrorCode();
+			else if(responseCode.equals("16"))
+				return NotificationCodes.PLNBillIsPending.getInternalErrorCode();
+			else if(responseCode.equals("41"))
+				return NotificationCodes.PLNUnderPurchase.getInternalErrorCode();
+			else if(responseCode.equals("47"))
+				return NotificationCodes.PLNOverPurchase.getInternalErrorCode();
+			else if(responseCode.equals("48"))
+				return NotificationCodes.PLNRegNoExpired.getInternalErrorCode();
+			else if(responseCode.equals("88"))
+				return NotificationCodes.PLNBillAlreadyPaid.getInternalErrorCode();
+			else if(responseCode.equals("89"))
+				return NotificationCodes.PLNLatestBillNA.getInternalErrorCode();
+			else if(responseCode.equals("98"))
+				return NotificationCodes.PLNTimeout.getInternalErrorCode();
+		}
+		return NotificationCodes.BankAccountToBankAccountFailed.getInternalErrorCode(); // return some default
+	}
+
+	public Set<String> getPlnNonTaglisBillers() {
+		return plnNonTaglisBillers;
+	}
+
+	public void setPlnNonTaglisBillers(Set<String> plnNonTaglisBillers) {
+		this.plnNonTaglisBillers = plnNonTaglisBillers;
+	}
+
+	public Set<String> getPlnPostpaidBillers() {
+		return plnPostpaidBillers;
+	}
+
+	public void setPlnPostpaidBillers(Set<String> plnPostpaidBillers) {
+		this.plnPostpaidBillers = plnPostpaidBillers;
+	}
+
+	public Set<String> getPlnPrepaidBillers() {
+		return plnPrepaidBillers;
+	}
+
+	public void setPlnPrepaidBillers(Set<String> plnPrepaidBillers) {
+		this.plnPrepaidBillers = plnPrepaidBillers;
+	}
+
+	public Map<String, String> getPlnPrepaidSMSKeyValues() {
+		return plnPrepaidSMSKeyValues;
+	}
+
+	public void setPlnPrepaidSMSKeyValues(Map<String, String> plnPrepaidSMSKeyValues) {
+		this.plnPrepaidSMSKeyValues = plnPrepaidSMSKeyValues;
+	}
+
+	public Map<String, String> getPlnpostPaidSMSKeyValues() {
+		return plnpostPaidSMSKeyValues;
+	}
+
+	public void setPlnpostPaidSMSKeyValues(
+			Map<String, String> plnpostPaidSMSKeyValues) {
+		this.plnpostPaidSMSKeyValues = plnpostPaidSMSKeyValues;
+	}
+
+	public Map<String, String> getPlnNonTaglisSMSKeyValues() {
+		return plnNonTaglisSMSKeyValues;
+	}
+
+	public void setPlnNonTaglisSMSKeyValues(
+			Map<String, String> plnNonTaglisSMSKeyValues) {
+		this.plnNonTaglisSMSKeyValues = plnNonTaglisSMSKeyValues;
+	}
+
+	public List<String> getPlnPrepaidSMSKeyWords() {
+		return plnPrepaidSMSKeyWords;
+	}
+
+	public void setPlnPrepaidSMSKeyWords(List<String> plnPrepaidSMSKeyWords) {
+		this.plnPrepaidSMSKeyWords = plnPrepaidSMSKeyWords;
+	}
+
+	public List<String> getPlnPostpaidSMSKeyWords() {
+		return plnPostpaidSMSKeyWords;
+	}
+
+	public void setPlnPostpaidSMSKeyWords(List<String> plnPostpaidSMSKeyWords) {
+		this.plnPostpaidSMSKeyWords = plnPostpaidSMSKeyWords;
+	}
+
+	public List<String> getPlnNonTaglisSMSKeyWords() {
+		return plnNonTaglisSMSKeyWords;
+	}
+
+	public void setPlnNonTaglisSMSKeyWords(List<String> plnNonTaglisSMSKeyWords) {
+		this.plnNonTaglisSMSKeyWords = plnNonTaglisSMSKeyWords;
 	}
 }

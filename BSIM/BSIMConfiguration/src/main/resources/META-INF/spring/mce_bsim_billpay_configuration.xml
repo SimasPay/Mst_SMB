@@ -36,9 +36,11 @@
 
 <context:annotation-config />
 	
-	<osgi:reference id="transactionChargingServiceImpl" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" />
-	
   <osgi:reference id="bankService" interface="com.mfino.mce.backend.BankService"/>
+ 
+  <osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService"/>
+  <osgi:reference id="subscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+  
 	<!-- define the jasypt properties parser with the given password to be used -->
 	<bean id="jasypt"
 		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
@@ -80,41 +82,209 @@
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
 	<bean id="billPayService" class="com.mfino.billpayments.bsim.impl.BillPaymentServiceImpl">
 	    <property name="bankService" ref="bankService"/>
-   		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
-	</bean>	
+	    <property name="billPaymentsService" ref="billPaymentsService"/>
+	    <!-- <property name="plnBillers">
+	        <set>
+	           <value>301211</value>
+	           <value>301422</value>
+	           <value>305111</value>
+	        </set>
+     	</property> -->
+     	<property name="plnPrepaidBillers">
+	        <set>
+	           <value>301422</value>
+	        </set>
+     	</property>
+     	<property name="plnPostpaidBillers">
+	        <set>
+	           <value>301211</value>
+	        </set>
+     	</property>
+     	<property name="plnNonTaglisBillers">
+	        <set>
+	           <value>305111</value>
+	        </set>
+     	</property>
+     	<property name="keywords">
+	        <set>
+			 <value>ref</value>
+			 <value>nama</value>
+			 <value>meter</value>
+			 <value>idpel</value>
+			 <value>bayar</value>
+			 <value>kwh</value>
+			 <value>token</value>
+			 <value>tariff</value>
+			 <value>bl/th</value>
+			 <value>registrasi</value>
+			 <value>bank</value>
+			 <value>tag</value>
+			 <value>name</value>
+			 <value>tarif</value>
+			 <value>transaksi</value>
+			 <value>informasi</value>
+			 <value>pln</value>
+			 <value>terdekat</value>
+			 <value>tgl</value>
+			 <value>biaya</value>
+	        </set>
+     	</property>
+     	
+     	<!-- List of keywords that are part of the entries to be considered while sending sms for pln prepaid billers -->
+     	<property name="plnPrepaidSMSKeyWords">
+	        <list>
+			 <value>no ref</value>
+			 <value>nama</value>
+			 <value>no meter</value>
+			 <value>idpel</value>
+			 <value>rp bayar</value>
+			 <value>kwh</value>
+			 <value>token</value>
+	        </list>
+     	</property>
+     	
+     	<!-- List of keywords that are part of the entries to be considered while sending sms for pln postpaid billers -->
+     	<property name="plnPostpaidSMSKeyWords">
+	        <list>
+			 <value>no ref</value>
+			 <value>idpel</value>
+			 <value>nama</value>
+			 <value>tariff</value>
+			 <value>bl/th</value>
+			 <value>stand meter</value>
+			 <value>rp tag pln</value>
+			 <value>bank</value>
+	        </list>
+     	</property>
+     	
+     	<!-- List of keywords that are part of the entries to be considered while sending sms for pln non-taglis billers -->
+     	<property name="plnNonTaglisSMSKeyWords">
+	        <list>
+			 <value>ref num</value>
+			 <value>transaksi</value>
+			 <value>no registrasi</value>
+			 <value>tgl registrasi</value>
+			 <value>nama</value>
+			 <value>idpel</value>
+			 <value>biaya</value>
+			 <value>bank</value>
+	        </list>
+     	</property>
+     	 
+     	<!-- Mapping of keywords against the values to be displayed in entries sents as sms for pln prepaid billers. 
+     	Ideally these entries should match with the list given in  plnPrepaidSMSKeyWords -->    	
+     	<property name="plnPrepaidSMSKeyValues">
+			<map>
+			    <entry key="no ref" value="" />
+				<entry key="nama" value="" />				
+				<entry key="no meter" value="" />
+				<entry key="idpel" value="" />
+				<entry key="rp bayar" value="" />
+				<entry key="kwh" value="kWh " />
+				<entry key="token" value="Stroom/Token " />				
+			</map>
+		</property>
+		
+		<!-- Mapping of keywords against the values to be displayed in entries sents as sms for pln postpaid billers. 
+     	Ideally these entries should match with the list given in  plnPostepaidSMSKeyWords -->    
+		<property name="plnpostPaidSMSKeyValues">
+			<map>
+			    <entry key="no ref" value="" />
+				<entry key="idpel" value="" />
+				<entry key="nama" value="" />				
+				<entry key="tariff" value="" />
+				<entry key="bl/th" value="Bln" />
+				<entry key="stand meter" value="Std" />
+				<entry key="rp tag pln" value=" " />
+				<entry key="bank" value="Adm " />				
+			</map>
+		</property>
+		
+		<!-- Mapping of keywords against the values to be displayed in entries sents as sms for pln non-taglis billers. 
+     	Ideally these entries should match with the list given in  plnNonTaglisSMSKeyWords -->    
+		<property name="plnNonTaglisSMSKeyValues">
+			<map>
+			    <entry key="ref num" value="" />
+			    <entry key="transaksi" value="" />
+				<entry key="no registrasi" value="" />				
+				<entry key="tgl registrasi" value="" />
+				<entry key="nama" value="" />
+				<entry key="idpel" value="" />
+				<entry key="biaya" value="" />
+				<entry key="bank" value="Adm " />				
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="ccbillPayService" class="com.mfino.billpayments.bsim.BillInquiryProcessor" >
+		<property name="subscriberService" ref="subscriberServiceImpl"/>
+	</bean>
 	
 	<camelContext id="bsimContext" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
         <route> 
-			<from uri="jms:bsimBillPayQueue?disableReplyTo=true" />
+			<from uri="jms:bsimBillPayQueue" />
 			<filter>
-				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayInquiry'</simple> 
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPayInquiry'</simple>
 				<filter>
-				<simple>${in.body.request.getNarration} == 'online'</simple> <!-- Confirmation Flow -->
-		        <to uri="bean:billPayService?method=billPayAmountInquiry"/>
-		           <filter>
-		               <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
-		               <to uri="jms:bsimISOQueue?disableReplyTo=true"/>
-		           </filter>
-		           <filter>
-		               <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
-		              <to uri="jms:notificationQueue?disableReplyTo=true"/>
-		           </filter>
-				   
-			    </filter>
-			   <filter>
-				<simple>${in.body.request.getNarration} != 'online'</simple> 
-				<to uri="bean:billPayService?method=billPayMoneyTransferInquirySourceToDestination"/>
-				<filter>
+					<simple>${in.body.request.getPaymentMode} == 'QRPayment'</simple> 
+			  		<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquirySourceToDestination"/>
+					<filter>
 		               <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
 		               <to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
-		        </filter>
-				<filter>
+		        	</filter>
+					<filter>
 		               <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
 		              <to uri="jms:notificationQueue?disableReplyTo=true"/>
-		        </filter>
+		        	</filter>
+				</filter>
+				<filter>
+					<simple>${in.body.request.getPaymentMode} != 'QRPayment'</simple> 
+						<filter>
+							<simple>${in.body.request.getNarration} == 'online'</simple> <!-- Confirmation Flow -->
+		       	 			<to uri="bean:billPayService?method=billPayAmountInquiry"/>
+		           				<filter>
+		               				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
+		               				<to uri="jms:bsimISOQueue?disableReplyTo=true"/>
+		           				</filter>
+		           				<filter>
+		               				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+		              				<to uri="jms:notificationQueue?disableReplyTo=true"/>
+		           				</filter>
+			    		</filter>
+			  			 <filter>
+							<simple>${in.body.request.getNarration} != 'online'</simple> 
+							<to uri="bean:billPayService?method=billPayMoneyTransferInquirySourceToDestination"/>
+								<filter>
+		               				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
+		               				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+		        				</filter>
+		        		</filter>
+						<filter>
+		               		<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+		              		<to uri="jms:notificationQueue?disableReplyTo=true"/>
+		       			 </filter>
 			    </filter>
-				
-			</filter> 
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillInquiry'</simple> <!-- Get Amount Flow -->
+				<filter>
+					<simple>${in.body.request.getNarration} == 'ccpayment'</simple> <!-- Confirmation Flow -->
+       	 			<to uri="bean:ccbillPayService?method=constructRequestMessage"/>
+           				<filter>
+               				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMGetAmountToBiller'</simple>
+               				<to uri="jms:bsimISOQueue?disableReplyTo=true"/>
+           				</filter>
+           				<filter>
+               				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+              				<to uri="jms:notificationQueue?disableReplyTo=true"/>
+           				</filter>
+	    		</filter>
+			</filter>
+			<filter>
+				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMQRPayment'</simple> <!-- Confirmation Flow -->
+				<to uri="bean:billPayService?method=qrPaymentMoneyTransferSourceToDestination"/>
+				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+			</filter>
 			<filter>
 				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPay'</simple> <!-- Confirmation Flow -->
 				<to uri="bean:billPayService?method=billPayMoneyTransferSourceToDestination"/>
@@ -127,12 +297,44 @@
 		</route>
 		
         <route>
-            <from uri="jms:bsimsourceToDestInquiryQueue?disableReplyTo=true" />
-            <to uri="bean:billPayService?method=billPayMoneyTransferInquiryCompletionSourceToDestination"/>
-            <to uri="jms:notificationQueue?disableReplyTo=true"/>
+            <from uri="jms:bsimsourceToDestInquiryQueue" />
+            <filter>
+				<simple>${in.body.request.getPaymentMode} != 'QRPayment'</simple> 
+            		<to uri="bean:billPayService?method=billPayMoneyTransferInquiryCompletionSourceToDestination"/>
+            		<to uri="jms:notificationQueue?disableReplyTo=true"/>
+            </filter>
+            <filter>
+				<simple>${in.body.request.getPaymentMode} == 'QRPayment'</simple> 
+            		<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquiryCompletionSourceToDestination"/>
+            		<to uri="jms:notificationQueue?disableReplyTo=true"/>
+            </filter>
         </route>
         <route>
-            <from uri="jms:bsimsourceToDestQueue?disableReplyTo=true" />
+            <from uri="jms:bsimsourceToDestQueue" />
+            <filter>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBank'</simple>
+                <filter>
+		             <simple>${in.body.response.getResponseCode} == '00'</simple>
+		             <to uri="bean:billPayService?method=billPayTransferCompletionSourceToDestination" />
+		             <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		    	</filter>
+		    	<filter>
+		             <simple>${in.body.response.getResponseCode} != '00'</simple>
+		             <to uri="jms:bsimreversalQueue?disableReplyTo=true"/>
+		    	</filter>
+            </filter>  
+            <filter>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentFromBank'</simple>
+                <filter>
+		             <simple>${in.body.response.getResponseCode} == '00'</simple>
+		             <to uri="jms:postBankResponseQueue?disableReplyTo=true" />
+		    	</filter>
+		    	<filter>
+		             <simple>${in.body.response.getResponseCode} != '00'</simple>
+		             <to uri="bean:billPayService?method=qrPaymentMoneyTransferCompletionSourceToDestination" />
+		              <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		    	</filter>  
+            </filter>
             <filter>
                 <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentFromBank'</simple>
                 <to uri="bean:billPayService?method=billPayMoneyTransferCompletionSourceToDestination"/>
@@ -140,20 +342,59 @@
             </filter>
            <filter>
                <simple>${body.response} is 'com.mfino.domain.NoISOResponseMsg'</simple>
-               <to uri="bean:billPayService?method=billPayReversalToBank"/>
-               <to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+               <filter>
+               		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentToBank'</simple>
+               		<to uri="bean:billPayService?method=qrPaymentReversalToBank"/>
+               		<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+               	</filter>
+               	<filter>
+               		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentToBank'</simple>
+               		<to uri="bean:billPayService?method=billPayReversalToBank"/>
+               		<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+               	</filter>     	
            </filter>
         </route>
         <route>
-            <from uri="jms:bsimAmountFromBankQueue?disableReplyTo=true" />
-            <to uri="bean:billPayService?method=billPayAmountInquiryFromBank"/>
+            <from uri="jms:bsimAmountFromBankQueue" />
+            <filter>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMGetAmountFromBiller'</simple>
+				<to uri="bean:billPayService?method=billPayAmountInquiryFromBank"/>
+            	<to uri="jms:notificationQueue?disableReplyTo=true"/>
+            </filter>            
+        </route>
+        <route>
+            <from uri="jms:bsimBillInquiryResponseQueue" />
+            <to uri="bean:ccbillPayService?method=constructReplyMessage"/>
             <to uri="jms:notificationQueue?disableReplyTo=true"/>
         </route>
         <route>
-            <from uri="jms:bsimreversalQueue?disableReplyTo=true" />
-            <to uri="bean:billPayService?method=billPayReversalFromBank"/>
-            <to uri="jms:notificationQueue?disableReplyTo=true"/>
+            <from uri="jms:bsimreversalQueue" />
+            <filter>
+               		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentReversalToBank'</simple>
+               		<to uri="bean:billPayService?method=qrPaymentReversalFromBank"/>
+          			<to uri="jms:notificationQueue?disableReplyTo=true"/>
+            </filter>
+            <filter>
+               		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentReversalToBank'</simple>
+               		<to uri="bean:billPayService?method=billPayReversalFromBank"/>
+          		    <to uri="jms:notificationQueue?disableReplyTo=true"/>
+            </filter>
        </route>
+	   <route>
+	   <from uri="jms:acknowledgementServiceQueue?disableReplyTo=true" />
+            <filter>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBank'</simple>
+                <filter>
+		             <simple>${in.body.response.getResponseCode} == '00'</simple>
+		             <to uri="bean:billPayService?method=billPayMoneyTransferCompletionSourceToDestination" />
+		             <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		    	</filter>
+		    	<filter>
+		             <simple>${in.body.response.getResponseCode} != '00'</simple>
+		             <to uri="jms:bsimreversalQueue?disableReplyTo=true"/>
+		    	</filter>
+            </filter>
+		</route>
   	</camelContext>
 
 	<bean id="camelTracer" class="org.apache.camel.processor.interceptor.Tracer">

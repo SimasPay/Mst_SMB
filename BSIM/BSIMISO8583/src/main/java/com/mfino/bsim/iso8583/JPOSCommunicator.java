@@ -46,8 +46,8 @@ public class JPOSCommunicator {
 		Timestamp lastKETime = TimestampRegistrar.getLastKeyExchangeTime(muxName);
 		Timestamp presentTime = new Timestamp();
 		boolean fail = false;
-		log.info("signonStatus when message with mti "+isoMsg.getMTI()+",de-11 "+isoMsg.getString(11)+" is "+signonStatus);
-		log.info("Echo status when message with mti "+isoMsg.getMTI()+",de-11 "+isoMsg.getString(11)+" is "+echoStatus);
+		//log.info("signonStatus when message with mti "+isoMsg.getMTI()+",de-11 "+isoMsg.getString(11)+" is "+signonStatus);
+		//log.info("Echo status when message with mti "+isoMsg.getMTI()+",de-11 "+isoMsg.getString(11)+" is "+echoStatus);
 		if (!signonStatus.equals(NMStatus.Successful)) {
 			log.info("signon status is " + signonStatus + ". Have to fail the transaction");
 			fail = true;

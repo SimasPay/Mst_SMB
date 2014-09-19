@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,12 +19,13 @@ import com.mfino.domain.TransactionChargeLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.util.DateTimeUtil;
 
-public class BillPaymentToBankProcessor extends BankRequestProcessor{
+public class QRPaymentToBankProcessor extends BankRequestProcessor{
 	
-	public BillPaymentToBankProcessor() {
+	public QRPaymentToBankProcessor() {
 	
 		try{
 			isoMsg.setMTI("0200");
@@ -35,7 +37,7 @@ public class BillPaymentToBankProcessor extends BankRequestProcessor{
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public ISOMsg process(CFIXMsg fixmsg){
-		CMBSIMBillPaymentToBank request = (CMBSIMBillPaymentToBank)fixmsg;
+		CMQRPaymentToBank request = (CMQRPaymentToBank)fixmsg;
 		Timestamp ts = request.getTransferTime();//changed to show transfer time as to show same thing in reversal. This is GMT Time
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		int flag = 0;
@@ -74,7 +76,7 @@ public class BillPaymentToBankProcessor extends BankRequestProcessor{
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
-			log.info("BillPaymentToBankProcessor :: process timestamp in de-7 =" + DateTimeFormatter.getMMDDHHMMSS(ts));
+			log.info("QRPaymentToBankProcessor :: process timestamp in de-7 =" + DateTimeFormatter.getMMDDHHMMSS(ts));
 			isoMsg.set(11,StringUtilities.leftPadWithCharacter(transactionID.toString(), 6, "0"));
 			isoMsg.set(12,DateTimeFormatter.getHHMMSS(localTS));
 			isoMsg.set(13,DateTimeFormatter.getMMDD(localTS));
@@ -90,13 +92,18 @@ public class BillPaymentToBankProcessor extends BankRequestProcessor{
 			isoMsg.set(37, StringUtilities.leftPadWithCharacter(request.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, StringUtilities.rightPadWithCharacter(request.getSourceMDN(), 15, " "));
-			isoMsg.set(43, StringUtilities.rightPadWithCharacter("SMS MFINO", 40, " "));
+			if(StringUtils.isNotBlank(request.getMerchantData())){
+				isoMsg.set(43, StringUtilities.rightPadWithCharacter(request.getMerchantData(), 40, " "));
+			}else{
+				isoMsg.set(43, StringUtilities.rightPadWithCharacter("SMS MFINO", 40, " "));
+			}
 			isoMsg.set(49, constantFieldsMap.get("49"));
 			if(request.getInfo3()!=null){
 				isoMsg.set(61,request.getInfo3());
 			}else{
 				isoMsg.set(61,request.getInvoiceNo());
 			}
+			isoMsg.set(62,request.getInvoiceNo());
 			isoMsg.set(63,constructDE63(request));			
 			isoMsg.set(98,request.getBillerCode());
 			isoMsg.set(102,request.getSourceCardPAN());
@@ -107,14 +114,14 @@ public class BillPaymentToBankProcessor extends BankRequestProcessor{
 			
 			}
 		catch (ISOException ex) {
-			log.error("BillPaymentsToBankProcessor :: process ", ex);
+			log.error("QRPaymentToBankProcessor :: process ", ex);
 		}
 		return isoMsg;
 		
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	private String constructDE63(CMBSIMBillPaymentToBank request) {
+	private String constructDE63(CMQRPaymentToBank request) {
 		Long sctlID = request.getServiceChargeTransactionLogID();
 		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
 		

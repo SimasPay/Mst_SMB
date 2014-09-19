@@ -83,6 +83,10 @@
 				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
 				<to uri="jms:IBTQueue?disableReplyTo=true"/>
 		   </filter>	
+		   <filter>
+				<simple>${in.body.request.getIntegrationCode} == 'BSIM'</simple>
+				<to uri="jms:bsimBillPayQueue?disableReplyTo=true"/>
+		   </filter>
 		</route>
 		<route>
 		    <from uri="jms:moneyTransferInquirySuspenseToDestination?disableReplyTo=true" />

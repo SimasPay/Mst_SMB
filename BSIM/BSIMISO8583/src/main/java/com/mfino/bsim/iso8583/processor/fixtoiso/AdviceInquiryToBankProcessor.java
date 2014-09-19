@@ -1,74 +1,64 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.packager.PostPackager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.TransactionChargeLogDAO;
-import com.mfino.domain.ChargeType;
-import com.mfino.domain.TransactionCharge;
 import com.mfino.domain.TransactionChargeLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentBankRequest;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMAdviceInquiryToBank;
 import com.mfino.hibernate.Timestamp;
+import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
 import com.mfino.util.DateTimeUtil;
+import com.mfino.util.MfinoUtil;
 
-public class BillPaymentAmountInquiryToBankProcessor extends BankRequestProcessor{
-	
-	private Set<String> offlineBillers;
-	
-	public BillPaymentAmountInquiryToBankProcessor() {
-		try{
+public class AdviceInquiryToBankProcessor extends BankRequestProcessor {
+
+	public AdviceInquiryToBankProcessor() {
+		try {
 			isoMsg.setMTI("0200");
 		}
-		catch (ISOException e) {
-			e.printStackTrace();
+		catch (ISOException ex) {
+			ex.printStackTrace();
 		}
 	}
-	
-	public ISOMsg process(CFIXMsg fixmsg){
-		CMBSIMGetAmountToBiller request = (CMBSIMGetAmountToBiller)fixmsg;
+
+	@Override
+	public ISOMsg process(CFIXMsg fixmsg) throws AllElementsNotAvailableException {
+		// super.process(fixmsg);
+		CMAdviceInquiryToBank request = (CMAdviceInquiryToBank) fixmsg;
 		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		Long transactionID = request.getTransactionID();
 		transactionID = transactionID % 1000000;
 		String fieldDE63 = constructDE63(request);
-		try
-		{
-			isoMsg.set(2,request.getInfo2());
+		try {
+			String mpan = MfinoUtil.CheckDigitCalculation(request.getSourceMDN());
+			isoMsg.set(2, mpan);
+
 			String processingCode = null;
+
 			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
-			 processingCode = "38" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
+				processingCode = "38" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
-			 processingCode = "38" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			if(processingCode==null){
-				processingCode = "381000";
-			}
+				processingCode = "38" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
+
 			isoMsg.set(3, processingCode);
-			isoMsg.set(4, StringUtilities.leftPadWithCharacter(0 + "", 18, "0")); // 4
-			if(request.getAmount()!=null && StringUtils.isNotBlank(request.getAmount().toString())){
-				long amount = request.getAmount().longValue()*(100);
-				isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
-			}
-			//isoMsg.set(3,CmFinoFIX.ISO8583_ProcessingCode_Artajasa_Bills_Inquiry0);
+			long amount = 0*(100);
+			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
 			isoMsg.set(11,StringUtilities.leftPadWithCharacter(transactionID.toString(), 6, "0"));
 			isoMsg.set(12,DateTimeFormatter.getHHMMSS(localTS));
@@ -89,52 +79,45 @@ public class BillPaymentAmountInquiryToBankProcessor extends BankRequestProcesso
 			isoMsg.set(43, StringUtilities.rightPadWithCharacter("SMS MFINO", 40, " "));
 			//isoMsg.set(40,service)
 			isoMsg.set(49, constantFieldsMap.get("49"));
-			//For Paymentmode of packagetype send customerid and packagetype in de-62 Simobi BillPay Phase2
-			if(CmFinoFIX.PaymentMode_PackageType.equalsIgnoreCase(request.getPaymentMode())){
-				isoMsg.set(61, request.getAmount()+request.getInvoiceNo());
-			}else{
-				isoMsg.set(61, request.getInvoiceNo());
-			}
+			isoMsg.set(61, StringUtilities.leftPadWithCharacter(request.getMerchantData(),20,"0") + StringUtilities.leftPadWithCharacter(request.getInvoiceNo(),32,"0") + "INQUIRY_ADVICE");
 			isoMsg.set(63,fieldDE63);
 			isoMsg.set(98, request.getBillerCode());
 			isoMsg.set(102,request.getSourceCardPAN());
-			isoMsg.set(121,constantFieldsMap.get("english"));
-			}
-		catch (ISOException ex) {
-			log.error("BillPaymentsToBankProcessor :: process ", ex);
+			if(request.getLanguage().equals(0))
+				isoMsg.set(121,constantFieldsMap.get("english"));
+			else
+				isoMsg.set(121,constantFieldsMap.get("bahasa"));
 		}
+
+		catch (ISOException ex) {
+
+		}	
 		return isoMsg;
-		
 	}
-	
+
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	private String constructDE63(CMBSIMBillPaymentInquiryToBank request) {
+	private String constructDE63(CMAdviceInquiryToBank request) {
 		Long sctlID = request.getServiceChargeTransactionLogID();
 		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
-		
+
 		BigDecimal serviceCharge = new BigDecimal(0);
 		BigDecimal tax = new BigDecimal(0);
 		String de63 = constantFieldsMap.get("63");
 		String strServiceCharge, strTax;
-		
-		if(sctlID != null){
-			List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
-			if(CollectionUtils.isNotEmpty(tclList)){
-				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
-					TransactionChargeLog tcl = it.next();
-					TransactionCharge txnCharge=tcl.getTransactionCharge();
-					ChargeType chargeType = txnCharge.getChargeType();
-					String chargeTypeName = chargeType.getName();
-					if(chargeTypeName.equalsIgnoreCase("charge")){
-						serviceCharge = tcl.getCalculatedCharge();
-					}
-					if(chargeTypeName.equalsIgnoreCase("tax")){
-						tax = tcl.getCalculatedCharge();
-					}				
+
+		List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+		if(CollectionUtils.isNotEmpty(tclList)){
+			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+				TransactionChargeLog tcl = it.next();
+				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
+					serviceCharge = tcl.getCalculatedCharge();
 				}
+				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
+					tax = tcl.getCalculatedCharge();
+				}				
 			}
 		}
-		
+
 		strServiceCharge = "C" + StringUtilities.leftPadWithCharacter(serviceCharge.toBigInteger().toString(),8,"0");
 		strTax = "C" + StringUtilities.leftPadWithCharacter(tax.toBigInteger().toString(),8,"0");
 		de63 = StringUtilities.replaceNthBlock(de63, 'C', 12,strServiceCharge,9);
@@ -142,12 +125,27 @@ public class BillPaymentAmountInquiryToBankProcessor extends BankRequestProcesso
 		return de63;
 	}
 	
+	public static void main(String[] args) throws Exception {
 
-	public Set<String> getOfflineBillers() {
-		return offlineBillers;
+		Timestamp ts = new Timestamp();
+		System.out.println(String.format("%Tm%<Td%<TH%<TM%<TS", ts));
+		System.out.println(String.format("%Tm%<Td", ts));
+		System.out.println(String.format("%Ty%<Tm", ts));
+		System.out.println(String.format("%TH%<TM%<TS", ts));
+		System.out.println(String.format("%TC%<Ty%<Tm%<Td", ts));
+
+		CMAdviceInquiryToBank msg = new CMAdviceInquiryToBank();
+		msg.setSourceCardPAN("55555555");
+		msg.setSourceBankAccountType(CmFinoFIX.BankAccountType_Saving.toString());
+		msg.setTransactionID(12345l);
+
+		AdviceInquiryToBankProcessor toZ = new AdviceInquiryToBankProcessor();
+		ISOMsg isoMsg = toZ.process(msg);
+
+		ISOPackager packager = new PostPackager();
+		isoMsg.setPackager(packager);
+		System.out.println(new String(isoMsg.pack()));
+
 	}
 
-	public void setOfflineBillers(Set<String> offlineBillers) {
-		this.offlineBillers = offlineBillers;
-	}
 }

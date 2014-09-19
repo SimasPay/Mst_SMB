@@ -42,6 +42,7 @@ public class ExistingSubscriberReActivationToBankProcessor extends
 		try {
 			//isoMsg.set(2, msg.getInfo2());// msg.getSourceMDN()
 			isoMsg.set(2,msg.getSourceCardPAN());
+
 			String processingCode = null;
 //			if (CmFinoFIX.BankAccountType_Saving.toString().equals(msg.getSourceBankAccountType()))
 //				processingCode = "90" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
