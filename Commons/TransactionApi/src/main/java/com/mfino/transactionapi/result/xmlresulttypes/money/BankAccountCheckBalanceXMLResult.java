@@ -23,8 +23,8 @@ public class BankAccountCheckBalanceXMLResult extends XMLResult {
 		// the valid notification code inside the ( ) paranthesis.
 		if (getMultixResponse() == null) {
 			super.render();
-//			writeEndOfDocument();
-//			return;
+			writeEndOfDocument();
+			return;
 		}
 		else {
 			try {

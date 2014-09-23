@@ -175,7 +175,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 		sc.setDestMDN(null);
 		sc.setChannelCodeId(StringUtils.isNotBlank(resetPin.getChannelCode()) ? Long.valueOf(resetPin.getChannelCode()) : null);
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
-		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN);
+		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CHANGEPIN);
 		sc.setTransactionAmount(BigDecimal.ZERO);
 		sc.setTransactionLogId(resetPin.getTransactionID());
 		sc.setTransactionIdentifier(resetPin.getTransactionIdentifier());
