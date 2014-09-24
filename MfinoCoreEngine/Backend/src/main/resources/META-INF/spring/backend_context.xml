@@ -75,7 +75,7 @@
 	<osgi:reference id="transactionLogServiceCoreImpl" bean-name="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService"/>
 	<osgi:reference id="fundValidationServiceImpl" bean-name="FundValidationServiceImpl" interface="com.mfino.service.FundValidationService"/>
 	
-	<osgi:reference id="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
+	<osgi:reference id="systemParametersServiceImpl" interface="com.mfino.service.SystemParametersService"/>
 	<osgi:reference id="moneyServiceImpl" bean-name="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>
 	<osgi:reference id="mfinoUtilServiceImpl" bean-name="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService"/>
 	<osgi:reference id="subscriberStatusEventServiceImpl" bean-name="SubscriberStatusEventServiceImpl" interface="com.mfino.service.SubscriberStatusEventService"/>
@@ -153,6 +153,7 @@
 		<property name="mfinoUtilService" ref="mfinoUtilServiceImpl"/>
 		<property name="ledgerService" ref="ledgerServiceImpl" />
 		<property name="subscriberStatusEventService" ref="subscriberStatusEventServiceImpl"/>
+		<property name="systemParametersService" ref="systemParametersServiceImpl"/>
 	</bean>
 	
 
@@ -167,6 +168,7 @@
 		<property name="ledgerService" ref="ledgerServiceImpl" />
 		<property name="moneyService" ref="moneyServiceImpl" />
 		<property name="integrationSummaryService" ref="integrationSummaryService" />
+		<property name="systemParametersService" ref="systemParametersServiceImpl"/>
 	</bean>
 	
 	<bean id="backendDefaultImpl" class="com.mfino.mce.backend.impl.BackendServiceDefaultImpl">

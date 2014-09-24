@@ -501,6 +501,7 @@ Ext.override(Ext.grid.GridView, {
 //label config  
 var firstname="First Name";
 var lastname="Last Name";
+var nickname="Nick Name";
 var mobile="MDN";
 var language="Language";
 var currency="Currency";

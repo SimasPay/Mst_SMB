@@ -27,7 +27,7 @@ public interface ValidationService {
 	
 	public BackendResponse validateSubscriber(Subscriber subscriber, SubscriberMDN subscriberMdn, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean isAllowInitialized, boolean isSystemInitiatedTransaction);
 	
-	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount);
+	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount, SubscriberMDN srcSubscriberMdn, SubscriberMDN destSubscriberMdn);
 	
 	public BackendResponse validatePct(PendingCommodityTransfer pct,Pocket sourcePocket, Pocket destinationPocket, SubscriberMDN sourceMdn, SubscriberMDN destMdn);
 	

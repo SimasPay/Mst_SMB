@@ -145,6 +145,9 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="url">
 			<value>${mfino.dbcp.url}</value>
 		</property>
+		<property name="testOnBorrow">
+			<value>${mfino.dbcp.testOnBorrow}</value>
+		</property>		
 		<property name="username">
 			<value>${mfino.dbcp.username}</value>
 		</property>
@@ -319,6 +322,7 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 				<value>com/mfino/domain/RSubscriberFavorite.hbm.xml</value>
 				<value>com/mfino/domain/RPartnerDefaultServices.hbm.xml</value>
 				<value>com/mfino/domain/RServiceDefaultConfiguration.hbm.xml</value>
+				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
 			</list>
 		</property>
 

@@ -29,6 +29,7 @@ import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.service.MfinoUtilService;
 import com.mfino.service.SubscriberStatusEventService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.impl.SystemParametersServiceImpl;
 
 /**
@@ -41,6 +42,8 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	private MfinoUtilService mfinoUtilService;
 	
 	private SubscriberStatusEventService subscriberStatusEventService;
+	
+	private SystemParametersService systemParametersService;
 	
 	protected LedgerService ledgerService;
 	
@@ -67,6 +70,15 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 
 	public void setMfinoUtilService(MfinoUtilService mfinoUtilService) {
 		this.mfinoUtilService = mfinoUtilService;
+	}
+
+	public SystemParametersService getSystemParametersService() {
+		return systemParametersService;
+	}
+
+	public void setSystemParametersService(
+			SystemParametersService systemParametersService) {
+		this.systemParametersService = systemParametersService;
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -379,12 +391,24 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount){
+	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount,
+			SubscriberMDN srcSubscriberMdn, SubscriberMDN destSubscriberMdn){
 		//TODO::Handle if the arguments are null;
 		BackendResponse responseFix = createResponseObject();
-		responseFix = validateRisksAndLimits(sourcePocket, debitAmount, true);
+		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType().intValue()) && 
+				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplate().getType().intValue()) ) {
+			responseFix.setInternalErrorCode(null);
+		} else {
+			responseFix = validateRisksAndLimits(sourcePocket, debitAmount, true);
+		}
 		if(responseFix!=null && isNullorZero(responseFix.getInternalErrorCode())){
-			responseFix = validateRisksAndLimits(destinationPocket, creditAmount, false);
+			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType().intValue()) && 
+					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplate().getType().intValue())) ||
+					(destSubscriberMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN)))) {
+				responseFix.setInternalErrorCode(null);
+			} else {
+				responseFix = validateRisksAndLimits(destinationPocket, creditAmount, false);
+			}
 		}		
 		return responseFix;
 	}
@@ -410,14 +434,14 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		
 		if(pocket.getPocketTemplate().getIsCollectorPocket()!=null&&pocket.getPocketTemplate().getIsCollectorPocket()){
 			responseFix.setInternalErrorCode(null);
-			pocket.setLastTransactionTime(now);
+//			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
 		if(pocket.getPocketTemplate().getIsSuspencePocket()!=null&&pocket.getPocketTemplate().getIsSuspencePocket()){
 			responseFix.setInternalErrorCode(null);
-			pocket.setLastTransactionTime(now);
+//			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}

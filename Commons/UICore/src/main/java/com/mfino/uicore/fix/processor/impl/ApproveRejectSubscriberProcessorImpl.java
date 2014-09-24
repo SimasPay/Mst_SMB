@@ -168,34 +168,33 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
-			
-			isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
-			if(isEMoneyPocketRequired == true){
-			if(emoneyPocket== null||
-        			!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-        			emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
-				log.info("valid emaoney pocket not found"+ realMsg.getSubscriberMDNID());
-				errorMsg.setErrorDescription(MessageText._("valid Emoney pocket not found"));
-				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-				return errorMsg;
-			}
-			}
-
 			if (kyclevel == null) {
 				log.info("Invalid kyclevel to upgrade"+ realMsg.getSubscriberMDNID());
 				errorMsg.setErrorDescription(MessageText._("Invalid Kyclevel to upgrade"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
-			PocketTemplate upgradeTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kyclevel.getKYCLevel(), true, CmFinoFIX.PocketType_SVA, subscriber.getType(), null, groupID);
-
-			if (upgradeTemplate == null) {
-				log.info("Invalid pocketTemplate for kyclevel to upgrade"+ realMsg.getSubscriberMDNID());
-				errorMsg.setErrorDescription(MessageText._("Invalid pocketTemplate for kyclevel to upgrade"));
-				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-				return errorMsg;
+			PocketTemplate upgradeTemplate = null;
+			isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
+			if(isEMoneyPocketRequired == true){
+				if(emoneyPocket== null||
+	        			!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
+	        			emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+					log.info("valid emaoney pocket not found"+ realMsg.getSubscriberMDNID());
+					errorMsg.setErrorDescription(MessageText._("valid Emoney pocket not found"));
+					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+					return errorMsg;
+				}
+				
+				upgradeTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kyclevel.getKYCLevel(), true, CmFinoFIX.PocketType_SVA, subscriber.getType(), null, groupID);
+	
+				if (upgradeTemplate == null) {
+					log.info("Invalid pocketTemplate for kyclevel to upgrade"+ realMsg.getSubscriberMDNID());
+					errorMsg.setErrorDescription(MessageText._("Invalid pocketTemplate for kyclevel to upgrade"));
+					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+					return errorMsg;
+				}
 			}
-
 			subscriber.setKYCLevelByKYCLevel(kyclevel);
 			subscriber.setUpgradableKYCLevel(null);
 			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);

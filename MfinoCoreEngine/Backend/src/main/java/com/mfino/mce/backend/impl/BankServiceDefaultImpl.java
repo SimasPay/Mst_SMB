@@ -92,6 +92,7 @@ import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.mce.core.util.ResponseCodes;
 import com.mfino.mce.core.util.StringUtilities;
+import com.mfino.service.SystemParametersService;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -106,6 +107,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	protected CommodityTransferService commodityTransferService;
 	protected LedgerService ledgerService;
 	protected IntegrationSummaryService integrationSummaryService;
+	protected SystemParametersService systemParametersService;
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg onTransferConfirmationFromBank(CMMoneyTransferToBank toBank,
@@ -613,7 +615,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 						returnFix = validationService.validateRisksAndLimits(
 								objSrcPocket, objDestPocket,
-								totalTransactionAmount, requestFix.getAmount());
+								totalTransactionAmount, requestFix.getAmount(),objSrcSubMdn, objDestSubMdn);
 						log.info("After ValidateRisksAndLimits returnFix.getInternalErrorCode()="
 								+ returnFix.getInternalErrorCode());
 					} else {
@@ -627,8 +629,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					if (isNullorZero(returnFix.getInternalErrorCode())) {
 						setPocketLimits(objSrcPocket, totalTransactionAmount);
 
-						setPocketLimits(objDestPocket, requestFix.getAmount());
-
+						if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
+								!(objDestSubMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN))) ) {
+							setPocketLimits(objDestPocket, requestFix.getAmount());
+						}						
+						
 						//objSrcPocket.setLastTransactionTime(requestFix.getReceiveTime());
 						//objDestPocket.setLastTransactionTime(requestFix.getReceiveTime());
 						if(!CmFinoFIX.SubscriberType_Partner.equals(objDestSubMdn.getSubscriber().getType())){
@@ -655,7 +660,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								coreDataWrapper.save(objSrcPocket);
 							}
 							if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
-							coreDataWrapper.save(objDestPocket);
+								coreDataWrapper.save(objDestPocket);
 							}
 					
 							coreDataWrapper.save(pct);
@@ -2436,19 +2441,19 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 						returnFix = validationService
 								.validateRisksAndLimits(sourcePocket,
-										destinationPocket, amount, amount);
+										destinationPocket, amount, amount, sourceSubcriberMdn, destinationSubcriberMdn);
 
 						log.info("After ValidateRisksAndLimits returnFix.getInternalErrorCode()="
 								+ returnFix.getInternalErrorCode());
 
 						if (isNullorZero(returnFix.getInternalErrorCode())) {
-							sourcePocket
-									.setLastTransactionTime(settlementOfCharge
-											.getReceiveTime());
+//							sourcePocket
+//									.setLastTransactionTime(settlementOfCharge
+//											.getReceiveTime());
 							setPocketLimits(sourcePocket, amount);
-							destinationPocket
-									.setLastTransactionTime(settlementOfCharge
-											.getReceiveTime());
+//							destinationPocket
+//									.setLastTransactionTime(settlementOfCharge
+//											.getReceiveTime());
 							setPocketLimits(destinationPocket, amount);
 
 //							sourceSubcriberMdn.setLastTransactionID(settlementOfCharge.getTransactionID());
@@ -2460,7 +2465,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							} else if (pct.getISO8583_MerchantType() == null) {
 								pct.setISO8583_MerchantType(CmFinoFIX.ISO8583_Mobile_Operator_Merchant_Type_Other);
 							}
-								coreDataWrapper.save(sourceSubcriberMdn);
+//								coreDataWrapper.save(sourceSubcriberMdn);
 
 								if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
 									coreDataWrapper.save(sourcePocket);
@@ -2767,6 +2772,15 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	public void setIntegrationSummaryService(
 			IntegrationSummaryService integrationSummaryService) {
 		this.integrationSummaryService = integrationSummaryService;
+	}
+
+	public SystemParametersService getSystemParametersService() {
+		return systemParametersService;
+	}
+
+	public void setSystemParametersService(
+			SystemParametersService systemParametersService) {
+		this.systemParametersService = systemParametersService;
 	}
 
 	public CFIXMsg onCashInInquiry(CMCashInInquiry cashInInquiry) {
@@ -3519,7 +3533,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// Reverting Pocket Limits
 		BackendUtil.revertPocketLimits(objSrcPocket, transferAmountWithCharges,
 				pendingTransfer);
-		BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
+		
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN))) ) {
+			BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
+		}		
 		if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 		coreDataWrapper.save(objSrcPocket);
 		}
@@ -3614,8 +3632,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// Reverting Pocket Limits
 		BackendUtil.revertPocketLimits(objSrcPocket, transferAmountWithCharges,
 				pendingTransfer);
-		BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
-
+		
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN))) ) {
+			BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
+		}
 		if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 		coreDataWrapper.save(objSrcPocket);
 		}

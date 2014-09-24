@@ -50,20 +50,20 @@ Ext.extend(mFino.widget.PocketDetails,mFino.widget.Form, {
         {
             fieldLabel: _("Account Number"),
             xtype: "displayfield",
-            name: CmFinoFIX.message.JSPocket.Entries.CardPAN._name,
-            renderer: function(value)
-            {
-                if(!value){
-                    return "";
-                }
-                var substring = value.substring(value.length-6,value.length);
-                var retval="",i;
-                for(i=0;i<(value.length-6);i++){
-                    retval += 'X';
-                }
-                retval +=substring;
-                return retval;
-            }
+            name: CmFinoFIX.message.JSPocket.Entries.CardPAN._name
+//            renderer: function(value)
+//            {
+//                if(!value){
+//                    return "";
+//                }
+//                var substring = value.substring(value.length-6,value.length);
+//                var retval="",i;
+//                for(i=0;i<(value.length-6);i++){
+//                    retval += 'X';
+//                }
+//                retval +=substring;
+//                return retval;
+//            }
         },
         {
             fieldLabel: _("Card Alias"),
