@@ -1,11 +1,5 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
-import static com.mfino.fix.CmFinoFIX.ISO8583_AcquiringInstIdCode_Smart_To_Sinarmas;
-import static com.mfino.fix.CmFinoFIX.ISO8583_ForwardingInstitutionIdentificationCode_Smart_To_Sinarmas;
-import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other1;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -29,8 +23,6 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentReversalToBank;
-import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
@@ -41,6 +33,8 @@ import com.mfino.util.MfinoUtil;
 public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 
 	public Log log = LogFactory.getLog(this.getClass());
+	
+	private SubscriberService subscriberService;
 	
 	public QRPaymentReversalToBankProcessor() {
 		try {
@@ -66,7 +60,7 @@ public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 			String mpan = MfinoUtil.CheckDigitCalculation(msg.getSourceMDN());
             isoMsg.set(2, mpan);
             String defaultDE3=CmFinoFIX.ISO8583_ProcessingCode_XLink_Payment0;
-            Pocket sourcePocket = SubscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+            Pocket sourcePocket = subscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
             PocketTemplate pocketTemplate = null;
             Integer pocketTempType = null;
             String processingCodePrefix = "50";
@@ -182,5 +176,15 @@ public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 			log.error("QRPaymentReversalToBankProcessor :: process ", e);
 		}
 		return isoMsg;
+	}
+
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
 	}
 }

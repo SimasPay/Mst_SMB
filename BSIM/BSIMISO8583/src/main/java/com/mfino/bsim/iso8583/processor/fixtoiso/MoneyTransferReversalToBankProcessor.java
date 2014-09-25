@@ -1,11 +1,7 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
-import static com.mfino.fix.CmFinoFIX.ISO8583_AcquiringInstIdCode_Smart_To_Sinarmas;
-import static com.mfino.fix.CmFinoFIX.ISO8583_ForwardingInstitutionIdentificationCode_Smart_To_Sinarmas;
 import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other1;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -43,6 +39,8 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 
 	public Log log = LogFactory.getLog(this.getClass());
 	
+	private SubscriberService subscriberService;
+	
 	public MoneyTransferReversalToBankProcessor() {
 		try {
 			isoMsg.setMTI("0420");
@@ -68,7 +66,7 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			String mpan = MfinoUtil.CheckDigitCalculation(msg.getSourceMDN());
             isoMsg.set(2, mpan);
             String defaultDE3=ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-            Pocket sourcePocket = SubscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+            Pocket sourcePocket = subscriberService.getDefaultPocket(msg.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
             PocketTemplate pocketTemplate = null;
             Integer pocketTempType = null;
             if(sourcePocket!=null){
@@ -203,5 +201,15 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			log.error("MoneyTransferReversalToBankProcessor :: process ", e);
 		}
 		return isoMsg;
+	}
+
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
 	}
 }

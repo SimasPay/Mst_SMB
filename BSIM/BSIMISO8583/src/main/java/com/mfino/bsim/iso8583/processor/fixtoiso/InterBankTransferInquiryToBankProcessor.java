@@ -42,11 +42,6 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 		CMInterBankTransferInquiryToBank msg = (CMInterBankTransferInquiryToBank) fixmsg;
 		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime();
-		log.info("Standard Timestamp" + DateTimeUtil.getTimeGMT());
-		log.info("Long Timestamp" + DateTimeUtil.getGMTTimeLong());
-		log.info("GMTTime Date String" + DateTimeUtil.getGMTTimeString());
-		log.info("GMTTime Date" + DateTimeUtil.getGMTTimeDate());
-		log.info("GMTTime AddHrs Date DateTimeUtil.getGMTTimeDate()" + DateTimeUtil.addHours(DateTimeUtil.getGMTTimeDate(), -7));
 		String fieldDE63 = constructDE63(msg);
 		try {
 			String processingCode=null;
