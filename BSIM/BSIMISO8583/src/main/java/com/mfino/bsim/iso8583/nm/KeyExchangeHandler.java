@@ -5,15 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.jpos.iso.ISOMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.mfino.bsim.iso8583.nm.exceptions.InvalidWorkingKeyException;
 import com.mfino.bsim.iso8583.nm.exceptions.KcvValidationFailedException;
@@ -25,27 +19,28 @@ public class KeyExchangeHandler {
 	private Logger	log	= LoggerFactory.getLogger(KeyExchangeHandler.class);
 
 	private static KeyExchangeHandler keyExchangeHandler;
-	private HibernateTransactionManager htm;
-	private SessionFactory sessionFactory;
-	public HibernateTransactionManager getHtm() {
-		return htm;
-	}
+//	private HibernateTransactionManager htm;
+//	private SessionFactory sessionFactory;
+//	public HibernateTransactionManager getHtm() {
+//		return htm;
+//	}
+//
+//	public void setHtm(HibernateTransactionManager htm) {
+//		this.htm = htm;
+//	}
 
-	public void setHtm(HibernateTransactionManager htm) {
-		this.htm = htm;
-	}
-
-	public static KeyExchangeHandler createInstance(){
-		if(keyExchangeHandler==null){
-			keyExchangeHandler = new KeyExchangeHandler();
-		}
-		
-		return keyExchangeHandler;
-	}
+//	public static KeyExchangeHandler createInstance(){
+//		if(keyExchangeHandler==null){
+//			keyExchangeHandler = new KeyExchangeHandler();
+//		}
+//		
+//		return keyExchangeHandler;
+//	}
 
 	public static KeyExchangeHandler getInstance(){
 	if(keyExchangeHandler==null){
-		throw new RuntimeException("Instance is not already created");
+		keyExchangeHandler = new KeyExchangeHandler();
+//		throw new RuntimeException("Instance is not already created");
 	}
 	return keyExchangeHandler;
 	}
@@ -53,9 +48,9 @@ public class KeyExchangeHandler {
 	public void handle(ISOMsg msg) throws KcvValidationFailedException, InvalidWorkingKeyException, Exception {
 
 		try {
-			sessionFactory = htm.getSessionFactory();
-			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
-			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
+//			sessionFactory = htm.getSessionFactory();
+//			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+//			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 			String key=msg.getValue(48).toString();
 			if (key.length() < 48) {
 				log.error("working key length is <48");
@@ -119,8 +114,8 @@ public class KeyExchangeHandler {
 			log.error("Exception while validating the kcv", ex);
 			throw ex;
 		}finally{
-			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
-			SessionFactoryUtils.closeSession(sessionHolder.getSession());
+//			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
+//			SessionFactoryUtils.closeSession(sessionHolder.getSession());
 		}
 	}
 }

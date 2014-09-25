@@ -72,7 +72,7 @@
 		<property name="mfinoUtilService" ref="mfinoUtilService" />
 		<property name="systemParametersService" ref="systemParametersService" />
 	</bean>
-	<bean id="keyExchangeHandler" class="com.mfino.bsim.iso8583.nm.KeyExchangeHandler" factory-method="createInstance">
+	<!-- bean id="keyExchangeHandler" class="com.mfino.bsim.iso8583.nm.KeyExchangeHandler" factory-method="createInstance">
 	<property name="htm" ref="txManager" />
-	</bean>
+	</bean-->
 </beans>

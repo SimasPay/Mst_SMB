@@ -40,6 +40,7 @@ public class NMRequestHandler implements Runnable {
 			if ("001".equals(code)) {
 				log.info("request is signon");
 				msg.set(39, "00");
+				Thread.sleep(10000);
 				log.info("setting signon status to true");
 				StatusRegistrar.setSignonStatus(muxName, NMStatus.Successful);
 			}// signoff
