@@ -47,6 +47,8 @@ import com.mfino.fix.CmFinoFIX.CMFundWithdrawalInquiry;
 import com.mfino.fix.CmFinoFIX.CMGetBankAccountTransactions;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
@@ -370,6 +372,10 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				}
 				else if(baseMessage instanceof CMExistingSubscriberReactivationFromBank) {
 					returnFix = bankService.onExistingSubscriberReactivationFromBank((CMExistingSubscriberReactivationToBank)requestFix, (CMExistingSubscriberReactivationFromBank)responseFix);
+				}
+				else if(baseMessage instanceof CMGetSubscriberDetailsFromBank)
+				{
+					returnFix = bankService.onGetSubscriberDetailsFromBank((CMGetSubscriberDetailsToBank)requestFix, (CMGetSubscriberDetailsFromBank)responseFix);
 				}
 				else
 				{

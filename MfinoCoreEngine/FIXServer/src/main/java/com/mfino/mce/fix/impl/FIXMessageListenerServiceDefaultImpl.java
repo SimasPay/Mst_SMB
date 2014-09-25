@@ -122,6 +122,10 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 	private static final String ACTIVEMQ_QUEUE_HSM ="jms:hsmQueue?disableReplyTo=true";
 	private static final String ACTIVEMQ_QUEUE_NFC_CMS = "jms:nfcISOQueue?disableReplyTo=true";
 	private static final String ACTIVEMQ_QUEUE_FLASHIZ ="jms:flashizISOQueue?disableReplyTo=true";
+	
+	private static final String ACTIVEMQ_QUEUE_UPDATE_SUB ="jms:bsimISOQueue?disableReplyTo=true";
+	
+	
 	/*
 	 * Process HttpServletRequests received by JETTY or SERVLET component of Apache Camel. 
 	 */
@@ -157,7 +161,7 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 		MCEMessage mceMessage = new MCEMessage();
 		CFIXMsg fixMesg = (CFIXMsg)CFIXMsg.fromFIX(buffer);
 		mceMessage.setRequest(fixMesg);
-		log.info(fixMesg.DumpFields());
+		//log.info(fixMesg.DumpFields());
 		//httpExchange.getIn().setBody(fixMesg);
 		
 		CamelContext camelContext = httpExchange.getContext();		
@@ -253,6 +257,12 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 			mceMessage.setResponse(responseObject);
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_FLASHIZ, mceMessage, header);
 		}
+		else if(fixMesg instanceof CmFinoFIX.CMGetSubscriberDetailsToBank){
+			CmFinoFIX.CMGetSubscriberDetailsToBank responseObject = new CmFinoFIX.CMGetSubscriberDetailsToBank();
+			responseObject.copy((CmFinoFIX.CMGetSubscriberDetailsToBank) fixMesg);
+			mceMessage.setResponse(responseObject);
+			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_UPDATE_SUB, mceMessage, header);
+		}		
 		else
 		{
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_START_SOME_FUNCTIONALITY, mceMessage, header);

@@ -22116,6 +22116,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="InternalLoginError" enum="2125">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Login Failed due to Internal Error. Please try after sometime.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

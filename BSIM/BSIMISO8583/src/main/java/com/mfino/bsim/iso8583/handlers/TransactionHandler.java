@@ -28,7 +28,6 @@ import com.mfino.service.SubscriberMdnService;
 import com.mfino.util.MfinoUtil;
 import com.mfino.bsim.iso8583.handlers.ATMRegistrationHandler;
 import com.mfino.bsim.iso8583.processor.fixtoiso.GetSubscriberDetailsToBankProcessor;
-import com.mfino.bsim.iso8583.utils.SyncProducer;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.query.PocketQuery;

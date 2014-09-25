@@ -26,14 +26,51 @@
 	    http://activemq.apache.org/schema/core 
 	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+	<osgi:reference id="subscriberService" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+	<osgi:reference id="subscriberMdnService" bean-name="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />
+	<osgi:reference id="pocketService" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />
+	<osgi:reference id="smsService" bean-name="SMSServiceImpl" interface="com.mfino.service.SMSService" />
+	<osgi:reference id="systemParametersService" bean-name="SystemParametersServiceImpl" interface="com.mfino.service.SystemParametersService" />
+	<osgi:reference id="transactionChargingService" bean-name="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" /> 
+	<osgi:reference id="transactionLogService" bean-name="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService" />
+	<osgi:reference id="subscriberServiceExtended" bean-name="SubscriberServiceExtendedImpl" interface="com.mfino.service.SubscriberServiceExtended" />
+	<osgi:reference id="mfinoUtilService" bean-name="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService" />
+	<osgi:reference id="notificationService" bean-name="NotificationServiceImpl" interface="com.mfino.service.NotificationService" />
+	<osgi:reference id="kycLevelService" bean-name="KYCLevelServiceImpl" interface="com.mfino.service.KYCLevelService" />
+	<osgi:reference id="groupService" bean-name="GroupServiceImpl" interface="com.mfino.service.GroupService" />
+	<osgi:reference id="subGroupService" bean-name="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService" />
+		
 	<bean id="atmRequestHandler" class="com.mfino.bsim.iso8583.handlers.ATMRequestHandler" factory-method="createInstance">
-	<property name="htm" ref="txManager" />
+		<property name="htm" ref="txManager" />
+		<property name="subscriberMdnService" ref="subscriberMdnService" />
+		<property name="pocketService" ref="pocketService" />
+		<property name="subscriberService" ref="subscriberService" />
+		<property name="smsService" ref="smsService" />
 	</bean>
 	<bean id="atmRegistrationHandler" class="com.mfino.bsim.iso8583.handlers.ATMRegistrationHandler" factory-method="createInstance">
-	<property name="htm" ref="txManager" />
+		<property name="htm" ref="txManager" />
+		<property name="subscriberService" ref="subscriberService" />
+		<property name="systemParametersService" ref="systemParametersService" />
+		<property name="transactionChargingService" ref="transactionChargingService" />
+		<property name="transactionLogService" ref="transactionLogService" />
+		<property name="notificationService" ref="notificationService" />
+		<property name="subscriberServiceExtended" ref="subscriberServiceExtended" />
+		<property name="pocketService" ref="pocketService" />
+		<property name="mfinoUtilService" ref="mfinoUtilService" />
+		<property name="subscriberMdnService" ref="subscriberMdnService" />
+		<property name="kycLevelService" ref="kycLevelService" />
+		<property name="groupService" ref="groupService" />
+		<property name="subGroupService" ref="subGroupService" />
 	</bean>
 	<bean id="atmChangePinHandler" class="com.mfino.bsim.iso8583.handlers.ATMChangePinHandler" factory-method="createInstance">
-	<property name="htm" ref="txManager" />
+		<property name="htm" ref="txManager" />
+		<property name="subscriberService" ref="subscriberService" />
+		<property name="transactionLogService" ref="transactionLogService" />
+		<property name="subscriberMdnService" ref="subscriberMdnService" />
+		<property name="transactionChargingService" ref="transactionChargingService" />
+		<property name="subscriberServiceExtended" ref="subscriberServiceExtended" />
+		<property name="mfinoUtilService" ref="mfinoUtilService" />
+		<property name="systemParametersService" ref="systemParametersService" />
 	</bean>
 	<bean id="keyExchangeHandler" class="com.mfino.bsim.iso8583.nm.KeyExchangeHandler" factory-method="createInstance">
 	<property name="htm" ref="txManager" />

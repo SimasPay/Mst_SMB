@@ -7,7 +7,7 @@ import com.mfino.mce.core.MCEMessage;
  * @author Maruthi
  *
  */
-public interface BSIMProcessor  {	
+public interface BSIMProcessorNew  {	
 	
 	public  MCEMessage constructRequestMessage(MCEMessage mceMessage);
 	

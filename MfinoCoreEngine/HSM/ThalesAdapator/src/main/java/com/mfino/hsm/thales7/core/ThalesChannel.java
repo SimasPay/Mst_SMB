@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.core;
+package com.mfino.hsm.thales7.core;
 
 import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOMsg;

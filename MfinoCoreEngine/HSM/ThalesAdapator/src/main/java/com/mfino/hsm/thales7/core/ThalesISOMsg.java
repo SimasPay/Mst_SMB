@@ -1,5 +1,5 @@
 
-package com.mfino.hsm.thales.core;
+package com.mfino.hsm.thales7.core;
 
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;

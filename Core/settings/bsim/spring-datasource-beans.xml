@@ -307,6 +307,7 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 				<value>com/mfino/domain/RActorChannelMapping.hbm.xml</value>
 				<value>com/mfino/domain/RAdjustments.hbm.xml</value>
 				<value>com/mfino/domain/RPermissionGroup.hbm.xml</value>
+				<value>com/mfino/domain/RZTEDataPush.hbm.xml</value>
 				<value>com/mfino/domain/RMFATransactionInfo.hbm.xml</value>
 				<value>com/mfino/domain/RMFAAuthentication.hbm.xml</value>
 				<value>com/mfino/domain/RRuleKey.hbm.xml</value>

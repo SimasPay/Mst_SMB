@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.processor;
+package com.mfino.hsm.thales7.processor;
 
 import java.io.IOException;
 
@@ -8,6 +8,7 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.TSpace;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMHSMBase;
 import com.mfino.fix.CmFinoFIX.CMHSMEcryptComponentsRequest;
@@ -24,9 +25,9 @@ import com.mfino.fix.CmFinoFIX.CMHSMPinBlockRequest;
 import com.mfino.fix.CmFinoFIX.CMHSMPinBlockResponse;
 import com.mfino.fix.CmFinoFIX.CMHSMRequestBase;
 import com.mfino.fix.CmFinoFIX.CMHSMResponseBase;
-import com.mfino.hsm.thales.command.ThalesCommandImplementor;
-import com.mfino.hsm.thales.core.ThalesCore;
-import com.mfino.hsm.thales.core.ThalesMsg;
+import com.mfino.hsm.thales7.command.ThalesCommandImplementor;
+import com.mfino.hsm.thales7.core.ThalesCore;
+import com.mfino.hsm.thales7.core.ThalesMsg;
 import com.mfino.mce.core.MCEMessage;
 
 /**
@@ -133,9 +134,9 @@ public class ThalesProcessor
 			boolean validationResult = commandImplementor.validatePINinHSM(pinRequest.getSourceMDN(),pinRequest.getHPin(),pinRequest.getoffset());
 			//response.setoffset(offset);
 			if(validationResult)
-				response.setHSMResponseCode("00");
+				response.setHSMResponseCode(GeneralConstants.LOGIN_RESPONSE_SUCCESS);
 			else
-				response.setHSMResponseCode("01");
+				response.setHSMResponseCode(GeneralConstants.LOGIN_RESPONSE_FAILED);
 		}
 		catch(Exception e)
 		{

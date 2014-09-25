@@ -3,6 +3,7 @@ package com.mfino.handlers.hsm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMHSMEcryptComponentsRequest;
 import com.mfino.fix.CmFinoFIX.CMHSMEcryptComponentsResponse;
@@ -41,7 +42,7 @@ public class HSMHandler extends FIXMessageHandler
 	 * @param offset offset agianst which HSM would compare
 	 * @return
 	 */
-	public boolean validatePIN(String mdn, String hPin, String offset)
+	public String validatePIN(String mdn, String hPin, String offset)
 	{
 		CMHSMPINValidationRequest pinValidationRequest = new CMHSMPINValidationRequest();
 		pinValidationRequest.setSourceMDN(mdn);
@@ -53,17 +54,21 @@ public class HSMHandler extends FIXMessageHandler
 		else
 		{
 			log.error("Obtained an invalid response for the pin valditaion request, response obtained is "+ response.getClass().getName());
-			return false;
+			return GeneralConstants.LOGIN_RESPONSE_INTERNAL_ERROR;
 		}
 	}
 	
-	private boolean generateResponse(CMHSMPINValidationResponse response)
+	private String generateResponse(CMHSMPINValidationResponse response)
 	{
-		log.info("response from hsm:"+response.getHSMResponseCode());
-		if(response.getHSMResponseCode().equals("00"))
-			return true;
-		
-		return false;
+		String hsmResponse = response.getHSMResponseCode();
+		log.info("response from hsm:"+hsmResponse);
+		//TODO
+		if(hsmResponse.equals(GeneralConstants.LOGIN_RESPONSE_SUCCESS) || hsmResponse.equals(GeneralConstants.LOGIN_RESPONSE_FAILED)){
+			return hsmResponse;
+		}
+		else{
+			return GeneralConstants.LOGIN_RESPONSE_INTERNAL_ERROR;
+		}
 	}
 	
 	/**

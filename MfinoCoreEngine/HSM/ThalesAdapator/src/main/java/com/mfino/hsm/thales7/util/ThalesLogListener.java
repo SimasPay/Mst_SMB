@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.util;
+package com.mfino.hsm.thales7.util;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;

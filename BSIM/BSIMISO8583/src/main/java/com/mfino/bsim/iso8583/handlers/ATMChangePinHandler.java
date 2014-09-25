@@ -34,9 +34,17 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.util.MfinoUtil;
 import com.mfino.util.SystemParametersUtil;
+import com.mfino.service.KYCLevelService;
+import com.mfino.service.MfinoUtilService;
+import com.mfino.service.NotificationMessageParserService;
+import com.mfino.service.NotificationService;
+import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SubscriberServiceExtended;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
+import com.mfino.service.TransactionLogService;
 import com.mfino.validators.SubscriberValidator;;
 
 public class ATMChangePinHandler extends FIXMessageHandler implements IATMChangePinHandler {
@@ -44,8 +52,31 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 	private static Logger log = LoggerFactory.getLogger(ATMChangePinHandler.class);
 	private HibernateTransactionManager htm;
 	private static ATMChangePinHandler atmChangePinHandler;
-	
+	private SubscriberService subscriberService ;
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
 
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
+
+	public SystemParametersService getSystemParametersService() {
+		return systemParametersService;
+	}
+
+	public void setSystemParametersService(
+			SystemParametersService systemParametersService) {
+		this.systemParametersService = systemParametersService;
+	}
+
+	private TransactionLogService transactionLogService;
+	private SubscriberMdnService subscriberMdnService;
+	private TransactionChargingService transactionChargingService ;
+	private SubscriberServiceExtended subscriberServiceExtended ;
+	private MfinoUtilService mfinoUtilService;
+	private SystemParametersService systemParametersService;
+	
 	public static ATMChangePinHandler createInstance(){
 		if(atmChangePinHandler==null){
 			atmChangePinHandler = new ATMChangePinHandler();
@@ -73,7 +104,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			notificationDAO.setSession(session);
 			pocketDAO.setSession(session);
 			log.info("ATMChangePinHandler :: handle() BEGIN");
-			String sourceMDN=MfinoUtil.normalizeMDN(msg.getString("61"));
+			String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));
 			String accountNumber=msg.getString("2");
 			accountNumber = accountNumber.substring(0, accountNumber.length()-1);
 			log.info("ATMRegistrationHandler :: handle() accountNumber="+accountNumber);
@@ -87,7 +118,6 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			Integer regResponse = CmFinoFIX.ResponseCode_Failure;
 			SubscriberValidator subscribervalidator = new SubscriberValidator(changePin.getSourceMDN());
 			Integer validationResult = subscribervalidator.validate();
-			SubscriberMdnService subscriberMdnService = new SubscriberMdnService();
 			SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -127,7 +157,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			TransactionsLog transactionsLog = null;
 			msg.set(39, GetConstantCodes.FAILURE);
 			log.info("Handling ChangePin atm request");
-			transactionsLog = saveTransactionsLog(CmFinoFIX.MessageType_ChangePin,changePin.DumpFields());
+			transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangePin,changePin.DumpFields());
 			changePin.setTransactionID(transactionsLog.getID());
 			Transaction transactionDetails = null;
 			ServiceCharge sc = new ServiceCharge();
@@ -140,9 +170,8 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			sc.setTransactionAmount(BigDecimal.ZERO);
 			sc.setTransactionLogId(transactionsLog.getID());
 			sc.setTransactionIdentifier(changePin.getTransactionIdentifier());
-			TransactionChargingService tcs = new TransactionChargingService();
 			try{
-				transactionDetails =tcs.getCharge(sc);
+				transactionDetails =transactionChargingService.getCharge(sc);
 			}catch (InvalidServiceException e) {
 				msg.set(39, GetConstantCodes.FAILURE);
 				log.error(e.getMessage()); // return null so as to not construct sms in this case
@@ -168,13 +197,13 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 				msg.set(39,GetConstantCodes.FAILURE);
 				return CmFinoFIX.NotificationCode_Failure;
 			}
-			String clearPIN = decryptedPin.substring(0, SystemParametersUtil.getPinLength());
+			String clearPIN = decryptedPin.substring(0, systemParametersService.getPinLength());
 			log.info("ATMChangePinHandler :: handle encryptedPin = " + encryptedPin);
 			changePin.setConfirmPin(clearPIN);
 			changePin.setNewPin(clearPIN);
 			String calcPIN = null; 
 			try{ 
-	        calcPIN = MfinoUtil.modifyPINForStoring(changePin.getSourceMDN(), changePin.getNewPin()); 
+	        calcPIN = mfinoUtilService.modifyPINForStoring(changePin.getSourceMDN(), changePin.getNewPin()); 
 	        log.info("ATMChangePinHandler :: handle calcPIN = " + calcPIN);
 	        } catch(Exception e) 
 	        { 
@@ -197,7 +226,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			subscriberMDN.setAuthorizationToken(null);
 			subscriberDAO.save(subscriber);
 			subscriberMDNDAO.save(subscriberMDN);
-			Pocket bankPocket = SubscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 			if(!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
 				log.info("ATMChangePinHandler :: handle () Activating Bank Pocket");
 				bankPocket.setStatusTime(new Timestamp());
@@ -216,14 +245,14 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 				}else{
 					log.error("Could not find the failure notification code: "+regResponse);
 				}
-				tcs.failTheTransaction(sctl, MessageText._("Change Pin failed. Notification Code: "+regResponse+" NotificationName: "+notificationName));
+				transactionChargingService.failTheTransaction(sctl, MessageText._("Change Pin failed. Notification Code: "+regResponse+" NotificationName: "+notificationName));
 			}else{
 				msg.set(39,GetConstantCodes.SUCCESS);
 				if (sctl != null) {
 					regResponse=CmFinoFIX.NotificationCode_ChangePINCompleted;
 					sc.setSctlId(sctl.getID());
 					//sctl.setCalculatedCharge(BigDecimal.ZERO);
-					tcs.confirmTheTransaction(sctl);
+					transactionChargingService.confirmTheTransaction(sctl);
 				}
 			}
 			log.info("ATMChangePinHandler :: handle() END");
@@ -240,6 +269,47 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 		this.htm = htm;
 	}
 	
+	public SubscriberMdnService getSubscriberMdnService() {
+		return subscriberMdnService;
+	}
+
+	public void setSubscriberMdnService(SubscriberMdnService subscriberMdnService) {
+		this.subscriberMdnService = subscriberMdnService;
+	}
+	
+	public TransactionLogService getTransactionLogService() {
+		return transactionLogService;
+	}
+
+	public void setTransactionLogService(TransactionLogService transactionLogService) {
+		this.transactionLogService = transactionLogService;
+	}
+	
+	public TransactionChargingService getTransactionChargingService() {
+		return transactionChargingService;
+	}
+
+	public void setTransactionChargingService(
+			TransactionChargingService transactionChargingService) {
+		this.transactionChargingService = transactionChargingService;
+	}
+	public SubscriberServiceExtended getSubscriberServiceExtended() {
+		return subscriberServiceExtended;
+	}
+
+	public void setSubscriberServiceExtended(
+			SubscriberServiceExtended subscriberServiceExtended) {
+		this.subscriberServiceExtended = subscriberServiceExtended;
+	}
+
+	public MfinoUtilService getMfinoUtilService() {
+		return mfinoUtilService;
+	}
+
+	public void setMfinoUtilService(MfinoUtilService mfinoUtilService) {
+		this.mfinoUtilService = mfinoUtilService;
+	}
+
 //	public static void main(String[] args) {
 //		Random random = new Random();
 //		while(true){

@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.adaptor;
+package com.mfino.hsm.thales7.adaptor;
 
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
@@ -8,9 +8,9 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.TSpace;
 import org.jpos.util.*;
-
-import com.mfino.hsm.thales.core.ThalesCore;
-import com.mfino.hsm.thales.core.ThalesMsg;
+import com.mfino.hsm.thales7.adaptor.ThalesAdaptorMBean;
+import com.mfino.hsm.thales7.core.ThalesCore;
+import com.mfino.hsm.thales7.core.ThalesMsg;
 
 import java.io.IOException;
 import java.io.PrintStream;

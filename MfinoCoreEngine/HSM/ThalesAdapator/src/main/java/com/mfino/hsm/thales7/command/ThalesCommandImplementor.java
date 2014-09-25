@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.command;
+package com.mfino.hsm.thales7.command;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,10 +16,11 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.TSpace;
 
-import com.mfino.hsm.thales.core.ThalesCore;
-import com.mfino.hsm.thales.core.ThalesMsg;
-import com.mfino.hsm.thales.util.HThalesKeyScheme;
-import com.mfino.hsm.thales.util.ThalesConstants;
+import com.mfino.constants.GeneralConstants;
+import com.mfino.hsm.thales7.core.ThalesCore;
+import com.mfino.hsm.thales7.core.ThalesMsg;
+import com.mfino.hsm.thales7.util.HThalesKeyScheme;
+import com.mfino.hsm.thales7.util.ThalesConstants;
 /**
  * Thales command implementor
  * @author POCHADRI
@@ -314,6 +315,7 @@ public class ThalesCommandImplementor
 	
 	private ThalesMsg encryptPIN(String pin, String accountNumber) throws IOException
     {
+		log.info("ThalesCommandImplementor :: encryptPIN BEGIN");
     	ThalesMsg req = ThalesCore.createRequest(ThalesConstants.ENCRYPT_COMMAND, basePath);
     	req.set("pin",pin+"FF");
     	req.set("account-number", accountNumber);
@@ -346,6 +348,7 @@ public class ThalesCommandImplementor
 	public boolean validatePINinHSM(String accountNumber, String hPin, String offset) throws Exception 
 	{
 		// encrypt hpin
+		log.info("ThalesCommandImplementor :: validatePINinHSM BEGIN");
 		ThalesMsg encryptPinResponse = encryptPIN(hPin, accountNumber);
 		if(encryptPinResponse== null )
 		{
@@ -367,9 +370,9 @@ public class ThalesCommandImplementor
 		String errorcode = validatePINResponse.get("error");
 		
 		// validation true or failure are the nonly valid messages remaining all are data issues
-		if("00".equals(errorcode))
+		if(GeneralConstants.LOGIN_RESPONSE_SUCCESS.equals(errorcode))
 			return true;
-		if("01".equals(errorcode))
+		if(GeneralConstants.LOGIN_RESPONSE_FAILED.equals(errorcode))
 			return false;
 		
 		throw new Exception("Error in validating PIN errorcode is: "+errorcode);
@@ -379,19 +382,8 @@ public class ThalesCommandImplementor
 	
 	 private ThalesMsg validatePIN(String pvk, String zpk, String offset, String pinblock, String accountNumber) throws IOException 
 	 {		
-		/* <field id='zpkunderlmk' type='A' length='16' />
-			<field id='pvkunderlmk' type='A' length='16' />
-			<feild id='maxpinlength' type='N' length="2" />
-			<feild id='pinblock' type='A' length="16
-			<feild id='pinblockformat' type='N' length="2" />
-			<feild id='minpinlength' type='N' length="2" />
-			<field id='accountnumber' type='N' length='12' />
-			<field id='dt' type='N' length='16' />
-			<field id='pvd' type='A' length='12' />
-			<field id='offset' type='A' length='12' />
-		 */
-    	
-    	ThalesMsg req = createRequest(ThalesConstants.PIN_VALIDATION_COMMAND);
+		log.info("ThalesCommandImplementor :: validatePIN BEGIN");
+		ThalesMsg req = createRequest(ThalesConstants.PIN_VALIDATION_COMMAND);
     	req.set("zpkunderlmk",zpk);
     	req.set("pvkunderlmk",pvk);
     	req.set("maxpinlength",maxpinlength);
@@ -402,49 +394,37 @@ public class ThalesCommandImplementor
     	req.set("dt",decimalizationTable);
     	req.set("pvd",pinValidationData);
     	req.set("offset", offset);
+    	log.info("ThalesCommandImplementor :: validatePIN END");
     	return req;
 	}
 	 
 	private  ThalesMsg createPINBlock(String zpk, String encryptedPIN,String accountNumber) throws IOException 
     {
-    	 /*	<field id='zpkunderlmk' type='A' length='16' />
-		 	<field id='pinblockformat' type='N' length='2' />
-			<field id='accountnumber' type='N' length='12' />
-			<field id='epin' type='N' length='5' />
-    	 */
-	
+		log.info("ThalesCommandImplementor :: createPINBlock BEGIN");
     	ThalesMsg req = createRequest(ThalesConstants.CREATE_PIN_BLOCK_COMMAND);
     	req.set("zpkunderlmk",zpk);
     	req.set("pinblockformat",pinBlockFormat);
     	req.set("accountnumber",accountNumber);
     	req.set("epin",encryptedPIN);
+    	log.info("ThalesCommandImplementor :: createPINBlock END");
+    	
     	return req;
 	}
 	private  ThalesMsg createPINBlockForReactivation(String zpk, String encryptedPIN,String accountNumber) throws IOException 
     {
-    	 /*	<field id='zpkunderlmk' type='A' length='16' />
-		 	<field id='pinblockformat' type='N' length='2' />
-			<field id='accountnumber' type='N' length='12' />
-			<field id='epin' type='N' length='5' />
-    	 */
-	
+		log.info("ThalesCommandImplementor :: createPINBlockForReactivation BEGIN");
     	ThalesMsg req = createRequest(ThalesConstants.CREATE_PIN_BLOCK_COMMAND_REACTIVATION);
     	req.set("zpkunderlmkreact",zpk);
     	req.set("pinblockformat",pinBlockFormat);
     	req.set("accountnumber",accountNumber);
     	req.set("epin",encryptedPIN);
+    	log.info("ThalesCommandImplementor :: createPINBlockForReactivation END");
     	return req;
 	}
 	    
     private ThalesMsg generateOffset(String pvk,String pinunderlmk,String accountNumber) throws IOException
     {
-    	/*<field id='pvk' type='A' length='16' />
-    	<field id='pin' type='A' length='6' />
-    	<field id='check-length' type='N' length='2' />
-    	<field id='account-number' type='N' length='12' />
-    	<field id='dt' type='N' length='16' />
-    	<field id='pvd' type='A' length='12' />*/
-    	
+    	log.info("ThalesCommandImplementor :: generateOffset BEGIN");
     	ThalesMsg req = createRequest(ThalesConstants.GENERATE_OFFSET_COMMAND);
     	req.set("pvk", pvk);
     	//req.set("pin", "0123");
@@ -453,6 +433,7 @@ public class ThalesCommandImplementor
     	req.set("account-number", accountNumber);
     	req.set("dt",decimalizationTable);
     	req.set("pvd",pinValidationData);
+    	log.info("ThalesCommandImplementor :: generateOffset END");
     	return req;
     }
 
@@ -464,7 +445,8 @@ public class ThalesCommandImplementor
      * @throws IOException
      */
 	public String createOffset(String accountNumber, String hPin) throws IOException 
-	{			
+	{		
+		log.info("ThalesCommandImplementor :: createOffset BEGIN");
 		ThalesMsg encryptPinResponse = encryptPIN(hPin, accountNumber);
 		if(encryptPinResponse==null ||"true".equalsIgnoreCase(encryptPinResponse.get("EOF")))
 		{
@@ -475,30 +457,14 @@ public class ThalesCommandImplementor
 		if(offsetResponse==null || "true".equalsIgnoreCase(encryptPinResponse.get("EOF")))
 			throw new IOException("Invalid response from HSM for generate offset request");
 		String offset = offsetResponse.get("offset");
+		log.info("ThalesCommandImplementor :: createOffset END");
 		return offset;
 	
 	}
-	//GG command
-    /*
-public String generateZMKUnderLMK() throws IOException {
-		
-		ThalesMsg req = ThalesCore.createRequest(ThalesConstants.GENERATE_ZMKUNDERLMK_COMMAND, basePath);
-		req.set("firstzmk",firstZmk);
-    	req.set("secondzmk",secondZmk);
-    	req.set("thirdzmk",thirdZmk);
-    	log.info("ThalesCommandImplementor :: generateZMKUnderLMK sending request with firstzmk= "+firstZmk+" secondzmk= "+secondZmk+" thirdzmk= "+thirdZmk);
-    	ThalesMsg res = sendRequest(req);
-    	if(res==null || "true".equalsIgnoreCase(res.get("EOF"))){
-			throw new IOException("Invalid response from HSM for generateZMKUnderLMK");
-		}
-		String zmkUnderLMK = res.get("key-lmk");
-		log.info("ThalesCommandImplementor :: generateZMKUnderLMK response zmkUnderLMK= "+zmkUnderLMK);
-		return zmkUnderLMK;
-    	
-	}
-	*/
+	
 	//FA command
 	public String commandFA(String zpkUnderZMK) throws IOException {
+		log.info("ThalesCommandImplementor :: commandFA BEGIN");
 		ThalesMsg req = ThalesCore.createRequest(ThalesConstants.ZMK_TO_LMK_ENCRYPTION_COMMAND, basePath);
 		BufferedReader br = null;
 		String zmkunderlmk="";
@@ -537,11 +503,13 @@ public String generateZMKUnderLMK() throws IOException {
 		String kcv = res.get("keycheckvalue");
 		
 		log.info("ThalesCommandImplementor :: zmkToLMKEncryption response zpkunderlmk= "+zpkunderlmk);
+		log.info("ThalesCommandImplementor :: commandFA END");
 		return zpkunderlmk+kcv;
     	
 	}
 	//NG command
 	public String decryptPin(String accountNumber,String pinunderlmk) throws IOException {
+		log.info("ThalesCommandImplementor :: decryptPin BEGIN");
 		ThalesMsg req = ThalesCore.createRequest(ThalesConstants.DECRYPT_COMMAND, basePath);
 		log.info("sending decryptPin request with zpkunderlmk "+pinunderlmk);
     	req.set("accountnumber", accountNumber);
@@ -549,15 +517,17 @@ public String generateZMKUnderLMK() throws IOException {
     	log.info("ThalesCommandImplementor :: decryptPin sending request ");
     	ThalesMsg res = sendRequest(req);
     	if(res==null || "true".equalsIgnoreCase(res.get("EOF"))){
-			throw new IOException("Invalid response from HSM for zpkToLMKTranslate");
+			throw new IOException("Invalid response from HSM for  NG Command during decryptPin()");
 		}
 		String clearpin = res.get("clear-pin");
+		log.info("ThalesCommandImplementor :: decryptPin END");
 		return clearpin;
     	
 	}
 	
 	//JE command
 	public String zpkToLMKTranslate(String accountNumber,String pinBlock) throws IOException {
+		log.info("ThalesCommandImplementor :: zpkToLMKTranslate BEGIN");
 		String zpkunderlmk = "";
 		BufferedReader br = new BufferedReader(new FileReader("mfino_conf"+File.separator+"zpkunderlmk.txt"));
 		String currentLine;
@@ -582,11 +552,13 @@ public String generateZMKUnderLMK() throws IOException {
 	}
 	
 	public String createOffsetForATMRegistration(String sourceMDN,String accountNumber,String pinBlock) throws IOException{
+		log.info("ThalesCommandImplementor :: createOffsetForATMRegistration BEGIN");
 		log.info("Send ZpktoLMK Translate to hsm accountNumber ="+accountNumber);
 		//call JE
 		String pinunderlmk = zpkToLMKTranslate(accountNumber, pinBlock);
 		//call NG
 		String clearPin = decryptPin(accountNumber, pinunderlmk);
+		log.info("ThalesCommandImplementor :: createOffsetForATMRegistration END");
 		return clearPin;
 	}
 	
@@ -599,6 +571,7 @@ public String generateZMKUnderLMK() throws IOException {
 	 */
 	public String generatePinBlock(String accountNumber, String hPin) throws IOException {			
 		// convert the clear pin to pin under LMK
+		log.info("ThalesCommandImplementor :: generatePinBlock BEGIN");
 		log.info("Sending request to HSM for BA command....");
 		ThalesMsg encryptPinResponse = encryptPIN(hPin, accountNumber);
 		if(encryptPinResponse==null ||"true".equalsIgnoreCase(encryptPinResponse.get("EOF")))
@@ -628,10 +601,12 @@ public String generateZMKUnderLMK() throws IOException {
 		}
 		
 		String pinblock = pinBlockResponse.get("pinblock");
+		log.info("ThalesCommandImplementor :: generatePinBlock END");
 		return pinblock;
 	}
 	
 	public String generateKeyUnderLMK() throws IOException{
+		log.info("ThalesCommandImplementor :: generateKeyUnderLMK BEGIN");
 		ThalesMsg req = createRequest(ThalesConstants.GENERATE_KEY_UNDER_LMK);
 		req.set("number-of-components","3"); 
 		req.set("key-type",keyType);

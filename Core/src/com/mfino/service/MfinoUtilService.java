@@ -18,7 +18,7 @@ public interface MfinoUtilService {
 	 * @param storedPin digested PIN/ offset (digested pin in case of hash and offset in case of HSM)
 	 * @return
 	 */
-	public boolean validatePin(String mdn, String pin ,String storedPin);
+	public String validatePin(String mdn, String pin ,String storedPin);
 	public  String modifyPINForStoring(String mdn, String pin) throws Exception;
 	/**
 	 * As part of request we get PIN in the form of Hash, we cannot use that pin for validation 
@@ -28,9 +28,9 @@ public interface MfinoUtilService {
 	 */
 	public  String convertPinForValidation(String pin, int len);
 
-	boolean validatePINUsingHash(String mdn, String pin, String digestedPin);
+	String validatePINUsingHash(String mdn, String pin, String digestedPin);
 	
-	boolean validatePINUsingHSM(String mdn,String hPin, String offset);
+	String validatePINUsingHSM(String mdn,String hPin, String offset);
 
 
 

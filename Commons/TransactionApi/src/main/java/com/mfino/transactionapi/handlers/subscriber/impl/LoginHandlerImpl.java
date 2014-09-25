@@ -190,7 +190,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				//if (!password.equals(userPwd)) {
 				//done this change for introducing HSM for validation
 				log.info("validating pin");
-				if(!mfinoUtilService.validatePin(srcSubscriberMDN.getMDN(), userPwd, password))
+				String pinValidationResponse = mfinoUtilService.validatePin(srcSubscriberMDN.getMDN(), userPwd, password);
+				if(GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse))
 				{
 					log.info("invalid pin received in login request");
 					recalculateWrongPinCounts(srcSubscriberMDN, result);
@@ -198,6 +199,12 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 					log.info("returning NotificationCode_WrongPINSpecified");
 					result.setNotificationCode(CmFinoFIX.NotificationCode_WrongPINSpecified);
+					return result;
+				}else if(GeneralConstants.LOGIN_RESPONSE_INTERNAL_ERROR.equals(pinValidationResponse))
+				{
+					log.info("Pin validation failed due to internal error");
+					log.info("DONOT update wrong pin counts as the error is due to internal failure");
+					result.setNotificationCode(CmFinoFIX.NotificationCode_InternalLoginError);
 					return result;
 				}
 //			}

@@ -1,4 +1,4 @@
-<HThales-adaptor name='thales-adaptor' class="com.mfino.hsm.thales.adaptor.ThalesAdaptor" logger="Q2_thales">
+<HThales-adaptor name='thales-adaptor' class="com.mfino.hsm.thales7.adaptor.ThalesAdaptor" logger="Q2_thales">
 	<host>localhost</host>
 	<port>9991</port>
 	<keep-alive>yes</keep-alive>

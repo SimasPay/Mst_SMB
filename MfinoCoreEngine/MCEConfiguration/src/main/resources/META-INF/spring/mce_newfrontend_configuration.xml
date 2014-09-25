@@ -76,8 +76,6 @@
 					value="jms:bankTellerQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMBankTellerMoneyTransferFromBank"
 					value="jms:bankTellerQueue?disableReplyTo=true" />
-				<entry key="com.mfino.fix.CmFinoFIX$CMGetSubscriberDetailsFromBank"
-					value="jms:updateDetailsServiceQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMNFCCardLinkFromCMS"
 				    value="jms:nfcCMSQueue?disableReplyTo=true" />
 				<!--send reversal to iso queue -->

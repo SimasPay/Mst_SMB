@@ -11,6 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerDAO;
@@ -234,23 +235,23 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validateSubscriberPin(Subscriber subscriber, SubscriberMDN subscriberMdn, String rPin, boolean isSource, boolean isSystemInitiatedTransaction){
 
+	public BackendResponse validateSubscriberPin(Subscriber subscriber, SubscriberMDN subscriberMdn, String rPin, boolean isSource, boolean isSystemInitiatedTransaction){
 		BackendResponse returnFix = createResponseObject();
 
 		// Modified to do the mPin validation for all the transactions irrespective of source pocket type.
 		// Skip the mPin validation for System Initiated Transactions
 		if((isSource) && !("mFino260".equals(rPin)) && !(isSystemInitiatedTransaction)){
 
-			boolean pinValid = mfinoUtilService.validatePin( subscriberMdn.getMDN(), rPin, subscriberMdn.getDigestedPIN());
+			String pinValid = mfinoUtilService.validatePin( subscriberMdn.getMDN(), rPin, subscriberMdn.getDigestedPIN());
 
-			if(pinValid){
+			if(pinValid.equals(GeneralConstants.LOGIN_RESPONSE_SUCCESS)){
 				if(subscriberMdn.getWrongPINCount() > 0){
 					subscriberMdn.setWrongPINCount(0);
 					coreDataWrapper.save(subscriberMdn);
 				}
 			}
-			else{
+			else if(pinValid.equals(GeneralConstants.LOGIN_RESPONSE_FAILED)){
 				log.error("Invalid PIN entered MDN="+subscriberMdn.getMDN());
 				subscriberMdn.setWrongPINCount(subscriberMdn.getWrongPINCount() + 1);
 				SystemParametersServiceImpl systemParametersServiceImpl = new SystemParametersServiceImpl();
@@ -282,6 +283,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				returnFix.setInternalErrorCode(NotificationCodes.WrongPINSpecified.getInternalErrorCode());
 				//return returnFix;
 			}
+		}else {
+			//Pin error due to internal Reasons
+			returnFix.setInternalErrorCode(CmFinoFIX.NotificationCode_InternalLoginError);
 		}
 		return returnFix;
 	}

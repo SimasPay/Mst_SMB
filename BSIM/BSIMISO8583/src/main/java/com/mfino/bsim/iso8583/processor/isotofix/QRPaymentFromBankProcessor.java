@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jpos.iso.ISOMsg;
 
 import com.mfino.bsim.iso8583.processor.BSIMISOtoFixProcessor;
-import com.mfino.bsim.iso8583.utils.SyncProducer;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentFromBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;

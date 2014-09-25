@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -410,7 +411,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_PINResetRequired;
 		}
 		String storedPin = digestedPin;
-		if (!mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin)) {
+		if (mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin).equals(GeneralConstants.LOGIN_RESPONSE_FAILED)) {
 			log.error("Invalid PIN entered MDN="+subscriberMDN.getMDN());
 			int wrongPINCount = subscriberMDN.getWrongPINCount();
 			subscriberMDN.setWrongPINCount(wrongPINCount + 1);
@@ -421,7 +422,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			
 			return CmFinoFIX.NotificationCode_WrongPINSpecified;
 		}
-		else {
+		else if(mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin).equals(GeneralConstants.LOGIN_RESPONSE_SUCCESS)) {
 			// reset wrong pin count and allow them to login
 			if (subscriberMDN.getWrongPINCount() > 0) {
 				log.info("Setting wrong pin count to zero");
@@ -429,6 +430,9 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 				subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 				return CmFinoFIX.ResponseCode_Success;
 			}
+		}else{
+			//internal failure reason . May have failed due to HSM error . Dont reset pin count
+				return CmFinoFIX.NotificationCode_InternalLoginError;
 		}
 		
 		return CmFinoFIX.ResponseCode_Success;

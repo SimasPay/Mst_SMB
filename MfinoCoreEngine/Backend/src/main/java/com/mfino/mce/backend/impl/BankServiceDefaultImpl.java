@@ -57,6 +57,8 @@ import com.mfino.fix.CmFinoFIX.CMExistingSubscriberReactivationToBank;
 import com.mfino.fix.CmFinoFIX.CMGetBankAccountTransactions;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
@@ -992,6 +994,38 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		return returnFix;
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public CFIXMsg onGetSubscriberDetailsFromBank(CMGetSubscriberDetailsToBank toBank, CMGetSubscriberDetailsFromBank fromBank){
+		log.info("BankServiceDefaultImpl::onGetSubscriberDetailsFromBank() Begin");
+
+		BackendResponse returnFix = createResponseObject();
+
+		log.info("BankServiceDefaultImpl : onGetSubscriberDetailsFromBank : Response from bank="
+				+ fromBank.getResponseCode());
+		if (!isNullOrEmpty(fromBank.getResponseCode())
+				&& "00".equals(fromBank.getResponseCode())) {
+
+			// set in the fix response and return
+			returnFix.setInternalErrorCode(NotificationCodes.SubscriberDetailsSuccessMessage.getInternalErrorCode());
+			returnFix.setResult(CmFinoFIX.ResponseCode_Success);
+			returnFix.setFirstName(fromBank.getFirstName());
+			returnFix.setLastName(fromBank.getLastName());
+			returnFix.setAdditionalInfo(fromBank.getEmail());// Storing Email ID in Additional Info
+			
+		} else {			
+			ResponseCodes rs = ResponseCodes.getResponseCodes(1,
+					fromBank.getResponseCode());
+			if (rs == ResponseCodes.bank_Failure) {
+				returnFix.setDescription(ExternalResponseCodeHolder
+						.getNotificationText(fromBank.getResponseCode()));
+			}
+			returnFix.setExternalResponseCode(rs.getExternalResponseCode());
+			returnFix.setResult(CmFinoFIX.ResponseCode_Failure);
+		}
+
+		return returnFix;
+	}
+	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg onNewSubscriberActivation(
 			CMNewSubscriberActivation requestFix) {

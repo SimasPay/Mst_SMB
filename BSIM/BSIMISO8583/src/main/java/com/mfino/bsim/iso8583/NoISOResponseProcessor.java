@@ -3,8 +3,6 @@ package com.mfino.bsim.iso8583;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOMsg;
-
-import com.mfino.bsim.iso8583.utils.SyncProducer;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;

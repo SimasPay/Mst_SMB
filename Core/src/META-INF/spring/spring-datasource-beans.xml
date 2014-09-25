@@ -547,6 +547,7 @@
     <osgi:service ref ="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
     <osgi:service ref ="IBTServiceImpl" interface="com.mfino.service.IBTService"/>
     <osgi:service ref ="CashinFirstTimeServiceImpl" interface="com.mfino.service.CashinFirstTimeService"/>
+    <osgi:service ref ="GroupServiceImpl" interface="com.mfino.service.GroupService"/>
     <osgi:service ref="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
     
 </beans>

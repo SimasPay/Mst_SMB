@@ -32,6 +32,7 @@ import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromNFC;
 import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyFromBank;
 import com.mfino.fix.CmFinoFIX.CMSMSNotification;
 import com.mfino.fix.CmFinoFIX.CMSubscriberNotification;
@@ -453,6 +454,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 		} else if(mceMessage.getRequest() instanceof CMGetUserAPIKeyFromBank){
 			webResponse = mceMessage.getRequest();
 			log.info("Got the UserAPIKey from Flashiz --> " + webResponse.DumpFields());
+		}  else if(mceMessage.getRequest() instanceof CMGetSubscriberDetailsFromBank){
+			webResponse = mceMessage.getRequest();
+			log.info("Got the GetSubscriberDetailsFromBank from Bank --> " + webResponse.DumpFields());
 		}
 		else 
 		{

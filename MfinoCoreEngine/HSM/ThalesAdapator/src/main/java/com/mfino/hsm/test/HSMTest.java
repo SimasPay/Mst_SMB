@@ -5,17 +5,28 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Random;
+
+import net.sf.json.JSONObject;
 
 public class HSMTest {
 	 public static void main(String args[]) {
-
+		 JSONObject json = new JSONObject();
+		 for(int i =0;i<2;i++){
 		  System.out.println("<<< Main Method Entry >>>");
 		  System.out.println("<<< Given Ip ............ : " + args[1]);
 		  String ipAddress = args[1];
 		  System.out.println("<<< Given Port ............ : " + args[2]);
 		  int port = Integer.parseInt(args[2]);
-		  String command = "0004NC";
-		  command = args[0];
+		  StringBuffer sb = new StringBuffer();
+		  sb.append("0000JG544B13CB7616C02201");
+		  Random random = new Random();
+		  Long longacnumber = random.nextLong();
+		  String accountNumber = longacnumber.toString().substring(2,14);
+		  sb.append(accountNumber);
+		  sb.append("01234");
+		  String command = sb.toString();
+		  //command = args[0];
 		  Socket socket = null;
 		  DataOutputStream out = null;
 		  DataInputStream in = null;
@@ -34,6 +45,8 @@ public class HSMTest {
 		          out.flush();
 		          String response = in.readUTF();
 		          System.out.println("Output from HSM :" +response);
+		          System.out.println("response json :" + response.substring(8, 24));
+		          json.put(accountNumber, response.substring(8, 24));
 		          System.out.println("");
 		   }
 		  } catch (Exception ex) {
@@ -55,5 +68,6 @@ public class HSMTest {
 		   }
 		  }
 		 }
-
+		System.out.println("json objecgt \n"+json.toString());
+	 }
 }

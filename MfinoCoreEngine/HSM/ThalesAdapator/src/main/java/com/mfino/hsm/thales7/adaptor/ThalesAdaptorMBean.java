@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.adaptor;
+package com.mfino.hsm.thales7.adaptor;
 
 import org.jdom.Element;
 

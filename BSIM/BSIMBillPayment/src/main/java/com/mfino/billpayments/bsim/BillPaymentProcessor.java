@@ -26,7 +26,7 @@ import com.mfino.service.SubscriberService;
  * @author Maruthi
  * 
  */
-public class BillPaymentProcessor implements BSIMProcessor {
+public class BillPaymentProcessor implements BSIMProcessorNew {
 
 	private Logger	log	= LoggerFactory.getLogger(this.getClass());
 	private SubscriberService subscriberService;

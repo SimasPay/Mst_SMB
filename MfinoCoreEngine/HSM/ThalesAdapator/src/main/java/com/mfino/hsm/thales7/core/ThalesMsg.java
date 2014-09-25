@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.core;
+package com.mfino.hsm.thales7.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -27,7 +27,7 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.Loggeable;
 
-import com.mfino.hsm.thales.util.HThalesKeyScheme;
+import com.mfino.hsm.thales7.util.HThalesKeyScheme;
 
 /**
  * General purpose, Field Separator delimited message.
@@ -499,29 +499,12 @@ public class ThalesMsg  implements Loggeable, Cloneable {
             	defValue = defValue.replace("\n", "").replace("\t", "").replace("\r", "");
             }
             String value = get (id, type, length, defValue, separator);
-
-
-
-
             if(isPreSeparated(separator)&&value.length()>0) {
-
-
-
                 char c = getPreSeparator(separator);
-
-
                 if(c>0)
                     sb.append(c);
-
-
-
-
-
             }
-
-
             sb.append (value);
-
             if (isSeparated(separator)) {
                 char c = getSeparator(separator);
                 if (c > 0)
@@ -562,9 +545,6 @@ public class ThalesMsg  implements Loggeable, Cloneable {
             }
         }
         return false;
-
-
-
     }
 
     private Map loadProperties(Element elem) {
@@ -590,8 +570,6 @@ public class ThalesMsg  implements Loggeable, Cloneable {
         throws IOException, JDOMException, MalformedURLException
 
     {
-
-
 
         Iterator iter = schema.getChildren("field").iterator();
         String keyOff = "";
@@ -644,7 +622,6 @@ public class ThalesMsg  implements Loggeable, Cloneable {
 
         boolean preSeparated = isPreSeparated(separator);
 
-
         if(preSeparated)
         {
 
@@ -652,14 +629,7 @@ public class ThalesMsg  implements Loggeable, Cloneable {
 
 
         }
-
-
-
         boolean separated = expectSeparator;
-
-
-
-
 
         if(type.equals("T"))
         {
@@ -672,11 +642,7 @@ public class ThalesMsg  implements Loggeable, Cloneable {
 
         }
 
-
-
         sb.append((char) b[0]);
-
-
 
         }
 

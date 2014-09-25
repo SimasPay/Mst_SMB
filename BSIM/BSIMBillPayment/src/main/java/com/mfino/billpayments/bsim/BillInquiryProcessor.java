@@ -20,7 +20,7 @@ import com.mfino.service.SubscriberService;
  * @author Maruthi
  *
  */
-public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements BSIMProcessor {
+public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements BSIMProcessorNew {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	private SubscriberService subscriberService;

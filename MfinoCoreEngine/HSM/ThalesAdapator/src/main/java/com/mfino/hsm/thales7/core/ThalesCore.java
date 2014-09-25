@@ -1,4 +1,4 @@
-package com.mfino.hsm.thales.core;
+package com.mfino.hsm.thales7.core;
 
 import org.jpos.iso.ISOException;
 import org.jpos.iso.packager.DummyPackager;
@@ -116,7 +116,6 @@ public class ThalesCore
 
     public void sendKeepAlive() throws Exception
     {
-       //command(echoTest());
     	command(diagnostics());    	
     }
     
@@ -156,7 +155,6 @@ public class ThalesCore
          req.set("noc", "2");
          req.set("firstzmk", "EB8AB461149D145B5708D09F81E287E9");
          req.set("secondzmk", "43D34615B7082439B8A9BE9D14E17995");
-         //req.set("thirdzmk", "AC73042C190FD04F");
          req.dump(System.out,"after setting values 111");
          return req;
      }
@@ -188,7 +186,7 @@ public class ThalesCore
          {
             String packedRequest =  request.pack();
             log.info("request:"+request.get("command"));
-            log.debug("complete packed request:"+packedRequest);
+            log.info("complete packed request:"+packedRequest);
          } 
          catch(Exception e) 
          {
@@ -214,10 +212,10 @@ public class ThalesCore
          channel.send(msg);
 
          ThalesISOMsg response = (ThalesISOMsg) channel.receive();
-         log.debug("got response from hsm");
+         log.info("got response from hsm");
          resp.merge(response.getFSDMsg());
          log.info("[response:" + resp.get("response")+"][code:" + resp.get("error")+"]");
-         log.debug("contents of message:\n"+getAppendedStringForMap(resp.getMap()));
+         log.info("contents of message:\n"+getAppendedStringForMap(resp.getMap()));
          
          return resp;
      } 

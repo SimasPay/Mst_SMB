@@ -25,6 +25,8 @@ import com.mfino.fix.CmFinoFIX.CMExistingSubscriberReactivationToBank;
 import com.mfino.fix.CmFinoFIX.CMGetBankAccountTransactions;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
+import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
@@ -260,4 +262,6 @@ public interface BankService {
 	public CFIXMsg onNewSubscriberActivationFromBank(CMNewSubscriberActivationToBank toBank,CMNewSubscriberActivationFromBank fromBank); 
 	
 	public CFIXMsg onExistingSubscriberReactivationFromBank(CMExistingSubscriberReactivationToBank toBank,CMExistingSubscriberReactivationFromBank fromBank);
+	
+	public CFIXMsg onGetSubscriberDetailsFromBank(CMGetSubscriberDetailsToBank toBank, CMGetSubscriberDetailsFromBank fromBank);
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.handlers.hsm.HSMHandler;
 import com.mfino.service.MfinoUtilService;
 import com.mfino.service.SystemParametersService;
@@ -30,7 +31,7 @@ public class MfinoUtilServiceImpl implements MfinoUtilService{
 	 * @param storedPin digested PIN/ offset (digested pin in case of hash and offset in case of HSM)
 	 * @return
 	 */
-	public boolean validatePin(String mdn, String pin ,String storedPin)
+	public String validatePin(String mdn, String pin ,String storedPin)
 	{
 		/**
 		 * Hopefully this method is always called in a transaction
@@ -103,13 +104,18 @@ public class MfinoUtilServiceImpl implements MfinoUtilService{
 	    return sb.toString();
 	}
 
-	public boolean validatePINUsingHash(String mdn, String pin, String digestedPin)
+	public String validatePINUsingHash(String mdn, String pin, String digestedPin)
 	{
 		String calcPIN = MfinoUtil.calculateDigestPin(mdn, pin);
-		return calcPIN.equalsIgnoreCase(digestedPin);
+		if (calcPIN.equalsIgnoreCase(digestedPin)){
+			return GeneralConstants.LOGIN_RESPONSE_SUCCESS;
+		}else{
+			return GeneralConstants.LOGIN_RESPONSE_FAILED;
+		}
+		
 	}
 	
-	public boolean validatePINUsingHSM(String mdn,String hPin, String offset)
+	public String validatePINUsingHSM(String mdn,String hPin, String offset)
 	{
 		HSMHandler h = new HSMHandler();
 		return  h.validatePIN(mdn, hPin,offset);

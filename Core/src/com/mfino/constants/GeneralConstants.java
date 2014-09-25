@@ -33,4 +33,7 @@ public class GeneralConstants {
 	public static final String RESET_PIN_MODE_DIRECT = "direct";
 	public static final String RESPONSE_CODE_SUCCESS = "00";
 	public static final String RESPONSE_CODE_FAILURE = "01";
+	public static final String LOGIN_RESPONSE_SUCCESS = "00";
+	public static final String LOGIN_RESPONSE_FAILED = "01";
+	public static final String LOGIN_RESPONSE_INTERNAL_ERROR = "02";
 }
