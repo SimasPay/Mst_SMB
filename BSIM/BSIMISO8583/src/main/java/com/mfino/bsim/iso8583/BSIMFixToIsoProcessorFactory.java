@@ -5,8 +5,8 @@ import java.util.Set;
 
 import com.mfino.bsim.iso8583.processor.fixtoiso.AdviceInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BalanceInquiryToBankProcessor;
-import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentAmountInquiryToBankProcessor;
+import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentReversalToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.BillPaymentToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.ExistingSubscriberReActivationToBankProcessor;
@@ -22,14 +22,11 @@ import com.mfino.bsim.iso8583.processor.fixtoiso.QRPaymentToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.TransferInquiryToBankProcessor;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMAdviceInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentReversalToBank;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
+import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMExistingSubscriberReactivationToBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
 import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
@@ -44,6 +41,7 @@ import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
 import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
 import com.mfino.iso8583.definitions.fixtoiso.IFixToIsoProcessor;
 import com.mfino.iso8583.definitions.fixtoiso.IFixToIsoProcessorFactory;
+import com.mfino.service.SubscriberService;
 
 public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 
@@ -52,6 +50,8 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 	private Map<String,String> constantFieldsMap;
 	
 	private Set<String> offlineBillers;
+	
+	private SubscriberService subscriberService;
 	
 	public void setConstantFieldsMap(Map<String,String> map){
 		this.constantFieldsMap = map;
@@ -72,8 +72,11 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 			processor = new BillPaymentAmountInquiryToBankProcessor();
 		else if(request instanceof CMQRPaymentReversalToBank)
 			processor = new QRPaymentReversalToBankProcessor();
-		else if (request instanceof CMBSIMBillPaymentReversalToBank)
-			processor = new BillPaymentReversalToBankProcessor();
+		else if (request instanceof CMBSIMBillPaymentReversalToBank){
+			BillPaymentReversalToBankProcessor billPaymentReversalToBankProcessor = new BillPaymentReversalToBankProcessor();
+			billPaymentReversalToBankProcessor.setSubscriberService(getSubscriberService());
+			processor = billPaymentReversalToBankProcessor;
+		}
 		else if (request instanceof CMBSIMBillPaymentInquiryToBank){
 			BillPaymentInquiryToBankProcessor billPaymentInquiryToBankProcessor = new BillPaymentInquiryToBankProcessor();
 			billPaymentInquiryToBankProcessor.setOfflineBillers(offlineBillers);
@@ -87,8 +90,11 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 			processor = new BalanceInquiryToBankProcessor();
 		else if (request instanceof CMAdviceInquiryToBank)
 			processor = new AdviceInquiryToBankProcessor();
-		else if (request instanceof CMMoneyTransferReversalToBank)
-			processor = new MoneyTransferReversalToBankProcessor();
+		else if (request instanceof CMMoneyTransferReversalToBank){
+			MoneyTransferReversalToBankProcessor moneyTransferReversalToBankProcessor = new MoneyTransferReversalToBankProcessor();
+			moneyTransferReversalToBankProcessor.setSubscriberService(getSubscriberService());
+			processor = moneyTransferReversalToBankProcessor;
+		}
 		else if (request instanceof CMMoneyTransferToBank)
 			processor = new MoneyTransferToBankProcessor();
 		else if (request instanceof CMGetLastTransactionsToBank)
@@ -116,5 +122,13 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 
 	public void setOfflineBillers(Set<String> offlineBillers) {
 		this.offlineBillers = offlineBillers;
+	}
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
 	}
 }

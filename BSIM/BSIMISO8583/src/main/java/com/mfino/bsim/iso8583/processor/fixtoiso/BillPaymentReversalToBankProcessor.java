@@ -146,7 +146,7 @@ public class BillPaymentReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(32, constantFieldsMap.get("32"));
 			isoMsg.set(33, constantFieldsMap.get("32"));// 33
 			//isoMsg.set(34, msg.getSourceCardPAN());//trac data
-			isoMsg.set(37, 	StringUtilities.leftPadWithCharacter( msg.getTransactionID().toString(), 12, "0"));
+			isoMsg.set(37, 	StringUtilities.leftPadWithCharacter( msg.getBankSystemTraceAuditNumber(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, msg.getSourceMDN());
 			/*isoMsg.set(43, constantFieldsMap.get("43"));
