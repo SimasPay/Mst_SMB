@@ -26,7 +26,7 @@
         
     "Query" : "	SELECT 
 					nvl(sm.applicationid, ' '),
-					p.cardpan",
+					p.cardpan,
 					s.firstname || ' ' || s.lastname,
 					sm.mdn,
 					TO_CHAR (s.activationtime, 'DD-MM-YYYY'),
