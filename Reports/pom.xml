@@ -180,8 +180,8 @@
 									</includes> 	
 								</resource>
 								<resource>
-									<targetPath>${basedir}/target/Reports/WEB-INF/resources/reports/bsim</targetPath>
-									<directory>src/main/resources/reports/bsim</directory>
+									<targetPath>${basedir}/target/Reports/WEB-INF/resources/reports</targetPath>
+									<directory>src/main/resources/reports/${profile}</directory>
 									<includes>
 										<include>*.json</include>
 									</includes>	
