@@ -5,7 +5,6 @@
                             
     "ReportHeader" : [   
                            [ "Date Range From" , "${StartTime}", "To" , "${EndTime}" ],
-   						   [ "Partner Code" , "${PartnerCode}"],
    						   [ "Biller Code" , "${BillerCode}"],   	
                            [ "Transaction Status", "${TransactionStatus}"]
                      ],

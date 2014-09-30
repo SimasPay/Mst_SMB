@@ -687,11 +687,9 @@ Ext
 									.show();
 							this.find('itemId', 'mdn')[0].show();
 						}else if(value === "TransactionReport"){
-							this.find('itemId', 'partnerCode')[0].show();
 							this.find('itemId', 'billerCode')[0].show();
 							this.find('itemId', 'transactionStatus')[0].show();
 						}else if(value === "TransactionMonthlyReport"){
-							this.find('itemId', 'partnerCode')[0].show();
 							this.find('itemId', 'billerCode')[0].show();
 							this.find('itemId', 'transactionStatus')[0].show();
 						}
