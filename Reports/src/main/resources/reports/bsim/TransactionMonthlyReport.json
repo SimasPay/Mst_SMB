@@ -35,7 +35,7 @@
 				WHERE
 					s.TransactiontypeID = t.ID
 					and t.TransactionName in ('CheckBalance', 'History', 'ChangePIN','Transfer', 'InterBankTransfer', 'Purchase', 'BillPay')
-					and (s.LastUpdateTime between '${StartTime}' and '${EndTime}')
+					and (s.LastUpdateTime between ${StartTime} and ${EndTime})
 				GROUP BY
 					t.TransactionName, to_char(s.LastUpdateTime, 'YYYY '),
 					to_char(s.LastUpdateTime, 'MONTH'), s.TransactiontypeID , s.status; ",

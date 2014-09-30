@@ -75,7 +75,7 @@ public class QueryExecutor {
 
 			stmt = connection.prepareStatement(query,
 					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			stmt.setFetchSize(Integer.MIN_VALUE);
+			//stmt.setFetchSize(Integer.MIN_VALUE);
 			resultSet = stmt.executeQuery();
 
 		} catch (SQLException e) {

@@ -44,7 +44,7 @@ public class ReportTool {
 					.getProperty(ReportPropertyConstants.SQL_QUERY);
 			query = replaceQueryVariablesWithActuals(query, reportParameters,
 					reportProperties);
-
+			query = query.replace(";", "");
 			JSONArray encryptedFields = reportProperties
 					.getJSONArray(ReportPropertyConstants.ENCRYPTED_COLUMN_INDICES);
 
@@ -133,7 +133,7 @@ public class ReportTool {
 
 	public static String replaceQueryVariablesWithActuals(String query,
 			ReportParameters reportParameters, ReportProperties reportProperties) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
 		if (reportParameters.getEndTime() != null) {
 			query = query.replace("${EndTime}",
 					"'" + dateFormat.format(reportParameters.getEndTime())
