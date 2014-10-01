@@ -349,21 +349,24 @@ public class ThalesCommandImplementor
 	{
 		// encrypt hpin
 		log.info("ThalesCommandImplementor :: validatePINinHSM BEGIN");
+		log.info("ThalesCommandImplementor :: sending BA command with pin : "+hPin+" accountNumber : "+accountNumber);
 		ThalesMsg encryptPinResponse = encryptPIN(hPin, accountNumber);
 		if(encryptPinResponse== null )
 		{
 			throw new Exception("No response for pin encryption request");
 		}
 		String pinunderlmk = encryptPinResponse.get("encrypted-pin");
-		
+		log.info("ThalesCommandImplementor :: got pinunderlmk : "+pinunderlmk +" in BB response");
 		// create pin block
+		log.info("ThalesCommandImplementor :: sending JG command with pinunderlmk : "+pinunderlmk+" accountNumber : "+accountNumber);
 		ThalesMsg pinBlockResponse = sendRequest(createPINBlock(zpk,pinunderlmk,accountNumber));
 		if(pinBlockResponse == null )
 			throw new Exception("Could not generate PIN Block");
 		
 		// validate pin
 		String pinblock = pinBlockResponse.get("pinblock");
-		
+		log.info("ThalesCommandImplementor :: got pinblock : "+pinblock +" in JH response");
+		log.info("ThalesCommandImplementor :: sending EA command with offset : "+offset+" accountNumber : "+accountNumber);
 		ThalesMsg validatePINResponse = sendRequest(validatePIN(pvk,zpk,offset,pinblock,accountNumber));
 		if(validatePINResponse == null )
 			throw new Exception("Could not validate PIN");

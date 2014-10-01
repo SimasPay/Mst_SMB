@@ -312,7 +312,7 @@
         <route>
             <from uri="jms:bsimsourceToDestQueue" />
             <filter>
-                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBank'</simple>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBankForBsim'</simple>
                 <filter>
 		             <simple>${in.body.response.getResponseCode} == '00'</simple>
 		             <to uri="bean:billPayService?method=billPayTransferCompletionSourceToDestination" />
@@ -383,7 +383,7 @@
 	   <route>
 	   <from uri="jms:acknowledgementServiceQueue?disableReplyTo=true" />
             <filter>
-                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBank'</simple>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBankForBsim'</simple>
                 <filter>
 		             <simple>${in.body.response.getResponseCode} == '00'</simple>
 		             <to uri="bean:billPayService?method=billPayMoneyTransferCompletionSourceToDestination" />
