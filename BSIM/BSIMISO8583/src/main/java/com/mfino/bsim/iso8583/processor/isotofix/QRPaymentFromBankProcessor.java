@@ -28,6 +28,10 @@ public class QRPaymentFromBankProcessor implements BSIMISOtoFixProcessor{
 
 		CMQRPaymentToBank toBank = (CMQRPaymentToBank)request;
 		CMQRPaymentFromBank fromBank = new CMQRPaymentFromBank();
+
+		//if(!GetConstantCodes.SUCCESS.equals(isoMsg.getString(39)))
+		//	return ISOtoFIXProcessor.getGenericResponse(isoMsg, fromBank);
+        
 		fromBank.copy(toBank);
 		if(isoMsg.hasField(38))
 			fromBank.setAIR(isoMsg.getString(38));
@@ -39,5 +43,8 @@ public class QRPaymentFromBankProcessor implements BSIMISOtoFixProcessor{
 		{
 			fromBank.setInfo1(isoMsg.getString(62));
 	}
-
+		fromBank.header().setSendingTime(DateTimeUtil.getLocalTime());
+		fromBank.m_pHeader.setMsgSeqNum(UniqueNumberGen.getNextNum());
+		return fromBank;
+	}
 }
