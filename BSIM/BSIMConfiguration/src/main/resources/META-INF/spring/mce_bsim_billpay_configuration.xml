@@ -83,6 +83,7 @@
 	<bean id="billPayService" class="com.mfino.billpayments.bsim.impl.BillPaymentServiceImpl">
 	    <property name="bankService" ref="bankService"/>
 	    <property name="billPaymentsService" ref="billPaymentsService"/>
+		<property name="subscriberService" ref="subscriberServiceImpl"/>
 	    <!-- <property name="plnBillers">
 	        <set>
 	           <value>301211</value>

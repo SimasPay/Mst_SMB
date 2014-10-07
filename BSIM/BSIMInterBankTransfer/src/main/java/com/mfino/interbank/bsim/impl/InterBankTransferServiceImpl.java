@@ -1,7 +1,10 @@
 package com.mfino.interbank.bsim.impl;
 
+import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,12 +14,16 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
 import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.PocketDAO;
+import com.mfino.dao.TransactionChargeLogDAO;
 import com.mfino.dao.query.IntegrationSummaryQuery;
+import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.InterBankCode;
 import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.TransactionCharge;
+import com.mfino.domain.TransactionChargeLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMInterBankFundsTransfer;
@@ -99,6 +106,31 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		if(inqResponse instanceof CMTransferInquiryToBank){
 			CMTransferInquiryToBank inquiryResponse =(CMTransferInquiryToBank) inqResponse;
 			CMInterBankTransferInquiryToBank response = new CMInterBankTransferInquiryToBank();
+			Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
+			TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+			
+			BigDecimal serviceCharge = new BigDecimal(0);
+			BigDecimal tax = new BigDecimal(0);
+			
+			List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+			if(CollectionUtils.isNotEmpty(tclList)){
+				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+					TransactionChargeLog tcl = it.next();
+					TransactionCharge txnCharge=tcl.getTransactionCharge();
+					ChargeType chargeType = txnCharge.getChargeType();
+					String chargeTypeName = chargeType.getName();
+					if(chargeTypeName.equalsIgnoreCase("charge")){
+						serviceCharge = tcl.getCalculatedCharge();
+					}
+					if(chargeTypeName.equalsIgnoreCase("tax")){
+						tax = tcl.getCalculatedCharge();
+					}				
+				}
+			}
+			
+			response.setServiceChargeDE63(serviceCharge.toBigInteger().toString());
+			response.setTaxAmount(tax);
+			
 			String mdn = StringUtilities.leftPadWithCharacter(inquiryResponse.getSourceMDN(), 13, "0");
 			String mdngen = MfinoUtil.CheckDigitCalculation(mdn); 
 			response.setSourceMDN(inquiryResponse.getSourceMDN());
@@ -220,6 +252,28 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			CMInterBankMoneyTransferToBank response = new CMInterBankMoneyTransferToBank();
 			String mdn = StringUtilities.leftPadWithCharacter(confirmResponse.getSourceMDN(), 13, "0");
 			String mdngen = MfinoUtil.CheckDigitCalculation(mdn); 
+			
+			Long sctlID = confirmResponse.getServiceChargeTransactionLogID();
+			TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+			
+			BigDecimal serviceCharge = new BigDecimal(0);
+			BigDecimal tax = new BigDecimal(0);
+			
+			List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+			if(CollectionUtils.isNotEmpty(tclList)){
+				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+					TransactionChargeLog tcl = it.next();
+					if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
+						serviceCharge = tcl.getCalculatedCharge();
+					}
+					if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
+						tax = tcl.getCalculatedCharge();
+					}				
+				}
+			}
+			
+			response.setServiceChargeAmount(serviceCharge);
+			response.setTaxAmount(tax);
 			response.setSourceMDN(confirmResponse.getSourceMDN());
 			response.setMPan(mdngen);
 			response.setAmount(confirmResponse.getAmount());

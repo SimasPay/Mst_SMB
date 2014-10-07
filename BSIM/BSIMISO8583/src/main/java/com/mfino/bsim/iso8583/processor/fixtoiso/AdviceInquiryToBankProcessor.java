@@ -25,6 +25,7 @@ import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
 
+@Deprecated
 public class AdviceInquiryToBankProcessor extends BankRequestProcessor {
 
 	public AdviceInquiryToBankProcessor() {

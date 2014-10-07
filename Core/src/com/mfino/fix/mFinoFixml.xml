@@ -1069,6 +1069,7 @@
 			<field name="BankSystemTraceAuditNumber" required="Y" />
 			<field name="BankRetrievalReferenceNumber" required="Y" />
 			<field name="DestBankCode" required="Y"/>
+			<field name="ProcessingCodeDE3" required="N" />
 		</message>
 		<message name="JSNotificationMessage" msgtype="1050" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="NotificationCode" required="N" />
@@ -3798,6 +3799,7 @@
 			<field name="BankName" required="N"/>
 			<field name="ServiceChargeAmount" required="N"/>
 			<field name="TaxAmount" required="N"/>
+			<field name="ServiceChargeDE63" required="N"/>
 		</message>
 		<message name="InterBankTransferInquiryFromBank" msgtype="1342" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="TransferInquiryFromBank">
 			<field name="DestBankCode" required="Y"/>
@@ -4674,6 +4676,7 @@
 	</message>
     <message name="BSIMBillPaymentReversalToBank" msgtype="1429" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalToBank">
             	<field name="BillerCode" required="N"/>
+            	<field name="ProcessingCodeDE3" required="N"/>
 	</message>
 	<message name="BSIMBillPaymentReversalFromBank" msgtype="1430" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalFromBank">
 	</message>    

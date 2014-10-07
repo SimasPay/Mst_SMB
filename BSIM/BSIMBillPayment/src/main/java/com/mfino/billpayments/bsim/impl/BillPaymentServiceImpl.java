@@ -2,6 +2,7 @@ package com.mfino.billpayments.bsim.impl;
 
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,16 +22,22 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationSummaryDao;
 import com.mfino.dao.MFSBillerPartnerDAO;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
+import com.mfino.dao.TransactionChargeLogDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
+import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.NoISOResponseMsg;
+import com.mfino.domain.Pocket;
+import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionCharge;
+import com.mfino.domain.TransactionChargeLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -64,6 +71,7 @@ import com.mfino.mce.core.util.ExternalResponseCodeHolder;
 import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.mce.core.util.ResponseCodes;
 import com.mfino.mce.core.util.StringUtilities;
+import com.mfino.service.SubscriberService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
@@ -73,6 +81,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	protected BankService bankService;
 	protected BillPaymentsService billPaymentsService;
+	protected SubscriberService subscriberService;
 	private TransactionChargingService transactionChargingService ;
 	private Set<String> plnPrepaidBillers;
 	private Set<String> plnPostpaidBillers;
@@ -147,6 +156,31 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		response.setAmount(inquiryResponse.getAmount());
 		String mdn = StringUtilities.leftPadWithCharacter(billPayInquiry.getSourceMDN(), 13, "0");
 		String mdngen = MfinoUtil.CheckDigitCalculation(mdn);
+		
+		Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
+		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+		BigDecimal serviceCharge = new BigDecimal(0);
+		BigDecimal tax = new BigDecimal(0);
+		
+		if(sctlID != null){
+			List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+			if(CollectionUtils.isNotEmpty(tclList)){
+				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+					TransactionChargeLog tcl = it.next();
+					TransactionCharge txnCharge=tcl.getTransactionCharge();
+					ChargeType chargeType = txnCharge.getChargeType();
+					String chargeTypeName = chargeType.getName();
+					if(chargeTypeName.equalsIgnoreCase("charge")){
+						serviceCharge = tcl.getCalculatedCharge();
+					}
+					if(chargeTypeName.equalsIgnoreCase("tax")){
+						tax = tcl.getCalculatedCharge();
+					}				
+				}
+			}
+		}
+		
+		
 		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
@@ -188,6 +222,8 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
         response.setBillerCode(billPayInquiry.getBillerCode());
         response.setInvoiceNo(billPayInquiry.getInvoiceNumber());
         response.setPaymentMode(billPayInquiry.getPaymentMode());
+        response.setServiceChargeAmount(serviceCharge);
+        response.setTaxAmount(tax);
 		mceMessage.setResponse(response);
 		}
 		else if(bankInqres instanceof BackendResponse){
@@ -633,6 +669,27 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
 		}
 		
+		Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
+		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+		
+		BigDecimal serviceCharge = new BigDecimal(0);
+		BigDecimal tax = new BigDecimal(0);
+		
+		List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+		if(CollectionUtils.isNotEmpty(tclList)){
+			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+				TransactionChargeLog tcl = it.next();
+				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
+					serviceCharge = tcl.getCalculatedCharge();
+				}
+				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
+					tax = tcl.getCalculatedCharge();
+				}				
+			}
+		}
+		
+		response.setServiceChargeAmount(serviceCharge);
+		response.setTaxAmount(tax);
 		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
 		response.setUICategory(inquiryResponse.getUICategory());
 		response.setSourcePocketID(inquiryResponse.getSourcePocketID());
@@ -759,12 +816,80 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			billPayrevtobank.setProcessingCode("50");
 		}
 		billPayrevtobank.setSourceCardPAN(billPayrevToBank.getSourceCardPAN());
+		constructAndSetDE3(billPayrevtobank);
 		log.info("BillPaymentServiceImpl :: set prefix processing code :" + billPayrevtobank.getProcessingCode());
 		mceMessage.setResponse(billPayrevtobank);
 		mceMessage.setDestinationQueue(reversalQueue);
 		return mceMessage;
 
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	private void constructAndSetDE3(CMBSIMBillPaymentReversalToBank billPayrevtobank){
+		String defaultDE3=CmFinoFIX.ISO8583_ProcessingCode_XLink_Payment0;
+		Pocket sourcePocket = subscriberService.getDefaultPocket(billPayrevtobank.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+		PocketTemplate pocketTemplate = null;
+		Integer pocketTempType = null;
+		String processingCodePrefix = billPayrevtobank.getProcessingCode();
+		log.info("BillPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
+		if(sourcePocket!=null){
+			pocketTemplate = sourcePocket.getPocketTemplate();
+			pocketTempType = pocketTemplate.getBankAccountCardType();
+			if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
+				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;
+			}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
+				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+"00";
+			}
+		}
+		billPayrevtobank.setProcessingCodeDE3(defaultDE3);//default de-3 will be overwritten depending on dest a/c type
+		log.info("BillPaymentReversalToBankProcessor :: process default "+ defaultDE3);
+		String processingCode=null;
+		IntegrationSummaryDao isDAO  = DAOFactory.getInstance().getIntegrationSummaryDao();
+		IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
+		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
+		ServiceChargeTransactionLog sctl;
+		Long transferID = billPayrevtobank.getTransferID();
+		Long sctlID;
+		String reconciliationID1 = null;
+		if(transferID!=null){
+			sctlQuery.setTransferID(transferID);
+			log.info("BillPaymentReversalToBankProcessor :: process Transfer ID :"+transferID);
+			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			if(CollectionUtils.isNotEmpty(list)){
+				sctl = list.get(0);
+				sctlID = sctl.getID();
+				log.info("BillPaymentReversalToBankProcessor :: process Sctl ID :"+sctlID);
+				isQuery.setSctlID(sctlID);
+				List<IntegrationSummary> isList = isDAO.get(isQuery);
+				if(CollectionUtils.isNotEmpty(isList)){
+					IntegrationSummary iSummary = isList.get(0);
+					reconciliationID1 = iSummary.getReconcilationID1();
+					log.info("BillPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
+					log.info("BillPaymentReversalToBankProcessor :: Dumping message fields :" + billPayrevtobank.DumpFields());
+					log.info("BillPaymentReversalToBankProcessor :: SourceMDN " + billPayrevtobank.getSourceMDN());
+					log.info("BillPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
+
+					if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
+					{
+						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankAccountCardType());
+						log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
+
+						if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
+							processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+reconciliationID1 ;
+						}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
+							processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+reconciliationID1;
+						}
+						log.info("BillPaymentReversalToBankProcessor :: process Setting ProcessingCode :"+processingCode+" in DE-3");
+						billPayrevtobank.setProcessingCodeDE3(processingCode);
+					}
+
+				}	   		
+			}
+		}
+	}
+	
+	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage billPayReversalFromBank(MCEMessage mceMessage){
@@ -802,6 +927,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			billPayrevtobank.setProcessingCode("50");
 		}
 		billPayrevtobank.setSourceCardPAN(billPayrevToBank.getSourceCardPAN());
+		constructAndSetDe63ForQr(billPayrevtobank);
 		log.info("BillPaymentServiceImpl :: set prefix processing code :" + billPayrevtobank.getProcessingCode());
 		billPaymentsService.updateBillPayStatus(billPayrev.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_REVERSAL_REQUESTED);
 		mceMessage.setResponse(billPayrevtobank);
@@ -809,6 +935,71 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		return mceMessage;
 
 	}
+	
+	public void constructAndSetDe63ForQr(CMQRPaymentReversalToBank billPayrevtobank){
+		String defaultDE3=CmFinoFIX.ISO8583_ProcessingCode_XLink_Payment0;
+		Pocket sourcePocket = subscriberService.getDefaultPocket(billPayrevtobank.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+		PocketTemplate pocketTemplate = null;
+		Integer pocketTempType = null;
+		String processingCodePrefix = "50";
+		log.info("QRPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
+		if(sourcePocket!=null){
+			pocketTemplate = sourcePocket.getPocketTemplate();
+			pocketTempType = pocketTemplate.getBankAccountCardType();
+			if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
+				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;
+			}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
+				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+"00";
+			}
+		}
+		billPayrevtobank.setProcessingCodeDE3(defaultDE3);//default de-3 will be overwritten depending on dest a/c type
+		log.info("QRPaymentReversalToBankProcessor :: process default "+ defaultDE3);
+		String processingCode=null;
+		IntegrationSummaryDao isDAO  = DAOFactory.getInstance().getIntegrationSummaryDao();
+		IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
+		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
+		ServiceChargeTransactionLog sctl;
+		Long transferID = billPayrevtobank.getTransferID();
+		Long sctlID;
+		String reconciliationID1 = null;
+		if(transferID!=null){
+			sctlQuery.setTransferID(transferID);
+			log.info("QRPaymentReversalToBankProcessor :: process Transfer ID :"+transferID);
+			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			if(CollectionUtils.isNotEmpty(list)){
+				sctl = list.get(0);
+				sctlID = sctl.getID();
+				log.info("QRPaymentReversalToBankProcessor :: process Sctl ID :"+sctlID);
+				isQuery.setSctlID(sctlID);
+				List<IntegrationSummary> isList = isDAO.get(isQuery);
+				if(CollectionUtils.isNotEmpty(isList)){
+					IntegrationSummary iSummary = isList.get(0);
+					reconciliationID1 = iSummary.getReconcilationID1();
+					log.info("QRPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
+					log.info("QRPaymentReversalToBankProcessor :: Dumping message fields :" + billPayrevtobank.DumpFields());
+					log.info("QRPaymentReversalToBankProcessor :: SourceMDN " + billPayrevtobank.getSourceMDN());
+					log.info("QRPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
+
+					if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
+					{
+						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankAccountCardType());
+						log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
+
+						if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
+							processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+reconciliationID1 ;
+						}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
+							processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+reconciliationID1;
+						}
+						log.info("QRPaymentReversalToBankProcessor :: process Setting ProcessingCode :"+processingCode+" in DE-3");
+						billPayrevtobank.setProcessingCodeDE3(processingCode);
+					}
+
+				}	   		
+			}
+		}
+	}
+	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage qrPaymentReversalFromBank(MCEMessage mceMessage){
@@ -1159,5 +1350,13 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 	public void setPlnNonTaglisSMSKeyWords(List<String> plnNonTaglisSMSKeyWords) {
 		this.plnNonTaglisSMSKeyWords = plnNonTaglisSMSKeyWords;
+	}
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
 	}
 }

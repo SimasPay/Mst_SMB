@@ -96,6 +96,7 @@ import com.mfino.mce.core.util.ResponseCodes;
 import com.mfino.mce.core.util.StringUtilities;
 import com.mfino.service.SystemParametersService;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
 
 /**
@@ -1723,6 +1724,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												moneyTransferToBank.setProcessingCode(iSummary.getReconcilationID1());
 												moneyTransferToBank.setAdditionalInfo(iSummary.getReconcilationID2());
 											}
+											Timestamp ts = DateTimeUtil.getGMTTime();
 											
 											moneyTransferToBank
 													.copy(confirmationToBank);
@@ -1758,8 +1760,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											moneyTransferToBank
 													.setTransferID(pct.getID());
 											moneyTransferToBank
-													.setTransferTime(pct
-															.getStartTime());
+													.setTransferTime(ts);
 											moneyTransferToBank
 													.setDestinationBankAccountNo(confirmationToBank
 															.getDestinationBankAccountNo());
@@ -1850,6 +1851,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												moneyTransferToBank.setProcessingCode(iSummary.getReconcilationID1());
 												moneyTransferToBank.setAdditionalInfo(iSummary.getReconcilationID2());
 											}
+											Timestamp ts = DateTimeUtil.getGMTTime();
+
 											moneyTransferToBank
 													.copy(confirmationToBank);
 											moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
@@ -1883,8 +1886,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											moneyTransferToBank
 													.setTransferID(pct.getID());
 											moneyTransferToBank
-													.setTransferTime(pct
-															.getStartTime());
+													.setTransferTime(ts);
 
 											moneyTransferToBank
 													.setDestCardPAN(coreDataWrapper
@@ -1956,6 +1958,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											moneyTransferToBank.setProcessingCode(iSummary.getReconcilationID1());
 											moneyTransferToBank.setAdditionalInfo(iSummary.getReconcilationID2());
 										}
+										Timestamp ts = DateTimeUtil.getGMTTime();
+
 										moneyTransferToBank
 												.copy(confirmationToBank);
 										moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
@@ -1986,8 +1990,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 														.getSourceCardPAN());
 										moneyTransferToBank.setTransferID(pct
 												.getID());
-										moneyTransferToBank.setTransferTime(pct
-												.getStartTime());
+										moneyTransferToBank.setTransferTime(ts);
 										moneyTransferToBank
 												.setOriginalReferenceID(confirmationToBank
 														.getOriginalReferenceID());
@@ -2596,6 +2599,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										 * confirmation from bank
 										 */
 										CMMoneyTransferToBank moneyTransferToBank = new CMMoneyTransferToBank();
+										Timestamp ts = DateTimeUtil.getGMTTime();
+
 										// moneyTransferToBank.copy(confirmationToBank);
 										moneyTransferToBank.setSourceMDN(settlementOfCharge.getSourceMDN());
 										moneyTransferToBank.setSourceMDNToUseForBank(coreDataWrapper.getPlatformMdn());
@@ -2625,8 +2630,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												.setPin(MCEUtil.FAKE_PIN_FOR_OMB);
 										moneyTransferToBank.setTransferID(pct
 												.getID());
-										moneyTransferToBank.setTransferTime(pct
-												.getStartTime());
+										moneyTransferToBank.setTransferTime(ts);
 										moneyTransferToBank
 												.setTransactionID(settlementOfCharge
 														.getTransactionID());

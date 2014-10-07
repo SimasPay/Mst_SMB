@@ -2,21 +2,11 @@ package com.mfino.bsim.iso8583.processor.fixtoiso;
 
 import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
-import com.mfino.bsim.iso8583.utils.FixToISOUtil;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
-import com.mfino.crypto.CryptographyService;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.IntegrationSummaryDao;
-import com.mfino.dao.query.IntegrationSummaryQuery;
-import com.mfino.domain.IntegrationSummary;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
@@ -43,9 +33,8 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 	@Override
 	public ISOMsg process(CFIXMsg fixmsg) throws AllElementsNotAvailableException {
 		CMMoneyTransferToBank request = (CMMoneyTransferToBank) fixmsg;
-		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime();
-
+		Timestamp ts = request.getTransferTime();
 		// use the MDN of the global account
 		String mdn = request.getSourceMDNToUseForBank();
 		if (mdn == null) {
@@ -74,17 +63,6 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
-			//Save timestamp in reconciliation3 to pick it up later in reversal txn.
-			Long sctlID = request.getServiceChargeTransactionLogID();
-			IntegrationSummaryDao isDAO  = DAOFactory.getInstance().getIntegrationSummaryDao();
-	        IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
-	        isQuery.setSctlID(sctlID);
-    		List<IntegrationSummary> isList = isDAO.get(isQuery);
-    		if(CollectionUtils.isNotEmpty(isList)){
-    			IntegrationSummary iSummary = isList.get(0);
-    			iSummary.setReconcilationID3(DateTimeFormatter.getMMDDHHMMSS(ts));
-    			isDAO.save(iSummary);
-    		}
 	        isoMsg.set(11,StringUtilities.leftPadWithCharacter(transactionID.toString(), 6, "0"));
 			isoMsg.set(12,DateTimeFormatter.getHHMMSS(localTS));
 			isoMsg.set(13,DateTimeFormatter.getMMDD(localTS));

@@ -1,10 +1,7 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,11 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
 import com.mfino.crypto.CryptographyService;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.TransactionChargeLogDAO;
-import com.mfino.domain.ChargeType;
-import com.mfino.domain.TransactionCharge;
-import com.mfino.domain.TransactionChargeLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
@@ -99,33 +91,13 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 		return isoMsg;
 	}
 	
-	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	private String constructDE63(CMInterBankTransferInquiryToBank request) {
-		Long sctlID = request.getServiceChargeTransactionLogID();
-		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
-		
-		BigDecimal serviceCharge = new BigDecimal(0);
-		BigDecimal tax = new BigDecimal(0);
+		String serviceCharge = request.getServiceChargeDE63();
+		BigDecimal tax = request.getTaxAmount();
 		String de63 = constantFieldsMap.get("63");
 		String strServiceCharge, strTax;
 		
-		List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
-		if(CollectionUtils.isNotEmpty(tclList)){
-			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
-				TransactionChargeLog tcl = it.next();
-				TransactionCharge txnCharge=tcl.getTransactionCharge();
-				ChargeType chargeType = txnCharge.getChargeType();
-				String chargeTypeName = chargeType.getName();
-				if(chargeTypeName.equalsIgnoreCase("charge")){
-					serviceCharge = tcl.getCalculatedCharge();
-				}
-				if(chargeTypeName.equalsIgnoreCase("tax")){
-					tax = tcl.getCalculatedCharge();
-				}				
-			}
-		}
-		
-		strServiceCharge = "C" + StringUtilities.leftPadWithCharacter(serviceCharge.toBigInteger().toString(),8,"0");
+		strServiceCharge = "C" + StringUtilities.leftPadWithCharacter(serviceCharge,8,"0");
 		strTax = "C" + StringUtilities.leftPadWithCharacter(tax.toBigInteger().toString(),8,"0");
 		de63 = StringUtilities.replaceNthBlock(de63, 'C', 12,strServiceCharge,9);
 		de63 = StringUtilities.replaceNthBlock(de63, 'C', 13,strTax,9);
