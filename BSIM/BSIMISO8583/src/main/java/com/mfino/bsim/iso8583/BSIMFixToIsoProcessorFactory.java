@@ -51,7 +51,6 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 	
 	private Set<String> offlineBillers;
 	
-	private SubscriberService subscriberService;
 	
 	public void setConstantFieldsMap(Map<String,String> map){
 		this.constantFieldsMap = map;
@@ -73,9 +72,7 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 		else if(request instanceof CMQRPaymentReversalToBank)
 			processor = new QRPaymentReversalToBankProcessor();
 		else if (request instanceof CMBSIMBillPaymentReversalToBank){
-			BillPaymentReversalToBankProcessor billPaymentReversalToBankProcessor = new BillPaymentReversalToBankProcessor();
-			billPaymentReversalToBankProcessor.setSubscriberService(getSubscriberService());
-			processor = billPaymentReversalToBankProcessor;
+			processor = new BillPaymentReversalToBankProcessor();
 		}
 		else if (request instanceof CMBSIMBillPaymentInquiryToBank){
 			BillPaymentInquiryToBankProcessor billPaymentInquiryToBankProcessor = new BillPaymentInquiryToBankProcessor();
@@ -91,9 +88,7 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 		else if (request instanceof CMAdviceInquiryToBank)
 			processor = new AdviceInquiryToBankProcessor();
 		else if (request instanceof CMMoneyTransferReversalToBank){
-			MoneyTransferReversalToBankProcessor moneyTransferReversalToBankProcessor = new MoneyTransferReversalToBankProcessor();
-			moneyTransferReversalToBankProcessor.setSubscriberService(getSubscriberService());
-			processor = moneyTransferReversalToBankProcessor;
+			processor = new MoneyTransferReversalToBankProcessor();
 		}
 		else if (request instanceof CMMoneyTransferToBank)
 			processor = new MoneyTransferToBankProcessor();
@@ -122,13 +117,5 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 
 	public void setOfflineBillers(Set<String> offlineBillers) {
 		this.offlineBillers = offlineBillers;
-	}
-
-	public SubscriberService getSubscriberService() {
-		return subscriberService;
-	}
-
-	public void setSubscriberService(SubscriberService subscriberService) {
-		this.subscriberService = subscriberService;
 	}
 }
