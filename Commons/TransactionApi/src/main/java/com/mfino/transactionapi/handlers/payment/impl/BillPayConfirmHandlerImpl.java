@@ -277,7 +277,8 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 				} else {
 					result.setServiceCharge(sctl.getCalculatedCharge());
 				}
-				result.setNominalAmount(billPayments.getNominalAmount());
+				if(billPayments != null && billPayments.getNominalAmount() != null)
+					result.setNominalAmount(billPayments.getNominalAmount());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.

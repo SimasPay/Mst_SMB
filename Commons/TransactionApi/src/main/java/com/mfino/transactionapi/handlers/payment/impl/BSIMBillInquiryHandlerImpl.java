@@ -189,6 +189,8 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		sc.setTransactionTypeName(transactionName);
 		sc.setSourceMDN(srcSubscriberMDN.getMDN());
 		sc.setTransactionAmount(BigDecimal.ZERO);//ONLINE BILLPAY
+		if(StringUtils.isNotBlank(billInquiry.getAmount().toString()))
+			sc.setTransactionAmount(billInquiry.getAmount());//Case where inquiry with amount sent to bank
 		sc.setMfsBillerCode(billInquiry.getBillerCode());
 		sc.setTransactionLogId(billInquiry.getTransactionID());
 		sc.setInvoiceNo(billInquiry.getInvoiceNumber());

@@ -153,7 +153,6 @@ public class TransferInquiryXMLResult extends XMLResult {
 		{
 			super.render();
 		}
-		writeEndOfDocument();
 			
 	}
 	

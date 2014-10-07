@@ -72,6 +72,7 @@ import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.mce.core.util.ResponseCodes;
 import com.mfino.mce.core.util.StringUtilities;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SCTLService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
@@ -83,6 +84,8 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	protected BillPaymentsService billPaymentsService;
 	protected SubscriberService subscriberService;
 	private TransactionChargingService transactionChargingService ;
+	private SCTLService sctlService ;
+
 	private Set<String> plnPrepaidBillers;
 	private Set<String> plnPostpaidBillers;
 	private Set<String> plnNonTaglisBillers;
@@ -121,6 +124,14 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	public void setTransactionChargingService(
 			TransactionChargingService transactionChargingService) {
 		this.transactionChargingService = transactionChargingService;
+	}
+	
+	public SCTLService getSctlService() {
+		return sctlService;
+	}
+
+	public void setSctlService(SCTLService sctlService) {
+		this.sctlService = sctlService;
 	}
 
 	protected  CMMoneyTransferToBank inquiryResponse;

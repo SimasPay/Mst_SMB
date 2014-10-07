@@ -82,7 +82,7 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 			iSummary=new IntegrationSummary();
 			iSummary.setSctlId(sctldId);
 			iSummary.setPctId(pctId);
-			iSummary.setCreateTime(timestamp);
+			iSummary.setCreateTime(timestamp != null ? timestamp : new Timestamp());
 			iSummary.setCreatedBy("System");
 		}
 		iSummary.setIntegrationType(IntegrationType);

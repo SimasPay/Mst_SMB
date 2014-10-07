@@ -282,10 +282,10 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				returnFix.setNumberOfTrailsLeft(maxWrongPinCount - subscriberMdn.getWrongPINCount());
 				returnFix.setInternalErrorCode(NotificationCodes.WrongPINSpecified.getInternalErrorCode());
 				//return returnFix;
+			}else {
+				//Pin error due to internal Reasons
+				returnFix.setInternalErrorCode(CmFinoFIX.NotificationCode_InternalLoginError);
 			}
-		}else {
-			//Pin error due to internal Reasons
-			returnFix.setInternalErrorCode(CmFinoFIX.NotificationCode_InternalLoginError);
 		}
 		return returnFix;
 	}

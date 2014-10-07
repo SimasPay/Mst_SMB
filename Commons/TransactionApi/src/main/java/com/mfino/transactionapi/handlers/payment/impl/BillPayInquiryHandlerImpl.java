@@ -249,7 +249,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		}
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		if((StringUtils.isNotBlank(transactionDetails.getPaymentMode())) && 
-				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) || CmFinoFIX.PaymentMode_HubFreeAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) )) {
+				(CmFinoFIX.PaymentMode_HubZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) || CmFinoFIX.PaymentMode_HubFreeAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) 
+						|| CmFinoFIX.PaymentMode_ZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) )) {
 			billPaymentInquiry.setNarration("online");
 			// Getting the Bill amount for the given online transaction.
 			response = doBillInquiry(billPaymentInquiry); 

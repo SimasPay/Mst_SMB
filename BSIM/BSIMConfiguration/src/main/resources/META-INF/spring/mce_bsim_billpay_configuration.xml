@@ -37,9 +37,10 @@
 <context:annotation-config />
 	
   <osgi:reference id="bankService" interface="com.mfino.mce.backend.BankService"/>
- 
+  <osgi:reference id="transactionChargingService" interface="com.mfino.service.TransactionChargingService"/>
   <osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService"/>
   <osgi:reference id="subscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
+  <osgi:reference id="sctlService" interface="com.mfino.service.SCTLService"/>
   
 	<!-- define the jasypt properties parser with the given password to be used -->
 	<bean id="jasypt"
@@ -82,8 +83,10 @@
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
 	<bean id="billPayService" class="com.mfino.billpayments.bsim.impl.BillPaymentServiceImpl">
 	    <property name="bankService" ref="bankService"/>
+	    <property name="transactionChargingService" ref="transactionChargingService"/>	    
 	    <property name="billPaymentsService" ref="billPaymentsService"/>
 		<property name="subscriberService" ref="subscriberServiceImpl"/>
+		<property name="sctlService" ref="sctlService"/>	    
 	    <!-- <property name="plnBillers">
 	        <set>
 	           <value>301211</value>
@@ -240,36 +243,33 @@
 				</filter>
 				<filter>
 					<simple>${in.body.request.getPaymentMode} != 'QRPayment'</simple> 
-						<filter>
-							<simple>${in.body.request.getNarration} == 'online'</simple> <!-- Confirmation Flow -->
-		       	 			<to uri="bean:billPayService?method=billPayAmountInquiry"/>
-		           				<filter>
-		               				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
-		               				<to uri="jms:bsimISOQueue?disableReplyTo=true"/>
-		           				</filter>
-		           				<filter>
-		               				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
-		              				<to uri="jms:notificationQueue?disableReplyTo=true"/>
-		           				</filter>
-			    		</filter>
-			  			 <filter>
-							<simple>${in.body.request.getNarration} != 'online'</simple> 
-							<to uri="bean:billPayService?method=billPayMoneyTransferInquirySourceToDestination"/>
-								<filter>
-		               				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
-		               				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
-		        				</filter>
-		        		</filter>
-						<filter>
-		               		<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
-		              		<to uri="jms:notificationQueue?disableReplyTo=true"/>
-		       			 </filter>
+					<to uri="bean:billPayService?method=billPayMoneyTransferInquirySourceToDestination"/>
+					<filter>
+						<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMTransferInquiryToBank'</simple> 						
+						<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+					</filter>
+					<filter>
+		               <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+		              <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		        	</filter>
 			    </filter>
 			</filter>
 			<filter>
 				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillInquiry'</simple> <!-- Get Amount Flow -->
 				<filter>
 					<simple>${in.body.request.getNarration} == 'ccpayment'</simple> <!-- Confirmation Flow -->
+       	 			<to uri="bean:ccbillPayService?method=constructRequestMessage"/>
+           				<filter>
+               				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMGetAmountToBiller'</simple>
+               				<to uri="jms:bsimISOQueue?disableReplyTo=true"/>
+           				</filter>
+           				<filter>
+               				<simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
+              				<to uri="jms:notificationQueue?disableReplyTo=true"/>
+           				</filter>
+	    		</filter>
+	    		<filter>
+					<simple>${in.body.request.getNarration} != 'ccpayment'</simple> <!-- Get Amount Flow-->
        	 			<to uri="bean:ccbillPayService?method=constructRequestMessage"/>
            				<filter>
                				<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMGetAmountToBiller'</simple>
