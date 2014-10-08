@@ -189,10 +189,7 @@ public class FIXMessageListenerServiceDefaultImpl implements FIXMessageListenerS
 		//TODO: need to move this code to a better manage
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
 		producerTemplate.start();
-		if(fixMesg instanceof CmFinoFIX.CMQRPaymentInquiry || fixMesg instanceof CmFinoFIX.CMQRPayment || fixMesg instanceof CMQRPaymentPendingRequest){
-			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_FLASHIZ_QR_PAYMENT, mceMessage, header);
-		}
-		else if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest || fixMesg instanceof CMBillInquiry){
+		if(fixMesg instanceof CmFinoFIX.CMBillPayInquiry || fixMesg instanceof CmFinoFIX.CMBillPay || fixMesg instanceof CMBillPayPendingRequest || fixMesg instanceof CMBillInquiry){
 			producerTemplate.sendBodyAndHeaders(ACTIVEMQ_QUEUE_BILL_PAY, mceMessage, header);
 		}
 		else if(fixMesg instanceof CmFinoFIX.CMSMSNotification )
