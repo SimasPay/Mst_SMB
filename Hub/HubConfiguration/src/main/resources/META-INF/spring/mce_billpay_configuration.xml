@@ -82,13 +82,9 @@
 			<filter>
 				<simple>${in.body.request.getIntegrationCode} == 'UANGKUIBT'</simple>
 				<to uri="jms:IBTQueue?disableReplyTo=true"/>
-		   </filter>	
-		   <filter>
-				<simple>${in.body.request.getIntegrationCode} == 'BSIM'</simple>
-				<to uri="jms:bsimBillPayQueue?disableReplyTo=true"/>
 		   </filter>
 		    <filter>
-				<simple>${in.body.request.getIntegrationCode} == 'UANGKUFLASHIZ'</simple>
+				<simple>${in.body.request.getIntegrationCode} == 'QRFLASHIZ'</simple>
 				<to uri="jms:flashizBillPayQueue?disableReplyTo=true"/>
 		   </filter>
 		</route>
