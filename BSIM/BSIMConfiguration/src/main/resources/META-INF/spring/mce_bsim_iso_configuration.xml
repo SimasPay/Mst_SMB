@@ -21,8 +21,6 @@
 	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
 
 	<!-- <osgi:reference id="jms" interface="org.apache.camel.Component" /> -->
-	<osgi:reference id="subscriberServiceImpl" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
-	
 
 	<bean id="bsimISOUtil" class="com.mfino.bsim.iso8583.BSIMISOUtil">
 	</bean>
@@ -78,7 +76,6 @@
 	           <value>012101</value>
 	        </set>
      	</property>	
-		<property name="subscriberService" ref="subscriberServiceImpl"/>
 	</bean>
 	
 	<bean id="bsimFrontendService" class="com.mfino.mce.frontend.impl.FrontendServiceDefaultImpl">
