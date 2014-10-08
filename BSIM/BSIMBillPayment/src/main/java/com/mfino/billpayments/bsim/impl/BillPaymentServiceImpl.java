@@ -349,6 +349,30 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		else{
 			response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
 		}
+		
+		Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
+		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+		BigDecimal serviceCharge = new BigDecimal(0);
+		BigDecimal tax = new BigDecimal(0);
+		
+		if(sctlID != null){
+			List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+			if(CollectionUtils.isNotEmpty(tclList)){
+				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+					TransactionChargeLog tcl = it.next();
+					TransactionCharge txnCharge=tcl.getTransactionCharge();
+					ChargeType chargeType = txnCharge.getChargeType();
+					String chargeTypeName = chargeType.getName();
+					if(chargeTypeName.equalsIgnoreCase("charge")){
+						serviceCharge = tcl.getCalculatedCharge();
+					}
+					if(chargeTypeName.equalsIgnoreCase("tax")){
+						tax = tcl.getCalculatedCharge();
+					}				
+				}
+			}
+		}
+		
 		//billerPartnertype = response.getBillerPartnerType();
 		response.setSourceMDN(billPayInquiry.getSourceMDN());
 		response.setInfo2(mdngen);
@@ -373,6 +397,8 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
         response.setBillerCode(billPayInquiry.getBillerCode());
         response.setInvoiceNo(billPayInquiry.getInvoiceNumber());
         response.setPaymentMode(billPayInquiry.getPaymentMode());
+        response.setServiceChargeAmount(serviceCharge);
+        response.setTaxAmount(tax);
 		mceMessage.setResponse(response);
 		}
 		else if(bankInqres instanceof BackendResponse){
@@ -478,6 +504,28 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		else{
 			response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
 		}
+		
+		Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
+		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+		
+		BigDecimal serviceCharge = new BigDecimal(0);
+		BigDecimal tax = new BigDecimal(0);
+		
+		List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+		if(CollectionUtils.isNotEmpty(tclList)){
+			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+				TransactionChargeLog tcl = it.next();
+				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
+					serviceCharge = tcl.getCalculatedCharge();
+				}
+				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
+					tax = tcl.getCalculatedCharge();
+				}				
+			}
+		}
+		
+        response.setServiceChargeAmount(serviceCharge);
+        response.setTaxAmount(tax);
 		
 		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
 		response.setUICategory(inquiryResponse.getUICategory());
@@ -947,7 +995,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 	}
 	
-	public void constructAndSetDe63ForQr(CMQRPaymentReversalToBank billPayrevtobank){
+	private void constructAndSetDe63ForQr(CMQRPaymentReversalToBank billPayrevtobank){
 		String defaultDE3=CmFinoFIX.ISO8583_ProcessingCode_XLink_Payment0;
 		Pocket sourcePocket = subscriberService.getDefaultPocket(billPayrevtobank.getSourceMDN(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		PocketTemplate pocketTemplate = null;
