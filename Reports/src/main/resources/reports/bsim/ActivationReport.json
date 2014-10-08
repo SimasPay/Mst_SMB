@@ -32,7 +32,7 @@
 					TO_CHAR (s.activationtime, 'DD-MM-YYYY'),
 					s.createdBy,
 					TO_CHAR (s.lastupdatetime, 'DD-MM-YYYY'),
-					s.status
+					et.EnumValue
 				FROM
 					subscriber s, 
 					subscriber_mdn sm, 
