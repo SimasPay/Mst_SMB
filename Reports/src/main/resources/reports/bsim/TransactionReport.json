@@ -33,13 +33,13 @@
     "EncryptedColumnIndices" : [13,14],
         
     "Query" : " SELECT 
-					ct.BankRetrievalReferenceNumber,
+					sctl.ID,
 					tt.transactionname,
 					sctl.TransactionAmount,
 					round(sctl.CalculatedCharge, 2),
-					sctl.status,
+					et1.EnumValue,
 					sctl.failurereason,
-					tt.LastUpdateTime,
+					sctl.LastUpdateTime,
 					sctl.SourceMDN,
 					sctl.Info1,
 					sctl.MFSBillerCode,
@@ -49,12 +49,20 @@
 					ct.DestCardPAN,
 					Concat(ic.BankCode,ic.BankName)
 				FROM 
+					enum_text et1,enum_text et2, enum_text et3,
 					service_charge_txn_log sctl
 					LEFT OUTER JOIN commodity_transfer ct on ct.TRANSACTIONID = sctl.TRANSACTIONID
+					INNER JOIN pocket srcPocket ON ct.SourcePocketID = srcPocket.ID
+					INNER JOIN pocket destPocket ON ct.DestPocketID = destPocket.ID
+					INNER JOIN pocket_template destpkTemp ON destpkTemp.ID = destPocket.PocketTemplateId
+					INNER JOIN pocket_template srcPkTemp ON srcPkTemp.ID = srcPocket.PocketTemplateId
 					JOIN transaction_type tt on tt.ID=sctl.transactionTypeId
 					LEFT OUTER JOIN interbank_codes ic on ic.BANKCODE = ct.BANKCODE
 				WHERE 
 					sctl.TransactionTypeID= tt.ID
+					AND et1.TagID=6089 AND sctl.status=et1.EnumCode
+					AND et2.TagID=5051 AND destPocket.status=et2.EnumCode
+					AND et3.TagID=5051 AND srcPocket.status=et3.EnumCode
 					AND sctl.CreateTime >=${StartTime}
 					AND sctl.CreateTime < ${EndTime}
 					AND sctl.MFSBillerCode like ${BillerCode};",
