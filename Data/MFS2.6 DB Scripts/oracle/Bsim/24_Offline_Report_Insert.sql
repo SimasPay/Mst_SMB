@@ -1,3 +1,4 @@
+delete from offline_report_receiver;
 Delete from offline_report;
 
 INSERT INTO offline_report (ID, Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, Name, ReportClass, TriggerEnable, IsDaily, IsMonthly, IsOnlineReport) VALUES ('1', '1', sysdate, 'system', sysdate, 'system', 'Registration Report', 'RegistrationReport', '0', '1', '0', '1');
