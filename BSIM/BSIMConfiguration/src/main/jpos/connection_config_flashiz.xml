@@ -1,0 +1,12 @@
+<channel-adaptor name='flashiz' class="org.jpos.q2.iso.ChannelAdaptor" logger="Q2_flashiz">
+    <channel class="org.jpos.iso.channel.ASCIIChannel" logger="Q2_flashiz" packager="org.jpos.iso.packager.GenericPackager">
+        <property name="host" value="172.21.1.26"/>
+        <property name="port" value="3000" />
+        <property name="packager-logger" value="Q2_flashiz" />
+        <property name="packager-realm" value="mfino-debug" />
+        <property name="packager-config" value="jpos/jpos_cfg/iso87ascii-flashiz.xml" />
+    </channel>
+    <in>flashizsend</in>
+    <out>flashizreceive</out>
+    <reconnect-delay>5000</reconnect-delay>
+</channel-adaptor>
