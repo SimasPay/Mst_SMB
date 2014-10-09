@@ -57,10 +57,11 @@ copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_not
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_scheduler_configuration.xml %1\servicemix\
 
 copy Core\settings\smart\database_config.properties %1\servicemix\mfino_conf\
-copy MfinoCoreEngine\mfino_conf\bc2qmap.cfg %1\servicemix\mfino_conf\
-copy MfinoCoreEngine\mfino_conf\externalcodedescriptions.xml %1\servicemix\mfino_conf\
-copy MfinoCoreEngine\mfino_conf\mce.properties %1\servicemix\mfino_conf\
+copy Core\settings\smart\bc2qmap.cfg %1\servicemix\mfino_conf\
 copy Core\settings\smart\mfino.properties %1\servicemix\mfino_conf\
+copy MfinoCoreEngine\mfino_conf\externalcodedescriptions.xml %1\servicemix\mfino_conf\
+copy Core\settings\smart\mce.properties %1\servicemix\mfino_conf\
+
 
 rem Email service
 copy Hub\HubConfiguration\src\main\resources\META-INF\spring\mce_email_configuration.xml %1\servicemix\

@@ -61,6 +61,7 @@
 				<entry key="43" value="SMS MFINO                              " />
 				<entry key="48" value="TABUNGANKU B" />
 				<entry key="49" value="360" />	
+				<entry key="60" value="090" />
 				<entry key="63" value="1000000013001C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000"	 />		
 				<entry key="98" value="360360" />
 				<entry key="100" value="153" />
@@ -72,8 +73,22 @@
 		</property>
 		<property name="offlineBillers">
 	        <set>
-	           <value>018001</value>
-	           <value>012101</value>
+	           <value>300001</value>
+	           <value>040001</value>
+	           <value>009901</value>
+	           <value>009902</value>
+	           <value>060301</value>
+	           <value>010002</value>
+	           <value>010003</value>
+	           <value>011002</value>
+	           <value>011003</value>
+	           <value>013002</value>
+	           <value>013003</value>
+	           <value>018002</value>
+	           <value>012102</value>
+	           <value>013101</value>
+	           <value>019003</value>
+		   <value>060701</value>
 	        </set>
      	</property>	
 	</bean>
@@ -111,7 +126,7 @@
 		<!-- deploy folder location where JPOS configuration files are defined -->
 		<property name="deployFolder" value="jpos/deploy/" />
 		<property name="muxName" value="bsmmux" />
-		<property name="timeout" value="30000" />
+		<property name="timeout" value="50000" />
 		<property name="sleepOnNoReply" value="10000" />
 		<property name="channelName" value="bsm" />
 		<property name="isoUtil" ref="bsimISOUtil" />
@@ -123,7 +138,7 @@
 	<bean id="bankCommunicator" class="com.mfino.mce.iso.jpos.comm.JPOSProcessor">
 		<constructor-arg index="0" value="bsmmux" />		
 		<constructor-arg index="1" ref="isoResponseEndpoint" />
-		<constructor-arg index="2" value="30000" />
+		<constructor-arg index="2" value="50000" />
 	</bean>
 
 	<bean id="isotofixfactory" class="com.mfino.bsim.iso8583.BSIMIsoToFixProcessorFactory">
@@ -149,7 +164,7 @@
 
 	<bean id="bankSimulator" class="com.mfino.bsim.iso8583.BankSimulator">
 		<constructor-arg index="0" ref="isoResponseEndpoint" />
-		<constructor-arg index="1" value="30000" />
+		<constructor-arg index="1" value="50000" />
 	</bean>
 	<bean id="failureProcessor" class="com.mfino.bsim.iso8583.FailTheRequestProcessor">
 		<constructor-arg index="0" ref="isoResponseEndpoint" />

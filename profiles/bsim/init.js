@@ -105,36 +105,38 @@ Ext.override(Ext.grid.Column, {
 //FIXME: Find out the exact pattern and change this
 //Ext.form.VTypes['smarttelcophoneVal'] = /^(6288|088)[\d]{1,12}(R\d*)?$/;
 // This is for search MDN. we are including 'R' digit here.
-Ext.form.VTypes['smarttelcophoneVal'] = /^([0]){0,1}([1-9]){1}([0-9]){3,10}(R\d*)?$/;
+Ext.form.VTypes['smarttelcophoneVal'] = /^([0]){0,1}([1-9]){1}([0-9]){3,13}(R\d*)?$/;
 Ext.form.VTypes['smarttelcophoneMask'] = /[R\d]/;
 Ext.form.VTypes['smarttelcophoneText'] = 'Phone number should be number only';
 Ext.form.VTypes['smarttelcophone'] = function(v){
-    return Ext.form.VTypes['smarttelcophoneVal'].test(v);
+    //return Ext.form.VTypes['smarttelcophoneVal'].test(v);
+    var valmdn=/^[6]{1}[2]{1}[1-9]{1}[0-9]{3,13}$/;
+    return Ext.form.VTypes['smarttelcophoneVal'].test(v) || valmdn.test(v);
 };
 
 // This is for adding new MDN. we are excluding 'R' digit here.
-Ext.form.VTypes['smarttelcophoneAddVal'] = /^([0]){0,1}([1-9]){1}([0-9]){3,10}$/;
+Ext.form.VTypes['smarttelcophoneAddVal'] = /^([0]){0,1}([1-9]){1}([0-9]){3,13}$/;
 Ext.form.VTypes['smarttelcophoneAddMask'] = /[\d]/;
 Ext.form.VTypes['smarttelcophoneAdd'] = function(v,field){
 	var mdn = field.getValue();	
 	if((!Ext.form.VTypes['smarttelcophoneAddVal'].test(v)) && (mdn.indexOf('62') != 0)){
-		this.smarttelcophoneAddText = "Phone number must should be 4 to 11 digits long";
+		this.smarttelcophoneAddText = "Phone number must should be 4 to 14 digits long";
 		return false;
 	}
-	var valmdn=/^[6]{1}[2]{1}[1-9]{1}[0-9]{3,10}$/;
+	var valmdn=/^[6]{1}[2]{1}[1-9]{1}[0-9]{3,13}$/;
 	var mdn = field.getValue();
-	if((mdn.length==12 || mdn.length==13) && (mdn.indexOf('0') != 0))
+	if((mdn.length==15 || mdn.length==16) && (mdn.indexOf('0') != 0))
 	{
 		if(!valmdn.test(mdn))
 		{
-			this.smarttelcophoneAddText = "MDN starting with 62 should be 6 to 13 digits long and cannot have 0 after country code";
+			this.smarttelcophoneAddText = "MDN starting with 62 should be 6 to 16 digits long and cannot have 0 after country code";
 			return false;
 		}
 	}
 	if(mdn.indexOf('62')== 0){
 		if(!valmdn.test(mdn))
 		{
-			this.smarttelcophoneAddText = "MDN starting with 62 should be 6 to 13 digits long and cannot have 0 after country code";
+			this.smarttelcophoneAddText = "MDN starting with 62 should be 6 to 16 digits long and cannot have 0 after country code";
 			return false;
 		}
 	}
@@ -142,28 +144,28 @@ Ext.form.VTypes['smarttelcophoneAdd'] = function(v,field){
 };
 
 //This is for adding new MDN - with few more validations. we are excluding 'R' digit here.
-Ext.form.VTypes['smarttelcophoneAddMoreVal'] = /^([0]){0,1}([1-9]){1}([0-9]){3,10}$/;
+Ext.form.VTypes['smarttelcophoneAddMoreVal'] = /^([0]){0,1}([1-9]){1}([0-9]){3,13}$/;
 Ext.form.VTypes['smarttelcophoneAddMoreMask'] = /[\d]/;
 Ext.form.VTypes['smarttelcophoneAddMore'] = function(v, field){
 	var mdn = field.getValue();
 	if((!Ext.form.VTypes['smarttelcophoneAddMoreVal'].test(v)) && (mdn.indexOf('62') != 0)) {
-		this.smarttelcophoneAddMoreText = "Phone number must should be 4 to 11 digits long";
+		this.smarttelcophoneAddMoreText = "Phone number must should be 4 to 14 digits long";
 		return false;
 	}
-	var valmdn=/^[6]{1}[2]{1}[1-9]{1}[0-9]{3,10}$/; 
+	var valmdn=/^[6]{1}[2]{1}[1-9]{1}[0-9]{3,13}$/; 
 
-	if((mdn.length==12 || mdn.length==13) && (mdn.indexOf('62') == 0))
+	if((mdn.length==15 || mdn.length==16) && (mdn.indexOf('62') == 0))
 	{
 		if(!valmdn.test(mdn))
 		{
-			this.smarttelcophoneAddMoreText = "MDN starting with 62 should be 6 to 13 digits long and cannot have 0 after country code";
+			this.smarttelcophoneAddMoreText = "MDN starting with 62 should be 6 to 16 digits long and cannot have 0 after country code";
 			return false;
 		}
 	}
 	if(mdn.indexOf('62')== 0){
 		if(!valmdn.test(mdn))
 		{
-			this.smarttelcophoneAddMoreText = "MDN starting with 62 should be 6 to 13 digits long and cannot have 0 after country code";
+			this.smarttelcophoneAddMoreText = "MDN starting with 62 should be 6 to 16 digits long and cannot have 0 after country code";
 			return false;
 		}
 	}
@@ -579,6 +581,8 @@ xmlhttp2.onreadystatechange=function()
  //    alert(firstname);
     fn=xmldata.getElementsByTagName("LastName");
     lastname=fn[0].firstChild.nodeValue;
+    fn=xmldata.getElementsByTagName("NickName");
+    nickname=fn[0].firstChild.nodeValue;
     fn=xmldata.getElementsByTagName("MDN");
     mobile=fn[0].firstChild.nodeValue;
     fn=xmldata.getElementsByTagName("Language");
