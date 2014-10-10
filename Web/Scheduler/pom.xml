@@ -273,6 +273,7 @@
 									<directory>${basedir}/../../Core/settings/${profile}</directory>
 									<includes>
 										<include>spring-datasource-beans.xml</include>
+										<include>applicationContext.xml</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>
