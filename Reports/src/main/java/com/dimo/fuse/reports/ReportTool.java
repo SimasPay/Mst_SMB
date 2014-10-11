@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dimo.fuse.reports.scheduler.ReportSchedulerProperties;
 import com.dimo.fuse.reports.util.FileReaderUtil;
 import com.dimo.fuse.reports.Impl.CSVReportGenerator;
 import com.dimo.fuse.reports.Impl.ExcelReportGenerator;
@@ -133,7 +134,8 @@ public class ReportTool {
 
 	public static String replaceQueryVariablesWithActuals(String query,
 			ReportParameters reportParameters, ReportProperties reportProperties) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat(ReportSchedulerProperties.getProperty("dateFormatInReportQuery"));
 		if (reportParameters.getEndTime() != null) {
 			query = query.replace("${EndTime}",
 					"'" + dateFormat.format(reportParameters.getEndTime())

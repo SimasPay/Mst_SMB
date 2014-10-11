@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryExecutor {
 	static final String DB_URL = DBProperties.getDBUrl();
+	static final String DB_DRIVERS = DBProperties.getJDBCDriver();
 	static final String USER = DBProperties.getDBUserName();
 	static final String PASSWORD = DBProperties.getDBPassword();
 
@@ -41,6 +42,7 @@ public class QueryExecutor {
 	public void getConnection() {
 		log.trace("Connecting to database...");
 		try {
+			Class.forName(DB_DRIVERS);
 			connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
 		} catch (Exception e) {
 			log.error("An error occurred while getting db connection. "	+ e.getMessage());

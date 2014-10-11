@@ -41,7 +41,7 @@ public class DBProperties {
 
 	public static String getJDBCDriver() {
 		return decryptProperty(dbProperties.getProperty(
-				"mfino.dbcp.driverClassName", "com.mysql.jdbc.Driver"));
+				"mfino.dbcp.driverClassName"));
 	}
 
 	public static String getDBUrl() {
