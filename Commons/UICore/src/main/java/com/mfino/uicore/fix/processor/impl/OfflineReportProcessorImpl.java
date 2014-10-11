@@ -6,6 +6,7 @@ package com.mfino.uicore.fix.processor.impl;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,19 @@ public class OfflineReportProcessorImpl extends BaseFixProcessor implements Offl
     	if (CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
     		OfflineReportDAO offlineReportDAO = DAOFactory.getInstance().getOfflineReportDAO();
     		List<OfflineReport> reports = offlineReportDAO.getOnlineReports();
-    		realMsg.allocateEntries(reports.size());
-    		for(int i=0;i<reports.size();i++){
-    			CMJSOfflineReport.CGEntries entry = new CMJSOfflineReport.CGEntries();
-    			OfflineReport report = reports.get(i);
-    			updateMessage(report,entry);
-    			realMsg.getEntries()[i]=entry;
+    		if (CollectionUtils.isNotEmpty(reports)) {
+        		realMsg.allocateEntries(reports.size());
+        		for(int i=0;i<reports.size();i++){
+        			CMJSOfflineReport.CGEntries entry = new CMJSOfflineReport.CGEntries();
+        			OfflineReport report = reports.get(i);
+        			updateMessage(report,entry);
+        			realMsg.getEntries()[i]=entry;
+        		}
+        		realMsg.settotal(reports.size());    			
     		}
-    		realMsg.settotal(reports.size());
+    		else {
+    			log.info("****************** There are no online reports to display **********");
+    		}
     	}
 
 		realMsg.setsuccess(CmFinoFIX.Boolean_True);
