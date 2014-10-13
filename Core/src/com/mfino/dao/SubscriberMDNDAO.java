@@ -304,8 +304,10 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
                 criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_MDN));
             } else if (StringUtils.isNotBlank(query.getLastName())) {
                 criteria.addOrder(Order.asc(lastNameWithAlias));
+                criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID));
             } else if (StringUtils.isNotBlank(query.getFirstName())) {
                 criteria.addOrder(Order.asc(firstNameWithAlias));
+                criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID));
             }
         }
 
