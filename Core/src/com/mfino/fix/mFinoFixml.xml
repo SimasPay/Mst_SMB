@@ -4242,10 +4242,7 @@
 	<message name="JSRole" msgtype="1390" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 		<field name="RoleID" required="N" />    	
 		<field name="DisplayText" required="N"/>
-		<field name="EnumCode" required="N" />  
     	<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
-			<field name="EnumCode" required="N" />
-        	<field name="EnumValue" required="N"  />
     		<field name="RoleID" id="ID" required="N" />    		
 			<field name="DisplayText" required="N"/>
 			<field name="IsSystemUser" required="N" />
