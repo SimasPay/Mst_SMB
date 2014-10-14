@@ -2,10 +2,9 @@ package com.mfino.bsim.iso8583.processor.fixtoiso;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.StringUtils;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
@@ -94,6 +93,12 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 	private String constructDE63(CMInterBankTransferInquiryToBank request) {
 		String serviceCharge = request.getServiceChargeDE63();
 		BigDecimal tax = request.getTaxAmount();
+		if(StringUtils.isNotBlank(serviceCharge)) {
+			serviceCharge = new BigDecimal(0).toBigInteger().toString();
+		}
+		if(tax == null) {
+			tax = new BigDecimal(0);
+		}
 		String de63 = constantFieldsMap.get("63");
 		String strServiceCharge, strTax;
 		

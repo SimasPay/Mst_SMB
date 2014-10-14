@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
 import com.mfino.bsim.iso8583.utils.StringUtilities;
@@ -125,6 +123,12 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 	private String constructDE63(CMInterBankMoneyTransferToBank request) {
 		BigDecimal serviceCharge = request.getServiceChargeAmount();
 		BigDecimal tax = request.getTaxAmount();
+		if(serviceCharge == null) {
+			serviceCharge = new BigDecimal(0);
+		}
+		if(tax == null) {
+			tax = new BigDecimal(0);
+		}
 		String de63 = constantFieldsMap.get("63");
 		String strServiceCharge, strTax;
 

@@ -110,6 +110,12 @@ public class BillPaymentToBankProcessor extends BankRequestProcessor{
 	private String constructDE63(CMBSIMBillPaymentToBank request) {
 		BigDecimal serviceCharge = request.getServiceChargeAmount();
 		BigDecimal tax = request.getTaxAmount();
+		if(serviceCharge == null) {
+			serviceCharge = new BigDecimal(0);
+		}
+		if(tax == null) {
+			tax = new BigDecimal(0);
+		}
 		String de63 = constantFieldsMap.get("63");
 		String strServiceCharge, strTax;
 

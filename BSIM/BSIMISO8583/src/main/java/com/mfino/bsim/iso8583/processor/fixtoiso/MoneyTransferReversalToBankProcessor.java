@@ -1,5 +1,8 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
+import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOException;
@@ -44,7 +47,11 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 		try {
 			String mpan = MfinoUtil.CheckDigitCalculation(msg.getSourceMDN());
 			isoMsg.set(2, mpan);
-			isoMsg.set(3,msg.getProcessingCodeDE3());
+			String defaultDE3=ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
+			if(StringUtils.isNotBlank(msg.getProcessingCodeDE3())) {
+				defaultDE3 = msg.getProcessingCodeDE3();
+			}
+			isoMsg.set(3,defaultDE3);
 
 			long amount = msg.getAmount().longValue()*(100);
 			isoMsg.set(4, StringUtilities.leftPadWithCharacter(amount+ "", 18, "0")); 
