@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.mfino.bsim.iso8583.GetConstantCodes;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
@@ -32,7 +30,6 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.mailer.NotificationWrapper;
-import com.mfino.mce.core.MCEMessage;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
@@ -186,17 +183,10 @@ public class ATMRequestHandler extends FIXMessageHandler {
 			toBank.setSourceCardPAN(msg.getString("2"));
 			toBank.setApplicationID(msg.getString("48").substring(3,23));
 			toBank.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
-			SubscriberDAO subscriberDAO = DAOFactory.getInstance().getSubscriberDAO();
 			SubscriberMDN subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
 			Subscriber subscriber = subMDNByMDN.getSubscriber();
 			if("Simobicustomer".equalsIgnoreCase(subscriber.getFirstName()))
 			{
-				/*MCEMessage mceMessage = new MCEMessage();
-				mceMessage.setRequest(toBank);
-				mceMessage.setResponse(toBank);
-				SyncProducer syncProducer = new SyncProducer();
-				syncProducer.produceMessage("bsimISOQueue", mceMessage,transactionID);
-				MCEMessage responseMessage = syncProducer.consumeMessage("updateDetailsServiceQueue",transactionID);*/
 				CFIXMsg responseMessage = super.process(toBank);
 				if(null!=responseMessage && responseMessage instanceof CMGetSubscriberDetailsFromBank){
 					CMGetSubscriberDetailsFromBank fromBank = (CMGetSubscriberDetailsFromBank) responseMessage;
@@ -204,8 +194,8 @@ public class ATMRequestHandler extends FIXMessageHandler {
 					if(fromBank.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success)) {
 						subscriber.setFirstName(fromBank.getFirstName());
 						subscriber.setLastName(fromBank.getLastName());
-						subscriber.setEmail(fromBank.getEmail());
-						subscriberDAO.save(subscriber);						
+						subscriber.setEmail(fromBank.getEmail());	
+						subscriberService.saveSubscriber(subscriber);
 					}
 					log.info("TransactionHandler :: finally block sourcemdn "+ fromBank.getSourceMDN());
 				}

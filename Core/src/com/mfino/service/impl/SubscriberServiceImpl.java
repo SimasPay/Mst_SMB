@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.AddressDAO;
 import com.mfino.dao.BrandDAO;
+import com.mfino.dao.CompanyDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PocketDAO;
@@ -849,5 +850,11 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		subscriber.setIsEmailVerified(true);
 		subscriberDAO.save(subscriber);		
+	}
+
+	public Company getDefaultCompanyForSubscriber() {
+		CompanyDAO companyDAO = daoFactory.getCompanyDAO();
+		Company company = companyDAO.getById(1L);
+		return company;
 	}
 }

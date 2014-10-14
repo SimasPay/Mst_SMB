@@ -1,6 +1,7 @@
 package com.mfino.bsim.iso8583.handlers;
 
 import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jpos.iso.ISOMsg;
@@ -9,13 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.NotificationDAO;
-import com.mfino.dao.PocketDAO;
-import com.mfino.dao.SubscriberDAO;
-import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
@@ -32,20 +29,16 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.handlers.hsm.HSMHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
-import com.mfino.util.MfinoUtil;
-import com.mfino.util.SystemParametersUtil;
-import com.mfino.service.KYCLevelService;
 import com.mfino.service.MfinoUtilService;
-import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.NotificationService;
-import com.mfino.service.SMSService;
+import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberServiceExtended;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.validators.SubscriberValidator;;
+import com.mfino.validators.SubscriberValidator;
 
 public class ATMChangePinHandler extends FIXMessageHandler implements IATMChangePinHandler {
 
@@ -53,29 +46,14 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 	private HibernateTransactionManager htm;
 	private static ATMChangePinHandler atmChangePinHandler;
 	private SubscriberService subscriberService ;
-	public SubscriberService getSubscriberService() {
-		return subscriberService;
-	}
-
-	public void setSubscriberService(SubscriberService subscriberService) {
-		this.subscriberService = subscriberService;
-	}
-
-	public SystemParametersService getSystemParametersService() {
-		return systemParametersService;
-	}
-
-	public void setSystemParametersService(
-			SystemParametersService systemParametersService) {
-		this.systemParametersService = systemParametersService;
-	}
-
 	private TransactionLogService transactionLogService;
 	private SubscriberMdnService subscriberMdnService;
 	private TransactionChargingService transactionChargingService ;
 	private SubscriberServiceExtended subscriberServiceExtended ;
 	private MfinoUtilService mfinoUtilService;
 	private SystemParametersService systemParametersService;
+	private NotificationService notificationService ;
+	private PocketService pocketService;
 	
 	public static ATMChangePinHandler createInstance(){
 		if(atmChangePinHandler==null){
@@ -95,14 +73,6 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public Integer handle(ISOMsg msg,Session session) throws Exception {
-			SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-			SubscriberDAO subscriberDAO = DAOFactory.getInstance().getSubscriberDAO();
-			NotificationDAO notificationDAO = DAOFactory.getInstance().getNotificationDAO();
-			PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-			subscriberMDNDAO.setSession(session);
-			subscriberDAO.setSession(session);
-			notificationDAO.setSession(session);
-			pocketDAO.setSession(session);
 			log.info("ATMChangePinHandler :: handle() BEGIN");
 			String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));
 			String accountNumber=msg.getString("2");
@@ -224,14 +194,14 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			subscriberMDN.setOTPExpirationTime(null);
 			//since pin is changed set authtoken to null so that after next login it is updated
 			subscriberMDN.setAuthorizationToken(null);
-			subscriberDAO.save(subscriber);
-			subscriberMDNDAO.save(subscriberMDN);
+			subscriberService.saveSubscriber(subscriber);
+			subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 			Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 			if(!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
 				log.info("ATMChangePinHandler :: handle () Activating Bank Pocket");
 				bankPocket.setStatusTime(new Timestamp());
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-				pocketDAO.save(bankPocket);
+				pocketService.save(bankPocket);
 			}
 			}
 			ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
@@ -239,7 +209,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			String notificationName = "";
 			if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
 				msg.set(39,GetConstantCodes.FAILURE);
-				notification = notificationDAO.getByNotificationCode(regResponse);
+				notification = notificationService.getByNoticationCode(regResponse);
 				if(notification != null){
 					notificationName = notification.getCodeName();
 				}else{
@@ -309,6 +279,40 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 	public void setMfinoUtilService(MfinoUtilService mfinoUtilService) {
 		this.mfinoUtilService = mfinoUtilService;
 	}
+
+	public SubscriberService getSubscriberService() {
+		return subscriberService;
+	}
+
+	public void setSubscriberService(SubscriberService subscriberService) {
+		this.subscriberService = subscriberService;
+	}
+
+	public SystemParametersService getSystemParametersService() {
+		return systemParametersService;
+	}
+
+	public void setSystemParametersService(
+			SystemParametersService systemParametersService) {
+		this.systemParametersService = systemParametersService;
+	}
+	
+	public NotificationService getNotificationService() {
+		return notificationService;
+	}
+
+	public void setNotificationService(NotificationService notificationService) {
+		this.notificationService = notificationService;
+	}
+
+	public PocketService getPocketService() {
+		return pocketService;
+	}
+
+	public void setPocketService(PocketService pocketService) {
+		this.pocketService = pocketService;
+	}
+
 
 //	public static void main(String[] args) {
 //		Random random = new Random();

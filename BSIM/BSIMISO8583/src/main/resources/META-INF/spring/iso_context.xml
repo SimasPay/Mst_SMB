@@ -39,6 +39,7 @@
 	<osgi:reference id="kycLevelService" bean-name="KYCLevelServiceImpl" interface="com.mfino.service.KYCLevelService" />
 	<osgi:reference id="groupService" bean-name="GroupServiceImpl" interface="com.mfino.service.GroupService" />
 	<osgi:reference id="subGroupService" bean-name="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService" />
+	<osgi:reference id="mFinoServiceProviderService" bean-name="MfinoServiceProviderServiceImpl" interface="com.mfino.service.MfinoServiceProviderService" />
 		
 	<bean id="atmRequestHandler" class="com.mfino.bsim.iso8583.handlers.ATMRequestHandler" factory-method="createInstance">
 		<property name="htm" ref="txManager" />
@@ -61,6 +62,7 @@
 		<property name="kycLevelService" ref="kycLevelService" />
 		<property name="groupService" ref="groupService" />
 		<property name="subGroupService" ref="subGroupService" />
+		<property name="mFinoServiceProviderService" ref="mFinoServiceProviderService" />
 	</bean>
 	<bean id="atmChangePinHandler" class="com.mfino.bsim.iso8583.handlers.ATMChangePinHandler" factory-method="createInstance">
 		<property name="htm" ref="txManager" />
@@ -71,6 +73,8 @@
 		<property name="subscriberServiceExtended" ref="subscriberServiceExtended" />
 		<property name="mfinoUtilService" ref="mfinoUtilService" />
 		<property name="systemParametersService" ref="systemParametersService" />
+		<property name="notificationService" ref="notificationService" />
+		<property name="pocketService" ref="pocketService" />
 	</bean>
 	<!-- bean id="keyExchangeHandler" class="com.mfino.bsim.iso8583.nm.KeyExchangeHandler" factory-method="createInstance">
 	<property name="htm" ref="txManager" />

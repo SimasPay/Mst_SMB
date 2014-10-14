@@ -219,4 +219,5 @@ public interface SubscriberService {
 	
 	public void verifyEmail(Long subscriberID, String email) throws Exception;
 
+	public Company getDefaultCompanyForSubscriber();
 }
