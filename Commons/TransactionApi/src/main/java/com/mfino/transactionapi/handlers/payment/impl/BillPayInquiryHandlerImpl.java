@@ -132,9 +132,17 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		ChannelCode cc = transactionDetails.getCc();
 		
 		billPaymentInquiry.setSourceMDN(transactionDetails.getSourceMDN());
-		billPaymentInquiry.setInvoiceNumber(transactionDetails.getBillNum());
+		//Change as part of migration to include old parameter names
+		if(transactionDetails.getDestMDN() != null)
+			billPaymentInquiry.setInvoiceNumber(transactionDetails.getDestMDN());
+		else
+			billPaymentInquiry.setInvoiceNumber(transactionDetails.getBillNum());
 		billPaymentInquiry.setPin(transactionDetails.getSourcePIN());
-		billPaymentInquiry.setBillerCode(transactionDetails.getBillerCode());
+		//Change as part of migration to include old parameter names
+		if(transactionDetails.getCompanyID() != null)
+			billPaymentInquiry.setBillerCode(transactionDetails.getCompanyID());
+		else
+			billPaymentInquiry.setBillerCode(transactionDetails.getBillerCode());
 		billPaymentInquiry.setAmount(transactionDetails.getAmount());
 		billPaymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
 		billPaymentInquiry.setChannelCode(cc.getChannelCode());
