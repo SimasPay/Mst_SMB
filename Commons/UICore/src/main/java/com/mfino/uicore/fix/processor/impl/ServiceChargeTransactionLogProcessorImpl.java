@@ -69,7 +69,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	private CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
 	private IntegrationSummaryDao integrationSummaryDao = daoFactory.getIntegrationSummaryDao();
 	private BillPaymentsDAO billPaymentsDao = daoFactory.getBillPaymentDAO();
-	private final Integer BACTH_SIZE = 1000;
+	private final Integer BACTH_SIZE = 10000;
 
 
 	//private int maxNoOfDaysToReverseTxn;
