@@ -31,7 +31,7 @@
 	<module>Hub</module>
 <!-- 	<module>Mock</module> -->
 	<module>InternalTools</module>
-	<module>ThirdPartyIntegrations</module>
+	<!--module>ThirdPartyIntegrations</module-->
 <!-- 	<module>Fidelity</module>	 -->
   </modules>
 

@@ -1,98 +1,106 @@
 {
-  "totalCount": 4,
-  "version": 2.6,
-  "success": true,
-  "purchaseData": [
+  "totalCount":3,
+  "version":5.0,
+  "success":true,
+  "purchaseData":[
     {
-      "productCategory": "Mobile Phone",
-      "providers": [
-        {
+      "productCategory":"Mobile Phone",
+      "providers":[
+		{
           "providerName": "Telkomsel",
           "products": [
             {
               "productName": "Telkomsel",
               "productCode": "010002",
-              "Denom": "25000 50000 100000 150000 200000 500000 1000000"
+              "Denom": "20000|25000|50000|100000|150000|200000|300000|500000|1000000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
+            }
+          ]
+        },
+        {
+          "providerName":"Smartfren Telco",
+          "products":[
+            {
+              "productName":"Smartfren",
+              "productCode":"019003",
+              "Denom":"10000|20000|50000|60000|100000|150000|200000|300000|500000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
+            }
+          ]
+        },
+		{
+          "providerName":"Indosat",
+          "products":[
+            {
+              "productName":"Mentari",
+              "productCode":"011002",
+              "Denom": "25000|50000|100000|150000|250000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
+            },
+            {
+              "productName":"Kartu IM3",
+              "productCode":"011003",
+              "Denom": "25000|50000|100000|150000|250000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
+            }
+          ]
+        },
+        {
+          "providerName":"XL/AXIS",
+          "products":[
+            {
+              "productName":"XL/AXIS Voucher",
+              "productCode":"013002",
+              "Denom": "25000|50000|100000|200000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
+            },
+            {
+              "productName":"XL Bebas Xtra",
+              "productCode":"013003",
+              "Denom": "50000|100000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
             },
 			{
-              "productName": "Kartu AS",
-              "productCode": "010003",
-              "Denom": "25000 50000 100000"
+              "productName": "XL Packet Data",
+              "productCode": "013007",
+              "Denom": "[102] Hotrod 1,5GB, 30 hari - Rp 49.000|[103] Hotrod 3,6GB, 30 hari - Rp 99.000|[201] BB 3in1, 30 hari - Rp 125.000|[202] BB ONE, 30 hari - Rp 90.000",
+			  "paymentMode": "PackageType",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
             }
           ]
         },
-		{
-          "providerName": "Indosat",
-          "products": [
+        {
+          "providerName":"Bakrie Telecom",
+          "products":[
             {
-              "productName": "Mentari",
-              "productCode": "011002",
-              "Denom": "25000 50000 100000 150000 250000"
-            },
-			{
-              "productName": "Kartu IMS",
-              "productCode": "011003",
-              "Denom": "25000 50000 100000 150000 250000"
+              "productName":"Esia",
+              "productCode":"018001",
+              "Denom": "25000|50000|100000|150000|250000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
             }
           ]
         },
-		{
-          "providerName": "XL",
-          "products": [
+        {
+          "providerName":"Hutch",
+          "products":[
             {
-              "productName": "XL Bebas Reguler",
-              "productCode": "013002",
-              "Denom": "25000 50000 100000 200000"
-            },
-			{
-              "productName": "XL Bebas Xtra",
-              "productCode": "013003",
-              "Denom": "50000 100000"
-            }
-          ]
-        },
-		{
-          "providerName": "Bakrie Telecom",
-          "products": [
-            {
-              "productName": "Esia",
-              "productCode": "018002",
-              "Denom": "25000 50000 100000 150000 250000"
-            }
-          ]
-        },
-		{
-          "providerName": "Hutch",
-          "products": [
-            {
-              "productName": "Three",
-              "productCode": "012102",
-              "Denom": "30000 40000 50000 75000 100000 150000 300000 500000"
-            }
-          ]
-        },
-		{
-          "providerName": "AXIS",
-          "products": [
-            {
-              "productName": "Axis",
-              "productCode": "013102",
-              "Denom": "25000 50000 75000 100000 150000 200000 300000"
-            }
-          ]
-        },
-		{
-          "providerName": "Smartfren Telco",
-          "products": [
-            {
-              "productName": "Smartfren",
-              "productCode": "019003",
-              "Denom": "10000 20000 50000 100000 150000 200000 300000 500000"
+              "productName":"Three",
+              "productCode":"012102",
+              "Denom": "30000|40000|50000|75000|100000|150000|300000|500000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Mobile Number|Nomor Ponsel"
             }
           ]
         }
       ]
-    },
+    },	
 	{
       "productCategory": "Other purchase",
       "providers": [
@@ -101,23 +109,22 @@
           "products": [
             {
               "productName": "PLN Voucher/Token",
-              "productCode": "301422",
-              "Denom": ""
+              "productCode": "009921",
+              "paymentMode": "ZeroAmount",
+			  "isPLNPrepaid": "true",
+			  "invoiceType": "Meter Number|Nomor Meter"
             }
-          ]
-        }
-      ]
-    },
+	  ]
+        },
 	{
-      "productCategory": "Ticket",
-      "providers": [
-        {
-          "providerName": "Ticket",
+          "providerName": "Entertainment",
           "products": [
             {
-              "productName": "Lion Air",
-              "productCode": "710110",
-              "Denom": ""
+              "productName": "Blitz Megaplex",
+              "productCode": "060201",
+              "Denom": "50000|75000|100000|200000|300000|400000|500000|600000|750000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Subscriber number|Nomor Pelanggan"
             }
           ]
         }
@@ -126,23 +133,15 @@
 	{
       "productCategory": "TV cable voucher",
       "providers": [
-        {
-          "providerName": "Telkom Grup",
-          "products": [
-            {
-              "productName": "TelkomVision",
-              "productCode": "060101",
-              "Denom": "40000 50000 60000 75000 85000 140000 250000"
-            }
-          ]
-        },
 		{
           "providerName": "TV Kabel",
           "products": [
             {
               "productName": "Orange TV",
               "productCode": "060701",
-              "Denom": "30000 50000 80000 100000"
+              "Denom": "50000|80000|100000|300000",
+			  "paymentMode": "Denom",
+			  "invoiceType": "Subscriber number|Nomor Pelanggan"
             }
           ]
         }
@@ -150,3 +149,5 @@
     }
   ]
 }
+
+
