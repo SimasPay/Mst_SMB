@@ -19,6 +19,7 @@ import com.dimo.fuse.reports.Impl.CSVReportGenerator;
 import com.dimo.fuse.reports.Impl.ExcelReportGenerator;
 import com.dimo.fuse.reports.Impl.PDFReportGenerator;
 import com.dimo.fuse.reports.Impl.TextReportGenerator;
+import com.dimo.fuse.reports.db.DBProperties;
 import com.dimo.fuse.reports.db.QueryExecutor;
 
 /**
@@ -29,7 +30,8 @@ import com.dimo.fuse.reports.db.QueryExecutor;
 public class ReportTool {
 
 	private static Logger log = LoggerFactory.getLogger(ReportTool.class);
-
+	static final String DB_DRIVERS = DBProperties.getJDBCDriver();
+	
 	public static void generateReports(String reportPropertiesFilePath,
 			ReportParameters reportParameters) {
 		QueryExecutor qe = null;
@@ -254,7 +256,12 @@ public class ReportTool {
 		if (reportParameters.getBillerCode() != null) {
 			query = query.replace("${BillerCode}", "'" + reportParameters.getBillerCode() + "'");
 		} else {
-			query = query.replace("${BillerCode}", "'%%'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				query = query.replace("${BillerCode}", "'%%' OR sctl.MFSBILLERCODE is null");
+			}else{
+				query = query.replace("${BillerCode}", "'%%'");
+			}
+			
 		}
 		
 		if (reportParameters.getPartnerTypeId() != null) {
