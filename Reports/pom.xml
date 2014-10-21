@@ -157,6 +157,13 @@
 						<configuration>
 							<outputDirectory>${basedir}/target/Reports/WEB-INF</outputDirectory>
 							<resources>
+								<resource>
+									<directory>${basedir}/../Core/settings/${profile}/Reports</directory>
+									<includes>
+										<include>applicationContext.xml</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
 								<!--<resource>
 									<targetPath>${basedir}/target/Reports/WEB-INF/</targetPath>
 									<directory>src/main/java</directory>
