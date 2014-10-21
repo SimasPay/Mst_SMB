@@ -57,12 +57,15 @@ public class AdminReportServlet extends HttpServlet {
 			}
 			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_END_DATE))) {
 				endDate = dateFormat.parse(request.getParameter(ReportPropertyConstants.ADMINAPP_END_DATE));
+				Calendar calendar = Calendar.getInstance(); 
+				calendar.setTime(endDate);
 				if(startDate == null){
-					Calendar calendar = Calendar.getInstance(); 
-					calendar.setTime(endDate);
 					calendar.add(Calendar.DATE, -1);
 					startDate = calendar.getTime();
-				}
+				}				
+				calendar.add(Calendar.DATE, 1);
+				calendar.add(Calendar.MILLISECOND, -1);
+				endDate = calendar.getTime();
 			}
 			reportParams.setStartTime(startDate);
 			reportParams.setEndTime(endDate);

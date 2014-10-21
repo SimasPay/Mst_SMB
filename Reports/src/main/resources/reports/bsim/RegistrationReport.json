@@ -28,20 +28,18 @@
 					p.cardpan,
 					s.firstname || ' ' || s.lastname,
 					sm.mdn,
-					TO_CHAR (s.createtime, 'DD-MM-YYYY'),
+					TO_CHAR (FROM_TZ(CAST(s.createtime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY'),
 					s.createdBy,
-					TO_CHAR (s.lastupdatetime, 'DD-MM-YYYY')
+					TO_CHAR (FROM_TZ(CAST(s.lastupdatetime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS')
 				FROM
 					subscriber s, 
 					subscriber_mdn sm, 
-					pocket p, 
-					enum_text et 
+					pocket p 
 				WHERE 
 					s.id = sm.subscriberid 
 					and p.mdnid = sm.id 
 					and p.pockettemplateid=4 
-					and et.tagid=5024 
-					and et.enumcode=s.status 
+					and s.type=0 
 					and s.CreateTime >= ${StartTime}
 					and s.CreateTime < ${EndTime};",
     

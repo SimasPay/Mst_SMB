@@ -12,10 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dimo.fuse.reports.ReportGenerator;
-import com.dimo.fuse.reports.ReportParameters;
-import com.dimo.fuse.reports.ReportProperties;
 import com.dimo.fuse.reports.ReportPropertyConstants;
 import com.dimo.fuse.reports.ReportTool;
+import com.dimo.fuse.reports.scheduler.ReportSchedulerProperties;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -134,9 +133,11 @@ public class PDFReportGenerator extends ReportGenerator {
 
 	@Override
 	public void addPageFooter() {
-
-		String footerText = reportProperties
+		String footerText  = ReportSchedulerProperties.getReportFooterText();
+		if (StringUtils.isBlank(footerText)) {
+			footerText = reportProperties
 				.getProperty(ReportPropertyConstants.PAGE_FOOTER_TEXT);
+		}
 		log.info("Adding Page Footer with text " + footerText);
 		if (StringUtils.isNotBlank(footerText)) {
 			HeaderFooter headerFooter = new HeaderFooter(

@@ -17,7 +17,7 @@
                            [ "Report Generation Date" , "${ReportGenerationDate}", "Accessed By" , "${UserName}" ]
                           ],
         
-    "ReportType" : ["pdf", "xls", "csv"],
+    "ReportType" : ["pdf", "xlsx", "csv"],
     
     "NullValueReplacementText" : "",
     

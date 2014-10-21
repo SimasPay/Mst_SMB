@@ -3,18 +3,25 @@ package com.dimo.fuse.reports.Impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -22,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dimo.fuse.reports.ReportGenerator;
 import com.dimo.fuse.reports.ReportPropertyConstants;
+import com.dimo.fuse.reports.scheduler.ReportSchedulerProperties;
 
 /**
  * 
@@ -34,6 +42,7 @@ public class ExcelReportGenerator extends ReportGenerator {
 	Sheet sheet;
 	int nofColumns;
 	int rowCount = 0;
+	int dataRowCount = 0;
 	private static final int DEFAULT_COLUMN_WIDTH = 20;
 
 	private static Logger log = LoggerFactory
@@ -46,7 +55,7 @@ public class ExcelReportGenerator extends ReportGenerator {
 				.getName());
 		log.info("Creating an excel report " + getReportFilePath());
 		if (extension.contains("xlsx")) {
-			workbook = new XSSFWorkbook();
+			workbook = new SXSSFWorkbook();
 		} else {
 			workbook = new HSSFWorkbook();
 		}
@@ -82,9 +91,57 @@ public class ExcelReportGenerator extends ReportGenerator {
 
 	@Override
 	public void addLogo() {
-		// TODO Auto-generated method stub
-
+		try {
+			CellRangeAddress region = new CellRangeAddress(rowCount, rowCount+2, 0,
+					getNumberOfHeaderColumns() - 1);
+			sheet.addMergedRegion(region);
+			
+			InputStream is = this.getClass().getResourceAsStream(
+					reportProperties.getProperty(ReportPropertyConstants.HEADER_LOGO));
+			byte[] bytes = IOUtils.toByteArray(is);
+			int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+			is.close();
+			CreationHelper helper = workbook.getCreationHelper();
+			Drawing drawing = sheet.createDrawingPatriarch();
+			ClientAnchor anchor = helper.createClientAnchor();
+			anchor.setCol1(getHeaderLogoAlignment());
+			anchor.setRow1(0);
+			Picture pict = drawing.createPicture(anchor, pictureIdx);
+			pict.resize();
+			rowCount = 3;
+		} catch (Exception e) {
+			log.warn("Failed to load Logo. " + e.getMessage(), e);
+		}
 	}
+	
+	private int getNumberOfHeaderColumns () {
+		int result = 0;
+		try {
+			JSONArray headerRowArray = reportProperties
+						.getJSONArray(ReportPropertyConstants.HEADER_COLUMNS);
+			if (headerRowArray != null) {
+				result = headerRowArray.length();
+			}
+		} catch (JSONException e) {
+			log.warn("Failed to load Json array for Header columns." + e.getMessage(), e);
+		}
+		return result;
+	}
+	
+	private int getHeaderLogoAlignment() {
+		int result = getNumberOfHeaderColumns();
+		String alignment = reportProperties.getProperty(ReportPropertyConstants.HEADER_LOGO_ALIGNMENT);
+		if(alignment.equalsIgnoreCase("center") || alignment.equalsIgnoreCase("centre")){
+			result = result /2;
+		} else if(alignment.equalsIgnoreCase("left")){
+			result = 0;
+		} else if(alignment.equalsIgnoreCase("right")){
+			result = result - 1;
+		} else{
+			result = 0;
+		}
+		return result;
+	}	
 
 	@Override
 	public void addPageHeader() {
@@ -252,12 +309,54 @@ public class ExcelReportGenerator extends ReportGenerator {
 	public void addReportFooter() {
 		try {
 			log.info("Adding Report Footer...");
+			if (dataRowCount == 0) {
+				addNoRecordsFoundMsg();
+			}
 			addEmptyRow();
 			addMetaData(ReportPropertyConstants.REPORT_FOOTER);
+			pageFooter();
 		} catch (JSONException e) {
 			log.error("Error while creating report footer. " + e.getMessage());
 		}
 
+	}
+
+	private void addNoRecordsFoundMsg() {
+		CellRangeAddress region = new CellRangeAddress(rowCount, rowCount, 0,
+				getNumberOfHeaderColumns() - 1);
+		sheet.addMergedRegion(region);
+
+		Row rowhead = createRow();
+		CellStyle cellStyle = workbook.createCellStyle();
+		Font font = workbook.createFont();
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setFontName("Arial");
+		cellStyle.setFont(font);
+		Cell headerCell = rowhead.createCell(0);
+		String footerText  = "No Records Found";
+		headerCell.setCellValue(footerText);
+		headerCell.setCellStyle(cellStyle);
+	}
+	
+	private void pageFooter() {
+		CellRangeAddress region = new CellRangeAddress(rowCount, rowCount, 0,
+				getNumberOfHeaderColumns() - 1);
+		sheet.addMergedRegion(region);
+
+		Row rowhead = createRow();
+		CellStyle cellStyle = workbook.createCellStyle();
+		Font font = workbook.createFont();
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setFontName("Arial");
+		cellStyle.setFont(font);
+		cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		Cell headerCell = rowhead.createCell(0);
+		String footerText  = ReportSchedulerProperties.getReportFooterText();
+		if (StringUtils.isBlank(footerText)) {
+			footerText = reportProperties.getProperty(ReportPropertyConstants.PAGE_FOOTER_TEXT);
+		}
+		headerCell.setCellValue(footerText);
+		headerCell.setCellStyle(cellStyle);
 	}
 
 	@Override
@@ -267,6 +366,7 @@ public class ExcelReportGenerator extends ReportGenerator {
 		for (int i = 0; i < rowContent.length; i++) {
 			row.createCell(i).setCellValue(rowContent[i]);
 		}
+		dataRowCount++;
 	}
 
 	private Row createRow() {

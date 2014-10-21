@@ -19,7 +19,8 @@ import com.dimo.fuse.reports.ReportPropertyConstants;
  * 
  */
 public class CSVReportGenerator extends ReportGenerator {
-
+	
+	int dataRowCount = 0;
 	FileWriter writer;
 	private final String DEFAULT_DELIMITER = ",";
 
@@ -103,8 +104,17 @@ public class CSVReportGenerator extends ReportGenerator {
 
 	@Override
 	public void addReportFooter() {
-		// TODO Auto-generated method stub
-
+		if (dataRowCount == 0) {
+			addNoRecordsFoundMsg();
+		}
+	}
+	
+	private void addNoRecordsFoundMsg() {
+		try {
+			writer.append("No Records Found");
+		} catch (IOException e) {
+			log.warn("IO Exception while Adding No Records found Msg...", e);
+		}
 	}
 
 	@Override
@@ -117,6 +127,7 @@ public class CSVReportGenerator extends ReportGenerator {
 				writer.append(rowContent[i]);
 			}
 			writer.append('\n');
+			dataRowCount++;
 		} catch (IOException e) {
 			log.error("IOEXception occurred. " + e.getMessage());
 		}

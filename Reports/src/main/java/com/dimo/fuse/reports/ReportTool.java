@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +85,7 @@ public class ReportTool {
 				reportGenerator.openDocAndCreateHeaders();
 			}
 			log.info("Fecthing data fron db and writing to transaction tables");
-			while (rs.next()) {
+			while (rs!=null && rs.next()) {
 				String[] rowContent = qe.fetchNextRowData(rs);
 				for (ReportGenerator report : reportsList) {
 					if(reportName.equalsIgnoreCase("BIReport") || reportName.equalsIgnoreCase("BIMonthlyOnlineReport")){ // if report BIReport OR BIMonthlyReport; Needs to write in cleaner way
@@ -300,8 +301,11 @@ public class ReportTool {
 			query = query.replace("${IDCardNo}", "'%%'");
 		}
 		
+		if (query.contains("$(TimeZone)")) {
+			query = query.replace("$(TimeZone)", TimeZone.getDefault().getID());
+		}		
 		
-
+		log.info("The Query being executed as part of the report is : " + query);
 		return query;
 	}
 

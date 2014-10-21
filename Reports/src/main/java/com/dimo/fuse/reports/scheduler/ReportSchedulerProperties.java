@@ -21,6 +21,7 @@ public class ReportSchedulerProperties {
 	private static String otherReportsOutputDir = null;
 	private static Properties schedulerProperties = new Properties();
 	private static String emailRecipients = "";
+	private static String reportFooterText = "";
 	private static String _propertiesFileName = "mfino.properties";
 	
 	
@@ -35,6 +36,7 @@ public class ReportSchedulerProperties {
 		scheduledReportsOutputDir = schedulerProperties.getProperty("scheduledReportsOutputDir");
 		otherReportsOutputDir = schedulerProperties.getProperty("mfino.report.directory");
 		emailRecipients = schedulerProperties.getProperty("email.recipient.list");
+		reportFooterText = schedulerProperties.getProperty("mfino.report.footer");
 		log.info("reportsInputDir :" + reportsInputDir);
 		log.info("scheduledReportsOutputDir :" + scheduledReportsOutputDir);
 		log.info("otherReportsOutputDir :" + otherReportsOutputDir);
@@ -60,5 +62,8 @@ public class ReportSchedulerProperties {
 	public static String getProperty(String propertyName) {
 		return schedulerProperties.getProperty(propertyName);
 	}
-	
+
+	public static String getReportFooterText() {
+		return reportFooterText;
+	}
 }

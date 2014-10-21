@@ -33,6 +33,7 @@ mFino.widget.ReportSearchForm = function(config) {
 											triggerAction : "all",
 											forceSelection : true,
 											pageSize : 20,
+											allowBlank : false,
 											addEmpty : true,
 											emptyText : _('<select one..>'),
 											store : new FIX.FIXStore(
@@ -75,9 +76,9 @@ mFino.widget.ReportSearchForm = function(config) {
 												itemId : 'fromDate',
 												items : [ {
 													xtype : 'datefield',
-													fieldLabel : 'FromDate',
+													fieldLabel : 'From Date',
 													editable : false,
-													allowBlank : false,
+													//allowBlank : false,
 													itemId : 'start',
 													anchor : '80%',
 													format : 'd/m/Y',
@@ -94,13 +95,13 @@ mFino.widget.ReportSearchForm = function(config) {
 												itemId : 'toDate',
 												items : [ {
 													xtype : 'datefield',
-													fieldLabel : 'ToDate',
+													fieldLabel : 'To Date',
 													editable : false,
 													itemId : 'end',
 													anchor : '80%',
 													format : 'd/m/Y',
-													allowBlank : false,
-													maxValue : new Date(),
+													//allowBlank : false,
+													maxValue : new Date().add('d', -1),
 													maxText : 'Date should not be future date',
 													name : CmFinoFIX.message.JSReport.ReportEndDate._name
 												} ]
@@ -745,10 +746,14 @@ Ext
 							//			if(values.ReportEndDate){
 							//			values.ReportEndDate =this.find('itemId','end')[0].getValue().format('Ymd-H:i:s:u');
 							//			}
+//							if (!values.ReportStartDate) {
+//								this.fireEvent("getReport", values);
 							if (!values.ReportStartDate) {
-								this.fireEvent("getReport", values);
+								Ext.ux.Toast.msg(_("Error"), _("From Date can't be empty"), 5);
+							} else if (!values.ReportEndDate) {
+								Ext.ux.Toast.msg(_("Error"), _("To Date can't be empty"), 5);
 							} else if (this.find('itemId', 'start')[0]
-									.getValue() < this.find('itemId', 'end')[0]
+									.getValue() <= this.find('itemId', 'end')[0]
 									.getValue()) {
 								this.fireEvent("getReport", values);
 							} else {
@@ -766,6 +771,8 @@ Ext
 					},
 					resetHandler : function(){
 						this.getForm().reset();
+						this.find('itemId', 'start')[0].setValue("");
+						this.find('itemId', 'end')[0].setValue("");
 					}
 				});
 Ext.reg('reportsearchform', mFino.widget.ReportSearchForm);

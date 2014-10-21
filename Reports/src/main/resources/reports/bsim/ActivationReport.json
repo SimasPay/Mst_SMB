@@ -29,9 +29,9 @@
 					p.cardpan,
 					s.firstname || ' ' || s.lastname,
 					sm.mdn,
-					TO_CHAR (s.activationtime, 'DD-MM-YYYY'),
+					TO_CHAR (FROM_TZ(CAST(s.activationtime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY'),
 					s.createdBy,
-					TO_CHAR (s.lastupdatetime, 'DD-MM-YYYY'),
+					TO_CHAR (FROM_TZ(CAST(s.lastupdatetime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
 					et.EnumValue
 				FROM
 					subscriber s, 
@@ -39,7 +39,8 @@
 					pocket p, 
 					enum_text et 
 				WHERE 
-					s.id = sm.subscriberid 
+					s.id = sm.subscriberid
+					and s.type=0 
 					and p.mdnid = sm.id 
 					and p.pockettemplateid=4 
 					and et.tagid=5024 
