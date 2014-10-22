@@ -4,15 +4,13 @@
     "ReportHeaderText" : "Transaction Monthly Report",
                             
     "ReportHeader" : [   
-                           [ "Date Range From" , "${StartTime}", "To" , "${EndTime}" ],
-   						   [ "Biller Code" , "${BillerCode}"],   	
-                           [ "Transaction Status", "${TransactionStatus}"]
+                           [ "Date Range From" , "${StartTime}", "To" , "${EndTime}" ]
                      ],
     
     "ReportHeaderDataColumnsWidth" : [ 5,3,1,6 ],
          
-    "HeaderColumns" : [ "TransactionName",
-						"No of Transactions", 
+    "HeaderColumns" : [ "Transaction Name",
+						"No.of Transactions", 
     					"Status",
     					"Total Amount",
     					"Month"
@@ -23,7 +21,7 @@
     "EncryptedColumnIndices" : [],
         
     "Query" : "	SELECT 
-    				t.TransactionName, 
+    				t.DisplayName, 
     				count(*) ,
     				decode(s.status, 4, 'Success', 5 , 'Failed' ),
     				sum(s.transactionamount) as Amount, 
