@@ -23,7 +23,7 @@
     
     "CSVDelimiter" : "," ,
 
-    "DateFormat" : "dd/MM/yyyy",
+    "DateFormat" : "dd/MM/yyyy HH:mm:ss",
     
     "DateTimeFormatOfDataFromDB" : "%Y-%m-%d %H:%i:%s"
     

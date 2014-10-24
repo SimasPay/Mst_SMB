@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +26,20 @@ public class MonthlyReportScheduler extends ReportScheduler{
 			
 	protected void initaliseTimes() throws ParseException {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM");
-		String monthEnd = fmt.format(System.currentTimeMillis());
-		endTime = fmt.parse(monthEnd);
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(endTime);
+		String currTimeMillis = fmt.format(System.currentTimeMillis());
+		Date currDateTime = fmt.parse(currTimeMillis);
+		Calendar cal = Calendar.getInstance(); 
+		
+		cal.setTime(currDateTime);
 		cal.add(Calendar.MONTH, -1);
 		startTime = cal.getTime();
+		
+		cal.setTime(currDateTime);
+		cal.add(Calendar.MILLISECOND, -1);
+		endTime = cal.getTime();
+		
 		log.info("StartTime : "+startTime.toString());
 		log.info("endTime : "+endTime.toString());		
-		
 	}
 	
 	protected String getOutputDirectory()

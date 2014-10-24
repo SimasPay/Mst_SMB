@@ -3,6 +3,7 @@ package com.dimo.fuse.reports.scheduler;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -20,16 +21,21 @@ public class DailyReportScheduler extends ReportScheduler{
 	
 	protected void setZipDirs() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String date = sdf.format(new Date());
+		String date = sdf.format(endTime);
 		zipFile = outputDirectory + File.separator + date ;
 	}
 	
 	protected void initaliseTimes() throws ParseException {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		String yesterdayEnd = fmt.format(System.currentTimeMillis());
-		endTime = fmt.parse(yesterdayEnd);
-		String yesterdayStart = fmt.format(endTime.getTime() - MILLIS_IN_DAY);
-		startTime = fmt.parse(yesterdayStart);
+		String currTimeMillis = fmt.format(System.currentTimeMillis());
+		Date currDateTime = fmt.parse(currTimeMillis);
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(currDateTime);
+		cal.add(Calendar.DATE, -1);
+		startTime = cal.getTime();
+		cal.setTime(currDateTime);
+		cal.add(Calendar.MILLISECOND, -1);
+		endTime = cal.getTime();
 		log.info("StartTime : "+startTime.toString());
 		log.info("endTime : "+endTime.toString());		
 	}

@@ -163,6 +163,13 @@ public abstract class ReportScheduler {
 						log.info("Unable to zip the xls files from input directory "+outputDirectory+" and hence not sending mail");
 					}
 					
+					String xlsxZipFile = zipFiles(outputDirectory,zipFile+"_xlsx",".xlsx");
+					if(xlsxZipFile != null){
+						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled XLSX Reports", "Attached Scheduled Reports Zip File", xlsxZipFile);
+					}else{
+						log.info("Unable to zip the xlsx files from input directory "+outputDirectory+" and hence not sending mail");
+					}
+
 					String csvZipFile = zipFiles(outputDirectory,zipFile+"_csv",".csv");
 					if(csvZipFile != null){
 						sendMail(ReportSchedulerProperties.getEmailRecipients(), "Scheduled CSV Reports", "Attached Scheduled Reports Zip File", csvZipFile);
