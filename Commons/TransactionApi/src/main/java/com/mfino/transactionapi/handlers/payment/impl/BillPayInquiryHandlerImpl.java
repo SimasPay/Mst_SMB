@@ -394,6 +394,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				sctl.setCommodityTransferID(transactionResponse.getTransferId());
 				billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 				result.setTransactionID(transactionResponse.getTransactionId());
+				result.setAdditionalInfo(additionalInfo);
 				transactionChargingService.saveServiceTransactionLog(sctl);
 			}
 			if (!transactionResponse.isResult() && sctl!=null){

@@ -14,19 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.exceptions.InvalidChargeDefinitionException;
-import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBillInquiry;
@@ -35,11 +30,11 @@ import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.BillerService;
 import com.mfino.service.MFSBillerService;
+import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.service.impl.TransactionLogServiceImpl;
 import com.mfino.transactionapi.handlers.payment.BillInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -83,6 +78,10 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
 	
+	@Autowired
+	@Qualifier("PocketServiceImpl")
+	private PocketService pocketService;
+	
 	public Result handle(TransactionDetails transDetails)
 	{
 		CMBillInquiry billInquiry = new CMBillInquiry();
@@ -114,6 +113,19 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 			result.setNotificationCode(validationResult);
 			return result;
 
+		}
+		
+		/* pocket required for charge deduction*/
+		Pocket subPocket = pocketService.getDefaultPocket(srcSubscriberMDN, transDetails.getSourcePocketCode());
+		if(subPocket==null){
+			log.error("Subscriber with mdn : "+billInquiry.getSourceMDN()+" has failed validations");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
+			return result;
+		}
+		if (!subPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+			log.error("Subscriber with mdn : "+billInquiry.getSourceMDN()+" has failed validations");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
+			return result;
 		}
 
 		if(StringUtils.isBlank(billInquiry.getInvoiceNumber())){
@@ -150,65 +162,34 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 			billInquiry.setIntegrationCode(results.getIntegrationCode());
 		}
 		
-		log.info("creating the serviceCharge object....");
-		Transaction transaction = null;
-		ServiceCharge sc = new ServiceCharge();
-		sc.setSourceMDN(billInquiry.getSourceMDN());
-		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
-		sc.setServiceName(transDetails.getServiceName());
-		sc.setTransactionTypeName(transDetails.getTransactionName());
-		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
-		sc.setTransactionIdentifier(billInquiry.getTransactionIdentifier());
-
-		try{
-			transaction =transactionChargingService.getCharge(sc);
-		}catch (InvalidServiceException e) {
-			log.error("Exception occured in getting charges",e);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
-			return result;
-		} catch (InvalidChargeDefinitionException e) {
-			log.error(e.getMessage());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
-			return result;
-		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		billInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		billInquiry.setNarration("ccpayment");
+		
+		billInquiry.setSourceBankAccountNo(subPocket.getCardPAN());
+		billInquiry.setSourcePocketID(subPocket.getID());
+		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(subPocket.getPocketTemplate().getBankAccountCardType()))
+			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 		
 		CFIXMsg response = super.process(billInquiry);
 
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
-		if(transactionResponse != null && transactionResponse.isResult())
-		{
-			if(StringUtils.isNotBlank(transactionResponse.getPaymentInquiryDetails()))
-			{
+		if(transactionResponse != null && transactionResponse.isResult()){
+			if(StringUtils.isNotBlank(transactionResponse.getPaymentInquiryDetails())){
 				BigDecimal amount = BigDecimal.ZERO;
-				try
-				{
-					if(transDetails.getBillerCode().equalsIgnoreCase(systemParametersService.getString(SystemParameterKeys.STARTIMES_BILLER_CODE))){
-						amount = transactionResponse.getAmount();
-						sctl.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
-						transactionChargingService.completeTheTransaction(sctl);
-					}else{
-						amount = new BigDecimal(Long.parseLong(transactionResponse.getPaymentInquiryDetails().substring(172, 183)));
-					}
-				}
-				catch(Exception e)
-				{
+				try{
+					amount = new BigDecimal(Long.parseLong(transactionResponse.getPaymentInquiryDetails()));
+				}catch(Exception e){
 					log.error("Exception occured in getting amount",e);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_GetBillDetailsFailed);
 					return result;
 				}
 				result.setMultixResponse(response);
 				result.setAmount(amount);
-				result.setAdditionalInfo(transactionResponse.getPaymentInquiryDetails());
-				//addCompanyANDLanguageToResult(srcSubscriberMDN,result);
+				addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 				result.setParentTransactionID(transactionResponse.getTransactionId());
-				result.setTransferID(transactionResponse.getTransferId());
 				result.setCode(transactionResponse.getCode());
 				result.setMessage(transactionResponse.getMessage());
+				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());
 				
 				return result;
 			}
