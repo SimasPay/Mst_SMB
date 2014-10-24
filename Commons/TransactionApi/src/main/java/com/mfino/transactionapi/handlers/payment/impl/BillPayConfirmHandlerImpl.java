@@ -117,7 +117,6 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 ChannelCode cc = transactionDetails.getCc();
 		
 		 billPay.setSourceMDN(transactionDetails.getSourceMDN());
-		 billPay.setInvoiceNumber(transactionDetails.getBillNum());
 		 billPay.setParentTransactionID(transactionDetails.getParentTxnId());
 		 billPay.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		 billPay.setTransferID(transactionDetails.getTransferId());
@@ -125,7 +124,16 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 billPay.setSourceApplication(cc.getChannelSourceApplication());
 		 billPay.setChannelCode(cc.getChannelCode());
 		 billPay.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
-		 billPay.setBillerCode(transactionDetails.getBillerCode());
+		 //Change as part of migration to include old parameter names
+		 if(transactionDetails.getDestMDN() != null)
+			 billPay.setInvoiceNumber(transactionDetails.getDestMDN());
+		 else
+			 billPay.setInvoiceNumber(transactionDetails.getBillNum());
+		 //Change as part of migration to include old parameter names
+		 if(transactionDetails.getCompanyID() != null)
+			 billPay.setBillerCode(transactionDetails.getCompanyID());
+		 else
+			 billPay.setBillerCode(transactionDetails.getBillerCode());
 		 billPay.setNarration(transactionDetails.getNarration());
 		 billPay.setPaymentMode(transactionDetails.getPaymentMode());
 		if (ServiceAndTransactionConstants.MESSAGE_BILL_PAY.equals(transactionDetails.getSourceMessage()))

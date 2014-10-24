@@ -427,8 +427,10 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				}
 				if(additionalInfo != null){
 					billPayment.setInfo4(additionalInfo);
-					if(billPayment.getInfo4() != null && billPayment.getInfo4().trim().length() >=6 )
+					if(billPayment.getInfo4() != null && "Bayar".equalsIgnoreCase(billPaymentInquiry.getIntegrationCode()) && billPayment.getInfo4().trim().length() >=6)
 						result.setBillDate(formatBillDate(billPayment.getInfo4().trim().substring(0, 6), "yyyyMM"));
+					else
+						result.setAdditionalInfo(additionalInfo);
 				}
 				if(billPayRefID != null)
 					billPayment.setBillData(billPayRefID);
