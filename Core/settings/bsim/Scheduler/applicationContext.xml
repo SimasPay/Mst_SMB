@@ -200,12 +200,6 @@
         <property name="cronExpression" value="0 0 22 * * ?" />      
     </bean>
     
-	<bean id="settlementHandler" class="com.mfino.scheduler.settlement.SettlementHandlerImpl" factory-method="createInstance">
- 	</bean>
- 	
- 	<bean id="settlementSchedulerLogsServiceImpl" class="com.mfino.service.impl.SettlementSchedulerLogsServiceImpl" factory-method="createInstance">
- 	</bean>
-    
     <!-- for Partner Settlements-->
      <bean id="partnerSettlementService" class="com.mfino.scheduler.service.impl.PartnerSettlementServiceImpl" >
     	<!-- <property name="sessionFactory" ref="sessionFactory"/>
@@ -264,7 +258,7 @@
     <bean id="updateSubscriberStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="updateSubscriberStatus" />       
 		<property name="timeZone" ref="timeZone" />
-        <property name="cronExpression" value="0 0 2 * * ?" />        
+        <property name="cronExpression" value="0 0 17 * * ?" />        
     </bean>
 	
 	 <!-- for Update Subscriber Status based on OTP -->
@@ -282,7 +276,7 @@
         <property name="jobDetail" ref="updateSubscriberOTPStatus" />       
 		<property name="timeZone" ref="timeZone" />
 		<!-- runs for every 10 minutes  -->
-        <property name="cronExpression" value="0 0/5 * * * ?" />        
+        <property name="cronExpression" value="0 0 17 * * ?" />        
     </bean>
     
     	<!-- for Bulk Transfer -->
@@ -333,7 +327,7 @@
     <bean id="checkExpirationOfTransferToUnRegisteredTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="checkExpirationOfTransferToUnRegistered" />       
 		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0/5 * * * ?" />        
+		<property name="cronExpression" value="0 0 19 * * ?" />        
     </bean>  
         	<!-- for reversing expired and failed funds and unfinished withdrawals -->
     <bean id="reverseFundsService" class="com.mfino.scheduler.service.impl.ReverseFundsServiceImpl"> 
@@ -382,7 +376,7 @@
     <bean id="activationMsgTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="activationMsgJob" />       
 		<property name="timeZone" ref="timeZone" />
-        <property name="cronExpression" value="0 0 23 * * ?" />     
+        <property name="cronExpression" value="0 0/5 * * * ?" />     
     </bean>
     
 	<!-- Update the pocket balances for the Defered Ledger entries -->
@@ -420,52 +414,32 @@
 		<property name="cronExpression" value="0 0 1 * * ?" />     
     </bean>
     
-    <!-- for KYC Upgrade -->
-    <bean id="kycUpgradeSchedulerService" class="com.mfino.scheduler.service.impl.KYCUpgradeSFTPSchedulerServiceImpl"> 
-    	<property name="txManager" ref="txManager"/>
-    </bean>
-    <bean id="processKYCUpgrade" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="kycUpgradeSchedulerService" />
-        <property name="targetMethod" value="processKYCUpgrade" />
-        <property name="concurrent" value="false" />
-    </bean>
-    <bean id="processKYCUpgradeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="processKYCUpgrade" />       
-		<property name="timeZone" ref="timeZone" />
-		<!-- corn expression for every 1 hour -->
-        <property name="cronExpression" value="0 0 0/1 * * ?" />        
-    </bean>
-      
 	<!-- All triggers need to be added here to work -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-            <!-- 
-            	<ref bean="settlementConfigUpdateTrigger"/>
             	<ref bean="baseBulkUploadTrigger"/>
-            	<ref bean="fundReimburseTrigger"/>
-            	<ref bean="updateSubscriberOTPStatusTrigger"/>
-            	<ref bean="processBulkTransferTrigger"/>
-                <ref bean="tellerEMoneyClearanceTrigger"/>
-                <ref bean="reverseFundsTrigger"/>
-                <ref bean="activationMsgTrigger"/>  
-             -->
-            	
-                <ref bean="partnerServiceSettlementTrigger"/>
-                <ref bean="distributeTransactionAmountTrigger"/>
-                <ref bean="updateCollectorPocketsTrigger"/>
-                <ref bean="retryCollectorPocketsTrigger"/>
-                <ref bean="retryFailedCollectorPocketsTrigger"/>
-                <ref bean="clearTheSCTLTrigger"/> 
+            	<ref bean="distributeTransactionAmountTrigger"/>
+            	<ref bean="clearTheSCTLTrigger"/>
                 <ref bean="updateSubscriberStatusTrigger"/>
-                <ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
+				<ref bean="updateSubscriberOTPStatusTrigger"/> 				
                 <ref bean="retirePocketsTrigger"/>
+                <ref bean="activationMsgTrigger"/>
                 <ref bean="forceGraveTrigger"/>
-                <ref bean="updatePocketBalancesFromLedgerTrigger"/>
-                <ref bean="bdvTrigger"/>
-                <ref bean="processKYCUpgradeTrigger"/>
-            <!--                            
-                <ref bean="bulkPendingResolveToolTrigger"/>		
+            	 
+            <!-- <ref bean="settlementConfigUpdateTrigger"/>
+	             <ref bean="partnerServiceSettlementTrigger"/>
+    	         <ref bean="updateCollectorPocketsTrigger"/>
+        	     <ref bean="retryCollectorPocketsTrigger"/>
+            	 <ref bean="retryFailedCollectorPocketsTrigger"/>
+             	 <ref bean="fundReimburseTrigger"/>
+	             <ref bean="processBulkTransferTrigger"/>
+    	         <ref bean="tellerEMoneyClearanceTrigger"/>
+             	 <ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
+             	 <ref bean="reverseFundsTrigger"/>
+				 <ref bean="updatePocketBalancesFromLedgerTrigger"/>
+                 <ref bean="bdvTrigger"/>                
+                 <ref bean="bulkPendingResolveToolTrigger"/>		
             -->		
              	 
             </list>
