@@ -26,7 +26,8 @@
 	    <module>BSIMISO8583</module>
 		<module>BSIMConfiguration</module>
 		<module>BSIMInterBankTransfer</module>
-		<module>BSIMSMS</module>
+		<!--module>BSIMSMS</module-->
+		<module>NewBSIMSMS</module>
 		<module>BSIMBillPayment</module>
 		<module>FlashizISO8583</module>
     </modules>	

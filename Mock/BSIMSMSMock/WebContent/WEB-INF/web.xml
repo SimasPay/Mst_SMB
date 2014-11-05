@@ -11,4 +11,14 @@
     <servlet-name>BSIMSMSServiceMock</servlet-name>
     <url-pattern>/SMSService</url-pattern>
   </servlet-mapping>
+   <servlet>
+    <description></description>
+    <display-name>NewBSIMSMSService</display-name>
+    <servlet-name>NewBSIMSMSServiceMock</servlet-name>
+    <servlet-class>com.mfino.mock.bsimsms.NewBSIMSMSServiceMock</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewBSIMSMSServiceMock</servlet-name>
+    <url-pattern>/SmsAlert/app/sendSms/*</url-pattern>
+  </servlet-mapping>
 </web-app>
