@@ -353,20 +353,25 @@ public class ThalesCommandImplementor
 		ThalesMsg encryptPinResponse = encryptPIN(hPin, accountNumber);
 		if(encryptPinResponse== null )
 		{
-			throw new Exception("No response for pin encryption request");
+			throw new Exception("No response for pin encryption request for AccountNumber :" + accountNumber);
 		}
 		String pinunderlmk = encryptPinResponse.get("encrypted-pin");
-		log.info("ThalesCommandImplementor :: got pinunderlmk : "+pinunderlmk +" in BB response");
+		if(StringUtils.isBlank(pinunderlmk)){
+			throw new Exception("pinunderlmk null for AccountNumber :" + accountNumber);
+		}
 		// create pin block
 		log.info("ThalesCommandImplementor :: sending JG command with pinunderlmk : "+pinunderlmk+" accountNumber : "+accountNumber);
 		ThalesMsg pinBlockResponse = sendRequest(createPINBlock(zpk,pinunderlmk,accountNumber));
 		if(pinBlockResponse == null )
-			throw new Exception("Could not generate PIN Block");
+			throw new Exception("Could not generate PIN Block for AccountNumber :"+accountNumber);
 		
 		// validate pin
 		String pinblock = pinBlockResponse.get("pinblock");
 		log.info("ThalesCommandImplementor :: got pinblock : "+pinblock +" in JH response");
 		log.info("ThalesCommandImplementor :: sending EA command with offset : "+offset+" accountNumber : "+accountNumber);
+		if(StringUtils.isBlank(pinblock)){
+			throw new Exception("pinblock null for AccountNumber :" + accountNumber);
+		}
 		ThalesMsg validatePINResponse = sendRequest(validatePIN(pvk,zpk,offset,pinblock,accountNumber));
 		if(validatePINResponse == null )
 			throw new Exception("Could not validate PIN");
@@ -453,9 +458,12 @@ public class ThalesCommandImplementor
 		ThalesMsg encryptPinResponse = encryptPIN(hPin, accountNumber);
 		if(encryptPinResponse==null ||"true".equalsIgnoreCase(encryptPinResponse.get("EOF")))
 		{
-			throw new IOException("Invalid response from HSM for encrypt pin request");
+			throw new IOException("Invalid response from HSM for encrypt pin request for AccountNumber : "+accountNumber);
 		}
 		String pinunderlmk = encryptPinResponse.get("encrypted-pin");
+		if(StringUtils.isBlank(pinunderlmk)){
+			throw new IOException("pinunderlmk null for AccountNumber :" + accountNumber);
+		}
 		ThalesMsg offsetResponse = sendRequest(generateOffset(pvk,pinunderlmk,accountNumber));
 		if(offsetResponse==null || "true".equalsIgnoreCase(encryptPinResponse.get("EOF")))
 			throw new IOException("Invalid response from HSM for generate offset request");
@@ -520,7 +528,7 @@ public class ThalesCommandImplementor
     	log.info("ThalesCommandImplementor :: decryptPin sending request ");
     	ThalesMsg res = sendRequest(req);
     	if(res==null || "true".equalsIgnoreCase(res.get("EOF"))){
-			throw new IOException("Invalid response from HSM for  NG Command during decryptPin()");
+			throw new IOException("Invalid response from HSM for NG Command during decryptPin()");
 		}
 		String clearpin = res.get("clear-pin");
 		log.info("ThalesCommandImplementor :: decryptPin END");
@@ -546,9 +554,12 @@ public class ThalesCommandImplementor
     	log.info("ThalesCommandImplementor :: zpkToLMKTranslate sending request ");
     	ThalesMsg res = sendRequest(req);
     	if(res==null || "true".equalsIgnoreCase(res.get("EOF"))){
-			throw new IOException("Invalid response from HSM for zpkToLMKTranslate");
+			throw new IOException("Invalid response from HSM for zpkToLMKTranslate for accountNumber :"+accountNumber);
 		}
 		String pinunderlmk = res.get("encrypted-pin");
+		if(StringUtils.isBlank(pinunderlmk)){
+			throw new IOException("pinunderlmk null for zpkToLMKTranslate accountNumber:"+accountNumber);
+		}
 		log.info("ThalesCommandImplementor :: zpkToLMKTranslate reponse pinunderlmk"+pinunderlmk);
 		return pinunderlmk;
     	
@@ -582,7 +593,9 @@ public class ThalesCommandImplementor
 			throw new IOException("Invalid response from HSM for encrypt pin request (BA Command)");
 		}
 		String pinunderlmk = encryptPinResponse.get("encrypted-pin");
-		
+		if(StringUtils.isBlank(pinunderlmk)){
+			throw new IOException("pinunderlmk null for AccountNumber :" + accountNumber);
+		}
 		// convert the pin under LMK to pin under ZPK
 		String zpkunderlmk = "";
 		BufferedReader br = null;
