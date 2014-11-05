@@ -183,14 +183,14 @@
         <handled>
             <constant>true</constant>
         </handled>
-        <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>
+        <!-- <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>-->
     </onException>
     <onException>
         <exception>com.mfino.bsim.iso8583.TimedoutISOException</exception>
         <handled>
             <constant>true</constant>
         </handled>
-        <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>
+        <!-- <to uri="jms:ISOdeadLetterQueue?disableReplyTo=true"/>-->
     </onException>
     <route>
         <from uri="jms:bsimISOQueue?disableReplyTo=true"/>
