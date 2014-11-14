@@ -59,7 +59,7 @@ mFino.widget.ReportSearchForm = function(config) {
 										}
 
 										]
-									} ],
+									} ]
 
 								},
 								{
@@ -530,7 +530,7 @@ mFino.widget.ReportSearchForm = function(config) {
 												} ]
 											}
 
-									],
+									]
 								},
 								{
 									layout : 'column',

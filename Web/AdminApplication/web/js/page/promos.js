@@ -82,7 +82,7 @@ mFino.page.promos = function(config) {
 				        									 buttons : Ext.MessageBox.OK,
 				        									 multiline : false
 				        								 });
-				        							 },
+				        							 }
 				        						 });
 				        				 return;
 				        			 }

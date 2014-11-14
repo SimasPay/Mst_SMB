@@ -9,7 +9,7 @@
         <li id="partners_tab" style="z-index:1000;"><a href="#" onclick="return false">Partners</a>
             <table><tr><td>
                         <ul>
-                            <li id="partner_tab"><a href="#" onclick="return false">All Partners</a></li>
+                            <li id="partner_tab"><a href="#" onclick="return false">Partner</a></li>
                             <li id="mfsBiller_tab"><a href="#" onclick="return false">Billers</a></li>
                             <li id="agent_tab" ><a href="#" onclick="return false">Agent</a></li>  
                             <li id="teller_tab" ><a href="#" onclick="return false">BankTeller</a></li>

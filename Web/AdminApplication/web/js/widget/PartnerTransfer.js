@@ -30,7 +30,7 @@ Ext.extend(	mFino.widget.PartnerTransfer,Ext.FormPanel,
 										xtype : 'displayfield',
 										fieldLabel : 'From',
 										itemId : 'transfer.form.sourcePocket',
-										anchor : '100%',
+										anchor : '100%'
 //										name : CmFinoFIX.message.JSMoneyTransfer.SourcePocketID._name
 									},
 									{
