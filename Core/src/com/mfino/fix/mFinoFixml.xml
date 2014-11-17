@@ -3685,6 +3685,10 @@
 			<field name="MerchantID" required="N" />
 			<field name="MerchantAccount" required="N" />
 			<field name="ReferenceNumber" required="N" />			
+			<field name="SourcePartnerCode" required="N" />
+			<field name="DestPartnerCode" required="N" />
+			<field name="ChannelName" required="N" />
+			<field name="BankRetrievalReferenceNumber" required="N" />
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="Lable" required="N"/> 
 				<field name="Index" required="N"/> 

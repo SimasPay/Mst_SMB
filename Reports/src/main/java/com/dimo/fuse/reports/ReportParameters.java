@@ -76,6 +76,14 @@ public class ReportParameters {
 	
 	private String destinationFolder;
 	
+	private String sourcePartnerCode;
+	
+	private String destPartnerCode;
+	
+	private String channelName;
+	
+	private String bankRRN;
+	
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -338,6 +346,37 @@ public class ReportParameters {
 
 	public void setScheduledReport(boolean isScheduledReport) {
 		this.isScheduledReport = isScheduledReport;
+	}
+	public String getSourcePartnerCode() {
+		return sourcePartnerCode;
+	}
+
+	public void setSourcePartnerCode(String sourcePartnerCode) {
+		this.sourcePartnerCode = sourcePartnerCode;
+	}
+
+	public String getDestPartnerCode() {
+		return destPartnerCode;
+	}
+
+	public void setDestPartnerCode(String destPartnerCode) {
+		this.destPartnerCode = destPartnerCode;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
+
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
+	}
+
+	public String getBankRRN() {
+		return bankRRN;
+	}
+
+	public void setBankRRN(String bankRRN) {
+		this.bankRRN = bankRRN;
 	}
 
 }

@@ -172,6 +172,14 @@ public abstract class ReportGenerator {
 		
 		cellContent = cellContent.replace("${ToLastUpdateTime}", (getReportParameters().getToUpdatedDate() != null) ? dateFormat.format(getReportParameters().getToUpdatedDate()) : "");
 		
+		cellContent = cellContent.replace("${SourcePartnerCode}", (getReportParameters().getSourcePartnerCode() != null) ? getReportParameters().getSourcePartnerCode() : "");
+		
+		cellContent = cellContent.replace("${DestPartnerCode}", (getReportParameters().getDestPartnerCode() != null) ? getReportParameters().getDestPartnerCode() : "");
+		
+		cellContent = cellContent.replace("${ChannelName}", (getReportParameters().getChannelName() != null) ? getReportParameters().getChannelName() : "");
+		
+		cellContent = cellContent.replace("${BankRRN}", (getReportParameters().getBankRRN() != null) ? getReportParameters().getBankRRN() : "");
+		
 		
 		return cellContent;
 	}

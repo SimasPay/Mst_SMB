@@ -63,5 +63,9 @@ public class ReportPropertyConstants {
 	public static final String ADMINAPP_MERCHANT_ID ="merchantId";
 	public static final String ADMINAPP_MERCHANT_ACCOUNT ="merchantAccount";
 	public static final String ADMINAPP_REFERENCE_NUMBER ="referenceNo";
+	public static final String ADMINAPP_SOURCE_PARTNER_CODE ="sourcePartnerCode";
+	public static final String ADMINAPP_DEST_PARTNER_CODE ="destPartnerCode";
+	public static final String ADMINAPP_CHANNEL_NAME ="channelName";
+	public static final String ADMINAPP_BANK_RRN ="bankRRN";
 	
 }

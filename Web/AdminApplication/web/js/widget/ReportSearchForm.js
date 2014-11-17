@@ -528,6 +528,86 @@ mFino.widget.ReportSearchForm = function(config) {
 																.createDelegate(this)
 													}
 												} ]
+											},
+											{
+												columnWidth : 0.5,
+												layout : 'form',
+												labelWidth : 80,
+												itemId : "sourcePartnerCode",
+												items : [ {
+													xtype : 'textfield',
+													allowDecimals : false,
+													fieldLabel : _("SourcePartnerCode"),
+													labelSeparator : '',
+													maxLength : 13,
+													minValue : 0,
+													name : CmFinoFIX.message.JSReport.SourcePartnerCode._name,
+													anchor : '80%',
+													listeners : {
+														specialkey : this.enterKeyHandler
+																.createDelegate(this)
+													}
+												} ]
+											},
+											{
+												columnWidth : 0.5,
+												layout : 'form',
+												labelWidth : 80,
+												itemId : "destPartnerCode",
+												items : [ {
+													xtype : 'textfield',
+													allowDecimals : false,
+													fieldLabel : _("DestPartnerCode"),
+													labelSeparator : '',
+													maxLength : 13,
+													minValue : 0,
+													name : CmFinoFIX.message.JSReport.DestPartnerCode._name,
+													anchor : '80%',
+													listeners : {
+														specialkey : this.enterKeyHandler
+																.createDelegate(this)
+													}
+												} ]
+											},
+											{
+												columnWidth : 0.5,
+												layout : 'form',
+												labelWidth : 80,
+												itemId : "channelName",
+												items : [ {
+													xtype : 'textfield',
+													allowDecimals : false,
+													fieldLabel : _("ChannelName"),
+													labelSeparator : '',
+													maxLength : 13,
+													minValue : 0,
+													name : CmFinoFIX.message.JSReport.ChannelName._name,
+													anchor : '80%',
+													listeners : {
+														specialkey : this.enterKeyHandler
+																.createDelegate(this)
+													}
+												} ]
+											},
+											{
+												columnWidth : 0.5,
+												layout : 'form',
+												labelWidth : 80,
+												itemId : "bankRRN",
+												items : [ {
+													xtype : 'textfield',
+													allowDecimals : false,
+													fieldLabel : _("BankRRN"),
+													labelSeparator : '',
+													maxLength : 13,
+													minValue : 0,
+													name : CmFinoFIX.message.JSReport.BankRetrievalReferenceNumber._name,
+													anchor : '80%',
+													listeners : {
+														specialkey : this.enterKeyHandler
+																.createDelegate(this)
+													}
+												} ]
 											}
 
 									]
@@ -693,6 +773,17 @@ Ext
 						}else if(value === "TransactionMonthlyReport"){
 //							this.find('itemId', 'billerCode')[0].show();
 //							this.find('itemId', 'transactionStatus')[0].show();
+						}else if(value === "TransactionExcelReport"){
+							this.find('itemId', 'transactionStatus')[0].show();
+							this.find('itemId', 'transactionType')[0].show();
+							this.find('itemId', 'sourceMDN')[0].show();
+							this.find('itemId', 'destMDN')[0].show();
+							this.find('itemId', 'billerCode')[0].show();
+							this.find('itemId', 'referenceNo')[0].show();
+							this.find('itemId', 'sourcePartnerCode')[0].show();
+							this.find('itemId', 'destPartnerCode')[0].show();
+							this.find('itemId', 'channelName')[0].show();
+							this.find('itemId', 'bankRRN')[0].show();
 						}
 						
 					},
@@ -722,6 +813,10 @@ Ext
 						this.find('itemId', 'merchantAccount')[0].hide();
 						this.find('itemId', 'referenceNo')[0].hide();
 						this.find('itemId', 'idCardNo')[0].hide();
+						this.find('itemId', 'sourcePartnerCode')[0].hide();
+						this.find('itemId', 'destPartnerCode')[0].hide();
+						this.find('itemId', 'channelName')[0].hide();
+						this.find('itemId', 'bankRRN')[0].hide();
 					},
 
 					reloadRemoteDropDown : function() {

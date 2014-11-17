@@ -303,7 +303,32 @@ public class ReportTool {
 		
 		if (query.contains("$(TimeZone)")) {
 			query = query.replace("$(TimeZone)", TimeZone.getDefault().getID());
-		}		
+		}	
+		
+		
+		if (reportParameters.getSourcePartnerCode() != null) {
+			query = query.replace("${SourcePartnerCode}", "'" + reportParameters.getIdNumber() + "'");
+		} else {
+			query = query.replace("${SourcePartnerCode}", "'%%'");
+		}
+		
+		if (reportParameters.getDestPartnerCode() != null) {
+			query = query.replace("${DestPartnerCode}", "'" + reportParameters.getIdNumber() + "'");
+		} else {
+			query = query.replace("${DestPartnerCode}", "'%%'");
+		}
+		
+		if (reportParameters.getChannelName() != null) {
+			query = query.replace("${ChannelName}", "'" + reportParameters.getIdNumber() + "'");
+		} else {
+			query = query.replace("${ChannelName}", "'%%'");
+		}
+		
+		if (reportParameters.getBankRRN() != null) {
+			query = query.replace("${BankRRN}", "'" + reportParameters.getIdNumber() + "'");
+		} else {
+			query = query.replace("${BankRRN}", "'%%'");
+		}
 		
 		log.info("The Query being executed as part of the report is : " + query);
 		return query;
