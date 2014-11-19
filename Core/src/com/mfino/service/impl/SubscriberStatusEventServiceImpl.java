@@ -57,6 +57,8 @@ public class SubscriberStatusEventServiceImpl implements
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(subscriber
 												.getStatus()));
+				if (subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
+					nextTimeStamp = new Timestamp();
 				statusNextEvent.setPickUpDateTime(nextTimeStamp);
 				statusNextEvent.setStatusOnPickup(subscriber.getStatus());
 				statusNextEvent.setSubscriberType(subscriber.getType());
@@ -68,6 +70,8 @@ public class SubscriberStatusEventServiceImpl implements
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(subscriber
 												.getStatus()));
+				if (subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
+					nextTimeStamp = new Timestamp();
 				subscriberExistingEvent.setPickUpDateTime(nextTimeStamp);
 				subscriberExistingEvent.setStatusOnPickup(subscriber
 						.getStatus());
@@ -81,6 +85,8 @@ public class SubscriberStatusEventServiceImpl implements
 							+ subscriberStatusTimeService
 									.getTimeToNextStatus(subscriber
 											.getStatus()));
+			if (subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
+				nextTimeStamp = new Timestamp();
 			statusNextEvent.setPickUpDateTime(nextTimeStamp);
 			statusNextEvent.setStatusOnPickup(subscriber.getStatus());
 			statusNextEvent.setSubscriberType(subscriber.getType());
