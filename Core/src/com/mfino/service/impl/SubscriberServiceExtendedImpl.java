@@ -1156,7 +1156,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		smsService.asyncSendSMS();
 		
 		if ( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0)
-			    && isSubscriberEmailVerified(subscriber)) {
+			    && subscriber.getEmail() != null && isSubscriberEmailVerified(subscriber)) {
 			String email = subscriber.getEmail();
 			String firstName = subscriber.getFirstName();
 			Long notificationLogDetailsID = notificationLogDetailsService.persistNotification(email, "Activation", emailMsg, subscriberActivation.getServiceChargeTransactionLogID(), 
