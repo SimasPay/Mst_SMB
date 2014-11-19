@@ -196,6 +196,25 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                         return errorMsg;
                     }
                 }
+                
+                // Card Pan Changed.
+                if (entry.isRemoteModifiedCardPAN() && entry.getCardPAN() != null && StringUtils.isNotEmpty(entry.getCardPAN())) {
+                	if (pocketService.getByCardPan(entry.getCardPAN()) == null) {
+                    	log.info("CardPan modified for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                        pocketService.handleCardPanChange(pocketObj);
+                	}
+                	else {
+                        CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
+                        String message = MessageText._("Account Number already exists in the system. It has to be unique.");
+                        errorMsg.setErrorDescription(message);
+                        errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+                        CmFinoFIX.CMJSError.CGEntries[] newEntries = errorMsg.allocateEntries(1);
+                        newEntries[0] = new CmFinoFIX.CMJSError.CGEntries();
+                        newEntries[0].setErrorName(CmFinoFIX.CMJSPocket.CGEntries.FieldName_CardPAN);
+                        newEntries[0].setErrorDescription(MessageText._("Account Number already exists."));
+                        return errorMsg;
+                	}
+                }                
 
                 if (entry.isRemoteModifiedPocketStatus() && entry.getPocketStatus() != null) {
                     isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Status_Edit);
@@ -243,12 +262,6 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     message = "Unable to save Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP();
                     log.warn(message, ex);
                     return errorMsg;
-                }
-
-                // Card Pan Changed.
-                if (entry.isRemoteModifiedCardPAN() && entry.getCardPAN() != null && StringUtils.isNotEmpty(entry.getCardPAN())) {
-                	log.info("CardPan modified for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
-                    pocketService.handleCardPanChange(pocketObj);
                 }
 
                 if (newRestrictions != null) {
@@ -440,6 +453,19 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     	String message = MessageText._("Invalid Regular Expression, in the PocketTemplate");
                         errorMsg.setErrorDescription(message);
                         log.warn(message, pse);
+                        return errorMsg;
+                    }
+                    
+                    if (pocketService.getByCardPan(e.getCardPAN()) != null) {
+                    	log.error("PocketProcessor :: Account Number already exists in the system for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                        errorMsg = new CmFinoFIX.CMJSError();
+                        String message = MessageText._("Account Number already exists in the system. It has to be unique.");
+                        errorMsg.setErrorDescription(message);
+                        errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+                        CmFinoFIX.CMJSError.CGEntries[] newEntries = errorMsg.allocateEntries(1);
+                        newEntries[0] = new CmFinoFIX.CMJSError.CGEntries();
+                        newEntries[0].setErrorName(CmFinoFIX.CMJSPocket.CGEntries.FieldName_CardPAN);
+                        newEntries[0].setErrorDescription(MessageText._("Account Number already exists."));
                         return errorMsg;
                     }
                 } else if (CmFinoFIX.PocketType_SVA.equals(pocketTemplate.getType()) && CmFinoFIX.Commodity_Money.equals(pocketTemplate.getCommodity()) &&
