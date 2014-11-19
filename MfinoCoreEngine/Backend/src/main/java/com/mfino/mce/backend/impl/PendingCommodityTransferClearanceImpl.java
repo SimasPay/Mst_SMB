@@ -24,7 +24,7 @@ import com.mfino.mce.backend.CommodityTransferService;
 import com.mfino.mce.backend.PendingCommodityTransferClearance;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SMSService;
-import com.mfino.service.impl.TransactionChargingServiceImpl;
+import com.mfino.service.TransactionChargingService;
 
 public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl implements PendingCommodityTransferClearance{
 
@@ -34,7 +34,8 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 
 	private CommodityTransferService commodityTransferService;
 
-	private TransactionChargingServiceImpl tcs =new TransactionChargingServiceImpl();
+	//private TransactionChargingServiceImpl tcs =new TransactionChargingServiceImpl();
+	private TransactionChargingService transactionChargingService ;
 
 	protected NotificationMessageParserService notificationMessageParserService ;
 	protected SMSService smsService;
@@ -80,7 +81,7 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 	private boolean calculateFinalState(PendingCommodityTransfer pct) {
 		boolean isExpired = checkExpiredTransfer(pct);
 		boolean bFinal = false;
-
+		log.info("calculating the final state of pct id: "+ pct.getID());
 		log.debug("PendingCommodityTransferClearanceImpl :: CmFinoFIX.TransferStatus_Completed="+CmFinoFIX.TransferStatus_Completed+", pct.getTransferStatus()="+pct.getTransferStatus() + ", CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferStatus())="+CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferStatus()) + ", (CmFinoFIX.TransferStatus_Completed.intValue() == pct.getTransferStatus().intValue())"+(CmFinoFIX.TransferStatus_Completed.intValue() == pct.getTransferStatus().intValue()));
 
 		if (CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferStatus())) {
@@ -177,7 +178,7 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 					//update pct status to failed and failure reason and sctl status to pending
 
 					coreDataWrapper.save(pct);
-					tcs.setPendingStatus(pct.getID());
+					transactionChargingService.setPendingStatus(pct.getID());
 
 					// Check if the Transaction is related to Bulk Transfer then do the changes in BulkUpload table also
 					pendingBulkTransfer(pct);
@@ -309,5 +310,14 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 	 */
 	public CommodityTransferService getCommodityTransferService() {
 		return commodityTransferService;
+	}
+
+	public TransactionChargingService getTransactionChargingService() {
+		return transactionChargingService;
+	}
+
+	public void setTransactionChargingService(
+			TransactionChargingService transactionChargingService) {
+		this.transactionChargingService = transactionChargingService;
 	}
 }

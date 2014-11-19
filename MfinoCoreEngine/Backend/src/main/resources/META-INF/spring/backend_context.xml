@@ -79,7 +79,7 @@
 	<osgi:reference id="moneyServiceImpl" bean-name="MoneyServiceImpl" interface="com.mfino.service.MoneyService"/>
 	<osgi:reference id="mfinoUtilServiceImpl" bean-name="MfinoUtilServiceImpl" interface="com.mfino.service.MfinoUtilService"/>
 	<osgi:reference id="subscriberStatusEventServiceImpl" bean-name="SubscriberStatusEventServiceImpl" interface="com.mfino.service.SubscriberStatusEventService"/>
-	
+	<osgi:reference id="smsServiceImpl" bean-name="SMSServiceImpl" interface="com.mfino.service.SMSService"/>
 		
 	<context:component-scan base-package="com.mfino.webapi.services" />
  	<context:component-scan base-package="com.mfino.webapi.servlet" />
@@ -202,6 +202,20 @@
 		<property name="sessionFactory" ref="sessionFactory"/>		
 	</bean>
 	
+	<bean id="pctClearanceService"	class="com.mfino.mce.backend.impl.PendingCommodityTransferClearanceImpl">
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
+		<property name="smsService" ref="smsServiceImpl"/>
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+	</bean>
+	
+	<bean id="bulkResolveService" class="com.mfino.mce.backend.impl.BulkPendingResolveServiceImpl">
+		<property name="pendingClearanceService" ref="pendingClearanceServiceImpl" />
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 	
 	<!--
 	  Create an osgi service from the bean created above
@@ -253,6 +267,19 @@
 			<value>com.mfino.mce.backend.IntegrationSummaryService</value>
 		</osgi:interfaces>
 	</osgi:service>
+	
+	<!-- service used in mce_sceduler_configuration  triggers -->
+	<osgi:service ref="bulkResolveService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.BulkPendingResolveService</value>
+		</osgi:interfaces>
+	</osgi:service>
+		
+	<osgi:service ref="pctClearanceService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.PendingCommodityTransferClearance</value>
+		</osgi:interfaces>
+	</osgi:service>	
 		
 	<tx:annotation-driven transaction-manager="txManager" />		
 </beans>

@@ -27,25 +27,12 @@
 						http://activemq.apache.org/schema/core
 						http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd">
 
-	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
-	<osgi:reference id="subscriberDAO" interface="com.mfino.dao.SubscriberDAO"/>
-    <osgi:reference id="subscriberMDNDAO" interface="com.mfino.dao.SubscriberMDNDAO"/>
-    <osgi:reference id="activitiesLogDAO" interface="com.mfino.dao.ActivitiesLogDAO"/>
-    <osgi:reference id="pocketDAO" interface="com.mfino.dao.PocketDAO"/>
-    <osgi:reference id="notificationDAO" interface="com.mfino.dao.NotificationDAO"/>
-    <osgi:reference id="mfinoServiceProviderDAO" interface="com.mfino.dao.MfinoServiceProviderDAO"/>
-    <osgi:reference id="pendingCommodityTransferDAO" interface="com.mfino.dao.PendingCommodityTransferDAO"/>
-    <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
-    <osgi:reference id="transactionLogDao" interface="com.mfino.dao.TransactionsLogDAO"/>
-    <osgi:reference id="systemParameterDao" interface="com.mfino.dao.SystemParametersDao"/>
-    <osgi:reference id="commodityTransferDao" interface="com.mfino.dao.CommodityTransferDAO"/>
-    <osgi:reference id="ledgerDao" interface="com.mfino.dao.LedgerDAO"/>
-    <osgi:reference id="pendingTransactionsEntryDAO" interface="com.mfino.dao.PendingTransactionsEntryDAO"/>
-    <osgi:reference id="pendingTransactionsFileDao" interface="com.mfino.dao.PendingTransactionsFileDAO"/>
+	<osgi:reference id="bulkResolveService"	interface="com.mfino.mce.backend.BulkPendingResolveService" />
+	<osgi:reference id="pctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransferClearance" />
     <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
-
-	<osgi:reference id="smsServiceImpl" bean-name="SMSServiceImpl" interface="com.mfino.service.SMSService"/>
-
+    <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+    <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
+	
     <bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
@@ -55,84 +42,21 @@
 		</property>
 	</bean>
      
-	
-	<bean id="coreDataWrapper" class="com.mfino.mce.core.CoreDataWrapper">
-		<!--  <property name="subscriberDAO" ref="subscriberDAO"/>-->
-		<property name="subscriberMDNDAO" ref="subscriberMDNDAO"/>
-		<property name="transactionLogDao" ref="transactionLogDao"/>
-		<property name="activitiesLogDAO" ref="activitiesLogDAO"/>
-		<property name="pocketDAO" ref="pocketDAO"/>
-		<property name="notificationDAO" ref="notificationDAO"/>
-		<property name="mfinoServiceProviderDAO" ref="mfinoServiceProviderDAO"/>
-		<property name="pendingCommodityTransferDAO" ref="pendingCommodityTransferDAO"/>
-		<property name="systemParameterDao" ref="systemParameterDao"/>
-		<property name="commodityTransferDao" ref="commodityTransferDao"/>
-		<property name="ledgerDao" ref="ledgerDao"/>
-		<property name="pendingTransactionsEntryDAO" ref="pendingTransactionsEntryDAO"/>
-		<property name="pendingTransactionsFileDao" ref="pendingTransactionsFileDao"/>
-	</bean>
-	
-	<bean id="commodityTransferServiceImpl" class="com.mfino.mce.backend.impl.CommodityTransferServiceImpl">
-		<property name="coreDataWrapper" ref="coreDataWrapper"/>
-		<property name="timeout" value="${pct.timeout}"></property>
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	
-	<bean id="ledgerServiceImpl" class="com.mfino.mce.backend.impl.LedgerServiceImpl">
-		<property name="coreDataWrapper" ref="coreDataWrapper"/>
-	</bean>
-	
-	<bean id="validationServiceImpl" class="com.mfino.mce.backend.impl.ValidationServiceImpl">
-		<property name="coreDataWrapper" ref="coreDataWrapper"/>
-		<property name="ledgerService" ref="ledgerServiceImpl" />
-	</bean>
-	
-	<bean id="bankServiceDefaultImpl" class="com.mfino.mce.backend.impl.BankServiceDefaultImpl">
-		<property name="coreDataWrapper" ref="coreDataWrapper"/>
-		<property name="validationService" ref="validationServiceImpl" />
-		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
-		<property name="ledgerService" ref="ledgerServiceImpl" />
-	</bean>
-	
-	<!-- <bean id="timeZone" class="java.util.TimeZone" factory-method="getTimeZone">
-        <constructor-arg value="GMT" />
-    </bean>  -->
     <bean id="timeZone" class="com.mfino.util.ConfigurationUtil" factory-method="getTimeZone">
     	<constructor-arg><ref bean="sessionFactory"/></constructor-arg>
 		<constructor-arg><ref bean="hibernateSessionHolder"/></constructor-arg>
     </bean>
     
-    <bean id="pendingClearanceServiceImpl" class="com.mfino.mce.backend.impl.PendingClearanceServiceDefaultImpl">
-		<property name="bankService" ref="bankServiceDefaultImpl" />
-		<property name="coreDataWrapper" ref="coreDataWrapper"/>
-	</bean>
-    
-	<bean id="pctClearanceImpl"	class="com.mfino.mce.backend.impl.PendingCommodityTransferClearanceImpl">
-		<property name="bankService" ref="bankServiceDefaultImpl" />
-		<property name="coreDataWrapper" ref="coreDataWrapper" />
-		<property name="sessionFactory" ref="sessionFactory" />
-		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
-		<property name="smsService" ref="smsServiceImpl"/>
-	</bean>
-
 	<bean id="transferPCT"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="pctClearanceImpl" />
+		<property name="targetObject" ref="pctClearanceService" />
 		<property name="targetMethod" value="movePendingToComplete" />
 		<property name="concurrent" value="false" />
 	</bean>
 	<bean id="transferPCTTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="transferPCT" />
 		<property name="timeZone" ref="timeZone" />
-		<!-- runs every day 1 AM -->
 		<property name="cronExpression" value="0 0/5 * * * ?" />
-	</bean>
-	
-	<bean id="bulkResolveService"
-		class="com.mfino.mce.backend.impl.BulkPendingResolveServiceImpl">
-		<property name="pendingClearanceService" ref="pendingClearanceServiceImpl" />
-		<property name="coreDataWrapper" ref="coreDataWrapper" />
-		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
 	<bean id="bulkResolvePCT"
@@ -151,7 +75,7 @@
 		<property name="triggers">
 			<list>
 			 <ref bean="transferPCTTrigger"/>
-			 <ref bean="bulkResolvePCTTrigger"/>
+			 <!-- ref bean="bulkResolvePCTTrigger"/-->
 			</list>
 		</property>
 	</bean>
