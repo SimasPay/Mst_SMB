@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberStatusEventDAO;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SubscriberStatusEvent;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -48,6 +49,7 @@ public class SubscriberStatusEventServiceImpl implements
 		SubscriberStatusEvent subscriberExistingEvent = getSubscriberStatusEventForSubscriber(subscriber,isOnline);
 		SubscriberStatusEventDAO statusEventDAO = DAOFactory.getInstance()
 				.getSubscriberStatusEventDAO();
+		SubscriberMDN subMDN = subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
 		if (subscriberExistingEvent != null) {
 			if (subscriberExistingEvent.getProcessingStatus()) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
@@ -57,7 +59,8 @@ public class SubscriberStatusEventServiceImpl implements
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(subscriber
 												.getStatus()));
-				if (subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
+				if (subMDN!=null && subMDN.getIsForceCloseRequested()!=null && subMDN.getIsForceCloseRequested() &&
+						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
 				statusNextEvent.setPickUpDateTime(nextTimeStamp);
 				statusNextEvent.setStatusOnPickup(subscriber.getStatus());
@@ -70,7 +73,8 @@ public class SubscriberStatusEventServiceImpl implements
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(subscriber
 												.getStatus()));
-				if (subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
+				if (subMDN!=null && subMDN.getIsForceCloseRequested()!=null && subMDN.getIsForceCloseRequested() &&
+						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
 				subscriberExistingEvent.setPickUpDateTime(nextTimeStamp);
 				subscriberExistingEvent.setStatusOnPickup(subscriber
@@ -85,7 +89,8 @@ public class SubscriberStatusEventServiceImpl implements
 							+ subscriberStatusTimeService
 									.getTimeToNextStatus(subscriber
 											.getStatus()));
-			if (subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
+			if (subMDN!=null && subMDN.getIsForceCloseRequested()!=null && subMDN.getIsForceCloseRequested() &&
+					subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 				nextTimeStamp = new Timestamp();
 			statusNextEvent.setPickUpDateTime(nextTimeStamp);
 			statusNextEvent.setStatusOnPickup(subscriber.getStatus());
