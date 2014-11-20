@@ -282,6 +282,12 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			s.setRestrictions(e.getMDNRestrictions());
 			s.getSubscriber().setRestrictions(e.getMDNRestrictions());
 		}
+		if (e.getIsForceCloseRequested() != null && e.getIsForceCloseRequested().booleanValue()) {
+			if(!e.getIsForceCloseRequested().equals(s.getIsForceCloseRequested())){
+        		log.info("Subscriber:"+ID+" Force Close Requested field is updated to " + userService.getCurrentUser().getUsername() + " by user:"+getLoggedUserNameWithIP());
+        	}
+			s.setIsForceCloseRequested(e.getIsForceCloseRequested());
+		}
 		if (e.getStatus() != null) {
 			if(!e.getStatus().equals(s.getStatus())){
         		log.info("Subscriber MDN:"+ID+" Status updated to "+e.getStatus()+" by user:"+getLoggedUserNameWithIP());
@@ -457,12 +463,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			s.getSubscriber().setAppliedBy(userService.getCurrentUser().getUsername());
 			s.getSubscriber().setAppliedTime(new Timestamp());
 		}
-		if (e.getIsForceCloseRequested() != null && e.getIsForceCloseRequested().booleanValue()) {
-			if(!e.getIsForceCloseRequested().equals(s.getIsForceCloseRequested())){
-        		log.info("Subscriber:"+ID+" Force Close Requested field is updated to " + userService.getCurrentUser().getUsername() + " by user:"+getLoggedUserNameWithIP());
-        	}
-			s.setIsForceCloseRequested(e.getIsForceCloseRequested());
-		}
+
 		// if (e.getDompetMerchant() != null) {
 		// s.getSubscriber().setDompetMerchant(e.getDompetMerchant());
 		// }
