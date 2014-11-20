@@ -26,5 +26,8 @@
 		<record name="UnRegisteredTxnInfo">
 			<field name="DigestedPIN"/>
 		</record>
+		<record name="RetiredCardPANInfo">
+			<field name="CardPAN" unique="Yes"/>
+		</record>
 	</records>
 </encrypt>
