@@ -1,0 +1,1 @@
+ALTER TABLE bill_payments ADD Info4 varchar2(255 char) DEFAULT NULL;

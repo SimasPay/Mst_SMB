@@ -1,0 +1,1 @@
+ALTER TABLE bill_payments ADD (Info5 varchar(255 char), OperatorMessage varchar(255 char));

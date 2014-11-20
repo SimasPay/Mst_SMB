@@ -1,0 +1,1 @@
+ALTER TABLE subscriber_favorite DROP constraint UNIQUE_fav_label;

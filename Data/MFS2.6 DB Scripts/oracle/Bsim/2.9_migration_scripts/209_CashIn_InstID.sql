@@ -1,0 +1,1 @@
+ALTER TABLE integration_summary ADD InstitutionID VARCHAR(225 char) DEFAULT NULL;
