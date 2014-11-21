@@ -40,6 +40,7 @@
 	<osgi:reference id="groupService" bean-name="GroupServiceImpl" interface="com.mfino.service.GroupService" />
 	<osgi:reference id="subGroupService" bean-name="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService" />
 	<osgi:reference id="mFinoServiceProviderService" bean-name="MfinoServiceProviderServiceImpl" interface="com.mfino.service.MfinoServiceProviderService" />
+	<osgi:reference id="notificationMessageParserService" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService" />
 		
 	<bean id="atmRequestHandler" class="com.mfino.bsim.iso8583.handlers.ATMRequestHandler" factory-method="createInstance">
 		<property name="htm" ref="txManager" />
@@ -47,6 +48,7 @@
 		<property name="pocketService" ref="pocketService" />
 		<property name="subscriberService" ref="subscriberService" />
 		<property name="smsService" ref="smsService" />
+		<property name="notificationMessageParserService" ref="notificationMessageParserService"/>
 	</bean>
 	<bean id="atmRegistrationHandler" class="com.mfino.bsim.iso8583.handlers.ATMRegistrationHandler" factory-method="createInstance">
 		<property name="htm" ref="txManager" />
