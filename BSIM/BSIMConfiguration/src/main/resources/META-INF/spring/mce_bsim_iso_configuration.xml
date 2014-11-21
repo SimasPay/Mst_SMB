@@ -127,7 +127,7 @@
 		<property name="deployFolder" value="jpos/deploy/" />
 		<property name="muxName" value="bsmmux" />
 		<property name="timeout" value="50000" />
-		<property name="sleepOnNoReply" value="10000" />
+		<property name="sleepOnNoReply" value="25000" />
 		<property name="channelName" value="bsm" />
 		<property name="isoUtil" ref="bsimISOUtil" />
 		<property name="echoInterval" value="300000" />
