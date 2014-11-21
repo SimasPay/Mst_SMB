@@ -110,6 +110,26 @@ mFino.widget.ReportSearchForm = function(config) {
 												columnWidth : 0.5,
 												layout : 'form',
 												labelWidth : 80,
+												itemId : "email",
+												items : [ {
+													xtype : 'textfield',
+													allowDecimals : false,
+													fieldLabel : _("Email"),
+													labelSeparator : '',
+													maxLength : 40,
+													minValue : 0,
+													name : CmFinoFIX.message.JSReport.Email._name,
+													anchor : '80%',
+													listeners : {
+														specialkey : this.enterKeyHandler
+																.createDelegate(this)
+													}
+												} ]
+											},
+											{
+												columnWidth : 0.5,
+												layout : 'form',
+												labelWidth : 80,
 												itemId : 'fromUpdatedTime',
 												items : [ {
 													xtype : 'datefield',
@@ -676,6 +696,7 @@ Ext
 						this.hideItems();
 						this.find('itemId', 'fromDate')[0].show();
 						this.find('itemId', 'toDate')[0].show();
+						this.find('itemId','email')[0].show();
 						if (value === "SubscriberReport-Detailed"
 								|| value === "SubscriberReport-Basic"
 								|| value === "SubscriberDetailsReport") {
@@ -847,6 +868,8 @@ Ext
 								Ext.ux.Toast.msg(_("Error"), _("From Date can't be empty"), 5);
 							} else if (!values.ReportEndDate) {
 								Ext.ux.Toast.msg(_("Error"), _("To Date can't be empty"), 5);
+							}  else if (!values.Email) {
+								Ext.ux.Toast.msg(_("Error"), _("Email can't be empty"), 5);
 							} else if (this.find('itemId', 'start')[0]
 									.getValue() <= this.find('itemId', 'end')[0]
 									.getValue()) {

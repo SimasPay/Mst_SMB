@@ -3689,6 +3689,7 @@
 			<field name="DestPartnerCode" required="N" />
 			<field name="ChannelName" required="N" />
 			<field name="BankRetrievalReferenceNumber" required="N" />
+			<field name="Email" required="N" />
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="Lable" required="N"/> 
 				<field name="Index" required="N"/> 

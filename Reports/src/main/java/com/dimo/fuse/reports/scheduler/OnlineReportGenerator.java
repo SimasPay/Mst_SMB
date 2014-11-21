@@ -64,7 +64,8 @@ public class OnlineReportGenerator {
 			for(String extension : REPORT_FILE_EXTENSIONS){
 				attachments.add(new File(fileNameWithoutExtension + "." + extension));
 			}
-			sendMail(ReportSchedulerProperties.getEmailRecipients(), reportName, "", attachments);
+			String emailRecepients = ReportSchedulerProperties.getEmailRecipients()+","+reportParams.getEmail();
+			sendMail(emailRecepients, reportName, "", attachments);
 		}		
 	}	
 

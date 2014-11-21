@@ -154,6 +154,9 @@ public class ReportService  {
 		if(reportParameters.getReferenceNumber() != null){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_REFERENCENUMBER, reportParameters.getReferenceNumber().toString()));
 		}
+		if(reportParameters.getEmail() != null){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_EMAIL, reportParameters.getEmail().toString()));
+		}
 		return qparams;
 	}
 	

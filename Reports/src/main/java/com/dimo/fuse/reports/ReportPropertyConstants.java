@@ -67,5 +67,6 @@ public class ReportPropertyConstants {
 	public static final String ADMINAPP_DEST_PARTNER_CODE ="destPartnerCode";
 	public static final String ADMINAPP_CHANNEL_NAME ="channelName";
 	public static final String ADMINAPP_BANK_RRN ="bankRRN";
+	public static final String ADMINAPP_EMAIL = "email";
 	
 }

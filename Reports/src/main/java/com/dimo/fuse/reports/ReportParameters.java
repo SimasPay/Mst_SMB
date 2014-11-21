@@ -84,6 +84,8 @@ public class ReportParameters {
 	
 	private String bankRRN;
 	
+	private String email;
+
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -379,4 +381,11 @@ public class ReportParameters {
 		this.bankRRN = bankRRN;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }
