@@ -219,7 +219,8 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			if(includeParnterInSLC == false){
 				query.setOnlySubscribers(true);
 			}
-			List<SubscriberStatusEvent> statusEventList=subscriberStatusEventService.getSubscriberStatusEvent(includeParnterInSLC);
+			List<SubscriberStatusEvent> statusEventList=subscriberStatusEventService.getSubscriberStatusEvent(includeParnterInSLC, status);
+			log.info("No of SubscriberStatusEvent entries for updateSubscriberStatus: " + statusEventList!=null?statusEventList.size()+"":null);
 //			List<SubscriberMDN> lst = subscriberMdnService.getByQuery(query);
 			if (CollectionUtils.isNotEmpty(statusEventList)) {
 				for (SubscriberStatusEvent subscriberStatusEvent : statusEventList) {
@@ -290,7 +291,8 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			query.setStatusIn(status);
 			//query.setOnlySubscribers(true);
 			query.setIsForceCloseRequested(Boolean.TRUE);
-			List<SubscriberStatusEvent> statusEventList=subscriberStatusEventService.getSubscriberStatusEvent(true);
+			List<SubscriberStatusEvent> statusEventList=subscriberStatusEventService.getSubscriberStatusEvent(true, status);
+			log.info("No of SubscriberStatusEvent entries for forceGraveSubscribers: " + statusEventList!=null?statusEventList.size()+"":null);
 
 //			List<SubscriberMDN> lst = subscriberMdnService.getByQuery(query);
 			if (CollectionUtils.isNotEmpty(statusEventList)) {

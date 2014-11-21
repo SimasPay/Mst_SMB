@@ -29,10 +29,10 @@ public class SubscriberStatusEventServiceImpl implements
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public List<SubscriberStatusEvent> getSubscriberStatusEvent(
-			boolean includeParnterInSLC) {
+			boolean includeParnterInSLC, Integer[] statuses) {
 		SubscriberStatusEventDAO statusEventDAO = DAOFactory.getInstance()
 				.getSubscriberStatusEventDAO();
-		return statusEventDAO.getSubscriberStatusEvent(includeParnterInSLC);
+		return statusEventDAO.getSubscriberStatusEvent(includeParnterInSLC, statuses);
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)

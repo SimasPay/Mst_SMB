@@ -10,7 +10,7 @@ import com.mfino.fix.CmFinoFIX;
 
 public class SubscriberStatusEventDAO extends BaseDAO<SubscriberStatusEvent> {
 
-	public List<SubscriberStatusEvent> getSubscriberStatusEvent(boolean includeParnterInSLC) {
+	public List<SubscriberStatusEvent> getSubscriberStatusEvent(boolean includeParnterInSLC, Integer[] statuses) {
 
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.lt(
@@ -19,6 +19,10 @@ public class SubscriberStatusEventDAO extends BaseDAO<SubscriberStatusEvent> {
 		criteria.add(Restrictions.eq(
 				CmFinoFIX.CRSubscriberStatusEvent.FieldName_ProcessingStatus,
 				false));
+
+        if (statuses != null && statuses.length > 0) 
+            criteria.add(Restrictions.in(CmFinoFIX.CRSubscriberStatusEvent.FieldName_StatusOnPickup, statuses));
+
 		if(!includeParnterInSLC){
 			criteria.add(Restrictions.eq(
 					CmFinoFIX.CRSubscriberStatusEvent.FieldName_SubscriberType,

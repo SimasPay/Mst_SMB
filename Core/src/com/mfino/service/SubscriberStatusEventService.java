@@ -8,7 +8,7 @@ import com.mfino.hibernate.Timestamp;
 
 public interface SubscriberStatusEventService {
 
-	public List<SubscriberStatusEvent> getSubscriberStatusEvent(boolean includeParnterInSLC);
+	public List<SubscriberStatusEvent> getSubscriberStatusEvent(boolean includeParnterInSLC, Integer[] statuses);
 	
 	public void save(SubscriberStatusEvent subscriberStatusEvent);
 	
