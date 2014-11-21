@@ -19,6 +19,7 @@
 	    http://activemq.apache.org/schema/core 
 	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
 	    
+	<osgi:reference id="fixListenerService" interface="com.mfino.mce.fix.FIXMessageListenerService"/>
 	    
     <bean name="q2MUXInitializer" class="com.mfino.mce.iso.jpos.Q2MUXInitializer" init-method="init" destroy-method="stop">
     	<property name="deployFolder" value="jpos/deploy/"/>
