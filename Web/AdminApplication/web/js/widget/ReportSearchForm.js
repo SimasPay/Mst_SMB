@@ -115,6 +115,7 @@ mFino.widget.ReportSearchForm = function(config) {
 													xtype : 'textfield',
 													allowDecimals : false,
 													fieldLabel : _("Email"),
+													vtype: 'email',
 													labelSeparator : '',
 													maxLength : 40,
 													minValue : 0,
