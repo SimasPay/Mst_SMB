@@ -74,7 +74,7 @@ public class JPOSManager {
 		this.echoSender.setTimeout(timeout);
 		
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(sleepOnNoReply);
 			observer.start();
 			log.info("Started sign on Observer " + muxName);
 			this.echoSender.start();

@@ -5,9 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -51,14 +49,16 @@ public class ExcelReportGenerator extends ReportGenerator {
 	@Override
 	public void createDocument() {
 
-		String extension = FilenameUtils.getExtension(getReportFilePath()
-				.getName());
+//		String extension = FilenameUtils.getExtension(getReportFilePath()
+//				.getName());
 		log.info("Creating an excel report " + getReportFilePath());
-		if (extension.contains("xlsx")) {
-			workbook = new SXSSFWorkbook();
-		} else {
-			workbook = new HSSFWorkbook();
-		}
+//		if (extension.contains("xlsx")) {
+//			workbook = new SXSSFWorkbook();
+//		} else {
+//			workbook = new HSSFWorkbook();
+//		}
+		workbook = new SXSSFWorkbook();
+		
 		if (reportProperties
 				.getProperty(ReportPropertyConstants.NAME_OF_THE_REPORT) != null) {
 			sheet = workbook.createSheet(reportProperties

@@ -11,10 +11,10 @@ mFino.widget.ReportSearchForm = function(config) {
 					localConfig,
 					{
 						layout : 'form',
-						autoScroll : true,
+						//autoScroll : true,
 						frame : true,
 						title : _('Report '),
-						height : 270,
+						height : 370,
 						items : [
 								{
 									xtype : 'fieldset',
@@ -539,7 +539,7 @@ mFino.widget.ReportSearchForm = function(config) {
 												items : [ {
 													xtype : 'textfield',
 													allowDecimals : false,
-													fieldLabel : _("ReferenceNo"),
+													fieldLabel : _("Reference ID"),
 													labelSeparator : '',
 													maxLength : 13,
 													minValue : 0,
@@ -559,7 +559,7 @@ mFino.widget.ReportSearchForm = function(config) {
 												items : [ {
 													xtype : 'textfield',
 													allowDecimals : false,
-													fieldLabel : _("SourcePartnerCode"),
+													fieldLabel : _("Source PartnerCode"),
 													labelSeparator : '',
 													maxLength : 13,
 													minValue : 0,
@@ -579,7 +579,7 @@ mFino.widget.ReportSearchForm = function(config) {
 												items : [ {
 													xtype : 'textfield',
 													allowDecimals : false,
-													fieldLabel : _("DestPartnerCode"),
+													fieldLabel : _("Dest PartnerCode"),
 													labelSeparator : '',
 													maxLength : 13,
 													minValue : 0,
@@ -599,7 +599,7 @@ mFino.widget.ReportSearchForm = function(config) {
 												items : [ {
 													xtype : 'textfield',
 													allowDecimals : false,
-													fieldLabel : _("ChannelName"),
+													fieldLabel : _("Channel Name"),
 													labelSeparator : '',
 													maxLength : 13,
 													minValue : 0,
