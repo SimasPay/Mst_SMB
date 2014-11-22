@@ -11,7 +11,7 @@ mFino.widget.ReportSearchForm = function(config) {
 					localConfig,
 					{
 						layout : 'form',
-						//autoScroll : true,
+						autoScroll : true,
 						frame : true,
 						title : _('Report '),
 						height : 370,
@@ -19,7 +19,8 @@ mFino.widget.ReportSearchForm = function(config) {
 								{
 									xtype : 'fieldset',
 									autoHeight : true,
-									layout : 'form',
+									layout : 'column',
+									width : 895,									
 									items : [ {
 										columnWidth : 1,
 										align : 'centre',
@@ -67,7 +68,7 @@ mFino.widget.ReportSearchForm = function(config) {
 									xtype : 'fieldset',
 									title : 'Report Parameters',
 									autoHeight : true,
-									// width: 920,
+									width: 895,
 									layout : 'column',
 									items : [
 											{
