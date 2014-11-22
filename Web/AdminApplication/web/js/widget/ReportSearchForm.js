@@ -11,6 +11,7 @@ mFino.widget.ReportSearchForm = function(config) {
 					localConfig,
 					{
 						layout : 'form',
+						autoScroll : true,
 						frame : true,
 						title : _('Report '),
 						height : 270,

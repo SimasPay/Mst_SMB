@@ -126,7 +126,7 @@ mFino.page.report = function(config){
 	                	 if(reportName!=""){
 	                	 queryString = "dType=report";
 	                	 queryString += "&reportName="+reportName;
-	                	 queryString += "&format="+".xls";
+	                	 queryString += "&format="+".xlsx";
 	                	 var URL = "reportdownload.htm?" + queryString;
 	                     window.open(URL,'mywindow','width=400,height=200');
 	                	 }else{
