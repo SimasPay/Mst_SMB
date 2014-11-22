@@ -159,7 +159,8 @@ public class SubscriberMDNExcelView extends AbstractExcelView {
         subMdn.setaction(CmFinoFIX.JSaction_Select);
         subMdn.setSubscriberSearch(true);
         subMdn.setlimit(ConfigurationUtil.getExcelRowLimit());
-
+        subMdn.setIsExcelDownload(true);
+        
         try {
             HSSFSheet sheet = workbook.createSheet("Subscriber Excel Document");
             sheet.setDefaultColumnWidth(16);

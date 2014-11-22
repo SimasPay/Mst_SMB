@@ -44,6 +44,7 @@
 		<message name="JSBase" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y">
 			<component name="JSParams" required="N" />
 			<component name="JSListFields" required="N" />
+			<field name="IsExcelDownload" required="N" default="false" />
 		</message>
 		<message name="JSBackEndBase" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="MSPID" required="Y" default="1" />
@@ -25683,6 +25684,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8181" name="IsOnlineReport" type="BOOLEAN" />
 	<field number="8182" name="IsAdvice" type="BOOLEAN" />
 	<field number="8183" name="CashinFirstTimeID" type="RecordID" />
+	<field number="8184" name="IsExcelDownload" type="BOOLEAN" />
 	</fields>
     <primitives>
 		<dbtype name="mysql">

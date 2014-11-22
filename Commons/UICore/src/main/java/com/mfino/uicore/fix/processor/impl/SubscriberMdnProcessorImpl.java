@@ -586,7 +586,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 	}
 
-	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads) {
+	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Boolean isExcelDownload) {
 		entry.setID(s.getID());
 
 		if (s.getActivationTime() != null) {
@@ -630,15 +630,17 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		if (s.getLastUpdateTime() != null) {
 			entry.setLastUpdateTime(s.getLastUpdateTime());
 		}
-		if(s.getSubscriber().getUpgradableKYCLevel()!=null&&
-				(CmFinoFIX.UpgradeState_Upgradable.equals(s.getSubscriber().getUpgradeState())
-						||CmFinoFIX.UpgradeState_Rejected.equals(s.getSubscriber().getUpgradeState()))){
-			KYCLevel kycLevel=kyclevelDao.getByKycLevel(s.getSubscriber().getUpgradableKYCLevel());
-			entry.setUpgradableKYCLevelText(kycLevel.getKYCLevelName());
-			entry.setKYCLevel(kycLevel.getKYCLevel());
-		}else if (s.getSubscriber().getKYCLevelByKYCLevel()!=null){
-			entry.setKYCLevel(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevel());
-			entry.setKYCLevelText(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevelName());
+		if(!isExcelDownload) {
+			if(s.getSubscriber().getUpgradableKYCLevel()!=null&&
+					(CmFinoFIX.UpgradeState_Upgradable.equals(s.getSubscriber().getUpgradeState())
+							||CmFinoFIX.UpgradeState_Rejected.equals(s.getSubscriber().getUpgradeState()))){
+				KYCLevel kycLevel=kyclevelDao.getByKycLevel(s.getSubscriber().getUpgradableKYCLevel());
+				entry.setUpgradableKYCLevelText(kycLevel.getKYCLevelName());
+				entry.setKYCLevel(kycLevel.getKYCLevel());
+			}else if (s.getSubscriber().getKYCLevelByKYCLevel()!=null){
+				entry.setKYCLevel(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevel());
+				entry.setKYCLevelText(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevelName());
+			}
 		}
 		if (s.getMDN() != null) {
 			entry.setMDN(s.getMDN());
@@ -746,14 +748,16 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		
 				}
 				
-				Pocket p = subscriberService.getDefaultPocket(s.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
-				entry.setDompetMerchant(Boolean.FALSE);
-				if (p != null) {
-					if ((p.getPocketTemplate().getAllowance().intValue() & CmFinoFIX.PocketAllowance_MerchantDompet.intValue()) > 0) {
-						entry.setDompetMerchant(Boolean.TRUE);
-					}
-					if( p.getCardPAN() != null ) {
-						entry.setAccountNumber(p.getCardPAN());
+				if(!isExcelDownload) {
+					Pocket p = subscriberService.getDefaultPocket(s.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
+					entry.setDompetMerchant(Boolean.FALSE);
+					if (p != null) {
+						if ((p.getPocketTemplate().getAllowance().intValue() & CmFinoFIX.PocketAllowance_MerchantDompet.intValue()) > 0) {
+							entry.setDompetMerchant(Boolean.TRUE);
+						}
+						if( p.getCardPAN() != null ) {
+							entry.setAccountNumber(p.getCardPAN());
+						}
 					}
 				}
 				if(s.getIDType()!=null){
@@ -1164,7 +1168,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				
 				mdnDao.save(s);
-				updateMessage(s, e, saf, ap, ads);
+				updateMessage(s, e, saf, ap, ads,false);
 
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
@@ -1290,7 +1294,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(! s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 					saf=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				}
-				updateMessage(s, entry, saf, ap, ads);
+				updateMessage(s, entry, saf, ap, ads,realMsg.getIsExcelDownload());
 				realMsg.getEntries()[i] = entry;
 				log.info("Subscriber:"+s.getID()+" details viewed completed by user:"+getLoggedUserNameWithIP());
 			}
@@ -1523,7 +1527,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
-				updateMessage(mdn, e,saf,ap,ads);
+				updateMessage(mdn, e,saf,ap,ads, false);
 			}
 
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);
