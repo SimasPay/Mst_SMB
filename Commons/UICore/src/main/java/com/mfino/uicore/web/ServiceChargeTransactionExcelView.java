@@ -117,6 +117,12 @@ public class ServiceChargeTransactionExcelView extends AbstractExcelView {
         
         HSSFCell header25 = getCell(sheet, currentRow, 24);
         setText(header25, "Operator Response Code");
+        
+        HSSFCell header26 = getCell(sheet, currentRow, 25);
+        setText(header26, "Source Account");
+        
+        HSSFCell header27 = getCell(sheet, currentRow, 26);
+        setText(header27, "Bank Code Destination");        
 
     }
 
@@ -185,6 +191,9 @@ public class ServiceChargeTransactionExcelView extends AbstractExcelView {
     	{
     		row.createCell(24).setCellValue("");
     	}
+    	row.createCell(25).setCellValue(jsSCTL.getSourceAccountNumber());
+    	row.createCell(26).setCellValue(jsSCTL.getDestBankCode());
+    	
     }
 
     @SuppressWarnings("rawtypes")

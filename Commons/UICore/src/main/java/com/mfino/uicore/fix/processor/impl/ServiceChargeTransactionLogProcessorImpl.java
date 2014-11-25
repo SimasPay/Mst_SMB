@@ -40,6 +40,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.IntegrationSummary;
+import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Service;
@@ -52,6 +53,7 @@ import com.mfino.fix.CmFinoFIX.CMJSServiceChargeTransactions;
 import com.mfino.fix.CmFinoFIX.CMJSServiceChargeTransactions.CGEntries;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.service.EnumTextService;
+import com.mfino.service.IBTService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
@@ -85,6 +87,10 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	@Autowired
 	@Qualifier("UserServiceImpl")
 	private UserService userService;
+	
+	@Autowired
+	@Qualifier("IBTServiceImpl")
+	private IBTService ibtService;	
 
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -319,6 +325,14 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			entry.setTransactionTypeID(sctl.getTransactionTypeID());
 			transactionType = ttDao.getById(sctl.getTransactionTypeID());
 			entry.setTransactionName(transactionType.getDisplayName());
+
+			if("InterBankTransfer".equals(transactionType.getTransactionName()))
+			{
+				InterbankTransfer ibt = ibtService.getBySctlId(sctl.getID());
+				if (ibt != null) {
+					entry.setDestBankCode(ibt.getDestBankCode());
+				}
+			}			
 		}
 		if(sctl.getServiceID()!=null){
 			entry.setServiceID(sctl.getServiceID());
@@ -406,6 +420,16 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		if(sctl.getDescription() != null){
 			entry.setDescription(sctl.getDescription());
 		}
+		
+
+	    if(sctl.getCommodityTransferID() != null){
+	    	CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
+	    	CommodityTransfer ct = ctDao.getById(sctl.getCommodityTransferID());
+	    	if(ct != null){
+	    		entry.setSourceAccountNumber(ct.getSourceCardPAN());
+	    	}
+	    }		
+		
 		setAdditionanInfo(entry,sctl,transactionType,service, sctlBpMap);
 		setIntegrationSummaryInfo(entry,sctl, transactionType, sctlIsMap);
 		entry.setIsReverseAllowed(checkIsTxnReverseAllowed(sctl, transactionType, maxNoOfDaysToReverseTxn));

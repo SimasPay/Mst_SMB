@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PocketDAO;
@@ -39,10 +41,13 @@ import com.mfino.service.PocketTemplateService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberServiceExtended;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.ApproveRejectSubscriberProcessor;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.DateUtil;
+import com.mfino.util.MfinoUtil;
 import com.mfino.util.SubscriberSyncErrors;
 
 /**
@@ -57,6 +62,10 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 	private static PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 	private static KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
 	private  boolean isEMoneyPocketRequired;
+	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 
 	@Autowired
 	@Qualifier("SubscriberServiceImpl")
@@ -258,6 +267,40 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			 smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); //use thread pool to send message
 			 notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 			 emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
+			 
+			 if(!ConfigurationUtil.getSendOTPBeforeApproval()){
+				Integer OTPLength = systemParametersService.getOTPLength();
+				String oneTimePin = MfinoUtil.generateOTP(OTPLength);
+				String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
+				subscriberMDN.setOTP(digestPin1);
+				subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+				subscriberMdnDao.save(subscriberMDN);
+				
+				log.info("new OTP set for " + subscriberMDN.getID() + " by user " + getLoggedUserNameWithIP());
+				NotificationWrapper smsNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
+				smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
+				smsNotificationWrapper.setLanguage(subscriber.getLanguage());
+				smsNotificationWrapper.setFirstName(subscriber.getFirstName());
+            	smsNotificationWrapper.setLastName(subscriber.getLastName());
+				String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
+				String mdn2 = subscriberMDN.getMDN();
+				smsService.setDestinationMDN(mdn2);
+				smsService.setMessage(smsMessage);
+				smsService.setNotificationCode(smsNotificationWrapper.getCode());
+				smsService.asyncSendSMS();
+				if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
+					NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
+					emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
+					emailNotificationWrapper.setLanguage(subscriber.getLanguage());
+					emailNotificationWrapper.setFirstName(subscriber.getFirstName());
+					emailNotificationWrapper.setLastName(subscriber.getLastName());
+					String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);
+					String to=subscriber.getEmail();
+					String name=subscriber.getFirstName();
+					String sub = ConfigurationUtil.getOTPMailSubsject();
+					mailService.asyncSendEmail(to, name, sub, emailMessage);
+				}
+			 }			 
 		}catch (Exception excp) {
 			log.error("failed to generate message:",excp);
 		}

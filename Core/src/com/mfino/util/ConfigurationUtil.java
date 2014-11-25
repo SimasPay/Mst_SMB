@@ -312,6 +312,7 @@ public class ConfigurationUtil {
 		pdfHistoryDateFormat("mfino.transaction.history.pdf.datetime.format","dd/MM/yyyy"),
 		ReportFooter("mfino.report.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved"),
 		PromoImagePath("promo.image.path","images/promoImage.png"),
+		SendOTPBeforeApproval("mfino.send.otp.before.approval", "true"),
 		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd");
 		
 		
@@ -1242,4 +1243,8 @@ public class ConfigurationUtil {
 	public static String getDateFormatInReportFileNames() { 
 	 	return get(ConfigurationKey.DateFormatInReportFileNames); 
 	 }
+	
+	public static boolean getSendOTPBeforeApproval() {
+		return getBoolean(ConfigurationKey.SendOTPBeforeApproval);
+	}
 }

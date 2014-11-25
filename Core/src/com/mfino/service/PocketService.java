@@ -104,4 +104,6 @@ public interface PocketService {
 	public Pocket getNFCPocket(SubscriberMDN subscriberMDN, String cardPAN);
 
     public Pocket getPocketAferEvicting(Pocket pocket);
+    
+	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist);    
 }

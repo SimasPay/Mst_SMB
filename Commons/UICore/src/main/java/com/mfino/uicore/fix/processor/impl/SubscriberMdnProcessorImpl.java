@@ -1424,38 +1424,43 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				} else{
 					saf=null;
 				}
-				//OTP
-				Integer OTPLength = systemParametersService.getOTPLength();
-				String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-				String digestPin1 = MfinoUtil.calculateDigestPin(mdn.getMDN(), oneTimePin);
-				mdn.setOTP(digestPin1);
-				mdn.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
-
 				try {
-					mdnDao.save(mdn);
-					log.info("new OTP set for " + mdn.getID() + " by user " + getLoggedUserNameWithIP());
-					NotificationWrapper smsNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
-					smsNotificationWrapper.setDestMDN(mdn.getMDN());
-					smsNotificationWrapper.setLanguage(mdn.getSubscriber().getLanguage());
-					smsNotificationWrapper.setFirstName(mdn.getSubscriber().getFirstName());
-	            	smsNotificationWrapper.setLastName(mdn.getSubscriber().getLastName());
-					String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
-					String mdn2 = mdn.getMDN();
-					smsService.setDestinationMDN(mdn2);
-					smsService.setMessage(smsMessage);
-					smsService.setNotificationCode(smsNotificationWrapper.getCode());
-					smsService.asyncSendSMS();
-					if(((e.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && e.getEmail() != null){
-						NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
-						emailNotificationWrapper.setDestMDN(mdn.getMDN());
-						emailNotificationWrapper.setLanguage(mdn.getSubscriber().getLanguage());
-						emailNotificationWrapper.setFirstName(mdn.getSubscriber().getFirstName());
-						emailNotificationWrapper.setLastName(mdn.getSubscriber().getLastName());
-						String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);
-						String to=s.getEmail();
-						String name=s.getFirstName();
-						String sub = ConfigurationUtil.getOTPMailSubsject();
-						mailService.asyncSendEmail(to, name, sub, emailMessage);
+					if (ConfigurationUtil.getSendOTPBeforeApproval()) {
+						//OTP
+						Integer OTPLength = systemParametersService.getOTPLength();
+						String oneTimePin = MfinoUtil.generateOTP(OTPLength);
+						String digestPin1 = MfinoUtil.calculateDigestPin(mdn.getMDN(), oneTimePin);
+						mdn.setOTP(digestPin1);
+						mdn.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+
+						mdnDao.save(mdn);
+						log.info("new OTP set for " + mdn.getID() + " by user " + getLoggedUserNameWithIP());
+						NotificationWrapper smsNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
+						smsNotificationWrapper.setDestMDN(mdn.getMDN());
+						smsNotificationWrapper.setLanguage(mdn.getSubscriber().getLanguage());
+						smsNotificationWrapper.setFirstName(mdn.getSubscriber().getFirstName());
+		            	smsNotificationWrapper.setLastName(mdn.getSubscriber().getLastName());
+						String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
+						String mdn2 = mdn.getMDN();
+						smsService.setDestinationMDN(mdn2);
+						smsService.setMessage(smsMessage);
+						smsService.setNotificationCode(smsNotificationWrapper.getCode());
+						smsService.asyncSendSMS();
+						if(((e.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && e.getEmail() != null){
+							NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
+							emailNotificationWrapper.setDestMDN(mdn.getMDN());
+							emailNotificationWrapper.setLanguage(mdn.getSubscriber().getLanguage());
+							emailNotificationWrapper.setFirstName(mdn.getSubscriber().getFirstName());
+							emailNotificationWrapper.setLastName(mdn.getSubscriber().getLastName());
+							String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);
+							String to=s.getEmail();
+							String name=s.getFirstName();
+							String sub = ConfigurationUtil.getOTPMailSubsject();
+							mailService.asyncSendEmail(to, name, sub, emailMessage);
+						}
+					}
+					else {
+						mdnDao.save(mdn);
 					}
 				} catch (ConstraintViolationException t) {
 					handleUniqueConstraintViolation(t);

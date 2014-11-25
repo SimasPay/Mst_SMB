@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -230,4 +231,38 @@ public class PocketDAO extends BaseDAO<Pocket> {
 			getSession().evict(pocket);
 			return getById(pocket.getID());
 		}
+		
+	/**
+	 * Returns the Default bank pockets for the given MDN list
+	 * @param mdnlist
+	 * @return
+	 */
+	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist) {
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_IsDefault, Boolean.TRUE));
+		criteria.createAlias(CmFinoFIX.CRPocket.FieldName_PocketTemplate, "pt");
+		criteria.add(Restrictions.eq("pt."+ CmFinoFIX.CRPocketTemplate.FieldName_PocketType, CmFinoFIX.PocketType_BankAccount));
+		criteria.createAlias(CmFinoFIX.CRPocket.FieldName_SubscriberMDNByMDNID, "smdn");
+		addCriteriaIn("smdn."+ CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, mdnlist, criteria);
+        @SuppressWarnings("unchecked")
+        List<Pocket> results = criteria.list();
+
+        return results;
+	}
+	
+	 private void addCriteriaIn (String propertyName, List<?> list,Criteria criteria)
+	  {
+	    Disjunction or = Restrictions.disjunction();
+	    if(list.size()>1000)
+	    {        
+	      while(list.size()>1000)
+	      {
+	        List<?> subList = list.subList(0, 1000);
+	        or.add(Restrictions.in(propertyName, subList));
+	        list.subList(0, 1000).clear();
+	      }
+	    }
+	    or.add(Restrictions.in(propertyName, list));
+	    criteria.add(or);
+	  }	
 }

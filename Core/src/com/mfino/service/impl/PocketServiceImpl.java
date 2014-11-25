@@ -949,4 +949,19 @@ public class PocketServiceImpl implements PocketService{
 	public Pocket getPocketAferEvicting(Pocket pocket) {		
 		return pocketDao.getPocketAfterEvicting(pocket);
 	}
+	
+	/**
+	 * Returns the Default bank pockets for the given MDN list
+	 * @param mdnlist
+	 * @return
+	 */
+	@Transactional(readOnly=true, propagation = Propagation.REQUIRED)
+	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist) {
+		if (CollectionUtils.isNotEmpty(mdnlist)) {
+			return pocketDao.getDefaultBankPocketByMdnList(mdnlist);
+		}
+		else {
+			return null;
+		}
+	}
 }

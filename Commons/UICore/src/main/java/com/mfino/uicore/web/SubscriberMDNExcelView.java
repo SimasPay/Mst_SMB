@@ -7,13 +7,17 @@ package com.mfino.uicore.web;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -26,9 +30,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
+import com.mfino.domain.Pocket;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberMDN;
 import com.mfino.hibernate.Timestamp;
+import com.mfino.service.PocketService;
 import com.mfino.uicore.fix.processor.SubscriberMdnProcessor;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
@@ -41,6 +47,11 @@ import com.mfino.util.DateUtil;
 public class SubscriberMDNExcelView extends AbstractExcelView {
     private Logger log = LoggerFactory.getLogger(this.getClass());
     private DateFormat df = DateUtil.getExcelDateFormat();
+    private HashMap<Long, String> accountMap = null;
+    
+	@Autowired
+	@Qualifier("PocketServiceImpl")
+	private PocketService pocketService ;
     
     @Autowired
     @Qualifier("SubscriberMdnProcessorImpl")
@@ -62,19 +73,22 @@ public class SubscriberMDNExcelView extends AbstractExcelView {
         setText(header5, "Registration Time");
 
         HSSFCell header6 = getCell(sheet, currentRow, 5);
-        setText(header6, "Status");
+        setText(header6, "Account Number");
 
         HSSFCell header7 = getCell(sheet, currentRow, 6);
-        setText(header7, "Self Suspended");
+        setText(header7, "Status");
 
         HSSFCell header8 = getCell(sheet, currentRow, 7);
-        setText(header8, "Suspended");
+        setText(header8, "Self Suspended");
 
         HSSFCell header9 = getCell(sheet, currentRow, 8);
-        setText(header9, "Security Locked");
+        setText(header9, "Suspended");
 
         HSSFCell header10 = getCell(sheet, currentRow, 9);
-        setText(header10, "Absolute Locked");
+        setText(header10, "Security Locked");
+
+        HSSFCell header11 = getCell(sheet, currentRow, 10);
+        setText(header11, "Absolute Locked");
     }
 
     private void fillSubscriberMDNCells(CMJSSubscriberMDN.CGEntries smdn, HSSFRow row) {
@@ -87,29 +101,34 @@ public class SubscriberMDNExcelView extends AbstractExcelView {
             } else {
                 row.createCell(4).setCellValue("");
             }
-            row.createCell(5).setCellValue(smdn.getSubscriberStatusText());
+            
+            if (accountMap != null) {
+            	row.createCell(5).setCellValue(accountMap.get(smdn.getID()));
+            }
+            
+            row.createCell(6).setCellValue(smdn.getSubscriberStatusText());
             int restrictions = smdn.getMDNRestrictions();
             if ((restrictions & CmFinoFIX.SubscriberRestrictions_SelfSuspended) > 0) {
-                row.createCell(6).setCellValue(Boolean.TRUE);
-            } else {
-                row.createCell(6).setCellValue(Boolean.FALSE);
-            }
-
-            if ((restrictions & CmFinoFIX.SubscriberRestrictions_Suspended) > 0) {
                 row.createCell(7).setCellValue(Boolean.TRUE);
             } else {
                 row.createCell(7).setCellValue(Boolean.FALSE);
             }
-            if ((restrictions & CmFinoFIX.SubscriberRestrictions_SecurityLocked) > 0) {
+
+            if ((restrictions & CmFinoFIX.SubscriberRestrictions_Suspended) > 0) {
                 row.createCell(8).setCellValue(Boolean.TRUE);
             } else {
                 row.createCell(8).setCellValue(Boolean.FALSE);
             }
-
-            if ((restrictions & CmFinoFIX.SubscriberRestrictions_AbsoluteLocked) > 0) {
+            if ((restrictions & CmFinoFIX.SubscriberRestrictions_SecurityLocked) > 0) {
                 row.createCell(9).setCellValue(Boolean.TRUE);
             } else {
                 row.createCell(9).setCellValue(Boolean.FALSE);
+            }
+
+            if ((restrictions & CmFinoFIX.SubscriberRestrictions_AbsoluteLocked) > 0) {
+                row.createCell(10).setCellValue(Boolean.TRUE);
+            } else {
+                row.createCell(10).setCellValue(Boolean.FALSE);
             }
     }
 
@@ -168,14 +187,30 @@ public class SubscriberMDNExcelView extends AbstractExcelView {
             initializeWorkBook(sheet, currentRow);
             CMJSSubscriberMDN processedList = (CMJSSubscriberMDN) subscriberMdnProcessor.process(subMdn);
             if (processedList.getEntries() != null) {
-            for (CMJSSubscriberMDN.CGEntries subMdnLs : processedList.getEntries()) {
-                currentRow++;
-                HSSFRow row = sheet.createRow(currentRow);
-                fillSubscriberMDNCells(subMdnLs, row);
-            }
+            	getMDNAccountMap(processedList);
+	            for (CMJSSubscriberMDN.CGEntries subMdnLs : processedList.getEntries()) {
+	                currentRow++;
+	                HSSFRow row = sheet.createRow(currentRow);
+	                fillSubscriberMDNCells(subMdnLs, row);
+	            }
            }
         } catch (Exception error) {
             log.error("Error in Subscriber Excel Dowload ::" , error);
+        }
+    }
+    
+    private void getMDNAccountMap(CMJSSubscriberMDN processedList) {
+    	List<Long> mdnLst = new ArrayList<Long>();
+        for (CMJSSubscriberMDN.CGEntries subMdn : processedList.getEntries()) {
+        	mdnLst.add(subMdn.getID());
+        }
+        
+        List<Pocket> pocketLst = pocketService.getDefaultBankPocketByMdnList(mdnLst);
+        if (CollectionUtils.isNotEmpty(pocketLst)) {
+        	accountMap = new HashMap<Long, String>();
+        	for (Pocket p: pocketLst) {
+        		accountMap.put(p.getSubscriberMDNByMDNID().getID(), p.getCardPAN());
+        	}
         }
     }
 }
