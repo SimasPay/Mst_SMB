@@ -113,7 +113,7 @@ public class ReportService  {
 		}
 		if(StringUtils.isNotBlank(reportParameters.getTransactionStatus())){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONSTATUSID, reportParameters.getTransactionStatus()));
-			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONSTATUSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionsTransferStatus, CmFinoFIX.Language_English, reportParameters.getTransactionStatus())));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONSTATUSTEXT, entumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, reportParameters.getTransactionStatus())));
 		}
 		if(reportParameters.getDestinationPocketStatus() != null){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_DESTINATIONPOCKETSTATUSID, reportParameters.getDestinationPocketStatus().toString()));
