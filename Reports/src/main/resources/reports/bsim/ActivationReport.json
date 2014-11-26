@@ -30,7 +30,7 @@
 					s.firstname || ' ' || s.lastname,
 					sctl.SourceMDN,
 					TO_CHAR (FROM_TZ(CAST(s.activationtime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY'),
-					(case when sctl.createdBy like '%%' then 'System' else sctl.createdBy end),,
+					(case when sctl.createdBy like '%%' then 'System' else sctl.createdBy end),
 					TO_CHAR (FROM_TZ(CAST(sctl.CreateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
 					et.DisplayText
 				FROM
