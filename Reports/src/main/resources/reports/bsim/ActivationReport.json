@@ -42,9 +42,10 @@
 					enum_text et 
 				WHERE 
 					sctl.SourceMDN = sm.MDN
-					and sctl.TransactionTypeID = tt.ID					
+					and sctl.TransactionTypeID = tt.ID	
+					and tt.transactionName='Activation'					
 					and s.id = sm.subscriberid
-					and p.mdnid = sm.id 
+					and p.mdnid = sm.id
 					and p.pockettemplateid=4 
 					and et.TagID=6089 
 					and sctl.status in(4,5)
