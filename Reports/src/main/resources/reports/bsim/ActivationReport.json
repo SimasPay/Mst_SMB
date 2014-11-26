@@ -47,6 +47,7 @@
 					and s.id = sm.subscriberid
 					and p.mdnid = sm.id
 					and p.pockettemplateid=4 
+					and p.isdefault=1
 					and et.TagID=6089 
 					and sctl.status in(4,5)
 					and sctl.status=et.EnumCode 
