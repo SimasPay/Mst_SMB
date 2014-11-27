@@ -49,7 +49,14 @@ public class SubscriberStatusEventServiceImpl implements
 		SubscriberStatusEvent subscriberExistingEvent = getSubscriberStatusEventForSubscriber(subscriber,isOnline);
 		SubscriberStatusEventDAO statusEventDAO = DAOFactory.getInstance()
 				.getSubscriberStatusEventDAO();
-		SubscriberMDN subMDN = subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
+		
+		SubscriberMDN subMDN = null;
+		
+		if(subscriber.getSubscriberMDNFromSubscriberID() != null && !(subscriber.getSubscriberMDNFromSubscriberID().size() == 0)){
+			
+			subMDN	= subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
+		}
+		 
 		if (subscriberExistingEvent != null) {
 			if (subscriberExistingEvent.getProcessingStatus()) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
