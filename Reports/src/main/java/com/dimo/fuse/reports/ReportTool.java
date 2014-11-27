@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +64,49 @@ public class ReportTool {
 			String reportName = reportProperties
 			.getProperty(ReportPropertyConstants.NAME_OF_THE_REPORT);
 
+			String reportFilePathWithOutExtension = 
+					reportParameters.getDestinationFolder()
+					+ File.separator
+					+ reportProperties
+							.getProperty(ReportPropertyConstants.NAME_OF_THE_REPORT)
+					+ "_"
+					+ dateFormat.format(reportParameters
+							.getStartTime())
+					+ "-"
+					+ dateFormat.format(reportParameters
+							.getEndTime());
+			if(StringUtils.isNotBlank(reportParameters.getTransactionTypeId())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getTransactionTypeId();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getTransactionStatusId())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getTransactionStatusId();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getSourceMdn())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getSourceMdn();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getDestMdn())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getDestMdn();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getBillerCode())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getBillerCode();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getBankRRN())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getBankRRN();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getSourcePartnerCode())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getSourcePartnerCode();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getDestPartnerCode())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getDestPartnerCode();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getChannelName())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getChannelName();
+			}
+			if(StringUtils.isNotBlank(reportParameters.getReferenceNo())){
+				reportFilePathWithOutExtension = reportFilePathWithOutExtension+"-"+reportParameters.getReferenceNo();
+			}
+			
+			
 			for (int index = 0; index < listOfReportTypes.length(); index++) {
 				String reportType = listOfReportTypes.getString(index);
 				ReportGenerator reportGenerator = getReportGenerator(reportType);
@@ -70,17 +114,7 @@ public class ReportTool {
 				reportGenerator.setReportProperties(reportProperties);
 				reportGenerator.setReportParameters(reportParameters);
 				reportGenerator
-						.setReportFilePath(new File(
-								reportParameters.getDestinationFolder()
-										+ File.separator
-										+ reportProperties
-												.getProperty(ReportPropertyConstants.NAME_OF_THE_REPORT)
-										+ "_"
-										+ dateFormat.format(reportParameters
-												.getStartTime())
-										+ "-"
-										+ dateFormat.format(reportParameters
-												.getEndTime()) + "."
+						.setReportFilePath(new File(reportFilePathWithOutExtension + "."
 										+ reportType.toLowerCase()));
 				reportGenerator.openDocAndCreateHeaders();
 			}

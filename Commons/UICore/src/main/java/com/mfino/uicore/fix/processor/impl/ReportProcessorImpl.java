@@ -54,6 +54,36 @@ public class ReportProcessorImpl extends BaseFixProcessor implements ReportProce
 		Date start = dateFormat.parse(realMsg.getReportStartDate());
 		
 		generatedReportName = ReportUtil.generateReportFilePath(realMsg.getReportName(),start,end);
+		if(realMsg.getTransactionTypeID()!=null){
+			generatedReportName = generatedReportName+"-"+realMsg.getTransactionTypeID();
+		}
+		if(StringUtils.isNotBlank(realMsg.getTransactionStatus())){
+			generatedReportName = generatedReportName+"-"+realMsg.getTransactionStatus();
+		}
+		if(StringUtils.isNotBlank(realMsg.getSourceMDN())){
+			generatedReportName = generatedReportName+"-"+realMsg.getSourceMDN();
+		}
+		if(StringUtils.isNotBlank(realMsg.getDestMDN())){
+			generatedReportName = generatedReportName+"-"+realMsg.getDestMDN();
+		}
+		if(StringUtils.isNotBlank(realMsg.getBillerCode())){
+			generatedReportName = generatedReportName+"-"+realMsg.getBillerCode();
+		}
+		if(StringUtils.isNotBlank(realMsg.getBankRetrievalReferenceNumber())){
+			generatedReportName = generatedReportName+"-"+realMsg.getBankRetrievalReferenceNumber();
+		}
+		if(StringUtils.isNotBlank(realMsg.getSourcePartnerCode())){
+			generatedReportName = generatedReportName+"-"+realMsg.getSourcePartnerCode();
+		}
+		if(StringUtils.isNotBlank(realMsg.getDestPartnerCode())){
+			generatedReportName = generatedReportName+"-"+realMsg.getDestPartnerCode();
+		}
+		if(StringUtils.isNotBlank(realMsg.getChannelName())){
+			generatedReportName = generatedReportName+"-"+realMsg.getChannelName();
+		}
+		if(realMsg.getReferenceNumber()!=null){
+			generatedReportName = generatedReportName+"-"+realMsg.getReferenceNumber();
+		}
     	report = new File(generatedReportName+ReportUtil.PDF_EXTENTION);
 
 		try {
