@@ -114,7 +114,7 @@ public class ChannelObserver implements Observer {
 		log.info("stopped the signon executorservice");
 
 		StatusRegistrar.setSignonStatus(muxName, NMStatus.Illegal);
-		StatusRegistrar.setKeyExchangeStatus(muxName, NMStatus.Illegal);
+//		StatusRegistrar.setKeyExchangeStatus(muxName, NMStatus.Illegal);
 		log.info("did set signon status to Illegal of mux=" + muxName + " from Registrar");
 
 	}
