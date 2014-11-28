@@ -29,6 +29,10 @@
 <script type="text/javascript" src="<c:url value="/js/msg.English.js"/>">
 </script>
 
+<!-- Json -->
+<script type="text/javascript" src="<c:url value="/js/json/json2.js"/>">
+</script>
+
 <!-- Fix Protocol -->
 <script type="text/javascript" src="<c:url value="/js/fix/ExtJSFIXProxy.js"/>">
 </script>
