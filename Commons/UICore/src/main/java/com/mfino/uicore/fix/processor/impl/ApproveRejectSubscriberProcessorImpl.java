@@ -252,7 +252,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			 notificationWrapper.setCompany(subscriber.getCompany());
 			 notificationWrapper.setKycLevel(kyclevel.getKYCLevelName());
 			 if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
-			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeSuccess);
+			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
 			 }else
 			 if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())){
 			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeFail);
@@ -282,9 +282,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				smsNotificationWrapper.setLanguage(subscriber.getLanguage());
 				smsNotificationWrapper.setFirstName(subscriber.getFirstName());
             	smsNotificationWrapper.setLastName(subscriber.getLastName());
-            	smsNotificationWrapper.setCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 				String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
-				log.info("OTP SMS:" + smsMessage);
 				String mdn2 = subscriberMDN.getMDN();
 				smsService.setDestinationMDN(mdn2);
 				smsService.setMessage(smsMessage);
@@ -310,7 +308,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			smsService.setDestinationMDN(mdn);
 			// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
 			smsService.setMessage(smsMsg);
-			smsService.asyncSendSMS();
+			//smsService.asyncSendSMS();
 		
 		if( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
 			String to=subscriber.getEmail();

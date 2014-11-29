@@ -1425,7 +1425,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					saf=null;
 				}
 				try {
-					if (!ConfigurationUtil.getSendOTPBeforeApproval()) {
+					if (ConfigurationUtil.getSendOTPBeforeApproval()) {
 						//OTP
 						Integer OTPLength = systemParametersService.getOTPLength();
 						String oneTimePin = MfinoUtil.generateOTP(OTPLength);
@@ -1440,7 +1440,6 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						smsNotificationWrapper.setLanguage(mdn.getSubscriber().getLanguage());
 						smsNotificationWrapper.setFirstName(mdn.getSubscriber().getFirstName());
 		            	smsNotificationWrapper.setLastName(mdn.getSubscriber().getLastName());
-		            	smsNotificationWrapper.setCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 						String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 						log.info("OTP SMS:" + smsMessage);
 						String mdn2 = mdn.getMDN();
