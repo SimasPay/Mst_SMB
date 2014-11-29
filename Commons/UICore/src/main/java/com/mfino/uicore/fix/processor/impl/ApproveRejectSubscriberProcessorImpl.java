@@ -282,6 +282,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				smsNotificationWrapper.setLanguage(subscriber.getLanguage());
 				smsNotificationWrapper.setFirstName(subscriber.getFirstName());
             	smsNotificationWrapper.setLastName(subscriber.getLastName());
+            	smsNotificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
 				String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 				String mdn2 = subscriberMDN.getMDN();
 				smsService.setDestinationMDN(mdn2);
