@@ -103,7 +103,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         	subdao.save(subscriber);
         	log.info("Subscriber MDN: " + mdn.getID() + " : new OTP generated for subscriber:" + subscriber.getID() + "selected by user: " + getLoggedUserNameWithIP());
             String message= String.format(
-                    "Dear %s ,\nPlease reset your Pin using new OTP.Your new OTP is : %s", name,otp);
+                    "Dear %s , Please reset your Pin using new OTP.Your new OTP is : %s", name,otp);
             if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationMethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
             	String to=subscriber.getEmail();
             	String subject="OTP";
