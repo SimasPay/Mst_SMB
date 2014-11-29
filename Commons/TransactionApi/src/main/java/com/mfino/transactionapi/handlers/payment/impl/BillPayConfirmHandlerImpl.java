@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,12 +126,12 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 billPay.setChannelCode(cc.getChannelCode());
 		 billPay.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		 //Change as part of migration to include old parameter names
-		 if(transactionDetails.getDestMDN() != null)
+		 if(transactionDetails.getDestMDN() != null && !StringUtils.isEmpty(transactionDetails.getDestMDN()))
 			 billPay.setInvoiceNumber(transactionDetails.getDestMDN());
 		 else
 			 billPay.setInvoiceNumber(transactionDetails.getBillNum());
 		 //Change as part of migration to include old parameter names
-		 if(transactionDetails.getCompanyID() != null)
+		 if(transactionDetails.getCompanyID() != null && !StringUtils.isEmpty(transactionDetails.getCompanyID()))
 			 billPay.setBillerCode(transactionDetails.getCompanyID());
 		 else
 			 billPay.setBillerCode(transactionDetails.getBillerCode());
