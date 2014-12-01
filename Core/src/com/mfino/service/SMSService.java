@@ -5,6 +5,7 @@ package com.mfino.service;
 
 import org.apache.http.HttpResponse;
 
+import com.mfino.domain.SMSValues;
 import com.mfino.fix.CFIXMsg;
 
 
@@ -27,6 +28,8 @@ public interface SMSService{
 	 */
 	public HttpResponse send(boolean isAlert);
 	
+	 public void asyncSendSMS(SMSValues smsValues);
+	 
 	 public void asyncSendSMS();
 
 	/**

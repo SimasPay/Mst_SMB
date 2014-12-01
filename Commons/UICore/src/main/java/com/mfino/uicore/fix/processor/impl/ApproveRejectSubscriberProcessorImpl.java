@@ -24,6 +24,7 @@ import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
+import com.mfino.domain.SMSValues;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMDN;
@@ -245,9 +246,11 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		log.info("Sending SMS to the subscriber:" + subscriberMDN.getMDN());
 		String smsMsg = "approve or reject notification";
 		String emailMsg = "approve or reject notification";
+		NotificationWrapper notificationWrapper = new NotificationWrapper();
+		SMSValues smsValues;
 		try {
 			 //add notifications
-			 NotificationWrapper notificationWrapper = new NotificationWrapper();
+			 
 			 notificationWrapper.setLanguage(subscriber.getLanguage());
 			 notificationWrapper.setCompany(subscriber.getCompany());
 			 notificationWrapper.setKycLevel(kyclevel.getKYCLevelName());
@@ -268,6 +271,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			 notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 			 emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
 			 
+			 
 			 if(!ConfigurationUtil.getSendOTPBeforeApproval()){
 				Integer OTPLength = systemParametersService.getOTPLength();
 				String oneTimePin = MfinoUtil.generateOTP(OTPLength);
@@ -284,10 +288,15 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
             	smsNotificationWrapper.setLastName(subscriber.getLastName());
 				String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 				String mdn2 = subscriberMDN.getMDN();
-				smsService.setDestinationMDN(mdn2);
+				smsValues= new SMSValues();
+				smsValues.setDestinationMDN(mdn2);
+				smsValues.setMessage(smsMessage);
+				smsValues.setNotificationCode(smsNotificationWrapper.getCode());
+				
+				/*smsService.setDestinationMDN(mdn2);
 				smsService.setMessage(smsMessage);
-				smsService.setNotificationCode(smsNotificationWrapper.getCode());
-				smsService.asyncSendSMS();
+				smsService.setNotificationCode(smsNotificationWrapper.getCode());*/
+				smsService.asyncSendSMS(smsValues);
 				if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
 					NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
 					emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
@@ -305,10 +314,15 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			log.error("failed to generate message:",excp);
 		}
 			String mdn = subscriberMDN.getMDN();
-			smsService.setDestinationMDN(mdn);
+			//smsService.setDestinationMDN(mdn);
 			// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
-			smsService.setMessage(smsMsg);
-			smsService.asyncSendSMS();
+			//smsService.setMessage(smsMsg);
+			smsValues= new SMSValues();
+			smsValues.setDestinationMDN(mdn);
+			smsValues.setMessage(smsMsg);
+			smsValues.setNotificationCode(notificationWrapper.getCode());
+			
+			smsService.asyncSendSMS(smsValues);
 		
 		if( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
 			String to=subscriber.getEmail();

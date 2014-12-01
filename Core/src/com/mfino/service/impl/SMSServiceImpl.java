@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.mfino.dao.DAOFactory;
+import com.mfino.domain.SMSValues;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMSMSNotification;
@@ -120,6 +121,31 @@ public class SMSServiceImpl extends MultixCommunicationHandler implements SMSSer
 		}
 	}
 	
+    public boolean send(SMSValues smsValues) {
+        try {
+        	CMSMSNotification sms = new CMSMSNotification();
+        	sms.setTo(smsValues.getDestinationMDN());
+        	sms.setText(smsValues.getMessage());
+        	sms.setCode(smsValues.getNotificationCode());
+        	sms.setServiceChargeTransactionLogID(smsValues.getSctlId());
+        	sms.setNotificationLogDetailsID(smsValues.getNotificationLogDetailsID());
+        	sms.setIsDuplicateSMS(isDuplicateSMS());
+    		//setting the transactionIdentifier to be use in fix to set the camel breadcrumbId header later
+        	sms.setTransactionIdentifier(getTransactionIdentifier());
+        	CFIXMsg resMsg =process(sms);
+//            HttpResponse httpResponse = send(false);
+//            if (httpResponse != null) {
+//                if (httpResponse.getStatusLine().getStatusCode() == 202) {
+//                    return true;
+//                }
+//            }
+        	return true;
+        } catch (Exception e) {
+            log.error("failed to send sms",e);
+        }
+        return false;
+    }
+
     public boolean send() {
         try {
         	CMSMSNotification sms = new CMSMSNotification();
@@ -214,6 +240,26 @@ public class SMSServiceImpl extends MultixCommunicationHandler implements SMSSer
 		return httpResponse;
 	}
 	
+	 public void asyncSendSMS(final SMSValues smsValues){ 	
+	    	threadPool.execute(new Runnable() {			
+				@Override
+				public void run(){
+					Session session = null;
+					HibernateService hibernateService = CoreServiceFactory.getInstance().getHibernateService();
+					session = hibernateService.getSessionFactory().openSession();
+					HibernateSessionHolder hibernateSessionHolder = hibernateService.getHibernateSessionHolder();
+					hibernateSessionHolder.setSession(session);		
+					DAOFactory.getInstance().setHibernateSessionHolder(hibernateSessionHolder);
+
+					//log.info("ThreadPool ID: " + threadPool.toString());
+					log.info("sending sms to "+destinationMDN);
+					send(smsValues);	
+					session.close();
+				}
+			});
+	    	  	
+	    }
+	 
 	 public void asyncSendSMS(){ 	
 	    	threadPool.execute(new Runnable() {			
 				@Override
