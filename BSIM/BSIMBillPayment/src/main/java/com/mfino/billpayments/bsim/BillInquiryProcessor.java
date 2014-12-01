@@ -13,6 +13,8 @@ import com.mfino.fix.CmFinoFIX.CMBillInquiry;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.NotificationCodes;
+import com.mfino.mce.core.util.ExternalResponseCodeHolder;
+import com.mfino.mce.core.util.ResponseCodes;
 import com.mfino.service.SubscriberService;
 
 /**
@@ -57,6 +59,7 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		log.info("BillInquiryProcessor :: constructReplyMessage() BEGIN mceMessage="+mceMceMessage);
 		MCEMessage responseMceMessage = new MCEMessage();
 		
+//		CMBSIMGetAmountToBiller requestFix = (CMBSIMGetAmountToBiller)mceMceMessage.getRequest();
 		CMBSIMGetAmountFromBiller response  = (CMBSIMGetAmountFromBiller) mceMceMessage.getResponse();
 		log.info("bsimBillPayInquiry Response for BillInquiry = "+response.getResponseCode());
 		
@@ -69,8 +72,27 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		if(response.getAmount() != null)
 			billResponse.setAmount(response.getAmount());
 		
-		billResponse.setResult(new Integer(response.getResponseCode()));
-		billResponse.setInternalErrorCode(getInternalErrorCode(new Integer(response.getResponseCode())));
+		if(response.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success)) {
+			billResponse.setResult(new Integer(response.getResponseCode()));
+			billResponse.setInternalErrorCode(getInternalErrorCode(new Integer(response.getResponseCode())));
+
+		}else{
+			log.info("BillPaymentServiceImpl - Unable to get bill amount");
+
+			ResponseCodes rs = ResponseCodes.getResponseCodes(1, response.getResponseCode());
+			billResponse.setDescription(ExternalResponseCodeHolder.getNotificationText(response.getResponseCode()));
+			billResponse.setExternalResponseCode(rs.getExternalResponseCode());
+			billResponse.setInternalErrorCode(rs.getInternalErrorCode());
+
+		//Pending as of now; Do it later
+		// Handle Notifications for PLN Billers separately, setting only for failure case
+		//if(billPayInquiryToBank.getBillerCode() != null && plnBillers.contains(billPayInquiryToBank.getBillerCode())){
+		//		if(requestFix.getBillerCode() != null && isPlnBiller(requestFix.getBillerCode())){
+		//			billResponse.setInternalErrorCode(getPLNErrorCode(CmFinoFIX.ResponseCode_Failure, response.getResponseCode()));
+		//			billResponse.setExternalResponseCode(null);
+		//		}
+		}
+		
 		responseMceMessage.setRequest(mceMceMessage.getRequest());
 		responseMceMessage.setResponse(billResponse);
 		
