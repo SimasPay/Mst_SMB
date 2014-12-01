@@ -133,13 +133,13 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		
 		billPaymentInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		//Change as part of migration to include old parameter names
-		if(transactionDetails.getDestMDN() != null && !StringUtils.isEmpty(transactionDetails.getDestMDN()))
+		if(transactionDetails.getDestMDN() != null && !StringUtils.isEmpty(transactionDetails.getDestMDN()) && !transactionDetails.getDestMDN().equalsIgnoreCase("null"))
 			billPaymentInquiry.setInvoiceNumber(transactionDetails.getDestMDN());
 		else
 			billPaymentInquiry.setInvoiceNumber(transactionDetails.getBillNum());
 		billPaymentInquiry.setPin(transactionDetails.getSourcePIN());
 		//Change as part of migration to include old parameter names
-		if(transactionDetails.getCompanyID() != null && !StringUtils.isEmpty(transactionDetails.getCompanyID()))
+		if(transactionDetails.getCompanyID() != null && !StringUtils.isEmpty(transactionDetails.getCompanyID()) && !transactionDetails.getCompanyID().equalsIgnoreCase("null"))
 			billPaymentInquiry.setBillerCode(transactionDetails.getCompanyID());
 		else
 			billPaymentInquiry.setBillerCode(transactionDetails.getBillerCode());
