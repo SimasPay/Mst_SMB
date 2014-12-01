@@ -467,6 +467,8 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 	notificationBuilder.append(notificationWrapper.getTransactionAmount());
                 }else if(CmFinoFIX.NotificationVariables_OneTimePin.equals(notificationVariable)) {
                 	notificationBuilder.append(notificationWrapper.getOneTimePin());
+                }else if(CmFinoFIX.NotificationVariables_SubscriberPIN.equals(notificationVariable)) {
+                	notificationBuilder.append(notificationWrapper.getSubscriberPin());
                 }else if(CmFinoFIX.NotificationVariables_OTPExpirationTime.equals(notificationVariable)) {
             	notificationBuilder.append(notificationWrapper.getOtpExpirationTime());
             	}else if(CmFinoFIX.NotificationVariables_KycLevel.equals(notificationVariable)) {

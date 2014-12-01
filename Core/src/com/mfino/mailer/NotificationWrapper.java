@@ -156,6 +156,8 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
     
     private String remainingBlockTimeHours;
     
+    private String subscriberPin;
+    
 	public String getValidDenominations() {
 		
 		return validDenominations;
@@ -810,5 +812,13 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 
 	public void setRemainingBlockTimeHours(String remainingBlockTimeHours) {
 		this.remainingBlockTimeHours = remainingBlockTimeHours;
+	}
+
+	public String getSubscriberPin() {
+		return subscriberPin;
+	}
+
+	public void setSubscriberPin(String subscriberPin) {
+		this.subscriberPin = subscriberPin;
 	}
 }
