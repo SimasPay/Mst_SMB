@@ -68,6 +68,7 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		billResponse.setTransactionID(response.getTransactionID());
 		billResponse.setPaymentInquiryDetails(response.getAmount().toString());
 		billResponse.setAdditionalInfo(response.getInfo3());
+		billResponse.setBillPaymentReferenceID(response.getAdditionalInfo());
 		
 		if(response.getAmount() != null)
 			billResponse.setAmount(response.getAmount());

@@ -211,6 +211,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		}
 		//billerPartnertype = response.getBillerPartnerType();
 		response.setSourceMDN(billPayInquiry.getSourceMDN());
+		response.setBillPaymentReferenceID(billPayInquiry.getBillData()); // To handle - DE-62 from inquiry response should be DE-61 of confirmation request; Check next function
 		response.setInfo2(mdngen);
 		response.setBankCode(inquiryResponse.getBankCode());
 		response.setDestMDN(inquiryResponse.getDestMDN());

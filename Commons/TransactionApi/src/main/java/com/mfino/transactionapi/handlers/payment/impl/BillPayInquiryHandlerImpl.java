@@ -378,6 +378,9 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billPaymentInquiry.setSourcePocketID(subPocket.getID());
 		billPaymentInquiry.setDestPocketID(agentPocket.getID());
 		billPaymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
+		// To handle - DE-62 from inquiry response should be DE-61 of confirmation request
+		if(billPayRefID != null)
+			billPaymentInquiry.setBillData(billPayRefID);
 		
 		if(transactionResponse != null && !transactionResponse.isResult()){
 			String errorMsg = transactionResponse.getMessage();

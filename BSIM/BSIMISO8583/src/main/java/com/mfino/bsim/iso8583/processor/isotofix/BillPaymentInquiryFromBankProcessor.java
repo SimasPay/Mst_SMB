@@ -6,8 +6,6 @@ import com.mfino.bsim.iso8583.processor.BSIMISOtoFixProcessor;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryFromBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
-import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.iso8583.definitions.exceptions.InvalidIsoElementException;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
@@ -24,14 +22,19 @@ public class BillPaymentInquiryFromBankProcessor implements BSIMISOtoFixProcesso
 		//	return ISOtoFIXProcessor.getGenericResponse(isoMsg, fromBank);
 		
 		fromBank.copy(toBank);
-		if(isoMsg.hasField(3))
+		if(isoMsg.hasField(3)){
+			fromBank.setProcessingCode(isoMsg.getString(3).substring(4, 6));
 			fromBank.setProcessingCodeDE3(isoMsg.getString(3).substring(4, 6));
+		}
 		if(isoMsg.hasField(38))
 			fromBank.setAIR(isoMsg.getString(38));
 		if(isoMsg.hasField(39))
 			fromBank.setResponseCode(isoMsg.getString(39));
 		fromBank.setInfo1(isoMsg.getString(61));
 		fromBank.setInfo3(isoMsg.getString(62));
+		// To handle - DE-62 from inquiry response should be DE-61 of confirmation request; Check next function
+		if(toBank.getBillPaymentReferenceID() != null)
+			fromBank.setAdditionalInfo(toBank.getBillPaymentReferenceID());
 		if(isoMsg.hasField(63)){
 			fromBank.setServiceChargeDE63(isoMsg.getString(63));
 		}
