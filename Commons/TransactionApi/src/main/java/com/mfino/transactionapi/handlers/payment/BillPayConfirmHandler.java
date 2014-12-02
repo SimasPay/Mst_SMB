@@ -12,4 +12,8 @@ import com.mfino.transactionapi.vo.TransactionDetails;
  */
 public interface BillPayConfirmHandler {
 	public Result handle(TransactionDetails transactionDetails);
+	public String getServiceName();
+	public void setServiceName(String serviceName);
+	public String getTransactionName();
+	public void setTransactionName(String transactionName);
 }

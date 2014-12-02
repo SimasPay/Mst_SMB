@@ -73,6 +73,8 @@ public class BuyAPIServiceImpl extends BaseAPIService implements BuyAPIService{
 				sourceMessage = ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE;
 			}
 			transactionDetails.setSourceMessage(sourceMessage);
+			billPayConfirmHandler.setServiceName(ServiceAndTransactionConstants.SERVICE_BUY);
+			billPayConfirmHandler.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);
 
 			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
 		}

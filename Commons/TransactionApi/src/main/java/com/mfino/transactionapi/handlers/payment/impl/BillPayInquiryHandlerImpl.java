@@ -133,16 +133,22 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		
 		billPaymentInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		//Change as part of migration to include old parameter names
-		if(transactionDetails.getDestMDN() != null && !StringUtils.isEmpty(transactionDetails.getDestMDN()) && !transactionDetails.getDestMDN().equalsIgnoreCase("null"))
+		if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(transactionDetails.getTransactionName())
+				&& StringUtils.isNotBlank(transactionDetails.getDestMDN())) {
 			billPaymentInquiry.setInvoiceNumber(transactionDetails.getDestMDN());
-		else
+		}
+		else {
 			billPaymentInquiry.setInvoiceNumber(transactionDetails.getBillNum());
+		}
 		billPaymentInquiry.setPin(transactionDetails.getSourcePIN());
 		//Change as part of migration to include old parameter names
-		if(transactionDetails.getCompanyID() != null && !StringUtils.isEmpty(transactionDetails.getCompanyID()) && !transactionDetails.getCompanyID().equalsIgnoreCase("null"))
+		if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(transactionDetails.getTransactionName())
+				&& StringUtils.isNotBlank(transactionDetails.getCompanyID())) {
 			billPaymentInquiry.setBillerCode(transactionDetails.getCompanyID());
-		else
+		}
+		else {
 			billPaymentInquiry.setBillerCode(transactionDetails.getBillerCode());
+		}
 		billPaymentInquiry.setAmount(transactionDetails.getAmount());
 		billPaymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
 		billPaymentInquiry.setChannelCode(cc.getChannelCode());

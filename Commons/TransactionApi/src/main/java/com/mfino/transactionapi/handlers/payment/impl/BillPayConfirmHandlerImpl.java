@@ -126,15 +126,21 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 billPay.setChannelCode(cc.getChannelCode());
 		 billPay.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		 //Change as part of migration to include old parameter names
-		 if(transactionDetails.getDestMDN() != null && !StringUtils.isEmpty(transactionDetails.getDestMDN()) && !transactionDetails.getDestMDN().equalsIgnoreCase("null"))
+		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName) && 
+				 StringUtils.isNotBlank(transactionDetails.getDestMDN())) {
 			 billPay.setInvoiceNumber(transactionDetails.getDestMDN());
-		 else
+		 }
+		 else {
 			 billPay.setInvoiceNumber(transactionDetails.getBillNum());
+		 }
 		 //Change as part of migration to include old parameter names
-		 if(transactionDetails.getCompanyID() != null && !StringUtils.isEmpty(transactionDetails.getCompanyID()) && !transactionDetails.getCompanyID().equalsIgnoreCase("null"))
+		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName) && 
+				 StringUtils.isNotBlank(transactionDetails.getCompanyID())) {
 			 billPay.setBillerCode(transactionDetails.getCompanyID());
-		 else
+		 }
+		 else {
 			 billPay.setBillerCode(transactionDetails.getBillerCode());
+		 }
 		 billPay.setNarration(transactionDetails.getNarration());
 		 billPay.setPaymentMode(transactionDetails.getPaymentMode());
 		if (ServiceAndTransactionConstants.MESSAGE_BILL_PAY.equals(transactionDetails.getSourceMessage()))
