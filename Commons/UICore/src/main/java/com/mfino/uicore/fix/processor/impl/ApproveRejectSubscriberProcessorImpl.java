@@ -247,7 +247,6 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		String smsMsg = "approve or reject notification";
 		String emailMsg = "approve or reject notification";
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
-		SMSValues smsValues;
 		try {
 			 //add notifications
 			 
@@ -288,15 +287,15 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
             	smsNotificationWrapper.setLastName(subscriber.getLastName());
 				String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 				String mdn2 = subscriberMDN.getMDN();
-				smsValues= new SMSValues();
+				SMSValues smsValues= new SMSValues();
 				smsValues.setDestinationMDN(mdn2);
 				smsValues.setMessage(smsMessage);
 				smsValues.setNotificationCode(smsNotificationWrapper.getCode());
 				
-				/*smsService.setDestinationMDN(mdn2);
+				smsService.setDestinationMDN(mdn2);
 				smsService.setMessage(smsMessage);
-				smsService.setNotificationCode(smsNotificationWrapper.getCode());*/
-				smsService.asyncSendSMS(smsValues);
+				smsService.setNotificationCode(smsNotificationWrapper.getCode());
+				smsService.send();
 				if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
 					NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
 					emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
@@ -317,12 +316,12 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			//smsService.setDestinationMDN(mdn);
 			// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
 			//smsService.setMessage(smsMsg);
-			smsValues= new SMSValues();
-			smsValues.setDestinationMDN(mdn);
-			smsValues.setMessage(smsMsg);
-			smsValues.setNotificationCode(notificationWrapper.getCode());
+			SMSValues smsValues1= new SMSValues();
+			smsValues1.setDestinationMDN(mdn);
+			smsValues1.setMessage(smsMsg);
+			smsValues1.setNotificationCode(notificationWrapper.getCode());
 			
-			smsService.asyncSendSMS(smsValues);
+			smsService.asyncSendSMS(smsValues1);
 		
 		if( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
 			String to=subscriber.getEmail();
