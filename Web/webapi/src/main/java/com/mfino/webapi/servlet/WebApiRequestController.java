@@ -186,7 +186,7 @@ public class WebApiRequestController {
 		}
 		
 		try {
-			sourceMDN = subscriberService.normalizeMDN(sourceMDN);
+//			sourceMDN = subscriberService.normalizeMDN(sourceMDN);
  			try {
  				if(isHTTPS){
  					udcontainer = getUserDataContainerForHttps(request, sourceMDN, servletOutputWriter, isLoginEnabled);

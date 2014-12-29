@@ -124,7 +124,7 @@ public class GenericWebAPIServiceImpl implements GenericWebAPIService{
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	public String generateTransactionIdentifier(HttpServletRequest request){
 		String uniqueIdMDN = request.getParameter(ApiConstants.PARAMETER_SOURCE_MDN);
-		uniqueIdMDN = subscriberService.normalizeMDN(uniqueIdMDN);
+//		uniqueIdMDN = subscriberService.normalizeMDN(uniqueIdMDN);
 		if(uniqueIdMDN==null || "".equals(uniqueIdMDN)){
 			uniqueIdMDN = request.getParameter(ApiConstants.PARAMETER_SUB_MDN);
 		}

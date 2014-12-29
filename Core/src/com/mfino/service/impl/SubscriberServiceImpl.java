@@ -769,12 +769,12 @@ public class SubscriberServiceImpl implements SubscriberService{
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public String normalizeMDN(String MDN) {
-		String countryCode = getCountryCode();
-		boolean startsWithCounrtyCode = false;
-
-		int start = 0;
 		if (StringUtils.isBlank(MDN))
 			return StringUtils.EMPTY;
+		
+		String countryCode = getCountryCode();
+		boolean startsWithCounrtyCode = false;
+		int start = 0;
 
 		MDN = MDN.trim();
 

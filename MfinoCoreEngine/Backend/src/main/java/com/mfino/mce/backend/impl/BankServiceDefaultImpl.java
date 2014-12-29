@@ -903,27 +903,28 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 		Subscriber subscriber = coreDataWrapper.getSubscriberByMdn(
 				toBank.getSourceMDN(), LockMode.UPGRADE);
-		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
-				toBank.getSourceMDN(), LockMode.UPGRADE);
+//		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
+//				toBank.getSourceMDN(), LockMode.UPGRADE);
 
 		Pocket toBankPocket = coreDataWrapper.getPocketById(
 				toBank.getPocketID(), LockMode.UPGRADE);
 
-		returnFix.setSourceMDN(subscriberMdn.getMDN());
+		returnFix.setSourceMDN(toBank.getSourceMDN());
 		returnFix.setLanguage(subscriber.getLanguage());
-		if(!toBank.getTransactionTypeName().equals(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_BALANCE))
-		{
-			returnFix = validationService.validateBankAccountSubscriber(subscriber,
-					subscriberMdn, toBankPocket, toBank.getPin(), true, false,
-					false, false);
-
-			log.info("BankServiceDefaultServiceImpl : onBalanceInquiryFromBank : validateBankAccountSubscriber "
-					+ returnFix.getInternalErrorCode());
-
-			if (!isNullorZero(returnFix.getInternalErrorCode())) {
-				return returnFix;
-			}
-		}
+// [Bala] As no need to do subscriber validation again in Check balance .		
+//		if(!toBank.getTransactionTypeName().equals(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_BALANCE))
+//		{
+//			returnFix = validationService.validateBankAccountSubscriber(subscriber,
+//					subscriberMdn, toBankPocket, toBank.getPin(), true, false,
+//					false, false);
+//
+//			log.info("BankServiceDefaultServiceImpl : onBalanceInquiryFromBank : validateBankAccountSubscriber "
+//					+ returnFix.getInternalErrorCode());
+//
+//			if (!isNullorZero(returnFix.getInternalErrorCode())) {
+//				return returnFix;
+//			}
+//		}
 
 		ActivitiesLog activitiesLog = coreDataWrapper
 				.getActivitiesLogByParentTransactionId(toBank

@@ -125,11 +125,15 @@ public class ActivationMsgServiceImpl  implements ActivationMsgService{
 	private void sendSms(SubscriberMDN destMDN){
 		
 		NotificationWrapper notification = new NotificationWrapper();
- 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
- 
+		Integer language = 0;
  		if(destMDN != null){
   			notification.setFirstName(destMDN.getSubscriber().getFirstName());
 		 	notification.setLastName(destMDN.getSubscriber().getLastName());
+		 	if (destMDN.getSubscriber().getLanguage() != null) {
+		 		language = destMDN.getSubscriber().getLanguage();
+		 	} else {
+		 		language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		 	}
   		}
 		notification.setLanguage(language);
 		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);

@@ -5,6 +5,7 @@ package com.mfino.transactionapi.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -298,9 +299,11 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		} else if (ApiConstants.TRANSACTION_LOGIN.equalsIgnoreCase(transactionName)) {
 
 			validationService.validateLoginDetails(transactionDetails);
-			IntegrationPartnerMapping integrationPartnerMapping = integrationPartnerMappingService.getByInstitutionID(transactionDetails.getInstitutionID());
-			if(integrationPartnerMapping!=null)
-			transactionDetails.setIsAppTypeChkEnabled(integrationPartnerMapping.getIsAppTypeCheckEnabled());
+			if (StringUtils.isNotBlank(transactionDetails.getInstitutionID())) {
+				IntegrationPartnerMapping integrationPartnerMapping = integrationPartnerMappingService.getByInstitutionID(transactionDetails.getInstitutionID());
+				if(integrationPartnerMapping!=null)
+					transactionDetails.setIsAppTypeChkEnabled(integrationPartnerMapping.getIsAppTypeCheckEnabled());
+			}
 
 			xmlResult = (XMLResult) loginHandler.handle(transactionDetails);
 
