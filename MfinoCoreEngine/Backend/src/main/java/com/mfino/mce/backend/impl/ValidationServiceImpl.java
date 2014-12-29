@@ -284,7 +284,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				//return returnFix;
 			}else {
 				//Pin error due to internal Reasons
-				returnFix.setInternalErrorCode(CmFinoFIX.NotificationCode_InternalLoginError);
+				returnFix.setInternalErrorCode(NotificationCodes.InternalLoginError.getInternalErrorCode());
 			}
 		}
 		return returnFix;
