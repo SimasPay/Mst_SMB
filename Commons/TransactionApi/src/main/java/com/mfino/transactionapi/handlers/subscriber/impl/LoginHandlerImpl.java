@@ -245,6 +245,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			{
 				authToken = MfinoUtil.calculateAuthorizationToken(request.getSourceMDN(),userPwd);
 				srcSubscriberMDN.setAuthorizationToken(authToken);
+				subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 			}
 			byte[] encryptedAESKey = CryptographyService.encryptWithPBE(aesKey, authToken.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
 			byte[] encryptedZeroes = CryptographyService.encryptWithAES(aesKey, GeneralConstants.ZEROES_STRING.getBytes(GeneralConstants.UTF_8));
@@ -257,9 +258,11 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_WebapiLoginSuccessful);
 			result.setSubscriberType(srcSubscriberMDN.getSubscriber().getType());
 			result.setUserAPIKey(srcSubscriberMDN.getUserAPIKey());
-			log.info("setting wrong pin count to 0, and saving subscribermdn status");
-			srcSubscriberMDN.setWrongPINCount(0);
-			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
+			if(srcSubscriberMDN.getWrongPINCount() > 0){
+				log.info("setting wrong pin count to 0, and saving subscribermdn status");
+				srcSubscriberMDN.setWrongPINCount(0);
+				subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
+			}
 		}
 		catch (Exception ex) {
 			log.error("Exception occured while handling login", ex);

@@ -435,8 +435,9 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			}
 		}
 		// Make Service Audit count for each service
-		doServiceAudit(serviceProviderId, serviceId, sourceMap.get(TYPE)!=null ? sourceMap.get(TYPE).intValue() : null, 
-				new Long(sc.getSourceMDN()), sourceMap.get(KYC_LEVEL), originalAmount);
+		// Removing Service Audit as no more keeping track of count
+//		doServiceAudit(serviceProviderId, serviceId, sourceMap.get(TYPE)!=null ? sourceMap.get(TYPE).intValue() : null, 
+//				new Long(sc.getSourceMDN()), sourceMap.get(KYC_LEVEL), originalAmount);
 		
 		Transaction transactionDetails = new Transaction();
 		transactionDetails.setAmountToDebit(amountToDebit);
