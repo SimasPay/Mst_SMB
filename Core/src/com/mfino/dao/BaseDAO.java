@@ -220,7 +220,7 @@ public class BaseDAO<T> {
     @Deprecated
     public T getById(long id, LockMode lockMode) {
         T entity;
-        entity = (T) getSession().get(getPersistentClass(), id);
+        entity = (T) getSession().get(getPersistentClass(), id, lockMode);
         return entity;
     }
     

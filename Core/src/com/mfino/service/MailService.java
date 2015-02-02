@@ -4,6 +4,7 @@
 package com.mfino.service;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
@@ -109,6 +110,8 @@ public interface MailService {
 
 	public void generateEmailVerificationMail(Subscriber subscriber,
 			String email);
-
-
+	/**
+	 * Send mail with multiple attachments
+	 */
+	public void asyncSendMail(final String toAddress, final String toName, final String subject, final String message, final List<File> attachments);
 }

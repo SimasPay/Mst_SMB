@@ -124,13 +124,6 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		validationResult=transactionApiValidationService.validatePin(sourceMDN, transactionsHistory.getPin());
-		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Pin validation failed for mdn: "+sourceMDN.getMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongPINCount());
-			result.setNotificationCode(validationResult);
-			return result;
-		}
 
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		Pocket sourcePocket = null;
@@ -202,7 +195,6 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		bankTransactionsReq.setMaxCount(transactionsHistory.getMaxCount());
 		
 		CFIXMsg response = super.process(bankTransactionsReq);
-
 		if (response instanceof CmFinoFIX.CMGetLastTransactionsFromBank) {
 			log.info("Got the Bank Transaction Histroy from Bank.");
 			if (sctl != null) {

@@ -61,6 +61,7 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void movePendingToComplete() {
 		log.info("PendingCommodityTransferClearanceImpl:: movePendingToComplete() Begin");
+		log.info("Number of Pending transactions that need manual Resolve are : " + coreDataWrapper.getCountOfPendingPCT());
 
 		List<PendingCommodityTransfer> lst = coreDataWrapper.getAllPendingTransfers();
 		for (PendingCommodityTransfer pct: lst) {

@@ -185,6 +185,10 @@ public class AdminReportServlet extends HttpServlet {
 			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_EMAIL))) {
 				reportParams.setEmail(request.getParameter(ReportPropertyConstants.ADMINAPP_EMAIL));
 			}
+			
+			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_USERNAME))) {
+				reportParams.setUserName(request.getParameter(ReportPropertyConstants.ADMINAPP_USERNAME));
+			}
 
 			OnlineReportGenerator report = new OnlineReportGenerator();
 

@@ -129,6 +129,13 @@ Ext.extend(mFino.widget.PocketIssuerForm, Ext.FormPanel, {
                     width:150,
                     itemId:'isSuspencePocket',
                     name: CmFinoFIX.message.JSPocketTemplate.Entries.IsSuspencePocket._name
+                },
+                {
+                    xtype:'checkbox',
+                    fieldLabel: _('Set As System Pocket'),
+                    width:150,
+                    itemId:'isSystemPocket',
+                    name: CmFinoFIX.message.JSPocketTemplate.Entries.IsSystemPocket._name
                 }                 
                 ]
             },

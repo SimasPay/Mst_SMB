@@ -85,7 +85,7 @@
 
 	<camelContext id="backend" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 		<threadPool id="backendPool" threadName="backendThread"
-			poolSize="5" maxPoolSize="20" />
+			poolSize="5" maxPoolSize="100" />
 		<route>
 			<from uri="jms:backendServiceQueue?disableReplyTo=true" />
 			<!-- add login to send the notification messages to notification queue -->

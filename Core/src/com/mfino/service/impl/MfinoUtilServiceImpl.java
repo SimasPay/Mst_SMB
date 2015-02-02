@@ -31,7 +31,7 @@ public class MfinoUtilServiceImpl implements MfinoUtilService{
 	 * @param storedPin digested PIN/ offset (digested pin in case of hash and offset in case of HSM)
 	 * @return
 	 */
-	public String validatePin(String mdn, String pin ,String storedPin)
+	public String validatePin(String mdn, String pin ,String storedPin, int pinlength)
 	{
 		/**
 		 * Hopefully this method is always called in a transaction
@@ -40,7 +40,7 @@ public class MfinoUtilServiceImpl implements MfinoUtilService{
 		if(ConfigurationUtil.getuseHashedPIN())
 		{
 			log.info("Converting hashed pin for validation");
-			pin = convertPinForValidation(pin, systemParametersService.getPinLength());
+			pin = convertPinForValidation(pin, pinlength);
 		}
 		//use digested PIN for validation
 		if(!ConfigurationUtil.getuseHSM())

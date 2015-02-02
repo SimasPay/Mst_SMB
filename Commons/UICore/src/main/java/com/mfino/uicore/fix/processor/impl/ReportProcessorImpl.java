@@ -9,7 +9,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMJSReport;
+import com.mfino.service.MailService;
 import com.mfino.service.ReportService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
@@ -43,6 +46,10 @@ public class ReportProcessorImpl extends BaseFixProcessor implements ReportProce
 	@Qualifier("UserServiceImpl")
 	private UserService userService;
 	
+	@Autowired
+	@Qualifier("MailServiceImpl")
+	private MailService mailService;	
+	
 
 	@Transactional(readOnly=true, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
@@ -52,6 +59,7 @@ public class ReportProcessorImpl extends BaseFixProcessor implements ReportProce
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date end = dateFormat.parse(realMsg.getReportEndDate());
 		Date start = dateFormat.parse(realMsg.getReportStartDate());
+		String reportName = realMsg.getReportName();
 		
 		generatedReportName = ReportUtil.generateReportFilePath(realMsg.getReportName(),start,end);
 		if(realMsg.getTransactionTypeID()!=null){
@@ -111,6 +119,17 @@ public class ReportProcessorImpl extends BaseFixProcessor implements ReportProce
 				realMsg.setReportEndDate(dateFormat.format(new Date()));
 			}
 			realMsg.setsuccess(true);
+			
+			// Sending the Report as attchment to the given Email Id.
+			List<File> attachments = new ArrayList<File>();
+			attachments.add(new File(generatedReportName+ReportUtil.PDF_EXTENTION));
+			attachments.add(new File(generatedReportName+ReportUtil.EXCEL_EXTENTION));
+			attachments.add(new File(generatedReportName+ReportUtil.TXT_EXTENTION));
+			attachments.add(new File(generatedReportName+ReportUtil.CSV_EXTENTION));
+			attachments.add(new File(generatedReportName+ReportUtil.XLSX_EXTENTION));
+			
+			mailService.asyncSendMail(realMsg.getEmail(), "", reportName, "Attached "+reportName, attachments);
+			
 		}catch (Exception e) {
 			log.error("Exception processing report request:",e);
 		}
@@ -123,6 +142,7 @@ public class ReportProcessorImpl extends BaseFixProcessor implements ReportProce
 		reportService.setReportParameters(realMsg);
 		String loggedInUsername = (userService.getCurrentUser()!=null) ? userService.getCurrentUser().getUsername() : "";
         reportService.setUserName(loggedInUsername);
+        reportService.setReportName(realMsg.getReportName());
         HttpResponse response =  reportService.send();
 		return response;
 	}

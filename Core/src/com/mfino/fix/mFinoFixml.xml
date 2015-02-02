@@ -930,6 +930,7 @@
 				<field name="IsCollectorPocket" required="N" />
 				<field name="NumberOfPocketsAllowedForMDN" required="N" />
 				<field name="IsSuspencePocket" required="N"/> 
+				<field name="IsSystemPocket" required="N"/> 
 			</group>
 		</message>
 		<message name="JSPocketTemplateConfig" msgtype="1364" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -5501,6 +5502,7 @@
 			<field name="IsCollectorPocket" required="N" />
 			<field name="NumberOfPocketsAllowedForMDN" required="N" />
 			<field name="IsSuspencePocket" required="N"/>      
+			<field name="IsSystemPocket" required="N" />
 		</record>
 		<record name="PocketTemplateConfig" ExtendsRecord="Base" Java="Y" SQLTable="pocket_template_config" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="SubscriberType" required="Y" />
@@ -25685,6 +25687,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8182" name="IsAdvice" type="BOOLEAN" />
 	<field number="8183" name="CashinFirstTimeID" type="RecordID" />
 	<field number="8184" name="IsExcelDownload" type="BOOLEAN" />
+	<field number="8193" name="IsSystemPocket" type="BOOLEAN"/>
 	</fields>
     <primitives>
 		<dbtype name="mysql">

@@ -14,49 +14,49 @@ public class Pocket extends CmFinoFIX.CRPocket {
 
 	@Override
 	public void setLastTransactionTime(Timestamp NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setLastTransactionTime(NewVal);
 		}
 	}
 
 	@Override
 	public void setCurrentDailyExpenditure(BigDecimal NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setCurrentDailyExpenditure(NewVal);
 		}
 	}
 	
 	@Override
 	public void setCurrentDailyTxnsCount(Integer NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setCurrentDailyTxnsCount(NewVal);
 		}
 	}
 
 	@Override
 	public void setCurrentMonthlyExpenditure(BigDecimal NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setCurrentMonthlyExpenditure(NewVal);
 		}
 	}
 	
 	@Override
 	public void setCurrentMonthlyTxnsCount(Integer NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setCurrentMonthlyTxnsCount(NewVal);
 		}
 	}
 
 	@Override
 	public void setCurrentWeeklyExpenditure(BigDecimal NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setCurrentWeeklyExpenditure(NewVal);
 		}
 	}
 
 	@Override
 	public void setCurrentWeeklyTxnsCount(Integer NewVal) {
-		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()))){
+		if(!((this.getPocketTemplate().getIsCollectorPocket()) || (this.getPocketTemplate().getIsSuspencePocket()) || (this.getPocketTemplate().getIsSystemPocket()) )){
 			super.setCurrentWeeklyTxnsCount(NewVal);
 		}
 	}

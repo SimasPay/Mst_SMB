@@ -79,6 +79,19 @@ Ext.extend(mFino.widget.PocketIssuerDetails, Ext.FormPanel, {
 							return "N";
 						}
 					}
+                },
+                {
+                    xtype: 'displayfield',
+                    fieldLabel: _('Set As System Pocket'),
+                    name: CmFinoFIX.message.JSPocketTemplate.Entries.IsSystemPocket._name,
+                    anchor:'85%',
+		            renderer: function(value) {
+						if (value) {
+							return "Y";
+						} else {
+							return "N";
+						}
+					}
                 }
                 ]
             },

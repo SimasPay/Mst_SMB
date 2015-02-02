@@ -411,7 +411,8 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_PINResetRequired;
 		}
 		String storedPin = digestedPin;
-		if (mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin).equals(GeneralConstants.LOGIN_RESPONSE_FAILED)) {
+		String pinValidationResponse = mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin, systemParametersService.getPinLength());
+		if (GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse)) {
 			log.error("Invalid PIN entered MDN="+subscriberMDN.getMDN());
 			int wrongPINCount = subscriberMDN.getWrongPINCount();
 			subscriberMDN.setWrongPINCount(wrongPINCount + 1);
@@ -422,7 +423,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			
 			return CmFinoFIX.NotificationCode_WrongPINSpecified;
 		}
-		else if(mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin).equals(GeneralConstants.LOGIN_RESPONSE_SUCCESS)) {
+		else if(GeneralConstants.LOGIN_RESPONSE_SUCCESS.equals(pinValidationResponse)) {
 			// reset wrong pin count and allow them to login
 			if (subscriberMDN.getWrongPINCount() > 0) {
 				log.info("Setting wrong pin count to zero");

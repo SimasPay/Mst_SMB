@@ -478,7 +478,7 @@ public class PartnerServiceImpl implements PartnerService {
 		Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
 		for(Pocket pocket:pockets){
 			if(pocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)&&
-					(pocket.getPocketTemplate().getIsCollectorPocket() || pocket.getPocketTemplate().getIsSuspencePocket())){
+					(pocket.getPocketTemplate().getIsCollectorPocket() || pocket.getPocketTemplate().getIsSuspencePocket() || pocket.getPocketTemplate().getIsSystemPocket())){
 				pocket.setActivationTime(new Timestamp());
 //				pocket.setIsDefault(true);
 				pocket.setStatus(CmFinoFIX.PocketStatus_Active);

@@ -22,6 +22,8 @@ public class ReportUtil {
 	public static final String PDF_EXTENTION = ".pdf";
 	public static final String CSV_EXTENTION = ".csv";
 	public static final String ZIP_EXTENTION = ".zip";
+	public static final String TXT_EXTENTION = ".txt";
+	public static final String XLSX_EXTENTION = ".xlsx";
 
 
 	private static DateFormat df = new SimpleDateFormat(ConfigurationUtil.getDateFormatInReportFileNames());

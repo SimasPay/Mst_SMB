@@ -54,7 +54,7 @@
 					and sctl.status in(4,5)
 					and sctl.status=et.EnumCode 
 					and sctl.CreateTime >= ${StartTime}
-					and sctl.CreateTime < ${EndTime}
+					and sctl.CreateTime <= ${EndTime}
 				ORDER BY sctl.ID;",
     
     "ReportFooter" : [ 

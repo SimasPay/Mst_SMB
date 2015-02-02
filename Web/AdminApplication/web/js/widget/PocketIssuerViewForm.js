@@ -88,6 +88,12 @@ Ext.extend(mFino.widget.PocketIssuerViewForm, Ext.FormPanel, {
                     fieldLabel: _('Set As Suspense Pocket'),
                     itemId : 'isSuspencePocket',
                     anchor : '95%'
+                },
+                {
+                    xtype : 'displayfield',
+                    fieldLabel: _('Set As System Pocket'),
+                    itemId : 'isSystemPocket',
+                    anchor : '95%'
                 }                
                 ]
             },

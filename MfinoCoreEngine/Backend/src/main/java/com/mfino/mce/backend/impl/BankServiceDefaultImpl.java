@@ -31,6 +31,7 @@ import com.mfino.domain.SCTLSettlementMap;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SystemParameters;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -122,22 +123,36 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				+ toBank.DumpFields());
 		log.debug("BankServiceDefaultImpl :: onTransferConfirmationFromBank() fromBank.DumpFields() :*: "
 				+ fromBank.DumpFields());
-
+		
 		BackendResponse returnFix = createResponseObject();
 		returnFix.copy(toBank);
 
-		Subscriber objSourceSubscriber = coreDataWrapper.getSubscriberByMdn(
-				toBank.getSourceMDN(), LockMode.UPGRADE);
-
+		Subscriber objSourceSubscriber = null;
+		Subscriber objDestSubscriber = null;
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
 		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(
 				toBank.getSourceMDN(), LockMode.UPGRADE);
 		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(
 				toBank.getDestMDN(), LockMode.UPGRADE);
+		if (objSrcSubMdn != null) {
+			objSourceSubscriber = objSrcSubMdn.getSubscriber();
+		}
+		if (objDestSubMdn != null) {
+			objDestSubscriber = objDestSubMdn.getSubscriber();
+		}
 
 		Pocket objSrcPocket = coreDataWrapper.getPocketById(
 				toBank.getSourcePocketID(), LockMode.UPGRADE);
-		Pocket objDestPocket = coreDataWrapper.getPocketById(
-				toBank.getDestPocketID(), LockMode.UPGRADE);
+	
+		Pocket objDestPocket = null;
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			objDestPocket = coreDataWrapper.getPocketById(
+					toBank.getDestPocketID(), LockMode.UPGRADE);
+		} else {
+			objDestPocket = coreDataWrapper.getPocketById(toBank.getDestPocketID());
+		}		
 
 //		Pocket suspensePocket = coreDataWrapper.getSuspensePocketWithLock();
 //		Pocket chargesPocket = coreDataWrapper.getChargesPocketWithLock();
@@ -377,16 +392,16 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					.setInternalErrorCode(NotificationCodes.DBGetPendingCommodityTransferFailed
 							.getInternalErrorCode());
 		}
-
+// [Bala] Commented the Activities log creation
 		/* Activity Log */
-		ActivitiesLog activitiesLog = coreDataWrapper
-				.getActivitiesLogByParentTransactionId(toBank
-						.getParentTransactionID());
-		if (activitiesLog != null) {
-			activitiesLog.setIsSuccessful(CmFinoFIX.Boolean_True);
-			activitiesLog.setNotificationCode(pct.getNotificationCode());
-			coreDataWrapper.save(activitiesLog);
-		}
+//		ActivitiesLog activitiesLog = coreDataWrapper
+//				.getActivitiesLogByParentTransactionId(toBank
+//						.getParentTransactionID());
+//		if (activitiesLog != null) {
+//			activitiesLog.setIsSuccessful(CmFinoFIX.Boolean_True);
+//			activitiesLog.setNotificationCode(pct.getNotificationCode());
+//			coreDataWrapper.save(activitiesLog);
+//		}
 		returnFix.setServiceChargeTransactionLogID(toBank
 				.getServiceChargeTransactionLogID());
 		return returnFix;
@@ -535,20 +550,31 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		ActivitiesLog activitiesLog = new ActivitiesLog();
 		PendingCommodityTransfer pct = null;
 
-		Subscriber objSourceSubscriber = coreDataWrapper.getSubscriberByMdn(
-				requestFix.getSourceMDN(), LockMode.UPGRADE);
-		Subscriber objDestSubscriber = coreDataWrapper.getSubscriberByMdn(
-				requestFix.getDestMDN(), LockMode.UPGRADE);
-
+		Subscriber objSourceSubscriber = null;
+		Subscriber objDestSubscriber = null;
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
 		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(
 				requestFix.getSourceMDN(), LockMode.UPGRADE);
 		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(
 				requestFix.getDestMDN(), LockMode.UPGRADE);
+		if (objSrcSubMdn != null) {
+			objSourceSubscriber = objSrcSubMdn.getSubscriber();
+		}
+		if (objDestSubMdn != null) {
+			objDestSubscriber = objDestSubMdn.getSubscriber();
+		}
 
 		Pocket objSrcPocket = coreDataWrapper.getPocketById(
 				requestFix.getSourcePocketID(), LockMode.UPGRADE);
-		Pocket objDestPocket = coreDataWrapper.getPocketById(
-				requestFix.getDestPocketID(), LockMode.UPGRADE);
+		Pocket objDestPocket = null;
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			objDestPocket = coreDataWrapper.getPocketById(
+					requestFix.getDestPocketID(), LockMode.UPGRADE);
+		} else {
+			objDestPocket = coreDataWrapper.getPocketById(requestFix.getDestPocketID());
+		}
 
 		boolean isSystemInitiatedTransaction = false;
 		if (requestFix.getIsSystemIntiatedTransaction() != null
@@ -633,13 +659,14 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						setPocketLimits(objSrcPocket, totalTransactionAmount);
 
 						if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
-								!(objDestSubMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN))) ) {
+								!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
 							setPocketLimits(objDestPocket, requestFix.getAmount());
 						}						
 						
 						//objSrcPocket.setLastTransactionTime(requestFix.getReceiveTime());
 						//objDestPocket.setLastTransactionTime(requestFix.getReceiveTime());
-						if(!CmFinoFIX.SubscriberType_Partner.equals(objDestSubMdn.getSubscriber().getType())){
+						if  ((!CmFinoFIX.SubscriberType_Partner.equals(objDestSubMdn.getSubscriber().getType())) &&
+								!(objDestSubMdn.getMDN().equals(dummySubMdn)) ){
 						      objDestSubMdn.setLastTransactionID(requestFix.getTransactionID());
 						      objDestSubMdn.setLastTransactionTime(requestFix.getReceiveTime());
 						 }
@@ -662,8 +689,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 								coreDataWrapper.save(objSrcPocket);
 							}
-							if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
-								coreDataWrapper.save(objDestPocket);
+							
+							if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
+									!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+								if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
+									coreDataWrapper.save(objDestPocket);
+								}
 							}
 					
 							coreDataWrapper.save(pct);
@@ -878,8 +909,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			activitiesLog.setISO8583_AcquiringInstIdCode(objSrcPocket
 					.getPocketTemplate().getBankCode());
 		}
-
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation
+//		coreDataWrapper.save(activitiesLog);
 
 		if (isoFix != null) {
 			return isoFix;
@@ -902,12 +933,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		BackendResponse returnFix = createResponseObject();
 
 		Subscriber subscriber = coreDataWrapper.getSubscriberByMdn(
-				toBank.getSourceMDN(), LockMode.UPGRADE);
+				toBank.getSourceMDN());
 //		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
 //				toBank.getSourceMDN(), LockMode.UPGRADE);
 
 		Pocket toBankPocket = coreDataWrapper.getPocketById(
-				toBank.getPocketID(), LockMode.UPGRADE);
+				toBank.getPocketID());
 
 		returnFix.setSourceMDN(toBank.getSourceMDN());
 		returnFix.setLanguage(subscriber.getLanguage());
@@ -926,9 +957,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //			}
 //		}
 
-		ActivitiesLog activitiesLog = coreDataWrapper
-				.getActivitiesLogByParentTransactionId(toBank
-						.getParentTransactionID());
+// [Bala] Commented the Activities log creation
+//		ActivitiesLog activitiesLog = coreDataWrapper
+//				.getActivitiesLogByParentTransactionId(toBank
+//						.getParentTransactionID());
 
 		if ((toBankPocket != null)
 				&& (!isNullOrEmpty(toBankPocket.getCardPAN()))
@@ -969,8 +1001,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				returnFix.setCurrency(subscriber.getCurrency());
 				returnFix.setResult(CmFinoFIX.ResponseCode_Success);
 				returnFix.setNfcCardBalanceCGEntries(entries);
-				activitiesLog.setIsSuccessful(Boolean.TRUE);
-				activitiesLog.setNotificationCode(NotificationCodes.BalanceInquiryCompleted.getNotificationCode());
+//				activitiesLog.setIsSuccessful(Boolean.TRUE);
+//				activitiesLog.setNotificationCode(NotificationCodes.BalanceInquiryCompleted.getNotificationCode());
 
 			} else {
 				ResponseCodes rs = ResponseCodes.getResponseCodes(1,
@@ -982,12 +1014,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				returnFix.setExternalResponseCode(rs.getExternalResponseCode());
 				returnFix.setResult(CmFinoFIX.ResponseCode_Failure);
 
-				activitiesLog.setIsSuccessful(Boolean.FALSE);
-				activitiesLog.setNotificationCode(rs.getInternalErrorCode());
+//				activitiesLog.setIsSuccessful(Boolean.FALSE);
+//				activitiesLog.setNotificationCode(rs.getInternalErrorCode());
 			}
 		}
 
-		coreDataWrapper.save(activitiesLog);
+//		coreDataWrapper.save(activitiesLog);
 
 		returnFix.setSourceMDN(toBank.getSourceMDN());
 		returnFix.setLanguage(subscriber.getLanguage());
@@ -1224,10 +1256,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		responseFix.copy(requestFix);
 
 		ActivitiesLog activitiesLog = new ActivitiesLog();
-		Subscriber subscriber = coreDataWrapper.getSubscriberByMdn(
-				requestFix.getSourceMDN(), LockMode.UPGRADE);
+		Subscriber subscriber = null;
 		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
 				requestFix.getSourceMDN(), LockMode.UPGRADE);
+		if (subscriberMdn != null) {
+			subscriber = subscriberMdn.getSubscriber();
+		}
 
 		Pocket moneyPocket = coreDataWrapper.getPocketById(requestFix
 				.getPocketID());
@@ -1399,12 +1433,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		log.debug("before save activities log BankServiceDefaultImpl:onBalanceInquiry():: isoFix==null="
 				+ (isoFix == null));
 
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation
+//		coreDataWrapper.save(activitiesLog);
 
 		log.debug("BankServiceDefaultImpl:onBalanceInquiry():: isoFix==null="
 				+ (isoFix == null));
-		log.info("activitiesLog.getParentTransactionId()="
-				+ activitiesLog.getParentTransactionID());
+//		log.info("activitiesLog.getParentTransactionId()="
+//				+ activitiesLog.getParentTransactionID());
 
 		if (isoFix != null) {
 			return isoFix;
@@ -1426,21 +1461,32 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		ActivitiesLog activitiesLog = new ActivitiesLog();
 		PendingCommodityTransfer pct = null;
 
-		Subscriber objSourceSubscriber = coreDataWrapper.getSubscriberByMdn(
-				confirmationToBank.getSourceMDN(), LockMode.UPGRADE);
-		Subscriber objDestSubscriber = coreDataWrapper.getSubscriberByMdn(
-				confirmationToBank.getDestMDN(), LockMode.UPGRADE);
-
+		Subscriber objSourceSubscriber = null;
+		Subscriber objDestSubscriber = null;
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
 		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(
 				confirmationToBank.getSourceMDN(), LockMode.UPGRADE);
 		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(
 				confirmationToBank.getDestMDN(), LockMode.UPGRADE);
+		if (objSrcSubMdn != null) {
+			objSourceSubscriber = objSrcSubMdn.getSubscriber();
+		}
+		if (objDestSubMdn != null) {
+			objDestSubscriber = objDestSubMdn.getSubscriber();
+		}
 
 		Pocket objSrcPocket = coreDataWrapper.getPocketById(
 				confirmationToBank.getSourcePocketID(), LockMode.UPGRADE);
-		Pocket objDestPocket = coreDataWrapper.getPocketById(
-				confirmationToBank.getDestPocketID(), LockMode.UPGRADE);
-
+		Pocket objDestPocket = null;
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			objDestPocket = coreDataWrapper.getPocketById(
+					confirmationToBank.getDestPocketID(), LockMode.UPGRADE);
+		} else {
+			objDestPocket = coreDataWrapper.getPocketById(confirmationToBank.getDestPocketID());
+		}		
+				
 //		Pocket suspensePocket = coreDataWrapper.getSuspensePocketWithLock();
 //		Pocket chargesPocket = coreDataWrapper.getChargesPocketWithLock();
 //		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocketWithLock();
@@ -2106,8 +2152,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 		if (pct != null)
 			activitiesLog.setTransferID(pct.getID());
-
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation
+//		coreDataWrapper.save(activitiesLog);
 
 		if (isoFix != null) {
 			return isoFix;
@@ -3241,10 +3287,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		responseFix.copy(getBankAccountTransations);
 
 		ActivitiesLog activitiesLog = new ActivitiesLog();
-		Subscriber subscriber = coreDataWrapper.getSubscriberByMdn(
-				getBankAccountTransations.getSourceMDN(), LockMode.UPGRADE);
+		Subscriber subscriber = null;
 		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
 				getBankAccountTransations.getSourceMDN(), LockMode.UPGRADE);
+		if (subscriberMdn != null) {
+			subscriber = subscriberMdn.getSubscriber();
+		}
 
 		Pocket moneyPocket = coreDataWrapper
 				.getPocketById(getBankAccountTransations.getPocketID());
@@ -3348,13 +3396,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 		log.debug("before save activities log BankServiceDefaultImpl:onGetBankHistory:: isoFix==null="
 				+ (isoFix == null));
-
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation
+//		coreDataWrapper.save(activitiesLog);
 
 		log.debug("BankServiceDefaultImpl:onGetBankHistory():: isoFix==null="
 				+ (isoFix == null));
-		log.info("activitiesLog.getParentTransactionId()="
-				+ activitiesLog.getParentTransactionID());
+//		log.info("activitiesLog.getParentTransactionId()="
+//				+ activitiesLog.getParentTransactionID());
 
 		if (isoFix != null) {
 			return isoFix;
@@ -3376,26 +3424,26 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		BackendResponse returnFix = createResponseObject();
 
 		Subscriber subscriber = coreDataWrapper.getSubscriberByMdn(
-				toBank.getSourceMDN(), LockMode.UPGRADE);
-		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
-				toBank.getSourceMDN(), LockMode.UPGRADE);
+				toBank.getSourceMDN());
+//		SubscriberMDN subscriberMdn = coreDataWrapper.getSubscriberMdn(
+//				toBank.getSourceMDN(), LockMode.UPGRADE);
 
 		Pocket toBankPocket = coreDataWrapper.getPocketById(toBank
 				.getPocketID());
 
-		returnFix.setSourceMDN(subscriberMdn.getMDN());
+		returnFix.setSourceMDN(toBank.getSourceMDN());
 		returnFix.setLanguage(subscriber.getLanguage());
-
-		returnFix = validationService.validateBankAccountSubscriber(subscriber,
-				subscriberMdn, toBankPocket, toBank.getPin(), true, false,
-				false, false);
-
-		log.info("BankServiceDefaultServiceImpl : onGetBankHistoryFromBank : validateBankAccountSubscriber "
-				+ returnFix.getInternalErrorCode());
-
-		if (!isNullorZero(returnFix.getInternalErrorCode())) {
-			return returnFix;
-		}
+//[Bala] Commented because of no need to validate the subscriber again after getting the response from thirdparty.
+//		returnFix = validationService.validateBankAccountSubscriber(subscriber,
+//				subscriberMdn, toBankPocket, toBank.getPin(), true, false,
+//				false, false);
+//
+//		log.info("BankServiceDefaultServiceImpl : onGetBankHistoryFromBank : validateBankAccountSubscriber "
+//				+ returnFix.getInternalErrorCode());
+//
+//		if (!isNullorZero(returnFix.getInternalErrorCode())) {
+//			return returnFix;
+//		}
 
 		if ((toBankPocket != null)
 				&& (!isNullOrEmpty(toBankPocket.getCardPAN()))
@@ -3412,9 +3460,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		}
 		log.info("BankServiceDefaultImpl : onGetBankHistoryFromBank  : Response from bank="
 				+ fromBank.getResponseCode());
-		ActivitiesLog activitiesLog = coreDataWrapper
-				.getActivitiesLogByParentTransactionId(toBank
-						.getParentTransactionID());
+// [Bala] Commented the Activities log creation
+//		ActivitiesLog activitiesLog = coreDataWrapper
+//				.getActivitiesLogByParentTransactionId(toBank
+//						.getParentTransactionID());
 		if (!isNullOrEmpty(fromBank.getResponseCode())
 				&& ResponseCodes.ISO_ResponseCode_Success
 						.getExternalResponseCode().equals(
@@ -3424,10 +3473,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					.setInternalErrorCode(NotificationCodes.BankAccountTransactionDetails
 							.getInternalErrorCode());
 
-			activitiesLog.setIsSuccessful(Boolean.TRUE);
-			activitiesLog
-					.setNotificationCode(NotificationCodes.BankAccountTransactionDetails
-							.getNotificationCode());
+//			activitiesLog.setIsSuccessful(Boolean.TRUE);
+//			activitiesLog
+//					.setNotificationCode(NotificationCodes.BankAccountTransactionDetails
+//							.getNotificationCode());
 
 		} else {
 			ResponseCodes rs = ResponseCodes.getResponseCodes(1,
@@ -3439,11 +3488,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			returnFix.setExternalResponseCode(rs.getExternalResponseCode());
 			returnFix.setResult(CmFinoFIX.ResponseCode_Failure);
 
-			activitiesLog.setIsSuccessful(Boolean.FALSE);
-			activitiesLog.setNotificationCode(rs.getInternalErrorCode());
+//			activitiesLog.setIsSuccessful(Boolean.FALSE);
+//			activitiesLog.setNotificationCode(rs.getInternalErrorCode());
 		}
 
-		coreDataWrapper.save(activitiesLog);
+//		coreDataWrapper.save(activitiesLog);
 
 		returnFix.setSourceMDN(toBank.getSourceMDN());
 		returnFix.setLanguage(subscriber.getLanguage());
@@ -3539,15 +3588,22 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		
 		/*Fetching the record before modifying it and commit when all updates are done, to avoid Stale Object exceptions 
 		 when cleaning up of pending transfers,in which same subscriber is involved in multiple transactions*/
-		
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;		
 		Pocket objSrcPocket = coreDataWrapper.getPocketById(pendingTransfer.getPocketBySourcePocketID().getID(), LockMode.UPGRADE);
 		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(pendingTransfer.getSourceMDN());
 		Subscriber objSourceSubscriber = objSrcSubMdn.getSubscriber();
 		
-		Pocket objDestPocket = coreDataWrapper.getPocketById(
-				pendingTransfer.getDestPocketID(), LockMode.UPGRADE);
-		SubscriberMDN objDestSubMdn = coreDataWrapper
-				.getSubscriberMdn(pendingTransfer.getDestMDN());
+		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(pendingTransfer.getDestMDN());
+		Subscriber objDestSubscriber = objDestSubMdn.getSubscriber();
+		Pocket objDestPocket = null;
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			objDestPocket = coreDataWrapper.getPocketById(
+					pendingTransfer.getDestPocketID(), LockMode.UPGRADE);
+		} else {
+			objDestPocket = coreDataWrapper.getPocketById(pendingTransfer.getDestPocketID());
+		}
 
 		BigDecimal amount = pendingTransfer.getAmount();
 		BigDecimal transferAmountWithCharges = amount.add(pendingTransfer
@@ -3574,16 +3630,19 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				pendingTransfer);
 		
 		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
-				!(objDestSubMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN))) ) {
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
 			BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
 		}		
 		if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 		coreDataWrapper.save(objSrcPocket);
 		}
-		if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
-		coreDataWrapper.save(objDestPocket);
+		
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
+				coreDataWrapper.save(objDestPocket);
+			}
 		}
-
 		log.info(":: OnRevertOfTransferInquiryToBank() Reverted Pocket Limits: "
 				+ pendingTransferID);
 
@@ -3623,7 +3682,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			coreDataWrapper.save(pendingTransfer);
 			handlePCTonFailure(pendingTransfer);
 		}
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation		
+//		coreDataWrapper.save(activitiesLog);
 
 		log.info(":: OnRevertOfTransferInquiry() completed and moved to ct with status failed for pct: "
 				+ pendingTransferID);
@@ -3644,10 +3704,19 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		Subscriber objSourceSubscriber = pendingTransfer
 				.getSubscriberBySourceSubscriberID();
 
-		Pocket objDestPocket = coreDataWrapper.getPocketById(
-				pendingTransfer.getDestPocketID(), LockMode.UPGRADE);
 		SubscriberMDN objDestSubMdn = coreDataWrapper
 				.getSubscriberMdn(pendingTransfer.getDestMDN());
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;		
+		
+		Pocket objDestPocket = null;
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			objDestPocket = coreDataWrapper.getPocketById(
+					pendingTransfer.getDestPocketID(), LockMode.UPGRADE);
+		} else {
+			objDestPocket = coreDataWrapper.getPocketById(pendingTransfer.getDestPocketID());
+		}		
 
 		BigDecimal amount = pendingTransfer.getAmount();
 		BigDecimal transferAmountWithCharges = amount.add(pendingTransfer
@@ -3673,16 +3742,19 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				pendingTransfer);
 		
 		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
-				!(objDestSubMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN))) ) {
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
 			BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
 		}
 		if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 		coreDataWrapper.save(objSrcPocket);
 		}
-		if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
-		coreDataWrapper.save(objDestPocket);
-		}   
-
+		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType().intValue()) &&
+				!(objDestSubMdn.getMDN().equals(dummySubMdn)) ) {
+			if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
+				coreDataWrapper.save(objDestPocket);
+			}   
+		}
+		
 //		List<Ledger> ledgerEntries = coreDataWrapper
 //				.getLedgerEntriesByTransferID(pendingTransfer.getID());
 //		for (Ledger ledger : ledgerEntries) {
@@ -3736,7 +3808,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			coreDataWrapper.save(pendingTransfer);
 			handlePCTonFailure(pendingTransfer);
 		}
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation		
+//		coreDataWrapper.save(activitiesLog);
 
 		log.info(":: onRevertOfTransferConfirmation() completed and moved to ct with status failed for pct: "
 				+ pendingTransferID);
@@ -3873,7 +3946,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		}
 		coreDataWrapper.save(pendingTransfer);
 		handlePCTonSuccess(pendingTransfer);
-		coreDataWrapper.save(activitiesLog);
+// [Bala] Commented the Activities log creation		
+//		coreDataWrapper.save(activitiesLog);
 
 		log.info(":: onResolveCompleteOfTransfer() completed and moved to ct with status success for pct: "
 				+ pendingTransferID);

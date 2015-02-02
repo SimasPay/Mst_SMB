@@ -4,13 +4,11 @@
  */
 package com.mfino.dao;
 
-import com.mfino.constants.DAOConstants;
-import com.mfino.dao.query.CommodityTransferQuery;
-import com.mfino.domain.Company;
-import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.Pocket;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.hibernate.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -24,11 +22,13 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.mfino.constants.DAOConstants;
+import com.mfino.dao.query.CommodityTransferQuery;
+import com.mfino.domain.Company;
+import com.mfino.domain.PendingCommodityTransfer;
+import com.mfino.domain.Pocket;
+import com.mfino.fix.CmFinoFIX;
+import com.mfino.hibernate.Timestamp;
 
 /**
  * 
@@ -427,4 +427,11 @@ public class PendingCommodityTransferDAO extends BaseDAO<PendingCommodityTransfe
          super.save(pct);
     }
 
+    public int getCountOfPendingPCT() {
+		String countQuery = "select count(*) from PendingCommodityTransfer where TransferStatus = 21";
+		int countOfPct = getSession().createQuery(countQuery).executeUpdate();
+		getSession().flush();
+		getSession().clear();
+		return countOfPct;
+    }
 }

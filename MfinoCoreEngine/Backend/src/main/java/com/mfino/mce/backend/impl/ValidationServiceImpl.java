@@ -20,6 +20,7 @@ import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SystemParameters;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
@@ -242,8 +243,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		// Modified to do the mPin validation for all the transactions irrespective of source pocket type.
 		// Skip the mPin validation for System Initiated Transactions
 		if((isSource) && !("mFino260".equals(rPin)) && !(isSystemInitiatedTransaction)){
-
-			String pinValid = mfinoUtilService.validatePin( subscriberMdn.getMDN(), rPin, subscriberMdn.getDigestedPIN());
+			SystemParameters pinLengthParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PIN_LENGTH);
+			int pinlength = Integer.parseInt(pinLengthParam.getParameterValue());
+			String pinValid = mfinoUtilService.validatePin( subscriberMdn.getMDN(), rPin, subscriberMdn.getDigestedPIN(), pinlength);
 
 			if(pinValid.equals(GeneralConstants.LOGIN_RESPONSE_SUCCESS)){
 				if(subscriberMdn.getWrongPINCount() > 0){
@@ -254,8 +256,8 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			else if(pinValid.equals(GeneralConstants.LOGIN_RESPONSE_FAILED)){
 				log.error("Invalid PIN entered MDN="+subscriberMdn.getMDN());
 				subscriberMdn.setWrongPINCount(subscriberMdn.getWrongPINCount() + 1);
-				SystemParametersServiceImpl systemParametersServiceImpl = new SystemParametersServiceImpl();
-				int maxWrongPinCount = systemParametersServiceImpl.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT);
+				SystemParameters wrongPinCountParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.MAX_WRONGPIN_COUNT);
+				int maxWrongPinCount = (wrongPinCountParam.getParameterValue() != null) ? Integer.parseInt(wrongPinCountParam.getParameterValue()) : 3; 
 				if (subscriberMdn.getWrongPINCount() >= maxWrongPinCount) {
 					Timestamp now = new Timestamp();
 					subscriberMdn.setRestrictions(subscriberMdn.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
@@ -398,6 +400,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount,
 			SubscriberMDN srcSubscriberMdn, SubscriberMDN destSubscriberMdn){
 		//TODO::Handle if the arguments are null;
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
+
 		BackendResponse responseFix = createResponseObject();
 		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType().intValue()) && 
 				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplate().getType().intValue()) ) {
@@ -408,7 +413,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		if(responseFix!=null && isNullorZero(responseFix.getInternalErrorCode())){
 			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType().intValue()) && 
 					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplate().getType().intValue())) ||
-					(destSubscriberMdn.getMDN().equals(systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN)))) {
+					(destSubscriberMdn.getMDN().equals(dummySubMdn))) {
 				responseFix.setInternalErrorCode(null);
 			} else {
 				responseFix = validateRisksAndLimits(destinationPocket, creditAmount, false);
@@ -444,6 +449,13 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		}
 		
 		if(pocket.getPocketTemplate().getIsSuspencePocket()!=null&&pocket.getPocketTemplate().getIsSuspencePocket()){
+			responseFix.setInternalErrorCode(null);
+//			pocket.setLastTransactionTime(now);
+			
+			return responseFix;
+		}
+		
+		if(pocket.getPocketTemplate().getIsSystemPocket()!=null&&pocket.getPocketTemplate().getIsSystemPocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			

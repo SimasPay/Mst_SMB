@@ -1,0 +1,1 @@
+ALTER TABLE interbank_transfers ADD INDEX i_sctlid_interbank_transfers(sctlid);

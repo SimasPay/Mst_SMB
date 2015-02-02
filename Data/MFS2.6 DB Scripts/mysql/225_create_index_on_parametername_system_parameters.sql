@@ -1,0 +1,1 @@
+ALTER TABLE system_parameters ADD INDEX i_parametername(parametername);

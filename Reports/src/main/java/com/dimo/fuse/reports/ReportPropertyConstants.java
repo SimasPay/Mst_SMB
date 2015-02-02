@@ -68,5 +68,6 @@ public class ReportPropertyConstants {
 	public static final String ADMINAPP_CHANNEL_NAME ="channelName";
 	public static final String ADMINAPP_BANK_RRN ="bankRRN";
 	public static final String ADMINAPP_EMAIL = "email";
+	public static final String ADMINAPP_USERNAME = "userName";
 	
 }

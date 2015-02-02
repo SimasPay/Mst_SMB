@@ -1,0 +1,1 @@
+ALTER TABLE activities_log ADD INDEX i_parent_txn_id_activities_log(ParentTransactionID);

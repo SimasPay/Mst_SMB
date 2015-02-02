@@ -109,7 +109,7 @@
 
 		<route>
 			<from uri="jms:notificationQueue?disableReplyTo=true" />
-			<threads maxPoolSize="10">
+			<threads maxPoolSize="50">
 				<to uri="bean:notificationService?method=processMessage" />
 				<process ref="notificationSplitter" />
 				<to uri="jms:FixReplyQueue?disableReplyTo=true" />

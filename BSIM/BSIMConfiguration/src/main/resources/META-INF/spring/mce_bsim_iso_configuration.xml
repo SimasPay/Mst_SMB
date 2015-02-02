@@ -206,14 +206,14 @@
     </route>
     <route>
         <from uri="direct:b"/>
-        <threads threadName="Threads" poolSize="10">
+        <threads threadName="Threads" poolSize="10" maxPoolSize="50">
             <to uri="bean:bsimFrontendService?method=processMessage"/>
             <bean method="processMessage" ref="jposCommuniator"/>
         </threads>
     </route>
     <route>
         <from ref="isoResponseEndpoint"/>
-        <threads threadName="Threads" poolSize="10">
+        <threads threadName="Threads" poolSize="10" maxPoolSize="50">
             <to uri="log:isoServerReply"/>
             <process ref="headerSetter"/>
             <to uri="jms:bsimAggQueue?disableReplyTo=true"/>

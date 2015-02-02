@@ -5,6 +5,8 @@
 package com.mfino.service.impl;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -125,7 +127,58 @@ public class MailServiceImpl  implements MailService{
 	  email.send();
   }
 
-
+  private void sendMail(String toAddress, String toName, String subject, String message, List<File> attachments) {
+	  log.info("Sending Reports Mail to " + toAddress);
+	  try{
+			MultiPartEmail email = new MultiPartEmail();
+			email.setHostName(ConfigurationUtil.getMailServer());
+			email.setSmtpPort(ConfigurationUtil.getMailServerPort());
+		    if (ConfigurationUtil.getMailServerRequireAuth()) {
+		      email.setAuthenticator(new DefaultAuthenticator(ConfigurationUtil.getMailServerAuthName(), 
+		    		  ConfigurationUtil.getMailServerAuthPassword()));
+		    }
+		    email.setFrom(ConfigurationUtil.getMailServerAuthName(), ConfigurationUtil.getMailServerFromName());
+		    if (ConfigurationUtil.getMailServerRequireSSL()) {
+		      email.setTLS(true);
+		      email.getMailSession().getProperties().put("mail.smtp.socketFactory.class", MAIL_SMTP_SOCKET_FACTORY_CLASS);
+		    }
+		    email.addTo(toAddress, toName);
+		    if(StringUtils.isNotBlank(subject)){
+		    	email.setSubject(subject);
+		    }
+		    if(StringUtils.isNotBlank(message)){
+		    	email.setMsg(message);
+		    }
+		    Iterator<File> it = attachments.iterator();
+		    while(it.hasNext()){
+		    	File attachmentFile = it.next();
+		    	if (attachmentFile.exists()) {
+		    		log.info("Attaching file " + attachmentFile.getName());
+		    		EmailAttachment attachment = new EmailAttachment();
+		    		attachment.setPath(attachmentFile.getAbsolutePath());
+		    		attachment.setDisposition(EmailAttachment.ATTACHMENT);
+		    		attachment.setDescription(attachmentFile.getName());
+		    		attachment.setName(attachmentFile.getName());
+		    		email.attach(attachment);
+		    	}
+		    }
+		    email.send();
+		    log.info("Successfully Sent Mail to " + toAddress );
+	  }catch(Exception e){
+		  log.error("Error while sending mail to " + toAddress ,e);
+	  }
+  }
+  
+  public void asyncSendMail(final String toAddress, final String toName, final String subject, final String message, final List<File> attachments) {
+	  threadPool.execute(new Runnable() {
+		
+		@Override
+		public void run() {
+			sendMail(toAddress, toName, subject, message, attachments);
+		}
+	});
+  }
+  
   public void sendMail(String toAddress, String toName, String subject,
       String message, File attachmentFile) throws EmailException {
     MultiPartEmail email = new MultiPartEmail();

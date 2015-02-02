@@ -26,7 +26,7 @@
         	<param name="ContextPrinting" value="true"/>
         	<param name="CategoryPrefixing" value="true"/>
         	<param name="DateFormat" value="ABSOLUTE"/>
-        	<param name="TimeZone" value="GMT+5:30"/>
+        	<!-- param name="TimeZone" value="GMT+5:30"/-->
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="info" />

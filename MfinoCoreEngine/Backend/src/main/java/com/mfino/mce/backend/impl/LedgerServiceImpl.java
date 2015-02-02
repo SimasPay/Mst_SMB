@@ -125,6 +125,8 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		}
 		else if ((pocket.getPocketTemplate().getIsSuspencePocket() != null) && pocket.getPocketTemplate().getIsSuspencePocket()) {
 			isImmediateUpdateRequired = false;
+		}else if ((pocket.getPocketTemplate().getIsSystemPocket() != null) && pocket.getPocketTemplate().getIsSystemPocket()) {
+			isImmediateUpdateRequired = false;
 		}
 		else if (pocket.getID().equals(globalSVAPocket.getID()) ) {
 			isImmediateUpdateRequired = false;

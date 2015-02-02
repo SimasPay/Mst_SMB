@@ -107,7 +107,7 @@
   		<camel:routeBuilder ref="fixRouter"/>
   		<route>
   			<from uri="jms:fixServiceQueue?disableReplyTo=true"/>
-  			<threads poolSize="10">
+  			<threads poolSize="10" maxPoolSize="50">
   				<to uri="bean:fixService?method=processMessage"/>
   				<to uri="jms:backendServiceQueue?disableReplyTo=true"/>
   			</threads>

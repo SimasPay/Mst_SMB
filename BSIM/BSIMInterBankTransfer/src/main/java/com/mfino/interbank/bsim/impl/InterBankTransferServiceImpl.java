@@ -73,7 +73,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 
 		InterBankCode interBankCode = interbankService.getBankCode(interBankFundsTransferInquiry.getDestBankCode());
 		String bankCode = interBankFundsTransferInquiry.getDestBankCode();
-		Pocket destinationPocket = interbankService.getIBDestinationPocket();
+//		Pocket destinationPocket = interbankService.getIBDestinationPocket();
 		
 		if(!interbankService.isIBTRestricted(bankCode)){
 			log.info("Inter Bank transfer restricted bank code="+bankCode);
@@ -88,7 +88,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		Pocket sourcePocket = getPocketFromId(interBankFundsTransferInquiry.getSourcePocketID());
 		InterbankTransfer ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, sourcePocket, interBankCode);
 		
-		interBankFundsTransferInquiry.setDestPocketID(destinationPocket.getID());
+//		interBankFundsTransferInquiry.setDestPocketID(destinationPocket.getID());
 		interBankFundsTransferInquiry.setMessageType(CmFinoFIX.MsgType_InterBankFundsTransferInquiry);
 		interBankFundsTransferInquiry.setParentTransactionID(0L);
 		

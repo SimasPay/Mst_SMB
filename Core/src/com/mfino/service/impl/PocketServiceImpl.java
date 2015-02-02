@@ -765,6 +765,11 @@ public class PocketServiceImpl implements PocketService{
 		if(pocketTemplate.getIsSuspencePocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
+		
+		//check for not to add system pocket to subscriber
+		if(pocketTemplate.getIsSystemPocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+			return false;
+		}
 		return true;
 	}
 

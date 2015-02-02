@@ -174,39 +174,67 @@ public class ReportTool {
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat(ReportSchedulerProperties.getProperty("dateFormatInReportQuery"));
 		if (reportParameters.getEndTime() != null) {
-			query = query.replace("${EndTime}",
-					"'" + dateFormat.format(reportParameters.getEndTime())
-							+ "'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				Date endGMTDate = new Date(reportParameters.getEndTime().getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${EndTime}",	"'" + dateFormat.format(endGMTDate)	+ "'");
+			} else {
+				query = query.replace("${EndTime}", "'" + dateFormat.format(reportParameters.getEndTime()) + "'");
+			}
 		} else {
-			query = query.replace("${EndTime}",
-					"'" + dateFormat.format(new Date()) + "'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				Date endGMTDate = new Date(new Date().getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${EndTime}", "'" + dateFormat.format(endGMTDate) + "'");
+			} else {
+				query = query.replace("${EndTime}", "'" + dateFormat.format(new Date()) + "'");
+			}			
 		}
 		
 		if (reportParameters.getStartTime() != null) {
-			query = query.replace("${StartTime}",
-					"'" + dateFormat.format(reportParameters.getStartTime())
-							+ "'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				Date startGMTDate = new Date(reportParameters.getStartTime().getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${StartTime}", "'" + dateFormat.format(startGMTDate) + "'");
+			} else {
+				query = query.replace("${StartTime}", "'" + dateFormat.format(reportParameters.getStartTime()) + "'");
+			}
 		} else {
-			query = query.replace("${StartTime}",
-					"'" + dateFormat.format(new Date(0)) + "'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				Date startGMTDate = new Date(new Date(0).getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${StartTime}", "'" + dateFormat.format(startGMTDate) + "'");
+			} else {
+				query = query.replace("${StartTime}", "'" + dateFormat.format(new Date(0)) + "'");
+			}			
 		}
 		
 		if (reportParameters.getFromUpdatedDate() != null) {
-			query = query.replace("${FromLastUpdateTime}",
-					"'" + dateFormat.format(reportParameters.getFromUpdatedDate())
-							+ "'");
+			if (DB_DRIVERS.equals("oracle.jdbc.OracleDriver")) {
+				Date updatedGMTDate = new Date(reportParameters.getFromUpdatedDate().getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${FromLastUpdateTime}", "'" + dateFormat.format(updatedGMTDate) + "'");
+			} else {
+				query = query.replace("${FromLastUpdateTime}", "'" + dateFormat.format(reportParameters.getFromUpdatedDate()) + "'");
+			}
 		} else {
-			query = query.replace("${FromLastUpdateTime}",
-					"'" + dateFormat.format(new Date(0)) + "'");
+			if (DB_DRIVERS.equals("oracle.jdbc.OracleDriver")) {
+				Date updatedGMTDate = new Date(new Date(0).getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${FromLastUpdateTime}", "'" + dateFormat.format(updatedGMTDate) + "'");
+			} else {
+				query = query.replace("${FromLastUpdateTime}", "'" + dateFormat.format(new Date(0)) + "'");
+			}
 		}
 		
-		if (reportParameters.getFromUpdatedDate() != null) {
-			query = query.replace("${ToLastUpdateTime}",
-					"'" + dateFormat.format(reportParameters.getToUpdatedDate())
-							+ "'");
+		if (reportParameters.getToUpdatedDate() != null) {
+			if (DB_DRIVERS.equals("oracle.jdbc.OracleDriver")) {
+				Date toUpdatedGMTDate = new Date(reportParameters.getToUpdatedDate().getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${ToLastUpdateTime}", "'" + dateFormat.format(toUpdatedGMTDate) + "'");
+			} else {
+				query = query.replace("${ToLastUpdateTime}", "'" + dateFormat.format(reportParameters.getToUpdatedDate()) + "'");
+			}
 		} else {
-			query = query.replace("${ToLastUpdateTime}",
-					"'" + dateFormat.format(new Date()) + "'");
+			if (DB_DRIVERS.equals("oracle.jdbc.OracleDriver")) {
+				Date toUpdatedGMTDate = new Date(new Date().getTime() - TimeZone.getDefault().getRawOffset());
+				query = query.replace("${ToLastUpdateTime}", "'" + dateFormat.format(toUpdatedGMTDate) + "'");
+			} else {
+				query = query.replace("${ToLastUpdateTime}", "'" + dateFormat.format(new Date()) + "'");				
+			}
 		}
 
 		if (reportProperties

@@ -1,0 +1,1 @@
+ALTER TABLE integration_summary ADD INDEX i_sctlid_integration_summary(sctlid);

@@ -4,6 +4,7 @@ import static com.mfino.mce.core.util.MCEUtil.isNullOrEmpty;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -96,6 +97,9 @@ public class CoreDataWrapper
 	
 	
 	private String globalAccountNumber = null;
+	
+	private static HashMap<String, Pocket> systemPocketsMap = new HashMap<String, Pocket>();
+	private static HashMap<String, SystemParameters> systemParametersMap = new HashMap<String, SystemParameters>();
 
 	public PendingCommodityTransferDAO getPendingCommodityTransferDAO() {
 		return pendingCommodityTransferDAO;
@@ -310,7 +314,7 @@ public class CoreDataWrapper
 		NotificationQuery query = new NotificationQuery();
 		query.setNotificationCode(notificationCode);
 		if(language == null) {
-			SystemParameters langSysparam = systemParameterDao.getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+			SystemParameters langSysparam = getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER); 
 			language = Integer.parseInt(langSysparam.getParameterValue());
 		}
 		query.setLanguage(language);
@@ -344,22 +348,26 @@ public class CoreDataWrapper
 
 
 	public Pocket getSuspensePocket(){
-		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.SUSPENSE_POCKET_ID_KEY);
+		Pocket result = null;
+		result = systemPocketsMap.get(MCEUtil.SUSPENSE_POCKET_ID_KEY);
+		if (result == null) {
+			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.SUSPENSE_POCKET_ID_KEY); 
 
-		if(systemParameter != null){
-			Long suspensePocketId = Long.valueOf(systemParameter.getParameterValue());
-			Pocket suspensePocket = pocketDAO.getById(suspensePocketId);
+			if(systemParameter != null){
+				Long suspensePocketId = Long.valueOf(systemParameter.getParameterValue());
+				Pocket suspensePocket = pocketDAO.getById(suspensePocketId);
 
-			if(null == suspensePocket.getCurrentBalance()){
-				suspensePocket.setCurrentBalance(BigDecimal.valueOf(0));
+				if(null == suspensePocket.getCurrentBalance()){
+					suspensePocket.setCurrentBalance(BigDecimal.valueOf(0));
+				}
+				result = suspensePocket;
+				systemPocketsMap.put(MCEUtil.SUSPENSE_POCKET_ID_KEY, suspensePocket);
 			}
-
-			return suspensePocket;
 		}
-
-		return null;
+		return result;
 	}
 
+	@Deprecated
 	public Pocket getSuspensePocketWithLock(){
 		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.SUSPENSE_POCKET_ID_KEY);
 
@@ -378,22 +386,27 @@ public class CoreDataWrapper
 	}
 	
 	public Pocket getGlobalSVAPocket(){
-		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY);
+		Pocket result = null;
+		result = systemPocketsMap.get(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY);
+		
+		if (result == null) {
+			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY); 
 
-		if(systemParameter != null){
-			Long globalSVAPocketId = Long.valueOf(systemParameter.getParameterValue());
-			Pocket globalSVAPocket = pocketDAO.getById(globalSVAPocketId);
+			if(systemParameter != null){
+				Long globalSVAPocketId = Long.valueOf(systemParameter.getParameterValue());
+				Pocket globalSVAPocket = pocketDAO.getById(globalSVAPocketId);
 
-			if(null == globalSVAPocket.getCurrentBalance()){
-				globalSVAPocket.setCurrentBalance(BigDecimal.valueOf(0));
+				if(null == globalSVAPocket.getCurrentBalance()){
+					globalSVAPocket.setCurrentBalance(BigDecimal.valueOf(0));
+				}
+				result = globalSVAPocket;
+				systemPocketsMap.put(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY, globalSVAPocket);
 			}
-
-			return globalSVAPocket;
 		}
-
-		return null;
+		return result;
 	}
 
+	@Deprecated
 	public Pocket getGlobalSVAPocketWithLock(){
 		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY);
 
@@ -412,22 +425,26 @@ public class CoreDataWrapper
 	}
 	
 	public Pocket getChargesPocket(){
-		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.CHARGES_POCKET_ID_KEY);
+		Pocket result = null;
+		result = systemPocketsMap.get(MCEUtil.CHARGES_POCKET_ID_KEY);
+		if (result == null) {
+			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.CHARGES_POCKET_ID_KEY); 
 
-		if(systemParameter != null){
-			Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
-			Pocket chargesPocket =  pocketDAO.getById(chargesPocketId);
+			if(systemParameter != null){
+				Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
+				Pocket chargesPocket =  pocketDAO.getById(chargesPocketId);
 
-			if(null == chargesPocket.getCurrentBalance()){
-				chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+				if(null == chargesPocket.getCurrentBalance()){
+					chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+				}
+				result = chargesPocket;
+				systemPocketsMap.put(MCEUtil.CHARGES_POCKET_ID_KEY, chargesPocket);
 			}
-
-			return chargesPocket;
 		}
-
-		return null;
+		return result;
 	}
 
+	@Deprecated
 	public Pocket getChargesPocketWithLock(){
 		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.CHARGES_POCKET_ID_KEY);
 
@@ -446,25 +463,29 @@ public class CoreDataWrapper
 	}
 	
 	public Pocket getPocket(String key, LockMode lockmode) {
+		Pocket result = null;
 		if (StringUtils.isNotBlank(key)) {
-			SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(key);
+			result = systemPocketsMap.get(key);
+			if (result == null) {
+				SystemParameters systemParameter = getSystemParameterByName(key); 
+				if(systemParameter != null){
+					Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
+					Pocket chargesPocket;
+					
+					if( lockmode==null )
+					   chargesPocket =  pocketDAO.getById(chargesPocketId);
+					else
+					   chargesPocket =  pocketDAO.getById(chargesPocketId,lockmode);
 
-			if(systemParameter != null){
-				Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
-				Pocket chargesPocket;
-				
-				if( lockmode==null )
-				   chargesPocket =  pocketDAO.getById(chargesPocketId);
-				else
-				   chargesPocket =  pocketDAO.getById(chargesPocketId,lockmode);
-
-				if(null == chargesPocket.getCurrentBalance()){
-					chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+					if(null == chargesPocket.getCurrentBalance()){
+						chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+					}
+					result = chargesPocket;
+					systemPocketsMap.put(key, chargesPocket);
 				}
-				return chargesPocket;
-			}			
+			}
 		}
-		return null;
+		return result;
 	}
 	
 	public Pocket getPocket(String key) {
@@ -562,11 +583,17 @@ public class CoreDataWrapper
 	}
 
 	public SystemParameters getSystemParameterByName(String parameterName){
-		return systemParameterDao.getSystemParameterByName(parameterName);
+		SystemParameters result = null;
+		result = systemParametersMap.get(parameterName);
+		if (result == null) {
+			result = systemParameterDao.getSystemParameterByName(parameterName);
+			systemParametersMap.put(parameterName, result);
+		}
+		return result;
 	}
 
 	public String getPlatformMdn(){ 
-		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.PLATFORM_DUMMY_MDN_KEY);
+		SystemParameters systemParameter = getSystemParameterByName(MCEUtil.PLATFORM_DUMMY_MDN_KEY);
 
 		if(systemParameter != null){
 			String mdn = systemParameter.getParameterValue();
@@ -581,7 +608,7 @@ public class CoreDataWrapper
 		//Also as subscribers increase the pocket table size increases so querying database for every request
 		//is unnecessary
 		if(globalAccountNumber==null){
-			SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.GLOBAL_ACCOUNT_KEY);
+			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.GLOBAL_ACCOUNT_KEY); 
 			if(systemParameter != null){
 				Long globalPocketId = Long.valueOf(systemParameter.getParameterValue());
 				Pocket globalPocket =  pocketDAO.getById(globalPocketId);
@@ -602,6 +629,10 @@ public class CoreDataWrapper
 
 	public List<PendingCommodityTransfer> getAllPendingTransfers() {
 		return pendingCommodityTransferDAO.getAll();
+	}
+	
+	public int getCountOfPendingPCT() {
+		return pendingCommodityTransferDAO.getCountOfPendingPCT();
 	}
 
 	public List<Ledger> getLedgerEntriesByTransferID(Long commodityTransferId) {

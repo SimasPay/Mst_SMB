@@ -1,0 +1,1 @@
+ALTER TABLE chargetxn_transfer_map ADD INDEX i_sctld_chargetxn_transfermap(sctlid);
