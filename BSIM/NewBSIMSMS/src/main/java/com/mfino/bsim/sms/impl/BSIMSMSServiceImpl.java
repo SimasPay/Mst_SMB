@@ -46,8 +46,8 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 	private String url;
 	private String systemId;
 	private String tokenId;
-	private String mdn;
-	private String message;
+//	private String mdn;
+//	private String message;
 	
 
 	@Transactional(readOnly=false,propagation=Propagation.REQUIRED) 
@@ -55,8 +55,8 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		
 		log.info("BSIMSMSServiceImpl :: process() BEGIN");
 		SMSNotification smsNotification = httpExchange.getIn().getBody(SMSNotification.class);
-		message = smsNotification.getContent();
-		mdn = smsNotification.getMdn();
+		String message = smsNotification.getContent();
+		String mdn = smsNotification.getMdn();
 		log.info("BSIMSMSServiceImpl :: process() message "+message+" mdn"+mdn);
 		Long notificationLogDetailsID = smsNotification.getNotificationLogDetailsID();
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
@@ -68,7 +68,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		String responseCode;
 		
 		try{
-			String url  = getActualUrl();
+			String url  = getActualUrl(message, mdn);
 			log.info("BSIMSMSServiceImpl :: process() url="+url);
 			HttpURLConnection connection = createHttpConnection(url);
 			responseCode = Integer.toString(connection.getResponseCode());
@@ -115,12 +115,12 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		log.debug("BSIMSMSServiceImpl :: process() END");	
 	}
 
-	private String getActualUrl() throws UnsupportedEncodingException {
+	private String getActualUrl(String msg, String mdn) throws UnsupportedEncodingException {
 		String url = getUrl();
 		url = url.replace(KEY_SYSTEM_ID, getSystemId());
 		url = url.replace(KEY_TOKEN_ID, getTokenId());
-		url = url.replace(KEY_MDN, getMdn());
-		url = url.replace(KEY_MESSAGE, URLEncoder.encode( getMessage(), "UTF-8" )).replace("+", "%20");	
+		url = url.replace(KEY_MDN, mdn);
+		url = url.replace(KEY_MESSAGE, URLEncoder.encode( msg, "UTF-8" )).replace("+", "%20");	
 		return url;
 	}
 	
@@ -177,20 +177,20 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		this.tokenId = tokenId;
 	}
 
-	public String getMdn() {
-		return mdn;
-	}
-
-	public void setMdn(String mdn) {
-		this.mdn = mdn;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
+//	public String getMdn() {
+//		return mdn;
+//	}
+//
+//	public void setMdn(String mdn) {
+//		this.mdn = mdn;
+//	}
+//
+//	public String getMessage() {
+//		return message;
+//	}
+//
+//	public void setMessage(String message) {
+//		this.message = message;
+//	}
 	
 }

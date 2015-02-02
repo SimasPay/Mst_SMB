@@ -292,10 +292,10 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				smsValues.setMessage(smsMessage);
 				smsValues.setNotificationCode(smsNotificationWrapper.getCode());
 				
-				smsService.setDestinationMDN(mdn2);
+				/*smsService.setDestinationMDN(mdn2);
 				smsService.setMessage(smsMessage);
-				smsService.setNotificationCode(smsNotificationWrapper.getCode());
-				smsService.send();
+				smsService.setNotificationCode(smsNotificationWrapper.getCode());*/
+				smsService.asyncSendSMS(smsValues);
 				if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
 					NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
 					emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
