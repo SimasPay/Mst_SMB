@@ -39,7 +39,7 @@
 					round(sctl.CalculatedCharge, 2),
 					et1.DisplayText,
 					sctl.failurereason,
-					TO_CHAR (FROM_TZ(CAST(sctl.LastUpdateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
+					TO_CHAR (FROM_TZ(CAST(sctl.CreateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
 					sctl.SourceMDN,
 					sctl.Info1,
 					sctl.MFSBillerCode,

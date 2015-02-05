@@ -25,17 +25,16 @@
     				count(*) ,
     				decode(s.status, 4, 'Success', 5 , 'Failed' ),
     				sum(s.transactionamount) as Amount, 
-    				Concat(to_char(s.LastUpdateTime,'YYYY '), to_char(s.LastUpdateTime, 'MONTH')) 
+    				Concat(to_char(s.CreateTime,'YYYY '), to_char(s.CreateTime, 'MONTH')) 
 				FROM 
 					service_charge_txn_log s, 
 					transaction_type t
 				WHERE
 					s.TransactiontypeID = t.ID
-					and t.TransactionName in ('CheckBalance', 'History', 'ChangePIN','Transfer', 'InterBankTransfer', 'Purchase', 'BillPay')
-					and (s.LastUpdateTime between ${StartTime} and ${EndTime})
+					and (s.CreateTime between ${StartTime} and ${EndTime})
 				GROUP BY
-					t.DisplayName, to_char(s.LastUpdateTime, 'YYYY '),
-					to_char(s.LastUpdateTime, 'MONTH'), s.TransactiontypeID , s.status
+					t.DisplayName, to_char(s.CreateTime, 'YYYY '),
+					to_char(s.CreateTime, 'MONTH'), s.TransactiontypeID , s.status
 				order by t.DisplayName; ",
     
     "ReportFooter" : [ 
