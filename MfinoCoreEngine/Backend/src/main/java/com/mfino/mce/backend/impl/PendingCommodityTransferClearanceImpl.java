@@ -166,11 +166,24 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 						//otherwise we are going to do local reversal when sending bank reversal
 					if(pct.getLocalBalanceRevertRequired()!=null && pct.getLocalBalanceRevertRequired())
 					{
-						bankService.onRevertOfTransferConfirmation(pct, true);
+						pct.setLocalRevertRequired(CmFinoFIX.Boolean_False);
+						pct.setLocalBalanceRevertRequired(CmFinoFIX.Boolean_False);
+						pct.setTransferStatus(CmFinoFIX.TransferStatus_Failed);
+						pct.setEndTime(new Timestamp());
+						coreDataWrapper.save(pct);
+						getCommodityTransferService().movePctToCt(pct);
+						
+//						bankService.onRevertOfTransferConfirmation(pct, true);
 					}
 					else if(pct.getLocalRevertRequired()!=null	&&	pct.getLocalRevertRequired())
 					{
-						bankService.onRevertOfTransferInquiry(pct, true);
+						pct.setTransferStatus(CmFinoFIX.TransferStatus_Failed);
+						pct.setLocalRevertRequired(CmFinoFIX.Boolean_False);
+						pct.setEndTime(new Timestamp());
+						coreDataWrapper.save(pct);
+						getCommodityTransferService().movePctToCt(pct);
+						
+//						bankService.onRevertOfTransferInquiry(pct, true);
 					}else {
 						log.info("Moving PCT to CT: "+pct.getID());
 						getCommodityTransferService().movePctToCt(pct);
