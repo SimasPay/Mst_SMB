@@ -212,7 +212,7 @@ public class WebApiRequestController {
 
 			TransactionDetails transactionDetails = converter.getTransactionDetails(udcontainer);
   			transactionDetails.setTransactionIdentifier(trxnIdentifier);
-  			transactionDetails.setSourceMDN(sourceMDN);
+//  			transactionDetails.setSourceMDN(sourceMDN);
 
   			ChannelCode channelCode = genericWebAPIService.getChannelCode(transactionDetails.getChannelCode());
   			transactionDetails.setCc(channelCode);
