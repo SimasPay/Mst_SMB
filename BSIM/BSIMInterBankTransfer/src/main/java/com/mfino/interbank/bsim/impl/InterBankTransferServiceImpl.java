@@ -222,14 +222,14 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		log.info("InterBankTransferServiceImpl :: interBankFundsTransferSourceToDestination mceMessage="+mceMessage);
 		
 		CMInterBankFundsTransfer interBankFundsTransfer = (CMInterBankFundsTransfer)mceMessage.getRequest();
-		InterbankTransfer ibt = interbankService.getIBT(interBankFundsTransfer.getServiceChargeTransactionLogID());
-		// update the IBT status to processing
-		ibt.setIBTStatus(CmFinoFIX.IBTStatus_PROCESSING);
-		interbankService.updateIBT(ibt);
-		
 		PendingCommodityTransfer pct = getPCT(interBankFundsTransfer.getTransferID());
 		IntegrationSummary iSummary = getIntegrationSummary(interBankFundsTransfer.getServiceChargeTransactionLogID(),pct.getID());
 		
+		InterbankTransfer ibt = interbankService.getIBT(interBankFundsTransfer.getServiceChargeTransactionLogID());
+		// update the IBT status to processing
+		ibt.setIBTStatus(CmFinoFIX.IBTStatus_PROCESSING);
+		ibt.setSourceAccountName(pct.getSourceSubscriberName());
+		interbankService.updateIBT(ibt);
 		
 		interBankFundsTransfer.setDestMDN(pct.getDestMDN());
 		interBankFundsTransfer.setDestPocketID(pct.getDestPocketID());
@@ -300,7 +300,9 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			response.setDestinationBankAccountType(confirmResponse.getDestinationBankAccountType());
 			response.setServiceChargeTransactionLogID(confirmResponse.getServiceChargeTransactionLogID());
 			response.setProcessingCode(iSummary.getReconcilationID1());
-	        response.setAdditionalInfo(iSummary.getReconcilationID2());
+			StringBuffer sb = new StringBuffer(iSummary.getReconcilationID2());
+			sb = sb.replace(46, 76, StringUtilities.rightPadWithCharacter(pct.getSourceSubscriberName(), 30, " "));
+	        response.setAdditionalInfo(sb.toString());
 	        response.setDestBankCode(ibt.getDestBankCode());
 			mceMessage.setRequest(interBankFundsTransfer);
 			mceMessage.setDestinationQueue(sourceToDestQueue);
