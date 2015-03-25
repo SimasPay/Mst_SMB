@@ -70,6 +70,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	private PendingCommodityTransferDAO pctDao = daoFactory.getPendingCommodityTransferDAO();
 	private CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
 	private IntegrationSummaryDao integrationSummaryDao = daoFactory.getIntegrationSummaryDao();
+	private ChargeTxnCommodityTransferMapDAO ctmapDao = daoFactory.getTxnTransferMap();
 	private BillPaymentsDAO billPaymentsDao = daoFactory.getBillPaymentDAO();
 	private final Integer BACTH_SIZE = 10000;
 
@@ -286,19 +287,37 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			ChannelCode cc= channelcodeDao.getById(sctl.getChannelCodeID());
 			entry.setAccessMethodText(cc!=null?cc.getChannelName():"");
 		}
+		if(sctl.getCommodityTransferID() == null){
+			List<Long> lstCTIds = ctmapDao.geTransferIdsBySCTLId(sctl.getID());
+			if (CollectionUtils.isNotEmpty(lstCTIds)) {
+				sctl.setCommodityTransferID(lstCTIds.get(0));
+			}
+		}
 		if(sctl.getCommodityTransferID()!=null){
 			entry.setCommodityTransferID(sctl.getCommodityTransferID());
 			PendingCommodityTransfer pct = pctDao.getById(sctl.getCommodityTransferID());
 		    if(pct != null)
 		    {
-		    	entry.setOperatorResponseCode(pct.getOperatorResponseCode());
+		    	if(pct.getOperatorResponseCode() != null){
+		    		entry.setOperatorResponseCode(pct.getOperatorResponseCode());
+		    	}else{
+		    		if(pct.getBankRejectReason() != null){
+		    			entry.setOperatorResponseCode(Integer.valueOf(pct.getBankRejectReason()));	
+		    		}
+		    	}    			    	
 		    }
 		    else
-		    {
+		    {		    	
 		    	CommodityTransfer ct = ctDao.getById(sctl.getCommodityTransferID());
 		    	if(ct != null)
 			    {
-			    	entry.setOperatorResponseCode(ct.getOperatorResponseCode());
+			    	if(ct.getOperatorResponseCode() != null){
+			    		entry.setOperatorResponseCode(ct.getOperatorResponseCode());
+			    	}else{
+			    		if(ct.getBankRejectReason() != null){
+			    			entry.setOperatorResponseCode(Integer.valueOf(ct.getBankRejectReason()));	
+			    		}
+			    	}			    	
 			    }
 		    }
 		}
