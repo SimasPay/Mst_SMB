@@ -47,6 +47,9 @@ public class ReportParameterKeys {
 	public static final String REPORT_PARAMETER_MERCHANTACCOUNT ="merchantAccount";
 	public static final String REPORT_PARAMETER_REFERENCENUMBER ="referenceNo";
 	public static final String REPORT_PARAMETER_EMAIL ="email";
+	public static final String REPORT_SOURCE_PARTNER_CODE ="sourcePartnerCode";
+	public static final String REPORT_DEST_PARTNER_CODE ="destPartnerCode";
+	public static final String REPORT_BANK_RRN ="bankRRN";
 		
 	public static final String SEPARATOR = "_";
 	public static final String FONTSIZE = "FontSize";

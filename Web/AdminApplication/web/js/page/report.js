@@ -40,6 +40,9 @@ mFino.page.report = function(config){
 	    	msg.m_pMerchantAccount = values.MerchantAccount;
 	    	msg.m_pReferenceNumber = values.ReferenceNumber;
 	    	msg.m_pEmail = values.Email;
+	    	msg.m_pBankRetrievalReferenceNumber = values.BankRetrievalReferenceNumber;
+	    	msg.m_pSourcePartnerCode = values.SourcePartnerCode;
+	    	msg.m_pDestPartnerCode = values.DestPartnerCode;
             var params = {
                     success : function(response){
                     	if(response.m_psuccess){

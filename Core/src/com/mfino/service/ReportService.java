@@ -154,8 +154,17 @@ public class ReportService  {
 		if(reportParameters.getReferenceNumber() != null){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_REFERENCENUMBER, reportParameters.getReferenceNumber().toString()));
 		}
-		if(reportParameters.getEmail() != null){
+		if(StringUtils.isNotBlank(reportParameters.getEmail())){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_EMAIL, reportParameters.getEmail().toString()));
+		}
+		if (StringUtils.isNotBlank(reportParameters.getSourcePartnerCode())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_SOURCE_PARTNER_CODE, reportParameters.getSourcePartnerCode()));
+		}
+		if (StringUtils.isNotBlank(reportParameters.getDestPartnerCode())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_DEST_PARTNER_CODE, reportParameters.getDestPartnerCode()));
+		}
+		if (StringUtils.isNotBlank(reportParameters.getBankRetrievalReferenceNumber())){
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_BANK_RRN, reportParameters.getBankRetrievalReferenceNumber()));
 		}
 		return qparams;
 	}

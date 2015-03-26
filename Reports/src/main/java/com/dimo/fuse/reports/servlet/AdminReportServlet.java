@@ -189,6 +189,18 @@ public class AdminReportServlet extends HttpServlet {
 			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_USERNAME))) {
 				reportParams.setUserName(request.getParameter(ReportPropertyConstants.ADMINAPP_USERNAME));
 			}
+			
+			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_BANK_RRN))) {
+				reportParams.setBankRRN(request.getParameter(ReportPropertyConstants.ADMINAPP_BANK_RRN));
+			}
+			
+			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_SOURCE_PARTNER_CODE))) {
+				reportParams.setSourcePartnerCode(request.getParameter(ReportPropertyConstants.ADMINAPP_SOURCE_PARTNER_CODE));
+			}
+			
+			if (StringUtils.isNotBlank(request.getParameter(ReportPropertyConstants.ADMINAPP_DEST_PARTNER_CODE))) {
+				reportParams.setDestPartnerCode(request.getParameter(ReportPropertyConstants.ADMINAPP_DEST_PARTNER_CODE));
+			}
 
 			OnlineReportGenerator report = new OnlineReportGenerator();
 

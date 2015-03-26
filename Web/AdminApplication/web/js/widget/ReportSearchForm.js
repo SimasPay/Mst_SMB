@@ -806,7 +806,7 @@ Ext
 							this.find('itemId', 'referenceNo')[0].show();
 							this.find('itemId', 'sourcePartnerCode')[0].show();
 							this.find('itemId', 'destPartnerCode')[0].show();
-							this.find('itemId', 'channelName')[0].show();
+//							this.find('itemId', 'channelName')[0].show();
 							this.find('itemId', 'bankRRN')[0].show();
 						}
 						

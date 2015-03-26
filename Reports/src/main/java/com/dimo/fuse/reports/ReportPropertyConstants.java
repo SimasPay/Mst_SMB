@@ -48,7 +48,7 @@ public class ReportPropertyConstants {
 	public static final String ADMINAPP_TRANSACTION_TYPE_TEXT ="transactionTypeText";
 	public static final String ADMINAPP_TRANSACTION_STATUS_ID ="transactionStatusId";
 	public static final String ADMINAPP_TRANSACTION_STATUS_TEXT ="transactionStatusText";
-	public static final String ADMINAPP_DESTINATION_POCKET_STATUS_ID ="destinationPocketStatus";
+	public static final String ADMINAPP_DESTINATION_POCKET_STATUS_ID ="destinationPocketStatusId";
 	public static final String ADMINAPP_DESTINATION_POCKET_STATUS_TEXT ="destinationPocketStatusText";
 	public static final String ADMINAPP_DEST_MDN ="destMdn";
 	public static final String ADMINAPP_PARTNER_CODE ="partnerCode";

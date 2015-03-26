@@ -283,7 +283,11 @@ public class ReportTool {
 		if (reportParameters.getDestMdn() != null) {
 			query = query.replace("${DestinationMDN}", "'" + reportParameters.getDestMdn() + "'");
 		} else {
-			query = query.replace("${DestinationMDN}", "'%%'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				query = query.replace("${DestinationMDN}", "'%%' OR 1=1");
+			}else{
+				query = query.replace("${DestinationMDN}", "'%%'");
+			}			
 		}
 		
 		if (reportParameters.getMdn() != null) {
@@ -320,11 +324,10 @@ public class ReportTool {
 			query = query.replace("${BillerCode}", "'" + reportParameters.getBillerCode() + "'");
 		} else {
 			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
-				query = query.replace("${BillerCode}", "'%%' OR sctl.MFSBILLERCODE is null");
+				query = query.replace("${BillerCode}", "'%%' OR 1=1");
 			}else{
 				query = query.replace("${BillerCode}", "'%%'");
 			}
-			
 		}
 		
 		if (reportParameters.getPartnerTypeId() != null) {
@@ -369,27 +372,39 @@ public class ReportTool {
 		
 		
 		if (reportParameters.getSourcePartnerCode() != null) {
-			query = query.replace("${SourcePartnerCode}", "'" + reportParameters.getIdNumber() + "'");
+			query = query.replace("${SourcePartnerCode}", "'" + reportParameters.getSourcePartnerCode() + "'");
 		} else {
-			query = query.replace("${SourcePartnerCode}", "'%%'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				query = query.replace("${SourcePartnerCode}", "'%%' OR 1=1");
+			}else{
+				query = query.replace("${SourcePartnerCode}", "'%%'");
+			}
 		}
 		
 		if (reportParameters.getDestPartnerCode() != null) {
-			query = query.replace("${DestPartnerCode}", "'" + reportParameters.getIdNumber() + "'");
+			query = query.replace("${DestPartnerCode}", "'" + reportParameters.getDestPartnerCode() + "'");
 		} else {
-			query = query.replace("${DestPartnerCode}", "'%%'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				query = query.replace("${DestPartnerCode}", "'%%' OR 1=1");
+			}else{
+				query = query.replace("${DestPartnerCode}", "'%%'");
+			}			
 		}
 		
 		if (reportParameters.getChannelName() != null) {
-			query = query.replace("${ChannelName}", "'" + reportParameters.getIdNumber() + "'");
+			query = query.replace("${ChannelName}", "'" + reportParameters.getChannelName() + "'");
 		} else {
 			query = query.replace("${ChannelName}", "'%%'");
 		}
 		
 		if (reportParameters.getBankRRN() != null) {
-			query = query.replace("${BankRRN}", "'" + reportParameters.getIdNumber() + "'");
+			query = query.replace("${BankRRN}", "'" + reportParameters.getBankRRN() + "'");
 		} else {
-			query = query.replace("${BankRRN}", "'%%'");
+			if(DB_DRIVERS.equals("oracle.jdbc.OracleDriver")){
+				query = query.replace("${BankRRN}", "'%%' OR 1=1");
+			}else{
+				query = query.replace("${BankRRN}", "'%%'");
+			}			
 		}
 		
 		log.info("The Query being executed as part of the report is : " + query);
