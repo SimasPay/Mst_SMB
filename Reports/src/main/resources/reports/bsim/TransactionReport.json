@@ -16,9 +16,12 @@
     					"Transaction Amount", 
     					"Charge From Source", 
     					"Status", 
-    					"Status Reason", 
+    					"Status Reason",
+    					"RC Code", 
     					"Transaction Time",
     					"SourceMDN",
+    					"Customer Name",
+    					"CIF",    					
     					"Additional Info",
     					"Biller Info ",
     					"Integration RRN",    					
@@ -28,9 +31,9 @@
     					"Destination Bank"
     					],
     
-    "HeaderColumnsWidth" : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "HeaderColumnsWidth" : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
-    "EncryptedColumnIndices" : [13,14],
+    "EncryptedColumnIndices" : [16,17],
         
     "Query" : " SELECT 
 					sctl.ID,
@@ -39,8 +42,11 @@
 					round(sctl.CalculatedCharge, 2),
 					et1.DisplayText,
 					sctl.failurereason,
+					COALESCE(ct.OperatorResponseCode||'', ct.bankrejectreason),
 					TO_CHAR (FROM_TZ(CAST(sctl.CreateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
 					sctl.SourceMDN,
+					s.firstname || ' ' || s.lastname,
+					nvl(sm.applicationid, ' '),					
 					sctl.Info1,
 					sctl.MFSBillerCode,
 					ct.BankRetrievalReferenceNumber,
@@ -51,6 +57,8 @@
 				FROM 
 					enum_text et1,enum_text et2, enum_text et3,
 					service_charge_txn_log sctl
+					JOIN Subscriber_mdn sm on sm.mdn=sctl.SourceMDN
+					JOIN Subscriber s on s.id=sm.subscriberid					
 					LEFT OUTER JOIN commodity_transfer ct on ct.TRANSACTIONID = sctl.TRANSACTIONID
 					INNER JOIN pocket srcPocket ON ct.SourcePocketID = srcPocket.ID
 					INNER JOIN pocket destPocket ON ct.DestPocketID = destPocket.ID
