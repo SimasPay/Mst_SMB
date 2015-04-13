@@ -1,6 +1,5 @@
 package com.mfino.billpayments.bsim;
 
-import com.mfino.mce.backend.BankService;
 import com.mfino.mce.core.MCEMessage;
 
 
@@ -35,6 +34,10 @@ public interface BillPaymentService {
 	public MCEMessage qrPaymentReversalToBank(MCEMessage mceMessage);
 		
 	public MCEMessage qrPaymentReversalFromBank(MCEMessage mceMessage);
+	
+	public MCEMessage qrPaymentInquiryUpdateToBillerInquiryPending(MCEMessage mceMessage);
+	
+	public MCEMessage qrPaymentUpdateToBillerConfirmPending(MCEMessage mceMessage);
 
 
 	

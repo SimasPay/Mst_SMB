@@ -92,6 +92,10 @@
 				    value="jms:nfcISOQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMNFCCardStatusFromCMS"
 			    	value="jms:nfcCMSQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMPaymentAuthorizationFromBankForBsim"
+					value="jms:bsimsourceToDestInquiryQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBankForBsim"
+					value="jms:bsimsourceToDestQueue?disableReplyTo=true" />
 			</map>
 		</constructor-arg>
 		<property name="defaultQueue" value="jms:backendServiceQueue?disableReplyTo=true" />

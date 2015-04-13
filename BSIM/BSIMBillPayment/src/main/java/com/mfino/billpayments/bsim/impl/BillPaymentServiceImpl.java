@@ -56,8 +56,12 @@ import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBankForBsim;
+import com.mfino.fix.CmFinoFIX.CMPaymentAuthorizationToBankForBsim;
 import com.mfino.fix.CmFinoFIX.CMQRPayment;
-import com.mfino.fix.CmFinoFIX.CMQRPaymentFromBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiry;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiryFromBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalFromBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
@@ -71,8 +75,8 @@ import com.mfino.mce.core.util.ExternalResponseCodeHolder;
 import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.mce.core.util.ResponseCodes;
 import com.mfino.mce.core.util.StringUtilities;
-import com.mfino.service.SubscriberService;
 import com.mfino.service.SCTLService;
+import com.mfino.service.SubscriberService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
@@ -314,7 +318,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	{
 		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferInquirySourceToDestination mceMessage="+mceMessage);
 		
-        CMBillPayInquiry billPayInquiry = (CMBillPayInquiry)mceMessage.getRequest();
+        CMQRPaymentInquiry billPayInquiry = (CMQRPaymentInquiry)mceMessage.getRequest();
         billPaymentsService.createBillPayments(billPayInquiry);
 		CFIXMsg bankInqres;
 		try{
@@ -329,7 +333,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mceMessage.setRequest(billPayInquiry);
 		CMTransferInquiryToBank inquiryResponse = (CMTransferInquiryToBank)bankInqres;
 		mceMessage.setDestinationQueue(sourceToDestInquiryQueue);
-		CMBSIMBillPaymentInquiryToBank response = new CMBSIMBillPaymentInquiryToBank();
+		CMQRPaymentInquiryToBank response = new CMQRPaymentInquiryToBank();
 		response.setAmount(inquiryResponse.getAmount());
 		String mdn = StringUtilities.leftPadWithCharacter(billPayInquiry.getSourceMDN(), 13, "0");
 		String mdngen = MfinoUtil.CheckDigitCalculation(mdn);
@@ -400,6 +404,12 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
         response.setPaymentMode(billPayInquiry.getPaymentMode());
         response.setServiceChargeAmount(serviceCharge);
         response.setTaxAmount(tax);
+        response.setDiscountAmount(billPayInquiry.getDiscountAmount());
+        response.setDiscountType(billPayInquiry.getDiscountType());
+        response.setNumberOfCoupons(billPayInquiry.getNumberOfCoupons());
+        response.setLoyalityName(billPayInquiry.getLoyalityName());
+        response.setMerchantData(billPayInquiry.getMerchantData());
+        response.setUserAPIKey(billPayInquiry.getUserAPIKey());
 		mceMessage.setResponse(response);
 		}
 		else if(bankInqres instanceof BackendResponse){
@@ -414,50 +424,45 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	public MCEMessage qrPaymentMoneyTransferInquiryCompletionSourceToDestination(MCEMessage mceMessage)
 	{
 		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferInquiryCompletionSourceToDestination mceMessage="+mceMessage);
-		CMBSIMBillPaymentInquiryToBank billPayInquiryToBank = (CMBSIMBillPaymentInquiryToBank)mceMessage.getRequest();
-		CMBSIMBillPaymentInquiryFromBank billPayInquiryfromBank = (CMBSIMBillPaymentInquiryFromBank)mceMessage.getResponse();
+		String billerCode = null;
+		String receiverMdn = null;
+		CFIXMsg req = mceMessage.getRequest();
+		CFIXMsg resp = mceMessage.getResponse();
+		boolean isFailedByBank = false;
+		if( req instanceof CMPaymentAuthorizationToBankForBsim) {
+			//this occurs when flashiz approves/fails the request
+			billerCode = ((CMPaymentAuthorizationToBankForBsim) req).getBillerCode();
+			receiverMdn = ((CMPaymentAuthorizationToBankForBsim) req).getInvoiceNo();
+		}
+		else {
+			//this occurs when bank(bsim) fails the request
+			billerCode = ((CMQRPaymentInquiryToBank)req).getBillerCode();
+			receiverMdn = ((CMQRPaymentInquiryToBank)req).getInvoiceNo();
+			isFailedByBank = true;
+		}
 		BackendResponse inquiryResponse;
 		try{
-			inquiryResponse= (BackendResponse)bankService.onTransferInquiryFromBank(billPayInquiryToBank,billPayInquiryfromBank);
+			inquiryResponse= (BackendResponse)bankService.onTransferInquiryFromBank((CMTransferInquiryToBank)req,(CMTransferInquiryFromBank)resp);
 		}catch(Exception e){
 			log.error(e.getMessage());
 			inquiryResponse = new BackendResponse();
 			((BackendResponse) inquiryResponse).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) inquiryResponse).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
 		}
-		CFIXMsg request = (CMTransferInquiryFromBank)billPayInquiryfromBank;
-		inquiryResponse.setBillerCode(billPayInquiryToBank.getBillerCode());
-		inquiryResponse.setReceiverMDN(billPayInquiryToBank.getInvoiceNo());
+		CFIXMsg request = (CMTransferInquiryFromBank)resp;
+		inquiryResponse.setBillerCode(billerCode);
+		inquiryResponse.setReceiverMDN(receiverMdn);
 		//inquiryResponse.setAdditionalInfo(billPayInquiryfromBank.getInfo3());
-		if(inquiryResponse.getResult().equals(CmFinoFIX.ResponseCode_Success))
-		{
 
-			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
-			sctlQuery.setId(inquiryResponse.getServiceChargeTransactionLogID());
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
-			Long ttID = null;
-			if(CollectionUtils.isNotEmpty(list))
-			{
-			ttID=list.get(0).getTransactionTypeID();
-			}
-			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
-			String txnName=null;
-			if(null!=ttDAO.getById(ttID))
-			{
-			txnName = ttDAO.getById(ttID).getTransactionName();
-			}
-			if((StringUtils.isNotBlank(txnName)) && (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(txnName) || ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(txnName)))
-			{
-				inquiryResponse.setInternalErrorCode(NotificationCodes.AirtimePurchaseInquiry.getInternalErrorCode());
-			}else{
-				inquiryResponse.setInternalErrorCode(NotificationCodes.BillpaymentInquirySuccessful.getInternalErrorCode());
-			}			
-		}
-		if(((BackendResponse)inquiryResponse).getResult() == CmFinoFIX.ResponseCode_Success){
-			billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_INQUIRY_COMPLETED);
-		}else {
+		if(isFailedByBank) {
 			billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_INQUIRY_FAILED);
+		}
+		else if(((BackendResponse)inquiryResponse).getResult() == CmFinoFIX.ResponseCode_Success){
+			billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_INQUIRY_COMPLETED);
+			inquiryResponse.setInternalErrorCode(NotificationCodes.QRpaymentInquirySuccessful.getInternalErrorCode());
+		}else {
+			billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_INQUIRY_FAILED);
+			inquiryResponse.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 		}
 		mceMessage.setRequest(request);
 		mceMessage.setResponse(inquiryResponse);
@@ -465,6 +470,16 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		return mceMessage;
 
 	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentInquiryUpdateToBillerInquiryPending(MCEMessage mceMessage) {
+		log.info("BillPaymentServiceImpl :: qrPaymentInquiryUpdateToBillerInquiryPending");
+		CMQRPaymentInquiryToBank qrPaymentInquiryToBank = (CMQRPaymentInquiryToBank) mceMessage.getRequest();
+		billPaymentsService.updateBillPayStatus(qrPaymentInquiryToBank.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_INQUIRY_PENDING);
+		return mceMessage;
+	}
+	
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
@@ -691,6 +706,15 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public MCEMessage qrPaymentUpdateToBillerConfirmPending(MCEMessage mceMessage) {
+		log.info("BillPaymentServiceImpl :: qrPaymentUpdateToBillerConfirmPending");
+		CMQRPaymentToBank qrPaymentToBank = (CMQRPaymentToBank)mceMessage.getRequest();
+		billPaymentsService.updateBillPayStatus(qrPaymentToBank.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING);
+		return mceMessage;
+	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage qrPaymentMoneyTransferSourceToDestination(MCEMessage mceMessage)
 	{
 		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferSourceToDestination mceMessage="+mceMessage);
@@ -773,6 +797,10 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		response.setPaymentMode(qrPayment.getPaymentMode());
 		response.setUserAPIKey(qrPayment.getUserAPIKey());
 		response.setMerchantData(qrPayment.getMerchantData());
+        response.setDiscountAmount(qrPayment.getDiscountAmount());
+        response.setDiscountType(qrPayment.getDiscountType());
+        response.setNumberOfCoupons(qrPayment.getNumberOfCoupons());
+        response.setLoyalityName(qrPayment.getLoyalityName());
 		mceMessage.setRequest(qrPayment);
 		mceMessage.setDestinationQueue(sourceToDestQueue);
 		response.setInfo1(qrPayment.getInvoiceNumber());
@@ -797,16 +825,34 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public MCEMessage qrPaymentMoneyTransferCompletionSourceToDestination(MCEMessage mceMessage)
 	{
-
 		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferCompletionSourceToDestination mceMessage="+mceMessage);
-		CMQRPaymentToBank qrPayToBank = (CMQRPaymentToBank)mceMessage.getRequest();
-		CMQRPaymentFromBank qrPayFromBank = (CMQRPaymentFromBank)mceMessage.getResponse();
+		CFIXMsg req = mceMessage.getRequest();
+		CFIXMsg resp = mceMessage.getResponse();
+		String billerCode = null;
+		String invoiceNo = null;
+		String info1 = null;
+		boolean isFailedByBank = false;
+		//CMQRPaymentToBank qrPayToBank = (CMQRPaymentToBank)mceMessage.getRequest();
+		//CMQRPaymentFromBank qrPayFromBank = (CMQRPaymentFromBank)mceMessage.getResponse();
+		if( req instanceof CMPaymentAcknowledgementToBankForBsim) {
+			//this occurs when flashiz approves/fails the request
+			billerCode = ((CMPaymentAcknowledgementToBankForBsim) req).getBillerCode();
+			invoiceNo = ((CMPaymentAcknowledgementToBankForBsim) req).getInvoiceNo();
+			info1 = ((CMPaymentAcknowledgementToBankForBsim)req).getInfo1();
+		}
+		else {
+			//this occurs when bank(bsim) fails the request
+			billerCode = ((CMQRPaymentToBank)req).getBillerCode();
+			invoiceNo = ((CMQRPaymentToBank)req).getInvoiceNo();
+			info1 = ((CMQRPaymentToBank)req).getInfo1();
+			isFailedByBank = true;
+		}
 		BackendResponse Response;
 
 		//make destination queue null so that it will be picked up from class based dynamic router ***
 		mceMessage.setDestinationQueue(null);
 		try {
-		Response = (BackendResponse)bankService.onTransferConfirmationFromBank((CMMoneyTransferToBank)qrPayToBank,qrPayFromBank);
+		Response = (BackendResponse)bankService.onTransferConfirmationFromBank( (CMMoneyTransferToBank)req, (CMMoneyTransferFromBank)resp );
 		} catch(Exception e){
 			log.error(e.getMessage());
 			Response = createResponseObject();
@@ -814,38 +860,23 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			((BackendResponse) Response).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) Response).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
 		}
-		Response.setAdditionalInfo(qrPayFromBank.getInfo1());
-		CFIXMsg request = (CMMoneyTransferFromBank)qrPayFromBank;
+		Response.setAdditionalInfo(info1);
+		CFIXMsg request = (CMMoneyTransferFromBank)resp;
 		
-		Response.setBillerCode(qrPayToBank.getBillerCode());
-		Response.setInvoiceNumber(qrPayToBank.getInvoiceNo());
-		if(Response.getResult().equals(CmFinoFIX.ResponseCode_Success)){
-			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
-			sctlQuery.setId(Response.getServiceChargeTransactionLogID());
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
-			Long ttID = null;
-			if(CollectionUtils.isNotEmpty(list))
-			{
-			ttID=list.get(0).getTransactionTypeID();
-			}
-			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
-			String txnName=null;
-			if(null!=ttDAO.getById(ttID))
-			{
-			txnName = ttDAO.getById(ttID).getTransactionName();
-			}
-			if((StringUtils.isNotBlank(txnName)) && (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(txnName) || ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(txnName)))
-			{
-				Response.setInternalErrorCode(NotificationCodes.BillpaymentConfirmationSuccess.getInternalErrorCode());
-			}else{
-				Response.setInternalErrorCode(NotificationCodes.BillPayCompletedToSender.getInternalErrorCode());
-			}
-			}
-		if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
-			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_COMPLETED);
-		}else {
+		Response.setBillerCode(billerCode);
+		Response.setInvoiceNumber(invoiceNo);
+		
+		if(isFailedByBank) {
 			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_FAILED);
+			Response.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
+		}
+		else if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
+			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_COMPLETED);
+			Response.setInternalErrorCode(NotificationCodes.QRpaymentConfirmationSuccessful.getInternalErrorCode());
+			Response.setNominalAmount(((CMPaymentAcknowledgementToBankForBsim)req).getAmount());
+		}else {
+			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_FAILED);
+			Response.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 		}
 		mceMessage.setRequest(request);
 		mceMessage.setResponse(Response);

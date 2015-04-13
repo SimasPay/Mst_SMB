@@ -17,6 +17,7 @@ import com.mfino.bsim.iso8583.processor.fixtoiso.InterBankTransferInquiryToBankP
 import com.mfino.bsim.iso8583.processor.fixtoiso.MoneyTransferReversalToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.MoneyTransferToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.NewSubscriberActivationToBankProcessor;
+import com.mfino.bsim.iso8583.processor.fixtoiso.QRPaymentInquiryToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.QRPaymentReversalToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.QRPaymentToBankProcessor;
 import com.mfino.bsim.iso8583.processor.fixtoiso.TransferInquiryToBankProcessor;
@@ -35,13 +36,13 @@ import com.mfino.fix.CmFinoFIX.CMInterBankTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMNewSubscriberActivationToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
 import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
 import com.mfino.iso8583.definitions.fixtoiso.IFixToIsoProcessor;
 import com.mfino.iso8583.definitions.fixtoiso.IFixToIsoProcessorFactory;
-import com.mfino.service.SubscriberService;
 
 public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 
@@ -100,6 +101,11 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 			processor = new ExistingSubscriberReActivationToBankProcessor();
 		else if (request instanceof CMGetSubscriberDetailsToBank)
 			processor = new GetSubscriberDetailsToBankProcessor();
+		else if(request instanceof CMQRPaymentInquiryToBank) {
+			QRPaymentInquiryToBankProcessor qrPaymentInquiryToBankProcessor = new QRPaymentInquiryToBankProcessor();
+			qrPaymentInquiryToBankProcessor.setOfflineBillers(offlineBillers);
+			processor = qrPaymentInquiryToBankProcessor;
+		}
 		else
 			throw new ProcessorNotAvailableException();
 

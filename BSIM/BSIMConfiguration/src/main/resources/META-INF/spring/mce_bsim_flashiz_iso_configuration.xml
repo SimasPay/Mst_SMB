@@ -47,6 +47,7 @@
 				<entry key="18" value="6017" />
 				<entry key="22" value="000" />
 				<entry key="23" value="000" />
+				<entry key="24" value="000" />
 				<entry key="25" value="05" />
 				<entry key="26" value="06" />
 				<entry key="28" value="C00000000" />
@@ -62,7 +63,7 @@
 				<entry key="48" value="TABUNGANKU B" />
 				<entry key="49" value="360" />	
 				<entry key="63" value="1000000013001C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000C00000000"	 />		
-				<entry key="98" value="360360" />
+				<entry key="98" value="02" />
 				<entry key="100" value="153" />
 				<entry key="bahasa" value="A" />
 				<entry key="english" value="B" />

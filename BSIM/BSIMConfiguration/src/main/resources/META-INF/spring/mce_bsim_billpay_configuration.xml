@@ -233,9 +233,10 @@
 					<simple>${in.body.request.getPaymentMode} == 'QRPayment'</simple> 
 			  		<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquirySourceToDestination"/>
 					<filter>
-		               <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentInquiryToBank'</simple>
+		               <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentInquiryToBank'</simple>
 		               <to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
 		        	</filter>
+		        	<!-- below code will be needed for failure case of CMQRPaymentInquiryToBank not being created -->
 					<filter>
 		               <simple>${body.response} is 'com.mfino.mce.core.util.BackendResponse'</simple>
 		              <to uri="jms:notificationQueue?disableReplyTo=true"/>
@@ -285,6 +286,7 @@
 				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMQRPayment'</simple> <!-- Confirmation Flow -->
 				<to uri="bean:billPayService?method=qrPaymentMoneyTransferSourceToDestination"/>
 				<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
+				<stop/>
 			</filter>
 			<filter>
 				<simple>${in.body.request} is 'com.mfino.fix.CmFinoFIX$CMBillPay'</simple> <!-- Confirmation Flow -->
@@ -300,14 +302,29 @@
         <route>
             <from uri="jms:bsimsourceToDestInquiryQueue" />
             <filter>
-				<simple>${in.body.request.getPaymentMode} != 'QRPayment'</simple> 
-            		<to uri="bean:billPayService?method=billPayMoneyTransferInquiryCompletionSourceToDestination"/>
-            		<to uri="jms:notificationQueue?disableReplyTo=true"/>
+                <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentInquiryFromBank'</simple>
+                <filter>
+		             <simple>${in.body.response.getResponseCode} == '00'</simple>
+		             	<!-- send to bean and update status to 	CmFinoFIX.BillPayStatus_Biller_inq_pending);  -->
+		             	<to uri="bean:billPayService?method=qrPaymentInquiryUpdateToBillerInquiryPending"/>
+		             	<to uri="jms:postBankResponseQueue?disableReplyTo=true" />
+		    	</filter>
+		    	<filter>
+		             <simple>${in.body.response.getResponseCode} != '00'</simple>
+            			<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquiryCompletionSourceToDestination"/>
+		              	<to uri="jms:notificationQueue?disableReplyTo=true"/>
+		    	</filter>  
             </filter>
             <filter>
-				<simple>${in.body.request.getPaymentMode} == 'QRPayment'</simple> 
-            		<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquiryCompletionSourceToDestination"/>
-            		<to uri="jms:notificationQueue?disableReplyTo=true"/>
+                	<simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAuthorizationFromBankForBsim'</simple>
+		            	<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquiryCompletionSourceToDestination" />
+		             	<to uri="jms:notificationQueue?disableReplyTo=true"/>
+		             	<stop/>
+            </filter>  
+            <filter>
+					<simple>${in.body.request.getPaymentMode} != 'QRPayment'</simple> 
+	            		<to uri="bean:billPayService?method=billPayMoneyTransferInquiryCompletionSourceToDestination"/>
+	            		<to uri="jms:notificationQueue?disableReplyTo=true"/>
             </filter>
         </route>
         <route>
@@ -316,11 +333,13 @@
                 <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBankForBsim'</simple>
                 <filter>
 		             <simple>${in.body.response.getResponseCode} == '00'</simple>
-		             <to uri="bean:billPayService?method=billPayTransferCompletionSourceToDestination" />
-		             <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		             	<to uri="bean:billPayService?method=qrPaymentMoneyTransferCompletionSourceToDestination" />
+		             	<to uri="jms:notificationQueue?disableReplyTo=true"/>
+    		             <stop/><!-- this stop is placed here to avoid an exception in  the below filter.Method(getResponseCode()) not found exception is throw below since the response is a BackendResponse Object -->
 		    	</filter>
 		    	<filter>
 		             <simple>${in.body.response.getResponseCode} != '00'</simple>
+		         	 <!-- not updating billpay status here since reversal is already sent and then response of reversal comes here-->
 		             <to uri="jms:bsimreversalQueue?disableReplyTo=true"/>
 		    	</filter>
             </filter>  
@@ -328,6 +347,8 @@
                 <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentFromBank'</simple>
                 <filter>
 		             <simple>${in.body.response.getResponseCode} == '00'</simple>
+		              <!-- send to bean and update status to 	CmFinoFIX.BillPayStatus_Biller_confirmation_pending);  -->
+		              <to uri="bean:billPayService?method=qrPaymentUpdateToBillerConfirmPending"/>
 		             <to uri="jms:postBankResponseQueue?disableReplyTo=true" />
 		    	</filter>
 		    	<filter>
@@ -387,8 +408,8 @@
                 <simple>${body.response} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementFromBankForBsim'</simple>
                 <filter>
 		             <simple>${in.body.response.getResponseCode} == '00'</simple>
-		             <to uri="bean:billPayService?method=billPayMoneyTransferCompletionSourceToDestination" />
-		             <to uri="jms:notificationQueue?disableReplyTo=true"/>
+		             	<to uri="bean:billPayService?method=billPayMoneyTransferCompletionSourceToDestination" />
+		             	<to uri="jms:notificationQueue?disableReplyTo=true"/>
 		    	</filter>
 		    	<filter>
 		             <simple>${in.body.response.getResponseCode} != '00'</simple>

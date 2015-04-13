@@ -10,13 +10,12 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.TransactionChargeLogDAO;
 import com.mfino.domain.TransactionChargeLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
-import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBank;
 import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBankForBsim;
 import com.mfino.flashiz.iso8583.utils.DateTimeFormatter;
 import com.mfino.flashiz.iso8583.utils.StringUtilities;
@@ -24,9 +23,9 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.util.DateTimeUtil;
 
 public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
-	
+
 	public PaymentAcknowledgementToBankProcessor() {
-	
+
 		try{
 			isoMsg.setMTI("0220");
 		}
@@ -34,7 +33,7 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public ISOMsg process(CFIXMsg fixmsg){
 		CMPaymentAcknowledgementToBankForBsim request = (CMPaymentAcknowledgementToBankForBsim)fixmsg;
@@ -57,7 +56,7 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			isoMsg.set(11,StringUtilities.leftPadWithCharacter(transactionID.toString(), 6, "0"));
 			isoMsg.set(12,DateTimeFormatter.getHHMMSS(localTS));
 			isoMsg.set(13,DateTimeFormatter.getMMDD(localTS));
-		    isoMsg.set(15,DateTimeFormatter.getMMDD(ts));
+			isoMsg.set(15,DateTimeFormatter.getMMDD(ts));
 			isoMsg.set(18,CmFinoFIX.ISO8583_MerchantType_Delivery_Channel_For_Mobile_Phone);
 			isoMsg.set(22,constantFieldsMap.get("22"));
 			isoMsg.set(25,constantFieldsMap.get("25"));
@@ -69,7 +68,7 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			isoMsg.set(37, StringUtilities.leftPadWithCharacter(request.getTransactionID().toString(), 12, "0"));
 			//if there is bank response then send same response to flashiz or else sent 68 in de-39
 			if(StringUtils.isNotBlank(request.getResponseCodeString())){
-			isoMsg.set(39,request.getResponseCodeString());
+				isoMsg.set(39,request.getResponseCodeString());
 			}
 			else{
 				isoMsg.set(39,"68");
@@ -88,28 +87,45 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			}else{
 				isoMsg.set(61,request.getInvoiceNo());
 			}
-			isoMsg.set(62,request.getInvoiceNo());
-			isoMsg.set(63,constructDE63(request));			
-			isoMsg.set(98,request.getBillerCode());
+			isoMsg.set(62,createDe62(request));
+			//isoMsg.set(63,constructDE63(request));			
+			//isoMsg.set(98,request.getBillerCode());
+			isoMsg.set(98,StringUtilities.rightPadWithCharacter(constantFieldsMap.get("98"),25," "));
 			//isoMsg.set(102,request.getSourceCardPAN());
-			}
+		}
 		catch (ISOException ex) {
 			log.error("PaymentAcknowledgementToBankProcessor :: process ", ex);
 		}
 		return isoMsg;
-		
+
 	}
-	
+
+	private String createDe62(CMPaymentAcknowledgementToBankForBsim request) {
+		String discountAmt = request.getDiscountAmount() != null?request.getDiscountAmount().toBigInteger().toString() :BigDecimal.ZERO.toBigInteger().toString();
+		String numberOfCoupons = StringUtils.isNotBlank(request.getNumberOfCoupons())?request.getNumberOfCoupons().toString() : "0".toString();
+		String discountType = StringUtils.isNotBlank(request.getDiscountType())?request.getDiscountType() : " ";
+		String loyaltyName = StringUtils.isNotBlank(request.getLoyalityName())?request.getLoyalityName() : " ";
+
+		String merchantApiKey = StringUtilities.leftPadWithCharacter(" ", 40, " ");
+		discountAmt = StringUtilities.leftPadWithCharacter(discountAmt, 12, "0");
+		numberOfCoupons = StringUtilities.leftPadWithCharacter(numberOfCoupons, 3, "0");
+		discountType = StringUtilities.rightPadWithCharacter(discountType, 20, " ");
+		loyaltyName = StringUtilities.rightPadWithCharacter(loyaltyName, 40, " ");
+
+		String finalDe62 = merchantApiKey + discountAmt + numberOfCoupons + discountType + loyaltyName;
+		return finalDe62;
+	}
+
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	private String constructDE63(CMPaymentAcknowledgementToBankForBsim request) {
 		Long sctlID = request.getServiceChargeTransactionLogID();
 		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
-		
+
 		BigDecimal serviceCharge = new BigDecimal(0);
 		BigDecimal tax = new BigDecimal(0);
 		String de63 = constantFieldsMap.get("63");
 		String strServiceCharge, strTax;
-		
+
 		List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
 		if(CollectionUtils.isNotEmpty(tclList)){
 			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
@@ -122,7 +138,7 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 				}				
 			}
 		}
-		
+
 		strServiceCharge = "C" + StringUtilities.leftPadWithCharacter(serviceCharge.toBigInteger().toString(),8,"0");
 		strTax = "C" + StringUtilities.leftPadWithCharacter(tax.toBigInteger().toString(),8,"0");
 		de63 = StringUtilities.replaceNthBlock(de63, 'C', 12,strServiceCharge,9);

@@ -17,6 +17,7 @@ import com.mfino.bsim.iso8583.processor.isotofix.MoneyTransferFromBankProcessor;
 import com.mfino.bsim.iso8583.processor.isotofix.MoneyTransferReversalFromBankProcessor;
 import com.mfino.bsim.iso8583.processor.isotofix.NewSubscriberActivationFromBankProcessor;
 import com.mfino.bsim.iso8583.processor.isotofix.QRPaymentFromBankProcessor;
+import com.mfino.bsim.iso8583.processor.isotofix.QRPaymentInquiryFromBankProcessor;
 import com.mfino.bsim.iso8583.processor.isotofix.QRPaymentReversalFromBankProcessor;
 import com.mfino.bsim.iso8583.processor.isotofix.TransferInquiryFromBankProcessor;
 import com.mfino.bsim.iso8583.processor.isotofix.networkmanagement.EchoTest;
@@ -44,6 +45,7 @@ import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMNewSubscriberActivationFromBank;
 import com.mfino.fix.CmFinoFIX.CMNewSubscriberActivationToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMSignOffResponseToBank;
@@ -70,6 +72,8 @@ public class BSIMIsoToFixProcessorFactory implements IIsoToFixProcessorFactory {
 		else if (requestFixMsg instanceof CMInterBankMoneyTransferToBank){
 			processor = new InterBankMoneyTransferFromBankProcessor();
 		}
+		else if (requestFixMsg instanceof CMQRPaymentInquiryToBank)
+			processor = new QRPaymentInquiryFromBankProcessor();
 		else if (requestFixMsg instanceof CMQRPaymentToBank){
 			processor = new QRPaymentFromBankProcessor();
 		}

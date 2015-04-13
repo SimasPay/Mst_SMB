@@ -2,12 +2,12 @@ package com.mfino.flashiz.iso8583;
 
 
 import com.mfino.fix.CFIXMsg;
-import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsToBank;
 import com.mfino.fix.CmFinoFIX.CMGetUserAPIKeyToBank;
-import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBank;
 import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBankForBsim;
+import com.mfino.fix.CmFinoFIX.CMPaymentAuthorizationToBankForBsim;
 import com.mfino.flashiz.iso8583.processor.isotofix.GetUserAPIKeyFromBankProcessor;
 import com.mfino.flashiz.iso8583.processor.isotofix.PaymentAcknowledgementFromBankProcessor;
+import com.mfino.flashiz.iso8583.processor.isotofix.PaymentAuthorizationFromBankProcessor;
 import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
 import com.mfino.iso8583.definitions.isotofix.IIsoToFixProcessor;
 import com.mfino.iso8583.definitions.isotofix.IIsoToFixProcessorFactory;
@@ -22,6 +22,8 @@ public class FlashizIsoToFixProcessorFactory implements IIsoToFixProcessorFactor
 		IIsoToFixProcessor processor = null;
 		if (requestFixMsg instanceof CMGetUserAPIKeyToBank)
 			processor = new GetUserAPIKeyFromBankProcessor();
+		else if (requestFixMsg instanceof CMPaymentAuthorizationToBankForBsim)
+			processor = new PaymentAuthorizationFromBankProcessor();
 		else if (requestFixMsg instanceof CMPaymentAcknowledgementToBankForBsim)
 			processor = new PaymentAcknowledgementFromBankProcessor();
 		else throw new ProcessorNotAvailableException();
