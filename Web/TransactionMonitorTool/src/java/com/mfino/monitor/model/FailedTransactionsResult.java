@@ -13,10 +13,19 @@ public class FailedTransactionsResult {
 	private String transactionType;
 	private String channelName;
 	private String reason;
+	private String rcCode;
 	private String txnDateTime;
 
 	public FailedTransactionsResult() {
 		super();
+	}
+
+	public String getRcCode() {
+		return rcCode;
+	}
+
+	public void setRcCode(String rcCode) {
+		this.rcCode = rcCode;
 	}
 
 	public String getMobileNumber() {

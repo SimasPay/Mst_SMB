@@ -30,11 +30,15 @@ import com.mfino.monitor.model.ChannelTransactionsResult;
 import com.mfino.monitor.model.FailedTransactionsResult;
 import com.mfino.monitor.model.FloatBalanceResult;
 import com.mfino.monitor.model.FloatWalletTransaction;
+import com.mfino.monitor.model.PerRcTransactionResults;
+import com.mfino.monitor.model.PerTransactionResults;
 import com.mfino.monitor.model.ServiceTransactionsResult;
 import com.mfino.monitor.model.Transaction;
 import com.mfino.monitor.model.TransactionSummaryResult;
 import com.mfino.monitor.processor.ChannelTransactionsProcessor;
 import com.mfino.monitor.processor.FailedTransactionsProcessor;
+import com.mfino.monitor.processor.PerRcTransactionsProcessor;
+import com.mfino.monitor.processor.PerTransactionsProcessor;
 import com.mfino.monitor.processor.ServiceTransactionsProcessor;
 import com.mfino.monitor.processor.TransactionSummaryProcessor;
 import com.mfino.monitor.processor.Interface.FloatBalanceProcessorI;
@@ -88,18 +92,37 @@ public class TransactionController {
 			results = tsp.process();
 			model.put("results", results);
 			return new ModelAndView("transactionSummaryResults", "model", model);
+			
+		} else if (portletName.equalsIgnoreCase("perTransactions")) {
+			List<PerTransactionResults> results;
+			PerTransactionsProcessor ptp = new PerTransactionsProcessor();
+			ptp.setLastUpdateTimeGE(lastUpdateTimeGE);
+			results = ptp.process();
+			model.put("results", results);
+			return new ModelAndView("perTransactionsResults", "model", model);
+			
+		} else if (portletName.equalsIgnoreCase("perRcTransactions")) {
+			List<PerRcTransactionResults> results;
+			PerRcTransactionsProcessor prtp = new PerRcTransactionsProcessor();
+			prtp.setLastUpdateTimeGE(lastUpdateTimeGE);
+			results = prtp.process();
+			model.put("results", results);
+			return new ModelAndView("perRcTransactionsResults", "model", model);
+			
 		} else if (portletName.equalsIgnoreCase("serviceTransactions")) {
 			List<ServiceTransactionsResult> results;
 			ServiceTransactionsProcessor stp = new ServiceTransactionsProcessor();
 			stp.setLastUpdateTimeGE(lastUpdateTimeGE);
 			results = stp.process();
 			model.put("results", results);
-			return new ModelAndView("serviceTransactionsResults", "model",
-					model);
+			return new ModelAndView("serviceTransactionsResults", "model", model);
+			
 		} else if (portletName.equalsIgnoreCase("failedTransactions")) {
+			int failedTxnsLimit = (Integer.parseInt(null != request.getParameter("failedTxns")?request.getParameter("failedTxns"):"5"));
 			List<FailedTransactionsResult> results;
 			FailedTransactionsProcessor ftp = new FailedTransactionsProcessor();
-			// No need to set lastupdate time in this case
+			ftp.setLastUpdateTimeGE(lastUpdateTimeGE);			
+			ftp.setTxnLimit(failedTxnsLimit);
 			results = ftp.process();
 			model.put("results", results);
 			return new ModelAndView("failedTransactionsResults", "model", model);
@@ -114,8 +137,7 @@ public class TransactionController {
 			ctp.setLastUpdateTimeGE(lastUpdateTimeGE);
 			results = ctp.process();
 			model.put("results", results);
-			return new ModelAndView("channelTransactionsResults", "model",
-					model);
+			return new ModelAndView("channelTransactionsResults", "model", model);
 		} else if (portletName.equalsIgnoreCase("transactionSearch")) {
 			List<Transaction> results;
 			Transaction searchBean = buildSearchBean(request);
@@ -129,8 +151,7 @@ public class TransactionController {
 			results = floatWalletTransactionProcessor.process(searchBean);
 			model.put("results", results);
 			model.put("total", searchBean.getTotal());
-			return new ModelAndView("floatWalletTransactionsResults", "model",
-					model);
+			return new ModelAndView("floatWalletTransactionsResults", "model", model);
 		}
 		return null;
 	}

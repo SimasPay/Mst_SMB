@@ -50,7 +50,7 @@ Ext.define('Mfino.view.dashboard.HeaderCombo', {
             queryMode: 'local',
             displayField: 'display',
             valueField: 'value',
-            value: 'Last 1 hr'
+            value: '2'
         });
     	
     	var settingsButton = Ext.create('Ext.Button', {

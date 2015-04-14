@@ -19,6 +19,10 @@ Ext.define('Mfino.controller.SettingsPanel', {
 			dashboardController.reloadTransactionSummaryPortlet();
 		} else if(record.data.sectionId == 'PerServiceTransactionsPortlet'){
 			dashboardController.reloadPerServiceTransactionsPortlet();
+		} else if(record.data.sectionId == 'PerTransactionsPortlet'){
+			dashboardController.reloadPerTransactionsPortlet();
+		} else if(record.data.sectionId == 'PerRcTransactionsPortlet'){
+			dashboardController.reloadRcTransactionsPortlet();
 		} else if(record.data.sectionId == 'FailedTransactionsPortlet'){
 			dashboardController.reloadFailedTransactionsPortlet();
 		} else if(record.data.sectionId == 'PerChannelTransactionsPortlet'){

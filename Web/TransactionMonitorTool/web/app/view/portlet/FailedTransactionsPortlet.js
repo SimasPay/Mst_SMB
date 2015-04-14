@@ -10,7 +10,7 @@ Ext.define('Mfino.view.portlet.FailedTransactionsPortlet', {
     	
         Ext.apply(this, {
             width: 635, 
-            height: 180,            
+            height: 200,            
             store: failedStore,
             stripeRows:true,
 			columnLines:true,
@@ -24,7 +24,8 @@ Ext.define('Mfino.view.portlet.FailedTransactionsPortlet', {
 				{text:"Amount",width:75,dataIndex:"amount",hideable: false,menuDisabled: true},
 				{text:"Transaction Name",width:110,dataIndex:"transactionType",hideable: false,menuDisabled: true},
 				{text:"Date",width:110,dataIndex:"txnDateTime",hideable: false,menuDisabled: true},
-				{text:"Reason For Failure",flex:1,dataIndex:"reason",hideable: false,menuDisabled: true}]
+				{text:"RC Code",width:110,dataIndex:"rcCode",hideable: false,menuDisabled: true},
+				{text:"Failure Reason",flex:1,dataIndex:"reason",hideable: false,menuDisabled: true}]
         });
 
         this.callParent(arguments);

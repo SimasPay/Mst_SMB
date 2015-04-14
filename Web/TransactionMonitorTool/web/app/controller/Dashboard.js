@@ -2,6 +2,7 @@ Ext.define('Mfino.controller.Dashboard', {
     extend: 'Ext.app.Controller',    
 
     stores: ['ResultsPanel'],
+    
 
     //models: ['Stock', 'ChartStock'],*/
     
@@ -12,12 +13,18 @@ Ext.define('Mfino.controller.Dashboard', {
             '#settings': {                
                 click : this.managePortlets
             },
-            '#headerCombo': {
+            '#headerCombo': {            	
             	select : this.onComboSelect            	
+            },
+            '#failedTsCombo': {
+            	select : this.onFailedTxnComboSelect            	
             },
             '#summary-bottom-grid > gridview': {
             	refresh: this.registerClickEvents
             },
+            '#pertransaction-bottom-grid > gridview': {
+            	refresh: this.registerClickEvents
+	        },
             '#service-bottom-grid > gridview': {
             	refresh: this.registerClickEvents
             },
@@ -27,21 +34,36 @@ Ext.define('Mfino.controller.Dashboard', {
             '#failed-transactions-grid > gridview': {
             	refresh: this.registerClickEvents
 	        },
+            '#perrc-bottom-grid > gridview': {
+            	refresh: this.registerClickEvents
+	        },
 	        '#balancePortletView': {
             	afterrender: this.registerBalanceClickEvent
 	        }
+	        
 	    });	
-    },    
-    
+    },   
+     
     onComboSelect: function(combo,item) {    	
     	Mfino.util.Utilities.monitoringPeriod = item[0].data.value;
     	this.reloadPortlets();
     },
     
+    onFailedTxnComboSelect: function(combo,item) {    	
+    	Mfino.util.Utilities.failedTxns = item[0].data.value;
+    	this.reloadFailedTxnPortlets();
+    },
+    
     reloadPortlets: function(){
     	this.reloadTransactionSummaryPortlet();
-    	this.reloadPerServiceTransactionsPortlet();
+    	this.reloadPerTransactionsPortlet();
+    	this.reloadPerServiceTransactionsPortlet();    	
     	this.reloadPerChannelTransactionsPortlet();
+    	this.reloadFailedTransactionsPortlet();
+    	this.reloadRcTransactionsPortlet();
+    },
+    
+    reloadFailedTxnPortlets: function(){
     	this.reloadFailedTransactionsPortlet();
     },
     
@@ -53,6 +75,28 @@ Ext.define('Mfino.controller.Dashboard', {
         	});    	
         	Ext.getCmp('summary-chart').refresh();
         	Ext.getCmp('summary-bottom-grid').getView().refresh();
+    	}    	
+    },
+    
+    reloadPerTransactionsPortlet: function(){
+    	var portlet = Ext.get('PerTransactionsPortlet');
+    	if(portlet.isDisplayed()){
+    		Ext.getStore('pertransactionsStore').load({
+        		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+        	});    	
+        	Ext.getCmp('pertrns-chart').refresh();
+        	Ext.getCmp('pertransaction-bottom-grid').getView().refresh();
+    	}    	
+    },
+    
+    reloadRcTransactionsPortlet: function(){
+    	var portlet = Ext.get('PerRcTransactionsPortlet');
+    	if(portlet.isDisplayed()){
+    		Ext.getStore('perRcTransactionsStore').load({
+        		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+        	});    	
+        	Ext.getCmp('perrc-chart').refresh();
+        	Ext.getCmp('perrc-bottom-grid').getView().refresh();
     	}    	
     },
     
@@ -82,7 +126,8 @@ Ext.define('Mfino.controller.Dashboard', {
     	var portlet = Ext.get('FailedTransactionsPortlet');
     	if(portlet.isDisplayed()){
     		Ext.getStore('failedTransactionsStore').load({
-        		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+        		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod,
+        				  'failedTxns': Mfino.util.Utilities.failedTxns}
         	});	
         	Ext.getCmp('failed-transactions-grid').getView().refresh();
     	}    	
@@ -108,7 +153,7 @@ Ext.define('Mfino.controller.Dashboard', {
     				});
     		    	win.show();
         		});
-    		});
+    		});    		
     	} else if(grid.id == 'channel-bottom-grid') {
     		var links = Ext.get(Ext.DomQuery.select('span.channel-transactions-link',cmp.el.dom));
     		Ext.each(links, function(link){
@@ -134,7 +179,33 @@ Ext.define('Mfino.controller.Dashboard', {
     				});
     		    	win.show();
         		});
-    		});
+    		});    		    		
+     	} else if(grid.id == 'pertransaction-bottom-grid') {
+    		var links = Ext.get(Ext.DomQuery.select('span.pertrns-transactions-link',cmp.el.dom));
+    		Ext.each(links, function(link){
+    			link.on('click',function(evt, el, o){    				
+    				var win = Ext.create('Mfino.view.dashboard.DetailsWindow',{
+    					searchParams: {
+    						'linkStatus': linkStatus,
+    						'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod
+    						}
+    				});
+    		    	win.show();
+        		});
+    		});        		
+     	} else if(grid.id == 'perrc-bottom-grid') {
+    		var links = Ext.get(Ext.DomQuery.select('span.perrc-transactions-link',cmp.el.dom));
+    		Ext.each(links, function(link){
+    			link.on('click',function(evt, el, o){    				
+    				var win = Ext.create('Mfino.view.dashboard.DetailsWindow',{
+    					searchParams: {
+    						'linkStatus': linkStatus,
+    						'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod
+    						}
+    				});
+    		    	win.show();
+        		});
+    		});    		
     	} else if(grid.id == 'summary-bottom-grid') {
     		var links = Ext.get(Ext.DomQuery.select('span.summary-transactions-link',cmp.el.dom));
     		Ext.each(links, function(link){

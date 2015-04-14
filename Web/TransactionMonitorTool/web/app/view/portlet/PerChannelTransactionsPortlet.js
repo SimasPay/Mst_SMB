@@ -35,6 +35,15 @@ Ext.define('Mfino.view.portlet.PerChannelTransactionsPortlet', {
 	                    axes : [ {
 	                		type : 'Category',
 	                		position : 'bottom',
+	                		label: {
+	                            renderer: function(val){
+	                             return Ext.String.ellipsis(val, 30, true);;
+	                            },
+                         		orientation: 'vertical',
+                         		rotate: {
+                                    degrees: 270
+                                }
+	                           },
 	                		fields : [ 'channelName' ]	                		
 	                	}, {
 	                		type : 'Numeric',

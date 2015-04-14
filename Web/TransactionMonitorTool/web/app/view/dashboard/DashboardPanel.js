@@ -39,6 +39,17 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
     		}    		
     	});
     	
+		var comboList = Ext.create('Ext.data.Store', {
+		    fields: ['display', 'value'],
+		    data : [
+		        {"display":"Last 5 Transactions", "value":"5"},
+		        {"display":"Last 10 Transactions", "value":"10"},
+		        {"display":"Last 15 Transactions", "value":"15"},
+		        {"display":"Last 20 Transactions", "value":"20"}
+		    ]
+		});
+		
+    	
         Ext.apply(this, {
         	id: 'dashboardPanel',
             items: [{
@@ -48,28 +59,49 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                     title: 'Transaction Summary',
                     items: Ext.create('Mfino.view.portlet.TransactionSummaryPortlet')                    
                 },{
+                    id: 'PerTransactionsPortlet',                    
+                    title: 'Per Transaction Details',
+                    items: Ext.create('Mfino.view.portlet.PerTransactionsPortlet')
+                },{
                     id: 'PerServiceTransactionsPortlet',                    
                     title: 'Per Service Transaction Details',
                     items: Ext.create('Mfino.view.portlet.PerServiceTransactionsPortlet')
-                }]
-            },{
+            }]
+        }, {
                 id: 'col-2',
-                items: [{
+                items: [/*{
                     id: 'BalancePortlet',   
                     header: false,
                     frame: false,
                     height: 60,
                     items: Ext.create('Mfino.view.portlet.BalancePortlet')
-                },
+                },*/
                 {
                     id: 'FailedTransactionsPortlet',
-                    title: 'Last 5 Failed Transactions',
+                    title: 'Recent Failed Transactions',
+                    tbar: [{
+                    			xtype:'combo',									
+							    fieldLabel: 'View Transactions',
+							    id: 'failedTsCombo',
+							    store: comboList,	
+							    queryMode: 'local',
+							    displayField: 'display',
+							    valueField: 'value',
+							    value: '5',
+							    renderTo: Ext.getBody()
+							}],
                     items: Ext.create('Mfino.view.portlet.FailedTransactionsPortlet')
-                },{
+                },
+                {
+                    id: 'PerRcTransactionsPortlet',
+                    title: 'Per RC Transaction Details',
+                    items: Ext.create('Mfino.view.portlet.PerRcTransactionsPortlet')
+                },
+                {
                     id: 'PerChannelTransactionsPortlet',
                     title: 'Per Channel Transactions',
                     items: Ext.create('Mfino.view.portlet.PerChannelTransactionsPortlet')
-                }
+                }                                
                 ]
             }]
             
