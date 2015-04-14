@@ -83,7 +83,7 @@
 	    	     
 	 -->
 	 
-	 <bean id="hsmCommandImplementor" class="com.mfino.hsm.thales7.command.ThalesCommandImplementor">
+	 <bean id="hsmCommandImplementor" class="com.mfino.hsm.thales7.command.ThalesCommandImplementor" scope="prototype">
 	     <property name="timeout" value="${hsm.thales.timeout}"/>
 	     <property name="basePath" value="./jpos/cfg/hsm-"/>
 	     <property name="pinBlockFormat" value="${hsm.thales.pin.block.format}"/>

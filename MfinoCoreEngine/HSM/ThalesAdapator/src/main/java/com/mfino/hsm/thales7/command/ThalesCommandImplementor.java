@@ -108,6 +108,8 @@ public class ThalesCommandImplementor
 	String decimalizationTable = "1234567890123456";
 	String keyType="000";
 	String keySchemeLMK="U";
+	
+	Space sp = SpaceFactory.getSpace();
 
 	/**
 	 * In queue and out queue should be same as the values that are used in
@@ -132,10 +134,6 @@ public class ThalesCommandImplementor
 		this.decimalizationTable = decimalizatioTable;
 	}
 	
-	Space sp = SpaceFactory.getSpace();
-
-	TSpace ts = new TSpace();
-
 	public String getInQueueName() {
 		return inQueueName;
 	}
@@ -224,9 +222,14 @@ public class ThalesCommandImplementor
 	@SuppressWarnings("unchecked")
 	private ThalesMsg sendRequest(ThalesMsg req)
 	{
+		TSpace ts = new TSpace();
+		
 		ts.out ("Request", req);
 		sp.out(inQueueName, ts);
 		ThalesMsg resp = (ThalesMsg) ts.in ("Response", timeout);
+		
+		ts = null;
+		
 		return resp;
 	}
 	
