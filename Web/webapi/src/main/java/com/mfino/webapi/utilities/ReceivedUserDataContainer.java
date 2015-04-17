@@ -141,6 +141,12 @@ public class ReceivedUserDataContainer {
 	private String userAPIKey;
 	private String sctlId;
 	
+	private String discountAmount;
+	private String loyalityName;
+	private String discountType;
+	private String numberOfCoupons;
+	
+	
 	public String getAppVersion() {
     	return appVersion;
     }
@@ -1262,4 +1268,38 @@ public class ReceivedUserDataContainer {
 	public void setNominalAmount(String nominalAmount) {
 		this.nominalAmount = nominalAmount;
 	}
+
+	public String getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(String discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public String getLoyalityName() {
+		return loyalityName;
+	}
+
+	public void setLoyalityName(String loyalityName) {
+		this.loyalityName = loyalityName;
+	}
+
+	public String getDiscountType() {
+		return discountType;
+	}
+
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
+	}
+
+	public String getNumberOfCoupons() {
+		return numberOfCoupons;
+	}
+
+	public void setNumberOfCoupons(String numberOfCoupons) {
+		this.numberOfCoupons = numberOfCoupons;
+	}
+
+	
 }

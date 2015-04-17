@@ -679,6 +679,52 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateParentTxnId(transactionDetails);
 	}
 	
+	public void validateQrPaymentInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateSourcePin(transactionDetails);
+		validateBillerCode(transactionDetails);
+		validateBillNo(transactionDetails);
+	}
+	
+	public void validateQrPaymentConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateBillNo(transactionDetails);
+		validateBillerCode(transactionDetails);
+		validateconfirmString(transactionDetails);
+		validateTransferId(transactionDetails);
+		validateParentTxnId(transactionDetails);
+	}
+	
+	@SuppressWarnings("unused")
+	private void validateDiscountAmount(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (transactionDetails.getDiscountAmount()==null) {
+			throw new InvalidDataException("Invalid Discount Amount", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_DISCOUNT_AMOUNT);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private void validateNumberOfCoupons(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getNumberOfCoupons())) {
+			throw new InvalidDataException("Invalid Number Of Coupons", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_NOOF_COUPONS);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private void validateDiscountType(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getDiscountType())) {
+			throw new InvalidDataException("Invalid Discount Type", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_DISCOUNT_TYPE);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private void validateLoyaltyName(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getLoyalityName())) {
+			throw new InvalidDataException("Invalid Loyalty Name", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_LOYALITY_NAME);
+		}
+	}
+	
 	public void validateAirtimePurchaseInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateAmount(transactionDetails);
 		//validateAmountForAirtimePurchase(transactionDetails);

@@ -3,10 +3,12 @@
  */
 package com.mfino.transactionapi.handlers.payment.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ import com.mfino.service.BillPaymentsService;
 import com.mfino.service.BillerService;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.MFAService;
+import com.mfino.service.MoneyService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
@@ -102,6 +105,10 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
 	private TransactionApiValidationService transactionApiValidationService;
+	
+	@Autowired
+	@Qualifier("MoneyServiceImpl")
+	private MoneyService moneyService;
 
 	private static Logger log	= LoggerFactory.getLogger(QRPaymentConfirmHandlerImpl.class);
 	private String serviceName = ServiceAndTransactionConstants.SERVICE_PAYMENT;
@@ -128,6 +135,11 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		 qrPayment.setPaymentMode(transactionDetails.getPaymentMode());
 		 qrPayment.setUserAPIKey(transactionDetails.getUserAPIKey());
 		 qrPayment.setMerchantData(transactionDetails.getMerchantData());
+		 qrPayment.setDiscountAmount(transactionDetails.getDiscountAmount());
+		 qrPayment.setDiscountType(transactionDetails.getDiscountType());
+		 qrPayment.setLoyalityName(transactionDetails.getLoyalityName());
+		 qrPayment.setNumberOfCoupons(transactionDetails.getNumberOfCoupons());
+		 
 		log.info("Handling Subscriber qr payment confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 		//2FA
@@ -185,8 +197,7 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
 		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(qrPayment.getParentTransactionID(),qrPayment.getTransactionIdentifier());
-			
-		
+				
 		if (sctl != null) {
 			qrPayment.setServiceChargeTransactionLogID(sctl.getID());
 			BillPaymentsQuery bpquery = new BillPaymentsQuery();

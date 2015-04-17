@@ -256,4 +256,9 @@ public interface TransactionRequestValidationService {
 	public void validateDonationInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateDonationConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateQrPaymentInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateQrPaymentConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 }

@@ -222,6 +222,23 @@ public class UserDataToTxnDetailsConverter {
 		if(StringUtils.isNotBlank(userDataContainer.getSctlId())){
 			txnDetails.setSctlId(getSctlId(userDataContainer.getSctlId()));
 		}
+		
+		if(StringUtils.isNotBlank(userDataContainer.getDiscountAmount())){
+			txnDetails.setDiscountAmount(getAmount(userDataContainer.getDiscountAmount()));
+		}
+		
+		if(StringUtils.isNotBlank(userDataContainer.getLoyalityName())){
+			txnDetails.setLoyalityName(userDataContainer.getLoyalityName());
+		}
+		
+		if(StringUtils.isNotBlank(userDataContainer.getDiscountType())){
+			txnDetails.setDiscountType(userDataContainer.getDiscountType());
+		}
+		
+		if(StringUtils.isNotBlank(userDataContainer.getNumberOfCoupons())){
+			txnDetails.setNumberOfCoupons(userDataContainer.getNumberOfCoupons());
+		}
+		
 		return txnDetails;
 	}
 	

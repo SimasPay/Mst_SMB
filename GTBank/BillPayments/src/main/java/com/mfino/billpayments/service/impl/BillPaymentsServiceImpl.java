@@ -54,7 +54,8 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		billPayments.setPartnerBillerCode(billPayInquiry.getPartnerBillerCode());
 		billPayments.setSctlId(billPayInquiry.getServiceChargeTransactionLogID());
 		billPayments.setSourceMDN(billPayInquiry.getSourceMDN());
-		
+		billPayments.setInfo2(billPayInquiry.getNarration());
+
 		if(StringUtils.isNotBlank(billPayInquiry.getPaymentInquiryDetails())) {
 			billPayments.setInfo1(billPayInquiry.getPaymentInquiryDetails());
 		}
@@ -69,6 +70,21 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 			billPayments.setInfo1(billPayInquiry.getMerchantData());
 		}
 		
+		/*Added as part of flash new requirements -- Starts */
+		if(billPayInquiry.getDiscountAmount() != null){
+			billPayments.setInfo2(billPayInquiry.getDiscountAmount().toString());
+		}		
+		if(StringUtils.isNotBlank(billPayInquiry.getDiscountType())){
+			billPayments.setInfo3(billPayInquiry.getDiscountType());
+		}
+		if(StringUtils.isNotBlank(billPayInquiry.getNumberOfCoupons())){
+			billPayments.setInfo4(billPayInquiry.getNumberOfCoupons());
+		}
+		if(StringUtils.isNotBlank(billPayInquiry.getLoyalityName())){
+			billPayments.setInfo5(billPayInquiry.getLoyalityName());
+		}
+		/*Added as part of flash new requirements -- Ends */
+		
 		// Data specific to Bayar.Net
 		if(billPayInquiry.getDenominationCode()!=null) {
 			billPayments.setInfo1(billPayInquiry.getDenominationCode());
@@ -77,7 +93,6 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 			billPayments.setNominalAmount(billPayInquiry.getNominalAmount());
 		}
 		
-		billPayments.setInfo2(billPayInquiry.getNarration());
 		BillPaymentsDAO billPayDAO = DAOFactory.getInstance().getBillPaymentDAO();
 		billPayDAO.save(billPayments);
 		

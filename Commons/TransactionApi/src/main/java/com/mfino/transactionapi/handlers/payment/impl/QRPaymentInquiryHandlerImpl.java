@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.MFSDenominationsQuery;
 import com.mfino.domain.BillPayments;
@@ -30,7 +28,6 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
@@ -39,7 +36,6 @@ import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
@@ -54,8 +50,6 @@ import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.transactionapi.constants.ApiConstants;
-import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.QRPaymentInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -111,7 +105,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 	
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
-	private TransactionApiValidationService transactionApiValidationService;
+	private TransactionApiValidationService transactionApiValidationService;	
 
 	private static Logger log = LoggerFactory.getLogger(QRPaymentInquiryHandlerImpl.class);
 	
@@ -125,6 +119,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 		qrPaymentInquiry.setInvoiceNumber(transactionDetails.getBillNum());
 		qrPaymentInquiry.setPin(transactionDetails.getSourcePIN());
 		qrPaymentInquiry.setBillerCode(transactionDetails.getBillerCode());
+		qrPaymentInquiry.setDiscountAmount(transactionDetails.getDiscountAmount());
 		qrPaymentInquiry.setAmount(transactionDetails.getAmount());
 		qrPaymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
 		qrPaymentInquiry.setChannelCode(cc.getChannelCode());
@@ -137,7 +132,10 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 		qrPaymentInquiry.setMerchantData(transactionDetails.getMerchantData());
 		srcpocketcode=transactionDetails.getSourcePocketCode();
         qrPaymentInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
-        qrPaymentInquiry.setPaymentMode(transactionDetails.getPaymentMode());
+		qrPaymentInquiry.setPaymentMode(transactionDetails.getPaymentMode());
+        qrPaymentInquiry.setDiscountType(transactionDetails.getDiscountType());
+        qrPaymentInquiry.setLoyalityName(transactionDetails.getLoyalityName());
+        qrPaymentInquiry.setNumberOfCoupons(transactionDetails.getNumberOfCoupons());
 		log.info("Handling Subscriber qr payment Inquiry webapi request");
 		XMLResult result = new TransferInquiryXMLResult();
 
@@ -154,6 +152,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 			result.setNotificationCode(validationResult);
 			return result;
 		}
+		qrPaymentInquiry.setUserAPIKey(sourceMDN.getUserAPIKey());
 
 		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(qrPaymentInquiry.getBillerCode());
 		if (mfsBiller == null) {

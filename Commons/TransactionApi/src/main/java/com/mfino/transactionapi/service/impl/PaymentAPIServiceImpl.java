@@ -148,7 +148,7 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 			transactionDetails.setBillerCode(frscCode);
 			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
 		}else if (ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT_INQUIRY.equalsIgnoreCase(transactionName)) {
-			transactionRequestValidationService.validateBillPayInquiryDetails(transactionDetails);
+			transactionRequestValidationService.validateQrPaymentInquiryDetails(transactionDetails);
 			String flashizCode = systemParametersService.getString(SystemParameterKeys.FLASHIZ_BILLER_CODE);
 			sourceMessage = ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT;
 			transactionDetails.setBillerCode(flashizCode);
@@ -156,7 +156,7 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT);
 			xmlResult = (XMLResult) qrPaymentInquiryHandler.handle(transactionDetails);
 		}else if (ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT.equalsIgnoreCase(transactionName)) {
-			transactionRequestValidationService.validateBillPayConfirmDetails(transactionDetails);
+			transactionRequestValidationService.validateQrPaymentConfirmDetails(transactionDetails);
 			String flashizCode = systemParametersService.getString(SystemParameterKeys.FLASHIZ_BILLER_CODE);
 			transactionDetails.setBillerCode(flashizCode);
 			xmlResult = (XMLResult) qrPaymentConfirmHandler.handle(transactionDetails);

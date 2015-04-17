@@ -329,6 +329,13 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String nominalAmount = request.getParameter(ApiConstants.PARAMETER_NOMINAL_AMOUNT);
 		String userAPIKey = request.getParameter(ApiConstants.PARAMETER_USER_API_KEY);
 		String sctlId = request.getParameter(ApiConstants.PARAMETER_SCTL_ID);
+		String discountAmount = request.getParameter(ApiConstants.PARAMETER_DISCOUNT_AMOUNT);
+		String loyalityName = request.getParameter(ApiConstants.PARAMETER_LOYALITY_NAME);
+		String discountType = request.getParameter(ApiConstants.PARAMETER_DISCOUNT_TYPE);
+		String numberOfCoupons = request.getParameter(ApiConstants.PARAMETER_NOOF_COUPONS);
+
+
+
 		
 		sourceMDN = subscriberService.normalizeMDN(sourceMDN);
 		if (! (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName) || 
@@ -464,6 +471,14 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setNominalAmount(nominalAmount);
 		rudContainer.setUserAPIKey(userAPIKey);
 		rudContainer.setSctlId(sctlId);
+		rudContainer.setDiscountAmount(discountAmount);
+		rudContainer.setLoyalityName(loyalityName);
+		rudContainer.setDiscountType(discountType);
+		rudContainer.setNumberOfCoupons(numberOfCoupons);
+
+
+
+		
 		log.info("initUserDataContainer: End");
 		return rudContainer;
 	}

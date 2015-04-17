@@ -61,6 +61,22 @@
 		<td>PocketCode</td>
 		<td><input type="text" name="sourcePocketCode" />(Emoney-1 ,Bank-2)</td>
 	</tr>
+	<tr>
+		<td>DiscountAmount</td>
+		<td><input type="text" name="discountAmount" />
+	</tr>
+	<tr>
+		<td>LoyalityName</td>
+		<td><input type="text" name="loyalityName" />
+	</tr>
+	<tr>
+		<td>DiscountType</td>
+		<td><input type="text" name="discountType" />
+	</tr>
+	<tr>
+		<td>NumberOfCoupons</td>
+		<td><input type="text" name="numberOfCoupons" />
+	</tr>
 	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>

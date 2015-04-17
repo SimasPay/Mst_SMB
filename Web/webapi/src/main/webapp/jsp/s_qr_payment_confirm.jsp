@@ -70,6 +70,22 @@
 		<td><input type="text" name="mfaOtp" value="" /><em>Required if the transaction is in mfa mode</em></td>
 	</tr>
 	<tr>
+		<td>DiscountAmount</td>
+		<td><input type="text" name="discountAmount" />
+	</tr>
+	<tr>
+		<td>LoyalityName</td>
+		<td><input type="text" name="loyalityName" />
+	</tr>
+	<tr>
+		<td>DiscountType</td>
+		<td><input type="text" name="discountType" />
+	</tr>
+	<tr>
+		<td>NumberOfCoupons</td>
+		<td><input type="text" name="numberOfCoupons" />
+	</tr>
+	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>
 </table>

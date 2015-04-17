@@ -859,4 +859,28 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 		// TODO Auto-generated method stub
 		return this.container.getSctlId();
 	}
+
+	@Override
+	public String getDiscountAmount() {
+		// TODO Auto-generated method stub
+		return this.container.getDiscountAmount();
+	}
+
+	@Override
+	public String getLoyalityName() {
+		// TODO Auto-generated method stub
+		return this.container.getLoyalityName();
+	}
+
+	@Override
+	public String getDiscountType() {
+		// TODO Auto-generated method stub
+		return this.container.getDiscountType();
+	}
+
+	@Override
+	public String getNumberOfCoupons() {
+		// TODO Auto-generated method stub
+		return this.container.getNumberOfCoupons();
+	}
 }

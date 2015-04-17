@@ -345,4 +345,10 @@ public interface IUserDataContainer {
 	public abstract String getNominalAmount();
 	public abstract String getUserAPIKey();
 	public abstract String getSctlId();
+
+	
+	public String getDiscountAmount();
+	public String getLoyalityName();
+	public String getDiscountType();
+	public String getNumberOfCoupons();
 }

@@ -159,6 +159,10 @@ public class TransactionDetails {
 	private String merchantData;
 	private String denomCode;
 	private BigDecimal nominalAmount;
+	private BigDecimal discountAmount;
+	private String loyalityName;
+	private String discountType;
+	private String numberOfCoupons;
 	
 	public String getTransactionTypeName() {
 		return transactionTypeName;
@@ -1046,4 +1050,31 @@ public class TransactionDetails {
 	public void setNominalAmount(BigDecimal nominalAmount) {
 		this.nominalAmount = nominalAmount;
 	}
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+	public String getLoyalityName() {
+		return loyalityName;
+	}
+	public void setLoyalityName(String loyalityName) {
+		this.loyalityName = loyalityName;
+	}
+	public String getDiscountType() {
+		return discountType;
+	}
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
+	}
+	public String getNumberOfCoupons() {
+		return numberOfCoupons;
+	}
+	public void setNumberOfCoupons(String numberOfCoupons) {
+		this.numberOfCoupons = numberOfCoupons;
+	}
+	
+	
+	
 }

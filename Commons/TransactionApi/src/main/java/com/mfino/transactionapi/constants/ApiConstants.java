@@ -329,6 +329,15 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_SCTL_ID = "sctlId";
 	
+	public static final String PARAMETER_DISCOUNT_AMOUNT = "discountAmount";
+	
+	public static final String PARAMETER_LOYALITY_NAME = "loyalityName";
+	
+	public static final String PARAMETER_DISCOUNT_TYPE = "discountType";
+	
+	public static final String PARAMETER_NOOF_COUPONS = "numberOfCoupons";
+	
+
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;
 		if(PARAMETER_ACTIVATION_CONFIRMPIN.equals(parameterName) ||
