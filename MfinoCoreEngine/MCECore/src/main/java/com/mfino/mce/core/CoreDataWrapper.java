@@ -634,6 +634,10 @@ public class CoreDataWrapper
 	public int getCountOfPendingPCT() {
 		return pendingCommodityTransferDAO.getCountOfPendingPCT();
 	}
+	
+	public List<PendingCommodityTransfer> getAll21NonPendingTransfers() {
+		return pendingCommodityTransferDAO.getAll21NonPendingTransfers();
+	}
 
 	public List<Ledger> getLedgerEntriesByTransferID(Long commodityTransferId) {
 		return ledgerDao.getByCommmodityTransferID(commodityTransferId);

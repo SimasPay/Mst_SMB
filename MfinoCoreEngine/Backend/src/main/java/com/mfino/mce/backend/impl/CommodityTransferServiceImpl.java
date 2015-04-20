@@ -15,10 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.CommodityTransferDAO;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.ServiceChargeTransactionLogDAO;
+import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
+import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.TransactionsLog;
@@ -253,23 +257,33 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CommodityTransfer movePctToCt(PendingCommodityTransfer pct) {
-		log.info("CommodityTransferServiceImpl : movePctToCt()");
+		//log.info("CommodityTransferServiceImpl : movePctToCt()");
 		CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
 		CommodityTransfer existingCT = ctDAO.getById(pct.getID());
 		if(existingCT != null){
+			//this method is used for only log purposes
 			isExistingCtDifferentFromPct(existingCT,pct);
 			return null;
+		}else{
+			log.info(String.format("CommodityTransferServiceImpl : movePctToCt : Moving pct(ID: %d) to ct, as record is not existing in Ct",pct.getID()));
+			CommodityTransfer ct = new CommodityTransfer();
+			
+			ClassMetadata classMetadata = getSessionFactory().getClassMetadata(CommodityTransfer.class);
+			ct.copy(pct,classMetadata);
+			ct.setID(pct.getID());
+			ct.setTransferStatus(CmFinoFIX.TransferStatus_Failed);
+			ct.setTransferFailureReason(99);
+			coreDataWrapper.save(ct);		
+	
+			Long sctlId = (Long)coreDataWrapper.getSCTLIdByCommodityTransferId(ct.getID());
+			
+			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+			int res = sctlDAO.updateSctlLogfor21Status(sctlId);
+			
+			coreDataWrapper.delete(pct);
+	
+			return ct; 
 		}
-		log.info(String.format("CommodityTransferServiceImpl : movePctToCt : Moving pct(ID: %d) to ct, as existingCt is null",pct.getID()));
-		CommodityTransfer ct = new CommodityTransfer();
-		
-		ClassMetadata classMetadata = getSessionFactory().getClassMetadata(CommodityTransfer.class);
-		ct.copy(pct,classMetadata);
-		ct.setID(pct.getID());
-		coreDataWrapper.save(ct);
-		coreDataWrapper.delete(pct);
-		
-		return ct; 
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)

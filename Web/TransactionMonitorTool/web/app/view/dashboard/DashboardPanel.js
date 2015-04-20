@@ -62,11 +62,11 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                     id: 'PerTransactionsPortlet',                    
                     title: 'Per Transaction Details',
                     items: Ext.create('Mfino.view.portlet.PerTransactionsPortlet')
-                },{
+                }/*,{
                     id: 'PerServiceTransactionsPortlet',                    
                     title: 'Per Service Transaction Details',
                     items: Ext.create('Mfino.view.portlet.PerServiceTransactionsPortlet')
-            }]
+            }*/]
         }, {
                 id: 'col-2',
                 items: [/*{
@@ -94,14 +94,14 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                 },
                 {
                     id: 'PerRcTransactionsPortlet',
-                    title: 'Per RC Transaction Details',
+                    title: 'Failed RC transaction Details',
                     items: Ext.create('Mfino.view.portlet.PerRcTransactionsPortlet')
-                },
+                }/*,
                 {
                     id: 'PerChannelTransactionsPortlet',
                     title: 'Per Channel Transactions',
                     items: Ext.create('Mfino.view.portlet.PerChannelTransactionsPortlet')
-                }                                
+                }*/                                
                 ]
             }]
             

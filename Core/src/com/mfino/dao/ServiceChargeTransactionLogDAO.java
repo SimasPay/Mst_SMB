@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -180,4 +181,16 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
 			return null;
 		return lst.get(0);
 	}
+	
+	public int updateSctlLogfor21Status(Long sctlid) 
+	{
+		Query query;
+		String sqlQuery = "update service_charge_txn_log set status = 5, failurereason = 'Manually moved from PCT to CT table' where id = :sctlid";		
+    	query = getSQLQuery(sqlQuery);
+    	query.setLong("sctlid", sctlid);    	  	    	
+    	@SuppressWarnings("unchecked")
+    	int result = query.executeUpdate();		
+    	return result;
+	}
+	
 }

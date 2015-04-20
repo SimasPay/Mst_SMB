@@ -434,4 +434,12 @@ public class PendingCommodityTransferDAO extends BaseDAO<PendingCommodityTransfe
 		getSession().clear();
 		return countOfPct;
     }
+	
+	public List<PendingCommodityTransfer> getAll21NonPendingTransfers() {
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(CmFinoFIX.CRPendingCommodityTransfer.FieldName_TransferStatus,CmFinoFIX.TransferStatus_Pending));
+		@SuppressWarnings("unchecked")
+		List<PendingCommodityTransfer> results = criteria.list();
+		return results;
+	}
 }

@@ -211,6 +211,15 @@
 		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
 	</bean>
 	
+	<bean id="pct21ctClearanceService"	class="com.mfino.mce.backend.impl.PendingCommodityTransfer21CtClearanceImpl">
+		<property name="bankService" ref="bankServiceDefaultImpl" />
+		<property name="coreDataWrapper" ref="coreDataWrapper" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
+		<property name="smsService" ref="smsServiceImpl"/>
+		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
+	</bean>
+	
 	<bean id="bulkResolveService" class="com.mfino.mce.backend.impl.BulkPendingResolveServiceImpl">
 		<property name="pendingClearanceService" ref="pendingClearanceServiceImpl" />
 		<property name="coreDataWrapper" ref="coreDataWrapper" />
@@ -278,6 +287,12 @@
 	<osgi:service ref="pctClearanceService">
 		<osgi:interfaces>
 			<value>com.mfino.mce.backend.PendingCommodityTransferClearance</value>
+		</osgi:interfaces>
+	</osgi:service>	
+	
+	<osgi:service ref="pct21ctClearanceService">
+		<osgi:interfaces>
+			<value>com.mfino.mce.backend.PendingCommodityTransfer21CtClearance</value>
 		</osgi:interfaces>
 	</osgi:service>	
 		
