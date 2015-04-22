@@ -49,8 +49,7 @@ Ext.define('Mfino.view.portlet.PerServiceTransactionsPortlet', {
 		                             		rotate: {
 		                                        degrees: 270
 		                                    }
-				                           },
-				                           
+				                           },				                           
 				                		
 				                		fields : [ 'serviceName' ]                		
 		                             }, 

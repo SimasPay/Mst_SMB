@@ -36,7 +36,8 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 	            	layout: 'fit',            	
 	            	items: [{
 		            		xtype: 'chart', 
-		            		id: 'per-trxn',
+		            		//id: 'per-trxn',
+		            		id: 'pertrns-chart',
 		                    animate: false,
 		                    shadow: false,		                    
 		                    theme: 'CustomTheme',
@@ -48,7 +49,8 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                    },
 		                    axes : [ {
 		                		type : 'Category',
-		                		position : 'bottom',	
+		                		position : 'bottom',
+		                		//title : 'Transaction Type',
 		                		label: {
 		                            renderer: function(val){
 		                             return Ext.String.ellipsis(val, 30, true);;
@@ -77,7 +79,8 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                			width : 140,
 		                			height : 50,
 		                			renderer : function(storeItem, item) {
-		                				this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' transactions '+ item.yField );
+		                				//this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' transactions '+ item.yField );
+		                				this.setTitle(String(item.value[1]) + ' Records ');
 		                			}
 		                		},	
 		                		renderer: function(sprite, record, attr, index, store) {
@@ -85,7 +88,7 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                            sprite.setAttributes({fill: 'red'}, true);
 		                            return attr;
 		                		},
-		                		label: 
+		                	/*	label: 
 		                		{ 
 		                			display: 'insideEnd', 
 		                			'text-anchor': 'middle', 
@@ -93,25 +96,66 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                			renderer: Ext.util.Format.numberRenderer('0'), 
 		                			orientation: 'vertical', 
 		                			color: '#333' 
-		                		},
+		                		},*/
 		                		xField : 'transactionType',
-		                		yField : [ 'successful', 'pending' , 'failed', 'processing' ]		                		
+		                		yField : [ 'successful', 'pending' , 'failed', 'InProgress' ]		                		
 		                	}]
 		            	}]                            	
 	            },{
             	xtype: 'grid',
-            	id: 'per-trxn-grid',
+            	//id: 'per-trxn-grid',
+            	id: 'pertransaction-bottom-grid',
             	plugins: ['headertooltip'],
             	//width: 600,            	
             	store: transactionChartStore,
                 stripeRows:true,
     			columnLines:true,    			
     			columns:[
- 						{text:"TransactionType",width:125,dataIndex:"transactionType",hideable: false, menuDisabled: true,},						
-						{text:"Successful",width:125,dataIndex:"successful",hideable: false,menuDisabled: true},
-						{text:"Pending",width:125,dataIndex:"pending",hideable: false,menuDisabled: true},
-						{text:"Failed",width:125,dataIndex:"failed",hideable: false,menuDisabled: true},
-						{text:"InProgress",width:145,dataIndex:"processing",hideable: false,menuDisabled: true}]	
+ 						//{text:"TransactionType",width:140,flex:1,dataIndex:"transactionType",hideable: false},						
+ 						//{text:"txnTypeId",width:125,flex:1,dataIndex:"txnTypeId",hideable: false}, 	
+
+	    				{text:"Transaction Type",width:140,sortable:false,dataIndex:"transactionType",hideable: false,
+	    					renderer: function(val, p, record)
+	    					{
+	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="count">'+val+'</span>';
+	    					}
+	    				}, 						 					
+	    				{text:"Total Count",width:100,sortable:false,dataIndex:"count",hideable: false,
+	    					renderer: function(val, p, record)
+	    					{
+	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="count">'+val+'</span>';
+	    					}
+	    				}, 						 						
+	    				{text:"Successful",width:100,sortable:false,dataIndex:"successful",hideable: false,
+	    					renderer: function(val, p, record)
+	    					{
+	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="successful">'+val+'</span>';
+	    					}
+	    				},
+	    				{text:"Pending",width:100,sortable:false,dataIndex:"pending",hideable: false,
+	    					renderer: function(val, p, record)
+	    					{
+	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="pending">'+val+'</span>';
+	    					}
+	    				},
+	    				{text:"Failed",width:100,sortable:false,dataIndex:"failed",hideable: false,
+	    					renderer: function(val, p, record)
+	    					{
+	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="failed">'+val+'</span>';
+	    					}
+	    				},
+	    				{text:"InProgress",width:100,sortable:false,dataIndex:"processing",hideable: false,
+	    					renderer: function(val, p, record)
+	    					{
+	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="processing">'+val+'</span>';
+	    					}
+	    				}
+						
+						
+						//{text:"Pending",width:125,dataIndex:"pending",hideable: false,menuDisabled: true},
+						//{text:"Failed",width:125,dataIndex:"failed",hideable: false,menuDisabled: true},
+						//{text:"InProgress",width:145,dataIndex:"processing",hideable: false,menuDisabled: true}
+						]	
             }]
         });
 

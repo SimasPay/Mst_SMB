@@ -12,6 +12,12 @@ Ext.define('Mfino.model.PerTransactions', {
 		name : 'failed',
 		type : 'int'
 	}, {
+		name : 'count',
+		type : 'int'
+	}, {
+		name : 'txnTypeId',
+		type : 'int'
+	}, {
 		name : 'processing',
 		type : 'int'
 	}]

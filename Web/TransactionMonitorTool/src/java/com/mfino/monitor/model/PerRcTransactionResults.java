@@ -3,7 +3,14 @@ package com.mfino.monitor.model;
 public class PerRcTransactionResults {
 	private String rcCode;
 	private int count;
+	private String rcDescription;
 	
+	public String getRcDescription() {
+		return rcDescription;
+	}
+	public void setRcDescription(String rcDescription) {
+		this.rcDescription = rcDescription;
+	}
 	public String getRcCode() {
 		return rcCode;
 	}

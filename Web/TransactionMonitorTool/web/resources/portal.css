@@ -222,7 +222,7 @@ div#logout {
 	margin-top: 15px;
 }
 
-span.summary-transactions-link,span.channel-transactions-link,span.service-transactions-link,span.failed-transactions-link
+span.summary-transactions-link,span.channel-transactions-link,span.service-transactions-link,span.failed-transactions-link,span.pertrns-transactions-link
 	{
 	cursor: pointer;
 	text-decoration: underline;

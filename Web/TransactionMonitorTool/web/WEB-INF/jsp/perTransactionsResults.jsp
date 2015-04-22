@@ -10,6 +10,8 @@
 			<json:property name="successful" value="${result.successful}" />
 			<json:property name="pending" value="${result.pending}" />
 			<json:property name="failed" value="${result.failed}" />
+			<json:property name="txnTypeId" value="${result.txnTypeId}" />
+			<json:property name="count" value="${result.count}" />
 			<json:property name="processing" value="${result.processing}" />
 		</json:object>
 	</json:array>

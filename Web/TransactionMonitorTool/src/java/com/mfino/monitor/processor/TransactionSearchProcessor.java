@@ -44,12 +44,12 @@ public class TransactionSearchProcessor extends BaseProcessor implements Transac
 		sctlQuery.setSourceMdn(searchBean.getSourceMDN());
 		sctlQuery.setSourcePartnerID(searchBean.getSourcePartnerID());
 		sctlQuery.setServiceID(searchBean.getServiceID());
-		sctlQuery.setSourceChannelApplication(searchBean
-				.getSourceChannelApplication());
+		sctlQuery.setSourceChannelApplication(searchBean.getSourceChannelApplication());
 		sctlQuery.setStatus(searchBean.getStatus());
 		sctlQuery.setStatusList(searchBean.getStatusList());
 		sctlQuery.setStart(searchBean.getStart());
 		sctlQuery.setLimit(searchBean.getLimit());
+		sctlQuery.setTransactionTypeID(searchBean.getTransactionTypeID());
 		List<ServiceChargeTransactionLog> sctlList = sctlDAO.get(sctlQuery);
 		if (sctlList != null) {
 			for (int i = 0; i < sctlList.size(); i++) {
@@ -63,8 +63,7 @@ public class TransactionSearchProcessor extends BaseProcessor implements Transac
 		return results;
 	}
 
-	private void updateMessage(ServiceChargeTransactionLog sctl,
-			Transaction transaction) {
+	private void updateMessage(ServiceChargeTransactionLog sctl, Transaction transaction) {
 		TransactionType transactionType = null;
 		Service service = null;
 		if (sctl.getCalculatedCharge() != null) {

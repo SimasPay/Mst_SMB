@@ -15,12 +15,21 @@ public class MonitorPeriodConstants {
 	public static final String LAST_1_WEEK = "5";
 	public static final String LAST_1_MONTH = "6";
 	public static final Integer[] SUCCESSFUL_SCTL = {
+			CmFinoFIX.SCTLStatus_Confirmed,
+			CmFinoFIX.SCTLStatus_Distribution_Started,
 			CmFinoFIX.SCTLStatus_Distribution_Completed,
-			CmFinoFIX.SCTLStatus_Expired };
+			CmFinoFIX.SCTLStatus_Distribution_Failed
+			};
 	public static final Integer[] FAILED_SCTL = { CmFinoFIX.SCTLStatus_Failed };
-	public static final Integer[] PENDING_SCTL = { CmFinoFIX.SCTLStatus_Pending };
+	public static final Integer[] PENDING_SCTL = { 
+			CmFinoFIX.SCTLStatus_Pending, 
+			CmFinoFIX.SCTLStatus_Pending_Resolved,
+			CmFinoFIX.SCTLStatus_Pending_Resolved_Processing
+			};
 	public static final Integer[] PROCESSING_SCTL = {
-			CmFinoFIX.SCTLStatus_Processing, CmFinoFIX.SCTLStatus_Inquiry };
+			CmFinoFIX.SCTLStatus_Inquiry, 
+			CmFinoFIX.SCTLStatus_Processing
+			};
 	public static final Integer[] REVERSALS_SCTL = {
 			CmFinoFIX.SCTLStatus_Reverse_Approved,
 			CmFinoFIX.SCTLStatus_Reverse_Success,
@@ -37,4 +46,16 @@ public class MonitorPeriodConstants {
 			CmFinoFIX.SCTLStatus_Distribution_Started,
 			CmFinoFIX.SCTLStatus_Pending_Resolved,
 			CmFinoFIX.SCTLStatus_Pending_Resolved_Processing };
+	public static final Integer[] COUNT_SCTL = {
+		CmFinoFIX.SCTLStatus_Confirmed,
+		CmFinoFIX.SCTLStatus_Distribution_Started,
+		CmFinoFIX.SCTLStatus_Distribution_Completed,
+		CmFinoFIX.SCTLStatus_Distribution_Failed,
+		CmFinoFIX.SCTLStatus_Failed,
+		CmFinoFIX.SCTLStatus_Pending, 
+		CmFinoFIX.SCTLStatus_Pending_Resolved,
+		CmFinoFIX.SCTLStatus_Pending_Resolved_Processing,
+		CmFinoFIX.SCTLStatus_Inquiry, 
+		CmFinoFIX.SCTLStatus_Processing
+		};
 }

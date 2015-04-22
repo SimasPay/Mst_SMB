@@ -38,8 +38,7 @@ public class ServiceTransactionsProcessor extends BaseProcessor implements Servi
 			// Get Total Transactions
 			sctlQuery.setStatus(null);
 			sctlQuery.setStatusList(null);
-			List<ServiceChargeTransactionLog> sctlResults = sctlDAO
-					.get(sctlQuery);
+			List<ServiceChargeTransactionLog> sctlResults = sctlDAO.get(sctlQuery);
 			count = sctlResults.size();
 
 			// Get Total Successful Transactions			

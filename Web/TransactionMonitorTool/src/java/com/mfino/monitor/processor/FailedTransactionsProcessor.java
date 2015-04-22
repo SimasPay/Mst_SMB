@@ -48,7 +48,7 @@ public class FailedTransactionsProcessor extends BaseProcessor implements Failed
 		query.setCreateTimeGE(lastUpdateTimeGE);		
 		query.setStatus(CmFinoFIX.SCTLStatus_Failed);
 		query.setIDOrdered(true);
-		int i = 1;
+		int i = 0;
 		List<ServiceChargeTransactionLog> sctlResults = sctlDAO.get(query);
 		//System.out.println("sctl records for failed transactions: "+sctlResults.size());
 		Iterator<ServiceChargeTransactionLog> iterator = sctlResults.iterator();
@@ -62,7 +62,7 @@ public class FailedTransactionsProcessor extends BaseProcessor implements Failed
 			// Get Channel code name
 			ChannelCode cc = ccDAO.getById(sctl.getChannelCodeID());
 			String rcCode = commodityTransferDAO.getRCCodeByTrnsId(sctl.getTransactionID());
-			if(rcCode != null && !rcCode.isEmpty() && !rcCode.equals("00") && !rcCode.equals("0"))
+			if(rcCode != null && !rcCode.isEmpty()) // && !rcCode.equals("00") && !rcCode.equals("0"))
 			{
 				FailedTransactionsResult ftr = new FailedTransactionsResult();
 				ftr.setAmount(sctl.getTransactionAmount());

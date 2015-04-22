@@ -184,9 +184,10 @@ Ext.define('Mfino.controller.Dashboard', {
     		var links = Ext.get(Ext.DomQuery.select('span.pertrns-transactions-link',cmp.el.dom));
     		Ext.each(links, function(link){
     			link.on('click',function(evt, el, o){    				
-    				var win = Ext.create('Mfino.view.dashboard.DetailsWindow',{
+    				var win = Ext.create('Mfino.view.dashboard.DetailsWindow',{    					
     					searchParams: {
-    						'linkStatus': linkStatus,
+    						'linkTxnID': el.getAttribute('linkTxnID'), 
+    						'linkStatus': el.getAttribute('linkStatus'),
     						'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod
     						}
     				});
@@ -199,7 +200,8 @@ Ext.define('Mfino.controller.Dashboard', {
     			link.on('click',function(evt, el, o){    				
     				var win = Ext.create('Mfino.view.dashboard.DetailsWindow',{
     					searchParams: {
-    						'linkStatus': linkStatus,
+    						'linkRCId': el.getAttribute('linkRCId'), 
+    						'linkStatus': el.getAttribute('linkStatus'),
     						'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod
     						}
     				});
@@ -218,7 +220,7 @@ Ext.define('Mfino.controller.Dashboard', {
     					linkStatus = 'failed';
     				} else if(value == 'Total Pending Transactions'){
     					linkStatus = 'pending';
-    				} else if(value == 'Total Processing Transactions'){
+    				} else if(value == 'Total InProgress Transactions'){
     					linkStatus = 'processing';
     				} else if(value == 'Total Reversals Transactions'){
     					linkStatus = 'reversals';

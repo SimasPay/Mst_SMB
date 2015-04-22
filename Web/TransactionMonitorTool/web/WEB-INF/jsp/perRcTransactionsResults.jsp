@@ -8,6 +8,7 @@
 		<json:object>	
 			<json:property name="rcCode" value="${result.rcCode}" />		
 			<json:property name="count" value="${result.count}" />
+			<json:property name="rcDescription" value="${result.rcDescription}" />
 		</json:object>
 	</json:array>
 </json:object>

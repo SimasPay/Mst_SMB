@@ -1,31 +1,18 @@
 package com.mfino.monitor.processor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import com.mfino.dao.CommodityTransferDAO;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.dao.query.TransactionTypeQuery;
-import com.mfino.domain.ChannelCode;
-import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.TransactionType;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.monitor.model.FailedTransactionsResult;
 import com.mfino.monitor.model.PerRcTransactionResults;
-import com.mfino.monitor.model.PerTransactionResults;
-import com.mfino.monitor.processor.Interface.FailedTransactionsProcessorI;
 import com.mfino.monitor.processor.Interface.PerRcTransactionsProcessorI;
+import com.mfino.monitor.util.ExternalResponseCodeHolder;
+
 
 @Service("PerRcTransactionsProcessor")
 public class PerRcTransactionsProcessor extends BaseProcessor implements PerRcTransactionsProcessorI{
@@ -73,12 +60,16 @@ public class PerRcTransactionsProcessor extends BaseProcessor implements PerRcTr
 				lastRec = sctlList.size();				
 				List<Long> subRcCodeList = (List<Long>)sctlList.subList(firstRec, lastRec);
 				getRcCodes(subRcCodeList);					
-			}			
+			}	
+			
+			ExternalResponseCodeHolder erc = ExternalResponseCodeHolder.getInstance();
+			
 			for (String key : rcSumCount.keySet()) 
 			{	
 				prtr = new PerRcTransactionResults();
 	 			prtr.setRcCode(key);
 	 			prtr.setCount(rcSumCount.get(key).intValue());
+	 			prtr.setRcDescription(erc.getDescription(key));
 	 			results.add(prtr);
 			}			
 		}				

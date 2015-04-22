@@ -56,11 +56,11 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                 id: 'col-1',
                 items: [{
                     id: 'TransactionSummaryPortlet',
-                    title: 'Transaction Summary',
+                    title: 'TOTAL TRANSACTION SUMMARY',
                     items: Ext.create('Mfino.view.portlet.TransactionSummaryPortlet')                    
                 },{
                     id: 'PerTransactionsPortlet',                    
-                    title: 'Per Transaction Details',
+                    title: 'TRANSACTION TYPE SUMMARY',
                     items: Ext.create('Mfino.view.portlet.PerTransactionsPortlet')
                 }/*,{
                     id: 'PerServiceTransactionsPortlet',                    
@@ -78,7 +78,7 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                 },*/
                 {
                     id: 'FailedTransactionsPortlet',
-                    title: 'Recent Failed Transactions',
+                    title: 'RECENT FAILED TRANSACTIONS',
                     tbar: [{
                     			xtype:'combo',									
 							    fieldLabel: 'View Transactions',
@@ -94,7 +94,7 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
                 },
                 {
                     id: 'PerRcTransactionsPortlet',
-                    title: 'Failed RC transaction Details',
+                    title: 'FAILED RESPONSE CODE TRANSACTION SUMMARY',
                     items: Ext.create('Mfino.view.portlet.PerRcTransactionsPortlet')
                 }/*,
                 {

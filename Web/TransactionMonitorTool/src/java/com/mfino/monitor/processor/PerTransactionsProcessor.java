@@ -29,7 +29,6 @@ public class PerTransactionsProcessor extends BaseProcessor implements PerTransa
 		PerTransactionResults perTransactionResults = null;		
 		Integer[] statusList = {0,1,2,3,4,5,6,16,17,18};		
 		//long[] transactionTypeList = new long[] {4,5,6,11,13,19};
-		
 		List<TransactionType> ttList = ttDAO.get(ttQuery);		
 		Iterator<TransactionType> iteratorTT = ttList.iterator();
 		while (iteratorTT.hasNext()) 
@@ -47,6 +46,7 @@ public class PerTransactionsProcessor extends BaseProcessor implements PerTransa
 				int failedCount=0;
 				int pendingCount=0;			
 				int processingCount=0;
+				int count=0;
 				
 				// set monitoringPeriod time
 				//sctlQuery.setLastUpdateTimeGE(lastUpdateTimeGE);
@@ -82,15 +82,18 @@ public class PerTransactionsProcessor extends BaseProcessor implements PerTransa
 					}
 				}
 				
-				if("BillPay".equals(transactionType))
+/*				if("BillPay".equals(transactionType))
 				{
 					perTransactionResults.setTxType("Payment(BillPay)");
 				}
 				else
 				{
 					perTransactionResults.setTxType(transactionType);
-				}
-				
+				}*/
+				count = successCount + failedCount + pendingCount + processingCount;
+				perTransactionResults.setCount(count);
+				perTransactionResults.setTxnTypeId(txTypeId);
+				perTransactionResults.setTxType(transactionType);
 				perTransactionResults.setSuccessful(successCount);
 				perTransactionResults.setFailed(failedCount);
 				perTransactionResults.setPending(pendingCount);

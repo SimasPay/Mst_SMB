@@ -29,7 +29,7 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 	            	layout: 'fit',            	
 	            	items: [{
 		            		xtype: 'chart', 
-		            		id: 'per-rc',
+		            		id: 'perrc-chart',
 		                    animate: false,
 		                    shadow: false,		                    
 		                    theme: 'CustomTheme',
@@ -41,20 +41,21 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 		                    },
 		                    axes : [ {
 		                		type : 'Category',
-		                		position : 'bottom',	
+		                		position : 'bottom',
+		                		//title : 'Response Code',
 		                		label: {
 		                            renderer: function(val){
-		                             return Ext.String.ellipsis(val, 30, true);;
-		                            },
+		                             return Ext.String.ellipsis(val, 30, true);
+		                            },		                            		                                                    
+		                            
                              		orientation: 'vertical',
                              		rotate: {
                                         degrees: 270
-                                    }
-		                           },
+                                    }},
 		                		fields : [ 'rcCode' ],
-		                		minimum : 0,
-		                		grid: true
-		                	}, {
+		                		minimum : 0,		                		
+		                		grid: true,
+		                    	}, {
 		                		type : 'Numeric',
 		                		position : 'left',
 		                		fields : [ 'count' ],
@@ -70,7 +71,8 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 		                			width : 140,
 		                			height : 50,
 		                			renderer : function(storeItem, item) {
-		                				this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' RcStatus '+ item.yField );
+		                				//this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' RcStatus '+ item.yField );
+		                				this.setTitle(String(item.value[1]) +' Records ');
 		                			}
 		                		},	
 		                		renderer: function(sprite, record, attr, index, store) {
@@ -84,15 +86,16 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 		            	}]                            	
 	            },{
             	xtype: 'grid',
-            	id: 'per-rc-grid',
+            	id: 'perrc-bottom-grid',
             	plugins: ['headertooltip'],
             	//width: 600,            	
             	store: rcTxnChartStore,
                 stripeRows:true,
     			columnLines:true,    			
     			columns:[
- 						{text:"RCCode",width:100,dataIndex:"rcCode",hideable: false, menuDisabled: true,},						
-						{text:"Count",width:100,dataIndex:"count",hideable: false,menuDisabled: true}]	
+ 						{text:"RCCode",width:150,dataIndex:"rcCode",hideable: false, menuDisabled: true},
+ 						{text:"RC Description",width:340,dataIndex:"rcDescription",hideable: false, menuDisabled: true},	
+						{text:"Count",width:150,dataIndex:"count",hideable: false,menuDisabled: true}]	
             }]
         });
 

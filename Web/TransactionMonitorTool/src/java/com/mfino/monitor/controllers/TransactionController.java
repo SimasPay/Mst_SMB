@@ -165,7 +165,7 @@ public class TransactionController {
 	 */
 	private Transaction buildSearchBean(HttpServletRequest request) {
 		Transaction searchBean = new Transaction();
-		if (StringUtils.isNotBlank(request.getParameter("linkRefID"))) {
+		if (StringUtils.isNotBlank(request.getParameter("linkRefID"))) {			
 			// case when details window is opened from failed transactions
 			// portlet
 			searchBean.setID(Long.valueOf(request.getParameter("linkRefID")));
@@ -229,7 +229,8 @@ public class TransactionController {
 			searchBean.setDestMDN(request.getParameter("destMDN"));
 		}
 		if (StringUtils.isNotBlank(request.getParameter("linkStatus"))) {
-			String linkStatus = request.getParameter("linkStatus");			
+			String linkStatus = request.getParameter("linkStatus");		
+			//System.out.println("linkStatus is: "+request.getParameter("linkStatus"));
 			if (linkStatus.equals("successful")) {
 				searchBean.setStatusList(MonitorPeriodConstants.SUCCESSFUL_SCTL);
 			} else if (linkStatus.equals("failed")) {
@@ -242,6 +243,8 @@ public class TransactionController {
 				searchBean.setStatusList(MonitorPeriodConstants.REVERSALS_SCTL);
 			} else if (linkStatus.equals("intermediate")) {
 				searchBean.setStatusList(MonitorPeriodConstants.INTERMEDIATE_SCTL);
+			} else if (linkStatus.equals("intermediate")) {
+				searchBean.setStatusList(MonitorPeriodConstants.COUNT_SCTL);
 			}
 		}
 		if (StringUtils.isNotBlank(request.getParameter("status"))) {
@@ -255,6 +258,10 @@ public class TransactionController {
 		if (StringUtils.isNotBlank(request.getParameter("linkServiceID"))) {
 			searchBean.setServiceID(Long.valueOf(request
 					.getParameter("linkServiceID")));
+		}
+		if (StringUtils.isNotBlank(request.getParameter("linkTxnID"))) {
+			//System.out.println("linkTxnID is: "+request.getParameter("linkTxnID"));
+			searchBean.setTransactionTypeID(Long.valueOf(request.getParameter("linkTxnID")));
 		}
 		if (StringUtils.isNotBlank(request.getParameter("billerCode"))) {
 			searchBean.setMFSBillerCode(request.getParameter("billerCode"));

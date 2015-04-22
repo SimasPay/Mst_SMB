@@ -46,10 +46,10 @@ public class TransactionSummaryProcessor extends BaseProcessor implements Transa
 		// Get Total Processing Transactions			
 		processingCount = TransactionService.getProcessingCount(sctlQuery);
 		transactionSummaryResult = new TransactionSummaryResult(
-				"Total Processing Transactions", processingCount);
+				"Total InProgress Transactions", processingCount);
 		results.add(transactionSummaryResult);
 
-		// Get Total Reversals Transactions			
+/*		// Get Total Reversals Transactions			
 		reversalsCount = TransactionService.getReversalsCount(sctlQuery);
 		transactionSummaryResult = new TransactionSummaryResult(
 				"Total Reversals Transactions", reversalsCount);
@@ -59,7 +59,7 @@ public class TransactionSummaryProcessor extends BaseProcessor implements Transa
 		intermediateCount = TransactionService.getIntermediateCount(sctlQuery);
 		transactionSummaryResult = new TransactionSummaryResult(
 				"Total Intermediate Transactions", intermediateCount);
-		results.add(transactionSummaryResult);
+		results.add(transactionSummaryResult);*/
 
 		return results;
 	}
