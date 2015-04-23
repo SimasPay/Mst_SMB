@@ -326,7 +326,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			{ 
 				log.error("Error during PIN conversion "+e); 
 				msg.set(39, GetConstantCodes.FAILURE); 
-				return CmFinoFIX.NotificationCode_Failure; 
+				return CmFinoFIX.ResponseCode_Failure; 
 			} 
 			subscriberMDN.setDigestedPIN(calcPIN);
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
