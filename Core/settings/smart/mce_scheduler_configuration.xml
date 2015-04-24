@@ -29,7 +29,6 @@
 
 	<osgi:reference id="bulkResolveService"	interface="com.mfino.mce.backend.BulkPendingResolveService" />
 	<osgi:reference id="pctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransferClearance" />
-<osgi:reference id="pct21ctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransfer21CtClearance" />
     <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
     <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
     <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
@@ -48,9 +47,12 @@
 		<constructor-arg><ref bean="hibernateSessionHolder"/></constructor-arg>
     </bean>
     
+ 	<bean id="pctClearanceJob"	class="com.mfino.mce.backend.PendingCommodityTransferClearanceJob">
+		<property name="pctClearance" ref="pctClearanceService" />
+	</bean>
 	<bean id="transferPCT"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="pctClearanceService" />
+		<property name="targetObject" ref="pctClearanceJob" />
 		<property name="targetMethod" value="movePendingToComplete" />
 		<property name="concurrent" value="false" />
 	</bean>
@@ -60,21 +62,6 @@
 		<property name="cronExpression" value="0 0/5 * * * ?" />
 	</bean>
 			
-	<bean id="pct21ctClearanceJob"	class="com.mfino.mce.backend.PendingCommodityTransfer21CtClearanceJob">
-		<property name="pct21ctClearance" ref="pct21ctClearanceService" />
-	</bean>
-	<bean id="transferPCT21CT"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="pct21ctClearanceJob" />
-		<property name="targetMethod" value="movePendingToComplete" />
-		<property name="concurrent" value="false" />
-	</bean>
-	<bean id="transferPCT21CTTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="transferPCT21CT" />
-		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0/5 * * * ?" />
-	</bean>
-
 	<bean id="bulkResolvePCT"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="bulkResolveService" />
@@ -91,7 +78,6 @@
 		<property name="triggers">
 			<list>
 			 <ref bean="transferPCTTrigger"/>
-			 <ref bean="transferPCT21CTTrigger"/>
 			 <!-- ref bean="bulkResolvePCTTrigger"/-->
 			</list>
 		</property>

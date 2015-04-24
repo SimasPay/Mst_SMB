@@ -212,11 +212,9 @@
 	</bean>
 	
 	<bean id="pct21ctClearanceService"	class="com.mfino.mce.backend.impl.PendingCommodityTransfer21CtClearanceImpl">
-		<property name="bankService" ref="bankServiceDefaultImpl" />
 		<property name="coreDataWrapper" ref="coreDataWrapper" />
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="commodityTransferService" ref="commodityTransferServiceImpl" />
-		<property name="smsService" ref="smsServiceImpl"/>
 		<property name="transactionChargingService" ref="transactionChargingServiceImpl" />
 	</bean>
 	

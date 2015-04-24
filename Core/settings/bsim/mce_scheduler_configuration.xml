@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Licensed to the 
+	Apache Software Foundation (ASF) under one or more contributor license agreements. 
+	See the NOTICE file distributed with this work for additional information 
+	regarding copyright ownership. The ASF licenses this file to You under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. --><!-- Configures the 
+	Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+						http://www.springframework.org/schema/osgi   
+						http://www.springframework.org/schema/osgi/spring-osgi.xsd 
+						http://www.springframework.org/schema/osgi-compendium 
+						http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd 
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+						http://activemq.apache.org/schema/core
+						http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd">
+
+	<osgi:reference id="bulkResolveService"	interface="com.mfino.mce.backend.BulkPendingResolveService" />
+	<osgi:reference id="pctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransferClearance" />
+	<osgi:reference id="pct21ctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransfer21CtClearance" />	
+    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+    <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
+    <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
+	
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/mce.properties</value>
+			</list>
+		</property>
+	</bean>
+     
+    <bean id="timeZone" class="com.mfino.util.ConfigurationUtil" factory-method="getTimeZone">
+    	<constructor-arg><ref bean="sessionFactory"/></constructor-arg>
+		<constructor-arg><ref bean="hibernateSessionHolder"/></constructor-arg>
+    </bean>
+    
+	<bean id="transferPCT"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="pctClearanceService" />
+		<property name="targetMethod" value="movePendingToComplete" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="transferPCTTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="transferPCT" />
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0/30 23-4 1/1 * ? *" />
+	</bean>
+	
+	<bean id="pct21ctClearanceJob"	class="com.mfino.mce.backend.PendingCommodityTransfer21CtClearanceJob">
+		<property name="pct21ctClearance" ref="pct21ctClearanceService" />
+	</bean>
+	<bean id="transferPCT21CT"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="pct21ctClearanceJob" />
+		<property name="targetMethod" value="movePendingToComplete" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="transferPCT21CTTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="transferPCT21CT" />
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0 22 1/1 * ? *" />
+	</bean>	
+
+	<bean id="bulkResolvePCT"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="bulkResolveService" />
+		<property name="targetMethod" value="resolve" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="bulkResolvePCTTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="bulkResolvePCT" />
+		 <property name="startDelay" value="10000" />
+        <property name="repeatInterval" value="1800000" />
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+			 <ref bean="transferPCTTrigger"/>
+			 <ref bean="transferPCT21CTTrigger"/>
+			 <!-- ref bean="bulkResolvePCTTrigger"/-->
+			</list>
+		</property>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+</beans>

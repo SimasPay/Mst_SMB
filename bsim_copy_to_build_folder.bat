@@ -60,7 +60,7 @@ rem copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_iso_jpos_configuration.xml %1\servicemix\
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_newfrontend_configuration.xml %1\servicemix\
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_notification_configuration.xml %1\servicemix\
-copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_scheduler_configuration.xml %1\servicemix\
+copy Core\settings\bsim\mce_scheduler_configuration.xml %1\servicemix\
 rem copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\pocket_commodity_adjustments.xml %1\servicemix\
 rem copy IntegrationTemplates\CashinFrontend\target\CashinFrontend-0.1-SNAPSHOT.jar %1\servicemix
 rem copy IntegrationTemplates\CashoutFrontend\target\CashoutFrontend-0.1-SNAPSHOT.jar %1\servicemix

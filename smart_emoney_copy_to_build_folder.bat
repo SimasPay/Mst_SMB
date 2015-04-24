@@ -54,7 +54,7 @@ copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_fix
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_iso_jpos_configuration.xml %1\servicemix\
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_newfrontend_configuration.xml %1\servicemix\
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_notification_configuration.xml %1\servicemix\
-copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_scheduler_configuration.xml %1\servicemix\
+copy Core\settings\smart\mce_scheduler_configuration.xml %1\servicemix\
 
 copy Core\settings\smart\database_config.properties %1\servicemix\mfino_conf\
 copy Core\settings\smart\bc2qmap.cfg %1\servicemix\mfino_conf\

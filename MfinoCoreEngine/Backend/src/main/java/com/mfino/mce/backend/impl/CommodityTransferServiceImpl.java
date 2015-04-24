@@ -271,17 +271,8 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 			ClassMetadata classMetadata = getSessionFactory().getClassMetadata(CommodityTransfer.class);
 			ct.copy(pct,classMetadata);
 			ct.setID(pct.getID());
-			ct.setTransferStatus(CmFinoFIX.TransferStatus_Failed);
-			ct.setTransferFailureReason(99);
 			coreDataWrapper.save(ct);		
-	
-			Long sctlId = (Long)coreDataWrapper.getSCTLIdByCommodityTransferId(ct.getID());
-			
-			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-			int res = sctlDAO.updateSctlLogfor21Status(sctlId);
-			
 			coreDataWrapper.delete(pct);
-	
 			return ct; 
 		}
 	}

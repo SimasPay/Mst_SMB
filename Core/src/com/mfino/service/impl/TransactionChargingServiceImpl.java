@@ -964,6 +964,29 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	}
 	
 	/**
+	 * Updates the Pending SCTL status to Fail
+	 * @param commodityTransaferId
+	 * @param failureReason
+	 */
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public void setAsFailed(long commodityTransaferId, String failureReason) {
+		ChargeTxnCommodityTransferMapDAO cTxnCommodityTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
+		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
+		query.setCommodityTransferID(commodityTransaferId);
+		List<ChargeTxnCommodityTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
+		Long sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?ctTxnCommodityTransferMap.get(0).getSctlId():null;
+		if(sctlid!=null){
+		ServiceChargeTransactionLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctlid);
+		if (CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus())) {
+			sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
+			sctl.setFailureReason(failureReason);
+			log.info("Changing the Pending SCTL as Failed --> " + sctlid);
+			saveServiceTransactionLog(sctl);
+		}
+		}
+	}	
+	
+	/**
 	 * Updates the SCTL CommodityTransferID
 	 * @param sctl
 	 * @param commodityTransaferId

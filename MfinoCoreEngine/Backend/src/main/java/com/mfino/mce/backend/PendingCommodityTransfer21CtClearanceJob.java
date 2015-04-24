@@ -28,7 +28,7 @@ public class PendingCommodityTransfer21CtClearanceJob {
 				pct21ctClearance.calculateFinalState(pct);
 			}
 			catch (Exception e) {
-				log.error("Exception in movePendingToComplete ",e);
+				log.error("Exception in movePendingToComplete of PCT ID: " + pct.getID(),e);
 			}
 		}
 		

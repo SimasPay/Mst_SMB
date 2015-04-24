@@ -345,5 +345,10 @@ public interface TransactionChargingService {
 	public boolean isTransactionSuccessful(TransactionResponse transactionResponse);
 	public Transaction getChargeDetails(ServiceCharge sc)  throws DataException, InvalidServiceException, InvalidChargeDefinitionException;
 
-
+	/**
+	 * Updates the Pending SCTL status to Fail
+	 * @param commodityTransaferId
+	 * @param failureReason
+	 */
+	public void setAsFailed(long commodityTransaferId, String failureReason);
 }
