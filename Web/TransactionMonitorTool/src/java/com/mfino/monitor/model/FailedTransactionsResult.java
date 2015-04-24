@@ -8,8 +8,8 @@ import java.math.BigDecimal;
  */
 public class FailedTransactionsResult {
 	private String mobileNumber;
-	private Long refID;
-	private BigDecimal amount;
+	private String refID;
+	private String amount;
 	private String transactionType;
 	private String channelName;
 	private String reason;
@@ -19,6 +19,32 @@ public class FailedTransactionsResult {
 	public FailedTransactionsResult() {
 		super();
 	}
+
+	
+	
+	public String getRefID() {
+		return refID;
+	}
+
+
+
+	public void setRefID(String refID) {
+		this.refID = refID;
+	}
+
+
+
+	public String getAmount() {
+		return amount;
+	}
+
+
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
+
 
 	public String getRcCode() {
 		return rcCode;
@@ -36,13 +62,7 @@ public class FailedTransactionsResult {
 		this.mobileNumber = mobileNumber;
 	}
 
-	public BigDecimal getAmount() {
-		return amount;
-	}
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
 
 	public String getTransactionType() {
 		return transactionType;
@@ -60,13 +80,7 @@ public class FailedTransactionsResult {
 		this.reason = reason;
 	}
 
-	public Long getRefID() {
-		return refID;
-	}
 
-	public void setRefID(Long refID) {
-		this.refID = refID;
-	}
 
 	public String getChannelName() {
 		return channelName;

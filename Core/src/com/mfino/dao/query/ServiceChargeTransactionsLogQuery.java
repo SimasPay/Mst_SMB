@@ -34,7 +34,16 @@ public class ServiceChargeTransactionsLogQuery extends BaseQuery{
     private String info1;
     private Integer adjustmentStatus;
     private Long parentIntegrationTransID;
+    private String customQuery;
     
+	public String getCustomQuery() {
+		return customQuery;
+	}
+
+	public void setCustomQuery(String customQuery) {
+		this.customQuery = customQuery;
+	}
+
 	public void setTransationID(Long transationID) {
 		this.transationID = transationID;
 	}

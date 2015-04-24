@@ -17,6 +17,8 @@ Ext.define('Mfino.view.dashboard.DashboardPanel', {
         }];
     },
     
+
+    
     initComponent: function() {
     	Ext.Ajax.on("requestcomplete", function(conn, response, options){
     	    //We can do nicer things here, like showing a login window and let

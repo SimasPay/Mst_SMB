@@ -26,11 +26,10 @@ Ext.define('Mfino.view.portlet.TransactionSummaryPortlet', {
             	run: function() {            		
             		summaryChartStore.load();
             	},
-                interval: 5000 //1 second
+                interval: 300000 //5 mins
             };
-            		 
         var runner = new Ext.util.TaskRunner();        		 
-        //runner.start(task);
+        runner.start(task);
                 
         Ext.apply(this, {            
 	            items: [{            	

@@ -29,6 +29,7 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
 	 * @return
 	 */
 	private ChannelCodeDAO channelDao = DAOFactory.getInstance().getChannelCodeDao();
+	
 	public ServiceChargeTransactionLog getByTransactionLogId(long transactionLogId) {
 		ServiceChargeTransactionLog sctl = null;
 		Criteria criteria = createCriteria();

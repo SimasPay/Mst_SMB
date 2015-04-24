@@ -19,6 +19,8 @@ import com.mfino.hibernate.session.HibernateSessionHolder;
 public class DAOFactory {
 
 	private ServiceChargeTransactionLogDAO sctlDAO = null;
+	
+	private TransactionMonitoringDAO tmDAO = null;
 
 	private TransactionChargeLogDAO tclDAO = null;
 
@@ -375,6 +377,12 @@ public class DAOFactory {
 		sctlDAO = new ServiceChargeTransactionLogDAO();
 		sctlDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return sctlDAO;
+	}
+	
+	public TransactionMonitoringDAO getTransactionMonitoringDAO(){
+		tmDAO = new TransactionMonitoringDAO();
+		tmDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return tmDAO;
 	}
 	
 	public HibernateSessionHolder getHibernateSessionHolder() {

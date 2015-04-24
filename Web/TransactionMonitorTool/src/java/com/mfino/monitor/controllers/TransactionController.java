@@ -1,6 +1,7 @@
 package com.mfino.monitor.controllers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -44,6 +47,7 @@ import com.mfino.monitor.processor.TransactionSummaryProcessor;
 import com.mfino.monitor.processor.Interface.FloatBalanceProcessorI;
 import com.mfino.monitor.processor.Interface.FloatWalletTransactionProcessorI;
 import com.mfino.monitor.processor.Interface.TransactionSearchProcessorI;
+import com.mfino.monitor.util.FileReaderUtil;
 import com.mfino.service.impl.SystemParametersServiceImpl;
 import com.mfino.util.DateTimeUtil;
 
@@ -54,7 +58,7 @@ import com.mfino.util.DateTimeUtil;
 
 @Controller("TransactionController")
 public class TransactionController {
-
+	
     @Autowired
     @Qualifier("FloatBalanceProcessor")
 	private FloatBalanceProcessorI floatBalanceProcessor ;
@@ -73,9 +77,13 @@ public class TransactionController {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"yyyyMMdd-HH:mm:ss:SSS");
 	
+	static ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    static URL url = loader.getResource("..\\sqlQueries.json");
+	static JSONObject SQL_QUERIES_JSON_OBJECT = FileReaderUtil.readFileContAsJsonObj(url.getFile());
+	
 	@RequestMapping("/getTransactions.htm")
 	public ModelAndView activation(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws ServletException, IOException, JSONException {
 		Map<String, Object> model = new HashMap<String, Object>();
 		String portletName = request.getParameter("portlet");
 		// holds the "monitor period" combo box value
@@ -83,75 +91,91 @@ public class TransactionController {
 		Date lastUpdateTimeGE = null;
 		if (StringUtils.isNotEmpty(monitorPeriod)) {
 			lastUpdateTimeGE = calculateLastUpdateTimeGE(monitorPeriod);
+			log.info("lastUpdateTimeGE in TransactionController is: "+lastUpdateTimeGE);
 		}
 
 		if (portletName.equalsIgnoreCase("transactionSummary")) {
-			List<TransactionSummaryResult> results;
+			List<TransactionSummaryResult> results = null;
+			log.info("In transactionSummary of TransactionController Begin");
 			TransactionSummaryProcessor tsp = new TransactionSummaryProcessor();
+			tsp.setQUERY(SQL_QUERIES_JSON_OBJECT.getString("TRANSACTION_SUMMARY"));
 			tsp.setLastUpdateTimeGE(lastUpdateTimeGE);
 			results = tsp.process();
 			model.put("results", results);
 			return new ModelAndView("transactionSummaryResults", "model", model);
 			
 		} else if (portletName.equalsIgnoreCase("perTransactions")) {
-			List<PerTransactionResults> results;
+			List<PerTransactionResults> results = null;
+			log.info("In perTransactions of TransactionController Begin");
 			PerTransactionsProcessor ptp = new PerTransactionsProcessor();
 			ptp.setLastUpdateTimeGE(lastUpdateTimeGE);
+			ptp.setQUERY(SQL_QUERIES_JSON_OBJECT.getString("PER_TRANSACTION"));
 			results = ptp.process();
 			model.put("results", results);
 			return new ModelAndView("perTransactionsResults", "model", model);
+
+		} else if (portletName.equalsIgnoreCase("failedTransactions")) {
+			log.info("In failedTransactions of TransactionController Begin");
+			int failedTxnsLimit = (Integer.parseInt(null != request.getParameter("failedTxns")?request.getParameter("failedTxns"):"5"));
+			List<FailedTransactionsResult> results = null;
+			FailedTransactionsProcessor ftp = new FailedTransactionsProcessor();
+			ftp.setLastUpdateTimeGE(lastUpdateTimeGE);			
+			ftp.setTxnLimit(failedTxnsLimit);
+			ftp.setQUERY(SQL_QUERIES_JSON_OBJECT.getString("RECENT_FAILED_TRANSACTION"));
+			results = ftp.process();
+			model.put("results", results);
+			return new ModelAndView("failedTransactionsResults", "model", model);			
 			
 		} else if (portletName.equalsIgnoreCase("perRcTransactions")) {
-			List<PerRcTransactionResults> results;
+			List<PerRcTransactionResults> results = null;
+			log.info("In perRcTransactions of TransactionController Begin");
 			PerRcTransactionsProcessor prtp = new PerRcTransactionsProcessor();
 			prtp.setLastUpdateTimeGE(lastUpdateTimeGE);
+			prtp.setQUERY(SQL_QUERIES_JSON_OBJECT.getString("PER_RC_TRANSACTION"));
 			results = prtp.process();
 			model.put("results", results);
 			return new ModelAndView("perRcTransactionsResults", "model", model);
 			
 		} else if (portletName.equalsIgnoreCase("serviceTransactions")) {
-			List<ServiceTransactionsResult> results;
+			log.info("In serviceTransactions of TransactionController Begin");
+			List<ServiceTransactionsResult> results = null;
 			ServiceTransactionsProcessor stp = new ServiceTransactionsProcessor();
 			stp.setLastUpdateTimeGE(lastUpdateTimeGE);
 			results = stp.process();
 			model.put("results", results);
 			return new ModelAndView("serviceTransactionsResults", "model", model);
 			
-		} else if (portletName.equalsIgnoreCase("failedTransactions")) {
-			int failedTxnsLimit = (Integer.parseInt(null != request.getParameter("failedTxns")?request.getParameter("failedTxns"):"5"));
-			List<FailedTransactionsResult> results;
-			FailedTransactionsProcessor ftp = new FailedTransactionsProcessor();
-			ftp.setLastUpdateTimeGE(lastUpdateTimeGE);			
-			ftp.setTxnLimit(failedTxnsLimit);
-			results = ftp.process();
-			model.put("results", results);
-			return new ModelAndView("failedTransactionsResults", "model", model);
-		} else if (portletName.equalsIgnoreCase("floatBalance")) {
-			
-			FloatBalanceResult result = floatBalanceProcessor.process();
-			model.put("result", result);
-			return new ModelAndView("floatBalanceResults", "model", model);
 		} else if (portletName.equalsIgnoreCase("channelTransactions")) {
-			List<ChannelTransactionsResult> results;
+			log.info("In channelTransactions of TransactionController Begin");
+			List<ChannelTransactionsResult> results = null;
 			ChannelTransactionsProcessor ctp = new ChannelTransactionsProcessor();
 			ctp.setLastUpdateTimeGE(lastUpdateTimeGE);
 			results = ctp.process();
 			model.put("results", results);
-			return new ModelAndView("channelTransactionsResults", "model", model);
+			return new ModelAndView("channelTransactionsResults", "model", model);			
+
+		} else if (portletName.equalsIgnoreCase("floatBalance")) {			
+			FloatBalanceResult result = null;
+			result = floatBalanceProcessor.process();
+			model.put("result", result);
+			return new ModelAndView("floatBalanceResults", "model", model);
+			
+		} else if (portletName.equalsIgnoreCase("floatWalletTransactions")) {
+			List<FloatWalletTransaction> results = null;
+			FloatWalletTransaction searchBean = buildFloatWalletSearchBean(request);
+			results = floatWalletTransactionProcessor.process(searchBean);
+			model.put("results", results);
+			model.put("total", searchBean.getTotal());
+			return new ModelAndView("floatWalletTransactionsResults", "model", model);
+			
 		} else if (portletName.equalsIgnoreCase("transactionSearch")) {
+			log.info("In transactionSearch of TransactionController Begin");
 			List<Transaction> results;
 			Transaction searchBean = buildSearchBean(request);
 			results = transactionSearchProcessor.process(searchBean);
 			model.put("results", results);
 			model.put("total", searchBean.getTotal());
 			return new ModelAndView("transactionSearchResults", "model", model);
-		} else if (portletName.equalsIgnoreCase("floatWalletTransactions")) {
-			List<FloatWalletTransaction> results;
-			FloatWalletTransaction searchBean = buildFloatWalletSearchBean(request);
-			results = floatWalletTransactionProcessor.process(searchBean);
-			model.put("results", results);
-			model.put("total", searchBean.getTotal());
-			return new ModelAndView("floatWalletTransactionsResults", "model", model);
 		}
 		return null;
 	}
@@ -230,7 +254,6 @@ public class TransactionController {
 		}
 		if (StringUtils.isNotBlank(request.getParameter("linkStatus"))) {
 			String linkStatus = request.getParameter("linkStatus");		
-			//System.out.println("linkStatus is: "+request.getParameter("linkStatus"));
 			if (linkStatus.equals("successful")) {
 				searchBean.setStatusList(MonitorPeriodConstants.SUCCESSFUL_SCTL);
 			} else if (linkStatus.equals("failed")) {
@@ -260,7 +283,6 @@ public class TransactionController {
 					.getParameter("linkServiceID")));
 		}
 		if (StringUtils.isNotBlank(request.getParameter("linkTxnID"))) {
-			//System.out.println("linkTxnID is: "+request.getParameter("linkTxnID"));
 			searchBean.setTransactionTypeID(Long.valueOf(request.getParameter("linkTxnID")));
 		}
 		if (StringUtils.isNotBlank(request.getParameter("billerCode"))) {

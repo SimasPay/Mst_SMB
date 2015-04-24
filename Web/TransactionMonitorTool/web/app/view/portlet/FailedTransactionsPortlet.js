@@ -8,6 +8,15 @@ Ext.define('Mfino.view.portlet.FailedTransactionsPortlet', {
     	var failedStore = Ext.create('Mfino.store.FailedTransactions');
     	failedStore.load();
     	
+    	var task = {
+            	run: function() {            		
+            		failedStore.load();
+            	},
+                interval: 300000 //5 mins
+            };
+        var runner = new Ext.util.TaskRunner();        		 
+        runner.start(task);
+    	
         Ext.apply(this, {
             width: 635, 
             height: 200,            

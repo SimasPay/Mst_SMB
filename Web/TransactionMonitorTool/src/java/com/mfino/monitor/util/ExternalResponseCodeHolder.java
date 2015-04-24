@@ -9,9 +9,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,21 +43,12 @@ public class ExternalResponseCodeHolder {
 	}
 	
 	private void loadExternalCodeMappings(String filePath) {
-		ApplicationContext ctx = new FileSystemXmlApplicationContext();
-		//Resource res = ctx.getResource(filePath);
-		//Resource res = ctx.getResource("D:/simobi/simservers/tomcat-6.0.37/apache-tomcat-6.0.37/mfino_conf/externalcodedescriptions.xml");
-		//Resource res = ctx.getResource("/TransactionMonitorTool/src/java/com/mfino/monitor/util/externalcodedescriptions.xml");	
-		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 	    URL url = loader.getResource("..\\externalcodedescriptions.xml");
-
-		
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			//File file = res.getFile();
 			File file = new File(url.toURI());
-
 			if (file.exists()) {
 				Document doc = db.parse(file);
 				Element docEle = doc.getDocumentElement();
@@ -69,7 +57,6 @@ public class ExternalResponseCodeHolder {
 				if (responseCodeList != null
 						&& responseCodeList.getLength() > 0) {
 					for (int i = 0; i < responseCodeList.getLength(); i++) {
-
 						Node node = responseCodeList.item(i);
 						ExternalResponsecode externalResponsecode = new ExternalResponsecode();
 						if (node.getNodeType() == Node.ELEMENT_NODE) {

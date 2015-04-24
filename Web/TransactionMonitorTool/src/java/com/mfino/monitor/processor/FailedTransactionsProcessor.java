@@ -1,21 +1,13 @@
 package com.mfino.monitor.processor;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.mfino.dao.CommodityTransferDAO;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.dao.query.TransactionTypeQuery;
-import com.mfino.domain.ChannelCode;
-import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.monitor.model.FailedTransactionsResult;
 import com.mfino.monitor.processor.Interface.FailedTransactionsProcessorI;
@@ -27,7 +19,17 @@ import com.mfino.monitor.processor.Interface.FailedTransactionsProcessorI;
 @Service("FailedTransactionsProcessor")
 public class FailedTransactionsProcessor extends BaseProcessor implements FailedTransactionsProcessorI{
 	
-	//public Log log = LogFactory.getLog(this.getClass());
+	private Logger log = Logger.getLogger(FailedTransactionsProcessor.class);
+	
+	private String QUERY;
+	
+	public String getQUERY() {
+		return QUERY;
+	}
+
+	public void setQUERY(String qUERY) {
+		QUERY = qUERY;
+	}
 	
 	public int txnLimit=0;
 	
@@ -40,46 +42,38 @@ public class FailedTransactionsProcessor extends BaseProcessor implements Failed
 	}
 
 	public List<FailedTransactionsResult> process() {
+		log.info("entered FailedTransactionsProcessor.process method()");
 		List<FailedTransactionsResult> results = new ArrayList<FailedTransactionsResult>();
 		ServiceChargeTransactionsLogQuery query = new ServiceChargeTransactionsLogQuery();
-		TransactionTypeQuery ttQuery = new TransactionTypeQuery();
-		// set monitoringPeriod time
-		//query.setLastUpdateTimeGE(lastUpdateTimeGE);
 		query.setCreateTimeGE(lastUpdateTimeGE);		
 		query.setStatus(CmFinoFIX.SCTLStatus_Failed);
-		query.setIDOrdered(true);
-		int i = 0;
-		List<ServiceChargeTransactionLog> sctlResults = sctlDAO.get(query);
-		//System.out.println("sctl records for failed transactions: "+sctlResults.size());
-		Iterator<ServiceChargeTransactionLog> iterator = sctlResults.iterator();
-		while (iterator.hasNext()) {
-			ServiceChargeTransactionLog sctl = iterator.next();
-			Long transactionTypeID = sctl.getTransactionTypeID();
-			ttQuery.setId(transactionTypeID);
-			List<TransactionType> ttRes = ttDAO.get(ttQuery);
-			String transactionType = ttRes.get(0).getTransactionName();
+		query.setLimit(this.getTxnLimit());
+		query.setCustomQuery(getQUERY());
+		
+		List<Object> rcFailedTxnList = (List<Object>)tmDAO.getRCFailedTransactions(query);
+		String rcCode;
+		
+    	if(rcFailedTxnList != null && rcFailedTxnList.size() > 0)
+    	{
+	        for (Iterator<Object> it = rcFailedTxnList.iterator(); it.hasNext();) 
+	        {
+	        	Object[] object = (Object[]) it.next();
 
-			// Get Channel code name
-			ChannelCode cc = ccDAO.getById(sctl.getChannelCodeID());
-			String rcCode = commodityTransferDAO.getRCCodeByTrnsId(sctl.getTransactionID());
-			if(rcCode != null && !rcCode.isEmpty()) // && !rcCode.equals("00") && !rcCode.equals("0"))
-			{
 				FailedTransactionsResult ftr = new FailedTransactionsResult();
-				ftr.setAmount(sctl.getTransactionAmount());
-				ftr.setMobileNumber(sctl.getSourceMDN());
-				ftr.setReason(sctl.getFailureReason());
-				ftr.setRefID(sctl.getID());
-				ftr.setChannelName(cc != null ? cc.getChannelName() : "");
-				ftr.setTransactionType(transactionType);
-				ftr.setRcCode(rcCode);
-				ftr.setTxnDateTime(sctl.getCreateTime().toString());
-				results.add(ftr);
+				ftr.setAmount(String.valueOf(object[6]));
+				ftr.setMobileNumber(String.valueOf(object[1]));
+				ftr.setReason(String.valueOf(object[2]));
+				ftr.setRefID(String.valueOf(object[0]));
+				ftr.setChannelName(String.valueOf(object[4]));
+				ftr.setTransactionType(String.valueOf(object[5]));
 				
-				i++;
-			}			
-			if(i == this.getTxnLimit())
-				break;
-		}
+				rcCode = String.valueOf(object[7]);
+				ftr.setRcCode((rcCode.length() == 1 ? "0"+rcCode : rcCode));
+				
+				ftr.setTxnDateTime(String.valueOf(object[3]));
+				results.add(ftr);
+	        }		
+    	}
 		return results;
 	}
 }

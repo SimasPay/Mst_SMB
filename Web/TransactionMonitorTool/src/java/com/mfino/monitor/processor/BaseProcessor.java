@@ -12,6 +12,7 @@ import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.ServiceDAO;
+import com.mfino.dao.TransactionMonitoringDAO;
 import com.mfino.dao.TransactionTypeDAO;
 
 /**
@@ -31,6 +32,8 @@ public abstract class BaseProcessor {
     public PendingCommodityTransferDAO pendingDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
     public MFSLedgerDAO ledgerDAO = DAOFactory.getInstance().getMFSLedgerDAO();
     public ChargeTxnCommodityTransferMapDAO ctMapDAO = DAOFactory.getInstance().getTxnTransferMap();
+    
+    public TransactionMonitoringDAO tmDAO = DAOFactory.getInstance().getTransactionMonitoringDAO();
 	
 	public Date lastUpdateTimeGE;
 

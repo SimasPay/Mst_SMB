@@ -2,11 +2,6 @@ Ext.define('Mfino.controller.Dashboard', {
     extend: 'Ext.app.Controller',    
 
     stores: ['ResultsPanel'],
-    
-
-    //models: ['Stock', 'ChartStock'],*/
-    
-    //views: ['portlet.TransactionSummaryPortlet'],
 
     init: function() {
     	this.control({	        
@@ -57,8 +52,8 @@ Ext.define('Mfino.controller.Dashboard', {
     reloadPortlets: function(){
     	this.reloadTransactionSummaryPortlet();
     	this.reloadPerTransactionsPortlet();
-    	this.reloadPerServiceTransactionsPortlet();    	
-    	this.reloadPerChannelTransactionsPortlet();
+    	//this.reloadPerServiceTransactionsPortlet();    	
+    	//this.reloadPerChannelTransactionsPortlet();
     	this.reloadFailedTransactionsPortlet();
     	this.reloadRcTransactionsPortlet();
     },
@@ -82,7 +77,8 @@ Ext.define('Mfino.controller.Dashboard', {
     	var portlet = Ext.get('PerTransactionsPortlet');
     	if(portlet.isDisplayed()){
     		Ext.getStore('pertransactionsStore').load({
-        		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+        		params: {
+        			'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
         	});    	
         	Ext.getCmp('pertrns-chart').refresh();
         	Ext.getCmp('pertransaction-bottom-grid').getView().refresh();
@@ -91,8 +87,8 @@ Ext.define('Mfino.controller.Dashboard', {
     
     reloadRcTransactionsPortlet: function(){
     	var portlet = Ext.get('PerRcTransactionsPortlet');
-    	if(portlet.isDisplayed()){
-    		Ext.getStore('perRcTransactionsStore').load({
+    	if(portlet.isDisplayed()){ 
+    		Ext.getStore('PerRcTransactions').load({
         		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
         	});    	
         	Ext.getCmp('perrc-chart').refresh();
@@ -174,7 +170,9 @@ Ext.define('Mfino.controller.Dashboard', {
     			link.on('click',function(evt, el, o){
     				var win = Ext.create('Mfino.view.dashboard.DetailsWindow',{
     					searchParams: {
-    						'linkRefID': el.getAttribute('linkRefID')    						
+    						'linkRefID': el.getAttribute('linkRefID'),
+    						'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod,
+    						'failedTxns': Mfino.util.Utilities.failedTxns
     						}
     				});
     		    	win.show();

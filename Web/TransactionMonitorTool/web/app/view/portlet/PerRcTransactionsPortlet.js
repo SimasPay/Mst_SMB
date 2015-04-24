@@ -21,6 +21,15 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
     	var rcTxnChartStore = Ext.create('Mfino.store.PerRcTransactions');
     	rcTxnChartStore.load();
     	
+    	var task = {
+            	run: function() {            		
+            		rcTxnChartStore.load();
+            	},
+                interval: 300000 //5 mins
+            };
+        var runner = new Ext.util.TaskRunner();        		 
+        runner.start(task);
+    	
         Ext.apply(this, {            
 	            items: [{
 	            	xtype: 'panel',

@@ -28,6 +28,15 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
     	var transactionChartStore = Ext.create('Mfino.store.PerTransactions');
     	transactionChartStore.load();
     	
+    	var task = {
+            	run: function() {            		
+            		transactionChartStore.load();
+            	},
+                interval: 300000 //5 mins
+            };
+        var runner = new Ext.util.TaskRunner();        		 
+        runner.start(task);
+    	
         Ext.apply(this, {            
 	            items: [{
 	            	xtype: 'panel',
@@ -98,7 +107,7 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                			color: '#333' 
 		                		},*/
 		                		xField : 'transactionType',
-		                		yField : [ 'successful', 'pending' , 'failed', 'InProgress' ]		                		
+		                		yField : [ 'successful', 'pending' , 'failed', 'processing' ]		                		
 		                	}]
 		            	}]                            	
 	            },{

@@ -1311,39 +1311,4 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 		return lstCtIds; 
 	}
 	
-	public String getRCCodeByTrnsId(Long trnsId) 
-	{
-		String rcCode="";
-		Query query;
-		String sqlQuery = "SELECT COALESCE(pct.OperatorResponseCode||'', pct.bankrejectreason, ct.OperatorResponseCode||'', ct.bankrejectreason) as RcCode FROM service_charge_txn_log sctl	LEFT OUTER JOIN commodity_transfer ct on ct.transactionid = sctl.transactionid LEFT OUTER JOIN pending_commodity_transfer pct on pct.transactionid = sctl.transactionid	WHERE sctl.transactionid = :trnsId";
-    	query = getSQLQuery(sqlQuery);
-    	query.setLong("trnsId", trnsId);    	
-    	query.setMaxResults(1);    	    	
-    	@SuppressWarnings("unchecked")
-		List<Object> sqlList1 =(List<Object>) query.list();
-    	if(sqlList1.size() > 0)
-    	{
-	        if(sqlList1.get(0) != null)
-			{
-	        	String resCode = sqlList1.get(0).toString();
-				rcCode = resCode;
-    			if(resCode.equals("0"))
-    			{
-    				rcCode = "00";
-    			}	
-			}
-    	}		
-    	return rcCode;
-	}
-	
-	public List<Object> getRCCodeByTrnsIdList(List<Long> trnsId) 
-	{
-		Query query;	
-		String sqlQuery = "SELECT COALESCE(pct.OperatorResponseCode||'', pct.bankrejectreason, ct.OperatorResponseCode||'', ct.bankrejectreason) as RcCode, count(*) as count FROM service_charge_txn_log sctl	LEFT OUTER JOIN commodity_transfer ct on ct.transactionid = sctl.transactionid LEFT OUTER JOIN pending_commodity_transfer pct on pct.transactionid = sctl.transactionid	WHERE sctl.transactionid in ("+StringUtils.join(trnsId, ",")+") group by pct.OperatorResponseCode||'', pct.bankrejectreason, ct.OperatorResponseCode||'', ct.bankrejectreason";	
-    	query = getSQLQuery(sqlQuery);
-    	@SuppressWarnings("unchecked")
-		List<Object> sqlList1 =(List<Object>) query.list();
-    	return sqlList1;
-	}
-	
 }
