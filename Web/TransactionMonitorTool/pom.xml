@@ -260,6 +260,9 @@
 			<resource>
 				<filtering>true</filtering>
 				<directory>src/resources</directory>
+				<excludes>
+					<exclude>**/*.json</exclude>
+				</excludes>
 		  </resource>
 		</resources>
 		<testResources>
@@ -312,9 +315,20 @@
 										<include>spring-datasource-beans.xml</include>
 									</includes>
 									<filtering>true</filtering>
-								</resource>						
+								</resource>
+								
+								<resource>
+									<targetPath>${basedir}/target/TransactionMonitorTool/WEB-INF/classes</targetPath>
+									<directory>src/resources/${profile}</directory>
+									<includes>
+										<include>*.json</include>
+									</includes>	
+									<filtering>true</filtering>
+								</resource>
+								
 							</resources>
 						</configuration>
+						
 					</execution>
 				</executions>
 			</plugin>
