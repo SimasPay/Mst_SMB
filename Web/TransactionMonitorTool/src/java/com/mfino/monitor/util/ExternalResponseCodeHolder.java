@@ -1,18 +1,12 @@
 package com.mfino.monitor.util;
 
-import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.json.JSONObject;
 
 /**
  * Loads external code,description values into codeMap from properties file
@@ -44,43 +38,28 @@ public class ExternalResponseCodeHolder {
 	
 	private void loadExternalCodeMappings(String filePath) {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-	    URL url = loader.getResource("..\\externalcodedescriptions.xml");
+	    URL url = loader.getResource("RCCodes.json");
+	    JSONObject RCCodes_JSON_OBJECT = null;
+	    
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			File file = new File(url.toURI());
-			if (file.exists()) {
-				Document doc = db.parse(file);
-				Element docEle = doc.getDocumentElement();
-				NodeList responseCodeList = docEle
-						.getElementsByTagName("response-code");
-				if (responseCodeList != null
-						&& responseCodeList.getLength() > 0) {
-					for (int i = 0; i < responseCodeList.getLength(); i++) {
-						Node node = responseCodeList.item(i);
-						ExternalResponsecode externalResponsecode = new ExternalResponsecode();
-						if (node.getNodeType() == Node.ELEMENT_NODE) {
-							Element e = (Element) node;
-							NodeList nodeList = e.getElementsByTagName("code");
-							externalResponsecode.setCode(nodeList.item(0)
-									.getChildNodes().item(0).getNodeValue());
-							nodeList = e.getElementsByTagName("description");
-							externalResponsecode.setDescription(nodeList
-									.item(0).getChildNodes().item(0)
-									.getNodeValue());
-							nodeList = e
-									.getElementsByTagName("notification-text");
-							externalResponsecode.setNotificationText(nodeList
-									.item(0).getChildNodes().item(0)
-									.getNodeValue());
-						}
-						codeMap.put(externalResponsecode.getCode(),
-								externalResponsecode);
-					}
-				} else {
+			
+			RCCodes_JSON_OBJECT = FileReaderUtil.readFileContAsJsonObj(url.getFile());
+			
+			if(null != RCCodes_JSON_OBJECT) {
+				
+				for (Iterator<String> iterator = RCCodes_JSON_OBJECT.keys(); iterator.hasNext();) {
+					
+					String key = (String) iterator.next();
+					String value = (String)RCCodes_JSON_OBJECT.get(key);
+					
+					ExternalResponsecode responseCode = new ExternalResponsecode();
+					responseCode.setCode(key);
+					responseCode.setDescription(value);
+					
+					codeMap.put(key,responseCode);
 				}
-			}
-
+				
+			}			
 		} catch (Exception e) {
 			e.fillInStackTrace();
 		}
