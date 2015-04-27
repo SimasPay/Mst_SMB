@@ -10,7 +10,18 @@ Ext.define('Mfino.view.portlet.FailedTransactionsPortlet', {
     	
     	var task = {
             	run: function() {            		
-            		failedStore.load();
+            		
+            		
+            		//failedStore.load();
+            		
+            		var portlet = Ext.get('FailedTransactionsPortlet');
+                	if(portlet.isDisplayed()){
+                		Ext.getStore('failedTransactionsStore').load({
+                    		params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod,
+                    				  'failedTxns': Mfino.util.Utilities.failedTxns}
+                    	});	
+                    	Ext.getCmp('failed-transactions-grid').getView().refresh();
+                	}
             	},
                 interval: 300000 //5 mins
             };

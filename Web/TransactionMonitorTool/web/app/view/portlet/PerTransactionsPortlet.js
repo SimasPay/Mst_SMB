@@ -30,7 +30,17 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
     	
     	var task = {
             	run: function() {            		
-            		transactionChartStore.load();
+            		//transactionChartStore.load();
+            		
+            		var portlet = Ext.get('PerTransactionsPortlet');
+					if(portlet.isDisplayed()){
+						Ext.getStore('pertransactionsStore').load({
+							params: {
+								'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+						});    	
+						Ext.getCmp('pertrns-chart').refresh();
+						Ext.getCmp('pertransaction-bottom-grid').getView().refresh();
+					}
             	},
                 interval: 300000 //5 mins
             };

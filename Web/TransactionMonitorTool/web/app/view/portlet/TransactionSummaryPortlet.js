@@ -24,7 +24,16 @@ Ext.define('Mfino.view.portlet.TransactionSummaryPortlet', {
     	
     	var task = {
             	run: function() {            		
-            		summaryChartStore.load();
+            		//summaryChartStore.load();
+            		
+            		var portlet = Ext.get('TransactionSummaryPortlet');
+					if(portlet.isDisplayed()){
+						Ext.getStore('transactionSummaryStore').load({
+							params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+						});    	
+						Ext.getCmp('summary-chart').refresh();
+						Ext.getCmp('summary-bottom-grid').getView().refresh();
+					}
             	},
                 interval: 300000 //5 mins
             };

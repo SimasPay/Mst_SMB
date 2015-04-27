@@ -23,7 +23,16 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
     	
     	var task = {
             	run: function() {            		
-            		rcTxnChartStore.load();
+            		//rcTxnChartStore.load();
+            		
+            		var portlet = Ext.get('PerRcTransactionsPortlet');
+					if(portlet.isDisplayed()){ 
+						Ext.getStore('PerRcTransactions').load({
+							params: { 'monitoringPeriod': Mfino.util.Utilities.monitoringPeriod}
+						});    	
+						Ext.getCmp('perrc-chart').refresh();
+						Ext.getCmp('perrc-bottom-grid').getView().refresh();
+					}
             	},
                 interval: 300000 //5 mins
             };

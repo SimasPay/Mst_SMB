@@ -78,8 +78,8 @@ public class TransactionController {
 			"yyyyMMdd-HH:mm:ss:SSS");
 	
 	static ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    static URL url = loader.getResource("..\\sqlQueries.json");
-	static JSONObject SQL_QUERIES_JSON_OBJECT = FileReaderUtil.readFileContAsJsonObj(url.getFile());
+    static URL url = loader.getResource("sqlQueries.json");
+	static JSONObject SQL_QUERIES_JSON_OBJECT = null;
 	
 	@RequestMapping("/getTransactions.htm")
 	public ModelAndView activation(HttpServletRequest request,
@@ -89,6 +89,16 @@ public class TransactionController {
 		// holds the "monitor period" combo box value
 		String monitorPeriod = request.getParameter("monitoringPeriod");
 		Date lastUpdateTimeGE = null;
+		
+		try {
+			
+			SQL_QUERIES_JSON_OBJECT = FileReaderUtil.readFileContAsJsonObj(url.getFile());
+			
+		} catch (Exception e) {
+			
+			log.info("Unable to read the sqlQueries.json file from the path:" + e);
+		}
+		
 		if (StringUtils.isNotEmpty(monitorPeriod)) {
 			lastUpdateTimeGE = calculateLastUpdateTimeGE(monitorPeriod);
 			log.info("lastUpdateTimeGE in TransactionController is: "+lastUpdateTimeGE);
