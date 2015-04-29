@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -100,7 +101,7 @@ public class TransactionController {
 		}
 		
 		if (StringUtils.isNotEmpty(monitorPeriod)) {
-			lastUpdateTimeGE = calculateLastUpdateTimeGE(monitorPeriod);
+			lastUpdateTimeGE = getTimeZoneBasedDateTimeGE(calculateLastUpdateTimeGE(monitorPeriod));
 			log.info("lastUpdateTimeGE in TransactionController is: "+lastUpdateTimeGE);
 		}
 
@@ -373,5 +374,9 @@ public class TransactionController {
 			lastUpdateTimeGE = DateTimeUtil.addDays(presentDate, -30);
 		}
 		return lastUpdateTimeGE;
+	}
+	private Date getTimeZoneBasedDateTimeGE(Date monitoringDate) {
+		
+		return new Date(monitoringDate.getTime() - TimeZone.getDefault().getRawOffset());
 	}
 }

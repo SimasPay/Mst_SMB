@@ -5,6 +5,7 @@ package com.mfino.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -29,7 +30,7 @@ public class TransactionMonitoringDAO extends BaseDAO<TransactionMonitoringLog> 
 	public List<Object> getRCFailedTransactions(ServiceChargeTransactionsLogQuery sctlQuery) 
 	{
 		Query query;
-		StringBuffer sqlQuery = new StringBuffer();
+		String sqlQuery = null;
 		/*sqlQuery.append(" SELECT ID,SOURCEMDN,FAILUREREASON,CREATETIME,CHANNELNAME, TRANSACTIONNAME,TRANSACTIONAMOUNT,RCCODE FROM");
 		sqlQuery.append(" (SELECT SCTL.ID ID,SCTL.SOURCEMDN SOURCEMDN,SCTL.FAILUREREASON FAILUREREASON,");
 		sqlQuery.append(" SCTL.CREATETIME CREATETIME,CC.CHANNELNAME CHANNELNAME,"); 
@@ -41,10 +42,16 @@ public class TransactionMonitoringDAO extends BaseDAO<TransactionMonitoringLog> 
 		sqlQuery.append(" AND CC.ID = SCTL.CHANNELCODEID AND TT.ID = SCTL.TRANSACTIONTYPEID");	
 		sqlQuery.append(" ORDER BY SCTL.ID DESC) WHERE RCCODE IS NOT NULL AND ROWNUM BETWEEN 1 AND :maxLimit");*/
     	
-		query = getSQLQuery(sctlQuery.getCustomQuery());
+		//query = getSQLQuery(sctlQuery.getCustomQuery());
+		
+		sqlQuery = sctlQuery.getCustomQuery();
+		sqlQuery = sqlQuery.replace("$(timeZone)", TimeZone.getDefault().getID());
+		
+		query = getSQLQuery(sqlQuery);
     	query.setInteger("status", sctlQuery.getStatus());  
     	query.setTimestamp("createtime", sctlQuery.getCreateTimeGE());
     	query.setInteger("maxLimit", sctlQuery.getLimit());
+    	//query.setString("timeZone", sctlQuery.getTimeZone());
     	
     	@SuppressWarnings("unchecked")
 		List<Object> sqlList1 =(List<Object>) query.list();

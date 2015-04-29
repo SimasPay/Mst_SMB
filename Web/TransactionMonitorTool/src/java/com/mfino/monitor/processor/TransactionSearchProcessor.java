@@ -50,6 +50,7 @@ public class TransactionSearchProcessor extends BaseProcessor implements Transac
 		sctlQuery.setStart(searchBean.getStart());
 		sctlQuery.setLimit(searchBean.getLimit());
 		sctlQuery.setTransactionTypeID(searchBean.getTransactionTypeID());
+		sctlQuery.setIDOrdered(true);
 		List<ServiceChargeTransactionLog> sctlList = sctlDAO.get(sctlQuery);
 		if (sctlList != null) {
 			for (int i = 0; i < sctlList.size(); i++) {
