@@ -138,7 +138,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		this.sctlService = sctlService;
 	}
 
-	protected  CMMoneyTransferToBank inquiryResponse;
+//	protected  CMMoneyTransferToBank inquiryResponse;
 	
 	
 	protected String sourceToDestInquiryQueue = "jms:bsimsourceToDestInquiryQueue?disableReplyTo=true";
@@ -487,6 +487,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	{
 		log.info("BillPaymentServiceImpl :: billPayMoneyTransferSourceToDestination mceMessage="+mceMessage);
 		CMBillPay billPay = (CMBillPay)mceMessage.getRequest();
+		CMMoneyTransferToBank inquiryResponse = null;
 		try {
 		inquiryResponse = (CMMoneyTransferToBank)bankService.onTransferConfirmationToBank(billPay);
 		} catch(Exception e){
@@ -596,7 +597,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		} catch(Exception e){
 			log.error(e.getMessage());
 			Response = createResponseObject();
-			((BackendResponse) Response).copy(inquiryResponse);
+			((BackendResponse) Response).copy((CMMoneyTransferToBank)billPayToBank);
 			((BackendResponse) Response).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) Response).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
 		}
@@ -719,6 +720,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	{
 		log.info("BillPaymentServiceImpl :: qrPaymentMoneyTransferSourceToDestination mceMessage="+mceMessage);
 		CMQRPayment qrPayment = (CMQRPayment)mceMessage.getRequest();
+		CMMoneyTransferToBank inquiryResponse = null;
 		try {
 		inquiryResponse = (CMMoneyTransferToBank)bankService.onTransferConfirmationToBank(qrPayment);
 		} catch(Exception e){
@@ -856,7 +858,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		} catch(Exception e){
 			log.error(e.getMessage());
 			Response = createResponseObject();
-			((BackendResponse) Response).copy(inquiryResponse);
+			((BackendResponse) Response).copy((CMMoneyTransferToBank)req);
 			((BackendResponse) Response).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) Response).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
 		}
@@ -895,12 +897,12 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		billPayrevtobank.setTransactionID(NoISORes.getTransactionID());
 		billPayrevtobank.setBillerCode(billPayrevToBank.getBillerCode());
 		billPayrevtobank.setBankRetrievalReferenceNumber(billPayrev.getBankRetrievalReferenceNumber());
-		billPayrevtobank.setBankCode(inquiryResponse.getBankCode());
+		billPayrevtobank.setBankCode(billPayrevToBank.getBankCode());
 		billPayrevtobank.setAmount(billPayrev.getAmount());
 		billPayrevtobank.setSourceMDN(billPayrev.getSourceMDN());
 		billPayrevtobank.setTransferID(billPayrev.getTransferID());
 		billPayrevtobank.setTransferTime(billPayrev.getTransferTime());
-		billPayrevtobank.setLanguage(inquiryResponse.getLanguage());
+		billPayrevtobank.setLanguage(billPayrevToBank.getLanguage());
 		if(billPayrevToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || billPayrevToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)){
 			billPayrevtobank.setProcessingCode("56");
 		}else{
@@ -1006,12 +1008,12 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		billPayrevtobank.setTransactionID(NoISORes.getTransactionID());
 		billPayrevtobank.setBillerCode(billPayrevToBank.getBillerCode());
 		billPayrevtobank.setBankRetrievalReferenceNumber(billPayrev.getBankRetrievalReferenceNumber());
-		billPayrevtobank.setBankCode(inquiryResponse.getBankCode());
+		billPayrevtobank.setBankCode(billPayrevToBank.getBankCode());
 		billPayrevtobank.setAmount(billPayrev.getAmount());
 		billPayrevtobank.setSourceMDN(billPayrev.getSourceMDN());
 		billPayrevtobank.setTransferID(billPayrev.getTransferID());
 		billPayrevtobank.setTransferTime(billPayrev.getTransferTime());
-		billPayrevtobank.setLanguage(inquiryResponse.getLanguage());
+		billPayrevtobank.setLanguage(billPayrevToBank.getLanguage());
 		if(billPayrevToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || billPayrevToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)){
 			billPayrevtobank.setProcessingCode("56");
 		}else{
