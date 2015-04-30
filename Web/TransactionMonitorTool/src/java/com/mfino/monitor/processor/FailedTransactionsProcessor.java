@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +69,11 @@ public class FailedTransactionsProcessor extends BaseProcessor implements Failed
 				ftr.setTransactionType(String.valueOf(object[5]));
 				
 				rcCode = String.valueOf(object[7]);
-				ftr.setRcCode((rcCode.length() == 1 ? "0"+rcCode : rcCode));
+				
+				if(StringUtils.isBlank(rcCode) || StringUtils.isEmpty(rcCode) || "null".equals(rcCode))
+					ftr.setRcCode("-");
+				else
+					ftr.setRcCode((rcCode.length() == 1 ? "0"+rcCode : rcCode));
 				
 				ftr.setTxnDateTime(String.valueOf(object[3]));
 				results.add(ftr);
