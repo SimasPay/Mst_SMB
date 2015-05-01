@@ -48,8 +48,8 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 	            	items: [{
 		            		xtype: 'chart', 
 		            		id: 'perrc-chart',
-		                    animate: false,
-		                    shadow: false,		                    
+		                    animate: true,
+		                    shadow: false,
 		                    theme: 'CustomTheme',
 		                    store: rcTxnChartStore,
 		                    legend: {
@@ -65,7 +65,6 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 		                            renderer: function(val){
 		                             return Ext.String.ellipsis(val, 30, true);
 		                            },		                            		                                                    
-		                            
                              		orientation: 'vertical',
                              		rotate: {
                                         degrees: 270
@@ -83,19 +82,29 @@ Ext.define('Mfino.view.portlet.PerRcTransactionsPortlet', {
 		                	} ],
 		                	series : [ {
 		                		type : 'column',		                		
-		                		axis : 'left',		                		
+		                		axis : 'left',		
+		                		highlight: true,
 		                		tips : {
 		                			trackMouse : true,
 		                			width : 140,
 		                			height : 50,
 		                			renderer : function(storeItem, item) {
-		                				//this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' RcStatus '+ item.yField );
-		                				this.setTitle(String(item.value[1]) +' Records ');
+		                				this.setTitle(String(item.value[1]) + ' Transactions with RCCode-' + String(item.value[0]) );
+		                				//this.setTitle(String(item.value[1]) +' Records ');
 		                			}
 		                		},	
 		                		renderer: function(sprite, record, attr, index, store) {
 		                            //draw diffrent color                                         
-		                            sprite.setAttributes({fill: 'red'}, true);
+		                            /*sprite.setAttributes({fill: 'red'}, true);
+		                			return attr;*/
+		                			
+		                            if (store.getCount() == 1) {
+		                                //attr.height = 80;
+		                                //attr.y = 75;
+		                            	attr.width = 50;
+		                                attr.x = 285;
+		                            	
+		                            }
 		                            return attr;
 		                		},
 		                		xField : 'rcCode',

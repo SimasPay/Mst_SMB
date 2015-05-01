@@ -31,7 +31,6 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
     	var task = {
             	run: function() {            		
             		//transactionChartStore.load();
-            		
             		var portlet = Ext.get('PerTransactionsPortlet');
 					if(portlet.isDisplayed()){
 						Ext.getStore('pertransactionsStore').load({
@@ -55,9 +54,8 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 	            	layout: 'fit',            	
 	            	items: [{
 		            		xtype: 'chart', 
-		            		//id: 'per-trxn',
 		            		id: 'pertrns-chart',
-		                    animate: false,
+		                    animate: true,
 		                    shadow: false,		                    
 		                    theme: 'CustomTheme',
 		                    store: transactionChartStore,
@@ -71,26 +69,25 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                		position : 'bottom',
 		                		//title : 'Transaction Type',
 		                		label: {
-		                            renderer: function(val){
-		                             return Ext.String.ellipsis(val, 30, true);;
-		                            },
-                             		orientation: 'vertical',
-                             		rotate: {
-                                        degrees: 270
-                                    }
+	                            	renderer: function(val){
+	                            	return Ext.String.ellipsis(val, 30, true);
+	                            	},
+	                            	orientation: 'vertical',
+	                            	rotate: {
+                                    degrees: 270
+	                            	}
 		                           },
-		                		fields : [ 'transactionType' ]                		
+		                		fields : [ 'transactionType' ],
 		                	}, {
 		                		type : 'Numeric',
 		                		position : 'left',
 		                		fields : [ 'successful', 'pending' , 'failed', 'processing' ],
-		                		label: { renderer: Ext.util.Format.numberRenderer('0,0') }, 
 		                		title : 'Count',			                		
 		                		minimum : 0,
 		                		grid: true
 		                	} ],
-		                	series : [ {
-		                		type : 'column',		                		
+		                	series : [ {		                		
+		                		type : 'column',
 		                		axis : 'left',		     
 		                		highlight: true,
 		                		tips : {
@@ -98,8 +95,8 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                			width : 140,
 		                			height : 50,
 		                			renderer : function(storeItem, item) {
-		                				//this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' transactions '+ item.yField );
-		                				this.setTitle(String(item.value[1]) + ' Records ');
+		                				this.setTitle(String(item.value[1]) + ' ' + String(item.value[0]) + ' Transactions '+ item.yField );
+		                				//this.setTitle(String(item.value[1]) + ' Records ');
 		                			}
 		                		},	
 		                		renderer: function(sprite, record, attr, index, store) {
@@ -107,15 +104,6 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 		                            sprite.setAttributes({fill: 'red'}, true);
 		                            return attr;
 		                		},
-		                	/*	label: 
-		                		{ 
-		                			display: 'insideEnd', 
-		                			'text-anchor': 'middle', 
-		                			field: 'transactionType', 
-		                			renderer: Ext.util.Format.numberRenderer('0'), 
-		                			orientation: 'vertical', 
-		                			color: '#333' 
-		                		},*/
 		                		xField : 'transactionType',
 		                		yField : [ 'successful', 'pending' , 'failed', 'processing' ]		                		
 		                	}]
@@ -130,9 +118,6 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
                 stripeRows:true,
     			columnLines:true,    			
     			columns:[
- 						//{text:"TransactionType",width:140,flex:1,dataIndex:"transactionType",hideable: false},						
- 						//{text:"txnTypeId",width:125,flex:1,dataIndex:"txnTypeId",hideable: false}, 	
-
 	    				{text:"Transaction Type",width:140,sortable:false,dataIndex:"transactionType",hideable: false,
 	    					renderer: function(val, p, record)
 	    					{
@@ -169,11 +154,6 @@ Ext.define('Mfino.view.portlet.PerTransactionsPortlet', {
 	    						return '<span class="pertrns-transactions-link" linkTxnID="'+record.data.txnTypeId+'" linkStatus="processing">'+val+'</span>';
 	    					}
 	    				}
-						
-						
-						//{text:"Pending",width:125,dataIndex:"pending",hideable: false,menuDisabled: true},
-						//{text:"Failed",width:125,dataIndex:"failed",hideable: false,menuDisabled: true},
-						//{text:"InProgress",width:145,dataIndex:"processing",hideable: false,menuDisabled: true}
 						]	
             }]
         });

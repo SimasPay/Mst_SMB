@@ -70,7 +70,7 @@ public class FailedTransactionsProcessor extends BaseProcessor implements Failed
 				
 				rcCode = String.valueOf(object[7]);
 				
-				if(StringUtils.isBlank(rcCode) || StringUtils.isEmpty(rcCode) || "null".equals(rcCode))
+				if(StringUtils.isBlank(rcCode) || StringUtils.isEmpty(rcCode) || "null".equals(rcCode) || "00".equals(rcCode) || "0".equals(rcCode))
 					ftr.setRcCode("-");
 				else
 					ftr.setRcCode((rcCode.length() == 1 ? "0"+rcCode : rcCode));
