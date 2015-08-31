@@ -34,6 +34,7 @@ public class UangkuSMSServiceImpl implements SMSNotificationService
 	public static final String KEY_SHORT_CODE = "shortcode";
 	public static final String KEY_TO_ADDRESS = "to";
 	public static final String KEY_MESSAGE = "message";
+	public static final String KEY_WALLETID = "walletid";
 
 	private Log log = LogFactory.getLog(UangkuSMSServiceImpl.class);
 
@@ -43,6 +44,7 @@ public class UangkuSMSServiceImpl implements SMSNotificationService
 	private String toAddress;
 	private String message;
 	private String intPrefixCode;
+	private String walletID;
 
 	@Transactional(readOnly=false,propagation=Propagation.REQUIRED,rollbackFor=Throwable.class) 
 	public void process(Exchange httpExchange) {
@@ -69,7 +71,7 @@ public class UangkuSMSServiceImpl implements SMSNotificationService
 
 		try{
 			String urlParams = getQueryString();
-			log.debug("UangkuSMSServiceImpl :: process() url: "+getUrl()+", URL Params: "+urlParams);
+			log.info("UangkuSMSServiceImpl :: process() url: "+getUrl()+", URL Params: "+urlParams);
 			URL uri = new URL(getUrl());
 			HttpURLConnection connection = (HttpURLConnection)uri.openConnection();
 			connection.setRequestMethod("POST");
@@ -125,6 +127,7 @@ public class UangkuSMSServiceImpl implements SMSNotificationService
 		queryString = queryString + "&" + KEY_MESSAGE + "=" + URLEncoder.encode( message, "UTF-8" );
 		queryString = queryString + "&" + KEY_API_TOKEN + "=" + getApitoken();
 		queryString = queryString + "&" + KEY_SHORT_CODE + "=" + getShortcode();
+		queryString = queryString + "&" + KEY_WALLETID + "=" + getWalletID();
 		return queryString;
 	}
 
@@ -158,5 +161,13 @@ public class UangkuSMSServiceImpl implements SMSNotificationService
 
 	public void setIntPrefixCode(String intPrefixCode) {
 		this.intPrefixCode = intPrefixCode;
+	}
+
+	public String getWalletID() {
+		return walletID;
+	}
+
+	public void setWalletID(String walletID) {
+		this.walletID = walletID;
 	}
 }

@@ -85,6 +85,7 @@
 		<property name="shortcode" value="${sms.shortCode}"/>
 		<property name="apitoken" value="${sms.apiToken}"/>
 		<property name="intPrefixCode" value="${sms.intPrefixCode}"/>
+		<property name="walletID" value="${sms.walletID}"/>
 	</bean>
 	
 	<camelContext id="HubSMS" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
