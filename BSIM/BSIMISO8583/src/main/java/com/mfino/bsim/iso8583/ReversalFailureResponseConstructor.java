@@ -6,10 +6,10 @@ import org.apache.commons.logging.LogFactory;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;
-import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferReversalFromBank;
-import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalFromBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalFromBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
 
@@ -18,6 +18,18 @@ public class ReversalFailureResponseConstructor {
 	Log	log	= LogFactory.getLog(ReversalFailureResponseConstructor.class);
 
 	public CFIXMsg construct(CMBankRequest request) {
+		
+		if (request instanceof CMQRPaymentReversalToBank) {
+			log.info("no Response for falshiz reversal request also, " + "sending the message to backend for putting the transaction in pending");
+			CMQRPaymentReversalToBank reversalFixMsg = (CMQRPaymentReversalToBank) request;
+			CMQRPaymentReversalFromBank reversalFromBank = new CMQRPaymentReversalFromBank();
+			// set the status to fail for Backend to take approriate action
+			reversalFromBank.copy(reversalFixMsg);
+			reversalFromBank.header().setSendingTime(DateTimeUtil.getLocalTime());
+			reversalFromBank.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+			reversalFromBank.setResponseCode(CmFinoFIX.ResponseCode_Failure.toString());
+			return reversalFromBank;
+		}
 
 		if (request instanceof CMMoneyTransferReversalToBank) {
 			log.info("no Response for reversal request also, " + "sending the message to backend for putting the transaction in pending");

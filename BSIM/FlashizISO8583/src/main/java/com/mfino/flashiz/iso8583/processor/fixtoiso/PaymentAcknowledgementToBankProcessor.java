@@ -63,7 +63,7 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			isoMsg.set(26,constantFieldsMap.get("26"));
 			isoMsg.set(27, CmFinoFIX.ISO8583_AuthorizationIdentificationResponseLength_Sinarmas.toString());
 			isoMsg.set(32,constantFieldsMap.get("32"));
-			isoMsg.set(33,constantFieldsMap.get("32"));
+			isoMsg.set(33,constantFieldsMap.get("33"));
 			//isoMsg.set(35,request.getSourceCardPAN());
 			isoMsg.set(37, StringUtilities.leftPadWithCharacter(request.getTransactionID().toString(), 12, "0"));
 			//if there is bank response then send same response to flashiz or else sent 68 in de-39

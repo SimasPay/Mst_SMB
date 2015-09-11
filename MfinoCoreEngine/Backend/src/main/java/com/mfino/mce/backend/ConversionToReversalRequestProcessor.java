@@ -29,6 +29,8 @@ import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.UniqueNumberGen;
 
@@ -61,6 +63,24 @@ public class ConversionToReversalRequestProcessor {
 
 			return reversalFixMsg;
 
+		}
+		else if (requestFixMsg instanceof CMQRPaymentToBank) {
+			log.info("Constructing the QR Payment reversal fix msg....");
+			CMQRPaymentToBank qrPaymentToBank = (CMQRPaymentToBank)requestFixMsg;
+			CMQRPaymentReversalToBank billPayrevtobank = new CMQRPaymentReversalToBank();
+			billPayrevtobank.copy(qrPaymentToBank);
+			billPayrevtobank.header().setSendingTime(DateTimeUtil.getLocalTime());
+			billPayrevtobank.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+			billPayrevtobank.setBankSystemTraceAuditNumber((qrPaymentToBank.getTransactionID() % 1000000) + "");
+			billPayrevtobank.setTransactionID(responseFix.getTransactionID());
+			billPayrevtobank.setBankRetrievalReferenceNumber(billPayrevtobank.getTransactionID() + "");			
+			if(qrPaymentToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || 
+					qrPaymentToBank.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)){
+				billPayrevtobank.setProcessingCode("56");
+			}else{
+				billPayrevtobank.setProcessingCode("50");
+			}
+			return billPayrevtobank;
 		}
 		// also write for reversal also not replied by bank
 		else if (requestFixMsg instanceof CMMoneyTransferToBank) {

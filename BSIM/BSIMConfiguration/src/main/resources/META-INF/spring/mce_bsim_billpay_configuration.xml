@@ -313,6 +313,7 @@
 		             <simple>${in.body.response.getResponseCode} != '00'</simple>
             			<to uri="bean:billPayService?method=qrPaymentMoneyTransferInquiryCompletionSourceToDestination"/>
 		              	<to uri="jms:notificationQueue?disableReplyTo=true"/>
+		              	<stop/>
 		    	</filter>  
             </filter>
             <filter>
@@ -339,8 +340,10 @@
 		    	</filter>
 		    	<filter>
 		             <simple>${in.body.response.getResponseCode} != '00'</simple>
-		         	 <!-- not updating billpay status here since reversal is already sent and then response of reversal comes here-->
-		             <to uri="jms:bsimreversalQueue?disableReplyTo=true"/>
+		         	 <!-- not updating billpay status here since reversal is already sent and then response of reversal comes here>
+		             <to uri="jms:bsimreversalQueue?disableReplyTo=true"/-->
+		             <to uri="bean:billPayService?method=qrPaymentMoneyTransferReversalSourceToDestination"/>
+               		 <to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
 		    	</filter>
             </filter>  
             <filter>

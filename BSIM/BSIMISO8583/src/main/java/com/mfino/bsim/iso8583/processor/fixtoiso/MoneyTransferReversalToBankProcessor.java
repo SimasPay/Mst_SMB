@@ -94,10 +94,10 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(100, msg.getBankCode().toString());
 			isoMsg.set(102, msg.getSourceCardPAN()); 
 			isoMsg.set(103, msg.getDestCardPAN());
-			if(msg.getLanguage().equals(0))
-				isoMsg.set(121,constantFieldsMap.get("english"));
-			else
-				isoMsg.set(121,constantFieldsMap.get("bahasa"));
+//			if(msg.getLanguage().equals(0))
+//				isoMsg.set(121,constantFieldsMap.get("english"));
+//			else
+//				isoMsg.set(121,constantFieldsMap.get("bahasa"));
 
 			isoMsg.set(127, msg.getDestBankCode());//Destination Institution Code.
 

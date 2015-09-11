@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOMsg;
 
 import com.mfino.domain.NoISOResponseMsg;
+import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;
@@ -29,68 +30,46 @@ public class NoISOResponseProcessor {
 
 	public MCEMessage processMessage(MCEMessage msg) {
 
-		log.info("processing in NoISOResponseMessage");
+		log.info("processing in Flashiz NoISOResponseMessage");
 
 		log.info("MCERequest--> " + msg.getRequest().getClass());//to
 		log.info("MCEResponse-->" + msg.getResponse().getClass());//from
 
-		//if (msg.getRequest() instanceof CMBankRequest)
-		//	return msg;
-
-		//		if(!( msg.getResponse().getClass().equals(CMMoneyTransferToBank.class) ||  msg.getResponse().getClass().equals(CMQRPaymentToBank.class) 
-		//				|| msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBank.class) ||
-		//			msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class)))
-		//			return msg;
-
-		//		CMBankRequest isoRequest = (CMBankRequest) msg.getResponse();
-		//
-		//		// No response for reversal
-		//		if (isoRequest instanceof CMMoneyTransferReversalToBank) {
-		//			ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
-		//			msg.setRequest(isoRequest);
-		//			msg.setResponse(proc.construct(isoRequest));
-		//			return msg;
-		//		}
-		//
-		//		NoISOResponseMsg noResponse = new NoISOResponseMsg();
-		//		noResponse.copy(isoRequest);
-		//		noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
-		//		noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
-		//		msg.setRequest(isoRequest);
-		//		msg.setResponse(noResponse);
-		//
-		//		return msg;
-
-
-		//no response for payment acknowledge write logic what to do
-
-
 		if( msg.getResponse().getClass().equals(CMPaymentAcknowledgementFromBankForBsim.class))
 		{
-			CMPaymentAcknowledgementFromBankForBsim paymentAcknowledgementFromBank  = (CMPaymentAcknowledgementFromBankForBsim) msg.getResponse();
-			if( paymentAcknowledgementFromBank.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success) )
-			{
-				return msg;
-			}
-
-			//if response code is not success then initiate the reversal.
-			else
-			{
-				ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
-				//msg.setResponse(proc.construct(paymentAcknowledgementFromBank));
-				msg.setResponse(proc.construct(msg));
-				msg.setRequest(msg.getResponse());
-				msg.setDestinationQueue(reversalQueue);
-				return msg;
-			}
+			return msg;
+//			CMPaymentAcknowledgementFromBankForBsim paymentAcknowledgementFromBank  = (CMPaymentAcknowledgementFromBankForBsim) msg.getResponse();
+//			if( paymentAcknowledgementFromBank.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success) )
+//			{
+//				return msg;
+//			}
+//
+//			//if response code is not success then initiate the reversal.
+//			else
+//			{
+//				ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
+//				CFIXMsg rfresponse = proc.construct(msg);
+//				//msg.setResponse(proc.construct(paymentAcknowledgementFromBank));
+//				
+//				NoISOResponseMsg noResponse = new NoISOResponseMsg();
+//				noResponse.copy(paymentAcknowledgementFromBank);
+//				noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
+//				noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+//				
+//				msg.setRequest(noResponse);
+//				msg.setResponse(rfresponse);
+//				msg.setDestinationQueue(reversalQueue);
+//				return msg;
+//			}
 		}
 		//if the request is of type PaymentAckToBank and the NMStatus failed we need to trigger reversal as the money is deducted from Bank AC
 		else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)) && (!(StatusRegistrar.getSignonStatus("flashizmux").equals(NMStatus.Successful)) || !(StatusRegistrar.getEchoStatus("flashizmux").equals(NMStatus.Successful))))
 		{
 			ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
+			CFIXMsg rfresponse = proc.construct(msg);
 			//msg.setResponse(proc.construct(paymentAcknowledgementFromBank));
-			msg.setResponse(proc.construct(msg));
 			msg.setRequest(msg.getResponse());
+			msg.setResponse(rfresponse);
 			msg.setDestinationQueue(reversalQueue);
 			return msg;
 		}else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)))

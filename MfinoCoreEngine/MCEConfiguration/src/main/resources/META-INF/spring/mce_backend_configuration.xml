@@ -67,6 +67,8 @@
 					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMMoneyTransferReversalToBank"
 					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
+				<entry key="com.mfino.fix.CmFinoFIX$CMQRPaymentReversalToBank"
+					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMMoneyTransferToBank"
 					value="jms:frontendRequestServiceQueue?disableReplyTo=true" />
 				<entry key="com.mfino.fix.CmFinoFIX$CMGetLastTransactionsToBank"

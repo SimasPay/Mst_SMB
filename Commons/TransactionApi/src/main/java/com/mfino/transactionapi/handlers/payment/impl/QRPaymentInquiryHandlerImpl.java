@@ -152,7 +152,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		qrPaymentInquiry.setUserAPIKey(sourceMDN.getUserAPIKey());
+		qrPaymentInquiry.setUserAPIKey(transactionDetails.getUserAPIKey());
 
 		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(qrPaymentInquiry.getBillerCode());
 		if (mfsBiller == null) {

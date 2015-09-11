@@ -80,9 +80,9 @@ public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(37, 	StringUtilities.leftPadWithCharacter( msg.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, msg.getSourceMDN());
-			/*isoMsg.set(43, constantFieldsMap.get("43"));
+			isoMsg.set(43, constantFieldsMap.get("43"));
 			isoMsg.set(47, msg.getTransactionID().toString());
-			isoMsg.set(48, msg.getTransactionID().toString());*/
+			isoMsg.set(48, msg.getTransactionID().toString());
 			isoMsg.set(49,constantFieldsMap.get("49"));
 			isoMsg.set(60, "No bank response");
 			String reversalInfoStr = "0200" + paddedSTAN;
@@ -94,10 +94,10 @@ public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 
 			isoMsg.set(98,msg.getBillerCode());
 			isoMsg.set(102, msg.getSourceCardPAN()); 
-			if(msg.getLanguage().equals(0))
-				isoMsg.set(121,constantFieldsMap.get("english"));
-			else
-				isoMsg.set(121,constantFieldsMap.get("bahasa"));
+//			if(msg.getLanguage().equals(0))
+//				isoMsg.set(121,constantFieldsMap.get("english"));
+//			else
+//				isoMsg.set(121,constantFieldsMap.get("bahasa"));
 
 
 		}

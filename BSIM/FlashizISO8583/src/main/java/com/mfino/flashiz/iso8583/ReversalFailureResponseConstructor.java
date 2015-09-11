@@ -51,6 +51,8 @@ public class ReversalFailureResponseConstructor {
 //	}
 	
 	public CFIXMsg construct(MCEMessage msg) {
+		
+		log.info("Constructing the Reversal Request..............");
 
 		CMPaymentAcknowledgementToBankForBsim paymentAcknowledgementToBank;
 

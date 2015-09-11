@@ -241,10 +241,23 @@ public class MfinoUtil {
 		return true;
 	}
 	
+	public static String leftPadWithCharacter(String str, int totalLength, String padCharacter){
+		if((str == null) || ("".equals(str))) return str;
+		
+		if(str.length() < totalLength){
+			int strLen = str.length();
+			for(int i = 0;i < (totalLength - strLen);i++ ){
+				str = padCharacter + str;
+			}
+		}
+		
+		return str;
+	}
+	
 	public static String CheckDigitCalculation(String mdn){
 		int sum=0;
 		int mulpro;
-		String mdnapp = "50" + mdn;
+		String mdnapp = "5" + leftPadWithCharacter(mdn, 14, "0");
 		String strgen;
 		int[] num = new int[mdnapp.length()];
 		for (int i = 0; i < mdnapp.length(); i++){

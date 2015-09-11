@@ -13,6 +13,8 @@ public interface BillPaymentService {
 	
 	public MCEMessage billPayMoneyTransferCompletionSourceToDestination(MCEMessage mceMessage);
 	
+	public MCEMessage qrPaymentMoneyTransferReversalSourceToDestination(MCEMessage mceMessage);
+	
 	public MCEMessage billPayAmountInquiry(MCEMessage mceMessage);
 	
 	public MCEMessage billPayAmountInquiryFromBank(MCEMessage mceMessage);

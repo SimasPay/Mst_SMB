@@ -3,14 +3,14 @@ package com.mfino.bsim.iso8583;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOMsg;
+
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;
-import com.mfino.fix.CmFinoFIX.CMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMInterBankMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
-import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBank;
+import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentToBank;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.util.DateTimeUtil;
@@ -32,12 +32,21 @@ public class NoISOResponseProcessor {
 
 		if(!( msg.getResponse().getClass().equals(CMMoneyTransferToBank.class) ||  msg.getResponse().getClass().equals(CMBSIMBillPaymentToBank.class) 
 				|| msg.getResponse().getClass().equals(CMInterBankMoneyTransferToBank.class) ||
-				msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class) ||  msg.getResponse().getClass().equals(CMQRPaymentToBank.class)))
+				msg.getResponse().getClass().equals(CMMoneyTransferReversalToBank.class) ||  msg.getResponse().getClass().equals(CMQRPaymentToBank.class)
+				|| msg.getResponse().getClass().equals(CMQRPaymentReversalToBank.class)))
 			return msg;
 		
 		CMBankRequest isoRequest = (CMBankRequest) msg.getResponse();
 
 		// No response for reversal
+		
+		if (isoRequest instanceof CMQRPaymentReversalToBank) {
+			ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
+			msg.setRequest(isoRequest);
+			msg.setResponse(proc.construct(isoRequest));
+			return msg;
+		}
+		
 		if (isoRequest instanceof CMMoneyTransferReversalToBank) {
 			ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
 			msg.setRequest(isoRequest);
@@ -45,6 +54,7 @@ public class NoISOResponseProcessor {
 			return msg;
 		}
 
+		log.info("Constructing NoISOResponse msg....");
 		NoISOResponseMsg noResponse = new NoISOResponseMsg();
 		noResponse.copy(isoRequest);
 		noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
