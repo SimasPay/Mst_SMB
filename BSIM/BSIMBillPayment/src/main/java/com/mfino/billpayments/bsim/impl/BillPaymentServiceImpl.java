@@ -864,6 +864,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		CFIXMsg resp = mceMessage.getResponse();
 		String billerCode = null;
 		String invoiceNo = null;
+		BigDecimal amount = null;
 		String info1 = null;
 		boolean isFailedByBank = false;
 		//CMQRPaymentToBank qrPayToBank = (CMQRPaymentToBank)mceMessage.getRequest();
@@ -873,12 +874,14 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			billerCode = ((CMPaymentAcknowledgementToBankForBsim) req).getBillerCode();
 			invoiceNo = ((CMPaymentAcknowledgementToBankForBsim) req).getInvoiceNo();
 			info1 = ((CMPaymentAcknowledgementToBankForBsim)req).getInfo1();
+			amount = ((CMPaymentAcknowledgementToBankForBsim)req).getAmount();
 		}
 		else {
 			//this occurs when bank(bsim) fails the request
 			billerCode = ((CMQRPaymentToBank)req).getBillerCode();
 			invoiceNo = ((CMQRPaymentToBank)req).getInvoiceNo();
 			info1 = ((CMQRPaymentToBank)req).getInfo1();
+			amount = ((CMQRPaymentToBank)req).getAmount();
 			isFailedByBank = true;
 		}
 		BackendResponse Response;
@@ -899,9 +902,11 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		
 		Response.setBillerCode(billerCode);
 		Response.setInvoiceNumber(invoiceNo);
+		Response.setNominalAmount(amount);
 		
 		if(isFailedByBank) {
 			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_FAILED);
+			Response.setExternalResponseCode(null);
 			Response.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 		}
 		else if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
@@ -1133,12 +1138,15 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		CMQRPaymentReversalToBank billPayrevToBank = (CMQRPaymentReversalToBank)mceMessage.getRequest();
 		CMQRPaymentReversalFromBank billPayrevFromBank = (CMQRPaymentReversalFromBank)mceMessage.getResponse();
 		BackendResponse Response = (BackendResponse)bankService.onTransferReversalFromBank(billPayrevToBank,billPayrevFromBank);
-		if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
+		if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Revert_Success){
 			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_REVERSAL_COMPLETED);
+			Response.setBillerCode(billPayrevToBank.getBillerCode());
+			Response.setInvoiceNumber(billPayrevToBank.getInvoiceNo());
+			Response.setNominalAmount(billPayrevToBank.getAmount());
+			Response.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 		}else {
 			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_BILLER_REVERSAL_FAILED);
 		}
-		Response.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 		mceMessage.setRequest(billPayrevFromBank);
 		mceMessage.setResponse(Response);
 		return mceMessage;

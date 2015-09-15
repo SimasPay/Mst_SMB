@@ -4746,6 +4746,7 @@
 	</message>
 	<message name="QRPaymentReversalToBank" msgtype="1440" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalToBank">
         	<field name="BillerCode" required="N"/>
+        	<field name="InvoiceNo" required="N"/>
 	</message>
 	<message name="QRPaymentReversalFromBank" msgtype="1441" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalFromBank">
 	</message>

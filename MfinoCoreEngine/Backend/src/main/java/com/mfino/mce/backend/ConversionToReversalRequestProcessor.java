@@ -80,6 +80,7 @@ public class ConversionToReversalRequestProcessor {
 			}else{
 				billPayrevtobank.setProcessingCode("50");
 			}
+			billPayrevtobank.setBillerCode(qrPaymentToBank.getBillerCode());
 			return billPayrevtobank;
 		}
 		// also write for reversal also not replied by bank
