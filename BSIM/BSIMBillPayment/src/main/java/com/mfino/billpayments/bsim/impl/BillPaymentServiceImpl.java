@@ -27,6 +27,7 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
+import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.MFSBillerPartner;
@@ -824,7 +825,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			log.info("Processing code"+iSummary.getReconcilationID1());
 			response.setInfo3(iSummary.getReconcilationID2());
 		}
-		billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_REQUESTED);
+		billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_REQUESTED, ts);
 		mceMessage.setResponse(response);
 
 		return mceMessage;

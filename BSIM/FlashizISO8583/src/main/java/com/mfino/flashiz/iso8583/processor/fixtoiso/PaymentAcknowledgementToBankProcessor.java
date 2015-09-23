@@ -48,6 +48,9 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			//dont send cardpan info and ac number in de-2 and de-102 to flashiz as it doesnot want flashiz to store user info.
 			//isoMsg.set(2,request.getInfo2());
 			String processingCode = "500000";
+			if(request.getIsAdvice()!=null && request.getIsAdvice()==true){
+				processingCode="510000";
+			}
 			isoMsg.set(3, processingCode);
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));

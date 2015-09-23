@@ -1,0 +1,1 @@
+alter table bill_payments add TransferTime timestamp(0);

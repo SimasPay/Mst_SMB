@@ -33,39 +33,21 @@ public class QRPaymentToBankProcessor extends BankRequestProcessor{
 		CMQRPaymentToBank request = (CMQRPaymentToBank)fixmsg;
 		Timestamp ts = request.getTransferTime();//changed to show transfer time as to show same thing in reversal. This is GMT Time
 		Timestamp localTS = DateTimeUtil.getLocalTime();
-		int flag = 0;
-		String fieldDE63 = constructDE63(request);
+//		int flag = 0;
+//		String fieldDE63 = constructDE63(request);
 		try
 		{
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,request.getInfo2());
-			String processingCode = null;
-			if(request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)){
-				if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType())){
-					processingCode = "56" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-				}
-				else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType())){
-					processingCode = "56" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-				}
-				flag = 1;
-			}
-			else{
+			String processingCode = "501000";
 			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType())){
 				processingCode = "50" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-			if(request.getProcessingCodeDE3()!=null){
-				processingCode = "50" + constantFieldsMap.get("SAVINGS_ACCOUNT")+request.getProcessingCodeDE3();
-			}
 			}
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType())){
 				processingCode = "50" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			if(request.getProcessingCodeDE3()!=null){
-					processingCode = "50" + constantFieldsMap.get("CHECKING_ACCOUNT")+request.getProcessingCodeDE3();
-			}
-			}
 			}
 			isoMsg.set(3, processingCode);
-			//isoMsg.set(3,CmFinoFIX.ISO8583_ProcessingCode_XLink_Payment0);
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
@@ -97,14 +79,9 @@ public class QRPaymentToBankProcessor extends BankRequestProcessor{
 				isoMsg.set(61,request.getInvoiceNo());
 			}
 			isoMsg.set(62,request.getInvoiceNo());
-			isoMsg.set(63,constructDE63(request));			
+//			isoMsg.set(63,constructDE63(request));			
 			isoMsg.set(98,request.getBillerCode());
 			isoMsg.set(102,request.getSourceCardPAN());
-//			if(request.getLanguage().equals(0))
-//				   isoMsg.set(121,constantFieldsMap.get("english"));
-//				else
-//				   isoMsg.set(121,constantFieldsMap.get("bahasa"));
-			
 			}
 		catch (ISOException ex) {
 			log.error("QRPaymentToBankProcessor :: process ", ex);

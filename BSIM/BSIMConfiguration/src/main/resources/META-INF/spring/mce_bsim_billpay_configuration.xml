@@ -336,8 +336,13 @@
 		             <simple>${in.body.response.getResponseCode} == '00'</simple>
 		             	<to uri="bean:billPayService?method=qrPaymentMoneyTransferCompletionSourceToDestination" />
 		             	<to uri="jms:notificationQueue?disableReplyTo=true"/>
-    		             <stop/><!-- this stop is placed here to avoid an exception in  the below filter.Method(getResponseCode()) not found exception is throw below since the response is a BackendResponse Object -->
+    		            <stop/><!-- this stop is placed here to avoid an exception in  the below filter.Method(getResponseCode()) not found exception is throw below since the response is a BackendResponse Object -->
 		    	</filter>
+                <filter>
+		             <simple>${in.body.response.getResponseCode} == '68'</simple>
+		             	<to uri="jms:postBankResponseQueue?disableReplyTo=true"/>
+    		            <stop/>
+		    	</filter>		    	
 		    	<filter>
 		             <simple>${in.body.response.getResponseCode} != '00'</simple>
 		         	 <!-- not updating billpay status here since reversal is already sent and then response of reversal comes here>

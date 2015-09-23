@@ -1,7 +1,5 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
-import static com.mfino.fix.CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,26 +78,17 @@ public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(37, 	StringUtilities.leftPadWithCharacter( msg.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, msg.getSourceMDN());
-			isoMsg.set(43, constantFieldsMap.get("43"));
-			isoMsg.set(47, msg.getTransactionID().toString());
-			isoMsg.set(48, msg.getTransactionID().toString());
+			isoMsg.set(43, StringUtilities.rightPadWithCharacter("SMS MFINO", 40, " "));
 			isoMsg.set(49,constantFieldsMap.get("49"));
-			isoMsg.set(60, "No bank response");
+			isoMsg.set(60,constantFieldsMap.get("60"));
 			String reversalInfoStr = "0200" + paddedSTAN;
 			reversalInfoStr = reversalInfoStr+ DateTimeFormatter.getMMDDHHMMSS(msg.getTransferTime());
 			log.info("QRPaymentReversalToBankProcessor :: process originaltransfertime = in de-90 "+ DateTimeFormatter.getMMDDHHMMSS(msg.getTransferTime()));
 			reversalInfoStr = reversalInfoStr + FixToISOUtil.padOnLeft(constantFieldsMap.get("32"), '0', 11);
 			reversalInfoStr = reversalInfoStr + FixToISOUtil.padOnLeft(constantFieldsMap.get("32"), '0', 11);
 			isoMsg.set(90, reversalInfoStr);
-
 			isoMsg.set(98,msg.getBillerCode());
 			isoMsg.set(102, msg.getSourceCardPAN()); 
-//			if(msg.getLanguage().equals(0))
-//				isoMsg.set(121,constantFieldsMap.get("english"));
-//			else
-//				isoMsg.set(121,constantFieldsMap.get("bahasa"));
-
-
 		}
 		catch (ISOException ex) {
 			log.error("QRPaymentReversalToBankProcessor :: process ", ex);

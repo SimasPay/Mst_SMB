@@ -39,7 +39,20 @@ public class FlashizCommunicator {
 
 	public MCEMessage processMessage(MCEMessage mceMsg) {
 		CFIXMsg request = mceMsg.getRequest();
-		if(request instanceof CMQRPaymentToBank) {
+		CFIXMsg response = mceMsg.getResponse();
+		if (response instanceof CMPaymentAcknowledgementToBankForBsim) {
+			CMPaymentAcknowledgementToBankForBsim ackToBank = (CMPaymentAcknowledgementToBankForBsim) response;
+			ackToBank.setIsAdvice(true);
+			mceMsg.setResponse(ackToBank);
+			return mceMsg;
+		}
+		else if (request instanceof CMPaymentAcknowledgementToBankForBsim) {
+			CMPaymentAcknowledgementToBankForBsim ackToBank = (CMPaymentAcknowledgementToBankForBsim) request;
+			ackToBank.setIsAdvice(true);
+			mceMsg.setResponse(ackToBank);
+			return mceMsg;
+		}
+		else if(request instanceof CMQRPaymentToBank) {
 			CMPaymentAcknowledgementToBankForBsim ackToBank = new CMPaymentAcknowledgementToBankForBsim();
 			CMQRPaymentToBank paymentRequest = (CMQRPaymentToBank)request;
 			CMQRPaymentFromBank paymentResponse = (CMQRPaymentFromBank) mceMsg.getResponse();

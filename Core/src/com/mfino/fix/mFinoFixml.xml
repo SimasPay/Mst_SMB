@@ -5079,6 +5079,7 @@
 		<field name="LoyalityName" required="N" />
 		<field name="DiscountType" required="N" />
 		<field name="NumberOfCoupons" required="N" />
+		<field name="IsAdvice" required="N"/>
 	</message>
 	<message name="PaymentAcknowledgementFromBankForBsim" msgtype="1756" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentFromBank">
 	</message>
@@ -6759,6 +6760,7 @@
 			<field name="BillData" required="N"/>
 			<field name="NominalAmount" required="N"/>
 			<field name="OperatorCharges" required="N"/>
+			<field name="TransferTime" required="N"/>
 		</record>
      	
 		<record name="ReportParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="report_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">

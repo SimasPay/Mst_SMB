@@ -36,24 +36,17 @@ public class QRPaymentInquiryToBankProcessor extends BankRequestProcessor {
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		Long transactionID = request.getTransactionID();
 		transactionID = transactionID % 1000000;
-		String fieldDE63 = constructDE63(request);
+//		String fieldDE63 = constructDE63(request);
 		try
 		{
 			isoMsg.set(2,request.getInfo2());
-			String processingCode = null;
-			
-			if (request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)
-					|| ((null != offlineBillers) && (offlineBillers.contains(request.getBillerCode())))) {
-				processingCode = "000000";
-			}
-			else{ 
-				if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
-				processingCode = "38" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-			    else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
-				processingCode = "38" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			}
-			isoMsg.set(3, "000000");
-			//isoMsg.set(3,CmFinoFIX.ISO8583_ProcessingCode_Artajasa_Bills_Inquiry0);
+			String processingCode = "381000";
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
+				 processingCode = "38" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
+				 processingCode = "38" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
+
+			isoMsg.set(3, processingCode);
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
@@ -77,14 +70,10 @@ public class QRPaymentInquiryToBankProcessor extends BankRequestProcessor {
 			//isoMsg.set(40,service)
 			isoMsg.set(49, constantFieldsMap.get("49"));
 			isoMsg.set(61, request.getInvoiceNo());
-			isoMsg.set(63,fieldDE63);
+//			isoMsg.set(63,fieldDE63);
 			isoMsg.set(98, request.getBillerCode());
 			isoMsg.set(102,request.getSourceCardPAN());
-			if(request.getLanguage().equals(0))
-				   isoMsg.set(121,constantFieldsMap.get("english"));
-				else
-				   isoMsg.set(121,constantFieldsMap.get("bahasa"));
-			}
+		}
 		catch (ISOException ex) {
 			log.error("BillPaymentsToBankProcessor :: process ", ex);
 		}

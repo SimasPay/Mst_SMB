@@ -24,6 +24,7 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.MCEMessage;
 
 /**
@@ -154,6 +155,17 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		
 		BillPayments billPayments = getBillPaymentsRecord(sctlId);
 		billPayments.setBillPayStatus(billPayStatus);
+		saveBillPayment(billPayments);
+	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public void updateBillPayStatus(Long sctlId, Integer billPayStatus, Timestamp ts){
+		log.info("BillPaymentsServiceImpl :: updateBillPayStatus sctlId="+sctlId+", billPayStatus="+billPayStatus);
+		
+		BillPayments billPayments = getBillPaymentsRecord(sctlId);
+		billPayments.setBillPayStatus(billPayStatus);
+		billPayments.setTransferTime(ts);
 		saveBillPayment(billPayments);
 	}
 

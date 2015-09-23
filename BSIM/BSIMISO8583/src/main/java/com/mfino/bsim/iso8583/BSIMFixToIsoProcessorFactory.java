@@ -65,6 +65,11 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 		else if(request instanceof CMInterBankMoneyTransferToBank){
 			processor = new InterBankMoneyTransferToBankProcessor();
 		}
+		else if(request instanceof CMQRPaymentInquiryToBank) {
+			QRPaymentInquiryToBankProcessor qrPaymentInquiryToBankProcessor = new QRPaymentInquiryToBankProcessor();
+			qrPaymentInquiryToBankProcessor.setOfflineBillers(offlineBillers);
+			processor = qrPaymentInquiryToBankProcessor;
+		}		
 		else if(request instanceof CMQRPaymentToBank){
 			processor = new QRPaymentToBankProcessor();
 		}
@@ -101,11 +106,6 @@ public class BSIMFixToIsoProcessorFactory implements IFixToIsoProcessorFactory {
 			processor = new ExistingSubscriberReActivationToBankProcessor();
 		else if (request instanceof CMGetSubscriberDetailsToBank)
 			processor = new GetSubscriberDetailsToBankProcessor();
-		else if(request instanceof CMQRPaymentInquiryToBank) {
-			QRPaymentInquiryToBankProcessor qrPaymentInquiryToBankProcessor = new QRPaymentInquiryToBankProcessor();
-			qrPaymentInquiryToBankProcessor.setOfflineBillers(offlineBillers);
-			processor = qrPaymentInquiryToBankProcessor;
-		}
 		else
 			throw new ProcessorNotAvailableException();
 

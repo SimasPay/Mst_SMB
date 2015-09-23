@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.mfino.domain.BillPayments;
 import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.MCEMessage;
 
 /**
@@ -19,6 +20,8 @@ public interface BillPaymentsService {
 	public BillPayments saveBillPayment(BillPayments billPayments);
 
 	public void updateBillPayStatus(Long sctlId, Integer billPayStatus);
+	
+	public void updateBillPayStatus(Long sctlId, Integer billPayStatus, Timestamp ts);
 	
 	public void updateBillPayStatus(MCEMessage mceMessage, String transferType);
 	

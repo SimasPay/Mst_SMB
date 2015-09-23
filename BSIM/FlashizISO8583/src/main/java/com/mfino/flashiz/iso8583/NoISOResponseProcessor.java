@@ -74,14 +74,16 @@ public class NoISOResponseProcessor {
 			return msg;
 		}else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)))
 		{
-			CMPaymentAcknowledgementToBankForBsim isoRequest = (CMPaymentAcknowledgementToBankForBsim) msg.getResponse();
-	        NoISOResponseMsg noResponse = new NoISOResponseMsg();
-			noResponse.copy(isoRequest);
-			noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
-			noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
-			msg.setRequest(isoRequest);
-			msg.setResponse(noResponse);
-			msg.setDestinationQueue("jms:flashizPendingQueue");
+			log.info("Request for the Flashiz advice call as there is no response from flashiz...");
+//			CMPaymentAcknowledgementToBankForBsim isoRequest = (CMPaymentAcknowledgementToBankForBsim) msg.getResponse();
+//	        NoISOResponseMsg noResponse = new NoISOResponseMsg();
+//			noResponse.copy(isoRequest);
+//			noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
+//			noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+//			msg.setRequest(isoRequest);
+//			msg.setResponse(noResponse);
+//			msg.setDestinationQueue("jms:flashizPendingQueue");
+			msg.setDestinationQueue("jms:postBankResponseQueue");
 			return msg;
 		}
 		else{
