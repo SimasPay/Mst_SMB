@@ -82,6 +82,10 @@ public class QRPaymentToBankProcessor extends BankRequestProcessor{
 //			isoMsg.set(63,constructDE63(request));			
 			isoMsg.set(98,request.getBillerCode());
 			isoMsg.set(102,request.getSourceCardPAN());
+			if(request.getLanguage().equals(0))
+				isoMsg.set(121,constantFieldsMap.get("english"));
+			else
+				isoMsg.set(121,constantFieldsMap.get("bahasa"));			
 			}
 		catch (ISOException ex) {
 			log.error("QRPaymentToBankProcessor :: process ", ex);

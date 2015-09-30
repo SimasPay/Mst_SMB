@@ -45,8 +45,9 @@ public class QRPaymentInquiryToBankProcessor extends BankRequestProcessor {
 				 processingCode = "38" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
 				 processingCode = "38" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-
-			isoMsg.set(3, processingCode);
+			// Changed the processing code to 000000 as there is no need to send the inquiry to bank. In the JposCommunicator based on the processing code 
+			//value we re-direct the ISO message to the original Bank or to the Simulator
+			isoMsg.set(3, "000000");  
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));

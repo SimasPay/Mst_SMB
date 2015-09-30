@@ -88,7 +88,11 @@ public class QRPaymentReversalToBankProcessor extends BankRequestProcessor {
 			reversalInfoStr = reversalInfoStr + FixToISOUtil.padOnLeft(constantFieldsMap.get("32"), '0', 11);
 			isoMsg.set(90, reversalInfoStr);
 			isoMsg.set(98,msg.getBillerCode());
-			isoMsg.set(102, msg.getSourceCardPAN()); 
+			isoMsg.set(102, msg.getSourceCardPAN());
+			if(msg.getLanguage().equals(0))
+				   isoMsg.set(121,constantFieldsMap.get("english"));
+				else
+				   isoMsg.set(121,constantFieldsMap.get("bahasa"));			
 		}
 		catch (ISOException ex) {
 			log.error("QRPaymentReversalToBankProcessor :: process ", ex);
