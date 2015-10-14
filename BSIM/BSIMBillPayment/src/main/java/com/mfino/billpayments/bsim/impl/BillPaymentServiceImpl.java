@@ -907,7 +907,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		
 		if(isFailedByBank) {
 			billPaymentsService.updateBillPayStatus(Response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_FAILED);
-			Response.setExternalResponseCode(null);
+//			Response.setExternalResponseCode(null);
 			Response.setInternalErrorCode(NotificationCodes.QRpaymentFailed.getInternalErrorCode());
 		}
 		else if(((BackendResponse)Response).getResult() == CmFinoFIX.ResponseCode_Success){
