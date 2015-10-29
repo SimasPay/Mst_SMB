@@ -12,7 +12,7 @@ import com.mfino.fix.CmFinoFIX.CMInterBankFundsTransferInquiry;
  */
 public interface InterBankService {
 
-	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, Pocket sourcePocket, InterBankCode interBankCode);
+	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterBankCode interBankCode);
 	
 	public InterBankCode getBankCode(String bankCode);
 	

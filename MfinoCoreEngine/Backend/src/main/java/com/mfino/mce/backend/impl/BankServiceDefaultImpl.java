@@ -679,11 +679,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						}
 
 
-						if(!CmFinoFIX.SubscriberType_Partner.equals(objSrcSubMdn.getSubscriber().getType())){
-							objSrcSubMdn.setLastTransactionID(requestFix.getTransactionID());
-							objSrcSubMdn.setLastTransactionTime(requestFix.getReceiveTime());
-							coreDataWrapper.save(objSrcSubMdn);
-						}
+//						if(!CmFinoFIX.SubscriberType_Partner.equals(objSrcSubMdn.getSubscriber().getType())){
+//							objSrcSubMdn.setLastTransactionID(requestFix.getTransactionID());
+//							objSrcSubMdn.setLastTransactionTime(requestFix.getReceiveTime());
+//							coreDataWrapper.save(objSrcSubMdn);
+//						}
 						
 							
 							if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){

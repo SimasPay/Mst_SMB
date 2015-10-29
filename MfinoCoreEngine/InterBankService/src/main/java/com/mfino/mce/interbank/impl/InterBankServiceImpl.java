@@ -46,15 +46,15 @@ public class InterBankServiceImpl implements InterBankService{
 
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, Pocket sourcePocket, InterBankCode interBankCode){
+	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterBankCode interBankCode){
 		InterbankTransfer ibt = new InterbankTransfer();
 
 		ibt.setTerminalID(ibtInquiry.getChannelCode());
 		ibt.setDestBankCode(ibtInquiry.getDestBankCode());
 		ibt.setDestBankName(interBankCode.getBankName());
-		ibt.setSourceAccountName(sourcePocket.getCardPAN());
+		ibt.setSourceAccountName(ibtInquiry.getSourceBankAccountNo());
 		ibt.setDestAccountName(ibtInquiry.getDestAccountNumber());
-		ibt.setSourceAccountNumber(sourcePocket.getCardPAN());
+		ibt.setSourceAccountNumber(ibtInquiry.getSourceBankAccountNo());
 		ibt.setDestAccountNumber(ibtInquiry.getDestAccountNumber());
 		//ibt.setNarration(ibtInquiry);
 		ibt.setAmount(ibtInquiry.getAmount());

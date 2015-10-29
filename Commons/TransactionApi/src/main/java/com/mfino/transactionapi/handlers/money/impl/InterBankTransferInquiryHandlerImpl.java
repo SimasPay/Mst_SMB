@@ -132,6 +132,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		interBankTransferInquiry.setChannelCode(channelCode.getChannelCode());
 		interBankTransferInquiry.setServiceName(transactionDetails.getServiceName());
 		interBankTransferInquiry.setSourcePocketID(srcPocket.getID());
+		interBankTransferInquiry.setSourceBankAccountNo(srcPocket.getCardPAN());
 		interBankTransferInquiry.setDestAccountNumber(transactionDetails.getDestAccountNumber());
 		interBankTransferInquiry.setDestinationBankAccountNo(transactionDetails.getDestAccountNumber());
 		interBankTransferInquiry.setDestBankCode(transactionDetails.getDestBankCode());

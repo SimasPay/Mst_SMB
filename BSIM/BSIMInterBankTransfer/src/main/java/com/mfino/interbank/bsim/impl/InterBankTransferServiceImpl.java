@@ -85,8 +85,8 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			return mceMessage;
 		}
 		
-		Pocket sourcePocket = getPocketFromId(interBankFundsTransferInquiry.getSourcePocketID());
-		InterbankTransfer ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, sourcePocket, interBankCode);
+//		Pocket sourcePocket = getPocketFromId(interBankFundsTransferInquiry.getSourcePocketID());
+		InterbankTransfer ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, interBankCode);
 		
 //		interBankFundsTransferInquiry.setDestPocketID(destinationPocket.getID());
 		interBankFundsTransferInquiry.setMessageType(CmFinoFIX.MsgType_InterBankFundsTransferInquiry);
