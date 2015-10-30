@@ -1,0 +1,1 @@
+ INSERT INTO offline_report (Version,LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Name,ReportSql,ReportClass,TriggerEnable,IsDaily,IsMonthly,IsOnlineReport) VALUES (1,sysdate,'system',sysdate,'system','Admin User Report',NULL,'AdminUserReport',0,0,0,1);
