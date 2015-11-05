@@ -287,40 +287,45 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			ChannelCode cc= channelcodeDao.getById(sctl.getChannelCodeID());
 			entry.setAccessMethodText(cc!=null?cc.getChannelName():"");
 		}
+		long ctid = 0;
+		CommodityTransfer ct = null;
 		if(sctl.getCommodityTransferID() == null){
 			List<Long> lstCTIds = ctmapDao.geTransferIdsBySCTLId(sctl.getID());
 			if (CollectionUtils.isNotEmpty(lstCTIds)) {
-				sctl.setCommodityTransferID(lstCTIds.get(0));
+				ctid = lstCTIds.get(0);
 			}
 		}
-		if(sctl.getCommodityTransferID()!=null){
-			entry.setCommodityTransferID(sctl.getCommodityTransferID());
-			PendingCommodityTransfer pct = pctDao.getById(sctl.getCommodityTransferID());
-		    if(pct != null)
-		    {
-		    	if(pct.getOperatorResponseCode() != null){
-		    		entry.setOperatorResponseCode(pct.getOperatorResponseCode());
-		    	}else{
-		    		if(pct.getBankRejectReason() != null){
-		    			entry.setOperatorResponseCode(Integer.valueOf(pct.getBankRejectReason()));	
-		    		}
-		    	}    			    	
-		    }
-		    else
-		    {		    	
-		    	CommodityTransfer ct = ctDao.getById(sctl.getCommodityTransferID());
-		    	if(ct != null)
-			    {
-			    	if(ct.getOperatorResponseCode() != null){
-			    		entry.setOperatorResponseCode(ct.getOperatorResponseCode());
-			    	}else{
-			    		if(ct.getBankRejectReason() != null){
-			    			entry.setOperatorResponseCode(Integer.valueOf(ct.getBankRejectReason()));	
-			    		}
-			    	}			    	
-			    }
-		    }
+		else {
+			ctid = sctl.getCommodityTransferID();
 		}
+		entry.setCommodityTransferID(ctid);
+		PendingCommodityTransfer pct = pctDao.getById(ctid);
+	    if(pct != null)
+	    {
+	    	if(pct.getOperatorResponseCode() != null){
+	    		entry.setOperatorResponseCode(pct.getOperatorResponseCode());
+	    	}else{
+	    		if(pct.getBankRejectReason() != null){
+	    			entry.setOperatorResponseCode(Integer.valueOf(pct.getBankRejectReason()));	
+	    		}
+	    	}
+	    	entry.setSourceAccountNumber(pct.getSourceCardPAN());
+	    }
+	    else
+	    {		    	
+	    	ct = ctDao.getById(ctid);
+	    	if(ct != null)
+		    {
+		    	if(ct.getOperatorResponseCode() != null){
+		    		entry.setOperatorResponseCode(ct.getOperatorResponseCode());
+		    	}else{
+		    		if(ct.getBankRejectReason() != null){
+		    			entry.setOperatorResponseCode(Integer.valueOf(ct.getBankRejectReason()));	
+		    		}
+		    	}
+		    	entry.setSourceAccountNumber(ct.getSourceCardPAN());
+		    }
+	    }
 		if(sctl.getDestMDN()!=null){
 			entry.setDestMDN(sctl.getDestMDN());
 		}
@@ -441,15 +446,15 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		}
 		
 
-	    if(sctl.getCommodityTransferID() != null){
-	    	CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
-	    	CommodityTransfer ct = ctDao.getById(sctl.getCommodityTransferID());
-	    	if(ct != null){
-	    		entry.setSourceAccountNumber(ct.getSourceCardPAN());
-	    	}
-	    }		
+//	    if(sctl.getCommodityTransferID() != null){
+//	    	CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
+//	    	CommodityTransfer ct = ctDao.getById(sctl.getCommodityTransferID());
+//	    	if(ct != null){
+//	    		entry.setSourceAccountNumber(ct.getSourceCardPAN());
+//	    	}
+//	    }		
 		
-		setAdditionanInfo(entry,sctl,transactionType,service, sctlBpMap);
+		setAdditionanInfo(entry,sctl,transactionType,service, sctlBpMap, ct);
 		setIntegrationSummaryInfo(entry,sctl, transactionType, sctlIsMap);
 		entry.setIsReverseAllowed(checkIsTxnReverseAllowed(sctl, transactionType, maxNoOfDaysToReverseTxn));
 	}
@@ -512,7 +517,8 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		return isReverseAllowed;
 	}
 
-	private void setAdditionanInfo(CGEntries entry, ServiceChargeTransactionLog sctl, TransactionType transactionType, Service service, Map<Long, BillPayments> sctlBpMap) {
+	private void setAdditionanInfo(CGEntries entry, ServiceChargeTransactionLog sctl, TransactionType transactionType, Service service, 
+			Map<Long, BillPayments> sctlBpMap, CommodityTransfer ct) {
 		BillPayments billPayment = sctlBpMap.get(sctl.getID());
 		entry.setAdditionalInfo("");
 		if(billPayment!=null) {
@@ -528,9 +534,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		else if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(transactionType.getTransactionName())){
 			entry.setAdditionalInfo(sctl.getOnBeHalfOfMDN());
 		}
-		else if(sctl.getCommodityTransferID()!=null){
-			CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
-			CommodityTransfer ct = ctDao.getById(sctl.getCommodityTransferID());
+		else {
 			if(ct!=null&&CmFinoFIX.PocketType_BankAccount.equals(ct.getDestPocketType())&&ct.getDestCardPAN()!=null){
 				entry.setAdditionalInfo(ct.getDestCardPAN());
 			}

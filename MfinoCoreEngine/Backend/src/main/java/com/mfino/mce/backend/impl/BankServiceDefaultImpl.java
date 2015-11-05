@@ -131,10 +131,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		Subscriber objDestSubscriber = null;
 		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
 		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
-		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(
-				toBank.getSourceMDN(), LockMode.UPGRADE);
-		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(
-				toBank.getDestMDN(), LockMode.UPGRADE);
+		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(toBank.getSourceMDN());
+		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(toBank.getDestMDN());
 		if (objSrcSubMdn != null) {
 			objSourceSubscriber = objSrcSubMdn.getSubscriber();
 		}
@@ -556,8 +554,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
 		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(
 				requestFix.getSourceMDN(), LockMode.UPGRADE);
-		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(
-				requestFix.getDestMDN(), LockMode.UPGRADE);
+		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(requestFix.getDestMDN());
 		if (objSrcSubMdn != null) {
 			objSourceSubscriber = objSrcSubMdn.getSubscriber();
 		}
@@ -665,11 +662,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						
 						//objSrcPocket.setLastTransactionTime(requestFix.getReceiveTime());
 						//objDestPocket.setLastTransactionTime(requestFix.getReceiveTime());
-						if  ((!CmFinoFIX.SubscriberType_Partner.equals(objDestSubMdn.getSubscriber().getType())) &&
-								!(objDestSubMdn.getMDN().equals(dummySubMdn)) ){
-						      objDestSubMdn.setLastTransactionID(requestFix.getTransactionID());
-						      objDestSubMdn.setLastTransactionTime(requestFix.getReceiveTime());
-						 }
+//						if  ((!CmFinoFIX.SubscriberType_Partner.equals(objDestSubMdn.getSubscriber().getType())) &&
+//								!(objDestSubMdn.getMDN().equals(dummySubMdn)) ){
+//						      objDestSubMdn.setLastTransactionID(requestFix.getTransactionID());
+//						      objDestSubMdn.setLastTransactionTime(requestFix.getReceiveTime());
+//						 }
 						pct.setLocalRevertRequired(CmFinoFIX.Boolean_True);
 						if (requestFix.getChannelCode() != null) {
 							pct.setISO8583_MerchantType(requestFix
@@ -1465,10 +1462,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		Subscriber objDestSubscriber = null;
 		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
 		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
-		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(
-				confirmationToBank.getSourceMDN(), LockMode.UPGRADE);
-		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(
-				confirmationToBank.getDestMDN(), LockMode.UPGRADE);
+		SubscriberMDN objSrcSubMdn = coreDataWrapper.getSubscriberMdn(confirmationToBank.getSourceMDN());
+		SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(confirmationToBank.getDestMDN());
 		if (objSrcSubMdn != null) {
 			objSourceSubscriber = objSrcSubMdn.getSubscriber();
 		}
