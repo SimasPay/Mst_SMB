@@ -154,6 +154,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		}
 	}
 	
+	public void validateUserAPIKey(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getUserAPIKey())) {
+			throw new InvalidDataException("Invalid UserAPIKey", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_USER_API_KEY);
+		}
+	}
+	
 	public void validateFirstName(TransactionDetails transactionDetails) throws InvalidDataException {
 		if (StringUtils.isBlank(transactionDetails.getFirstName())) {
 			throw new InvalidDataException("Invalid First name", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
@@ -683,11 +690,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateSourcePin(transactionDetails);
 		validateBillerCode(transactionDetails);
 		validateBillNo(transactionDetails);
+		validateUserAPIKey(transactionDetails);
 	}
 	
 	public void validateQrPaymentConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateBillNo(transactionDetails);
 		validateBillerCode(transactionDetails);
+		validateUserAPIKey(transactionDetails);
 		validateconfirmString(transactionDetails);
 		validateTransferId(transactionDetails);
 		validateParentTxnId(transactionDetails);
