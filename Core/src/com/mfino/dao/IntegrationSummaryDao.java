@@ -81,13 +81,14 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 	}
 	
 	public IntegrationSummary getByScltId(Long sctlId,Long pctId){
-		
+		log.info("getByScltId: getting the integration summary details for sctlid = "+ sctlId + " pctid = "+ pctId);
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(CmFinoFIX.CRIntegrationSummary.FieldName_SctlId,sctlId));
 		List<IntegrationSummary> results = criteria.list();
 		IntegrationSummary iSummary = null;
 		
 		if((null != results) && (results.size() > 0)){
+			log.info("got the result if size "+ results.size());
 			iSummary = results.get(0);
 		}
 		
@@ -95,6 +96,7 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 	}
 	
 	public void logIntegrationSummary(Long sctldId, Long pctId,String IntegrationType, String reconId1, String reconId2,String reconId3, String reconId4, Timestamp timestamp){
+		log.info("logIntegrationSummary: getting the integration summary details for sctlid = "+ sctldId + " pctid = "+ pctId);
 		IntegrationSummary iSummary = getByScltId(sctldId, pctId);
 		if(iSummary == null){
 			iSummary=new IntegrationSummary();

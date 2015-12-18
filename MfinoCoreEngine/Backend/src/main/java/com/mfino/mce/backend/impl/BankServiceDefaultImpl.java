@@ -377,7 +377,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 				handlePCTonFailure(pct);
 			}
-			integrationSummaryService.logIntegrationSummary(toBank.getServiceChargeTransactionLogID(), pct.getID(), "BANK", fromBank.getProcessingCode(), null, fromBank.getBankAccountName(), null,toBank.getReceiveTime());
+//			integrationSummaryService.logIntegrationSummary(toBank.getServiceChargeTransactionLogID(), pct.getID(), "BANK", fromBank.getProcessingCode(), null, fromBank.getBankAccountName(), null,toBank.getReceiveTime());
 			if(fromBank.getProcessingCode()!=null){
 				if (fromBank.getBankAccountName() != null){
 					returnFix.setBankName(fromBank.getBankAccountName().trim());
