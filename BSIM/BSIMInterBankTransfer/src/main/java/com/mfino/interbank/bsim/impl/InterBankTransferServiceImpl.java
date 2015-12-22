@@ -349,7 +349,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		
 		mceMessage.setRequest(request);
 		mceMessage.setResponse(response);
-		saveIntegrationSummary(interBankFundsTransferToBank.getSctlId(),interBankFundsTransferFromBank.getResponseCode());
+		saveIntegrationSummary(interBankFundsTransferToBank.getServiceChargeTransactionLogID(),interBankFundsTransferFromBank.getResponseCode());
 	
 		return mceMessage;
 	}
@@ -363,7 +363,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 	}
 	
 	private void saveIntegrationSummary(Long sctlId, String de39){
-		
+		log.info("Updating the bank response for sctlid : "+ sctlId);
 		IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummaryQuery query = new IntegrationSummaryQuery();
 		query.setSctlID(sctlId);
