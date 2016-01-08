@@ -28,12 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.BranchCodeDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.RoleDAO;
 import com.mfino.dao.RolePermissionDAO;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.RolePermissionQuery;
 import com.mfino.dao.query.UserQuery;
+import com.mfino.domain.BranchCodes;
 import com.mfino.domain.Company;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Role;
@@ -66,6 +68,7 @@ public class UserServiceImpl implements UserService {
 	private static UserDAO userDao = DAOFactory.getInstance().getUserDAO();
 	private static RolePermissionDAO rpDao = DAOFactory.getInstance().getRolePermissionDAO();
 	private static RoleDAO roleDao = DAOFactory.getInstance().getRoleDAO();
+	private static BranchCodeDAO branchCodeDao = DAOFactory.getInstance().getBranchCodeDAO();
 	
     private static String defaultLanguage = "English";
     private static Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -245,6 +248,26 @@ public class UserServiceImpl implements UserService {
            return null;
        }
         return role.getDisplayText();
+    }
+    
+    public  String getUserBranchCode(Integer enumCode) {      
+        BranchCodes branchcodes = branchCodeDao.getById(enumCode);
+        if (branchcodes == null) {
+            log.error(MessageText._("No BranchCode defined with the code : ") + enumCode);
+            return null;
+        }
+        return branchcodes.getBranchCode()+"-"+branchcodes.getBranchName();
+    }
+
+    public  String getUserBranchCodeString() {
+    	User user=getCurrentUser();
+    	Long enumCode=user.getBranchCodeID();
+        BranchCodes branchcodes = branchCodeDao.getById(enumCode);
+        if (branchcodes == null) {
+            log.error(MessageText._("No BranchCode defined with the code : ") + enumCode);
+            return null;
+        }
+        return branchcodes.getBranchCode()+"-"+branchcodes.getBranchName();
     }
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)

@@ -351,6 +351,13 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			}
 			user.setRole(role);
 		}
+		
+		Long branchcodeID = e.getBranchCodeID();
+
+		if (branchcodeID != null) {
+			
+			user.setBranchCodeID(branchcodeID);
+		}
 
 		if (e.getFirstName() != null) {
 			if(user.getRole()==CmFinoFIX.Role_Subscriber){
@@ -631,6 +638,12 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		e.setRole(user.getRole());
 		e.setRoleText(userService.getUserRole(user.getRole()));
 
+		e.setBranchCodeID(user.getBranchCodeID());
+		if(user.getBranchCodeID()!=null){
+			e.setBranchCodeText(userService.getUserBranchCode(user.getBranchCodeID().intValue()));	
+		}
+		
+		
 		e.setLanguageText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_Language, user.getLanguage(), user.getLanguage()));
 

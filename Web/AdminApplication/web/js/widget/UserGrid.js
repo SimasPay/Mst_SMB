@@ -70,6 +70,11 @@ mFino.widget.UserGrid = function (config) {
             dataIndex: CmFinoFIX.message.JSUsers.Entries.RoleText._name
         },
         {
+            header: _("Branch Code"),
+            width : 150,
+            dataIndex: CmFinoFIX.message.JSUsers.Entries.BranchCodeText._name
+        },
+        {
             header: _("Status"),
             width : 150,
             dataIndex: CmFinoFIX.message.JSUsers.Entries.UserStatusText._name

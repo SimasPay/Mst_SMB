@@ -84,6 +84,22 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
             params: {start:0, limit:10}
         },
         {
+            xtype: 'remotedropdown',
+            fieldLabel  : _('BranchCode'),
+            width  : 150,
+            itemId : 'UserAdd.form.branchcode',
+            allowBlank: false,
+            addEmpty : false,
+            emptyText : '<Select one..>',
+            name: CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
+            store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSBranchCodes), 
+            displayField: CmFinoFIX.message.JSBranchCodes.Entries.BranchName._name, 
+            valueField : CmFinoFIX.message.JSBranchCodes.Entries.ID._name, 
+            hiddenName : CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
+            pageSize: 10,
+            params: {start:0, limit:10}
+        },
+        {
             fieldLabel: _('Language'),
             xtype: 'enumdropdown',
             width  : 150,

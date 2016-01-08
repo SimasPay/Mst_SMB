@@ -72,6 +72,22 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             params: {start:0, limit:10}
         },
         {
+            xtype: 'remotedropdown',
+            fieldLabel  : _('BranchCode'),
+            width  : 150,
+            itemId : 'userBranchCode',
+            allowBlank: false,
+            addEmpty : false,
+            emptyText : '<Select one..>',
+            name: CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
+            store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSBranchCodes), 
+            displayField: CmFinoFIX.message.JSBranchCodes.Entries.BranchName._name, 
+            valueField : CmFinoFIX.message.JSBranchCodes.Entries.ID._name, 
+            hiddenName : CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
+            pageSize: 10,
+            params: {start:0, limit:10}
+        },
+        {
             fieldLabel: _('Language'),
             xtype: 'enumdropdown',
             allowBlank: false,
@@ -125,6 +141,8 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         this.getForm().loadRecord(record);
         var role_combo = this.find('itemId','userRole')[0];
         role_combo.setRawValue(this.record.get(CmFinoFIX.message.JSUsers.Entries.RoleText._name));
+        var branchCode_combo = this.find('itemId','userBranchCode')[0];
+        branchCode_combo.setValue(this.record.get(CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name));
         var restrictions = this.record.get(CmFinoFIX.message.JSUsers.Entries.UserRestrictions._name);
         var suspended = this.getComponent('usersuspend');
         var secLock = this.getComponent('usersecuritylock');

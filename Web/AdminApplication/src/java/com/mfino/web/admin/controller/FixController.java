@@ -35,6 +35,7 @@ import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInConfirm;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSBase;
+import com.mfino.fix.CmFinoFIX.CMJSBranchCodes;
 import com.mfino.fix.CmFinoFIX.CMJSClosedAccountSettlementMdn;
 import com.mfino.fix.CmFinoFIX.CMJSExpirationType;
 import com.mfino.fix.CmFinoFIX.CMJSFundDefinitions;
@@ -610,6 +611,10 @@ public class FixController {
 	@Autowired
 	@Qualifier("MoneyTransferProcessorImpl")
 	private MoneyTransferProcessor moneyTransferProcessor  ;
+	
+	@Autowired
+	@Qualifier("BranchCodeProcessorImpl")
+	private BranchCodeProcessor branchCodeProcessor;
 	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
@@ -1200,6 +1205,9 @@ public class FixController {
 			else if(msgClassName.equals(CMJSMoneyTransfer.class.getName())){
 				fixProcessor = moneyTransferProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSMoneyTransfer);
+			}else if(msgClassName.equals(CMJSBranchCodes.class.getName())){
+				fixProcessor = branchCodeProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSBranchCodes);
 			}
 			
 			/*

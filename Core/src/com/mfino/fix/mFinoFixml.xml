@@ -721,6 +721,8 @@
 				<field name="IsCreditCardUserModified" required="N" />
 				<field name="HomePhone" required="N" />
 				<field name="WorkPhone" required="N" />
+				<field name="BranchCodeID" required="N" />
+				<field name="BranchCodeText" required="N" />
         
 			</group>
 		</message>
@@ -5120,6 +5122,19 @@
 	</message>
 	<message name="PaymentAuthorizationFromBankForBsim" msgtype="1764"	msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentInquiryFromBank">
 	</message>
+	<message name="JSBranchCodes" msgtype="1766" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+<!-- 		<field name="RoleID" required="N" />    	 -->
+<!-- 		<field name="DisplayText" required="N"/> -->
+    	<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+    		<field name="BranchCodeID" id="ID" required="N" />    		
+    		<field name="BranchCodeNo" required="N" />    		
+			<field name="BranchName" required="N"/>
+			<field name="LastUpdateTime" required="Y" />
+			<field name="UpdatedBy" required="Y" />
+			<field name="CreateTime" required="Y" />
+			<field name="CreatedBy" required="Y" />
+      	</group>
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -5763,6 +5778,7 @@
 			<field name="LastPasswordChangeTime" required="N" />
 			<field name="PasswordHistory" required="N" />
 			<field name="IsLoggedIn" required="N" />
+			<field name="BranchCodeID" required="N" />
 		</record>
 		<record name="Notification" ExtendsRecord="Base" Java="Y" SQLTable="notification" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="Code" Unique="Y">
@@ -7211,7 +7227,14 @@
 			<field name="SctlId" required="N" />
 			<field name="TransactionAmount" required="N" />
 		</record>
-	 
+	 	<record name="BranchCodes" ExtendsRecord="Base" Java="Y" SQLTable="branchcodes" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<index name="BranchCode" Unique="Y">
+				<field name="BranchCode" />
+			</index>			
+			<field name="BranchCode" required="N" />
+			<field name="BranchName" required="N" />
+<!-- 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />	 -->
+		</record>
 	</records>
 	<classes>
 		<class name="ISO8583Elements" CPP="Y">
@@ -7641,6 +7664,7 @@
 			<value enum="1731" description="JSMoneyTransfer"/>
 			<value enum="1732" description="ModifyNFCCardAlias"/>
 			<value enum="1741" description="BalanceInquiryFromNFC"/>
+			<value enum="1766" description="JSBranchCodes"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -25749,7 +25773,11 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8187" name="DiscountType" type="STRING" />
 	<field number="8188" name="NumberOfCoupons" type="STRING" />
 	<field number="8193" name="IsSystemPocket" type="BOOLEAN"/>
-	</fields>
+	<field number="8231" name="BranchCodeID" type="INT64" />
+    <field number="8232" name="BranchCodeNo" type="STRING" />
+    <field number="8233" name="BranchCode" type="STRING" />
+    <field number="8234" name="BranchCodeText" type="STRING" />
+    </fields>
     <primitives>
 		<dbtype name="mysql">
 			<field name="BLOB" SQLType="LONGTEXT" HibernateType="java.lang.String" />
