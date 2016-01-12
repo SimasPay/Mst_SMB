@@ -24,7 +24,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         this.items = [
         {
             fieldLabel: _('Username'),
-            width : 150,
+            anchor:'90%',
             name:CmFinoFIX.message.JSUsers.Entries.Username._name,
             allowBlank: false,
             itemId : 'UserAdd.form.name',
@@ -40,7 +40,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('First Name'),
-            width : 150,
+            anchor:'90%',
             allowBlank: false,
             itemId : 'UserAdd.form.firstname',
             vtype:'name',
@@ -49,7 +49,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('Last Name'),
-            width : 150,
+            anchor:'90%',
             itemId : 'UserAdd.form.lastname',
             vtype:'name',
             maxLength : 255,
@@ -57,7 +57,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('Email'),
-            width : 150,
+            anchor:'90%',
             allowBlank: false,
             blankText : _('Email is required'),
             vtype: 'email',
@@ -70,7 +70,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         {
             xtype: 'remotedropdown',
             fieldLabel  : _('Role'),
-            width  : 150,
+            anchor:'90%',
             itemId : 'UserAdd.form.role',
             allowBlank: false,
             addEmpty : false,
@@ -86,9 +86,9 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         {
             xtype: 'remotedropdown',
             fieldLabel  : _('BranchCode'),
-            width  : 150,
+            anchor:'90%',
             itemId : 'UserAdd.form.branchcode',
-            allowBlank: true,
+            allowBlank: false,
             addEmpty : false,
             emptyText : '<Select one..>',
             name: CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
@@ -102,7 +102,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         {
             fieldLabel: _('Language'),
             xtype: 'enumdropdown',
-            width  : 150,
+            anchor:'90%',
             allowBlank: false,
             itemId : 'UserAdd.form.language',
             addEmpty : false,
@@ -113,7 +113,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         {
             fieldLabel: _('Time zone'),
             xtype: 'enumdropdown',
-            width  : 150,
+            anchor:'90%',
             allowBlank: false,
             itemId : 'UserAdd.form.timezone',
             addEmpty : false,
@@ -134,7 +134,7 @@ Ext.extend(mFino.widget.UserAddForm, Ext.FormPanel, {
         {
             fieldLabel: _('Administrative Comment'),
             xtype: 'textarea',
-            width : 150,
+            anchor:'90%',
             maxLength : 1000,
             itemId : 'UserAdd.form.administrator',
             name:CmFinoFIX.message.JSUsers.Entries.AdminComment._name

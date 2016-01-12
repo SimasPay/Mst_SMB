@@ -29,7 +29,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('First Name'),
-            width : 150,
+            anchor:'90%',
             allowBlank: false,
             vtype:'name',
             maxLength : 255,
@@ -37,14 +37,14 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('Last Name'),
-            width : 150,
+            anchor:'90%',
             vtype:'name',
             maxLength : 255,
             name:CmFinoFIX.message.JSUsers.Entries.LastName._name
         },
         {
             fieldLabel: _('Email'),
-            width : 150,
+            anchor:'90%',
             allowBlank: false,
             itemId : 'userEmail',
             blankText : _('Email is required'),
@@ -57,7 +57,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         	xtype: 'remotedropdown',
             fieldLabel  : _('Role'),
             itemId : 'userRole',
-            width  : 150,
+            anchor:'90%',
             allowBlank: false,
             addEmpty : false,
             emptyText : _('<Select one..>'),
@@ -74,9 +74,9 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         {
             xtype: 'remotedropdown',
             fieldLabel  : _('BranchCode'),
-            width  : 150,
+            anchor:'90%',
             itemId : 'userBranchCode',
-            allowBlank: true,
+            allowBlank: false,
             addEmpty : false,
             emptyText : '<Select one..>',
             name: CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
@@ -91,7 +91,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             fieldLabel: _('Language'),
             xtype: 'enumdropdown',
             allowBlank: false,
-            width  : 150,
+            anchor:'90%',
             enumId: CmFinoFIX.TagID.Language,
             name: CmFinoFIX.message.JSUsers.Entries.Language._name
         },
@@ -99,7 +99,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             fieldLabel: _('Time zone'),
             xtype: 'enumdropdown',
             allowBlank: false,
-            width  : 150,
+            anchor:'90%',
             enumId: CmFinoFIX.TagID.Timezone,
             name:CmFinoFIX.message.JSUsers.Entries.Timezone._name
         },
@@ -118,7 +118,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             fieldLabel  : _('Status'),
             enumId: CmFinoFIX.TagID.UserStatus,
             name: CmFinoFIX.message.JSUsers.Entries.UserStatus._name,
-            width  : 150,
+            anchor:'90%',
             mode: 'local',
             triggerAction: 'all',
             emptyText : _('<Select one..>')
@@ -126,7 +126,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         {
             fieldLabel: _('Administrative Comment'),
             xtype: 'textarea',
-            width : 150,
+            anchor:'90%',
             maxLength : 1000,
             name:CmFinoFIX.message.JSUsers.Entries.AdminComment._name
         }
