@@ -6,9 +6,9 @@
 	UPDATEDBY VARCHAR2(255), 
 	CREATETIME TIMESTAMP DEFAULT sysdate NOT NULL , 
 	CREATEDBY VARCHAR2(255) NOT NULL , 
-	BRANCHCODE VARCHAR2(10), 
+	BRANCHCODE VARCHAR2(10) Not null, 
 	BRANCHNAME VARCHAR2(200) NOT NULL 
-   )
+   );
 
 insert into branchcodes(version,branchcode,branchname,createdby,id) values(1,'002','KCU Thamrin ','System',1);
 insert into branchcodes(version,branchcode,branchname,createdby,id) values(1,'003','KC Zainul Arifin ','System',2);
@@ -217,3 +217,5 @@ insert into branchcodes(version,branchcode,branchname,createdby,id) values(1,'21
 
 
 ALTER TABLE mfino_user  ADD BRANCHCODEID NUMBER(10,0) DEFAULT 0;
+
+commit;
