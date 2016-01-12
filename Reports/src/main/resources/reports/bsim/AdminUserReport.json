@@ -14,13 +14,13 @@
     					"First Name",
     					"Last Name",
     					"Role",
+    					"BranchCode",
     					"Status",
 						"Created On",
 						"Created By",
-						"BranchCode"
 						],
     
-    "HeaderColumnsWidth" : [1,1,1,1,1,1,1],
+    "HeaderColumnsWidth" : [1,1,1,1,1,1,1,1],
 
     "EncryptedColumnIndices" : [],
         
@@ -29,10 +29,10 @@
     				u.firstname, 
     				u.lastname, 
     				r.displaytext, 
+    				concat(concat(bc.BRANCHCODE,'-'),bc.branchname),
     				et.displaytext,
     				TO_CHAR (FROM_TZ(CAST(u.CreateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
-					u.createdby,
-          			concat(concat(bc.BRANCHCODE,'-'),bc.branchname)  
+					u.createdby
 				From 
 					mfino_user u, 
 					enum_text et, 

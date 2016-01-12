@@ -76,7 +76,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             fieldLabel  : _('BranchCode'),
             width  : 150,
             itemId : 'userBranchCode',
-            allowBlank: false,
+            allowBlank: true,
             addEmpty : false,
             emptyText : '<Select one..>',
             name: CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,

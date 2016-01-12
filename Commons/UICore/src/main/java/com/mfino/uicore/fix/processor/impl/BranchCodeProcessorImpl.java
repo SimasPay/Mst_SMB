@@ -104,7 +104,7 @@ public class BranchCodeProcessorImpl extends BaseFixProcessor implements BranchC
 	}
 
 	private void updateMessage(BranchCodes r, CMJSBranchCodes.CGEntries e) {
-		e.setBranchName(r.getBranchName());
+		e.setBranchName(r.getBranchCode()+'-'+r.getBranchName());
 		e.setID(r.getID());
 		e.setBranchCodeNo(r.getBranchCode());
 

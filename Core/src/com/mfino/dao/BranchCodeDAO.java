@@ -29,7 +29,7 @@ public class BranchCodeDAO extends BaseDAO<BranchCodes> {
 					query.getBranchName()).ignoreCase());
 		}
 
-		addOrder(QueryConstants.ASC_STRING, CmFinoFIX.CRBranchCodes.FieldName_BranchName, criteria);		
+		addOrder(QueryConstants.ASC_STRING, CmFinoFIX.CRBranchCodes.FieldName_BranchCode, criteria);		
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		
