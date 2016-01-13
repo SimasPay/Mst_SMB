@@ -325,6 +325,7 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 				<value>com/mfino/domain/RServiceDefaultConfiguration.hbm.xml</value>
 				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
 				<value>com/mfino/domain/RBranchCodes.hbm.xml</value>
+				<value>com/mfino/domain/RKtpDetails.hbm.xml</value>
 			</list>
 		</property>
 
@@ -419,4 +420,9 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
     <bean id="BranchCodeDAO" class="com.mfino.dao.BranchCodeDAO" >
     	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
     </bean>
+    
+    <bean id="ktpDetailsDAO" class="com.mfino.dao.KtpDetailsDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
 </beans>

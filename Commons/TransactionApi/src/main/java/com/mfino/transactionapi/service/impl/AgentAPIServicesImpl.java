@@ -27,6 +27,7 @@ import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.agent.AgentBillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.agent.AgentBillPayInquiryHandler;
+import com.mfino.transactionapi.handlers.subscriber.SubscriberKtpValidationHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithOutServiceChargeHandler;
 import com.mfino.transactionapi.handlers.wallet.AgentCashInConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.AgentCashInInquiryHandler;
@@ -36,7 +37,6 @@ import com.mfino.transactionapi.service.AgentAPIServices;
 import com.mfino.transactionapi.service.BaseAPIService;
 import com.mfino.transactionapi.service.TransactionRequestValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
-import com.mfino.util.SystemParametersUtil;
 
 /**
  * Handles all Agent Service related transactions Subscriber Registration Cash
@@ -107,6 +107,10 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	@Autowired
 	@Qualifier("MoneyTransferHandlerImpl")
 	private MoneyTransferHandler moneyTransferHandler;
+	
+	@Autowired
+	@Qualifier("SubscriberKtpValidationHandlerImpl")
+	private SubscriberKtpValidationHandler subscriberKtpValidationHandler;
 
  	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
@@ -286,6 +290,10 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			
 			transactionDetails.setSystemIntiatedTransaction(true);
 			xmlResult = (XMLResult) moneyTransferHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.SUBSCRIBER_KTP_VALIDATION.equalsIgnoreCase(transactionName)) {
+			
+			xmlResult = (XMLResult) subscriberKtpValidationHandler.handle(transactionDetails);
 		}
 
 		else {

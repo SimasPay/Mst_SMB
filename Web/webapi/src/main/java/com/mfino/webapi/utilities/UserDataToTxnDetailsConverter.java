@@ -239,6 +239,45 @@ public class UserDataToTxnDetailsConverter {
 			txnDetails.setNumberOfCoupons(userDataContainer.getNumberOfCoupons());
 		}
 		
+		txnDetails.setKtpDocument(userDataContainer.getKtpDocument());
+		txnDetails.setSubscriberFormDocument(userDataContainer.getSubscriberFormDocument());
+		txnDetails.setSupportingDocument(userDataContainer.getSupportingDocument());
+		txnDetails.setKtpId(userDataContainer.getKtpId());
+		
+		if(StringUtils.isNotBlank(userDataContainer.getKtpValidUntil())) {
+		
+			txnDetails.setKtpValidUntil(getDate(userDataContainer.getKtpValidUntil(), ApiConstants.PARAMETER_KTP_VALID_UNTIL));
+		}
+		
+		
+		if(StringUtils.isNotBlank(userDataContainer.getKtpLifetime())) {
+		
+			txnDetails.setKtpLifetime(Boolean.getBoolean(userDataContainer.getKtpLifetime()));
+		}
+		
+		txnDetails.setKtpLine1(userDataContainer.getKtpLine1());
+		txnDetails.setKtpLine2(userDataContainer.getKtpLine2());
+		txnDetails.setKtpCity(userDataContainer.getKtpCity());
+		txnDetails.setKtpState(userDataContainer.getKtpState());
+		txnDetails.setKtpCountry(userDataContainer.getKtpCountry());
+		txnDetails.setKtpZipCode(userDataContainer.getKtpZipCode());
+		txnDetails.setKtpRegionName(userDataContainer.getKtpRegionName());
+		txnDetails.setDomesticIdentity(userDataContainer.getDomesticIdentity());
+		txnDetails.setWork(userDataContainer.getWork());
+		
+		if(StringUtils.isNotBlank(userDataContainer.getIncome())) {
+		
+			txnDetails.setIncome(new BigDecimal(userDataContainer.getIncome()));
+		}
+		
+		txnDetails.setGoalOfOpeningAccount(userDataContainer.getGoalOfOpeningAccount());
+		txnDetails.setSourceOfFunds(userDataContainer.getSourceOfFunds());
+		
+		if(StringUtils.isNotBlank(userDataContainer.getTransactionId())) {
+			
+			txnDetails.setTransactionId(Long.parseLong(userDataContainer.getTransactionId()));
+		}
+		
 		return txnDetails;
 	}
 	

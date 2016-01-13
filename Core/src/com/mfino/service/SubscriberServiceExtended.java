@@ -3,6 +3,7 @@
  */
 package com.mfino.service;
 
+import com.mfino.domain.Address;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
@@ -23,6 +24,11 @@ public interface SubscriberServiceExtended {
 			SubscriberMDN subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
 			String oneTimePin, Partner registeringPartner);
+	
+	public Integer registerSubscriberByAgent(Subscriber subscriber,
+			SubscriberMDN subscriberMDN,
+			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
+			String oneTimePin, Partner registeringPartner, Address ktpAddress, Address dometicAddress);
 
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration);

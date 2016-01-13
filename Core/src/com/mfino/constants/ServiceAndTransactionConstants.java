@@ -339,4 +339,6 @@ public class ServiceAndTransactionConstants {
 	public static final String MESSAGE_QR_PAYMENT 			=	"QR Payment";
 	
 	public static final String MESSAGE_DONATION = "Donation";
+	
+	public static final String SUBSCRIBER_KTP_VALIDATION = "SubscriberKTPValidation";
 }

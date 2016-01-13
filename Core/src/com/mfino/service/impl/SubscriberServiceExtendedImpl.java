@@ -310,6 +310,199 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMDN subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
+			Pocket lakuPandiaPocket, String oneTimePin, Partner registeringPartner, Address ktpAddress, Address domesticAddress) {
+		
+		SubscriberMDN existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
+		
+		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
+		if (existingSubscriberMDN == null || isUnRegistered) {
+			
+			if (isUnRegistered) {
+				
+				Long regPartnerID = subscriber.getRegisteringPartnerID();
+				subscriberMDN = existingSubscriberMDN;
+				subscriber = subscriberMDN.getSubscriber();
+				subscriber.setRegisteringPartnerID(regPartnerID);
+			}
+
+			fillSubscriberMandatoryFields(subscriber);
+			fillSubscriberMDNMandatoryFields(subscriberMDN);
+			String createdByName = null;
+			
+			if (registeringPartner != null) {
+				
+				createdByName = registeringPartner.getTradeName();
+			
+			} else {
+				
+				createdByName = subscriberRegistration.getFirstName();
+			}
+			
+			subscriber.setFirstName(subscriberRegistration.getFirstName());
+			subscriber.setLastName(subscriberRegistration.getLastName());
+			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
+			
+			String mothersMaidenName = "MothersMaidenName";
+			
+			subscriber.setSecurityQuestion(mothersMaidenName);
+			
+			if (subscriberRegistration.getMothersMaidenName() != null) {
+				subscriber.setSecurityAnswer(subscriberRegistration.getMothersMaidenName());
+			}
+			
+			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
+			
+			if (registeringPartner != null) {
+				subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Agent);
+				
+			} else {
+				subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Self);
+			}
+
+			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
+			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+			if (subscriberRegistration.getSubscriberStatus() != null) {
+				
+				subscriber.setStatus(subscriberRegistration.getSubscriberStatus());
+			}
+			
+			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
+			subscriber.setStatusTime(new Timestamp());
+			subscriber.setCreatedBy(createdByName);
+			subscriber.setUpdatedBy(createdByName);
+			subscriber.setCreateTime(new Timestamp());
+			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
+			
+			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
+			
+			if (kycLevel == null ) {
+				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
+			}
+			
+			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			Long groupID = null;
+			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+			
+			if(subscriberGroups != null && !subscriberGroups.isEmpty()){
+				
+				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				groupID = subscriberGroup.getGroup().getID();
+			}
+			
+			Long kycLevelNo = null;
+			if(null != subscriber.getUpgradableKYCLevel()){
+				
+				kycLevelNo = subscriber.getUpgradableKYCLevel();
+			}
+			else {
+				
+				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+			}
+			
+			PocketTemplate lakuPandaiTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+			
+			if (lakuPandaiTemplate == null) {
+				
+				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
+			}
+			
+			subscriber.setUpgradableKYCLevel(subscriberRegistration.getKYCLevel());
+			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
+			
+			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
+			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration.getSubscriberStatus()) {
+				
+				Long templateID = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
+				
+				if (templateID > 0) {
+					PocketTemplateDAO templateDAO = DAOFactory.getInstance().getPocketTemplateDao();
+					PocketTemplate unRegisteredTemplate = templateDAO.getById(templateID);
+					if (unRegisteredTemplate != null) {
+						lakuPandaiTemplate = unRegisteredTemplate;
+						pocketStatus = CmFinoFIX.PocketStatus_OneTimeActive;
+					} else {
+						log.error("ERROR: Pocket Template for Emoney Unregistered system is not found");
+						return CmFinoFIX.NotificationCode_UnRegisteredPocketTemplateNotFound;
+					}
+				}
+			}
+			
+			subscriber.setAppliedBy(createdByName);
+			subscriber.setAppliedTime(new Timestamp());
+			subscriber.setDetailsRequired(true);
+			subscriberDao.save(subscriber);
+			
+			if(subscriber.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
+				
+				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());				
+			}
+			
+			subscriberMDN.setSubscriber(subscriber);
+			subscriberMDN.setMDN(subscriberRegistration.getMDN());
+			subscriberMDN.setApplicationID(subscriberRegistration.getApplicationID());
+			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+			
+			if (subscriberRegistration.getSubscriberStatus() != null) {
+				subscriberMDN.setStatus(subscriberRegistration.getSubscriberStatus());
+			}
+			
+			subscriberMDN.setStatusTime(new Timestamp());
+			subscriberMDN.setCreatedBy(createdByName);
+			subscriberMDN.setCreateTime(new Timestamp());
+			subscriberMDN.setUpdatedBy(createdByName);
+			setOTPToSubscriber(subscriberMDN, oneTimePin);
+			subscriberMdnDao.save(subscriberMDN);
+			//handling adding default group if the group doesnot exist here
+			if(groupID==null){
+				
+				GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+				Group defaultGroup =groupDao.getSystemGroup();
+				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+				SubscriberGroup sg = new SubscriberGroup();
+				sg.setSubscriber(subscriber);
+				sg.setGroup(defaultGroup);
+				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
+				if(subscriber.getID() != null){
+					subscriberGroupDao.save(sg);
+				}
+			}
+			
+			if (isUnRegistered) {
+				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+				// ideally there should be only one pocket
+				if (pockets.size() == 1) {
+					Pocket pocket = null;
+					Iterator<Pocket> pocketIterator = pockets.iterator();
+					while (pocketIterator.hasNext()) {
+						
+						pocket = pocketIterator.next();
+						
+						if (pocket.getPocketTemplate().getID().equals(systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
+							break;
+						}
+					}
+					
+					if (pocket != null) {
+						
+						pocket.setPocketTemplate(lakuPandaiTemplate);
+						pocket.setStatus(pocketStatus);
+						pocketDao.save(pocket);
+						return CmFinoFIX.ResponseCode_Success;
+					}
+				}
+				return CmFinoFIX.NotificationCode_MoneySVAPocketNotFound;
+			}
+			
+			lakuPandiaPocket.setID(pocketService.createPocket(lakuPandaiTemplate,subscriberMDN, pocketStatus, true, null).getID());
+			
+			return CmFinoFIX.ResponseCode_Success;
+		}
+		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
+	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerWithActivationSubscriber(

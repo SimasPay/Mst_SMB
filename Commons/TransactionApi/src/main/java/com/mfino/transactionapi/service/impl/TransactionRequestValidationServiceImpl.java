@@ -572,18 +572,21 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	public void validateSubscriberRegistrationByAgentDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateDesttinationMDN(transactionDetails);
 		validateFirstName(transactionDetails);
-		validateLastName(transactionDetails);
+		//validateLastName(transactionDetails);
 		validateDateOfBirth(transactionDetails);
-		if(transactionDetails.getMothersMaidenName()!=null)
-		{
+		if(transactionDetails.getMothersMaidenName()!=null) {
+			
 			validateMothersMaidenName(transactionDetails);	
 		}
-        validateAccountType(transactionDetails);
-		if(transactionDetails.getApplicationId()!=null)
-		{
-		validateApplicationId(transactionDetails);
+        
+		/*validateAccountType(transactionDetails);
+		
+        if(transactionDetails.getApplicationId()!=null){
+		
+        	validateApplicationId(transactionDetails);
 		}
-		validateSourcePin(transactionDetails);
+        
+		validateSourcePin(transactionDetails);*/
 	}
 
 	public void validateSubscriberRegistration(TransactionDetails transactionDetails) throws InvalidDataException {

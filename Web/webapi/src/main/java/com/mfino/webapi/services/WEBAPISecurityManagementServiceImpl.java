@@ -333,9 +333,25 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String loyalityName = request.getParameter(ApiConstants.PARAMETER_LOYALITY_NAME);
 		String discountType = request.getParameter(ApiConstants.PARAMETER_DISCOUNT_TYPE);
 		String numberOfCoupons = request.getParameter(ApiConstants.PARAMETER_NOOF_COUPONS);
-
-
-
+		String ktpId = request.getParameter(ApiConstants.PARAMETER_KTPID);
+		String ktpValidUntil = request.getParameter(ApiConstants.PARAMETER_KTP_VALID_UNTIL);
+		String ktpLifetime = request.getParameter(ApiConstants.PARAMETER_KTP_LIFETIME);
+		String ktpLine1 = request.getParameter(ApiConstants.PARAMETER_KTP_LINE1);
+		String ktpLine2 = request.getParameter(ApiConstants.PARAMETER_KTP_LINE2);
+		String ktpCity = request.getParameter(ApiConstants.PARAMETER_KTP_CITY);
+		String ktpState = request.getParameter(ApiConstants.PARAMETER_KTP_STATE);
+		String ktpCountry = request.getParameter(ApiConstants.PARAMETER_KTP_COUNTRY);
+		String ktpZipCode = request.getParameter(ApiConstants.PARAMETER_KTP_ZIP_CODE);
+		String ktpRegionName = request.getParameter(ApiConstants.PARAMETER_KTP_REGION_NAME);
+		String domesticIdentity = request.getParameter(ApiConstants.PARAMETER_DOMESTIC_IDENTITY);
+		String work = request.getParameter(ApiConstants.PARAMETER_WORK);
+		String income = request.getParameter(ApiConstants.PARAMETER_INCOME);
+		String goalOfOpeningAccount = request.getParameter(ApiConstants.PARAMETER_GOAL_OF_OPENING_ACCOUNT);
+		String sourceOfFunds = request.getParameter(ApiConstants.PARAMETER_SOURCE_OF_FUNDS);
+		String transactionId = request.getParameter(ApiConstants.PARAMETER_TRANSACTION_ID);
+		String ktpDocument = request.getParameter(ApiConstants.PARAMETER_KTP_DOCUMENT);
+		String subscriberFormDocument = request.getParameter(ApiConstants.PARAMETER_SUBSCRIBER_FORM_DOCUMENT);
+		String supportingDocument = request.getParameter(ApiConstants.PARAMETER_SUPPORTING_DOCUMENT);
 		
 		sourceMDN = subscriberService.normalizeMDN(sourceMDN);
 		if (! (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName) || 
@@ -476,8 +492,25 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setDiscountType(discountType);
 		rudContainer.setNumberOfCoupons(numberOfCoupons);
 
-
-
+		rudContainer.setKtpId(ktpId);
+		rudContainer.setKtpValidUntil(ktpValidUntil);
+		rudContainer.setKtpLifetime(ktpLifetime);
+		rudContainer.setKtpLine1(ktpLine1);
+		rudContainer.setKtpLine2(ktpLine2);
+		rudContainer.setKtpCity(ktpCity);
+		rudContainer.setKtpState(ktpState);
+		rudContainer.setKtpCountry(ktpCountry);
+		rudContainer.setKtpZipCode(ktpZipCode);
+		rudContainer.setKtpRegionName(ktpRegionName);
+		rudContainer.setDomesticIdentity(domesticIdentity);
+		rudContainer.setWork(work);
+		rudContainer.setIncome(income);
+		rudContainer.setGoalOfOpeningAccount(goalOfOpeningAccount);
+		rudContainer.setSourceOfFunds(sourceOfFunds);
+		rudContainer.setTransactionId(transactionId);
+		rudContainer.setKtpDocument(ktpDocument);
+		rudContainer.setSubscriberFormDocument(subscriberFormDocument);
+		rudContainer.setSupportingDocument(supportingDocument);
 		
 		log.info("initUserDataContainer: End");
 		return rudContainer;

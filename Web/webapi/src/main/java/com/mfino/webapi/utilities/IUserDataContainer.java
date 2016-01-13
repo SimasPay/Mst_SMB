@@ -351,4 +351,24 @@ public interface IUserDataContainer {
 	public String getLoyalityName();
 	public String getDiscountType();
 	public String getNumberOfCoupons();
+	
+	public String getKtpDocument();
+	public String getSubscriberFormDocument();
+	public String getSupportingDocument();
+	public String getKtpId();
+	public String getKtpValidUntil();
+	public String getKtpLifetime();
+	public String getKtpLine1();
+	public String getKtpLine2();
+	public String getKtpCity();
+	public String getKtpState();
+	public String getKtpCountry();
+	public String getKtpZipCode();
+	public String getKtpRegionName();
+	public String getDomesticIdentity();
+	public String getWork();
+	public String getIncome();
+	public String getGoalOfOpeningAccount();
+	public String getSourceOfFunds();
+	public String getTransactionId();
 }

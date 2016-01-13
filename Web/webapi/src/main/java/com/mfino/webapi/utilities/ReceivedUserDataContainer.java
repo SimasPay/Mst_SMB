@@ -146,7 +146,300 @@ public class ReceivedUserDataContainer {
 	private String discountType;
 	private String numberOfCoupons;
 	
+	private String ktpId;
+	private String ktpValidUntil;
+	private String ktpLifetime;
+	private String ktpLine1;
+	private String ktpLine2;
+	private String ktpCity;
+	private String ktpState;
+	private String ktpCountry;
+	private String ktpZipCode;
+	private String ktpRegionName;
+	private String domesticIdentity;
+	private String work;
+	private String income;
+	private String goalOfOpeningAccount;
+	private String sourceOfFunds;
+	private String transactionId;
+	private String ktpDocument;
+	private String subscriberFormDocument;
+	private String supportingDocument;
 	
+	
+	/**
+	 * @return the ktpDocument
+	 */
+	public String getKtpDocument() {
+		return ktpDocument;
+	}
+
+	/**
+	 * @param ktpDocument the ktpDocument to set
+	 */
+	public void setKtpDocument(String ktpDocument) {
+		this.ktpDocument = ktpDocument;
+	}
+
+	/**
+	 * @return the subscriberFormDocument
+	 */
+	public String getSubscriberFormDocument() {
+		return subscriberFormDocument;
+	}
+
+	/**
+	 * @param subscriberFormDocument the subscriberFormDocument to set
+	 */
+	public void setSubscriberFormDocument(String subscriberFormDocument) {
+		this.subscriberFormDocument = subscriberFormDocument;
+	}
+
+	/**
+	 * @return the supportingDocument
+	 */
+	public String getSupportingDocument() {
+		return supportingDocument;
+	}
+
+	/**
+	 * @param supportingDocument the supportingDocument to set
+	 */
+	public void setSupportingDocument(String supportingDocument) {
+		this.supportingDocument = supportingDocument;
+	}
+
+	/**
+	 * @return the ktpId
+	 */
+	public String getKtpId() {
+		return ktpId;
+	}
+
+	/**
+	 * @param ktpId the ktpId to set
+	 */
+	public void setKtpId(String ktpId) {
+		this.ktpId = ktpId;
+	}
+
+	/**
+	 * @return the ktpValidUntil
+	 */
+	public String getKtpValidUntil() {
+		return ktpValidUntil;
+	}
+
+	/**
+	 * @param ktpValidUntil the ktpValidUntil to set
+	 */
+	public void setKtpValidUntil(String ktpValidUntil) {
+		this.ktpValidUntil = ktpValidUntil;
+	}
+
+	/**
+	 * @return the ktpLifetime
+	 */
+	public String getKtpLifetime() {
+		return ktpLifetime;
+	}
+
+	/**
+	 * @param ktpLifetime the ktpLifetime to set
+	 */
+	public void setKtpLifetime(String ktpLifetime) {
+		this.ktpLifetime = ktpLifetime;
+	}
+
+	/**
+	 * @return the ktpLine1
+	 */
+	public String getKtpLine1() {
+		return ktpLine1;
+	}
+
+	/**
+	 * @param ktpLine1 the ktpLine1 to set
+	 */
+	public void setKtpLine1(String ktpLine1) {
+		this.ktpLine1 = ktpLine1;
+	}
+
+	/**
+	 * @return the ktpLine2
+	 */
+	public String getKtpLine2() {
+		return ktpLine2;
+	}
+
+	/**
+	 * @param ktpLine2 the ktpLine2 to set
+	 */
+	public void setKtpLine2(String ktpLine2) {
+		this.ktpLine2 = ktpLine2;
+	}
+
+	/**
+	 * @return the ktpCity
+	 */
+	public String getKtpCity() {
+		return ktpCity;
+	}
+
+	/**
+	 * @param ktpCity the ktpCity to set
+	 */
+	public void setKtpCity(String ktpCity) {
+		this.ktpCity = ktpCity;
+	}
+
+	/**
+	 * @return the ktpState
+	 */
+	public String getKtpState() {
+		return ktpState;
+	}
+
+	/**
+	 * @param ktpState the ktpState to set
+	 */
+	public void setKtpState(String ktpState) {
+		this.ktpState = ktpState;
+	}
+
+	/**
+	 * @return the ktpCountry
+	 */
+	public String getKtpCountry() {
+		return ktpCountry;
+	}
+
+	/**
+	 * @param ktpCountry the ktpCountry to set
+	 */
+	public void setKtpCountry(String ktpCountry) {
+		this.ktpCountry = ktpCountry;
+	}
+
+	/**
+	 * @return the ktpZipCode
+	 */
+	public String getKtpZipCode() {
+		return ktpZipCode;
+	}
+
+	/**
+	 * @param ktpZipCode the ktpZipCode to set
+	 */
+	public void setKtpZipCode(String ktpZipCode) {
+		this.ktpZipCode = ktpZipCode;
+	}
+
+	/**
+	 * @return the ktpRegionName
+	 */
+	public String getKtpRegionName() {
+		return ktpRegionName;
+	}
+
+	/**
+	 * @param ktpRegionName the ktpRegionName to set
+	 */
+	public void setKtpRegionName(String ktpRegionName) {
+		this.ktpRegionName = ktpRegionName;
+	}
+
+	/**
+	 * @return the domesticIdentity
+	 */
+	public String getDomesticIdentity() {
+		return domesticIdentity;
+	}
+
+	/**
+	 * @param domesticIdentity the domesticIdentity to set
+	 */
+	public void setDomesticIdentity(String domesticIdentity) {
+		this.domesticIdentity = domesticIdentity;
+	}
+
+	/**
+	 * @return the work
+	 */
+	public String getWork() {
+		return work;
+	}
+
+	/**
+	 * @param work the work to set
+	 */
+	public void setWork(String work) {
+		this.work = work;
+	}
+
+	/**
+	 * @return the income
+	 */
+	public String getIncome() {
+		return income;
+	}
+
+	/**
+	 * @param income the income to set
+	 */
+	public void setIncome(String income) {
+		this.income = income;
+	}
+
+	/**
+	 * @return the goalOfOpeningAccount
+	 */
+	public String getGoalOfOpeningAccount() {
+		return goalOfOpeningAccount;
+	}
+
+	/**
+	 * @param goalOfOpeningAccount the goalOfOpeningAccount to set
+	 */
+	public void setGoalOfOpeningAccount(String goalOfOpeningAccount) {
+		this.goalOfOpeningAccount = goalOfOpeningAccount;
+	}
+
+	/**
+	 * @return the sourceOfFunds
+	 */
+	public String getSourceOfFunds() {
+		return sourceOfFunds;
+	}
+
+	/**
+	 * @param sourceOfFunds the sourceOfFunds to set
+	 */
+	public void setSourceOfFunds(String sourceOfFunds) {
+		this.sourceOfFunds = sourceOfFunds;
+	}
+
+	/**
+	 * @return the transactionId
+	 */
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	/**
+	 * @param transactionId the transactionId to set
+	 */
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	/**
+	 * @return the otp
+	 */
+	public String getOtp() {
+		return otp;
+	}
+
 	public String getAppVersion() {
     	return appVersion;
     }

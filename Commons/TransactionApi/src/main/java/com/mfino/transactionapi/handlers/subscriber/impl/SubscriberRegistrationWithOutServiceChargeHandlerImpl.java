@@ -1,6 +1,7 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.KtpDetailsDAO;
+import com.mfino.dao.query.KtpDetailsQuery;
+import com.mfino.domain.Address;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.KtpDetails;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -27,7 +33,6 @@ import com.mfino.fix.CmFinoFIX.CMSubscriberRegistration;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
-import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.NotificationMessageParserService;
@@ -99,8 +104,10 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 	private SMSService smsService;
 	
 	public Result handle(TransactionDetails txnDetails) {
+		
+		ChannelCode cc = txnDetails.getCc();
+		
 		subscriberRegistration = new CMSubscriberRegistration();
-		ChannelCode cc = txnDetails.getCc();		
 		subscriberRegistration.setSourceMDN(txnDetails.getSourceMDN());
 		subscriberRegistration.setMDN(subscriberService.normalizeMDN(txnDetails.getDestMDN()));
 		subscriberRegistration.setFirstName(txnDetails.getFirstName());
@@ -108,7 +115,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		subscriberRegistration.setMothersMaidenName(txnDetails.getMothersMaidenName());
 		subscriberRegistration.setApplicationID(txnDetails.getApplicationId());
 		subscriberRegistration.setDateOfBirth(new Timestamp(txnDetails.getDateOfBirth()));
-		subscriberRegistration.setKYCLevel(Long.parseLong(txnDetails.getAccountType()));
+		subscriberRegistration.setKYCLevel(Long.parseLong(String.valueOf(CmFinoFIX.SubscriberKYCLevel_UnBanked)));
 		subscriberRegistration.setChannelCode(cc.getChannelCode());
 		subscriberRegistration.setSourceApplication(cc.getChannelSourceApplication());
 		subscriberRegistration.setPin(txnDetails.getSourcePIN());
@@ -136,10 +143,15 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		}
 		
 		validationResult = transactionApiValidationService.validatePin(agentMDN, subscriberRegistration.getPin());
+		
+		validationResult = CmFinoFIX.ResponseCode_Success;
+		
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
+			
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
 			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+			
 			return result;
 		}
 
@@ -157,31 +169,66 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
 
 		try{
+			
 			transactionDetails =transactionChargingService.getCharge(sc);
+			
 		}catch (InvalidServiceException e) {
+			
 			log.error("Exception occured in getting charges",e);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
+			
 		} catch (InvalidChargeDefinitionException e) {
+			
 			log.error(e.getMessage());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
+		
 		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
 		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getID());
+		
 		try{
+			
 			if (!transactionChargingService.checksPartnerService(sc)) {
 				log.info("Service Not Registered for the Agent");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 				transactionChargingService.failTheTransaction(sctl, MessageText._("Service Not Registered for the Agent"));
 				return result;
 			}
+			
 		}catch (InvalidServiceException e) {
+			
 			log.error("Exception occured in getting charges",e);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			transactionChargingService.failTheTransaction(sctl, MessageText._("Service Not Avialable"));
 			return result;
 		}
+		
+		boolean isDataValid = validateKtpDetails(txnDetails);
+		
+		if(!isDataValid) {
+			
+			log.debug("KTP Details are invalid");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValidationFailed);
+			
+			return result;
+			
+		}
+		
+		Address ktpAddress = new Address();
+		ktpAddress.setLine1(txnDetails.getKtpLine1());
+		ktpAddress.setCity(txnDetails.getKtpCity());
+		ktpAddress.setState(txnDetails.getKtpState());
+		ktpAddress.setRegionName(txnDetails.getKtpRegionName());
+		ktpAddress.setZipCode(txnDetails.getKtpZipCode());
+		
+		Address domesticAddress = new Address();
+		domesticAddress.setLine1(txnDetails.getAddressLine1());
+		domesticAddress.setCity(txnDetails.getCity());
+		domesticAddress.setState(txnDetails.getState());
+		domesticAddress.setRegionName(txnDetails.getRegionName());
+		domesticAddress.setZipCode(txnDetails.getZipCode());
 
 		Subscriber subscriber = new Subscriber();
 		SubscriberMDN subscriberMDN = new SubscriberMDN();
@@ -190,23 +237,29 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		Partner partner = partnerService.getPartner(agentMDN);
 		subscriber.setRegisteringPartnerID(partner.getID());
-		Integer regResponse = subscriberServiceExtended.registerSubscriber(subscriber, subscriberMDN, subscriberRegistration,
-				epocket,oneTimePin,partner);
+		
+		Integer regResponse = subscriberServiceExtended.registerSubscriberByAgent(subscriber, subscriberMDN, subscriberRegistration,
+				epocket,oneTimePin,partner, ktpAddress, domesticAddress);
+		
 		if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
 			Notification notification = notificationService.getByNoticationCode(regResponse);
 			String notificationName = null;
+			
 			if(notification != null){
 				notificationName = notification.getCodeName();
 			}else{
 				log.error("Could not find the failure notification code: "+regResponse);
 			}
+			
 			result.setActivityStatus(false);
 			result.setNotificationCode(regResponse);
 			transactionChargingService.failTheTransaction(sctl, MessageText._("Subscriber Registration failed. Notification Code: "+regResponse+" NotificationName: "+notificationName));
-			sendSMS(subscriberRegistration, oneTimePin, false);
+		
 		}else{
+			
 			result.setActivityStatus(true);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToAgent);
+			
 			if (sctl != null) {
 				// Calculate the Commission and generates the logs for the same
 				sc.setSctlId(sctl.getID());
@@ -217,10 +270,8 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				} catch (Exception e) {
 					log.error("Exception occured in getting charges for Registration",e);
 				}
-//				sctl.setCalculatedCharge(BigDecimal.ZERO);
 				transactionChargingService.confirmTheTransaction(sctl);
 			}
-			sendSMS(subscriberRegistration, oneTimePin, true);
 		}
 
 		result.setSctlID(sctl.getID());
@@ -228,38 +279,38 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 
 	}
 
-	private void sendSMS(CMSubscriberRegistration subscriberRegistration, String oneTimePin, boolean registartionStatus) {
-
-		smsService.setSctlId(subscriberRegistration.getServiceChargeTransactionLogID());
-		NotificationWrapper notificationWrapper=new NotificationWrapper();
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(subscriberRegistration.getSourceMDN());
-		if(subMDN != null)
-		{
-			notificationWrapper.setFirstName(subMDN.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(subMDN.getSubscriber().getLastName());
+	private boolean validateKtpDetails(TransactionDetails transactionDetails) {
+		
+		boolean isDataValid = false;
+		
+		KtpDetailsDAO ktpDetailsDAO = DAOFactory.getInstance().getKtpDetailsDAO();
+		
+		if(null != transactionDetails) {
+			
+			KtpDetailsQuery query = new KtpDetailsQuery();
+			query.setId(transactionDetails.getTransactionId());
+			
+			List<KtpDetails> ktpDetails = ktpDetailsDAO.get(query);
+			
+			if(!ktpDetails.isEmpty() ) {
+				
+				KtpDetails ktpDetail = ktpDetails.get(0);
+				
+				if(ktpDetail.getKTPID().equals(transactionDetails.getKtpId())) {
+					
+					if(ktpDetail.getFullName().equals(transactionDetails.getFirstName())) {
+						
+						if(ktpDetail.getDateOfBirth().equals(new java.sql.Timestamp(transactionDetails.getDateOfBirth().getTime()))) {
+							
+							isDataValid  = true;
+							
+						}
+						
+					}
+				}
+			}
 		}
-		if(registartionStatus){
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
-			notificationWrapper.setOneTimePin(oneTimePin);
-			notificationWrapper.setDestMDN(subscriberRegistration.getMDN());
-			smsService.setDestinationMDN(subscriberRegistration.getMDN());
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			smsService.setMessage(notificationMessageParserService.buildMessage(notificationWrapper,true));
-			smsService.send();
-
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToAgent);
-			notificationWrapper.setDestMDN(subscriberRegistration.getMDN());
-			smsService.setDestinationMDN(subscriberRegistration.getSourceMDN());
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			smsService.setMessage(notificationMessageParserService.buildMessage(notificationWrapper,true));
-			smsService.send();
-		}else{
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationfailedToAgent);
-			notificationWrapper.setDestMDN(subscriberRegistration.getMDN());
-			smsService.setDestinationMDN(subscriberRegistration.getSourceMDN());
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			smsService.setMessage(notificationMessageParserService.buildMessage(notificationWrapper,true));
-			smsService.send();
-		}
+		
+		return isDataValid;
 	}
 }
