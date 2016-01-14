@@ -54,7 +54,6 @@ import com.mfino.transactionapi.result.xmlresulttypes.subscriber.RegistrationXML
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.Base64;
-import com.mfino.util.MfinoUtil;
 
 /*
  *
@@ -248,8 +247,6 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		SubscriberMDN subscriberMDN = new SubscriberMDN();
 		SubscribersAdditionalFields subscriberAddiFields = new SubscribersAdditionalFields();
 		Pocket epocket = new Pocket();
-		Integer OTPLength = systemParametersService.getOTPLength();
-		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		Partner partner = partnerService.getPartner(agentMDN);
 		subscriber.setRegisteringPartnerID(partner.getID());
 		
@@ -330,7 +327,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		subscriberAddiFields.setSourceOfFund(txnDetails.getSourceOfFunds());
 		
 		Integer regResponse = subscriberServiceExtended.registerSubscriberByAgent(subscriber, subscriberMDN, subscriberRegistration,
-				epocket,oneTimePin,partner, ktpAddress, domesticAddress, subscriberAddiFields);
+				epocket,partner, ktpAddress, domesticAddress, subscriberAddiFields);
 		
 		if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
 			Notification notification = notificationService.getByNoticationCode(regResponse);

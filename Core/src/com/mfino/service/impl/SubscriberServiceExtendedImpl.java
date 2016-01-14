@@ -307,7 +307,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMDN subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
-			Pocket lakuPandiaPocket, String oneTimePin, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscribersAdditionalFields subscriberAddiFields) {
+			Pocket lakuPandiaPocket, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscribersAdditionalFields subscriberAddiFields) {
 		
 		SubscriberMDN existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
 		
@@ -464,8 +464,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setCreatedBy(createdByName);
 			subscriberMDN.setCreateTime(new Timestamp());
 			subscriberMDN.setUpdatedBy(createdByName);
-			setOTPToSubscriber(subscriberMDN, oneTimePin);
 			subscriberMdnDao.save(subscriberMDN);
+			
 			//handling adding default group if the group doesnot exist here
 			if(groupID==null){
 				

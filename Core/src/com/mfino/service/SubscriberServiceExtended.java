@@ -29,7 +29,7 @@ public interface SubscriberServiceExtended {
 	public Integer registerSubscriberByAgent(Subscriber subscriber,
 			SubscriberMDN subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
-			String oneTimePin, Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscribersAdditionalFields subscriberAddiFields);
+		    Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscribersAdditionalFields subscriberAddiFields);
 
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration);
