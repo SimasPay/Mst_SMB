@@ -70,20 +70,14 @@ import com.mfino.util.SubscriberSyncErrors;
 
 @Service("SubscriberServiceExtendedImpl")
 public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
-	private static Logger log = LoggerFactory
-			.getLogger(SubscriberServiceExtendedImpl.class);
-	private SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance()
-			.getSubscriberMdnDAO();
-	private SubscribersAdditionalFieldsDAO subscribersAdditionalFieldsDao = DAOFactory
-			.getInstance().getSubscribersAdditionalFieldsDAO();
-	private AddressDAO addressDao = DAOFactory.getInstance()
-			.getAddressDAO();
-	private SubscriberDAO subscriberDao = DAOFactory.getInstance()
-			.getSubscriberDAO();
-	private KYCLevelDAO kycLevelDAO = DAOFactory.getInstance()
-			.getKycLevelDAO();
-	private PocketDAO pocketDao = DAOFactory.getInstance()
-			.getPocketDAO();
+	private static Logger log = LoggerFactory.getLogger(SubscriberServiceExtendedImpl.class);
+	private SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
+	private SubscribersAdditionalFieldsDAO subscribersAdditionalFieldsDao = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
+	private AddressDAO addressDao = DAOFactory.getInstance().getAddressDAO();
+	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
+	private KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
+	private PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
+	private SubscribersAdditionalFieldsDAO subscriberAddFieldsDAO = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
 	
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -313,7 +307,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMDN subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
-			Pocket lakuPandiaPocket, String oneTimePin, Partner registeringPartner, Address ktpAddress, Address domesticAddress) {
+			Pocket lakuPandiaPocket, String oneTimePin, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscribersAdditionalFields subscriberAddiFields) {
 		
 		SubscriberMDN existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
 		
@@ -410,6 +404,19 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
 			}
 			
+			addressDao.save(ktpAddress);
+			subscriber.setAddressBySubscriberAddressKTPID(ktpAddress);
+			
+			if(subscriberMDN.getDomAddrIdentity().equals(CmFinoFIX.DomAddrIdentity_According_to_Identity)) {
+				
+				subscriber.setAddressBySubscriberAddressID(ktpAddress);
+				
+			} else {
+			
+				addressDao.save(domesticAddress);
+				subscriber.setAddressBySubscriberAddressID(domesticAddress);
+			}
+			
 			subscriber.setUpgradableKYCLevel(subscriberRegistration.getKYCLevel());
 			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
 			
@@ -435,6 +442,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setAppliedTime(new Timestamp());
 			subscriber.setDetailsRequired(true);
 			subscriberDao.save(subscriber);
+			
+			subscriberAddiFields.setSubscriber(subscriber);
+			subscriberAddFieldsDAO.save(subscriberAddiFields);
 			
 			if(subscriber.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
 				

@@ -1,8 +1,11 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -49,6 +53,7 @@ import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithOu
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.RegistrationXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.Base64;
 import com.mfino.util.MfinoUtil;
 
 /*
@@ -154,6 +159,15 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			
 			return result;
 		}
+		
+		SubscriberMDN destMDN = subscriberMdnService.getByMDN(txnDetails.getDestMDN());
+		
+		if(destMDN != null) {
+			
+			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Destination);
+			return result;
+			
+		}
 
 		// Check whether the agent has the Service or not.
 
@@ -232,14 +246,91 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 
 		Subscriber subscriber = new Subscriber();
 		SubscriberMDN subscriberMDN = new SubscriberMDN();
+		SubscribersAdditionalFields subscriberAddiFields = new SubscribersAdditionalFields();
 		Pocket epocket = new Pocket();
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		Partner partner = partnerService.getPartner(agentMDN);
 		subscriber.setRegisteringPartnerID(partner.getID());
 		
+		if(txnDetails.isKtpLifetime()) {
+			
+			subscriberMDN.setISIDLifetime(CmFinoFIX.ISIDLifetime_LifeTime_True);
+			
+		} else {
+			
+			subscriberMDN.setISIDLifetime(CmFinoFIX.ISIDLifetime_LifeTime_False);
+			subscriber.setIDExiparetionTime(new Timestamp(txnDetails.getKtpValidUntil()));
+		}
+		
+		if(StringUtils.isNotBlank(txnDetails.getDomesticIdentity())) {
+		
+			subscriberMDN.setDomAddrIdentity(Integer.parseInt(txnDetails.getDomesticIdentity()));
+		}
+		
+		subscriberMDN.setSubscriber(subscriber);
+		subscriberMDN.getSubscriber().setEmail(txnDetails.getEmail());
+		subscriberMDN.getSubscriber().setMothersmaidenName(txnDetails.getMothersMaidenName());
+		
+		String ktpDocument = txnDetails.getKtpDocument();
+		String subscriberFormDoc = txnDetails.getSubscriberFormDocument();
+		String supportingDoc = txnDetails.getSupportingDocument();
+		
+		try {
+			String documentPath = System.getProperty("catalina.home");
+			
+			File docFile = new File(documentPath + File.separator + "Documents" + File.separator + txnDetails.getDestMDN());
+			
+			if(!docFile.exists()) {
+				
+				docFile.mkdir();
+			}
+			
+			if(StringUtils.isNotBlank(ktpDocument)) {
+				
+				byte[] ktpDocImageByteArray = Base64.decode(ktpDocument);
+				 
+				  FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "KTP_Document.jpg");
+				  fileOuputStream.write(ktpDocImageByteArray);
+				  fileOuputStream.close();
+				  
+				  subscriberMDN.setKTPDocumentPath(docFile.getAbsoluteFile() + File.separator + "KTP_Document.jpg");
+			}
+			
+			if(StringUtils.isNotBlank(subscriberFormDoc)) {
+				
+				byte[] subFormDocImageByteArray = Base64.decode(subscriberFormDoc);
+				 
+				  FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "Subscriber_Form_Document.jpg");
+				  fileOuputStream.write(subFormDocImageByteArray);
+				  fileOuputStream.close();
+				  
+				  subscriberMDN.setSubscriberFormPath(docFile.getAbsoluteFile() + File.separator + "Subscriber_Form_Document.jpg");
+			}
+			
+			if(StringUtils.isNotBlank(supportingDoc)) {
+				
+				byte[] supportingDocImageByteArray = Base64.decode(supportingDoc);
+				 
+				  FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "Supporting_Document.jpg");
+				  fileOuputStream.write(supportingDocImageByteArray);
+				  fileOuputStream.close();
+				  
+				  subscriberMDN.setSupportingDocumentPath(docFile.getAbsoluteFile() + File.separator + "Supporting_Document.jpg");
+			}
+			
+		} catch (Exception ex) {
+			
+			log.error("Error while uploading the images...." + ex);
+		}
+		
+		subscriberAddiFields.setWork(txnDetails.getWork());
+		subscriberAddiFields.setIncome(txnDetails.getIncome());
+		subscriberAddiFields.setGoalOfAcctOpening(txnDetails.getGoalOfOpeningAccount());
+		subscriberAddiFields.setSourceOfFund(txnDetails.getSourceOfFunds());
+		
 		Integer regResponse = subscriberServiceExtended.registerSubscriberByAgent(subscriber, subscriberMDN, subscriberRegistration,
-				epocket,oneTimePin,partner, ktpAddress, domesticAddress);
+				epocket,oneTimePin,partner, ktpAddress, domesticAddress, subscriberAddiFields);
 		
 		if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
 			Notification notification = notificationService.getByNoticationCode(regResponse);
@@ -305,7 +396,6 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 							isDataValid  = true;
 							
 						}
-						
 					}
 				}
 			}

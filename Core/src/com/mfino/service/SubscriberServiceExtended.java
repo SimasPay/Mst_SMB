@@ -9,6 +9,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SubscriberSyncRecord;
+import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.fix.CmFinoFIX.CMExistingSubscriberReactivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberRegistration;
@@ -28,7 +29,7 @@ public interface SubscriberServiceExtended {
 	public Integer registerSubscriberByAgent(Subscriber subscriber,
 			SubscriberMDN subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
-			String oneTimePin, Partner registeringPartner, Address ktpAddress, Address dometicAddress);
+			String oneTimePin, Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscribersAdditionalFields subscriberAddiFields);
 
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration);

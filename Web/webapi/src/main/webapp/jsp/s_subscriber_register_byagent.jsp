@@ -142,10 +142,6 @@
 		<td><input type="text" name="sourceOfFunds" value="" /></td>
 	</tr>
 	<tr>
-		<td>E-mail</td>
-		<td><input type="text" name="email" value="" /></td>
-	</tr>
-	<tr>
 		<td>KTP Document</td>
 		<td><input type="text" name="ktpDocument" value="" /></td>
 	</tr>

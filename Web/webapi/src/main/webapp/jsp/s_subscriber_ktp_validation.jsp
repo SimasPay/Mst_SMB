@@ -42,10 +42,6 @@
 		<td><input type="text" name="ktpId" value="" /></td>
 	</tr>
 	<tr>
-		<td>Mother's Maiden Name</td>
-		<td><input type="text" name="subMothersMaidenName" value="" /></td>
-	</tr>
-	<tr>
 		<td>Date Of Birth</td>
 		<td><input type="text" name="dob" value="" /><em>ddmmyyyy</em></td>
 	</tr>

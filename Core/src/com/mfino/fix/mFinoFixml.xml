@@ -5538,7 +5538,6 @@
 			<field name="UserAPIKey" required="N"/>
 			<field name="OtpRetryCount" required="N" />
 			<field name="CashinFirstTimeID" required="N" />
-			<field name="IDValidUntil" required="N" />
 			<field name="DomAddrIdentity" required="N" />
 			<field name="ISIDLifetime" required="N" />
 			<field name="KTPDocumentPath" required="N" />
@@ -7263,7 +7262,6 @@
 			<field name="MDN" required="N" />
 			<field name="KTPID" required="N" />
 			<field name="FullName" required="N" />
-			<field name="MothersMaidenName" required="N" />
 			<field name="DateOfBirth" required="N" />
 			<field name="AgentMDN" required="N" />
 			<field name="BankResponseStatus" required="N" />

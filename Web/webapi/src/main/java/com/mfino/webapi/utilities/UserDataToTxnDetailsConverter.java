@@ -252,7 +252,7 @@ public class UserDataToTxnDetailsConverter {
 		
 		if(StringUtils.isNotBlank(userDataContainer.getKtpLifetime())) {
 		
-			txnDetails.setKtpLifetime(Boolean.getBoolean(userDataContainer.getKtpLifetime()));
+			txnDetails.setKtpLifetime(Boolean.valueOf(userDataContainer.getKtpLifetime()));
 		}
 		
 		txnDetails.setKtpLine1(userDataContainer.getKtpLine1());
