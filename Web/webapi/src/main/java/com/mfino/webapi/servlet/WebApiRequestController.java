@@ -163,6 +163,11 @@ public class WebApiRequestController {
 		String transactionName = request.getParameter(ApiConstants.PARAMETER_TRANSACTIONNAME);
  		String institutionID =  request.getParameter(ApiConstants.PARAMETER_INSTITUTION_ID);
  		String sourcePocketCode = request.getParameter(ApiConstants.PARAMETER_SRC_POCKET_CODE);
+ 		String str_isSimaspayActivity = request.getParameter(ApiConstants.IS_SIMASPAY_ACTIVITY);
+ 		boolean isSimaspayActivity=false;
+ 		if(str_isSimaspayActivity!=null&&str_isSimaspayActivity.equalsIgnoreCase("true")){
+ 			isSimaspayActivity=true;
+ 		}
  		boolean isLoginEnabled = true;
 
 		ServletOutputStream servletOutputWriter = response.getOutputStream();
@@ -212,6 +217,8 @@ public class WebApiRequestController {
 
 			TransactionDetails transactionDetails = converter.getTransactionDetails(udcontainer);
   			transactionDetails.setTransactionIdentifier(trxnIdentifier);
+  			transactionDetails.setSimpaspayActivity(isSimaspayActivity);
+  			
 //  			transactionDetails.setSourceMDN(sourceMDN);
 
   			ChannelCode channelCode = genericWebAPIService.getChannelCode(transactionDetails.getChannelCode());

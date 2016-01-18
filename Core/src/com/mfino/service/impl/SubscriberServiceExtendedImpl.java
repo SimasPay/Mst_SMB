@@ -70,20 +70,14 @@ import com.mfino.util.SubscriberSyncErrors;
 
 @Service("SubscriberServiceExtendedImpl")
 public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
-	private static Logger log = LoggerFactory
-			.getLogger(SubscriberServiceExtendedImpl.class);
-	private SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance()
-			.getSubscriberMdnDAO();
-	private SubscribersAdditionalFieldsDAO subscribersAdditionalFieldsDao = DAOFactory
-			.getInstance().getSubscribersAdditionalFieldsDAO();
-	private AddressDAO addressDao = DAOFactory.getInstance()
-			.getAddressDAO();
-	private SubscriberDAO subscriberDao = DAOFactory.getInstance()
-			.getSubscriberDAO();
-	private KYCLevelDAO kycLevelDAO = DAOFactory.getInstance()
-			.getKycLevelDAO();
-	private PocketDAO pocketDao = DAOFactory.getInstance()
-			.getPocketDAO();
+	private static Logger log = LoggerFactory.getLogger(SubscriberServiceExtendedImpl.class);
+	private SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
+	private SubscribersAdditionalFieldsDAO subscribersAdditionalFieldsDao = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
+	private AddressDAO addressDao = DAOFactory.getInstance().getAddressDAO();
+	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
+	private KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
+	private PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
+	private SubscribersAdditionalFieldsDAO subscriberAddFieldsDAO = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
 	
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -306,6 +300,215 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			epocket.setID(pocketService.createPocket(emoneyTemplate,
 					subscriberMDN, pocketStatus, true, cardPan).getID());
 			}
+			return CmFinoFIX.ResponseCode_Success;
+		}
+		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
+	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMDN subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
+			Pocket lakuPandiaPocket, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscribersAdditionalFields subscriberAddiFields) {
+		
+		SubscriberMDN existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
+		
+		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
+		if (existingSubscriberMDN == null || isUnRegistered) {
+			
+			if (isUnRegistered) {
+				
+				Long regPartnerID = subscriber.getRegisteringPartnerID();
+				subscriberMDN = existingSubscriberMDN;
+				subscriber = subscriberMDN.getSubscriber();
+				subscriber.setRegisteringPartnerID(regPartnerID);
+			}
+
+			fillSubscriberMandatoryFields(subscriber);
+			fillSubscriberMDNMandatoryFields(subscriberMDN);
+			String createdByName = null;
+			
+			if (registeringPartner != null) {
+				
+				createdByName = registeringPartner.getTradeName();
+			
+			} else {
+				
+				createdByName = subscriberRegistration.getFirstName();
+			}
+			
+			subscriber.setFirstName(subscriberRegistration.getFirstName());
+			subscriber.setLastName(subscriberRegistration.getLastName());
+			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
+			
+			String mothersMaidenName = "MothersMaidenName";
+			
+			subscriber.setSecurityQuestion(mothersMaidenName);
+			
+			if (subscriberRegistration.getMothersMaidenName() != null) {
+				subscriber.setSecurityAnswer(subscriberRegistration.getMothersMaidenName());
+			}
+			
+			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
+			
+			if (registeringPartner != null) {
+				subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Agent);
+				
+			} else {
+				subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Self);
+			}
+
+			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
+			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+			if (subscriberRegistration.getSubscriberStatus() != null) {
+				
+				subscriber.setStatus(subscriberRegistration.getSubscriberStatus());
+			}
+			
+			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
+			subscriber.setStatusTime(new Timestamp());
+			subscriber.setCreatedBy(createdByName);
+			subscriber.setUpdatedBy(createdByName);
+			subscriber.setCreateTime(new Timestamp());
+			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
+			
+			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
+			
+			if (kycLevel == null ) {
+				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
+			}
+			
+			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			Long groupID = null;
+			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+			
+			if(subscriberGroups != null && !subscriberGroups.isEmpty()){
+				
+				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				groupID = subscriberGroup.getGroup().getID();
+			}
+			
+			Long kycLevelNo = null;
+			if(null != subscriber.getUpgradableKYCLevel()){
+				
+				kycLevelNo = subscriber.getUpgradableKYCLevel();
+			}
+			else {
+				
+				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+			}
+			
+			PocketTemplate lakuPandaiTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+			
+			if (lakuPandaiTemplate == null) {
+				
+				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
+			}
+			
+			addressDao.save(ktpAddress);
+			subscriber.setAddressBySubscriberAddressKTPID(ktpAddress);
+			
+			if(subscriberMDN.getDomAddrIdentity().equals(CmFinoFIX.DomAddrIdentity_According_to_Identity)) {
+				
+				subscriber.setAddressBySubscriberAddressID(ktpAddress);
+				
+			} else {
+			
+				addressDao.save(domesticAddress);
+				subscriber.setAddressBySubscriberAddressID(domesticAddress);
+			}
+			
+			subscriber.setUpgradableKYCLevel(subscriberRegistration.getKYCLevel());
+			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
+			
+			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
+			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration.getSubscriberStatus()) {
+				
+				Long templateID = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
+				
+				if (templateID > 0) {
+					PocketTemplateDAO templateDAO = DAOFactory.getInstance().getPocketTemplateDao();
+					PocketTemplate unRegisteredTemplate = templateDAO.getById(templateID);
+					if (unRegisteredTemplate != null) {
+						lakuPandaiTemplate = unRegisteredTemplate;
+						pocketStatus = CmFinoFIX.PocketStatus_OneTimeActive;
+					} else {
+						log.error("ERROR: Pocket Template for Emoney Unregistered system is not found");
+						return CmFinoFIX.NotificationCode_UnRegisteredPocketTemplateNotFound;
+					}
+				}
+			}
+			
+			subscriber.setAppliedBy(createdByName);
+			subscriber.setAppliedTime(new Timestamp());
+			subscriber.setDetailsRequired(true);
+			subscriberDao.save(subscriber);
+			
+			subscriberAddiFields.setSubscriber(subscriber);
+			subscriberAddFieldsDAO.save(subscriberAddiFields);
+			
+			if(subscriber.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
+				
+				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());				
+			}
+			
+			subscriberMDN.setSubscriber(subscriber);
+			subscriberMDN.setMDN(subscriberRegistration.getMDN());
+			subscriberMDN.setApplicationID(subscriberRegistration.getApplicationID());
+			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+			
+			if (subscriberRegistration.getSubscriberStatus() != null) {
+				subscriberMDN.setStatus(subscriberRegistration.getSubscriberStatus());
+			}
+			
+			subscriberMDN.setStatusTime(new Timestamp());
+			subscriberMDN.setCreatedBy(createdByName);
+			subscriberMDN.setCreateTime(new Timestamp());
+			subscriberMDN.setUpdatedBy(createdByName);
+			subscriberMdnDao.save(subscriberMDN);
+			
+			//handling adding default group if the group doesnot exist here
+			if(groupID==null){
+				
+				GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+				Group defaultGroup =groupDao.getSystemGroup();
+				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+				SubscriberGroup sg = new SubscriberGroup();
+				sg.setSubscriber(subscriber);
+				sg.setGroup(defaultGroup);
+				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
+				if(subscriber.getID() != null){
+					subscriberGroupDao.save(sg);
+				}
+			}
+			
+			if (isUnRegistered) {
+				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+				// ideally there should be only one pocket
+				if (pockets.size() == 1) {
+					Pocket pocket = null;
+					Iterator<Pocket> pocketIterator = pockets.iterator();
+					while (pocketIterator.hasNext()) {
+						
+						pocket = pocketIterator.next();
+						
+						if (pocket.getPocketTemplate().getID().equals(systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
+							break;
+						}
+					}
+					
+					if (pocket != null) {
+						
+						pocket.setPocketTemplate(lakuPandaiTemplate);
+						pocket.setStatus(pocketStatus);
+						pocketDao.save(pocket);
+						return CmFinoFIX.ResponseCode_Success;
+					}
+				}
+				return CmFinoFIX.NotificationCode_MoneySVAPocketNotFound;
+			}
+			
+			lakuPandiaPocket.setID(pocketService.createPocket(lakuPandaiTemplate,subscriberMDN, pocketStatus, true, null).getID());
+			
 			return CmFinoFIX.ResponseCode_Success;
 		}
 		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
@@ -841,28 +1044,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		String mdn = subscriberActivation.getSourceMDN();
 
 		SubscriberMDN subscriberMDN = subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(mdn));
-		if (subscriberMDN == null) {
-			return CmFinoFIX.NotificationCode_MDNNotFound;
-		}
-		if (!CmFinoFIX.SubscriberType_Subscriber.equals(subscriberMDN
-				.getSubscriber().getType())) {
-			return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
-		}
-		if (!(CmFinoFIX.SubscriberStatus_Registered.equals(subscriberMDN
-				.getStatus()) || CmFinoFIX.SubscriberStatus_Initialized
-				.equals(subscriberMDN.getStatus()))) {
-			if (!(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
-					.getStatus()))) {
-				return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
-			}
-		}
-		if (!(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
-				.getStatus()))
-				&& subscriberMDN.getOTPExpirationTime().before(new Date())) {
-			return CmFinoFIX.NotificationCode_OTPExpired;
+		
+		int int_code=validateOTP(subscriberActivation, isHttps, isHashedPin);
+		
+		if(int_code!=CmFinoFIX.NotificationCode_OTPValidationSuccessful){
+			return CmFinoFIX.NotificationCode_OTPInvalid;
 		}
 
-		String originalOTP = subscriberMDN.getOTP();
 		String newpin = null;
  		try{
  			newpin = CryptographyService.decryptWithPrivateKey(subscriberActivation.getPin());
@@ -873,88 +1061,6 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
  			e.printStackTrace();
  			return CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing;
  		}
-
-		if (!isHttps) {
-			try {
-				String authStr = subscriberActivation.getOTP();
-				byte[] authBytes = CryptographyService.hexToBin(authStr
-						.toCharArray());
-				byte[] salt = { 0, 0, 0, 0, 0, 0, 0, 0 };
-				byte[] decStr = CryptographyService.decryptWithPBE(authBytes,
-						originalOTP.toCharArray(), salt, 20);
-				String str = new String(decStr, GeneralConstants.UTF_8);
-				if (!GeneralConstants.ZEROES_STRING.equals(str))
-					return CmFinoFIX.NotificationCode_OTPInvalid;
-				/**
-				 * TODO: This needs to be fixed for hashed pin
-				 */
-			} catch (Exception ex) {
-				log.info("OTP Check failed for the subscriber "
-						+ subscriberMDN.getMDN());
-				return CmFinoFIX.NotificationCode_OTPInvalid;
-			}
-		} else {
-			String receivedOTP = subscriberActivation.getOTP();
-			if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
-					.getStatus())) {
-				boolean isValidFac = false;
-				UnRegisteredTxnInfoDAO unRegisteredTxnInfoDAO = DAOFactory
-						.getInstance().getUnRegisteredTxnInfoDAO();
-				Integer[] status = new Integer[2];
-				status[0] = CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED;
-				status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
-
-				UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
-				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getID());
-				txnInfoQuery.setMultiStatus(status);
-				List<UnRegisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
-						.get(txnInfoQuery);
-				String prefix = systemParametersService
-						.getString(SystemParameterKeys.FAC_PREFIX_VALUE);
-				prefix = (prefix == null) ? StringUtils.EMPTY : prefix;
-				int otpLength = Integer.parseInt(systemParametersService
-						.getString(SystemParameterKeys.OTP_LENGTH));
-				String receivedFAC = receivedOTP;
-				if (receivedOTP.length() < (otpLength + prefix.length()))
-					receivedFAC = prefix + receivedOTP;
-
-				String receivedFACDigest = MfinoUtil.calculateDigestPin(
-						subscriberMDN.getMDN(), receivedFAC);
-				for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
-					if (txnInfo.getDigestedPIN().equals(receivedFACDigest)) {
-						isValidFac = true;
-						break;
-					}
-				}
-
-				if (isValidFac == true) {
-					for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
-						if (StringUtils.isBlank(txnInfo.getTransactionName())) { 
-							txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
-						}
-					}
-					unRegisteredTxnInfoDAO.save(txnInfoList);
-				}
-
-				if (isValidFac == false) {
-					log.info("OTP Check failed for the subscriber "
-							+ subscriberMDN.getMDN());
-					return CmFinoFIX.NotificationCode_OTPInvalid;
-				}
-			} else {
-				receivedOTP = new String(
-						CryptographyService
-								.generateSHA256Hash(mdn, receivedOTP));
-				if (!originalOTP.equals(receivedOTP)) {
-					log.info("OTP Check failed for the subscriber "
-							+ subscriberMDN.getMDN());
-					return CmFinoFIX.NotificationCode_OTPInvalid;
-				}
-			}
-			/**
-			 * Depending on whethere hashed pin is enabled or not we get either hashed pin or normal pin
-			 */
-		}
 		if(!isHashedPin)
 		{
 			if (systemParametersService.getPinLength() != newpin.length()) {
@@ -1166,6 +1272,127 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		return CmFinoFIX.NotificationCode_BOBPocketActivationCompleted;
 	}
 
+
+	public  Integer validateOTP(CMSubscriberActivation subscriberActivation, boolean isHttps, boolean isHashedPin) {
+
+		String mdn = subscriberActivation.getSourceMDN();
+
+		SubscriberMDN subscriberMDN = subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(mdn));
+		if (subscriberMDN == null) {
+			return CmFinoFIX.NotificationCode_MDNNotFound;
+		}
+		int int_subscriberType=subscriberMDN.getSubscriber().getType();
+		System.out.println("int_subscriberType: "+int_subscriberType);
+		System.out.println((!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)
+				||CmFinoFIX.SubscriberType_Partner.equals(int_subscriberType))
+				));
+		if (!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)
+				||CmFinoFIX.SubscriberType_Partner.equals(int_subscriberType))
+				) {
+			return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
+		}
+		if (!(CmFinoFIX.SubscriberStatus_Registered.equals(subscriberMDN
+				.getStatus()) || CmFinoFIX.SubscriberStatus_Initialized
+				.equals(subscriberMDN.getStatus()))) {
+			if (!(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
+					.getStatus()))) {
+				return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
+			}
+		}
+		if (!(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
+				.getStatus()))
+				&& subscriberMDN.getOTPExpirationTime().before(new Date())) {
+			return CmFinoFIX.NotificationCode_OTPExpired;
+		}
+
+		String originalOTP =subscriberMDN.getOTP();
+
+		
+		if (!isHttps) {
+			try {
+				String authStr = subscriberActivation.getOTP();
+				byte[] authBytes = CryptographyService.hexToBin(authStr
+						.toCharArray());
+				byte[] salt = { 0, 0, 0, 0, 0, 0, 0, 0 };
+				byte[] decStr = CryptographyService.decryptWithPBE(authBytes,
+						originalOTP.toCharArray(), salt, 20);
+				String str = new String(decStr, GeneralConstants.UTF_8);
+				if (!GeneralConstants.ZEROES_STRING.equals(str))
+					return CmFinoFIX.NotificationCode_OTPInvalid;
+				/**
+				 * TODO: This needs to be fixed for hashed pin
+				 */
+			} catch (Exception ex) {
+				log.info("OTP Check failed for the subscriber "
+						+ subscriberMDN.getMDN());
+				return CmFinoFIX.NotificationCode_OTPInvalid;
+			}
+		} else {
+			String receivedOTP = subscriberActivation.getOTP();
+			if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
+					.getStatus())) {
+				boolean isValidFac = false;
+				UnRegisteredTxnInfoDAO unRegisteredTxnInfoDAO = DAOFactory
+						.getInstance().getUnRegisteredTxnInfoDAO();
+				Integer[] status = new Integer[2];
+				status[0] = CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED;
+				status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
+
+				UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
+				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getID());
+				txnInfoQuery.setMultiStatus(status);
+				List<UnRegisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
+						.get(txnInfoQuery);
+				String prefix = systemParametersService
+						.getString(SystemParameterKeys.FAC_PREFIX_VALUE);
+				prefix = (prefix == null) ? StringUtils.EMPTY : prefix;
+				int otpLength = Integer.parseInt(systemParametersService
+						.getString(SystemParameterKeys.OTP_LENGTH));
+				String receivedFAC = receivedOTP;
+				if (receivedOTP.length() < (otpLength + prefix.length()))
+					receivedFAC = prefix + receivedOTP;
+
+				String receivedFACDigest = MfinoUtil.calculateDigestPin(
+						subscriberMDN.getMDN(), receivedFAC);
+				for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
+					if (txnInfo.getDigestedPIN().equals(receivedFACDigest)) {
+						isValidFac = true;
+						break;
+					}
+				}
+
+				if (isValidFac == true) {
+					for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
+						if (StringUtils.isBlank(txnInfo.getTransactionName())) { 
+							txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
+						}
+					}
+					unRegisteredTxnInfoDAO.save(txnInfoList);
+				}
+
+				if (isValidFac == false) {
+					log.info("OTP Check failed for the subscriber "
+							+ subscriberMDN.getMDN());
+					return CmFinoFIX.NotificationCode_OTPInvalid;
+				}
+			} else {
+				receivedOTP = new String(
+						CryptographyService
+								.generateSHA256Hash(mdn, receivedOTP));
+				if (!originalOTP.equals(receivedOTP)) {
+					log.info("OTP Check failed for the subscriber "
+							+ subscriberMDN.getMDN());
+					return CmFinoFIX.NotificationCode_OTPInvalid;
+				}
+			}
+			/**
+			 * Depending on whethere hashed pin is enabled or not we get either hashed pin or normal pin
+			 */
+		}
+	
+		return CmFinoFIX.NotificationCode_OTPValidationSuccessful;
+	}
+	
 	public NotificationWrapper generateOTPMessage(String oneTimePin, Integer notificationMethod) {
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);

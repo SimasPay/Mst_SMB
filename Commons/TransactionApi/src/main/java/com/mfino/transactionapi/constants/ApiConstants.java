@@ -337,6 +337,30 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_NOOF_COUPONS = "numberOfCoupons";
 	
+	public static final String PARAMETER_KTPID = "ktpId";
+	public static final String PARAMETER_KTP_VALID_UNTIL = "ktpValidUntil";
+	public static final String PARAMETER_KTP_LIFETIME = "ktpLifetime";
+	public static final String PARAMETER_KTP_LINE1 = "ktpLine1";
+	public static final String PARAMETER_KTP_LINE2 = "ktpLine2";
+	public static final String PARAMETER_KTP_CITY = "ktpCity";
+	public static final String PARAMETER_KTP_STATE = "ktpState";
+	public static final String PARAMETER_KTP_COUNTRY = "ktpCountry";
+	public static final String PARAMETER_KTP_ZIP_CODE = "ktpZipCode";
+	public static final String PARAMETER_KTP_REGION_NAME = "ktpRegionName";
+	public static final String PARAMETER_DOMESTIC_IDENTITY = "domesticIdentity";
+	public static final String PARAMETER_WORK = "work";
+	public static final String PARAMETER_INCOME = "income";
+	public static final String PARAMETER_GOAL_OF_OPENING_ACCOUNT = "goalOfOpeningAccount";
+	public static final String PARAMETER_SOURCE_OF_FUNDS = "sourceOfFunds";
+	public static final String PARAMETER_TRANSACTION_ID = "transactionId";
+	public static final String PARAMETER_KTP_DOCUMENT = "ktpDocument";
+	public static final String PARAMETER_SUBSCRIBER_FORM_DOCUMENT = "subscriberFormDocument";
+	public static final String PARAMETER_SUPPORTING_DOCUMENT = "supportingDocument";
+	public static final String PARAMETER_KTP_RW = "ktpRW";
+	public static final String PARAMETER_KTP_RT = "ktpRT";
+	public static final String PARAMETER_RW = "RW";
+	public static final String PARAMETER_RT = "RT";
+	public static final String IS_SIMASPAY_ACTIVITY = "isSimaspayActivity";
 
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;
