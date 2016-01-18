@@ -293,6 +293,11 @@
 			<a href="jsp/s_subscriber_donation_confirm.jsp">Donation Confirm</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_ktp_validation.jsp">Subscriber KTP Validation</a>
+		</td>
+	</tr>
 	
 	</table></td>
 	

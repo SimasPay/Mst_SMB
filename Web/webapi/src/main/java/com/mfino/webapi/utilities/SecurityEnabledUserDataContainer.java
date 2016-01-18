@@ -883,4 +883,173 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 		// TODO Auto-generated method stub
 		return this.container.getNumberOfCoupons();
 	}
+	
+	@Override
+	public String getKtpDocument() {
+		return this.container.getKtpDocument();
+	}
+
+	/**
+	 * @return the subscriberFormDocument
+	 */
+	@Override
+	public String getSubscriberFormDocument() {
+		return this.container.getSubscriberFormDocument();
+	}
+
+	/**
+	 * @return the supportingDocument
+	 */
+	@Override
+	public String getSupportingDocument() {
+		return this.container.getSupportingDocument();
+	}
+
+	/**
+	 * @return the ktpId
+	 */
+	@Override
+	public String getKtpId() {
+		return this.container.getKtpId();
+	}
+
+	/**
+	 * @return the ktpValidUntil
+	 */
+	@Override
+	public String getKtpValidUntil() {
+		return this.container.getKtpValidUntil();
+	}
+
+	/**
+	 * @return the ktpLifetime
+	 */
+	@Override
+	public String getKtpLifetime() {
+		return this.container.getKtpLifetime();
+	}
+
+	/**
+	 * @return the ktpLine1
+	 */
+	@Override
+	public String getKtpLine1() {
+		return this.container.getKtpLine1();
+	}
+
+	/**
+	 * @return the ktpLine2
+	 */
+	@Override
+	public String getKtpLine2() {
+		return this.container.getKtpLine2();
+	}
+
+	/**
+	 * @return the ktpCity
+	 */
+	@Override
+	public String getKtpCity() {
+		return this.container.getKtpCity();
+	}
+
+	/**
+	 * @return the ktpState
+	 */
+	@Override
+	public String getKtpState() {
+		return this.container.getKtpState();
+	}
+
+	/**
+	 * @return the ktpCountry
+	 */
+	@Override
+	public String getKtpCountry() {
+		return this.container.getKtpCountry();
+	}
+
+	/**
+	 * @return the ktpZipCode
+	 */
+	@Override
+	public String getKtpZipCode() {
+		return this.container.getKtpZipCode();
+	}
+
+	/**
+	 * @return the ktpRegionName
+	 */
+	@Override
+	public String getKtpRegionName() {
+		return this.container.getKtpRegionName();
+	}
+
+	/**
+	 * @return the domesticIdentity
+	 */
+	@Override
+	public String getDomesticIdentity() {
+		return this.container.getDomesticIdentity();
+	}
+
+	/**
+	 * @return the work
+	 */
+	@Override
+	public String getWork() {
+		return this.container.getWork();
+	}
+
+	/**
+	 * @return the income
+	 */
+	@Override
+	public String getIncome() {
+		return this.container.getIncome();
+	}
+
+	/**
+	 * @return the goalOfOpeningAccount
+	 */
+	@Override
+	public String getGoalOfOpeningAccount() {
+		return this.container.getGoalOfOpeningAccount();
+	}
+
+	/**
+	 * @return the sourceOfFunds
+	 */
+	@Override
+	public String getSourceOfFunds() {
+		return this.container.getSourceOfFunds();
+	}
+
+	/**
+	 * @return the transactionId
+	 */
+	@Override
+	public String getTransactionId() {
+		return this.container.getTransactionId();
+	}
+	
+	@Override
+	public String getRT() {
+		return this.container.getRT();
+	}
+	
+	@Override
+	public String getRW() {
+		return this.container.getRW();
+	}
+
+	@Override
+	public String getKtpRW() {
+		return this.container.getKtpRW();
+	}
+
+	@Override
+	public String getKtpRT() {
+		return this.container.getKtpRT();
+	}
 }

@@ -5135,6 +5135,17 @@
 			<field name="CreatedBy" required="Y" />
       	</group>
 	</message>
+	
+	<message name="KtpDetails" msgtype="1767"	msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="MDN" required="Y" />
+		<field name="KTPID" required="Y" />
+		<field name="FullName" required="Y" />
+		<field name="MothersMaidenName" required="Y" />
+		<field name="DateOfBirth" required="Y" />
+		<field name="AgentMDN" required="N" />
+		<field name="BankResponseStatus" required="N" />
+		<field name="BankResponse" required="N" />
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -5527,6 +5538,11 @@
 			<field name="UserAPIKey" required="N"/>
 			<field name="OtpRetryCount" required="N" />
 			<field name="CashinFirstTimeID" required="N" />
+			<field name="DomAddrIdentity" required="N" />
+			<field name="ISIDLifetime" required="N" />
+			<field name="KTPDocumentPath" required="N" />
+			<field name="SubscriberFormPath" required="N" />
+			<field name="SupportingDocumentPath" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -5950,6 +5966,8 @@
 			<field name="RegistrationMedium" required="N" default="0" SQLDefault="0"/>
 			<field name="RegisteringPartnerID" required="N"/>
 			<field name="LastNotificationTime" required="N"/>
+			<field name="SubscriberAddressKTPID" required="N"  References="Address"/>
+			<field name="MothersmaidenName" required="N"/>
 			<!--<field name="Religion" required="N" />
 				  <field name="MaritalStatus" required="N" />
 				  <field name="Citizenship" required="N" />
@@ -6007,7 +6025,10 @@
 			<field name="Line1" required="N" />
 			<field name="Line2" required="N" />
 			<field name="City" required="N" default="" SQLDefault="" />
+			<field name="RW" required="N" default="" SQLDefault="" />
+			<field name="RT" required="N" default="" SQLDefault="" />
 			<field name="State" required="N" default="" SQLDefault="" />
+			<field name="SubState" required="N" default="" SQLDefault="" />
 			<field name="ZipCode" required="N" default="" SQLDefault="" />
 			<field name="Country" required="N" default="" SQLDefault="" />
 			<field name="RegionName" required="N" />
@@ -6693,6 +6714,10 @@
 			<field name="KinMDN" required="N" /> 
 			<field name="ControllReference" required="N" />
 			<field name="SubscriberMobileCompany" required="N" />
+			<field name="Work" required="N" />
+			<field name="Income" required="N" />
+			<field name="GoalOfAcctOpening" required="N" />
+			<field name="SourceOfFund" required="N" />
 		</record>
 
 		<record name="SystemParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="system_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -7235,6 +7260,17 @@
 			<field name="BranchName" required="N" />
 <!-- 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />	 -->
 		</record>
+		
+		<record name="KtpDetails" ExtendsRecord="Base" Java="Y" SQLTable="ktp_details" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="MDN" required="N" />
+			<field name="KTPID" required="N" />
+			<field name="FullName" required="N" />
+			<field name="DateOfBirth" required="N" />
+			<field name="AgentMDN" required="N" />
+			<field name="BankResponseStatus" required="N" />
+			<field name="BankResponse" required="N" />
+		</record>
+		
 	</records>
 	<classes>
 		<class name="ISO8583Elements" CPP="Y">
@@ -7665,6 +7701,7 @@
 			<value enum="1732" description="ModifyNFCCardAlias"/>
 			<value enum="1741" description="BalanceInquiryFromNFC"/>
 			<value enum="1766" description="JSBranchCodes"/>
+			<value enum="1767" description="KtpDetails"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -7838,6 +7875,7 @@
 			<value enum="2" description="BOBAccount" comment="Billing on Behalf Account" />
 			<value enum="3" description="BankAccount" comment="BankAccount" />
 			<value enum="4" description="NFC" comment="NFC Pocket"/>
+			<value enum="6" description="LakuPandai" comment="Laku Pandai"/>
 		</field>
 		<field number="5050" name="PocketAllowance" type="INT32">
 			<value enum="4" description="MerchantDompet" />
@@ -22219,6 +22257,34 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="SubscriberKtpValdiationSuccess" enum="2126">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber KTP Validation Successfull</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber KTP Validation Successfull</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="SubscriberKtpValidationFailed" enum="2127">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber KTP Validation Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber KTP Validation Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -25777,6 +25843,40 @@ ERROR:Mismatch of  mdn type and app type
     <field number="8232" name="BranchCodeNo" type="STRING" />
     <field number="8233" name="BranchCode" type="STRING" />
     <field number="8234" name="BranchCodeText" type="STRING" />
+    
+    <field number="8235" name="LakuPandaiAccountType" type="STRING">
+		<value enum="1" description="BasicSavingsAccount" />
+		<value enum="2" description="AdvancedSavingsAccount" />
+	</field>	
+	<field number="8236" name="SubscriberAddressKTPID" type="INT32"/>
+	<field number="8237" name="MothersmaidenName" type="STRING"/>
+	<field number="8238" name="ISIDLifetime" type="INT32" >
+		<value enum="0" description="LifeTime_False" />
+		<value enum="1" description="LifeTime_True" />
+	</field>
+	<field number="8239" name="IDValidUntil" type="UTCTIMESTAMP" />
+	<field number="8240" name="DomAddrIdentity" type="INT32" >
+		<value enum="1" description="According_to_Identity" />
+		<value enum="2" description="Contrast_to_Identity" />
+	</field>
+	<field number="8241" name="Work" type="STRING" />
+	<field number="8242" name="Income" type="NEWAMT" />
+	<field number="8243" name="GoalOfAcctOpening" type="STRING" />
+	<field number="8244" name="SourceOfFund" type="STRING" />
+	
+	<field number="8245" name="KTPID" type="STRING" />
+	<field number="8246" name="FullName" type="STRING" />
+	<field number="8247" name="AgentMDN" type="STRING" />
+	<field number="8248" name="BankResponseStatus" type="STRING" />
+	<field number="8249" name="BankResponse" type="STRING" />
+	
+	<field number="8250" name="KTPDocumentPath" type="STRING" />
+	<field number="8251" name="SubscriberFormPath" type="STRING" />
+	<field number="8252" name="SupportingDocumentPath" type="STRING" />
+    <field number="8253" name="SubState" type="STRING" />
+    <field number="8254" name="RT" type="STRING" />
+    <field number="8255" name="RW" type="STRING" />
+    
     </fields>
     <primitives>
 		<dbtype name="mysql">
