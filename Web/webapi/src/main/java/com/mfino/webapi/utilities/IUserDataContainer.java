@@ -371,4 +371,9 @@ public interface IUserDataContainer {
 	public String getGoalOfOpeningAccount();
 	public String getSourceOfFunds();
 	public String getTransactionId();
+	
+	public String getRT();	
+	public String getRW();
+	public String getKtpRW();
+	public String getKtpRT();
 }

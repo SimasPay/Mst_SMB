@@ -3,6 +3,9 @@
  */
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,6 +125,21 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		ktpDetail.setKTPID(transactionDetails.getKtpId());
 		
 		
+		/**
+		 * Mapping of Address in DB as below:
+		 * 
+		 *  AddressLine -> Address.Line1
+		 *  RT -> Address.RT
+		 *  RW -> Address.RW
+		 *  District -> Address.STATE
+		 *  SubDistrict -> Address.SUBSTATE
+		 *  Province -> Address.REGIONNAME
+		 *  PostalCode -> Address.ZipCode
+		 */
+		
+		result.setName(transactionDetails.getFirstName());
+		result.setDob(getDob(transactionDetails.getDateOfBirth()));
+		result.setMothersMaidenName("mothersMaidenName");
 		result.setAddressLine("addressLine");
 		result.setRt("rt");
 		result.setRw("rw");
@@ -140,5 +158,21 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		
 		return result;
+	}
+	
+	private String getDob(Date dobDate) {
+		
+		String dob = null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dobDate);
+		
+		String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + cal.get(Calendar.DAY_OF_MONTH) : cal.get(Calendar.DAY_OF_MONTH));
+		String month = String.valueOf(cal.get(Calendar.MONTH) < 10 ? "0" + (cal.get(Calendar.MONTH) + 1) : (cal.get(Calendar.MONTH)+1));
+		String year = String.valueOf(cal.get(Calendar.YEAR));
+		
+		dob = day + month + year;
+		
+		return dob;
 	}
 }

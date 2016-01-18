@@ -14,8 +14,53 @@ public class SubscriberKTPValidationXMLResult extends XMLResult {
 	private String city;
 	private String province;
 	private String postalCode;
+	private String mothersMaidenName;
+	private String name;
+	private String dob;
 	
 	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the dob
+	 */
+	public String getDob() {
+		return dob;
+	}
+
+	/**
+	 * @param dob the dob to set
+	 */
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
+
+	/**
+	 * @return the mothersMaidenName
+	 */
+	public String getMothersMaidenName() {
+		return mothersMaidenName;
+	}
+
+	/**
+	 * @param mothersMaidenName the mothersMaidenName to set
+	 */
+	public void setMothersMaidenName(String mothersMaidenName) {
+		this.mothersMaidenName = mothersMaidenName;
+	}
+
 	/**
 	 * @return the addressLine
 	 */
@@ -141,6 +186,27 @@ public class SubscriberKTPValidationXMLResult extends XMLResult {
 			
 			getXmlWriter().writeStartElement("transactionId");
 			getXmlWriter().writeCharacters(String.valueOf(getTransactionID()), false);
+			getXmlWriter().writeEndElement();
+		}
+		
+		if(StringUtils.isNotBlank(getName())) {
+			
+			getXmlWriter().writeStartElement("name");
+			getXmlWriter().writeCharacters(getName(), false);
+			getXmlWriter().writeEndElement();
+		}
+		
+		if(StringUtils.isNotBlank(getDob())) {
+			
+			getXmlWriter().writeStartElement("dob");
+			getXmlWriter().writeCharacters(getDob(), false);
+			getXmlWriter().writeEndElement();
+		}
+		
+		if(StringUtils.isNotBlank(getMothersMaidenName())) {
+			
+			getXmlWriter().writeStartElement("mothersMaidenName");
+			getXmlWriter().writeCharacters(getMothersMaidenName(), false);
 			getXmlWriter().writeEndElement();
 		}
 		

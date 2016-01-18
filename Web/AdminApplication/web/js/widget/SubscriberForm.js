@@ -126,7 +126,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     },
                     {
                         xtype : 'textfield',
-                        fieldLabel: nickname,
+                        //fieldLabel: nickname,
                         itemId : 'sub.form.nickname',
                         allowBlank: true,
                         anchor : '100%',

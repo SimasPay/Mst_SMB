@@ -1059,4 +1059,24 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 	public String getTransactionId() {
 		return this.container.getTransactionId();
 	}
+	
+	@Override
+	public String getRT() {
+		return this.container.getRT();
+	}
+	
+	@Override
+	public String getRW() {
+		return this.container.getRW();
+	}
+
+	@Override
+	public String getKtpRW() {
+		return this.container.getKtpRW();
+	}
+
+	@Override
+	public String getKtpRT() {
+		return this.container.getKtpRT();
+	}
 }

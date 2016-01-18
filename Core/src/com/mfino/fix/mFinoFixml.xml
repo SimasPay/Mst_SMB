@@ -6025,7 +6025,10 @@
 			<field name="Line1" required="N" />
 			<field name="Line2" required="N" />
 			<field name="City" required="N" default="" SQLDefault="" />
+			<field name="RW" required="N" default="" SQLDefault="" />
+			<field name="RT" required="N" default="" SQLDefault="" />
 			<field name="State" required="N" default="" SQLDefault="" />
+			<field name="SubState" required="N" default="" SQLDefault="" />
 			<field name="ZipCode" required="N" default="" SQLDefault="" />
 			<field name="Country" required="N" default="" SQLDefault="" />
 			<field name="RegionName" required="N" />
@@ -25870,7 +25873,9 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8250" name="KTPDocumentPath" type="STRING" />
 	<field number="8251" name="SubscriberFormPath" type="STRING" />
 	<field number="8252" name="SupportingDocumentPath" type="STRING" />
-    
+    <field number="8253" name="SubState" type="STRING" />
+    <field number="8254" name="RT" type="STRING" />
+    <field number="8255" name="RW" type="STRING" />
     
     </fields>
     <primitives>

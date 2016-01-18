@@ -235,6 +235,9 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		ktpAddress.setState(txnDetails.getKtpState());
 		ktpAddress.setRegionName(txnDetails.getKtpRegionName());
 		ktpAddress.setZipCode(txnDetails.getKtpZipCode());
+		ktpAddress.setRT(txnDetails.getKtpRT());
+		ktpAddress.setRW(txnDetails.getKtpRW());
+		
 		
 		Address domesticAddress = new Address();
 		domesticAddress.setLine1(txnDetails.getAddressLine1());
@@ -242,6 +245,8 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		domesticAddress.setState(txnDetails.getState());
 		domesticAddress.setRegionName(txnDetails.getRegionName());
 		domesticAddress.setZipCode(txnDetails.getZipCode());
+		domesticAddress.setRT(txnDetails.getRT());
+		domesticAddress.setRW(txnDetails.getRW());
 
 		Subscriber subscriber = new Subscriber();
 		SubscriberMDN subscriberMDN = new SubscriberMDN();

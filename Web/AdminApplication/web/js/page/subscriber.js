@@ -294,16 +294,7 @@ mFino.page.subscriber = function(config){
                                 buttons: Ext.MessageBox.OK,
                                 multiline: false
                             });
-                        }else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.DetailsRequired._name) && 
-                        		(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeState._name)!=CmFinoFIX.UpgradeState.none)) {
-                    		Ext.Msg.show({
-                                title: _('Alert !'),
-                                minProgressWidth:250,
-                                msg: _("Required details not available"),
-                                buttons: Ext.MessageBox.OK,
-                                multiline: false
-                            });
-                        }else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeState._name)===CmFinoFIX.UpgradeState.Upgradable|| 
+                        } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeState._name)===CmFinoFIX.UpgradeState.Upgradable|| 
                         		detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeState._name)===CmFinoFIX.UpgradeState.Rejected){
                             approveWindow.show();
                             approveWindow.setRecord(detailsForm.record);

@@ -356,6 +356,10 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	public static final String PARAMETER_KTP_DOCUMENT = "ktpDocument";
 	public static final String PARAMETER_SUBSCRIBER_FORM_DOCUMENT = "subscriberFormDocument";
 	public static final String PARAMETER_SUPPORTING_DOCUMENT = "supportingDocument";
+	public static final String PARAMETER_KTP_RW = "ktpRW";
+	public static final String PARAMETER_KTP_RT = "ktpRT";
+	public static final String PARAMETER_RW = "RW";
+	public static final String PARAMETER_RT = "RT";
 	
 
 	public static boolean isSecuredParameter(String parameterName){

@@ -164,8 +164,67 @@ public class ReceivedUserDataContainer {
 	private String ktpDocument;
 	private String subscriberFormDocument;
 	private String supportingDocument;
+	private String RT;
+	private String RW;
+	private String ktpRW;
+	private String ktpRT;
 	
-	
+	/**
+	 * @return the rT
+	 */
+	public String getRT() {
+		return RT;
+	}
+
+	/**
+	 * @param rT the rT to set
+	 */
+	public void setRT(String rT) {
+		RT = rT;
+	}
+
+	/**
+	 * @return the rW
+	 */
+	public String getRW() {
+		return RW;
+	}
+
+	/**
+	 * @param rW the rW to set
+	 */
+	public void setRW(String rW) {
+		RW = rW;
+	}
+
+	/**
+	 * @return the ktpRW
+	 */
+	public String getKtpRW() {
+		return ktpRW;
+	}
+
+	/**
+	 * @param ktpRW the ktpRW to set
+	 */
+	public void setKtpRW(String ktpRW) {
+		this.ktpRW = ktpRW;
+	}
+
+	/**
+	 * @return the ktpRT
+	 */
+	public String getKtpRT() {
+		return ktpRT;
+	}
+
+	/**
+	 * @param ktpRT the ktpRT to set
+	 */
+	public void setKtpRT(String ktpRT) {
+		this.ktpRT = ktpRT;
+	}
+
 	/**
 	 * @return the ktpDocument
 	 */

@@ -278,6 +278,11 @@ public class UserDataToTxnDetailsConverter {
 			txnDetails.setTransactionId(Long.parseLong(userDataContainer.getTransactionId()));
 		}
 		
+		txnDetails.setKtpRT(userDataContainer.getKtpRT());
+		txnDetails.setKtpRW(userDataContainer.getKtpRW());
+		txnDetails.setRT(userDataContainer.getRT());
+		txnDetails.setRW(userDataContainer.getRW());
+		
 		return txnDetails;
 	}
 	

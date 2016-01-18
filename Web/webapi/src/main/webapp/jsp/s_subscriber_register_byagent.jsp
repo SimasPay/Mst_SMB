@@ -58,8 +58,12 @@
 		<td><input type="text" name="ktpLine1" value="" /></td>
 	</tr>
 	<tr>
-		<td>Line2</td>
-		<td><input type="text" name="ktpLine2" value="" /></td>
+		<td>RT</td>
+		<td><input type="text" name="ktpRT" value="" /></td>
+	</tr>
+	<tr>
+		<td>RW</td>
+		<td><input type="text" name="ktpRW" value="" /></td>
 	</tr>
 	<tr>
 		<td>City</td>
@@ -94,8 +98,12 @@
 		<td><input type="text" name="line1" value="" /></td>
 	</tr>
 	<tr>
-		<td>Line2</td>
-		<td><input type="text" name="line2" value="" /></td>
+		<td>RT</td>
+		<td><input type="text" name="RT" value="" /></td>
+	</tr>
+	<tr>
+		<td>RW</td>
+		<td><input type="text" name="RW" value="" /></td>
 	</tr>
 	<tr>
 		<td>City</td>
