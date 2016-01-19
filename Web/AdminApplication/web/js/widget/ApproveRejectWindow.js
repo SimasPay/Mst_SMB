@@ -10,7 +10,7 @@ mFino.widget.ApproveRejectWindow = function (config){
         title : _("Approve/Reject Subscriber"),
         layout:'fit',
         floating: true,
-        width:330,
+        width:400,
         height:260,
         plain:true,
         closable: false,
@@ -40,12 +40,34 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                },{
                 xtype : 'textarea',
                 itemId :'comment',
+                id:'comment',
                 fieldLabel : _('Comments'),
                 allowBlank: false,
                 hideLabel: true,
                 labelSeparator :'',
                 anchor : '100%'
-               },{
+               },
+               {
+               	xtype: 'enumdropdown',                   
+                fieldLabel: _('Reject Reason'),
+                itemId : 'rejectReason',
+                id : 'rejectReason',
+                labelSeparator:':',
+                emptyText : _('<select one..>'),
+                anchor:'95%',
+                allowBlank: false,
+                addEmpty : false,
+                editable: false,
+                disabled: true,
+                enumId : CmFinoFIX.TagID.RejectReason,
+                   //name : CmFinoFIX.message.JSPocketTemplate.Entries.Type._name,
+                listeners: {
+                   	select: function() {
+                               this.findParentByType('ApproveRejectWindow').onChangeType();
+                           }
+                       }
+              	},
+              	{
                 xtype: 'fieldset',
                 title : _('Select One'),
                 layout : 'column',
@@ -60,7 +82,17 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                     name: 'selectone',
                     anchor : '90%',
                     checked : true,
-                    boxLabel: _('Approve')
+                    boxLabel: _('Approve'),
+                    handler: {
+                    	call:function(field){
+                    		
+	                    	if(field.checked){
+	                			
+	                    		Ext.getCmp('comment').enable();
+	                    		Ext.getCmp('rejectReason').disable();
+	                		}
+                    	}
+                    }
                 },
                 {
                     columnWidth: 0.5,
@@ -68,7 +100,18 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                     itemId : 'reject',
                     anchor : '90%',
                     name: 'selectone',
-                    boxLabel: _('Reject')
+                    boxLabel: _('Reject'),
+                    handler: {
+                    	call :  function(field){
+                    		
+                    		if(field.checked){
+                    			
+                    			Ext.getCmp('comment').reset();
+                    			Ext.getCmp('comment').disable();
+                    			Ext.getCmp('rejectReason').enable();
+                    		}
+                        }
+                    }
                 }]
             }]
         });
@@ -79,7 +122,19 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
     cancel : function(){
         this.hide();
     },
-
+    onChangeType : function(){
+	   	 var value = this.form.items.get("rejectReason").getValue();
+	     if(Number(value) === CmFinoFIX.RejectReason.Others){
+	    	 
+	    	Ext.getCmp('comment').reset();
+ 			Ext.getCmp('comment').enable();
+ 			
+	     } else {
+	    	 
+	    	Ext.getCmp('comment').reset();
+	 		Ext.getCmp('comment').disable();
+	     }
+    },
     ok : function(){
         if(!this.record){
             Ext.Msg.show({
@@ -130,7 +185,18 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                  }else{
                 var rmsg = new CmFinoFIX.message.JSApproveRejectSubscriber();
                 rmsg.m_pSubscriberMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
-                rmsg.m_pAdminComment = this.form.items.get('comment').getValue();
+                
+                var value = this.form.items.get("rejectReason").getValue();
+                
+       	     	if(Number(value) === CmFinoFIX.RejectReason.Others){
+       	     		
+       	     		rmsg.m_pAdminComment = this.form.items.get('comment').getValue();
+       	     		
+       	     	} else {
+       	     		
+       	     		rmsg.m_pAdminComment = this.form.items.get('rejectReason').getRawValue();
+       	     	}
+       	     	
                 rmsg.m_pAdminAction = CmFinoFIX.AdminAction.Reject;
                 var rparams = mFino.util.showResponse.getDisplayParam();
                 rparams.store = this.store;
@@ -155,4 +221,4 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
         this.store = store;
     }
 });
-
+Ext.reg("ApproveRejectWindow", mFino.widget.ApproveRejectWindow);

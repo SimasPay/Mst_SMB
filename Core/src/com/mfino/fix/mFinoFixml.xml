@@ -25876,6 +25876,9 @@ ERROR:Mismatch of  mdn type and app type
     <field number="8253" name="SubState" type="STRING" />
     <field number="8254" name="RT" type="STRING" />
     <field number="8255" name="RW" type="STRING" />
+    <field number="8256" name="RejectReason" type="INT32">
+    	<value enum="11" description="Others" />
+    </field>
     
     </fields>
     <primitives>
