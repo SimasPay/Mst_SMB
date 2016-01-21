@@ -76,12 +76,15 @@
 		<property name="url" value="http://uat.banksinarmas.com/SmsAlert/app/sendSms/systemId/tokenId/mdn/message"/>
 		<property name="systemId" value="TEST"/>
 		<property name="tokenId" value="123456"/>
+		<property name="timeOut" value="30000"/>
 	</bean>
 	
 	<camelContext id="BSIMSMS" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 		<route>
 			<from uri="jms:SMSNotificationQueue?disableReplyTo=true" />
-			<to uri="bean:BSIMSMSService?method=process" />
+			<threads threadName="SMSThreads" poolSize="10" maxPoolSize="50">
+				<to uri="bean:BSIMSMSService?method=process" />
+			</threads>
 		</route>
 	</camelContext>
 

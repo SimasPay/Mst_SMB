@@ -46,6 +46,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 	private String url;
 	private String systemId;
 	private String tokenId;
+	private int timeOut;
 //	private String mdn;
 //	private String message;
 	
@@ -141,7 +142,9 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 	private HttpURLConnection createHttpConnection(String url) throws IOException {
 		URL uri = new URL(url);
 		HttpURLConnection connection = (HttpURLConnection)uri.openConnection();
-		connection.setRequestMethod("GET");  
+		connection.setRequestMethod("GET");
+		connection.setConnectTimeout(getTimeOut());
+		connection.setReadTimeout(getTimeOut());
 		return connection;
 	}
 
@@ -175,6 +178,14 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 
 	public void setTokenId(String tokenId) {
 		this.tokenId = tokenId;
+	}
+
+	public int getTimeOut() {
+		return timeOut;
+	}
+
+	public void setTimeOut(int timeOut) {
+		this.timeOut = timeOut;
 	}
 
 //	public String getMdn() {
