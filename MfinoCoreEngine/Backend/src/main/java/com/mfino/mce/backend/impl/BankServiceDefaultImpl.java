@@ -284,7 +284,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				}
 
 				if ((objSrcPocket.getPocketTemplate().getType()
-						.equals(CmFinoFIX.PocketType_SVA))
+						.equals(CmFinoFIX.PocketType_SVA) || isLakupandaiPocketType(objSrcPocket))
 						&& (objDestPocket.getPocketTemplate().getType()
 								.equals(CmFinoFIX.PocketType_BankAccount))) {
 
@@ -309,7 +309,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				if ((objSrcPocket.getPocketTemplate().getType()
 						.equals(CmFinoFIX.PocketType_BankAccount))
 						&& (objDestPocket.getPocketTemplate().getType()
-								.equals(CmFinoFIX.PocketType_SVA))) {
+								.equals(CmFinoFIX.PocketType_SVA) || isLakupandaiPocketType(objDestPocket))) {
 					pct.setDestPocketBalance(objDestPocket.getCurrentBalance());
 //					ledgerService.createLedgerEntry(suspensePocket,
 //							chargesPocket, null, pct, charges);
@@ -701,10 +701,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 							if ((objSrcPocket.getPocketTemplate().getType()
 									.intValue() == CmFinoFIX.PocketType_SVA
-									.intValue() || isNFCPocketType(objSrcPocket))
+									.intValue() || isNFCPocketType(objSrcPocket) || isLakupandaiPocketType(objSrcPocket))
 									&& (objDestPocket.getPocketTemplate()
 											.getType().intValue() == CmFinoFIX.PocketType_SVA
-											.intValue() || isNFCPocketType(objDestPocket))) {
+											.intValue() || isNFCPocketType(objDestPocket) || isLakupandaiPocketType(objDestPocket))) {
 								returnFix.setSourceMDN(objSrcSubMdn.getMDN());
 								returnFix
 										.setReceiverMDN(objDestSubMdn.getMDN());
@@ -815,7 +815,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 								if (CmFinoFIX.PocketType_SVA
 										.equals(objSrcPocket
-												.getPocketTemplate().getType())) {
+												.getPocketTemplate().getType()) || isLakupandaiPocketType(objSrcPocket)) {
 									inquiryToBank
 											.setSourceCardPAN(coreDataWrapper
 													.getGlobalAccountNumber());
@@ -826,7 +826,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 								if (CmFinoFIX.PocketType_SVA
 										.equals(objDestPocket
-												.getPocketTemplate().getType())) {
+												.getPocketTemplate().getType()) || isLakupandaiPocketType(objDestPocket)) {
 									inquiryToBank
 											.setDestCardPAN(coreDataWrapper
 													.getGlobalAccountNumber());
@@ -1599,11 +1599,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 									if ((objSrcPocket.getPocketTemplate()
 											.getType().intValue() == CmFinoFIX.PocketType_SVA
-											.intValue() || isNFCPocketType(objSrcPocket))
+											.intValue() || isNFCPocketType(objSrcPocket) || isLakupandaiPocketType(objSrcPocket))
 											&& (objDestPocket
 													.getPocketTemplate()
 													.getType().intValue() == CmFinoFIX.PocketType_SVA
-													.intValue() || isNFCPocketType(objDestPocket))) {
+													.intValue() || isNFCPocketType(objDestPocket) || isLakupandaiPocketType(objDestPocket))) {
 										returnFix.setSourcePocketId(objSrcPocket.getID());
 										returnFix.setDestPocketId(objDestPocket.getID());
 										returnFix.setRemarks(confirmationToBank.getRemarks());
@@ -1722,7 +1722,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									} else if ((objSrcPocket
 											.getPocketTemplate().getType()
 											.intValue() == CmFinoFIX.PocketType_SVA
-											.intValue())
+											.intValue() || isLakupandaiPocketType(objSrcPocket))
 											&& (objDestPocket
 													.getPocketTemplate()
 													.getType().intValue() == CmFinoFIX.PocketType_BankAccount
@@ -1855,7 +1855,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											&& (objDestPocket
 													.getPocketTemplate()
 													.getType().intValue() == CmFinoFIX.PocketType_SVA
-													.intValue())) {
+													.intValue() || isLakupandaiPocketType(objDestPocket))) {
 										log.info("BankServiceDefaultImpl :: onTransferConfirmationToBank : Bank 2 E-Money");
 
 //										ledgerService.createLedgerEntry(
@@ -4230,6 +4230,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	}
 	private boolean isNFCPocketType(Pocket pocket){
 		if (pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_NFC.intValue()) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isLakupandaiPocketType(Pocket pocket){
+		if (pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_LakuPandai.intValue()) {
 			return true;
 		}
 		return false;
