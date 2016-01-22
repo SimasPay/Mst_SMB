@@ -10,7 +10,7 @@ mFino.widget.ApproveRejectWindow = function (config){
         title : _("Approve/Reject Subscriber"),
         layout:'fit',
         floating: true,
-        width:400,
+        width:500,
         height:260,
         plain:true,
         closable: false,
@@ -76,11 +76,11 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                 columns: 1,
                 items: [
                 {
-                    columnWidth: 0.5,
+                    columnWidth: 0.3,
                     xtype : 'radio',
                     itemId : 'approve',
                     name: 'selectone',
-                    anchor : '90%',
+                    anchor : '100%',
                     checked : true,
                     boxLabel: _('Approve'),
                     handler: {
@@ -95,10 +95,10 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                     }
                 },
                 {
-                    columnWidth: 0.5,
+                    columnWidth: 0.3,
                     xtype : 'radio',
                     itemId : 'reject',
-                    anchor : '90%',
+                    anchor : '100%',
                     name: 'selectone',
                     boxLabel: _('Reject'),
                     handler: {
@@ -111,6 +111,26 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                     			Ext.getCmp('rejectReason').enable();
                     		}
                         }
+                    }
+                },
+                {
+                    columnWidth: 0.3,
+                    xtype : 'radio',
+                    itemId : 'requestForCorrection',
+                    name: 'selectone',
+                    anchor : '100%',
+                    checked : false,
+                    boxLabel: _('Request For Correction'),
+                    handler: {
+                    	call:function(field){
+                    		
+	                    	if(field.checked){
+	                			
+	                    		Ext.getCmp('comment').reset();
+	                    		Ext.getCmp('comment').enable();
+	                    		Ext.getCmp('rejectReason').disable();
+	                		}
+                    	}
                     }
                 }]
             }]
@@ -160,7 +180,7 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                 return;
             }
            
-            if(this.form.find('itemId','approve')[0].checked)
+            if(this.form.find('itemId','approve')[0].checked || this.form.find('itemId','requestForCorrection')[0].checked)
             {
                 var amsg = new CmFinoFIX.message.JSApproveRejectSubscriber();
                 amsg.m_pSubscriberMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];

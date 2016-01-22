@@ -293,6 +293,7 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			
 		} else if (ServiceAndTransactionConstants.SUBSCRIBER_KTP_VALIDATION.equalsIgnoreCase(transactionName)) {
 			
+			transactionRequestValidationService.validateSubscriberKtpDetails(transactionDetails);
 			xmlResult = (XMLResult) subscriberKtpValidationHandler.handle(transactionDetails);
 		}
 

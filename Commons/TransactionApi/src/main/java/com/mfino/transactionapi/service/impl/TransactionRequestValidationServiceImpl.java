@@ -168,6 +168,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		}
 	}
 	
+	public void validateKtpId(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getKtpId())) {
+			throw new InvalidDataException("Invalid KTP Id", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_KTPID);
+		}
+	}
+	
 	public void validateLastName(TransactionDetails transactionDetails) throws InvalidDataException {
 		if (StringUtils.isBlank(transactionDetails.getLastName())) {
 			throw new InvalidDataException("Invalid Last name", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
@@ -570,6 +577,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateconfirmString(transactionDetails);
 		validateTransferId(transactionDetails);
 		validateParentTxnId(transactionDetails);
+	}
+	
+	public void validateSubscriberKtpDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateDesttinationMDN(transactionDetails);
+		validateFirstName(transactionDetails);
+		//validateDateOfBirth(transactionDetails);
+		validateKtpId(transactionDetails);
 	}
 	
 	public void validateSubscriberRegistrationByAgentDetails(TransactionDetails transactionDetails) throws InvalidDataException {

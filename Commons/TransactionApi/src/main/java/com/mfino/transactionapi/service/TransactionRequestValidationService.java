@@ -261,4 +261,6 @@ public interface TransactionRequestValidationService {
 	
 	public void validateQrPaymentConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
+	public void validateSubscriberKtpDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 }

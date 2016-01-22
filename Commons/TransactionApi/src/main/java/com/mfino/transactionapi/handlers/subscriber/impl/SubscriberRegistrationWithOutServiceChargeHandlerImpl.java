@@ -270,6 +270,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			subscriberMDN.setDomAddrIdentity(Integer.parseInt(txnDetails.getDomesticIdentity()));
 		}
 		
+		subscriberMDN.setApplicationID(txnDetails.getKtpId());
 		subscriberMDN.setSubscriber(subscriber);
 		subscriberMDN.getSubscriber().setEmail(txnDetails.getEmail());
 		subscriberMDN.getSubscriber().setMothersmaidenName(txnDetails.getMothersMaidenName());
