@@ -179,7 +179,7 @@
 	<camelContext id="bsimiso" xmlns="http://camel.apache.org/schema/spring">
     <onException>
         <exception>com.mfino.mce.iso.jpos.NoISOResponseException</exception>
-        <redeliveryPolicy maximumRedeliveries="10"/>
+        <redeliveryPolicy maximumRedeliveries="1"/>
         <handled>
             <constant>true</constant>
         </handled>

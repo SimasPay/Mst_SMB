@@ -30,6 +30,7 @@
 		<module>NewBSIMSMS</module>
 		<module>BSIMBillPayment</module>
 		<module>FlashizISO8583</module>
+		<module>BSMPPOBISO8583</module>
     </modules>	
 	
 	<dependencies>

@@ -103,5 +103,13 @@ copy BSIM\BSIMConfiguration\src\main\jpos_cfg\iso87ascii-bsm.xml %1\servicemix\j
 copy BSIM\BSIMConfiguration\src\main\jpos_cfg\iso87ascii-flashiz.xml %1\servicemix\jpos\jpos_cfg\
 copy MfinoCoreEngine\HSM\ThalesConfiguration\src\main\resources\jpos\cfg\*.xml %1\servicemix\jpos\cfg\
 
+rem BSM PPOB integration 
+copy BSIM\BSMPPOBISO8583\target\BSMPPOBISO8583-0.1-SNAPSHOT.jar %1\servicemix
+copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsm_ppob_iso_configuration.xml %1\servicemix\
+copy BSIM\BSIMConfiguration\src\main\jpos_cfg\iso87ascii-bsm-ppob.xml %1\servicemix\jpos\jpos_cfg\
+copy BSIM\BSIMConfiguration\src\main\jpos\connection_config_bsm_ppob.xml %1\servicemix\jpos\deploy\
+copy BSIM\BSIMConfiguration\src\main\jpos\jpos_config_bsm_ppob.xml %1\servicemix\jpos\deploy\
+copy BSIM\BSIMConfiguration\src\main\jpos\mux_config_bsm_ppob.xml %1\servicemix\jpos\deploy\
+
 
 :End
