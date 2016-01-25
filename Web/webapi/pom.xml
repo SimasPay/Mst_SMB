@@ -109,17 +109,10 @@
 										<include>category.bankCodes.txt</include>
 										<include>category.purchase.txt</include>
 										<include>category.payments.txt</include>
-										<include>category.postpaid.txt</include>
-										<include>category.prepaid.txt</include>
-										<include>category.postpaidPhone.txt</include>
-										<include>category.prepaidPhone.txt</include>
-										<include>category.postpaidPLN.txt</include>
-										<include>category.prepaidPLN.txt</include>
+										<include>category.geographicaldata.txt</include>
 										<include>defaultJson.txt</include>
 										<include>errorJson.txt</include>
 										<include>category.help.txt</include>
-										<include>category.upgradeAddressList.txt</include>
-										<include>category.cashoutAddressList.txt</include>
 										<include>RSAdp.dat</include>
 										<include>RSAdq.dat</include>
 										<include>RSAmod.dat</include>
