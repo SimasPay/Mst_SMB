@@ -59,7 +59,9 @@ public class CryptographyService {
 
 	private static Logger	log	= LoggerFactory.getLogger(CryptographyService.class);
 	
-	private static String KEY_FILE_LOCATION = "../webapps/webapi/WEB-INF/";
+	//private static String KEY_FILE_LOCATION = "../webapps/webapi/WEB-INF/";
+	private static String KEY_FILE_LOCATION = "D:/Simaspay/Sandbox/Simobi_UAT/Web/webapi/src/main/webapp/WEB-INF/";
+	
 	//private static String KEY_FILE_LOCATION = "C:/Keys/";
 	private static String OUTPUT_FILE_LOCATION =".\\keys\\";
 	private static String PUBLIC_KEY_EXPONENT = "10001";

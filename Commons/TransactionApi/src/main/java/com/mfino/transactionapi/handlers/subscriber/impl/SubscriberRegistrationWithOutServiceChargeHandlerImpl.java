@@ -3,6 +3,7 @@ package com.mfino.transactionapi.handlers.subscriber.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -392,10 +393,15 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				
 				if(ktpDetail.getKTPID().equals(transactionDetails.getKtpId())) {
 					
+					log.debug("KTP ID Matched.....");
+					
 					if(ktpDetail.getFullName().equals(transactionDetails.getFirstName())) {
 						
-						if(ktpDetail.getDateOfBirth().equals(new java.sql.Timestamp(transactionDetails.getDateOfBirth().getTime()))) {
+						log.debug("Name Matched.....");
+						
+						if(getDateOfBirth(ktpDetail.getDateOfBirth()).equals(getDateOfBirth(new java.sql.Timestamp(transactionDetails.getDateOfBirth().getTime())))) {
 							
+							log.debug("Date of Birth Matched....");
 							isDataValid  = true;
 							
 						}
@@ -405,5 +411,19 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		}
 		
 		return isDataValid;
+	}
+	
+	private String getDateOfBirth(java.sql.Timestamp dobTime) {
+		
+		StringBuffer dobStrBuf = new StringBuffer();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(dobTime.getTime());
+		
+		dobStrBuf.append(cal.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + cal.get(Calendar.DAY_OF_MONTH) : cal.get(Calendar.DAY_OF_MONTH));
+		dobStrBuf.append(cal.get(Calendar.MONTH) < 10 ? "0" + (cal.get(Calendar.MONTH) + 1) : (cal.get(Calendar.MONTH) + 1));
+		dobStrBuf.append(cal.get(Calendar.YEAR));
+		
+		return dobStrBuf.toString();
 	}
 }

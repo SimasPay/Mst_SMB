@@ -591,7 +591,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setDigestedPIN(digestpin);*/
 			String newpin = null;
 	 		try{
-	 			newpin = CryptographyService.decryptWithPrivateKey(subscriberRegistration.getPin());
+	 			newpin = subscriberRegistration.getPin();
 	 			subscriberRegistration.setPin(newpin);
 	 		}
 	 		catch(Exception e){
@@ -1053,7 +1053,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 		String newpin = null;
  		try{
- 			newpin = CryptographyService.decryptWithPrivateKey(subscriberActivation.getPin());
+ 			newpin = subscriberActivation.getPin();
  			subscriberActivation.setPin(newpin);
  		}
  		catch(Exception e){
@@ -1465,7 +1465,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		
 		String newpin = null;
  		try{
- 			newpin = CryptographyService.decryptWithPrivateKey(subscriberReactivation.getNewPin());
+ 			newpin = subscriberReactivation.getNewPin();
  			subscriberReactivation.setNewPin(newpin);
  			subscriberReactivation.setConfirmPin(newpin);
  		}

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
@@ -98,7 +97,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 		result.setTransactionID(transactionLog.getID());
 		
  		try{
- 			String clearPin = CryptographyService.decryptWithPrivateKey(transDetails.getNewPIN());
+ 			String clearPin = transDetails.getNewPIN();
  			resetPin.setNewPin(clearPin);
  			resetPin.setConfirmPin(clearPin);
  		}

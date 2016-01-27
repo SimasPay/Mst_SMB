@@ -11,7 +11,7 @@ CREATE TABLE "KTP_DETAILS"
 	"DATEOFBIRTH" TIMESTAMP (0),
 	"AGENTMDN" VARCHAR2(255 CHAR),
 	"BANKRESPONSESTATUS" VARCHAR2(255),
-	"BANKRESPONSE" VARCHAR2(255 CHAR),
+	"BANKRESPONSE" VARCHAR2(1000 CHAR),
 	 CONSTRAINT "PRIMARY_KTP1" PRIMARY KEY ("ID")
    );
 
@@ -61,8 +61,6 @@ INSERT INTO PTC_GROUP_MAPPING (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, C
 
 ALTER TABLE ADDRESS ADD  (RW VARCHAR2(255), RT VARCHAR2(255), SUBSTATE VARCHAR2(255));
 
-//Notifications - START
-
 DELETE FROM notification WHERE CODE = 2126;
 
 INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2126', 'SubscriberKtpValdiationSuccess', '1', 'Subscriber KTP Validation Success', '0', '0', sysdate, '1', '1');
@@ -108,6 +106,8 @@ INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, Create
 
 INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2127', 'SubscriberKtpValdiationFailed', '16', 'Subscriber KTP Validation Failed', '1', '0', sysdate, '1', '1');
 
-//Notifications - End
+UPDATE POCKET_TEMPLATE SET BANKCODE = 9999 WHERE ID = (SELECT ID FROM POCKET_TEMPLATE WHERE DESCRIPTION='LakuPandaiBasicTemplate');
+
+UPDATE POCKET_TEMPLATE SET BANKCODE = 9999 WHERE ID = (SELECT ID FROM POCKET_TEMPLATE WHERE DESCRIPTION='LakuPandaiAdvancedTemplate');
 
 COMMIT;

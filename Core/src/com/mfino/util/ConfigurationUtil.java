@@ -9,12 +9,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.session.HibernateSessionHolder;
 
 public class ConfigurationUtil {
@@ -313,7 +311,9 @@ public class ConfigurationUtil {
 		ReportFooter("mfino.report.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved"),
 		PromoImagePath("promo.image.path","images/promoImage.png"),
 		SendOTPBeforeApproval("mfino.send.otp.before.approval", "true"),
-		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd");
+		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd"),
+		KTPServerURL("mfino.ktpserver.base.url","null"),
+		KTPServerTimeout("mfino.ktpserver.server.timeout","10000");
 		
 		
 		private final String key;
@@ -1243,6 +1243,16 @@ public class ConfigurationUtil {
 	public static String getDateFormatInReportFileNames() { 
 	 	return get(ConfigurationKey.DateFormatInReportFileNames); 
 	 }
+	
+	public static String getKTPServerURL() {
+		
+		return get(ConfigurationKey.KTPServerURL);
+	}
+	
+	public static int getKTPServerTimeout() {
+		
+		return Integer.parseInt(get(ConfigurationKey.KTPServerTimeout));
+	}
 	
 	public static boolean getSendOTPBeforeApproval() {
 		return getBoolean(ConfigurationKey.SendOTPBeforeApproval);

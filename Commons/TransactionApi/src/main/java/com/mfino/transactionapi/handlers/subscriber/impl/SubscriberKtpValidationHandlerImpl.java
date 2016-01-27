@@ -6,6 +6,8 @@ package com.mfino.transactionapi.handlers.subscriber.impl;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ import com.mfino.transactionapi.handlers.subscriber.SubscriberKtpValidationHandl
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.SubscriberKTPValidationXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.wsclient.RSClientPostHttps;
 
 /**
  * @author Sunil
@@ -124,38 +128,66 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		ktpDetail.setFullName(transactionDetails.getFirstName());
 		ktpDetail.setKTPID(transactionDetails.getKtpId());
 		
-		
-		/**
-		 * Mapping of Address in DB as below:
-		 * 
-		 *  AddressLine -> Address.Line1
-		 *  RT -> Address.RT
-		 *  RW -> Address.RW
-		 *  District -> Address.STATE
-		 *  SubDistrict -> Address.SUBSTATE
-		 *  Province -> Address.REGIONNAME
-		 *  PostalCode -> Address.ZipCode
-		 */
-		
-		result.setName(transactionDetails.getFirstName());
-		result.setDob(getDob(transactionDetails.getDateOfBirth()));
-		result.setMothersMaidenName("mothersMaidenName");
-		result.setAddressLine("addressLine");
-		result.setRt("rt");
-		result.setRw("rw");
-		result.setSubDistrict("subDistrict");
-		result.setDistrict("district");
-		result.setProvince("province");
-		result.setPostalCode("postalCode");
-		
 		KtpDetailsDAO ktpDetailsDAO = DAOFactory.getInstance().getKtpDetailsDAO();
 		ktpDetailsDAO.save(ktpDetail);
 		
-		result.setTransactionID(ktpDetail.getID());
-		result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess));
-		result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess);
-		result.setMessage("Subscriber KTP validation successfull");
-		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+		RSClientPostHttps wsCall = new RSClientPostHttps();
+		
+		try {
+			
+			JSONObject request = new JSONObject();
+			
+			request.put("nik",transactionDetails.getKtpId());
+			request.put("namalengkap",transactionDetails.getFirstName());
+			request.put("tanggallahir",getKtpDob(transactionDetails.getDateOfBirth()));
+			request.put("reffno",StringUtils.leftPad(String.valueOf(ktpDetail.getID()),12,"0"));
+			request.put("action","inquiryEKTPPersonal");
+			
+			JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
+		
+			if(null != response) {// && response.get("status").toString().equals("Success")) {
+			
+				
+				ktpDetail.setBankResponse(response.toString());
+				ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+				ktpDetailsDAO.save(ktpDetail);
+			
+				/**
+				 * Mapping of Address in DB as below:
+				 * 
+				 *  AddressLine -> Address.Line1
+				 *  RT -> Address.RT
+				 *  RW -> Address.RW
+				 *  District -> Address.STATE
+				 *  SubDistrict -> Address.SUBSTATE
+				 *  Province -> Address.REGIONNAME
+				 *  PostalCode -> Address.ZipCode
+				 */
+				
+				result.setName(transactionDetails.getFirstName());
+				result.setDob(getDob(transactionDetails.getDateOfBirth()));
+				result.setMothersMaidenName("mothersMaidenName");
+				result.setAddressLine(response.get("alamat").toString());
+				result.setRt(response.get("rt").toString());
+				result.setRw(response.get("rw").toString());
+				result.setSubDistrict(response.get("kelurahan").toString());
+				result.setDistrict(response.get("kecamatan").toString());
+				result.setProvince(response.get("provinsi").toString());
+				result.setPostalCode(response.get("kodepos").toString());
+				result.setTransactionID(ktpDetail.getID());
+				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess));
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess);
+				result.setMessage("Subscriber KTP validation successfull");
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+				
+			} else {
+				
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValidationFailed);
+			}
+		} catch(Exception ex) {
+			
+			log.error("Error in parsing the response from server..." + ex);
+		}
 		
 		return result;
 	}
@@ -172,6 +204,22 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		String year = String.valueOf(cal.get(Calendar.YEAR));
 		
 		dob = day + month + year;
+		
+		return dob;
+	}
+	
+	private String getKtpDob(Date dobdate) {
+		
+		String dob = null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dobdate);
+		
+		String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + cal.get(Calendar.DAY_OF_MONTH) : cal.get(Calendar.DAY_OF_MONTH));
+		String month = String.valueOf(cal.get(Calendar.MONTH) < 10 ? "0" + (cal.get(Calendar.MONTH) + 1) : (cal.get(Calendar.MONTH)+1));
+		String year = String.valueOf(cal.get(Calendar.YEAR));
+		
+		dob = year + "-" + month + "-" + day;
 		
 		return dob;
 	}

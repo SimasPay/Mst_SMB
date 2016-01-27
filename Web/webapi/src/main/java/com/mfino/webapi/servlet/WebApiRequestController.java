@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
 import com.mfino.exceptions.CoreException;
 import com.mfino.exceptions.InvalidDataException;
@@ -247,7 +248,42 @@ public class WebApiRequestController {
 				return;
 			}
 			if(transactionDetails!=null){
-				 
+				
+				if(StringUtils.isNotBlank(transactionDetails.getSourcePIN())) {
+					
+					transactionDetails.setSourcePIN(CryptographyService.decryptWithPrivateKey(transactionDetails.getSourcePIN()));
+				}
+				
+				if(StringUtils.isNotBlank(transactionDetails.getNewPIN())) {
+				
+					transactionDetails.setNewPIN(CryptographyService.decryptWithPrivateKey(transactionDetails.getNewPIN()));
+				}
+				
+				if(StringUtils.isNotBlank(transactionDetails.getConfirmPIN())) {
+				
+					transactionDetails.setConfirmPIN(CryptographyService.decryptWithPrivateKey(transactionDetails.getConfirmPIN()));
+				}
+				
+				if(StringUtils.isNotBlank(transactionDetails.getActivationOTP())) {
+				
+					transactionDetails.setActivationOTP(CryptographyService.decryptWithPrivateKey(transactionDetails.getActivationOTP()));
+				}
+				
+				if(StringUtils.isNotBlank(transactionDetails.getTransactionOTP())) {
+				
+					transactionDetails.setTransactionOTP(CryptographyService.decryptWithPrivateKey(transactionDetails.getTransactionOTP()));
+				}
+				
+				if(StringUtils.isNotBlank(transactionDetails.getAuthenticationString())) {
+					
+					transactionDetails.setAuthenticationString(CryptographyService.decryptWithPrivateKey(transactionDetails.getAuthenticationString()));
+				}
+				
+				if(StringUtils.isNotBlank(transactionDetails.getCardPAN())) {
+					
+					transactionDetails.setCardPAN(CryptographyService.decryptWithPrivateKey(transactionDetails.getCardPAN()));
+				}
+				
 				if (ServiceAndTransactionConstants.SERVICE_ACCOUNT.equals(transactionDetails.getServiceName())) {
 					
 					service = (BaseAPIService) accountAPIServices;
