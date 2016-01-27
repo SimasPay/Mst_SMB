@@ -80,13 +80,9 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 			isoMsg.set(48, msg.getAdditionalInfo());
 			isoMsg.set(49, constantFieldsMap.get("49"));
 			isoMsg.set(63, constructDE63(msg));
-			isoMsg.set(100, constantFieldsMap.get("100"));
-			isoMsg.set(102,msg.getSourceCardPAN());
-			isoMsg.set(103,msg.getDestCardPAN());
-//			if(msg.getLanguage().equals(0))
-//				isoMsg.set(121,constantFieldsMap.get("english"));
-//			else
-//				isoMsg.set(121,constantFieldsMap.get("bahasa"));
+			isoMsg.set(100, msg.getBankCode().toString());
+			isoMsg.set(102, msg.getSourceCardPAN());
+			isoMsg.set(103, msg.getDestCardPAN());
 			isoMsg.set(127, msg.getDestBankCode());
 		}
 		catch (ISOException ex) {

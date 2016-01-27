@@ -23,7 +23,7 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 	
 	public MoneyTransferReversalToBankProcessor() {
 		try {
-			isoMsg.setMTI("0420"); // [Bala] Changed from 400 to 420 as per new Spec 25/9/14
+			isoMsg.setMTI("0400");
 		}
 		catch (ISOException ex) {
 			ex.printStackTrace();
@@ -79,16 +79,11 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(12, DateTimeFormatter.getHHMMSS(localTS)); // 12
 			isoMsg.set(13, DateTimeFormatter.getMMDD(localTS)); // 13
 			isoMsg.set(15, DateTimeFormatter.getMMDD(ts));
-
 			isoMsg.set(18, constantFieldsMap.get("18")); // 18
-//			isoMsg.set(22,constantFieldsMap.get("22")); [Bala] As per the new Spec this field is not required. 25/09/14
-//			isoMsg.set(25,constantFieldsMap.get("25"));
-//			isoMsg.set(26,constantFieldsMap.get("26"));
 			isoMsg.set(27, CmFinoFIX.ISO8583_AuthorizationIdentificationResponseLength_Sinarmas.toString()); // 27
 			isoMsg.set(32, constantFieldsMap.get("32"));
 			isoMsg.set(33, constantFieldsMap.get("33"));// 33
-//			isoMsg.set(35, msg.getSourceCardPAN()); [Bala] As per the new Spec this field is not required. 25/09/14
-			isoMsg.set(37, StringUtilities.leftPadWithCharacter(msg.getBankRetrievalReferenceNumber(), 12, "0"));
+			isoMsg.set(37, StringUtilities.leftPadWithCharacter(msg.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, StringUtilities.rightPadWithCharacter(msg.getSourceMDN(), 15, " "));
 			isoMsg.set(43, constantFieldsMap.get("43"));

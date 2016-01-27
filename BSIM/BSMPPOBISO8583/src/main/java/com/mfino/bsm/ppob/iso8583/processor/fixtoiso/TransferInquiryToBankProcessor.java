@@ -12,6 +12,7 @@ import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
 import com.mfino.util.DateTimeUtil;
+import com.mfino.util.MfinoUtil;
 
 public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 	
@@ -31,7 +32,8 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		try {
-//			isoMsg.set(2, msg.getSourceCardPAN()); [Bala] As per the new Spec this field is not required. 25/09/14
+			String mpan = MfinoUtil.CheckDigitCalculation(msg.getSourceMDN());
+			isoMsg.set(2, mpan);
 			String processingCode = null;
 			String sourceAccountType = "00";
 			String destAccountType = "00";
@@ -60,19 +62,14 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(13, DateTimeFormatter.getMMDD(localTS)); // 13
 			isoMsg.set(15, DateTimeFormatter.getMMDD(ts)); // 15
 			isoMsg.set(18, constantFieldsMap.get("18")); // 18
-//			isoMsg.set(22, constantFieldsMap.get("22")); // 18 [Bala] As per the new Spec this field is not required. 25/09/14
-//			isoMsg.set(25, constantFieldsMap.get("25")); // 18
-//			isoMsg.set(26, constantFieldsMap.get("26")); // 18
 			isoMsg.set(27, CmFinoFIX.ISO8583_AuthorizationIdentificationResponseLength_Sinarmas.toString()); // 27
 			isoMsg.set(32, constantFieldsMap.get("32"));// 32
 			isoMsg.set(33, constantFieldsMap.get("33"));// 33
-//			isoMsg.set(35, msg.getSourceCardPAN()); [Bala] As per the new Spec this field is not required. 25/09/14
 			isoMsg.set(37, StringUtilities.leftPadWithCharacter(msg.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, StringUtilities.rightPadWithCharacter(msg.getSourceMDN(), 15, " "));
 			isoMsg.set(43, constantFieldsMap.get("43"));
 			isoMsg.set(47, msg.getTransactionID().toString());
-//			isoMsg.set(48, msg.getTransactionID().toString());[Bala] As per the new Spec this field is not required. 25/09/14
 			isoMsg.set(49, constantFieldsMap.get("49"));  
 			isoMsg.set(100, msg.getBankCode().toString());
 			isoMsg.set(102,msg.getSourceCardPAN());
@@ -83,40 +80,5 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			log.error("TransferInquiryToBankProcessor :: process ", ex);
 		}
 		return isoMsg;
-	}
-	
-	public String getProcessingCode(CMTransferInquiryToBank msg){
-		String processingCode = CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut_Inquiry;
-		/*
-		 * if source if omnibus, then use Sinarmas_Transfer_CashIn_Inquiry 
-		 */
-/*		if (TPM_UseBankNewCodes != 0)
-			processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry1;
-		else
-			processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry;
-
-		if (msg.getUICategory().equals(TransactionUICategory_EMoney_CashIn)
-				|| msg.getUICategory().equals(TransactionUICategory_Dompet_EMoney_Trf)) {
-			if (TPM_UseBankNewCodes != 0)
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashIn_Inquiry1;
-			else
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashIn_Inquiry;
-		}
-		else if (msg.getUICategory().equals(TransactionUICategory_EMoney_Purchase) 
-				|| msg.getUICategory().equals(TransactionUICategory_EMoney_CashOut)
-		        || msg.getUICategory().equals(TransactionUICategory_EMoney_Dompet_Trf)) {
-			if (TPM_UseBankNewCodes != 0)
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut_Inquiry1;
-			else
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut_Inquiry;
-		}
-		else {
-			if (TPM_UseBankNewCodes != 0)
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry1;
-			else
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry;
-		}*/
-		return processingCode;
-
 	}
 }

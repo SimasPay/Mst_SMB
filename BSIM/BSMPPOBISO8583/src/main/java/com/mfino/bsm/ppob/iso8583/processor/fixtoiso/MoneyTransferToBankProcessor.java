@@ -4,7 +4,6 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 
 import com.mfino.bsm.ppob.iso8583.utils.DateTimeFormatter;
-import com.mfino.bsm.ppob.iso8583.utils.FixToISOUtil;
 import com.mfino.bsm.ppob.iso8583.utils.StringUtilities;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -69,19 +68,15 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(13, DateTimeFormatter.getMMDD(localTS)); // 13
 			isoMsg.set(15, DateTimeFormatter.getMMDD(ts)); // 15
 			isoMsg.set(18, constantFieldsMap.get("18")); // 18			
-//			isoMsg.set(22, constantFieldsMap.get("22")); // 18 [Bala] As per the new Spec this field is not required. 25/09/14
-//			isoMsg.set(25, constantFieldsMap.get("25")); // 18
-//			isoMsg.set(26, constantFieldsMap.get("26")); // 18
 			isoMsg.set(27, CmFinoFIX.ISO8583_AuthorizationIdentificationResponseLength_Sinarmas.toString()); // 27
 			isoMsg.set(32, constantFieldsMap.get("32"));// 32
 			isoMsg.set(33, constantFieldsMap.get("33"));// 33
-//			isoMsg.set(35, msg.getSourceCardPAN()); [Bala] As per the new Spec this field is not required. 25/09/14
 			isoMsg.set(37, StringUtilities.leftPadWithCharacter(msg.getTransactionID().toString(), 12, "0"));
 			isoMsg.set(41, constantFieldsMap.get("41"));
 			isoMsg.set(42, StringUtilities.rightPadWithCharacter(msg.getSourceMDN(), 15, " "));
 			isoMsg.set(43, constantFieldsMap.get("43"));
 			isoMsg.set(47, msg.getTransactionID().toString());
-			isoMsg.set(48, FixToISOUtil.getElement48("", String.valueOf(transactionID), "", "", ""));
+			isoMsg.set(48, msg.getAdditionalInfo());
 			isoMsg.set(49, constantFieldsMap.get("49"));
 			isoMsg.set(100, msg.getBankCode().toString());
 			isoMsg.set(102,msg.getSourceCardPAN());

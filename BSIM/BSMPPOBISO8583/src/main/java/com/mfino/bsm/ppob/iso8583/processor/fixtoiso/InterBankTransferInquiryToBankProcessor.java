@@ -33,7 +33,7 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 		Timestamp ts = DateTimeUtil.getGMTTime();
 		Timestamp localTS = DateTimeUtil.getLocalTime(); 
 		try {
-//			isoMsg.set(2, msg.getMPan()); [Bala] As per the new Spec this field is not required. 25/09/14
+			isoMsg.set(2, msg.getMPan());
 			String processingCode = null;
 			String sourceAccountType = "00";
 			String destAccountType = "00";
@@ -72,18 +72,9 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 			isoMsg.set(43, constantFieldsMap.get("43"));
 			isoMsg.set(47, msg.getTransactionID().toString());
 			isoMsg.set(49, constantFieldsMap.get("49"));
-//			isoMsg.set(63,"00"); [Bala] As per the new Spec this field is not required. 25/09/14
-			isoMsg.set(100, constantFieldsMap.get("100"));// source bank code (bsim ibt)
-			isoMsg.set(102,msg.getSourceCardPAN());
-			isoMsg.set(103,msg.getDestCardPAN());
-			
-			/*if((null != msg.getLanguage()) && !(msg.getLanguage().equals(0))){
-				isoMsg.set(121,constantFieldsMap.get("bahasa"));
-			}
-			else{
-				isoMsg.set(121,constantFieldsMap.get("english"));
-			}*/
-				
+			isoMsg.set(100, msg.getBankCode().toString());
+			isoMsg.set(102, msg.getSourceCardPAN());
+			isoMsg.set(103, msg.getDestCardPAN());
 			isoMsg.set(127, msg.getDestBankCode());  //Destination bank code / inter bank code (bsim ibt)
 		}
 		catch (ISOException ex) {
