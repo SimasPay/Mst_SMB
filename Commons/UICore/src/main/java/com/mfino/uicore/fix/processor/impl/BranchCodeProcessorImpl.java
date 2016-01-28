@@ -65,7 +65,7 @@ public class BranchCodeProcessorImpl extends BaseFixProcessor implements BranchC
 //			query.setMsp(msp);
 
 			List<BranchCodes> results = branchCodeDAO.get(query);
-			System.out.println("resluts size : "+results.size());
+			//System.out.println("resluts size : "+results.size());
 			realMsg.allocateEntries(results.size());
 
 			for (int i = 0; i < results.size(); i++) {

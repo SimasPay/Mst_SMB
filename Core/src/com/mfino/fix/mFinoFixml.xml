@@ -5146,6 +5146,349 @@
 		<field name="BankResponseStatus" required="N" />
 		<field name="BankResponse" required="N" />
 	</message>
+	
+	<message name="JSAgent" msgtype="1768" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+			<field name="PartnerIDSearch" required="N"  />
+			<field name="IsHierarchyTabPartnerIDSearch" required="N" />
+			<field name="PartnerCodeSearch" required="N" />
+			<field name="TradeNameSearch" required="N" />
+			<field name="AuthorizedEmailSearch" required="N" />
+			<field name="CardPAN" required="N" />
+			<field name="StartDateSearch" required="N" />
+			<field name="EndDateSearch" required="N" />
+			<field name="PartnerTypeSearch" required="N"/>    
+			<field name="NotPartnerTypeSearch" required="N"/>
+			<field name="ServiceIDSearch" required="N"/>
+			<field name="ServiceProviderIDSearch" required="N"/>
+			<field name="TransactionRuleSearch" required="N"/>
+			<field name="PartnerTypeSearchString" required="N"/>
+			<field name="UpgradeStateSearch" required="N" />
+			<field name="ErrorDescription" required="N" />
+			
+				<field name="PartnerID" id="ID" required="N"  />
+				<field name="SubscriberID" required="N"  />
+				<field name="MSPID" required="N" />
+				<field name="MDNID" required="N" />
+				<field name="MDN" required="N" />
+				<field name="UpgradeState" required="N" />
+				<field name="Username" required="N" />
+				<field name="PartnerCode" required="N" />
+				<field name="PartnerStatus" required="N" />
+				<field name="PartnerStatusText" required="N" />
+				<field name="TradeName" required="N" />
+				<field name="TypeOfOrganization" required="N" />
+				<field name="FaxNumber" required="N" />
+				<field name="WebSite" required="N" />
+				<field name="AuthorizedRepresentative" required="N" />
+				<field name="RepresentativeName" required="N" />
+				<field name="Designation" required="N" />
+				<field name="FranchisePhoneNumber" required="N" />
+				<field name="FranchiseOutletAddressID" required="N" />        
+				<field name="Classification" required="N" />
+				<field name="NumberOfOutlets" required="N" />
+				<field name="IndustryClassification" required="N" />
+				<field name="YearEstablished" required="N" />
+				<field name="AuthorizedFaxNumber" required="N" />
+				<field name="AuthorizedEmail" required="N" />
+				<field name="LastUpdateTime" required="N" />
+				<field name="UpdatedBy" required="N" />
+				<field name="CreateTime" required="N" />
+				<field name="CreatedBy" required="N" />
+				<field name="MerchantAddressLine1" required="N" />
+				<field name="MerchantAddressLine2" required="N" />
+				<field name="MerchantAddressCity" required="N" />
+				<field name="MerchantAddressState" required="N" />
+				<field name="MerchantAddressCountry" required="N" />
+				<field name="MerchantAddressZipcode" required="N" />
+				<field name="OutletAddressLine1" required="N" />
+				<field name="OutletAddressLine2" required="N" />
+				<field name="OutletAddressCity" required="N" />
+				<field name="OutletAddressState" required="N" />
+				<field name="OutletAddressCountry" required="N" />
+				<field name="OutletAddressZipcode" required="N" />
+				<field name="MerchantAddressID" required="N" />
+				<field name="FirstName" required="N" />
+				<field name="LastName" required="N" />
+				<field name="Timezone" required="N" />
+				<field name="SubscriberRestrictions" id="Restrictions" required="Y" default="0" SQLDefault="0" />
+				<field name="SubscriberType" required="N" />
+				<field name="Language" required="N" />
+				<field name="Currency" required="N" />
+				<field name="CompanyID" required="N" />
+				<field name="RecordVersion" required="N" />
+				<field name="LanguageText" required="N" />
+				<field name="BusinessPartnerType" required="N" />    
+				<field name="BusinessPartnerTypeText" required="N" /> 
+				<field name="UpgradeStateText" required="N" />
+				<field name="UpgradableKYCLevel" required="N" />
+				<field name="UpgradableKYCLevelText" required="N" />
+				<field name="ApplicationID" required="N"  />
+				<field name="ApproveOrRejectTime" required="N" />
+				<field name="ApprovedOrRejectedBy" required="N" />
+				<field name="ApproveOrRejectComment" required="N" /> 
+				<field name="AppliedBy" required="N" /> 
+				<field name="AppliedTime" required="N" />
+				<field name="IsForceCloseRequested" required="N"/>
+				<field name="GroupID" required="N"/>
+				<field name="GroupName" required="N"/>
+				<field name="AccountNumber" required="N"/>
+				
+				<field name="AgentCode" required="N"/>
+				<field name="AgentType" required="N"/>
+				<field name="ClassificationAgent" required="N"/>
+				<field name="TypeofBusinessAgent" required="N"/>
+				<field name="ElectonicDevieused" required="N"/>
+				<field name="AgentDescription" required="N"/>
+				<field name="KCKCPKKBankSinarmas" required="N"/>
+				<field name="BranchCode" required="N"/>
+				<field name="CIFNumber" required="N"/>
+				<field name="AccountnumberofBankSinarmas" required="N"/>
+				<field name="BranchofBankSinarmas" required="N"/>
+				<field name="NameInAccordanceIdentity" required="N"/>
+				<field name="KTPID" required="N"/>
+				<field name="ExpiredDate" required="N"/>
+				<field name="AlamatInAccordanceIdentity" required="N"/>
+				<field name="RTRWAl" required="N"/>
+				<field name="DistrictAl" required="N"/>
+				<field name="VillageAl" required="N"/>
+				<field name="CityAl" required="N"/>
+				<field name="PotalCodeAl" required="N"/>
+				<field name="ProvincialAl" required="N"/>
+				<field name="DomicileAddress" required="N"/>
+				<field name="AddressDomicile" required="N"/>
+				<field name="RTRWDom" required="N"/>
+				<field name="DistrictDom" required="N"/>
+				<field name="VillageDom" required="N"/>
+				<field name="CityDom" required="N"/>
+				<field name="PotalCodeDom" required="N"/>
+				<field name="ProvincialDom" required="N"/>
+				<field name="MobilePhoneNumber" required="N"/>
+				<field name="EMail" required="N"/>
+				<field name="Jobs" required="N"/>
+				<field name="AgreementNumber" required="N"/>
+				<field name="AgreementDate" required="N"/>
+				<field name="Implementationdate" required="N"/>
+				<field name="AgentCompanyName" required="N"/>
+				<field name="Businessfields" required="N"/>
+				<field name="Position" required="N"/>
+				<field name="Lengthofwork" required="N"/>
+				<field name="CompanyAddress" required="N"/>
+				<field name="RTRWCom" required="N"/>
+				<field name="DistrictCom" required="N"/>
+				<field name="VillageCom" required="N"/>
+				<field name="CityCom" required="N"/>
+				<field name="PotalCodeCom" required="N"/>
+				<field name="LatitudeLongitude" required="N"/>
+				<field name="ProvincialCom" required="N"/>
+				<field name="PhoneNumber" required="N"/>
+				<field name="MerchantAddressID2" required="N" />				
+				<field name="TypeofBusinessAgentText" required="N"/>
+				<field name="ClassificationAgentText" required="N"/>
+				<field name="AgentTypeText" required="N"/>
+				<field name="ElectonicDevieusedText" required="N"/>
+				<field name="AgentDescriptionText" required="N"/>
+				<field name="KCKCPKKBankSinarmasText" required="N"/>
+				<field name="BranchCodeText" required="N"/>
+				<field name="DomicileAddressText" required="N"/>
+				<field name="JobsText" required="N"/>
+				<field name="TypeAgentObject" required="N"/>
+				<field name="TypesofbusinessEntity" required="N"/>
+				<field name="NameofBusinessEntity" required="N"/>
+				<field name="TaxFileNumberNPWP" required="N"/>
+				<field name="StatusofBusinessSites" required="N"/>
+				<field name="FacsimileNumber" required="N"/>
+				<field name="Website" required="N"/>
+				<field name="LegalRelationship" required="N"/>
+				<field name="TypesofbusinessEntityText" required="N"/>
+				<field name="StatusofBusinessSitesText" required="N"/>
+				<field name="LegalRelationshipText" required="N"/>
+				<field name="OtherJobs" required="N"/>
+				<field name="OtherTypesofbusinessEntity" required="N"/>
+				<field name="OtherStatusofBusinessSites" required="N"/>
+				<field name="OtherLegalRelationship" required="N"/>
+				<field name="CorpBusinessfields" required="N"/>
+				<field name="corpemail" required="N"/>
+				<field name="corpKTPID" required="N"/>
+				<field name="corpExpiredDate" required="N"/>
+				<field name="AddressInAccordanceIdentity" required="N"/>
+				<field name="BusinessAddress" required="N"/>
+				<field name="PlaceofBirth" required="N"/>
+				<field name="DateofBirth" required="N"/>
+				<field name="CompanyEmailId" required="N"/>
+				<field name="UserBankBranch" required="N"/>
+				<field name="BankAccountStatus" required="N"/>
+			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
+				<field name="PartnerID" id="ID" required="N"  />
+				<field name="SubscriberID" required="N"  />
+				<field name="MSPID" required="N" />
+				<field name="MDNID" required="N" />
+				<field name="MDN" required="N" />
+				<field name="UpgradeState" required="N" />
+				<field name="Username" required="N" />
+				<field name="PartnerCode" required="N" />
+				<field name="PartnerStatus" required="N" />
+				<field name="PartnerStatusText" required="N" />
+				<field name="TradeName" required="N" />
+				<field name="TypeOfOrganization" required="N" />
+				<field name="FaxNumber" required="N" />
+				<field name="WebSite" required="N" />
+				<field name="AuthorizedRepresentative" required="N" />
+				<field name="RepresentativeName" required="N" />
+				<field name="Designation" required="N" />
+				<field name="FranchisePhoneNumber" required="N" />
+				<field name="FranchiseOutletAddressID" required="N" />        
+				<field name="Classification" required="N" />
+				<field name="NumberOfOutlets" required="N" />
+				<field name="IndustryClassification" required="N" />
+				<field name="YearEstablished" required="N" />
+				<field name="AuthorizedFaxNumber" required="N" />
+				<field name="AuthorizedEmail" required="N" />
+				<field name="LastUpdateTime" required="N" />
+				<field name="UpdatedBy" required="N" />
+				<field name="CreateTime" required="N" />
+				<field name="CreatedBy" required="N" />
+				<field name="MerchantAddressLine1" required="N" />
+				<field name="MerchantAddressLine2" required="N" />
+				<field name="MerchantAddressCity" required="N" />
+				<field name="MerchantAddressState" required="N" />
+				<field name="MerchantAddressCountry" required="N" />
+				<field name="MerchantAddressZipcode" required="N" />
+				<field name="OutletAddressLine1" required="N" />
+				<field name="OutletAddressLine2" required="N" />
+				<field name="OutletAddressCity" required="N" />
+				<field name="OutletAddressState" required="N" />
+				<field name="OutletAddressCountry" required="N" />
+				<field name="OutletAddressZipcode" required="N" />
+				<field name="MerchantAddressID" required="N" />
+				<field name="FirstName" required="N" />
+				<field name="LastName" required="N" />
+				<field name="Timezone" required="N" />
+				<field name="SubscriberRestrictions" id="Restrictions" required="Y" default="0" SQLDefault="0" />
+				<field name="SubscriberType" required="N" />
+				<field name="Language" required="N" />
+				<field name="Currency" required="N" />
+				<field name="CompanyID" required="N" />
+				<field name="RecordVersion" required="N" />
+				<field name="LanguageText" required="N" />
+				<field name="BusinessPartnerType" required="N" />    
+				<field name="BusinessPartnerTypeText" required="N" /> 
+				<field name="UpgradeStateText" required="N" />
+				<field name="UpgradableKYCLevel" required="N" />
+				<field name="UpgradableKYCLevelText" required="N" />
+				<field name="ApplicationID" required="N"  />
+				<field name="ApproveOrRejectTime" required="N" />
+				<field name="ApprovedOrRejectedBy" required="N" />
+				<field name="ApproveOrRejectComment" required="N" /> 
+				<field name="AppliedBy" required="N" /> 
+				<field name="AppliedTime" required="N" />
+				<field name="IsForceCloseRequested" required="N"/>
+				<field name="GroupID" required="N"/>
+				<field name="GroupName" required="N"/>
+				<field name="AccountNumber" required="N"/>
+				
+				<field name="AgentCode" required="N"/>
+				<field name="AgentType" required="N"/>
+				<field name="ClassificationAgent" required="N"/>
+				<field name="TypeofBusinessAgent" required="N"/>
+				<field name="ElectonicDevieused" required="N"/>
+				<field name="AgentDescription" required="N"/>
+				<field name="KCKCPKKBankSinarmas" required="N"/>
+				<field name="BranchCode" required="N"/>
+				<field name="CIFNumber" required="N"/>
+				<field name="AccountnumberofBankSinarmas" required="N"/>
+				<field name="BranchofBankSinarmas" required="N"/>
+				<field name="NameInAccordanceIdentity" required="N"/>
+				<field name="KTPID" required="N"/>
+				<field name="ExpiredDate" required="N"/>
+				<field name="AlamatInAccordanceIdentity" required="N"/>
+				<field name="RTRWAl" required="N"/>
+				<field name="DistrictAl" required="N"/>
+				<field name="VillageAl" required="N"/>
+				<field name="CityAl" required="N"/>
+				<field name="PotalCodeAl" required="N"/>
+				<field name="ProvincialAl" required="N"/>
+				<field name="DomicileAddress" required="N"/>
+				<field name="AddressDomicile" required="N"/>
+				<field name="RTRWDom" required="N"/>
+				<field name="DistrictDom" required="N"/>
+				<field name="VillageDom" required="N"/>
+				<field name="CityDom" required="N"/>
+				<field name="PotalCodeDom" required="N"/>
+				<field name="ProvincialDom" required="N"/>
+				<field name="MobilePhoneNumber" required="N"/>
+				<field name="EMail" required="N"/>
+				<field name="Jobs" required="N"/>
+				<field name="AgreementNumber" required="N"/>
+				<field name="AgreementDate" required="N"/>
+				<field name="Implementationdate" required="N"/>
+				<field name="AgentCompanyName" required="N"/>
+				<field name="Businessfields" required="N"/>
+				<field name="Position" required="N"/>
+				<field name="Lengthofwork" required="N"/>
+				<field name="CompanyAddress" required="N"/>
+				<field name="RTRWCom" required="N"/>
+				<field name="DistrictCom" required="N"/>
+				<field name="VillageCom" required="N"/>
+				<field name="CityCom" required="N"/>
+				<field name="PotalCodeCom" required="N"/>
+				<field name="LatitudeLongitude" required="N"/>
+				<field name="ProvincialCom" required="N"/>
+				<field name="PhoneNumber" required="N"/>
+				<field name="MerchantAddressID2" required="N" />				
+				<field name="TypeofBusinessAgentText" required="N"/>
+				<field name="ClassificationAgentText" required="N"/>
+				<field name="AgentTypeText" required="N"/>
+				<field name="ElectonicDevieusedText" required="N"/>
+				<field name="AgentDescriptionText" required="N"/>
+				<field name="KCKCPKKBankSinarmasText" required="N"/>
+				<field name="BranchCodeText" required="N"/>
+				<field name="DomicileAddressText" required="N"/>
+				<field name="JobsText" required="N"/>
+				<field name="TypeAgentObject" required="N"/>
+				<field name="TypesofbusinessEntity" required="N"/>
+				<field name="NameofBusinessEntity" required="N"/>
+				<field name="TaxFileNumberNPWP" required="N"/>
+				<field name="StatusofBusinessSites" required="N"/>
+				<field name="FacsimileNumber" required="N"/>
+				<field name="Website" required="N"/>
+				<field name="LegalRelationship" required="N"/>
+				<field name="TypesofbusinessEntityText" required="N"/>
+				<field name="StatusofBusinessSitesText" required="N"/>
+				<field name="LegalRelationshipText" required="N"/>
+				<field name="OtherJobs" required="N"/>
+				<field name="OtherTypesofbusinessEntity" required="N"/>
+				<field name="OtherStatusofBusinessSites" required="N"/>
+				<field name="OtherLegalRelationship" required="N"/>
+				<field name="CorpBusinessfields" required="N"/>
+				<field name="corpemail" required="N"/>
+				<field name="corpKTPID" required="N"/>
+				<field name="corpExpiredDate" required="N"/>
+				<field name="AddressInAccordanceIdentity" required="N"/>
+				<field name="BusinessAddress" required="N"/>
+				<field name="PlaceofBirth" required="N"/>
+				<field name="DateofBirth" required="N"/>
+				<field name="CompanyEmailId" required="N"/>
+				<field name="UserBankBranch" required="N"/>
+				<field name="BankAccountStatus" required="N"/>
+			</group>
+		</message>
+		<message name="JSAgentError" msgtype="1769" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSError">
+			<field name="AlamatInAccordanceIdentity" required="N"/>
+			<field name="RTRWAl" required="N"/>
+			<field name="DistrictAl" required="N"/>
+			<field name="VillageAl" required="N"/>
+			<field name="CityAl" required="N"/>
+			<field name="PotalCodeAl" required="N"/>
+			<field name="ProvincialAl" required="N"/>
+			<field name="EMail" required="N"/>
+			<field name="UserBankBranch" required="N"/>
+			<field name="BankAccountStatus" required="N"/>
+			<field name="OtherField1" required="N" />
+			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+				<field name="ErrorName" required="Y" />
+				<field name="ErrorDescription" required="Y" />        
+			</group>
+		</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -6463,7 +6806,13 @@
 			<field name="YearEstablished" required="N" />
 			<field name="AuthorizedFaxNumber" required="N" />
 			<field name="AuthorizedEmail" required="N" />
+			<field name="CompanyEmailId" required="N" />
 			<field name="BusinessPartnerType" required="N" />
+			<field name="BranchCode" required="N" />
+			<field name="BranchSequence" required="N" />
+			<field name="AccountnumberofBankSinarmas" required="N" />
+			<field name="BranchofBankSinarmas" required="N" />
+			<field name="MerchantAddressID2" required="N" References="Address" />
 		</record>
 		<!-- <record name="ServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 				<field name="MSPID" required="Y" References="mFinoServiceProvider" />  
@@ -6718,6 +7067,19 @@
 			<field name="Income" required="N" />
 			<field name="GoalOfAcctOpening" required="N" />
 			<field name="SourceOfFund" required="N" />
+			
+			<field name="ElectonicDevieused" required="N" />
+			<field name="AgentDescription" required="N" />
+			<field name="KTPID" required="N" />
+			<field name="AgreementNumber" required="N" />
+			<field name="AgreementDate" required="N" />
+			<field name="Implementationdate" required="N" />
+			<field name="AgentCompanyName" required="N" />
+			<field name="LatitudeLongitude" required="N" />
+			<field name="PlaceofBirth" required="N"/>
+			<field name="DateofBirth" required="N"/>			
+			<field name="UserBankBranch" required="N"/>
+			<field name="BankAccountStatus" required="N"/>
 		</record>
 
 		<record name="SystemParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="system_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -7702,6 +8064,8 @@
 			<value enum="1741" description="BalanceInquiryFromNFC"/>
 			<value enum="1766" description="JSBranchCodes"/>
 			<value enum="1767" description="KtpDetails"/>
+			<value enum="1768" description="JSAgent"/>
+			<value enum="1769" description="JSAgentError"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -23797,6 +24161,7 @@ ERROR:Mismatch of  mdn type and app type
 			<!-- <value enum="12202" description="BusinessPartner_Add" />
 			<value enum="12203" description="BusinessPartner_Edit" />
 			<value enum="12204" description="BusinessPartner_Edit_Status" /> -->
+			<value enum="12206" description="BusinessPartnerSp_View" />
 			<!-- integration partner -->
 			<!-- <value enum="12301" description="IntegrationPartner_View" />
 			<value enum="12302" description="IntegrationPartner_Add" />
@@ -25882,6 +26247,90 @@ ERROR:Mismatch of  mdn type and app type
     	<value enum="11" description="Others" />
     </field>
     
+    <field number="8301"  name="AgentCode" type="STRING"/>
+	<field number="8302"  name="AgentType" type="STRING"/>
+	<field number="8303"  name="ClassificationAgent" type="STRING"/>
+	<field number="8304"  name="TypeofBusinessAgent" type="STRING"/>
+	<field number="8305"  name="ElectonicDevieused" type="STRING"/>
+	<field number="8306"  name="AgentDescription" type="STRING"/>
+	<field number="8307"  name="KCKCPKKBankSinarmas" type="STRING"/>
+	<field number="8309"  name="CIFNumber" type="STRING"/>
+	<field number="8310"  name="AccountnumberofBankSinarmas" type="STRING"/>
+	<field number="8311"  name="BranchofBankSinarmas" type="STRING"/>
+	<field number="8312"  name="NameInAccordanceIdentity" type="STRING"/>
+	<field number="8314"  name="ExpiredDate" type="STRING"/>
+	<field number="8315"  name="AlamatInAccordanceIdentity" type="STRING"/>
+	<field number="8316"  name="RTRWAl" type="STRING"/>
+	<field number="8317"  name="DistrictAl" type="STRING"/>
+	<field number="8318"  name="VillageAl" type="STRING"/>
+	<field number="8319"  name="CityAl" type="STRING"/>
+	<field number="8320"  name="PotalCodeAl" type="STRING"/>
+	<field number="8321"  name="ProvincialAl" type="STRING"/>
+	<field number="8322"  name="DomicileAddress" type="STRING"/>
+	<field number="8323"  name="AddressDomicile" type="STRING"/>
+	<field number="8324"  name="RTRWDom" type="STRING"/>
+	<field number="8325"  name="DistrictDom" type="STRING"/>
+	<field number="8326"  name="VillageDom" type="STRING"/>
+	<field number="8327"  name="CityDom" type="STRING"/>
+	<field number="8328"  name="PotalCodeDom" type="STRING"/>
+	<field number="8329"  name="ProvincialDom" type="STRING"/>
+	<field number="8330"  name="MobilePhoneNumber" type="STRING"/>
+	<field number="8331"  name="EMail" type="STRING"/>
+	<field number="8332"  name="Jobs" type="STRING"/>
+	<field number="8333"  name="AgreementNumber" type="STRING"/>
+	<field number="8334"  name="AgreementDate" type="STRING"/>
+	<field number="8335"  name="Implementationdate" type="STRING"/>
+	<field number="8336"  name="AgentCompanyName" type="STRING"/>
+	<field number="8337"  name="Businessfields" type="STRING"/>
+	<field number="8338"  name="Position" type="STRING"/>
+	<field number="8339"  name="Lengthofwork" type="STRING"/>
+	<field number="8340"  name="CompanyAddress" type="STRING"/>
+	<field number="8341"  name="RTRWCom" type="STRING"/>
+	<field number="8342"  name="DistrictCom" type="STRING"/>
+	<field number="8343"  name="VillageCom" type="STRING"/>
+	<field number="8344"  name="CityCom" type="STRING"/>
+	<field number="8345"  name="PotalCodeCom" type="STRING"/>
+	<field number="8346"  name="LatitudeLongitude" type="STRING"/>
+	<field number="8347"  name="ProvincialCom" type="STRING"/>
+	<field number="8348"  name="PhoneNumber" type="STRING"/>	
+	<field number="8349" name="TypeofBusinessAgentText" type="STRING"/>
+	<field number="8350" name="ClassificationAgentText" type="STRING"/>
+	<field number="8351" name="AgentTypeText" type="STRING"/>
+	<field number="8352" name="ElectonicDevieusedText" type="STRING"/>
+	<field number="8353" name="AgentDescriptionText" type="STRING"/>
+	<field number="8354" name="KCKCPKKBankSinarmasText" type="STRING"/>
+	<field number="8356" name="DomicileAddressText" type="STRING"/>
+	<field number="8357" name="JobsText" type="STRING"/>	
+	<field number="8359"  name="BranchSequence" type="INT32"/>
+	<field number="8360" name="MerchantAddressID2" type="RecordID" />
+	<field number="8361" name="TypeAgentObject" type="STRING"/>
+	<field number="8363" name="TypesofbusinessEntity" type="STRING"/>	
+	<field number="8364" name="NameofBusinessEntity" type="STRING"/>
+	<field number="8365" name="TaxFileNumberNPWP" type="STRING"/>
+	<field number="8366" name="StatusofBusinessSites" type="STRING"/>
+	<field number="8367" name="FacsimileNumber" type="STRING"/>
+	<field number="8368" name="Website" type="STRING"/>
+	<field number="8369" name="LegalRelationship" type="STRING"/>
+	<field number="8372" name="TypesofbusinessEntityText" type="STRING"/>
+	<field number="8373" name="StatusofBusinessSitesText" type="STRING"/>
+	<field number="8374" name="LegalRelationshipText" type="STRING"/>
+	<field number="8375" name="OtherJobs" type="STRING"/>
+	<field number="8376" name="OtherTypesofbusinessEntity" type="STRING"/>
+	<field number="8377" name="OtherStatusofBusinessSites" type="STRING"/>
+	<field number="8378" name="OtherLegalRelationship" type="STRING"/>
+	<field number="8379" name="CorpBusinessfields" type="STRING"/>
+	<field number="8380" name="corpemail" type="STRING"/>
+	<field number="8381" name="corpKTPID" type="STRING"/>
+	<field number="8382" name="corpExpiredDate" type="STRING"/>
+	<field number="8383" name="AddressInAccordanceIdentity" type="STRING"/>
+	<field number="8384" name="BusinessAddress" type="STRING"/>
+	<field number="8385" name="PlaceofBirth" type="STRING"/>
+	<field number="8386" name="DateofBirth" type="STRING"/>
+	<field number="8387" name="CompanyEmailId" type="STRING"/>
+	<field number="8388" name="UserBankBranch" type="STRING"/>
+	<field number="8389" name="BankAccountStatus" type="STRING"/>
+	<field number="8390" name="OtherField1" type="STRING"/>
+   
     </fields>
     <primitives>
 		<dbtype name="mysql">
