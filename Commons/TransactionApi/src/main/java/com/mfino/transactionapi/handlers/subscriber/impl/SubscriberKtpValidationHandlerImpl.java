@@ -168,6 +168,7 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 				result.setDob(getDob(transactionDetails.getDateOfBirth()));
 				result.setMothersMaidenName("mothersMaidenName");
 				result.setAddressLine(response.get("alamat").toString());
+				result.setCity(response.get("kota").toString());
 				result.setRt(response.get("rt").toString());
 				result.setRw(response.get("rw").toString());
 				result.setSubDistrict(response.get("kelurahan").toString());

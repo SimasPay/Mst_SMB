@@ -24520,6 +24520,7 @@ ERROR:Mismatch of  mdn type and app type
 		<field number="5327" name="AdminAction" type="INT32">
 			<value enum="1" description="Approve" />
 			<value enum="2" description="Reject" />
+			<value enum="3" description="RequestForCorrection" />
 		</field>
 		<field number="5859" name="CardStatus" type="UserStatus"/>
 		<field number="5860" name="ShortCodes" type="STRING"/>
@@ -25084,6 +25085,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="1" description="Upgradable"/>
 			<value enum="2" description="Approved"/>
 			<value enum="3" description="Rejected"/>
+			<value enum="4" description="RequestForCorrection"/>
 		</field>
 		<field number="6217" name="TownVillage" type="STRING"  />
 		<field number="6218" name="TypeofBankAccount" type="STRING"  />

@@ -223,6 +223,16 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			}
 			errorMsg.setErrorDescription(MessageText._("Successfully approved the subscriber"));
 
+		} else if (CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())) { 
+			
+			subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
+			subscriber.setApproveOrRejectTime(new Timestamp());
+			subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
+			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_RequestForCorrection);
+			subscriberDao.save(subscriber);
+			
+			errorMsg.setErrorDescription(MessageText._("Request For Correction has been sent for Subscriber"));
+			
 		} else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
 			// update subscriber donot update pockets
 			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Rejected);

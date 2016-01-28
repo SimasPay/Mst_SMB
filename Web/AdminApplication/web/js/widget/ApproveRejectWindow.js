@@ -180,13 +180,24 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
                 return;
             }
            
-            if(this.form.find('itemId','approve')[0].checked || this.form.find('itemId','requestForCorrection')[0].checked)
+            if(this.form.find('itemId','approve')[0].checked)
             {
                 var amsg = new CmFinoFIX.message.JSApproveRejectSubscriber();
                 amsg.m_pSubscriberMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
                 amsg.m_pAdminComment = this.form.items.get('comment').getValue();
                 //amsg.SetUserStatus(this.record.data[CmFinoFIX.message.JSUsers.Entries.UserStatus._name]);
                 amsg.m_pAdminAction = CmFinoFIX.AdminAction.Approve;
+                var aparams = mFino.util.showResponse.getDisplayParam();
+                aparams.store = this.store;
+                aparams.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = this.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                mFino.util.fix.send(amsg, aparams);
+                this.hide();
+            } else if(this.form.find('itemId','requestForCorrection')[0].checked) {
+            	
+            	var amsg = new CmFinoFIX.message.JSApproveRejectSubscriber();
+                amsg.m_pSubscriberMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
+                amsg.m_pAdminComment = this.form.items.get('comment').getValue();
+                amsg.m_pAdminAction = CmFinoFIX.AdminAction.RequestForCorrection;
                 var aparams = mFino.util.showResponse.getDisplayParam();
                 aparams.store = this.store;
                 aparams.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = this.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
