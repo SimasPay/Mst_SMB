@@ -102,24 +102,6 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 		                    }
 		                }*/
 	               },
-/*	               {
-	                   xtype : "hidden",
-	                   fieldLabel :_('Branch code'),
-	                   anchor : '100%',
-	                   allowBlank: true,
-	                   maxLength : 100,
-	                   itemId : 'servicepartner.form.BranchCode',
-	                   name : CmFinoFIX.message.JSAgent.BranchCode._name
-	               },*/
-/*	               {
-	                   xtype : "hidden",
-	                   fieldLabel :_('Branch Name'),
-	                   anchor : '100%',
-	                   allowBlank: true,
-	                   maxLength : 100,
-	                   itemId : 'servicepartner.form.BranchofBankSinarmas',
-	                   name : CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name
-	               }*/
 	            ]
             },
             {
@@ -500,7 +482,7 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             
             Ext.apply(params, {
             success :  function(response){
-       		 if(response.m_pErrorCode === CmFinoFIX.ErrorCode.NoError){
+       		 if(response.m_pErrorCode == CmFinoFIX.ErrorCode_Generic){
                   Ext.Msg.show({
                       title: 'Info',
                       minProgressWidth:600,

@@ -90,7 +90,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
     	                   allowBlank: true,
     	                   maxLength : 255,
     	                   itemId : 'servicepartner.form.BranchCode',
-    	                   name : CmFinoFIX.message.JSAgent.BranchCode._name
+    	                   name : CmFinoFIX.message.JSAgent.BranchCodeText._name
     	               },
 /*	    	               {
 	    	                   xtype : "hidden",
@@ -127,7 +127,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
 							   blankText : _('Agent Type is required'),
 							   enumId: CmFinoFIX.TagID.AgentType,
 							   itemId : 'servicepartner.form.AgentType',
-							   name : CmFinoFIX.message.JSAgent.AgentType._name
+							   name : CmFinoFIX.message.JSAgent.AgentTypeText._name
 							},
                     	   {
                     		   xtype : "enumdropdown",
@@ -151,7 +151,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                      		   blankText : _('Type of Business Agent is required'),
                      		   enumId: CmFinoFIX.TagID.TypeofBusinessAgent,
                      		   itemId : 'servicepartner.form.TypeofBusinessAgent',
-                     		   name : CmFinoFIX.message.JSAgent.TypeofBusinessAgent._name
+                     		   name : CmFinoFIX.message.JSAgent.TypeofBusinessAgentText._name
                      	   },
                      	   {
                      		   xtype : "enumdropdown",
@@ -177,7 +177,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.AgreementNumber._name
                            },
                            {
-                               xtype : "datefield",
+                               xtype : "textfield",
                                //fieldLabel :_("Agreement Date"),
                                fieldLabel :_("Tanggal Perjanjan Kerjasama"),
                                anchor : '100%',
@@ -187,7 +187,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.AgreementDate._name
                            },
                            {
-                               xtype : "datefield",
+                               xtype : "textfield",
                                //fieldLabel :_("Implementation date"),
                                fieldLabel :_("Tanggal Pelaksanaan"),
                                anchor : '100%',
@@ -215,7 +215,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.PlaceofBirth._name
                            },
                            {
-                               xtype : "datefield",
+                               xtype : "textfield",
                                //fieldLabel :_("Date of Birth"),
                                fieldLabel :_("Tanggal Lahir"),
                                anchor : '100%',

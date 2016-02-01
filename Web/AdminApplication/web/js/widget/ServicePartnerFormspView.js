@@ -73,15 +73,6 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 	       	                   itemId  : 'servicepartner.form.AccountnumberofBankSinarmas',
 	       	                   name: CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name
 	       	               },
-/*	       	               {
-	       	                   xtype : "textfield",
-	       	                   fieldLabel :_("Cabang"),
-	                           anchor : '100%',
-	                           allowBlank: true,
-	                           maxLength : 255,
-	       	                   itemId  : 'servicepartner.form.BranchofBankSinarmas',
-	       	                   name: CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name
-	       	               },*/
 	       	               {
 	       	                   xtype : "textfield",
 	       	                   fieldLabel :_("Cabang"),
@@ -89,17 +80,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 	                           allowBlank: true,
 	                           maxLength : 255,
 	       	                   itemId  : 'servicepartner.form.BranchCode',
-	       	                   name: CmFinoFIX.message.JSAgent.BranchCode._name
+	       	                   name: CmFinoFIX.message.JSAgent.BranchCodeText._name
 	       	               },
-/*	    	               {
-	    	                   xtype : "hidden",
-	    	                   fieldLabel :_('Branch code'),
-	    	                   anchor : '100%',
-	    	                   allowBlank: true,
-	    	                   maxLength : 255,
-	    	                   itemId : 'servicepartner.form.BranchCode',
-	    	                   name : CmFinoFIX.message.JSAgent.BranchCode._name
-	    	               },*/
                            {
                                xtype : 'label',
                                text :'DATA AGEN',
@@ -118,7 +100,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 							    name    : CmFinoFIX.message.JSAgent.AgentCode._name
 							},
 							{
-							   xtype : "enumdropdown",
+							   xtype : "textfield",
 							   fieldLabel :_('Jenis Agen'),
 							   anchor : '100%',
 							   allowBlank: true,
@@ -126,10 +108,10 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 							   blankText : _('Agent Type is required'),
 							   enumId: CmFinoFIX.TagID.AgentType,
 							   itemId : 'servicepartner.form.AgentType',
-							   name : CmFinoFIX.message.JSAgent.AgentType._name
+							   name : CmFinoFIX.message.JSAgent.AgentTypeText._name
 							},
                     	   {
-                    		   xtype : "enumdropdown",
+                    		   xtype : "textfield",
                     		   fieldLabel :_('Klasifikasi Agen'),
                     		   anchor : '100%',
                     		   allowBlank: true,
@@ -137,10 +119,10 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                     		   blankText : _('Classification Agent is required'),
                     		   enumId: CmFinoFIX.TagID.ClassificationAgent,
                     		   itemId : 'servicepartner.form.ClassificationAgent',
-                    		   name : CmFinoFIX.message.JSAgent.ClassificationAgent._name
+                    		   name : CmFinoFIX.message.JSAgent.ClassificationAgentText._name
                     	   },
                      	   {
-                     		   xtype : "enumdropdown",
+                     		   xtype : "textfield",
                      		   fieldLabel :_('Jenis Usaha Agen'),
                      		   anchor : '100%',
                      		   allowBlank: true,
@@ -148,10 +130,10 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                      		   blankText : _('Type of Business Agent is required'),
                      		   enumId: CmFinoFIX.TagID.TypeofBusinessAgent,
                      		   itemId : 'servicepartner.form.TypeofBusinessAgent',
-                     		   name : CmFinoFIX.message.JSAgent.TypeofBusinessAgent._name
+                     		   name : CmFinoFIX.message.JSAgent.TypeofBusinessAgentText._name
                      	   },
                      	   {
-                     		   xtype : "enumdropdown",
+                     		   xtype : "textfield",
                      		   fieldLabel :_('Yang Digunakan'),
                      		   anchor : '100%',
                      		   allowBlank: true,
@@ -159,7 +141,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                      		   blankText : _('Electonic Devie used is required'),
                      		   enumId: CmFinoFIX.TagID.ElectonicDevieused,
                      		   itemId : 'servicepartner.form.ElectonicDevieused',
-                     		   name : CmFinoFIX.message.JSAgent.ElectonicDevieused._name
+                     		   name : CmFinoFIX.message.JSAgent.ElectonicDevieusedText._name
                      	   },
                            {
                                xtype : "textfield",
@@ -172,19 +154,21 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.AgreementNumber._name
                            },
                            {
-                               xtype : "datefield",
+                               xtype : "textfield",
                                fieldLabel :_("Tanggal Perjanjan Kerjasama"),
                                anchor : '100%',
-							   editable: false,
+                               allowBlank: true,
+                               maxLength : 255,
                                blankText : _('Agreement Date is required'),
                                itemId  : 'servicepartner.form.AgreementDate',
                                name: CmFinoFIX.message.JSAgent.AgreementDate._name
                            },
                            {
-                               xtype : "datefield",
+                               xtype : "textfield",
                                fieldLabel :_("Tanggal Pelaksanaan"),
                                anchor : '100%',
-							   editable: false,						   
+                               allowBlank: true,
+                               maxLength : 255,					   
                                blankText : _('Implementation date is required'),
                                itemId  : 'servicepartner.form.Implementationdate',
                                name: CmFinoFIX.message.JSAgent.Implementationdate._name
@@ -207,10 +191,11 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.PlaceofBirth._name
                            },
                            {
-                               xtype : "datefield",
+                               xtype : "textfield",
                                fieldLabel :_("Tanggal Lahir"),
                                anchor : '100%',
-							   editable: false,
+                               allowBlank: true,
+                               maxLength : 255,
                                blankText : _('Date of birth is required'),
                                itemId  : 'servicepartner.form.DateofBirth',
                                name: CmFinoFIX.message.JSAgent.DateofBirth._name
@@ -454,7 +439,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.UserBankBranch._name
                            },
                      	   {
-                     		   xtype : "enumdropdown",
+                     		   xtype : "textfield",
                      		   fieldLabel :_('Status'),
                      		   anchor : '100%',
                      		   allowBlank: true,
@@ -462,7 +447,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                      		   blankText : _('BankAccountStatus is required'),
                      		   enumId: CmFinoFIX.TagID.BankAccountStatus,
                      		   itemId : 'servicepartner.form.BankAccountStatus',
-                     		   name : CmFinoFIX.message.JSAgent.BankAccountStatus._name
+                     		   name : CmFinoFIX.message.JSAgent.BankAccountStatusText._name
                      	   }
                 ]
             },

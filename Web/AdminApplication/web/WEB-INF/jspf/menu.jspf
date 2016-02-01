@@ -11,8 +11,8 @@
                         <ul>
                             <li id="partner_tab"><a href="#" onclick="return false">Partner</a></li>
                             <li id="mfsBiller_tab"><a href="#" onclick="return false">Billers</a></li>
-                            <!-- <li id="agent_tab" ><a href="#" onclick="return false">Agent</a></li> -->
-                            <li id="agentsp_tab" ><a href="#" onclick="return false">Agent</a></li>  
+                            <li id="agent_tab" ><a href="#" onclick="return false">Agent</a></li>
+                            <!-- <li id="agentsp_tab" ><a href="#" onclick="return false">Agent</a></li> -->  
                             <li id="teller_tab" ><a href="#" onclick="return false">BankTeller</a></li>
                             <li id="fundingForAgent_tab"><a href="#" onclick="return false">Approve Funding</a></li> 
                         </ul>

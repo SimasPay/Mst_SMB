@@ -19,7 +19,8 @@ mFino.page.agentsp = function(config){
 	    },config));
 	 
 	 var gridEditFormView = new mFino.widget.FormWindowsp(Ext.apply({
-	        form : new mFino.widget.ServicePartnerFormspEdit(config),
+	        //form : new mFino.widget.ServicePartnerFormspEdit(config),
+		 form : new mFino.widget.ServicePartnerFormspView(config),
 		    height : 600,
 		    width: 920    
 	    },config));

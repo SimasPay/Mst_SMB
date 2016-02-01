@@ -151,6 +151,9 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 if (!entry.getRecordVersion().equals(objPartner.getVersion())) {
                     handleStaleDataException();
                 }
+                if(entry.getEMail() != null){
+                	entry.setAuthorizedEmail(entry.getEMail());
+                }
                 if(entry.isRemoteModifiedPartnerCode()&&(!objPartner.getPartnerCode().equalsIgnoreCase(entry.getPartnerCode()))){
                 	PartnerDAO dao = DAOFactory.getInstance().getPartnerDAO();
             		PartnerQuery query = new PartnerQuery();
@@ -290,13 +293,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			{
 				System.out.println("entered into agentprimarydata block");
 				
-				
-				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
-				
-/*				errorMsg = (CMJSAgentError)verifyAgentData();
+/*				errorMsg = (CMJSAgentError)verifyAgentData(errorMsg);
 				errorMsg.setErrorDescription("Agent KTP validation successfull");
 				errorMsg.setsuccess(CmFinoFIX.Boolean_True);
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);*/
+				
+				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
 				
 				KtpDetails ktpDetail = new KtpDetails();
 				ktpDetail.setMDN(realMsg.getMDN());
@@ -1392,6 +1394,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
 	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
 	        	entry.setAgentType(String.valueOf(partner.getBusinessPartnerType()));
+	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
 	        }
 	        entry.setRestrictions(subscriberMdn.getRestrictions());
         }
@@ -1477,7 +1480,9 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 		    		entry.setAgreementNumber(saf.getAgreementNumber());
 		    	}
 		    	if(saf.getAgrementDate()!= null){
+		    		//entry.setAgreementDate("Testtttttt");
 		    		entry.setAgreementDate(String.valueOf(saf.getAgrementDate()));
+		    		System.out.println("agreement date is: "+entry.getAgreementDate());
 		    	}
 		    	if(saf.getImplementatindate()!= null){
 		    		entry.setImplementationdate(String.valueOf(saf.getImplementatindate()));
@@ -1651,6 +1656,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
 	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
 	        	entry.setAgentType(String.valueOf(partner.getBusinessPartnerType()));
+	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
 	        }
 	        entry.setRestrictions(subscriberMdn.getRestrictions());
         }
@@ -1854,8 +1860,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     	subAddFldsDAO.save(addnlData);
     }
     
-    public CMJSAgentError verifyAgentData(){
-    	CmFinoFIX.CMJSAgentError errorAgentMsg = new CMJSAgentError();
+    public CMJSAgentError verifyAgentData(CmFinoFIX.CMJSAgentError errorAgentMsg){
+    	//CmFinoFIX.CMJSAgentError errorAgentMsg = new CMJSAgentError();
     	errorAgentMsg.setAlamatInAccordanceIdentity("jakarta");
     	errorAgentMsg.setRTAl("01");
     	errorAgentMsg.setRWAl("02");
