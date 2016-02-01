@@ -66,23 +66,32 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 	       	               },
 	       	               {
 	       	                   xtype : "textfield",
-	       	                   fieldLabel :_("Rekening Sinarmas"),
+	       	                   fieldLabel :_("Nomor Rekening Bank Sinarmas"),
 	                           anchor : '100%',
 	                           allowBlank: true,
 	                           maxLength : 255,
 	       	                   itemId  : 'servicepartner.form.AccountnumberofBankSinarmas',
 	       	                   name: CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name
 	       	               },
-	       	               {
+/*	       	               {
 	       	                   xtype : "textfield",
-	       	                   fieldLabel :_("Bank Sinarmas Branch"),
+	       	                   fieldLabel :_("Cabang"),
 	                           anchor : '100%',
 	                           allowBlank: true,
 	                           maxLength : 255,
 	       	                   itemId  : 'servicepartner.form.BranchofBankSinarmas',
 	       	                   name: CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name
+	       	               },*/
+	       	               {
+	       	                   xtype : "textfield",
+	       	                   fieldLabel :_("Cabang"),
+	                           anchor : '100%',
+	                           allowBlank: true,
+	                           maxLength : 255,
+	       	                   itemId  : 'servicepartner.form.BranchCode',
+	       	                   name: CmFinoFIX.message.JSAgent.BranchCode._name
 	       	               },
-	    	               {
+/*	    	               {
 	    	                   xtype : "hidden",
 	    	                   fieldLabel :_('Branch code'),
 	    	                   anchor : '100%',
@@ -90,17 +99,17 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 	    	                   maxLength : 255,
 	    	                   itemId : 'servicepartner.form.BranchCode',
 	    	                   name : CmFinoFIX.message.JSAgent.BranchCode._name
-	    	               },
+	    	               },*/
                            {
                                xtype : 'label',
-                               text :'AGENT DATA',
+                               text :'DATA AGEN',
                                name: 'PersonalData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
                            },
 							{
 							    xtype : 'textfield',
-							    fieldLabel :_("Agent Code"),
+							    fieldLabel :_("Nomor Identifikasi Agen"),
 							    anchor : '100%',
 							    allowBlank: true,
 							    maxLength : 255,
@@ -110,9 +119,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 							},
 							{
 							   xtype : "enumdropdown",
-							   fieldLabel :_('Agent Type'),
+							   fieldLabel :_('Jenis Agen'),
 							   anchor : '100%',
-							   allowBlank: false,
+							   allowBlank: true,
 							   emptyText : _('<select one..>'),
 							   blankText : _('Agent Type is required'),
 							   enumId: CmFinoFIX.TagID.AgentType,
@@ -121,9 +130,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 							},
                     	   {
                     		   xtype : "enumdropdown",
-                    		   fieldLabel :_('Classification Agent'),
+                    		   fieldLabel :_('Klasifikasi Agen'),
                     		   anchor : '100%',
-                    		   allowBlank: false,
+                    		   allowBlank: true,
                     		   emptyText : _('<select one..>'),
                     		   blankText : _('Classification Agent is required'),
                     		   enumId: CmFinoFIX.TagID.ClassificationAgent,
@@ -132,9 +141,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                     	   },
                      	   {
                      		   xtype : "enumdropdown",
-                     		   fieldLabel :_('Type of Business Agent'),
+                     		   fieldLabel :_('Jenis Usaha Agen'),
                      		   anchor : '100%',
-                     		   allowBlank: false,
+                     		   allowBlank: true,
                      		   emptyText : _('<select one..>'),
                      		   blankText : _('Type of Business Agent is required'),
                      		   enumId: CmFinoFIX.TagID.TypeofBusinessAgent,
@@ -143,9 +152,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                      	   },
                      	   {
                      		   xtype : "enumdropdown",
-                     		   fieldLabel :_('Electonic Devie used'),
+                     		   fieldLabel :_('Yang Digunakan'),
                      		   anchor : '100%',
-                     		   allowBlank: false,
+                     		   allowBlank: true,
                      		   emptyText : _('<select one..>'),
                      		   blankText : _('Electonic Devie used is required'),
                      		   enumId: CmFinoFIX.TagID.ElectonicDevieused,
@@ -154,7 +163,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                      	   },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Agreement Number"),
+                               fieldLabel :_("Nomor Perjanjan Kerjasama"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -164,7 +173,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "datefield",
-                               fieldLabel :_("Agreement Date"),
+                               fieldLabel :_("Tanggal Perjanjan Kerjasama"),
                                anchor : '100%',
 							   editable: false,
                                blankText : _('Agreement Date is required'),
@@ -173,7 +182,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "datefield",
-                               fieldLabel :_("Implementation date"),
+                               fieldLabel :_("Tanggal Pelaksanaan"),
                                anchor : '100%',
 							   editable: false,						   
                                blankText : _('Implementation date is required'),
@@ -182,14 +191,14 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'PERSONAL DATA',
+                               text :'DATA PRIBADI',
                                name: 'PersonalData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Place of Birth"),
+                               fieldLabel :_("Tempat"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -199,7 +208,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "datefield",
-                               fieldLabel :_("Date of Birth"),
+                               fieldLabel :_("Tanggal Lahir"),
                                anchor : '100%',
 							   editable: false,
                                blankText : _('Date of birth is required'),
@@ -208,7 +217,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Alamat (InAccordanceIdentity)"),
+                               fieldLabel :_("Alamat (Sesuai KTP)"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -218,17 +227,27 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("RT/RW"),
+                               fieldLabel :_("RT"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('RT/RW is required'),
-                               itemId  : 'servicepartner.form.RTRWAl',
-                               name: CmFinoFIX.message.JSAgent.RTRWAl._name
+                               blankText : _('RT is required'),
+                               itemId  : 'servicepartner.form.RTAl',
+                               name: CmFinoFIX.message.JSAgent.RTAl._name
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Village"),
+                               fieldLabel :_("RW"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('RW is required'),
+                               itemId  : 'servicepartner.form.RWAl',
+                               name: CmFinoFIX.message.JSAgent.RWAl._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("Kelurahan/Desa"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -238,7 +257,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("District"),
+                               fieldLabel :_("Kecamatan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -248,7 +267,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("City"),
+                               fieldLabel :_("Kabupaten/Kota"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -258,7 +277,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Provincial"),
+                               fieldLabel :_("Propinsi"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -268,7 +287,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Potal Code"),
+                               fieldLabel :_("Kode Pos"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -289,14 +308,14 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'COMPANY DATA',
+                               text :'DATA PERUSAHAAN',
                                name: 'CompanyData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Company Name"),
+                               fieldLabel :_("Nama Perusahaan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -306,7 +325,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Company Address"),
+                               fieldLabel :_("Alamat"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -316,17 +335,27 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("RT/RW"),
+                               fieldLabel :_("RT"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('RT/RW is required'),
-                               itemId  : 'servicepartner.form.RTRWCom',
-                               name: CmFinoFIX.message.JSAgent.RTRWCom._name
+                               blankText : _('RT is required'),
+                               itemId  : 'servicepartner.form.RTCom',
+                               name: CmFinoFIX.message.JSAgent.RTCom._name
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Village"),
+                               fieldLabel :_("RW"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('RW is required'),
+                               itemId  : 'servicepartner.form.RWCom',
+                               name: CmFinoFIX.message.JSAgent.RWCom._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("Kelurahan/Desa"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -336,7 +365,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("District"),
+                               fieldLabel :_("Kecamatan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -346,7 +375,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("City"),
+                               fieldLabel :_("Kabupaten/Kota"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -356,7 +385,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Provincial"),
+                               fieldLabel :_("Propinsi"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -366,7 +395,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Potal Code"),
+                               fieldLabel :_("Kode Pos"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -376,17 +405,27 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Latitude-Longitude"),
+                               fieldLabel :_("Latitude"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Latitude-Longitude is required'),
-                               itemId  : 'servicepartner.form.LatitudeLongitude',
-                               name: CmFinoFIX.message.JSAgent.LatitudeLongitude._name
+                               blankText : _('Latitude is required'),
+                               itemId  : 'servicepartner.form.Latitude',
+                               name: CmFinoFIX.message.JSAgent.Latitude._name
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Phone Number"),
+                               fieldLabel :_("Longitude"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('Longitude is required'),
+                               itemId  : 'servicepartner.form.Longitude',
+                               name: CmFinoFIX.message.JSAgent.Longitude._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("Nomor Telephon (Fixed Line)"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -396,7 +435,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Company Email"),
+                               fieldLabel :_("Alamat Email"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -405,15 +444,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.CompanyEmailId._name
                            },
                            {
-                               xtype : 'label',
-                               text :'USER DETAILS',
-                               name: 'PersonalData',
-                               anchor : '100%',
-                               style: 'font-weight:bold;'
-                           },
-                           {
                                xtype : "textfield",
-                               fieldLabel :_("User Bank Branch"),
+                               fieldLabel :_("Jaringan Kantor Bank"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -425,12 +457,12 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                      		   xtype : "enumdropdown",
                      		   fieldLabel :_('Status'),
                      		   anchor : '100%',
-                     		   allowBlank: false,
+                     		   allowBlank: true,
                      		   emptyText : _('<select one..>'),
-                     		   blankText : _('Description is required'),
-                     		   enumId: CmFinoFIX.TagID.AgentDescription,
-                     		   itemId : 'servicepartner.form.AgentDescription',
-                     		   name : CmFinoFIX.message.JSAgent.AgentDescription._name
+                     		   blankText : _('BankAccountStatus is required'),
+                     		   enumId: CmFinoFIX.TagID.BankAccountStatus,
+                     		   itemId : 'servicepartner.form.BankAccountStatus',
+                     		   name : CmFinoFIX.message.JSAgent.BankAccountStatus._name
                      	   }
                 ]
             },

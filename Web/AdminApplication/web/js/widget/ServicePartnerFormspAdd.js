@@ -131,7 +131,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'PERSONAL DATA',
+                               text :'DATA PRIBADI',
                                name: 'PersonalData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
@@ -171,13 +171,23 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("RT/RW"),
+                               fieldLabel :_("RT"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('RT/RW is required'),
-                               itemId  : 'servicepartner.form.RTRWAl',
-                               name: CmFinoFIX.message.JSAgent.RTRWAl._name
+                               blankText : _('RT is required'),
+                               itemId  : 'servicepartner.form.RTAl',
+                               name: CmFinoFIX.message.JSAgent.RTAl._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("RW"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('RW is required'),
+                               itemId  : 'servicepartner.form.RWAl',
+                               name: CmFinoFIX.message.JSAgent.RWAl._name
                            },
                            {
                                xtype : "textfield",
@@ -246,8 +256,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.EMail._name
                            },
                            {
-                               xtype : 'label',
-                               text :'COMPANY DATA',
+                               xtype : 'label',                               text :'DATA PERUSAHAAN',
+
                                name: 'CompanyData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
@@ -276,13 +286,23 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("RT/RW"),
+                               fieldLabel :_("RT"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('RT/RW is required'),
-                               itemId  : 'servicepartner.form.RTRWCom',
-                               name: CmFinoFIX.message.JSAgent.RTRWCom._name
+                               blankText : _('RT is required'),
+                               itemId  : 'servicepartner.form.RTCom',
+                               name: CmFinoFIX.message.JSAgent.RTCom._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("RW"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('RW is required'),
+                               itemId  : 'servicepartner.form.RWCom',
+                               name: CmFinoFIX.message.JSAgent.RWCom._name
                            },
                            {
                                xtype : "textfield",
@@ -341,18 +361,29 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Latitude-Longitude"),
+                               fieldLabel :_("Latitude"),
                                anchor : '100%',
                                allowBlank: false,
                                maxLength : 255,
-                               blankText : _('Latitude-Longitude is required'),
-                               itemId  : 'servicepartner.form.LatitudeLongitude',
-                               name: CmFinoFIX.message.JSAgent.LatitudeLongitude._name
+                               blankText : _('Latitude is required'),
+                               itemId  : 'servicepartner.form.Latitude',
+                               name: CmFinoFIX.message.JSAgent.Latitude._name
                            },
                            {
                                xtype : "textfield",
+                               fieldLabel :_("Longitude"),
+                               anchor : '100%',
+                               allowBlank: false,
+                               maxLength : 255,
+                               blankText : _('Longitude is required'),
+                               itemId  : 'servicepartner.form.Longitude',
+                               name: CmFinoFIX.message.JSAgent.Longitude._name
+                           },
+                           {
+                        	   xtype : 'numberfield',
                                //fieldLabel :_("Phone Number"),
                                fieldLabel :_("Nomor Telephon (Fixed Line)"),
+                               allowDecimals:false,
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
@@ -368,16 +399,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                                allowBlank: true,
                                maxLength : 255,
                                vtype: 'email',
-                               blankText : _('Phone Number is required'),
+                               blankText : _('Company Email is required'),
                                itemId  : 'servicepartner.form.CompanyEmailId',
                                name: CmFinoFIX.message.JSAgent.CompanyEmailId._name
-                           },
-                           {
-                               xtype : 'label',
-                               text :'USER DETAILS',
-                               name: 'userData',
-                               anchor : '100%',
-                               style: 'font-weight:bold;'
                            },
                            {
                                xtype : "textfield",
@@ -396,10 +420,10 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                      		   anchor : '100%',
                      		   allowBlank: false,
                      		   emptyText : _('<select one..>'),
-                     		   blankText : _('Description is required'),
-                     		   enumId: CmFinoFIX.TagID.AgentDescription,
-                     		   itemId : 'servicepartner.form.AgentDescription',
-                     		   name : CmFinoFIX.message.JSAgent.AgentDescription._name
+                     		   blankText : _('BankAccountStatus is required'),
+                     		   enumId: CmFinoFIX.TagID.BankAccountStatus,
+                     		   itemId : 'servicepartner.form.BankAccountStatus',
+                     		   name : CmFinoFIX.message.JSAgent.BankAccountStatus._name
                      	   },
                      	   
               			{
@@ -438,7 +462,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
        	                   itemId  : 'servicepartner.form.AccountnumberofBankSinarmas',
        	                   name: CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name
        	               },
-       	               {
+/*       	               {
        	                   xtype : "hidden",
        	                   fieldLabel :_("Bank Sinarmas Branch"),
                            anchor : '100%',
@@ -446,7 +470,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            maxLength : 255,
        	                   itemId  : 'servicepartner.form.BranchofBankSinarmas',
        	                   name: CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name
-       	               },
+       	               },*/
     	               {
     	                   xtype : "hidden",
     	                   fieldLabel :_('Branch code'),
@@ -740,6 +764,23 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
     setCombo : function(combo){
     	subscribercombo = combo;
     },
+    onDOBSelect : function(field)
+    {
+    	var age = 18;
+   	 day = field.getValue().getDate();
+   	 month = field.getValue().getMonth() + 1;
+   	 year = field.getValue().getFullYear();
+	  	 
+   	 var mydate = new Date();
+		 mydate.setFullYear(year, month-1, day);
+   	 var currdate = new Date();
+		 currdate.setFullYear(currdate.getFullYear() - age);
+		 if ((currdate - mydate) < 0){
+			alert("Date should be greater than 18 years");
+			this.form.items.get("servicepartner.form.BirthDate").setValue('');
+			}
+
+    },
     onSuspendClick: function(){
     	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
     	if (partnerType === CmFinoFIX.BusinessPartnerType.ServicePartner) {
@@ -792,16 +833,16 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 	      	this.find('itemId','servicepartner.form.KTPID')[0].enable();
 	      	this.find('itemId','servicepartner.form.MDN')[0].enable();
 	      	this.find('itemId','servicepartner.form.AccountnumberofBankSinarmas')[0].enable();
-	      	this.find('itemId','servicepartner.form.BranchofBankSinarmas')[0].enable();
+	      	//this.find('itemId','servicepartner.form.BranchofBankSinarmas')[0].enable();
 	      	this.find('itemId','servicepartner.form.BranchCode')[0].enable();
 	      	this.find('itemId','servicepartner.form.AlamatInAccordanceIdentity')[0].enable();
-	      	this.find('itemId','servicepartner.form.RTRWAl')[0].enable();
+	      	this.find('itemId','servicepartner.form.RTAl')[0].enable();
+	      	this.find('itemId','servicepartner.form.RWAl')[0].enable();
 	      	this.find('itemId','servicepartner.form.VillageAl')[0].enable();
 	      	this.find('itemId','servicepartner.form.DistrictAl')[0].enable();
 	      	this.find('itemId','servicepartner.form.CityAl')[0].enable();
 	      	this.find('itemId','servicepartner.form.ProvincialAl')[0].enable();
 	      	this.find('itemId','servicepartner.form.PotalCodeAl')[0].enable();
-	      	this.find('itemId','servicepartner.form.EMail')[0].enable();
 	      	this.find('itemId','servicepartner.form.UserBankBranch')[0].enable();   
        		
        		var msg= new CmFinoFIX.message.JSAgent();
@@ -818,7 +859,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                var PlaceofBirth = values[CmFinoFIX.message.JSAgent.PlaceofBirth._name];
                var DateofBirth = values[CmFinoFIX.message.JSAgent.DateofBirth._name];
                var AlamatInAccordanceIdentity = values[CmFinoFIX.message.JSAgent.AlamatInAccordanceIdentity._name];
-               var RTRWAl = values[CmFinoFIX.message.JSAgent.RTRWAl._name];
+               var RTAl = values[CmFinoFIX.message.JSAgent.RTAl._name];
+               var RWAl = values[CmFinoFIX.message.JSAgent.RWAl._name];
                var VillageAl = values[CmFinoFIX.message.JSAgent.VillageAl._name];
                var DistrictAl = values[CmFinoFIX.message.JSAgent.DistrictAl._name];
                var CityAl = values[CmFinoFIX.message.JSAgent.CityAl._name];
@@ -827,23 +869,25 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                var EMail = values[CmFinoFIX.message.JSAgent.EMail._name];
                var AgentCompanyName = values[CmFinoFIX.message.JSAgent.AgentCompanyName._name];
                var CompanyAddress = values[CmFinoFIX.message.JSAgent.CompanyAddress._name];
-               var RTRWCom = values[CmFinoFIX.message.JSAgent.RTRWCom._name];
+               var RTCom = values[CmFinoFIX.message.JSAgent.RTCom._name];
+               var RWCom = values[CmFinoFIX.message.JSAgent.RWCom._name];
                var VillageCom = values[CmFinoFIX.message.JSAgent.VillageCom._name];
                var DistrictCom = values[CmFinoFIX.message.JSAgent.DistrictCom._name];
                var CityCom = values[CmFinoFIX.message.JSAgent.CityCom._name];
                var ProvincialCom = values[CmFinoFIX.message.JSAgent.ProvincialCom._name];
                var PotalCodeCom = values[CmFinoFIX.message.JSAgent.PotalCodeCom._name];
-               var LatitudeLongitude = values[CmFinoFIX.message.JSAgent.LatitudeLongitude._name];
+               var Latitude = values[CmFinoFIX.message.JSAgent.Latitude._name];
+               var Longitude = values[CmFinoFIX.message.JSAgent.Longitude._name];
                var PhoneNumber = values[CmFinoFIX.message.JSAgent.PhoneNumber._name];
                var CompanyEmailId = values[CmFinoFIX.message.JSAgent.CompanyEmailId._name];
                var UserBankBranch = values[CmFinoFIX.message.JSAgent.UserBankBranch._name];
-               var AgentDescription = values[CmFinoFIX.message.JSAgent.AgentDescription._name];
+               var BankAccountStatus = values[CmFinoFIX.message.JSAgent.BankAccountStatus._name];
                
                var Username = values[CmFinoFIX.message.JSAgent.Username._name];
                var KTPID = values[CmFinoFIX.message.JSAgent.KTPID._name];
                var MDN = values[CmFinoFIX.message.JSAgent.MDN._name];
                var AccountnumberofBankSinarmas = values[CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name];
-               var BranchofBankSinarmas = values[CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name];
+               //var BranchofBankSinarmas = values[CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name];
                var BranchCode = values[CmFinoFIX.message.JSAgent.BranchCode._name];
                
                
@@ -861,7 +905,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                msg.m_pPlaceofBirth = PlaceofBirth;
                msg.m_pDateofBirth = DateofBirth;
                msg.m_pAlamatInAccordanceIdentity = AlamatInAccordanceIdentity;
-               msg.m_pRTRWAl = RTRWAl;
+               msg.m_pRTAl = RTAl;
+               msg.m_pRWAl = RWAl;
                msg.m_pVillageAl = VillageAl;
                msg.m_pDistrictAl = DistrictAl;
                msg.m_pCityAl = CityAl;
@@ -871,23 +916,25 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                msg.m_pAuthorizedEmail = EMail;
                msg.m_pAgentCompanyName = AgentCompanyName;
                msg.m_pCompanyAddress = CompanyAddress;
-               msg.m_pRTRWCom = RTRWCom;
+               msg.m_pRTCom = RTCom;
+               msg.m_pRWCom = RWCom;
                msg.m_pVillageCom = VillageCom;
                msg.m_pDistrictCom = DistrictCom;
                msg.m_pCityCom = CityCom;
                msg.m_pProvincialCom = ProvincialCom;
                msg.m_pPotalCodeCom = PotalCodeCom;
-               msg.m_pLatitudeLongitude = LatitudeLongitude;
+               msg.m_pLatitude = Latitude;
+               msg.m_pLongitude = Longitude;
                msg.m_pPhoneNumber = PhoneNumber;
                msg.m_pCompanyEmailId = CompanyEmailId;
                msg.m_pUserBankBranch = UserBankBranch;
-               msg.m_pAgentDescription = AgentDescription;
+               msg.m_pBankAccountStatus = BankAccountStatus;
                
                msg.m_pUsername = Username;
                msg.m_pKTPID = KTPID;
                msg.m_pMDN = MDN;
                msg.m_pAccountnumberofBankSinarmas = AccountnumberofBankSinarmas;
-               msg.m_pBranchofBankSinarmas = BranchofBankSinarmas;
+               //msg.m_pBranchofBankSinarmas = BranchofBankSinarmas;
                msg.m_pBranchCode = BranchCode;
 
                
@@ -927,23 +974,23 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                       return params;
                    }
              },
-      setDetails : function(Username,KTPID, MDN, AccountnumberofBankSinarmas, BranchofBankSinarmas, BranchCode,
-    		  AlamatInAccordanceIdentity, RTRWAl, VillageAl, DistrictAl, CityAl, ProvincialAl, PotalCodeAl, EMail, UserBankBranch){
+      setDetails : function(Username,KTPID, MDN, AccountnumberofBankSinarmas, BranchCode,
+    		  AlamatInAccordanceIdentity, RTAl, RWAl, VillageAl, DistrictAl, CityAl, ProvincialAl, PotalCodeAl, UserBankBranch){
 	        this.getForm().reset();
 	        this.form.items.get("servicepartner.form.Username").setValue(Username);
 	      	this.form.items.get("servicepartner.form.KTPID").setValue(KTPID);
 	      	this.form.items.get("servicepartner.form.MDN").setValue(MDN);
 	      	this.form.items.get("servicepartner.form.AccountnumberofBankSinarmas").setValue(AccountnumberofBankSinarmas);
-	      	this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(BranchofBankSinarmas);
+	      	//this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(BranchofBankSinarmas);
 	      	this.form.items.get("servicepartner.form.BranchCode").setValue(BranchCode);
 	      	this.form.items.get("servicepartner.form.AlamatInAccordanceIdentity").setValue(AlamatInAccordanceIdentity);
-	      	this.form.items.get("servicepartner.form.RTRWAl").setValue(RTRWAl);
+	      	this.form.items.get("servicepartner.form.RTAl").setValue(RTAl);
+	      	this.form.items.get("servicepartner.form.RWAl").setValue(RWAl);
 	      	this.form.items.get("servicepartner.form.VillageAl").setValue(VillageAl);
 	      	this.form.items.get("servicepartner.form.DistrictAl").setValue(DistrictAl);
 	      	this.form.items.get("servicepartner.form.CityAl").setValue(CityAl);
 	      	this.form.items.get("servicepartner.form.ProvincialAl").setValue(ProvincialAl);
 	      	this.form.items.get("servicepartner.form.PotalCodeAl").setValue(PotalCodeAl);
-	      	this.form.items.get("servicepartner.form.EMail").setValue(EMail);
 	      	this.form.items.get("servicepartner.form.UserBankBranch").setValue(UserBankBranch);
 	      	
 	      	this.find('itemId','servicepartner.form.AgentCode')[0].disable();
@@ -951,16 +998,16 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 	      	this.find('itemId','servicepartner.form.KTPID')[0].disable();
 	      	this.find('itemId','servicepartner.form.MDN')[0].disable();
 	      	this.find('itemId','servicepartner.form.AccountnumberofBankSinarmas')[0].disable();
-	      	this.find('itemId','servicepartner.form.BranchofBankSinarmas')[0].disable();
+	      	//this.find('itemId','servicepartner.form.BranchofBankSinarmas')[0].disable();
 	      	this.find('itemId','servicepartner.form.BranchCode')[0].disable();
 	      	this.find('itemId','servicepartner.form.AlamatInAccordanceIdentity')[0].disable();
-	      	this.find('itemId','servicepartner.form.RTRWAl')[0].disable();
+	      	this.find('itemId','servicepartner.form.RTAl')[0].disable();
+	      	this.find('itemId','servicepartner.form.RWAl')[0].disable();
 	      	this.find('itemId','servicepartner.form.VillageAl')[0].disable();
 	      	this.find('itemId','servicepartner.form.DistrictAl')[0].disable();
 	      	this.find('itemId','servicepartner.form.CityAl')[0].disable();
 	      	this.find('itemId','servicepartner.form.ProvincialAl')[0].disable();
 	      	this.find('itemId','servicepartner.form.PotalCodeAl')[0].disable();
-	      	this.find('itemId','servicepartner.form.EMail')[0].disable();
 	      	this.find('itemId','servicepartner.form.UserBankBranch')[0].disable();
 
       },

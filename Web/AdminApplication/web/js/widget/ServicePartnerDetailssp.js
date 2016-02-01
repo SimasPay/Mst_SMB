@@ -163,13 +163,13 @@ mFino.widget.ServicePartnerDetailssp = function (config)
                 anchor : '100%',
                 name: CmFinoFIX.message.JSAgent.Entries.AppliedTime._name
             },
-            {
+/*            {
                 xtype: "displayfield",
                 anchor : '100%',
                 renderer: "date",
                 fieldLabel: _('Approve/Reject Time'),
                 name: CmFinoFIX.message.JSAgent.Entries.ApproveOrRejectTime._name
-            },
+            },*/
             
             //simaspay changes starts
 /*			{
@@ -214,12 +214,12 @@ mFino.widget.ServicePartnerDetailssp = function (config)
      		   fieldLabel :_('KC/KCP/KK Bank Sinarmas'),
      		   name : CmFinoFIX.message.JSAgent.Entries.KCKCPKKBankSinarmasText._name
      	   },*/
-     	   {
+/*     	   {
      		   xtype : "displayfield",
      		   anchor : '75%',
      		   fieldLabel :_('Branch code'),
-     		   name : CmFinoFIX.message.JSAgent.Entries.BranchCode._name
-     	   },
+     		   name : CmFinoFIX.message.JSAgent.Entries.BranchCodeText._name
+     	   },*/
           /* {
                xtype : "displayfield",
                anchor : '75%',
@@ -236,7 +236,7 @@ mFino.widget.ServicePartnerDetailssp = function (config)
                xtype : "displayfield",
                anchor : '75%',
                fieldLabel :_("Branch of Bank Sinarmas"),
-               name: CmFinoFIX.message.JSAgent.Entries.BranchofBankSinarmas._name,
+               name: CmFinoFIX.message.JSAgent.Entries.BranchCodeText._name,
            },
            
            
@@ -321,8 +321,14 @@ mFino.widget.ServicePartnerDetailssp = function (config)
            {
                xtype : "displayfield",
                anchor : '75%',
-               fieldLabel :_("RT/RW"),
-               name: CmFinoFIX.message.JSAgent.Entries.RTRWAl._name,
+               fieldLabel :_("RT"),
+               name: CmFinoFIX.message.JSAgent.Entries.RTAl._name,
+           },
+           {
+               xtype : "displayfield",
+               anchor : '75%',
+               fieldLabel :_("RW"),
+               name: CmFinoFIX.message.JSAgent.Entries.RWAl._name,
            },
            {
                xtype : "displayfield",
@@ -359,19 +365,8 @@ mFino.widget.ServicePartnerDetailssp = function (config)
                fieldLabel: _('Applied By'),
                anchor : '75%',
                name: CmFinoFIX.message.JSAgent.Entries.AppliedBy._name
-           },
-           {
-               xtype: "displayfield",
-               fieldLabel: _('Approved/Rejected By'),
-               anchor : '75%',
-               name: CmFinoFIX.message.JSAgent.Entries.ApprovedOrRejectedBy._name
-           },
-           {
-               xtype: "displayfield",
-               fieldLabel: _('Approve/Reject Comment'),
-               anchor : '75%',
-               name: CmFinoFIX.message.JSAgent.Entries.ApproveOrRejectComment._name
            }
+
            //simaspay changes end
             ]
         },
@@ -653,9 +648,15 @@ mFino.widget.ServicePartnerDetailssp = function (config)
          {
              xtype : "displayfield",
              anchor : '75%',
-             fieldLabel :_("RT/RW"),
-             name: CmFinoFIX.message.JSAgent.Entries.RTRWCom._name,
+             fieldLabel :_("RT"),
+             name: CmFinoFIX.message.JSAgent.Entries.RTCom._name,
         },
+        {
+            xtype : "displayfield",
+            anchor : '75%',
+            fieldLabel :_("RW"),
+            name: CmFinoFIX.message.JSAgent.Entries.RWCom._name,
+       },
          {
              xtype : "displayfield",
              anchor : '75%',
@@ -689,8 +690,14 @@ mFino.widget.ServicePartnerDetailssp = function (config)
          {
              xtype : "displayfield",
              anchor : '75%',
-             fieldLabel :_("Latitude-Longitude"),
-             name: CmFinoFIX.message.JSAgent.Entries.LatitudeLongitude._name,
+             fieldLabel :_("Latitude"),
+             name: CmFinoFIX.message.JSAgent.Entries.Latitude._name,
+         },
+         {
+             xtype : "displayfield",
+             anchor : '75%',
+             fieldLabel :_("Longitude"),
+             name: CmFinoFIX.message.JSAgent.Entries.Longitude._name,
          },
          {
              xtype : "displayfield",
@@ -714,8 +721,27 @@ mFino.widget.ServicePartnerDetailssp = function (config)
              xtype : "displayfield",
              anchor : '75%',
              fieldLabel :_("Bank Account Status"),
-             name: CmFinoFIX.message.JSAgent.Entries.AgentDescriptionText._name,
+             name: CmFinoFIX.message.JSAgent.Entries.BankAccountStatusText._name,
          },
+         {
+             xtype: "displayfield",
+             fieldLabel: _('Approved/Rejected By'),
+             anchor : '75%',
+             name: CmFinoFIX.message.JSAgent.Entries.ApprovedOrRejectedBy._name
+         },
+         {
+             xtype: "displayfield",
+             fieldLabel: _('Approve/Reject Comment'),
+             anchor : '75%',
+             name: CmFinoFIX.message.JSAgent.Entries.ApproveOrRejectComment._name
+         },
+         {
+             xtype: "displayfield",
+             anchor : '100%',
+             renderer: "date",
+             fieldLabel: _('Approve/Reject Time'),
+             name: CmFinoFIX.message.JSAgent.Entries.ApproveOrRejectTime._name
+         }
         /* {
              xtype : "displayfield",
              anchor : '75%',

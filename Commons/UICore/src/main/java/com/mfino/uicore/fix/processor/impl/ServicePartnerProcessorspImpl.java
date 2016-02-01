@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -65,6 +67,7 @@ import com.mfino.uicore.fix.processor.ServicePartnerProcessorsp;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
+import com.mfino.util.wsclient.RSClientPostHttps;
 
 @Service("ServicePartnerProcessorspImpl")
 public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements ServicePartnerProcessorsp{
@@ -286,23 +289,62 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			if("agentprimarydata".equals(realMsg.getTypeAgentObject()))
 			{
 				System.out.println("entered into agentprimarydata block");
-
+				
+				
+				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
+				
+/*				errorMsg = (CMJSAgentError)verifyAgentData();
+				errorMsg.setErrorDescription("Agent KTP validation successfull");
+				errorMsg.setsuccess(CmFinoFIX.Boolean_True);
+				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);*/
+				
 				KtpDetails ktpDetail = new KtpDetails();
 				ktpDetail.setMDN(realMsg.getMDN());
 				ktpDetail.setKTPID(realMsg.getKTPID());
 				ktpDetail.setFullName(realMsg.getUsername());
+				ktpDetail.setBankResponseStatus("00");
 				ktpDetail.setBankResponse("Success");
+				
 				ktpDetailsDAO.save(ktpDetail);
-									
-				//CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
-				//CmFinoFIX.CMJSAgentError errorAgentMsg = new CmFinoFIX.CMJSAgentError();
 				
-				errorMsg = (CMJSAgentError)verifyAgentData();
+				RSClientPostHttps wsCall = new RSClientPostHttps();
+				try {
+					JSONObject request = new JSONObject();
+					
+					request.put("accno",realMsg.getAccountnumberofBankSinarmas());
+					request.put("nik",realMsg.getKTPID());
+					request.put("namalengkap",realMsg.getFirstName());
+					request.put("reffno",StringUtils.leftPad(String.valueOf(ktpDetail.getID()),12,"0"));
+					request.put("action","inquiryEKTPAgent");
+								
+					JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
 				
-				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
-				//errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-				errorMsg.setsuccess(CmFinoFIX.Boolean_True);
-				
+					if(null != response) {// && response.get("status").toString().equals("Success")) {
+						
+						ktpDetail.setBankResponse(response.toString());
+						ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+						ktpDetailsDAO.save(ktpDetail);
+										
+						errorMsg.setAlamatInAccordanceIdentity(response.get("alamat").toString());
+						errorMsg.setRTAl(response.get("rt").toString());
+						errorMsg.setRWAl(response.get("rw").toString());
+						errorMsg.setVillageAl(response.get("kelurahan").toString());
+						errorMsg.setDistrictAl(response.get("kecamatan").toString());
+						errorMsg.setCityAl(response.get("kota").toString());
+						errorMsg.setProvincialAl(response.get("provinsi").toString());
+						errorMsg.setPotalCodeAl(response.get("kodepos").toString());
+						errorMsg.setErrorDescription("Agent KTP validation successfull");
+						errorMsg.setsuccess(CmFinoFIX.Boolean_True);
+						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+					} else {
+						errorMsg.setErrorDescription("Agent KTP validation Failed");
+						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+						errorMsg.setsuccess(CmFinoFIX.Boolean_False);
+					}
+				} catch(Exception ex) {
+					
+					log.error("Error in parsing the response from server..." + ex);
+				}
                 return errorMsg;
 			}
 /*            CMJSAgent.CGEntries[] entries = realMsg.getEntries();
@@ -342,11 +384,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     			}
         		
                 String agentCode = "153"+realMsg.getBranchCode()+realMsg.getAgentType() + branchSeq;
-/*                if(StringUtils.isBlank(realMsg.getPartnerCode())){
-                	e.setPartnerCode(agentCode);
-                }*/
+
                 realMsg.setPartnerCode(agentCode);
                 realMsg.setTradeName(realMsg.getUsername());
+                realMsg.setAuthorizedEmail(realMsg.getEMail());
                 realMsg.setLanguage(CmFinoFIX.Language_English);
                 realMsg.setCurrency(CmFinoFIX.Currency_IDR);
                 realMsg.setTimezone(ConfigurationUtil.getLocalTimeZone().getDisplayName());
@@ -378,37 +419,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                     return errorMsg;
                 }
                 
-/*                if(StringUtils.isEmpty(e.getMerchantAddressLine1())
-                		||StringUtils.isEmpty(e.getMerchantAddressCity())
-                		||StringUtils.isEmpty(e.getMerchantAddressCountry())
-                		||StringUtils.isEmpty(e.getMerchantAddressState())
-                		||StringUtils.isEmpty(e.getMerchantAddressZipcode())){
-                	errorMsg.setErrorDescription(MessageText._("Fill all required fields in Address under Contact Details"));
-                    errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-                    return errorMsg;           	
-                }*/
-                
-/*                if(StringUtils.isEmpty(e.getOutletAddressLine1())
-                		||StringUtils.isEmpty(e.getOutletAddressCity())
-                		||StringUtils.isEmpty(e.getOutletAddressCountry())
-                		||StringUtils.isEmpty(e.getOutletAddressState())
-                		||StringUtils.isEmpty(e.getOutletAddressZipcode())){
-                	errorMsg.setErrorDescription(MessageText._("Fill all required fields in Address under Outlet Details"));
-                    errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-                    return errorMsg;           	
-                }*/
-                
                 if(StringUtils.isBlank(realMsg.getUsername())){
                 	errorMsg.setErrorDescription(MessageText._("User name Required"));
                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                     return errorMsg; 
                 }
-                
-/*                if(StringUtils.isBlank(e.getTradeName())){
-                	errorMsg.setErrorDescription(MessageText._("Trade name Required"));
-                    errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-                    return errorMsg; 
-                }*/
                 
                 if(StringUtils.isBlank(realMsg.getMDN())){
                 	errorMsg.setErrorDescription(MessageText._("MDN Required"));
@@ -504,7 +519,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriber.setApprovedOrRejectedBy("");
                 subscriber.setApproveOrRejectComment("");
                 subscriber.setApproveOrRejectTime(null);
-
                 partner.setBranchSequence(branchSeq);
                 
                 userDAO.save(u);                                               
@@ -605,6 +619,41 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 					isError = true;
 					errDescription.append("Default Suspense Pocket creation failed for the Partner<br/>");
 				}
+                
+				Pocket bankPocket = null;
+				PocketTemplate bankPocketTemplate = null;
+                try {
+                	 String bankCardPan=realMsg.getAccountnumberofBankSinarmas();
+                	bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Partner, null, groupID);
+        			if (bankPocketTemplate == null) {
+        				errorMsg.setErrorDescription(MessageText._("No Default Bank Pocket set for this KYC"));
+        				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+        				log.warn("No Default Bank Pocket set for " + subscriberMdn.getID());
+        				return errorMsg;
+        			}
+        			if(bankPocketTemplate.getID() >= 0 && bankCardPan != null)
+        			{
+        				boolean isallowed=pocketService.checkCount(bankPocketTemplate,subscriberMdn);
+        				if(!isallowed){
+        					log.error("PocketProcessor :: Pocket count limit reached for template:"+bankPocketTemplate.getDescription()+" for MDN:"+subscriberMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());	
+        					return getErrorMessage(MessageText._(" Pocket count Limit reached for this template  "), CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSPocket.CGEntries.FieldName_PocketTypeText, MessageText._("Pocket count Limit reached for this template"));  		
+        				}           
+
+        				bankPocket = pocketService.createDefaultBankPocket(bankPocketTemplate.getID(), subscriberMdn, bankCardPan);
+        				if(bankPocket==null){
+        					errorMsg.setErrorDescription(MessageText._("Default Bank Pocket creation failed for the Subscriber"));
+        					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+        					log.info("Default Bank Pocket creation failed for Subscriber "+subscriberMdn.getID());
+        					return errorMsg;
+        				}
+        			}
+				} catch (Exception e1) {
+					log.info("Default Bank Pocket creation failed for the Partner --> " + partner.getID());
+					isError = true;
+					errDescription.append("Default Bank Pocket creation failed for the Partner<br/>");
+				}
+                
+                
                 if(isError)
                 {
                 	realMsg.setErrorDescription(errDescription.toString());
@@ -767,10 +816,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     	if(entry.getMDN()!=null){
     		subscriberMdn.setMDN(subscriberService.normalizeMDN(entry.getMDN()));
     	}
+    	if(entry.getKTPID()!= null){
+    		subscriberMdn.setApplicationID(entry.getKTPID());
+    	}
     	if(entry.getBusinessPartnerType()!=null){
     		partner.setBusinessPartnerType(entry.getBusinessPartnerType());
     	}
-        
         if (entry.getPartnerStatus() != null) {
             if (!(entry.getPartnerStatus().equals(partner.getPartnerStatus()))) {
                 subscriberMdn.setStatus(entry.getPartnerStatus());
@@ -789,9 +840,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
       
         if (entry.getLanguage() != null) {
             subscriber.setLanguage(entry.getLanguage());
-        }
-        else
-        {
+        } else {
         	subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
         }
     
@@ -801,7 +850,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if (entry.getCurrency() != null) {
             subscriber.setCurrency(entry.getCurrency());
         }
-        
+      	if(entry.getPlaceofBirth()!= null){
+      		subscriber.setBirthPlace(entry.getPlaceofBirth());
+    	}
+    	if(entry.getDateofBirth()!= null){
+    		subscriber.setDateOfBirth(new Timestamp(getDate(entry.getDateofBirth())));
+    	}
         if(entry.getBusinessPartnerType()!=null){
         	partner.setBusinessPartnerType(entry.getBusinessPartnerType());
         }
@@ -818,49 +872,13 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(entry.getCompanyEmailId() != null){
         	partner.setCompanyEmailId(entry.getCompanyEmailId());
         }
-        if(entry.getAuthorizedFaxNumber() != null){
-        	partner.setAuthorizedFaxNumber(entry.getAuthorizedFaxNumber());
-        }
-        if(entry.getAuthorizedRepresentative() != null){
-        	partner.setAuthorizedRepresentative(entry.getAuthorizedRepresentative());
-        }
-        if(entry.getClassification() != null){
-        	partner.setClassification(entry.getClassification());
-        }
-        if(entry.getFaxNumber() != null){
-        	partner.setFaxNumber(entry.getFaxNumber());
-        }
-        if(entry.getDesignation() != null){
-        	partner.setDesignation(entry.getDesignation());
-        }
-        if(entry.getFranchisePhoneNumber() != null){
-        	partner.setFranchisePhoneNumber(entry.getFranchisePhoneNumber());
-        }
-        if(entry.getIndustryClassification() != null){
-        	partner.setIndustryClassification(entry.getIndustryClassification());
-        }
-        
+       
         partner.setmFinoServiceProviderByMSPID(mspDAO.getById(1));
         
-        if(entry.getNumberOfOutlets() != null){
-        	partner.setNumberOfOutlets(entry.getNumberOfOutlets());
-        }
-        if(entry.getRepresentativeName() != null){
-        	partner.setRepresentativeName(entry.getRepresentativeName());
-        }
         if(entry.getTradeName() != null){
         	partner.setTradeName(entry.getTradeName());
         	  subscriber.setFirstName(entry.getTradeName());
          }
-        if(entry.getTypeOfOrganization() != null){
-        	partner.setTypeOfOrganization(entry.getTypeOfOrganization());
-        }
-        if(entry.getWebSite() != null){
-        	partner.setWebSite(entry.getWebSite());
-        }
-        if(entry.getYearEstablished() != null){
-        	partner.setYearEstablished(entry.getYearEstablished());
-        }
         if (entry.getRestrictions() != null) {
         	subscriber.setRestrictions(entry.getRestrictions());
         	subscriberMdn.setRestrictions(entry.getRestrictions());
@@ -877,14 +895,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	partner.setFranchisePhoneNumber(entry.getPhoneNumber());
         }
         if(entry.getBranchCode() != null){
-        	partner.setBranchCode(entry.getBranchCode());
+        	partner.setBankBranchCode(Integer.valueOf(entry.getBranchCode()));
         }
 
         if(entry.getAccountnumberofBankSinarmas() != null){
         	partner.setAccountnumberofBankSinarmas(entry.getAccountnumberofBankSinarmas());
-        }
-        if(entry.getBranchofBankSinarmas() != null){
-        	partner.setBranchofBankSinarmas(entry.getBranchofBankSinarmas());
         }
 
         //simaspay changes ends
@@ -898,63 +913,32 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
        	
         	//simaspay changes starts
         	if(entry.getAlamatInAccordanceIdentity()!= null){
-        	merchantAddress.setDescription(entry.getAlamatInAccordanceIdentity());
+        	merchantAddress.setLine1(entry.getAlamatInAccordanceIdentity());
         	}
-        	if(entry.getAddressInAccordanceIdentity()!= null){
-        	merchantAddress.setDescription(entry.getAddressInAccordanceIdentity());
+        	if(entry.getRTAl()!= null){
+        	merchantAddress.setRT(entry.getRTAl());
         	}
-        	if(entry.getRTRWAl()!= null){
-        	merchantAddress.setLine1(entry.getRTRWAl());
+        	if(entry.getRWAl()!= null){
+        	merchantAddress.setRW(entry.getRWAl());
         	}
         	if(entry.getDistrictAl()!= null){
-        	merchantAddress.setLine2(entry.getDistrictAl());
+        	merchantAddress.setState(entry.getDistrictAl());
         	}
         	if(entry.getCityAl()!= null){
         	merchantAddress.setCity(entry.getCityAl());
         	}
         	if(entry.getVillageAl()!= null){
-        	merchantAddress.setRegionName(entry.getVillageAl());
+        	merchantAddress.setSubState(entry.getVillageAl());
         	}
         	if(entry.getPotalCodeAl()!= null){
         	merchantAddress.setZipCode(entry.getPotalCodeAl());
         	}
         	if(entry.getProvincialAl()!= null){
-        	merchantAddress.setCountry(entry.getProvincialAl());
+        	merchantAddress.setRegionName(entry.getProvincialAl());
         	}
         	//simaspay changes ends
         	addressDao.save(merchantAddress);
-        	
-/*          Address merchantAddress2 = partner.getAddressByMerchantAddressID2();        	
-        	if(merchantAddress2 == null){
-        		merchantAddress2 = new Address();
-        		partner.setAddressByMerchantAddressID2(merchantAddress2);
-           	}
-        	
-        	//simaspay changes starts
-        	if(entry.getAddressDomicile()!= null){
-        	merchantAddress2.setDescription(entry.getAddressDomicile());
-        	}
-        	if(entry.getRTRWDom()!= null){
-        	merchantAddress2.setLine1(entry.getRTRWDom());
-        	}
-        	if(entry.getDistrictDom()!= null){
-        	merchantAddress2.setLine2(entry.getDistrictDom());
-        	}
-        	if(entry.getCityDom()!= null){
-        	merchantAddress2.setCity(entry.getCityDom());
-        	}
-        	if(entry.getVillageDom()!= null){
-        	merchantAddress2.setRegionName(entry.getVillageDom());
-        	}
-        	if(entry.getPotalCodeDom()!= null){
-        	merchantAddress2.setZipCode(entry.getPotalCodeDom());
-        	}
-        	if(entry.getProvincialDom()!= null){
-        	merchantAddress2.setCountry(entry.getProvincialDom());
-        	}
-        	//simaspay changes ends
-        	addressDao.save(merchantAddress2);*/
-        
+        	        
         	//outlet address
            	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
             	if(outletAddress == null){
@@ -963,28 +947,28 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	}
             	//simaspay changes starts
             	if(entry.getCompanyAddress()!= null){
-            		outletAddress.setDescription(entry.getCompanyAddress());
+            		outletAddress.setLine1(entry.getCompanyAddress());
             	}
-            	if(entry.getBusinessAddress()!= null){
-            		outletAddress.setDescription(entry.getBusinessAddress());
+            	if(entry.getRTCom()!= null){
+            		outletAddress.setRT(entry.getRTCom());
             	}
-            	if(entry.getRTRWCom()!= null){
-            		outletAddress.setLine1(entry.getRTRWCom());
+            	if(entry.getRWCom()!= null){
+            		outletAddress.setRW(entry.getRWCom());
             	}
             	if(entry.getDistrictCom()!= null){
-            		outletAddress.setLine2(entry.getDistrictCom());
+            		outletAddress.setState(entry.getDistrictCom());
             	}
             	if(entry.getCityCom()!= null){
             		outletAddress.setCity(entry.getCityCom());
             	}
             	if(entry.getVillageCom()!= null){
-            		outletAddress.setRegionName(entry.getVillageCom());
+            		outletAddress.setSubState(entry.getVillageCom());
             	}
             	if(entry.getPotalCodeCom()!= null){
             		outletAddress.setZipCode(entry.getPotalCodeCom());
             	}
             	if(entry.getProvincialCom()!= null){
-            		outletAddress.setCountry(entry.getProvincialCom());
+            		outletAddress.setRegionName(entry.getProvincialCom());
             	}
             	//simaspay changes ends  	
             	addressDao.save(outletAddress);
@@ -1026,11 +1010,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     	if(entry.getMDN()!=null){
     		subscriberMdn.setMDN(subscriberService.normalizeMDN(entry.getMDN()));
     	}
+    	if(entry.getKTPID()!= null){
+    		subscriberMdn.setApplicationID(entry.getKTPID());
+    	}
     	if(entry.getBusinessPartnerType()!=null){
     		partner.setBusinessPartnerType(entry.getBusinessPartnerType());
     	}
-        
-        
         if (entry.getPartnerStatus() != null) {
             if (!(entry.getPartnerStatus().equals(partner.getPartnerStatus()))) {
                 subscriberMdn.setStatus(entry.getPartnerStatus());
@@ -1049,9 +1034,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
       
         if (entry.getLanguage() != null) {
             subscriber.setLanguage(entry.getLanguage());
-        }
-        else
-        {
+        } else {
         	subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
         }
     
@@ -1061,7 +1044,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if (entry.getCurrency() != null) {
             subscriber.setCurrency(entry.getCurrency());
         }
-        
+      	if(entry.getPlaceofBirth()!= null){
+      		subscriber.setBirthPlace(entry.getPlaceofBirth());
+    	}
+    	if(entry.getDateofBirth()!= null){
+    		subscriber.setDateOfBirth(new Timestamp(getDate(entry.getDateofBirth())));
+    	}
         if(entry.getBusinessPartnerType()!=null){
         	partner.setBusinessPartnerType(entry.getBusinessPartnerType());
         }
@@ -1075,55 +1063,16 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	subscriber.setEmail(entry.getAuthorizedEmail());
         	subscriber.setIsEmailVerified(false);
         }
-        if(entry.getcorpemail() != null){
-        	partner.setAuthorizedEmail(entry.getcorpemail());
-        	subscriber.setEmail(entry.getcorpemail());
-        	subscriber.setIsEmailVerified(false);
+        if(entry.getCompanyEmailId() != null){
+        	partner.setCompanyEmailId(entry.getCompanyEmailId());
         }
-        
-        if(entry.getAuthorizedFaxNumber() != null){
-        	partner.setAuthorizedFaxNumber(entry.getAuthorizedFaxNumber());
-        }
-        if(entry.getAuthorizedRepresentative() != null){
-        	partner.setAuthorizedRepresentative(entry.getAuthorizedRepresentative());
-        }
-        if(entry.getClassification() != null){
-        	partner.setClassification(entry.getClassification());
-        }
-        if(entry.getFaxNumber() != null){
-        	partner.setFaxNumber(entry.getFaxNumber());
-        }
-        if(entry.getDesignation() != null){
-        	partner.setDesignation(entry.getDesignation());
-        }
-        if(entry.getFranchisePhoneNumber() != null){
-        	partner.setFranchisePhoneNumber(entry.getFranchisePhoneNumber());
-        }
-        if(entry.getIndustryClassification() != null){
-        	partner.setIndustryClassification(entry.getIndustryClassification());
-        }
-        
+       
         partner.setmFinoServiceProviderByMSPID(mspDAO.getById(1));
         
-        if(entry.getNumberOfOutlets() != null){
-        	partner.setNumberOfOutlets(entry.getNumberOfOutlets());
-        }
-        if(entry.getRepresentativeName() != null){
-        	partner.setRepresentativeName(entry.getRepresentativeName());
-        }
         if(entry.getTradeName() != null){
         	partner.setTradeName(entry.getTradeName());
         	  subscriber.setFirstName(entry.getTradeName());
          }
-        if(entry.getTypeOfOrganization() != null){
-        	partner.setTypeOfOrganization(entry.getTypeOfOrganization());
-        }
-        if(entry.getWebSite() != null){
-        	partner.setWebSite(entry.getWebSite());
-        }
-        if(entry.getYearEstablished() != null){
-        	partner.setYearEstablished(entry.getYearEstablished());
-        }
         if (entry.getRestrictions() != null) {
         	subscriber.setRestrictions(entry.getRestrictions());
         	subscriberMdn.setRestrictions(entry.getRestrictions());
@@ -1140,14 +1089,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	partner.setFranchisePhoneNumber(entry.getPhoneNumber());
         }
         if(entry.getBranchCode() != null){
-        	partner.setBranchCode(entry.getBranchCode());
+        	partner.setBankBranchCode(Integer.valueOf(entry.getBranchCode()));
         }
 
         if(entry.getAccountnumberofBankSinarmas() != null){
         	partner.setAccountnumberofBankSinarmas(entry.getAccountnumberofBankSinarmas());
-        }
-        if(entry.getBranchofBankSinarmas() != null){
-        	partner.setBranchofBankSinarmas(entry.getBranchofBankSinarmas());
         }
 
         //simaspay changes ends
@@ -1161,63 +1107,32 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
        	
         	//simaspay changes starts
         	if(entry.getAlamatInAccordanceIdentity()!= null){
-        	merchantAddress.setDescription(entry.getAlamatInAccordanceIdentity());
+        	merchantAddress.setLine1(entry.getAlamatInAccordanceIdentity());
         	}
-        	if(entry.getAddressInAccordanceIdentity()!= null){
-        	merchantAddress.setDescription(entry.getAddressInAccordanceIdentity());
+        	if(entry.getRTAl()!= null){
+        	merchantAddress.setRT(entry.getRTAl());
         	}
-        	if(entry.getRTRWAl()!= null){
-        	merchantAddress.setLine1(entry.getRTRWAl());
+        	if(entry.getRWAl()!= null){
+        	merchantAddress.setRW(entry.getRWAl());
         	}
         	if(entry.getDistrictAl()!= null){
-        	merchantAddress.setLine2(entry.getDistrictAl());
+        	merchantAddress.setState(entry.getDistrictAl());
         	}
         	if(entry.getCityAl()!= null){
         	merchantAddress.setCity(entry.getCityAl());
         	}
         	if(entry.getVillageAl()!= null){
-        	merchantAddress.setRegionName(entry.getVillageAl());
+        	merchantAddress.setSubState(entry.getVillageAl());
         	}
         	if(entry.getPotalCodeAl()!= null){
         	merchantAddress.setZipCode(entry.getPotalCodeAl());
         	}
         	if(entry.getProvincialAl()!= null){
-        	merchantAddress.setCountry(entry.getProvincialAl());
+        	merchantAddress.setRegionName(entry.getProvincialAl());
         	}
         	//simaspay changes ends
         	addressDao.save(merchantAddress);
-        	
-          Address merchantAddress2 = partner.getAddressByMerchantAddressID2();        	
-        	if(merchantAddress2 == null){
-        		merchantAddress2 = new Address();
-        		partner.setAddressByMerchantAddressID2(merchantAddress2);
-           	}
-        	
-        	//simaspay changes starts
-        	if(entry.getAddressDomicile()!= null){
-        	merchantAddress2.setDescription(entry.getAddressDomicile());
-        	}
-        	if(entry.getRTRWDom()!= null){
-        	merchantAddress2.setLine1(entry.getRTRWDom());
-        	}
-        	if(entry.getDistrictDom()!= null){
-        	merchantAddress2.setLine2(entry.getDistrictDom());
-        	}
-        	if(entry.getCityDom()!= null){
-        	merchantAddress2.setCity(entry.getCityDom());
-        	}
-        	if(entry.getVillageDom()!= null){
-        	merchantAddress2.setRegionName(entry.getVillageDom());
-        	}
-        	if(entry.getPotalCodeDom()!= null){
-        	merchantAddress2.setZipCode(entry.getPotalCodeDom());
-        	}
-        	if(entry.getProvincialDom()!= null){
-        	merchantAddress2.setCountry(entry.getProvincialDom());
-        	}
-        	//simaspay changes ends
-        	addressDao.save(merchantAddress2);
-        
+        	        
         	//outlet address
            	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
             	if(outletAddress == null){
@@ -1226,28 +1141,28 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	}
             	//simaspay changes starts
             	if(entry.getCompanyAddress()!= null){
-            		outletAddress.setDescription(entry.getCompanyAddress());
+            		outletAddress.setLine1(entry.getCompanyAddress());
             	}
-            	if(entry.getBusinessAddress()!= null){
-            		outletAddress.setDescription(entry.getBusinessAddress());
+            	if(entry.getRTCom()!= null){
+            		outletAddress.setRT(entry.getRTCom());
             	}
-            	if(entry.getRTRWCom()!= null){
-            		outletAddress.setLine1(entry.getRTRWCom());
+            	if(entry.getRWCom()!= null){
+            		outletAddress.setRW(entry.getRWCom());
             	}
             	if(entry.getDistrictCom()!= null){
-            		outletAddress.setLine2(entry.getDistrictCom());
+            		outletAddress.setState(entry.getDistrictCom());
             	}
             	if(entry.getCityCom()!= null){
             		outletAddress.setCity(entry.getCityCom());
             	}
             	if(entry.getVillageCom()!= null){
-            		outletAddress.setRegionName(entry.getVillageCom());
+            		outletAddress.setSubState(entry.getVillageCom());
             	}
             	if(entry.getPotalCodeCom()!= null){
             		outletAddress.setZipCode(entry.getPotalCodeCom());
             	}
             	if(entry.getProvincialCom()!= null){
-            		outletAddress.setCountry(entry.getProvincialCom());
+            		outletAddress.setRegionName(entry.getProvincialCom());
             	}
             	//simaspay changes ends  	
             	addressDao.save(outletAddress);
@@ -1277,12 +1192,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         				if(subscriber.getID() != null){
         					subscriberGroupDao.save(sg);
         				}
-        				
-//        				subscriberGroupDao.save(sg);
-        				//save subscriber group
-//        				Set<SubscriberGroup> subscriberGroups = new HashSet<SubscriberGroup>();
-//        				subscriberGroups.add(sg);
-//        				s.getSubscriber().setSubscriberGroupFromSubscriberID(subscriberGroups);
         			}
         		}            	
         }
@@ -1294,96 +1203,67 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		entry.setMDN(subscriberMdn.getMDN());
         		entry.setMobilePhoneNumber(subscriberMdn.getMDN());
         	}
+	    	if(subscriberMdn.getApplicationID()!= null){
+	    		entry.setKTPID(subscriberMdn.getApplicationID());
+	    	}
         	
 			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				
-				if(saf.getElectonicDevieused()!= null){
-					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, subscriber.getLanguage(), saf.getElectonicDevieused()));
-		    		entry.setElectonicDevieused(saf.getElectonicDevieused());
+				if(saf.getElectonicDeviceUsed()!= null){
+					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, subscriber.getLanguage(), saf.getElectonicDeviceUsed()));
+		    		entry.setElectonicDevieused(String.valueOf(saf.getElectonicDeviceUsed()));
 		    	}
-		    	if(saf.getAgentDescription()!= null){
-		    		entry.setAgentDescriptionText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AgentDescription, subscriber.getLanguage(), saf.getAgentDescription()));
-		    		entry.setAgentDescription(saf.getAgentDescription());
-		    	}
-		    	if(saf.getKTPID()!= null){
-		    		entry.setKTPID(saf.getKTPID());
-		    	}
-
 		    	if(saf.getAgreementNumber()!= null){
 		    		entry.setAgreementNumber(saf.getAgreementNumber());
 		    	}
-		    	if(saf.getAgreementDate()!= null){
-		    		entry.setAgreementDate(saf.getAgreementDate());
+		    	if(saf.getAgrementDate()!= null){
+		    		entry.setAgreementDate(String.valueOf(saf.getAgrementDate()));
 		    	}
-		    	if(saf.getImplementationdate()!= null){
-		    		entry.setImplementationdate(saf.getImplementationdate());
+		    	if(saf.getImplementatindate()!= null){
+		    		entry.setImplementationdate(String.valueOf(saf.getImplementatindate()));
 		    	}
 		    	if(saf.getAgentCompanyName()!= null){
 		    		entry.setAgentCompanyName(saf.getAgentCompanyName());
 		    	}
-		    	if(saf.getLatitudeLongitude()!= null){
-		    		entry.setLatitudeLongitude(saf.getLatitudeLongitude());
+		    	if(saf.getLatitude()!= null){
+		    		entry.setLatitude(saf.getLatitude());
 		    	}
-		    	if(saf.getPlaceofBirth()!= null){
-		    		entry.setPlaceofBirth(saf.getPlaceofBirth());
-		    	}
-		    	if(saf.getDateofBirth()!= null){
-		    		entry.setDateofBirth(saf.getDateofBirth());
+		    	if(saf.getLongitude()!= null){
+		    		entry.setLongitude(saf.getLongitude());
 		    	}
 		    	if(saf.getUserBankBranch()!= null){
 		    		entry.setUserBankBranch(saf.getUserBankBranch());
 		    	}
-		    	if(saf.getBankAccountStatus()!= null){
-		    		entry.setBankAccountStatus(saf.getBankAccountStatus());
+		    	if(saf.getBankAcountStatus()!= null){
+		    		entry.setBankAccountStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankAccountStatus, subscriber.getLanguage(), saf.getBankAcountStatus()));
+		    		entry.setBankAccountStatus(String.valueOf(saf.getBankAcountStatus()));
 		    	}
 			}
         	
 	        if(partner.getAddressByFranchiseOutletAddressID() != null){
 	        	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
 	        	
-/*	        	if(outletAddress.getLine1() != null){
-	        		entry.setOutletAddressLine1(outletAddress.getLine1());
-	        	}
 	        	if(outletAddress.getLine1() != null){
-	        		entry.setOutletAddressLine1(outletAddress.getLine1());
+	        		entry.setCompanyAddress(outletAddress.getLine1());
 	        	}
-	        	if(outletAddress.getLine2() != null){
-	        		entry.setOutletAddressLine2(outletAddress.getLine2());
+	        	if(outletAddress.getRT() != null){
+	        		entry.setRTCom(outletAddress.getRT());
 	        	}
-	        	if(outletAddress.getCity() != null){
-	        		entry.setOutletAddressCity(outletAddress.getCity());
-	        	}
-	        	if(outletAddress.getCity() != null){
-	        		entry.setOutletAddressCity(outletAddress.getCity());
+	        	if(outletAddress.getRW() != null){
+	        		entry.setRWCom(outletAddress.getRW());
 	        	}
 	        	if(outletAddress.getState() != null){
-	        		entry.setOutletAddressState(outletAddress.getState());
+	        		entry.setDistrictCom(outletAddress.getState());
 	        	}
-	        	if(outletAddress.getCountry() != null){
-	        		entry.setOutletAddressCountry(outletAddress.getCountry());
-	        	}	        	
-	        	if(outletAddress.getZipCode() != null){
-	        		entry.setOutletAddressZipcode(outletAddress.getZipCode());
-	        	}*/
-	        	
-	        	if(outletAddress.getDescription() != null){
-	        		entry.setCompanyAddress(outletAddress.getDescription());
-	        	}
-	        	if(outletAddress.getLine1() != null){
-	        		entry.setRTRWCom(outletAddress.getLine1());
-	        	}
-	        	if(outletAddress.getLine2() != null){
-	        		entry.setDistrictCom(outletAddress.getLine2());
-	        	}
-	        	if(outletAddress.getRegionName() != null){
-	        		entry.setVillageCom(outletAddress.getRegionName());
+	        	if(outletAddress.getSubState() != null){
+	        		entry.setVillageCom(outletAddress.getSubState());
 	        	}
 	        	if(outletAddress.getCity() != null){
 	        		entry.setCityCom(outletAddress.getCity());
 	        	}
-	        	if(outletAddress.getCountry() != null){
-	        		entry.setProvincialCom(outletAddress.getCountry());
+	        	if(outletAddress.getRegionName() != null){
+	        		entry.setProvincialCom(outletAddress.getRegionName());
 	        	}	        	
 	        	if(outletAddress.getZipCode() != null){
 	        		entry.setPotalCodeCom(outletAddress.getZipCode());
@@ -1392,93 +1272,29 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if(partner.getAddressByMerchantAddressID() != null){
 	        	Address merchantAddress = partner.getAddressByMerchantAddressID();
 	        	
-/*	        	if(merchantAddress.getLine1() != null){
-	        		entry.setMerchantAddressLine1(merchantAddress.getLine1());
+	        	if(merchantAddress.getLine1() != null){
+	        		entry.setAlamatInAccordanceIdentity(merchantAddress.getLine1());
 	        	}
-	        	if(merchantAddress.getLine2() != null){
-	        		entry.setMerchantAddressLine2(merchantAddress.getLine2());
+	        	if(merchantAddress.getRT() != null){
+	        		entry.setRTAl(merchantAddress.getRT());
 	        	}
-	        	if(merchantAddress.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress.getCity());
-	        	}
-	        	if(merchantAddress.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress.getCity());
+	        	if(merchantAddress.getRW() != null){
+	        		entry.setRWAl(merchantAddress.getRW());
 	        	}
 	        	if(merchantAddress.getState() != null){
-	        		entry.setMerchantAddressState(merchantAddress.getState());
+	        		entry.setDistrictAl(merchantAddress.getState());
 	        	}
-	        	if(merchantAddress.getCountry() != null){
-	        		entry.setMerchantAddressCountry(merchantAddress.getCountry());
-	        	}
-	        	if(merchantAddress.getZipCode() != null){
-	        		entry.setMerchantAddressZipcode(merchantAddress.getZipCode());
-	        	}*/
-	        	if(merchantAddress.getDescription() != null){
-	        		entry.setAlamatInAccordanceIdentity(merchantAddress.getDescription());
-	        	}
-	        	if(merchantAddress.getLine1() != null){
-	        		entry.setRTRWAl(merchantAddress.getLine1());
-	        	}
-	        	if(merchantAddress.getLine2() != null){
-	        		entry.setDistrictAl(merchantAddress.getLine2());
-	        	}
-	        	if(merchantAddress.getRegionName() != null){
-	        		entry.setVillageAl(merchantAddress.getRegionName());
+	        	if(merchantAddress.getSubState() != null){
+	        		entry.setVillageAl(merchantAddress.getSubState());
 	        	}
 	        	if(merchantAddress.getCity() != null){
 	        		entry.setCityAl(merchantAddress.getCity());
 	        	}
-	        	if(merchantAddress.getCountry() != null){
-	        		entry.setProvincialAl(merchantAddress.getCountry());
+	        	if(merchantAddress.getRegionName() != null){
+	        		entry.setProvincialAl(merchantAddress.getRegionName());
 	        	}	        	
 	        	if(merchantAddress.getZipCode() != null){
 	        		entry.setPotalCodeAl(merchantAddress.getZipCode());
-	        	}
-	        }
-	        if(partner.getAddressByMerchantAddressID2() != null){
-	        	Address merchantAddress2 = partner.getAddressByMerchantAddressID2();
-	        	
-/*	        	if(merchantAddress2.getLine1() != null){
-	        		entry.setMerchantAddressLine1(merchantAddress2.getLine1());
-	        	}
-	        	if(merchantAddress2.getLine2() != null){
-	        		entry.setMerchantAddressLine2(merchantAddress2.getLine2());
-	        	}
-	        	if(merchantAddress2.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress2.getCity());
-	        	}
-	        	if(merchantAddress2.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress2.getCity());
-	        	}
-	        	if(merchantAddress2.getState() != null){
-	        		entry.setMerchantAddressState(merchantAddress2.getState());
-	        	}
-	        	if(merchantAddress2.getCountry() != null){
-	        		entry.setMerchantAddressCountry(merchantAddress2.getCountry());
-	        	}
-	        	if(merchantAddress2.getZipCode() != null){
-	        		entry.setMerchantAddressZipcode(merchantAddress2.getZipCode());
-	        	}*/
-	        	if(merchantAddress2.getDescription() != null){
-	        		entry.setAddressDomicile(merchantAddress2.getDescription());
-	        	}
-	        	if(merchantAddress2.getLine1() != null){
-	        		entry.setRTRWDom(merchantAddress2.getLine1());
-	        	}
-	        	if(merchantAddress2.getLine2() != null){
-	        		entry.setDistrictDom(merchantAddress2.getLine2());
-	        	}
-	        	if(merchantAddress2.getRegionName() != null){
-	        		entry.setVillageDom(merchantAddress2.getRegionName());
-	        	}
-	        	if(merchantAddress2.getCity() != null){
-	        		entry.setCityDom(merchantAddress2.getCity());
-	        	}
-	        	if(merchantAddress2.getCountry() != null){
-	        		entry.setProvincialDom(merchantAddress2.getCountry());
-	        	}	        	
-	        	if(merchantAddress2.getZipCode() != null){
-	        		entry.setPotalCodeDom(merchantAddress2.getZipCode());
 	        	}
 	        }
 	        if(partner.getID() != null){
@@ -1563,16 +1379,15 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	            entry.setRecordVersion(partner.getVersion());
 	        }
 
-	        if (partner.getBranchCode() != null) {
-	            entry.setBranchCode(String.valueOf(partner.getBranchCode()));
+	        if (partner.getBankBranchCode() != null) {
+	        	entry.setBranchCodeText(userService.getUserBranchCode(partner.getBankBranchCode()));
+	            entry.setBranchCode(String.valueOf(partner.getBankBranchCode()));
 	        }
 
 	        if (partner.getAccountnumberofBankSinarmas() != null) {
 	            entry.setAccountnumberofBankSinarmas(partner.getAccountnumberofBankSinarmas());
 	        }
-	        if (partner.getBranchofBankSinarmas() != null) {
-	            entry.setBranchofBankSinarmas(partner.getBranchofBankSinarmas());
-	        }
+
 	        if(partner.getBusinessPartnerType() != null){
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
 	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
@@ -1619,6 +1434,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        }
 	        if(subscriber.getApproveOrRejectComment()!=null){
 	        	entry.setApproveOrRejectComment(subscriber.getApproveOrRejectComment());
+	        }
+	        if(subscriber.getBirthPlace()!=null){
+	        	entry.setPlaceofBirth(subscriber.getBirthPlace());
+	        }
+	        if(subscriber.getDateOfBirth()!=null){
+	        	entry.setDateofBirth(String.valueOf(subscriber.getDateOfBirth()));
 	        }
 	        
 			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
@@ -1641,95 +1462,67 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		entry.setMDN(subscriberMdn.getMDN());
         		entry.setMobilePhoneNumber(subscriberMdn.getMDN());
         	}
+	    	if(subscriberMdn.getApplicationID()!= null){
+	    		entry.setKTPID(subscriberMdn.getApplicationID());
+	    	}
         	
 			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				
-				if(saf.getElectonicDevieused()!= null){
-					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, subscriber.getLanguage(), saf.getElectonicDevieused()));
-		    		entry.setElectonicDevieused(saf.getElectonicDevieused());
-		    	}
-		    	if(saf.getAgentDescription()!= null){
-		    		entry.setAgentDescriptionText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AgentDescription, subscriber.getLanguage(), saf.getAgentDescription()));
-		    		entry.setAgentDescription(saf.getAgentDescription());
-		    	}
-		    	if(saf.getKTPID()!= null){
-		    		entry.setKTPID(saf.getKTPID());
+				if(saf.getElectonicDeviceUsed()!= null){
+					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, subscriber.getLanguage(), saf.getElectonicDeviceUsed()));
+		    		entry.setElectonicDevieused(String.valueOf(saf.getElectonicDeviceUsed()));
 		    	}
 		    	if(saf.getAgreementNumber()!= null){
 		    		entry.setAgreementNumber(saf.getAgreementNumber());
 		    	}
-		    	if(saf.getAgreementDate()!= null){
-		    		entry.setAgreementDate(saf.getAgreementDate());
+		    	if(saf.getAgrementDate()!= null){
+		    		entry.setAgreementDate(String.valueOf(saf.getAgrementDate()));
 		    	}
-		    	if(saf.getImplementationdate()!= null){
-		    		entry.setImplementationdate(saf.getImplementationdate());
+		    	if(saf.getImplementatindate()!= null){
+		    		entry.setImplementationdate(String.valueOf(saf.getImplementatindate()));
 		    	}
 		    	if(saf.getAgentCompanyName()!= null){
 		    		entry.setAgentCompanyName(saf.getAgentCompanyName());
 		    	}
-		    	if(saf.getLatitudeLongitude()!= null){
-		    		entry.setLatitudeLongitude(saf.getLatitudeLongitude());
+		    	if(saf.getLatitude()!= null){
+		    		entry.setLatitude(saf.getLatitude());
 		    	}
-		    	if(saf.getPlaceofBirth()!= null){
-		    		entry.setPlaceofBirth(saf.getPlaceofBirth());
-		    	}
-		    	if(saf.getDateofBirth()!= null){
-		    		entry.setDateofBirth(saf.getDateofBirth());
+		    	if(saf.getLongitude()!= null){
+		    		entry.setLongitude(saf.getLongitude());
 		    	}
 		    	if(saf.getUserBankBranch()!= null){
 		    		entry.setUserBankBranch(saf.getUserBankBranch());
 		    	}
-		    	if(saf.getBankAccountStatus()!= null){
-		    		entry.setBankAccountStatus(saf.getBankAccountStatus());
+		    	if(saf.getBankAcountStatus()!= null){
+		    		entry.setBankAccountStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankAccountStatus, subscriber.getLanguage(), saf.getBankAcountStatus()));
+		    		entry.setBankAccountStatus(String.valueOf(saf.getBankAcountStatus()));
 		    	}
 			}
         	
 	        if(partner.getAddressByFranchiseOutletAddressID() != null){
 	        	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
 	        	
-/*	        	if(outletAddress.getLine1() != null){
-	        		entry.setOutletAddressLine1(outletAddress.getLine1());
-	        	}
 	        	if(outletAddress.getLine1() != null){
-	        		entry.setOutletAddressLine1(outletAddress.getLine1());
+	        		entry.setCompanyAddress(outletAddress.getLine1());
 	        	}
-	        	if(outletAddress.getLine2() != null){
-	        		entry.setOutletAddressLine2(outletAddress.getLine2());
+	        	if(outletAddress.getRT() != null){
+	        		entry.setRTCom(outletAddress.getRT());
 	        	}
-	        	if(outletAddress.getCity() != null){
-	        		entry.setOutletAddressCity(outletAddress.getCity());
-	        	}
-	        	if(outletAddress.getCity() != null){
-	        		entry.setOutletAddressCity(outletAddress.getCity());
+	        	if(outletAddress.getRW() != null){
+	        		entry.setRWCom(outletAddress.getRW());
 	        	}
 	        	if(outletAddress.getState() != null){
-	        		entry.setOutletAddressState(outletAddress.getState());
+	        		entry.setDistrictCom(outletAddress.getState());
 	        	}
-	        	if(outletAddress.getCountry() != null){
-	        		entry.setOutletAddressCountry(outletAddress.getCountry());
-	        	}	        	
-	        	if(outletAddress.getZipCode() != null){
-	        		entry.setOutletAddressZipcode(outletAddress.getZipCode());
-	        	}*/
-	        	
-	        	if(outletAddress.getDescription() != null){
-	        		entry.setCompanyAddress(outletAddress.getDescription());
-	        	}
-	        	if(outletAddress.getLine1() != null){
-	        		entry.setRTRWCom(outletAddress.getLine1());
-	        	}
-	        	if(outletAddress.getLine2() != null){
-	        		entry.setDistrictCom(outletAddress.getLine2());
-	        	}
-	        	if(outletAddress.getRegionName() != null){
-	        		entry.setVillageCom(outletAddress.getRegionName());
+	        	if(outletAddress.getSubState() != null){
+	        		entry.setVillageCom(outletAddress.getSubState());
 	        	}
 	        	if(outletAddress.getCity() != null){
 	        		entry.setCityCom(outletAddress.getCity());
 	        	}
-	        	if(outletAddress.getCountry() != null){
-	        		entry.setProvincialCom(outletAddress.getCountry());
+	        	if(outletAddress.getRegionName() != null){
+	        		entry.setProvincialCom(outletAddress.getRegionName());
 	        	}	        	
 	        	if(outletAddress.getZipCode() != null){
 	        		entry.setPotalCodeCom(outletAddress.getZipCode());
@@ -1738,93 +1531,29 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if(partner.getAddressByMerchantAddressID() != null){
 	        	Address merchantAddress = partner.getAddressByMerchantAddressID();
 	        	
-/*	        	if(merchantAddress.getLine1() != null){
-	        		entry.setMerchantAddressLine1(merchantAddress.getLine1());
+	        	if(merchantAddress.getLine1() != null){
+	        		entry.setAlamatInAccordanceIdentity(merchantAddress.getLine1());
 	        	}
-	        	if(merchantAddress.getLine2() != null){
-	        		entry.setMerchantAddressLine2(merchantAddress.getLine2());
+	        	if(merchantAddress.getRT() != null){
+	        		entry.setRTAl(merchantAddress.getRT());
 	        	}
-	        	if(merchantAddress.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress.getCity());
-	        	}
-	        	if(merchantAddress.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress.getCity());
+	        	if(merchantAddress.getRW() != null){
+	        		entry.setRWAl(merchantAddress.getRW());
 	        	}
 	        	if(merchantAddress.getState() != null){
-	        		entry.setMerchantAddressState(merchantAddress.getState());
+	        		entry.setDistrictAl(merchantAddress.getState());
 	        	}
-	        	if(merchantAddress.getCountry() != null){
-	        		entry.setMerchantAddressCountry(merchantAddress.getCountry());
-	        	}
-	        	if(merchantAddress.getZipCode() != null){
-	        		entry.setMerchantAddressZipcode(merchantAddress.getZipCode());
-	        	}*/
-	        	if(merchantAddress.getDescription() != null){
-	        		entry.setAlamatInAccordanceIdentity(merchantAddress.getDescription());
-	        	}
-	        	if(merchantAddress.getLine1() != null){
-	        		entry.setRTRWAl(merchantAddress.getLine1());
-	        	}
-	        	if(merchantAddress.getLine2() != null){
-	        		entry.setDistrictAl(merchantAddress.getLine2());
-	        	}
-	        	if(merchantAddress.getRegionName() != null){
-	        		entry.setVillageAl(merchantAddress.getRegionName());
+	        	if(merchantAddress.getSubState() != null){
+	        		entry.setVillageAl(merchantAddress.getSubState());
 	        	}
 	        	if(merchantAddress.getCity() != null){
 	        		entry.setCityAl(merchantAddress.getCity());
 	        	}
-	        	if(merchantAddress.getCountry() != null){
-	        		entry.setProvincialAl(merchantAddress.getCountry());
+	        	if(merchantAddress.getRegionName() != null){
+	        		entry.setProvincialAl(merchantAddress.getRegionName());
 	        	}	        	
 	        	if(merchantAddress.getZipCode() != null){
 	        		entry.setPotalCodeAl(merchantAddress.getZipCode());
-	        	}
-	        }
-	        if(partner.getAddressByMerchantAddressID2() != null){
-	        	Address merchantAddress2 = partner.getAddressByMerchantAddressID2();
-	        	
-/*	        	if(merchantAddress2.getLine1() != null){
-	        		entry.setMerchantAddressLine1(merchantAddress2.getLine1());
-	        	}
-	        	if(merchantAddress2.getLine2() != null){
-	        		entry.setMerchantAddressLine2(merchantAddress2.getLine2());
-	        	}
-	        	if(merchantAddress2.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress2.getCity());
-	        	}
-	        	if(merchantAddress2.getCity() != null){
-	        		entry.setMerchantAddressCity(merchantAddress2.getCity());
-	        	}
-	        	if(merchantAddress2.getState() != null){
-	        		entry.setMerchantAddressState(merchantAddress2.getState());
-	        	}
-	        	if(merchantAddress2.getCountry() != null){
-	        		entry.setMerchantAddressCountry(merchantAddress2.getCountry());
-	        	}
-	        	if(merchantAddress2.getZipCode() != null){
-	        		entry.setMerchantAddressZipcode(merchantAddress2.getZipCode());
-	        	}*/
-	        	if(merchantAddress2.getDescription() != null){
-	        		entry.setAddressDomicile(merchantAddress2.getDescription());
-	        	}
-	        	if(merchantAddress2.getLine1() != null){
-	        		entry.setRTRWDom(merchantAddress2.getLine1());
-	        	}
-	        	if(merchantAddress2.getLine2() != null){
-	        		entry.setDistrictDom(merchantAddress2.getLine2());
-	        	}
-	        	if(merchantAddress2.getRegionName() != null){
-	        		entry.setVillageDom(merchantAddress2.getRegionName());
-	        	}
-	        	if(merchantAddress2.getCity() != null){
-	        		entry.setCityDom(merchantAddress2.getCity());
-	        	}
-	        	if(merchantAddress2.getCountry() != null){
-	        		entry.setProvincialDom(merchantAddress2.getCountry());
-	        	}	        	
-	        	if(merchantAddress2.getZipCode() != null){
-	        		entry.setPotalCodeDom(merchantAddress2.getZipCode());
 	        	}
 	        }
 	        if(partner.getID() != null){
@@ -1909,15 +1638,13 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	            entry.setRecordVersion(partner.getVersion());
 	        }
 
-	        if (partner.getBranchCode() != null) {
-	            entry.setBranchCode(String.valueOf(partner.getBranchCode()));
+	        if (partner.getBankBranchCode() != null) {
+	        	entry.setBranchCodeText(userService.getUserBranchCode(partner.getBankBranchCode()));
+	            entry.setBranchCode(String.valueOf(partner.getBankBranchCode()));
 	        }
 
 	        if (partner.getAccountnumberofBankSinarmas() != null) {
 	            entry.setAccountnumberofBankSinarmas(partner.getAccountnumberofBankSinarmas());
-	        }
-	        if (partner.getBranchofBankSinarmas() != null) {
-	            entry.setBranchofBankSinarmas(partner.getBranchofBankSinarmas());
 	        }
 
 	        if(partner.getBusinessPartnerType() != null){
@@ -1966,6 +1693,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        }
 	        if(subscriber.getApproveOrRejectComment()!=null){
 	        	entry.setApproveOrRejectComment(subscriber.getApproveOrRejectComment());
+	        }
+	        if(subscriber.getBirthPlace()!=null){
+	        	entry.setPlaceofBirth(subscriber.getBirthPlace());
+	        }
+	        if(subscriber.getDateOfBirth()!=null){
+	        	entry.setDateofBirth(String.valueOf(subscriber.getDateOfBirth()));
 	        }
 	        
 			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
@@ -2042,7 +1775,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     }
     
     private void updateEntityAddInfo(Subscriber sub, CMJSAgent.CGEntries entry){
-    	 	  	
+ 	  	
 		SubscribersAdditionalFields addnlData; 
 		if (CollectionUtils.isNotEmpty(sub.getSubscribersAdditionalFieldsFromSubscriberID())) {
 			addnlData = sub.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
@@ -2051,35 +1784,34 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			addnlData = new SubscribersAdditionalFields();
 			addnlData.setSubscriber(sub);
 		}
-    	
         if(entry.getElectonicDevieused()!= null){
-    		addnlData.setElectonicDevieused(entry.getElectonicDevieused());
+    		addnlData.setElectonicDeviceUsed(Integer.valueOf(entry.getElectonicDevieused()));
     	}
-    	if(entry.getAgentDescription()!= null){
-    		addnlData.setAgentDescription(entry.getAgentDescription());
-    	}
-    	if(entry.getKTPID()!= null){
-    		addnlData.setKTPID(entry.getKTPID());
-    	}
-    	if(entry.getcorpKTPID()!= null){
-    		addnlData.setKTPID(entry.getcorpKTPID());
-    	}
-    	if(entry.getAgreementNumber()!= null){
+     	if(entry.getAgreementNumber()!= null){
     		addnlData.setAgreementNumber(entry.getAgreementNumber());
     	}
     	if(entry.getAgreementDate()!= null){
-    		addnlData.setAgreementDate(entry.getAgreementDate());
+    		addnlData.setAgrementDate(new Timestamp(getDate(entry.getAgreementDate())));
     	}
     	if(entry.getImplementationdate()!= null){
-    		addnlData.setImplementationdate(entry.getImplementationdate());
+    		addnlData.setImplementatindate(new Timestamp(getDate(entry.getImplementationdate())));
     	}
     	if(entry.getAgentCompanyName()!= null){
     		addnlData.setAgentCompanyName(entry.getAgentCompanyName());
     	}
-    	if(entry.getLatitudeLongitude()!= null){
-    		addnlData.setLatitudeLongitude(entry.getLatitudeLongitude());
+    	if(entry.getLatitude()!= null){
+    		addnlData.setLatitude(entry.getLatitude());
     	}
-     	subAddFldsDAO.save(addnlData);
+    	if(entry.getLongitude()!= null){
+    		addnlData.setLongitude(entry.getLongitude());
+    	}
+    	if(entry.getUserBankBranch()!= null){
+    		addnlData.setUserBankBranch(entry.getUserBankBranch());
+    	}
+    	if(entry.getBankAccountStatus()!= null){
+    		addnlData.setBankAcountStatus(Integer.valueOf(entry.getBankAccountStatus()));
+    	}
+    	subAddFldsDAO.save(addnlData);
     }
     
     private void updateEntityAddInfosp(Subscriber sub, CMJSAgent entry){
@@ -2092,46 +1824,32 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			addnlData = new SubscribersAdditionalFields();
 			addnlData.setSubscriber(sub);
 		}
-    	
         if(entry.getElectonicDevieused()!= null){
-    		addnlData.setElectonicDevieused(entry.getElectonicDevieused());
-    	}
-    	if(entry.getAgentDescription()!= null){
-    		addnlData.setAgentDescription(entry.getAgentDescription());
-    	}
-    	if(entry.getKTPID()!= null){
-    		addnlData.setKTPID(entry.getKTPID());
-    	}
-    	if(entry.getcorpKTPID()!= null){
-    		addnlData.setKTPID(entry.getcorpKTPID());
+    		addnlData.setElectonicDeviceUsed(Integer.valueOf(entry.getElectonicDevieused()));
     	}
      	if(entry.getAgreementNumber()!= null){
     		addnlData.setAgreementNumber(entry.getAgreementNumber());
     	}
     	if(entry.getAgreementDate()!= null){
-    		addnlData.setAgreementDate(entry.getAgreementDate());
+    		addnlData.setAgrementDate(new Timestamp(getDate(entry.getAgreementDate())));
     	}
     	if(entry.getImplementationdate()!= null){
-    		addnlData.setImplementationdate(entry.getImplementationdate());
+    		addnlData.setImplementatindate(new Timestamp(getDate(entry.getImplementationdate())));
     	}
     	if(entry.getAgentCompanyName()!= null){
     		addnlData.setAgentCompanyName(entry.getAgentCompanyName());
     	}
-  
-    	if(entry.getLatitudeLongitude()!= null){
-    		addnlData.setLatitudeLongitude(entry.getLatitudeLongitude());
+    	if(entry.getLatitude()!= null){
+    		addnlData.setLatitude(entry.getLatitude());
     	}
-      	if(entry.getPlaceofBirth()!= null){
-    		addnlData.setPlaceofBirth(entry.getPlaceofBirth());
-    	}
-    	if(entry.getDateofBirth()!= null){
-    		addnlData.setDateofBirth(entry.getDateofBirth());
+    	if(entry.getLongitude()!= null){
+    		addnlData.setLongitude(entry.getLongitude());
     	}
     	if(entry.getUserBankBranch()!= null){
     		addnlData.setUserBankBranch(entry.getUserBankBranch());
     	}
     	if(entry.getBankAccountStatus()!= null){
-    		addnlData.setBankAccountStatus(entry.getBankAccountStatus());
+    		addnlData.setBankAcountStatus(Integer.valueOf(entry.getBankAccountStatus()));
     	}
     	subAddFldsDAO.save(addnlData);
     }
@@ -2139,14 +1857,26 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     public CMJSAgentError verifyAgentData(){
     	CmFinoFIX.CMJSAgentError errorAgentMsg = new CMJSAgentError();
     	errorAgentMsg.setAlamatInAccordanceIdentity("jakarta");
-    	errorAgentMsg.setRTRWAl("01/01");
+    	errorAgentMsg.setRTAl("01");
+    	errorAgentMsg.setRWAl("02");
     	errorAgentMsg.setVillageAl("kel gambir");
     	errorAgentMsg.setDistrictAl("gambir");
     	errorAgentMsg.setCityAl("kota adm");
     	errorAgentMsg.setProvincialAl("dkjakarta");
     	errorAgentMsg.setPotalCodeAl("12910");
-    	errorAgentMsg.setEMail("srinivaas.telugu@rand-ind.com");
     	
     	return errorAgentMsg;
     }
+    
+	private Date getDate(String dateStr) {
+		Date dateOfBirth = null;
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			dateFormat.setLenient(false);
+			dateOfBirth = dateFormat.parse(dateStr);
+		} catch (Exception e) {
+			log.error("Exception in Registration: Invalid Date",e);
+		}		
+		return dateOfBirth;
+	}
 }

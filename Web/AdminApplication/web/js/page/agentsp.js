@@ -109,7 +109,7 @@ mFino.page.agentsp = function(config){
                 	gridEditForm.form.resetAll();
                 	gridEditForm.setRecord(record);
                     gridEditForm.setStore(listBox.store);
-                	gridEditForm.setTitle( _("Register Agent"));
+                	gridEditForm.setTitle( _("PENDAFTARAN AGEN LAKU PANDAI BANK SINARMAS"));
                     //gridEditForm.setMode("add");
                 	gridEditForm.setMode("addagent");
                     gridEditForm.show();
@@ -126,7 +126,7 @@ mFino.page.agentsp = function(config){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Agent selected!"));
                     }else{
-                    	gridEditFormsp.setTitle( _("Edit Agent"));
+                    	gridEditFormsp.setTitle( _("PERUBAHAN DATA AGEN LAKU PANDAI BAK SINARMAS"));
                     	//gridEditForm.setMode("edit");
                     	gridEditFormsp.setMode("editagentdata");
                     	gridEditFormsp.form.resetAll();

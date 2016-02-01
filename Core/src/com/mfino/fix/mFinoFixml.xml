@@ -5317,6 +5317,17 @@
 				<field name="CompanyEmailId" required="N"/>
 				<field name="UserBankBranch" required="N"/>
 				<field name="BankAccountStatus" required="N"/>
+				<field name="RTAl" required="N"/>
+				<field name="RWAl" required="N"/>
+				<field name="RTCom" required="N"/>
+				<field name="RWCom" required="N"/>
+				<field name="Latitude" required="N"/>
+				<field name="Longitude" required="N"/>
+				<field name="BirthDate" required="N"/>
+				<field name="AgrmtDate" required="N"/>
+				<field name="ImplDate" required="N"/>
+				<field name="BankAccountStatusText" required="N"/>
+				<field name="BranchofBankSinarmasText" required="N"/>
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
 				<field name="PartnerID" id="ID" required="N"  />
 				<field name="SubscriberID" required="N"  />
@@ -5470,11 +5481,23 @@
 				<field name="CompanyEmailId" required="N"/>
 				<field name="UserBankBranch" required="N"/>
 				<field name="BankAccountStatus" required="N"/>
+				<field name="RTAl" required="N"/>
+				<field name="RWAl" required="N"/>
+				<field name="RTCom" required="N"/>
+				<field name="RWCom" required="N"/>
+				<field name="Latitude" required="N"/>
+				<field name="Longitude" required="N"/>
+				<field name="BirthDate" required="N"/>
+				<field name="AgrmtDate" required="N"/>
+				<field name="ImplDate" required="N"/>
+				<field name="BankAccountStatusText" required="N"/>
+				<field name="BranchofBankSinarmasText" required="N"/>
 			</group>
 		</message>
 		<message name="JSAgentError" msgtype="1769" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSError">
 			<field name="AlamatInAccordanceIdentity" required="N"/>
-			<field name="RTRWAl" required="N"/>
+			<field name="RTAl" required="N"/>
+			<field name="RWAl" required="N"/>
 			<field name="DistrictAl" required="N"/>
 			<field name="VillageAl" required="N"/>
 			<field name="CityAl" required="N"/>
@@ -5483,7 +5506,6 @@
 			<field name="EMail" required="N"/>
 			<field name="UserBankBranch" required="N"/>
 			<field name="BankAccountStatus" required="N"/>
-			<field name="OtherField1" required="N" />
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="ErrorName" required="Y" />
 				<field name="ErrorDescription" required="Y" />        
@@ -6806,13 +6828,12 @@
 			<field name="YearEstablished" required="N" />
 			<field name="AuthorizedFaxNumber" required="N" />
 			<field name="AuthorizedEmail" required="N" />
-			<field name="CompanyEmailId" required="N" />
 			<field name="BusinessPartnerType" required="N" />
-			<field name="BranchCode" required="N" />
+			
+			<field name="BankBranchCode" required="N" />
 			<field name="BranchSequence" required="N" />
 			<field name="AccountnumberofBankSinarmas" required="N" />
-			<field name="BranchofBankSinarmas" required="N" />
-			<field name="MerchantAddressID2" required="N" References="Address" />
+			<field name="CompanyEmailId" required="N" />			
 		</record>
 		<!-- <record name="ServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 				<field name="MSPID" required="Y" References="mFinoServiceProvider" />  
@@ -7068,18 +7089,17 @@
 			<field name="GoalOfAcctOpening" required="N" />
 			<field name="SourceOfFund" required="N" />
 			
-			<field name="ElectonicDevieused" required="N" />
-			<field name="AgentDescription" required="N" />
-			<field name="KTPID" required="N" />
+			<field name="ElectonicDeviceUsed" required="N" />
 			<field name="AgreementNumber" required="N" />
 			<field name="AgreementDate" required="N" />
 			<field name="Implementationdate" required="N" />
 			<field name="AgentCompanyName" required="N" />
-			<field name="LatitudeLongitude" required="N" />
-			<field name="PlaceofBirth" required="N"/>
-			<field name="DateofBirth" required="N"/>			
+			<field name="Latitude" required="N" />
+			<field name="Longitude" required="N" />
 			<field name="UserBankBranch" required="N"/>
-			<field name="BankAccountStatus" required="N"/>
+			<field name="BankAcountStatus" required="N"/>
+			<field name="AgrementDate" required="N" />
+			<field name="Implementatindate" required="N" />
 		</record>
 
 		<record name="SystemParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="system_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -26330,6 +26350,21 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8388" name="UserBankBranch" type="STRING"/>
 	<field number="8389" name="BankAccountStatus" type="STRING"/>
 	<field number="8390" name="OtherField1" type="STRING"/>
+	<field number="8391" name="RTAl" type="STRING"/>
+	<field number="8392" name="RWAl" type="STRING"/>
+	<field number="8393" name="RTCom" type="STRING"/>
+	<field number="8394" name="RWCom" type="STRING"/>
+	<field number="8395" name="Latitude" type="STRING"/>
+	<field number="8396" name="Longitude" type="STRING"/>
+	<field number="8397" name="AgrmtDate" type="UTCTIMESTAMP"/>
+	<field number="8398" name="ImplDate" type="UTCTIMESTAMP"/>
+	<field number="8399" name="BankAccountStatusText" type="STRING"/>
+	<field number="8400" name="BranchofBankSinarmasText" type="STRING"/>
+	<field number="8401" name="BankBranchCode" type="INT32"/>
+	<field number="8402" name="ElectonicDeviceUsed" type="INT32"/>
+	<field number="8403" name="BankAcountStatus" type="INT32"/>
+	<field number="8404" name="AgrementDate" type="UTCTIMESTAMP"/>
+	<field number="8405" name="Implementatindate" type="UTCTIMESTAMP"/>
    
     </fields>
     <primitives>

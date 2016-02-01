@@ -254,7 +254,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	public Partner getBranchSequence(PartnerQuery query) {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BranchCode, query.getBranchCode()));
+		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BankBranchCode, Integer.valueOf(query.getBranchCode())));
 		criteria.addOrder(Order.desc("ID"));
 		criteria.setMaxResults(1);
 		List<Partner> results = criteria.list();
