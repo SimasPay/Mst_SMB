@@ -156,7 +156,13 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 							   allowBlank: false,
                                blankText : _('Date of birth is required'),
                                itemId  : 'servicepartner.form.DateofBirth',
-                               name: CmFinoFIX.message.JSAgent.DateofBirth._name
+                               name: CmFinoFIX.message.JSAgent.DateofBirth._name,
+                          	 	listeners: {
+	                                 change: function(field) 
+	                                 {
+	                                	 this.findParentByType('ServicePartnerFormspAdd').onDOBSelect(field);
+	                                 }
+                          	 	}
                            },
                            {
                                xtype : "textfield",
@@ -766,7 +772,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
     },
     onDOBSelect : function(field)
     {
-    	var age = 18;
+     var age = 18;
    	 day = field.getValue().getDate();
    	 month = field.getValue().getMonth() + 1;
    	 year = field.getValue().getFullYear();
@@ -776,8 +782,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
    	 var currdate = new Date();
 		 currdate.setFullYear(currdate.getFullYear() - age);
 		 if ((currdate - mydate) < 0){
-			alert("Date should be greater than 18 years");
-			this.form.items.get("servicepartner.form.BirthDate").setValue('');
+			alert("Date of Birth should be greater than 18 years");
+			this.form.items.get("servicepartner.form.DateofBirth").setValue('');
 			}
 
     },

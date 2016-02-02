@@ -482,7 +482,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             
             Ext.apply(params, {
             success :  function(response){
-       		 if(response.m_pErrorCode == CmFinoFIX.ErrorCode_Generic){
+       		 if(response.m_psuccess == false || response.m_pErrorCode == 1)
+       		 {
                   Ext.Msg.show({
                       title: 'Info',
                       minProgressWidth:600,
@@ -492,37 +493,39 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
                   });
        		 }
        
-		        if(response.m_psuccess == true){
+	        if(response.m_psuccess == true || response.m_pErrorCode == 0)
+	        {
 		         var ConfirmAgent = new mFino.widget.FormWindowsp(Ext.apply({
-                   form : new mFino.widget.ServicePartnerFormspAdd(this),
-                   height : 600,
-                   width:900,
-                   title : _("PENDAFTARAN AGEN LAKU PANDAI BANK SINARMAS"),
-                   mode:"addagentdata"
-                },this));
+		               form : new mFino.widget.ServicePartnerFormspAdd(this),
+		               height : 600,
+		               width:900,
+		               title : _("PENDAFTARAN AGEN LAKU PANDAI BANK SINARMAS"),
+		               mode:"addagentdata"
+		         },this));
 		         ConfirmAgent.show(); 
-		         ConfirmAgent.form.setDetails(msg.m_pUsername,
-							        		 msg.m_pKTPID,
-							        		 msg.m_pMDN,
-							        		 msg.m_pAccountnumberofBankSinarmas,
-							        		// msg.m_pBranchofBankSinarmas,
-							        		 msg.m_pBranchCode,
-							        		 response.m_pAlamatInAccordanceIdentity,
-							        		 response.m_pRTAl,
-							        		 response.m_pRWAl,
-							        		 response.m_pVillageAl,
-							        		 response.m_pDistrictAl,
-							        		 response.m_pCityAl,
-							        		 response.m_pProvincialAl,
-							        		 response.m_pPotalCodeAl,
-							        		 response.m_pUserBankBranch);
-		        }
+		         ConfirmAgent.form.setDetails(
+	 				 msg.m_pUsername,
+	        		 msg.m_pKTPID,
+	        		 msg.m_pMDN,
+	        		 msg.m_pAccountnumberofBankSinarmas,
+	        		// msg.m_pBranchofBankSinarmas,
+	        		 msg.m_pBranchCode,
+	        		 response.m_pAlamatInAccordanceIdentity,
+	        		 response.m_pRTAl,
+	        		 response.m_pRWAl,
+	        		 response.m_pVillageAl,
+	        		 response.m_pDistrictAl,
+	        		 response.m_pCityAl,
+	        		 response.m_pProvincialAl,
+	        		 response.m_pPotalCodeAl,
+	        		 response.m_pUserBankBranch);
+	        }
        	 },
             failure : function(response){
                 Ext.Msg.show({
                     title: 'Error',
                     minProgressWidth:250,
-                    msg: "Your transaction is having a problem. Please check your recent transaction on pending transaction list or contact Customer Care :881",
+                    msg: "Your Registration is having a problem. Please contact Customer Care",
                     buttons: Ext.MessageBox.OK,
                     multiline: false
                 });

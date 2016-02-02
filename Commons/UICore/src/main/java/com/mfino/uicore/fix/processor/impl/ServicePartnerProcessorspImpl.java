@@ -138,7 +138,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 		log.info("ServicePartnerProcessorspImpl::process() :: realMsg.getaction()="+realMsg.getaction());
 		
 		if (CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())) {
-			System.out.println("entered into update block");
+			log.info("entered into update block");
 			CMJSAgent.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSAgent.CGEntries entry : entries) {
@@ -291,7 +291,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			CmFinoFIX.CMJSAgentError errorMsg = new CmFinoFIX.CMJSAgentError();
 			if("agentprimarydata".equals(realMsg.getTypeAgentObject()))
 			{
-				System.out.println("entered into agentprimarydata block");
+				log.info("entered into agentprimarydata block");
 				
 /*				errorMsg = (CMJSAgentError)verifyAgentData(errorMsg);
 				errorMsg.setErrorDescription("Agent KTP validation successfull");
@@ -320,9 +320,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 					request.put("action","inquiryEKTPAgent");
 								
 					JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
-				
-					if(null != response) {// && response.get("status").toString().equals("Success")) {
-						
+					if(null != response) {
 						ktpDetail.setBankResponse(response.toString());
 						ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
 						ktpDetailsDAO.save(ktpDetail);
@@ -335,24 +333,27 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 						errorMsg.setCityAl(response.get("kota").toString());
 						errorMsg.setProvincialAl(response.get("provinsi").toString());
 						errorMsg.setPotalCodeAl(response.get("kodepos").toString());
-						errorMsg.setErrorDescription("Agent KTP validation successfull");
+						errorMsg.setErrorDescription(MessageText._("Agent KTP validation successfull"));
 						errorMsg.setsuccess(CmFinoFIX.Boolean_True);
 						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					} else {
-						errorMsg.setErrorDescription("Agent KTP validation Failed");
+						errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
 						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 						errorMsg.setsuccess(CmFinoFIX.Boolean_False);
 					}
 				} catch(Exception ex) {
-					
 					log.error("Error in parsing the response from server..." + ex);
+					errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
+					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+					errorMsg.setsuccess(CmFinoFIX.Boolean_False);
+					return errorMsg;
 				}
                 return errorMsg;
 			}
 /*            CMJSAgent.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSAgent.CGEntries e : entries) {*/
-				System.out.println("entered into agent data add block");            	
+				log.info("entered into agent data add block");            	
             	Partner partner = new Partner();
                 Subscriber subscriber;
                 SubscriberMDN subscriberMdn;
@@ -384,8 +385,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     			}else{
     				branchSeq = 1;
     			}
-        		
-                String agentCode = "153"+realMsg.getBranchCode()+realMsg.getAgentType() + branchSeq;
+    			String bc = StringUtils.leftPad(realMsg.getBranchCode(), 3, "0");
+    			String bs = StringUtils.leftPad(""+branchSeq, 4, "0");
+                //String agentCode = "153"+realMsg.getBranchCode()+realMsg.getAgentType() + branchSeq;
+    			String agentCode = "153" + bc + realMsg.getAgentType() + bs;
 
                 realMsg.setPartnerCode(agentCode);
                 realMsg.setTradeName(realMsg.getUsername());
@@ -1480,9 +1483,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 		    		entry.setAgreementNumber(saf.getAgreementNumber());
 		    	}
 		    	if(saf.getAgrementDate()!= null){
-		    		//entry.setAgreementDate("Testtttttt");
 		    		entry.setAgreementDate(String.valueOf(saf.getAgrementDate()));
-		    		System.out.println("agreement date is: "+entry.getAgreementDate());
 		    	}
 		    	if(saf.getImplementatindate()!= null){
 		    		entry.setImplementationdate(String.valueOf(saf.getImplementatindate()));

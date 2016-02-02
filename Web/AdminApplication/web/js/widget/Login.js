@@ -34,7 +34,6 @@ Ext.extend(mFino.widget.Login, Ext.FormPanel, {
             labelSeparator :'',
             name        : "j_username",
             allowBlank : false,
-            value	: "user",
             width:140,
             blankText : _('User name is required'),
             listeners   : {
@@ -51,7 +50,6 @@ Ext.extend(mFino.widget.Login, Ext.FormPanel, {
             name        : 'j_password',
             inputType   : 'password',
             allowBlank : false,
-            value		: "User123",
             width:140,
             blankText : _('Password is required'),
             listeners   : {
