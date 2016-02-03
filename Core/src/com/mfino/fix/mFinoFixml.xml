@@ -5328,6 +5328,9 @@
 				<field name="ImplDate" required="N"/>
 				<field name="BankAccountStatusText" required="N"/>
 				<field name="BranchofBankSinarmasText" required="N"/>
+				<field name="BusinessPartnerTypeAgent" required="N"/>
+				<field name="BusinessPartnerTypeAgentText" required="N"/>
+				<field name="BankBranchCode" required="N" />
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
 				<field name="PartnerID" id="ID" required="N"  />
 				<field name="SubscriberID" required="N"  />
@@ -5492,6 +5495,9 @@
 				<field name="ImplDate" required="N"/>
 				<field name="BankAccountStatusText" required="N"/>
 				<field name="BranchofBankSinarmasText" required="N"/>
+				<field name="BusinessPartnerTypeAgent" required="N"/>
+				<field name="BusinessPartnerTypeAgentText" required="N"/>
+				<field name="BankBranchCode" required="N" />
 			</group>
 		</message>
 		<message name="JSAgentError" msgtype="1769" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSError">
@@ -6830,7 +6836,7 @@
 			<field name="AuthorizedEmail" required="N" />
 			<field name="BusinessPartnerType" required="N" />
 			
-			<field name="BankBranchCode" required="N" />
+			<field name="BranchCode" required="N" />
 			<field name="BranchSequence" required="N" />
 			<field name="AccountnumberofBankSinarmas" required="N" />
 			<field name="CompanyEmailId" required="N" />			
@@ -7091,8 +7097,6 @@
 			
 			<field name="ElectonicDeviceUsed" required="N" />
 			<field name="AgreementNumber" required="N" />
-			<field name="AgreementDate" required="N" />
-			<field name="Implementationdate" required="N" />
 			<field name="AgentCompanyName" required="N" />
 			<field name="Latitude" required="N" />
 			<field name="Longitude" required="N" />
@@ -26365,6 +26369,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8403" name="BankAcountStatus" type="INT32"/>
 	<field number="8404" name="AgrementDate" type="UTCTIMESTAMP"/>
 	<field number="8405" name="Implementatindate" type="UTCTIMESTAMP"/>
+	<field number="8406" name="BusinessPartnerTypeAgentText" type="STRING"/>
    
     </fields>
     <primitives>

@@ -106,9 +106,12 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
 							   allowBlank: true,
 							   emptyText : _('<select one..>'),
 							   blankText : _('Agent Type is required'),
-							   enumId: CmFinoFIX.TagID.AgentType,
+/*							   enumId: CmFinoFIX.TagID.AgentType,
 							   itemId : 'servicepartner.form.AgentType',
-							   name : CmFinoFIX.message.JSAgent.AgentTypeText._name
+							   name : CmFinoFIX.message.JSAgent.AgentTypeText._name*/
+							   enumId: CmFinoFIX.TagID.BusinessPartnerTypeAgent,
+							   itemId : 'servicepartner.form.BusinessPartnerType',
+							   name : CmFinoFIX.message.JSAgent.BusinessPartnerTypeText._name
 							},
                     	   {
                     		   xtype : "textfield",

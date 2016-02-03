@@ -48,7 +48,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 							    itemId  : 'servicepartner.form.AgentCode',
 							    name    : CmFinoFIX.message.JSAgent.AgentCode._name
 							},
-							{
+/*							{
 							   xtype : "enumdropdown",
 							   //fieldLabel :_('Agent Type'),
 							   fieldLabel :_('Jenis Agen'),
@@ -59,6 +59,18 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 							   enumId: CmFinoFIX.TagID.AgentType,
 							   itemId : 'servicepartner.form.AgentType',
 							   name : CmFinoFIX.message.JSAgent.AgentType._name
+							},*/
+							{
+							   xtype : "enumdropdown",
+							   //fieldLabel :_('Agent Type'),
+							   fieldLabel :_('Jenis Agen'),
+							   anchor : '100%',
+							   allowBlank: false,
+							   emptyText : _('<select one..>'),
+							   blankText : _('Agent Type is required'),
+							   enumId: CmFinoFIX.TagID.BusinessPartnerTypeAgent,
+							   itemId : 'servicepartner.form.BusinessPartnerType',
+							   name : CmFinoFIX.message.JSAgent.BusinessPartnerType._name
 							},
                     	   {
                     		   xtype : "enumdropdown",
@@ -468,7 +480,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
        	                   itemId  : 'servicepartner.form.AccountnumberofBankSinarmas',
        	                   name: CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name
        	               },
-/*       	               {
+       	               {
        	                   xtype : "hidden",
        	                   fieldLabel :_("Bank Sinarmas Branch"),
                            anchor : '100%',
@@ -476,7 +488,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            maxLength : 255,
        	                   itemId  : 'servicepartner.form.BranchofBankSinarmas',
        	                   name: CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name
-       	               },*/
+       	               },
     	               {
     	                   xtype : "hidden",
     	                   fieldLabel :_('Branch code'),
@@ -855,7 +867,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                var values = this.form.getValues();
                
                var AgentCode = values[CmFinoFIX.message.JSAgent.AgentCode._name];
-               var AgentType = values[CmFinoFIX.message.JSAgent.AgentType._name];
+               //var AgentType = values[CmFinoFIX.message.JSAgent.AgentType._name];
+               //var BusinessPartnerTypeAgent = values[CmFinoFIX.message.JSAgent.BusinessPartnerTypeAgent._name];
+               var BusinessPartnerType = values[CmFinoFIX.message.JSAgent.BusinessPartnerType._name];
                var ClassificationAgent = values[CmFinoFIX.message.JSAgent.ClassificationAgent._name];
                var TypeofBusinessAgent = values[CmFinoFIX.message.JSAgent.TypeofBusinessAgent._name];
                var ElectonicDevieused = values[CmFinoFIX.message.JSAgent.ElectonicDevieused._name];
@@ -893,15 +907,16 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                var KTPID = values[CmFinoFIX.message.JSAgent.KTPID._name];
                var MDN = values[CmFinoFIX.message.JSAgent.MDN._name];
                var AccountnumberofBankSinarmas = values[CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name];
-               //var BranchofBankSinarmas = values[CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name];
+               var BranchofBankSinarmas = values[CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name];
                var BranchCode = values[CmFinoFIX.message.JSAgent.BranchCode._name];
                
                
                msg.m_paction = "create";
                msg.m_pAgentCode = AgentCode;
                msg.m_pPartnerCode = AgentCode;
-               msg.m_pAgentType = AgentType;
-               msg.m_pBusinessPartnerType = AgentType;
+               //msg.m_pAgentType = AgentType;
+               //msg.m_pBusinessPartnerTypeAgent = BusinessPartnerTypeAgent;
+               msg.m_pBusinessPartnerType = BusinessPartnerType;
                msg.m_pClassificationAgent = ClassificationAgent;
                msg.m_pTypeofBusinessAgent = TypeofBusinessAgent;
                msg.m_pElectonicDevieused = ElectonicDevieused;
@@ -940,7 +955,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                msg.m_pKTPID = KTPID;
                msg.m_pMDN = MDN;
                msg.m_pAccountnumberofBankSinarmas = AccountnumberofBankSinarmas;
-               //msg.m_pBranchofBankSinarmas = BranchofBankSinarmas;
+               msg.m_pBranchofBankSinarmas = BranchofBankSinarmas;
                msg.m_pBranchCode = BranchCode;
 
                
@@ -980,14 +995,14 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                       return params;
                    }
              },
-      setDetails : function(Username,KTPID, MDN, AccountnumberofBankSinarmas, BranchCode,
+      setDetails : function(Username,KTPID, MDN, AccountnumberofBankSinarmas, BranchofBankSinarmas, BranchCode,
     		  AlamatInAccordanceIdentity, RTAl, RWAl, VillageAl, DistrictAl, CityAl, ProvincialAl, PotalCodeAl, UserBankBranch){
 	        this.getForm().reset();
 	        this.form.items.get("servicepartner.form.Username").setValue(Username);
 	      	this.form.items.get("servicepartner.form.KTPID").setValue(KTPID);
 	      	this.form.items.get("servicepartner.form.MDN").setValue(MDN);
 	      	this.form.items.get("servicepartner.form.AccountnumberofBankSinarmas").setValue(AccountnumberofBankSinarmas);
-	      	//this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(BranchofBankSinarmas);
+	      	this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(BranchofBankSinarmas);
 	      	this.form.items.get("servicepartner.form.BranchCode").setValue(BranchCode);
 	      	this.form.items.get("servicepartner.form.AlamatInAccordanceIdentity").setValue(AlamatInAccordanceIdentity);
 	      	this.form.items.get("servicepartner.form.RTAl").setValue(RTAl);
@@ -1004,7 +1019,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 	      	this.find('itemId','servicepartner.form.KTPID')[0].disable();
 	      	this.find('itemId','servicepartner.form.MDN')[0].disable();
 	      	this.find('itemId','servicepartner.form.AccountnumberofBankSinarmas')[0].disable();
-	      	//this.find('itemId','servicepartner.form.BranchofBankSinarmas')[0].disable();
+	      	this.find('itemId','servicepartner.form.BranchofBankSinarmas')[0].disable();
 	      	this.find('itemId','servicepartner.form.BranchCode')[0].disable();
 	      	this.find('itemId','servicepartner.form.AlamatInAccordanceIdentity')[0].disable();
 	      	this.find('itemId','servicepartner.form.RTAl')[0].disable();

@@ -125,9 +125,12 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
 							   allowBlank: false,
 							   emptyText : _('<select one..>'),
 							   blankText : _('Agent Type is required'),
-							   enumId: CmFinoFIX.TagID.AgentType,
+/*							   enumId: CmFinoFIX.TagID.AgentType,
 							   itemId : 'servicepartner.form.AgentType',
-							   name : CmFinoFIX.message.JSAgent.AgentTypeText._name
+							   name : CmFinoFIX.message.JSAgent.AgentTypeText._name*/
+							   enumId: CmFinoFIX.TagID.BusinessPartnerTypeAgent,
+							   itemId : 'servicepartner.form.BusinessPartnerType',
+							   name : CmFinoFIX.message.JSAgent.BusinessPartnerTypeText._name
 							},
                     	   {
                     		   xtype : "enumdropdown",
@@ -827,7 +830,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
       	this.find('itemId','servicepartner.form.BranchCode')[0].disable();
       	
       	this.find('itemId','servicepartner.form.AgentCode')[0].disable();
-      	this.find('itemId','servicepartner.form.AgentType')[0].disable();
+      	//this.find('itemId','servicepartner.form.AgentType')[0].disable();
+      	this.find('itemId','servicepartner.form.BusinessPartnerType')[0].disable();
       	this.find('itemId','servicepartner.form.TypeofBusinessAgent')[0].disable();
       	this.find('itemId','servicepartner.form.AgreementNumber')[0].disable();
       	this.find('itemId','servicepartner.form.AgreementDate')[0].disable();
@@ -852,7 +856,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                var values = this.form.getValues();
                
                var AgentCode = values[CmFinoFIX.message.JSAgent.AgentCode._name];
-               var AgentType = values[CmFinoFIX.message.JSAgent.AgentType._name];
+               //var AgentType = values[CmFinoFIX.message.JSAgent.AgentType._name];
+               var BusinessPartnerType = values[CmFinoFIX.message.JSAgent.BusinessPartnerType._name];
                var ClassificationAgent = values[CmFinoFIX.message.JSAgent.ClassificationAgent._name];
                var TypeofBusinessAgent = values[CmFinoFIX.message.JSAgent.TypeofBusinessAgent._name];
                var ElectonicDevieused = values[CmFinoFIX.message.JSAgent.ElectonicDevieused._name];
@@ -896,8 +901,9 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                msg.m_paction = "create";
                msg.m_pAgentCode = AgentCode;
                msg.m_pPartnerCode = AgentCode;
-               msg.m_pAgentType = AgentType;
-               msg.m_pBusinessPartnerType = AgentType;
+               //msg.m_pAgentType = AgentType;
+               msg.m_pBusinessPartnerType = BusinessPartnerType;
+              // msg.m_pBusinessPartnerType = AgentType;
                msg.m_pClassificationAgent = ClassificationAgent;
                msg.m_pTypeofBusinessAgent = TypeofBusinessAgent;
                msg.m_pElectonicDevieused = ElectonicDevieused;

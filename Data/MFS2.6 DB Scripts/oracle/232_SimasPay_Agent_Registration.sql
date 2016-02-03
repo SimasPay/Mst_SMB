@@ -1,29 +1,25 @@
 
 ALTER TABLE PARTNER ADD (
-BANKBRANCHCODE NUMBER(10),
+BRANCHCODE VARCHAR2(255),
 BRANCHSEQUENCE NUMBER(10), 
 ACCOUNTNUMBEROFBANKSINARMAS VARCHAR2(255), 
 COMPANYEMAILID VARCHAR2(255));
 
 
-ALTER TABLE SUBSCRIBER_ADDI_INFO ADD (
-AGREEMENTNUMBER VARCHAR2(255),
-AGENTCOMPANYNAME VARCHAR2(255),
-LATITUDE VARCHAR2(255),
-LONGITUDE VARCHAR2(255),
-USERBANKBRANCH VARCHAR2(255),
-ELECTONICDEVICEUSED NUMBER(10),
-BANKACCOUNTSTATUS NUMBER(10),
-AGREMENTDATE TIMESTAMP,
-IMPLEMENTATINDATE TIMESTAMP);
+ALTER TABLE SUBSCRIBER_ADDI_INFO ADD(
+ElectonicDeviceUsed  NUMBER(10),
+AgreementNumber VARCHAR2(255),
+AgentCompanyName VARCHAR2(255),
+Latitude VARCHAR2(255),
+Longitude VARCHAR2(255),
+UserBankBranch VARCHAR2(255),
+BankAcountStatus  NUMBER(10),
+AgrementDate TIMESTAMP,
+Implementatindate TIMESTAMP);
 
 delete from enum_text where TagID = 6414;
 INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','BusinessPartnerTypeAgent','6414','4','DirectAgent','Perorangan');
 INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','BusinessPartnerTypeAgent','6414','5','SuperAgent','Badan Usaha');
-
-delete from enum_text where TAGID=8302;
-INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','AgentType','8302','1','PersonalAgent','Perorangan');
-INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','AgentType','8302','2','Corporate','Badan Usaha');
 
 delete from enum_text where TAGID=8303;
 INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','ClassificationAgent','8303','1','A','A');

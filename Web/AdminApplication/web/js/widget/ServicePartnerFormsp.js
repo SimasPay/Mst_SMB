@@ -87,21 +87,30 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 	                   anchor : '100%',
 	                   allowBlank: false,
 	                   addEmpty : false,
-	                   itemId : 'servicepartner.form.BranchCode',
+	                   itemId : 'servicepartner.form.BranchofBankSinarmas',
 	                   emptyText : '<Select one..>',
-	                   name: CmFinoFIX.message.JSAgent.BranchCode._name,
+	                   name: CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name,
 	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSBranchCodes), 
 	                   displayField: CmFinoFIX.message.JSBranchCodes.Entries.BranchName._name, 
 	                   valueField : CmFinoFIX.message.JSBranchCodes.Entries.ID._name, 
-	                   hiddenName : CmFinoFIX.message.JSAgent.BranchCode._name,
+	                   hiddenName : CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name,
 	                   pageSize: 10,
 	                   params: {start:0, limit:10},
-/*		                listeners: {
+		                listeners: {
 		                    select: function(field) {
 		                        this.findParentByType('ServicePartnerFormsp').onBranchName(field);
 		                    }
-		                }*/
+		                }
 	               },
+	               {
+	                   xtype : "hidden",
+	                   fieldLabel :_('Branch code'),
+	                   anchor : '100%',
+	                   allowBlank: true,
+	                   maxLength : 255,
+	                   itemId : 'servicepartner.form.BranchCode',
+	                   name : CmFinoFIX.message.JSAgent.BranchCode._name
+	               }
 	            ]
             },
             {
@@ -464,14 +473,14 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             var KTPID = values[CmFinoFIX.message.JSAgent.KTPID._name];
             var MDN = values[CmFinoFIX.message.JSAgent.MDN._name];
             var AccountnumberofBankSinarmas = values[CmFinoFIX.message.JSAgent.AccountnumberofBankSinarmas._name];
-            //var BranchofBankSinarmas = values[CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name];
+            var BranchofBankSinarmas = values[CmFinoFIX.message.JSAgent.BranchofBankSinarmas._name];
             var BranchCode = values[CmFinoFIX.message.JSAgent.BranchCode._name];
             
             msg.m_pUsername = Username;
             msg.m_pKTPID = KTPID;
             msg.m_pMDN = MDN;
             msg.m_pAccountnumberofBankSinarmas = AccountnumberofBankSinarmas;
-            //msg.m_pBranchofBankSinarmas = BranchofBankSinarmas;
+            msg.m_pBranchofBankSinarmas = BranchofBankSinarmas;
             msg.m_pBranchCode = BranchCode;
             msg.m_pTypeAgentObject = "agentprimarydata";
             msg.m_paction = "create";
@@ -508,7 +517,7 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 	        		 msg.m_pKTPID,
 	        		 msg.m_pMDN,
 	        		 msg.m_pAccountnumberofBankSinarmas,
-	        		// msg.m_pBranchofBankSinarmas,
+	        		 msg.m_pBranchofBankSinarmas,
 	        		 msg.m_pBranchCode,
 	        		 response.m_pAlamatInAccordanceIdentity,
 	        		 response.m_pRTAl,

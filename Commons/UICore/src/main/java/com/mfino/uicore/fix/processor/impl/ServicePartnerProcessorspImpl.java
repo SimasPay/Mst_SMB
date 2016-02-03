@@ -362,7 +362,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 //CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
             	PartnerDAO dao = DAOFactory.getInstance().getPartnerDAO();
         		           	
-                int agntTyp = Integer.valueOf(realMsg.getAgentType());
+/*                int agntTyp = Integer.valueOf(realMsg.getAgentType());
                 if(agntTyp == 1)
                 {
                 	realMsg.setBusinessPartnerType(4);                	
@@ -370,7 +370,18 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 if(agntTyp == 2)
                 {
                 	realMsg.setBusinessPartnerType(5);  
+                }*/
+            	
+            	int agntTyp = realMsg.getBusinessPartnerType();
+                if(agntTyp == 4)
+                {
+                	realMsg.setAgentType("1");                	
                 }
+                if(agntTyp == 5)
+                {
+                	realMsg.setAgentType("2");  
+                }
+            	
         		query = new PartnerQuery();
         		query.setBranchCode(realMsg.getBranchCode());
         		query.setBusinessPartnerType(realMsg.getBusinessPartnerType());
@@ -824,9 +835,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     	if(entry.getKTPID()!= null){
     		subscriberMdn.setApplicationID(entry.getKTPID());
     	}
-    	if(entry.getBusinessPartnerType()!=null){
-    		partner.setBusinessPartnerType(entry.getBusinessPartnerType());
-    	}
         if (entry.getPartnerStatus() != null) {
             if (!(entry.getPartnerStatus().equals(partner.getPartnerStatus()))) {
                 subscriberMdn.setStatus(entry.getPartnerStatus());
@@ -900,13 +908,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	partner.setFranchisePhoneNumber(entry.getPhoneNumber());
         }
         if(entry.getBranchCode() != null){
-        	partner.setBankBranchCode(Integer.valueOf(entry.getBranchCode()));
+        	partner.setBranchCode(entry.getBranchCode());
         }
-
         if(entry.getAccountnumberofBankSinarmas() != null){
         	partner.setAccountnumberofBankSinarmas(entry.getAccountnumberofBankSinarmas());
         }
-
         //simaspay changes ends
         
         //for merchant and outlet addresses
@@ -977,7 +983,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	}
             	//simaspay changes ends  	
             	addressDao.save(outletAddress);
-            	
             	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){
         			
@@ -1018,9 +1023,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     	if(entry.getKTPID()!= null){
     		subscriberMdn.setApplicationID(entry.getKTPID());
     	}
-    	if(entry.getBusinessPartnerType()!=null){
-    		partner.setBusinessPartnerType(entry.getBusinessPartnerType());
-    	}
         if (entry.getPartnerStatus() != null) {
             if (!(entry.getPartnerStatus().equals(partner.getPartnerStatus()))) {
                 subscriberMdn.setStatus(entry.getPartnerStatus());
@@ -1094,13 +1096,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	partner.setFranchisePhoneNumber(entry.getPhoneNumber());
         }
         if(entry.getBranchCode() != null){
-        	partner.setBankBranchCode(Integer.valueOf(entry.getBranchCode()));
+        	partner.setBranchCode(entry.getBranchCode());
         }
-
         if(entry.getAccountnumberofBankSinarmas() != null){
         	partner.setAccountnumberofBankSinarmas(entry.getAccountnumberofBankSinarmas());
         }
-
         //simaspay changes ends
         
         //for merchant and outlet addresses
@@ -1172,7 +1172,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	//simaspay changes ends  	
             	addressDao.save(outletAddress);
             	
-            	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){
         			
         			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
@@ -1211,7 +1210,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	    	if(subscriberMdn.getApplicationID()!= null){
 	    		entry.setKTPID(subscriberMdn.getApplicationID());
 	    	}
-        	
 			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				
@@ -1383,16 +1381,13 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if (partner.getVersion() != null) {
 	            entry.setRecordVersion(partner.getVersion());
 	        }
-
-	        if (partner.getBankBranchCode() != null) {
-	        	entry.setBranchCodeText(userService.getUserBranchCode(partner.getBankBranchCode()));
-	            entry.setBranchCode(String.valueOf(partner.getBankBranchCode()));
+	        if (partner.getBranchCode() != null) {
+	        	entry.setBranchCodeText(userService.getUserBranchCode(Integer.valueOf(partner.getBranchCode())));
+	            entry.setBranchCode(partner.getBranchCode());
 	        }
-
 	        if (partner.getAccountnumberofBankSinarmas() != null) {
 	            entry.setAccountnumberofBankSinarmas(partner.getAccountnumberofBankSinarmas());
 	        }
-
 	        if(partner.getBusinessPartnerType() != null){
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
 	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
@@ -1471,7 +1466,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	    	if(subscriberMdn.getApplicationID()!= null){
 	    		entry.setKTPID(subscriberMdn.getApplicationID());
 	    	}
-        	
 			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				
@@ -1643,16 +1637,13 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if (partner.getVersion() != null) {
 	            entry.setRecordVersion(partner.getVersion());
 	        }
-
-	        if (partner.getBankBranchCode() != null) {
-	        	entry.setBranchCodeText(userService.getUserBranchCode(partner.getBankBranchCode()));
-	            entry.setBranchCode(String.valueOf(partner.getBankBranchCode()));
+	        if (partner.getBranchCode() != null) {
+	        	entry.setBranchCodeText(userService.getUserBranchCode(Integer.valueOf(partner.getBranchCode())));
+	            entry.setBranchCode(partner.getBranchCode());
 	        }
-
 	        if (partner.getAccountnumberofBankSinarmas() != null) {
 	            entry.setAccountnumberofBankSinarmas(partner.getAccountnumberofBankSinarmas());
 	        }
-
 	        if(partner.getBusinessPartnerType() != null){
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
 	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
