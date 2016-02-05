@@ -104,9 +104,6 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		}
 		
 		validationResult = transactionApiValidationService.validatePin(agentMDN, transactionDetails.getSourcePIN());
-		
-		validationResult = CmFinoFIX.ResponseCode_Success;
-		
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
@@ -117,6 +114,7 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		SubscriberMDN subMDN = subscriberMdnService.getByMDN(ktpDetails.getMDN());
 		if (subMDN != null) {
 			
+			result.setDestinationMDN(ktpDetails.getMDN());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source);
 			return result;
 		}

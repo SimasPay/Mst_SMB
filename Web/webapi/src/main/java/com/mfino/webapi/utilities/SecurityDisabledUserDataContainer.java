@@ -1079,4 +1079,14 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 	public String getKtpRT() {
 		return this.container.getKtpRT();
 	}
+	
+	@Override
+	public String getKtpSubState() {
+		return this.container.getKtpSubState();
+	}
+	
+	@Override
+	public String getSubState() {
+		return this.container.getSubState();
+	}
 }

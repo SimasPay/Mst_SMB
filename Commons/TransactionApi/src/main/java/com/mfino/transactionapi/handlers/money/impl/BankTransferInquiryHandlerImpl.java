@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
@@ -28,6 +29,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.MFAService;
+import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
@@ -65,6 +67,10 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 	@Autowired
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
+	
+	@Autowired
+	@Qualifier("PocketServiceImpl")
+	private PocketService pocketService;
 	
 	public Result handle(TransactionDetails transactionDetails) {
 
@@ -107,7 +113,20 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		
-
+		Pocket destPocket = null;
+		
+		if (StringUtils.isNotBlank(String.valueOf(bankAccountToBankAccount.getDestPocketID()))) {
+			
+			destPocket = pocketService.getById(bankAccountToBankAccount.getDestPocketID());
+		}
+		
+		Pocket srcPocket = null;
+		
+		if (StringUtils.isNotBlank(String.valueOf(bankAccountToBankAccount.getSourcePocketID()))) {
+			
+			srcPocket = pocketService.getById(bankAccountToBankAccount.getSourcePocketID());
+		}
+		
 		ServiceCharge sc = new ServiceCharge();
 		
 		sc.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
@@ -125,7 +144,42 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT);
 		}
 		else {
-			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
+			
+			/*
+			 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
+			 */
+			
+			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
+
+				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER);
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+				}
+				
+				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER);
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+				}
+			}
+			
+			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+
+				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
+				}
+				
+				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER);
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
+				}
+			}
+						
+			//sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
 		}
 		
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());

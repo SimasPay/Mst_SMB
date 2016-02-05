@@ -57,6 +57,12 @@ public class ServiceAndTransactionConstants {
 
 	public static final String TRANSACTION_TRANSFER = "Transfer";
 	
+	public static final String TRANSACTION_E2ETRANSFER = "E2ETransfer";
+	
+	public static final String TRANSACTION_B2ETRANSFER = "B2ETransfer";
+	
+	public static final String TRANSACTION_E2BTRANSFER = "E2BTransfer";
+	
 	public static final String TRANSACTION_TRANSFER_UNREGISTERED = "TransferToUnregistered";
 
 	public static final String TRANSACTION_CASHOUT = "CashOut";

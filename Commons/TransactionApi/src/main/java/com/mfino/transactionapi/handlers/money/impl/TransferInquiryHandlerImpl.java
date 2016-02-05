@@ -25,7 +25,6 @@ import com.mfino.result.Result;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
-import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.money.BankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.NonRegisteredTransferInquiryHandler;
@@ -137,7 +136,11 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		if((CmFinoFIX.NotificationCode_DestinationMDNNotFound.equals(validationResult) ||
 				CmFinoFIX.NotificationCode_SubscriberNotRegistered.equals(validationResult)))
 		{
-			if(ApiConstants.POCKET_CODE_SVA.equals(transactionDetails.getSourcePocketCode()) &&
+			/*
+			 * Commented as for Simaspay we do not need to transfer to Unregistered subscriber. 
+			 */
+			
+			/*if(ApiConstants.POCKET_CODE_SVA.equals(transactionDetails.getSourcePocketCode()) &&
 					transactionDetails.getSourcePocketCode().equals(transactionDetails.getDestPocketCode())){
 				log.info("Handling transferInquiry for unregistered subscriber");
 				//Handle UnRegistered MDN 
@@ -151,7 +154,10 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 			else{
 				result.setNotificationCode(validationResult);
 				return result;
-			}
+			}*/
+			
+			result.setNotificationCode(CmFinoFIX.NotificationCode_DestinationMDNNotFound);
+			return result;
 		} 
 		else if(!CmFinoFIX.ResponseCode_Success.equals(validationResult))
 		{

@@ -152,6 +152,8 @@ public class ReceivedUserDataContainer {
 	private String ktpLine2;
 	private String ktpCity;
 	private String ktpState;
+	private String ktpSubState;
+	private String subState;
 	private String ktpCountry;
 	private String ktpZipCode;
 	private String ktpRegionName;
@@ -169,6 +171,34 @@ public class ReceivedUserDataContainer {
 	private String ktpRW;
 	private String ktpRT;
 	
+	/**
+	 * @return the ktpSubState
+	 */
+	public String getKtpSubState() {
+		return ktpSubState;
+	}
+
+	/**
+	 * @param ktpSubState the ktpSubState to set
+	 */
+	public void setKtpSubState(String ktpSubState) {
+		this.ktpSubState = ktpSubState;
+	}
+
+	/**
+	 * @return the subState
+	 */
+	public String getSubState() {
+		return subState;
+	}
+
+	/**
+	 * @param subState the subState to set
+	 */
+	public void setSubState(String subState) {
+		this.subState = subState;
+	}
+
 	/**
 	 * @return the rT
 	 */

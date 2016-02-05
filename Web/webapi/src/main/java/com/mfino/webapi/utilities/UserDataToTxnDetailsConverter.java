@@ -252,7 +252,7 @@ public class UserDataToTxnDetailsConverter {
 		
 		if(StringUtils.isNotBlank(userDataContainer.getKtpLifetime())) {
 		
-			txnDetails.setKtpLifetime(Boolean.valueOf(userDataContainer.getKtpLifetime()));
+			txnDetails.setKtpLifetime(getBoolean(userDataContainer.getKtpLifetime(), ApiConstants.PARAMETER_KTP_LIFETIME));
 		}
 		
 		txnDetails.setKtpLine1(userDataContainer.getKtpLine1());
@@ -335,6 +335,23 @@ public class UserDataToTxnDetailsConverter {
 			throw new InvalidDataException("Invalid Date", CmFinoFIX.NotificationCode_InvalidData, parameterName);
 		}		
 		return dateOfBirth;
+	}
+	
+	public boolean getBoolean(String booleanStr, String parameterName) throws InvalidDataException {
+		
+		boolean result = false;
+		
+		try {
+			
+			result = Boolean.valueOf(booleanStr);
+			
+		} catch (Exception e) {
+			
+			log.error("Exception in Registration: Invalid Boolean",e);
+			throw new InvalidDataException("Invalid Boolean", CmFinoFIX.NotificationCode_InvalidData, parameterName);
+		}
+		
+		return result;
 	}
 	
 	public long getSctlId(String sctlIdStr) throws InvalidDataException { 

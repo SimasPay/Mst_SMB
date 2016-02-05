@@ -70,12 +70,12 @@
 		<td><input type="text" name="ktpCity" value="" /></td>
 	</tr>
 	<tr>
-		<td>State</td>
-		<td><input type="text" name="ktpState" value="" /></td>
+		<td>Sub State</td>
+		<td><input type="text" name="ktpSubState" value="" /></td>
 	</tr>
 	<tr>
-		<td>Country</td>
-		<td><input type="text" name="ktpCountry" value="" /></td>
+		<td>State</td>
+		<td><input type="text" name="ktpState" value="" /></td>
 	</tr>
 	<tr>
 		<td>Zip Code</td>
@@ -110,12 +110,12 @@
 		<td><input type="text" name="city" value="" /></td>
 	</tr>
 	<tr>
-		<td>State</td>
-		<td><input type="text" name="state" value="" /></td>
+		<td>Sub State</td>
+		<td><input type="text" name="subState" value="" /></td>
 	</tr>
 	<tr>
-		<td>Country</td>
-		<td><input type="text" name="country" value="" /></td>
+		<td>State</td>
+		<td><input type="text" name="state" value="" /></td>
 	</tr>
 	<tr>
 		<td>Zip Code</td>

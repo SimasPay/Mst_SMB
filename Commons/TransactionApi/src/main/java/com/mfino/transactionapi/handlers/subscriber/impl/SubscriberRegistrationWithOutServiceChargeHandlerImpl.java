@@ -147,10 +147,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			return result;
 		}
 		
-		validationResult = transactionApiValidationService.validatePin(agentMDN, subscriberRegistration.getPin());
-		
-		validationResult = CmFinoFIX.ResponseCode_Success;
-		
+		validationResult = transactionApiValidationService.validatePin(agentMDN, subscriberRegistration.getPin());		
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
@@ -230,10 +227,22 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			
 		}
 		
+		if(StringUtils.isNotBlank(txnDetails.getDomesticIdentity())) {
+			
+			if((CmFinoFIX.DomAddrIdentity_Contrast_to_Identity == Integer.parseInt(txnDetails.getDomesticIdentity())) && !validateDomesticAddress(txnDetails)) {
+				
+				log.debug("Domestic Address is invalid");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberRegistrationfailed);
+				
+				return result;
+			}
+		}
+		
 		Address ktpAddress = new Address();
 		ktpAddress.setLine1(txnDetails.getKtpLine1());
 		ktpAddress.setCity(txnDetails.getKtpCity());
 		ktpAddress.setState(txnDetails.getKtpState());
+		ktpAddress.setSubState(txnDetails.getKtpSubState());
 		ktpAddress.setRegionName(txnDetails.getKtpRegionName());
 		ktpAddress.setZipCode(txnDetails.getKtpZipCode());
 		ktpAddress.setRT(txnDetails.getKtpRT());
@@ -244,6 +253,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		domesticAddress.setLine1(txnDetails.getAddressLine1());
 		domesticAddress.setCity(txnDetails.getCity());
 		domesticAddress.setState(txnDetails.getState());
+		domesticAddress.setSubState(txnDetails.getSubState());
 		domesticAddress.setRegionName(txnDetails.getRegionName());
 		domesticAddress.setZipCode(txnDetails.getZipCode());
 		domesticAddress.setRT(txnDetails.getRT());
@@ -281,7 +291,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		String supportingDoc = txnDetails.getSupportingDocument();
 		
 		try {
-			String documentPath = System.getProperty("catalina.home");
+			String documentPath = System.getProperty("catalina.home") + "webapps" + File.separator + "webapi";
 			
 			File docFile = new File(documentPath + File.separator + "Documents" + File.separator + txnDetails.getDestMDN());
 			
@@ -294,33 +304,33 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				
 				byte[] ktpDocImageByteArray = Base64.decode(ktpDocument);
 				 
-				  FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "KTP_Document.jpg");
-				  fileOuputStream.write(ktpDocImageByteArray);
-				  fileOuputStream.close();
+				FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "KTP_Document.jpg");
+				fileOuputStream.write(ktpDocImageByteArray);
+				fileOuputStream.close();
 				  
-				  subscriberMDN.setKTPDocumentPath(docFile.getAbsoluteFile() + File.separator + "KTP_Document.jpg");
+				subscriberMDN.setKTPDocumentPath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "KTP_Document.jpg");
 			}
 			
 			if(StringUtils.isNotBlank(subscriberFormDoc)) {
 				
 				byte[] subFormDocImageByteArray = Base64.decode(subscriberFormDoc);
 				 
-				  FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "Subscriber_Form_Document.jpg");
-				  fileOuputStream.write(subFormDocImageByteArray);
-				  fileOuputStream.close();
+				FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "Subscriber_Form_Document.jpg");
+				fileOuputStream.write(subFormDocImageByteArray);
+				fileOuputStream.close();
 				  
-				  subscriberMDN.setSubscriberFormPath(docFile.getAbsoluteFile() + File.separator + "Subscriber_Form_Document.jpg");
+				subscriberMDN.setSubscriberFormPath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "Subscriber_Form_Document.jpg");
 			}
 			
 			if(StringUtils.isNotBlank(supportingDoc)) {
 				
 				byte[] supportingDocImageByteArray = Base64.decode(supportingDoc);
 				 
-				  FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "Supporting_Document.jpg");
-				  fileOuputStream.write(supportingDocImageByteArray);
-				  fileOuputStream.close();
+				FileOutputStream fileOuputStream = new FileOutputStream(docFile.getAbsoluteFile() + File.separator + "Supporting_Document.jpg");
+				fileOuputStream.write(supportingDocImageByteArray);
+				fileOuputStream.close();
 				  
-				  subscriberMDN.setSupportingDocumentPath(docFile.getAbsoluteFile() + File.separator + "Supporting_Document.jpg");
+				subscriberMDN.setSupportingDocumentPath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "Supporting_Document.jpg");
 			}
 			
 		} catch (Exception ex) {
@@ -425,5 +435,23 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		dobStrBuf.append(cal.get(Calendar.YEAR));
 		
 		return dobStrBuf.toString();
+	}
+	
+	private boolean validateDomesticAddress(TransactionDetails transactionDetails) {
+		
+		boolean result = true;
+		
+		if(StringUtils.isBlank(transactionDetails.getAddressLine1()) || 
+				StringUtils.isBlank(transactionDetails.getCity()) ||
+				StringUtils.isBlank(transactionDetails.getState()) ||
+				StringUtils.isBlank(transactionDetails.getRegionName()) ||
+				StringUtils.isBlank(transactionDetails.getZipCode()) || 
+				StringUtils.isBlank(transactionDetails.getRT()) ||
+				StringUtils.isBlank(transactionDetails.getRW())) {
+		
+				result = false;
+		}
+		
+		return result;
 	}
 }

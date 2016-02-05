@@ -376,4 +376,6 @@ public interface IUserDataContainer {
 	public String getRW();
 	public String getKtpRW();
 	public String getKtpRT();
+	public String getKtpSubState();
+	public String getSubState();
 }

@@ -57,7 +57,13 @@
 	</tr>
 	<tr>
 		<td>DestinationPocketCode</td>
-		<td><input type="text" name="destPocketCode" />(Emoney-1 ,Bank-2)</td>
+		<td>
+			<select name="destPocketCode">
+  				<option value="1">E-Money</option>
+  				<option value="2">Bank</option>
+  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
