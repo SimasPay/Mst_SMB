@@ -231,6 +231,13 @@ public class SubscriberKTPValidationXMLResult extends XMLResult {
 			getXmlWriter().writeEndElement();
 		}
 		
+		if(StringUtils.isNotBlank(getCity())) {
+			
+			getXmlWriter().writeStartElement("city");
+			getXmlWriter().writeCharacters(getCity(), false);
+			getXmlWriter().writeEndElement();
+		}
+		
 		if(StringUtils.isNotBlank(getSubDistrict())) {
 			
 			getXmlWriter().writeStartElement("subDistrict");
