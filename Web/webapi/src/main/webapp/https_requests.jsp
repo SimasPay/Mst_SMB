@@ -318,7 +318,7 @@
 	
 	<tr>
 	<td>
-	<a href="jsp/s_subscriber_register_byagent.jsp">subscriber registration by agent</a>
+	<a href="jsp/s_subscriber_register_byagent.jsp">Subscriber Registration by Agent</a>
 	</td>
 	</tr>
 	
