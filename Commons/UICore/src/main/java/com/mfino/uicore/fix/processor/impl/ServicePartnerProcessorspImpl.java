@@ -640,7 +640,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				PocketTemplate bankPocketTemplate = null;
                 try {
                 	 String bankCardPan=realMsg.getAccountnumberofBankSinarmas();
-                	bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Partner, null, groupID);
+                	bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(),
+                			true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Partner, realMsg.getBusinessPartnerType(), groupID);
         			if (bankPocketTemplate == null) {
         				errorMsg.setErrorDescription(MessageText._("No Default Bank Pocket set for this KYC"));
         				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
