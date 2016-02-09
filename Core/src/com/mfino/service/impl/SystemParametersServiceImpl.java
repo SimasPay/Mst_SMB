@@ -148,5 +148,20 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 		}
 	}
 
+	/**
+	 * Get the parameter value as boolean for the given parameter name with in the given Tenant.
+	 * @param parameterName
+	 * @param mfsp
+	 * @return
+	 */
+	public boolean getBoolean(String parameterName) {
+		String paramValue = getString(parameterName);
+		if("true".equalsIgnoreCase(paramValue)) {
+			return true;
+		}
+		else {
+			return false;	
+		}
+	}
 
 }

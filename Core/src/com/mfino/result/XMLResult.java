@@ -139,7 +139,18 @@ public class XMLResult extends Result {
 	private String otherMDN;
 	private String remainingBlockTimeMinutes;
 	private String remainingBlockTimeHours;
+	private BigDecimal multiplesOff;
 	
+	
+	
+	public BigDecimal getMultiplesOff() {
+		return multiplesOff;
+	}
+
+	public void setMultiplesOff(BigDecimal multiplesOff) {
+		this.multiplesOff = multiplesOff;
+	}
+
 	public String getOtherMDN() {
 		return otherMDN;
 	}

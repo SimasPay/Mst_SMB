@@ -1282,10 +1282,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
 		int int_subscriberType=subscriberMDN.getSubscriber().getType();
-		System.out.println("int_subscriberType: "+int_subscriberType);
-		System.out.println((!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)
-				||CmFinoFIX.SubscriberType_Partner.equals(int_subscriberType))
-				));
+
 		if (!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)
 				||CmFinoFIX.SubscriberType_Partner.equals(int_subscriberType))
 				) {

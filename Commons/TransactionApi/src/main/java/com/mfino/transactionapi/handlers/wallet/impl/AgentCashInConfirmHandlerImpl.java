@@ -29,6 +29,7 @@ import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.wallet.AgentCashInConfirmHandler;
@@ -77,10 +78,15 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
 	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService;
+	
 	public Result handle(TransactionDetails transactionDetails)  {
-		log.info("Extracting data from transactionDetails in AgentCashInConfirmHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()
-				+"to"+transactionDetails.getDestMDN());
-
+		log.info("Extracting data from transactionDetails in AgentCashInConfirmHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()+" to "+transactionDetails.getDestMDN());
+		
+		transactionDetails.setDestPocketCode(CmFinoFIX.PocketType_LakuPandai.toString());
+		
 		ChannelCode cc = transactionDetails.getCc();
 		CMAgentCashInConfirm agentcashinconfirm = new CMAgentCashInConfirm();
 		boolean confirmed = false;
@@ -96,8 +102,8 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		agentcashinconfirm.setSourceApplication(cc.getChannelSourceApplication());
 		agentcashinconfirm.setChannelCode(cc.getChannelCode());
 		agentcashinconfirm.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
-		log.info("Handling Agent cashin confirm webapi request::From " + agentcashinconfirm.getSourceMDN() + " To " + 
-				agentcashinconfirm.getDestMDN());
+		agentcashinconfirm.setIsSystemIntiatedTransaction(BOOL_TRUE);
+		log.info("Handling Agent to subscriber cashin confirm webapi request::From " + agentcashinconfirm.getSourceMDN() + " To " + agentcashinconfirm.getDestMDN());
 		XMLResult result = new WalletConfirmXMLResult();
 
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentCashInConfirm,agentcashinconfirm.DumpFields(),agentcashinconfirm.getParentTransactionID());
@@ -126,7 +132,7 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		}
 
 
-		Pocket destSubscriberPocket = pocketService.getDefaultPocket(destinationMDN, null);
+		Pocket destSubscriberPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
 		validationResult = transactionApiValidationService.validateDestinationPocket(destSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination pocket with pocket id : "+(destSubscriberPocket!=null? destSubscriberPocket.getID():null)+" of the subscriber "+destinationMDN.getMDN()+
@@ -135,6 +141,9 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 			return result;
 		}
 
+		result.setCreditAmount(transactionDetails.getAmount());
+		result.setDestinationMDN(destinationMDN.getMDN());
+		
 		CMCashIn cashin = new CMCashIn();
 		cashin.setSourceMDN(agentcashinconfirm.getSourceMDN());
 		cashin.setDestMDN(agentcashinconfirm.getDestMDN());
@@ -145,7 +154,9 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		cashin.setDestPocketID(destSubscriberPocket.getID());
 		cashin.setSourceApplication(cc.getChannelSourceApplication());
 		cashin.setServletPath(CmFinoFIX.ServletPath_Subscribers);
+		cashin.setUICategory(CmFinoFIX.TransactionUICategory_Cashin_At_Agent);
 		cashin.setTransactionIdentifier(agentcashinconfirm.getTransactionIdentifier());
+		cashin.setIsSystemIntiatedTransaction(agentcashinconfirm.getIsSystemIntiatedTransaction());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
@@ -197,6 +208,8 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
 				result.setServiceCharge(sctl.getCalculatedCharge());
 				transactionApiValidationService.checkAndChangeStatus(destinationMDN);
+				//log.info("Sending sms to destination subscriber...");
+				//sendSMS(result.getDestinationMDN(), agent.getTradeName() ,String.valueOf(result.getTransferID()), result.getCreditAmount().toPlainString(), transactionDetails.getMsp().getID());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -212,4 +225,26 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		result.setMessage(transactionResponse.getMessage());
 		return result;
 	}
+	
+/*	private void sendSMS(String mdn, String agentname,String transferId, String amount, Long mspId) {
+		
+		StringBuffer message = new StringBuffer();
+		
+		Locale locale = new Locale("in");
+	    NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
+	    String str_amount = numberFormat.format(new BigDecimal(amount));
+	    
+	    if(str_amount.indexOf(",") == -1) {
+	    	
+	    	str_amount += ",00";
+	    }
+		
+		message.append("Anda menerima IDR " + str_amount + " dari " + agentname + " no Ref " + transferId);
+		message.append(" pada tanggal " + DateUtil.getFormattedDate() + ". Info hubungi 021-5001000");
+		
+		smsService.setDestinationMDN(mdn);
+		smsService.setMessage(message.toString());
+		smsService.setMspId(mspId);
+		smsService.send();
+	}*/
 }

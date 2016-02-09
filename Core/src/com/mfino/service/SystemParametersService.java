@@ -87,4 +87,11 @@ public interface SystemParametersService {
 
 	public boolean getIsEmailVerificationNeeded();
 
+	/**
+	 * Get the parameter value as boolean for the given parameter name with in the given Tenant.
+	 * @param parameterName
+	 * @param mfsp
+	 * @return
+	 */
+	public boolean getBoolean(String parameterName);
 }

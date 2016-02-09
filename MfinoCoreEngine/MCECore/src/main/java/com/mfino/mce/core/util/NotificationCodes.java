@@ -593,7 +593,9 @@ public enum NotificationCodes {
 	QRpaymentFailed(12110,2110,true),
 	QRpaymentConfirmationSuccessful(12111,2111,true),
 	QRPaymentCompletedToReceiver(12112,2112,true),
-	InternalLoginError(12125,2125,false);
+	InternalLoginError(12125,2125,false),
+	AgentSubscriberCashinSuccessToSender(12156,2156,true),
+	AgentSubscriberCashinSuccessToReceiver(12157,2157,true);
 	
 	private static Map<Integer,NotificationCodes> nofificationCodeMap = null;
 	private static Map<Integer, Integer> notificationCodetoInternalErroCodeMap = null;
@@ -664,6 +666,7 @@ public enum NotificationCodes {
 
 		receiverNofificationCodeMap.put(BankAccountToBankAccountCompletedToSenderMDN.getInternalErrorCode(), BankAccountToBankAccountCompletedToReceiverMDN);
 		receiverNofificationCodeMap.put(CashInToEMoneyCompletedToSender.getInternalErrorCode(), CashInToEMoneyCompletedToReceiver);
+		receiverNofificationCodeMap.put(AgentSubscriberCashinSuccessToSender.getInternalErrorCode(), AgentSubscriberCashinSuccessToReceiver);
 		receiverNofificationCodeMap.put(BankAccountToEMoneyCompletedToSender.getInternalErrorCode(), BankAccountToEMoneyCompletedToReceiver);
 		receiverNofificationCodeMap.put(CashInToEMoneyCompletedToSender.getInternalErrorCode(), CashInToEMoneyCompletedToReceiver);
 		receiverNofificationCodeMap.put(CashOutFromEMoneyCompletedToSender.getInternalErrorCode(), CashOutFromEMoneyCompletedToReceiver);

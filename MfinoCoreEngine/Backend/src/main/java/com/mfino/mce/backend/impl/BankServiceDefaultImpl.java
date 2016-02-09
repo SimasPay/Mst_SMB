@@ -1642,6 +1642,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												pct.setNotificationCode(NotificationCodes.DonationCompleteToSender
 														.getNotificationCode());
 											}
+											else if (confirmationToBank.getUICategory() != null && confirmationToBank.getUICategory().equals(CmFinoFIX.TransactionUICategory_Cashin_At_Agent)) {
+												pct.setNotificationCode(NotificationCodes.AgentSubscriberCashinSuccessToSender.getInternalErrorCode());
+											}
 											else{
 												pct.setNotificationCode(NotificationCodes.EMoneytoEMoneyCompleteToSender
 														.getNotificationCode());
@@ -1673,7 +1676,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										
 										if(confirmationToBank.getUICategory() != null && confirmationToBank.getUICategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup)){
 											returnFix.setInternalErrorCode(NotificationCodes.NFCPocketTopupSuccess.getInternalErrorCode());
-										}else{
+										} else if (confirmationToBank.getUICategory() != null && confirmationToBank.getUICategory().equals(CmFinoFIX.TransactionUICategory_Cashin_At_Agent)) {
+											returnFix.setInternalErrorCode(NotificationCodes.AgentSubscriberCashinSuccessToSender.getInternalErrorCode());
+										} else{
 											returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyCompleteToSender.getInternalErrorCode());
 										}
 										
@@ -1752,8 +1757,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											coreDataWrapper.save(objSrcPocket);
 //											coreDataWrapper
 //													.save(suspensePocket);
-											coreDataWrapper.save(lstMfsLedgers);
-
+											if (ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)) {
+												coreDataWrapper.save(objSrcPocket);
+											}
+											//coreDataWrapper.save(lstMfsLedgers);
 											/*
 											 * Send ISO message to transfer
 											 * amount, and rest of the logic in

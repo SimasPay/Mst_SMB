@@ -324,13 +324,13 @@
 	
 	<tr>
 		<td>
-			<a href="jsp/s_agent_cashininquiry.jsp"> Agent CashInInquiry</a>
+			<a href="jsp/s_agent_cashininquiry.jsp"> Agent_to_Sub_CashInInquiry</a>
 		</td>
 	</tr>
 	
 	<tr>
 		<td>
-			<a href="jsp/s_agent_cashinconfirm.jsp"> Agent CashIn confirm</a>
+			<a href="jsp/s_agent_cashinconfirm.jsp"> Agent_to_Sub_CashInConfirm</a>
 		</td>
 	</tr>
 	
@@ -378,17 +378,17 @@
 			<a href="jsp/s_agent_airtime_purchase_confirm.jsp"> agent airtime Confirm</a>
 		</td>
 		</tr>
-+		<tr>
-+		<td>
-+			<a href="jsp/s_agent_frsc_payment_inquiry.jsp"> Agent FRSC Payment inquiry</a>
-+		</td>
-+		</tr>
-+		
-+			<tr>
-+		<td>
-+			<a href="jsp/s_agent_frsc_payment_confirm.jsp"> Agent FRSC Payment confirm</a>
-+		</td>
-+		</tr>
+		<tr>
+		<td>
+		<a href="jsp/s_agent_frsc_payment_inquiry.jsp"> Agent FRSC Payment inquiry</a>
+		</td>
+		</tr>
+		
+			<tr>
+		<td>
+			<a href="jsp/s_agent_frsc_payment_confirm.jsp"> Agent FRSC Payment confirm</a>
+		</td>
+		</tr>
 		<tr>
 		<td>
 			<a href="jsp/s_agent_airtime_pin_purchase_inquiry.jsp"> agent airtime pin purchase inquiry</a>

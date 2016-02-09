@@ -828,6 +828,9 @@ public class PocketServiceImpl implements PocketService{
 		else if(pocketCode!=null && CmFinoFIX.PocketType_NFC.toString().equals(pocketCode)) {
 			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_NFC, CmFinoFIX.Commodity_Money);
 		}
+		else if(pocketCode!=null && CmFinoFIX.PocketType_LakuPandai.toString().equals(pocketCode)) {
+			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
+		}
 		else {
 			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 		} 

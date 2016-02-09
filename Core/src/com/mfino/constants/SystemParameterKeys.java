@@ -116,4 +116,7 @@ public class SystemParameterKeys {
 	public static final String ABSOLUTE_LOCK_DURATION_HOURS = "absolute.lock.duration.hours";
 	public static final String OTP_TIMEOUT_DURATION_MINUTES = "otp.timeout.duration.minutes";
 	public static final String UANGKU_IBT_BILLER_CODE = "uangku.ibt.biller.code";
+	public static final String MINIMUM_VALUE_OF_CASHIN = "minimum.value.of.cashin";
+	public static final String CASHIN_VALUE_MULTIPLES_OFF = "cashin.amount.multiples.off.value";
+	public static final String MAXIMUM_VALUE_OF_CASHIN = "maximum.value.of.cashin";
 }

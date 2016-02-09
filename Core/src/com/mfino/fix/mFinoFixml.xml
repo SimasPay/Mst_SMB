@@ -22673,6 +22673,51 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
+			<value description="AgentSubscriberCashinSuccessToSender" enum="2156">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Anda menerima $(Currency) $(Amount) dari $(AgentName) no Ref $(TransferID) pada tanggal $(CurrentDateTime). Info hubungi 021-5001000</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="AgentSubscriberCashinSuccessToReceiver" enum="2157">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Anda menerima $(Currency) $(Amount) dari $(AgentName) no Ref $(TransferID) pada tanggal $(CurrentDateTime). Info hubungi 021-5001000</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="CashInAmountMustbeMultiplesOff" enum="2158">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Cash in amount must be multiples off $(MultiplesIn)</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>
+			<value description="CashInAmountMustbeMinAmount" enum="2159">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Cash in amount must be with in range of $(minAmount) and $(maxAmount)</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>
+			<value description="CashInAmountMustbeMaxAmount" enum="2160">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Cash in amount must be with in range of $(minAmount) and $(maxAmount)</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>	
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -24416,6 +24461,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="58" description="NFC_Card_Topup_Reversal"/>
 			<value enum="59" description="NFC_Pocket_Topup"/>
 			<value enum="60" description="Donation"/>
+			<value enum="63" description="Cashin_At_Agent"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />
