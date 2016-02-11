@@ -1146,6 +1146,17 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateEmail(transactionDetails);
 		validateLineOFBussiness(transactionDetails);
 	}
+	
+	public void validateSubscriberClosingInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		
+		validateDesttinationMDN(transactionDetails);
+	}
+	
+	public void validateSubscriberClosingDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		
+		validateDesttinationMDN(transactionDetails);
+		validateOTP(transactionDetails);
+	}
 
 	private void validateLineOFBussiness(TransactionDetails transactionDetails) throws InvalidDataException {
 		if(StringUtils.isBlank(transactionDetails.getIndustryClassification()))

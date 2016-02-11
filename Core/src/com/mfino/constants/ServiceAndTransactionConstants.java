@@ -347,4 +347,10 @@ public class ServiceAndTransactionConstants {
 	public static final String MESSAGE_DONATION = "Donation";
 	
 	public static final String SUBSCRIBER_KTP_VALIDATION = "SubscriberKTPValidation";
+	
+	public static final String SUBSCRIBER_CLOSING_INQUIRY = "SubscriberClosingInquiry";
+	
+	public static final String SUBSCRIBER_CLOSING = "SubscriberClosing";
+	
+	public static final String TRANSACTION_CLOSE_ACCOUNT = "CloseAccount";
 }

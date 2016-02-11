@@ -26,5 +26,7 @@ public interface SCTLService {
 	public AutoReversals getAutoReversalsFromSCTL(ServiceChargeTransactionLog sctl);
 	
 	public void saveSCTL(ServiceChargeTransactionLog sctl);
+	
+	public List<ServiceChargeTransactionLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query);
 
 }

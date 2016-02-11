@@ -119,4 +119,6 @@ public class SystemParameterKeys {
 	public static final String MINIMUM_VALUE_OF_CASHIN = "minimum.value.of.cashin";
 	public static final String CASHIN_VALUE_MULTIPLES_OFF = "cashin.amount.multiples.off.value";
 	public static final String MAXIMUM_VALUE_OF_CASHIN = "maximum.value.of.cashin";
+	
+	public static final String MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT = "max.subscriber.account.closing.amount";
 }

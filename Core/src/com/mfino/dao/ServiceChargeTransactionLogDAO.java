@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -182,4 +183,43 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
 		return lst.get(0);
 	}
 
+	public List<ServiceChargeTransactionLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query){
+		
+    	Criteria criteria = createCriteria();
+    	
+    	if(query.getSourceMdn()!=null){
+    		
+    		Criterion sourceCriteria = Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourceMDN, query.getSourceMdn());
+        	Criterion destCriteria = Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestMDN, query.getSourceMdn());
+        	
+    		criteria.add(Restrictions.or(sourceCriteria , destCriteria));
+    	}
+    		
+    	if(query.getStatus()!=null){
+    		
+    		criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, query.getStatus()));
+    		
+    	} else if(query.getStatusList()!=null){
+    		
+    		criteria.add(Restrictions.in(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, query.getStatusList()));
+    	}
+    		
+    	processBaseQuery(query, criteria);
+
+        // Paging
+        processPaging(query, criteria);
+
+        if(query.isIDOrdered()) {
+           criteria.addOrder(Order.desc(CmFinoFIX.CRActivitiesLog.FieldName_RecordID));
+        }
+          
+        //applying Order
+        applyOrder(query, criteria);
+        
+        @SuppressWarnings("unchecked")
+        List<ServiceChargeTransactionLog> results = criteria.list();
+
+        return results;
+    	
+    }
 }

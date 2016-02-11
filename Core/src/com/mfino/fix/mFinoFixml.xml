@@ -5517,7 +5517,11 @@
 				<field name="ErrorDescription" required="Y" />        
 			</group>
 		</message>
-</messages>
+		<message name="SubscriberClosing" msgtype="1770" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+			<field name="MDN" required="Y" />
+			<field name="AgentMDN" required="N" />
+		</message>
+	</messages>
 	<records>
 		<record name="Base" Java="Y">
 			<index name="Primary" PrimaryKey="Y">
@@ -22717,7 +22721,78 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</English>
 				</C1>				
-			</value>	
+			</value>
+			<value description="SubscriberClosingInquirySuccess" enum="2128">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Closing Inquiry Successfull</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber Closing Inquiry Successfull</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="SubscriberClosingInquiryFailed" enum="2129">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Closing Inquiry Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber Closing Inquiry Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="SubscriberClosingSuccess" enum="2130">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Closing Successfull</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber Closing Successfull</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="SubscriberClosingFailed" enum="2131">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Closing Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber Closing Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="SubscriberHasAccountBalance" enum="2132">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Closing Inquiry Failed due to Available Account Balance</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber Closing Inquiry Failed due to Available Account Balance</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

@@ -263,4 +263,8 @@ public interface TransactionRequestValidationService {
 	
 	public void validateSubscriberKtpDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
+	public void validateSubscriberClosingInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateSubscriberClosingDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 }

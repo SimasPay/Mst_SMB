@@ -42,6 +42,8 @@ import com.mfino.transactionapi.handlers.account.PartnerRegistrationHandler;
 import com.mfino.transactionapi.handlers.account.PendingSettlementsForPartnerHandler;
 import com.mfino.transactionapi.handlers.account.ResendOtp;
 import com.mfino.transactionapi.handlers.account.SubscriberActivationHandler;
+import com.mfino.transactionapi.handlers.account.SubscriberClosingHandler;
+import com.mfino.transactionapi.handlers.account.SubscriberClosingInquiryHandler;
 import com.mfino.transactionapi.handlers.account.TransactionStatusHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangeEmailHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangeNicknameHandler;
@@ -112,6 +114,14 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("TransactionStatusHandlerImpl")
 	private TransactionStatusHandler transactionStatusHandlerImpl;
+	
+	@Autowired
+	@Qualifier("SubscriberClosingInquiryHandlerImpl")
+	SubscriberClosingInquiryHandler subscriberClosingInquiryHandler;
+	
+	@Autowired
+	@Qualifier("SubscriberClosingHandlerImpl")
+	SubscriberClosingHandler subscriberClosingHandler;
 	
 	@Autowired
 	@Qualifier("SubscriberActivationHandlerImpl")
@@ -469,6 +479,25 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult) getUserAPIKeyHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_PROMO_IMAGE.equals(transactionName)){
 			xmlResult = (XMLResult) getPromoImageHandler.handle(transactionDetails);
+		
+		}else if (ServiceAndTransactionConstants.SUBSCRIBER_CLOSING_INQUIRY.equals(transactionName)) {
+			
+			/*
+			 * Subscriber Closing Inquiry
+			 */
+			
+			validationService.validateSubscriberClosingInquiryDetails(transactionDetails);
+	  		xmlResult = (XMLResult) subscriberClosingInquiryHandler.handle(transactionDetails);
+		
+		}else if (ServiceAndTransactionConstants.SUBSCRIBER_CLOSING.equals(transactionName)) {
+			
+			/*
+			 * Subscriber Closing
+			 */
+			
+			validationService.validateSubscriberClosingDetails(transactionDetails);
+  			xmlResult = (XMLResult) subscriberClosingHandler.handle(transactionDetails);
+	
 		}else {
 			xmlResult = new XMLError();
 			xmlResult.setLanguage(language);

@@ -109,5 +109,13 @@ public class SCTLServiceImpl implements SCTLService{
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		sctlDAO.save(sctl);
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRES_NEW,rollbackFor=Throwable.class)
+	public List<ServiceChargeTransactionLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query) {
+		
+		ServiceChargeTransactionLogDAO sctldao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+		List<ServiceChargeTransactionLog> sctlList = sctldao.getSubscriberPendingTransactions(query);
+		return sctlList;
+	}
 }
 
