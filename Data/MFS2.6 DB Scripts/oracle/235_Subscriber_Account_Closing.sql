@@ -73,7 +73,7 @@ INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, Create
 
 INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2130', 'SubscriberClosingSuccess', '8', 'Subscriber Account Closing Success', '1', '0', sysdate, '1', '1');
 
-INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2130', 'SubscriberClosingSuccess', '16', s'Subscriber Account Closing Success', '1', '0', sysdate, '1', '1');
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2130', 'SubscriberClosingSuccess', '16', 'Subscriber Account Closing Success', '1', '0', sysdate, '1', '1');
 
 
 DELETE FROM notification WHERE CODE = 2131;
