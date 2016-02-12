@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
-import com.mfino.domain.Transaction;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -21,6 +20,7 @@ import com.mfino.transactionapi.handlers.payment.BillInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.GetThirdPartyDataHandler;
+import com.mfino.transactionapi.handlers.payment.GetThirdPartyLocationHandler;
 import com.mfino.transactionapi.handlers.payment.QRPaymentConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.QRPaymentInquiryHandler;
 import com.mfino.transactionapi.service.BaseAPIService;
@@ -57,6 +57,10 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 	@Autowired
 	@Qualifier("GetThirdPartyDataHandlerImpl")
 	private GetThirdPartyDataHandler getThirdPartyDataHandler;
+	
+	@Autowired
+	@Qualifier("GetThirdPartyLocationHandlerImpl")
+	private GetThirdPartyLocationHandler getThirdPartyLocationHandler;
 
 	@Autowired
 	@Qualifier("TransactionRequestValidationServiceImpl")
@@ -160,11 +164,10 @@ public class PaymentAPIServiceImpl extends BaseAPIService implements PaymentAPIS
 			String flashizCode = systemParametersService.getString(SystemParameterKeys.FLASHIZ_BILLER_CODE);
 			transactionDetails.setBillerCode(flashizCode);
 			xmlResult = (XMLResult) qrPaymentConfirmHandler.handle(transactionDetails);
-		}
-		else if(ServiceAndTransactionConstants.TRANSACTION_GET_THIRD_PARTY_DATA.equals(transactionName)){
-
+		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_THIRD_PARTY_DATA.equals(transactionName)){
 			xmlResult = (XMLResult) getThirdPartyDataHandler.handle(transactionDetails);
-
+		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_THIRD_PARTY_LOCATION.equals(transactionName)){
+			xmlResult = (XMLResult) getThirdPartyLocationHandler.handle(transactionDetails);
 		}else{
 			xmlResult = new XMLResult();
 			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);

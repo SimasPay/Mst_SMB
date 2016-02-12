@@ -182,6 +182,8 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_GET_THIRD_PARTY_DATA = "GetThirdPartyData";
 	
+	public static final String TRANSACTION_GET_THIRD_PARTY_LOCATION = "GetThirdPartyLocation";
+	
 	public static final String TRANSACTION_RESEND_OTP ="ResendOtp";
 
 	public static final String TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY = "InterEmoneyTransferInquiry";
