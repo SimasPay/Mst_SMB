@@ -41,7 +41,7 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
 			{
                 xtype : 'textarea',
                 itemId :'comment',
-				id:'comment',
+				id:'commentsp',
                 fieldLabel : _('Comments'),
                 allowBlank: false,
                 hideLabel: true,
@@ -52,7 +52,7 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
                	xtype: 'enumdropdown',                   
                 fieldLabel: _('Reject Reason'),
                 itemId : 'rejectReason',
-                id : 'rejectReason',
+                id : 'rejectReasonsp',
                 labelSeparator:':',
                 emptyText : _('<select one..>'),
                 anchor:'95%',
@@ -64,7 +64,7 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
                    //name : CmFinoFIX.message.JSPocketTemplate.Entries.Type._name,
                 listeners: {
                    	select: function() {
-                               this.findParentByType('ApproveRejectWindow').onChangeType();
+                               this.findParentByType('ApproveRejectPartnerWindowsp').onChangeType();
                            }
                        }
             },
@@ -89,8 +89,8 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
                     		
 	                    	if(field.checked){
 	                			
-	                    		Ext.getCmp('comment').enable();
-	                    		Ext.getCmp('rejectReason').disable();
+	                    		Ext.getCmp('commentsp').enable();
+	                    		Ext.getCmp('rejectReasonsp').disable();
 	                		}
                     	}
                     }
@@ -107,9 +107,9 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
                     		
                     		if(field.checked){
                     			
-                    			Ext.getCmp('comment').reset();
-                    			Ext.getCmp('comment').disable();
-                    			Ext.getCmp('rejectReason').enable();
+                    			Ext.getCmp('commentsp').reset();
+                    			Ext.getCmp('commentsp').disable();
+                    			Ext.getCmp('rejectReasonsp').enable();
                     		}
                         }
                     }
@@ -127,9 +127,9 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
                     		
 	                    	if(field.checked){
 	                			
-	                    		Ext.getCmp('comment').reset();
-	                    		Ext.getCmp('comment').enable();
-	                    		Ext.getCmp('rejectReason').disable();
+	                    		Ext.getCmp('commentsp').reset();
+	                    		Ext.getCmp('commentsp').enable();
+	                    		Ext.getCmp('rejectReasonsp').disable();
 	                		}
                     	}
                     }
@@ -145,15 +145,15 @@ Ext.extend(mFino.widget.ApproveRejectPartnerWindowsp, Ext.Window, {
     },
     onChangeType : function(){
 	   	 var value = this.form.items.get("rejectReason").getValue();
-	     if(Number(value) === CmFinoFIX.RejectReason.Others){
+	     if(Number(value) == CmFinoFIX.RejectReason.Others){
 	    	 
-	    	Ext.getCmp('comment').reset();
- 			Ext.getCmp('comment').enable();
+	    	Ext.getCmp('commentsp').reset();
+ 			Ext.getCmp('commentsp').enable();
  			
 	     } else {
 	    	 
-	    	Ext.getCmp('comment').reset();
-	 		Ext.getCmp('comment').disable();
+	    	Ext.getCmp('commentsp').reset();
+	 		Ext.getCmp('commentsp').disable();
 	     }
     },
     ok : function(){

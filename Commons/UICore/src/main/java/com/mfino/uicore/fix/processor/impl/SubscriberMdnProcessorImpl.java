@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +101,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 	private  boolean sendOTPOnIntialized;
 	private  boolean isEMoneyPocketRequired;
 	
+	@Autowired
+    private HttpServletRequest httpServletRequest;
 	
 	@Autowired
 	@Qualifier("ForwardNotificationRequestProcessorImpl")
@@ -586,7 +591,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 	}
 
-	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Boolean isExcelDownload) {
+	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Boolean isExcelDownload,String str_tomcatPath) {
 		entry.setID(s.getID());
 
 		if (s.getActivationTime() != null) {
@@ -683,6 +688,17 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		
 		if (s.getSubscriber().getNickname() != null) {
 			entry.setNickname(s.getSubscriber().getNickname());
+		}
+		if(s.getKTPDocumentPath()!=null){
+			entry.setKTPDocumentPath(str_tomcatPath+"/"+s.getKTPDocumentPath());
+		}
+		
+		if(s.getSubscriberFormPath()!=null){
+			entry.setSubscriberFormPath(str_tomcatPath+"/"+s.getSubscriberFormPath());
+		}
+		
+		if(s.getSupportingDocumentPath()!=null){
+			entry.setSupportingDocumentPath(str_tomcatPath+"/"+s.getSupportingDocumentPath());
 		}
 
 		if (s.getSubscriber().getEmail() != null) {
@@ -942,6 +958,11 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		AuthorizingPersonDAO authorizingPersonDAO = DAOFactory.getInstance().getAuthorizingPersonDAO();
 		AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
 
+		//tomcat path
+		String str_requestPath=httpServletRequest.getRequestURL().toString();
+		String str_contextPath=httpServletRequest.getContextPath();
+		String str_tomcatPath=str_requestPath.substring(0, str_requestPath.indexOf(str_contextPath));
+		
 		if (CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())) {
 			CMJSSubscriberMDN.CGEntries[] entries = realMsg.getEntries();
 			boolean isResetPinSuccess = true;
@@ -1169,7 +1190,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				
 				mdnDao.save(s);
-				updateMessage(s, e, saf, ap, ads,false);
+				updateMessage(s, e, saf, ap, ads,false,str_tomcatPath);
 
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
@@ -1295,7 +1316,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(! s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 					saf=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				}
-				updateMessage(s, entry, saf, ap, ads,realMsg.getIsExcelDownload());
+				updateMessage(s, entry, saf, ap, ads,realMsg.getIsExcelDownload(),str_tomcatPath);
 				realMsg.getEntries()[i] = entry;
 				log.info("Subscriber:"+s.getID()+" details viewed completed by user:"+getLoggedUserNameWithIP());
 			}
@@ -1534,7 +1555,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
-				updateMessage(mdn, e,saf,ap,ads, false);
+				updateMessage(mdn, e,saf,ap,ads, false,str_tomcatPath);
 			}
 
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);

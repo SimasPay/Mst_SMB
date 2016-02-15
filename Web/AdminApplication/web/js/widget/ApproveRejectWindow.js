@@ -144,7 +144,7 @@ Ext.extend(mFino.widget.ApproveRejectWindow, Ext.Window, {
     },
     onChangeType : function(){
 	   	 var value = this.form.items.get("rejectReason").getValue();
-	     if(Number(value) === CmFinoFIX.RejectReason.Others){
+	     if(Number(value) == CmFinoFIX.RejectReason.Others){
 	    	 
 	    	Ext.getCmp('comment').reset();
  			Ext.getCmp('comment').enable();

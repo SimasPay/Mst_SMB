@@ -13,7 +13,14 @@ public class LoginXMLResult extends XMLResult {
 	private Integer	subscriberType;
 	private boolean isValidVersion;
 	private String userAPIKey;
+	private boolean isBank;
 	
+	public boolean getIsBank() {
+		return isBank;
+	}
+	public void setIsBank(boolean isBank) {
+		this.isBank = isBank;
+	}
 	public String getNewAppURL() {
     	return newAppURL;
     }
@@ -92,6 +99,15 @@ public class LoginXMLResult extends XMLResult {
 		if(subscriberType!=null){
 			getXmlWriter().writeStartElement("type");
 			getXmlWriter().writeCharacters(subscriberType.toString(),false);
+			getXmlWriter().writeEndElement();
+		}
+		if(isBank){
+			getXmlWriter().writeStartElement("isBank");
+			getXmlWriter().writeCharacters("true",false);
+			getXmlWriter().writeEndElement();
+		}else{
+			getXmlWriter().writeStartElement("isBank");
+			getXmlWriter().writeCharacters("false",false);
 			getXmlWriter().writeEndElement();
 		}
 		writeEndOfDocument();

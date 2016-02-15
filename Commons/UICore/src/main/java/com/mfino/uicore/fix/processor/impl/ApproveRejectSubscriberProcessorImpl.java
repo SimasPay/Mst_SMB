@@ -266,7 +266,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			 if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
 			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeSuccess);
 			 }else
-			 if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())){
+			 if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction()) || CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())){
 			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeFail);
 			 }
 			 notificationWrapper.setDestMDN(subscriberMDN.getMDN());

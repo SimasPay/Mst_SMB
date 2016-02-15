@@ -18,6 +18,7 @@ import com.mfino.crypto.CryptographyService;
 import com.mfino.crypto.KeyService;
 import com.mfino.domain.ChannelSessionManagement;
 import com.mfino.domain.Partner;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
@@ -29,6 +30,7 @@ import com.mfino.service.ChannelSessionManagementService;
 import com.mfino.service.MfinoUtilService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionLogService;
@@ -79,6 +81,11 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 	@Autowired
 	@Qualifier("SubscriberStatusEventServiceImpl")
 	private SubscriberStatusEventService subscriberStatusEventService;
+	
+	@Autowired
+	@Qualifier("SubscriberServiceImpl")
+	private SubscriberService subscriberService;
+	
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public XMLResult handle(TransactionDetails transDetails) {
@@ -185,13 +192,11 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				 *with length same as pin lengh allowed on the system
 				*/
 				//String userPwd = MfinoUtil.convertPinForValidation(request.getAuthMAC(),SystemParametersUtil.getPinLength());
-				//String userPwd = CryptographyService.decryptWithPrivateKey(request.getAuthMAC());
+				String userPwd = CryptographyService.decryptWithPrivateKey(request.getAuthMAC());
 				//userPwd = new String(CryptographyService.generateSHA256Hash(subscriberMDN.getMDN(), userPwd));
 				//if (!password.equals(userPwd)) {
 				//done this change for introducing HSM for validation
-				
-			String userPwd = request.getAuthMAC();
-			log.info("validating pin");
+				log.info("validating pin");
 				String pinValidationResponse = mfinoUtilService.validatePin(srcSubscriberMDN.getMDN(), userPwd, password, 
 						systemParametersService.getPinLength());
 				if(GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse))
@@ -250,6 +255,22 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				srcSubscriberMDN.setAuthorizationToken(authToken);
 				subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 			}
+			int subscriberType=srcSubscriberMDN.getSubscriber().getType();
+			boolean isBankTypePocket=false;
+			if(subscriberType==CmFinoFIX.SubscriberType_Partner){
+				isBankTypePocket=true;
+			}else if(subscriberType==CmFinoFIX.SubscriberType_Subscriber){
+				Pocket bankPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+				
+				if(bankPocket != null && bankPocket.getStatus().intValue() == CmFinoFIX.PocketStatus_Active){
+					
+					isBankTypePocket=true;
+				}else{
+					isBankTypePocket=false;
+				}
+			}
+			
+			
 			byte[] encryptedAESKey = CryptographyService.encryptWithPBE(aesKey, authToken.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
 			byte[] encryptedZeroes = CryptographyService.encryptWithAES(aesKey, GeneralConstants.ZEROES_STRING.getBytes(GeneralConstants.UTF_8));
 			String hexEncodedEncKey = new String(CryptographyService.binToHex(encryptedAESKey));
@@ -259,8 +280,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setSalt(hexEncodedSalt);
 			result.setAuthentication(hexEncodedEncZeroes);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_WebapiLoginSuccessful);
-			result.setSubscriberType(srcSubscriberMDN.getSubscriber().getType());
+			result.setSubscriberType(subscriberType);
 			result.setUserAPIKey(srcSubscriberMDN.getUserAPIKey());
+			result.setIsBank(isBankTypePocket);
+			
 			if(srcSubscriberMDN.getWrongPINCount() > 0){
 				log.info("setting wrong pin count to 0, and saving subscribermdn status");
 				srcSubscriberMDN.setWrongPINCount(0);
