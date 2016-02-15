@@ -546,6 +546,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 			byPass = true;
 		else if(ApiConstants.TRANSACTION_GET_THIRD_PARTY_DATA.equals(transactionName))
 			byPass=true;
+		else if(ApiConstants.TRANSACTION_GET_THIRD_PARTY_LOCATION.equals(transactionName))
+			byPass=true;
 		else if(ApiConstants.TRANSACTION_RESEND_OTP.equals(transactionName))
 			byPass=true;
 		else if (ApiConstants.TRANSACTION_SUBSCRIBER_DETAILS.equals(transactionName))

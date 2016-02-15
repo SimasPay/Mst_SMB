@@ -351,6 +351,19 @@ public class WebApiRequestController {
 				response.setContentType("application/json");
 				servletOutputWriter.flush();
 				servletOutputWriter.close();
+			} else if(ServiceAndTransactionConstants.TRANSACTION_GET_THIRD_PARTY_LOCATION.equals(transactionName) && ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(serviceName)){
+					FileInputStream input;
+					if(StringUtils.isNotBlank(xmlResult.getMessage())){			
+						servletOutputWriter.print(xmlResult.getMessage());
+					}
+					else{
+						File errorFile = new File("../webapps/webapi/WEB-INF", "errorJson.txt");
+						input = new FileInputStream(errorFile);
+						IOUtils.copy(input, servletOutputWriter);
+					}
+					response.setContentType("application/json");
+					servletOutputWriter.flush();
+					servletOutputWriter.close();
 			} else if(ServiceAndTransactionConstants.SERVICE_ACCOUNT.equals(serviceName) && ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON.equals(transactionName)) {
 				if(xmlResult.getNotificationCode() != null) {
 					xmlResult.setNotificationMessageParserService(notificationMessageParserService);

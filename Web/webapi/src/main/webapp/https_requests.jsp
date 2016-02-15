@@ -8,10 +8,19 @@
 	<table>
 	<tr>
 		<th>
+			Login Activity
+		</th>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_login.jsp">WebApi Login</a>
+		</td>
+	</tr>
+	<tr>
+		<th>
 			Subscriber Activity
 		</th>
 	</tr>
-	<tr></tr>
 	<tr>
 	<td>
 	<a href="jsp/s_subscriber_Activation.jsp">Subscriber Activation</a>
@@ -56,6 +65,11 @@
 	<tr>
 		<td>
 			<a href="jsp/get_third_party_data.jsp">Get Third Party Data</a>
+		</td>
+	</tr>
+		<tr>
+		<td>
+			<a href="jsp/get_third_party_location.jsp">Get Third Party Location</a>
 		</td>
 	</tr>
 	<tr>

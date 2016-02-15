@@ -1,0 +1,1649 @@
+{
+    "indonesia": {
+        "province": [
+            {
+                "province_name": "ACEH",
+                "region": [
+                    {
+                        "region_name": "KAB. ACEH SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. ACEH TENGGARA"
+                    },
+                    {
+                        "region_name": "KAB. ACEH TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. ACEH TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. ACEH BARAT"
+                    },
+                    {
+                        "region_name": "KAB. ACEH BESAR"
+                    },
+                    {
+                        "region_name": "KAB. PIDIE"
+                    },
+                    {
+                        "region_name": "KAB. ACEH UTARA"
+                    },
+                    {
+                        "region_name": "KAB. SIMEULUE"
+                    },
+                    {
+                        "region_name": "KAB. ACEH SINGKIL"
+                    },
+                    {
+                        "region_name": "KAB. BIREUEN"
+                    },
+                    {
+                        "region_name": "KAB. ACEH BARAT DAYA"
+                    },
+                    {
+                        "region_name": "KAB. GAYO LUES"
+                    },
+                    {
+                        "region_name": "KAB. ACEH JAYA"
+                    },
+                    {
+                        "region_name": "KAB. NAGAN RAYA"
+                    },
+                    {
+                        "region_name": "KAB. ACEH TAMIANG"
+                    },
+                    {
+                        "region_name": "KAB. BENER MERIAH"
+                    },
+                    {
+                        "region_name": "KAB. PIDIE JAYA"
+                    },
+                    {
+                        "region_name": "KOTA BANDA ACEH"
+                    },
+                    {
+                        "region_name": "KOTA SABANG"
+                    },
+                    {
+                        "region_name": "KOTA LHOKSEUMAWE"
+                    },
+                    {
+                        "region_name": "KOTA LANGSA"
+                    },
+                    {
+                        "region_name": "KOTA SUBULUSSALAM"
+                    }
+                ]
+            },
+            {
+                "province_name": "SUMATERA UTARA",
+                "region": [
+                    {
+                        "region_name": "KAB. TAPANULI TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. TAPANULI UTARA"
+                    },
+                    {
+                        "region_name": "KAB. TAPANULI SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. NIAS"
+                    },
+                    {
+                        "region_name": "KAB. LANGKAT"
+                    },
+                    {
+                        "region_name": "KAB. KARO"
+                    },
+                    {
+                        "region_name": "KAB. DELI SERDANG"
+                    },
+                    {
+                        "region_name": "KAB. SIMALUNGUN"
+                    },
+                    {
+                        "region_name": "KAB. ASAHAN"
+                    },
+                    {
+                        "region_name": "KAB. LABUHANBATU"
+                    },
+                    {
+                        "region_name": "KAB. DAIRI"
+                    },
+                    {
+                        "region_name": "KAB. TOBA SAMOSIR"
+                    },
+                    {
+                        "region_name": "KAB. MANDAILING NATAL"
+                    },
+                    {
+                        "region_name": "KAB. NIAS SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. PAKPAK BHARAT"
+                    },
+                    {
+                        "region_name": "KAB. HUMBANG HASUNDUTAN"
+                    },
+                    {
+                        "region_name": "KAB. SAMOSIR"
+                    },
+                    {
+                        "region_name": "KAB. SERDANG BEDAGAI"
+                    },
+                    {
+                        "region_name": "KAB. BATU BARA"
+                    },
+                    {
+                        "region_name": "KAB. PADANG LAWAS UTARA"
+                    },
+                    {
+                        "region_name": "KAB. PADANG LAWAS"
+                    },
+                    {
+                        "region_name": "KAB. LABUHANBATU SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. LABUHANBATU UTARA"
+                    },
+                    {
+                        "region_name": "KOTA MEDAN"
+                    },
+                    {
+                        "region_name": "KOTA PEMATANG SIANTAR"
+                    },
+                    {
+                        "region_name": "KOTA SIBOLGA"
+                    },
+                    {
+                        "region_name": "KOTA TANJUNG BALAI"
+                    },
+                    {
+                        "region_name": "KOTA BINJAI"
+                    },
+                    {
+                        "region_name": "KOTA TEBING TINGGI"
+                    },
+                    {
+                        "region_name": "KOTA PADANGSIDIMPUAN"
+                    }
+                ]
+            },
+            {
+                "province_name": "SUMATERA BARAT",
+                "region": [
+                    {
+                        "region_name": "KAB. PESISIR SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. SOLOK"
+                    },
+                    {
+                        "region_name": "KAB. SIJUNJUNG"
+                    },
+                    {
+                        "region_name": "KAB. TANAH DATAR"
+                    },
+                    {
+                        "region_name": "KAB. PADANG PARIAMAN"
+                    },
+                    {
+                        "region_name": "KAB. AGAM"
+                    },
+                    {
+                        "region_name": "KAB. LIMA PULUH KOTA"
+                    },
+                    {
+                        "region_name": "KAB. PASAMAN"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN MENTAWAI"
+                    },
+                    {
+                        "region_name": "KAB. DHARMASRAYA"
+                    },
+                    {
+                        "region_name": "KAB. SOLOK SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. PASAMAN BARAT"
+                    },
+                    {
+                        "region_name": "KOTA PADANG"
+                    },
+                    {
+                        "region_name": "KOTA SOLOK"
+                    },
+                    {
+                        "region_name": "KOTA SAWAHLUNTO"
+                    },
+                    {
+                        "region_name": "KOTA PADANG PANJANG"
+                    },
+                    {
+                        "region_name": "KOTA BUKITTINGGI"
+                    },
+                    {
+                        "region_name": "KOTA PAYAKUMBUH"
+                    },
+                    {
+                        "region_name": "KOTA PARIAMAN"
+                    }
+                ]
+            },
+            {
+                "province_name": "RIAU",
+                "region": [
+                    {
+                        "region_name": "KAB. KAMPAR"
+                    },
+                    {
+                        "region_name": "KAB. INDRAGIRI HULU"
+                    },
+                    {
+                        "region_name": "KAB. BENGKALIS"
+                    },
+                    {
+                        "region_name": "KAB. INDRAGIRI HILIR"
+                    },
+                    {
+                        "region_name": "KAB. PELALAWAN"
+                    },
+                    {
+                        "region_name": "KAB. ROKAN HULU"
+                    },
+                    {
+                        "region_name": "KAB. ROKAN HILIR"
+                    },
+                    {
+                        "region_name": "KAB. SIAK"
+                    },
+                    {
+                        "region_name": "KAB. KUANTAN SINGINGI"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN MERANTI"
+                    },
+                    {
+                        "region_name": "KOTA PEKANBARU"
+                    },
+                    {
+                        "region_name": "KOTA DUMAI"
+                    }
+                ]
+            },
+            {
+                "province_name": "JAMBI",
+                "region": [
+                    {
+                        "region_name": "KAB. KERINCI"
+                    },
+                    {
+                        "region_name": "KAB. MERANGIN"
+                    },
+                    {
+                        "region_name": "KAB. SAROLANGUN"
+                    },
+                    {
+                        "region_name": "KAB. BATANGHARI"
+                    },
+                    {
+                        "region_name": "KAB. MUARO JAMBI"
+                    },
+                    {
+                        "region_name": "KAB. TANJUNG JABUNG BARAT"
+                    },
+                    {
+                        "region_name": "KAB. TANJUNG JABUNG TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. BUNGO"
+                    },
+                    {
+                        "region_name": "KAB. TEBO"
+                    },
+                    {
+                        "region_name": "KOTA JAMBI"
+                    }
+                ]
+            },
+            {
+                "province_name": "SUMATERA SELATAN",
+                "region": [
+                    {
+                        "region_name": "KAB. OGAN KOMERING ULU"
+                    },
+                    {
+                        "region_name": "KAB. OGAN KOMERING ILIR"
+                    },
+                    {
+                        "region_name": "KAB. MUARA ENIM"
+                    },
+                    {
+                        "region_name": "KAB. LAHAT"
+                    },
+                    {
+                        "region_name": "KAB. MUSI RAWAS"
+                    },
+                    {
+                        "region_name": "KAB. MUSI BANYUASIN"
+                    },
+                    {
+                        "region_name": "KAB. BANYUASIN"
+                    },
+                    {
+                        "region_name": "KAB. OGAN KOMERING ULU TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. OGAN KOMERING ULU SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. OGAN ILIR"
+                    },
+                    {
+                        "region_name": "KAB. EMPAT LAWANG"
+                    },
+                    {
+                        "region_name": "KOTA PALEMBANG"
+                    },
+                    {
+                        "region_name": "KOTA PAGAR ALAM"
+                    },
+                    {
+                        "region_name": "KOTA LUBUK LINGGAU"
+                    },
+                    {
+                        "region_name": "KOTA PRABUMULIH"
+                    }
+                ]
+            },
+            {
+                "province_name": "BENGKULU",
+                "region": [
+                    {
+                        "region_name": "KAB. BENGKULU SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. REJANG LEBONG"
+                    },
+                    {
+                        "region_name": "KAB. BENGKULU UTARA"
+                    },
+                    {
+                        "region_name": "KAB. KAUR"
+                    },
+                    {
+                        "region_name": "KAB. SELUMA"
+                    },
+                    {
+                        "region_name": "KAB. MUKO MUKO"
+                    },
+                    {
+                        "region_name": "KAB. LEBONG"
+                    },
+                    {
+                        "region_name": "KAB. KEPAHIANG"
+                    },
+                    {
+                        "region_name": "KAB. BENGKULU TENGAH"
+                    },
+                    {
+                        "region_name": "KOTA BENGKULU"
+                    }
+                ]
+            },
+            {
+                "province_name": "LAMPUNG",
+                "region": [
+                    {
+                        "region_name": "KAB. LAMPUNG SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. LAMPUNG TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. LAMPUNG UTARA"
+                    },
+                    {
+                        "region_name": "KAB. LAMPUNG BARAT"
+                    },
+                    {
+                        "region_name": "KAB. TULANG BAWANG"
+                    },
+                    {
+                        "region_name": "KAB. TANGGAMUS"
+                    },
+                    {
+                        "region_name": "KAB. LAMPUNG TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. WAY KANAN"
+                    },
+                    {
+                        "region_name": "KAB. PESAWARAN"
+                    },
+                    {
+                        "region_name": "KAB. PRINGSEWU"
+                    },
+                    {
+                        "region_name": "KAB. MESUJI"
+                    },
+                    {
+                        "region_name": "KAB. TULANG BAWANG BARAT"
+                    },
+                    {
+                        "region_name": "KOTA BANDAR LAMPUNG"
+                    },
+                    {
+                        "region_name": "KOTA METRO"
+                    }
+                ]
+            },
+            {
+                "province_name": "KEPULAUAN BANGKA BELITUNG",
+                "region": [
+                    {
+                        "region_name": "KAB. BANGKA"
+                    },
+                    {
+                        "region_name": "KAB. BELITUNG"
+                    },
+                    {
+                        "region_name": "KAB. BANGKA SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. BANGKA TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. BANGKA BARAT"
+                    },
+                    {
+                        "region_name": "KAB. BELITUNG TIMUR"
+                    },
+                    {
+                        "region_name": "KOTA PANGKAL PINANG"
+                    }
+                ]
+            },
+            {
+                "province_name": "KEPULAUAN RIAU",
+                "region": [
+                    {
+                        "region_name": "KAB. BINTAN"
+                    },
+                    {
+                        "region_name": "KAB. KARIMUN"
+                    },
+                    {
+                        "region_name": "KAB. NATUNA"
+                    },
+                    {
+                        "region_name": "KAB. LINGGA"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN ANAMBAS"
+                    },
+                    {
+                        "region_name": "KOTA BATAM"
+                    },
+                    {
+                        "region_name": "KOTA TANJUNG PINANG"
+                    }
+                ]
+            },
+            {
+                "province_name": "DKI JAKARTA",
+                "region": [
+                    {
+                        "region_name": "KAB. ADM. KEP. SERIBU"
+                    },
+                    {
+                        "region_name": "KOTA ADM. JAKARTA PUSAT"
+                    },
+                    {
+                        "region_name": "KOTA ADM. JAKARTA UTARA"
+                    },
+                    {
+                        "region_name": "KOTA ADM. JAKARTA BARAT"
+                    },
+                    {
+                        "region_name": "KOTA ADM. JAKARTA SELATAN"
+                    },
+                    {
+                        "region_name": "KOTA ADM. JAKARTA TIMUR"
+                    }
+                ]
+            },
+            {
+                "province_name": "JAWA BARAT",
+                "region": [
+                    {
+                        "region_name": "KAB. BOGOR"
+                    },
+                    {
+                        "region_name": "KAB. SUKABUMI"
+                    },
+                    {
+                        "region_name": "KAB. CIANJUR"
+                    },
+                    {
+                        "region_name": "KAB. BANDUNG"
+                    },
+                    {
+                        "region_name": "KAB. GARUT"
+                    },
+                    {
+                        "region_name": "KAB. TASIKMALAYA"
+                    },
+                    {
+                        "region_name": "KAB. CIAMIS"
+                    },
+                    {
+                        "region_name": "KAB. KUNINGAN"
+                    },
+                    {
+                        "region_name": "KAB. CIREBON"
+                    },
+                    {
+                        "region_name": "KAB. MAJALENGKA"
+                    },
+                    {
+                        "region_name": "KAB. SUMEDANG"
+                    },
+                    {
+                        "region_name": "KAB. INDRAMAYU"
+                    },
+                    {
+                        "region_name": "KAB. SUBANG"
+                    },
+                    {
+                        "region_name": "KAB. PURWAKARTA"
+                    },
+                    {
+                        "region_name": "KAB. KARAWANG"
+                    },
+                    {
+                        "region_name": "KAB. BEKASI"
+                    },
+                    {
+                        "region_name": "KAB. BANDUNG BARAT"
+                    },
+                    {
+                        "region_name": "KOTA BOGOR"
+                    },
+                    {
+                        "region_name": "KOTA SUKABUMI"
+                    },
+                    {
+                        "region_name": "KOTA BANDUNG"
+                    },
+                    {
+                        "region_name": "KOTA CIREBON"
+                    },
+                    {
+                        "region_name": "KOTA BEKASI"
+                    },
+                    {
+                        "region_name": "KOTA DEPOK"
+                    },
+                    {
+                        "region_name": "KOTA CIMAHI"
+                    },
+                    {
+                        "region_name": "KOTA TASIKMALAYA"
+                    },
+                    {
+                        "region_name": "KOTA BANJAR"
+                    }
+                ]
+            },
+            {
+                "province_name": "JAWA TENGAH",
+                "region": [
+                    {
+                        "region_name": "KAB. CILACAP"
+                    },
+                    {
+                        "region_name": "KAB. BANYUMAS"
+                    },
+                    {
+                        "region_name": "KAB. PURBALINGGA"
+                    },
+                    {
+                        "region_name": "KAB. BANJARNEGARA"
+                    },
+                    {
+                        "region_name": "KAB. KEBUMEN"
+                    },
+                    {
+                        "region_name": "KAB. PURWOREJO"
+                    },
+                    {
+                        "region_name": "KAB. WONOSOBO"
+                    },
+                    {
+                        "region_name": "KAB. MAGELANG"
+                    },
+                    {
+                        "region_name": "KAB. BOYOLALI"
+                    },
+                    {
+                        "region_name": "KAB. KLATEN"
+                    },
+                    {
+                        "region_name": "KAB. SUKOHARJO"
+                    },
+                    {
+                        "region_name": "KAB. WONOGIRI"
+                    },
+                    {
+                        "region_name": "KAB. KARANGANYAR"
+                    },
+                    {
+                        "region_name": "KAB. SRAGEN"
+                    },
+                    {
+                        "region_name": "KAB. GROBOGAN"
+                    },
+                    {
+                        "region_name": "KAB. BLORA"
+                    },
+                    {
+                        "region_name": "KAB. REMBANG"
+                    },
+                    {
+                        "region_name": "KAB. PATI"
+                    },
+                    {
+                        "region_name": "KAB. KUDUS"
+                    },
+                    {
+                        "region_name": "KAB. JEPARA"
+                    },
+                    {
+                        "region_name": "KAB. DEMAK"
+                    },
+                    {
+                        "region_name": "KAB. SEMARANG"
+                    },
+                    {
+                        "region_name": "KAB. TEMANGGUNG"
+                    },
+                    {
+                        "region_name": "KAB. KENDAL"
+                    },
+                    {
+                        "region_name": "KAB. BATANG"
+                    },
+                    {
+                        "region_name": "KAB. PEKALONGAN"
+                    },
+                    {
+                        "region_name": "KAB. PEMALANG"
+                    },
+                    {
+                        "region_name": "KAB. TEGAL"
+                    },
+                    {
+                        "region_name": "KAB. BREBES"
+                    },
+                    {
+                        "region_name": "KOTA MAGELANG"
+                    },
+                    {
+                        "region_name": "KOTA SURAKARTA"
+                    },
+                    {
+                        "region_name": "KOTA SALATIGA"
+                    },
+                    {
+                        "region_name": "KOTA SEMARANG"
+                    },
+                    {
+                        "region_name": "KOTA PEKALONGAN"
+                    },
+                    {
+                        "region_name": "KOTA TEGAL"
+                    }
+                ]
+            },
+            {
+                "province_name": "DAERAH ISTIMEWA YOGYAKARTA",
+                "region": [
+                    {
+                        "region_name": "KAB. KULON PROGO"
+                    },
+                    {
+                        "region_name": "KAB. BANTUL"
+                    },
+                    {
+                        "region_name": "KAB. GUNUNGKIDUL"
+                    },
+                    {
+                        "region_name": "KAB. SLEMAN"
+                    },
+                    {
+                        "region_name": "KOTA YOGYAKARTA"
+                    }
+                ]
+            },
+            {
+                "province_name": "JAWA TIMUR",
+                "region": [
+                    {
+                        "region_name": "KAB. PACITAN"
+                    },
+                    {
+                        "region_name": "KAB. PONOROGO"
+                    },
+                    {
+                        "region_name": "KAB. TRENGGALEK"
+                    },
+                    {
+                        "region_name": "KAB. TULUNGAGUNG"
+                    },
+                    {
+                        "region_name": "KAB. BLITAR"
+                    },
+                    {
+                        "region_name": "KAB. KEDIRI"
+                    },
+                    {
+                        "region_name": "KAB. MALANG"
+                    },
+                    {
+                        "region_name": "KAB. LUMAJANG"
+                    },
+                    {
+                        "region_name": "KAB. JEMBER"
+                    },
+                    {
+                        "region_name": "KAB. BANYUWANGI"
+                    },
+                    {
+                        "region_name": "KAB. BONDOWOSO"
+                    },
+                    {
+                        "region_name": "KAB. SITUBONDO"
+                    },
+                    {
+                        "region_name": "KAB. PROBOLINGGO"
+                    },
+                    {
+                        "region_name": "KAB. PASURUAN"
+                    },
+                    {
+                        "region_name": "KAB. SIDOARJO"
+                    },
+                    {
+                        "region_name": "KAB. MOJOKERTO"
+                    },
+                    {
+                        "region_name": "KAB. JOMBANG"
+                    },
+                    {
+                        "region_name": "KAB. NGANJUK"
+                    },
+                    {
+                        "region_name": "KAB. MADIUN"
+                    },
+                    {
+                        "region_name": "KAB. MAGETAN"
+                    },
+                    {
+                        "region_name": "KAB. NGAWI"
+                    },
+                    {
+                        "region_name": "KAB. BOJONEGORO"
+                    },
+                    {
+                        "region_name": "KAB. TUBAN"
+                    },
+                    {
+                        "region_name": "KAB. LAMONGAN"
+                    },
+                    {
+                        "region_name": "KAB. GRESIK"
+                    },
+                    {
+                        "region_name": "KAB. BANGKALAN"
+                    },
+                    {
+                        "region_name": "KAB. SAMPANG"
+                    },
+                    {
+                        "region_name": "KAB. PAMEKASAN"
+                    },
+                    {
+                        "region_name": "KAB. SUMENEP"
+                    },
+                    {
+                        "region_name": "KOTA KEDIRI"
+                    },
+                    {
+                        "region_name": "KOTA BLITAR"
+                    },
+                    {
+                        "region_name": "KOTA MALANG"
+                    },
+                    {
+                        "region_name": "KOTA PROBOLINGGO"
+                    },
+                    {
+                        "region_name": "KOTA PASURUAN"
+                    },
+                    {
+                        "region_name": "KOTA MOJOKERTO"
+                    },
+                    {
+                        "region_name": "KOTA MADIUN"
+                    },
+                    {
+                        "region_name": "KOTA SURABAYA"
+                    },
+                    {
+                        "region_name": "KOTA BATU"
+                    }
+                ]
+            },
+            {
+                "province_name": "BANTEN",
+                "region": [
+                    {
+                        "region_name": "KAB. PANDEGLANG"
+                    },
+                    {
+                        "region_name": "KAB. LEBAK"
+                    },
+                    {
+                        "region_name": "KAB. TANGERANG"
+                    },
+                    {
+                        "region_name": "KAB. SERANG"
+                    },
+                    {
+                        "region_name": "KOTA TANGERANG"
+                    },
+                    {
+                        "region_name": "KOTA CILEGON"
+                    },
+                    {
+                        "region_name": "KOTA SERANG"
+                    },
+                    {
+                        "region_name": "KOTA TANGERANG SELATAN"
+                    }
+                ]
+            },
+            {
+                "province_name": "BALI",
+                "region": [
+                    {
+                        "region_name": "KAB. JEMBRANA"
+                    },
+                    {
+                        "region_name": "KAB. TABANAN"
+                    },
+                    {
+                        "region_name": "KAB. BADUNG"
+                    },
+                    {
+                        "region_name": "KAB. GIANYAR"
+                    },
+                    {
+                        "region_name": "KAB. KLUNGKUNG"
+                    },
+                    {
+                        "region_name": "KAB. BANGLI"
+                    },
+                    {
+                        "region_name": "KAB. KARANGASEM"
+                    },
+                    {
+                        "region_name": "KAB. BULELENG"
+                    },
+                    {
+                        "region_name": "KOTA DENPASAR"
+                    }
+                ]
+            },
+            {
+                "province_name": "NUSA TENGGARA BARAT",
+                "region": [
+                    {
+                        "region_name": "KAB. LOMBOK BARAT"
+                    },
+                    {
+                        "region_name": "KAB. LOMBOK TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. LOMBOK TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. SUMBAWA"
+                    },
+                    {
+                        "region_name": "KAB. DOMPU"
+                    },
+                    {
+                        "region_name": "KAB. BIMA"
+                    },
+                    {
+                        "region_name": "KAB. SUMBAWA BARAT"
+                    },
+                    {
+                        "region_name": "KAB. LOMBOK UTARA"
+                    },
+                    {
+                        "region_name": "KOTA MATARAM"
+                    },
+                    {
+                        "region_name": "KOTA BIMA"
+                    }
+                ]
+            },
+            {
+                "province_name": "NUSA TENGGARA TIMUR",
+                "region": [
+                    {
+                        "region_name": "KAB. KUPANG"
+                    },
+                    {
+                        "region_name": "KAB. TIMOR TENGAH SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. TIMOR TENGAH UTARA"
+                    },
+                    {
+                        "region_name": "KAB. BELU"
+                    },
+                    {
+                        "region_name": "KAB. ALOR"
+                    },
+                    {
+                        "region_name": "KAB. FLORES TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. SIKKA"
+                    },
+                    {
+                        "region_name": "KAB. ENDE"
+                    },
+                    {
+                        "region_name": "KAB. NGADA"
+                    },
+                    {
+                        "region_name": "KAB. MANGGARAI"
+                    },
+                    {
+                        "region_name": "KAB. SUMBA TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. SUMBA BARAT"
+                    },
+                    {
+                        "region_name": "KAB. LEMBATA"
+                    },
+                    {
+                        "region_name": "KAB. ROTE NDAO"
+                    },
+                    {
+                        "region_name": "KAB. MANGGARAI BARAT"
+                    },
+                    {
+                        "region_name": "KAB. NAGEKEO"
+                    },
+                    {
+                        "region_name": "KAB. SUMBA TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. SUMBA BARAT DAYA"
+                    },
+                    {
+                        "region_name": "KAB. MANGGARAI TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. SABU RAIJUA"
+                    },
+                    {
+                        "region_name": "KOTA KUPANG"
+                    }
+                ]
+            },
+            {
+                "province_name": "KALIMANTAN BARAT",
+                "region": [
+                    {
+                        "region_name": "KAB. SAMBAS"
+                    },
+                    {
+                        "region_name": "KAB. MEMPAWAH"
+                    },
+                    {
+                        "region_name": "KAB. SANGGAU"
+                    },
+                    {
+                        "region_name": "KAB. KETAPANG"
+                    },
+                    {
+                        "region_name": "KAB. SINTANG"
+                    },
+                    {
+                        "region_name": "KAB. KAPUAS HULU"
+                    },
+                    {
+                        "region_name": "KAB. BENGKAYANG"
+                    },
+                    {
+                        "region_name": "KAB. LANDAK"
+                    },
+                    {
+                        "region_name": "KAB. SEKADAU"
+                    },
+                    {
+                        "region_name": "KAB. MELAWI"
+                    },
+                    {
+                        "region_name": "KAB. KAYONG UTARA"
+                    },
+                    {
+                        "region_name": "KAB. KUBU RAYA"
+                    },
+                    {
+                        "region_name": "KOTA PONTIANAK"
+                    },
+                    {
+                        "region_name": "KOTA SINGKAWANG"
+                    }
+                ]
+            },
+            {
+                "province_name": "KALIMANTAN TENGAH",
+                "region": [
+                    {
+                        "region_name": "KAB. KOTAWARINGIN BARAT"
+                    },
+                    {
+                        "region_name": "KAB. KOTAWARINGIN TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. KAPUAS"
+                    },
+                    {
+                        "region_name": "KAB. BARITO SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. BARITO UTARA"
+                    },
+                    {
+                        "region_name": "KAB. KATINGAN"
+                    },
+                    {
+                        "region_name": "KAB. SERUYAN"
+                    },
+                    {
+                        "region_name": "KAB. SUKAMARA"
+                    },
+                    {
+                        "region_name": "KAB. LAMANDAU"
+                    },
+                    {
+                        "region_name": "KAB. GUNUNG MAS"
+                    },
+                    {
+                        "region_name": "KAB. PULANG PISAU"
+                    },
+                    {
+                        "region_name": "KAB. MURUNG RAYA"
+                    },
+                    {
+                        "region_name": "KAB. BARITO TIMUR"
+                    },
+                    {
+                        "region_name": "KOTA PALANGKARAYA"
+                    }
+                ]
+            },
+            {
+                "province_name": "KALIMANTAN SELATAN",
+                "region": [
+                    {
+                        "region_name": "KAB. TANAH LAUT"
+                    },
+                    {
+                        "region_name": "KAB. KOTABARU"
+                    },
+                    {
+                        "region_name": "KAB. BANJAR"
+                    },
+                    {
+                        "region_name": "KAB. BARITO KUALA"
+                    },
+                    {
+                        "region_name": "KAB. TAPIN"
+                    },
+                    {
+                        "region_name": "KAB. HULU SUNGAI SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. HULU SUNGAI TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. HULU SUNGAI UTARA"
+                    },
+                    {
+                        "region_name": "KAB. TABALONG"
+                    },
+                    {
+                        "region_name": "KAB. TANAH BUMBU"
+                    },
+                    {
+                        "region_name": "KAB. BALANGAN"
+                    },
+                    {
+                        "region_name": "KOTA BANJARMASIN"
+                    },
+                    {
+                        "region_name": "KOTA BANJARBARU"
+                    }
+                ]
+            },
+            {
+                "province_name": "KALIMANTAN TIMUR",
+                "region": [
+                    {
+                        "region_name": "KAB. PASER"
+                    },
+                    {
+                        "region_name": "KAB. KUTAI KARTANEGARA"
+                    },
+                    {
+                        "region_name": "KAB. BERAU"
+                    },
+                    {
+                        "region_name": "KAB. KUTAI BARAT"
+                    },
+                    {
+                        "region_name": "KAB. KUTAI TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. PENAJAM PASER UTARA"
+                    },
+                    {
+                        "region_name": "KOTA BALIKPAPAN"
+                    },
+                    {
+                        "region_name": "KOTA SAMARINDA"
+                    },
+                    {
+                        "region_name": "KOTA BONTANG"
+                    }
+                ]
+            },
+            {
+                "province_name": "KALIMANTAN UTARA",
+                "region": [
+                    {
+                        "region_name": "KAB. BULUNGAN"
+                    },
+                    {
+                        "region_name": "KAB. MALINAU"
+                    },
+                    {
+                        "region_name": "KAB. NUNUKAN"
+                    },
+                    {
+                        "region_name": "KAB. TANA TIDUNG"
+                    },
+                    {
+                        "region_name": "KOTA TARAKAN"
+                    }
+                ]
+            },
+            {
+                "province_name": "SULAWESI UTARA",
+                "region": [
+                    {
+                        "region_name": "KAB. BOLAANG MONGONDOW"
+                    },
+                    {
+                        "region_name": "KAB. MINAHASA"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN SANGIHE"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN TALAUD"
+                    },
+                    {
+                        "region_name": "KAB. MINAHASA SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. MINAHASA UTARA"
+                    },
+                    {
+                        "region_name": "KAB. MINAHASA TENGGARA"
+                    },
+                    {
+                        "region_name": "KAB. BOLAANG MONGONDOW UTARA"
+                    },
+                    {
+                        "region_name": "KAB. KEP. SIAU TAGULANDANG BIARO"
+                    },
+                    {
+                        "region_name": "KAB. BOLAANG MONGONDOW TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. BOLAANG MONGONDOW SELATAN"
+                    },
+                    {
+                        "region_name": "KOTA MANADO"
+                    },
+                    {
+                        "region_name": "KOTA BITUNG"
+                    },
+                    {
+                        "region_name": "KOTA TOMOHON"
+                    },
+                    {
+                        "region_name": "KOTA KOTAMOBAGU"
+                    }
+                ]
+            },
+            {
+                "province_name": "SULAWESI TENGAH",
+                "region": [
+                    {
+                        "region_name": "KAB. BANGGAI"
+                    },
+                    {
+                        "region_name": "KAB. POSO"
+                    },
+                    {
+                        "region_name": "KAB. DONGGALA"
+                    },
+                    {
+                        "region_name": "KAB. TOLI TOLI"
+                    },
+                    {
+                        "region_name": "KAB. BUOL"
+                    },
+                    {
+                        "region_name": "KAB. MOROWALI"
+                    },
+                    {
+                        "region_name": "KAB. BANGGAI KEPULAUAN"
+                    },
+                    {
+                        "region_name": "KAB. PARIGI MOUTONG"
+                    },
+                    {
+                        "region_name": "KAB. TOJO UNA UNA"
+                    },
+                    {
+                        "region_name": "KAB. SIGI"
+                    },
+                    {
+                        "region_name": "KOTA PALU"
+                    }
+                ]
+            },
+            {
+                "province_name": "SULAWESI SELATAN",
+                "region": [
+                    {
+                        "region_name": "KAB. KEPULAUAN SELAYAR"
+                    },
+                    {
+                        "region_name": "KAB. BULUKUMBA"
+                    },
+                    {
+                        "region_name": "KAB. BANTAENG"
+                    },
+                    {
+                        "region_name": "KAB. JENEPONTO"
+                    },
+                    {
+                        "region_name": "KAB. TAKALAR"
+                    },
+                    {
+                        "region_name": "KAB. GOWA"
+                    },
+                    {
+                        "region_name": "KAB. SINJAI"
+                    },
+                    {
+                        "region_name": "KAB. BONE"
+                    },
+                    {
+                        "region_name": "KAB. MAROS"
+                    },
+                    {
+                        "region_name": "KAB. PANGKAJENE KEPULAUAN"
+                    },
+                    {
+                        "region_name": "KAB. BARRU"
+                    },
+                    {
+                        "region_name": "KAB. SOPPENG"
+                    },
+                    {
+                        "region_name": "KAB. WAJO"
+                    },
+                    {
+                        "region_name": "KAB. SIDENRENG RAPPANG"
+                    },
+                    {
+                        "region_name": "KAB. PINRANG"
+                    },
+                    {
+                        "region_name": "KAB. ENREKANG"
+                    },
+                    {
+                        "region_name": "KAB. LUWU"
+                    },
+                    {
+                        "region_name": "KAB. TANA TORAJA"
+                    },
+                    {
+                        "region_name": "KAB. LUWU UTARA"
+                    },
+                    {
+                        "region_name": "KAB. LUWU TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. TORAJA UTARA"
+                    },
+                    {
+                        "region_name": "KOTA MAKASSAR"
+                    },
+                    {
+                        "region_name": "KOTA PARE PARE"
+                    },
+                    {
+                        "region_name": "KOTA PALOPO"
+                    }
+                ]
+            },
+            {
+                "province_name": "SULAWESI TENGGARA",
+                "region": [
+                    {
+                        "region_name": "KAB. KOLAKA"
+                    },
+                    {
+                        "region_name": "KAB. KONAWE"
+                    },
+                    {
+                        "region_name": "KAB. MUNA"
+                    },
+                    {
+                        "region_name": "KAB. BUTON"
+                    },
+                    {
+                        "region_name": "KAB. KONAWE SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. BOMBANA"
+                    },
+                    {
+                        "region_name": "KAB. WAKATOBI"
+                    },
+                    {
+                        "region_name": "KAB. KOLAKA UTARA"
+                    },
+                    {
+                        "region_name": "KAB. KONAWE UTARA"
+                    },
+                    {
+                        "region_name": "KAB. BUTON UTARA"
+                    },
+                    {
+                        "region_name": "KOTA KENDARI"
+                    },
+                    {
+                        "region_name": "KOTA BAU BAU"
+                    }
+                ]
+            },
+            {
+                "province_name": "GORONTALO",
+                "region": [
+                    {
+                        "region_name": "KAB. GORONTALO"
+                    },
+                    {
+                        "region_name": "KAB. BOALEMO"
+                    },
+                    {
+                        "region_name": "KAB. BONE BOLANGO"
+                    },
+                    {
+                        "region_name": "KAB. PAHUWATO"
+                    },
+                    {
+                        "region_name": "KAB. GORONTALO UTARA"
+                    },
+                    {
+                        "region_name": "KOTA GORONTALO"
+                    }
+                ]
+            },
+            {
+                "province_name": "SULAWESI BARAT",
+                "region": [
+                    {
+                        "region_name": "KAB. MAMUJU UTARA"
+                    },
+                    {
+                        "region_name": "KAB. MAMUJU"
+                    },
+                    {
+                        "region_name": "KAB. MAMASA"
+                    },
+                    {
+                        "region_name": "KAB. POLEWALI MANDAR"
+                    },
+                    {
+                        "region_name": "KAB. MAJENE"
+                    }
+                ]
+            },
+            {
+                "province_name": "MALUKU",
+                "region": [
+                    {
+                        "region_name": "KAB. MALUKU TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. MALUKU TENGGARA"
+                    },
+                    {
+                        "region_name": "KAB. MALUKU TENGGARA BARAT"
+                    },
+                    {
+                        "region_name": "KAB. BURU"
+                    },
+                    {
+                        "region_name": "KAB. SERAM BAGIAN TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. SERAM BAGIAN BARAT"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN ARU"
+                    },
+                    {
+                        "region_name": "KAB. MALUKU BARAT DAYA"
+                    },
+                    {
+                        "region_name": "KAB. BURU SELATAN"
+                    },
+                    {
+                        "region_name": "KOTA AMBON"
+                    },
+                    {
+                        "region_name": "KOTA TUAL"
+                    }
+                ]
+            },
+            {
+                "province_name": "MALUKU UTARA",
+                "region": [
+                    {
+                        "region_name": "KAB. HALMAHERA BARAT"
+                    },
+                    {
+                        "region_name": "KAB. HALMAHERA TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. HALMAHERA UTARA"
+                    },
+                    {
+                        "region_name": "KAB. HALMAHERA SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN SULA"
+                    },
+                    {
+                        "region_name": "KAB. HALMAHERA TIMUR"
+                    },
+                    {
+                        "region_name": "KAB. PULAU MOROTAI"
+                    },
+                    {
+                        "region_name": "KOTA TERNATE"
+                    },
+                    {
+                        "region_name": "KOTA TIDORE KEPULAUAN"
+                    }
+                ]
+            },
+            {
+                "province_name": "PAPUA",
+                "region": [
+                    {
+                        "region_name": "KAB. MERAUKE"
+                    },
+                    {
+                        "region_name": "KAB. JAYAWIJAYA"
+                    },
+                    {
+                        "region_name": "KAB. JAYAPURA"
+                    },
+                    {
+                        "region_name": "KAB. NABIRE"
+                    },
+                    {
+                        "region_name": "KAB. KEPULAUAN YAPEN"
+                    },
+                    {
+                        "region_name": "KAB. BIAK NUMFOR"
+                    },
+                    {
+                        "region_name": "KAB. PUNCAK JAYA"
+                    },
+                    {
+                        "region_name": "KAB. PANIAI"
+                    },
+                    {
+                        "region_name": "KAB. MIMIKA"
+                    },
+                    {
+                        "region_name": "KAB. SARMI"
+                    },
+                    {
+                        "region_name": "KAB. KEEROM"
+                    },
+                    {
+                        "region_name": "KAB. PEGUNUNGAN BINTANG"
+                    },
+                    {
+                        "region_name": "KAB. YAHUKIMO"
+                    },
+                    {
+                        "region_name": "KAB. TOLIKARA"
+                    },
+                    {
+                        "region_name": "KAB. WAROPEN"
+                    },
+                    {
+                        "region_name": "KAB. BOVEN DIGOEL"
+                    },
+                    {
+                        "region_name": "KAB. MAPPI"
+                    },
+                    {
+                        "region_name": "KAB. ASMAT"
+                    },
+                    {
+                        "region_name": "KAB. SUPIORI"
+                    },
+                    {
+                        "region_name": "KAB. MAMBERAMO RAYA"
+                    },
+                    {
+                        "region_name": "KAB. MAMBERAMO TENGAH"
+                    },
+                    {
+                        "region_name": "KAB. YALIMO"
+                    },
+                    {
+                        "region_name": "KAB. LANNY JAYA"
+                    },
+                    {
+                        "region_name": "KAB. NDUGA"
+                    },
+                    {
+                        "region_name": "KAB. PUNCAK"
+                    },
+                    {
+                        "region_name": "KAB. DOGIYAI"
+                    },
+                    {
+                        "region_name": "KAB. INTAN JAYA"
+                    },
+                    {
+                        "region_name": "KOTA JAYAPURA"
+                    }
+                ]
+            },
+            {
+                "province_name": "PAPUA BARAT",
+                "region": [
+                    {
+                        "region_name": "KAB. SORONG"
+                    },
+                    {
+                        "region_name": "KAB. MANOKWARI"
+                    },
+                    {
+                        "region_name": "KAB. FAK FAK"
+                    },
+                    {
+                        "region_name": "KAB. SORONG SELATAN"
+                    },
+                    {
+                        "region_name": "KAB. RAJA AMPAT"
+                    },
+                    {
+                        "region_name": "KAB. TELUK BINTUNI"
+                    },
+                    {
+                        "region_name": "KAB. TELUK WONDAMA"
+                    },
+                    {
+                        "region_name": "KAB. KAIMANA"
+                    },
+                    {
+                        "region_name": "KAB. TAMBRAUW"
+                    },
+                    {
+                        "region_name": "KOTA SORONG"
+                    }
+                ]
+            }
+        ]
+    }
+}
