@@ -312,6 +312,16 @@
 			<a href="jsp/s_subscriber_ktp_validation.jsp">Subscriber KTP Validation</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_closing_inquiry.jsp">Subscriber Closing Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_closing.jsp">Subscriber Closing</a>
+		</td>
+	</tr>
 	
 	</table></td>
 	
