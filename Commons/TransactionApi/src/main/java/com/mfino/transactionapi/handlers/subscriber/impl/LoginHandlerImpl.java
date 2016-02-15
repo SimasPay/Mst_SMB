@@ -192,7 +192,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				 *with length same as pin lengh allowed on the system
 				*/
 				//String userPwd = MfinoUtil.convertPinForValidation(request.getAuthMAC(),SystemParametersUtil.getPinLength());
-				String userPwd = CryptographyService.decryptWithPrivateKey(request.getAuthMAC());
+				String userPwd = request.getAuthMAC();
 				//userPwd = new String(CryptographyService.generateSHA256Hash(subscriberMDN.getMDN(), userPwd));
 				//if (!password.equals(userPwd)) {
 				//done this change for introducing HSM for validation
