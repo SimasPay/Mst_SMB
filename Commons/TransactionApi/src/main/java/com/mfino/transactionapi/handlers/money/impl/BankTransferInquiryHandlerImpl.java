@@ -149,7 +149,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
 			 */
 			
-			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
+			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
 
 				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
 
