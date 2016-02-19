@@ -235,23 +235,13 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Kelurahan/Desa"),
+                               fieldLabel :_("Propinsi"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Village is required'),
-                               itemId  : 'servicepartner.form.VillageAl',
-                               name: CmFinoFIX.message.JSAgent.VillageAl._name
-                           },
-                           {
-                               xtype : "textfield",
-                               fieldLabel :_("Kecamatan"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('District is required'),
-                               itemId  : 'servicepartner.form.DistrictAl',
-                               name: CmFinoFIX.message.JSAgent.DistrictAl._name
+                               blankText : _('Provincial is required'),
+                               itemId  : 'servicepartner.form.ProvincialAl',
+                               name: CmFinoFIX.message.JSAgent.ProvincialAl._name
                            },
                            {
                                xtype : "textfield",
@@ -265,13 +255,23 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Propinsi"),
+                               fieldLabel :_("Kecamatan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Provincial is required'),
-                               itemId  : 'servicepartner.form.ProvincialAl',
-                               name: CmFinoFIX.message.JSAgent.ProvincialAl._name
+                               blankText : _('District is required'),
+                               itemId  : 'servicepartner.form.DistrictAl',
+                               name: CmFinoFIX.message.JSAgent.DistrictAl._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("Kelurahan/Desa"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('Village is required'),
+                               itemId  : 'servicepartner.form.VillageAl',
+                               name: CmFinoFIX.message.JSAgent.VillageAl._name
                            },
                            {
                                xtype : "textfield",
@@ -343,23 +343,13 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Kelurahan/Desa"),
+                               fieldLabel :_("Propinsi"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Village is required'),
-                               itemId  : 'servicepartner.form.VillageCom',
-                               name: CmFinoFIX.message.JSAgent.VillageCom._name
-                           },
-                           {
-                               xtype : "textfield",
-                               fieldLabel :_("Kecamatan"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('District is required'),
-                               itemId  : 'servicepartner.form.DistrictCom',
-                               name: CmFinoFIX.message.JSAgent.DistrictCom._name
+                               blankText : _('Provincial is required'),
+                               itemId  : 'servicepartner.form.ProvincialCom',
+                               name: CmFinoFIX.message.JSAgent.ProvincialCom._name
                            },
                            {
                                xtype : "textfield",
@@ -373,13 +363,23 @@ Ext.extend(mFino.widget.ServicePartnerFormspView, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               fieldLabel :_("Propinsi"),
+                               fieldLabel :_("Kecamatan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Provincial is required'),
-                               itemId  : 'servicepartner.form.ProvincialCom',
-                               name: CmFinoFIX.message.JSAgent.ProvincialCom._name
+                               blankText : _('District is required'),
+                               itemId  : 'servicepartner.form.DistrictCom',
+                               name: CmFinoFIX.message.JSAgent.DistrictCom._name
+                           },
+                           {
+                               xtype : "textfield",
+                               fieldLabel :_("Kelurahan/Desa"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('Village is required'),
+                               itemId  : 'servicepartner.form.VillageCom',
+                               name: CmFinoFIX.message.JSAgent.VillageCom._name
                            },
                            {
                                xtype : "textfield",

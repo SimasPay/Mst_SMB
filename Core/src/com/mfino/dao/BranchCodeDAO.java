@@ -7,9 +7,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.BranchCodeQuery;
-import com.mfino.dao.query.RoleQuery;
 import com.mfino.domain.BranchCodes;
-import com.mfino.domain.Role;
 import com.mfino.fix.CmFinoFIX;
 
 /**

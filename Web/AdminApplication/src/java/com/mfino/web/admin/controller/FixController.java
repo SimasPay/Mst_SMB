@@ -38,6 +38,7 @@ import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSBase;
 import com.mfino.fix.CmFinoFIX.CMJSBranchCodes;
 import com.mfino.fix.CmFinoFIX.CMJSClosedAccountSettlementMdn;
+import com.mfino.fix.CmFinoFIX.CMJSDistrict;
 import com.mfino.fix.CmFinoFIX.CMJSExpirationType;
 import com.mfino.fix.CmFinoFIX.CMJSFundDefinitions;
 import com.mfino.fix.CmFinoFIX.CMJSFundEvents;
@@ -47,6 +48,8 @@ import com.mfino.fix.CmFinoFIX.CMJSMFSBillerPartner;
 import com.mfino.fix.CmFinoFIX.CMJSMoneyTransfer;
 import com.mfino.fix.CmFinoFIX.CMJSPartner;
 import com.mfino.fix.CmFinoFIX.CMJSPartnerByDCT;
+import com.mfino.fix.CmFinoFIX.CMJSProvince;
+import com.mfino.fix.CmFinoFIX.CMJSProvinceRegion;
 import com.mfino.fix.CmFinoFIX.CMJSPurpose;
 import com.mfino.fix.CmFinoFIX.CMJSRuleKey;
 import com.mfino.fix.CmFinoFIX.CMJSRuleKeyComparision;
@@ -56,6 +59,7 @@ import com.mfino.fix.CmFinoFIX.CMJSShowBalanceDetails;
 import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
 import com.mfino.fix.CmFinoFIX.CMJSValidateChargeExpr;
+import com.mfino.fix.CmFinoFIX.CMJSVillage;
 import com.mfino.fix.processor.IFixProcessor;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -63,7 +67,6 @@ import com.mfino.service.AuthorizationService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.*;
-import com.mfino.uicore.fix.processor.impl.ShowBalanceDetailsProcessorImpl;
 import com.mfino.uicore.web.FixView;
 import com.mfino.uicore.web.WebContextError;
 import com.mfino.util.MfinoUtil;
@@ -620,6 +623,22 @@ public class FixController {
 	@Autowired
 	@Qualifier("ServicePartnerProcessorspImpl")
 	private ServicePartnerProcessorsp servicePartnerProcessorsp;
+	
+	@Autowired
+	@Qualifier("ProvinceProcessorImpl")
+	private ProvinceProcessor provinceProcessor;
+	
+	@Autowired
+	@Qualifier("ProvinceRegionProcessorImpl")
+	private ProvinceRegionProcessor provinceRegionProcessor;
+	
+	@Autowired
+	@Qualifier("DistrictProcessorImpl")
+	private DistrictProcessor districtProcessor;
+	
+	@Autowired
+	@Qualifier("VillageProcessorImpl")
+	private VillageProcessor villageProcessor;
 	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
@@ -1214,6 +1233,18 @@ public class FixController {
 			}else if(msgClassName.equals(CMJSBranchCodes.class.getName())){
 				fixProcessor = branchCodeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSBranchCodes);
+			}else if(msgClassName.equals(CMJSProvince.class.getName())){
+				fixProcessor = provinceProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSProvince);
+			}else if(msgClassName.equals(CMJSProvinceRegion.class.getName())){
+				fixProcessor = provinceRegionProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSProvinceRegion);
+			}else if(msgClassName.equals(CMJSDistrict.class.getName())){
+				fixProcessor = districtProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSDistrict);
+			}else if(msgClassName.equals(CMJSVillage.class.getName())){
+				fixProcessor = villageProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSVillage);
 			}
 			
 			/*

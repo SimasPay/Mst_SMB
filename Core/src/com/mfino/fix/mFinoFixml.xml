@@ -5149,7 +5149,7 @@
 		<field name="BankResponseStatus" required="N" />
 		<field name="BankResponse" required="N" />
 	</message>
-	
+		
 	<message name="JSAgent" msgtype="1768" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="PartnerIDSearch" required="N"  />
 			<field name="IsHierarchyTabPartnerIDSearch" required="N" />
@@ -5235,7 +5235,6 @@
 				<field name="GroupID" required="N"/>
 				<field name="GroupName" required="N"/>
 				<field name="AccountNumber" required="N"/>
-				
 				<field name="AgentCode" required="N"/>
 				<field name="AgentType" required="N"/>
 				<field name="ClassificationAgent" required="N"/>
@@ -5402,7 +5401,6 @@
 				<field name="GroupID" required="N"/>
 				<field name="GroupName" required="N"/>
 				<field name="AccountNumber" required="N"/>
-				
 				<field name="AgentCode" required="N"/>
 				<field name="AgentType" required="N"/>
 				<field name="ClassificationAgent" required="N"/>
@@ -5524,6 +5522,56 @@
 			<field name="MDN" required="Y" />
 			<field name="AgentMDN" required="N" />
 		</message>
+		
+	<message name="JSProvince" msgtype="1771" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+    	<field name="RecordID" id="ID" required="N" /> 
+		<field name="DisplayText" required="N" />			
+   		<field name="ProvinceId" required="N" />
+		<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+    	 	<field name="RecordID" id="ID" required="N" /> 
+			<field name="DisplayText" required="N" />			
+    		<field name="ProvinceId" required="N" />
+    	</group>    		
+	</message>	
+	<message name="JSProvinceRegion" msgtype="1772" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="RecordID" id="ID" required="N" /> 
+		<field name="RegionId" required="N" />
+		<field name="DisplayText" required="N" />
+		<field name="BIRegionId" required="N" />
+		<field name="IdProvince" required="N" />
+		<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+			<field name="RecordID" id="ID" required="N" /> 
+			<field name="RegionId" required="N" />
+			<field name="DisplayText" required="N" />
+			<field name="BIRegionId" required="N" />
+			<field name="IdProvince" required="N" /> 
+    	</group>			   		
+	</message>
+	<message name="JSDistrict" msgtype="1773" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+    	<field name="RecordID" id="ID" required="N" />    		
+   		<field name="DistrictId" required="N" />
+		<field name="DisplayText" required="N" />
+		<field name="IdRegion" required="N" />
+		<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+    		<field name="RecordID" id="ID" required="N" />    		
+    		<field name="DistrictId" required="N" />
+			<field name="DisplayText" required="N" />
+			<field name="IdRegion" required="N" />
+    	</group>			    		
+	</message>
+	<message name="JSVillage" msgtype="1774" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+    	<field name="RecordID" id="ID" required="N" />    		
+   		<field name="VillageId" required="N" />
+		<field name="DisplayText" required="N" />
+		<field name="IdDistrict" required="N" />
+		<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
+    		<field name="RecordID" id="ID" required="N" />    		
+    		<field name="VillageId" required="N" />
+			<field name="DisplayText" required="N" />
+			<field name="IdDistrict" required="N" />  
+    	</group>			 		
+	</message>		
+		
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -7663,6 +7711,30 @@
 			<field name="BankResponseStatus" required="N" />
 			<field name="BankResponse" required="N" />
 		</record>
+
+		<record name="Province" ExtendsRecord="Base" Java="Y" SQLTable="province" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="DisplayText" required="N" />
+			<field name="ProvinceId" required="N" />
+		</record>
+		
+		<record name="ProvinceRegion" ExtendsRecord="Base" Java="Y" SQLTable="province_region" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="RegionId" required="N" />
+			<field name="DisplayText" required="N" />
+			<field name="BIRegionId" required="N" />
+			<field name="IdProvince" required="N" />
+		</record>
+		
+		<record name="District" ExtendsRecord="Base" Java="Y" SQLTable="district" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="DistrictId" required="N" />
+			<field name="DisplayText" required="N" />
+			<field name="IdRegion" required="N" />
+		</record>
+		
+		<record name="Village" ExtendsRecord="Base" Java="Y" SQLTable="village" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="VillageId" required="N" />
+			<field name="DisplayText" required="N" />
+			<field name="IdDistrict" required="N" />
+		</record>
 		
 	</records>
 	<classes>
@@ -8097,6 +8169,10 @@
 			<value enum="1767" description="KtpDetails"/>
 			<value enum="1768" description="JSAgent"/>
 			<value enum="1769" description="JSAgentError"/>
+			<value enum="1771" description="JSProvince"/>
+			<value enum="1772" description="JSProvinceRegion"/>
+			<value enum="1773" description="JSDistrict"/>
+			<value enum="1774" description="JSVillage"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -26494,6 +26570,14 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8404" name="AgrementDate" type="UTCTIMESTAMP"/>
 	<field number="8405" name="Implementatindate" type="UTCTIMESTAMP"/>
 	<field number="8406" name="BusinessPartnerTypeAgentText" type="STRING"/>
+	<field number="8411" name="ProvinceId" type="STRING"/>
+	<field number="8412" name="RegionId" type="STRING"/>
+	<field number="8413" name="BIRegionId" type="STRING"/>
+	<field number="8414" name="IdProvince" type="INT64"/>
+	<field number="8415" name="DistrictId" type="STRING"/>
+	<field number="8416" name="IdRegion" type="INT64"/>
+	<field number="8417" name="VillageId" type="STRING"/>
+	<field number="8418" name="IdDistrict" type="INT64"/>
    
     </fields>
     <primitives>

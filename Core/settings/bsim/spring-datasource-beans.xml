@@ -326,6 +326,10 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
 				<value>com/mfino/domain/RBranchCodes.hbm.xml</value>
 				<value>com/mfino/domain/RKtpDetails.hbm.xml</value>
+				<value>com/mfino/domain/RProvince.hbm.xml</value>
+				<value>com/mfino/domain/RProvinceRegion.hbm.xml</value>
+				<value>com/mfino/domain/RDistrict.hbm.xml</value>
+				<value>com/mfino/domain/RVillage.hbm.xml</value>
 			</list>
 		</property>
 
@@ -422,6 +426,22 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
     </bean>
     
     <bean id="ktpDetailsDAO" class="com.mfino.dao.KtpDetailsDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+    <bean id="provinceDAO" class="com.mfino.dao.ProvinceDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+    <bean id="provinceRegionDAO" class="com.mfino.dao.ProvinceRegionDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+        <bean id="districtDAO" class="com.mfino.dao.DistrictDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+        <bean id="villageDAO" class="com.mfino.dao.VillageDAO" >
     	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
     </bean>
     

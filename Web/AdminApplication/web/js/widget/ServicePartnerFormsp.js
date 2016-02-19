@@ -102,6 +102,80 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 		                    }
 		                }
 	               },
+/*                   {
+						 xtype : "combo",
+						 anchor : '100%',
+						 //fieldLabel :_("Provincial"),
+						 fieldLabel :_("Propinsi"),
+						 itemId : 'servicepartner.form.ProvincialCom',
+						 triggerAction: "all",
+						 emptyText : '<Select one..>',
+						 name: CmFinoFIX.message.JSAgent.ProvincialCom._name,
+						 store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvince), 
+						 displayField: CmFinoFIX.message.JSProvince.Entries.DisplayText._name,
+						 valueField : CmFinoFIX.message.JSProvince.Entries.ID._name,
+						 hiddenName : CmFinoFIX.message.JSAgent.ProvincialCom._name,
+						 listeners: {
+							 	select: function(field) {
+							 	this.findParentByType('ServicePartnerFormsp').onProvince2(field);
+						    }
+						}
+	                },
+	                {
+	                	 xtype : "combo",
+	                     anchor : '100%',
+	                     //fieldLabel :_("Region/City"),
+	                     fieldLabel :_("Kabupaten/Kota"),
+	                     itemId : 'servicepartner.form.CityCom',
+	                     triggerAction: "all",
+	                     emptyText : '<Select one..>',
+	                     mode: 'local',
+	                     name: CmFinoFIX.message.JSAgent.CityCom._name,
+	                     store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvinceRegion), 
+	                     displayField: CmFinoFIX.message.JSProvinceRegion.Entries.DisplayText._name,
+	                     valueField : CmFinoFIX.message.JSProvinceRegion.Entries.ID._name,
+	                     hiddenName : CmFinoFIX.message.JSAgent.CityCom._name,
+						 listeners: {
+							 	select: function(field) {
+							 	this.findParentByType('ServicePartnerFormsp').onProvinceRegion2(field);
+						    }
+						}
+	                },
+	                {
+	                	 xtype : "combo",
+	                     anchor : '100%',
+                         //fieldLabel :_("District"),
+                         fieldLabel :_("Kecamatan"),
+                         itemId : 'servicepartner.form.DistrictCom',
+	                     triggerAction: "all",
+	                     emptyText : '<Select one..>',
+	                     mode: 'local',
+	                     name: CmFinoFIX.message.JSAgent.DistrictCom._name,
+  	                     store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSDistrict), 
+	                     displayField: CmFinoFIX.message.JSDistrict.Entries.DisplayText._name, 
+	                     valueField : CmFinoFIX.message.JSDistrict.Entries.ID._name, 
+	                     hiddenName : CmFinoFIX.message.JSAgent.DistrictCom._name,
+						 listeners: {
+							 	select: function(field) {
+							 	this.findParentByType('ServicePartnerFormsp').onDistrict2(field);
+						    }
+						}
+	                },
+	                {
+	                   xtype : "combo",
+	                   anchor : '100%',
+                       //fieldLabel :_("Village"),
+                       fieldLabel :_("Kelurahan/Desa"),
+                       itemId : 'servicepartner.form.VillageCom',
+	                   triggerAction: "all",
+	                   emptyText : '<Select one..>',
+	                   mode: 'local',
+  	                   name: CmFinoFIX.message.JSAgent.VillageCom._name,
+	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSVillage), 
+	                   displayField: CmFinoFIX.message.JSVillage.Entries.DisplayText._name, 
+	                   valueField : CmFinoFIX.message.JSVillage.Entries.ID._name, 
+	                   hiddenName : CmFinoFIX.message.JSAgent.VillageCom._name,
+	                },*/
 	               {
 	                   xtype : "hidden",
 	                   fieldLabel :_('Branch code'),
@@ -162,7 +236,46 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
         	 this.find("itemId", "servicepartner.form.username")[0].enable();
         	 }
     },
-    disableNotPermittedItems: function(){
+/*    onProvince2 : function(field){
+        var value=field.getValue();
+        alert(value);
+    	var region_combo = this.find('itemId','servicepartner.form.CityCom')[0];
+    	region_combo.clearValue();
+    	region_combo.store.reload({
+    		params: {
+    			//start : 0, 
+    			//limit : 10,
+    			IdProvince : value
+    		}
+    	});
+    },
+    onProvinceRegion2 : function(field){
+        var value=field.getValue();
+        alert(value);
+    	var district_combo = this.find('itemId','servicepartner.form.DistrictCom')[0];
+    	district_combo.clearValue();
+    	district_combo.store.reload({
+    		params: {
+    			//start : 0, 
+    			//limit : 10,
+    			IdRegion : value
+    		}
+    	});
+    },
+    onDistrict2 : function(field){
+        var value=field.getValue();
+        alert(value);
+    	var village_combo = this.find('itemId','servicepartner.form.VillageCom')[0];
+    	village_combo.clearValue();
+    	village_combo.store.reload({
+    		params: {
+    			//start : 0, 
+    			//limit : 10,
+    			IdDistrict : value
+    		}
+    	});
+    },*/
+/*    disableNotPermittedItems: function(){
         var checkAbleItems = ['servicepartner.form.status'];//, 'servicepartner.form.DCT', 'servicepartner.form.parentId','servicepartner.form.mdn','servicepartner.form.sourceIp'];
         for(var i = 0; i < checkAbleItems.length; i++){
             var itemIdStr = checkAbleItems[i];
@@ -171,8 +284,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
                 checkItem.disable();
             }
         }
-    },
-    enablePermittedItems: function(){
+    },*/
+/*    enablePermittedItems: function(){
         var checkAbleItems = ['servicepartner.form.status', 'servicepartner.form.DCT', 'servicepartner.form.parentId'];
         for(var i = 0; i < checkAbleItems.length; i++){
             var itemIdStr = checkAbleItems[i];
@@ -180,8 +293,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             // The above items are disabled only for Edit operation. They should be available for Add.
           //  checkItem.enable();
         }
-    },
-    onPartnerType : function(partnerType){
+    },*/
+/*    onPartnerType : function(partnerType){
     	var st_combo = this.find('itemId','servicepartner.form.type')[0];
     	st_combo.clearValue();
     	st_combo.store.reload({
@@ -190,8 +303,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
     		}
     	});
     	st_combo.store.sort(CmFinoFIX.message.JSEnumTextSimple.Entries.DisplayText._name);
-    },
-    onSpecificPartnerType : function(partnerType){
+    },*/
+ /*   onSpecificPartnerType : function(partnerType){
     	var partnerTagID = CmFinoFIX.TagID.BusinessPartnerType;
     	var st_combo = this.find('itemId','servicepartner.form.type')[0];
     	st_combo.clearValue();
@@ -202,9 +315,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
     		}
     	});
     	st_combo.store.sort(CmFinoFIX.message.JSEnumTextSimple.Entries.DisplayText._name);
-    },
+    },*/
     onStatusDropdown : function(status){
-    	
         if(status == CmFinoFIX.SubscriberStatus.PendingRetirement||status==CmFinoFIX.SubscriberStatus.Retired){
         	this.getForm().items.each(function(item) {
 				if (item.getXType() == 'textfield'
@@ -265,29 +377,12 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 			});
 	},
     save : function(){
-    	
     	//this.checkServicePartnerType(this.getForm().findField('servicepartner.form.type'));
     	if(this.getForm().isValid()){
             this.getForm().updateRecord(this.record);
             var notiValue = 0;
             
             var resValue = 0;
-//            if(this.form.items.get("SelfSuspended").checked){
-//                resValue = resValue + CmFinoFIX.SubscriberRestrictions.SelfSuspended;
-//            }
-/*            if(this.form.items.get("Suspended").checked){
-                resValue = resValue + CmFinoFIX.SubscriberRestrictions.Suspended;
-            }
-            if(this.form.items.get("SecurityLocked").checked){
-                resValue = resValue + CmFinoFIX.SubscriberRestrictions.SecurityLocked;
-            }
-            if(this.form.items.get("AbsoluteLocked").checked){
-                resValue = resValue + CmFinoFIX.SubscriberRestrictions.AbsoluteLocked;
-            }*/
-
-/*            this.record.beginEdit();
-            this.record.set(CmFinoFIX.message.JSAgent.Entries.Restrictions._name, resValue);
-            this.record.endEdit();*/
 
             if(this.store){
                 if(this.record.phantom && !(this.record.store)){
@@ -312,18 +407,12 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
        // pt_combo.setRawValue(this.record.get(CmFinoFIX.message.JSAgent.Entries.BusinessPartnerTypeText._name));
         
         var resValue = record.get(CmFinoFIX.message.JSAgent.Entries.Restrictions._name);
-//        this.form.items.get("SelfSuspended").setValue( (resValue & CmFinoFIX.SubscriberRestrictions.SelfSuspended) > 0);
-/*        this.form.items.get("Suspended").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.Suspended) > 0);
-        this.form.items.get("SecurityLocked").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.SecurityLocked) > 0);
-        this.form.items.get("AbsoluteLocked").setValue((resValue & CmFinoFIX.SubscriberRestrictions.AbsoluteLocked) > 0);
-        */
         this.getForm().clearInvalid();
     },
     resetAll : function() {
     	for ( var j = 0; j < this.form.items.length; j++) {
 			this.form.items.get(j).setValue(null);
 		}
-    	//this.items.get("tabpanelmerchant").setActiveTab(0);
     },
     setStore : function(store){
         if(this.store){
@@ -343,7 +432,7 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             mFino.util.fix.checkNameInDB(field,msg, checkForExists);
         }
     },
-    onTradeName : function(field){
+/*    onTradeName : function(field){
         var value = this.record.get(CmFinoFIX.message.JSAgent.Entries.TradeName._name);
         if(!value||(field.getValue().toUpperCase() != value.toUpperCase())){
             var msg = new CmFinoFIX.message.JSTradeNameCheck();
@@ -352,8 +441,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             var checkForExists=true;
             mFino.util.fix.checkNameInDB(field,msg, checkForExists);
         }
-    },
-    onPartnerCode : function(field){
+    },*/
+/*    onPartnerCode : function(field){
         var value = this.record.get(CmFinoFIX.message.JSAgent.Entries.PartnerCode._name);
         if(!value||(field.getValue().toUpperCase() != value.toUpperCase())){
             var msg = new CmFinoFIX.message.JSDuplicatePartnerCodeCheck();
@@ -361,28 +450,19 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             var checkForExists=true;
             mFino.util.fix.checkNameInDB(field,msg, checkForExists);
         }
-    },
+    },*/
 
     onStoreUpdate: function(){
         this.setRecord(this.record);
     },
-    onMDN : function(field){ 
+/*    onMDN : function(field){ 
     	if(this.getForm().isValid()){
     	this.subscribercombo.baseParams[CmFinoFIX.message.JSSubscriberMDN.ExactMDNSearch._name] =field.getValue(); 
     	this.subscribercombo.load();
     	}
-    },
+    },*/
        
-//    onTypeChange : function(field){
-//    	if(field.getValue()!=""){
-//    		if(CmFinoFIX.BusinessPartnerType.DirectAgent<=field.getValue()){
-//    			this.find('itemId','servicepartner.form.mobileno')[0].allowBlank = false;
-//    			}else{
-//    				this.find('itemId','servicepartner.form.mobileno')[0].allowBlank = true;
-//    				}
-//    		}
-//    	},
-    checkServicePartnerType : function(field){
+/*    checkServicePartnerType : function(field){
         var resValue = this.record.get(CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name);
         if(field.getValue() !== resValue){
             var msg = new CmFinoFIX.message.JSCheckServicePartner();
@@ -390,11 +470,11 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             var checkForExists=true;
             mFino.util.fix.checkNameInDB(field,msg, checkForExists);
         }
-    },
+    },*/
     setCombo : function(combo){
     	subscribercombo = combo;
     },
-    onSuspendClick: function(){
+/*    onSuspendClick: function(){
     	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
     	if (partnerType === CmFinoFIX.BusinessPartnerType.ServicePartner) {
     		Ext.MessageBox.alert(_("Alert"), _("Service Partner can't be suspended"));
@@ -410,15 +490,15 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
                 this.form.items.get("servicepartner.form.status").setValue(currentStatus);
             }
     	}
-    },
-    onSelfSuspendClick: function(){
+    },*/
+/*    onSelfSuspendClick: function(){
     	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
     	if (partnerType === CmFinoFIX.BusinessPartnerType.ServicePartner) {
     		Ext.MessageBox.alert(_("Alert"), _("Service Partner can't be suspended"));
             this.form.items.get("SelfSuspended").setValue(false);
     	} 
-    },
-    onSecurityLockClick: function(){
+    },*/
+/*    onSecurityLockClick: function(){
     	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
     	if (partnerType === CmFinoFIX.BusinessPartnerType.ServicePartner) {
     		Ext.MessageBox.alert(_("Alert"), _("Service Partner can't be Locked"));
@@ -437,8 +517,8 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
                 this.form.items.get("servicepartner.form.status").setValue(currentStatus);
             }
     	}
-    },
-    onAbsoluteLockClick: function(){
+    },*/
+/*    onAbsoluteLockClick: function(){
     	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
     	if (partnerType === CmFinoFIX.BusinessPartnerType.ServicePartner) {
     		Ext.MessageBox.alert(_("Alert"), _("Service Partner can't be Locked"));
@@ -457,7 +537,7 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
                 this.form.items.get("servicepartner.form.status").setValue(currentStatus);
             }
     	}
-    },
+    },*/
     onBranchName : function(field){
         var value=field.getValue();
         //var value2=field.getRawValue();
@@ -547,7 +627,7 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 /*
  * Partner / Agent Restrictions
  **/
-var partnerRestrictions = {
+/*var partnerRestrictions = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -605,13 +685,7 @@ var partnerRestrictions = {
             }
         }]
     }]
-};
-
-
-
-
-
-
+};*/
 
 
 Ext.reg("ServicePartnerFormsp", mFino.widget.ServicePartnerFormsp);
