@@ -41,12 +41,25 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,mpan);
-			String processingCode = null;
+			String processingCode = "37";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
 			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
-				processingCode = "37" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
-				processingCode = "37" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			isoMsg.set(3, processingCode);
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+			
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getDestinationBankAccountType()))
+				destAcccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getDestinationBankAccountType()))
+				destAcccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getDestinationBankAccountType()))
+				destAcccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");			
+			
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);
 			//isoMsg.set(3,CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry);
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));

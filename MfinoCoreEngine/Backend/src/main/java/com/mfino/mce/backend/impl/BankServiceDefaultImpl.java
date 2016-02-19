@@ -821,7 +821,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 													.getGlobalAccountNumber());
 									inquiryToBank
 											.setSourceBankAccountType(""
-													+ CmFinoFIX.BankAccountType_Checking);
+													+ CmFinoFIX.BankAccountType_Lakupandai);
 								}
 
 								if (CmFinoFIX.PocketType_SVA
@@ -832,7 +832,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 													.getGlobalAccountNumber());
 									inquiryToBank
 											.setDestinationBankAccountType(""
-													+ CmFinoFIX.BankAccountType_Checking);
+													+ CmFinoFIX.BankAccountType_Lakupandai);
 								}
 
 								// this part is not required as we dont have pin
@@ -1816,7 +1816,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 											moneyTransferToBank
 													.setSourceBankAccountType(""
-															+ CmFinoFIX.BankAccountType_Checking);
+															+ CmFinoFIX.BankAccountType_Lakupandai);
 											moneyTransferToBank.setLanguage(objSourceSubscriber.getLanguage());
 											moneyTransferToBank
 													.setSourceCardPAN(coreDataWrapper
@@ -1827,18 +1827,18 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											if(StringUtils.isNotBlank(confirmationToBank.getINTxnId())){
 												moneyTransferToBank.setINTxnId(confirmationToBank.getINTxnId());
 											}
-											if (CmFinoFIX.BankAccountCardType_SavingsAccount
-													.equals(objSrcPocket
-															.getPocketTemplate()
-															.getBankAccountCardType())) {
-												moneyTransferToBank
-														.setSourceBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Saving);
-											} else {
-												moneyTransferToBank
-														.setSourceBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Checking);
-											}
+//											if (CmFinoFIX.BankAccountCardType_SavingsAccount
+//													.equals(objSrcPocket
+//															.getPocketTemplate()
+//															.getBankAccountCardType())) {
+//												moneyTransferToBank
+//														.setSourceBankAccountType(""
+//																+ CmFinoFIX.BankAccountType_Saving);
+//											} else {
+//												moneyTransferToBank
+//														.setSourceBankAccountType(""
+//																+ CmFinoFIX.BankAccountType_Checking);
+//											}
 
 											if (CmFinoFIX.BankAccountCardType_SavingsAccount
 													.equals(objDestPocket
@@ -1942,7 +1942,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 															.getGlobalAccountNumber());
 											moneyTransferToBank
 													.setDestinationBankAccountType(""
-															+ CmFinoFIX.BankAccountType_Checking);
+															+ CmFinoFIX.BankAccountType_Lakupandai);
 											moneyTransferToBank
 													.setOriginalReferenceID(confirmationToBank
 															.getOriginalReferenceID());
@@ -1962,18 +1962,18 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 																+ CmFinoFIX.BankAccountType_Checking);
 											}
 
-											if (CmFinoFIX.BankAccountCardType_SavingsAccount
-													.equals(objDestPocket
-															.getPocketTemplate()
-															.getBankAccountCardType())) {
-												moneyTransferToBank
-														.setDestinationBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Saving);
-											} else {
-												moneyTransferToBank
-														.setDestinationBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Checking);
-											}
+//											if (CmFinoFIX.BankAccountCardType_SavingsAccount
+//													.equals(objDestPocket
+//															.getPocketTemplate()
+//															.getBankAccountCardType())) {
+//												moneyTransferToBank
+//														.setDestinationBankAccountType(""
+//																+ CmFinoFIX.BankAccountType_Saving);
+//											} else {
+//												moneyTransferToBank
+//														.setDestinationBankAccountType(""
+//																+ CmFinoFIX.BankAccountType_Checking);
+//											}
 
 											isoFix = moneyTransferToBank;
 										
@@ -2685,7 +2685,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 														.getTransactionID());
 										moneyTransferToBank
 												.setSourceBankAccountType(""
-														+ CmFinoFIX.BankAccountType_Checking);
+														+ CmFinoFIX.BankAccountType_Lakupandai);
 										moneyTransferToBank
 												.setSourceCardPAN(coreDataWrapper
 														.getGlobalAccountNumber());
@@ -2695,18 +2695,18 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											.setServiceChargeTransactionLogID(settlementOfCharge
 													.getServiceChargeTransactionLogID());
 
-										if (CmFinoFIX.BankAccountCardType_SavingsAccount
-												.equals(sourcePocket
-														.getPocketTemplate()
-														.getBankAccountCardType())) {
-											moneyTransferToBank
-													.setSourceBankAccountType(""
-															+ CmFinoFIX.BankAccountType_Saving);
-										} else {
-											moneyTransferToBank
-													.setSourceBankAccountType(""
-															+ CmFinoFIX.BankAccountType_Checking);
-										}
+//										if (CmFinoFIX.BankAccountCardType_SavingsAccount
+//												.equals(sourcePocket
+//														.getPocketTemplate()
+//														.getBankAccountCardType())) {
+//											moneyTransferToBank
+//													.setSourceBankAccountType(""
+//															+ CmFinoFIX.BankAccountType_Saving);
+//										} else {
+//											moneyTransferToBank
+//													.setSourceBankAccountType(""
+//															+ CmFinoFIX.BankAccountType_Checking);
+//										}
 
 										if (CmFinoFIX.BankAccountCardType_SavingsAccount
 												.equals(destinationPocket

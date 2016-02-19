@@ -23277,6 +23277,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="20" description="Checking" />
 			<value enum="30" description="CreditCard" />
 			<value enum="40" description="NFCCard" />
+			<value enum="98" description="Lakupandai" />
 		</field>
 		<field number="5185" name="BankAmountType" type="INT32">
 			<value enum="1" description="AccountLegderBalance" />

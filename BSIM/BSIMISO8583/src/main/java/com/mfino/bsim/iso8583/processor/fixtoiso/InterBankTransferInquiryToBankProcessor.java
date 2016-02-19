@@ -35,13 +35,19 @@ public class InterBankTransferInquiryToBankProcessor extends BankRequestProcesso
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		String fieldDE63 = constructDE63(msg);
 		try {
-			String processingCode=null;
 			isoMsg.set(2, msg.getMPan());
+			String processingCode = "37";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
 			if (CmFinoFIX.BankAccountType_Saving.toString().equals(msg.getSourceBankAccountType()))
-				processingCode = "37" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(msg.getSourceBankAccountType()))
-				processingCode = "37" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			isoMsg.set(3, processingCode);// TODO: need to check the processing code for interbank transfer
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(msg.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);
 			MoneyService ms = CoreServiceFactory.getInstance().getMoneyService();
 			BigDecimal amountWithoutCharge = ms.subtract(msg.getAmount(), msg.getServiceChargeAmount());
 			long amount = amountWithoutCharge.longValue()*(100);

@@ -123,16 +123,14 @@ public class ConversionToReversalRequestProcessor {
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	private void constructAndSetDE3(CMMoneyTransferReversalToBank reversalFixMsg){
 		String defaultDE3=ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-		if (CmFinoFIX.BankAccountType_Saving.toString().equals(reversalFixMsg.getSourceBankAccountType())){
-			defaultDE3="49"+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;
-		}
-		else if (CmFinoFIX.BankAccountType_Checking.toString().equals(reversalFixMsg.getSourceBankAccountType())){
-			defaultDE3="49"+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+"00";
-		}
-
-		reversalFixMsg.setProcessingCodeDE3(defaultDE3);// default de-3 will be overwritten based on destination ac type
+		String processingCode = "49";
+		String sourceAccountType = "00";
+		String destAcccountType = "00";
+		
+		sourceAccountType = reversalFixMsg.getSourceBankAccountType();
+		destAcccountType = reversalFixMsg.getDestinationBankAccountType();
+		
 		log.info("MoneyTransferReversalToBankProcessor :: process default " + defaultDE3);
-		String processingCode=null;
 		IntegrationSummaryDao isDAO  = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
@@ -163,17 +161,13 @@ public class ConversionToReversalRequestProcessor {
 					//log.info("MoneyTransferReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
 					if(StringUtils.isNotBlank(reconciliationID1))
 					{
-						if (CmFinoFIX.BankAccountType_Saving.toString().equals(reversalFixMsg.getSourceBankAccountType())){
-							processingCode="49"+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+reconciliationID1 ;
-						}else if (CmFinoFIX.BankAccountType_Checking.toString().equals(reversalFixMsg.getSourceBankAccountType())){
-							processingCode="49"+CmFinoFIX.BankAccountCardType_CheckingAccount.toString()+reconciliationID1;
-						}
-						log.info("MoneyTransferReversalToBankProcessor :: process Setting ProcessingCode :"+processingCode+" in DE-3");
-						reversalFixMsg.setProcessingCodeDE3(defaultDE3);
+						destAcccountType = reconciliationID1;
 					}
 
 				}	   		
 			}
 		}
+		defaultDE3 = processingCode + sourceAccountType + destAcccountType;
+		reversalFixMsg.setProcessingCodeDE3(defaultDE3);
 	}
 }

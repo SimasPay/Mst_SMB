@@ -39,15 +39,18 @@ public class BillPaymentAmountInquiryToBankProcessor extends BankRequestProcesso
 		try
 		{
 			isoMsg.set(2,request.getInfo2());
-			String processingCode = null;
+			String processingCode = "38";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
 			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
-			 processingCode = "38" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
 			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
-			 processingCode = "38" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			if(processingCode==null){
-				processingCode = "381000";
-			}
-			isoMsg.set(3, processingCode);
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);			
 			isoMsg.set(4, StringUtilities.leftPadWithCharacter(0 + "", 18, "0")); // 4
 			if(request.getAmount()!=null && StringUtils.isNotBlank(request.getAmount().toString())){
 				long amount = request.getAmount().longValue()*(100);
