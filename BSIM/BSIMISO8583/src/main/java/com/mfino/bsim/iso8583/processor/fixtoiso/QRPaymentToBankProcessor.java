@@ -40,14 +40,18 @@ public class QRPaymentToBankProcessor extends BankRequestProcessor{
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,request.getInfo2());
-			String processingCode = "501000";
-			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType())){
-				processingCode = "50" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-			}
-			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType())){
-				processingCode = "50" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			}
-			isoMsg.set(3, processingCode);
+			String processingCode = "50";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);			
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));

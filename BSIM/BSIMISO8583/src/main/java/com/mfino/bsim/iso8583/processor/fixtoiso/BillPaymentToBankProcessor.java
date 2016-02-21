@@ -38,32 +38,31 @@ public class BillPaymentToBankProcessor extends BankRequestProcessor{
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,request.getInfo2());
-			String processingCode = null;
-			if(request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)){
-				if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType())){
-					processingCode = "56" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-				}
-				else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType())){
-					processingCode = "56" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-				}
+			String processingCode = "56";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
+			if(request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Denomination) || 
+					request.getBillerPartnerType().equals(CmFinoFIX.BillerPartnerType_Topup_Free)) {
+				processingCode = "56";
 				flag = 1;
 			}
-			else{
-				if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType())){
-					processingCode = "50" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-					if(request.getProcessingCodeDE3()!=null){
-						processingCode = "50" + constantFieldsMap.get("SAVINGS_ACCOUNT")+request.getProcessingCodeDE3();
-					}
-				}
-				else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType())){
-					processingCode = "50" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-					if(request.getProcessingCodeDE3()!=null){
-						processingCode = "50" + constantFieldsMap.get("CHECKING_ACCOUNT")+request.getProcessingCodeDE3();
-					}
-				}
+			else {
+				processingCode = "50";
 			}
-			isoMsg.set(3, processingCode);
-			//isoMsg.set(3,CmFinoFIX.ISO8583_ProcessingCode_XLink_Payment0);
+			
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+			
+			if(request.getProcessingCodeDE3()!=null){
+				destAcccountType = request.getProcessingCodeDE3();
+			}			
+
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);			
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));

@@ -326,6 +326,10 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
 				<value>com/mfino/domain/RBranchCodes.hbm.xml</value>
 				<value>com/mfino/domain/RKtpDetails.hbm.xml</value>
+				<value>com/mfino/domain/RProvince.hbm.xml</value>
+				<value>com/mfino/domain/RProvinceRegion.hbm.xml</value>
+				<value>com/mfino/domain/RDistrict.hbm.xml</value>
+				<value>com/mfino/domain/RVillage.hbm.xml</value>
 			</list>
 		</property>
 

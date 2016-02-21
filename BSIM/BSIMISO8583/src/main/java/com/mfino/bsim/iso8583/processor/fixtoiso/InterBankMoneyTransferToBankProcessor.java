@@ -48,20 +48,21 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 			else
 				isoMsg.set(3, constantFieldsMap.get("IBT"));*/
 
-			String processingCode = null;
-			if (CmFinoFIX.BankAccountType_Saving.toString().equals(msg.getSourceBankAccountType())){
-				processingCode = "49" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
-				if(msg.getProcessingCode()!=null){
-					processingCode = "49" + constantFieldsMap.get("SAVINGS_ACCOUNT")+msg.getProcessingCode();
-				}
+			String processingCode = "49";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(msg.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(msg.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(msg.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+			
+			if(msg.getProcessingCode()!=null){
+				destAcccountType = msg.getProcessingCode();
 			}
-			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(msg.getSourceBankAccountType())){
-				processingCode = "49" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-				if(msg.getProcessingCode()!=null){
-					processingCode = "49" + constantFieldsMap.get("CHECKING_ACCOUNT")+msg.getProcessingCode();
-				}
-			}
-			isoMsg.set(3, processingCode);
+
 			long amount = msg.getAmount().longValue()*(100);
 			isoMsg.set(4, StringUtilities.leftPadWithCharacter(amount + "", 18, "0")); // 4	
 

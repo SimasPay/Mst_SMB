@@ -304,6 +304,14 @@ public class DAOFactory {
 	
 	private KtpDetailsDAO ktpDetailsDAO;
 	
+	private ProvinceDAO provinceDAO;
+	
+	private ProvinceRegionDAO provinceRegionDAO;
+	
+	private DistrictDAO districtDAO;
+	
+	private VillageDAO villageDAO;
+	
 	public RetiredCardPANInfoDAO getRetiredCardPANInfoDAO() {
 		retiredCardPANInfoDAO = new RetiredCardPANInfoDAO();
 		retiredCardPANInfoDAO.setHibernateSessionHolder(getHibernateSessionHolder());
@@ -1266,5 +1274,30 @@ public class DAOFactory {
 		ktpDetailsDAO = new KtpDetailsDAO();
 		ktpDetailsDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return ktpDetailsDAO;
+	}
+	
+	
+	public ProvinceDAO getProvinceDAO() {
+		provinceDAO = new ProvinceDAO();
+		provinceDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return provinceDAO;
+	}
+	
+	public ProvinceRegionDAO getProvinceRegionDAO() {
+		provinceRegionDAO = new ProvinceRegionDAO();
+		provinceRegionDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return provinceRegionDAO;
+	}
+	
+	public DistrictDAO getDistrictDAO() {
+		districtDAO = new DistrictDAO();
+		districtDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return districtDAO;
+	}
+	
+	public VillageDAO getVillageDAO() {
+		villageDAO = new VillageDAO();
+		villageDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return villageDAO;
 	}
 }

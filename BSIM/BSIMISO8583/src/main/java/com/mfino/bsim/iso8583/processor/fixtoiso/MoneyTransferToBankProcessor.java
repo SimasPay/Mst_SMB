@@ -46,20 +46,29 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,mpan);
-			String processingCode = null;
-			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType())){
-				processingCode = "49" + constantFieldsMap.get("SAVINGS_ACCOUNT")+"00";
+			String processingCode = "49";
+			String sourceAccountType = "00";
+			String destAcccountType = "00";
+			
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType()))
+				sourceAccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+			
+			if (CmFinoFIX.BankAccountType_Saving.toString().equals(request.getDestinationBankAccountType()))
+				destAcccountType = constantFieldsMap.get("SAVINGS_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getDestinationBankAccountType()))
+				destAcccountType = constantFieldsMap.get("CHECKING_ACCOUNT");
+			else if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getDestinationBankAccountType()))
+				destAcccountType = constantFieldsMap.get("LAKUPANDAI_ACCOUNT");
+			
 			if(request.getProcessingCode()!=null){
-				processingCode = "49" + constantFieldsMap.get("SAVINGS_ACCOUNT")+request.getProcessingCode();
+				destAcccountType = request.getProcessingCode();
 			}
-			}
-			else if (CmFinoFIX.BankAccountType_Checking.toString().equals(request.getSourceBankAccountType())){
-				processingCode = "49" + constantFieldsMap.get("CHECKING_ACCOUNT")+"00";
-			if(request.getProcessingCode()!=null){
-					processingCode = "49" + constantFieldsMap.get("CHECKING_ACCOUNT")+request.getProcessingCode();
-			}
-			}
-			isoMsg.set(3, processingCode);
+			
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);			
 			long amount = request.getAmount().longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
