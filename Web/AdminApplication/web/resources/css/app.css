@@ -401,6 +401,9 @@ div#mainDiv{
 .mfino-button-distribute {
     background-image:url(../images/distribute.png) !important;
 }
+.mfino-button-close-account {
+    background-image:url(../images/delete.gif) !important;
+}
 .mfino-button-recharge {
     background-image:url(../images/recharge.png) !important;
 }

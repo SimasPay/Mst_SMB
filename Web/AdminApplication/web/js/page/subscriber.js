@@ -34,7 +34,16 @@ mFino.page.subscriber = function(config){
     	height : 300,
     	anchor : "100%, -255"
     }, config));
+    
     var approveWindow = new mFino.widget.ApproveRejectWindow(config);
+    
+    var subClosing = new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.SubscriberClosingInquiry(config),
+        title : _("Subscriber Account Closing"),
+        height : 220,
+        width:400,
+        mode:"closeaccount"
+    },config));
 	
     var approveSettlementWindow = new mFino.widget.ClosedAccountSettlementApproveRejectWindow(config);
     	
@@ -357,7 +366,31 @@ mFino.page.subscriber = function(config){
                             }, this);
                     }
                 }
-            }],
+            },
+            {
+            	iconCls: 'mfino-button-close-account',
+            	tooltip : _('Subscriber Account Closing'),
+            	handler : function() {
+            		if(!detailsForm.record){
+            			Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+            		}
+            		else {
+            			
+            			if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) != CmFinoFIX.MDNStatus.Retired) {
+            				Ext.MessageBox.alert(_("Alert"), _("Subscriber Closing is already Retired"));
+            				return;
+            			}
+            			
+            			if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) != CmFinoFIX.MDNStatus.Active) {
+            				Ext.MessageBox.alert(_("Alert"), _("Subscriber Closing is allowed only for active subscribers"));
+            				return;
+            			}
+            			
+            			subClosing.show();
+            			subClosing.form.setDetails(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name));            			
+            		}
+            	}
+	        }],
             items: [ detailsForm ]
         },
         {

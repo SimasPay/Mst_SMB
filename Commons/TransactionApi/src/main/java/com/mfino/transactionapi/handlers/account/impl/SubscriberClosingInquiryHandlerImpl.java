@@ -31,7 +31,7 @@ import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMSubscriberClosing;
+import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosingInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
@@ -123,33 +123,41 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		TransactionsLog transactionsLog = null;
 		ServiceChargeTransactionLog sctl = null;
 		
-		CMSubscriberClosing subscriberClosing = new CMSubscriberClosing();
+		CMJSSubscriberClosingInquiry subscriberClosing = new CMJSSubscriberClosingInquiry();
 		subscriberClosing.setAgentMDN(transactionDetails.getSourceMDN());
-		subscriberClosing.setMDN(transactionDetails.getDestMDN());
+		subscriberClosing.setDestMDN(transactionDetails.getDestMDN());
 		
-		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberClosing,subscriberClosing.DumpFields());
+		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_JSSubscriberClosingInquiry,subscriberClosing.DumpFields());
 		
-		SubscriberMDN agentMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
-		
-		result.setCompany(agentMDN.getSubscriber().getCompany());
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
-		Integer validationResult = transactionApiValidationService.validateAgentMDN(agentMDN);
-		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
-			result.setNotificationCode(validationResult);
-			return result;
-		}
+		SubscriberMDN agentMDN = null;
+		SubscriberMDN subMDN = subscriberMdnService.getByMDN(subscriberClosing.getDestMDN());
 		
-		validationResult = transactionApiValidationService.validatePin(agentMDN, transactionDetails.getSourcePIN());
-		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
-			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
-			return result;
-		}
+		if(!transactionDetails.isSystemIntiatedTransaction()) {
 		
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(subscriberClosing.getMDN());
+			agentMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+			result.setCompany(agentMDN.getSubscriber().getCompany());
+			
+			Integer validationResult = transactionApiValidationService.validateAgentMDN(agentMDN);
+			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
+				validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
+				result.setNotificationCode(validationResult);
+				return result;
+			}
+			
+			validationResult = transactionApiValidationService.validatePin(agentMDN, transactionDetails.getSourcePIN());
+			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
+				validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
+				result.setNotificationCode(validationResult);
+				result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+				return result;
+			}
+		} else {
+			
+			addCompanyANDLanguageToResult(subMDN, result);
+			
+		}
 		
 		if (subMDN != null) {
 			
@@ -180,7 +188,11 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							ServiceCharge serviceCharge = new ServiceCharge();
 							ChannelCode channelCode   =	transactionDetails.getCc();
 							
-							serviceCharge.setSourceMDN(agentMDN.getMDN());
+							if(null != agentMDN) {
+							
+								serviceCharge.setSourceMDN(agentMDN.getMDN());
+							}
+							
 							serviceCharge.setDestMDN(subMDN.getMDN());
 							serviceCharge.setChannelCodeId(channelCode.getID());
 							serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
@@ -208,7 +220,11 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							
 							result.setSctlID(sctl.getID());
 							result.setMfaMode("OTP");
-							mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
+							
+							if(!transactionDetails.isSystemIntiatedTransaction()) {
+							
+								mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
+							}
 							
 							sendOTPSMS(subMDN);
 							

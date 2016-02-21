@@ -53,6 +53,8 @@ import com.mfino.fix.CmFinoFIX.CMJSRuleKeyComparision;
 import com.mfino.fix.CmFinoFIX.CMJSScheduleTemplate;
 import com.mfino.fix.CmFinoFIX.CMJSServiceProvider;
 import com.mfino.fix.CmFinoFIX.CMJSShowBalanceDetails;
+import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosing;
+import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosingInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
 import com.mfino.fix.CmFinoFIX.CMJSValidateChargeExpr;
@@ -63,7 +65,6 @@ import com.mfino.service.AuthorizationService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.*;
-import com.mfino.uicore.fix.processor.impl.ShowBalanceDetailsProcessorImpl;
 import com.mfino.uicore.web.FixView;
 import com.mfino.uicore.web.WebContextError;
 import com.mfino.util.MfinoUtil;
@@ -620,6 +621,14 @@ public class FixController {
 	@Autowired
 	@Qualifier("ServicePartnerProcessorspImpl")
 	private ServicePartnerProcessorsp servicePartnerProcessorsp;
+	
+	@Autowired
+	@Qualifier("SubscriberClosingInquiryProcessorImpl")
+	private SubscriberClosingInquiryProcessor subscriberClosingInquiryProcessor;
+	
+	@Autowired
+	@Qualifier("SubscriberClosingProcessorImpl")
+	private SubscriberClosingProcessor subscriberClosingProcessor;
 	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
@@ -1214,6 +1223,12 @@ public class FixController {
 			}else if(msgClassName.equals(CMJSBranchCodes.class.getName())){
 				fixProcessor = branchCodeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSBranchCodes);
+			}else if(msgClassName.equals(CMJSSubscriberClosingInquiry.class.getName())){
+				fixProcessor = subscriberClosingInquiryProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberClosingInquiry);
+			}else if(msgClassName.equals(CMJSSubscriberClosing.class.getName())){
+				fixProcessor = subscriberClosingProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberClosing);
 			}
 			
 			/*

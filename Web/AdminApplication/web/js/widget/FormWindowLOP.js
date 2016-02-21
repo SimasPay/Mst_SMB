@@ -75,6 +75,14 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             itemId: "cancelTransfer",
             text: _('Cancel'),
             handler: this.onCancelTransfer.createDelegate(this)
+        },{
+            itemId: "confirm",
+            text: _('Confirm'),
+            handler: this.onConfirm.createDelegate(this)
+        },{
+            itemId: "closeaccount",
+            text: _('Close Account'),
+            handler: this.onCloseAccount.createDelegate(this)
         }        
         ];
 
@@ -121,6 +129,12 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
                 item.show();
             }
             if(mode === "bulkTransfer" && (item.itemId === "uploadTransfer" || item.itemId === "cancelTransfer")){
+                item.show();
+            }
+            if(mode === "closeaccount" && (item.itemId === "closeaccount" || item.itemId === "cancel")){
+                item.show();
+            }
+            if(mode === "confirm" && (item.itemId === "confirm" || item.itemId === "cancel")){
                 item.show();
             }
         });
@@ -283,6 +297,18 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
     onTransfer:function(){
         if(this.form.getForm().isValid()){
         	this.form.transfer(this);
+           }
+    },
+    
+    onConfirm:function(){
+        if(this.form.getForm().isValid()){
+        	this.form.confirm(this);
+           }
+    },
+    
+    onCloseAccount:function(){
+        if(this.form.getForm().isValid()){
+        	this.form.closeaccount(this);
            }
     },
     

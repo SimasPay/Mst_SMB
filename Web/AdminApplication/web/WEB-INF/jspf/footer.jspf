@@ -92,6 +92,10 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/ClosedAccountSettlementApproveRejectWindow.js"/>">
 </script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberClosingInquiry.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberClosing.js" />">
+</script>
 
 <!-- Pocket widgets -->
 <script type="text/javascript" src="<c:url value="/js/widget/PocketAddForm.js"/>">
@@ -897,7 +901,6 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/RoleForm.js" />">
 </script>
-
 
 <script type="text/javascript" src="<c:url value="/js/widget/FormWindowWithValidation.js" />">
 </script>
