@@ -84,6 +84,7 @@ public class SubscriberClosingProcessorImpl extends BaseFixProcessor implements 
 		td.setActivationOTP(realMsg.getOneTimePassCode());
 		td.setSystemIntiatedTransaction(true);
 		td.setHttps(true);
+		td.setDescription(realMsg.getComments());
 		
 		SubscriberAccountClosingXMLResult result = (SubscriberAccountClosingXMLResult)subscriberClosingHandler.handle(td);
 		

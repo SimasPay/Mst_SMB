@@ -5980,6 +5980,7 @@
 			<field name="KTPDocumentPath" required="N" />
 			<field name="SubscriberFormPath" required="N" />
 			<field name="SupportingDocumentPath" required="N" />
+			<field name="CloseComments" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -26592,6 +26593,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8416" name="IdRegion" type="INT64"/>
 	<field number="8417" name="VillageId" type="STRING"/>
 	<field number="8418" name="IdDistrict" type="INT64"/>
+	<field number="8419" name="CloseComments" type="STRING"/>
    
     </fields>
     <primitives>

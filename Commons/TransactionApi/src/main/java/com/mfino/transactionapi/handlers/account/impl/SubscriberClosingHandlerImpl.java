@@ -160,6 +160,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 					
 						subMDN.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
 						subMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
+						subMDN.setCloseComments(transactionDetails.getDescription());
 						
 						Subscriber subscriber = subMDN.getSubscriber();
 						subscriber.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);

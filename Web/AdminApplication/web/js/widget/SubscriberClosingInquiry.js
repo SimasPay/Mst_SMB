@@ -33,6 +33,7 @@ Ext.extend(mFino.widget.SubscriberClosingInquiry, Ext.FormPanel, {
                      {
                          xtype : 'textarea',
                          fieldLabel:'Comment',
+                         itemId : 'subcloseinq.form.comments',
                          labelSeparator: '',
                          hieght: 70,
                          width: 200,
@@ -53,7 +54,9 @@ Ext.extend(mFino.widget.SubscriberClosingInquiry, Ext.FormPanel, {
         	var msg= new CmFinoFIX.message.JSSubscriberClosingInquiry();            
             var values = this.form.getValues();
             var subscribermdn = values[CmFinoFIX.message.JSSubscriberClosingInquiry.DestMDN._name];
+            var comments = values[CmFinoFIX.message.JSSubscriberClosingInquiry.Comments._name];
             msg.m_pDestMDN = subscribermdn;
+            msg.m_pComments = comments;
             msg.m_paction = "create";
             var params = mFino.util.showResponse.getDisplayParam();
             params.formWindow = formWindow;
@@ -83,7 +86,7 @@ Ext.extend(mFino.widget.SubscriberClosingInquiry, Ext.FormPanel, {
 			                	},this));
 								
 			                	ConfirmClose.show();			                	
-			                	ConfirmClose.form.setDetails(response.m_pDestMDN,response.m_pDestinationUserName,response.m_pTransferID,'');
+			                	ConfirmClose.form.setDetails(response.m_pDestMDN,response.m_pDestinationUserName,response.m_pTransferID,comments);
 							}
 				},
                 failure : function(response){
