@@ -76,16 +76,19 @@ Ext.extend(mFino.widget.SubscriberClosing, Ext.FormPanel, {
             
     		this.find('itemId','subclose.form.mdnID')[0].enable();
         	this.find('itemId','subclose.form.transactionId')[0].enable();
+        	this.find('itemId','subclose.form.comment')[0].enable();
     		
         	var msg= new CmFinoFIX.message.JSSubscriberClosing();
             var values = this.form.getValues();
             var subscribermdn = values[CmFinoFIX.message.JSSubscriberClosing.DestMDN._name];
             var txnId = values[CmFinoFIX.message.JSSubscriberClosing.SctlId._name];
             var otp = values[CmFinoFIX.message.JSSubscriberClosing.OneTimePassCode._name];
+            var comments = values[CmFinoFIX.message.JSSubscriberClosing.Comments._name];
             
             msg.m_pDestMDN = subscribermdn;
             msg.m_pSctlId = txnId;
             msg.m_pOneTimePassCode = otp;
+            msg.m_pComments = comments;
             msg.m_paction = "create";
             
             var params = mFino.util.showResponse.getDisplayParam();

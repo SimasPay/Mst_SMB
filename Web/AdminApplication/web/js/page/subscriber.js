@@ -376,7 +376,7 @@ mFino.page.subscriber = function(config){
             		}
             		else {
             			
-            			if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) != CmFinoFIX.MDNStatus.Retired) {
+            			if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.MDNStatus.Retired) {
             				Ext.MessageBox.alert(_("Alert"), _("Subscriber Closing is already Retired"));
             				return;
             			}
