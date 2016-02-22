@@ -4,18 +4,17 @@ package com.mfino.mock.iso8583;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import javax.print.attribute.standard.MediaSize.ISO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.mfino.fix.CmFinoFIX;
 import com.solab.iso8583.IsoMessage;
 import com.solab.iso8583.IsoType;
@@ -28,8 +27,11 @@ public class ISO8583Server implements Runnable {
 	
 	private static Logger	log	= LoggerFactory.getLogger(ISO8583Server.class);
 
-	private static ScheduledExecutorService threadPool = Executors
-			.newScheduledThreadPool(5);
+//	private static ScheduledExecutorService threadPool = Executors
+//			.newScheduledThreadPool(100);
+	
+	ExecutorService threadPool = Executors.newFixedThreadPool(100);
+	
 	private static MessageFactory mfact;
 
 	private Socket socket;
@@ -65,8 +67,9 @@ public class ISO8583Server implements Runnable {
 					count++;
 					// Set a job to parse the message and respond
 					// Delay it a bit to pretend we're doing something important
-					threadPool.schedule(new Processor(buf, socket), 400,
-							TimeUnit.MILLISECONDS);
+//					threadPool.schedule(new Processor(buf, socket), 0,
+//							TimeUnit.MILLISECONDS);
+					threadPool.execute(new Processor(buf, socket));
 				}
 			}
 		} catch (IOException ex) {
@@ -165,13 +168,14 @@ public class ISO8583Server implements Runnable {
 		
 		public void run() {
 			try {
-				log.debug(String.format("Parsing incoming: '%s'", new String(msg)));
+				log.info(String.format("Parsing incoming: '%s'", new String(msg)));
 				IsoMessage incoming = mfact.parseMessage(msg, 0);
-				log.debug("\n" + incoming.toDebugString());
+				log.info("\n" + incoming.toDebugString());
 
 				switch (incoming.getType()) {
 				case 0x210:
 				case 0x410:
+				case 0x430:
 				case 0x810:
 					log.debug("Done with response message");
 					return;
@@ -319,6 +323,10 @@ public class ISO8583Server implements Runnable {
 					else if ("301000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
 						//response.setValue(35, " ", IsoType.LLLVAR, 0);
+						Random r = new Random();
+						if (r.nextInt(4) % 4 == 0) {
+							Thread.sleep(65000);
+						} 
 						response.setValue(39, "00", IsoType.ALPHA, 2);
 						response.setValue(54, "1002360C000000000034260000",
 								IsoType.LLLVAR, 0);
@@ -374,17 +382,20 @@ public class ISO8583Server implements Runnable {
 								IsoType.LLLVAR, 0);
 					}
 					//  Transfer_Inquiry
-					else if ("370000".equals(incoming.getObjectValue(3))) {
+					else if (incoming.getObjectValue(3).toString().startsWith("37")){
+//					   response.setValue(3, "371010", IsoType.NUMERIC, 6);
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						response.setValue(48, "TABUNGANKU B",
-								IsoType.LLLVAR, 0);
-					}
-					else if ("371000".equals(incoming.getObjectValue(3))) {
-					   response.setValue(3, "371010", IsoType.NUMERIC, 6);
-						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						response.setValue(48, "TABUNGANKU B",
+						String de4 = (String)incoming.getObjectValue(4);
+						if ("000000000000100000".equals(de4)) {
+							Thread.sleep(65000);
+						}
+						else if ("000000000000200000".equals(de4)) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}						
+						response.setValue(48, "DONIH NISKALA                                                                                             00",
 								IsoType.LLLVAR, 0);
 					}
 					else if ("372000".equals(incoming.getObjectValue(3))) {
@@ -403,10 +414,22 @@ public class ISO8583Server implements Runnable {
 						response.setValue(61,"0001344568",
 								IsoType.LLLVAR, 0);
 					}
-					else if("381000".equals(incoming.getObjectValue(3))){
-					    response.setValue(3, "381010", IsoType.NUMERIC, 6);
+					else if(incoming.getObjectValue(3).toString().startsWith("38")){
+//					    response.setValue(3, "381010", IsoType.NUMERIC, 6);
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random r = new Random();
+						int num = r.nextInt(5);
+						if (num % 5 == 0) {
+							Thread.sleep(65000);
+						}
+						else if (num % 4 == 0) {
+							Thread.sleep(65000);
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							Thread.sleep(65000);
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 						response.setValue(62,"08PAYMENT    : Axis Postpaid            IDPEL      : 628382244000             NAME       : ARIEF SUSANTO MULAWARMAN BILLING AMT: RP. 11.111               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 11.111                                                                                           628382244000                    11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000000000002708    000000011111000000000000000000000000ARIEF SUSANTO MULAWARMAN                          ", IsoType.LLLVAR, 0);
@@ -474,23 +497,18 @@ public class ISO8583Server implements Runnable {
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
-					// D. Transfer to other SMART
-					else if ("490000".equals(incoming.getObjectValue(3))) {
+					else if (incoming.getObjectValue(3).toString().startsWith("49")){
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						response.setValue(48, "TABUNGANKU B",
-								IsoType.LLLVAR, 0);
-					}
-					else if ("491000".equals(incoming.getObjectValue(3))) {
-						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						response.setValue(48, "TABUNGANKU B",
-								IsoType.LLLVAR, 0);
-					}
-					else if ("491010".equals(incoming.getObjectValue(3))) {
-						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						Thread.sleep(1000);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						String de4 = (String)incoming.getObjectValue(4);
+						if ("000000000000100100".equals(de4)) {
+							Thread.sleep(65000);
+						}
+						else if ("000000000000200100".equals(de4)) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}	
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
@@ -532,7 +550,24 @@ public class ISO8583Server implements Runnable {
 					// Transfer_CashOut
 					else if ("492000".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						String de11 = (String)incoming.getObjectValue(11);
+						de11 = de11.substring(4);
+						int num = Integer.parseInt(de11);
+						if (num % 9 == 0) {
+							Thread.sleep(60000);
+							if (num % 2 == 0) {
+								response.setValue(39, "00", IsoType.ALPHA, 2);
+							}
+							else {
+								response.setValue(39, "06", IsoType.ALPHA, 2);								
+							}
+						}
+						else if (num % 8 == 0) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);							
+						}
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
@@ -552,10 +587,18 @@ public class ISO8583Server implements Runnable {
 						response.setValue(61,"TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
-					else if("501000".equals(incoming.getObjectValue(3))){
+					else if(incoming.getObjectValue(3).toString().startsWith("50")){
 					    response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						//Thread.sleep(50000);
+					    String de4 = (String)incoming.getObjectValue(4);
+						if ("000000000000300000".equals(de4)) {
+							Thread.sleep(65000);
+						}
+						else if ("000000000000400000".equals(de4)) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}					    
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 						
@@ -580,10 +623,19 @@ public class ISO8583Server implements Runnable {
 						response.setValue(61,"TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
-					else if("561000".equals(incoming.getObjectValue(3))){
+					else if(incoming.getObjectValue(3).toString().startsWith("56")){
 					    response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						//Thread.sleep(50000);
+						Random r = new Random();
+						int num = r.nextInt(5);
+						if (num % 9 == 0) {
+							Thread.sleep(65000);
+						}
+						else if (num % 8 == 0) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}					    
 						response.setValue(48, "TABUNGANKU Baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 								IsoType.LLLVAR, 0);
 						
@@ -602,10 +654,22 @@ public class ISO8583Server implements Runnable {
 					}
 					break;
 				case 0x400:
+				case 0x420:
 					// E: Reversal Transfer
-					if ("490000".equals(incoming.getObjectValue(3))) {
+					if (incoming.getObjectValue(3).toString().startsWith("49")) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random r = new Random();
+						int num = r.nextInt(5);
+						if (num % 9 == 0) {
+//							Thread.sleep(65000);
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}
+						else if (num % 8 == 0) {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}						
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
@@ -615,11 +679,21 @@ public class ISO8583Server implements Runnable {
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 					}
-					// E. Intra Inter Bank Transfer
+					// E. Intra Inter Bank Transfer reversal
 					else if ("491010".equals(incoming.getObjectValue(3))) {
 						
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random r = new Random();
+						int num = r.nextInt(5);
+						if (num % 5 == 0) {
+							Thread.sleep(65000);
+						}
+						else if (num % 4 == 0) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}						
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 						if("011".equals(incoming.getObjectValue(22))) {
@@ -644,14 +718,43 @@ public class ISO8583Server implements Runnable {
 						response.setValue(39, "00", IsoType.ALPHA, 2);
 					}
 					// D. Reversal TOPUP to other MDN
-					else if ("560000".equals(incoming.getObjectValue(3))) {
+					else if (incoming.getObjectValue(3).toString().startsWith("56")) {
 						if (incoming.getObjectValue(90) != null) {
 
 						}
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
+						Random r = new Random();
+						int num = r.nextInt(5);
+						if (num % 5 == 0) {
+							Thread.sleep(65000);
+						}
+						else if (num % 4 == 0) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}						
 						response.setValue(41, "87654321", IsoType.ALPHA, 8);
-					} 
+					}
+					else if (incoming.getObjectValue(3).toString().startsWith("50")) {
+						if (incoming.getObjectValue(90) != null) {
+
+						}
+						response.setValue(38, "654321", IsoType.ALPHA, 6);
+						Random r = new Random();
+						int num = r.nextInt(5);
+						if (num % 5 == 0) {
+//							Thread.sleep(65000);
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}
+						else if (num % 4 == 0) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);	
+						}						
+						response.setValue(41, "87654321", IsoType.ALPHA, 8);
+					}					
 					// D. Reversal TOPUP to other MDN
 					else if ("569800".equals(incoming.getObjectValue(3))) {
 						if (incoming.getObjectValue(90) != null) {
@@ -716,7 +819,7 @@ public class ISO8583Server implements Runnable {
 					log.error("Failed to parse the config file", e);
 					return;
 				}
-				log.info("Setting up server socket...");
+				log.info("Setting up server socket...8888");
 				ServerSocket server;
 				try {
 					server = new ServerSocket(8888);
