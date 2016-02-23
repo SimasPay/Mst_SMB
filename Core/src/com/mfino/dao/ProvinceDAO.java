@@ -7,7 +7,6 @@ import org.hibernate.Criteria;
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.ProvinceQuery;
 import com.mfino.domain.Province;
-import com.mfino.domain.ProvinceRegion;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 

@@ -333,6 +333,19 @@ mFino.widget.ServicePartnerDetailssp = function (config)
            {
                xtype : "displayfield",
                anchor : '75%',
+               fieldLabel :_("Provincial"),
+               name: CmFinoFIX.message.JSAgent.Entries.ProvincialAl._name,
+           },
+           {
+               xtype : "displayfield",
+               anchor : '75%',
+               //fieldLabel :_("City"),
+               fieldLabel :_("Region"),
+               name: CmFinoFIX.message.JSAgent.Entries.CityAl._name,
+           },
+           {
+               xtype : "displayfield",
+               anchor : '75%',
                fieldLabel :_("District"),
                name: CmFinoFIX.message.JSAgent.Entries.DistrictAl._name,
            },
@@ -345,20 +358,8 @@ mFino.widget.ServicePartnerDetailssp = function (config)
            {
                xtype : "displayfield",
                anchor : '75%',
-               fieldLabel :_("City"),
-               name: CmFinoFIX.message.JSAgent.Entries.CityAl._name,
-           },
-           {
-               xtype : "displayfield",
-               anchor : '75%',
                fieldLabel :_("Potal Code"),
                name: CmFinoFIX.message.JSAgent.Entries.PotalCodeAl._name,
-           },
-           {
-               xtype : "displayfield",
-               anchor : '75%',
-               fieldLabel :_("Provincial"),
-               name: CmFinoFIX.message.JSAgent.Entries.ProvincialAl._name,
            },
            {
                xtype: "displayfield",
@@ -657,6 +658,18 @@ mFino.widget.ServicePartnerDetailssp = function (config)
             fieldLabel :_("RW"),
             name: CmFinoFIX.message.JSAgent.Entries.RWCom._name,
        },
+       {
+           xtype : "displayfield",
+           anchor : '75%',
+           fieldLabel :_("Provincial"),
+           name: CmFinoFIX.message.JSAgent.Entries.ProvincialCom._name,
+       },
+       {
+           xtype : "displayfield",
+           anchor : '75%',
+           fieldLabel :_("Region"),
+           name: CmFinoFIX.message.JSAgent.Entries.CityCom._name,
+       },
          {
              xtype : "displayfield",
              anchor : '75%',
@@ -672,20 +685,8 @@ mFino.widget.ServicePartnerDetailssp = function (config)
          {
              xtype : "displayfield",
              anchor : '75%',
-             fieldLabel :_("City"),
-             name: CmFinoFIX.message.JSAgent.Entries.CityCom._name,
-         },
-         {
-             xtype : "displayfield",
-             anchor : '75%',
              fieldLabel :_("Potal Code"),
              name: CmFinoFIX.message.JSAgent.Entries.PotalCodeCom._name,
-         },
-         {
-             xtype : "displayfield",
-             anchor : '75%',
-             fieldLabel :_("Provincial"),
-             name: CmFinoFIX.message.JSAgent.Entries.ProvincialCom._name,
          },
          {
              xtype : "displayfield",

@@ -209,25 +209,14 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               //fieldLabel :_("Village"),
-                               fieldLabel :_("Kelurahan/Desa"),
+                               //fieldLabel :_("Provincial"),
+                               fieldLabel :_("Propinsi"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Village is required'),
-                               itemId  : 'servicepartner.form.VillageAl',
-                               name: CmFinoFIX.message.JSAgent.VillageAl._name
-                           },
-                           {
-                               xtype : "textfield",
-                               //fieldLabel :_("District"),
-                               fieldLabel :_("Kecamatan"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('District is required'),
-                               itemId  : 'servicepartner.form.DistrictAl',
-                               name: CmFinoFIX.message.JSAgent.DistrictAl._name
+                               blankText : _('Provincial is required'),
+                               itemId  : 'servicepartner.form.ProvincialAl',
+                               name: CmFinoFIX.message.JSAgent.ProvincialAl._name
                            },
                            {
                                xtype : "textfield",
@@ -242,14 +231,25 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               //fieldLabel :_("Provincial"),
-                               fieldLabel :_("Propinsi"),
+                               //fieldLabel :_("District"),
+                               fieldLabel :_("Kecamatan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Provincial is required'),
-                               itemId  : 'servicepartner.form.ProvincialAl',
-                               name: CmFinoFIX.message.JSAgent.ProvincialAl._name
+                               blankText : _('District is required'),
+                               itemId  : 'servicepartner.form.DistrictAl',
+                               name: CmFinoFIX.message.JSAgent.DistrictAl._name
+                           },
+                           {
+                               xtype : "textfield",
+                               //fieldLabel :_("Village"),
+                               fieldLabel :_("Kelurahan/Desa"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('Village is required'),
+                               itemId  : 'servicepartner.form.VillageAl',
+                               name: CmFinoFIX.message.JSAgent.VillageAl._name
                            },
                            {
                                xtype : "textfield",
@@ -274,7 +274,8 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                                name: CmFinoFIX.message.JSAgent.EMail._name
                            },
                            {
-                               xtype : 'label',                               text :'DATA PERUSAHAAN',
+                               xtype : 'label',
+                               text :'DATA PERUSAHAAN',
 
                                name: 'CompanyData',
                                anchor : '100%',
@@ -322,27 +323,16 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                                itemId  : 'servicepartner.form.RWCom',
                                name: CmFinoFIX.message.JSAgent.RWCom._name
                            },
-                           {
+/*                           {
                                xtype : "textfield",
-                               //fieldLabel :_("Village"),
-                               fieldLabel :_("Kelurahan/Desa"),
+                               //fieldLabel :_("Provincial"),
+                               fieldLabel :_("Propinsi"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Village is required'),
-                               itemId  : 'servicepartner.form.VillageCom',
-                               name: CmFinoFIX.message.JSAgent.VillageCom._name
-                           },
-                           {
-                               xtype : "textfield",
-                               //fieldLabel :_("District"),
-                               fieldLabel :_("Kecamatan"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('District is required'),
-                               itemId  : 'servicepartner.form.DistrictCom',
-                               name: CmFinoFIX.message.JSAgent.DistrictCom._name
+                               blankText : _('Provincial is required'),
+                               itemId  : 'servicepartner.form.ProvincialCom',
+                               name: CmFinoFIX.message.JSAgent.ProvincialCom._name
                            },
                            {
                                xtype : "textfield",
@@ -357,15 +347,188 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : "textfield",
-                               //fieldLabel :_("Provincial"),
-                               fieldLabel :_("Propinsi"),
+                               //fieldLabel :_("District"),
+                               fieldLabel :_("Kecamatan"),
                                anchor : '100%',
                                allowBlank: true,
                                maxLength : 255,
-                               blankText : _('Provincial is required'),
-                               itemId  : 'servicepartner.form.ProvincialCom',
-                               name: CmFinoFIX.message.JSAgent.ProvincialCom._name
+                               blankText : _('District is required'),
+                               itemId  : 'servicepartner.form.DistrictCom',
+                               name: CmFinoFIX.message.JSAgent.DistrictCom._name
                            },
+                           {
+                               xtype : "textfield",
+                               //fieldLabel :_("Village"),
+                               fieldLabel :_("Kelurahan/Desa"),
+                               anchor : '100%',
+                               allowBlank: true,
+                               maxLength : 255,
+                               blankText : _('Village is required'),
+                               itemId  : 'servicepartner.form.VillageCom',
+                               name: CmFinoFIX.message.JSAgent.VillageCom._name
+                           },*/
+/*        	               {
+        	                   xtype: 'remotedropdown',
+                               //fieldLabel :_("Provincial"),
+                               fieldLabel :_("Propinsi"),
+        	                   anchor : '100%',
+        	                   allowBlank: false,
+        	                   addEmpty : false,
+        	                   itemId : 'servicepartner.form.ProvincialCom',
+        	                   emptyText : '<Select one..>',
+        	                   name: CmFinoFIX.message.JSAgent.ProvincialCom._name,
+        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvince), 
+        	                   displayField: CmFinoFIX.message.JSProvince.Entries.DisplayText._name, 
+        	                   valueField : CmFinoFIX.message.JSProvince.Entries.ID._name, 
+        	                   hiddenName : CmFinoFIX.message.JSAgent.ProvincialCom._name,
+        	                   pageSize: 10,
+        	                   params: {start:0, limit:10},
+        		                listeners: {
+        		                    select: function(field) {
+        		                        this.findParentByType('ServicePartnerFormspAdd').onProvince(field);
+        		                    }
+        		                }
+        	               },
+                           {
+        	                   xtype: 'remotedropdown',
+                               //fieldLabel :_("City"),
+                               fieldLabel :_("Kabupaten/Kota"),
+        	                   anchor : '100%',
+        	                   allowBlank: false,
+        	                   addEmpty : false,
+        	                   itemId : 'servicepartner.form.CityCom',
+        	                   emptyText : '<Select one..>',
+        	                   name: CmFinoFIX.message.JSAgent.CityCom._name,
+        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvinceRegion), 
+        	                   displayField: CmFinoFIX.message.JSProvinceRegion.Entries.DisplayText._name, 
+        	                   valueField : CmFinoFIX.message.JSProvinceRegion.Entries.ID._name, 
+        	                   hiddenName : CmFinoFIX.message.JSAgent.CityCom._name,
+        	                   pageSize: 10,
+        	                   params: {start:0, limit:10},
+        		                listeners: {
+        		                    select: function(field) {
+        		                        this.findParentByType('ServicePartnerFormspAdd').onProvinceRegion(field);
+        		                    }
+        		                }
+        	               },
+                           {
+        	                   xtype: 'remotedropdown',
+                               //fieldLabel :_("District"),
+                               fieldLabel :_("Kecamatan"),
+        	                   anchor : '100%',
+        	                   allowBlank: false,
+        	                   addEmpty : false,
+        	                   itemId : 'servicepartner.form.DistrictCom',
+        	                   emptyText : '<Select one..>',
+        	                   name: CmFinoFIX.message.JSAgent.DistrictCom._name,
+        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSDistrict), 
+        	                   displayField: CmFinoFIX.message.JSDistrict.Entries.DisplayText._name, 
+        	                   valueField : CmFinoFIX.message.JSDistrict.Entries.ID._name, 
+        	                   hiddenName : CmFinoFIX.message.JSAgent.DistrictCom._name,
+        	                   pageSize: 10,
+        	                   params: {start:0, limit:10},
+        		                listeners: {
+        		                    select: function(field) {
+        		                        this.findParentByType('ServicePartnerFormspAdd').onDistrict(field);
+        		                    }
+        		                }
+        	               },
+                           {
+        	                   xtype: 'remotedropdown',
+                               //fieldLabel :_("Village"),
+                               fieldLabel :_("Kelurahan/Desa"),
+        	                   anchor : '100%',
+        	                   allowBlank: false,
+        	                   addEmpty : false,
+        	                   itemId : 'servicepartner.form.VillageCom',
+        	                   emptyText : '<Select one..>',
+        	                   name: CmFinoFIX.message.JSAgent.VillageCom._name,
+        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSVillage), 
+        	                   displayField: CmFinoFIX.message.JSVillage.Entries.DisplayText._name, 
+        	                   valueField : CmFinoFIX.message.JSVillage.Entries.ID._name, 
+        	                   hiddenName : CmFinoFIX.message.JSAgent.VillageCom._name,
+        	                   pageSize: 10,
+        	                   params: {start:0, limit:10},
+        		                listeners: {
+        		                    select: function(field) {
+        		                        this.findParentByType('ServicePartnerFormspAdd').onVillage(field);
+        		                    }
+        		                }
+        	               },*/
+	                           {
+	      						 xtype : "combo",
+	      						 anchor : '100%',
+	      						 //fieldLabel :_("Provincial"),
+	      						 fieldLabel :_("Propinsi"),
+	      						 itemId : 'servicepartner.form.ProvincialCom',
+	      						 triggerAction: "all",
+	      						 emptyText : '<Select one..>',
+	      						 name: CmFinoFIX.message.JSAgent.ProvincialCom._name,
+	      						 store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvince), 
+	      						 displayField: CmFinoFIX.message.JSProvince.Entries.DisplayText._name,
+	      						 valueField : CmFinoFIX.message.JSProvince.Entries.ID._name,
+	      						 hiddenName : CmFinoFIX.message.JSAgent.ProvincialCom._name,
+	      						 listeners: {
+	      							 	select: function(field) {
+	      							 	this.findParentByType('ServicePartnerFormspAdd').onProvince2(field);
+	      						    }
+	      						}
+	      	                },
+	      	                {
+	      	                	 xtype : "combo",
+	      	                     anchor : '100%',
+	      	                     //fieldLabel :_("Region/City"),
+	      	                     fieldLabel :_("Kabupaten/Kota"),
+	      	                     itemId : 'servicepartner.form.CityCom',
+	      	                     triggerAction: "all",
+	      	                     emptyText : '<Select one..>',
+	      	                     mode: 'local',
+	      	                     name: CmFinoFIX.message.JSAgent.CityCom._name,
+	      	                     store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvinceRegion), 
+	      	                     displayField: CmFinoFIX.message.JSProvinceRegion.Entries.DisplayText._name,
+	      	                     valueField : CmFinoFIX.message.JSProvinceRegion.Entries.ID._name,
+	      	                     hiddenName : CmFinoFIX.message.JSAgent.CityCom._name,
+	      						 listeners: {
+	      							 	select: function(field) {
+	      							 	this.findParentByType('ServicePartnerFormspAdd').onProvinceRegion2(field);
+	      						    }
+	      						}
+	      	                },
+	      	                {
+	      	                	 xtype : "combo",
+	      	                     anchor : '100%',
+	                               //fieldLabel :_("District"),
+	                               fieldLabel :_("Kecamatan"),
+	                               itemId : 'servicepartner.form.DistrictCom',
+	      	                     triggerAction: "all",
+	      	                     emptyText : '<Select one..>',
+	      	                     mode: 'local',
+	      	                     name: CmFinoFIX.message.JSAgent.DistrictCom._name,
+	        	                     store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSDistrict), 
+	      	                     displayField: CmFinoFIX.message.JSDistrict.Entries.DisplayText._name, 
+	      	                     valueField : CmFinoFIX.message.JSDistrict.Entries.ID._name, 
+	      	                     hiddenName : CmFinoFIX.message.JSAgent.DistrictCom._name,
+	      						 listeners: {
+	      							 	select: function(field) {
+	      							 	this.findParentByType('ServicePartnerFormspAdd').onDistrict2(field);
+	      						    }
+	      						}
+	      	                },	
+	      	                {
+	      	                   xtype : "combo",
+	      	                   anchor : '100%',
+	                           //fieldLabel :_("Village"),
+	                           fieldLabel :_("Kelurahan/Desa"),
+	                           itemId : 'servicepartner.form.VillageCom',
+	      	                   triggerAction: "all",
+	      	                   emptyText : '<Select one..>',
+	      	                   mode: 'local',
+	        	               name: CmFinoFIX.message.JSAgent.VillageCom._name,
+	      	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSVillage), 
+	      	                   displayField: CmFinoFIX.message.JSVillage.Entries.DisplayText._name, 
+	      	                   valueField : CmFinoFIX.message.JSVillage.Entries.ID._name, 
+	      	                   hiddenName : CmFinoFIX.message.JSAgent.VillageCom._name,
+	      	                },
                            {
                                xtype : "textfield",
                                //fieldLabel :_("Potal Code"),
@@ -843,6 +1006,73 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
             }
     	}
     },
+    onProvince2 : function(field){
+        var value=field.getValue();
+        //alert(value);
+    	var region_combo = this.find('itemId','servicepartner.form.CityCom')[0];
+    	region_combo.clearValue();
+    	region_combo.store.reload({
+    		params: {
+    			//start : 0, 
+    			//limit : 10,
+    			IdProvince : value
+    		}
+    	});
+    },
+    onProvinceRegion2 : function(field){
+        var value=field.getValue();
+        //alert(value);
+    	var district_combo = this.find('itemId','servicepartner.form.DistrictCom')[0];
+    	district_combo.clearValue();
+    	district_combo.store.reload({
+    		params: {
+    			//start : 0, 
+    			//limit : 10,
+    			IdRegion : value
+    		}
+    	});
+    },
+    onDistrict2 : function(field){
+        var value=field.getValue();
+        //alert(value);
+    	var village_combo = this.find('itemId','servicepartner.form.VillageCom')[0];
+    	village_combo.clearValue();
+    	village_combo.store.reload({
+    		params: {
+    			//start : 0, 
+    			//limit : 10,
+    			IdDistrict : value
+    		}
+    	});
+    },
+/*    onProvince : function(field){
+        var value=field.getValue();
+        alert(value);
+        //var value2=field.getRawValue();
+        //this.form.items.get("servicepartner.form.PotalCodeCom").setValue(value);
+        //this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(value2);
+    },
+    onProvinceRegion : function(field){
+        var value=field.getValue();
+        alert(value);
+        //var value2=field.getRawValue();
+        //this.form.items.get("servicepartner.form.CityCom").setValue(value);
+        //this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(value2);
+    },
+    onDistrict : function(field){
+        var value=field.getValue();
+        alert(value);
+        //var value2=field.getRawValue();
+        //this.form.items.get("servicepartner.form.CityCom").setValue(value);
+        //this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(value2);
+    },
+    onVillage : function(field){
+        var value=field.getValue();
+        alert(value);
+        //var value2=field.getRawValue();
+        //this.form.items.get("servicepartner.form.CityCom").setValue(value);
+        //this.form.items.get("servicepartner.form.BranchofBankSinarmas").setValue(value2);
+    },*/
     simpan : function(formWindow){
        	if(this.getForm().isValid()){
        		

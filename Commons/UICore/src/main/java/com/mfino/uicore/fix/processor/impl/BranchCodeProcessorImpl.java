@@ -14,19 +14,14 @@ import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.query.BranchCodeQuery;
 import com.mfino.domain.BranchCodes;
 import com.mfino.domain.Role;
-import com.mfino.domain.User;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSBranchCodes;
-import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.fix.CmFinoFIX.CMJSRole;
-import com.mfino.i18n.MessageText;
 import com.mfino.service.MfinoServiceProviderService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.BranchCodeProcessor;
-import com.mfino.uicore.fix.processor.RoleProcessor;
 
 @Service("BranchCodeProcessorImpl")
 public class BranchCodeProcessorImpl extends BaseFixProcessor implements BranchCodeProcessor{

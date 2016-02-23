@@ -18,17 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.AddressDAO;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.DistrictDAO;
 import com.mfino.dao.GroupDao;
 import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.KtpDetailsDAO;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PocketDAO;
+import com.mfino.dao.ProvinceDAO;
+import com.mfino.dao.ProvinceRegionDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscribersAdditionalFieldsDAO;
 import com.mfino.dao.UserDAO;
+import com.mfino.dao.VillageDAO;
 import com.mfino.dao.query.PartnerQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.Company;
@@ -81,6 +85,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	private PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 	private SubscribersAdditionalFieldsDAO subAddFldsDAO = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
 	private KtpDetailsDAO ktpDetailsDAO = DAOFactory.getInstance().getKtpDetailsDAO();
+	private ProvinceDAO provinceDAO = DAOFactory.getInstance().getProvinceDAO();
+	private ProvinceRegionDAO provinceRegionDAO = DAOFactory.getInstance().getProvinceRegionDAO();
+	private DistrictDAO districtDAO = DAOFactory.getInstance().getDistrictDAO();
+	private VillageDAO villageDAO = DAOFactory.getInstance().getVillageDAO();
+
 	private boolean isOTPEnabled;
 	
 	@Autowired
@@ -293,13 +302,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			{
 				log.info("entered into agentprimarydata block");
 				
-/*				errorMsg = (CMJSAgentError)verifyAgentData(errorMsg);
-				errorMsg.setErrorDescription("Agent KTP validation successfull");
-				errorMsg.setsuccess(CmFinoFIX.Boolean_True);
-				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);*/
-				
-				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
-				
 				KtpDetails ktpDetail = new KtpDetails();
 				ktpDetail.setMDN(realMsg.getMDN());
 				ktpDetail.setKTPID(realMsg.getKTPID());
@@ -307,51 +309,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				ktpDetail.setBankResponseStatus("00");
 				ktpDetail.setBankResponse("Success");
 				
-				ktpDetailsDAO.save(ktpDetail);
-				
-				RSClientPostHttps wsCall = new RSClientPostHttps();
-				try {
-					JSONObject request = new JSONObject();
-					
-					request.put("accno",realMsg.getAccountnumberofBankSinarmas());
-					request.put("nik",realMsg.getKTPID());
-					request.put("namalengkap",realMsg.getFirstName());
-					request.put("reffno",StringUtils.leftPad(String.valueOf(ktpDetail.getID()),12,"0"));
-					request.put("action","inquiryEKTPAgent");
-								
-					JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
-					if(null != response) {
-						ktpDetail.setBankResponse(response.toString());
-						ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
-						ktpDetailsDAO.save(ktpDetail);
-										
-						errorMsg.setAlamatInAccordanceIdentity(response.get("alamat").toString());
-						errorMsg.setRTAl(response.get("rt").toString());
-						errorMsg.setRWAl(response.get("rw").toString());
-						errorMsg.setVillageAl(response.get("kelurahan").toString());
-						errorMsg.setDistrictAl(response.get("kecamatan").toString());
-						errorMsg.setCityAl(response.get("kota").toString());
-						errorMsg.setProvincialAl(response.get("provinsi").toString());
-						errorMsg.setPotalCodeAl(response.get("kodepos").toString());
-						errorMsg.setErrorDescription(MessageText._("Agent KTP validation successfull"));
-						errorMsg.setsuccess(CmFinoFIX.Boolean_True);
-						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-					} else {
-						errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
-						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-						errorMsg.setsuccess(CmFinoFIX.Boolean_False);
-					}
-				} catch(Exception ex) {
-					log.error("Error in parsing the response from server..." + ex);
-					errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
-					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-					errorMsg.setsuccess(CmFinoFIX.Boolean_False);
-					return errorMsg;
-				}
+				errorMsg = (CMJSAgentError)verifyAgentData(errorMsg,ktpDetail);
+				//errorMsg = (CMJSAgentError)verifyAgentDataFromWS(errorMsg,realMsg,ktpDetail);
+
                 return errorMsg;
 			}
-/*            CMJSAgent.CGEntries[] entries = realMsg.getEntries();
-
+/*          CMJSAgent.CGEntries[] entries = realMsg.getEntries();
             for (CMJSAgent.CGEntries e : entries) {*/
 				log.info("entered into agent data add block");            	
             	Partner partner = new Partner();
@@ -361,16 +324,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 PartnerQuery query = null;
                 //CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
             	PartnerDAO dao = DAOFactory.getInstance().getPartnerDAO();
-        		           	
-/*                int agntTyp = Integer.valueOf(realMsg.getAgentType());
-                if(agntTyp == 1)
-                {
-                	realMsg.setBusinessPartnerType(4);                	
-                }
-                if(agntTyp == 2)
-                {
-                	realMsg.setBusinessPartnerType(5);  
-                }*/
             	
             	int agntTyp = realMsg.getBusinessPartnerType();
                 if(agntTyp == 4)
@@ -933,21 +886,22 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	if(entry.getRWAl()!= null){
         	merchantAddress.setRW(entry.getRWAl());
         	}
-        	if(entry.getDistrictAl()!= null){
-        	merchantAddress.setState(entry.getDistrictAl());
+        	if(entry.getProvincialAl()!= null){
+        	merchantAddress.setState(entry.getProvincialAl());
         	}
         	if(entry.getCityAl()!= null){
-        	merchantAddress.setCity(entry.getCityAl());
+        	merchantAddress.setRegionName(entry.getCityAl());
+        	}
+        	if(entry.getDistrictAl()!= null){
+        	merchantAddress.setSubState(entry.getDistrictAl());
         	}
         	if(entry.getVillageAl()!= null){
-        	merchantAddress.setSubState(entry.getVillageAl());
+        	merchantAddress.setCity(entry.getVillageAl());
         	}
         	if(entry.getPotalCodeAl()!= null){
         	merchantAddress.setZipCode(entry.getPotalCodeAl());
         	}
-        	if(entry.getProvincialAl()!= null){
-        	merchantAddress.setRegionName(entry.getProvincialAl());
-        	}
+
         	//simaspay changes ends
         	addressDao.save(merchantAddress);
         	        
@@ -967,21 +921,22 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	if(entry.getRWCom()!= null){
             		outletAddress.setRW(entry.getRWCom());
             	}
-            	if(entry.getDistrictCom()!= null){
-            		outletAddress.setState(entry.getDistrictCom());
+            	if(entry.getProvincialCom()!= null){
+            		outletAddress.setState(entry.getProvincialCom());
             	}
             	if(entry.getCityCom()!= null){
-            		outletAddress.setCity(entry.getCityCom());
+            		outletAddress.setRegionName(entry.getCityCom());
+            	}
+            	if(entry.getDistrictCom()!= null){
+            		outletAddress.setSubState(entry.getDistrictCom());
             	}
             	if(entry.getVillageCom()!= null){
-            		outletAddress.setSubState(entry.getVillageCom());
+            		outletAddress.setCity(entry.getVillageCom());
             	}
             	if(entry.getPotalCodeCom()!= null){
             		outletAddress.setZipCode(entry.getPotalCodeCom());
             	}
-            	if(entry.getProvincialCom()!= null){
-            		outletAddress.setRegionName(entry.getProvincialCom());
-            	}
+
             	//simaspay changes ends  	
             	addressDao.save(outletAddress);
             	
@@ -1121,21 +1076,22 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	if(entry.getRWAl()!= null){
         	merchantAddress.setRW(entry.getRWAl());
         	}
-        	if(entry.getDistrictAl()!= null){
-        	merchantAddress.setState(entry.getDistrictAl());
+        	if(entry.getProvincialAl()!= null){
+        	merchantAddress.setState(entry.getProvincialAl());
         	}
         	if(entry.getCityAl()!= null){
-        	merchantAddress.setCity(entry.getCityAl());
+        	merchantAddress.setRegionName(entry.getCityAl());
+        	}
+        	if(entry.getDistrictAl()!= null){
+        	merchantAddress.setSubState(entry.getDistrictAl());
         	}
         	if(entry.getVillageAl()!= null){
-        	merchantAddress.setSubState(entry.getVillageAl());
+        	merchantAddress.setCity(entry.getVillageAl());
         	}
         	if(entry.getPotalCodeAl()!= null){
         	merchantAddress.setZipCode(entry.getPotalCodeAl());
         	}
-        	if(entry.getProvincialAl()!= null){
-        	merchantAddress.setRegionName(entry.getProvincialAl());
-        	}
+
         	//simaspay changes ends
         	addressDao.save(merchantAddress);
         	        
@@ -1155,21 +1111,22 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	if(entry.getRWCom()!= null){
             		outletAddress.setRW(entry.getRWCom());
             	}
-            	if(entry.getDistrictCom()!= null){
-            		outletAddress.setState(entry.getDistrictCom());
+            	if(entry.getProvincialCom()!= null){
+            		outletAddress.setState(entry.getProvincialCom());
             	}
             	if(entry.getCityCom()!= null){
-            		outletAddress.setCity(entry.getCityCom());
+            		outletAddress.setRegionName(entry.getCityCom());
+            	}
+            	if(entry.getDistrictCom()!= null){
+            		outletAddress.setSubState(entry.getDistrictCom());
             	}
             	if(entry.getVillageCom()!= null){
-            		outletAddress.setSubState(entry.getVillageCom());
+            		outletAddress.setCity(entry.getVillageCom());
             	}
             	if(entry.getPotalCodeCom()!= null){
             		outletAddress.setZipCode(entry.getPotalCodeCom());
             	}
-            	if(entry.getProvincialCom()!= null){
-            		outletAddress.setRegionName(entry.getProvincialCom());
-            	}
+
             	//simaspay changes ends  	
             	addressDao.save(outletAddress);
             	
@@ -1201,262 +1158,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		}            	
         }
     
-    private void updateMessage(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,  CMJSAgent.CGEntries entry) {
-
-        if(partner != null){
-        	if(subscriberMdn.getMDN()!=null){
-        		entry.setMDN(subscriberMdn.getMDN());
-        		entry.setMobilePhoneNumber(subscriberMdn.getMDN());
-        	}
-	    	if(subscriberMdn.getApplicationID()!= null){
-	    		entry.setKTPID(subscriberMdn.getApplicationID());
-	    	}
-			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
-				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
-				
-				if(saf.getElectonicDeviceUsed()!= null){
-					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, subscriber.getLanguage(), saf.getElectonicDeviceUsed()));
-		    		entry.setElectonicDevieused(String.valueOf(saf.getElectonicDeviceUsed()));
-		    	}
-		    	if(saf.getAgreementNumber()!= null){
-		    		entry.setAgreementNumber(saf.getAgreementNumber());
-		    	}
-		    	if(saf.getAgrementDate()!= null){
-		    		entry.setAgreementDate(String.valueOf(saf.getAgrementDate()));
-		    	}
-		    	if(saf.getImplementatindate()!= null){
-		    		entry.setImplementationdate(String.valueOf(saf.getImplementatindate()));
-		    	}
-		    	if(saf.getAgentCompanyName()!= null){
-		    		entry.setAgentCompanyName(saf.getAgentCompanyName());
-		    	}
-		    	if(saf.getLatitude()!= null){
-		    		entry.setLatitude(saf.getLatitude());
-		    	}
-		    	if(saf.getLongitude()!= null){
-		    		entry.setLongitude(saf.getLongitude());
-		    	}
-		    	if(saf.getUserBankBranch()!= null){
-		    		entry.setUserBankBranch(saf.getUserBankBranch());
-		    	}
-		    	if(saf.getBankAcountStatus()!= null){
-		    		entry.setBankAccountStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankAccountStatus, subscriber.getLanguage(), saf.getBankAcountStatus()));
-		    		entry.setBankAccountStatus(String.valueOf(saf.getBankAcountStatus()));
-		    	}
-			}
-        	
-	        if(partner.getAddressByFranchiseOutletAddressID() != null){
-	        	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
-	        	
-	        	if(outletAddress.getLine1() != null){
-	        		entry.setCompanyAddress(outletAddress.getLine1());
-	        	}
-	        	if(outletAddress.getRT() != null){
-	        		entry.setRTCom(outletAddress.getRT());
-	        	}
-	        	if(outletAddress.getRW() != null){
-	        		entry.setRWCom(outletAddress.getRW());
-	        	}
-	        	if(outletAddress.getState() != null){
-	        		entry.setDistrictCom(outletAddress.getState());
-	        	}
-	        	if(outletAddress.getSubState() != null){
-	        		entry.setVillageCom(outletAddress.getSubState());
-	        	}
-	        	if(outletAddress.getCity() != null){
-	        		entry.setCityCom(outletAddress.getCity());
-	        	}
-	        	if(outletAddress.getRegionName() != null){
-	        		entry.setProvincialCom(outletAddress.getRegionName());
-	        	}	        	
-	        	if(outletAddress.getZipCode() != null){
-	        		entry.setPotalCodeCom(outletAddress.getZipCode());
-	        	}
-	        }
-	        if(partner.getAddressByMerchantAddressID() != null){
-	        	Address merchantAddress = partner.getAddressByMerchantAddressID();
-	        	
-	        	if(merchantAddress.getLine1() != null){
-	        		entry.setAlamatInAccordanceIdentity(merchantAddress.getLine1());
-	        	}
-	        	if(merchantAddress.getRT() != null){
-	        		entry.setRTAl(merchantAddress.getRT());
-	        	}
-	        	if(merchantAddress.getRW() != null){
-	        		entry.setRWAl(merchantAddress.getRW());
-	        	}
-	        	if(merchantAddress.getState() != null){
-	        		entry.setDistrictAl(merchantAddress.getState());
-	        	}
-	        	if(merchantAddress.getSubState() != null){
-	        		entry.setVillageAl(merchantAddress.getSubState());
-	        	}
-	        	if(merchantAddress.getCity() != null){
-	        		entry.setCityAl(merchantAddress.getCity());
-	        	}
-	        	if(merchantAddress.getRegionName() != null){
-	        		entry.setProvincialAl(merchantAddress.getRegionName());
-	        	}	        	
-	        	if(merchantAddress.getZipCode() != null){
-	        		entry.setPotalCodeAl(merchantAddress.getZipCode());
-	        	}
-	        }
-	        if(partner.getID() != null){
-	        	entry.setID(partner.getID());
-	        }	        
-	        if(partner.getLastUpdateTime() != null){
-	        	entry.setLastUpdateTime(partner.getLastUpdateTime());
-	        }
-	        if(partner.getUpdatedBy() != null){
-	        	entry.setUpdatedBy(partner.getUpdatedBy());
-	        }
-	        if(partner.getCreateTime() != null){
-	        	entry.setCreateTime(partner.getCreateTime());
-	        }
-	        if(partner.getCreatedBy() != null){
-	        	entry.setCreatedBy(partner.getCreatedBy());
-	        }
-	        if(partner.getSubscriber() != null){
-	        	entry.setSubscriberID(subscriber.getID());
-	        	entry.setMDNID(subscriberMdn.getID());
-	        }
-	        if(partner.getPartnerCode() != null){
-	        	entry.setPartnerCode(partner.getPartnerCode());
-	        	entry.setAgentCode(partner.getPartnerCode());
-	        }
-	        if(partner.getPartnerStatus() != null){
-	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, subscriber.getLanguage(), partner.getPartnerStatus()));
-	        	entry.setPartnerStatus(partner.getPartnerStatus());
-	        }
-	        if(partner.getTradeName() != null){
-	        	entry.setTradeName(partner.getTradeName());
-	        }
-	        if(partner.getTypeOfOrganization() != null){
-	        	entry.setTypeofBusinessAgentText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TypeofBusinessAgent, subscriber.getLanguage(), partner.getTypeOfOrganization()));
-	        	entry.setTypeOfOrganization(partner.getTypeOfOrganization());
-	        	entry.setTypeofBusinessAgent(partner.getTypeOfOrganization());
-	        }
-	        if(partner.getFaxNumber() != null){
-	        	entry.setFaxNumber(partner.getFaxNumber());
-	        }
-	        if(partner.getWebSite() != null){
-	        	entry.setWebSite(partner.getWebSite());
-	        }
-	        if(partner.getAuthorizedRepresentative() != null){
-	        	entry.setAuthorizedRepresentative(partner.getAuthorizedRepresentative());
-	        }
-	        if(partner.getRepresentativeName() != null){
-	        	entry.setRepresentativeName(partner.getRepresentativeName());
-	        }
-	        if(partner.getDesignation() != null){
-	        	entry.setDesignation(partner.getDesignation());
-	        }
-	        if(partner.getFranchisePhoneNumber() != null){
-	        	entry.setFranchisePhoneNumber(partner.getFranchisePhoneNumber());
-	        	entry.setPhoneNumber(partner.getFranchisePhoneNumber());
-	        }
-	        if(partner.getClassification() != null){
-	        	entry.setClassificationAgentText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ClassificationAgent, subscriber.getLanguage(), partner.getClassification()));
-	        	entry.setClassification(partner.getClassification());
-	        	entry.setClassificationAgent(partner.getClassification());
-	        }
-	        if(partner.getNumberOfOutlets() != null){
-	        	entry.setNumberOfOutlets(partner.getNumberOfOutlets());
-	        }
-	        if(partner.getIndustryClassification() != null){
-	        	entry.setIndustryClassification(partner.getIndustryClassification());
-	        }
-	        if(partner.getYearEstablished() != null){
-	        	entry.setYearEstablished(partner.getYearEstablished());
-	        }
-	        if(partner.getAuthorizedFaxNumber() != null){
-	        	entry.setAuthorizedFaxNumber(partner.getAuthorizedFaxNumber());
-	        }
-	        if(partner.getAuthorizedEmail() != null){
-	        	entry.setAuthorizedEmail(partner.getAuthorizedEmail());
-	        	entry.setEMail(partner.getAuthorizedEmail());
-	        }
-	        if(partner.getCompanyEmailId() != null){
-	        	entry.setCompanyEmailId(partner.getCompanyEmailId());
-	        }
-	        if (partner.getVersion() != null) {
-	            entry.setRecordVersion(partner.getVersion());
-	        }
-	        if (partner.getBranchCode() != null) {
-	        	entry.setBranchCodeText(userService.getUserBranchCode(Integer.valueOf(partner.getBranchCode())));
-	            entry.setBranchCode(partner.getBranchCode());
-	        }
-	        if (partner.getAccountnumberofBankSinarmas() != null) {
-	            entry.setAccountnumberofBankSinarmas(partner.getAccountnumberofBankSinarmas());
-	        }
-	        if(partner.getBusinessPartnerType() != null){
-	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
-	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
-	        	entry.setAgentType(String.valueOf(partner.getBusinessPartnerType()));
-	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
-	        }
-	        entry.setRestrictions(subscriberMdn.getRestrictions());
-        }
-        if(subscriber != null){
-        	if(subscriber.getFirstName() != null){
-        		entry.setFirstName(subscriber.getFirstName());
-        	}
-        	if(subscriber.getLastName() != null){
-        		entry.setLastName(subscriber.getLastName());
-        	}
-	        if(subscriber.getLanguage() != null){
-	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, subscriber.getLanguage(), subscriber.getLanguage()));
-	        	entry.setLanguage(subscriber.getLanguage());
-	        }
-	        else
-	        {
-	        	subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
-	        }
-	        if(subscriber.getTimezone() != null){
-	        	entry.setTimezone(subscriber.getTimezone());
-	        }
-	        if(subscriber.getCurrency() != null){
-	        	entry.setCurrency(subscriber.getCurrency());	        	
-	        }
-	        if(subscriber.getUpgradeState()!=null){
-	        	entry.setUpgradeState(subscriber.getUpgradeState());
-	        	entry.setUpgradeStateText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_UpgradeState, CmFinoFIX.Language_English, subscriber.getUpgradeState()));
-	        }
-	        if(subscriber.getAppliedBy()!=null){
-	        	entry.setAppliedBy(subscriber.getAppliedBy());
-	        }
-	        if(subscriber.getAppliedTime()!=null){
-	        	entry.setAppliedTime(subscriber.getAppliedTime());
-	        }
-	        if(subscriber.getApprovedOrRejectedBy()!=null){
-	        	entry.setApprovedOrRejectedBy(subscriber.getApprovedOrRejectedBy());
-	        }
-	        if(subscriber.getApproveOrRejectTime()!=null){
-	        	entry.setApproveOrRejectTime(subscriber.getApproveOrRejectTime());
-	        }
-	        if(subscriber.getApproveOrRejectComment()!=null){
-	        	entry.setApproveOrRejectComment(subscriber.getApproveOrRejectComment());
-	        }
-	        if(subscriber.getBirthPlace()!=null){
-	        	entry.setPlaceofBirth(subscriber.getBirthPlace());
-	        }
-	        if(subscriber.getDateOfBirth()!=null){
-	        	entry.setDateofBirth(String.valueOf(subscriber.getDateOfBirth()));
-	        }
-	        
-			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
-				SubscriberGroup sg = subscriber.getSubscriberGroupFromSubscriberID().iterator().next();
-				entry.setGroupName(sg.getGroup().getGroupName());
-				entry.setGroupID(""+sg.getGroup().getID());
-			}
-        }
-        if(partner.getUser()!=null){
-        	entry.setUsername(partner.getUser().getUsername());
-        	entry.setNameInAccordanceIdentity(partner.getUser().getUsername());
-        }
-        
-    }
-
     private void updateMessagesp(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,  CMJSAgent entry) {
 
         if(partner != null){
@@ -1514,17 +1215,21 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        		entry.setRWCom(outletAddress.getRW());
 	        	}
 	        	if(outletAddress.getState() != null){
-	        		entry.setDistrictCom(outletAddress.getState());
-	        	}
-	        	if(outletAddress.getSubState() != null){
-	        		entry.setVillageCom(outletAddress.getSubState());
-	        	}
-	        	if(outletAddress.getCity() != null){
-	        		entry.setCityCom(outletAddress.getCity());
+	        		String province = provinceDAO.getProvinceName(outletAddress.getState());
+	        		entry.setProvincialCom(province);
 	        	}
 	        	if(outletAddress.getRegionName() != null){
-	        		entry.setProvincialCom(outletAddress.getRegionName());
-	        	}	        	
+	        		String region = provinceRegionDAO.getProvinceRegionName(outletAddress.getRegionName());
+	        		entry.setCityCom(region);
+	        	}
+	        	if(outletAddress.getSubState() != null){
+	        		String district = districtDAO.getDistrictName(outletAddress.getSubState());
+	        		entry.setDistrictCom(district);
+	        	}
+	        	if(outletAddress.getCity() != null){
+	        		String village = villageDAO.getVillageName(outletAddress.getCity());
+	        		entry.setVillageCom(village);
+	        	}
 	        	if(outletAddress.getZipCode() != null){
 	        		entry.setPotalCodeCom(outletAddress.getZipCode());
 	        	}
@@ -1542,17 +1247,17 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        		entry.setRWAl(merchantAddress.getRW());
 	        	}
 	        	if(merchantAddress.getState() != null){
-	        		entry.setDistrictAl(merchantAddress.getState());
-	        	}
-	        	if(merchantAddress.getSubState() != null){
-	        		entry.setVillageAl(merchantAddress.getSubState());
-	        	}
-	        	if(merchantAddress.getCity() != null){
-	        		entry.setCityAl(merchantAddress.getCity());
+	        		entry.setProvincialAl(merchantAddress.getState());
 	        	}
 	        	if(merchantAddress.getRegionName() != null){
-	        		entry.setProvincialAl(merchantAddress.getRegionName());
-	        	}	        	
+	        		entry.setCityAl(merchantAddress.getRegionName());
+	        	}
+	        	if(merchantAddress.getSubState() != null){
+	        		entry.setDistrictAl(merchantAddress.getSubState());
+	        	}
+	        	if(merchantAddress.getCity() != null){
+	        		entry.setVillageAl(merchantAddress.getCity());
+	        	}
 	        	if(merchantAddress.getZipCode() != null){
 	        		entry.setPotalCodeAl(merchantAddress.getZipCode());
 	        	}
@@ -1710,9 +1415,267 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	entry.setUsername(partner.getUser().getUsername());
         	entry.setNameInAccordanceIdentity(partner.getUser().getUsername());
         }
-        
+    }	
+	
+    private void updateMessage(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,  CMJSAgent.CGEntries entry) {
+
+        if(partner != null){
+        	if(subscriberMdn.getMDN()!=null){
+        		entry.setMDN(subscriberMdn.getMDN());
+        		entry.setMobilePhoneNumber(subscriberMdn.getMDN());
+        	}
+	    	if(subscriberMdn.getApplicationID()!= null){
+	    		entry.setKTPID(subscriberMdn.getApplicationID());
+	    	}
+			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
+				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+				
+				if(saf.getElectonicDeviceUsed()!= null){
+					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, subscriber.getLanguage(), saf.getElectonicDeviceUsed()));
+		    		entry.setElectonicDevieused(String.valueOf(saf.getElectonicDeviceUsed()));
+		    	}
+		    	if(saf.getAgreementNumber()!= null){
+		    		entry.setAgreementNumber(saf.getAgreementNumber());
+		    	}
+		    	if(saf.getAgrementDate()!= null){
+		    		entry.setAgreementDate(String.valueOf(saf.getAgrementDate()));
+		    	}
+		    	if(saf.getImplementatindate()!= null){
+		    		entry.setImplementationdate(String.valueOf(saf.getImplementatindate()));
+		    	}
+		    	if(saf.getAgentCompanyName()!= null){
+		    		entry.setAgentCompanyName(saf.getAgentCompanyName());
+		    	}
+		    	if(saf.getLatitude()!= null){
+		    		entry.setLatitude(saf.getLatitude());
+		    	}
+		    	if(saf.getLongitude()!= null){
+		    		entry.setLongitude(saf.getLongitude());
+		    	}
+		    	if(saf.getUserBankBranch()!= null){
+		    		entry.setUserBankBranch(saf.getUserBankBranch());
+		    	}
+		    	if(saf.getBankAcountStatus()!= null){
+		    		entry.setBankAccountStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankAccountStatus, subscriber.getLanguage(), saf.getBankAcountStatus()));
+		    		entry.setBankAccountStatus(String.valueOf(saf.getBankAcountStatus()));
+		    	}
+			}
+        	
+	        if(partner.getAddressByFranchiseOutletAddressID() != null){
+	        	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
+	        	
+	        	if(outletAddress.getLine1() != null){
+	        		entry.setCompanyAddress(outletAddress.getLine1());
+	        	}
+	        	if(outletAddress.getRT() != null){
+	        		entry.setRTCom(outletAddress.getRT());
+	        	}
+	        	if(outletAddress.getRW() != null){
+	        		entry.setRWCom(outletAddress.getRW());
+	        	}
+	        	if(outletAddress.getState() != null){
+	        		String province = provinceDAO.getProvinceName(outletAddress.getState());
+	        		entry.setProvincialCom(province);
+	        	}
+	        	if(outletAddress.getRegionName() != null){
+	        		String region = provinceRegionDAO.getProvinceRegionName(outletAddress.getRegionName());
+	        		entry.setCityCom(region);
+	        	}
+	        	if(outletAddress.getSubState() != null){
+	        		String district = districtDAO.getDistrictName(outletAddress.getSubState());
+	        		entry.setDistrictCom(district);
+	        	}
+	        	if(outletAddress.getCity() != null){
+	        		String village = villageDAO.getVillageName(outletAddress.getCity());
+	        		entry.setVillageCom(village);
+	        	}
+	        	if(outletAddress.getZipCode() != null){
+	        		entry.setPotalCodeCom(outletAddress.getZipCode());
+	        	}
+	        }
+	        if(partner.getAddressByMerchantAddressID() != null){
+	        	Address merchantAddress = partner.getAddressByMerchantAddressID();
+	        	
+	        	if(merchantAddress.getLine1() != null){
+	        		entry.setAlamatInAccordanceIdentity(merchantAddress.getLine1());
+	        	}
+	        	if(merchantAddress.getRT() != null){
+	        		entry.setRTAl(merchantAddress.getRT());
+	        	}
+	        	if(merchantAddress.getRW() != null){
+	        		entry.setRWAl(merchantAddress.getRW());
+	        	}
+	        	if(merchantAddress.getState() != null){
+	        		entry.setProvincialAl(merchantAddress.getState());
+	        	}
+	        	if(merchantAddress.getRegionName() != null){
+	        		entry.setCityAl(merchantAddress.getRegionName());
+	        	}
+	        	if(merchantAddress.getSubState() != null){
+	        		entry.setDistrictAl(merchantAddress.getSubState());
+	        	}
+	        	if(merchantAddress.getCity() != null){
+	        		entry.setVillageAl(merchantAddress.getCity());
+	        	}
+	        	if(merchantAddress.getZipCode() != null){
+	        		entry.setPotalCodeAl(merchantAddress.getZipCode());
+	        	}
+	        }
+	        if(partner.getID() != null){
+	        	entry.setID(partner.getID());
+	        }	        
+	        if(partner.getLastUpdateTime() != null){
+	        	entry.setLastUpdateTime(partner.getLastUpdateTime());
+	        }
+	        if(partner.getUpdatedBy() != null){
+	        	entry.setUpdatedBy(partner.getUpdatedBy());
+	        }
+	        if(partner.getCreateTime() != null){
+	        	entry.setCreateTime(partner.getCreateTime());
+	        }
+	        if(partner.getCreatedBy() != null){
+	        	entry.setCreatedBy(partner.getCreatedBy());
+	        }
+	        if(partner.getSubscriber() != null){
+	        	entry.setSubscriberID(subscriber.getID());
+	        	entry.setMDNID(subscriberMdn.getID());
+	        }
+	        if(partner.getPartnerCode() != null){
+	        	entry.setPartnerCode(partner.getPartnerCode());
+	        	entry.setAgentCode(partner.getPartnerCode());
+	        }
+	        if(partner.getPartnerStatus() != null){
+	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, subscriber.getLanguage(), partner.getPartnerStatus()));
+	        	entry.setPartnerStatus(partner.getPartnerStatus());
+	        }
+	        if(partner.getTradeName() != null){
+	        	entry.setTradeName(partner.getTradeName());
+	        }
+	        if(partner.getTypeOfOrganization() != null){
+	        	entry.setTypeofBusinessAgentText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TypeofBusinessAgent, subscriber.getLanguage(), partner.getTypeOfOrganization()));
+	        	entry.setTypeOfOrganization(partner.getTypeOfOrganization());
+	        	entry.setTypeofBusinessAgent(partner.getTypeOfOrganization());
+	        }
+	        if(partner.getFaxNumber() != null){
+	        	entry.setFaxNumber(partner.getFaxNumber());
+	        }
+	        if(partner.getWebSite() != null){
+	        	entry.setWebSite(partner.getWebSite());
+	        }
+	        if(partner.getAuthorizedRepresentative() != null){
+	        	entry.setAuthorizedRepresentative(partner.getAuthorizedRepresentative());
+	        }
+	        if(partner.getRepresentativeName() != null){
+	        	entry.setRepresentativeName(partner.getRepresentativeName());
+	        }
+	        if(partner.getDesignation() != null){
+	        	entry.setDesignation(partner.getDesignation());
+	        }
+	        if(partner.getFranchisePhoneNumber() != null){
+	        	entry.setFranchisePhoneNumber(partner.getFranchisePhoneNumber());
+	        	entry.setPhoneNumber(partner.getFranchisePhoneNumber());
+	        }
+	        if(partner.getClassification() != null){
+	        	entry.setClassificationAgentText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ClassificationAgent, subscriber.getLanguage(), partner.getClassification()));
+	        	entry.setClassification(partner.getClassification());
+	        	entry.setClassificationAgent(partner.getClassification());
+	        }
+	        if(partner.getNumberOfOutlets() != null){
+	        	entry.setNumberOfOutlets(partner.getNumberOfOutlets());
+	        }
+	        if(partner.getIndustryClassification() != null){
+	        	entry.setIndustryClassification(partner.getIndustryClassification());
+	        }
+	        if(partner.getYearEstablished() != null){
+	        	entry.setYearEstablished(partner.getYearEstablished());
+	        }
+	        if(partner.getAuthorizedFaxNumber() != null){
+	        	entry.setAuthorizedFaxNumber(partner.getAuthorizedFaxNumber());
+	        }
+	        if(partner.getAuthorizedEmail() != null){
+	        	entry.setAuthorizedEmail(partner.getAuthorizedEmail());
+	        	entry.setEMail(partner.getAuthorizedEmail());
+	        }
+	        if(partner.getCompanyEmailId() != null){
+	        	entry.setCompanyEmailId(partner.getCompanyEmailId());
+	        }
+	        if (partner.getVersion() != null) {
+	            entry.setRecordVersion(partner.getVersion());
+	        }
+	        if (partner.getBranchCode() != null) {
+	        	entry.setBranchCodeText(userService.getUserBranchCode(Integer.valueOf(partner.getBranchCode())));
+	            entry.setBranchCode(partner.getBranchCode());
+	        }
+	        if (partner.getAccountnumberofBankSinarmas() != null) {
+	            entry.setAccountnumberofBankSinarmas(partner.getAccountnumberofBankSinarmas());
+	        }
+	        if(partner.getBusinessPartnerType() != null){
+	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, subscriber.getLanguage(), partner.getBusinessPartnerType()));
+	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
+	        	entry.setAgentType(String.valueOf(partner.getBusinessPartnerType()));
+	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
+	        }
+	        entry.setRestrictions(subscriberMdn.getRestrictions());
+        }
+        if(subscriber != null){
+        	if(subscriber.getFirstName() != null){
+        		entry.setFirstName(subscriber.getFirstName());
+        	}
+        	if(subscriber.getLastName() != null){
+        		entry.setLastName(subscriber.getLastName());
+        	}
+	        if(subscriber.getLanguage() != null){
+	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, subscriber.getLanguage(), subscriber.getLanguage()));
+	        	entry.setLanguage(subscriber.getLanguage());
+	        }
+	        else
+	        {
+	        	subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
+	        }
+	        if(subscriber.getTimezone() != null){
+	        	entry.setTimezone(subscriber.getTimezone());
+	        }
+	        if(subscriber.getCurrency() != null){
+	        	entry.setCurrency(subscriber.getCurrency());	        	
+	        }
+	        if(subscriber.getUpgradeState()!=null){
+	        	entry.setUpgradeState(subscriber.getUpgradeState());
+	        	entry.setUpgradeStateText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_UpgradeState, CmFinoFIX.Language_English, subscriber.getUpgradeState()));
+	        }
+	        if(subscriber.getAppliedBy()!=null){
+	        	entry.setAppliedBy(subscriber.getAppliedBy());
+	        }
+	        if(subscriber.getAppliedTime()!=null){
+	        	entry.setAppliedTime(subscriber.getAppliedTime());
+	        }
+	        if(subscriber.getApprovedOrRejectedBy()!=null){
+	        	entry.setApprovedOrRejectedBy(subscriber.getApprovedOrRejectedBy());
+	        }
+	        if(subscriber.getApproveOrRejectTime()!=null){
+	        	entry.setApproveOrRejectTime(subscriber.getApproveOrRejectTime());
+	        }
+	        if(subscriber.getApproveOrRejectComment()!=null){
+	        	entry.setApproveOrRejectComment(subscriber.getApproveOrRejectComment());
+	        }
+	        if(subscriber.getBirthPlace()!=null){
+	        	entry.setPlaceofBirth(subscriber.getBirthPlace());
+	        }
+	        if(subscriber.getDateOfBirth()!=null){
+	        	entry.setDateofBirth(String.valueOf(subscriber.getDateOfBirth()));
+	        }
+	        
+			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
+				SubscriberGroup sg = subscriber.getSubscriberGroupFromSubscriberID().iterator().next();
+				entry.setGroupName(sg.getGroup().getGroupName());
+				entry.setGroupID(""+sg.getGroup().getID());
+			}
+        }
+        if(partner.getUser()!=null){
+        	entry.setUsername(partner.getUser().getUsername());
+        	entry.setNameInAccordanceIdentity(partner.getUser().getUsername());
+        }
     }
-    
+
     private void generateAndSendOTP(Partner partner, SubscriberMDN subscriberMDN, Subscriber subscriber) {
         User u =partner.getUser();
 		Integer OTPLength = systemParametersService.getOTPLength();
@@ -1770,51 +1733,48 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				throw new Exception("Service Partner already defined.");
 			}
 		}
-    	
-    }
-    
-    private void updateEntityAddInfo(Subscriber sub, CMJSAgent.CGEntries entry){
- 	  	
-		SubscribersAdditionalFields addnlData; 
-		if (CollectionUtils.isNotEmpty(sub.getSubscribersAdditionalFieldsFromSubscriberID())) {
-			addnlData = sub.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
-		} 
-		else {
-			addnlData = new SubscribersAdditionalFields();
-			addnlData.setSubscriber(sub);
-		}
-        if(entry.getElectonicDevieused()!= null){
-    		addnlData.setElectonicDeviceUsed(Integer.valueOf(entry.getElectonicDevieused()));
-    	}
-     	if(entry.getAgreementNumber()!= null){
-    		addnlData.setAgreementNumber(entry.getAgreementNumber());
-    	}
-    	if(entry.getAgreementDate()!= null){
-    		addnlData.setAgrementDate(new Timestamp(getDate(entry.getAgreementDate())));
-    	}
-    	if(entry.getImplementationdate()!= null){
-    		addnlData.setImplementatindate(new Timestamp(getDate(entry.getImplementationdate())));
-    	}
-    	if(entry.getAgentCompanyName()!= null){
-    		addnlData.setAgentCompanyName(entry.getAgentCompanyName());
-    	}
-    	if(entry.getLatitude()!= null){
-    		addnlData.setLatitude(entry.getLatitude());
-    	}
-    	if(entry.getLongitude()!= null){
-    		addnlData.setLongitude(entry.getLongitude());
-    	}
-    	if(entry.getUserBankBranch()!= null){
-    		addnlData.setUserBankBranch(entry.getUserBankBranch());
-    	}
-    	if(entry.getBankAccountStatus()!= null){
-    		addnlData.setBankAcountStatus(Integer.valueOf(entry.getBankAccountStatus()));
-    	}
-    	subAddFldsDAO.save(addnlData);
     }
     
     private void updateEntityAddInfosp(Subscriber sub, CMJSAgent entry){
- 	  	
+ 		SubscribersAdditionalFields addnlData; 
+ 		if (CollectionUtils.isNotEmpty(sub.getSubscribersAdditionalFieldsFromSubscriberID())) {
+ 			addnlData = sub.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+ 		} 
+ 		else {
+ 			addnlData = new SubscribersAdditionalFields();
+ 			addnlData.setSubscriber(sub);
+ 		}
+         if(entry.getElectonicDevieused()!= null){
+     		addnlData.setElectonicDeviceUsed(Integer.valueOf(entry.getElectonicDevieused()));
+     	}
+      	if(entry.getAgreementNumber()!= null){
+     		addnlData.setAgreementNumber(entry.getAgreementNumber());
+     	}
+     	if(entry.getAgreementDate()!= null){
+     		addnlData.setAgrementDate(new Timestamp(getDate(entry.getAgreementDate())));
+     	}
+     	if(entry.getImplementationdate()!= null){
+     		addnlData.setImplementatindate(new Timestamp(getDate(entry.getImplementationdate())));
+     	}
+     	if(entry.getAgentCompanyName()!= null){
+     		addnlData.setAgentCompanyName(entry.getAgentCompanyName());
+     	}
+     	if(entry.getLatitude()!= null){
+     		addnlData.setLatitude(entry.getLatitude());
+     	}
+     	if(entry.getLongitude()!= null){
+     		addnlData.setLongitude(entry.getLongitude());
+     	}
+     	if(entry.getUserBankBranch()!= null){
+     		addnlData.setUserBankBranch(entry.getUserBankBranch());
+     	}
+     	if(entry.getBankAccountStatus()!= null){
+     		addnlData.setBankAcountStatus(Integer.valueOf(entry.getBankAccountStatus()));
+     	}
+     	subAddFldsDAO.save(addnlData);
+     }
+    
+    private void updateEntityAddInfo(Subscriber sub, CMJSAgent.CGEntries entry){
 		SubscribersAdditionalFields addnlData; 
 		if (CollectionUtils.isNotEmpty(sub.getSubscribersAdditionalFieldsFromSubscriberID())) {
 			addnlData = sub.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
@@ -1853,18 +1813,78 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     	subAddFldsDAO.save(addnlData);
     }
     
-    public CMJSAgentError verifyAgentData(CmFinoFIX.CMJSAgentError errorAgentMsg){
+    public CMJSAgentError verifyAgentData(CmFinoFIX.CMJSAgentError errorAgentMsg, KtpDetails ktpDetail){
     	//CmFinoFIX.CMJSAgentError errorAgentMsg = new CMJSAgentError();
+    	ktpDetailsDAO.save(ktpDetail);
+    	errorAgentMsg.setUserBankBranch(userService.getUserBranchCodeString());
     	errorAgentMsg.setAlamatInAccordanceIdentity("jakarta");
     	errorAgentMsg.setRTAl("01");
     	errorAgentMsg.setRWAl("02");
-    	errorAgentMsg.setVillageAl("kel gambir");
-    	errorAgentMsg.setDistrictAl("gambir");
-    	errorAgentMsg.setCityAl("kota adm");
-    	errorAgentMsg.setProvincialAl("dkjakarta");
+    	errorAgentMsg.setVillageAl("kel gambir village");
+    	errorAgentMsg.setDistrictAl("gambir district");
+    	errorAgentMsg.setCityAl("kota adm city");
+    	errorAgentMsg.setProvincialAl("dkjakarta province");
     	errorAgentMsg.setPotalCodeAl("12910");
+    	errorAgentMsg.setErrorDescription(MessageText._("Agent KTP validation successfull"));
+    	errorAgentMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+    	errorAgentMsg.setsuccess(CmFinoFIX.Boolean_True);
     	
     	return errorAgentMsg;
+    }
+    
+    public CMJSAgentError verifyAgentDataFromWS(CmFinoFIX.CMJSAgentError errorMsg, CMJSAgent realMsg, KtpDetails ktpDetail)
+    {
+    	log.info("Entered into verifyAgentDataFromWS method for making a WS call");
+  		RSClientPostHttps wsCall = new RSClientPostHttps();
+		try {
+			JSONObject request = new JSONObject();
+			
+			ktpDetailsDAO.save(ktpDetail);
+			
+			request.put("accno",realMsg.getAccountnumberofBankSinarmas());
+			request.put("nik",realMsg.getKTPID());
+			request.put("namalengkap",realMsg.getFirstName());
+			request.put("reffno",StringUtils.leftPad(String.valueOf(ktpDetail.getID()),12,"0"));
+			request.put("action","inquiryEKTPAgent");
+						
+			JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
+			if(null != response) {
+				ktpDetail.setBankResponse(response.toString());
+				ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+				ktpDetailsDAO.save(ktpDetail);
+				
+				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
+				errorMsg.setAlamatInAccordanceIdentity(response.get("alamat").toString());
+				errorMsg.setRTAl(response.get("rt").toString());
+				errorMsg.setRWAl(response.get("rw").toString());
+				errorMsg.setVillageAl(response.get("kelurahan").toString());
+				errorMsg.setDistrictAl(response.get("kecamatan").toString());
+				errorMsg.setCityAl(response.get("kota").toString());
+				errorMsg.setProvincialAl(response.get("provinsi").toString());
+				errorMsg.setPotalCodeAl(response.get("kodepos").toString());
+				errorMsg.setErrorDescription(MessageText._("Agent KTP validation successfull"));
+				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+				errorMsg.setsuccess(CmFinoFIX.Boolean_True);
+			} else {
+				log.info("Did not received proper data from WS call");
+				
+				ktpDetail.setBankResponse(response.toString());
+				ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+				ktpDetailsDAO.save(ktpDetail);
+				
+				errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
+				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+				errorMsg.setsuccess(CmFinoFIX.Boolean_False);
+			}
+		} catch(Exception ex) {
+			log.error("Error in parsing the response from WS Server..." + ex);
+			errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
+			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+			errorMsg.setsuccess(CmFinoFIX.Boolean_False);
+			return errorMsg;
+		}
+		log.info("Webservice call completed");
+		return errorMsg;
     }
     
 	private Date getDate(String dateStr) {

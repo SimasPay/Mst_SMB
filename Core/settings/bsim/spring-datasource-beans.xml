@@ -429,4 +429,20 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
     	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
     </bean>
     
+    <bean id="provinceDAO" class="com.mfino.dao.ProvinceDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+    <bean id="provinceRegionDAO" class="com.mfino.dao.ProvinceRegionDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+        <bean id="districtDAO" class="com.mfino.dao.DistrictDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+        <bean id="villageDAO" class="com.mfino.dao.VillageDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
 </beans>
