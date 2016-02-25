@@ -378,4 +378,10 @@ public interface IUserDataContainer {
 	public String getKtpRT();
 	public String getKtpSubState();
 	public String getSubState();
+	
+	
+	public String getFullName();
+	public String getProductDesired();
+	public String getOthers();
+	
 }

@@ -72,6 +72,13 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setFirstName(userDataContainer.getFirstName());
 		txnDetails.setLastName(userDataContainer.getLastName());
 		txnDetails.setMothersMaidenName(userDataContainer.getMothersMaidenName());
+		
+		txnDetails.setFullName(userDataContainer.getFullName());
+		txnDetails.setProductDesired(userDataContainer.getProductDesired());
+		txnDetails.setOthers(userDataContainer.getOthers());
+		
+		
+		
 		txnDetails.setNewPIN(newPin);
 		if(activationNewPin!=null)
 		{

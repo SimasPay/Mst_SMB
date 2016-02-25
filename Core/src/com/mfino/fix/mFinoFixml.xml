@@ -5581,7 +5581,19 @@
 			<field name="DisplayText" required="N" />
 			<field name="IdDistrict" required="N" />  
     	</group>			 		
-	</message>		
+	</message>	
+	
+	
+	
+	<message name="ProductReferral" msgtype="1776" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+			<field name="AgentMDN" required="Y" />
+			<field name="FullName" required="N" />
+			<field name="SubscriberMDN" required="N" />
+			<field name="Email" required="N" />
+			<field name="ProductDesired" required="N" />
+			<field name="Others" required="N" />
+	</message>	
+		
 		
 	</messages>
 	<records>
@@ -7748,6 +7760,16 @@
 			<field name="IdDistrict" required="N" />
 		</record>
 		
+		
+		<record name="ProductReferral" ExtendsRecord="Base" Java="Y" SQLTable="Product_Referral" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="AgentMDN" required="N" />
+			<field name="FullName" required="N" />
+			<field name="SubscriberMDN" required="N" />
+			<field name="Email" required="N" />
+			<field name="ProductDesired" required="N" />
+			<field name="Others" required="N" />	
+		</record>
+		
 	</records>
 	<classes>
 		<class name="ISO8583Elements" CPP="Y">
@@ -8187,6 +8209,8 @@
 			<value enum="1773" description="JSProvinceRegion"/>
 			<value enum="1774" description="JSDistrict"/>
 			<value enum="1775" description="JSVillage"/>
+			<value enum="1776" description="ProductReferral"/>
+			
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -26594,6 +26618,9 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8417" name="VillageId" type="STRING"/>
 	<field number="8418" name="IdDistrict" type="INT64"/>
 	<field number="8419" name="CloseComments" type="STRING"/>
+	<field number="8420" name="SubscriberMDN" type="STRING"/>
+	<field number="8421" name="ProductDesired" type="STRING"/>
+	<field number="8422" name="Others" type="STRING"/>
    
     </fields>
     <primitives>

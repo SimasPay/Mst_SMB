@@ -323,6 +323,14 @@
 		</td>
 	</tr>
 	
+	
+	<tr>
+		<td>
+			<a href="jsp/s_product_referral.jsp">Product Referral Service</a>
+		</td>
+	</tr>
+	
+	
 	</table></td>
 	
 	</tr>

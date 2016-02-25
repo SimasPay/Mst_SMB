@@ -361,6 +361,9 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	public static final String PARAMETER_RW = "RW";
 	public static final String PARAMETER_RT = "RT";
 	public static final String IS_SIMASPAY_ACTIVITY = "isSimaspayActivity";
+	public static final String PARAMETER_FULL_NAME = "fullName";
+	public static final String PARAMETER_PRODUCT_DESIRED = "productDesired";
+	public static final String PARAMETER_OTHERS = "others";
 
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;

@@ -1212,5 +1212,34 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 			throw new InvalidDataException("Invalid partnerType", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, ApiConstants.PARAMETER_PARTNER_TYPE);
 		}		
 	}
+
+
+
+
+public void validateProductReferralDetails(TransactionDetails transactionDetails) throws InvalidDataException {	
+	validateFullName(transactionDetails);
+	validateDesttinationMDN(transactionDetails);
+	validateProductDesired(transactionDetails);
+}
+
+private void validateProductDesired(TransactionDetails transactionDetails)throws InvalidDataException {
+	if (StringUtils.isBlank(transactionDetails.getProductDesired())) {
+		throw new InvalidDataException("Invalid Product Desired", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+				ApiConstants.PARAMETER_PRODUCT_DESIRED);
+	}
+	
+}
+
+private void validateFullName(TransactionDetails transactionDetails)throws InvalidDataException {
+	if (StringUtils.isBlank(transactionDetails.getFullName())) {
+		throw new InvalidDataException("Invalid Full Name", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+				ApiConstants.PARAMETER_FULL_NAME);
+	}
+	
+}
+	
+	
+	
+	
 	
 }

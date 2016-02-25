@@ -192,6 +192,48 @@ public class TransactionDetails {
 	private String ktpRT;
 	private boolean isSimaspayActivity;
 	
+	private String agentMDN;
+	private String fullName;
+	private String subscriberMDN;
+	private String productDesired;
+	private String others;
+	
+	public boolean isSimaspayActivity() {
+		return isSimaspayActivity;
+	}
+	public void setSimaspayActivity(boolean isSimaspayActivity) {
+		this.isSimaspayActivity = isSimaspayActivity;
+	}
+	public String getAgentMDN() {
+		return agentMDN;
+	}
+	public void setAgentMDN(String agentMDN) {
+		this.agentMDN = agentMDN;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	public String getSubscriberMDN() {
+		return subscriberMDN;
+	}
+	public void setSubscriberMDN(String subscriberMDN) {
+		this.subscriberMDN = subscriberMDN;
+	}
+	public String getProductDesired() {
+		return productDesired;
+	}
+	public void setProductDesired(String productDesired) {
+		this.productDesired = productDesired;
+	}
+	public String getOthers() {
+		return others;
+	}
+	public void setOthers(String others) {
+		this.others = others;
+	}
 	/**
 	 * @return the ktpSubState
 	 */

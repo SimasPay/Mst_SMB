@@ -1089,4 +1089,22 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 	public String getSubState() {
 		return this.container.getSubState();
 	}
+
+	@Override
+	public String getFullName() {
+		// TODO Auto-generated method stub
+		return this.container.getFullName();
+	}
+
+	@Override
+	public String getProductDesired() {
+		// TODO Auto-generated method stub
+		return this.container.getProductDesired();
+	}
+
+	@Override
+	public String getOthers() {
+		// TODO Auto-generated method stub
+		return this.container.getOthers();
+	}
 }

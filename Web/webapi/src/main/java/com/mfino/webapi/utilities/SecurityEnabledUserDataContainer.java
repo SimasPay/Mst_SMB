@@ -1062,4 +1062,32 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 	public String getSubState() {
 		return this.container.getSubState();
 	}
+	
+	
+	@Override
+	public String getFullName() {
+		return this.container.getFullName();
+	}
+	
+	
+	@Override
+	public String getProductDesired() {
+		return this.container.getProductDesired();
+	}
+	
+	
+	@Override
+	public String getOthers() {
+		return this.container.getOthers();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

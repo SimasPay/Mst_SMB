@@ -312,6 +312,14 @@ public class DAOFactory {
 	
 	private VillageDAO villageDAO;
 	
+	private ProductReferralDAO productReferralDAO;
+	
+	public ProductReferralDAO getProductReferralDAO() {
+		productReferralDAO=new ProductReferralDAO();		
+		productReferralDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return productReferralDAO;
+	}
+	
 	public RetiredCardPANInfoDAO getRetiredCardPANInfoDAO() {
 		retiredCardPANInfoDAO = new RetiredCardPANInfoDAO();
 		retiredCardPANInfoDAO.setHibernateSessionHolder(getHibernateSessionHolder());

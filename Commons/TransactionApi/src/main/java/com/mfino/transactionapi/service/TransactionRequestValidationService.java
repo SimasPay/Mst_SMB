@@ -266,5 +266,7 @@ public interface TransactionRequestValidationService {
 	public void validateSubscriberClosingInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateSubscriberClosingDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+
+	public void validateProductReferralDetails(TransactionDetails transactionDetails)throws InvalidDataException;
 	
 }

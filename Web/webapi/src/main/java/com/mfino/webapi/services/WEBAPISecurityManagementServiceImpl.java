@@ -357,6 +357,15 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String ktpRt = request.getParameter(ApiConstants.PARAMETER_KTP_RT);
 		String ktpRw = request.getParameter(ApiConstants.PARAMETER_KTP_RW);
 		
+		
+		String fullName = request.getParameter(ApiConstants.PARAMETER_FULL_NAME);
+		String productDesired = request.getParameter(ApiConstants.PARAMETER_PRODUCT_DESIRED);
+		String others = request.getParameter(ApiConstants.PARAMETER_OTHERS);
+		
+		
+		
+		
+		
 		sourceMDN = subscriberService.normalizeMDN(sourceMDN);
 		if (! (ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName) || 
 				ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equalsIgnoreCase(transactionName)) ) {
@@ -519,6 +528,10 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setRW(rw);
 		rudContainer.setKtpRT(ktpRt);
 		rudContainer.setKtpRW(ktpRw);
+		
+		rudContainer.setFullName(fullName);
+		rudContainer.setProductDesired(productDesired);
+		rudContainer.setOthers(others);
 		
 		log.info("initUserDataContainer: End");
 		return rudContainer;

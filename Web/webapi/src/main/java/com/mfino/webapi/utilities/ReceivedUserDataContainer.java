@@ -170,6 +170,38 @@ public class ReceivedUserDataContainer {
 	private String RW;
 	private String ktpRW;
 	private String ktpRT;
+	private String fullName;
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getProductDesired() {
+		return productDesired;
+	}
+
+	public void setProductDesired(String productDesired) {
+		this.productDesired = productDesired;
+	}
+
+	public String getOthers() {
+		return others;
+	}
+
+	public void setOthers(String others) {
+		this.others = others;
+	}
+
+	private String productDesired;
+	private String others;
+	
+	
+	
+	
+	
 	
 	/**
 	 * @return the ktpSubState

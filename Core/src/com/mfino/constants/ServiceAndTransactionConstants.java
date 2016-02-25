@@ -355,4 +355,6 @@ public class ServiceAndTransactionConstants {
 	public static final String SUBSCRIBER_CLOSING = "SubscriberClosing";
 	
 	public static final String TRANSACTION_CLOSE_ACCOUNT = "CloseAccount";
+	
+	public static final String PRODUCT_REFERRAL = "ProductReferral";
 }

@@ -21,6 +21,7 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.IntegrationPartnerMappingService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
+import com.mfino.transactionapi.handlers.agent.ProductReferralHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
@@ -111,6 +112,10 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	@Autowired
 	@Qualifier("SubscriberKtpValidationHandlerImpl")
 	private SubscriberKtpValidationHandler subscriberKtpValidationHandler;
+	
+	@Autowired
+	@Qualifier("ProductReferralHandlerImpl")
+	private ProductReferralHandler productReferralHandler;
 
  	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
@@ -296,6 +301,13 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			transactionRequestValidationService.validateSubscriberKtpDetails(transactionDetails);
 			xmlResult = (XMLResult) subscriberKtpValidationHandler.handle(transactionDetails);
 		}
+		
+		else if (ServiceAndTransactionConstants.PRODUCT_REFERRAL.equalsIgnoreCase(transactionName)) {
+						
+			//transactionRequestValidationService.validateProductReferralDetails(transactionDetails);
+			xmlResult = (XMLResult) productReferralHandler.handle(transactionDetails);
+		}
+		
 
 		else {
 			xmlResult = new XMLResult();
