@@ -4,14 +4,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>subscriber Cashout Inquiry</title>
+<title>Subscriber to Agent Cashout Inquiry</title>
 </head>
 <body>
 <center>
-<h1>subscriber Cashout Inquiry</h1>
+<h1>Subscriber to Agent Cashout Inquiry</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Wallet" name="service" /> 
 <input type="hidden" value="CashOutInquiry" name="txnName" />
+<input type="hidden" value="Inquiry" name="mfaTransaction" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -29,9 +30,13 @@
 		<td>SourcePIN</td>
 		<td><input type="text" name="sourcePIN" value="" /></td>
 	</tr>
-	<tr>
+<!-- 	<tr>
 		<td>AgentCode</td>
 		<td><input type="text" name="agentCode" value="" /></td>
+	</tr> -->
+	<tr>
+		<td>DestinationPhoneNumber</td>
+		<td><input type="text" name="destMDN" value="" /></td>
 	</tr>
 	<tr>
 		<td>Amount</td>
@@ -39,17 +44,12 @@
 	</tr>
 	<tr>
 		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
+		<td><input type="text" name="channelID" value="7" /></td>
 	</tr>
-	<tr>
-		
-		<td><input type="hidden" name="bankID" value="" /></td>
-	</tr>
-	<tr>
+<!-- 	<tr>
 		<td>PocketCode</td>
-		<td><input type="text" name="sourcePocketCode" />(Emoney-1 ,Bank-2)</td>
-	</tr>
-	
+		<td><input type="text" name="sourcePocketCode" value="6" />(Emoney-1 ,Bank-2, Lakupandai-6)</td>
+	</tr> -->
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

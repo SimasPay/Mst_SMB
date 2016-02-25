@@ -486,11 +486,11 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	public void validateCashOutInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateSourcePin(transactionDetails);
 		validateAmount(transactionDetails);
-		validatePartnerCode(transactionDetails);
+		//validatePartnerCode(transactionDetails);
 	}
 	
 	public void validateCashOutConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException {
-		validatePartnerCode(transactionDetails);
+		//validatePartnerCode(transactionDetails);
 		validateconfirmString(transactionDetails);
 		validateTransferId(transactionDetails);
 		validateParentTxnId(transactionDetails);

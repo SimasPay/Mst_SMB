@@ -90,6 +90,7 @@ public class MFAServiceImpl implements MFAService{
 		smsService.setMessage(message);
 		smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 		smsService.asyncSendSMS();
+		log.info("sms sent successfully");
 		log.info("MFAService::handleMFATransaction End");
 	}
 	

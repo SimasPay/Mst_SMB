@@ -28,6 +28,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.CommodityTransferService;
+import com.mfino.service.MFAService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
@@ -75,14 +76,23 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
 	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	public Result handle(TransactionDetails transactionDetails) {
-		log.info("Extracting data from transactionDetails in SubscriberCashOutConfirmHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()
-				+"to"+transactionDetails.getDestMDN());
-		CMSubscriberCashOutConfirm subscribercashoutconfirm = new CMSubscriberCashOutConfirm();
+		log.info("Extracting data from transactionDetails in SubscriberCashOutConfirmHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()+"to"+transactionDetails.getDestMDN());
+		
+		transactionDetails.setSourcePocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 		ChannelCode cc = transactionDetails.getCc();
 		boolean confirmed = false;
 		confirmed = Boolean.parseBoolean(transactionDetails.getConfirmString());
+		String mfaOneTimeOTP = transactionDetails.getTransactionOTP();
+		
+		CMSubscriberCashOutConfirm subscribercashoutconfirm = new CMSubscriberCashOutConfirm();
+		
 		subscribercashoutconfirm.setSourceMDN(transactionDetails.getSourceMDN());
+		subscribercashoutconfirm.setDestMDN(transactionDetails.getDestMDN());
 		subscribercashoutconfirm.setPartnerCode(transactionDetails.getPartnerCode());
 		subscribercashoutconfirm.setParentTransactionID(transactionDetails.getParentTxnId());
 		subscribercashoutconfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
@@ -121,14 +131,16 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 		pocketList.add(srcSubscriberPocket);
 		result.setPocketList(pocketList);
 
-		Partner destAgent = partnerService.getPartnerByPartnerCode(subscribercashoutconfirm.getPartnerCode());
+		//Partner destAgent = partnerService.getPartnerByPartnerCode(subscribercashoutconfirm.getPartnerCode());
+		Partner destAgent = partnerService.getPartner(subscribercashoutconfirm.getDestMDN());
 		validationResult = transactionApiValidationService.validateAgentByPartnerType(destAgent);
 		if(validationResult.equals(CmFinoFIX.NotificationCode_DestinationAgentNotFound)){
 			log.info("Destination failed agent validations.validating if the destination is teller");
 			validationResult= transactionApiValidationService.validateTellerByPartnerType(destAgent);
 		}
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			result.setPartnerCode(subscribercashoutconfirm.getPartnerCode());
+			//result.setPartnerCode(subscribercashoutconfirm.getPartnerCode());
+			result.setDestinationMDN(subscribercashoutconfirm.getDestMDN());
 			validationResult = processValidationResultForDestinationAgent(validationResult);
 			result.setNotificationCode(validationResult);
 			return result;
@@ -164,7 +176,15 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 			log.error("Could not find sctl with parentTransaction ID: "+subscribercashoutconfirm.getParentTransactionID());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);			
 			return result;
-		}		
+		}
+		
+		if(!(mfaService.isValidOTP(mfaOneTimeOTP , sctl.getID(), srcSubscriberMDN.getMDN()))){
+			log.info("Invalid OTP Entered");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+			result.setSctlID(sctl.getID());
+			result.setMessage("Invalid OTP Entered");
+			return result;
+		}
 		
 		Pocket destAgentPocket;
 		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getID(), sctl.getServiceProviderID(), sctl.getServiceID());

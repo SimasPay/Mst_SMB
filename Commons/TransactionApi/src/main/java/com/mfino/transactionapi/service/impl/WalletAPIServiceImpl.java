@@ -3,18 +3,23 @@
  */
 package com.mfino.transactionapi.service.impl;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.domain.ChannelCode;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MFAService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
+import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
 import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
@@ -33,6 +38,7 @@ import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMConfirmHan
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutInquiryHandler;
+import com.mfino.transactionapi.handlers.wallet.impl.SubscriberCashOutInquiryHandlerImpl;
 import com.mfino.transactionapi.handlers.wallet.impl.SubscriberDonationConfirmHandlerImpl;
 import com.mfino.transactionapi.handlers.wallet.impl.SubscriberDonationInquiryHandlerImpl;
 import com.mfino.transactionapi.service.BaseAPIService;
@@ -53,6 +59,7 @@ import com.mfino.transactionapi.vo.TransactionDetails;
  */
 @Service("WalletAPIServiceImpl")
 public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPIService{
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	@Qualifier("CheckBalanceHandlerImpl")
@@ -146,6 +153,10 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService ;
 	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	private static final String MAX_NO_OF_RECORDS = "15000";
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
@@ -155,6 +166,7 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 		String destMDN = transactionDetails.getDestMDN();
 		transactionDetails.setDestMDN( subscriberService.normalizeMDN(destMDN));
 		String sourceMessage = transactionDetails.getSourceMessage();
+		ChannelCode channelCode = transactionDetails.getCc();
 
 		if (ServiceAndTransactionConstants.TRANSACTION_CHECKBALANCE.equals(transactionName)) {
 		
@@ -198,17 +210,48 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			xmlResult = (XMLResult) moneyTransferHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_INQUIRY.equalsIgnoreCase(transactionName)) {
-
-			transactionRequestValidationService.validateCashOutInquiryDetails(transactionDetails);
 			if (StringUtils.isBlank(sourceMessage)) {
 				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASH_OUT);
 			}
-			xmlResult = (XMLResult) subscriberCashOutInquiryHandler.handle(transactionDetails);
+			transactionRequestValidationService.validateCashOutInquiryDetails(transactionDetails);
+			String mfaTransaction = transactionDetails.getMfaTransaction();
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, transactionName, channelCode.getID()) == true) {
+				if(mfaTransaction != null
+						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
+									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
+					xmlResult = (XMLResult) subscriberCashOutInquiryHandler.handle(transactionDetails);
+				}
+				else{
+					log.info("mfaTransaction parameter is Invalid");
+				}
+			}else{
+				xmlResult = new XMLResult();
+				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+				xmlResult.setLanguage(language);
+				xmlResult.setTransactionTime(new Timestamp());
+				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
+			}
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT.equalsIgnoreCase(transactionName)) {
-			
 			transactionRequestValidationService.validateCashOutConfirmDetails(transactionDetails);
-			xmlResult = (XMLResult) subscriberCashOutConfirmHandler.handle(transactionDetails);
+			//xmlResult = (XMLResult) subscriberCashOutConfirmHandler.handle(transactionDetails);
+			String mfaTransaction = transactionDetails.getMfaTransaction();
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, transactionName, channelCode.getID()) == true) {
+				if(mfaTransaction != null
+						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
+									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
+					xmlResult = (XMLResult) subscriberCashOutConfirmHandler.handle(transactionDetails);
+				}
+				else{
+					log.info("mfaTransaction parameter is Invalid");
+				}
+			}else{
+				xmlResult = new XMLResult();
+				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+				xmlResult.setLanguage(language);
+				xmlResult.setTransactionTime(new Timestamp());
+				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
+			}
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM_INQUIRY.equalsIgnoreCase(transactionName)) {
 			

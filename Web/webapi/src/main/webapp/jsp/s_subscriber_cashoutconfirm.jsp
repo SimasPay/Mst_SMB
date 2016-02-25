@@ -4,14 +4,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>subscriber cashout confirm</title>
+<title>Subscriber to Agent Cashout Confirmation</title>
 </head>
 <body>
 <center>
-<h1>subscriber cashOut confirm</h1>
+<h1>Subscriber to Agent Cashout Confirmation</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Wallet" name="service" /> 
 <input type="hidden" value="CashOut" name="txnName" />
+<input type="hidden" value="Confirm" name="mfaTransaction" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -25,22 +26,17 @@
 		<td>SourcePhoneNumber</td>
 		<td><input type="text" name="sourceMDN" value="" /></td>
 	</tr>
-	<!-- <tr>
+	<tr>
+		<td>MFAOneTimePin</td>
+		<td><input type="text" name="mfaOtp" value="" /></td>
+	</tr>
+	 <tr>
 		<td>DestinationPhoneNumber</td>
 		<td><input type="text" name="destMDN" value="" /></td>
-	</tr> -->
-	<tr>
-		<td>AgentCode</td>
-		<td><input type="text" name="agentCode" value="" /></td>
-	</tr>	
+	</tr> 
 	<tr>
 		<td>ParentTransferId</td>
 		<td><input type="text" name="parentTxnID" value="" /></td>
-	</tr>
-	
-	<tr>
-		
-		<td><input type="hidden" name="bankID" value="" /></td>
 	</tr>
 	<tr>
 		<td>TransferId</td>
@@ -48,7 +44,7 @@
 	</tr>
 	<tr>
 		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
+		<td><input type="text" name="channelID" value="7" /></td>
 	</tr>
 	
 	<tr>

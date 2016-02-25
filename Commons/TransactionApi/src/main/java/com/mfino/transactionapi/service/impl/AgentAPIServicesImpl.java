@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.domain.ChannelCode;
 import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.MFSBiller;
 import com.mfino.exceptions.InvalidDataException;
@@ -19,6 +20,7 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
 import com.mfino.service.IntegrationPartnerMappingService;
+import com.mfino.service.MFAService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.agent.ProductReferralHandler;
@@ -116,13 +118,18 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	@Autowired
 	@Qualifier("ProductReferralHandlerImpl")
 	private ProductReferralHandler productReferralHandler;
-
+	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
  	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
 
 
 		String transactionName = transactionDetails.getTransactionName();
 		String sourceMessage = transactionDetails.getSourceMessage();
+		ChannelCode channelCode = transactionDetails.getCc();
 
 		if (ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION.equalsIgnoreCase(transactionName)) {
 			log.info("AgentAPIService :: handleRequest() TRANSACTION_SUBSCRIBERREGISTRATION");
@@ -138,13 +145,48 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			if (StringUtils.isBlank(sourceMessage)) {
 				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASH_IN);
 			}
-			xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
+			//xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
+			
+			String mfaTransaction = transactionDetails.getMfaTransaction();
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, transactionName, channelCode.getID()) == true) {
+				if(mfaTransaction != null
+						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
+									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
+					xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
+				}
+				else{
+					log.info("mfaTransaction parameter is Invalid");
+				}
+			}else{
+				xmlResult = new XMLResult();
+				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+				xmlResult.setLanguage(language);
+				xmlResult.setTransactionTime(new Timestamp());
+				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
+			}
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHIN.equalsIgnoreCase(transactionName)) {
 			log.info("AgentAPIService :: handleRequest() TRANSACTION_CASHIN ") ;
 
 			transactionRequestValidationService.validateCashInConfirmDetails(transactionDetails);
-			xmlResult = (XMLResult) agentCashInConfirmHandlerImpl.handle(transactionDetails);
+			//xmlResult = (XMLResult) agentCashInConfirmHandlerImpl.handle(transactionDetails);
+			String mfaTransaction = transactionDetails.getMfaTransaction();
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, transactionName, channelCode.getID()) == true) {
+				if(mfaTransaction != null
+						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
+									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
+					xmlResult = (XMLResult) agentCashInConfirmHandlerImpl.handle(transactionDetails);
+				}
+				else{
+					log.info("mfaTransaction parameter is Invalid");
+				}
+			}else{
+				xmlResult = new XMLResult();
+				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+				xmlResult.setLanguage(language);
+				xmlResult.setTransactionTime(new Timestamp());
+				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
+			}
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED_INQUIRY.equalsIgnoreCase(transactionName)) {
 			log.info("AgentAPIService :: handleRequest() TRANSACTION_CASHOUT_UNREGISTERED_INQUIRY");
@@ -245,7 +287,7 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			String terminalID = systemParametersService.getString(SystemParameterKeys.AIRTIME_PIN_PURCHASE_TERMINAL_ID);
 			String billerCode = systemParametersService.getString(SystemParameterKeys.AIRTIME_PIN_PURCHASE_BILLER_CODE);
 			transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE);			
-			transactionDetails.setBillerCode(billerCode) ;
+			transactionDetails.setBillerCode(billerCode); 
 			transactionDetails.setNarration(terminalID);
 			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE);
 

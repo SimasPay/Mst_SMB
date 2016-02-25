@@ -5,6 +5,7 @@
 
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
@@ -37,9 +39,11 @@ import com.mfino.fix.CmFinoFIX.CMSubscriberCashOutInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MFAService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutInquiryHandler;
@@ -85,13 +89,27 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
 	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
+	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+		
 	public Result handle(TransactionDetails transactionDetails)
 	{
-		log.info("Extracting data from transactionDetails in SubscriberCashOutInquiryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()
-				+"to"+transactionDetails.getDestMDN());
-		CMSubscriberCashOutInquiry subscriberCashOutInquiry = new CMSubscriberCashOutInquiry();
+		log.info("Begin SubscriberCashOutInquiryHandlerImpl :: handle method");
+		log.info("Extracting data from transactionDetails in SubscriberCashOutInquiryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()+"to"+transactionDetails.getDestMDN());
+		
+		XMLResult result = new TransferInquiryXMLResult();
+		transactionDetails.setSourcePocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 		ChannelCode cc = transactionDetails.getCc();
+		
+		CMSubscriberCashOutInquiry subscriberCashOutInquiry = new CMSubscriberCashOutInquiry();
+		
 		subscriberCashOutInquiry.setSourceMDN(transactionDetails.getSourceMDN());
+		subscriberCashOutInquiry.setDestMDN(transactionDetails.getDestMDN());
 		subscriberCashOutInquiry.setPartnerCode(transactionDetails.getPartnerCode());
 		subscriberCashOutInquiry.setPin(transactionDetails.getSourcePIN());
 		subscriberCashOutInquiry.setAmount(transactionDetails.getAmount());
@@ -100,9 +118,9 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		subscriberCashOutInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		subscriberCashOutInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		subscriberCashOutInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
-		log.info("Handling Subscriber CashOut Inquiry webapi request::From " + subscriberCashOutInquiry.getSourceMDN() + 
-				" To agent " + subscriberCashOutInquiry.getPartnerCode() + " For Amount = " + subscriberCashOutInquiry.getAmount());
-		XMLResult result = new TransferInquiryXMLResult();
+		//log.info("Handling Subscriber CashOut Inquiry webapi request::From " + subscriberCashOutInquiry.getSourceMDN() +" To agent " + subscriberCashOutInquiry.getPartnerCode() + " For Amount = " + subscriberCashOutInquiry.getAmount());
+		log.info("Handling Subscriber CashOut Inquiry webapi request::From " + subscriberCashOutInquiry.getSourceMDN() +" To agent " + subscriberCashOutInquiry.getDestMDN() + " For Amount = " + subscriberCashOutInquiry.getAmount());
+		
 
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberCashOutInquiry, subscriberCashOutInquiry.DumpFields());
 		subscriberCashOutInquiry.setTransactionID(transactionsLog.getID());
@@ -138,14 +156,16 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		pocketList.add(srcSubscriberPocket);
 		result.setPocketList(pocketList);
 
-		Partner destAgent = partnerService.getPartnerByPartnerCode(subscriberCashOutInquiry.getPartnerCode());
+		//Partner destAgent = partnerService.getPartnerByPartnerCode(subscriberCashOutInquiry.getPartnerCode());
+		Partner destAgent = partnerService.getPartner(subscriberCashOutInquiry.getDestMDN());
 		validationResult = transactionApiValidationService.validateAgentByPartnerType(destAgent);
 		if(validationResult.equals(CmFinoFIX.NotificationCode_DestinationAgentNotFound)){
-			log.info("Destination failed agent validations.validating if the destination is teller");
+			log.info("Destination agent failed validations.validating if the destination is teller");
 			validationResult= transactionApiValidationService.validateTellerByPartnerType(destAgent);
 		}
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			result.setPartnerCode(subscriberCashOutInquiry.getPartnerCode());
+			//result.setPartnerCode(subscriberCashOutInquiry.getPartnerCode());
+			result.setDestinationMDN(subscriberCashOutInquiry.getDestMDN());
 			validationResult = processValidationResultForDestinationAgent(validationResult);
 			result.setNotificationCode(validationResult);
 			return result;
@@ -161,13 +181,48 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT);
 		sc.setSourceMDN(srcSubscriberMDN.getMDN());
 		sc.setTransactionAmount(subscriberCashOutInquiry.getAmount());
-		sc.setMfsBillerCode(subscriberCashOutInquiry.getPartnerCode());
+		//sc.setMfsBillerCode(subscriberCashOutInquiry.getPartnerCode());
+		sc.setMfsBillerCode(destAgent.getPartnerCode());
 		sc.setTransactionLogId(subscriberCashOutInquiry.getTransactionID());
 		sc.setTransactionIdentifier(subscriberCashOutInquiry.getTransactionIdentifier());
 		if(destAgent.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_BranchOffice)){
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
 		}else{
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);//change to service
+		}
+		
+		BigDecimal minCashInValue = systemParametersService.getBigDecimal(SystemParameterKeys.MINIMUM_VALUE_OF_CASHIN);
+		//BigDecimal maxCashInValue = systemParametersService.getBigDecimal(SystemParameterKeys.MAXIMUM_VALUE_OF_CASHIN);
+		
+		if (minCashInValue.compareTo(transactionDetails.getAmount()) > 0) {
+			result.setMinAmount(minCashInValue);
+			//result.setMaxAmount(maxCashInValue);
+			result.setAmount(transactionDetails.getAmount());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_CashInAmountMustbeMinAmount);
+			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_CashInAmountMustbeMinAmount));
+			
+			return result;
+		}
+		
+		/*if (maxCashInValue.compareTo(transactionDetails.getAmount()) < 0) {
+			result.setMinAmount(minCashInValue);
+			result.setMaxAmount(maxCashInValue);
+			result.setAmount(transactionDetails.getAmount());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_CashInAmountMustbeMaxAmount);
+			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_CashInAmountMustbeMaxAmount));
+			
+			return result;
+		}*/
+		
+		BigDecimal cashInValueMulOf = systemParametersService.getBigDecimal(SystemParameterKeys.CASHIN_VALUE_MULTIPLES_OFF);
+		
+		if ( BigDecimal.ZERO.compareTo(transactionDetails.getAmount().remainder(cashInValueMulOf)) != 0 ) {
+			result.setMultiplesOff(cashInValueMulOf);
+			result.setAmount(transactionDetails.getAmount());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_CashInAmountMustbeMultiplesOff);
+			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_CashInAmountMustbeMultiplesOff));
+			
+			return result;
 		}
 		
 		Pocket destAgentPocket;
@@ -247,6 +302,9 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 			subscriberCashOutInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
+			
+			result.setMfaMode("OTP");
+			mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
 		}
 		if (!transactionResponse.isResult() && sctl!=null) 
 		{
@@ -264,6 +322,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
+		log.info("End SubscriberCashOutInquiryHandlerImpl :: handle method");
 		return result;
 	}
 }

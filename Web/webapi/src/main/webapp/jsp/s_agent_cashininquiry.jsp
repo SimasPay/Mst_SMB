@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Agent Cashin Inquiry</title>
+<title>Agent to Subscriber Cashin Inquiry</title>
 </head>
 <body>
 <center>
@@ -12,6 +12,7 @@
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="AgentServices" name="service" /> 
 <input type="hidden" value="CashInInquiry" name="txnName" />
+<input type="hidden" value="Inquiry" name="mfaTransaction" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -39,19 +40,8 @@
 	</tr>
 	<tr>
 		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
+		<td><input type="text" name="channelID" value="7" /></td>
 	</tr>
-	<tr>
-		
-		<td><input type="hidden" name="bankID" value="" /></td>
-	</tr>
-	
-<!-- 	<tr>
-		<td>destPocketCode</td>
-		<td><input type="text" name="destPocketCode" value="1" />(Emoney-1 ,Bank-2)</td>
-	</tr> -->
-	
-	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

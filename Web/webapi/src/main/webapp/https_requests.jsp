@@ -103,13 +103,13 @@
 	
 	<tr>
 		<td>
-			<a href="jsp/s_subscriber_cashoutinquiry.jsp"> Subscriber CashOut Inquiry</a>
+			<a href="jsp/s_subscriber_cashoutinquiry.jsp"> Subscriber_to_Agent_CashOut_Inquiry</a>
 		</td>
 	</tr>
 	
 	<tr>
 		<td>
-			<a href="jsp/s_subscriber_cashoutconfirm.jsp"> Subscriber CashOut confirm</a>
+			<a href="jsp/s_subscriber_cashoutconfirm.jsp"> Subscriber_to_Agent_CashOut_Confirm</a>
 		</td>
 	</tr>
 	<tr>

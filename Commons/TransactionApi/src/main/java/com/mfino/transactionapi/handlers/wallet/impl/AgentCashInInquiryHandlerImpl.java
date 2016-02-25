@@ -34,6 +34,7 @@ import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MFAService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
@@ -86,15 +87,16 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
 	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	public Result handle(TransactionDetails transactionDetails) 
 	{
-		log.info("Extracting data from transactionDetails in AgentCashInInquiryHandlerImpl from sourceMDN: "+
-				transactionDetails.getSourceMDN()+"to"+transactionDetails.getDestMDN());
+		log.info("Extracting data from transactionDetails in AgentCashInInquiryHandlerImpl from sourceMDN: "+ transactionDetails.getSourceMDN()+"to"+transactionDetails.getDestMDN());
 		
-		//transactionDetails.setDestinationPocketId(Long.parseLong("1"));
-		//transactionDetails.setDestinationPocketId(CmFinoFIX.PocketType_LakuPandai.longValue());
-		transactionDetails.setDestPocketCode(CmFinoFIX.PocketType_LakuPandai.toString());
-		transactionDetails.setSystemIntiatedTransaction(true);
+		transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+		//transactionDetails.setSystemIntiatedTransaction(true);
 		
 		CMAgentCashInInquiry agentCashinInquiry = new CMAgentCashInInquiry();
 
@@ -266,7 +268,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		cashIn.setUICategory(CmFinoFIX.TransactionUICategory_Cashin_At_Agent);
 		cashIn.setServiceChargeTransactionLogID(sctl.getID());
 		cashIn.setTransactionIdentifier(agentCashinInquiry.getTransactionIdentifier());
-		cashIn.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
+		//cashIn.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		
 		log.info("sending request to backend for processing");
 		CFIXMsg response = super.process(cashIn);
@@ -285,6 +287,9 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			cashIn.setTransactionID(transactionResponse.getTransactionId());			
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
+			
+			result.setMfaMode("OTP");
+			mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
 		}
 
 		result.setSctlID(sctl.getID());

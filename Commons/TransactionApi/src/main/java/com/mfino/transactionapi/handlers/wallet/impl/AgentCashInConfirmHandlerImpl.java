@@ -25,6 +25,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.CommodityTransferService;
+import com.mfino.service.MFAService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
@@ -82,16 +83,21 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
 	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	public Result handle(TransactionDetails transactionDetails)  {
 		log.info("Extracting data from transactionDetails in AgentCashInConfirmHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()+" to "+transactionDetails.getDestMDN());
 		
-		transactionDetails.setDestPocketCode(CmFinoFIX.PocketType_LakuPandai.toString());
+		transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 		
 		ChannelCode cc = transactionDetails.getCc();
 		CMAgentCashInConfirm agentcashinconfirm = new CMAgentCashInConfirm();
 		boolean confirmed = false;
 		confirmed = Boolean.parseBoolean(transactionDetails.getConfirmString());
 		String destMDN = subscriberService.normalizeMDN(transactionDetails.getDestMDN());
+		String mfaOneTimeOTP = transactionDetails.getTransactionOTP();
 		
 		agentcashinconfirm.setSourceMDN(transactionDetails.getSourceMDN());
 		agentcashinconfirm.setDestMDN(destMDN);
@@ -130,7 +136,6 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-
 
 		Pocket destSubscriberPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
 		validationResult = transactionApiValidationService.validateDestinationPocket(destSubscriberPocket);
@@ -173,6 +178,14 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		} else {
 			log.error("Could not find sctl with parentTransaction ID: "+agentcashinconfirm.getParentTransactionID());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
+			return result;
+		}
+		
+		if(!(mfaService.isValidOTP(mfaOneTimeOTP , sctl.getID(), srcSubscriberMDN.getMDN()))){
+			log.info("Invalid OTP Entered");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+			result.setSctlID(sctl.getID());
+			result.setMessage("Invalid OTP Entered");
 			return result;
 		}
 		

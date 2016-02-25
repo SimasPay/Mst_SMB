@@ -8,10 +8,11 @@
 </head>
 <body>
 <center>
-<h1>Agent cashin confirm</h1>
+<h1>Agent to Subsscriber cashin confirm</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="AgentServices" name="service" /> 
 <input type="hidden" value="CashIn" name="txnName" />
+<input type="hidden" value="Confirm" name="mfaTransaction" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -26,6 +27,10 @@
 		<td><input type="text" name="sourceMDN" value="" /></td>
 	</tr>
 	<tr>
+		<td>MFAOneTimePin</td>
+		<td><input type="text" name="mfaOtp" value="" /></td>
+	</tr>
+	<tr>
 		<td>DestinationPhoneNumber</td>
 		<td><input type="text" name="destMDN" value="" /></td>
 	</tr>
@@ -33,22 +38,14 @@
 		<td>parentTxnID</td>
 		<td><input type="text" name="parentTxnID" value="" /></td>
 	</tr>
-	
-	<tr>
-		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
-	</tr>
-	
 	<tr>
 		<td>TransferId</td>
 		<td><input type="text" name="transferID" value="" /></td>
 	</tr>
-	
 	<tr>
-		
-		<td><input type="hidden" name="bankID" value="" /></td>
+		<td>channelId</td>
+		<td><input type="text" name="channelID" value="7" /></td>
 	</tr>
-	
 	<tr>
 		<td>Confirmation (true/false)</td>
 		<td><input type="text" name="confirmed" value="true" /></td>
