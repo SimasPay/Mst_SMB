@@ -22910,6 +22910,38 @@ ERROR:Mismatch of  mdn type and app type
 				</C1>
 			</value>
 			
+			
+			<value description="ProductReferralSuccess" enum="2133">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Product  Referral Success</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Product  Referral Success</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			
+			
+			<value description="ProductReferralFailed" enum="2134">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Product Referral Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Product Referral Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

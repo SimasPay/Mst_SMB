@@ -446,4 +446,9 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
     	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
     </bean>
     
+    <bean id="productReferralDAO" class="com.mfino.dao.ProductReferralDAO" >
+    	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
+    </bean>
+    
+    
 </beans>
