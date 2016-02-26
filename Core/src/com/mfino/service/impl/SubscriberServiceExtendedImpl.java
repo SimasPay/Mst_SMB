@@ -1088,8 +1088,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
 		Pocket bankPocket = null;
 		Pocket emoneyPocket = null;
+		Pocket lakupandaiPocket = null;
 		boolean bankPocketFound = false;
 		boolean emoneyPocketFound = false;
+		boolean lakupandaiPocketFound = false;
 		Long groupID = null;
 		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
@@ -1121,6 +1123,18 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				bankPocket = pocket;
 				continue;
 			}
+			if (!lakupandaiPocketFound
+					&& pocket.getPocketTemplate().getType()
+							.equals(CmFinoFIX.PocketType_LakuPandai)
+					&& pocket.getCardPAN() != null
+					&& (pocket.getStatus()
+							.equals(CmFinoFIX.PocketStatus_Active) || pocket
+							.getStatus().equals(
+									CmFinoFIX.PocketStatus_Initialized))) {
+				lakupandaiPocketFound = true;
+				lakupandaiPocket = pocket;
+				continue;
+			}			
 			if (!emoneyPocketFound
 					&& pocket.getPocketTemplate().getType()
 							.equals(CmFinoFIX.PocketType_SVA)
@@ -1137,7 +1151,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				emoneyPocket = pocket;
 				continue;
 			}
-			if (emoneyPocketFound && bankPocketFound) {
+			if (emoneyPocketFound && bankPocketFound && lakupandaiPocketFound) {
 				break;
 			}
 		}
@@ -1164,6 +1178,14 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						+ bankPocket.getID() + " subscriberid"
 						+ subscriber.getID());
 			}
+		}
+		
+		if (lakupandaiPocketFound && lakupandaiPocket != null) {
+			lakupandaiPocket.setActivationTime(new Timestamp());
+			lakupandaiPocket.setIsDefault(true);
+			lakupandaiPocket.setStatus(CmFinoFIX.PocketStatus_Active);
+			lakupandaiPocket.setStatusTime(new Timestamp());
+			lakupandaiPocket.setUpdatedBy(subscriberName);
 		}
 
 		if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
@@ -1234,6 +1256,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					.createPocket(svaPocketTemplate, subscriberMDN,
 							CmFinoFIX.PocketStatus_Active, true, cardPan);
 			}
+		}
+		if (lakupandaiPocketFound && lakupandaiPocket != null) {
+			pocketDao.save(lakupandaiPocket);
 		}
 		subscriberDao.save(subscriber);
 		subscriberMdnDao.save(subscriberMDN);
