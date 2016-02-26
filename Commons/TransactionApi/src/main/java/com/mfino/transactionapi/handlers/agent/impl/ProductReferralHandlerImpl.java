@@ -134,7 +134,7 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 		result.setEmail(transactionDetails.getEmail());
 		result.setProductDesired(transactionDetails.getProductDesired());
 		result.setOthers(transactionDetails.getOthers());
-
+		result.setTransID(productReferral.getID().toString());
 		return result;
 										
 	}		

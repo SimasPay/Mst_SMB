@@ -3,18 +3,20 @@
  */
 package com.mfino.transactionapi.result.xmlresulttypes.subscriber;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.mfino.result.XMLResult;
 
 /**
- * @author Admin
+ * @author Harihara
  *
  */
-public class ProductReferralXMLResult extends XMLResult{
+public class ProductReferralXMLResult extends XMLResult {
 
-	
-	
 	private String agentMDN;
+
 	private String fullName;
+
 	/**
 	 * @return the agentMDN
 	 */
@@ -23,7 +25,8 @@ public class ProductReferralXMLResult extends XMLResult{
 	}
 
 	/**
-	 * @param agentMDN the agentMDN to set
+	 * @param agentMDN
+	 *            the agentMDN to set
 	 */
 	public void setAgentMDN(String agentMDN) {
 		this.agentMDN = agentMDN;
@@ -37,7 +40,8 @@ public class ProductReferralXMLResult extends XMLResult{
 	}
 
 	/**
-	 * @param fullName the fullName to set
+	 * @param fullName
+	 *            the fullName to set
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
@@ -51,7 +55,8 @@ public class ProductReferralXMLResult extends XMLResult{
 	}
 
 	/**
-	 * @param subscriberMDN the subscriberMDN to set
+	 * @param subscriberMDN
+	 *            the subscriberMDN to set
 	 */
 	public void setSubscriberMDN(String subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
@@ -65,7 +70,8 @@ public class ProductReferralXMLResult extends XMLResult{
 	}
 
 	/**
-	 * @param email the email to set
+	 * @param email
+	 *            the email to set
 	 */
 	public void setEmail(String email) {
 		this.email = email;
@@ -79,7 +85,8 @@ public class ProductReferralXMLResult extends XMLResult{
 	}
 
 	/**
-	 * @param productDesired the productDesired to set
+	 * @param productDesired
+	 *            the productDesired to set
 	 */
 	public void setProductDesired(String productDesired) {
 		this.productDesired = productDesired;
@@ -93,7 +100,8 @@ public class ProductReferralXMLResult extends XMLResult{
 	}
 
 	/**
-	 * @param others the others to set
+	 * @param others
+	 *            the others to set
 	 */
 	public void setOthers(String others) {
 		this.others = others;
@@ -103,18 +111,22 @@ public class ProductReferralXMLResult extends XMLResult{
 	private String email;
 	private String productDesired;
 	private String others;
-	
+
 	public ProductReferralXMLResult() {
 		super();
 	}
-	
-	public void render() throws Exception{
+
+	public void render() throws Exception {
 		writeStartOfDocument();
 
 		super.render();
-
+		if (StringUtils.isNotBlank(getTransID())) {
+			getXmlWriter().writeStartElement("transID");
+			getXmlWriter().writeCharacters(getTransID(), false);
+			getXmlWriter().writeEndElement();
+		}
 		writeEndOfDocument();
-	
-    }
+
+	}
 
 }
