@@ -283,6 +283,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setSubscriberType(subscriberType);
 			result.setUserAPIKey(srcSubscriberMDN.getUserAPIKey());
 			result.setIsBank(isBankTypePocket);
+			result.setName(srcSubscriberMDN.getSubscriber().getFirstName());
 			
 			if(srcSubscriberMDN.getWrongPINCount() > 0){
 				log.info("setting wrong pin count to 0, and saving subscribermdn status");

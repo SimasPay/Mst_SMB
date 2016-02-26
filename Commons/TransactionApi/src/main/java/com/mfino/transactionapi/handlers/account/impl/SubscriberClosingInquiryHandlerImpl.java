@@ -36,6 +36,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
+import com.mfino.result.XMLResult;
 import com.mfino.service.MFAService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PartnerService;
@@ -48,6 +49,7 @@ import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.SubscriberClosingInquiryHandler;
+import com.mfino.transactionapi.result.xmlresulttypes.XMLError;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.SubscriberAccountClosingXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -123,6 +125,23 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		TransactionsLog transactionsLog = null;
 		ServiceChargeTransactionLog sctl = null;
 		
+		ChannelCode channelCode = transactionDetails.getCc();
+		
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		
+		if(!mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
+			
+			XMLResult xmlResult = null;
+			
+			xmlResult = new XMLError();
+			xmlResult.setLanguage(language);
+			xmlResult.setTransactionTime(new Timestamp());
+			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
+			
+			return xmlResult;
+			
+		}
+		
 		CMJSSubscriberClosingInquiry subscriberClosing = new CMJSSubscriberClosingInquiry();
 		subscriberClosing.setAgentMDN(transactionDetails.getSourceMDN());
 		subscriberClosing.setDestMDN(transactionDetails.getDestMDN());
@@ -186,7 +205,6 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							
 							Transaction transaction = null;
 							ServiceCharge serviceCharge = new ServiceCharge();
-							ChannelCode channelCode   =	transactionDetails.getCc();
 							
 							if(null != agentMDN) {
 							

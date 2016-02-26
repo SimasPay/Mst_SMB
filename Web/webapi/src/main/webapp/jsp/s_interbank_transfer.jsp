@@ -53,7 +53,13 @@
 	</tr>
 	<tr>
 		<td>SourcePocketCode</td>
-		<td><input type="text" name="sourcePocketCode" value=""/><em>1-emoney, 2-bank</em></td>
+		<td>
+		<select name="sourcePocketCode">
+	  				<option value="1">E-Money</option>
+	  				<option value="2">Bank</option>
+	  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td>MFAOneTimePin</td>

@@ -14,7 +14,20 @@ public class LoginXMLResult extends XMLResult {
 	private boolean isValidVersion;
 	private String userAPIKey;
 	private boolean isBank;
+	private String name;
 	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 	public boolean getIsBank() {
 		return isBank;
 	}
@@ -110,6 +123,15 @@ public class LoginXMLResult extends XMLResult {
 			getXmlWriter().writeCharacters("false",false);
 			getXmlWriter().writeEndElement();
 		}
+		
+		if(StringUtils.isNotBlank(name)){
+			
+			getXmlWriter().writeStartElement("name");
+			getXmlWriter().writeCharacters(name,false);
+			getXmlWriter().writeEndElement();
+			
+		}
+		
 		writeEndOfDocument();
 	}
 

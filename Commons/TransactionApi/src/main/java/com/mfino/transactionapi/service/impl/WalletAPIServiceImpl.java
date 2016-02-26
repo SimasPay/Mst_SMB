@@ -134,11 +134,11 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	private TransactionRequestValidationService transactionRequestValidationService;
 	
 	@Autowired
-	@Qualifier("NewInterBankTransferInquiryHandlerImpl")
+	@Qualifier("InterBankTransferInquiryHandlerImpl")
 	private InterBankTransferInquiryHandler interBankTransferInquiryHandler;
 	
 	@Autowired
-	@Qualifier("NewInterBankTransferHandlerImpl")
+	@Qualifier("InterBankTransferHandlerImpl")
 	private InterBankTransferHandler interBankTransferHandler;
 	
 	@Autowired

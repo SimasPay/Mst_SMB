@@ -3829,7 +3829,7 @@
 			<field name="DestBankCode" required="Y"/>
 			<field name="SourceAccountName" required="N"/>
 			<field name="DestAccountName" required="N"/>
-			<field name="SourceAccountNumber" required="Y"/>
+			<field name="SourceAccountNumber" required="N"/>
 			<field name="DestAccountNumber" required="Y"/>
 			<field name="TransferID" required="N"/>
 			<field name="SctlId" required="N"/>
@@ -3847,7 +3847,7 @@
 			<field name="DestBankCode" required="Y"/>
 			<field name="SourceAccountName" required="N"/>
 			<field name="DestAccountName" required="N"/>
-			<field name="SourceAccountNumber" required="Y"/>
+			<field name="SourceAccountNumber" required="N"/>
 			<field name="DestAccountNumber" required="Y"/>
 			<field name="TransferID" required="N"/>
 			<field name="SctlId" required="N"/>
@@ -7329,7 +7329,7 @@
 			<field name="DestBankName" required="N"/>
 			<field name="SourceAccountName" required="N"/>
 			<field name="DestAccountName" required="N"/>
-			<field name="SourceAccountNumber" required="Y"/>
+			<field name="SourceAccountNumber" required="N"/>
 			<field name="DestAccountNumber" required="Y"/>
 			<field name="Amount" required="Y"/>
 			<field name="Charges" required="Y"/>

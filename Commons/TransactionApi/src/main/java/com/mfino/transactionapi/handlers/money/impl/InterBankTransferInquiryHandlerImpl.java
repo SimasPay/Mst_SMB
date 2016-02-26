@@ -143,7 +143,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
  		validationResult=transactionApiValidationService.validateSubscriberAsDestination(destMDN);
 		addCompanyANDLanguageToResult(sourceMDN, result);
 
-		Pocket destPocket = pocketService.getDefaultPocket(destMDN, "2");
+		Pocket destPocket = pocketService.getDefaultPocket(destMDN, String.valueOf(CmFinoFIX.PocketType_BankAccount));
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");

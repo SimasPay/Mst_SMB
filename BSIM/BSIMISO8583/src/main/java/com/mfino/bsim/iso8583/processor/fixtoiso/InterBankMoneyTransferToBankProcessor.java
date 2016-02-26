@@ -62,7 +62,9 @@ public class InterBankMoneyTransferToBankProcessor extends BankRequestProcessor 
 			if(msg.getProcessingCode()!=null){
 				destAcccountType = msg.getProcessingCode();
 			}
-
+			
+			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);
+			
 			long amount = msg.getAmount().longValue()*(100);
 			isoMsg.set(4, StringUtilities.leftPadWithCharacter(amount + "", 18, "0")); // 4	
 

@@ -314,13 +314,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		if (existingSubscriberMDN == null || isUnRegistered) {
 			
-			if (isUnRegistered) {
-				
-				Long regPartnerID = subscriber.getRegisteringPartnerID();
-				subscriberMDN = existingSubscriberMDN;
-				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringPartnerID(regPartnerID);
-			}
+			Long regPartnerID = subscriber.getRegisteringPartnerID();
+			subscriberMDN = existingSubscriberMDN;
+			subscriber = subscriberMDN.getSubscriber();
+			subscriber.setRegisteringPartnerID(regPartnerID);
 
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
@@ -363,7 +360,15 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setStatus(subscriberRegistration.getSubscriberStatus());
 			}
 			
-			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			if(StringUtils.isNotBlank(subscriber.getEmail())) {
+			
+				subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+				
+			} else {
+				
+				subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			}
+			
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
 			subscriber.setStatusTime(new Timestamp());
 			subscriber.setCreatedBy(createdByName);
@@ -371,13 +376,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCreateTime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			
-			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
+			/*KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
 			
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			subscriber.setKYCLevelByKYCLevel(kycLevel);*/
 			Long groupID = null;
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			
