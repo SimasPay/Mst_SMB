@@ -10,8 +10,6 @@ insert into mfa_transactions_info VALUES (mfa_transactions_info_ID_SEQ.nextval,1
 insert into mfa_transactions_info VALUES (mfa_transactions_info_ID_SEQ.nextval,1,sysdate,'System',sysdate,'System',1,(select id from service where SERVICENAME = 'Wallet' and mspid=1),(select id from transaction_type where TRANSACTIONNAME = 'CashOut' and mspid=1),(select id from channel_code where CHANNELNAME = 'WebAPI'),1);
 insert into mfa_transactions_info VALUES (mfa_transactions_info_ID_SEQ.nextval,1,sysdate,'System',sysdate,'System',1,(select id from service where SERVICENAME = 'Wallet' and mspid=1),(select id from transaction_type where TRANSACTIONNAME = 'CashOutInquiry' and mspid=1),(select id from channel_code where CHANNELNAME = 'WebAPI'),1);
 
-INSERT INTO role_permission (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, Role, Permission) VALUES ('1',sysdate,'system',sysdate,'system','1','10228');
-
 update ENUM_TEXT set DISPLAYTEXT='Perorangan' where TAGID=6079 and  ENUMCODE=4;
 update ENUM_TEXT set DISPLAYTEXT='Badan Usaha' where TAGID=6079 and  ENUMCODE=5;
 
