@@ -346,7 +346,7 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 		
 		else if (ServiceAndTransactionConstants.PRODUCT_REFERRAL.equalsIgnoreCase(transactionName)) {
 						
-			//transactionRequestValidationService.validateProductReferralDetails(transactionDetails);
+			transactionRequestValidationService.validateProductReferralDetails(transactionDetails);
 			xmlResult = (XMLResult) productReferralHandler.handle(transactionDetails);
 		}
 		

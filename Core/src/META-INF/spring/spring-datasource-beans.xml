@@ -324,6 +324,7 @@
 				<value>com/mfino/domain/RProvinceRegion.hbm.xml</value>
 				<value>com/mfino/domain/RDistrict.hbm.xml</value>
 				<value>com/mfino/domain/RVillage.hbm.xml</value>
+				<value>com/mfino/domain/RProductReferral.hbm.xml</value>
 			</list>
 		</property>
 

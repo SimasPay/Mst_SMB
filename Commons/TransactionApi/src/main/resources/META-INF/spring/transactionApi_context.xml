@@ -110,7 +110,8 @@
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.payment.impl"/>
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.mobileshopping.impl"/>
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.nfc.impl"/>
-		<context:component-scan base-package="com.mfino.transactionapi.service.impl"/>		
+		<context:component-scan base-package="com.mfino.transactionapi.service.impl"/>
+		<context:component-scan base-package="com.mfino.transactionapi.handlers.agent.impl"/>		
 
 		<!-- Exposing handlers as OSGI services.-->
 		
