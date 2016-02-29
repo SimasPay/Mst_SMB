@@ -314,10 +314,12 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		if (existingSubscriberMDN == null || isUnRegistered) {
 			
-			Long regPartnerID = subscriber.getRegisteringPartnerID();
-			subscriberMDN = existingSubscriberMDN;
-			subscriber = subscriberMDN.getSubscriber();
-			subscriber.setRegisteringPartnerID(regPartnerID);
+			if (isUnRegistered) {
+				Long regPartnerID = subscriber.getRegisteringPartnerID();
+				subscriberMDN = existingSubscriberMDN;
+				subscriber = subscriberMDN.getSubscriber();
+				subscriber.setRegisteringPartnerID(regPartnerID);
+			}
 
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
@@ -376,13 +378,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCreateTime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			
-			/*KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
+			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
 			
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			
-			subscriber.setKYCLevelByKYCLevel(kycLevel);*/
+			subscriber.setKYCLevelByKYCLevel(kycLevel);
 			Long groupID = null;
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			
@@ -399,7 +401,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			else {
 				
-				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+				kycLevelNo = kycLevel.getKYCLevel();
 			}
 			
 			PocketTemplate lakuPandaiTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
