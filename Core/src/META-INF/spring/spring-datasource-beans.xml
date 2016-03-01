@@ -325,6 +325,8 @@
 				<value>com/mfino/domain/RDistrict.hbm.xml</value>
 				<value>com/mfino/domain/RVillage.hbm.xml</value>
 				<value>com/mfino/domain/RProductReferral.hbm.xml</value>
+				<value>com/mfino/domain/RMonthlyBalance.hbm.xml</value>
+				<value>com/mfino/domain/RAgentCommissionFee.hbm.xml</value>
 			</list>
 		</property>
 

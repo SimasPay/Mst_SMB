@@ -184,6 +184,9 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		if (e.getIsSystemPocket() != null) {
 			p.setIsSystemPocket(e.getIsSystemPocket());
 		}
+		if (e.getInterestRate() != null) {
+			p.setInterestRate(e.getInterestRate());
+		}
 	}
 
 	private void updateMessage(PocketTemplate p,
@@ -305,6 +308,9 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		}
 		if (p.getIsSystemPocket() != null) {
 			entry.setIsSystemPocket(p.getIsSystemPocket());
+		}
+		if (p.getInterestRate() != null) {
+			entry.setInterestRate(p.getInterestRate());
 		}
 	}
 

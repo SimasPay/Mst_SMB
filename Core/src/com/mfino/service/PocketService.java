@@ -105,5 +105,7 @@ public interface PocketService {
 
     public Pocket getPocketAferEvicting(Pocket pocket);
     
-	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist);    
+	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist); 
+	
+	public List<Object[]> getLakuPandaiPockets();
 }

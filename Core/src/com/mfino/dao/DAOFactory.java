@@ -314,11 +314,17 @@ public class DAOFactory {
 	
 	private ProductReferralDAO productReferralDAO;
 	
+	private MonthlyBalanceDAO monthlyBalanceDAO;	
+	
+	private AgentCommissionFeeDAO agentCommissionFeeDAO;
+	
 	public ProductReferralDAO getProductReferralDAO() {
 		productReferralDAO=new ProductReferralDAO();		
 		productReferralDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return productReferralDAO;
 	}
+	
+	
 	
 	public RetiredCardPANInfoDAO getRetiredCardPANInfoDAO() {
 		retiredCardPANInfoDAO = new RetiredCardPANInfoDAO();
@@ -1307,5 +1313,17 @@ public class DAOFactory {
 		villageDAO = new VillageDAO();
 		villageDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return villageDAO;
+	}
+	
+	public MonthlyBalanceDAO getMonthlyBalanceDAO() {
+		monthlyBalanceDAO = new MonthlyBalanceDAO();
+		monthlyBalanceDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return monthlyBalanceDAO;
+	}
+	
+	public AgentCommissionFeeDAO getAgentCommissionFeeDAO() {
+		agentCommissionFeeDAO = new AgentCommissionFeeDAO();
+		agentCommissionFeeDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return agentCommissionFeeDAO;
 	}
 }

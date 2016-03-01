@@ -222,6 +222,15 @@ Ext.extend(mFino.widget.PocketIssuerForm, Ext.FormPanel, {
                     allowBlank: false,
                     emptyText:_('Ex:^[0-9]{0,14}$ 14 digit no'),
                     name: CmFinoFIX.message.JSPocketTemplate.Entries.RegularExpression._name
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: _('Interest Rate (%PA)'),
+                    itemId:'interestRate',
+                    anchor:'95%',
+                    labelSeparator:':',
+                    allowBlank: false,
+                    name: CmFinoFIX.message.JSPocketTemplate.Entries.InterestRate._name
                 }
                 ]
             }

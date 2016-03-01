@@ -1,6 +1,7 @@
 package com.mfino.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -42,6 +43,13 @@ public class BookingDatedBalanceServiceImpl implements
 		BookingDatedBalanceDAO bookingDatedBalanceDAO = DAOFactory
 				.getInstance().getBookingDatedBalanceDao();
 		return bookingDatedBalanceDAO.deleteBookingDatedEntries(date);
+	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public List<BookingDatedBalance> getDailyBalanceForPocket(Long pocketId, Date startDate, Date endDate) {
+		BookingDatedBalanceDAO bookingDatedBalanceDAO = DAOFactory
+				.getInstance().getBookingDatedBalanceDao();
+		return bookingDatedBalanceDAO.getDailyBalanceForPocket(pocketId, startDate, endDate);
 	}
 
 }

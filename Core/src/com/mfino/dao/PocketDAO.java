@@ -264,5 +264,14 @@ public class PocketDAO extends BaseDAO<Pocket> {
 	    }
 	    or.add(Restrictions.in(propertyName, list));
 	    criteria.add(or);
-	  }	
+	  }
+	 
+	 public List<Object[]> getLakuPandaiPockets() {
+
+		 String sql= "select ID, MDNID from Pocket where PocketTemplateID in (select ID from PocketTemplate where Type = :pocketType)"; 
+		 Query queryObj = getSession().createQuery(sql);
+		 queryObj.setParameter("pocketType", CmFinoFIX.PocketType_LakuPandai);
+		 List<Object[]> results = queryObj.list();
+		 return results;
+	}
 }

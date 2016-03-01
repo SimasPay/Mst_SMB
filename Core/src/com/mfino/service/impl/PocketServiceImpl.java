@@ -972,4 +972,8 @@ public class PocketServiceImpl implements PocketService{
 			return null;
 		}
 	}
+	
+	public List<Object[]> getLakuPandaiPockets() {
+		return pocketDao.getLakuPandaiPockets();
+	}
 }

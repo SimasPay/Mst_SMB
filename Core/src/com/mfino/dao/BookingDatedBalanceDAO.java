@@ -62,4 +62,16 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 		List<BookingDatedBalance> list = criteria.list();			
 		return list;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<BookingDatedBalance> getDailyBalanceForPocket(Long pocketId, Date startDate, Date endDate) {
+		List<BookingDatedBalance> result = null;
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocketId));
+		criteria.add(Restrictions.ge(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, startDate));
+		criteria.add(Restrictions.le(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, startDate));
+		criteria.addOrder(Order.asc(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate));
+		result = criteria.list();
+		return result;
+	}
 }

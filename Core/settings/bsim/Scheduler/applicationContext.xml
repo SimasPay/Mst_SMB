@@ -414,6 +414,21 @@
 		<property name="cronExpression" value="0 0 1 * * ?" />     
     </bean>
     
+    <!-- For constructing Booking dated value -->
+    <bean id="AvgMonthlyBalanceService" class="com.mfino.scheduler.service.impl.AverageMonthlyBalanceServiceImpl"> 
+    	<property name="txManager" ref="txManager"/>
+    </bean>
+    <bean id="AvgMonthlyBalanceJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="AvgMonthlyBalanceService" />
+        <property name="targetMethod" value="calculateAverageMonthlyBalanceForLakupandai" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="AvgMonthlyBalanceTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="AvgMonthlyBalanceJob" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />     
+    </bean>    
+    
 	<!-- All triggers need to be added here to work -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
@@ -426,19 +441,20 @@
                 <ref bean="retirePocketsTrigger"/>
                 <ref bean="activationMsgTrigger"/>
                 <ref bean="forceGraveTrigger"/>
-            	 
+                <ref bean="bdvTrigger"/>   
+    	        <ref bean="updateCollectorPocketsTrigger"/>
+        	    <ref bean="retryCollectorPocketsTrigger"/>
+            	<ref bean="retryFailedCollectorPocketsTrigger"/>
+            	<ref bean="updatePocketBalancesFromLedgerTrigger"/>
+            	<ref bean="AvgMonthlyBalanceTrigger"/>
+            	
             <!-- <ref bean="settlementConfigUpdateTrigger"/>
-	             <ref bean="partnerServiceSettlementTrigger"/>
-    	         <ref bean="updateCollectorPocketsTrigger"/>
-        	     <ref bean="retryCollectorPocketsTrigger"/>
-            	 <ref bean="retryFailedCollectorPocketsTrigger"/>
+            	 <ref bean="partnerServiceSettlementTrigger"/> 
              	 <ref bean="fundReimburseTrigger"/>
 	             <ref bean="processBulkTransferTrigger"/>
     	         <ref bean="tellerEMoneyClearanceTrigger"/>
              	 <ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
              	 <ref bean="reverseFundsTrigger"/>
-				 <ref bean="updatePocketBalancesFromLedgerTrigger"/>
-                 <ref bean="bdvTrigger"/>                
                  <ref bean="bulkPendingResolveToolTrigger"/>		
             -->		
              	 

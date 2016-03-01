@@ -152,6 +152,13 @@ Ext.extend(mFino.widget.PocketIssuerViewForm, Ext.FormPanel, {
                     labelSeparator : ':',
                     anchor : '95%',
                     name: CmFinoFIX.message.JSPocketTemplate.Entries.RegularExpression._name
+                },
+                {
+                    xtype : 'displayfield',
+                    fieldLabel: _('Interest Rate (%PA)'),
+                    labelSeparator : ':',
+                    anchor : '95%',
+                    name: CmFinoFIX.message.JSPocketTemplate.Entries.InterestRate._name
                 }
                 ]
             }
