@@ -148,7 +148,7 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			//xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
 			
 			String mfaTransaction = transactionDetails.getMfaTransaction();
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, transactionName, channelCode.getID()) == true) {
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CASHIN, channelCode.getID()) == true) {
 				if(mfaTransaction != null
 						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
 									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){

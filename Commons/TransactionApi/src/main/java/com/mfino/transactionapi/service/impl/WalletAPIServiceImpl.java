@@ -215,7 +215,7 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			}
 			transactionRequestValidationService.validateCashOutInquiryDetails(transactionDetails);
 			String mfaTransaction = transactionDetails.getMfaTransaction();
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, transactionName, channelCode.getID()) == true) {
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, ServiceAndTransactionConstants.TRANSACTION_CASHOUT, channelCode.getID()) == true) {
 				if(mfaTransaction != null
 						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
 									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
