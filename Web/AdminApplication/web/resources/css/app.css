@@ -985,3 +985,9 @@ body.x-body-masked .x-window-plain .x-window-mc {
 font:14px tahoma, arial, helvetica, sans-serif;
 color:red;
 }
+.mfino-button-upgrade {
+    background-image:url(../images/subscriber_upgrade_approve1.png) !important;
+}
+.mfino-button-upgrade-approve {
+    background-image:url(../images/upgrade-approve-16.png) !important;
+}

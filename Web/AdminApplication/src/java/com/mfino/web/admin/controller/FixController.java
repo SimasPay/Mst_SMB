@@ -649,6 +649,11 @@ public class FixController {
 	@Autowired
 	@Qualifier("VillageProcessorImpl")
 	private VillageProcessor villageProcessor;
+	
+	@Autowired
+	@Qualifier("SubscriberUpgradeProcessorImpl")
+	private SubscriberUpgradeProcessor subscriberUpgradeProcessor;
+
 
 	
 	@RequestMapping("/fix.htm")
@@ -1262,6 +1267,9 @@ public class FixController {
 			}else if(msgClassName.equals(CMJSVillage.class.getName())){
 				fixProcessor = villageProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSVillage);
+			}else if (msgClassName.equals(CmFinoFIX.CMJSSubscriberUpgrade.class.getName())) {
+				fixProcessor = subscriberUpgradeProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberUpgrade);
 			}
 			
 			/*

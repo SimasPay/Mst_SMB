@@ -876,6 +876,11 @@
 				<field name="KTPDocumentPath" required="N" />
 				<field name="SubscriberFormPath" required="N" />
 				<field name="SupportingDocumentPath" required="N" />
+				<field name="UpgradeAcctStatus" required="N" />
+				<field name="UpgradeAcctApprovedBy" required="N" />
+				<field name="UpgradeAcctTime" required="N" />
+				<field name="UpgradeAcctComments" required="N" />
+				<field name="UpgradeAcctStatusText" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplate" msgtype="1040" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -5594,7 +5599,11 @@
 			<field name="ProductDesired" required="N" />
 			<field name="Others" required="N" />
 	</message>	
-		
+		<message name="JSSubscriberUpgrade" msgtype="1777" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+			<field name="MDNID" required="Y"/>
+			<field name="UpgradeAcctComments" required="N"/>
+			<field name="UpgradeAcctStatus" required="N"/>
+		</message>
 		
 	</messages>
 	<records>
@@ -5994,6 +6003,10 @@
 			<field name="SubscriberFormPath" required="N" />
 			<field name="SupportingDocumentPath" required="N" />
 			<field name="CloseComments" required="N" />
+			<field name="UpgradeAcctStatus" required="N" />
+			<field name="UpgradeAcctApprovedBy" required="N" />
+			<field name="UpgradeAcctTime" required="N" />
+			<field name="UpgradeAcctComments" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -8226,6 +8239,7 @@
 			<value enum="1774" description="JSDistrict"/>
 			<value enum="1775" description="JSVillage"/>
 			<value enum="1776" description="ProductReferral"/>
+			<value enum="1777" description="JSSubscriberUpgrade"/>
 			
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
@@ -22957,7 +22971,33 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
-			
+			<value description="SubscriberUpgradeRequestInitialized" enum="2161">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your Subscriber Upgrade Request is Intialized.</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>
+			<value description="SubscriberUpgradeRequestApproved" enum="2162">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your Subscriber Upgrade Request is Approved.</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>
+			<value description="SubscriberUpgradeRequestRejected" enum="2163">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your Subscriber Upgrade Request is Rejected.</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>		
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -24310,6 +24350,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="10238" description="Subscriber_Cashin" />
 			<value enum="10242" description="SubscriberList_Download_Excel" />
 			<value enum="10243" description="PocketTransactions_Download_Excel" />
+			<value enum="10244" description="SubscriberUpgrade" />
+			<value enum="10245" description="SubscriberUpgradeApproveReject" />
 			<!-- Merchant Tab Permissions -->
 			<!--  <value enum="10301" description="Merchant_Details_All_Merchants_View" />
 			<value enum="10302" description="Merchant_Details_Self_Downline_View" />
@@ -26676,7 +26718,16 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8420" name="SubscriberMDN" type="STRING"/>
 	<field number="8421" name="ProductDesired" type="STRING"/>
 	<field number="8422" name="Others" type="STRING"/>
-   
+   <field number="8423" name="SubscriberUpgradeStatus" type="INT32">
+			<value enum="0" description="Initialized" />
+			<value enum="1" description="Approve" />
+			<value enum="2" description="Reject" />
+	</field>
+	<field number="8424" name="UpgradeAcctStatus" type="INT32" />
+	<field number="8425" name="UpgradeAcctApprovedBy" type="STRING" />
+	<field number="8426" name="UpgradeAcctTime" type="UTCTIMESTAMP" />
+	<field number="8427" name="UpgradeAcctComments" type="STRING" />
+	<field number="8428" name="UpgradeAcctStatusText" type="STRING" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

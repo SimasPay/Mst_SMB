@@ -904,6 +904,28 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(s.getSubscriber().getRegistrationMedium()!=null){
 					entry.setRegistrationMedium(s.getSubscriber().getRegistrationMedium());
 				}
+				if(s.getUpgradeAcctStatus()!=null){
+					int upgradeSttus=s.getUpgradeAcctStatus();
+					entry.setUpgradeAcctStatus(upgradeSttus);
+					if(upgradeSttus==CmFinoFIX.SubscriberUpgradeStatus_Initialized.intValue()){
+						entry.setUpgradeAcctStatusText("Initialized");	
+					}else if(upgradeSttus==CmFinoFIX.SubscriberUpgradeStatus_Approve.intValue()){
+						entry.setUpgradeAcctStatusText("Approved");	
+					}else if(upgradeSttus==CmFinoFIX.SubscriberUpgradeStatus_Reject.intValue()){
+						entry.setUpgradeAcctStatusText("Rejected");	
+					}
+					
+				}
+				if(s.getUpgradeAcctApprovedBy()!=null){
+					entry.setUpgradeAcctApprovedBy(s.getUpgradeAcctApprovedBy());
+				}
+				if(s.getUpgradeAcctTime()!=null){
+					entry.setUpgradeAcctTime(s.getUpgradeAcctTime());
+				}
+				if(s.getUpgradeAcctComments()!=null){
+					entry.setUpgradeAcctComments(s.getUpgradeAcctComments());
+				}
+				
 
 	}
 

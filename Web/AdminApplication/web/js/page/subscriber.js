@@ -37,6 +37,8 @@ mFino.page.subscriber = function(config){
     
     var approveWindow = new mFino.widget.ApproveRejectWindow(config);
     
+    var subscriberUpgradeApproveRejectWindow = new mFino.widget.SubscriberUpgradeApproveRejectWindow(config);
+    
     var subClosing = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberClosingInquiry(config),
         title : _("Subscriber Account Closing"),
@@ -390,7 +392,65 @@ mFino.page.subscriber = function(config){
             			subClosing.form.setDetails(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name));            			
             		}
             	}
-	        }],
+	        },
+	        {
+                iconCls: 'mfino-button-upgrade',
+                tooltip : _('Upgrade'),
+                itemId : 'sub.details.upgrade',
+                handler : function(){
+                	
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
+                    }else{
+                    	var mdn=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name);
+                    	var name=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name)+" "
+                    				+detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.LastName._name);
+                        Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to Upgrade Subscriber for "+mdn+", "+name+"?"),
+                            function(btn){
+                                if(btn !== "yes"){
+                                    return;
+                                }
+                                var msg = new CmFinoFIX.message.JSSubscriberUpgrade();
+                                msg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                                msg.m_paction="default"
+                                var params = mFino.util.showResponse.getDisplayParam();
+                                //params.store = detailsForm.store;
+                                //params.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                                mFino.util.fix.send(msg, params);
+                            }, this);
+                    }
+                }
+            },
+            {
+                iconCls : "mfino-button-upgrade-approve",
+                tooltip : _('Approve/Reject Subscriber Upgrade'),
+                itemId: 'sub.approveUpgrade',
+                handler : function(){
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active!"));
+                    }else{
+                    	if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctStatus._name)==CmFinoFIX.SubscriberUpgradeStatus.Initialized){
+                    		subscriberUpgradeApproveRejectWindow.show();
+                        	subscriberUpgradeApproveRejectWindow.setRecord(detailsForm.record);
+//                        	subscriberUpgradeApproveRejectWindow.setStore(detailsForm.store);
+                    		
+                        } else {
+                        	Ext.Msg.show({
+                                title: _('Alert !'),
+                                minProgressWidth:250,
+                                msg: _("Subscriber Upgrade Status Should be Initialized State Only!"),
+                                buttons: Ext.MessageBox.OK,
+                                multiline: false
+                            });
+                        }
+                    }
+                }
+            }
+            ],
             items: [ detailsForm ]
         },
         {

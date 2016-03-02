@@ -248,6 +248,19 @@ mFino.widget.SubscriberDetails = function (config)
                 renderer: "date",
                 fieldLabel: _('Approve/Reject Time'),
                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApproveOrRejectTime._name
+            },
+            {
+                xtype: "displayfield",
+                anchor : '100%',
+                fieldLabel: _('UpgradeStatus'),
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctStatusText._name
+                
+            },
+            {
+                xtype: "displayfield",
+                anchor : '100%',
+                fieldLabel: _('UpgradeComments'),
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name
             }
             
             ]
