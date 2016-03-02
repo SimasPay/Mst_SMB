@@ -267,7 +267,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 						|| CmFinoFIX.PaymentMode_ZeroAmount.equalsIgnoreCase(transactionDetails.getPaymentMode()) )) {
 			billPaymentInquiry.setNarration("online");
 			// Getting the Bill amount for the given online transaction.
-			response = doBillInquiry(billPaymentInquiry); 
+			response = doBillInquiry(billPaymentInquiry , subPocket); 
 			transactionResponse = checkBackEndResponse(response);
 			
 			if(transactionResponse != null && transactionResponse.isResult()) {
@@ -475,7 +475,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		return result;
 	}
 
-	private CFIXMsg doBillInquiry(CMBillPayInquiry billPayInquiry) {
+	private CFIXMsg doBillInquiry(CMBillPayInquiry billPayInquiry, Pocket srcPocket) {
 		log.info("BillpayInquiryHandler:: doBillInquiry :: Begin");
 		CMBillInquiry billInquiry = new CMBillInquiry();
 		billInquiry.setSourceMDN(billPayInquiry.getSourceMDN());
@@ -490,6 +490,21 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billInquiry.setIntegrationCode(billPayInquiry.getIntegrationCode());
 		billInquiry.setSourceCardPAN(billPayInquiry.getSourceBankAccountNo());
 		billInquiry.setAmount(billPayInquiry.getAmount());
+		
+		if (CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplate().getBankAccountCardType())) {
+			
+			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
+			
+		} else {
+			
+			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Checking);
+		}
+		
+		if (CmFinoFIX.PocketType_LakuPandai.equals(srcPocket.getPocketTemplate().getType())) {
+
+			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Lakupandai);
+		}
+			
 		//For Bayar.Net BillPayments
 		if(billPayInquiry.getDenominationCode()!=null)
 			billInquiry.setDenominationCode(billPayInquiry.getDenominationCode());
