@@ -107,5 +107,5 @@ public interface PocketService {
     
 	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist); 
 	
-	public List<Object[]> getLakuPandaiPockets();
+	public List<Long> getLakuPandaiPockets();
 }

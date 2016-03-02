@@ -414,7 +414,7 @@
 		<property name="cronExpression" value="0 0 1 * * ?" />     
     </bean>
     
-    <!-- For constructing Booking dated value -->
+    <!-- For Calculating the Monthly average balance, interest, agent Commission balance fee, Account opening fee to Agent -->
     <bean id="AvgMonthlyBalanceService" class="com.mfino.scheduler.service.impl.AverageMonthlyBalanceServiceImpl"> 
     	<property name="txManager" ref="txManager"/>
     </bean>
@@ -426,8 +426,19 @@
     <bean id="AvgMonthlyBalanceTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="AvgMonthlyBalanceJob" />       
 		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0/5 * * * ?" />     
-    </bean>    
+		<property name="cronExpression" value="0 0 0 2 1/1 ? *" />     
+    </bean>
+    
+    <bean id="AccountOpeningFeeJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="AvgMonthlyBalanceService" />
+        <property name="targetMethod" value="calculateLakupandaiAccountOpeningFeeToAgents" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="AccountOpeningFeeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="AccountOpeningFeeJob" />       
+		<property name="timeZone" ref="timeZone" />
+		<property name="cronExpression" value="0 0 0 2 1/1 ? *" />     
+    </bean>         
     
 	<!-- All triggers need to be added here to work -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -447,6 +458,7 @@
             	<ref bean="retryFailedCollectorPocketsTrigger"/>
             	<ref bean="updatePocketBalancesFromLedgerTrigger"/>
             	<ref bean="AvgMonthlyBalanceTrigger"/>
+            	<ref bean="AccountOpeningFeeTrigger"/>
             	
             <!-- <ref bean="settlementConfigUpdateTrigger"/>
             	 <ref bean="partnerServiceSettlementTrigger"/> 

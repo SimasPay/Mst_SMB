@@ -69,7 +69,7 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocketId));
 		criteria.add(Restrictions.ge(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, startDate));
-		criteria.add(Restrictions.le(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, startDate));
+		criteria.add(Restrictions.le(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, endDate));
 		criteria.addOrder(Order.asc(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate));
 		result = criteria.list();
 		return result;

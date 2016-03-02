@@ -857,4 +857,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 		Company company = companyDAO.getById(1L);
 		return company;
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public List<Object[]> getNewSubscribersCount(Date startDate, Date endDate) {
+		SubscriberDAO sDao = daoFactory.getSubscriberDAO();
+		return sDao.getNewSubscribersCount(startDate, endDate);
+	}
 }

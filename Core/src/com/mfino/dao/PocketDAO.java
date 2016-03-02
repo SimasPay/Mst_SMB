@@ -5,9 +5,11 @@
 package com.mfino.dao;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -18,6 +20,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.PocketQuery;
+import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.MFSLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.fix.CmFinoFIX;
@@ -266,12 +269,19 @@ public class PocketDAO extends BaseDAO<Pocket> {
 	    criteria.add(or);
 	  }
 	 
-	 public List<Object[]> getLakuPandaiPockets() {
-
-		 String sql= "select ID, MDNID from Pocket where PocketTemplateID in (select ID from PocketTemplate where Type = :pocketType)"; 
+	 public List<Long> getLakuPandaiPockets() {
+		 List<Long> result = null;
+		 String sql= "select p.ID from Pocket p where PocketTemplateID in (select ID from PocketTemplate where Type = :pocketType)"; 
 		 Query queryObj = getSession().createQuery(sql);
 		 queryObj.setParameter("pocketType", CmFinoFIX.PocketType_LakuPandai);
-		 List<Object[]> results = queryObj.list();
-		 return results;
+		 List lst = queryObj.list();
+		 if (CollectionUtils.isNotEmpty(lst)) {
+			 result = new ArrayList<Long>(lst.size());
+			 for(int i=0; i<lst.size(); i++) {
+				 Long id = (Long)lst.get(i);
+				 result.add(id);
+    		 }
+		 }
+		 return result;
 	}
 }

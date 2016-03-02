@@ -10,4 +10,6 @@ package com.mfino.scheduler.service;
 public interface AverageMonthlyBalanceService extends BaseService {
 
 	public void calculateAverageMonthlyBalanceForLakupandai();
+	
+	public void calculateLakupandaiAccountOpeningFeeToAgents();
 }

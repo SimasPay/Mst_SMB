@@ -17,5 +17,10 @@ public class AgentCommissionFeeServiceImpl implements AgentCommissionFeeService 
 	public void save(AgentCommissionFee agentCommissionFee) {
 		agentCommissionFeeDAO.save(agentCommissionFee);
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public AgentCommissionFee getAgentCommissionFee(Long partnerId, String month, int year) {
+		return agentCommissionFeeDAO.getAgentCommissionFee(partnerId, month, year);
+	}
 
 }

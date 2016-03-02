@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SubscriberQuery;
@@ -145,5 +146,23 @@ public class SubscriberDAO extends BaseDAO<Subscriber> {
 		 List<Subscriber> results = criteria.list();
 		return results;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> getNewSubscribersCount(Date startDate, Date endDate) {
+
+		String sql= "select s.RegisteringPartnerID, count(*) " +
+		 		"from Subscriber as s " + 
+				"where s.RegistrationMedium = :rmedium " +
+		 		"and s.CreateTime >= :start " +
+				"and s.CreateTime <= :end " +
+				"group by s.RegisteringPartnerID"; 
+		 
+		Query queryObj = getSession().createQuery(sql);
+		queryObj.setParameter("rmedium", CmFinoFIX.RegistrationMedium_Agent);
+		queryObj.setParameter("start", startDate);
+		queryObj.setParameter("end", endDate);
+		List<Object[]> results = queryObj.list();
+		return results;
+	}	
 
 }

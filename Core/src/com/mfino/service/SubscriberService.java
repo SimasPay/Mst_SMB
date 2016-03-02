@@ -4,6 +4,7 @@
 package com.mfino.service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.mfino.dao.query.SubscriberQuery;
@@ -220,4 +221,6 @@ public interface SubscriberService {
 	public void verifyEmail(Long subscriberID, String email) throws Exception;
 
 	public Company getDefaultCompanyForSubscriber();
+	
+	public List<Object[]> getNewSubscribersCount(Date startDate, Date endDate);
 }
