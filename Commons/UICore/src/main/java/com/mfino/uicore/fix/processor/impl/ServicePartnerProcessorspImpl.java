@@ -286,6 +286,14 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriberMdnDao.save(objSubscriberMdn);
                 subscriberDao.save(objSubscriber);
                 partnerDao.save(objPartner);
+                
+        		if(StringUtils.isNotBlank(objPartner.getAuthorizedEmail())) {
+        			objSubscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+        		} else {
+        			objSubscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+        		}
+        		subscriberDao.save(objSubscriber);
+                
                 if(entry.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(objSubscriber, entry.getAuthorizedEmail());					
 				}
@@ -309,8 +317,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				ktpDetail.setBankResponseStatus("00");
 				ktpDetail.setBankResponse("Success");
 				
-				errorMsg = (CMJSAgentError)verifyAgentData(errorMsg,ktpDetail);
-				//errorMsg = (CMJSAgentError)verifyAgentDataFromWS(errorMsg,realMsg,ktpDetail);
+				//errorMsg = (CMJSAgentError)verifyAgentData(errorMsg,ktpDetail);
+				errorMsg = (CMJSAgentError)verifyAgentDataFromWS(errorMsg,realMsg,ktpDetail);
 
                 return errorMsg;
 			}
@@ -474,7 +482,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriber.setUpgradableKYCLevel(null);
                 subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
                 subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_AdminApp);
-                subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+                //subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
                 subscriberMdn.setOTP(null);
                 subscriberMdn.setDigestedPIN(null);
                 subscriberMdn.setAuthorizationToken(null);
@@ -497,6 +505,13 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 
                 updateEntityAddInfosp(subscriber,realMsg);
                 
+        		if(StringUtils.isNotBlank(partner.getAuthorizedEmail())) {
+        			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+        		} else {
+        			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+        		}
+        		subscriberDao.save(subscriber);
+        		
                 if(realMsg.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(subscriber, realMsg.getAuthorizedEmail());
 				}
@@ -542,7 +557,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 		pocketDao.save(epocket);
 
                 	}else{
+                		try{
                 		epocket = pocketService.createPocket(svaPocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, cardPan);
+                		}catch(Exception ex){
+                			log.error("Exception in creating pocket",ex);
+                		}
                 		log.info("Default emoney pocket successfully created for the partner -->"+partner.getID());
                 	}
                 }
@@ -839,7 +858,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(entry.getCompanyEmailId() != null){
         	partner.setCompanyEmailId(entry.getCompanyEmailId());
         }
-       
+        
         partner.setmFinoServiceProviderByMSPID(mspDAO.getById(1));
         
         if(entry.getTradeName() != null){
@@ -851,7 +870,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	subscriberMdn.setRestrictions(entry.getRestrictions());
         }
         
-        //simaspay changes starts
 		if(entry.getClassificationAgent() != null){
         	partner.setClassification(entry.getClassificationAgent());
         }
@@ -867,7 +885,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(entry.getAccountnumberofBankSinarmas() != null){
         	partner.setAccountnumberofBankSinarmas(entry.getAccountnumberofBankSinarmas());
         }
-        //simaspay changes ends
         
         //for merchant and outlet addresses
         Address merchantAddress = partner.getAddressByMerchantAddressID();        	
@@ -876,7 +893,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		partner.setAddressByMerchantAddressID(merchantAddress);
            	}
        	
-        	//simaspay changes starts
         	if(entry.getAlamatInAccordanceIdentity()!= null){
         	merchantAddress.setLine1(entry.getAlamatInAccordanceIdentity());
         	}
@@ -902,7 +918,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	merchantAddress.setZipCode(entry.getPotalCodeAl());
         	}
 
-        	//simaspay changes ends
         	addressDao.save(merchantAddress);
         	        
         	//outlet address
@@ -911,7 +926,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             		outletAddress = new Address();
             		partner.setAddressByFranchiseOutletAddressID(outletAddress);
             	}
-            	//simaspay changes starts
             	if(entry.getCompanyAddress()!= null){
             		outletAddress.setLine1(entry.getCompanyAddress());
             	}
@@ -937,7 +951,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             		outletAddress.setZipCode(entry.getPotalCodeCom());
             	}
 
-            	//simaspay changes ends  	
             	addressDao.save(outletAddress);
             	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){
@@ -1029,7 +1042,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(entry.getCompanyEmailId() != null){
         	partner.setCompanyEmailId(entry.getCompanyEmailId());
         }
-       
+        
         partner.setmFinoServiceProviderByMSPID(mspDAO.getById(1));
         
         if(entry.getTradeName() != null){
@@ -1041,7 +1054,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	subscriberMdn.setRestrictions(entry.getRestrictions());
         }
         
-        //simaspay changes starts
 		if(entry.getClassificationAgent() != null){
         	partner.setClassification(entry.getClassificationAgent());
         }
@@ -1057,7 +1069,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(entry.getAccountnumberofBankSinarmas() != null){
         	partner.setAccountnumberofBankSinarmas(entry.getAccountnumberofBankSinarmas());
         }
-        //simaspay changes ends
         
         //for merchant and outlet addresses
         Address merchantAddress = partner.getAddressByMerchantAddressID();        	
@@ -1066,7 +1077,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		partner.setAddressByMerchantAddressID(merchantAddress);
            	}
        	
-        	//simaspay changes starts
         	if(entry.getAlamatInAccordanceIdentity()!= null){
         	merchantAddress.setLine1(entry.getAlamatInAccordanceIdentity());
         	}
@@ -1092,7 +1102,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         	merchantAddress.setZipCode(entry.getPotalCodeAl());
         	}
 
-        	//simaspay changes ends
         	addressDao.save(merchantAddress);
         	        
         	//outlet address
@@ -1101,7 +1110,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             		outletAddress = new Address();
             		partner.setAddressByFranchiseOutletAddressID(outletAddress);
             	}
-            	//simaspay changes starts
             	if(entry.getCompanyAddress()!= null){
             		outletAddress.setLine1(entry.getCompanyAddress());
             	}
@@ -1127,7 +1135,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             		outletAddress.setZipCode(entry.getPotalCodeCom());
             	}
 
-            	//simaspay changes ends  	
             	addressDao.save(outletAddress);
             	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){

@@ -68,7 +68,12 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
 	                   maxLength : 100,
 	                   vtype: 'smarttelcophoneAddMore',
 	                   itemId : 'servicepartner.form.mdn',
-	                   name: CmFinoFIX.message.JSAgent.MDN._name
+	                   name: CmFinoFIX.message.JSAgent.MDN._name,
+                       listeners: {
+                           change: function(field) {
+                           	this.findParentByType('ServicePartnerFormsp').onMDN(field);
+                           }
+                       }
 	               },
                    {
                        xtype : 'numberfield',
@@ -135,12 +140,14 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
     },
     
     onLoad: function(){
+    	alert('entered into onLoad method');
      var record = this.subscribercombo.getAt(0);
-   	 var convertAgentStore = new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSAgent);
+   	// var convertAgentStore = new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSAgent);
        var mrecord = this.record;
-       if(record!=null&&record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberType._name)===CmFinoFIX.SubscriberType.Partner){
+    //   if(record != null && record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberType._name)===CmFinoFIX.SubscriberType.Partner){
+       if(record != null){
     	   Ext.MessageBox.alert(_("Alert"), _("MDN already registered as Partnerrrrrr or Agentttttttt"));   
-         }else{
+         }/*else{
         	 if(record!=null){
              Ext.apply(mrecord.data, record.data);
         	 }else{
@@ -160,7 +167,7 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
         	 this.find("itemId", "servicepartner.form.mobileno")[0].disable(); 
         	 this.find("itemId", "servicepartner.form.status")[0].disable(); 
         	 this.find("itemId", "servicepartner.form.username")[0].enable();
-        	 }
+        	 }*/
     },
     disableNotPermittedItems: function(){
         var checkAbleItems = ['servicepartner.form.status'];//, 'servicepartner.form.DCT', 'servicepartner.form.parentId','servicepartner.form.mdn','servicepartner.form.sourceIp'];
@@ -343,6 +350,18 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
             mFino.util.fix.checkNameInDB(field,msg, checkForExists);
         }
     },
+    
+    onMDN : function(field){
+        var value = this.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name);
+        if(!value || (field.getValue().toUpperCase() != value.toUpperCase())){
+            var msg = new CmFinoFIX.message.JSMDNCheck();
+            msg.m_pMDN = field.getValue();
+            msg.m_pAgentCheck = true;
+            var checkForExists=true;
+            mFino.util.fix.checkNameInDB(field, msg, checkForExists);
+        }
+    },
+    
     onTradeName : function(field){
         var value = this.record.get(CmFinoFIX.message.JSAgent.Entries.TradeName._name);
         if(!value||(field.getValue().toUpperCase() != value.toUpperCase())){
@@ -366,12 +385,17 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
     onStoreUpdate: function(){
         this.setRecord(this.record);
     },
-    onMDN : function(field){ 
+/*    onMDN : function(field){ 
+    	alert('entered into onMDN');
     	if(this.getForm().isValid()){
-    	this.subscribercombo.baseParams[CmFinoFIX.message.JSSubscriberMDN.ExactMDNSearch._name] =field.getValue(); 
-    	this.subscribercombo.load();
+    	this.subscribercombo.baseParams[CmFinoFIX.message.JSSubscriberMDN.ExactMDNSearch._name] = field.getValue();
+        var record = this.subscribercombo.getAt(0);
+        if(record != null){
+    	   Ext.MessageBox.alert(_("Alert"), _("MDN already registered as Partnerrrrrr or Agentttttttt"));   
+         }
+    	//this.subscribercombo.load();
     	}
-    },
+    },*/
        
 //    onTypeChange : function(field){
 //    	if(field.getValue()!=""){

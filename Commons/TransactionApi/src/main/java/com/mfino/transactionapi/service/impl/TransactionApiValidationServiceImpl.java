@@ -375,7 +375,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		}
 		else if(!destPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)){
 			log.error("Destination pocket is not active");
-			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
+			return CmFinoFIX.NotificationCode_DestinationMoneySVAPocketNotActive;
 		}
 		return CmFinoFIX.ResponseCode_Success;
 	}
