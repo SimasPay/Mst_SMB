@@ -323,138 +323,6 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                                itemId  : 'servicepartner.form.RWCom',
                                name: CmFinoFIX.message.JSAgent.RWCom._name
                            },
-/*                           {
-                               xtype : "textfield",
-                               //fieldLabel :_("Provincial"),
-                               fieldLabel :_("Propinsi"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('Provincial is required'),
-                               itemId  : 'servicepartner.form.ProvincialCom',
-                               name: CmFinoFIX.message.JSAgent.ProvincialCom._name
-                           },
-                           {
-                               xtype : "textfield",
-                               //fieldLabel :_("City"),
-                               fieldLabel :_("Kabupaten/Kota"),
-                               anchor : '100%',
-                               allowBlank: false,
-                               maxLength : 255,
-                               blankText : _('City is required'),
-                               itemId  : 'servicepartner.form.CityCom',
-                               name: CmFinoFIX.message.JSAgent.CityCom._name
-                           },
-                           {
-                               xtype : "textfield",
-                               //fieldLabel :_("District"),
-                               fieldLabel :_("Kecamatan"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('District is required'),
-                               itemId  : 'servicepartner.form.DistrictCom',
-                               name: CmFinoFIX.message.JSAgent.DistrictCom._name
-                           },
-                           {
-                               xtype : "textfield",
-                               //fieldLabel :_("Village"),
-                               fieldLabel :_("Kelurahan/Desa"),
-                               anchor : '100%',
-                               allowBlank: true,
-                               maxLength : 255,
-                               blankText : _('Village is required'),
-                               itemId  : 'servicepartner.form.VillageCom',
-                               name: CmFinoFIX.message.JSAgent.VillageCom._name
-                           },*/
-/*        	               {
-        	                   xtype: 'remotedropdown',
-                               //fieldLabel :_("Provincial"),
-                               fieldLabel :_("Propinsi"),
-        	                   anchor : '100%',
-        	                   allowBlank: false,
-        	                   addEmpty : false,
-        	                   itemId : 'servicepartner.form.ProvincialCom',
-        	                   emptyText : '<Select one..>',
-        	                   name: CmFinoFIX.message.JSAgent.ProvincialCom._name,
-        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvince), 
-        	                   displayField: CmFinoFIX.message.JSProvince.Entries.DisplayText._name, 
-        	                   valueField : CmFinoFIX.message.JSProvince.Entries.ID._name, 
-        	                   hiddenName : CmFinoFIX.message.JSAgent.ProvincialCom._name,
-        	                   pageSize: 10,
-        	                   params: {start:0, limit:10},
-        		                listeners: {
-        		                    select: function(field) {
-        		                        this.findParentByType('ServicePartnerFormspAdd').onProvince(field);
-        		                    }
-        		                }
-        	               },
-                           {
-        	                   xtype: 'remotedropdown',
-                               //fieldLabel :_("City"),
-                               fieldLabel :_("Kabupaten/Kota"),
-        	                   anchor : '100%',
-        	                   allowBlank: false,
-        	                   addEmpty : false,
-        	                   itemId : 'servicepartner.form.CityCom',
-        	                   emptyText : '<Select one..>',
-        	                   name: CmFinoFIX.message.JSAgent.CityCom._name,
-        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvinceRegion), 
-        	                   displayField: CmFinoFIX.message.JSProvinceRegion.Entries.DisplayText._name, 
-        	                   valueField : CmFinoFIX.message.JSProvinceRegion.Entries.ID._name, 
-        	                   hiddenName : CmFinoFIX.message.JSAgent.CityCom._name,
-        	                   pageSize: 10,
-        	                   params: {start:0, limit:10},
-        		                listeners: {
-        		                    select: function(field) {
-        		                        this.findParentByType('ServicePartnerFormspAdd').onProvinceRegion(field);
-        		                    }
-        		                }
-        	               },
-                           {
-        	                   xtype: 'remotedropdown',
-                               //fieldLabel :_("District"),
-                               fieldLabel :_("Kecamatan"),
-        	                   anchor : '100%',
-        	                   allowBlank: false,
-        	                   addEmpty : false,
-        	                   itemId : 'servicepartner.form.DistrictCom',
-        	                   emptyText : '<Select one..>',
-        	                   name: CmFinoFIX.message.JSAgent.DistrictCom._name,
-        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSDistrict), 
-        	                   displayField: CmFinoFIX.message.JSDistrict.Entries.DisplayText._name, 
-        	                   valueField : CmFinoFIX.message.JSDistrict.Entries.ID._name, 
-        	                   hiddenName : CmFinoFIX.message.JSAgent.DistrictCom._name,
-        	                   pageSize: 10,
-        	                   params: {start:0, limit:10},
-        		                listeners: {
-        		                    select: function(field) {
-        		                        this.findParentByType('ServicePartnerFormspAdd').onDistrict(field);
-        		                    }
-        		                }
-        	               },
-                           {
-        	                   xtype: 'remotedropdown',
-                               //fieldLabel :_("Village"),
-                               fieldLabel :_("Kelurahan/Desa"),
-        	                   anchor : '100%',
-        	                   allowBlank: false,
-        	                   addEmpty : false,
-        	                   itemId : 'servicepartner.form.VillageCom',
-        	                   emptyText : '<Select one..>',
-        	                   name: CmFinoFIX.message.JSAgent.VillageCom._name,
-        	                   store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSVillage), 
-        	                   displayField: CmFinoFIX.message.JSVillage.Entries.DisplayText._name, 
-        	                   valueField : CmFinoFIX.message.JSVillage.Entries.ID._name, 
-        	                   hiddenName : CmFinoFIX.message.JSAgent.VillageCom._name,
-        	                   pageSize: 10,
-        	                   params: {start:0, limit:10},
-        		                listeners: {
-        		                    select: function(field) {
-        		                        this.findParentByType('ServicePartnerFormspAdd').onVillage(field);
-        		                    }
-        		                }
-        	               },*/
 	                           {
 	      						 xtype : "combo",
 	      						 anchor : '100%',
@@ -462,6 +330,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 	      						 fieldLabel :_("Propinsi"),
 	      						 itemId : 'servicepartner.form.ProvincialCom',
 	      						 triggerAction: "all",
+	      						 allowBlank: false,
 	      						 emptyText : '<Select one..>',
 	      						 name: CmFinoFIX.message.JSAgent.ProvincialCom._name,
 	      						 store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSProvince), 
@@ -481,6 +350,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
 	      	                     fieldLabel :_("Kabupaten/Kota"),
 	      	                     itemId : 'servicepartner.form.CityCom',
 	      	                     triggerAction: "all",
+	      	                     allowBlank: false,
 	      	                     emptyText : '<Select one..>',
 	      	                     mode: 'local',
 	      	                     name: CmFinoFIX.message.JSAgent.CityCom._name,
