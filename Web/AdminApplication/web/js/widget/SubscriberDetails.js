@@ -122,7 +122,57 @@ mFino.widget.SubscriberDetails = function (config)
                 fieldLabel: _('Approval ID Number'),
                 anchor : '100%',
                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApprovalIdNumber._name
-            }
+            },
+            {
+                xtype: "displayfield",
+                fieldLabel: _('KTPDocument'),
+                anchor : '100%',
+				style: {
+					color: '#0000ff' ,
+					//text-decoration:'underline',
+					//text-decoration: 'underline',
+					cursor:'pointer'
+				},
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name,
+                listeners:{
+                	 afterrender: function(component) {
+						 
+                	      component.getEl().on('click', function() { 
+						  
+							
+						    mFino.widget.SubscriberDetails.prototype.showImage(component.getValue())
+                	        
+                	      });  
+                	      
+                	    }
+                             	
+                }
+            },
+			{
+                xtype: "displayfield",
+                fieldLabel: _('SubscriberForm'),
+                anchor : '100%',
+				style: {
+					color: '#0000ff' ,
+					//text-decoration:'underline',
+					//text-decoration: 'underline',
+					cursor:'pointer'
+				},
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name,
+                listeners:{
+                	 afterrender: function(component) {
+						 
+                	      component.getEl().on('click', function() { 
+						  
+							
+						    mFino.widget.SubscriberDetails.prototype.showImage(component.getValue())
+                	        
+                	      });  
+                	      
+                	    }
+                             	
+                }
+            }  
             ]
         },
         {
@@ -252,15 +302,40 @@ mFino.widget.SubscriberDetails = function (config)
             {
                 xtype: "displayfield",
                 anchor : '100%',
-                fieldLabel: _('UpgradeStatus'),
+                fieldLabel: _('Upgrade Account Status'),
                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctStatusText._name
                 
             },
             {
                 xtype: "displayfield",
                 anchor : '100%',
-                fieldLabel: _('UpgradeComments'),
+                fieldLabel: _('Upgrade Account Comments'),
                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name
+            },
+            {
+                xtype: "displayfield",
+                fieldLabel: _('SupportingDocument'),
+                anchor : '100%',
+				style: {
+					color: '#0000ff' ,
+					//text-decoration:'underline',
+					//text-decoration: 'underline',
+					cursor:'pointer'
+				},
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name,
+                listeners:{
+                	 afterrender: function(component) {
+						 
+                	      component.getEl().on('click', function() { 
+						  
+							
+						    mFino.widget.SubscriberDetails.prototype.showImage(component.getValue())
+                	        
+                	      });  
+                	      
+                	    }
+                             	
+                }
             }
             
             ]
@@ -276,10 +351,80 @@ Ext.extend(mFino.widget.SubscriberDetails , Ext.form.FormPanel, {
         this.labelPad = 20;
         mFino.widget.SubscriberDetails.superclass.initComponent.call(this);
     },
+    showImage:function(imageName){
+    	var imagePath=mFino.widget.SubscriberDetails.path+imageName
+		if(imagePath.indexOf('.')!=-1){
+			
+		
+			var window=new Ext.Window({
+				layout:'anchor',
+				width:500,
+				height:500,
+				autoScroll:true,
+				bodyStyle:'backgroundColor:white',
+				title:imageName,
+				items:[{
+					anchor : '100%',
+					html: "<div display=\"block\" style=''>" + 
+						
+					"<div style=\"text-align:left;line-height:3px;padding:5px 3px 4px;\">" +
+						"<span>" + 
+								"<img height=200 width=200 alt=\"image\" src=\""+imagePath+"\" />" +
+						"</span>" + 
+					"</div>" +
+				   "</div>"
+				}]
+			});
+			window.show();
+		}else{
+			
+			Ext.Msg.alert('Info', 'Document Not Available!');
+		}
+    },
 
     setRecord : function(record){
         this.getForm().reset();
         this.record = record;
+
+		if(record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name)!=null){
+
+			var docFullPath=record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name)
+			if(mFino.widget.SubscriberDetails.path == null || mFino.widget.SubscriberDetails.path == '' || mFino.widget.SubscriberDetails.path == undefined){
+					mFino.widget.SubscriberDetails.path=docFullPath.substring(0,docFullPath.lastIndexOf('/')+1);
+			}
+			
+			var docName=docFullPath.substring(docFullPath.lastIndexOf('/')+1,docFullPath.length);
+			
+			record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name,docName);
+		}
+		
+		
+			if(record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name)!=null){
+
+			var docFullPath=record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name)
+			if(mFino.widget.SubscriberDetails.path == null || mFino.widget.SubscriberDetails.path == '' || mFino.widget.SubscriberDetails.path == undefined){
+					mFino.widget.SubscriberDetails.path=docFullPath.substring(0,docFullPath.lastIndexOf('/')+1);
+			}
+			
+			var docName=docFullPath.substring(docFullPath.lastIndexOf('/')+1,docFullPath.length);
+			
+			record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name,docName);
+		}
+		
+
+		
+			if(record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name)!=null){
+
+			var docFullPath=record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name)
+			if(mFino.widget.SubscriberDetails.path == null || mFino.widget.SubscriberDetails.path == '' || mFino.widget.SubscriberDetails.path == undefined){
+					mFino.widget.SubscriberDetails.path=docFullPath.substring(0,docFullPath.lastIndexOf('/')+1);
+			}
+			
+			var docName=docFullPath.substring(docFullPath.lastIndexOf('/')+1,docFullPath.length);
+			
+			record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name,docName);
+		}
+
         this.getForm().loadRecord(record);
         this.getForm().clearInvalid();
     },
