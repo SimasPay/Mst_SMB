@@ -1,0 +1,12 @@
+{
+        "work_list": [
+            {
+                "Kartu Kredit": "Kartu Kredit",
+				"Kredit Kepemilikan Mobil" : "Kredit Kepemilikan Mobil",
+				"Pinjaman Modal Kerja" : "Pinjaman Modal Kerja",
+				"Kredit Investasi" : "Kredit Investasi",
+				"Kredit Usaha Mikro" : "Kredit Usaha Mikro",
+				"Lainnya" : "Lainnya"
+			}
+		]
+}

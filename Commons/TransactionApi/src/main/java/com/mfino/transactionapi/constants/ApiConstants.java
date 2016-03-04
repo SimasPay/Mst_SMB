@@ -378,7 +378,10 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 				(PARAMETER_SALT.equals(parameterName)) ||
 				(PARAMETER_SECRET_ANSWER.equals(parameterName)) ||
 				(PARAMETER_SOURCE_PIN.equals(parameterName))||
-				(PARAMETER_SECRETE_CODE.equals(parameterName))){
+				(PARAMETER_SECRETE_CODE.equals(parameterName)) ||
+				(PARAMETER_KTP_DOCUMENT.equals(parameterName)) ||
+				(PARAMETER_SUBSCRIBER_FORM_DOCUMENT.equals(parameterName)) ||
+				(PARAMETER_SUPPORTING_DOCUMENT.equals(parameterName))){
 			isSecure = true;
 		}
 		return isSecure;

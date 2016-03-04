@@ -488,33 +488,6 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				}
 			}
 			
-			/*if (isUnRegistered) {
-				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
-				// ideally there should be only one pocket
-				if (pockets.size() == 1) {
-					Pocket pocket = null;
-					Iterator<Pocket> pocketIterator = pockets.iterator();
-					while (pocketIterator.hasNext()) {
-						
-						pocket = pocketIterator.next();
-						
-						if (pocket.getPocketTemplate().getID().equals(systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
-							break;
-						}
-					}
-					
-					if (pocket != null) {
-						
-						pocket.setPocketTemplate(lakuPandaiTemplate);
-						pocket.setStatus(pocketStatus);
-						
-						pocketDao.save(pocket);
-						return CmFinoFIX.ResponseCode_Success;
-					}
-				}
-				return CmFinoFIX.NotificationCode_MoneySVAPocketNotFound;
-			}*/
-			
 			Pocket lakuPocket = null;
 			lakuPocket = pocketService.createPocket(lakuPandaiTemplate,subscriberMDN, pocketStatus, true, null);
 			

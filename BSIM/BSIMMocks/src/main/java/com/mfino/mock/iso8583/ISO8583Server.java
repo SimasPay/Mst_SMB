@@ -419,7 +419,7 @@ public class ISO8583Server implements Runnable {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
 						Random r = new Random();
 						int num = r.nextInt(5);
-						if (num % 5 == 0) {
+						/*if (num % 5 == 0) {
 							Thread.sleep(65000);
 						}
 						else if (num % 4 == 0) {
@@ -429,12 +429,29 @@ public class ISO8583Server implements Runnable {
 						else {
 							Thread.sleep(65000);
 							response.setValue(39, "00", IsoType.ALPHA, 2);	
-						}
+						}*/
+						response.setValue(39, "00", IsoType.ALPHA, 2);
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
 						response.setValue(62,"08PAYMENT    : Axis Postpaid            IDPEL      : 628382244000             NAME       : ARIEF SUSANTO MULAWARMAN BILLING AMT: RP. 11.111               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 11.111                                                                                           628382244000                    11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000000000002708    000000011111000000000000000000000000ARIEF SUSANTO MULAWARMAN                          ", IsoType.LLLVAR, 0);
 						response.setValue(3, "381010", IsoType.NUMERIC, 6);
 						response.setValue(4, "1000", IsoType.NUMERIC, 18);
+						
+						response.setValue(38, "654321", IsoType.ALPHA, 6);
+						String de4 = (String)incoming.getObjectValue(4);
+						if ("000000000000100000".equals(de4)) {
+							Thread.sleep(65000);
+						}
+						else if ("000000000000200000".equals(de4)) {
+							response.setValue(39, "06", IsoType.ALPHA, 2);
+						}
+						else {
+							response.setValue(39, "00", IsoType.ALPHA, 2);
+						}						
+						response.setValue(48, "DONIH NISKALA                                                                                             00",
+								IsoType.LLLVAR, 0);
+						
+						System.out.println("DE 3 starts with 38..........");
 					}
 					else if("382000".equals(incoming.getObjectValue(3))){
 					    response.setValue(3, "382010", IsoType.NUMERIC, 6);

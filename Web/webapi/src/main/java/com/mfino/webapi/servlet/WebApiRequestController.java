@@ -508,7 +508,7 @@ public class WebApiRequestController {
 	private String getDumpString(String value){
 		StringBuffer buffer = new StringBuffer();
 		if(value!=null){
-			int size = value.length();
+			int size = value.length() > 25 ? value.length() : 25;
 			for(int count=0; count<size; count++){
 				buffer.append('x');
 			}
