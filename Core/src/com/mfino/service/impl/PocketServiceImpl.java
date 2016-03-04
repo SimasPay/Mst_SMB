@@ -506,6 +506,33 @@ public class PocketServiceImpl implements PocketService{
 		}
 		return cardPAN.substring(0,16);
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public String generateLakupandia16DigitCardPAN(String mdn) throws InvalidMDNException, EmptyStringException {
+		
+		mdn = subscriberMdnService.denormalizeMDN(mdn);
+		
+		if(mdn.length()==0)
+			throw new InvalidMDNException("length of mdn is 0");
+		
+		String cardPAN=null;
+		Random rand = new Random();	
+		long randNum=rand.nextLong();
+		
+		if(randNum<0)
+			randNum = -randNum;
+		
+		if(mdn.length()>5){
+			
+			cardPAN ="00"+mdn.substring(0,5)+String.valueOf(randNum);
+		
+		}else{
+			
+			cardPAN ="00"+mdn+String.valueOf(randNum);
+		}
+		
+		return cardPAN.substring(0,16);
+	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMDN subscriberMdn) {

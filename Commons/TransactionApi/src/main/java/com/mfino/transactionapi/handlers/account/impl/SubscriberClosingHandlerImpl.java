@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
+import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
+import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
@@ -97,6 +99,16 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 		log.info("Handling subscriber services Registration webapi request");
 		SubscriberAccountClosingXMLResult result = new SubscriberAccountClosingXMLResult();
 		
+		boolean isMfATransaction = false;
+		
+		ChannelCode channelCode = transactionDetails.getCc();
+		
+		if(!mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
+			
+			isMfATransaction = true;
+			
+		}
+		
 		CMJSSubscriberClosing subscriberClosing = new CMJSSubscriberClosing();
 		subscriberClosing.setAgentMDN(transactionDetails.getSourceMDN());
 		subscriberClosing.setDestMDN(transactionDetails.getDestMDN());
@@ -146,7 +158,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 			
 			ServiceChargeTransactionLog sctlForMFA = sctlService.getBySCTLID(parentTxnId);
 			
-			if(!transactionDetails.isSystemIntiatedTransaction() && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getID(), agentMDN.getMDN()))){
+			if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getID(), agentMDN.getMDN()))){
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
 					

@@ -51,6 +51,8 @@ public interface PocketService {
 	public CmFinoFIX.CRCommodityTransfer getFirstTransferAfter(Pocket pocket, Date end);
 	
 	public String generateSVAEMoney16DigitCardPAN(String mdn) throws InvalidMDNException, EmptyStringException;
+	
+	public String generateLakupandia16DigitCardPAN(String mdn) throws InvalidMDNException, EmptyStringException;
 
 	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMDN subscriberMdn); 
 

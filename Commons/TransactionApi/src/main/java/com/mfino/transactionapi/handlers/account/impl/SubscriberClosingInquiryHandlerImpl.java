@@ -125,20 +125,13 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		TransactionsLog transactionsLog = null;
 		ServiceChargeTransactionLog sctl = null;
 		
-		ChannelCode channelCode = transactionDetails.getCc();
+		boolean isMfATransaction = false;
 		
-		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		ChannelCode channelCode = transactionDetails.getCc();
 		
 		if(!mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
 			
-			XMLResult xmlResult = null;
-			
-			xmlResult = new XMLError();
-			xmlResult.setLanguage(language);
-			xmlResult.setTransactionTime(new Timestamp());
-			xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
-			
-			return xmlResult;
+			isMfATransaction = true;
 			
 		}
 		
@@ -204,24 +197,26 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 							
 							Transaction transaction = null;
-							ServiceCharge serviceCharge = new ServiceCharge();
+							
+							ServiceCharge sc=new ServiceCharge();
+							sc.setChannelCodeId(channelCode.getID());
+							sc.setDestMDN(subMDN.getMDN());
+							sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
+							sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT);
 							
 							if(null != agentMDN) {
-							
-								serviceCharge.setSourceMDN(agentMDN.getMDN());
+								
+								sc.setSourceMDN(agentMDN.getMDN());
+								sc.setOnBeHalfOfMDN(agentMDN.getMDN());
 							}
 							
-							serviceCharge.setDestMDN(subMDN.getMDN());
-							serviceCharge.setChannelCodeId(channelCode.getID());
-							serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
-							serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT);
-							serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-							serviceCharge.setTransactionLogId(transactionsLog.getID());
-							serviceCharge.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
+							sc.setTransactionAmount(BigDecimal.ZERO);
+							sc.setTransactionLogId(transactionsLog.getID());
+							sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 							try{
 								
-								transaction = transactionChargingService.getCharge(serviceCharge);
+								transaction = transactionChargingService.getCharge(sc);
 
 							}catch (InvalidServiceException e) {
 								log.error("Exception occured in getting charges",e);
@@ -239,7 +234,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							result.setSctlID(sctl.getID());
 							result.setMfaMode("OTP");
 							
-							if(!transactionDetails.isSystemIntiatedTransaction()) {
+							if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction) {
 							
 								mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
 							}

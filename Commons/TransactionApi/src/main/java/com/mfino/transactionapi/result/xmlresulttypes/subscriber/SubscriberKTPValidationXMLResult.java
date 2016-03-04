@@ -17,8 +17,23 @@ public class SubscriberKTPValidationXMLResult extends XMLResult {
 	private String mothersMaidenName;
 	private String name;
 	private String dob;
+	private String birthPlace;
 	
 	
+	/**
+	 * @return the birthPlace
+	 */
+	public String getBirthPlace() {
+		return birthPlace;
+	}
+
+	/**
+	 * @param birthPlace the birthPlace to set
+	 */
+	public void setBirthPlace(String birthPlace) {
+		this.birthPlace = birthPlace;
+	}
+
 	/**
 	 * @return the name
 	 */
@@ -200,6 +215,13 @@ public class SubscriberKTPValidationXMLResult extends XMLResult {
 			
 			getXmlWriter().writeStartElement("dob");
 			getXmlWriter().writeCharacters(getDob(), false);
+			getXmlWriter().writeEndElement();
+		}
+		
+		if(StringUtils.isNotBlank(getBirthPlace())) {
+			
+			getXmlWriter().writeStartElement("birthPlace");
+			getXmlWriter().writeCharacters(getBirthPlace(), false);
 			getXmlWriter().writeEndElement();
 		}
 		

@@ -488,7 +488,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				}
 			}
 			
-			if (isUnRegistered) {
+			/*if (isUnRegistered) {
 				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
 				// ideally there should be only one pocket
 				if (pockets.size() == 1) {
@@ -507,14 +507,35 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						
 						pocket.setPocketTemplate(lakuPandaiTemplate);
 						pocket.setStatus(pocketStatus);
+						
 						pocketDao.save(pocket);
 						return CmFinoFIX.ResponseCode_Success;
 					}
 				}
 				return CmFinoFIX.NotificationCode_MoneySVAPocketNotFound;
-			}
+			}*/
 			
-			lakuPandiaPocket.setID(pocketService.createPocket(lakuPandaiTemplate,subscriberMDN, pocketStatus, true, null).getID());
+			Pocket lakuPocket = null;
+			lakuPocket = pocketService.createPocket(lakuPandaiTemplate,subscriberMDN, pocketStatus, true, null);
+			
+			if(null != lakuPocket) {
+				
+				lakuPandiaPocket.setID(lakuPocket.getID());
+				
+				String cardPan = null;
+				
+				try {
+					
+					cardPan = pocketService.generateLakupandia16DigitCardPAN(subscriberMDN.getMDN());
+					
+				} catch (Exception e) {
+					
+					log.error("Cardpan creation failed", e);
+				}
+				
+				lakuPocket.setCardPAN(cardPan);
+				pocketDao.save(lakuPocket);
+			}
 			
 			return CmFinoFIX.ResponseCode_Success;
 		}

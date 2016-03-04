@@ -173,6 +173,7 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 				result.setDistrict(response.get("kecamatan").toString());
 				result.setProvince(response.get("provinsi").toString());
 				result.setPostalCode(response.get("kodepos").toString());
+				result.setBirthPlace(response.get("tempatlahir").toString());
 				result.setTransactionID(ktpDetail.getID());
 				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess));
 				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess);
