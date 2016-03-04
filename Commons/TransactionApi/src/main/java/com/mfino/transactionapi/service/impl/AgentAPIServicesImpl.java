@@ -23,6 +23,8 @@ import com.mfino.service.IntegrationPartnerMappingService;
 import com.mfino.service.MFAService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
+import com.mfino.transactionapi.handlers.agent.AgentTransferConfirmHandler;
+import com.mfino.transactionapi.handlers.agent.AgentTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.agent.ProductReferralHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
@@ -122,6 +124,14 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	@Autowired
 	@Qualifier("MFAServiceImpl")
 	private MFAService mfaService;
+	
+	@Autowired
+	@Qualifier("AgentTransferInquiryHandlerImpl")
+	private AgentTransferInquiryHandler agentTransferInquiryHandler;
+	
+	@Autowired
+	@Qualifier("AgentTransferConfirmHandlerImpl")
+	private AgentTransferConfirmHandler agentTransferConfirmHandler;
 	
  	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
@@ -276,7 +286,8 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			transactionDetails.setSourceMessage(sourceMessage);
 
 			xmlResult = (XMLResult) agentBillPayConfirmHandler.handle(transactionDetails);
-		}else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
+		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateAirtimePinPurchaseInquiryDetails(transactionDetails);
 			
 
@@ -338,19 +349,28 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			transactionDetails.setSystemIntiatedTransaction(true);
 			xmlResult = (XMLResult) moneyTransferHandler.handle(transactionDetails);
 			
-		} else if (ServiceAndTransactionConstants.SUBSCRIBER_KTP_VALIDATION.equalsIgnoreCase(transactionName)) {
+		} 
+		else if (ServiceAndTransactionConstants.SUBSCRIBER_KTP_VALIDATION.equalsIgnoreCase(transactionName)) {
 			
 			transactionRequestValidationService.validateSubscriberKtpDetails(transactionDetails);
 			xmlResult = (XMLResult) subscriberKtpValidationHandler.handle(transactionDetails);
-		}
-		
+		} 
 		else if (ServiceAndTransactionConstants.PRODUCT_REFERRAL.equalsIgnoreCase(transactionName)) {
 						
 			transactionRequestValidationService.validateProductReferralDetails(transactionDetails);
 			xmlResult = (XMLResult) productReferralHandler.handle(transactionDetails);
+		} 
+		else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName)) {
+			transactionRequestValidationService.validateTransferInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
+			}
+			xmlResult = (XMLResult) agentTransferInquiryHandler.handle(transactionDetails);
+		} 
+		else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER.equalsIgnoreCase(transactionName)) {
+			transactionRequestValidationService.validateTransferConfirmDetails(transactionDetails);
+			xmlResult = (XMLResult) agentTransferConfirmHandler.handle(transactionDetails);
 		}
-		
-
 		else {
 			xmlResult = new XMLResult();
 			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);

@@ -35,6 +35,7 @@ import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.money.BankTransferInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
+import com.mfino.transactionapi.service.BaseAPIService;
 import com.mfino.transactionapi.vo.TransactionDetails;
 
 /**
@@ -140,7 +141,8 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		else if(ServiceAndTransactionConstants.TRANSACTION_TELLER_EMONEY_CLEARANCE_INQUIRY.equals(transactionDetails.getTransactionName())) {
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TELLER_EMONEY_CLEARANCE);
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		}else if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
+		}
+		else if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT);
 		}
 		else {
@@ -150,15 +152,17 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			 */
 			
 			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
-
+				
 				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
-
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER);
-					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+					if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
+						sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
+					}else{
+						sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+					}
 				}
 				
 				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
-
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER);
 					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 				}
@@ -167,15 +171,18 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
 
 				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
-
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
 					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
 				}
 				
 				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
-
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER);
-					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
+					//sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
+					if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
+						sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
+					}else{
+						sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
+					}
 				}
 			}
 						
@@ -208,7 +215,6 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			transaction =transactionChargingService.getCharge(sc);
 			bankAccountToBankAccount.setAmount(transaction.getAmountToCredit());
 			bankAccountToBankAccount.setCharges(transaction.getAmountTowardsCharges());
-
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);//change to service not found

@@ -365,7 +365,16 @@
 			<a href="jsp/s_agent_cashinconfirm.jsp"> Agent_to_Sub_CashInConfirm</a>
 		</td>
 	</tr>
-	
+	<tr>
+		<td>
+			<a href="jsp/s_Agent_transfer_inquiry.jsp"> Agent Transfer Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_Agent_transfer_confirm.jsp"> Agent Transfer Confirmation</a>
+		</td>
+	</tr>
 	<tr>
 		<td>
 			<a href="jsp/s_agent_agent_transfer_inquiry.jsp"> Agent to Agent Transfer Inquiry</a>
