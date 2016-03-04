@@ -125,6 +125,8 @@
 										<include>category.province.txt</include>
 										<include>category.region.txt</include>
 										<include>category.village.txt</include>
+										<include>category.work.txt</include>
+										<include>category.product_referral.txt</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>
