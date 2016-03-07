@@ -85,7 +85,8 @@ Ext.extend(mFino.widget.BookingDatedBalanceViewGridWindow, Ext.Window, {
 	       ];
         mFino.widget.BookingDatedBalanceViewGridWindow.superclass.initComponent.call(this);
         
-        this.grid.on("filedownload", function() {
+        this.grid.on("filedownload", function(format) {
+//        	alert(format)
             var sourceDestnPocketID = this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.SourceDestnPocketID._name];
             var transferState=this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.TransferState._name];
             var isMini=this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.IsMiniStatementRequest._name];
@@ -95,6 +96,7 @@ Ext.extend(mFino.widget.BookingDatedBalanceViewGridWindow, Ext.Window, {
             var sctlid=this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.ServiceChargeTransactionLogID._name];
             var queryString;
             queryString = "dType=ledger";
+            queryString += "&dFormat="+format;
             if(sourceDestnPocketID){
                 queryString += "&"+CmFinoFIX.message.JSCommodityTransfer.SourceDestnPocketID._name+"="+sourceDestnPocketID;
             }

@@ -47,7 +47,8 @@ public class FileDownloadController {
     @RequestMapping("/download.htm")
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
     	String type = request.getParameter("dType");
-    	String viewName;
+    	String format=request.getParameter("dFormat");
+    	String viewName="";
     	log.info("dType value is :" + type);
     	if (USER_DOWNLOAD.equals(type)) { 
             viewName = "UserExcelView";
@@ -80,9 +81,14 @@ public class FileDownloadController {
         	viewName = "ServiceChargeTransactionExcelView";
         } else if(TADL_DOWNLOAD.equalsIgnoreCase(type)) {
         	viewName = "ChargeDistributionExcelView";
-        } else if(LEDGER_DOWNLOAD.equalsIgnoreCase(type) && 
-        			authorizationService.isAuthorized(CmFinoFIX.Permission_PocketTransactions_Download_Excel)) {
-        	viewName = "TransactionLedgerExcelView";
+        } else if(LEDGER_DOWNLOAD.equalsIgnoreCase(type)) {
+        	
+        	if(format!=null && format.equals("pdf")){
+        		viewName = "TransactionLedgerPDFView";
+        	}else if(authorizationService.isAuthorized(CmFinoFIX.Permission_PocketTransactions_Download_Excel)){
+        		viewName = "TransactionLedgerExcelView";	
+        	}
+        	
         } else if(BULK_TRANSFER_DOWNLOAD.equalsIgnoreCase(type)) {
         	viewName = "BulkTransferExcelView";
         } else {

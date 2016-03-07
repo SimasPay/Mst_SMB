@@ -29,6 +29,15 @@ mFino.widget.PocketTransactionsViewGrid = function(config) {
 	 tooltip : _('Export data to Excel Sheet'),
 	 handler : this.excelView.createDelegate(this)
 	 });
+	 
+	 var sPdfBtn = new Ext.Toolbar.Button({
+		  pressed: true,
+		 enableToggle: true,
+		 iconCls: 'mfino-button-pdf',
+		 text:'Print Account Statement',
+		 tooltip : _('Export data to PDF'),
+		 handler : this.pdfView.createDelegate(this,['pdf'])
+		 });
 	localConfig = Ext
 			.applyIf(
 					localConfig || {},
@@ -156,11 +165,16 @@ mFino.widget.PocketTransactionsViewGrid = function(config) {
 	if(mFino.auth.isEnabledItem('sub.pockettxn.download.excel')){	
 		 this.getBottomToolbar().add('->',sbun);
 	}
+	 this.getBottomToolbar().add(sPdfBtn);
+	
 };
 
 Ext.extend(mFino.widget.PocketTransactionsViewGrid, Ext.grid.GridPanel, {
 		 excelView: function(){
 				 this.fireEvent("filedownload");
+				 },
+		pdfView: function(format){
+					 this.fireEvent("filedownload",format);
 				 }
 		});
 
