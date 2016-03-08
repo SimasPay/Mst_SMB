@@ -7813,7 +7813,6 @@
 			<value enum="2" description="BOBAccount" comment="Billing on Behalf Account" />
 			<value enum="3" description="BankAccount" comment="BankAccount" />
 			<value enum="4" description="NFC" comment="NFC Pocket"/>
-			<value enum="6" description="LakuPandai" comment="Laku Pandai"/>
 		</field>
 		<field number="5050" name="PocketAllowance" type="INT32">
 			<value enum="4" description="MerchantDompet" />

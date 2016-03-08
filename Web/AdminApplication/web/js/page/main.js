@@ -36,7 +36,7 @@ mFino.page.main = function(config){
 		"chargeDefinition":mFino.page.chargeDefinition,
 		"transactionRule":mFino.page.transactionRule,
 		"transactionCharge":mFino.page.transactionCharge,
-		"agent":mFino.page.agentsp,
+		"agent":mFino.page.agent,
 		"chargeTransactions":mFino.page.chargeTransactions,
 		"report":mFino.page.report,
 		"bulkTransfer":mFino.page.bulkTransfer,
