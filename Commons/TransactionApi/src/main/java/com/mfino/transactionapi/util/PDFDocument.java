@@ -331,7 +331,7 @@ public class PDFDocument {
 		}
 		else
 		{
-			title = "Uangku E-Statement";
+			title = "E-Statement";
 		}
 		return LanguageTranslator.translate(language, title);
 	}

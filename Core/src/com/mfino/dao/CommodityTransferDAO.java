@@ -497,7 +497,8 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     			&& query.getLimit() <= ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
 
     		String selectString = "select distinct ct, ctmap.SctlId from CommodityTransfer ct, ChargeTxnCommodityTransferMap ctmap, ServiceChargeTransactionLog sctl ";
-    		String orderString = " order by sctl.ID desc, ct.ID desc ";
+    		//String orderString = " order by sctl.ID desc, ct.ID desc ";
+    		String orderString = " order by ctmap.SctlId desc, ct.ID desc ";
     		String queryString = " where ( ct.PocketBySourcePocketID = :sourcePocket" 
     				+ " or ct.DestPocketID = :destPocketID )"
     				+ " and ctmap.CommodityTransferID = ct.ID "

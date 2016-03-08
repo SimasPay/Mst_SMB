@@ -303,7 +303,7 @@ public class ConfigurationUtil {
 		KYCUpgradeEmailMessage("mfino.kycupgrade.email.message", "Successfully processed the kyc upgrade request"),
 		CurrencyFormatLocale("mfino.currency.format.locale", "us"),
 		UseRealHSM("mfino.use.real.hsm","false"),
-		RequiresSuccessfullTransactionsInEmoneyHistory("mfino.requires.successful.transactions.in.emoney.history","false"),
+		RequiresSuccessfullTransactionsInEmoneyHistory("mfino.requires.successful.transactions.in.emoney.history","true"),
 		PdfHistoryFooter("mfino.pdf.history.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved"),
 		EmailPdfHistorySubject("mfino.email.pdf.history.subject","Smartfren Uangku Electronic Statement"),
 		EmailPdfHistoryBody("mfino.email.pdf.history.body","Thank you for using Uangku E-Statements Services. Please find your requested Uangku Transaction History for your selected time period.   Enter your Uangku PIN to view the document."),

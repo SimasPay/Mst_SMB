@@ -45,11 +45,11 @@ Ext.extend(mFino.widget.ServicePartnerFormsp, Ext.form.FormPanel, {
     	                maxLength : 100,
     	                itemId : 'servicepartner.form.username',
     	                name: CmFinoFIX.message.JSAgent.Username._name,
-    	                listeners: {
+/*    	                listeners: {
     	                    change: function(field) {
     	                        this.findParentByType('ServicePartnerFormsp').onName(field);
     	                    }
-    	                }
+    	                }*/
     	            },
 	               {
 	                   xtype : "textfield",

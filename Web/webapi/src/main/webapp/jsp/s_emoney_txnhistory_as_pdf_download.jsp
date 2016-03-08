@@ -33,9 +33,20 @@
 		<td>channelId</td>
 		<td><input type="text" name="channelID"/></td>
 	</tr>
-	<tr>
+<!-- 	<tr>
 		<td>sourcePocketCode</td>
 		<td><input type="hidden" name="sourcePocketCode"  value="1"/>1</td>
+	</tr> -->
+		<tr>
+		<td>sourcePocketCode</td>
+		<!-- <td><input type="text" name="sourcePocketCode"/></td> -->
+		<td>
+			<select name="sourcePocketCode">
+  				<option value="1">E-Money</option>
+  				<option value="2">Bank</option>
+  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td>From Date</td>

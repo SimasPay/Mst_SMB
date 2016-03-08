@@ -99,7 +99,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                      	   {
                      		   xtype : "enumdropdown",
                      		   //fieldLabel :_('Electonic Devie used'),
-                     		   fieldLabel :_('Yang Digunakan'),
+                     		   fieldLabel :_('Electonic Device Yang Digunakan'),
                      		   anchor : '100%',
                      		   allowBlank: false,
                      		   emptyText : _('<select one..>'),
@@ -143,7 +143,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'DATA PRIBADI',
+                               text :'DATA_PRIBADI',
                                name: 'PersonalData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
@@ -275,7 +275,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'DATA PERUSAHAAN',
+                               text :'DATA_PERUSAHAAN',
 
                                name: 'CompanyData',
                                anchor : '100%',

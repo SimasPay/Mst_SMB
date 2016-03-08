@@ -498,7 +498,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriber.setApproveOrRejectTime(null);
                 partner.setBranchSequence(branchSeq);
                 
-                userDAO.save(u);                                               
+                //userDAO.save(u);                                               
                 subscriberDao.save(subscriber);
                 subscriberMdnDao.save(subscriberMdn);
                 partnerDao.save(partner);
