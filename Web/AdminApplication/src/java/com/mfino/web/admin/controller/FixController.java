@@ -31,12 +31,10 @@ import com.mfino.fix.CmFinoFIX.CMJSActorChannelMapping;
 import com.mfino.fix.CmFinoFIX.CMJSActorChannelMappingValidator;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustments;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustmentsPocket;
-import com.mfino.fix.CmFinoFIX.CMJSAgent;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInConfirm;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSBase;
-import com.mfino.fix.CmFinoFIX.CMJSBranchCodes;
 import com.mfino.fix.CmFinoFIX.CMJSClosedAccountSettlementMdn;
 import com.mfino.fix.CmFinoFIX.CMJSExpirationType;
 import com.mfino.fix.CmFinoFIX.CMJSFundDefinitions;
@@ -612,15 +610,7 @@ public class FixController {
 	@Autowired
 	@Qualifier("MoneyTransferProcessorImpl")
 	private MoneyTransferProcessor moneyTransferProcessor  ;
-	
-	@Autowired
-	@Qualifier("BranchCodeProcessorImpl")
-	private BranchCodeProcessor branchCodeProcessor;
-	
-	@Autowired
-	@Qualifier("ServicePartnerProcessorspImpl")
-	private ServicePartnerProcessorsp servicePartnerProcessorsp;
-	
+		
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -875,9 +865,6 @@ public class FixController {
 				// fixProcessor = new PartnerProcessor();
 				fixProcessor = servicePartnerProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSPartner);
-			} else if (msgClassName.equals(CMJSAgent.class.getName())) {
-				fixProcessor = servicePartnerProcessorsp;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAgent);
 			} else if (msgClassName.equals(CMJSServiceProvider.class.getName())) {
 				fixProcessor = serviceProviderProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSServiceProvider);
@@ -1211,9 +1198,6 @@ public class FixController {
 			else if(msgClassName.equals(CMJSMoneyTransfer.class.getName())){
 				fixProcessor = moneyTransferProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSMoneyTransfer);
-			}else if(msgClassName.equals(CMJSBranchCodes.class.getName())){
-				fixProcessor = branchCodeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBranchCodes);
 			}
 			
 			/*

@@ -139,18 +139,7 @@ public class XMLResult extends Result {
 	private String otherMDN;
 	private String remainingBlockTimeMinutes;
 	private String remainingBlockTimeHours;
-	private BigDecimal multiplesOff;
 	
-	
-	
-	public BigDecimal getMultiplesOff() {
-		return multiplesOff;
-	}
-
-	public void setMultiplesOff(BigDecimal multiplesOff) {
-		this.multiplesOff = multiplesOff;
-	}
-
 	public String getOtherMDN() {
 		return otherMDN;
 	}
@@ -320,102 +309,97 @@ public class XMLResult extends Result {
 			code = String.valueOf(getNotificationCode());
 			StringBuilder messageBuilder = new StringBuilder();
 			NotificationWrapper notificationWrapper = getNotificationWrapper(notificationService,CmFinoFIX.NotificationMethod_Web);
+			notificationWrapper.setSourcePocket(pocket);
+			notificationWrapper.setPocketType(getPocketType());
+			notificationWrapper.setTransactionId(getTransactionID());
+			notificationWrapper.setBankName(getBankName());
+			notificationWrapper.setBank(getBank());
+			notificationWrapper.setBillAmount(getBillAmount());
+			notificationWrapper.setServiceCharge(getServiceCharge());
+			notificationWrapper.setTransactionAmount(getDebitAmount());
+			notificationWrapper.setDestMDN(getDestinationMDN());
+			notificationWrapper.setNumberOfTriesLeft(getNumberOfTriesLeft());
+			notificationWrapper.setPartnerCode(getPartnerCode());
+			notificationWrapper.setSctlID(getSctlID());
+			notificationWrapper.setMinAmount(getMinAmount());
+			notificationWrapper.setMaxAmount(getMaxAmount());
+			notificationWrapper.setOneTimePin(getOneTimePin());
+			notificationWrapper.setAmount(getAmount());
+			notificationWrapper.setValidDenominations(getValidDenominations());
+			notificationWrapper.setInstitutionID(getInstitutionID());
+			notificationWrapper.setIntegrationName(getIntegrationName());
+			notificationWrapper.setOtpExpirationTime(getOtpExpirationTime());
+			notificationWrapper.setIPAddress(getIPAddress());
+			notificationWrapper.setFirstName(getFirstName());
+			notificationWrapper.setLastName(getLastName());
+			notificationWrapper.setReceiverAccountName(getReceiverAccountName());
+			notificationWrapper.setTransID(getTransID());
+			notificationWrapper.setParentTransID(getParentTransID());
+			notificationWrapper.setSourceMDN(getSourceMDN());
+			notificationWrapper.setCardPan(getCardPan());
+			notificationWrapper.setMaxFavoriteCount(getMaxFavoriteCount());
+			notificationWrapper.setFavoriteLabel(getFavoriteLabel());
+			notificationWrapper.setFavoriteValue(getFavoriteValue());
+			notificationWrapper.setKycLevel(getKycLevel());
+			notificationWrapper.setCardAlias(getCardAlias());
+			notificationWrapper.setOldCardAlias(getOldCardAlias());
+			notificationWrapper.setSubscriberStatus(getStatus());
+			notificationWrapper.setNickName(getNickName());
+			notificationWrapper.setOtherMDN(getOtherMDN());
+			notificationWrapper.setRemainingBlockTimeMinutes(getRemainingBlockTimeMinutes());
+			notificationWrapper.setRemainingBlockTimeHours(getRemainingBlockTimeHours());
 			
-			if(notificationWrapper != null) {
-			
-				notificationWrapper.setSourcePocket(pocket);
-				notificationWrapper.setPocketType(getPocketType());
-				notificationWrapper.setTransactionId(getTransactionID());
-				notificationWrapper.setBankName(getBankName());
-				notificationWrapper.setBank(getBank());
-				notificationWrapper.setBillAmount(getBillAmount());
-				notificationWrapper.setServiceCharge(getServiceCharge());
-				notificationWrapper.setTransactionAmount(getDebitAmount());
-				notificationWrapper.setDestMDN(getDestinationMDN());
-				notificationWrapper.setNumberOfTriesLeft(getNumberOfTriesLeft());
-				notificationWrapper.setPartnerCode(getPartnerCode());
-				notificationWrapper.setSctlID(getSctlID());
-				notificationWrapper.setMinAmount(getMinAmount());
-				notificationWrapper.setMaxAmount(getMaxAmount());
-				notificationWrapper.setOneTimePin(getOneTimePin());
-				notificationWrapper.setAmount(getAmount());
-				notificationWrapper.setValidDenominations(getValidDenominations());
-				notificationWrapper.setInstitutionID(getInstitutionID());
-				notificationWrapper.setIntegrationName(getIntegrationName());
-				notificationWrapper.setOtpExpirationTime(getOtpExpirationTime());
-				notificationWrapper.setIPAddress(getIPAddress());
-				notificationWrapper.setFirstName(getFirstName());
-				notificationWrapper.setLastName(getLastName());
-				notificationWrapper.setReceiverAccountName(getReceiverAccountName());
-				notificationWrapper.setTransID(getTransID());
-				notificationWrapper.setParentTransID(getParentTransID());
-				notificationWrapper.setSourceMDN(getSourceMDN());
-				notificationWrapper.setCardPan(getCardPan());
-				notificationWrapper.setMaxFavoriteCount(getMaxFavoriteCount());
-				notificationWrapper.setFavoriteLabel(getFavoriteLabel());
-				notificationWrapper.setFavoriteValue(getFavoriteValue());
-				notificationWrapper.setKycLevel(getKycLevel());
-				notificationWrapper.setCardAlias(getCardAlias());
-				notificationWrapper.setOldCardAlias(getOldCardAlias());
-				notificationWrapper.setSubscriberStatus(getStatus());
-				notificationWrapper.setNickName(getNickName());
-				notificationWrapper.setOtherMDN(getOtherMDN());
-				notificationWrapper.setRemainingBlockTimeMinutes(getRemainingBlockTimeMinutes());
-				notificationWrapper.setRemainingBlockTimeHours(getRemainingBlockTimeHours());
-				
-				if (getSCTLList() != null) {
-						notificationWrapper.setServiceChargeTransactionLog(getSCTLList());
-						notificationWrapper.setSourceMDN(getSCTLList().getSourceMDN());
-						notificationWrapper.setReceiverMDN(getSCTLList().getDestMDN());
-				}
-				
-				if (ctList != null) {
-					for (CommodityTransfer commodityTransfer : ctList) {
-						notificationWrapper.setCommodityTransfer(commodityTransfer);
-						messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
-						messageBuilder.append("\r\n");
-					}
-				}
-				else if(psList != null)
-				{
-					for (SCTLSettlementMap pendingSettlement : psList) {
-						notificationWrapper.setPendingSettlement(pendingSettlement);
-						notificationWrapper.setAmount(pendingSettlement.getAmount());
-						Service service = getMfinoService().getByServiceID(pendingSettlement.getServiceID());
-						notificationWrapper.setService(service!=null?service.getDisplayName():"");
-						
-						Partner partner = getPartnerService().getPartnerById(pendingSettlement.getPartnerID());
-	            		notificationWrapper.setTradeName(partner!=null?partner.getTradeName():"");
-						messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
-						messageBuilder.append("\r\n");
-					}
-				}
-				else if (lastBankTrxnsList != null) {
-					for (CMGetLastTransactionsFromBank.CGEntries entry : lastBankTrxnsList) {
-						notificationWrapper.setLastBankTrxnEntry(entry);
-						messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
-						messageBuilder.append("\r\n");
-					}
-				}
-				else if (nfcTrxHistory != null) {
-					for (CMGetLastTransactionsFromBank.CGEntries entry : nfcTrxHistory) {
-						notificationWrapper.setLastBankTrxnEntry(entry);
-						messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
-						messageBuilder.append("\r\n");
-					}
-				}
-				else if (nfcCardBalances != null) {
-					for (CMBalanceInquiryFromBank.CGEntries entry : nfcCardBalances) {
-						notificationWrapper.setLastNFCCheckBalanceEntry(entry);
-						messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
-						messageBuilder.append("\r\n");
-					}
-				}
-				else {
-					messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
-				}
+			if (getSCTLList() != null) {
+					notificationWrapper.setServiceChargeTransactionLog(getSCTLList());
+					notificationWrapper.setSourceMDN(getSCTLList().getSourceMDN());
+					notificationWrapper.setReceiverMDN(getSCTLList().getDestMDN());
 			}
 			
+			if (ctList != null) {
+				for (CommodityTransfer commodityTransfer : ctList) {
+					notificationWrapper.setCommodityTransfer(commodityTransfer);
+					messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
+					messageBuilder.append("\r\n");
+				}
+			}
+			else if(psList != null)
+			{
+				for (SCTLSettlementMap pendingSettlement : psList) {
+					notificationWrapper.setPendingSettlement(pendingSettlement);
+					notificationWrapper.setAmount(pendingSettlement.getAmount());
+					Service service = getMfinoService().getByServiceID(pendingSettlement.getServiceID());
+					notificationWrapper.setService(service!=null?service.getDisplayName():"");
+					
+					Partner partner = getPartnerService().getPartnerById(pendingSettlement.getPartnerID());
+            		notificationWrapper.setTradeName(partner!=null?partner.getTradeName():"");
+					messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
+					messageBuilder.append("\r\n");
+				}
+			}
+			else if (lastBankTrxnsList != null) {
+				for (CMGetLastTransactionsFromBank.CGEntries entry : lastBankTrxnsList) {
+					notificationWrapper.setLastBankTrxnEntry(entry);
+					messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
+					messageBuilder.append("\r\n");
+				}
+			}
+			else if (nfcTrxHistory != null) {
+				for (CMGetLastTransactionsFromBank.CGEntries entry : nfcTrxHistory) {
+					notificationWrapper.setLastBankTrxnEntry(entry);
+					messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
+					messageBuilder.append("\r\n");
+				}
+			}
+			else if (nfcCardBalances != null) {
+				for (CMBalanceInquiryFromBank.CGEntries entry : nfcCardBalances) {
+					notificationWrapper.setLastNFCCheckBalanceEntry(entry);
+					messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
+					messageBuilder.append("\r\n");
+				}
+			}
+			else {
+				messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
+			}
 			message = messageBuilder.toString();
 		}
 		else {

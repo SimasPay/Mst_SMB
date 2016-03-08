@@ -637,7 +637,6 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				KYCLevel kycLevel=kyclevelDao.getByKycLevel(s.getSubscriber().getUpgradableKYCLevel());
 				entry.setUpgradableKYCLevelText(kycLevel.getKYCLevelName());
 				entry.setKYCLevel(kycLevel.getKYCLevel());
-				entry.setKYCLevelText(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevelName());
 			}else if (s.getSubscriber().getKYCLevelByKYCLevel()!=null){
 				entry.setKYCLevel(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevel());
 				entry.setKYCLevelText(s.getSubscriber().getKYCLevelByKYCLevel().getKYCLevelName());

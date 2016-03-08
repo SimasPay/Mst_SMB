@@ -292,13 +292,7 @@
 		<td>
 			<a href="jsp/s_subscriber_donation_confirm.jsp">Donation Confirm</a>
 		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_ktp_validation.jsp">Subscriber KTP Validation</a>
-		</td>
-	</tr>
-	
+	</tr>	
 	</table></td>
 	
 	</tr>
@@ -324,13 +318,13 @@
 	
 	<tr>
 		<td>
-			<a href="jsp/s_agent_cashininquiry.jsp"> Agent_to_Sub_CashInInquiry</a>
+			<a href="jsp/s_agent_cashininquiry.jsp"> Agent CashInInquiry</a>
 		</td>
 	</tr>
 	
 	<tr>
 		<td>
-			<a href="jsp/s_agent_cashinconfirm.jsp"> Agent_to_Sub_CashInConfirm</a>
+			<a href="jsp/s_agent_cashinconfirm.jsp"> Agent CashIn confirm</a>
 		</td>
 	</tr>
 	

@@ -77,12 +77,6 @@ mFino.widget.UserDetails = function (config)
                 name: CmFinoFIX.message.JSUsers.Entries.RoleText._name
             },
             {
-                xtype: "displayfield",
-                fieldLabel: _('Branch Code'),
-                anchor : '100%',
-                name: CmFinoFIX.message.JSUsers.Entries.BranchCodeText._name
-            },
-            {
                 xtype: 'displayfield',
                 fieldLabel: _('Security Lock'),
                 itemId: "securitylockcb",

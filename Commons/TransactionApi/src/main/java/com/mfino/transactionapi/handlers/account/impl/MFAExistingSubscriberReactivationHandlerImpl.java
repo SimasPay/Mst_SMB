@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
@@ -108,9 +109,9 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 		result.setTransactionID(transactionsLog.getID());
 		subscriberReactivation.setTransactionID(transactionsLog.getID());
  		try{
- 			String clearPin = transactionDetails.getSourcePIN();
+ 			String clearPin = CryptographyService.decryptWithPrivateKey(transactionDetails.getSourcePIN());
  			subscriberReactivation.setPin(clearPin);
- 			String clearCardPan = transactionDetails.getCardPAN();
+ 			String clearCardPan = CryptographyService.decryptWithPrivateKey(transactionDetails.getCardPAN());
  			subscriberReactivation.setSourceCardPAN(clearCardPan);
  		}
  		catch(Exception e){

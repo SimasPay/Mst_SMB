@@ -46,11 +46,7 @@ public interface UserService {
     public  boolean isSystemUser(Integer enumCode);
     
     public String getUserRole(Integer enumCode);
-    
-    public String getUserBranchCode(Integer enumCode);
-    
-    public String getUserBranchCodeString();
-    
+        
     public  Partner getPartner();
     
     public  void changePassword(String username, String oldPassword, String newPassword, Boolean isMerchantRegistration, boolean checkExisting) throws InvalidPasswordException, MfinoRuntimeException;

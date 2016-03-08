@@ -216,20 +216,10 @@
 			<artifactId>oro</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>de.congrace</groupId>
-			<artifactId>exp4j</artifactId>
-			<version>0.2.9</version>
-		</dependency> -->
 		<dependency>
 			<groupId>de.congrace</groupId>
 			<artifactId>exp4jCustom</artifactId>
 			<version>100</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
 		</dependency>
 	</dependencies>
 	<build>

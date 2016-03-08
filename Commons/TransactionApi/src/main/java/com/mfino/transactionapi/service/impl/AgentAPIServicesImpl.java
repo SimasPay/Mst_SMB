@@ -27,7 +27,6 @@ import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.agent.AgentBillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.agent.AgentBillPayInquiryHandler;
-import com.mfino.transactionapi.handlers.subscriber.SubscriberKtpValidationHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithOutServiceChargeHandler;
 import com.mfino.transactionapi.handlers.wallet.AgentCashInConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.AgentCashInInquiryHandler;
@@ -108,10 +107,6 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	@Qualifier("MoneyTransferHandlerImpl")
 	private MoneyTransferHandler moneyTransferHandler;
 	
-	@Autowired
-	@Qualifier("SubscriberKtpValidationHandlerImpl")
-	private SubscriberKtpValidationHandler subscriberKtpValidationHandler;
-
  	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
 
@@ -290,11 +285,6 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			
 			transactionDetails.setSystemIntiatedTransaction(true);
 			xmlResult = (XMLResult) moneyTransferHandler.handle(transactionDetails);
-			
-		} else if (ServiceAndTransactionConstants.SUBSCRIBER_KTP_VALIDATION.equalsIgnoreCase(transactionName)) {
-			
-			transactionRequestValidationService.validateSubscriberKtpDetails(transactionDetails);
-			xmlResult = (XMLResult) subscriberKtpValidationHandler.handle(transactionDetails);
 		}
 
 		else {

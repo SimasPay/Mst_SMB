@@ -29,7 +29,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('First Name'),
-            anchor:'90%',
+            width : 150,
             allowBlank: false,
             vtype:'name',
             maxLength : 255,
@@ -37,14 +37,14 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         },
         {
             fieldLabel: _('Last Name'),
-            anchor:'90%',
+            width : 150,
             vtype:'name',
             maxLength : 255,
             name:CmFinoFIX.message.JSUsers.Entries.LastName._name
         },
         {
             fieldLabel: _('Email'),
-            anchor:'90%',
+            width : 150,
             allowBlank: false,
             itemId : 'userEmail',
             blankText : _('Email is required'),
@@ -57,7 +57,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         	xtype: 'remotedropdown',
             fieldLabel  : _('Role'),
             itemId : 'userRole',
-            anchor:'90%',
+            width : 150,
             allowBlank: false,
             addEmpty : false,
             emptyText : _('<Select one..>'),
@@ -72,26 +72,10 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             params: {start:0, limit:10}
         },
         {
-            xtype: 'remotedropdown',
-            fieldLabel  : _('BranchCode'),
-            anchor:'90%',
-            itemId : 'userBranchCode',
-            allowBlank: false,
-            addEmpty : false,
-            emptyText : '<Select one..>',
-            name: CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
-            store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSBranchCodes), 
-            displayField: CmFinoFIX.message.JSBranchCodes.Entries.BranchName._name, 
-            valueField : CmFinoFIX.message.JSBranchCodes.Entries.ID._name, 
-            hiddenName : CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name,
-            pageSize: 10,
-            params: {start:0, limit:10}
-        },
-        {
             fieldLabel: _('Language'),
             xtype: 'enumdropdown',
             allowBlank: false,
-            anchor:'90%',
+           width : 150,
             enumId: CmFinoFIX.TagID.Language,
             name: CmFinoFIX.message.JSUsers.Entries.Language._name
         },
@@ -99,7 +83,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             fieldLabel: _('Time zone'),
             xtype: 'enumdropdown',
             allowBlank: false,
-            anchor:'90%',
+            width : 150,
             enumId: CmFinoFIX.TagID.Timezone,
             name:CmFinoFIX.message.JSUsers.Entries.Timezone._name
         },
@@ -118,7 +102,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
             fieldLabel  : _('Status'),
             enumId: CmFinoFIX.TagID.UserStatus,
             name: CmFinoFIX.message.JSUsers.Entries.UserStatus._name,
-            anchor:'90%',
+            width : 150,
             mode: 'local',
             triggerAction: 'all',
             emptyText : _('<Select one..>')
@@ -126,7 +110,7 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         {
             fieldLabel: _('Administrative Comment'),
             xtype: 'textarea',
-            anchor:'90%',
+            width : 150,
             maxLength : 1000,
             name:CmFinoFIX.message.JSUsers.Entries.AdminComment._name
         }
@@ -141,8 +125,6 @@ Ext.extend(mFino.widget.UserEditForm, Ext.FormPanel, {
         this.getForm().loadRecord(record);
         var role_combo = this.find('itemId','userRole')[0];
         role_combo.setRawValue(this.record.get(CmFinoFIX.message.JSUsers.Entries.RoleText._name));
-        var branchCode_combo = this.find('itemId','userBranchCode')[0];
-        branchCode_combo.setValue(this.record.get(CmFinoFIX.message.JSUsers.Entries.BranchCodeID._name));
         var restrictions = this.record.get(CmFinoFIX.message.JSUsers.Entries.UserRestrictions._name);
         var suspended = this.getComponent('usersuspend');
         var secLock = this.getComponent('usersecuritylock');

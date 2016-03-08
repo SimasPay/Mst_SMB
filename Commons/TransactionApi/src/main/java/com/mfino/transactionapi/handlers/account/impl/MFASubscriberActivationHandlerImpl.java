@@ -30,10 +30,8 @@ import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
-import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
-import com.mfino.service.AgentService;
 import com.mfino.service.MFAService;
 import com.mfino.service.NotificationService;
 import com.mfino.service.PocketService;
@@ -83,10 +81,6 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 	@Qualifier("SCTLServiceImpl")
 	private SCTLService sctlService;
 	
-	@Autowired
-	@Qualifier("AgentServiceImpl")
-	private AgentService agentService;
-	
 	private String transactionName = ServiceAndTransactionConstants.TRANSACTION_ACTIVATION;
 
 	public Result handle(TransactionDetails transactionDetails) {
@@ -98,7 +92,6 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		String transactionOTP = transactionDetails.getTransactionOTP();
 		ChannelCode channelCode   =	transactionDetails.getCc();
 		String mfaTransactionType = transactionDetails.getMfaTransaction();
-		boolean isSimaspayActivity=transactionDetails.isSimpaspayActivity();
 		
 		CMSubscriberActivation subscriberActivation = new CMSubscriberActivation();
 		
@@ -156,21 +149,6 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 				log.error(e.getMessage());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  				return result;
-			}
-			
-			//Validating OTP for SimaspayActivity
-			try{
-			
-				if(isSimaspayActivity){
-					
-					boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();
-					code=subscriberServiceExtended.validateOTP(subscriberActivation,isHttps,isHashedPin);
-					
-					if(!code.equals(CmFinoFIX.NotificationCode_OTPValidationSuccessful)){
-						result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
-		 				return result;
-					}
-				}
 			}catch(Exception e){
 				log.error("Error in Validating OTP",e);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
@@ -205,19 +183,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		}
 		
 		subscriberActivation.setServiceChargeTransactionLogID(sctl.getID());
-		boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();
-		
-		if(subscribermdn!=null){
-			Subscriber subscriber=subscribermdn.getSubscriber();
-			int int_subscriberType=subscriber.getType();
-			if(int_subscriberType==CmFinoFIX.SubscriberType_Partner){
-				NotificationWrapper wrapper = agentService.activeAgent(subscriberActivation,isHttps, ConfigurationUtil.getuseHashedPIN());		
-				 code= wrapper.getCode();
-			}else{
-				code=subscriberServiceExtended.activeSubscriber(subscriberActivation,isHttps,isHashedPin);
-			}
-		}
-		
+		boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();		
 		
 		if(code.equals(CmFinoFIX.NotificationCode_BOBPocketActivationCompleted)){
 			

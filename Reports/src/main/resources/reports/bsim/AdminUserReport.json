@@ -14,7 +14,6 @@
     					"First Name",
     					"Last Name",
     					"Role",
-    					"BranchCode",
     					"Status",
 						"Created On",
 						"Created By",
@@ -29,19 +28,16 @@
     				u.firstname, 
     				u.lastname, 
     				r.displaytext, 
-    				concat(concat(bc.BRANCHCODE,'-'),bc.branchname),
     				et.displaytext,
     				TO_CHAR (FROM_TZ(CAST(u.CreateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
 					u.createdby
 				From 
 					mfino_user u, 
 					enum_text et, 
-					role r,
-          			branchcodes bc
+					role r
 				Where 
 					(et.tagid=5268 and u.status=et.enumcode) 
 					and (u.role=r.enumcode)
-					and (u.BRANCHCODEID=bc.id)
 					and u.CreateTime >= ${StartTime}
 					and u.CreateTime <= ${EndTime}
 				Order By u.CreateTime;",

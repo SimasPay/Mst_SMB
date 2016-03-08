@@ -33,11 +33,19 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		Criteria criteria = createCriteria();
 
 		if (query.getTransactionRuleId() != null) {
-			TransactionRuleDAO trDAO = DAOFactory.getInstance().getTransactionRuleDAO();
+			TransactionRuleDAO trDAO = DAOFactory.getInstance()
+					.getTransactionRuleDAO();
 			TransactionRule tr = trDAO.getById(query.getTransactionRuleId());
-			criteria.createAlias(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID,"ps");
-			criteria.add(Restrictions.eq("ps." + CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID, tr.getPartnerByServiceProviderID()));
-			criteria.add(Restrictions.eq("ps." + CmFinoFIX.CRPartnerServices.FieldName_Service,	tr.getService()));
+			criteria.createAlias(
+					CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID,
+					"ps");
+			criteria.add(Restrictions
+					.eq("ps."
+							+ CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID,
+							tr.getPartnerByServiceProviderID()));
+			criteria.add(Restrictions.eq("ps."
+					+ CmFinoFIX.CRPartnerServices.FieldName_Service,
+					tr.getService()));
 		}
 		if (StringUtils.isNotBlank(query.getPartnerTypeSearchString())) {
 			String[] strArray = query.getPartnerTypeSearchString().split(",");
@@ -47,7 +55,9 @@ public class PartnerDAO extends BaseDAO<Partner> {
 				intArray[i] = new Integer(s);
 				i++;
 			}
-			criteria.add(Restrictions.in(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,	intArray));
+			criteria.add(Restrictions
+					.in(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,
+							intArray));
 		}
 		if (StringUtils.isNotBlank(query.getTradeName())) {
 			if (Boolean.TRUE == query.isPartnerCodeLike()) {
@@ -242,21 +252,6 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_Subscriber,
 				sub));
-		List<Partner> results = criteria.list();
-		if (results.size() > 0) {
-			return results.get(0);
-		} else {
-			return null;
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Partner getBranchSequence(PartnerQuery query) {
-		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BranchCode, query.getBranchCode()));
-		criteria.addOrder(Order.desc("ID"));
-		criteria.setMaxResults(1);
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
 			return results.get(0);

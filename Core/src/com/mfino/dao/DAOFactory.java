@@ -300,10 +300,6 @@ public class DAOFactory {
 	
 	private FavoriteCategoryDAO favoriteCategoryDAO;
 	
-	private BranchCodeDAO branchCodeDAO;
-	
-	private KtpDetailsDAO ktpDetailsDAO;
-	
 	public RetiredCardPANInfoDAO getRetiredCardPANInfoDAO() {
 		retiredCardPANInfoDAO = new RetiredCardPANInfoDAO();
 		retiredCardPANInfoDAO.setHibernateSessionHolder(getHibernateSessionHolder());
@@ -1253,18 +1249,5 @@ public class DAOFactory {
 		cftDAO = new CashinFirstTimeDAO();
 		cftDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return cftDAO;
-	}
-	
-	public BranchCodeDAO getBranchCodeDAO() {
-		branchCodeDAO = new BranchCodeDAO();
-		branchCodeDAO.setHibernateSessionHolder(getHibernateSessionHolder());
-		return branchCodeDAO;
-	}
-	
-	public KtpDetailsDAO getKtpDetailsDAO() {
-		
-		ktpDetailsDAO = new KtpDetailsDAO();
-		ktpDetailsDAO.setHibernateSessionHolder(getHibernateSessionHolder());
-		return ktpDetailsDAO;
 	}
 }

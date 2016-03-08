@@ -57,8 +57,6 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/FormWindow.js"/>">
 </script>
-<script type="text/javascript" src="<c:url value="/js/widget/FormWindowsp.js"/>">
-</script>
 <script type="text/javascript" src="<c:url value="/js/util/fix.js"/>">
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/Form.js"/>">
@@ -568,16 +566,6 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/SettlementConfigGridView.js"/>">
 </script>
-<script type="text/javascript" src="<c:url value="/js/page/agentsp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerFormsp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerDetailssp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerListsp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectPartnerWindowsp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerSearchFormsp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerTabsp.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerFormspAdd.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerFormspEdit.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerFormspView.js"/>"></script>
 
 <%-- <script type="text/javascript" src="<c:url value="/js/page/Partnertransaction.js"/>">
 </script>

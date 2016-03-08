@@ -20,40 +20,11 @@ public class PartnerQuery extends BaseQuery {
 	private String cardPAN;
 	private Long subscriberID;
 	private boolean partnerCodeLike;
+
+   
 	private Long distributionChainTemplateId;
     private Long parentId;
     private boolean firstLevelPartnerSearch;
-    private String branchCode;
-    private Integer branchSequence;
-    private Integer businessPartnerType;
-
-    
-
-
-	public String getBranchCode() {
-		return branchCode;
-	}
-
-	public void setBranchCode(String branchCode) {
-		this.branchCode = branchCode;
-	}
-
-	public Integer getBranchSequence() {
-		return branchSequence;
-	}
-
-	public void setBranchSequence(Integer branchSequence) {
-		this.branchSequence = branchSequence;
-	}
-
-	public Integer getBusinessPartnerType() {
-		return businessPartnerType;
-	}
-
-	public void setBusinessPartnerType(Integer businessPartnerType) {
-		this.businessPartnerType = businessPartnerType;
-	}
-
 	public Long getSubscriberID() {
 		return subscriberID;
 	}

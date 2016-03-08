@@ -3,13 +3,11 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.Address;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.fix.CmFinoFIX.CMExistingSubscriberReactivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberRegistration;
@@ -25,11 +23,6 @@ public interface SubscriberServiceExtended {
 			SubscriberMDN subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
 			String oneTimePin, Partner registeringPartner);
-	
-	public Integer registerSubscriberByAgent(Subscriber subscriber,
-			SubscriberMDN subscriberMDN,
-			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
-		    Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscribersAdditionalFields subscriberAddiFields);
 
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration);
@@ -62,6 +55,5 @@ public interface SubscriberServiceExtended {
 			boolean isHashedPin);
 
 	public boolean isSubscriberEmailVerified(Subscriber sub);
-	
-	public  Integer validateOTP(CMSubscriberActivation subscriberActivation, boolean isHttps, boolean isHashedPin) ;
+
 }

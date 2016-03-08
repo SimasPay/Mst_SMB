@@ -401,7 +401,7 @@ public class PartnerServiceImpl implements PartnerService {
 		
 		subscriberServiceExtended.updateUnRegisteredTxnInfoToActivated(subscriberMDN);
 		
-		//mailService.asyncSendEmail(email,to , emailSubject,emailMsg);
+		mailService.asyncSendEmail(email,to , emailSubject,emailMsg);
 		String smsMsg="activation notification";
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		try {

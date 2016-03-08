@@ -56,13 +56,7 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_HISTORY = "History";
 
 	public static final String TRANSACTION_TRANSFER = "Transfer";
-	
-	public static final String TRANSACTION_E2ETRANSFER = "E2ETransfer";
-	
-	public static final String TRANSACTION_B2ETRANSFER = "B2ETransfer";
-	
-	public static final String TRANSACTION_E2BTRANSFER = "E2BTransfer";
-	
+		
 	public static final String TRANSACTION_TRANSFER_UNREGISTERED = "TransferToUnregistered";
 
 	public static final String TRANSACTION_CASHOUT = "CashOut";
@@ -345,6 +339,4 @@ public class ServiceAndTransactionConstants {
 	public static final String MESSAGE_QR_PAYMENT 			=	"QR Payment";
 	
 	public static final String MESSAGE_DONATION = "Donation";
-	
-	public static final String SUBSCRIBER_KTP_VALIDATION = "SubscriberKTPValidation";
 }

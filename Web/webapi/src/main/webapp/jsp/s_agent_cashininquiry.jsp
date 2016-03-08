@@ -8,7 +8,7 @@
 </head>
 <body>
 <center>
-<h1>Agent to Subscriber Cashin Inquiry</h1>
+<h1>Agent Cashin Inquiry</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="AgentServices" name="service" /> 
 <input type="hidden" value="CashInInquiry" name="txnName" />
@@ -30,7 +30,7 @@
 		<td><input type="text" name="sourcePIN" value="" /></td>
 	</tr>
 	<tr>
-		<td>DestinationPhoneNumber</td>
+		<td>DestinationNumber</td>
 		<td><input type="text" name="destMDN" value="" /></td>
 	</tr>
 	<tr>
@@ -46,10 +46,10 @@
 		<td><input type="hidden" name="bankID" value="" /></td>
 	</tr>
 	
-<!-- 	<tr>
+	<tr>
 		<td>destPocketCode</td>
-		<td><input type="text" name="destPocketCode" value="1" />(Emoney-1 ,Bank-2)</td>
-	</tr> -->
+		<td><input type="text" name="destPocketCode" />(Emoney-1 ,Bank-2)</td>
+	</tr>
 	
 	
 	<tr>

@@ -167,14 +167,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 					ApiConstants.PARAMETER_SUB_FIRSTNAME);
 		}
 	}
-	
-	public void validateKtpId(TransactionDetails transactionDetails) throws InvalidDataException {
-		if (StringUtils.isBlank(transactionDetails.getKtpId())) {
-			throw new InvalidDataException("Invalid KTP Id", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-					ApiConstants.PARAMETER_KTPID);
-		}
-	}
-	
+		
 	public void validateLastName(TransactionDetails transactionDetails) throws InvalidDataException {
 		if (StringUtils.isBlank(transactionDetails.getLastName())) {
 			throw new InvalidDataException("Invalid Last name", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
@@ -405,10 +398,6 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	public void validateSubscriberActivationDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateOTP(transactionDetails);
 				
-		if(!transactionDetails.isSimpaspayActivity()){
-			validateNewPin(transactionDetails);
-			validateConfirmPin(transactionDetails);	
-		}
 		if (transactionDetails.getDateOfBirth()!=null) {
 			validateDateOfBirth(transactionDetails);
 		}
@@ -578,32 +567,22 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateTransferId(transactionDetails);
 		validateParentTxnId(transactionDetails);
 	}
-	
-	public void validateSubscriberKtpDetails(TransactionDetails transactionDetails) throws InvalidDataException {
-		validateDesttinationMDN(transactionDetails);
-		validateFirstName(transactionDetails);
-		//validateDateOfBirth(transactionDetails);
-		validateKtpId(transactionDetails);
-	}
-	
+		
 	public void validateSubscriberRegistrationByAgentDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateDesttinationMDN(transactionDetails);
 		validateFirstName(transactionDetails);
-		//validateLastName(transactionDetails);
+		validateLastName(transactionDetails);
 		validateDateOfBirth(transactionDetails);
-		if(transactionDetails.getMothersMaidenName()!=null) {
-			
+		if(transactionDetails.getMothersMaidenName()!=null)
+		{
 			validateMothersMaidenName(transactionDetails);	
 		}
-        
-		/*validateAccountType(transactionDetails);
-		
-        if(transactionDetails.getApplicationId()!=null){
-		
-        	validateApplicationId(transactionDetails);
+        validateAccountType(transactionDetails);
+		if(transactionDetails.getApplicationId()!=null)
+		{
+		validateApplicationId(transactionDetails);
 		}
-        
-		validateSourcePin(transactionDetails);*/
+		validateSourcePin(transactionDetails);
 	}
 
 	public void validateSubscriberRegistration(TransactionDetails transactionDetails) throws InvalidDataException {

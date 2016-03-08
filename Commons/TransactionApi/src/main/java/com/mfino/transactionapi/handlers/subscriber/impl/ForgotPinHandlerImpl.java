@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,12 +11,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
+import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
+import com.mfino.exceptions.InvalidChargeDefinitionException;
+import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMResetPinByOTP;
 import com.mfino.handlers.FIXMessageHandler;
@@ -105,7 +112,7 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		result.setTransactionID(transactionLog.getID());
 		
  		try{
- 			String clearPin = transDetails.getNewPIN();
+ 			String clearPin = CryptographyService.decryptWithPrivateKey(transDetails.getNewPIN());
  			resetPin.setNewPin(clearPin);
  			resetPin.setConfirmPin(clearPin);
  		}

@@ -44,10 +44,9 @@ public class PlaceHolderController {
         String userString = StringUtils.EMPTY;
         String i18nJSPath = StringUtils.EMPTY;
         String authFileName = StringUtils.EMPTY;
-        String userBranchCode=StringUtils.EMPTY;
+		
         try {
             userString = userService.getUserString();
-            userBranchCode=userService.getUserBranchCodeString();
             i18nJSPath = "/js/message/msg." + userService.getUserLanguageCode() + ".js";
             authFileName = "authorization.jsx?" + CacheBuster.getTimeStamp();
         } catch (Exception ex) {
@@ -62,7 +61,6 @@ public class PlaceHolderController {
         String promptPin = CookieStore.get(request, "promptPin");  
         map.put("promptPin", promptPin);
         map.put("userString", userString);
-        map.put("userBranchCodeString", userBranchCode);
         map.put("i18nJSPath", i18nJSPath);
         map.put("authFileName", authFileName);
         map.put("ip", request.getRemoteAddr());

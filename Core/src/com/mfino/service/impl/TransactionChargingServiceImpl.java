@@ -347,7 +347,6 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		log.info("checking for source partner service details");
 		Map<String, Long> sourceMap = getMDNDetails(sc.getSourceMDN());
 		if (sourceMap.get(PARTNER_ID) != null && !ServiceAndTransactionConstants.TRANSACTION_AGENTACTIVATION.equals(sc.getTransactionTypeName())
-				&&!ServiceAndTransactionConstants.TRANSACTION_ACTIVATION.equals(sc.getTransactionTypeName())
 				&& !ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_SYSTEM.equals(sc.getTransactionTypeName())
 				&& !ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY.equals(sc.getTransactionTypeName())
 				&& getPartnerService(sourceMap.get(PARTNER_ID), serviceProviderId, serviceId) == null) {

@@ -43,6 +43,7 @@ import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.ApproveRejectPartnerProcessor;
@@ -137,8 +138,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         Subscriber subscriber = partner.getSubscriber();
         SubscriberMDN subscriberMDN =subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
         if((!CmFinoFIX.UpgradeState_Upgradable.equals(subscriber.getUpgradeState()))
-        		&&(!CmFinoFIX.UpgradeState_Rejected.equals(subscriber.getUpgradeState()))
-        	&&(!CmFinoFIX.UpgradeState_RequestForCorrection.equals(subscriber.getUpgradeState()))){
+        		&&(!CmFinoFIX.UpgradeState_Rejected.equals(subscriber.getUpgradeState()))){
         	log.info("Invalid partner status" + realMsg.getPartnerID());
             errorMsg.setErrorDescription(MessageText._("Invalid partner upgradestatus"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -261,16 +261,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     			String sub= ConfigurationUtil.getOTPMailSubsject();
     			mailService.asyncSendEmail(email, to, sub, emailMessage);
     		}
-		} else if (CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())) { 
-			
-        	subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-        	subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
-        	subscriber.setApproveOrRejectTime(new Timestamp());
-        	subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-        	subscriber.setStatusTime(new Timestamp());
-        	subscriber.setUpgradeState(CmFinoFIX.UpgradeState_RequestForCorrection);
-        	subscriberDao.save(subscriber);
-			errorMsg.setErrorDescription(MessageText._("Requested For Correction of Data for Agent"));
+            
         } else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
             //update subscriber  update pockets
         	partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Initialized);

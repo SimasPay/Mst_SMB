@@ -2,19 +2,21 @@ package com.mfino.transactionapi.handlers.payment.impl;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.fix.CmFinoFIX.CMGetThirdPartData;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.XMLResult;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.handlers.payment.GetThirdPartyDataHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.RegistrationMediumXMLResult;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -27,6 +29,10 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 	public static final Integer INVALID_CATEGORY = 1;
 	public static final Integer INVALID_VERSION = 2;
 	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService;
+
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public XMLResult handle(TransactionDetails transDetails) {
 		
@@ -47,23 +53,18 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
 		    return xmlResult;
 		}
-		
-		categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", getThirdPartyData.getDataCategory()+".txt");
-		
-		if(!categoryRelatedJsonFile.exists()){
-			//handle file not found
-			log.error("category related file not found : "+categoryRelatedJsonFile.getName());
+		boolean isSystemparameterExists = checkSystemParamterExists(getThirdPartyData.getDataCategory());
+
+		if(!isSystemparameterExists){
+			log.error("Invalid system parameter or no system paramter: "+getThirdPartyData.getDataCategory()+" has been created");
 			categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", "errorJson.txt");
 			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
-			return xmlResult;
-		}
-		
+		    return xmlResult;
+		}		
 		float systemVersion = 0;
 		float enteredVersion = 0;
 		try{
-			String jsonString = FileUtils.readFileToString(categoryRelatedJsonFile);
-			JSONObject jsonObject = new JSONObject(jsonString);			
-			systemVersion = Float.parseFloat(jsonObject.getString("version"));
+			systemVersion = Float.parseFloat(systemParametersService.getString(getThirdPartyData.getDataCategory()));
 			enteredVersion = Float.parseFloat(getThirdPartyData.getVersion());
 		}
 		catch(Exception e){
@@ -81,6 +82,16 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 		    return xmlResult;
 		}
 
+		categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", getThirdPartyData.getDataCategory()+".txt");
+		
+		if(!categoryRelatedJsonFile.exists()){
+			//handle file not found
+			log.error("category related file not found : "+categoryRelatedJsonFile.getName());
+			categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", "errorJson.txt");
+			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
+			return xmlResult;
+		}
+
 		log.info("path:"+categoryRelatedJsonFile.getAbsolutePath());
 		xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
 	    return xmlResult;
@@ -95,5 +106,19 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 			return INVALID_VERSION;
 		}
 		return SUCCESS;
+	}
+
+	private boolean checkSystemParamterExists(String dataCategory) {
+		boolean isSystemParameterExists = false;
+		if(SystemParameterKeys.CATEGORY_BANK_CODES.equals(dataCategory) || SystemParameterKeys.CATEGORY_PAYMENTS.equals(dataCategory) 
+				|| SystemParameterKeys.CATEGORY_PURCHASE.equals(dataCategory) || SystemParameterKeys.CATEGORY_PREPAID.equals(dataCategory)
+				|| SystemParameterKeys.CATEGORY_POSTPAID.equals(dataCategory) || SystemParameterKeys.CATEGORY_PREPAIDPLN.equals(dataCategory)
+				|| SystemParameterKeys.CATEGORY_POSTPAIDPLN.equals(dataCategory) || SystemParameterKeys.CATEGORY_PREPAIDPHONE.equals(dataCategory)
+				|| SystemParameterKeys.CATEGORY_POSTPAIDPHONE.equals(dataCategory) || SystemParameterKeys.CATEGORY_HELP.equals(dataCategory)
+				|| SystemParameterKeys.CATEGORY_UPGRADE_ADDRESSLIST.equals(dataCategory) || SystemParameterKeys.CATEGORY_CASHOUT_ADDRESSLIST.equals(dataCategory)){
+			return true;
+		}
+		return isSystemParameterExists;
+
 	}
 }

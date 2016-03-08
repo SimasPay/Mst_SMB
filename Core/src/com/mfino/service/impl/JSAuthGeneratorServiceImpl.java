@@ -82,7 +82,6 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private static final String TRANSACTION_CHARGE_TAB = "transactionCharge";
     private static final String REPORT_TAB = "report";
     private static final String AGENT_TAB = "agent";
-    private static final String AGENTSP_TAB = "agentsp";
     private static final String BULK_TRANSFER_TAB = "bulkTransfer";
     private static final String GROUPS_TAB = "groups";
     private static final String OLAP_TAB = "OLAP";
@@ -235,8 +234,6 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         jsBuf.append(ELSE);
         jsBuf.append(getCodeForSingleTabEnabled(AGENT_TAB)); 
         jsBuf.append(ELSE);
-        jsBuf.append(getCodeForSingleTabEnabled(AGENTSP_TAB)); 
-        jsBuf.append(ELSE);
         jsBuf.append(getCodeForSingleTabEnabled(TELLER_TAB)); 
         jsBuf.append(ELSE);
         jsBuf.append(getCodeForSingleTabEnabled(TRANSACTION_CHARGE_TAB)); 
@@ -329,7 +326,6 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         } else if (tabName.equals(PARTNERS_TAB)) {
         	return (authorizationService.isAuthorized(CmFinoFIX.Permission_ServicePartner_View) ||        		
             		authorizationService.isAuthorized(CmFinoFIX.Permission_BusinessPartner_View) ||
-            		authorizationService.isAuthorized(CmFinoFIX.Permission_BusinessPartnerSp_View) ||
             		authorizationService.isAuthorized(CmFinoFIX.Permission_MFSBiller_View) ||
             		authorizationService.isAuthorized(CmFinoFIX.Permission_BankTeller_View) ||
             		authorizationService.isAuthorized(CmFinoFIX.Permission_FundingForAgent));
@@ -351,8 +347,6 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         	 return authorizationService.isAuthorized(CmFinoFIX.Permission_TransactionCharge_View);
         } else if (tabName.equals(AGENT_TAB)) {
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_BusinessPartner_View);
-        } else if (tabName.equals(AGENTSP_TAB)) {
-        	return authorizationService.isAuthorized(CmFinoFIX.Permission_BusinessPartnerSp_View);
         } else if (tabName.equals(TELLER_TAB)) {
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_BankTeller_View);
         } else if (tabName.equals(REPORT_TAB)) {

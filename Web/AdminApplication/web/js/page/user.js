@@ -10,7 +10,7 @@ mFino.page.user = function(config){
         form : new mFino.widget.UserEditForm(config),
         title : _('Edit User'),
         width:420,
-        height:440,
+        height:420,
         mode : 'edit'
     },config));
 
@@ -18,7 +18,7 @@ mFino.page.user = function(config){
         form : new mFino.widget.UserAddForm(config),
         title : _('New User'),
         width:420,
-        height:420,
+        height:400,
         mode : 'add'
     },config));
 

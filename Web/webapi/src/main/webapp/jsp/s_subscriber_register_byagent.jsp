@@ -58,24 +58,20 @@
 		<td><input type="text" name="ktpLine1" value="" /></td>
 	</tr>
 	<tr>
-		<td>RT</td>
-		<td><input type="text" name="ktpRT" value="" /></td>
-	</tr>
-	<tr>
-		<td>RW</td>
-		<td><input type="text" name="ktpRW" value="" /></td>
+		<td>Line2</td>
+		<td><input type="text" name="ktpLine2" value="" /></td>
 	</tr>
 	<tr>
 		<td>City</td>
 		<td><input type="text" name="ktpCity" value="" /></td>
 	</tr>
 	<tr>
-		<td>Sub State</td>
-		<td><input type="text" name="ktpSubState" value="" /></td>
-	</tr>
-	<tr>
 		<td>State</td>
 		<td><input type="text" name="ktpState" value="" /></td>
+	</tr>
+	<tr>
+		<td>Country</td>
+		<td><input type="text" name="ktpCountry" value="" /></td>
 	</tr>
 	<tr>
 		<td>Zip Code</td>
@@ -98,24 +94,20 @@
 		<td><input type="text" name="line1" value="" /></td>
 	</tr>
 	<tr>
-		<td>RT</td>
-		<td><input type="text" name="RT" value="" /></td>
-	</tr>
-	<tr>
-		<td>RW</td>
-		<td><input type="text" name="RW" value="" /></td>
+		<td>Line2</td>
+		<td><input type="text" name="line2" value="" /></td>
 	</tr>
 	<tr>
 		<td>City</td>
 		<td><input type="text" name="city" value="" /></td>
 	</tr>
 	<tr>
-		<td>Sub State</td>
-		<td><input type="text" name="subState" value="" /></td>
-	</tr>
-	<tr>
 		<td>State</td>
 		<td><input type="text" name="state" value="" /></td>
+	</tr>
+	<tr>
+		<td>Country</td>
+		<td><input type="text" name="country" value="" /></td>
 	</tr>
 	<tr>
 		<td>Zip Code</td>

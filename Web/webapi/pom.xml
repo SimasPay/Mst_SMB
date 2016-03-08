@@ -109,7 +109,6 @@
 										<include>category.bankCodes.txt</include>
 										<include>category.purchase.txt</include>
 										<include>category.payments.txt</include>
-										<include>category.geographicaldata.txt</include>
 										<include>defaultJson.txt</include>
 										<include>errorJson.txt</include>
 										<include>category.help.txt</include>

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -52,7 +51,7 @@ import com.mfino.transactionapi.vo.TransactionDetails;
 @Service("AgentCashInInquiryHandlerImpl")
 public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements AgentCashInInquiryHandler{
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private static Logger log = LoggerFactory.getLogger(AgentCashInInquiryHandlerImpl.class);
 
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
@@ -88,21 +87,16 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 	
 	public Result handle(TransactionDetails transactionDetails) 
 	{
-		log.info("Extracting data from transactionDetails in AgentCashInInquiryHandlerImpl from sourceMDN: "+
-				transactionDetails.getSourceMDN()+"to"+transactionDetails.getDestMDN());
-		
-		//transactionDetails.setDestinationPocketId(Long.parseLong("1"));
-		//transactionDetails.setDestinationPocketId(CmFinoFIX.PocketType_LakuPandai.longValue());
-		transactionDetails.setDestPocketCode(CmFinoFIX.PocketType_LakuPandai.toString());
-		transactionDetails.setSystemIntiatedTransaction(true);
-		
+		log.info("Extracting data from transactionDetails in AgentCashInInquiryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()
+				+"to"+transactionDetails.getDestMDN());
+		//setting the needed transactionDetails into the message
 		CMAgentCashInInquiry agentCashinInquiry = new CMAgentCashInInquiry();
 
 		ChannelCode cc = transactionDetails.getCc();
 		BigDecimal amount = transactionDetails.getAmount();
 		String destpocketcode=transactionDetails.getDestPocketCode();
 
-		agentCashinInquiry.setSourceMDN(subscriberService.normalizeMDN(transactionDetails.getSourceMDN()));
+		agentCashinInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		agentCashinInquiry.setAmount(amount);
 		agentCashinInquiry.setPin(transactionDetails.getSourcePIN());
 		agentCashinInquiry.setDestMDN(subscriberService.normalizeMDN(transactionDetails.getDestMDN()));
@@ -112,7 +106,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		agentCashinInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		agentCashinInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
-		log.info("Handling Agent to subscriber cashin inquiry webapi request::From " + agentCashinInquiry.getSourceMDN() + " To " + 
+		log.info("Handling Agent cashin inquiry webapi request::From " + agentCashinInquiry.getSourceMDN() + " To " + 
 				agentCashinInquiry.getDestMDN() + " For Amount = " + agentCashinInquiry.getAmount());
 
 		XMLResult result = new TransferInquiryXMLResult();
@@ -143,10 +137,11 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		validationResult = transactionApiValidationService.validateDestinationPocket(destSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination pocket with pocket id : "+(destSubscriberPocket!=null? destSubscriberPocket.getID():null)+" of the subscriber "+destinationMDN.getMDN()+
-					" has failed validations");
+					"has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
+
 
 		log.info("creating the serviceCharge object....");
 		Transaction transDetails = null;
@@ -166,40 +161,6 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			log.error("validations falied at hierarchy service for sourceSubscriberMDN : "+srcSubscriberMDN+" destinationSubscriberMDN: "+destinationMDN+
 					" service: "+sc.getServiceName()+" transactionType: "+sc.getTransactionTypeName());
 			result.setNotificationCode(validationResult);
-			return result;
-		}
-		
-		BigDecimal minCashInValue = systemParametersService.getBigDecimal(SystemParameterKeys.MINIMUM_VALUE_OF_CASHIN);
-		//BigDecimal maxCashInValue = systemParametersService.getBigDecimal(SystemParameterKeys.MAXIMUM_VALUE_OF_CASHIN);
-		
-		if (minCashInValue.compareTo(transactionDetails.getAmount()) > 0) {
-			result.setMinAmount(minCashInValue);
-			//result.setMaxAmount(maxCashInValue);
-			result.setAmount(transactionDetails.getAmount());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_CashInAmountMustbeMinAmount);
-			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_CashInAmountMustbeMinAmount));
-			
-			return result;
-		}
-		
-		/*if (maxCashInValue.compareTo(transactionDetails.getAmount()) < 0) {
-			result.setMinAmount(minCashInValue);
-			result.setMaxAmount(maxCashInValue);
-			result.setAmount(transactionDetails.getAmount());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_CashInAmountMustbeMaxAmount);
-			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_CashInAmountMustbeMaxAmount));
-			
-			return result;
-		}*/
-		
-		BigDecimal cashInValueMulOf = systemParametersService.getBigDecimal(SystemParameterKeys.CASHIN_VALUE_MULTIPLES_OFF);
-		
-		if ( BigDecimal.ZERO.compareTo(transactionDetails.getAmount().remainder(cashInValueMulOf)) != 0 ) {
-			result.setMultiplesOff(cashInValueMulOf);
-			result.setAmount(transactionDetails.getAmount());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_CashInAmountMustbeMultiplesOff);
-			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_CashInAmountMustbeMultiplesOff));
-			
 			return result;
 		}
 		
@@ -237,10 +198,9 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		if(destSubscriberPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount) || 
-				srcAgentPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
+		if(destSubscriberPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)||srcAgentPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
 		{
-			if(!systemParametersService.getBoolean("SystemParameterKeys.BANK_SERVICE_STATUS"))
+			if(!systemParametersService.getBankServiceStatus())
 			{
 				log.info("The bank service is down as set in the system parameter");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
@@ -263,10 +223,8 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		cashIn.setSourceApplication(cc.getChannelSourceApplication());
 		cashIn.setSourceMessage(agentCashinInquiry.getSourceMessage());
 		cashIn.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		cashIn.setUICategory(CmFinoFIX.TransactionUICategory_Cashin_At_Agent);
 		cashIn.setServiceChargeTransactionLogID(sctl.getID());
 		cashIn.setTransactionIdentifier(agentCashinInquiry.getTransactionIdentifier());
-		cashIn.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		
 		log.info("sending request to backend for processing");
 		CFIXMsg response = super.process(cashIn);
@@ -274,17 +232,16 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 		
-		if (!transactionResponse.isResult() && sctl!=null) {
-			String errorMsg = transactionResponse.getMessage();
-			transactionChargingService.failTheTransaction(sctl, errorMsg);	
-		}
-		
 		if (transactionResponse.getTransactionId() !=null) {
 			sctl.setTransactionID(transactionResponse.getTransactionId());
-			//agentCashinInquiry.setTransactionID(transactionResponse.getTransactionId());
-			cashIn.setTransactionID(transactionResponse.getTransactionId());			
+			agentCashinInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
+		}
+		if (!transactionResponse.isResult() && sctl!=null) 
+		{
+			String errorMsg = transactionResponse.getMessage();
+			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 
 		result.setSctlID(sctl.getID());
