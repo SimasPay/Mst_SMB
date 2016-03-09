@@ -178,6 +178,8 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 			
 			if(null != destPocket) {
 			
+				result.setName(subMDN.getSubscriber().getFirstName());
+				
 				if(destPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT))) == -1) {
 					
 					if(CmFinoFIX.SubscriberStatus_Active.equals(subMDN.getSubscriber().getStatus())) {
@@ -190,7 +192,6 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 						
 						if(null == sctlData || (null != sctlData && sctlData.size() == 0)) {
 						
-							result.setName(subMDN.getSubscriber().getFirstName());
 							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingInquirySuccess));
 							result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingInquirySuccess);
 							result.setMessage("Subscriber Closing Inquiry successfull");
