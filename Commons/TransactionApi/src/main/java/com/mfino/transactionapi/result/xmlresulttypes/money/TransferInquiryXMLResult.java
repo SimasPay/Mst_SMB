@@ -9,6 +9,17 @@ import com.mfino.result.XMLResult;
 import com.mfino.util.MfinoUtil;
 
 public class TransferInquiryXMLResult extends XMLResult {
+	
+	private String	name;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public TransferInquiryXMLResult() {
 		super();
 	}
@@ -123,7 +134,7 @@ public class TransferInquiryXMLResult extends XMLResult {
 				getXmlWriter().writeStartElement("sctlID");
 				getXmlWriter().writeCharacters(getSctlID().toString(),true);
 				getXmlWriter().writeEndElement();
-		}
+			}
 			if(getMfaMode() != null)
 			{
 				 getXmlWriter().writeStartElement("mfaMode");
@@ -146,6 +157,13 @@ public class TransferInquiryXMLResult extends XMLResult {
 			if (getInvoiceNo() != null) {
 				getXmlWriter().writeStartElement("invoiceNo");
 				getXmlWriter().writeCharacters(getInvoiceNo(),false);
+				getXmlWriter().writeEndElement();
+			}
+			
+			if(StringUtils.isNotBlank(getName())) {
+				
+				getXmlWriter().writeStartElement("name");
+				getXmlWriter().writeCharacters(getName(),false);
 				getXmlWriter().writeEndElement();
 			}
 		}

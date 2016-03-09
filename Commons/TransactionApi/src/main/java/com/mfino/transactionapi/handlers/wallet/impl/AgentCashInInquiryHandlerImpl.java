@@ -117,7 +117,8 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		log.info("Handling Agent to subscriber cashin inquiry webapi request::From " + agentCashinInquiry.getSourceMDN() + " To " + 
 				agentCashinInquiry.getDestMDN() + " For Amount = " + agentCashinInquiry.getAmount());
 
-		XMLResult result = new TransferInquiryXMLResult();
+		//XMLResult result = new TransferInquiryXMLResult();
+		TransferInquiryXMLResult result = new TransferInquiryXMLResult();
 
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentCashInInquiry, agentCashinInquiry.DumpFields());
 		agentCashinInquiry.setTransactionID(transactionsLog.getID());
@@ -302,6 +303,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
+		result.setName(destinationMDN.getSubscriber().getFirstName());
 		return result;
 	}
 }
