@@ -143,7 +143,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'DATA_PRIBADI',
+                               text :'DATA PRIBADI',
                                name: 'PersonalData',
                                anchor : '100%',
                                style: 'font-weight:bold;'
@@ -275,7 +275,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspAdd, Ext.form.FormPanel, {
                            },
                            {
                                xtype : 'label',
-                               text :'DATA_PERUSAHAAN',
+                               text :'DATA PERUSAHAAN',
 
                                name: 'CompanyData',
                                anchor : '100%',
