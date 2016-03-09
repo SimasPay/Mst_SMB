@@ -195,28 +195,6 @@
 		<td>
 			<a href="jsp/s_bill_inquiry.jsp"> Bill  Inquiry</a>
 		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_bill_pay_inquiry.jsp"> Bill Payment Inquiry</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_bill_pay_confirm.jsp"> Bill Pay Confirm</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_airtime_purchase_inquiry.jsp"> Airtime Purchase Inquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_airtime_purchase_confirm.jsp"> Airtime Purchase Confirmation</a>
-		</td>
 	</tr>	
 	
 	<tr>
@@ -287,16 +265,7 @@
 			<a href="jsp/get_user_api_key.jsp">Get User API Key</a>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_qr_payment_inquiry.jsp">QR Payment Inquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_qr_payment_confirm.jsp">QR Payment Confirm</a>
-		</td>
-	</tr>
+	
 	<tr>
 		<td>
 			<a href="jsp/s_subscriber_donation_inquiry.jsp">Donation Inquiry</a>
@@ -307,29 +276,6 @@
 			<a href="jsp/s_subscriber_donation_confirm.jsp">Donation Confirm</a>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_ktp_validation.jsp">Subscriber KTP Validation</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_closing_inquiry.jsp">Subscriber Closing Inquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_closing.jsp">Subscriber Closing</a>
-		</td>
-	</tr>
-	
-	
-	<tr>
-		<td>
-			<a href="jsp/s_product_referral.jsp">Product Referral Service</a>
-		</td>
-	</tr>
-	
 	
 	</table></td>
 	
@@ -386,7 +332,7 @@
 			<a href="jsp/s_agent_agent_transfer_confirm.jsp"> Agent to Agent Transfer confirm</a>
 		</td>
 	</tr>
-	<tr>
+	<!-- <tr>
 		<td>
 			<a href="jsp/s_agent_unregisteredsubscriber_cashoutinquiry.jsp"> Unregistered cashout Inquiry</a>
 		</td>
@@ -440,11 +386,33 @@
 		<td>
 			<a href="jsp/s_agent_airtime_pin_purchase_confirm.jsp"> agent airtime pin purchase confirm</a>
 		</td>
-		</tr>			
+		</tr>	-->
+		<tr>
+		<td>
+			<a href="jsp/s_subscriber_ktp_validation.jsp">Subscriber KTP Validation</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_closing_inquiry.jsp">Subscriber Closing Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_closing.jsp">Subscriber Closing</a>
+		</td>
+	</tr>
+	
+	
+	<tr>
+		<td>
+			<a href="jsp/s_product_referral.jsp">Product Referral Service</a>
+		</td>
+	</tr>		
 	</table></td></tr>
 
 	<tr><td><table>
-	<tr>
+	<!-- <tr>
 		<th>
 			Partner Activity
 		</th>
@@ -457,21 +425,21 @@
 		</td>
 	</tr>
 	
-	</table></td></tr>
+	</table></td></tr> -->
 
 
 
 	<tr><td><table>
 	<tr>
 		<th>
-			Bank
+			Subscriber Activities (Lakupandia Support)
 		</th>
 	</tr>
 	<tr></tr>
 	
 	<tr>
 		<td>
-			<a href="jsp/s_bank_checkbalance.jsp">checkbalance</a>
+			<a href="jsp/s_bank_checkbalance.jsp">Checkbalance</a>
 		</td>
 	</tr>
 	
@@ -504,7 +472,38 @@
 			<a href="jsp/s_interbank_transfer.jsp"> Inter Bank Transfer Confirmation</a>
 		</td>
 	</tr>
+		<tr>
+		<td>
+			<a href="jsp/s_bill_pay_inquiry.jsp"> Bill Payment Inquiry</a>
+		</td>
+	</tr>
+	
 	<tr>
+		<td>
+			<a href="jsp/s_bill_pay_confirm.jsp"> Bill Pay Confirm</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_airtime_purchase_inquiry.jsp"> Airtime Purchase Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_airtime_purchase_confirm.jsp"> Airtime Purchase Confirmation</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_qr_payment_inquiry.jsp">QR Payment Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_qr_payment_confirm.jsp">QR Payment Confirm</a>
+		</td>
+	</tr>
+	<!-- <tr>
 		<td>
 			<a href="jsp/s_uangku_interbank_transfer_inquiry.jsp">Uangku Inter Bank Transfer Inquiry</a>
 		</td>
@@ -514,7 +513,7 @@
 		<td>
 			<a href="jsp/s_uangku_interbank_transfer.jsp">Uangku Inter Bank Transfer Confirmation</a>
 		</td>
-	</tr>
+	</tr> -->
 	
 	</table></td></tr>
 
