@@ -426,7 +426,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                      return errorMsg;
         		}*/
         		
-                String username = realMsg.getUsername();
+                //String username = realMsg.getUsername();
+        		String username = agentCode;
                 log.info("User name = " + username);
                 User user = userDAO.getByUserName(username);
                 if (user != null) {
@@ -498,7 +499,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriber.setApproveOrRejectTime(null);
                 partner.setBranchSequence(branchSeq);
                 
-                //userDAO.save(u);                                               
+                userDAO.save(u);                                               
                 subscriberDao.save(subscriber);
                 subscriberMdnDao.save(subscriberMdn);
                 partnerDao.save(partner);
@@ -1368,6 +1369,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(subscriber != null){
         	if(subscriber.getFirstName() != null){
         		entry.setFirstName(subscriber.getFirstName());
+            	entry.setUsername(subscriber.getFirstName());
+            	entry.setNameInAccordanceIdentity(subscriber.getFirstName());
         	}
         	if(subscriber.getLastName() != null){
         		entry.setLastName(subscriber.getLastName());
@@ -1418,10 +1421,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				entry.setGroupID(""+sg.getGroup().getID());
 			}
         }
-        if(partner.getUser()!=null){
+/*        if(partner.getUser()!=null){
         	entry.setUsername(partner.getUser().getUsername());
         	entry.setNameInAccordanceIdentity(partner.getUser().getUsername());
-        }
+        }*/
     }	
 	
     private void updateMessage(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,  CMJSAgent.CGEntries entry) {
@@ -1627,6 +1630,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         if(subscriber != null){
         	if(subscriber.getFirstName() != null){
         		entry.setFirstName(subscriber.getFirstName());
+            	entry.setUsername(subscriber.getFirstName());
+            	entry.setNameInAccordanceIdentity(subscriber.getFirstName());
         	}
         	if(subscriber.getLastName() != null){
         		entry.setLastName(subscriber.getLastName());
@@ -1677,10 +1682,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				entry.setGroupID(""+sg.getGroup().getID());
 			}
         }
-        if(partner.getUser()!=null){
+/*        if(partner.getUser()!=null){
         	entry.setUsername(partner.getUser().getUsername());
         	entry.setNameInAccordanceIdentity(partner.getUser().getUsername());
-        }
+        }*/
     }
 
     private void generateAndSendOTP(Partner partner, SubscriberMDN subscriberMDN, Subscriber subscriber) {
