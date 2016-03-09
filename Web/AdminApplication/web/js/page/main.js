@@ -54,7 +54,9 @@ mFino.page.main = function(config){
 		"appUploader":mFino.page.appUploader,
 		"adjustments":mFino.page.adjustments,
 		"permissions":mFino.page.permissions,
-		"promos":mFino.page.promos
+		"promos":mFino.page.promos,
+		"productReferral":mFino.page.productReferral
+		
     };
 
     var center = new Ext.Panel({
@@ -260,7 +262,13 @@ mFino.page.main = function(config){
         { 
             id: 'promos', 
 		    layout : "fit"
+        },
+        
+        { 
+            id: 'productReferral', 
+		    layout : "fit"
         }
+        
         ]
     });
   

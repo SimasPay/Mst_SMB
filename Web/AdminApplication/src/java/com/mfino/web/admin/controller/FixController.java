@@ -62,6 +62,7 @@ import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
 import com.mfino.fix.CmFinoFIX.CMJSValidateChargeExpr;
 import com.mfino.fix.CmFinoFIX.CMJSVillage;
+import com.mfino.fix.CmFinoFIX.CMJSProductReferral;
 import com.mfino.fix.processor.IFixProcessor;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -89,7 +90,6 @@ public class FixController {
 	@Autowired
 	@Qualifier("CheckBalanceProcessorImpl")
 	private CheckBalanceProcessor checkBalanceProcessor;
-	
 
 	@Autowired
 	@Qualifier("UserServiceImpl")
@@ -106,74 +106,74 @@ public class FixController {
 	@Autowired
 	@Qualifier("DistributionChainLevelProcessorImpl")
 	private DistributionChainLevelProcessor distributionChainLevelProcessor;
-	
+
 	@Autowired
 	@Qualifier("DistributionChainTemplateProcessorImpl")
 	private DistributionChainTemplateProcessor distributionChainTemplateProcessor;
-	
+
 	@Autowired
 	@Qualifier("DuplicateNameCheckProcessorImpl")
 	private DuplicateNameCheckProcessor duplicateNameCheckProcessor;
-	
+
 	@Autowired
 	@Qualifier("DuplicatePartnerCodeCheckProcessorImpl")
-	private DuplicatePartnerCodeCheckProcessor  duplicatePartnerCodeCheckProcessor;
-	
+	private DuplicatePartnerCodeCheckProcessor duplicatePartnerCodeCheckProcessor;
+
 	@Autowired
 	@Qualifier("EmptySVAPocketProcessorImpl")
-	private EmptySVAPocketProcessor  emptySVAPocketProcessor;
-	
+	private EmptySVAPocketProcessor emptySVAPocketProcessor;
+
 	@Autowired
 	@Qualifier("EnumTextProcessorImpl")
-	private EnumTextProcessor  enumTextProcessor;
-	
+	private EnumTextProcessor enumTextProcessor;
+
 	@Autowired
 	@Qualifier("EnumTextSimpleProcessorImpl")
-	private EnumTextSimpleProcessor  enumTextSimpleProcessor;
-	
+	private EnumTextSimpleProcessor enumTextSimpleProcessor;
+
 	@Autowired
 	@Qualifier("GetAvialableBalanceProcessorImpl")
-	private GetAvialableBalanceProcessor  getAvialableBalanceProcessor;
-	
+	private GetAvialableBalanceProcessor getAvialableBalanceProcessor;
+
 	@Autowired
 	@Qualifier("GetBulkUploadFileDataProcessorImpl")
-	private GetBulkUploadFileDataProcessor  getBulkUploadFileDataProcessor;
-	
+	private GetBulkUploadFileDataProcessor getBulkUploadFileDataProcessor;
+
 	@Autowired
 	@Qualifier("GroupsProcessorImpl")
-	private GroupsProcessor  groupsProcessor;
-	
+	private GroupsProcessor groupsProcessor;
+
 	@Autowired
 	@Qualifier("IntegrationPartnerMappingProcessorImpl")
-	private IntegrationPartnerMappingProcessor  integrationPartnerMappingProcessor;
-	
+	private IntegrationPartnerMappingProcessor integrationPartnerMappingProcessor;
+
 	@Autowired
 	@Qualifier("IPMappingprocessorImpl")
-	private IPMappingprocessor  ipMappingprocessor;
-	
+	private IPMappingprocessor ipMappingprocessor;
+
 	@Autowired
 	@Qualifier("KYCFieldsPrcocessorImpl")
-	private KYCFieldsPrcocessor  kycFieldsPrcocessor;
-  	
+	private KYCFieldsPrcocessor kycFieldsPrcocessor;
+
 	@Autowired
 	@Qualifier("KYCProcessorImpl")
-	private KYCProcessor  kycProcessor;
+	private KYCProcessor kycProcessor;
 
 	@Autowired
 	@Qualifier("LOPHistoryProcessorImpl")
-	private LOPHistoryProcessor  lopHistoryProcessor;
+	private LOPHistoryProcessor lopHistoryProcessor;
 
 	@Autowired
 	@Qualifier("LOPProcessorImpl")
-	private LOPProcessor  lopProcessor;
+	private LOPProcessor lopProcessor;
 
 	@Autowired
 	@Qualifier("MDNCheckProcessorImpl")
-	private MDNCheckProcessor  mdnCheckProcessor;
+	private MDNCheckProcessor mdnCheckProcessor;
 
 	@Autowired
 	@Qualifier("MfinoServiceproviderProcessorImpl")
-    private MfinoServiceproviderProcessor mFinoServiceProviderProcessor;
+	private MfinoServiceproviderProcessor mFinoServiceProviderProcessor;
 
 	@Autowired
 	@Qualifier("MFSBillerPartnerProcessorImpl")
@@ -474,7 +474,7 @@ public class FixController {
 	@Autowired
 	@Qualifier("TradeNameCheckProcessorImpl")
 	private TradeNameCheckProcessor tradeNameCheckProcessor;
-	
+
 	@Autowired
 	@Qualifier("SubscriberMdnProcessorImpl")
 	private SubscriberMdnProcessor subscriberMdnProcessor;
@@ -527,135 +527,134 @@ public class FixController {
 	@Qualifier("VerifyNonRegisteredBulkTransferProcessorImpl")
 	private VerifyNonRegisteredBulkTransferProcessor verifyNonRegisteredBulkTransferProcessor;
 
-
-	
 	@Autowired
 	@Qualifier("AgentCashInProcessorImpl")
 	private AgentCashInProcessor agentCashInProcessor;
-	
+
 	@Autowired
 	@Qualifier("ClosedAccountSettlementMdnProcessorImpl")
-	private ClosedAccountSettlementMdnProcessor closedAccountSettlementMdnProcessor ;
-	
+	private ClosedAccountSettlementMdnProcessor closedAccountSettlementMdnProcessor;
+
 	@Autowired
 	@Qualifier("ApproveRejectSettlementProcessorImpl")
-	private ApproveRejectSettlementProcessor approveRejectSettlementProcessor   ;	
+	private ApproveRejectSettlementProcessor approveRejectSettlementProcessor;
 
 	@Autowired
 	@Qualifier("ScheduleTemplateProcessorImpl")
-	private ScheduleTemplateProcessor scheduleTemplateProcessor   ;
-	
+	private ScheduleTemplateProcessor scheduleTemplateProcessor;
+
 	@Autowired
 	@Qualifier("FundDefinitionsProcessorImpl")
-	private  FundDefinitionsProcessor fundDefinitionsProcessor  ;
-	
+	private FundDefinitionsProcessor fundDefinitionsProcessor;
+
 	@Autowired
 	@Qualifier("FundEventsProcessorImpl")
-	private FundEventsProcessor fundEventsProcessor   ;
-	
+	private FundEventsProcessor fundEventsProcessor;
+
 	@Autowired
 	@Qualifier("PurposeProcessorImpl")
-	private PurposeProcessor purposeProcessor   ;
+	private PurposeProcessor purposeProcessor;
 
 	@Autowired
 	@Qualifier("ExpirationTypeProcessorImpl")
-	private ExpirationTypeProcessor expirationTypeProcessor  ;
-	
+	private ExpirationTypeProcessor expirationTypeProcessor;
+
 	@Autowired
 	@Qualifier("ValidateChargeExprProcessorImpl")
-	private ValidateChargeExprProcessor validateChargeExprProcessor  ;
-	
+	private ValidateChargeExprProcessor validateChargeExprProcessor;
+
 	@Autowired
 	@Qualifier("NotificationLogProcessorImpl")
-	private NotificationLogProcessor notificationLogProcessor  ;
-	
+	private NotificationLogProcessor notificationLogProcessor;
+
 	@Autowired
 	@Qualifier("ResendNotificationProcessorImpl")
-	private ResendNotificationProcessor resendNotificationProcessor   ;
-	
+	private ResendNotificationProcessor resendNotificationProcessor;
 
 	@Autowired
 	@Qualifier("ActorChannelMappingProcessorImpl")
-	private ActorChannelMappingProcessor actorChannelMappingProcessor  ;
+	private ActorChannelMappingProcessor actorChannelMappingProcessor;
 
 	@Autowired
 	@Qualifier("ActorChannelMappingValidatorProcessorImpl")
-	private ActorChannelMappingValidatorProcessor actorChannelMappingValidatorProcessor ;
+	private ActorChannelMappingValidatorProcessor actorChannelMappingValidatorProcessor;
 
 	@Autowired
 	@Qualifier("AdjustmentsPocketProcessorImpl")
-	private AdjustmentsPocketProcessor adjustmentsPocketProcessor ;
-	
+	private AdjustmentsPocketProcessor adjustmentsPocketProcessor;
+
 	@Autowired
 	@Qualifier("AdjustmentsProcessorImpl")
-	private AdjustmentsProcessor adjustmentsProcessor    ;
-		
+	private AdjustmentsProcessor adjustmentsProcessor;
+
 	@Autowired
 	@Qualifier("LedgerProcessorImpl")
-	private LedgerProcessor ledgerProcessor  ;
-	
+	private LedgerProcessor ledgerProcessor;
+
 	@Autowired
 	@Qualifier("RuleKeyProcessorImpl")
-	private RuleKeyProcessor ruleKeyProcessor  ;
-	
+	private RuleKeyProcessor ruleKeyProcessor;
+
 	@Autowired
 	@Qualifier("TransactionRuleAddnInfoProcessorImpl")
-	private TransactionRuleAddnInfoProcessor transactionRuleAddnInfoProcessor ;
-	
+	private TransactionRuleAddnInfoProcessor transactionRuleAddnInfoProcessor;
+
 	@Autowired
 	@Qualifier("RuleKeyComparisionProcessorImpl")
 	private RuleKeyComparisionProcessor ruleKeyComparisionProcessor;
-	
+
 	@Autowired
 	@Qualifier("AuthorizationServiceImpl")
 	private AuthorizationService authorizationService;
-	
+
 	@Autowired
 	@Qualifier("ShowBalanceDetailsProcessorImpl")
-	private ShowBalanceDetailsProcessor showBalanceDetailsProcessor  ;
-	
+	private ShowBalanceDetailsProcessor showBalanceDetailsProcessor;
+
 	@Autowired
 	@Qualifier("MoneyTransferProcessorImpl")
-	private MoneyTransferProcessor moneyTransferProcessor  ;
-	
+	private MoneyTransferProcessor moneyTransferProcessor;
+
 	@Autowired
 	@Qualifier("BranchCodeProcessorImpl")
 	private BranchCodeProcessor branchCodeProcessor;
-	
+
 	@Autowired
 	@Qualifier("ServicePartnerProcessorspImpl")
 	private ServicePartnerProcessorsp servicePartnerProcessorsp;
-	
+
 	@Autowired
 	@Qualifier("SubscriberClosingInquiryProcessorImpl")
 	private SubscriberClosingInquiryProcessor subscriberClosingInquiryProcessor;
-	
+
 	@Autowired
 	@Qualifier("SubscriberClosingProcessorImpl")
 	private SubscriberClosingProcessor subscriberClosingProcessor;
-	
+
 	@Autowired
 	@Qualifier("ProvinceProcessorImpl")
 	private ProvinceProcessor provinceProcessor;
-	
+
 	@Autowired
 	@Qualifier("ProvinceRegionProcessorImpl")
 	private ProvinceRegionProcessor provinceRegionProcessor;
-	
+
 	@Autowired
 	@Qualifier("DistrictProcessorImpl")
 	private DistrictProcessor districtProcessor;
-	
+
 	@Autowired
 	@Qualifier("VillageProcessorImpl")
 	private VillageProcessor villageProcessor;
-	
+
+	@Autowired
+	@Qualifier("ProductReferralProcessorImpl")
+	private ProductReferralProcessor productReferralProcessor;
+
 	@Autowired
 	@Qualifier("SubscriberUpgradeProcessorImpl")
 	private SubscriberUpgradeProcessor subscriberUpgradeProcessor;
 
-
-	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -679,13 +678,11 @@ public class FixController {
 			CMultiXBuffer buf = new CMultiXBuffer();
 			buf.Append(completePostString);
 
-
 			CFIXMsg msg = CFIXMsg.fromFIX(buf);
 
 			if (msg == null) {
-				log.error("Failed to decode fix message: ("
-						+ msg.DumpFields() + ") \n"
-						+ MfinoUtil.dumpHttpRequest(request));
+				log.error("Failed to decode fix message: (" + msg.DumpFields()
+						+ ") \n" + MfinoUtil.dumpHttpRequest(request));
 				CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 				// TODO : choose more meaningful error and get the description
 				// from enum
@@ -806,7 +803,7 @@ public class FixController {
 				tl.setMessageCode(CmFinoFIX.MsgType_JSMDNCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBulkUploadEntry.class
 					.getName())) {
-				fixProcessor =  bulkUploadEntryProcessor;
+				fixProcessor = bulkUploadEntryProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSBulkUploadEntry);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSGetBulkUploadFileData.class.getName())) {
@@ -1139,7 +1136,7 @@ public class FixController {
 				tl.setMessageCode(CmFinoFIX.MsgType_JSSystemParameters);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSMFSDenominations.class
 					.getName())) {
-				fixProcessor =mfsDenominationsProcessor;
+				fixProcessor = mfsDenominationsProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSMFSDenominations);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSIntegrationPartnerMapping.class
@@ -1159,119 +1156,118 @@ public class FixController {
 					.equals(CmFinoFIX.CMJSDistributeChargesForm.class.getName())) {
 				fixProcessor = distributeChargesProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSDistributeChargesForm);
-			} else if (msgClassName
-					.equals(CmFinoFIX.CMJSRole.class.getName())) {
+			} else if (msgClassName.equals(CmFinoFIX.CMJSRole.class.getName())) {
 				fixProcessor = roleProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSRole);
-			} else if (msgClassName.equals(CmFinoFIX.CMAgentCashIn.class.getName())){
+			} else if (msgClassName.equals(CmFinoFIX.CMAgentCashIn.class
+					.getName())) {
 				fixProcessor = agentCashInProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_AgentCashIn);
-		    }
-			else if(msgClassName.equals(CMJSClosedAccountSettlementMdn.class.getName())){
+			} else if (msgClassName.equals(CMJSClosedAccountSettlementMdn.class
+					.getName())) {
 				fixProcessor = closedAccountSettlementMdnProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSClosedAccountSettlementMdn);
-			}
-			else if(msgClassName.equals(CMJSApproveRejectSettlement.class.getName())){
+			} else if (msgClassName.equals(CMJSApproveRejectSettlement.class
+					.getName())) {
 				fixProcessor = approveRejectSettlementProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSApproveRejectSettlement);
-			}
-			else if(msgClassName.equals(CMJSScheduleTemplate.class.getName())){
+			} else if (msgClassName
+					.equals(CMJSScheduleTemplate.class.getName())) {
 				fixProcessor = scheduleTemplateProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSScheduleTemplate);
-			}
-			else if(msgClassName.equals(CMJSFundDefinitions.class.getName())){
+			} else if (msgClassName.equals(CMJSFundDefinitions.class.getName())) {
 				fixProcessor = fundDefinitionsProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSFundDefinitions);
-			}
-			else if(msgClassName.equals(CMJSFundEvents.class.getName())){
+			} else if (msgClassName.equals(CMJSFundEvents.class.getName())) {
 				fixProcessor = fundEventsProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSFundEvents);
-			}
-			else if(msgClassName.equals(CMJSPurpose.class.getName())){
+			} else if (msgClassName.equals(CMJSPurpose.class.getName())) {
 				fixProcessor = purposeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSPurpose);
-			}
-			else if(msgClassName.equals(CMJSExpirationType.class.getName())){
+			} else if (msgClassName.equals(CMJSExpirationType.class.getName())) {
 				fixProcessor = expirationTypeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSExpirationType);
-			}
-			else if(msgClassName.equals(CMJSValidateChargeExpr.class.getName())){
+			} else if (msgClassName.equals(CMJSValidateChargeExpr.class
+					.getName())) {
 				fixProcessor = validateChargeExprProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSValidateChargeExpr);
-			}
-			else if(msgClassName.equals(CmFinoFIX.CMJSNotificationLog.class.getName())){
+			} else if (msgClassName.equals(CmFinoFIX.CMJSNotificationLog.class
+					.getName())) {
 				fixProcessor = notificationLogProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSNotificationLog);
-			}
-			else if(msgClassName.equals(CmFinoFIX.CMJSResendNotification.class.getName())){
+			} else if (msgClassName
+					.equals(CmFinoFIX.CMJSResendNotification.class.getName())) {
 				fixProcessor = resendNotificationProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSResendNotification);
-			}
-			else if(msgClassName.equals(CMJSActorChannelMapping.class.getName())){
+			} else if (msgClassName.equals(CMJSActorChannelMapping.class
+					.getName())) {
 				fixProcessor = actorChannelMappingProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSActorChannelMapping);
-			}
-			else if(msgClassName.equals(CMJSActorChannelMappingValidator.class.getName())){
+			} else if (msgClassName
+					.equals(CMJSActorChannelMappingValidator.class.getName())) {
 				fixProcessor = actorChannelMappingValidatorProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSActorChannelMappingValidator);
-			}
-			else if(msgClassName.equals(CMJSAdjustmentsPocket.class.getName())){
+			} else if (msgClassName.equals(CMJSAdjustmentsPocket.class
+					.getName())) {
 				fixProcessor = adjustmentsPocketProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSAdjustmentsPocket);
-			}
-			else if(msgClassName.equals(CMJSAdjustments.class.getName())){
+			} else if (msgClassName.equals(CMJSAdjustments.class.getName())) {
 				fixProcessor = adjustmentsProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSAdjustments);
-			}
-			else if(msgClassName.equals(CMJSLedger.class.getName())){
+			} else if (msgClassName.equals(CMJSLedger.class.getName())) {
 				fixProcessor = ledgerProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSLedger);
-			}
-			else if(msgClassName.equals(CMJSShowBalanceDetails.class.getName())){
+			} else if (msgClassName.equals(CMJSShowBalanceDetails.class
+					.getName())) {
 				fixProcessor = showBalanceDetailsProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSShowBalanceDetails);
-			}
-			else if(msgClassName.equals(CMJSRuleKey.class.getName())){
+			} else if (msgClassName.equals(CMJSRuleKey.class.getName())) {
 				fixProcessor = ruleKeyProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSRuleKey);
-			}
-			else if(msgClassName.equals(CMJSTxnRuleAddnInfo.class.getName())){
+			} else if (msgClassName.equals(CMJSTxnRuleAddnInfo.class.getName())) {
 				fixProcessor = transactionRuleAddnInfoProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSTxnRuleAddnInfo);
-			}
-			else if(msgClassName.equals(CMJSRuleKeyComparision.class.getName())){
+			} else if (msgClassName.equals(CMJSRuleKeyComparision.class
+					.getName())) {
 				fixProcessor = ruleKeyComparisionProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSRuleKeyComparision);
-			}
-			else if(msgClassName.equals(CMJSMoneyTransfer.class.getName())){
+			} else if (msgClassName.equals(CMJSMoneyTransfer.class.getName())) {
 				fixProcessor = moneyTransferProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSMoneyTransfer);
-			}else if(msgClassName.equals(CMJSBranchCodes.class.getName())){
+			} else if (msgClassName.equals(CMJSBranchCodes.class.getName())) {
 				fixProcessor = branchCodeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSBranchCodes);
-			}else if(msgClassName.equals(CMJSSubscriberClosingInquiry.class.getName())){
+			} else if (msgClassName.equals(CMJSSubscriberClosingInquiry.class
+					.getName())) {
 				fixProcessor = subscriberClosingInquiryProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberClosingInquiry);
-			}else if(msgClassName.equals(CMJSSubscriberClosing.class.getName())){
+			} else if (msgClassName.equals(CMJSSubscriberClosing.class
+					.getName())) {
 				fixProcessor = subscriberClosingProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberClosing);
-			}else if(msgClassName.equals(CMJSProvince.class.getName())){
+			} else if (msgClassName.equals(CMJSProvince.class.getName())) {
 				fixProcessor = provinceProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSProvince);
-			}else if(msgClassName.equals(CMJSProvinceRegion.class.getName())){
+			} else if (msgClassName.equals(CMJSProvinceRegion.class.getName())) {
 				fixProcessor = provinceRegionProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSProvinceRegion);
-			}else if(msgClassName.equals(CMJSDistrict.class.getName())){
+			} else if (msgClassName.equals(CMJSDistrict.class.getName())) {
 				fixProcessor = districtProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSDistrict);
-			}else if(msgClassName.equals(CMJSVillage.class.getName())){
+			} else if (msgClassName.equals(CMJSVillage.class.getName())) {
 				fixProcessor = villageProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSVillage);
-			}else if (msgClassName.equals(CmFinoFIX.CMJSSubscriberUpgrade.class.getName())) {
+			} else if (msgClassName
+					.equals(CmFinoFIX.CMJSSubscriberUpgrade.class.getName())) {
 				fixProcessor = subscriberUpgradeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberUpgrade);
 			}
-			
+
+			else if (msgClassName.equals(CMJSProductReferral.class.getName())) {
+				fixProcessor = productReferralProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSProductReferral);
+			}
+
 			/*
 			 * else if
 			 * (msgClassName.equals(CmFinoFIX.CMJSBulkLOP.class.getName())) {
@@ -1396,8 +1392,8 @@ public class FixController {
 				transactionLogService.save(tl);
 			}
 			// Check for Authorization
-			boolean isAuth = authorizationService.isAuthorized(ItemType.FixMessage,
-					msgClassName, action);
+			boolean isAuth = authorizationService.isAuthorized(
+					ItemType.FixMessage, msgClassName, action);
 			if (isAuth) {
 				String loggedUserName = userService.getCurrentUser()
 						.getUsername();
@@ -1405,14 +1401,14 @@ public class FixController {
 				fixProcessor.setIpAddress(request.getRemoteAddr());
 
 				CFIXMsg returnMsg = fixProcessor.process(msg);
-				if(!(CmFinoFIX.JSaction_Select.equals(action)))
-				{
-				AuditLogDAO auditLogDAO = DAOFactory.getInstance().getAuditLogDAO();
-				AuditLog auditLog = new AuditLog();
-				auditLog.setJSaction(action);
-				auditLog.setMessageName(msgClassName);
-				auditLog.setFixMessage(returnMsg.DumpFields());
-				auditLogDAO.save(auditLog);
+				if (!(CmFinoFIX.JSaction_Select.equals(action))) {
+					AuditLogDAO auditLogDAO = DAOFactory.getInstance()
+							.getAuditLogDAO();
+					AuditLog auditLog = new AuditLog();
+					auditLog.setJSaction(action);
+					auditLog.setMessageName(msgClassName);
+					auditLog.setFixMessage(returnMsg.DumpFields());
+					auditLogDAO.save(auditLog);
 				}
 				if (returnMsg instanceof CmFinoFIX.CMJSError
 						&& ((CmFinoFIX.CMJSError) returnMsg).getErrorCode() != null

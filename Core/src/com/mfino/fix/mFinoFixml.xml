@@ -5604,7 +5604,30 @@
 			<field name="UpgradeAcctComments" required="N"/>
 			<field name="UpgradeAcctStatus" required="N"/>
 		</message>
-		
+	<message name="JSProductReferral" msgtype="1778" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+			<field name="IDSearch" required="N" />			
+			<field name="StartDateSearch" required="N" />
+			<field name="EndDateSearch" required="N" />
+			<field name="AgentMDNSearch" required="N" />
+			<field name="FullNameSearch" required="N" />
+			<field name="SubscriberMDNSearch" required="N" />
+			<field name="ProductDesiredSearch" required="N" />
+			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
+				<field name="ProductReferralID" id="ID" required="N" AutoIncrement="Y" />
+				<field name="FullName" required="N" />
+				<field name="AgentMDN" required="N" />
+				<field name="SubscriberMDN" required="N" />
+				<field name="Email" required="N" />
+				<field name="CreateTime" required="N" />
+				<field name="CreatedBy" required="N" />
+				<field name="LastUpdateTime" required="N" />
+				<field name="UpdatedBy" required="N" />
+				<field name="RecordVersion" required="N" />
+				<field name="ProductDesired" required="N"/>
+				<field name="Others" required="N"/>
+			</group>
+	</message>
+			
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -8240,6 +8263,7 @@
 			<value enum="1775" description="JSVillage"/>
 			<value enum="1776" description="ProductReferral"/>
 			<value enum="1777" description="JSSubscriberUpgrade"/>
+			<value enum="1778" description="JSProductReferral"/>			
 			
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
@@ -24602,6 +24626,10 @@ ERROR:Mismatch of  mdn type and app type
 	        <value enum="22002" description="Permissions_Save" />
 	        <!-- Promos -->
 	        <value enum="23001" description="Promos" />
+	         <!-- ProductReferrals -->
+	        <value enum="23101" description="ProductReferrals" />	        
+	        <value enum="23102" description="ProductReferrals_View" />
+	        
 		</field>
 		<field number="5495" name="NotificationMethodText" type="STRING" unused="Y" />
 		<field number="5496" name="AllowedForLOP" type="BOOLEAN" unused="Y" />
@@ -26728,6 +26756,11 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8426" name="UpgradeAcctTime" type="UTCTIMESTAMP" />
 	<field number="8427" name="UpgradeAcctComments" type="STRING" />
 	<field number="8428" name="UpgradeAcctStatusText" type="STRING" />
+	<field number="8429" name="AgentMDNSearch" type="STRING"/>
+   	<field number="8430" name="FullNameSearch" type="STRING"/>
+   	<field number="8431" name="SubscriberMDNSearch" type="STRING"/>
+   	<field number="8432" name="ProductDesiredSearch" type="STRING"/>
+   	<field number="8433" name="ProductReferralID"  type="RecordID" unused="Y" />
     </fields>
     <primitives>
 		<dbtype name="mysql">
