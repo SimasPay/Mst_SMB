@@ -102,7 +102,8 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		log.info("Begin SubscriberCashOutInquiryHandlerImpl :: handle method");
 		log.info("Extracting data from transactionDetails in SubscriberCashOutInquiryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN()+"to"+transactionDetails.getDestMDN());
 		
-		XMLResult result = new TransferInquiryXMLResult();
+		//XMLResult result = new TransferInquiryXMLResult();
+		TransferInquiryXMLResult result = new TransferInquiryXMLResult();
 		transactionDetails.setSourcePocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 		ChannelCode cc = transactionDetails.getCc();
 		
@@ -322,6 +323,8 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
+		result.setDestinationMDN(destAgentMDN.getMDN());
+		result.setName(destAgentMDN.getSubscriber().getFirstName());
 		log.info("End SubscriberCashOutInquiryHandlerImpl :: handle method");
 		return result;
 	}
