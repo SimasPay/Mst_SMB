@@ -128,7 +128,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 				try {
 				
 					retireAllCardPans(subMDN.getID());
-					retirePartner(subMDN.getID());
+					retirePartner(subMDN.getID(), transactionDetails.getDescription());
 					
 					Subscriber subscriber = subMDN.getSubscriber();
 					
@@ -218,7 +218,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
         }        
 	}
 	
-	private void retirePartner(Long subscriberId) {
+	private void retirePartner(Long subscriberId, String comments) {
 		
 		// TODO Auto-generated method stub
 		PartnerQuery partnerQuery = new PartnerQuery();
@@ -272,6 +272,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			partner.getUser().setUsername(userNameStringToReplace);
 		}
 		
+		partner.setCloseComments(comments);
 		partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Retired);
 		
 		partnerDAO.save(partner);

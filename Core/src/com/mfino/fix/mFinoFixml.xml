@@ -6963,11 +6963,11 @@
 			<field name="AuthorizedFaxNumber" required="N" />
 			<field name="AuthorizedEmail" required="N" />
 			<field name="BusinessPartnerType" required="N" />
-			
 			<field name="BranchCode" required="N" />
 			<field name="BranchSequence" required="N" />
 			<field name="AccountnumberofBankSinarmas" required="N" />
-			<field name="CompanyEmailId" required="N" />			
+			<field name="CompanyEmailId" required="N" />
+			<field name="CloseComments" required="N" />		
 		</record>
 		<!-- <record name="ServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 				<field name="MSPID" required="Y" References="mFinoServiceProvider" />  
