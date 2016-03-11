@@ -185,6 +185,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		subscriberActivation.setServiceChargeTransactionLogID(sctl.getID());
 		boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();		
 		
+		code=subscriberServiceExtended.activeSubscriber(subscriberActivation,isHttps,isHashedPin);
 		if(code.equals(CmFinoFIX.NotificationCode_BOBPocketActivationCompleted)){
 			
 			result.setActivityStatus(BOOL_TRUE);
