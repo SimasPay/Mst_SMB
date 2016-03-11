@@ -32,10 +32,6 @@
 	<tr>
 		<td>RechargeMDN/Invoice</td>
 		<td><input type="text" name="billNo" value="" /></td>
-	</tr>	
-	<tr>
-		<td>ParentTransferId</td>
-		<td><input type="text" name="parentTxnID" value="" /></td>
 	</tr>
 	<tr> 
 		<td>PaymentMode(optional)</td> 
@@ -53,12 +49,22 @@
 		<td><input type="text" name="transferID" value="" /></td>
 	</tr>
 	<tr>
+		<td>ParentTransferId</td>
+		<td><input type="text" name="parentTxnID" value="" /></td>
+	</tr>
+	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID" value="" /></td>
 	</tr>
 	<tr>
 		<td>PocketCode</td>
-		<td><input type="text" name="sourcePocketCode" />(Emoney-1 ,Bank-2)</td>
+		<td>
+			<select name="sourcePocketCode">
+	  				<option value="1">E-Money</option>
+	  				<option value="2">Bank</option>
+	  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td>Confirmation (true/false)</td>
