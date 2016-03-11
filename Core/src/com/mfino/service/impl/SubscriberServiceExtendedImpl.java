@@ -460,7 +460,6 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			subscriberMDN.setSubscriber(subscriber);
 			subscriberMDN.setMDN(subscriberRegistration.getMDN());
-			subscriberMDN.setApplicationID(subscriberRegistration.getApplicationID());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			
 			if (subscriberRegistration.getSubscriberStatus() != null) {
