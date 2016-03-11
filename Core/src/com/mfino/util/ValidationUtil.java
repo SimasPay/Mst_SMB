@@ -4,12 +4,18 @@
  */
 package com.mfino.util;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mfino.constants.GeneralConstants;
+import com.mfino.crypto.CryptographyService;
+import com.mfino.domain.SubscriberMDN;
+import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -120,4 +126,74 @@ public class ValidationUtil {
 	}
 	return false;
     }
+    
+    public static Integer validateOTP(SubscriberMDN subscriberMDN, boolean isHttps, boolean isHashedPin, String oneTimeOTP) {
+
+		if (subscriberMDN == null) {
+			
+			return CmFinoFIX.NotificationCode_MDNNotFound;
+		}
+		
+		int int_subscriberType=subscriberMDN.getSubscriber().getType();
+
+		if (!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)
+				||CmFinoFIX.SubscriberType_Partner.equals(int_subscriberType))) {
+			
+			return CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation;
+		}
+		
+		if (subscriberMDN.getOTPExpirationTime().before(new Date())) {
+			
+			log.info("OTP Expired failed for the subscriber "+ subscriberMDN.getMDN());
+			return CmFinoFIX.NotificationCode_OTPExpired;
+		}
+
+		String originalOTP =subscriberMDN.getOTP();
+
+		if (!isHttps) {
+			
+		try {
+				String authStr = oneTimeOTP;
+				byte[] authBytes = CryptographyService.hexToBin(authStr.toCharArray());
+				byte[] salt = { 0, 0, 0, 0, 0, 0, 0, 0 };
+				byte[] decStr = CryptographyService.decryptWithPBE(authBytes, originalOTP.toCharArray(), salt, 20);
+				String str = new String(decStr, GeneralConstants.UTF_8);
+				
+				if (!GeneralConstants.ZEROES_STRING.equals(str))
+					return CmFinoFIX.NotificationCode_OTPInvalid;
+				
+			} catch (Exception ex) {
+				log.info("OTP Check failed for the subscriber " + subscriberMDN.getMDN());
+				
+				return CmFinoFIX.NotificationCode_OTPInvalid;
+			}
+		
+		} else {
+			String receivedOTP = oneTimeOTP;
+			if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN.getStatus())) {
+				
+				/*String prefix = systemParametersService.getString(SystemParameterKeys.FAC_PREFIX_VALUE);
+				prefix = (prefix == null) ? StringUtils.EMPTY : prefix;
+				int otpLength = Integer.parseInt(systemParametersService.getString(SystemParameterKeys.OTP_LENGTH));
+				
+				String receivedFAC = receivedOTP;
+				
+				if (receivedOTP.length() < (otpLength + prefix.length()))
+					receivedFAC = prefix + receivedOTP;
+
+				String receivedFACDigest = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), receivedFAC);*/
+			
+			} else {
+				receivedOTP = new String(CryptographyService.generateSHA256Hash(subscriberMDN.getMDN(), receivedOTP));
+				
+				if (!originalOTP.equals(receivedOTP)) {
+					
+					log.info("OTP Check failed for the subscriber "+ subscriberMDN.getMDN());
+					return CmFinoFIX.NotificationCode_OTPInvalid;
+				}
+			}
+		}
+	
+		return CmFinoFIX.NotificationCode_OTPValidationSuccessful;
+	}
 }

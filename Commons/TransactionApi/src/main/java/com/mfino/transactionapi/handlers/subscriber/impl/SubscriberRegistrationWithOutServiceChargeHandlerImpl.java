@@ -291,7 +291,8 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		String supportingDoc = txnDetails.getSupportingDocument();
 		
 		try {
-			String documentPath = System.getProperty("catalina.home") + File.separator + "webapps" + File.separator + "webapi";
+			
+			String documentPath = System.getProperty("catalina.home") + File.separator + "webapps";
 			
 			File docFile = new File(documentPath + File.separator + "Documents" + File.separator + txnDetails.getDestMDN());
 			

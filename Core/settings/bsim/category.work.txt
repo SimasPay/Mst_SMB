@@ -1,12 +1,10 @@
 {
         "work_list": [
-            {
-                "Kartu Kredit": "Kartu Kredit",
-				"Kredit Kepemilikan Mobil" : "Kredit Kepemilikan Mobil",
-				"Pinjaman Modal Kerja" : "Pinjaman Modal Kerja",
-				"Kredit Investasi" : "Kredit Investasi",
-				"Kredit Usaha Mikro" : "Kredit Usaha Mikro",
-				"Lainnya" : "Lainnya"
-			}
-		]
+            {"workName": "Kartu Kredit"},
+            {"workName":"Kredit Kepemilikan Mobil"},
+            {"workName":"Pinjaman Modal Kerja"},
+            {"workName":"Kredit Investasi"},
+            {"workName":"Kredit Usaha Mikro"},
+            {"workName":"Lainnya"}
+  ]
 }

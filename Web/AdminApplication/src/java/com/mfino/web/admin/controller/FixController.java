@@ -32,6 +32,8 @@ import com.mfino.fix.CmFinoFIX.CMJSActorChannelMappingValidator;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustments;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustmentsPocket;
 import com.mfino.fix.CmFinoFIX.CMJSAgent;
+import com.mfino.fix.CmFinoFIX.CMJSAgentClosing;
+import com.mfino.fix.CmFinoFIX.CMJSAgentClosingInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInConfirm;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInInquiry;
@@ -48,6 +50,7 @@ import com.mfino.fix.CmFinoFIX.CMJSMFSBillerPartner;
 import com.mfino.fix.CmFinoFIX.CMJSMoneyTransfer;
 import com.mfino.fix.CmFinoFIX.CMJSPartner;
 import com.mfino.fix.CmFinoFIX.CMJSPartnerByDCT;
+import com.mfino.fix.CmFinoFIX.CMJSProductReferral;
 import com.mfino.fix.CmFinoFIX.CMJSProvince;
 import com.mfino.fix.CmFinoFIX.CMJSProvinceRegion;
 import com.mfino.fix.CmFinoFIX.CMJSPurpose;
@@ -62,7 +65,6 @@ import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
 import com.mfino.fix.CmFinoFIX.CMJSValidateChargeExpr;
 import com.mfino.fix.CmFinoFIX.CMJSVillage;
-import com.mfino.fix.CmFinoFIX.CMJSProductReferral;
 import com.mfino.fix.processor.IFixProcessor;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -630,6 +632,14 @@ public class FixController {
 	@Autowired
 	@Qualifier("SubscriberClosingProcessorImpl")
 	private SubscriberClosingProcessor subscriberClosingProcessor;
+	
+	@Autowired
+	@Qualifier("AgentClosingInquiryProcessorImpl")
+	private AgentClosingInquiryProcessor agentClosingInquiryProcessor;
+
+	@Autowired
+	@Qualifier("AgentClosingProcessorImpl")
+	private AgentClosingProcessor agentClosingProcessor;
 
 	@Autowired
 	@Qualifier("ProvinceProcessorImpl")
@@ -1261,6 +1271,14 @@ public class FixController {
 					.equals(CmFinoFIX.CMJSSubscriberUpgrade.class.getName())) {
 				fixProcessor = subscriberUpgradeProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberUpgrade);
+			}else if (msgClassName.equals(CMJSAgentClosingInquiry.class
+					.getName())) {
+				fixProcessor = agentClosingInquiryProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentClosingInquiry);
+			} else if (msgClassName.equals(CMJSAgentClosing.class
+					.getName())) {
+				fixProcessor = agentClosingProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentClosing);
 			}
 
 			else if (msgClassName.equals(CMJSProductReferral.class.getName())) {

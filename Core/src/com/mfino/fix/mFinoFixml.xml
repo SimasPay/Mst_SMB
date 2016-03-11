@@ -5627,6 +5627,17 @@
 				<field name="Others" required="N"/>
 			</group>
 	</message>
+	<message name="JSAgentClosingInquiry" msgtype="1779" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="DestMDN" required="Y" />
+		<field name="Comments" required="N" />
+	</message>
+	<message name="JSAgentClosing" msgtype="1780" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="DestMDN" required="Y" />
+		<field name="DestSubscriberName" required="N" />
+		<field name="OneTimePassCode" required="N" />
+		<field name="SctlId" required="N" />
+		<field name="Comments" required="N" />
+	</message>
 			
 	</messages>
 	<records>
@@ -8263,7 +8274,9 @@
 			<value enum="1775" description="JSVillage"/>
 			<value enum="1776" description="ProductReferral"/>
 			<value enum="1777" description="JSSubscriberUpgrade"/>
-			<value enum="1778" description="JSProductReferral"/>			
+			<value enum="1778" description="JSProductReferral"/>
+			<value enum="1779" description="JSAgentClosingInquiry"/>
+			<value enum="1780" description="JSAgentClosing"/>			
 			
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
@@ -23021,6 +23034,62 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</English>
 				</C1>				
+			</value>
+			<value description="AgentClosingInquirySuccess" enum="2164">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Agent Closing Inquiry Successfull</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Agent Closing Inquiry Successfull</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="AgentClosingInquiryFailed" enum="2165">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Agent Closing Inquiry Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Agent Closing Inquiry Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="AgentClosingSuccess" enum="2166">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Agent Closing Successfull</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Agent Closing Successfull</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="AgentClosingFailed" enum="2167">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Agent Closing Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Agent Closing Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
 			</value>		
 		</field>
 		

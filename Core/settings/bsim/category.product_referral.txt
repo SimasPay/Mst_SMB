@@ -1,12 +1,10 @@
 {
-        "product_referral_list": [
-            {
-                "Kartu Kredit": "Kartu Kredit",
-				"Kredit Kepemilikan Mobil" : "Kredit Kepemilikan Mobil",
-				"Pinjaman Modal Kerja" : "Pinjaman Modal Kerja",
-				"Kredit Investasi" : "Kredit Investasi",
-				"Kredit Usaha Mikro" : "Kredit Usaha Mikro",
-				"Lainnya" : "Lainnya"
-			}
-		]
+        "referreal_list": [
+            {"referrealName": "Kartu Kredit"},
+            {"referrealName":"Kredit Kepemilikan Mobil"},
+            {"referrealName":"Pinjaman Modal Kerja"},
+            {"referrealName":"Kredit Investasi"},
+            {"referrealName":"Kredit Usaha Mikro"},
+            {"referrealName":"Lainnya"}
+  ]
 }

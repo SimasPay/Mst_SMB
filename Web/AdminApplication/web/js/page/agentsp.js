@@ -56,7 +56,14 @@ mFino.page.agentsp = function(config){
         mode:"transfer"
     },config));
     
-
+    var agentClosing = new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.AgentClosingInquiry(config),
+        title : _("Agent Account Closing"),
+        height : 260,
+        width:400,
+        mode:"closeaccount"
+    },config));
+    
     var listBox = new mFino.widget.ServicePartnerListsp(Ext.apply({
        	height : 300,
        	anchor : "100%, -255",
@@ -345,7 +352,31 @@ mFino.page.agentsp = function(config){
                             }, this);
                     }
                 }
-            }
+            },
+            {
+            	iconCls: 'mfino-button-close-account',
+            	tooltip : _('Agent Account Closing'),
+            	handler : function() {
+            		if(!detailsForm.record){
+            			Ext.MessageBox.alert(_("Alert"), _("No Agent selected!"));
+            		}
+            		else {
+            			
+            			if(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.PartnerStatus._name) == CmFinoFIX.MDNStatus.Retired) {
+            				Ext.MessageBox.alert(_("Alert"), _("Agent Closing is already Retired"));
+            				return;
+            			}
+            			
+            			if(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.PartnerStatus._name) != CmFinoFIX.MDNStatus.Active) {
+            				Ext.MessageBox.alert(_("Alert"), _("Agent Closing is allowed only for active status"));
+            				return;
+            			}
+            			
+            			agentClosing.show();
+            			agentClosing.form.setDetails(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.NameInAccordanceIdentity._name),detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.AgentCode._name),detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.MDN._name));            			
+            		}
+            	}
+	        }
             ],
             items: [ detailsForm ]
         },
