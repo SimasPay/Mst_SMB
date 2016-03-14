@@ -119,6 +119,10 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 			return result;
 		}
 		
+		result.setMessage("Subscriber KTP validation failure");
+		result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValidationFailed);
+		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+		
 		KtpDetails ktpDetail = new KtpDetails();
 		ktpDetail.setAgentMDN(transactionDetails.getSourceMDN());
 		ktpDetail.setMDN(transactionDetails.getDestMDN());
@@ -143,46 +147,50 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 			
 			JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
 		
-			if(null != response) {// && response.get("status").toString().equals("Success")) {
+			if(null != response) {
 			
+				if(response.has("status") && StringUtils.isNotBlank(response.get("status").toString()) && (response.get("status").toString().equals("CommunicationFailure"))) {
+					
+					ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					ktpDetailsDAO.save(ktpDetail);
+					
+				} else {
+					
+					ktpDetail.setBankResponse(response.toString());
+					ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+					ktpDetailsDAO.save(ktpDetail);
 				
-				ktpDetail.setBankResponse(response.toString());
-				ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
-				ktpDetailsDAO.save(ktpDetail);
-			
-				/**
-				 * Mapping of Address in DB as below:
-				 * 
-				 *  AddressLine -> Address.Line1
-				 *  RT -> Address.RT
-				 *  RW -> Address.RW
-				 *  District -> Address.STATE
-				 *  SubDistrict -> Address.SUBSTATE
-				 *  Province -> Address.REGIONNAME
-				 *  PostalCode -> Address.ZipCode
-				 */
-				
-				result.setName(transactionDetails.getFirstName());
-				result.setDob(getDob(transactionDetails.getDateOfBirth()));
-				result.setMothersMaidenName("mothersMaidenName");
-				result.setAddressLine(response.get("alamat").toString());
-				result.setCity(response.get("kota").toString());
-				result.setRt(response.get("rt").toString());
-				result.setRw(response.get("rw").toString());
-				result.setSubDistrict(response.get("kelurahan").toString());
-				result.setDistrict(response.get("kecamatan").toString());
-				result.setProvince(response.get("provinsi").toString());
-				result.setPostalCode(response.get("kodepos").toString());
-				result.setBirthPlace(response.get("tempatlahir").toString());
-				result.setTransactionID(ktpDetail.getID());
-				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess));
-				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess);
-				result.setMessage("Subscriber KTP validation successfull");
-				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
-				
-			} else {
-				
-				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValidationFailed);
+					/**
+					 * Mapping of Address in DB as below:
+					 * 
+					 *  AddressLine -> Address.Line1
+					 *  RT -> Address.RT
+					 *  RW -> Address.RW
+					 *  District -> Address.STATE
+					 *  SubDistrict -> Address.SUBSTATE
+					 *  Province -> Address.REGIONNAME
+					 *  PostalCode -> Address.ZipCode
+					 */
+					
+					result.setName(transactionDetails.getFirstName());
+					result.setDob(getDob(transactionDetails.getDateOfBirth()));
+					result.setMothersMaidenName("mothersMaidenName");
+					result.setAddressLine(response.get("alamat").toString());
+					result.setCity(response.get("kota").toString());
+					result.setRt(response.get("rt").toString());
+					result.setRw(response.get("rw").toString());
+					result.setSubDistrict(response.get("kelurahan").toString());
+					result.setDistrict(response.get("kecamatan").toString());
+					result.setProvince(response.get("provinsi").toString());
+					result.setPostalCode(response.get("kodepos").toString());
+					result.setBirthPlace(response.get("tempatlahir").toString());
+					result.setTransactionID(ktpDetail.getID());
+					result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess));
+					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess);
+					result.setMessage("Subscriber KTP validation successfull");
+					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+					
+				}
 			}
 		} catch(Exception ex) {
 			
