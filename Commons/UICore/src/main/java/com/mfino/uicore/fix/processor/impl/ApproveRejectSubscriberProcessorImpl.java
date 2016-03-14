@@ -167,7 +167,6 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 
 		if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
 			
-
 			if (ConfigurationUtil.getBulkUploadSubscriberKYClevel().equals(subscriber.getUpgradableKYCLevel())
 					&&(bankPocket== null||
 		         			!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
@@ -178,12 +177,14 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
+			
 			if (kyclevel == null) {
 				log.info("Invalid kyclevel to upgrade"+ realMsg.getSubscriberMDNID());
 				errorMsg.setErrorDescription(MessageText._("Invalid Kyclevel to upgrade"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
+			
 			PocketTemplate upgradeTemplate = null;
 			isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 			if(isEMoneyPocketRequired == true){
@@ -258,28 +259,30 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		String emailMsg = "approve or reject notification";
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		try {
-			 //add notifications
-			 
 			 notificationWrapper.setLanguage(subscriber.getLanguage());
 			 notificationWrapper.setCompany(subscriber.getCompany());
 			 notificationWrapper.setKycLevel(kyclevel.getKYCLevelName());
 			 if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
-			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeSuccess);
-			 }else
-			 if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction()) || CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())){
-			 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeFail);
+			 
+				 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeSuccess);
+				 
+			 }else if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction()) || CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())){
+			 
+				 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeFail);
 			 }
+			 
 			 notificationWrapper.setDestMDN(subscriberMDN.getMDN());
-			 if(subscriberMDN != null)
-			 {
+			 
+			 if(subscriberMDN != null){
+				 
 				 notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
 				 notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());					
 			 }
+			 
 			 notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			 smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); //use thread pool to send message
 			 notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 			 emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
-			 
 			 
 			 if(!ConfigurationUtil.getSendOTPBeforeApproval()){
 				Integer OTPLength = systemParametersService.getOTPLength();
@@ -289,39 +292,42 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 				subscriberMdnDao.save(subscriberMDN);
 				
-				log.info("new OTP set for " + subscriberMDN.getID() + " by user " + getLoggedUserNameWithIP());
-				NotificationWrapper smsNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
-				smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-				smsNotificationWrapper.setLanguage(subscriber.getLanguage());
-				smsNotificationWrapper.setFirstName(subscriber.getFirstName());
-            	smsNotificationWrapper.setLastName(subscriber.getLastName());
-				String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
-				String mdn2 = subscriberMDN.getMDN();
-				SMSValues smsValues= new SMSValues();
-				smsValues.setDestinationMDN(mdn2);
-				smsValues.setMessage(smsMessage);
-				smsValues.setNotificationCode(smsNotificationWrapper.getCode());
-				
-				/*smsService.setDestinationMDN(mdn2);
-				smsService.setMessage(smsMessage);
-				smsService.setNotificationCode(smsNotificationWrapper.getCode());*/
-				smsService.asyncSendSMS(smsValues);
-				if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
-					NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
-					emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-					emailNotificationWrapper.setLanguage(subscriber.getLanguage());
-					emailNotificationWrapper.setFirstName(subscriber.getFirstName());
-					emailNotificationWrapper.setLastName(subscriber.getLastName());
-					String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);
-					String to=subscriber.getEmail();
-					String name=subscriber.getFirstName();
-					String sub = ConfigurationUtil.getOTPMailSubsject();
-					mailService.asyncSendEmail(to, name, sub, emailMessage);
+				if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
+					log.info("new OTP set for " + subscriberMDN.getID() + " by user " + getLoggedUserNameWithIP() + " oneTimePin:" + oneTimePin);
+					NotificationWrapper smsNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
+					smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
+					smsNotificationWrapper.setLanguage(subscriber.getLanguage());
+					smsNotificationWrapper.setFirstName(subscriber.getFirstName());
+		            smsNotificationWrapper.setLastName(subscriber.getLastName());
+					String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
+					String mdn2 = subscriberMDN.getMDN();
+					SMSValues smsValues= new SMSValues();
+					smsValues.setDestinationMDN(mdn2);
+					smsValues.setMessage(smsMessage);
+					smsValues.setNotificationCode(smsNotificationWrapper.getCode());
+						
+					smsService.asyncSendSMS(smsValues);
+					
+					if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
+						NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
+						emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
+						emailNotificationWrapper.setLanguage(subscriber.getLanguage());
+						emailNotificationWrapper.setFirstName(subscriber.getFirstName());
+						emailNotificationWrapper.setLastName(subscriber.getLastName());
+						String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);
+						String to=subscriber.getEmail();
+						String name=subscriber.getFirstName();
+						String sub = ConfigurationUtil.getOTPMailSubsject();
+						mailService.asyncSendEmail(to, name, sub, emailMessage);
+					}
 				}
 			 }			 
 		}catch (Exception excp) {
 			log.error("failed to generate message:",excp);
 		}
+			
+		if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
+			
 			String mdn = subscriberMDN.getMDN();
 			//smsService.setDestinationMDN(mdn);
 			// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
@@ -332,13 +338,16 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			smsValues1.setNotificationCode(notificationWrapper.getCode());
 			
 			smsService.asyncSendSMS(smsValues1);
+		}
 		
 		if( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
 			String to=subscriber.getEmail();
 			String name= subscriber.getFirstName();
 			mailService.asyncSendEmail(to,name, "UpgradeNotification", emailMsg);
 		}
+		
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+		
 		return errorMsg;
 	}
 

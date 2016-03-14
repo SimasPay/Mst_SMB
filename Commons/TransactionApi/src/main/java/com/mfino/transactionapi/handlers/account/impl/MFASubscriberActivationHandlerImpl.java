@@ -129,6 +129,14 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 
 		SubscriberMDN subscribermdn = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 		Integer code = null;
+		
+		if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscribermdn.getStatus())) {
+			
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation);
+			return result;
+			
+		}
+		
 		if(mfaTransactionType.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY)){
 
 

@@ -40,7 +40,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
                },{
                 xtype : 'textarea',
                 itemId :'comment',
-                id:'comment',
+                id:'commentsu',
                 fieldLabel : _('Comments'),
                 allowBlank: false,
                 hideLabel: true,
@@ -68,7 +68,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
                     		
 	                    	if(field.checked){
 	                			
-	                    		Ext.getCmp('comment').enable();
+	                    		Ext.getCmp('commentsu').enable();
 	                		}
                     	}
                     }
@@ -85,7 +85,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
                     		
                     		if(field.checked){
                     			
-                    			Ext.getCmp('comment').reset();
+                    			Ext.getCmp('commentsu').reset();
                     		}
                         }
                     }
@@ -119,7 +119,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
          
             	   var amsg = new CmFinoFIX.message.JSSubscriberUpgrade();
             	   amsg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
-            	   amsg.m_pUpgradeAcctComments = this.form.items.get('comment').getValue();
+            	   amsg.m_pUpgradeAcctComments = this.form.items.get('commentsu').getValue();
             	   amsg.m_paction="update"
             		   
             		   if(this.form.find('itemId','approve')[0].checked)
@@ -128,7 +128,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
             			   amsg.m_pUpgradeAcctStatus=CmFinoFIX.SubscriberUpgradeStatus.Approve
             		   	}
             		   else if(this.form.find('itemId','reject')[0].checked){
-            			   alert('reject ::'+this.form.items.get('comment').getValue())
+            			   alert('reject ::'+this.form.items.get('commentsu').getValue())
             			   amsg.m_pUpgradeAcctStatus=CmFinoFIX.SubscriberUpgradeStatus.Reject
             		   }
                   
