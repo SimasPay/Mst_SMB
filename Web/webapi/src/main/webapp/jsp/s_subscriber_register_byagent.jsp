@@ -70,7 +70,7 @@
 		<td><input type="text" name="ktpCity" value="" /></td>
 	</tr>
 	<tr>
-		<td>Sub State</td>
+		<td>Sub State (Village)</td>
 		<td><input type="text" name="ktpSubState" value="" /></td>
 	</tr>
 	<tr>
@@ -82,7 +82,7 @@
 		<td><input type="text" name="ktpZipCode" value="" /></td>
 	</tr>
 	<tr>
-		<td>Region Name</td>
+		<td>Region Name (Provience)</td>
 		<td><input type="text" name="ktpRegionName" value="" /></td>
 	</tr>
 	<tr>
@@ -110,7 +110,7 @@
 		<td><input type="text" name="city" value="" /></td>
 	</tr>
 	<tr>
-		<td>Sub State</td>
+		<td>Sub State (Village)</td>
 		<td><input type="text" name="subState" value="" /></td>
 	</tr>
 	<tr>
@@ -122,7 +122,7 @@
 		<td><input type="text" name="zipCode" value="" /></td>
 	</tr>
 	<tr>
-		<td>Region Name</td>
+		<td>Region Name(Provience)</td>
 		<td><input type="text" name="regionName" value="" /></td>
 	</tr>
 	<tr>

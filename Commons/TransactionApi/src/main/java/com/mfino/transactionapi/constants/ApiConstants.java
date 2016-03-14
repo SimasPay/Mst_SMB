@@ -344,6 +344,7 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	public static final String PARAMETER_KTP_LINE2 = "ktpLine2";
 	public static final String PARAMETER_KTP_CITY = "ktpCity";
 	public static final String PARAMETER_KTP_STATE = "ktpState";
+	public static final String PARAMETER_KTP_SUB_STATE = "ktpSubState";
 	public static final String PARAMETER_KTP_COUNTRY = "ktpCountry";
 	public static final String PARAMETER_KTP_ZIP_CODE = "ktpZipCode";
 	public static final String PARAMETER_KTP_REGION_NAME = "ktpRegionName";

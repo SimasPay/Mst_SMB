@@ -340,6 +340,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String ktpLine2 = request.getParameter(ApiConstants.PARAMETER_KTP_LINE2);
 		String ktpCity = request.getParameter(ApiConstants.PARAMETER_KTP_CITY);
 		String ktpState = request.getParameter(ApiConstants.PARAMETER_KTP_STATE);
+		String ktpSubState = request.getParameter(ApiConstants.PARAMETER_KTP_SUB_STATE);
 		String ktpCountry = request.getParameter(ApiConstants.PARAMETER_KTP_COUNTRY);
 		String ktpZipCode = request.getParameter(ApiConstants.PARAMETER_KTP_ZIP_CODE);
 		String ktpRegionName = request.getParameter(ApiConstants.PARAMETER_KTP_REGION_NAME);
@@ -512,6 +513,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setKtpLine2(ktpLine2);
 		rudContainer.setKtpCity(ktpCity);
 		rudContainer.setKtpState(ktpState);
+		rudContainer.setKtpSubState(ktpSubState);
 		rudContainer.setKtpCountry(ktpCountry);
 		rudContainer.setKtpZipCode(ktpZipCode);
 		rudContainer.setKtpRegionName(ktpRegionName);

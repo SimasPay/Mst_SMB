@@ -266,6 +266,7 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setKtpLine2(userDataContainer.getKtpLine2());
 		txnDetails.setKtpCity(userDataContainer.getKtpCity());
 		txnDetails.setKtpState(userDataContainer.getKtpState());
+		txnDetails.setKtpSubState(userDataContainer.getKtpSubState());
 		txnDetails.setKtpCountry(userDataContainer.getKtpCountry());
 		txnDetails.setKtpZipCode(userDataContainer.getKtpZipCode());
 		txnDetails.setKtpRegionName(userDataContainer.getKtpRegionName());
