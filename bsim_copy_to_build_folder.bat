@@ -12,6 +12,8 @@ goto End
 mkdir %1\DBscripts\
 mkdir %1\tomcat\
 mkdir %1\tomcat\mfino_conf\
+mkdir %1\tomcat\mfino_conf\RSA\
+mkdir %1\tomcat\mfino_conf\CategoryFiles\
 mkdir %1\servicemix\
 mkdir %1\servicemix\mfino_conf\
 mkdir %1\servicemix\jpos
@@ -31,6 +33,11 @@ copy Reports\target\Reports.war %1\tomcat
 copy Core\settings\bsim\mfino.properties %1\tomcat\mfino_conf\
 copy Core\settings\bsim\database_config.properties %1\tomcat\mfino_conf\
 copy Core\settings\bsim\languageTranslation.json %1\tomcat\mfino_conf\
+
+copy Core\settings\bsim\RSA*.dat %1\tomcat\mfino_conf\RSA\
+copy Core\settings\bsim\category*.txt %1\tomcat\mfino_conf\CategoryFiles\
+copy Core\settings\bsim\defaultJson.txt %1\tomcat\mfino_conf\CategoryFiles\
+copy Core\settings\bsim\errorJson.txt %1\tomcat\mfino_conf\CategoryFiles\
 
 copy Commons\HierarchyService\target\HierarchyService-0.1-SNAPSHOT.jar %1\servicemix
 copy Commons\TransactionApi\target\TransactionApi-0.1-SNAPSHOT.jar %1\servicemix

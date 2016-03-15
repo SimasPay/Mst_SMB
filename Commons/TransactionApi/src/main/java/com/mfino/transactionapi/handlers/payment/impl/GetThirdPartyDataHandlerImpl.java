@@ -43,17 +43,17 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 		Integer isValidData = validateData();
 		if(isValidData!=SUCCESS){
 			log.error("Invalid data entered for category or version");
-			categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", "errorJson.txt");
+			categoryRelatedJsonFile = new File("../mfino_conf/CategoryFiles", "errorJson.txt");
 			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
 		    return xmlResult;
 		}
 		
-		categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", getThirdPartyData.getDataCategory()+".txt");
+		categoryRelatedJsonFile = new File("../mfino_conf/CategoryFiles", getThirdPartyData.getDataCategory()+".txt");
 		
 		if(!categoryRelatedJsonFile.exists()){
 			//handle file not found
 			log.error("category related file not found : "+categoryRelatedJsonFile.getName());
-			categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", "errorJson.txt");
+			categoryRelatedJsonFile = new File("../mfino_conf/CategoryFiles", "errorJson.txt");
 			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
 			return xmlResult;
 		}
@@ -68,7 +68,7 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 		}
 		catch(Exception e){
 			log.error("Invalid float value either in system parameter or entered parameter : "+getThirdPartyData.getDataCategory());
-			categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", "errorJson.txt");
+			categoryRelatedJsonFile = new File("../mfino_conf/CategoryFiles", "errorJson.txt");
 			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
 			return xmlResult;
 		}
@@ -76,7 +76,7 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 		if(Float.compare(systemVersion, enteredVersion)<=0){
 			//return default json statement
 			log.info("System is up to date");
-			categoryRelatedJsonFile = new File("../webapps/webapi/WEB-INF", "defaultJson.txt");
+			categoryRelatedJsonFile = new File("../mfino_conf/CategoryFiles", "defaultJson.txt");
 			xmlResult.setMessage(categoryRelatedJsonFile.getAbsolutePath());
 		    return xmlResult;
 		}

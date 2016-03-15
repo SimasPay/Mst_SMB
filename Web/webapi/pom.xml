@@ -106,27 +106,6 @@
 									<directory>${basedir}/../../Core/settings/${profile}</directory>
 									<includes>
 										<include>spring-datasource-beans.xml</include>
-										<include>category.bankCodes.txt</include>
-										<include>category.purchase.txt</include>
-										<include>category.payments.txt</include>
-										<include>category.geographicaldata.txt</include>
-										<include>defaultJson.txt</include>
-										<include>errorJson.txt</include>
-										<include>category.help.txt</include>
-										<include>RSAdp.dat</include>
-										<include>RSAdq.dat</include>
-										<include>RSAmod.dat</include>
-										<include>RSAp.dat</include>
-										<include>RSAprivExp.dat</include>
-										<include>RSApubExp.dat</include>
-										<include>RSAq.dat</include>
-										<include>RSAqInv.dat</include>
-										<include>category.district.txt</include>
-										<include>category.province.txt</include>
-										<include>category.region.txt</include>
-										<include>category.village.txt</include>
-										<include>category.work.txt</include>
-										<include>category.product_referral.txt</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>
