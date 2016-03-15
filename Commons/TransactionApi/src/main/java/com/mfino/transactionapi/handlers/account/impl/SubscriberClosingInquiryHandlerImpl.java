@@ -36,7 +36,6 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.MFAService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PartnerService;
@@ -49,7 +48,6 @@ import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.SubscriberClosingInquiryHandler;
-import com.mfino.transactionapi.result.xmlresulttypes.XMLError;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.SubscriberAccountClosingXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -233,10 +231,11 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							sctl = transaction.getServiceChargeTransactionLog();
 							
 							result.setSctlID(sctl.getID());
-							result.setMfaMode("OTP");
+							result.setMfaMode("None");
 							
 							if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction) {
 							
+								result.setMfaMode("OTP");
 								mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
 							}
 							

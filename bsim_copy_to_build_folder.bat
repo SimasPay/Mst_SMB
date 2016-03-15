@@ -29,7 +29,8 @@ copy Web\TransactionMonitorTool\target\TransactionMonitorTool.war %1\tomcat\
 copy Reports\target\Reports.war %1\tomcat
 
 copy Core\settings\bsim\mfino.properties %1\tomcat\mfino_conf\
-copy Core\settings\bsim\database_config.properties %1\tomcat\mfino_conf\  
+copy Core\settings\bsim\database_config.properties %1\tomcat\mfino_conf\
+copy Core\settings\bsim\languageTranslation.json %1\tomcat\mfino_conf\
 
 copy Commons\HierarchyService\target\HierarchyService-0.1-SNAPSHOT.jar %1\servicemix
 copy Commons\TransactionApi\target\TransactionApi-0.1-SNAPSHOT.jar %1\servicemix

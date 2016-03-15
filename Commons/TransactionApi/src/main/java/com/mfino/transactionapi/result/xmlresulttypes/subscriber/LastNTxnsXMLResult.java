@@ -161,7 +161,7 @@ public class LastNTxnsXMLResult extends XMLResult {
 					getXmlWriter().writeEndElement();
 
 					getXmlWriter().writeStartElement("transactionTime");
-					getXmlWriter().writeCharacters(formatDate(ct.getStartTime()),false);
+					getXmlWriter().writeCharacters(formatDateForTransaction(ct.getStartTime()),false);
 					getXmlWriter().writeEndElement();
 					
 					getXmlWriter().writeStartElement("transactionDescription");

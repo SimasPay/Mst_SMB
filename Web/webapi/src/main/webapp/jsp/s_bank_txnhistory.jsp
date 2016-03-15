@@ -4,15 +4,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title> Account txn history</title>
+<title> Account Transaction history</title>
 </head>
 <body>
 <center>
-<h1> Account txn history</h1>
+<h1> Account Transaction history</h1>
 <form action="../sdynamic" method="POST">
-<input type="hidden" value="Bank" name="service" /> 
 <input type="hidden" value="History" name="txnName" />
 <table>
+	<tr>
+		<td>Service</td>
+		<td>
+			<select name="service">
+	  			<option value="Bank">Bank</option>
+	  			<option value="Wallet">Wallet</option>
+			</select>
+		</td>
+	</tr>
 	<tr>
 		<td>Institution ID*</td>
 		<td><input type="text" name="institutionID" value="" /><em>Required if the request is from an Integration</em></td>
@@ -35,7 +43,13 @@
 	</tr>
 	<tr>
 		<td>sourcePocketCode</td>
-		<td><input type="hidden" name="sourcePocketCode" value="2"/>2</td>
+		<td>
+			<select name="sourcePocketCode">
+	  			<option value="1">E-Money</option>
+	  			<option value="2">Bank</option>
+	  			<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
