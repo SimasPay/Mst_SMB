@@ -129,7 +129,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		
 		ChannelCode channelCode = transactionDetails.getCc();
 		
-		if(!mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
+		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
 			
 			isMfATransaction = true;
 			

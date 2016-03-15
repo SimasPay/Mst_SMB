@@ -10,9 +10,17 @@
 <center>
 <h1>Transfer Confirmation</h1>
 <form action="../sdynamic" method="POST">
-<input type="hidden" value="Bank" name="service" /> 
 <input type="hidden" value="Transfer" name="txnName" />
 <table>
+	<tr>
+		<td>Service</td>
+		<td>
+			<select name="service">
+	  			<option value="Bank">Bank</option>
+	  			<option value="Wallet">Wallet</option>
+			</select>
+		</td>
+	</tr>
 	<tr>
 		<td>Institution ID*</td>
 		<td><input type="text" name="institutionID" value="" /><em>Required if the request is from an Integration</em></td>
