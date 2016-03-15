@@ -70,6 +70,7 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberForm.js"/>">
 </script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberFormSPView.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberDetails.js"/>">
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberSearchForm.js"/>">

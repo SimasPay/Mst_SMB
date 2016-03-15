@@ -12,6 +12,16 @@ mFino.page.subscriber = function(config){
     	//anchor: '100%'
     	//width: browserWidth
     },config));
+    
+    var gridEditFormview = new mFino.widget.FormWindowForSubscriber(Ext.apply({
+        //form : new mFino.widget.SubscriberForm(config),
+    	form : new mFino.widget.SubscriberFormSPView(config),
+        width:750,
+    	height:600
+    	//anchor: '100%'
+    	//width: browserWidth
+    },config));
+    
 	var closedAccountForm = new mFino.widget.FormWindow(Ext.apply({
         form : new mFino.widget.ClosedAccountSettlementForm(config),
 		store : new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSClosedAccountSettlementMdn),
@@ -208,16 +218,29 @@ mFino.page.subscriber = function(config){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
                     }else{
-                        gridEditForm.setTitle( _(" Subscriber Details"));
-                        gridEditForm.setMode("close");
-                        gridEditForm.form.setReadOnly(true);
-                        gridEditForm.show();
-                       /* var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
-                        gridEditForm.form.onStatusDropdown(status);
-                        gridEditForm.form.disableNotPermittedItems();*/
-                        gridEditForm.setRecord(detailsForm.record);
-                        gridEditForm.setStore(detailsForm.store);
-                        gridEditForm.form.setAccountAndTemplateDisplay(true);
+                    	//var kyc=detailsForm.record.get(CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name);
+                    	var kyc=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name);
+                		if(kyc == CmFinoFIX.RecordType.SubscriberUnBanked)
+                		{
+                			gridEditFormview.setTitle( _("PERSETUJUAN NASABAH LAKU PANDAI BANK SINARMAS"));
+                			gridEditFormview.setMode("close");
+                			gridEditFormview.form.setReadOnly(true);
+                			gridEditFormview.show();
+                			gridEditFormview.setRecord(detailsForm.record);
+                			gridEditFormview.setStore(detailsForm.store);
+                			gridEditFormview.form.setAccountAndTemplateDisplay(true);
+                		}else{
+	                        gridEditForm.setTitle( _(" Subscriber Details"));
+	                        gridEditForm.setMode("close");
+	                        gridEditForm.form.setReadOnly(true);
+	                        gridEditForm.show();
+	                       /* var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
+	                        gridEditForm.form.onStatusDropdown(status);
+	                        gridEditForm.form.disableNotPermittedItems();*/
+	                        gridEditForm.setRecord(detailsForm.record);
+	                        gridEditForm.setStore(detailsForm.store);
+	                        gridEditForm.form.setAccountAndTemplateDisplay(true);
+                		}
                     }
                 }
             },

@@ -845,8 +845,6 @@
 				<field name="PANBankAccountID" required="N" isSecure="Y"/>
 				<field name="PlotNo" required="N" />
 				<field name="Nationality" required="N" />
-				
-			
 				<field name="AuthoFirstName" required="N" />
 				<field name="AuthoLastName" required="N" />
 				<field name="AuthorizingPersonIDNumber" required="N" />
@@ -881,6 +879,19 @@
 				<field name="UpgradeAcctTime" required="N" />
 				<field name="UpgradeAcctComments" required="N" />
 				<field name="UpgradeAcctStatusText" required="N" />
+				
+				<field name="IDValidUntil" required="N" />
+				<field name="IsIdLifetimeText" required="N" />
+				<field name="MothersMaidenName" required="N" />
+				<field name="UserBankBranch" required="N" />
+				<field name="AgentName" required="N" />
+				<field name="AgentCode" required="N" />
+				<field name="RT" required="N" />
+				<field name="RW" required="N" />
+				<field name="ZipCode" required="N" />
+				<field name="SubState" required="N" />
+				<field name="DateOfBirthText" required="N" />
+				<field name="IDValidUntilText" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplate" msgtype="1040" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -26830,6 +26841,10 @@ ERROR:Mismatch of  mdn type and app type
    	<field number="8431" name="SubscriberMDNSearch" type="STRING"/>
    	<field number="8432" name="ProductDesiredSearch" type="STRING"/>
    	<field number="8433" name="ProductReferralID"  type="RecordID" unused="Y" />
+   	<field number="8434" name="AgentName" type="STRING"/>
+   	<field number="8435" name="IsIdLifetimeText" type="STRING"/>
+   	<field number="8436" name="DateOfBirthText" type="STRING"/>
+   	<field number="8437" name="IDValidUntilText" type="STRING"/>
     </fields>
     <primitives>
 		<dbtype name="mysql">

@@ -591,7 +591,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 	}
 
-	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Boolean isExcelDownload,String str_tomcatPath) {
+	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Address adsktp, Boolean isExcelDownload,String str_tomcatPath) {
 		entry.setID(s.getID());
 
 		if (s.getActivationTime() != null) {
@@ -788,6 +788,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				if(s.getSubscriber().getDateOfBirth()!=null){
 					entry.setDateOfBirth(s.getSubscriber().getDateOfBirth());
+					entry.setDateOfBirthText(s.getSubscriber().getDateOfBirth().toString());
 				}
 				if(s.getSubscriber().getBirthPlace()!=null){
 					entry.setBirthPlace(s.getSubscriber().getBirthPlace());
@@ -894,6 +895,36 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						entry.setRegionName(ads.getRegionName());
 					}
 				}
+				
+				if(adsktp!=null){
+					if (adsktp.getLine1() != null) {
+						entry.setPlotNo(adsktp.getLine1());
+					}
+					if(adsktp.getLine2()!=null){
+						entry.setStreetAddress(adsktp.getLine2());
+					}
+					if (adsktp.getCity()!=null){
+						entry.setCity(adsktp.getCity());
+					}
+					if(adsktp.getState()!=null){
+						entry.setStreetAddress(adsktp.getState());
+					}
+					if (adsktp.getSubState()!=null){
+						entry.setSubState(adsktp.getSubState());
+					}
+					if (adsktp.getRegionName()!=null){
+						entry.setRegionName(adsktp.getRegionName());
+					}
+					if (adsktp.getZipCode()!=null){
+						entry.setZipCode(adsktp.getZipCode());
+					}
+					if (adsktp.getRT()!=null){
+						entry.setRT(adsktp.getRT());
+					}
+					if (adsktp.getRW()!=null){
+						entry.setRW(adsktp.getRW());
+					}
+				}
 
 				if((s.getSubscriber().getSubscriberGroupFromSubscriberID() != null) && (s.getSubscriber().getSubscriberGroupFromSubscriberID().size() > 0)) {
 					SubscriberGroup sg = s.getSubscriber().getSubscriberGroupFromSubscriberID().iterator().next();
@@ -925,8 +956,34 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(s.getUpgradeAcctComments()!=null){
 					entry.setUpgradeAcctComments(s.getUpgradeAcctComments());
 				}
-				
-
+				if(s.getISIDLifetime()!=null){
+					if(s.getISIDLifetime().equals(CmFinoFIX.ISIDLifetime_LifeTime_True)){
+						entry.setIsIdLifetimeText(Boolean.TRUE.toString());
+					}else{
+						entry.setIsIdLifetimeText(Boolean.FALSE.toString());
+					}
+				}
+				if(s.getSubscriber().getIDExiparetionTime()!=null){
+					entry.setIDValidUntil(s.getSubscriber().getIDExiparetionTime());
+					entry.setIDValidUntilText(s.getSubscriber().getIDExiparetionTime().toString());
+				}
+				if(s.getSubscriber().getMothersmaidenName()!=null){
+					entry.setMothersMaidenName(s.getSubscriber().getMothersmaidenName());
+				}
+				if(s.getSubscriber().getRegisteringPartnerID()!=null){
+					Partner partner = partnerService.getPartnerById(s.getSubscriber().getRegisteringPartnerID());
+					if(partner != null){
+						if(partner.getBranchCode() != null){
+							entry.setUserBankBranch(userService.getUserBranchCode(Integer.valueOf(partner.getBranchCode())));
+						}
+						if(partner.getPartnerCode() != null){
+							entry.setAgentCode(partner.getPartnerCode());
+						}
+						if(partner.getTradeName() != null){
+							entry.setAgentName(partner.getTradeName());
+						}
+					}
+				}
 	}
 
 	public void updateForwardMessage(CMJSForwardNotificationRequest newMsg, CMJSSubscriberMDN.CGEntries e, Integer oldRestristions) throws Exception{
@@ -1156,6 +1213,11 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if (ads == null && checkAddress(e)){
 					ads = new Address();
 				}
+/*				Address adsktp=s.getSubscriber().getAddressBySubscriberAddressKTPID();
+				if (adsktp == null && checkAddress(e)){
+					adsktp = new Address();
+				}*/
+				
 				AuthorizingPerson ap= sub.getAuthorizingPerson();
 				if (ap == null && checkAuthorizingPersonDetails(e)){
 					ap = new AuthorizingPerson();
@@ -1212,7 +1274,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				
 				mdnDao.save(s);
-				updateMessage(s, e, saf, ap, ads,false,str_tomcatPath);
+				updateMessage(s, e, saf, ap, ads,null,false,str_tomcatPath);
 
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
@@ -1334,11 +1396,12 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				CMJSSubscriberMDN.CGEntries entry = new CMJSSubscriberMDN.CGEntries();
 				SubscribersAdditionalFields saf=null;
 				Address ads=s.getSubscriber().getAddressBySubscriberAddressID();
+				Address adsktp=s.getSubscriber().getAddressBySubscriberAddressKTPID();
 				AuthorizingPerson ap=s.getSubscriber().getAuthorizingPerson();
 				if(! s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 					saf=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				}
-				updateMessage(s, entry, saf, ap, ads,realMsg.getIsExcelDownload(),str_tomcatPath);
+				updateMessage(s, entry, saf, ap, ads,adsktp,realMsg.getIsExcelDownload(),str_tomcatPath);
 				realMsg.getEntries()[i] = entry;
 				log.info("Subscriber:"+s.getID()+" details viewed completed by user:"+getLoggedUserNameWithIP());
 			}
@@ -1577,7 +1640,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
-				updateMessage(mdn, e,saf,ap,ads, false,str_tomcatPath);
+				updateMessage(mdn, e,saf,ap,ads,null, false,str_tomcatPath);
 			}
 
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);

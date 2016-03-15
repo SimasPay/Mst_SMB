@@ -3,7 +3,7 @@
 
 Ext.ns("mFino.widget");
 
-mFino.widget.SubscriberForm = function (config) {
+mFino.widget.SubscriberFormSPView = function (config) {
     var localConfig = Ext.apply({}, config);
     localConfig = Ext.applyIf(localConfig, {
         bodyStyle:'padding:5px 5px 0',
@@ -12,16 +12,16 @@ mFino.widget.SubscriberForm = function (config) {
         msgTarget: 'side'
     });
 
-    mFino.widget.SubscriberForm.superclass.constructor.call(this, localConfig);
+    mFino.widget.SubscriberFormSPView.superclass.constructor.call(this, localConfig);
 };
 
 
-Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
+Ext.extend(mFino.widget.SubscriberFormSPView, Ext.form.FormPanel, {
 	
     initComponent : function ()
     {
     	this.subscribercombo = new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSSubscriberMDN);
-        this.labelWidth = 120;
+        this.labelWidth = 180;
         this.labelPad = 20;
         this.autoScroll = true;
         this.frame = true;
@@ -31,7 +31,8 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
             
             items : [
             {
-                columnWidth: 0.5,
+                //columnWidth: 0.6,
+            	columnWidth: 1,
                 items : [
                 {
                     //width: 300,
@@ -39,29 +40,274 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     allowBlank: false,
                     layout: 'form',
                     items: [
-                            {
+								{
+									xtype : 'displayfield',
+									fieldLabel: _("Nama Nasabah (Sesuai KTP)"),
+									anchor : '100%',
+									allowBlank: true,
+									maxLength : 255,
+									itemId : 'subsp.form.firstname',
+									name: CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name
+								},
+								{
+									xtype : "displayfield",
+									fieldLabel :_("Nomor KTP"),
+									anchor : '100%',
+									allowBlank: true,
+									maxLength : 255,
+									itemId  : 'subsp.form.ktpid',
+									name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApplicationID._name
+								},
+								{
+									xtype : "displayfield",
+									fieldLabel :_("Tanggal Lahir"),
+									anchor : '100%',
+									allowBlank: true,
+									maxLength : 255,
+									itemId  : 'subsp.form.DateofBirth',
+									name: CmFinoFIX.message.JSSubscriberMDN.Entries.DateOfBirthText._name
+								},
+								{
+									xtype : "displayfield",
+									fieldLabel :_("Is Id Lifetime"),
+									anchor : '100%',
+									allowBlank: true,
+									maxLength : 255,
+									itemId  : 'subsp.form.ISIDLifetime',
+									name: CmFinoFIX.message.JSSubscriberMDN.Entries.IsIdLifetimeText._name
+								},
+								{
+									xtype : "displayfield",
+									fieldLabel :_("Masa Berlaku (Hingga)"),
+									anchor : '100%',
+									allowBlank: true,
+									maxLength : 255,
+									itemId  : 'subsp.form.IdValidUntil',
+									name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDValidUntilText._name
+								},
+								{
+									xtype : "displayfield",
+									fieldLabel :_("Nomor Telepon Selular (Handphone)"),
+									anchor : '100%',
+									allowBlank: true,
+									maxLength : 255,
+									itemId : 'subsp.form.mdn',
+									name: CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name
+								},
+	                           {
+	                               xtype : 'label',
+	                               text :'DATA PRIBADI',
+	                               name: 'PersonalData',
+	                               anchor : '100%',
+	                               style: 'font-weight:bold;'
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Alamat (Sesuai KTP)"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.AlamatKTP',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.PlotNo._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("RT"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.RT',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.RT._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("RW"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.RW',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.RW._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Desa/Kelurahan"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.TownVillage',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubState._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Kecamatan"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.SubState',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.StreetAddress._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Kabupaten/Kota"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.City',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.City._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Propinsi"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.Country',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.RegionName._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Kode Pos"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.ZipCode',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.ZipCode._name
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Nama lbu Kandung"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.MothersMaidenName',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.MothersMaidenName._name
+	                           },
+	                           {
+	                               xtype:'displayfield',
+	                               fieldLabel: _('Alamat Email'),
+	                               anchor : '100%',
+	                               allowBlank : true,
+	                               maxLength : 255,
+	                               itemId : 'subsp.form.email',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.Email._name
+	                           },
+	                           {
+	                               xtype : 'label',
+	                               text :'	Dokumen Lampiran',
+	                               name: 'Data1',
+	                               anchor : '100%',
+	                               style: 'font-weight:bold;'
+	                           },
+	                           //documents,
+	                           {
+	                               xtype: "displayfield",
+	                               fieldLabel: _('1) KTPDocument'),
+	                               anchor : '100%',
+	               				   style: {
+	               				   color: '#0000ff' ,
+	               				   cursor:'pointer'
+	               				},
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name,
+	                               listeners:{
+	                               	 afterrender: function(component) {
+	                               	      component.getEl().on('click', function() { 
+	               						    mFino.widget.SubscriberFormSPView.prototype.showImage(component.getValue())
+	                               	      });  
+ 	                               	   }
+	                               }
+	                           },
+	               			   {
+	                               xtype: "displayfield",
+	                               fieldLabel: _('2) Subscriber Form'),
+	                               anchor : '100%',
+		               				style: {
+		               					color: '#0000ff' ,
+		               					cursor:'pointer'
+		               				},
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name,
+	                               listeners:{
+	                               	 afterrender: function(component) {
+	                               	      component.getEl().on('click', function() { 
+	               						    mFino.widget.SubscriberFormSPView.prototype.showImage(component.getValue())
+	                               	      });  
+	                               	  }
+	                               }
+	                           },
+	                           {
+	                               xtype: "displayfield",
+	                               fieldLabel: _('3) Supporting Document'),
+	                               anchor : '100%',
+	               				style: {
+	               					color: '#0000ff' ,
+	               					cursor:'pointer'
+	               				},
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name,
+	                               listeners:{
+	                               	 afterrender: function(component) {
+	                               	      component.getEl().on('click', function() { 
+	               						    mFino.widget.SubscriberFormSPView.prototype.showImage(component.getValue())
+	                               	      });  
+	                               	   }
+	                               }
+	                           },
+	                           {
+	                               xtype : 'label',
+	                               text :'Data Agen',
+	                               name: 'Data1',
+	                               anchor : '100%',
+	                               style: 'font-weight:bold;'
+	                           },
+	                           {
+	                               xtype : "displayfield",
+	                               fieldLabel :_("Jaringan Kantor Bank"),
+	                               anchor : '100%',
+	                               allowBlank: true,
+	                               maxLength : 255,
+	                               itemId  : 'subsp.form.UserBankBranch',
+	                               name: CmFinoFIX.message.JSSubscriberMDN.Entries.UserBankBranch._name
+	                           },
+		             			{
+		           	                xtype : 'displayfield',
+		           	                fieldLabel: _("Nama Agen"),
+		                            anchor : '100%',
+		                            allowBlank: true,
+		                            maxLength : 255,
+		           	                itemId : 'subsp.form.AgentName',
+		           	                name: CmFinoFIX.message.JSSubscriberMDN.Entries.AgentName._name
+		           	            },	                           
+								{
+								    xtype : 'displayfield',
+								    fieldLabel :_("Nomor Identifikasi Agen"),
+								    anchor : '100%',
+								    allowBlank: true,
+								    maxLength : 255,
+								    itemId  : 'subsp.form.AgentCode',
+								    name: CmFinoFIX.message.JSSubscriberMDN.Entries.AgentCode._name
+								}                            
+                            
+/*                            {
                                 xtype : 'textfield',
                                 fieldLabel: mobile,
-                                itemId : 'sub.form.mobileno',
+                                itemId : 'subsp.form.mobileno',
                                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name,
                                 allowBlank: false,
-                                vtype: 'smarttelcophoneAddMore',
+                                //vtype: 'smarttelcophoneAddMore',
                                 listeners: {
                                     change: function(field) {
-                                    	this.findParentByType('subscriberform').onMDN(field);
+                                    	this.findParentByType('SubscriberFormSPView').onMDN(field);
                                     }
                                 },
                                 emptyText: _(''),
                                 blankText : _('Mobile Number is required'),
                                 anchor : '100%'
-                            },                            
-                   {
+                            },*/                            
+/*                   {
                         xtype : "remotedropdown",
                         anchor : '100%',
                         allowBlank: false, 
                         blankText : _('KYC is required'),
-                        itemId : 'sub.form.KYCLevel',
-                        id : 'sub.form.KYCLevel',
+                        itemId : 'subsp.form.KYCLevel',
+                        id : 'subsp.form.KYCLevel',
                         fieldLabel :kyc,
                         emptyText : _('<select one..>'),
                         RPCObject : CmFinoFIX.message.JSKYCCheck,
@@ -76,42 +322,52 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                             		field.clearValue();
                             		return;
                             	}
-                            	var kf_combo = Ext.getCmp("sub.form.kycfield");
+                            	var kf_combo = Ext.getCmp("subsp.form.kycfield");
                             	kf_combo.store.reload({
                     				params: {KYCFieldsLevelID : kyc },
                     				callback:function(){}
                     			});
-                            	var subscriberForm = this.findParentByType('subscriberform');
-                            	subscriberForm.onKYCDropdown(kyc);
-                            	var subscriberID = subscriberForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberID._name);
+                            	var SubscriberFormSPView = this.findParentByType('SubscriberFormSPView');
+                            	SubscriberFormSPView.onKYCDropdown(kyc);
+                            	var subscriberID = SubscriberFormSPView.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberID._name);
                             	if(subscriberID == null) { //while subscriber registration
                             		if(kyc == CmFinoFIX.RecordType.SubscriberFullyBanked
                             				|| kyc == CmFinoFIX.RecordType.SubscriberSemiBanked){
-                            			subscriberForm.setAccountAndTemplateDisplay(true);
-                            			subscriberForm.loadBankPocketTemplateCombo();
+                            			SubscriberFormSPView.setAccountAndTemplateDisplay(true);
+                            			SubscriberFormSPView.loadBankPocketTemplateCombo();
                                 	} else {
-                                		subscriberForm.setAccountAndTemplateDisplay(false);
+                                		SubscriberFormSPView.setAccountAndTemplateDisplay(false);
                                 	}
                             	} else { //while subscriber update
                             		if(kyc == CmFinoFIX.RecordType.SubscriberFullyBanked
                             				|| kyc == CmFinoFIX.RecordType.SubscriberSemiBanked){
-                                		var actualKyc = subscriberForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name);
+                                		var actualKyc = SubscriberFormSPView.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name);
                                 		if(actualKyc == CmFinoFIX.RecordType.SubscriberUnBanked || actualKyc === 0) {
-                                			subscriberForm.setAccountAndTemplateDisplay(true);
-                                			subscriberForm.loadBankPocketTemplateCombo();
+                                			SubscriberFormSPView.setAccountAndTemplateDisplay(true);
+                                			SubscriberFormSPView.loadBankPocketTemplateCombo();
                                 		}
                                 	}else{                            		
-                                		subscriberForm.setAccountAndTemplateDisplay(false);
+                                		SubscriberFormSPView.setAccountAndTemplateDisplay(false);
                                 	}
                             	}                                
                             }
                         }
                        
-                    },
-                    {
+                    },*/
+/*                    {
+                        xtype : 'textfield',
+                        //fieldLabel: _("kyc"),
+                        fieldLabel :kyc,
+                        itemId : 'subsp.form.KYCLevel',
+                        anchor : '100%',
+                        allowBlank: false,
+                        disabled: false,
+                        name: CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevelText._name           
+                    },*/
+/*                    {
                         xtype : 'textfield',
                         fieldLabel:firstname,
-                        itemId : 'sub.form.firstname',
+                        itemId : 'subsp.form.firstname',
                         allowBlank: false,
                         anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name
@@ -120,52 +376,52 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                         xtype : 'textfield',
                         fieldLabel: lastname,
                         allowBlank: false,
-                        itemId : 'sub.form.lastname',
+                        itemId : 'subsp.form.lastname',
                         anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.LastName._name
-                    },
-                    {
+                    },*/
+/*                    {
                         xtype : 'textfield',
                         //fieldLabel: nickname,
-                        fieldLabel: _("Nickname"),
-                        itemId : 'sub.form.nickname',
+                        fieldLabel: _("Nicknameeeeeee"),
+                        itemId : 'subsp.form.nickname',
                         allowBlank: true,
                         anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.Nickname._name
-                    },
-                   {
+                    },*/
+/*                   {
                    	 xtype : 'datefield',
                    	 allowBlank: true,
                    	 editable: false,
                 	 fieldLabel: dateofbirth,
-                	 itemId : 'sub.form.dateofbirth',
+                	 itemId : 'subsp.form.dateofbirth',
                 	 anchor : '100%',
                 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.DateOfBirth._name,
                      maxValue:new Date().add('d',-1),
                      maxText:'Date of birth should not be future date',
                      listeners: {
                          change: function(field) {
-                        	 this.findParentByType('subscriberform').onDOBSelect(field);
+                        	 this.findParentByType('SubscriberFormSPView').onDOBSelect(field);
                         	                          }}
-                	},
-                    {
+                	},*/
+/*                    {
                         xtype : 'textfield',
                         fieldLabel: city,
                         allowBlank: true,
-                        itemId : 'sub.form.city',
+                        itemId : 'subsp.form.city',
                         anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.City._name
-                    },
-                    {
+                    },*/
+ /*                   {
                         xtype : 'textfield',
                         fieldLabel: email,
-                        itemId : 'sub.form.email',
+                        itemId : 'subsp.form.email',
                         vtype: 'email',
                         anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.Email._name,
                         listeners: {
                         	blur: function(field) {
-//                        		this.findParentByType('subscriberform').updateEmailCheck(field);
+//                        		this.findParentByType('SubscriberFormSPView').updateEmailCheck(field);
                         	}
                         }
                     },
@@ -173,7 +429,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                         xtype : 'textfield',
                         fieldLabel: _("Reg Branch Code"),
                         allowBlank: false,
-                        itemId : 'sub.form.applicationid',
+                        itemId : 'subsp.form.applicationid',
 						vtype: 'name',
 						anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApplicationID._name
@@ -181,16 +437,16 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     {
                 	    xtype : 'textfield',
                 	    fieldLabel: subsrefaccount,
-                	    itemId : 'sub.form.subsrefaccount',
-                	    //allowBlank: false,
+                	    itemId : 'subsp.form.subsrefaccount',
+                	    allowBlank: true,
                 	    anchor : '100%',
-                	    vtype:'number19',
+                	    //vtype:'number19',
                 	    name: CmFinoFIX.message.JSSubscriberMDN.Entries.ReferenceAccount._name
                     },
                     {
                     	xtype : "combo",
-                        itemId : 'sub.form.kycfield',
-                        id : 'sub.form.kycfield',
+                        itemId : 'subsp.form.kycfield',
+                        id : 'subsp.form.kycfield',
                         hidden:true,
                         lastQuery: '',
                         store : new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSKYCCheckFields),
@@ -199,17 +455,17 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                         name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name,
                         listeners: {
                             reload: function(field) {
-                            	var kf_combo = Ext.getCmp("sub.form.kycfield");
+                            	var kf_combo = Ext.getCmp("subsp.form.kycfield");
                             	alert("      "+kf_combo.store.getCount());
                             	                            }
                         		}
-                     }]
+                     }*/]
                 }]
-            },
-            {columnWidth: 0.5,
-                items : [subsBasicDetail]}
+            }
+/*            {columnWidth: 0.5,
+                items : [subsBasicDetailsp]}*/
             ]
-        },
+        }/*,
         {
 
             xtype:'tabpanel',
@@ -227,7 +483,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                 layout:'column',
                 frame:true,
                 autoHeight: true,
-                items:[subsotdetail]
+                items:[subsotdetailsp]
             },{
                 title: _('Security Question'),
                 layout:'column',
@@ -238,7 +494,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     columnWidth:0.5,
                     xtype: 'panel',
                     layout: 'form',
-                    items:[subsMoreDetail]
+                    items:[subsMoreDetailsp]
                 }]
             },
             {
@@ -247,25 +503,25 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                 frame:true,
                 autoHeight: true,
                 items :
-                [subsAthorizingDetail]
+                [subsAthorizingDetailsp]
             },
             {
                 title: _('Notification Method'),
                 layout:'column',
                 frame:true,
                 autoHeight: true,
-                items:[subsNotificationMethod]
+                items:[subsNotificationMethodsp]
             },
             {
                 title: _('Restriction'),
                 layout:'column',
                 frame:true,
                 autoHeight: true,
-                items:[subsRestrictions]
+                items:[subsRestrictionssp]
             }]
-        }] ;
+        }*/] ;
         this.subscribercombo.on("load", this.onLoad.createDelegate(this));
-        mFino.widget.SubscriberForm.superclass.initComponent.call(this);
+        mFino.widget.SubscriberFormSPView.superclass.initComponent.call(this);
         markMandatoryFields(this.form);
     },
     onLoad: function(){
@@ -280,18 +536,18 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
       		 this.unregisterRecord  = record;
       		 this.store.modified =[this.record];
       		 this.onStatusDropdown( CmFinoFIX.MDNStatus.Initialized);
-           	 this.find("itemId", "sub.form.mobileno")[0].disable(); 
-           	 this.find("itemId", "sub.form.status")[0].disable(); 
+           	 this.find("itemId", "subsp.form.mobileno")[0].disable(); 
+           	 this.find("itemId", "subsp.form.status")[0].disable(); 
       		 this.subscribercombo.remove(record);
           }else if(record!=null){
        	   Ext.MessageBox.alert(_("Alert"), _("MDN already Registered")); 
        	   this.subscribercombo.remove(record);
            }else{           	
            	 this.onStatusDropdown( CmFinoFIX.MDNStatus.Initialized);
-           	 this.find("itemId", "sub.form.mobileno")[0].disable(); 
-           	 this.find("itemId", "sub.form.status")[0].disable(); 
+           	 this.find("itemId", "subsp.form.mobileno")[0].disable(); 
+           	 this.find("itemId", "subsp.form.status")[0].disable(); 
            	 
-//           	srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name,this.find("itemId", "sub.form.mobileno")[0].getValue());
+//           	srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name,this.find("itemId", "subsp.form.mobileno")[0].getValue());
 //   		    srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Language._name,CmFinoFIX.Language.English);
 //   		    srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Timezone._name,CmFinoFIX.Timezone.UTC);
 //   		    srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Currency._name,CmFinoFIX.Currency.NGN);
@@ -314,7 +570,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     	   this.store.insert(0,record);
        },
     onStatusDropdown : function(status){
-    	 var items = ['sub.form.KYCLevel','sub.form.firstname','sub.form.lastname','sub.form.nickname','sub.form.dateofbirth','sub.form.city','sub.form.email','sub.form.applicationid','sub.form.plotno','sub.form.streetaddress','sub.form.regionname','sub.form.country','sub.form.idtype','sub.form.idnumber','sub.form.expirationtime','sub.form.proofofaddress','sub.form.typeofbankaccount','sub.form.bankaccid','SMS','Email1','Suspended','SecurityLocked','AbsoluteLocked','NoFundMovement','sub.form.securityquestion','sub.form.secretanswer','sub.form.birthplace','sub.form.nationality','sub.form.companyname','sub.form.subscribermobilecompany','sub.form.coi','sub.form.authofirstname','sub.form.authofirstname','sub.form.autholastname','sub.form.authorizingpersonid','sub.form.authodateofbirth','sub.form.authoiddescription','sub.form.status','sub.form.language','sub.form.currency','sub.form.timezone','sub.form.kinname','sub.form.kinmdn','sub.form.streetname','sub.form.group','sub.form.accountnumber','sub.form.bankPocketTemplate','sub.form.otherMDN'];
+    	 var items = ['subsp.form.KYCLevel','subsp.form.firstname','subsp.form.lastname','subsp.form.nickname','subsp.form.dateofbirth','subsp.form.city','subsp.form.email','subsp.form.applicationid','subsp.form.plotno','subsp.form.streetaddress','subsp.form.regionname','subsp.form.country','subsp.form.idtype','subsp.form.idnumber','subsp.form.expirationtime','subsp.form.proofofaddress','subsp.form.typeofbankaccount','subsp.form.bankaccid','SMS','Email1','Suspended','SecurityLocked','AbsoluteLocked','NoFundMovement','subsp.form.securityquestion','subsp.form.secretanswer','subsp.form.birthplace','subsp.form.nationality','subsp.form.companyname','subsp.form.subscribermobilecompany','subsp.form.coi','subsp.form.authofirstname','subsp.form.authofirstname','subsp.form.autholastname','subsp.form.authorizingpersonid','subsp.form.authodateofbirth','subsp.form.authoiddescription','subsp.form.status','subsp.form.language','subsp.form.currency','subsp.form.timezone','subsp.form.kinname','subsp.form.kinmdn','subsp.form.streetname','subsp.form.group','subsp.form.accountnumber','subsp.form.bankPocketTemplate','subsp.form.otherMDN'];
 
     	if(status == CmFinoFIX.MDNStatus.PendingRetirement || status==CmFinoFIX.MDNStatus.Retired){
             for(var i=0;i<items.length;i++){
@@ -325,35 +581,35 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
             	this.record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.IsForceCloseRequested._name, true);
             }
         }else{
-           // items = ['SMS','Email1','SelfSuspended','Suspended','SecurityLocked','AbsoluteLocked','sub.form.mobileno','sub.form.firstname','sub.form.lastname','form.email','sub.form.timezone','sub.form.language','sub.form.currency','sub.form.secretanswer','sub.form.timezone','sub.form.status'];
+           // items = ['SMS','Email1','SelfSuspended','Suspended','SecurityLocked','AbsoluteLocked','subsp.form.mobileno','subsp.form.firstname','subsp.form.lastname','form.email','subsp.form.timezone','subsp.form.language','subsp.form.currency','subsp.form.secretanswer','subsp.form.timezone','subsp.form.status'];
             for(i=0;i<items.length;i++){
                 this.find('itemId',items[i])[0].enable();
             }
             
 			this.loadBankPocketTemplateCombo();
 			if((SYSTEM_DEFAULT_ACCOUNT_NUMBER_MANDATORY) && (SYSTEM_DEFAULT_KYC == "3")){
-				this.find("itemId", "sub.form.accountnumber")[0].allowBlank = false;
+				this.find("itemId", "subsp.form.accountnumber")[0].allowBlank = false;
 			}
 			
 			 if(SYSTEM_DEFAULT_KYC != "3"){
-				 this.find('itemId','sub.form.accountnumber')[0].disable();
-				 this.find("itemId", "sub.form.bankPocketTemplate")[0].disable();
+				 this.find('itemId','subsp.form.accountnumber')[0].disable();
+				 this.find("itemId", "subsp.form.bankPocketTemplate")[0].disable();
            	 }
 			 
-            //this.find("itemId", "sub.form.bankPocketTemplate")[0].disable();
+            //this.find("itemId", "subsp.form.bankPocketTemplate")[0].disable();
             
             if((status == CmFinoFIX.MDNStatus.Active) || (status == CmFinoFIX.MDNStatus.Initialized)) {
-            	this.find('itemId','sub.form.status')[0].enable();
+            	this.find('itemId','subsp.form.status')[0].enable();
             } else {
-            	this.find('itemId','sub.form.status')[0].disable();
+            	this.find('itemId','subsp.form.status')[0].disable();
             }
         }
     },
     
     loadBankPocketTemplateCombo : function() {
-    	var kycLevel = this.find('itemId','sub.form.KYCLevel')[0].getValue();
-    	var group = this.find('itemId','sub.form.group')[0].getValue();    	
-    	var bankPocketField = this.find('itemId','sub.form.bankPocketTemplate')[0];
+    	var kycLevel = this.find('itemId','subsp.form.KYCLevel')[0].getValue();
+    	var group = this.find('itemId','subsp.form.group')[0].getValue();    	
+    	var bankPocketField = this.find('itemId','subsp.form.bankPocketTemplate')[0];
     	bankPocketField.store.reload({
     	      params: { 
     	    	  CommodityTypeSearch : CmFinoFIX.Commodity.Money,
@@ -398,8 +654,8 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     	if(kyc!="")
     	{
 
-			var kf_combo = Ext.getCmp("sub.form.kycfield");
-			var kf_combo_id='sub.form.kyc';
+			var kf_combo = Ext.getCmp("subsp.form.kycfield");
+			var kf_combo_id='subsp.form.kyc';
 			
 			/*````````````````````````````````````````````````````````````````*/
 			kf_combo.store.clearFilter(); 
@@ -409,14 +665,14 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 				callback:function(){}
 			});
 			
-			var kf_combo = Ext.getCmp("sub.form.kycfield");
+			var kf_combo = Ext.getCmp("subsp.form.kycfield");
 			var kycFieldSize = kf_combo.store.getCount();
 
 			var fn;
 			var items=new Array();
 			for ( var i = 0; i < kycFieldSize; i++) {
 				fn=kf_combo.store.getAt(i).data.KYCFieldsName;
-				items[i]="sub.form."+fn;
+				items[i]="subsp.form."+fn;
 			}
 
 			for(var i=0;i<items.length;i++){
@@ -436,7 +692,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 		 mydate.setFullYear(year, month-1, day);
    	 var currdate = new Date();
 		 currdate.setFullYear(currdate.getFullYear() - age);
-		 var aitems = ['sub.form.authofirstname','sub.form.autholastname','sub.form.authorizingpersonid','sub.form.authodateofbirth'];
+		 var aitems = ['subsp.form.authofirstname','subsp.form.autholastname','subsp.form.authorizingpersonid','subsp.form.authodateofbirth'];
 		 if ((currdate - mydate) < 0){			
 	            for(var i=0;i<aitems.length;i++){
 	            	this.find('itemId',aitems[i])[0].allowBlank = false;
@@ -472,7 +728,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 		 currdate.setFullYear(currdate.getFullYear() - age);
 		 if ((currdate - mydate) < 0){
 			alert("Date should be greater than 18 years");
-			this.form.items.get("sub.form.authodateofbirth").setValue('');
+			this.form.items.get("subsp.form.authodateofbirth").setValue('');
 			}
 
     },
@@ -481,7 +737,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     		
             this.getForm().updateRecord(this.record);
            /* var isEmailChecked = this.form.items.get("Email1").getValue();
-	        if (this.form.items.get("sub.form.email").getValue() === "" && isEmailChecked) {
+	        if (this.form.items.get("subsp.form.email").getValue() === "" && isEmailChecked) {
 	       		Ext.ux.Toast.msg(_("Error"), _("Please enter the Email Address."),	3);
 				return;
 			} */
@@ -541,8 +797,8 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
         this.form.items.get("SMS").setValue( (notiValue & CmFinoFIX.NotificationMethod.SMS) > 0);
         this.form.items.get("Email1").setValue( ( notiValue & CmFinoFIX.NotificationMethod.Email) > 0);
 
-        this.find('itemId','sub.form.subsrefaccount')[0].disable();
-        this.find('itemId','sub.form.creditcheck')[0].disable();
+/*        this.find('itemId','subsp.form.subsrefaccount')[0].disable();
+        this.find('itemId','subsp.form.creditcheck')[0].disable();*/
 
         this.getForm().clearInvalid();
     },
@@ -566,7 +822,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
         this.store.on("update", this.onStoreUpdate, this);
     },
     disableNotPermittedItems: function(){
-        var checkAbleItems = ['sub.form.mobileno'];
+        var checkAbleItems = ['subsp.form.mobileno'];
         for(var i = 0; i < checkAbleItems.length; i++){
             var itemIdStr = checkAbleItems[i];
             var checkItem = this.find("itemId", itemIdStr)[0];
@@ -576,7 +832,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
         }
     },
     enablePermittedItems: function(){
-        var checkAbleItems = ['sub.form.mobileno'];
+        var checkAbleItems = ['subsp.form.mobileno'];
         for(var i = 0; i < checkAbleItems.length; i++){
             var itemIdStr = checkAbleItems[i];
             var checkItem = this.find("itemId", itemIdStr)[0];
@@ -589,48 +845,48 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     onSuspendClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("Suspended").checked) {
-            this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+            this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
         } else {
         	if (CmFinoFIX.SubscriberStatus.Suspend === currentStatus) {
         		currentStatus = CmFinoFIX.SubscriberStatus.Initialized;
         	}
-            this.form.items.get("sub.form.status").setValue(currentStatus);
+            this.form.items.get("subsp.form.status").setValue(currentStatus);
         }
     },
     onSecurityLockClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("SecurityLocked").checked) {
-            this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("Suspended").checked) {
-                this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+                this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
         	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
         		currentStatus = CmFinoFIX.SubscriberStatus.Initialized;
         	}
-            this.form.items.get("sub.form.status").setValue(currentStatus);
+            this.form.items.get("subsp.form.status").setValue(currentStatus);
         }
     },
     onAbsoluteLockClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("AbsoluteLocked").checked) {
-            this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("Suspended").checked) {
-                this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+                this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
         	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
         		currentStatus = CmFinoFIX.SubscriberStatus.Initialized;
         	}
-            this.form.items.get("sub.form.status").setValue(currentStatus);
+            this.form.items.get("subsp.form.status").setValue(currentStatus);
         }
     },
      onNoFundMovementClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("NoFundMovement").checked) {
-            this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("Suspended").checked) {
-                this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+                this.form.items.get("subsp.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
         	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
@@ -639,19 +895,47 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                 	currentStatus = CmFinoFIX.SubscriberStatus.Suspend;
             	}
         	}
-            this.form.items.get("sub.form.status").setValue(currentStatus);
+            this.form.items.get("subsp.form.status").setValue(currentStatus);
         }
     },
 	onCheckEmail: function(){
 	    var isEmailChecked = this.form.items.get("Email1").getValue();
-	       if (this.form.items.get("sub.form.email").getValue() === "" && isEmailChecked) {
+	       if (this.form.items.get("subsp.form.email").getValue() === "" && isEmailChecked) {
 	       	alert("Enter a valid email");
 			this.form.items.get("Email1").setValue(false);
 	    }     
 	},
+    showImage:function(imageName){
+    	var imagePath=mFino.widget.SubscriberFormSPView.path+imageName
+		if(imagePath.indexOf('.')!=-1){
+			var window=new Ext.Window({
+				layout:'anchor',
+				width:500,
+				height:500,
+				autoScroll:true,
+				bodyStyle:'backgroundColor:white',
+				title:imageName,
+				items:[{
+					anchor : '100%',
+					html: "<div display=\"block\" style=''>" + 
+						
+					"<div style=\"text-align:left;line-height:3px;padding:5px 3px 4px;\">" +
+						"<span>" + 
+								"<img height=200 width=200 alt=\"image\" src=\""+imagePath+"\" />" +
+						"</span>" + 
+					"</div>" +
+				   "</div>"
+				}]
+			});
+			window.show();
+		}else{
+			
+			Ext.Msg.alert('Info', 'Document Not Available!');
+		}
+    },
 	setAccountAndTemplateDisplay: function(isVisible) {
-		var accNo = this.find('itemId','sub.form.accountnumber')[0];
-		var bankTemplate = this.find('itemId','sub.form.bankPocketTemplate')[0];
+		var accNo = this.find('itemId','subsp.form.accountnumber')[0];
+		var bankTemplate = this.find('itemId','subsp.form.bankPocketTemplate')[0];
 		if(isVisible) {
 			accNo.show();
 			//accNo.enable();
@@ -681,44 +965,44 @@ var subsAdditional = {
     items: [{
 		 xtype : 'textfield',
 		 fieldLabel: plotno,
-		 itemId : 'sub.form.plotno',
+		 itemId : 'subsp.form.plotno',
 		 anchor : '100%',
 		 name: CmFinoFIX.message.JSSubscriberMDN.Entries.PlotNo._name
 	 },{
    	 xtype : 'textfield',
 	 fieldLabel: streetaddress,
-	 itemId : 'sub.form.streetaddress',
+	 itemId : 'subsp.form.streetaddress',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.StreetAddress._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: regionname,
-	 itemId : 'sub.form.regionname',
+	 itemId : 'subsp.form.regionname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.RegionName._name
- },{
+ },/*{
 	 xtype : 'textfield',
 	 fieldLabel: country,
-	 itemId : 'sub.form.country',
+	 itemId : 'subsp.form.country',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Country._name
- },{
+ },*/{
 	 xtype : 'textfield',
 	 fieldLabel: idtype,
-	 itemId : 'sub.form.idtype',
+	 itemId : 'subsp.form.idtype',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDType._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: idnumber,
-	 itemId : 'sub.form.idnumber',
+	 itemId : 'subsp.form.idnumber',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDNumber._name
  },{
 	 xtype : 'datefield',
 	 fieldLabel: expirationtime,
 	 editable: false,
-	 itemId : 'sub.form.expirationtime',
+	 itemId : 'subsp.form.expirationtime',
 	 anchor : '100%',
 	 minValue:new Date().add('d',1),
      minText:'Must be future date',
@@ -726,18 +1010,18 @@ var subsAdditional = {
  },{
 	 xtype : 'textfield',
 	 fieldLabel: proofofaddress,
-	 itemId : 'sub.form.proofofaddress',
+	 itemId : 'subsp.form.proofofaddress',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.ProofofAddress._name
  },{
      xtype : 'textfield',
-     itemId : 'sub.form.typeofbankaccount',
+     itemId : 'subsp.form.typeofbankaccount',
      hidden:true,
      anchor : '100%',
      name: CmFinoFIX.message.JSSubscriberMDN.Entries.TypeofBankAccount._name
  },{
 	 xtype : 'textfield',
-	 itemId : 'sub.form.bankaccid',
+	 itemId : 'subsp.form.bankaccid',
 	 hidden:true,
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.PANBankAccountID._name
@@ -759,7 +1043,7 @@ var subsReference = {
 /*
  * Notification Method
  **/
-var subsNotificationMethod = {
+var subsNotificationMethodsp = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -784,7 +1068,7 @@ var subsNotificationMethod = {
         boxLabel: email,
 		listeners: {
             check: function() {
-                //this.findParentByType("subscriberform").onCheckEmail();  //commented to fix #3381
+                //this.findParentByType("SubscriberFormSPView").onCheckEmail();  //commented to fix #3381
             }
         }
     }]
@@ -794,7 +1078,7 @@ var subsNotificationMethod = {
 /*
  * Subscriber Restrictions
  **/
-var subsRestrictions = {
+var subsRestrictionssp = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -814,7 +1098,7 @@ var subsRestrictions = {
             boxLabel: securitylocked,
             listeners: {
                 check: function() {
-                    this.findParentByType("subscriberform").onSecurityLockClick();
+                    this.findParentByType("SubscriberFormSPView").onSecurityLockClick();
                 }
             }
         },
@@ -825,7 +1109,7 @@ var subsRestrictions = {
             boxLabel: absolutelocked,
             listeners: {
                 check: function() {
-                    this.findParentByType("subscriberform").onAbsoluteLockClick();
+                    this.findParentByType("SubscriberFormSPView").onAbsoluteLockClick();
                 }
             }
         },
@@ -842,7 +1126,7 @@ var subsRestrictions = {
             boxLabel: suspended,
             listeners: {
                 check: function() {
-                    this.findParentByType("subscriberform").onSuspendClick();
+                    this.findParentByType("SubscriberFormSPView").onSuspendClick();
                 }
             }
         },
@@ -853,7 +1137,7 @@ var subsRestrictions = {
             boxLabel: 'NoFundMovement',
             listeners: {
                 check: function() {
-                    this.findParentByType("subscriberform").onNoFundMovementClick();
+                    this.findParentByType("SubscriberFormSPView").onNoFundMovementClick();
                 }
             }
         }]
@@ -864,7 +1148,7 @@ var subsRestrictions = {
 /*
  * Subscriber more Details
  **/
-var subsMoreDetail = {
+var subsMoreDetailsp = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -873,7 +1157,7 @@ var subsMoreDetail = {
         xtype : 'textfield',
         anchor : '100%',
         allowBlank: true,
-        itemId : 'sub.form.securityquestion',
+        itemId : 'subsp.form.securityquestion',
         fieldLabel : secretquestion,
         name : CmFinoFIX.message.JSSubscriberMDN.Entries.SecurityQuestion._name
     },
@@ -882,7 +1166,7 @@ var subsMoreDetail = {
         fieldLabel : secretanswer,
         anchor : '100%',
         allowBlank: true,
-        itemId : 'sub.form.secretanswer',
+        itemId : 'subsp.form.secretanswer',
         blankText : _('Answer is required'),
         vtype: 'numberchar',
         name : CmFinoFIX.message.JSSubscriberMDN.Entries.AuthenticationPhrase._name
@@ -906,7 +1190,7 @@ var subsMoreDetail = {
 /*
  * subsOtherDetail
  **/
-var subsOtherDetail = {
+var subsOtherDetailsp = {
 		xtype: 'fieldset',
 	    title: 'Other Details',
 	    autoHeight: true,
@@ -915,39 +1199,137 @@ var subsOtherDetail = {
     items: [{
 	 xtype : 'textfield',
 	 fieldLabel: birthplace,
-	 itemId : 'sub.form.birthplace',
+	 itemId : 'subsp.form.birthplace',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.BirthPlace._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: nationality,
-	 itemId : 'sub.form.nationality',
+	 itemId : 'subsp.form.nationality',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Nationality._name
- },{
+ }/*,{
 	 xtype : 'textfield',
 	 fieldLabel: companyname,
-	 itemId : 'sub.form.companyname',
+	 itemId : 'subsp.form.companyname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CompanyName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: subscribermobilecompany,
-	 itemId : 'sub.form.subscribermobilecompany',
+	 itemId : 'subsp.form.subscribermobilecompany',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberMobileCompany._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: coi,
-	 itemId : 'sub.form.coi',
+	 itemId : 'subsp.form.coi',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CertofIncorporation._name
- }]
+ }*/]
 };
+
+
+var documents = {
+		xtype: 'fieldset',
+	    title: 'Dokumen Lampiran',
+	    autoHeight: true,
+	    //width: 410,
+	    columnWidth: 1,
+	    layout: 'form',
+    items: [
+           /* {
+                xtype: "displayfield",
+                fieldLabel: _('KTP Document'),
+                anchor : '150%',
+				style: {
+					color: '#0000ff' ,
+					cursor:'pointer'
+				},
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name,
+                listeners:{
+                	 afterrender: function(component) {
+                	      component.getEl().on('click', function() {
+						    mFino.widget.SubscriberFormSPView.prototype.showImage(component.getValue())
+                	      });  
+                	 }
+                }
+            },
+			{
+                xtype: "displayfield",
+                fieldLabel: _('Subscriber Form'),
+                anchor : '150%',
+				style: {
+					color: '#0000ff' ,
+					cursor:'pointer'
+				},
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name,
+                listeners:{
+                	 afterrender: function(component) {
+                	      component.getEl().on('click', function() { 
+						    mFino.widget.SubscriberFormSPView.prototype.showImage(component.getValue())
+                	      });  
+                	      
+                	 }
+                }
+            },
+            {
+                xtype: "displayfield",
+                fieldLabel: _('Supporting Document'),
+                anchor : '150%',
+				style: {
+					color: '#0000ff' ,
+					cursor:'pointer'
+				},
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name,
+                listeners:{
+                	 afterrender: function(component) {
+                	      component.getEl().on('click', function() { 
+						    mFino.widget.SubscriberFormSPView.prototype.showImage(component.getValue())
+                	      });  
+                	 }
+                }
+            }*/
+            
+/*{
+	 xtype : 'textfield',
+	 fieldLabel: birthplace,
+	 itemId : 'subsp.form.birthplace',
+	 anchor : '100%',
+	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.BirthPlace._name
+ },{
+	 xtype : 'textfield',
+	 fieldLabel: nationality,
+	 itemId : 'subsp.form.nationality',
+	 anchor : '100%',
+	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Nationality._name
+ }*//*,{
+	 xtype : 'textfield',
+	 fieldLabel: companyname,
+	 itemId : 'subsp.form.companyname',
+	 anchor : '100%',
+	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CompanyName._name
+ },{
+	 xtype : 'textfield',
+	 fieldLabel: subscribermobilecompany,
+	 itemId : 'subsp.form.subscribermobilecompany',
+	 anchor : '100%',
+	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberMobileCompany._name
+ },{
+	 xtype : 'textfield',
+	 fieldLabel: coi,
+	 itemId : 'subsp.form.coi',
+	 anchor : '100%',
+	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CertofIncorporation._name
+ }*/]
+};
+
+
+
 /*
  * subsAthorizingDetail
  **/
-var subsAthorizingDetail = {
+var subsAthorizingDetailsp = {
     title: '',
     autoHeight: true,
     width: 300,
@@ -955,19 +1337,19 @@ var subsAthorizingDetail = {
     items: [{
 	 xtype : 'textfield',
 	 fieldLabel: firstname,
-	 itemId : 'sub.form.authofirstname',
+	 itemId : 'subsp.form.authofirstname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoFirstName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: lastname,
-	 itemId : 'sub.form.autholastname',
+	 itemId : 'subsp.form.autholastname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoLastName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: idnumber,
-	 itemId : 'sub.form.authorizingpersonid',
+	 itemId : 'subsp.form.authorizingpersonid',
 //	 vtype:'number19',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthorizingPersonIDNumber._name
@@ -975,19 +1357,19 @@ var subsAthorizingDetail = {
 	 xtype : 'datefield',
 	 fieldLabel: dateofbirth,
 	 editable: false,
-	 itemId : 'sub.form.authodateofbirth',
+	 itemId : 'subsp.form.authodateofbirth',
 	 anchor : '100%',
 	 maxValue:new Date().add('d',-1),
      maxText:'Date of birth should not be future date',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoDateofBirth._name,
 	 listeners: {
          change: function(field) {
-        	 this.findParentByType('subscriberform').onAuthoDOBSelect(field);
+        	 this.findParentByType('SubscriberFormSPView').onAuthoDOBSelect(field);
         	                          }}
  },{
 	 xtype : 'textfield',
 	 fieldLabel: description,
-	 itemId : 'sub.form.authoiddescription',
+	 itemId : 'subsp.form.authoiddescription',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoIDDescription._name
  }]
@@ -999,7 +1381,7 @@ var subsAthorizingDetail = {
 /*
  * Basic Detail
  **/
-var subsBasicDetail = {
+var subsBasicDetailsp = {
     title: '',
     autoHeight: true,
     width: 300,
@@ -1009,25 +1391,25 @@ var subsBasicDetail = {
                          anchor : '100%',
                         allowBlank: false,
                         blankText : _('Status is required'),
-                        itemId : 'sub.form.status',
+                        itemId : 'subsp.form.status',
                         //emptyText:'Initialized',
                         emptyText : _('<select one..>'),
                         fieldLabel :status,
                         addEmpty: false,
                         enumId : CmFinoFIX.TagID.SubscriberStatus,
                         name : CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name,
-                        value : CmFinoFIX.MDNStatus.Initialized,
-                        listeners : {
+                        value : CmFinoFIX.MDNStatus.Initialized
+/*                        listeners : {
                             select :  function(field){
                                 var status= field.getValue();
-                                this.findParentByType('subscriberform').onStatusDropdown(status);
+                                this.findParentByType('SubscriberFormSPView').onStatusDropdown(status);
                             }
-                        }
+                        }*/
                     },{
     xtype : "enumdropdown",
      anchor : '100%',
     fieldLabel :language,
-    itemId : 'sub.form.language',
+    itemId : 'subsp.form.language',
     emptyText : _('<select one..>'),
     allowBlank: false,
     blankText : _('Language is required'),
@@ -1039,7 +1421,7 @@ var subsBasicDetail = {
     xtype : "enumdropdown",
      anchor : '100%',
     fieldLabel :currency,
-    itemId : 'sub.form.currency',
+    itemId : 'subsp.form.currency',
     emptyText : _('<select one..>'),
     allowBlank: false,
     blankText : _('Currency is required'),
@@ -1053,14 +1435,14 @@ var subsBasicDetail = {
     fieldLabel :timezone,
     emptyText : _('<select one..>'),
     allowBlank: false,
-    itemId : 'sub.form.timezone',
+    itemId : 'subsp.form.timezone',
     enumId: CmFinoFIX.TagID.Timezone,
     name : CmFinoFIX.message.JSSubscriberMDN.Entries.Timezone._name
 },
-{
+/*{
     xtype : 'textfield',
     fieldLabel: _("Next Of Kin"),
-    itemId : 'sub.form.kinname',
+    itemId : 'subsp.form.kinname',
     allowBlank: true,
     anchor : '100%',
     name: CmFinoFIX.message.JSSubscriberMDN.Entries.KinName._name
@@ -1068,7 +1450,7 @@ var subsBasicDetail = {
 {
     xtype : 'textfield',
     fieldLabel: 'Next Of Kin No',
-    itemId : 'sub.form.kinmdn',
+    itemId : 'subsp.form.kinmdn',
     allowBlank: true,
     anchor : '100%',
     vtype: 'smarttelcophoneAdd',
@@ -1077,14 +1459,14 @@ var subsBasicDetail = {
         change: function(field) {
         						}
     			}
-},
-{
+},*/
+/*{
 	xtype : "remotedropdown",
 	anchor : '100%',
 	allowBlank: false,
 	addEmpty: false,
-	itemId : 'sub.form.group',
-	id : 'sub.form.item.group',
+	itemId : 'subsp.form.group',
+	id : 'subsp.form.item.group',
 	fieldLabel :"Group",
 	pageSize : 5,
 	emptyText : _('<select one..>'),
@@ -1095,29 +1477,37 @@ var subsBasicDetail = {
 	params: {SystemGroupSearch : "true"},
 	listeners: {
 		select : function() {
-			var bankPocketField = this.findParentByType('subscriberform').find('itemId','sub.form.bankPocketTemplate')[0];
+			var bankPocketField = this.findParentByType('SubscriberFormSPView').find('itemId','subsp.form.bankPocketTemplate')[0];
 			if(!bankPocketField.disabled) {
-				this.findParentByType('subscriberform').loadBankPocketTemplateCombo();
+				this.findParentByType('SubscriberFormSPView').loadBankPocketTemplateCombo();
 			}			
 		}
 	}
+},*/
+{
+    xtype : 'textfield',
+    fieldLabel: _("Group"),
+    itemId : 'subsp.form.group',
+    anchor : '100%',
+    disabled: false,
+    name: CmFinoFIX.message.JSSubscriberMDN.Entries.GroupName._name           
 },
 {
     xtype : 'textfield',
     fieldLabel: _("Account No:"),
-    itemId : 'sub.form.accountnumber',
+    itemId : 'subsp.form.accountnumber',
     vtype:'tendigitnumber',
     labelSeparator : '',
     anchor : '100%',
     disabled: false,
     name: CmFinoFIX.message.JSSubscriberMDN.Entries.AccountNumber._name            
 },
-{
+/*{
 	xtype : "remotedropdown",
 	anchor : '100%',	
 	addEmpty: false,
-	itemId : 'sub.form.bankPocketTemplate',
-	id : 'sub.form.item.bankPocketTemplate',
+	itemId : 'subsp.form.bankPocketTemplate',
+	id : 'subsp.form.item.bankPocketTemplate',
 	fieldLabel :"Bank Pocket Template",
 	emptyText : _('<select one..>'),
 	RPCObject : CmFinoFIX.message.JSPocketTemplateConfig,
@@ -1127,17 +1517,25 @@ var subsBasicDetail = {
 },
 {
     xtype : 'textfield',
+    fieldLabel: _("Bank Pocket Template"),
+    itemId : 'subsp.form.bankPocketTemplate',
+    anchor : '100%',
+    disabled: false,
+    name: CmFinoFIX.message.JSSubscriberMDN.Entries.PocketTemplateConfigID._name            
+},
+{
+    xtype : 'textfield',
     fieldLabel: _("Other MDN:"),
-    itemId : 'sub.form.otherMDN',
+    itemId : 'subsp.form.otherMDN',
     vtype:'smarttelcophoneAdd',
     labelSeparator : '',
     anchor : '100%',
     disabled: false,
     name: CmFinoFIX.message.JSSubscriberMDN.Entries.OtherMDN._name            
-}
+}*/
 ]
 };
-var subsotdetail = {
+var subsotdetailsp = {
 	    title: _(''),
 	    autoHeight: true,
 	    width: 600,
@@ -1159,20 +1557,20 @@ var subsotdetail = {
 	        autoHeight: true,
 		    layout: 'form',
 		    bodyStyle: 'padding:0 10px 0;',
-	    items: [{
+	    items: [/*{
 	   	 xtype : 'textfield',
 		 fieldLabel: creditcheck,
-		 itemId : 'sub.form.creditcheck',
+		 itemId : 'subsp.form.creditcheck',
 		 anchor : '100%',
 		 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CreditCheck._name
-	 },{
+	 },*//*{
 	  	 xtype : 'textfield',
-		 itemId : 'sub.form.streetname',
+		 itemId : 'subsp.form.streetname',
 		 hidden:true,
 		 anchor : '100%',
 		 name: CmFinoFIX.message.JSSubscriberMDN.Entries.StreetName._name
-	},subsOtherDetail]
+	},*/subsOtherDetailsp]
 	    }]
 	    }]
 	};
-Ext.reg("subscriberform", mFino.widget.SubscriberForm);
+Ext.reg("SubscriberFormSPView", mFino.widget.SubscriberFormSPView);
