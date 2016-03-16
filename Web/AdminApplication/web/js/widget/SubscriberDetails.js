@@ -389,6 +389,8 @@ Ext.extend(mFino.widget.SubscriberDetails , Ext.form.FormPanel, {
 		if(record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name)!=null){
 
 			var docFullPath=record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name)
+			docFullPath=docFullPath.replace("\\","/");
+			docFullPath=docFullPath.replace("\\","/");
 			if(mFino.widget.SubscriberDetails.path == null || mFino.widget.SubscriberDetails.path == '' || mFino.widget.SubscriberDetails.path == undefined){
 					mFino.widget.SubscriberDetails.path=docFullPath.substring(0,docFullPath.lastIndexOf('/')+1);
 			}
@@ -402,6 +404,8 @@ Ext.extend(mFino.widget.SubscriberDetails , Ext.form.FormPanel, {
 			if(record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name)!=null){
 
 			var docFullPath=record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberFormPath._name)
+			docFullPath=docFullPath.replace("\\","/");
+			docFullPath=docFullPath.replace("\\","/");
 			if(mFino.widget.SubscriberDetails.path == null || mFino.widget.SubscriberDetails.path == '' || mFino.widget.SubscriberDetails.path == undefined){
 					mFino.widget.SubscriberDetails.path=docFullPath.substring(0,docFullPath.lastIndexOf('/')+1);
 			}
@@ -414,8 +418,12 @@ Ext.extend(mFino.widget.SubscriberDetails , Ext.form.FormPanel, {
 
 		
 			if(record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name)!=null){
-
+				
+		
 			var docFullPath=record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.SupportingDocumentPath._name)
+			
+					docFullPath=docFullPath.replace("\\","/");
+			docFullPath=docFullPath.replace("\\","/");
 			if(mFino.widget.SubscriberDetails.path == null || mFino.widget.SubscriberDetails.path == '' || mFino.widget.SubscriberDetails.path == undefined){
 					mFino.widget.SubscriberDetails.path=docFullPath.substring(0,docFullPath.lastIndexOf('/')+1);
 			}

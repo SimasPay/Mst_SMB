@@ -784,6 +784,8 @@ Ext.extend(mFino.widget.SubscriberFormSPView, Ext.form.FormPanel, {
         this.getForm().reset();
         this.record = record;
         this.unregisterRecord = null;
+        
+
         this.getForm().loadRecord(record);
 
         var resValue = record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.MDNRestrictions._name);
@@ -906,7 +908,7 @@ Ext.extend(mFino.widget.SubscriberFormSPView, Ext.form.FormPanel, {
 	    }     
 	},
     showImage:function(imageName){
-    	var imagePath=mFino.widget.SubscriberFormSPView.path+imageName
+    	var imagePath=mFino.widget.SubscriberDetails.path+imageName
 		if(imagePath.indexOf('.')!=-1){
 			var window=new Ext.Window({
 				layout:'anchor',
