@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.IntegrationPartnerMapping;
-import com.mfino.domain.MFSBiller;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -22,14 +20,17 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.IntegrationPartnerMappingService;
 import com.mfino.service.MFAService;
 import com.mfino.service.SystemParametersService;
-import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.agent.AgentTransferConfirmHandler;
 import com.mfino.transactionapi.handlers.agent.AgentTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.agent.ProductReferralHandler;
+import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
+import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
+import com.mfino.transactionapi.handlers.payment.QRPaymentConfirmHandler;
+import com.mfino.transactionapi.handlers.payment.QRPaymentInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.agent.AgentBillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.agent.AgentBillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberKtpValidationHandler;
@@ -133,6 +134,22 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	@Qualifier("AgentTransferConfirmHandlerImpl")
 	private AgentTransferConfirmHandler agentTransferConfirmHandler;
 	
+	@Autowired
+	@Qualifier("QRPaymentInquiryHandlerImpl")
+	private QRPaymentInquiryHandler qrPaymentInquiryHandler;
+
+	@Autowired
+	@Qualifier("QRPaymentConfirmHandlerImpl")
+	private QRPaymentConfirmHandler qrPaymentConfirmHandler;
+	
+	@Autowired
+	@Qualifier("InterBankTransferInquiryHandlerImpl")
+	private InterBankTransferInquiryHandler interBankTransferInquiryHandler;
+	
+	@Autowired
+	@Qualifier("InterBankTransferHandlerImpl")
+	private InterBankTransferHandler interBankTransferHandler;
+	
  	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
 
@@ -212,82 +229,69 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 	
 			transactionRequestValidationService.validateUnregisteredCashOutConfirmDetails(transactionDetails);
 			xmlResult = (XMLResult) unregisteredSubscriberCashOutConfirmHandler.handle(transactionDetails);
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_AGENT_BILL_PAY_INQUIRY.equalsIgnoreCase(transactionName)) {
-			log.info("AgentAPIService :: handleRequest() TRANSACTION_AGENT_BILL_PAY_INQUIRY");
-			transactionRequestValidationService.validateAgentBillPayInquiryDetails(transactionDetails);
+		
+		} else if (ServiceAndTransactionConstants.TRANSACTION_BILL_PAY_INQUIRY.equalsIgnoreCase(transactionName)) {
 			String billerCode = systemParametersService.getString(SystemParameterKeys.STARTIMES_BILLER_CODE);
+			transactionRequestValidationService.validateBillPayInquiryDetails(transactionDetails);			
 			if(billerCode!=null && billerCode.equals(transactionDetails.getBillerCode())){
+				
 				if (StringUtils.isBlank(sourceMessage)) {
 					sourceMessage = ServiceAndTransactionConstants.MESSAGE_STARTIMES_PAYMENT;
 				}
+				
 				transactionDetails.setSourceMessage(sourceMessage);
 				transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_STARTIMES_PAYMENT);
 				transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_STARTIMES_PAYMENT);
-			}else{
+				
+			} else{
+
 				if (StringUtils.isBlank(sourceMessage)) {
-					transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_AGENT_BILL_PAY);
+					
+					sourceMessage = ServiceAndTransactionConstants.MESSAGE_BILL_PAY;
 				}
-				transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY);
+				
+				transactionDetails.setSourceMessage(sourceMessage);
 				transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY);
 			}
-			xmlResult = (XMLResult) agentBillPayInquiryHandler.handle(transactionDetails);
-
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_AGENT_BILL_PAY.equalsIgnoreCase(transactionName)) {
-			log.info("AgentAPIService :: handleRequest() TRANSACTION_AGENT_BILL_PAY");
-
-			transactionRequestValidationService.validateBillPayConfirmDetails(transactionDetails);
-			xmlResult = (XMLResult) agentBillPayConfirmHandler.handle(transactionDetails);
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
-
-			transactionRequestValidationService.validateAirtimePurchaseInquiryDetails(transactionDetails);
-			String IN_ID = SystemParameterKeys.IN_PARTNER_SUFFIX + transactionDetails.getCompanyID();
 			
-			IntegrationPartnerMapping partnerMap = integrationPartnerMappingService.getByInstitutionID(IN_ID);
-			if(partnerMap==null){
-				throw new InvalidDataException("Invalid Company ID", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-						ApiConstants.COMPANY_ID);	
-			}
-			MFSBiller biller = partnerMap.getMFSBiller();
-			String billerCode = biller.getMFSBillerCode();
-			transactionDetails.setBillerCode(billerCode);
-			
-			if (StringUtils.isBlank(sourceMessage)) {
-				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE);
-			}
-			log.info("AgentAPIService :: handleRequest() TRANSACTION_AIRTIME_PURCHASE_INQUIRY billerCode=" + billerCode);
-			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);
-			xmlResult = (XMLResult) agentBillPayInquiryHandler.handle(transactionDetails);
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName)) {
+			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
 		
-			transactionRequestValidationService.validateAirtimePurchaseDetails(transactionDetails);
-			String IN_ID = SystemParameterKeys.IN_PARTNER_SUFFIX + transactionDetails.getCompanyID();
+		} else if(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(transactionName)) {
 			
-			log.info("AgentAPIService handleRequest() TRANSACTION_AIRTIME_PURCHASE partnerCode="+IN_ID);
+			transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_BILL_PAY);
+			transactionRequestValidationService.validateBillPayConfirmDetails(transactionDetails);
+			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
+
+		} else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
 			
-			IntegrationPartnerMapping partnerMap = integrationPartnerMappingService.getByInstitutionID(IN_ID);
-			if(partnerMap==null){
-				throw new InvalidDataException("Invalid Company ID", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-						ApiConstants.COMPANY_ID);	
-			}
-			MFSBiller biller = partnerMap.getMFSBiller();
-			String billerCode = biller.getMFSBillerCode();
-			
+			transactionRequestValidationService.validateAirtimePurchaseInquiryDetails(transactionDetails);
+
 			if (StringUtils.isBlank(sourceMessage)) {
 				sourceMessage = ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE;
 			}
-
-			log.info("AgentAPIService :: handleRequest() TRANSACTION_AIRTIME_PURCHASE IN_Code=" + IN_ID);
-
-			transactionDetails.setBillerCode(billerCode);
+			
 			transactionDetails.setSourceMessage(sourceMessage);
+			transactionDetails.setOnBehalfOfMDN(transactionDetails.getBillNum());//changes done as per ticket NUM 3396
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);
+			
+			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
+			
+		} else if(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName)) {
+			
+			transactionRequestValidationService.validateAirtimePurchaseDetails(transactionDetails);
 
-			xmlResult = (XMLResult) agentBillPayConfirmHandler.handle(transactionDetails);
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
+			if (StringUtils.isBlank(sourceMessage)) {
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE;
+			}
+			
+			transactionDetails.setSourceMessage(sourceMessage);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_PURCHASE);
+			billPayConfirmHandler.setServiceName(ServiceAndTransactionConstants.SERVICE_BUY);
+			billPayConfirmHandler.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);
+
+			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE_INQUIRY.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateAirtimePinPurchaseInquiryDetails(transactionDetails);
 			
 
@@ -303,17 +307,48 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE);
 
 			xmlResult = (XMLResult) billPayInquiryHandler.handle(transactionDetails);
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE.equalsIgnoreCase(transactionName)) {
+		} else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateInterBankTransferInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER;
+				transactionDetails.setSourceMessage(sourceMessage);
+			}
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
+			xmlResult = (XMLResult) interBankTransferInquiryHandler.handle(transactionDetails);
+		
+		} else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateInterBankTransferConfirmDetails(transactionDetails);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
+			xmlResult = (XMLResult) interBankTransferHandler.handle(transactionDetails);			
+		
+		} else if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PIN_PURCHASE.equalsIgnoreCase(transactionName)) {
+			
 			transactionRequestValidationService.validateAirtimePinPurchaseConfirmDetails(transactionDetails);
 			
-
 			String billerCode = systemParametersService.getString(SystemParameterKeys.AIRTIME_PIN_PURCHASE_BILLER_CODE);
 			transactionDetails.setBillerCode(billerCode);
 			xmlResult = (XMLResult) billPayConfirmHandler.handle(transactionDetails);
-		}
 		
-		else if (ServiceAndTransactionConstants.TRANSACTION_FRSC_PAYMENT_INQUIRY.equalsIgnoreCase(transactionName)) {
+		} else if (ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT_INQUIRY.equalsIgnoreCase(transactionName)) {
+			
+			transactionRequestValidationService.validateQrPaymentInquiryDetails(transactionDetails);
+			String flashizCode = systemParametersService.getString(SystemParameterKeys.FLASHIZ_BILLER_CODE);
+			sourceMessage = ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT;
+			transactionDetails.setBillerCode(flashizCode);
+			transactionDetails.setSourceMessage(sourceMessage);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT);
+			xmlResult = (XMLResult) qrPaymentInquiryHandler.handle(transactionDetails);
+			
+		}else if (ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT.equalsIgnoreCase(transactionName)) {
+			
+			transactionRequestValidationService.validateQrPaymentConfirmDetails(transactionDetails);
+			String flashizCode = systemParametersService.getString(SystemParameterKeys.FLASHIZ_BILLER_CODE);
+			transactionDetails.setBillerCode(flashizCode);
+			xmlResult = (XMLResult) qrPaymentConfirmHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_FRSC_PAYMENT_INQUIRY.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateFRSCPaymentInquiryDetails(transactionDetails);
 
 			if (StringUtils.isBlank(sourceMessage)) {

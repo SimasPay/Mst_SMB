@@ -343,29 +343,49 @@
 			<a href="jsp/s_agent_unregisteredsubscriber_cashoutconfirm.jsp"> Unregistered cashout confirm</a>
 		</td>
 		</tr>
-			<tr>
+			<tr>-->
 		<td>
-			<a href="jsp/s_agent_dstv_inquiry.jsp"> agent bill Pay inquiry</a>
+			<a href="jsp/s_agent_dstv_inquiry.jsp"> Agent Bill Pay Inquiry</a>
 		</td>
 		</tr>
 		
 			<tr>
 		<td>
-			<a href="jsp/s_agent_dstv_confirm.jsp"> agent bill Pay Confirm</a>
+			<a href="jsp/s_agent_dstv_confirm.jsp"> Agent Bill Pay Confirm</a>
 		</td>
 		</tr>
 				<tr>
 		<td>
-			<a href="jsp/s_agent_airtime_purchase_inquiry.jsp"> agent airtime inquiry</a>
+			<a href="jsp/s_agent_airtime_purchase_inquiry.jsp"> Agent Airtime inquiry</a>
 		</td>
 		</tr>
 		
 			<tr>
 		<td>
-			<a href="jsp/s_agent_airtime_purchase_confirm.jsp"> agent airtime Confirm</a>
+			<a href="jsp/s_agent_airtime_purchase_confirm.jsp"> Agent Airtime Confirm</a>
 		</td>
 		</tr>
 		<tr>
+		<td>
+			<a href="jsp/s_agent_qr_payment_inquiry.jsp">QR Payment Inquiry</a>
+		</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="jsp/s_agent_qr_payment_confirm.jsp">QR Payment Confirm</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="jsp/s_agent_interbank_transfer_inquiry.jsp">Inter Bank Transfer Inquiry</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="jsp/s_agent_interbank_transfer.jsp"> Inter Bank Transfer Confirmation</a>
+			</td>
+		</tr>
+		<!-- <tr>
 		<td>
 		<a href="jsp/s_agent_frsc_payment_inquiry.jsp"> Agent FRSC Payment inquiry</a>
 		</td>
@@ -460,7 +480,6 @@
 			<a href="jsp/s_bank_txnhistory.jsp">Transaction History</a>
 		</td>
 	</tr>
-	
     <tr>
 		<td>
 			<a href="jsp/s_interbank_transfer_inquiry.jsp">Inter Bank Transfer Inquiry</a>
@@ -472,7 +491,7 @@
 			<a href="jsp/s_interbank_transfer.jsp"> Inter Bank Transfer Confirmation</a>
 		</td>
 	</tr>
-		<tr>
+	<tr>
 		<td>
 			<a href="jsp/s_bill_pay_inquiry.jsp"> Bill Payment Inquiry</a>
 		</td>

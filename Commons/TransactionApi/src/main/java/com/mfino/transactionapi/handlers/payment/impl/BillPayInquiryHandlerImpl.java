@@ -186,7 +186,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		result.setTransactionID(transactionsLog.getID());
 		result.setSourceMessage(billPaymentInquiry);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
-
+		
 		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(billPaymentInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -194,6 +194,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			result.setNotificationCode(validationResult);
 			return result;
 		}
+		
+		result.setDestinationName(sourceMDN.getSubscriber().getFirstName());
 
 		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(billPaymentInquiry.getBillerCode());
 		if (mfsBiller == null) {
@@ -464,6 +466,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
 		result.setNominalAmount(billPaymentInquiry.getNominalAmount());
+		result.setMfaMode("None");
 
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
