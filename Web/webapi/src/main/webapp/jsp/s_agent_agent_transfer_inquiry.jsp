@@ -4,14 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Agent to Agent Transfer Inquiry</title>
+<title>Transfer Inquiry</title>
 </head>
 <body>
 <center>
-<h1>Agent to Agent Transfer Inquiry</h1>
+<h1>Transfer Inquiry</h1>
 <form action="../sdynamic" method="POST">
-<input type="hidden" value="Wallet" name="service" /> 
-<input type="hidden" value="AgentToAgentTransferInquiry" name="txnName" />
+<input type="hidden" value="TransferInquiry" name="txnName" />
+<input type="hidden" value="AgentServices" name="service" />
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -30,8 +30,14 @@
 		<td><input type="text" name="sourcePIN" value="" /></td>
 	</tr>
 	<tr>
-		<td>AgentCode</td>
-		<td><input type="text" name="agentCode" value="" /></td>
+		<td>Enter either of the below fields</td>
+	</tr>
+	<tr>
+		<td>Destination MDN</td>
+		<td><input type="text" name="destMDN" value="" /></td>
+	
+		<td>Destination BankAccount No </td>
+		<td><input type="text" name="destBankAccount" value="" /></td>
 	</tr>
 	<tr>
 		<td>Amount</td>
@@ -46,10 +52,25 @@
 		<td><input type="hidden" name="bankID" value="" /></td>
 	</tr>
 	<tr>
-		<td>PocketCode</td>
-		<td><input type="text" name="sourcePocketCode" />(Emoney-1 ,Bank-2)</td>
+		<td>SourcePocketCode</td>
+		<td>
+		<select name="sourcePocketCode">
+	  				<option value="1">E-Money</option>
+	  				<option value="2">Bank</option>
+	  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
-	
+	<tr>
+		<td>DestinationPocketCode</td>
+		<td>
+			<select name="destPocketCode">
+  				<option value="1">E-Money</option>
+  				<option value="2">Bank</option>
+  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

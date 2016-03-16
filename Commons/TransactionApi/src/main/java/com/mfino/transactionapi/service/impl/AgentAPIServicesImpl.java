@@ -348,6 +348,18 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			transactionDetails.setBillerCode(flashizCode);
 			xmlResult = (XMLResult) qrPaymentConfirmHandler.handle(transactionDetails);
 			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName)) {
+
+			transactionRequestValidationService.validateTransferInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
+			}
+			xmlResult = (XMLResult) transferInquiryHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER.equalsIgnoreCase(transactionName)) {
+
+			transactionRequestValidationService.validateTransferConfirmDetails(transactionDetails);
+			xmlResult = (XMLResult) moneyTransferHandler.handle(transactionDetails);
 		} else if (ServiceAndTransactionConstants.TRANSACTION_FRSC_PAYMENT_INQUIRY.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateFRSCPaymentInquiryDetails(transactionDetails);
 
