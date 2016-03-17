@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mfino.domain.PendingCommodityTransfer;
+import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author srinivaas
@@ -25,7 +26,9 @@ public class PendingCommodityTransfer21CtClearanceJob {
 		List<PendingCommodityTransfer> lst = pct21ctClearance.getAll21NonPendingTransfers();
 		for (PendingCommodityTransfer pct: lst) {
 			try{
-				pct21ctClearance.calculateFinalState(pct);
+				if(pct.getSourcePocketType() == CmFinoFIX.PocketType_BankAccount && pct.getDestPocketType() == CmFinoFIX.PocketType_BankAccount){
+					pct21ctClearance.calculateFinalState(pct);
+				}
 			}
 			catch (Exception e) {
 				log.error("Exception in movePendingToComplete of PCT ID: " + pct.getID(),e);
