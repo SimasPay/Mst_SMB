@@ -181,6 +181,11 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			if (restrictions != null && restrictions.trim().length() > 0) {
 				query.setRestrictions(Integer.parseInt(restrictions));
 			}           
+			
+			
+			query.setNotequalsRole(CmFinoFIX.Role_Business_Partner);	//Added restriction for not showing "Agent or Business_partnenr" type users. 
+			
+			
 			log.info("User details queried by:"+getLoggedUserNameWithIP());
 			List<User> results = userDAO.get(query);
 
