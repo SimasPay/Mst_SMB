@@ -130,6 +130,15 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 
 					query.setTransactionTypeID(realMsg.getTransactionTypeID());
 				}
+				
+				if(realMsg.getServiceID() != null){
+
+					query.setServiceID(realMsg.getServiceID());
+				}
+				
+				
+			
+				
 				if(StringUtils.isNotBlank(realMsg.getSourcePartnerCode())){
 					Partner sourcePartner = partnerDao.getPartnerByPartnerCode(realMsg.getSourcePartnerCode());
 					if(sourcePartner==null){
@@ -349,6 +358,12 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			entry.setTransactionTypeID(sctl.getTransactionTypeID());
 			transactionType = ttDao.getById(sctl.getTransactionTypeID());
 			entry.setTransactionName(transactionType.getDisplayName());
+			
+			/*if(sctl.getServiceTypeID()!=null){
+				entry.setServiceTypeID(sctl.getServiceTypeID());
+				service = serviceDao.getById(sctl.getServiceTypeID());
+				entry.setServiceName(service.getDisplayName());	}
+			*/
 
 			if("InterBankTransfer".equals(transactionType.getTransactionName()))
 			{
@@ -405,6 +420,10 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		if(sctl.getTransactionID()!=null){
 			entry.setTransactionID(sctl.getTransactionID());
 		}
+		if(sctl.getServiceID()!=null){
+			entry.setServiceID(sctl.getServiceID());
+		}
+		
 		if(sctl.getTransactionRuleID()!=null){
 			entry.setTransactionRuleID(sctl.getTransactionRuleID());
 		}

@@ -382,7 +382,7 @@ mFino.page.chargeTransactions = function(config){
         searchBox.searchHandler();
     });
    
-    transactionGrid.on("download", function() {
+    transactionGrid.on("download", function() {    	
         var queryString;
         var values = searchBox.getForm().getValues();
         var idSearch = values[CmFinoFIX.message.JSServiceChargeTransactions.IDSearch._name];
@@ -398,8 +398,8 @@ mFino.page.chargeTransactions = function(config){
         var endDateSearch = Ext.getCmp('sctldaterange').endDateField.getValue();
         var rrn = values[CmFinoFIX.message.JSServiceChargeTransactions.BankRetrievalReferenceNumber._name];
         var transactionType = values[CmFinoFIX.message.JSServiceChargeTransactions.TransactionTypeID._name];
-        var billerCode = values[CmFinoFIX.message.JSServiceChargeTransactions.MFSBillerCode._name];
-        
+        var billerCode = values[CmFinoFIX.message.JSServiceChargeTransactions.MFSBillerCode._name];       
+        var serviceID=values[CmFinoFIX.message.JSServiceChargeTransactions.ServiceID._name];      
         queryString = "dType=sctlLogs";       
         if(idSearch){
             queryString += "&"+CmFinoFIX.message.JSServiceChargeTransactions.IDSearch._name+"="+idSearch;
@@ -443,6 +443,11 @@ mFino.page.chargeTransactions = function(config){
         if(billerCode){
             queryString += "&"+CmFinoFIX.message.JSServiceChargeTransactions.MFSBillerCode._name+"="+billerCode;
         }
+        
+        if(serviceID){
+            queryString += "&"+CmFinoFIX.message.JSServiceChargeTransactions.ServiceID._name+"="+serviceID;
+        }
+        
         var URL = "download.htm?" + queryString;
         window.open(URL,'mywindow','width=400,height=200');
     });
@@ -520,6 +525,7 @@ mFino.page.chargeTransactions = function(config){
 		}
         
     });
+       
     
     var panel = new Ext.Panel({
         layout: "border",

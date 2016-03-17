@@ -244,6 +244,13 @@ public class ServiceChargeTransactionExcelView extends AbstractExcelView {
 		if((null != status) && !("".equals(status))){
 			jsServicechargeTransactions.setStatus(Integer.valueOf(status));
 		}
+		
+		String serviceID = request.getParameter(CmFinoFIX.CMJSServiceChargeTransactions.FieldName_ServiceID);
+		if((null != serviceID) && !("".equals(serviceID))){
+			jsServicechargeTransactions.setServiceID(Integer.valueOf(serviceID).longValue());
+		}
+		
+		
        
         String startDateSearch = request.getParameter(CmFinoFIX.CMJSServiceChargeTransactions.FieldName_StartDateSearch);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss:SS");

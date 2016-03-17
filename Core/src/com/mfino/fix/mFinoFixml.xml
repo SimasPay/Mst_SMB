@@ -3513,7 +3513,8 @@
 			<field name="TransactionTypeID" required="N" />
 			<field name="ParentSCTLID" required="N"/>   
 			<field name="Info1" required="N"/>
-			<field name="AdjustmentStatus" required="N"/>			
+			<field name="AdjustmentStatus" required="N"/>
+			<field name="ServiceID" required="N"/>						
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="TransactionID" required="N"/> 
 				<field name="RecordID" id="ID" required="N" />  	
@@ -26845,6 +26846,7 @@ ERROR:Mismatch of  mdn type and app type
    	<field number="8435" name="IsIdLifetimeText" type="STRING"/>
    	<field number="8436" name="DateOfBirthText" type="STRING"/>
    	<field number="8437" name="IDValidUntilText" type="STRING"/>
+	<field number="8438" name="Service"  type="STRING" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

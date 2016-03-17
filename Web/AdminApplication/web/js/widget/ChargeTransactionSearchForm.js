@@ -48,6 +48,31 @@ mFino.widget.ChargeTransactionSearchForm = function (config) {
                     specialkey: this.enterKeyHandler.createDelegate(this)
                 }
             },
+                        
+            {
+                xtype:'displayfield',
+                labelSeparator:''
+            },
+                       	    
+            { xtype : "remotedropdown", 
+            fieldLabel: _('Service Name'), 
+            labelSeparator : '', 
+            //itemId: "transactiontype", 	                
+            anchor : '98%', 
+            pageSize: 10,
+            params: {start: 0, limit: 10},
+            emptyText : _('<select one..>'),
+            store: new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSService), 
+            displayField: CmFinoFIX.message.JSService.Entries.ServiceName._name, 
+            valueField : CmFinoFIX.message.JSService.Entries.ID._name,            
+            name: CmFinoFIX.message.JSServiceChargeTransactions.ServiceID._name, 
+            hiddenName : CmFinoFIX.message.JSServiceChargeTransactions.ServiceID._name, 
+            listeners   : { 
+                specialkey: this.enterKeyHandler.createDelegate(this) 
+            }   
+	            
+        },    
+	               
             { 
 	                xtype:'displayfield', 
 	                labelSeparator:'' 
@@ -74,20 +99,6 @@ mFino.widget.ChargeTransactionSearchForm = function (config) {
                 xtype:'displayfield',
                 labelSeparator:''
             },
-           /* {
-                xtype : 'hidden',
-                allowDecimals:false,
-                fieldLabel: _('Reference ID'),
-                labelSeparator : '',
-                itemId:"transferid",
-                maxLength : 16,
-                minValue:0,
-                anchor: '98%',
-                name: CmFinoFIX.message.JSServiceChargeTransactions.TransferID._name,
-                listeners   : {
-                    specialkey: this.enterKeyHandler.createDelegate(this)
-                }
-            },*/
             {
                 xtype:'displayfield',
                 labelSeparator:''
@@ -346,8 +357,12 @@ Ext.extend(mFino.widget.ChargeTransactionSearchForm, Ext.FormPanel, {
             }
             if(values.BankRetrievalReferenceNumber === "undefined"||values.BankRetrievalReferenceNumber===""){
                 values.BankRetrievalReferenceNumber =null;
-            }
-             this.fireEvent("search", values);
+            }          
+            if(values.ServiceID === "undefined"||values.ServiceID===""){
+             values.ServiceID =null;
+          }
+           
+         this.fireEvent("search", values);
             
         }
         else{
