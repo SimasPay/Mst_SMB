@@ -365,7 +365,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 realMsg.setPartnerCode(agentCode);
                 realMsg.setTradeName(realMsg.getUsername());
                 realMsg.setAuthorizedEmail(realMsg.getEMail());
-                realMsg.setLanguage(CmFinoFIX.Language_English);
+                //realMsg.setLanguage(CmFinoFIX.Language_English);
+                realMsg.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
                 realMsg.setCurrency(CmFinoFIX.Currency_IDR);
                 realMsg.setTimezone(ConfigurationUtil.getLocalTimeZone().getDisplayName());
                 realMsg.setGroupID("1");
