@@ -336,6 +336,13 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	public static final String PARAMETER_DISCOUNT_TYPE = "discountType";
 	
 	public static final String PARAMETER_NOOF_COUPONS = "numberOfCoupons";
+	
+	public static final String PARAMETER_TIPPING_AMOUNT = "tippingAmount";
+	
+	public static final String PARAMETER_POINTS_REDEEMED = "pointsRedeemed";
+	
+	public static final String PARAMETER_AMOUNT_REDEEMED = "amountRedeemed";	
+	
 
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;

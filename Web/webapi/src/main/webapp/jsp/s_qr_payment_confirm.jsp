@@ -86,6 +86,18 @@
 		<td><input type="text" name="numberOfCoupons" />
 	</tr>
 	<tr>
+		<td>Points Redeemed</td>
+		<td><input type="text" name="pointsRedeemed" />
+	</tr>
+	<tr>
+		<td>Amount Redeemed</td>
+		<td><input type="text" name="amountRedeemed" />
+	</tr>
+	<tr>
+		<td>Tipping Amount</td>
+		<td><input type="text" name="tippingAmount" />
+	</tr>	
+	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>
 </table>

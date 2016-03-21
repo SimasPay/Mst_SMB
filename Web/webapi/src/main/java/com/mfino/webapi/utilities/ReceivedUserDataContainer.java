@@ -145,6 +145,9 @@ public class ReceivedUserDataContainer {
 	private String loyalityName;
 	private String discountType;
 	private String numberOfCoupons;
+	private String tippingAmount;
+	private String pointsRedeemed;
+	private String amountRedeemed;
 	
 	
 	public String getAppVersion() {
@@ -1299,6 +1302,30 @@ public class ReceivedUserDataContainer {
 
 	public void setNumberOfCoupons(String numberOfCoupons) {
 		this.numberOfCoupons = numberOfCoupons;
+	}
+
+	public String getTippingAmount() {
+		return tippingAmount;
+	}
+
+	public void setTippingAmount(String tippingAmount) {
+		this.tippingAmount = tippingAmount;
+	}
+
+	public String getPointsRedeemed() {
+		return pointsRedeemed;
+	}
+
+	public void setPointsRedeemed(String pointsRedeemed) {
+		this.pointsRedeemed = pointsRedeemed;
+	}
+
+	public String getAmountRedeemed() {
+		return amountRedeemed;
+	}
+
+	public void setAmountRedeemed(String amountRedeemed) {
+		this.amountRedeemed = amountRedeemed;
 	}
 
 	

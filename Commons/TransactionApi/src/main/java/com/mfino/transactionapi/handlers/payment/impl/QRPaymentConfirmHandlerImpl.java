@@ -3,12 +3,10 @@
  */
 package com.mfino.transactionapi.handlers.payment.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
@@ -30,7 +27,6 @@ import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBillPay;
 import com.mfino.fix.CmFinoFIX.CMQRPayment;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
@@ -46,7 +42,6 @@ import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.QRPaymentConfirmHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.MoneyTransferXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -139,7 +134,9 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		 qrPayment.setDiscountType(transactionDetails.getDiscountType());
 		 qrPayment.setLoyalityName(transactionDetails.getLoyalityName());
 		 qrPayment.setNumberOfCoupons(transactionDetails.getNumberOfCoupons());
-		 
+		 qrPayment.setTippingAmount(transactionDetails.getTippingAmount());
+		 qrPayment.setPointsRedeemed(transactionDetails.getPointsRedeemed());
+		 qrPayment.setAmountRedeemed(transactionDetails.getAmountRedeemed());		 
 		log.info("Handling Subscriber qr payment confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 		//2FA

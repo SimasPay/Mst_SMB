@@ -333,6 +333,9 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String loyalityName = request.getParameter(ApiConstants.PARAMETER_LOYALITY_NAME);
 		String discountType = request.getParameter(ApiConstants.PARAMETER_DISCOUNT_TYPE);
 		String numberOfCoupons = request.getParameter(ApiConstants.PARAMETER_NOOF_COUPONS);
+		String tippingAmount = request.getParameter(ApiConstants.PARAMETER_TIPPING_AMOUNT);
+		String pointsRedeemed = request.getParameter(ApiConstants.PARAMETER_POINTS_REDEEMED);
+		String amountRedeemed = request.getParameter(ApiConstants.PARAMETER_AMOUNT_REDEEMED);
 
 
 
@@ -475,9 +478,9 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setLoyalityName(loyalityName);
 		rudContainer.setDiscountType(discountType);
 		rudContainer.setNumberOfCoupons(numberOfCoupons);
-
-
-
+		rudContainer.setTippingAmount(tippingAmount);
+		rudContainer.setPointsRedeemed(pointsRedeemed);
+		rudContainer.setAmountRedeemed(amountRedeemed);
 		
 		log.info("initUserDataContainer: End");
 		return rudContainer;

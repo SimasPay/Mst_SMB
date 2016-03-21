@@ -85,6 +85,9 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			}
 			isoMsg.set(48,request.getUserAPIKey());
 			isoMsg.set(49, constantFieldsMap.get("49"));
+			long tippingAmount = (request.getTippingAmount()!=null) ? request.getTippingAmount().longValue()*100: 0;
+			isoMsg.set(54,StringUtilities.leftPadWithCharacter(tippingAmount + "", 18, "0"));
+			
 			if(request.getInfo3()!=null){
 				isoMsg.set(61,request.getInfo3());
 			}else{
@@ -108,14 +111,18 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 		String numberOfCoupons = StringUtils.isNotBlank(request.getNumberOfCoupons())?request.getNumberOfCoupons().toString() : "0".toString();
 		String discountType = StringUtils.isNotBlank(request.getDiscountType())?request.getDiscountType() : " ";
 		String loyaltyName = StringUtils.isNotBlank(request.getLoyalityName())?request.getLoyalityName() : " ";
+		String amountRedeemed = request.getAmountRedeemed() != null?request.getAmountRedeemed().toBigInteger().toString() :BigDecimal.ZERO.toBigInteger().toString();
+		String pointsRedeemed = request.getPointsRedeemed() != null ? request.getPointsRedeemed().toString(): "0";
 
 		String merchantApiKey = StringUtilities.leftPadWithCharacter(" ", 40, " ");
 		discountAmt = StringUtilities.leftPadWithCharacter(discountAmt, 12, "0");
 		numberOfCoupons = StringUtilities.leftPadWithCharacter(numberOfCoupons, 3, "0");
 		discountType = StringUtilities.rightPadWithCharacter(discountType, 20, " ");
 		loyaltyName = StringUtilities.rightPadWithCharacter(loyaltyName, 40, " ");
+		amountRedeemed = StringUtilities.leftPadWithCharacter(amountRedeemed, 12, "0");
+		pointsRedeemed = StringUtilities.leftPadWithCharacter(pointsRedeemed, 12, "0");
 
-		String finalDe62 = merchantApiKey + discountAmt + numberOfCoupons + discountType + loyaltyName;
+		String finalDe62 = merchantApiKey + discountAmt + numberOfCoupons + discountType + loyaltyName + pointsRedeemed + amountRedeemed;
 		return finalDe62;
 	}
 

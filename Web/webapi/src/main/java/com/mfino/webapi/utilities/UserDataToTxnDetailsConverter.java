@@ -238,7 +238,18 @@ public class UserDataToTxnDetailsConverter {
 		if(StringUtils.isNotBlank(userDataContainer.getNumberOfCoupons())){
 			txnDetails.setNumberOfCoupons(userDataContainer.getNumberOfCoupons());
 		}
+
+		if(StringUtils.isNotBlank(userDataContainer.getTippingAmount())){
+			txnDetails.setTippingAmount(getAmount(userDataContainer.getTippingAmount()));
+		}
 		
+		if(StringUtils.isNotBlank(userDataContainer.getAmountRedeemed())){
+			txnDetails.setAmountRedeemed(getAmount(userDataContainer.getAmountRedeemed()));
+		}
+		
+		if(StringUtils.isNotBlank(userDataContainer.getPointsRedeemed())){
+			txnDetails.setPointsRedeemed(getLong(userDataContainer.getPointsRedeemed()));
+		}		
 		return txnDetails;
 	}
 	
@@ -267,6 +278,19 @@ public class UserDataToTxnDetailsConverter {
 		}
 		return transferId;
 	}
+	
+
+	public long getLong(String transferIdStr) throws InvalidDataException { 
+		long transferId = -1L;
+		try {
+			transferId = Long.parseLong(transferIdStr);
+		}
+		catch (NumberFormatException ex) {
+			log.error("Error parsing string as long", ex);
+			throw new InvalidDataException("Invalid Long data", CmFinoFIX.NotificationCode_InvalidData, ApiConstants.PARAMETER_POINTS_REDEEMED);
+		}
+		return transferId;
+	}	
 	
 	public long getParentTxnId(String parentTxnIdStr) throws InvalidDataException { 
 		long parentTrxnId = -1L;
