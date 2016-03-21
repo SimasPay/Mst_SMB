@@ -329,6 +329,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
+		result.setMfaMode("None");
 
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){

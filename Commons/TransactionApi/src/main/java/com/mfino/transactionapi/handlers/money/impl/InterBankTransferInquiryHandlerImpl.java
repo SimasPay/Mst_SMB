@@ -240,6 +240,8 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		result.setMessage(transactionResponse.getMessage());
 		result.setSctlID(sctl.getID());
 		result.setBankName(transactionResponse.getBankName());
+		result.setMfaMode("None");
+		
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
 			if(mfaService.isMFATransaction(serviceName, transactionName, channelCode.getID()) == true){
