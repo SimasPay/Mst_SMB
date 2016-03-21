@@ -38,6 +38,17 @@
 		<td><input type="text" name="sourcePIN"/></td>
 	</tr>
 	<tr>
+		<td>From Date</td>
+		<td><input type="text" name="fromDate"/><em>ddMMyyyy</em></td>
+	</tr>
+	<tr>
+		<td>To Date</td>
+		<td><input type="text" name="toDate"/><em>ddMMyyyy</em></td>
+	</tr>
+	<tr>
+		<td colspan="2"><input type="submit" value="submit" /></td>
+	</tr>
+	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID"/></td>
 	</tr>

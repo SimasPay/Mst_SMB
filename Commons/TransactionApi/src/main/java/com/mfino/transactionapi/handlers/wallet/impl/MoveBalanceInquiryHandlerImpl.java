@@ -68,6 +68,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		bankAccountToBankAccount.setDestMDN(transactionDetails.getDestMDN());
 		bankAccountToBankAccount.setAmount(transactionDetails.getAmount());
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(true);
+		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMessage(StringUtils.isNotBlank(sourceMessage) ? sourceMessage : ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
 		bankAccountToBankAccount.setSourceApplication(channelCode.getChannelSourceApplication());

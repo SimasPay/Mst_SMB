@@ -65,9 +65,12 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(true);
+		transferConfirmation.setIsSystemIntiatedTransaction(true);
 		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
 		transferConfirmation.setChannelCode(cc.getChannelCode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
+		transferConfirmation.setIsRetirePartner(CmFinoFIX.IsRetirePartner_True);
+		transferConfirmation.setDescription(transactionDetails.getDescription());
 		log.info("Handling Transfer Confirm request for moving money from Retired Subscriber::From "+ transferConfirmation.getSourceMDN() + " To " + 
 				transferConfirmation.getDestMDN());
 		XMLResult result = new MoneyTransferXMLResult();

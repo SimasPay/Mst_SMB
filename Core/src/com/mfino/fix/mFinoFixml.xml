@@ -129,7 +129,9 @@
 			<field name="OriginalReferenceID" required="N"/> 
 			<field name="DestinationBankAccountNo" required="N"/>
 			<field name="SourceBankAccountNo" required="N"/>     
-			<field name="INTxnId" required="N"/>   
+			<field name="INTxnId" required="N"/>
+			<field name="Description" required="N"/>
+			<field name="IsRetirePartner" required="N"/>   
 		</message>
 		<message name="BankAccountBalanceInquiry" msgtype="1009" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="BankAccountPin" id="Pin" required="Y" isSecure="Y"/>
@@ -26846,7 +26848,10 @@ ERROR:Mismatch of  mdn type and app type
    	<field number="8435" name="IsIdLifetimeText" type="STRING"/>
    	<field number="8436" name="DateOfBirthText" type="STRING"/>
    	<field number="8437" name="IDValidUntilText" type="STRING"/>
-	<field number="8438" name="Service"  type="STRING" />
+	<field number="8438" name="IsRetirePartner" type="INT32">
+   		<value enum="0" description="False" />
+		<value enum="1" description="True" />
+   	</field>
     </fields>
     <primitives>
 		<dbtype name="mysql">

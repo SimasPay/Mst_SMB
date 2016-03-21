@@ -17,14 +17,14 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubscriberMDNDAO;
+import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
@@ -34,7 +34,6 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosingInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
-import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PartnerService;
@@ -138,12 +137,12 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		
 		if (subMDN != null) {
 			
-			Pocket destPocket = null;			
+			Pocket destPocket = null;	
 			destPocket = pocketService.getDefaultPocket(subMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
 			
 			if(null != destPocket) {
 			
-				if(destPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) == -1) {
+				if(!checkBalanceInAllPockets(subMDN.getID())) {
 					
 					if(CmFinoFIX.SubscriberStatus_Active.equals(subMDN.getSubscriber().getStatus())) {
 					
@@ -192,7 +191,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							result.setSctlID(sctl.getID());
 							result.setMfaMode("None");
 							
-							sendOTPSMS(subMDN);
+							sendOTPSMS(subMDN,sctl.getID());
 							
 							log.debug("SMS for OTP has been sent....");
 							
@@ -234,10 +233,31 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		return result;
 	}
 	
-	private void sendOTPSMS (SubscriberMDN subscriberMDN ) {
+	private boolean checkBalanceInAllPockets(Long mdnId) {
+        
+		// Here we need to get the Records from pocket table for MdnId.        
+		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();			
+        PocketQuery pocketQuery = new PocketQuery();
+        pocketQuery.setMdnIDSearch(mdnId);
+        boolean isBalanceAvailable = false;
+        
+        List<Pocket> resultantPockets = pocketDAO.get(pocketQuery);
+
+        for (Pocket eachPocket : resultantPockets) {
+        
+        	if(eachPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) == 1) {
+        		
+        		isBalanceAvailable = true;
+        		break;
+        	}
+        }
+        
+        return isBalanceAvailable;
+	}
+	
+	private void sendOTPSMS (SubscriberMDN subscriberMDN , Long sctlID) {
 		
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		Subscriber subscriber = subscriberMDN.getSubscriber();
 		
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
@@ -248,20 +268,19 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		
 		log.info("oneTimePin:" + oneTimePin);
 		
-		NotificationWrapper smsNotificationWrapper = subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
-		smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-		smsNotificationWrapper.setLanguage(subscriber.getLanguage());
-		smsNotificationWrapper.setFirstName(subscriber.getFirstName());
-    	smsNotificationWrapper.setLastName(subscriber.getLastName());
-		
-    	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 		String mdn2 = subscriberMDN.getMDN();
-		
-		SMSValues smsValues= new SMSValues();
-		smsValues.setDestinationMDN(mdn2);
-		smsValues.setMessage(smsMessage);
-		smsValues.setNotificationCode(smsNotificationWrapper.getCode());
-		
-		smsService.asyncSendSMS(smsValues);
+		Integer subLang = subscriberMDN.getSubscriber().getLanguage();
+		String message = null;
+		if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
+			message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
+		}
+		else {
+			message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
+		}
+		smsService.setDestinationMDN(mdn2);
+		smsService.setMessage(message);
+		smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
+		smsService.asyncSendSMS();
+		log.info("sms sent successfully");
 	}
 }
