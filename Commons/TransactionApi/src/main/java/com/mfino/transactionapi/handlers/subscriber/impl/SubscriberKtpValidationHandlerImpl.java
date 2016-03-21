@@ -151,7 +151,12 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 			
 				if(response.has("status") && StringUtils.isNotBlank(response.get("status").toString()) && (response.get("status").toString().equals("CommunicationFailure"))) {
 					
-					ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					if(response.toString().length() > 1000){
+					
+						ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					}else{
+						ktpDetail.setBankResponse(response.toString());
+					}
 					ktpDetailsDAO.save(ktpDetail);
 					
 				} else {

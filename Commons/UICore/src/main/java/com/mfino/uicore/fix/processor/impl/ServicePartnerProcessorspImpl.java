@@ -314,8 +314,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				ktpDetail.setMDN(realMsg.getMDN());
 				ktpDetail.setKTPID(realMsg.getKTPID());
 				ktpDetail.setFullName(realMsg.getUsername());
-				ktpDetail.setBankResponseStatus("00");
-				ktpDetail.setBankResponse("Success");
+/*				ktpDetail.setBankResponseStatus("00");
+				ktpDetail.setBankResponse("Success");*/
 				
 				//errorMsg = (CMJSAgentError)verifyAgentData(errorMsg,ktpDetail);
 				errorMsg = (CMJSAgentError)verifyAgentDataFromWS(errorMsg,realMsg,ktpDetail);
@@ -1862,32 +1862,45 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 						
 			JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
 			if(null != response) {
-				ktpDetail.setBankResponse(response.toString());
-				ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
-				ktpDetailsDAO.save(ktpDetail);
-				
-				errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
-				errorMsg.setAlamatInAccordanceIdentity(response.get("alamat").toString());
-				errorMsg.setRTAl(response.get("rt").toString());
-				errorMsg.setRWAl(response.get("rw").toString());
-				errorMsg.setVillageAl(response.get("kelurahan").toString());
-				errorMsg.setDistrictAl(response.get("kecamatan").toString());
-				errorMsg.setCityAl(response.get("kota").toString());
-				errorMsg.setProvincialAl(response.get("provinsi").toString());
-				errorMsg.setPotalCodeAl(response.get("kodepos").toString());
-				errorMsg.setErrorDescription(MessageText._("Agent KTP validation successfull"));
-				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-				errorMsg.setsuccess(CmFinoFIX.Boolean_True);
-			} else {
-				log.info("Did not received proper data from WS call");
-				
-				ktpDetail.setBankResponse(response.toString());
-				ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
-				ktpDetailsDAO.save(ktpDetail);
-				
-				errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
-				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-				errorMsg.setsuccess(CmFinoFIX.Boolean_False);
+				if(response.has("status") && StringUtils.isNotBlank(response.get("status").toString()) && (response.get("status").toString().equals("CommunicationFailure"))) {
+					log.info("Did not received proper data from WS call");
+					//ktpDetail.setBankResponse(response.toString());
+					//ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					if(response.toString().length() > 1000){
+					ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					}else{
+						ktpDetail.setBankResponse(response.toString());
+					}
+					//ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+					ktpDetailsDAO.save(ktpDetail);
+					
+					errorMsg.setErrorDescription(MessageText._("Agent KTP validation Failed"));
+					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+					errorMsg.setsuccess(CmFinoFIX.Boolean_False);
+				} else {
+					//ktpDetail.setBankResponse(response.toString());
+					//ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					if(response.toString().length() > 1000){
+					ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+					}else{
+						ktpDetail.setBankResponse(response.toString());
+					}
+					ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+					ktpDetailsDAO.save(ktpDetail);
+					
+					errorMsg.setUserBankBranch(userService.getUserBranchCodeString());
+					errorMsg.setAlamatInAccordanceIdentity(response.get("alamat").toString());
+					errorMsg.setRTAl(response.get("rt").toString());
+					errorMsg.setRWAl(response.get("rw").toString());
+					errorMsg.setVillageAl(response.get("kelurahan").toString());
+					errorMsg.setDistrictAl(response.get("kecamatan").toString());
+					errorMsg.setCityAl(response.get("kota").toString());
+					errorMsg.setProvincialAl(response.get("provinsi").toString());
+					errorMsg.setPotalCodeAl(response.get("kodepos").toString());
+					errorMsg.setErrorDescription(MessageText._("Agent KTP validation successfull"));
+					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+					errorMsg.setsuccess(CmFinoFIX.Boolean_True);
+				}
 			}
 		} catch(Exception ex) {
 			log.error("Error in parsing the response from WS Server..." + ex);
