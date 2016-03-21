@@ -284,7 +284,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 	private void sendOTPSMS (SubscriberMDN subscriberMDN, Long sctlID) {
 		
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		//Subscriber subscriber = subscriberMDN.getSubscriber();
+		Subscriber subscriber = subscriberMDN.getSubscriber();
 		
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
@@ -295,7 +295,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		
 		log.info("oneTimePin:" + oneTimePin);
 		
-/*		NotificationWrapper smsNotificationWrapper = subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
+		NotificationWrapper smsNotificationWrapper = subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS,CmFinoFIX.NotificationCode_SubscriberClosingInquirySuccess);
 		smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
 		smsNotificationWrapper.setLanguage(subscriber.getLanguage());
 		smsNotificationWrapper.setFirstName(subscriber.getFirstName());
@@ -308,21 +308,8 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		smsValues.setDestinationMDN(mdn2);
 		smsValues.setMessage(smsMessage);
 		smsValues.setNotificationCode(smsNotificationWrapper.getCode());
-		smsService.asyncSendSMS(smsValues);*/
+		smsService.asyncSendSMS(smsValues);
 		
-		String mdn2 = subscriberMDN.getMDN();
-		Integer subLang = subscriberMDN.getSubscriber().getLanguage();
-		String message = null;
-		if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
-			message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
-		}
-		else {
-			message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
-		}
-		smsService.setDestinationMDN(mdn2);
-		smsService.setMessage(message);
-		smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
-		smsService.asyncSendSMS();
 		log.info("sms sent successfully");
 	}
 }

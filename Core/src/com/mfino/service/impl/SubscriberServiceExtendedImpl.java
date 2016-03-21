@@ -1419,14 +1419,23 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		notificationWrapper.setLanguage(language);
-		notificationWrapper
-				.setNotificationMethod(notificationMethod);
-		notificationWrapper
-				.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
+		notificationWrapper.setNotificationMethod(notificationMethod);
+		notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
 		notificationWrapper.setOneTimePin(oneTimePin);
 		return notificationWrapper;
 	}
-
+	
+	public NotificationWrapper generateOTPMessage(String oneTimePin, Integer notificationMethod, Integer notificationCode) {
+		
+		NotificationWrapper notificationWrapper = new NotificationWrapper();
+		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
+		notificationWrapper.setLanguage(language);
+		notificationWrapper.setNotificationMethod(notificationMethod);
+		notificationWrapper.setCode(notificationCode);
+		notificationWrapper.setOneTimePin(oneTimePin);
+		
+		return notificationWrapper;
+	}
 	
 	private boolean isRegistrationForUnRegistered(
 			SubscriberMDN subscriberMDN) {

@@ -64,4 +64,6 @@ public interface SubscriberServiceExtended {
 	public boolean isSubscriberEmailVerified(Subscriber sub);
 	
 	public  Integer validateOTP(CMSubscriberActivation subscriberActivation, boolean isHttps, boolean isHashedPin) ;
+	
+	public NotificationWrapper generateOTPMessage(String oneTimePin, Integer notificationMethod, Integer notificationCode);
 }

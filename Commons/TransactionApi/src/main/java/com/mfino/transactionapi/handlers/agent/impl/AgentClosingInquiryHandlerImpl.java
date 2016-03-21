@@ -23,8 +23,10 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
@@ -34,6 +36,7 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosingInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
+import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PartnerService;
@@ -258,6 +261,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 	private void sendOTPSMS (SubscriberMDN subscriberMDN , Long sctlID) {
 		
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
+		Subscriber subscriber = subscriberMDN.getSubscriber();
 		
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
@@ -266,21 +270,21 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subscriberMDNDAO.save(subscriberMDN);
 		
-		log.info("oneTimePin:" + oneTimePin);
+		NotificationWrapper smsNotificationWrapper = subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS,CmFinoFIX.NotificationCode_AgentClosingInquirySuccess);
+		smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
+		smsNotificationWrapper.setLanguage(subscriber.getLanguage());
+		smsNotificationWrapper.setFirstName(subscriber.getFirstName());
+    	smsNotificationWrapper.setLastName(subscriber.getLastName());
 		
+    	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 		String mdn2 = subscriberMDN.getMDN();
-		Integer subLang = subscriberMDN.getSubscriber().getLanguage();
-		String message = null;
-		if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
-			message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
-		}
-		else {
-			message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
-		}
-		smsService.setDestinationMDN(mdn2);
-		smsService.setMessage(message);
-		smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
-		smsService.asyncSendSMS();
+		
+		SMSValues smsValues= new SMSValues();
+		smsValues.setDestinationMDN(mdn2);
+		smsValues.setMessage(smsMessage);
+		smsValues.setNotificationCode(smsNotificationWrapper.getCode());
+		smsService.asyncSendSMS(smsValues);
+		
 		log.info("sms sent successfully");
 	}
 }
