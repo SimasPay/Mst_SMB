@@ -262,7 +262,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			validationService.validateSubscriberActivationDetails(transactionDetails);
 			String mfaTransaction = transactionDetails.getMfaTransaction();
 
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getID()) == true) {
+			//if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getID()) == true) {
 				if(mfaTransaction != null
 						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
 									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
@@ -273,10 +273,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 				else{
 					log.info("mfaTransaction parameter is Invalid");
 				}
-			}
+			/*}
 			else {
 				xmlResult = (XMLResult) subscriberActivationHandler.handle(transactionDetails);
-			}
+			}*/
 		} else if (ServiceAndTransactionConstants.TRANSACTION_AGENTACTIVATION.equals(transactionName)) {
 		
 			validationService.validateSubscriberActivationDetails(transactionDetails);

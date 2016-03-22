@@ -87,8 +87,6 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 	@Qualifier("AgentServiceImpl")
 	private AgentService agentService;
 	
-	private String transactionName = ServiceAndTransactionConstants.TRANSACTION_ACTIVATION;
-
 	public Result handle(TransactionDetails transactionDetails) {
 		
 		boolean isHttps = 		transactionDetails.isHttps();
@@ -136,6 +134,8 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			return result;
 			
 		}
+		
+		ChannelCode cc = transactionDetails.getCc();
 		
 		if(mfaTransactionType.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY)){
 
@@ -190,9 +190,12 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			result.setSctlID(sctl.getID());
 			result.setMfaMode("None");
 			
-			result.setMfaMode("OTP");
-			mfaService.handleMFATransaction(sctl.getID(), subscriberActivation.getSourceMDN());
-		
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getID()) == true){
+			
+				result.setMfaMode("OTP");
+				mfaService.handleMFATransaction(sctl.getID(), subscriberActivation.getSourceMDN());
+			}
+			
 			if(sctl!=null){
 				transactionChargingService.saveServiceTransactionLog(sctl);
 			}
@@ -206,10 +209,13 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 
 			sctl=sctlForMFA;
 
-			if(transactionOTP == null || !(mfaService.isValidOTP(transactionOTP,sctlForMFA.getID(), subscriberActivation.getSourceMDN()))){
-					result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
-					return result;
-				}			
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getID()) == true){
+				
+				if(transactionOTP == null || !(mfaService.isValidOTP(transactionOTP,sctlForMFA.getID(), subscriberActivation.getSourceMDN()))){
+						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+						return result;
+				}
+			}
 		}
 		
 		subscriberActivation.setServiceChargeTransactionLogID(sctl.getID());
@@ -313,5 +319,4 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		result.setSctlID(sctl.getID());
 		return result;
 	}
-
 }
