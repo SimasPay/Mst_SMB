@@ -45,6 +45,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
                 allowBlank: false,
                 hideLabel: true,
                 labelSeparator :'',
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name,
                 anchor : '100%'
                },
               	{
@@ -118,8 +119,11 @@ Ext.extend(mFino.widget.SubscriberUpgradeApproveRejectWindow, Ext.Window, {
             if(this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctStatus._name]==CmFinoFIX.SubscriberUpgradeStatus.Initialized){
          
             	   var amsg = new CmFinoFIX.message.JSSubscriberUpgrade();
+            	   var values = this.form.getForm().getValues();
+            	   
             	   amsg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
-            	   amsg.m_pUpgradeAcctComments = this.form.items.get('commentsu').getValue();
+            	   amsg.m_pUpgradeAcctComments = values[CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments];
+            	   
             	   amsg.m_paction="update"
             		   
             		   if(this.form.find('itemId','approve')[0].checked)
