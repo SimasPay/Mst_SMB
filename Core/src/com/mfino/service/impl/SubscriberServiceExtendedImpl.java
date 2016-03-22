@@ -472,6 +472,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setUpdatedBy(createdByName);
 			subscriberMdnDao.save(subscriberMDN);
 			
+			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
+			
 			//handling adding default group if the group doesnot exist here
 			if(groupID==null){
 				

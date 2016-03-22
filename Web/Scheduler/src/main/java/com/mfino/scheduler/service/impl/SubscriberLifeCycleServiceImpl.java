@@ -420,13 +420,15 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 						TransactionDetails txnDetails= new TransactionDetails();
 						txnDetails.setSourceMDN(subscriberMDN.getMDN());
 						txnDetails.setDestMDN(destSystemProviderMDN.getMDN());
-						txnDetails.setDestPocketCode("1");
-						txnDetails.setSourcePocketCode("1");
+						//txnDetails.setDestPocketCode("1");
+						//txnDetails.setSourcePocketCode("1");
 						txnDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 						txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_SYSTEM_INQUIRY);
 						txnDetails.setDestinationPocketId(destSystemProviderPocket.getID());
 						for(Pocket sourcePocket:srcPocketList){
 							moneyMovedSuccessfully = false;
+							txnDetails.setSourcePocketCode(String.valueOf(sourcePocket.getPocketTemplate().getType()));
+							txnDetails.setDestPocketCode(String.valueOf(destSystemProviderPocket.getPocketTemplate().getType()));
 							txnDetails.setSrcPocketId(sourcePocket.getID());
 							txnDetails.setSourcePIN("1503");
 							txnDetails.setCc(channelCode);
@@ -732,7 +734,8 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		List<Pocket> pkListWithBalance = new ArrayList<Pocket>();
 		PocketQuery pocketQuery = new PocketQuery();
 		pocketQuery.setMdnIDSearch(subscriberMDN.getID());
-		pocketQuery.setPocketType(CmFinoFIX.PocketType_SVA);
+		//pocketQuery.setPocketType(CmFinoFIX.PocketType_SVA);
+		//pocketQuery.setPocketType(CmFinoFIX.PocketType_LakuPandai);
 		pkList = pocketService.get(pocketQuery);
 		if (pkList != null) {
 			for (Pocket pk : pkList) {

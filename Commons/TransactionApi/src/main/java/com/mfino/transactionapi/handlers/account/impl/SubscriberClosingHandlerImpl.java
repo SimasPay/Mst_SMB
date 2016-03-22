@@ -30,6 +30,7 @@ import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
@@ -87,6 +88,10 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 	@Autowired
 	@Qualifier("SCTLServiceImpl")
 	private SCTLService sctlService;
+	
+	@Autowired
+	@Qualifier("SubscriberStatusEventServiceImpl")
+	private SubscriberStatusEventService subscriberStatusEventService;
 	
 	/* (non-Javadoc)
 	 * @see com.mfino.transactionapi.handlers.subscriber.SubscriberKtpValidation#handle(com.mfino.transactionapi.vo.TransactionDetails)
@@ -182,6 +187,8 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 						
 						SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 						subscriberMDNDAO.save(subMDN);
+						
+						subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 						
 						result.setName(subscriber.getFirstName());
 						result.setDestinationMDN(subMDN.getMDN());
