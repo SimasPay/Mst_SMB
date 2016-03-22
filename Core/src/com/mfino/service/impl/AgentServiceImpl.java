@@ -34,6 +34,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.AgentService;
 import com.mfino.service.MailService;
+import com.mfino.service.MfinoUtilService;
 import com.mfino.service.NotificationLogDetailsService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PartnerService;
@@ -92,6 +93,10 @@ public class AgentServiceImpl implements AgentService {
 	@Autowired
 	@Qualifier("SubscriberStatusEventServiceImpl")
 	private SubscriberStatusEventService subscriberStatusEventService;
+	
+	@Autowired
+	@Qualifier("MfinoUtilServiceImpl")
+	private MfinoUtilService mfinoUtilService;
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public NotificationWrapper activeAgent(CMSubscriberActivation subscriberActivation,boolean isHttps) 	{
@@ -239,8 +244,23 @@ public class AgentServiceImpl implements AgentService {
 			log.info("AgentActivation : bankPocket activation id:" + bankPocket.getID() + " agentid" + agent.getID());
 		}
 
-		String digestpin = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), newpin);
-		subscriberMDN.setDigestedPIN(digestpin);
+		String calcPIN = null;
+		
+		try	{
+			
+			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMDN(), newpin);
+		}
+		catch(Exception e){
+			log.error("Error during PIN conversion "+e);
+		}
+		subscriberMDN.setDigestedPIN(calcPIN);
+		
+		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMDN(), newpin);
+		subscriberMDN.setAuthorizationToken(authToken);
+		
+		/*String digestpin = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), newpin);
+		subscriberMDN.setDigestedPIN(digestpin);*/
+		
 		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 		subscriberMDN.setStatusTime(new Timestamp());
 		subscriberMDN.setActivationTime(new Timestamp());
