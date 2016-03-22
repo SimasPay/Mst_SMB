@@ -280,7 +280,7 @@ public class AgentServiceImpl implements AgentService {
 		subscriberDAO.save(subscriber);
 		subscriberMdnDao.save(subscriberMDN);
 		subscriberServiceExtended.updateUnRegisteredTxnInfoToActivated(subscriberMDN);
-		mailService.asyncSendEmail(email, to, emailSubject, emailMsg);
+//		mailService.asyncSendEmail(email, to, emailSubject, emailMsg);//commented for SMP-93
 		String smsMsg = "activation notification";
 		try {
 			//add notifications
