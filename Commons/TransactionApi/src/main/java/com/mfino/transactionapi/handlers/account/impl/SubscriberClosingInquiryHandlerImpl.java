@@ -194,6 +194,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingInquirySuccess);
 							result.setMessage("Subscriber Closing Inquiry successfull");
 							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+							result.setDestinationMDN(subMDN.getMDN());
 							
 							Transaction transaction = null;
 							
@@ -300,6 +301,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		smsNotificationWrapper.setLanguage(subscriber.getLanguage());
 		smsNotificationWrapper.setFirstName(subscriber.getFirstName());
     	smsNotificationWrapper.setLastName(subscriber.getLastName());
+    	smsNotificationWrapper.setOneTimePin(oneTimePin);
 		
     	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 		String mdn2 = subscriberMDN.getMDN();

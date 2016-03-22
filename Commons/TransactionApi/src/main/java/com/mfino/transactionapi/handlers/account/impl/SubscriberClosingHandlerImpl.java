@@ -183,6 +183,8 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 						SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 						subscriberMDNDAO.save(subMDN);
 						
+						result.setName(subscriber.getFirstName());
+						result.setDestinationMDN(subMDN.getMDN());
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingSuccess));
 						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 						result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingSuccess);

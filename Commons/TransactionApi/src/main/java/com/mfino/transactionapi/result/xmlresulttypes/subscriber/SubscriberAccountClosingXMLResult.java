@@ -7,6 +7,7 @@ import com.mfino.result.XMLResult;
 public class SubscriberAccountClosingXMLResult extends XMLResult {
 
 	private String	name;
+	private String destinationMDN;
 	
 	/**
 	 * @return the name
@@ -22,6 +23,20 @@ public class SubscriberAccountClosingXMLResult extends XMLResult {
 		this.name = name;
 	}
 
+	/**
+	 * @return the destinationMDN
+	 */
+	public String getDestinationMDN() {
+		return destinationMDN;
+	}
+
+	/**
+	 * @param destinationMDN the destinationMDN to set
+	 */
+	public void setDestinationMDN(String destinationMDN) {
+		this.destinationMDN = destinationMDN;
+	}
+
 	public SubscriberAccountClosingXMLResult() {
 		super();
 	}
@@ -34,6 +49,13 @@ public class SubscriberAccountClosingXMLResult extends XMLResult {
 		
 			getXmlWriter().writeStartElement("name");
 			getXmlWriter().writeCharacters(getName(),false);
+			getXmlWriter().writeEndElement();
+		}
+		
+		if(StringUtils.isNotBlank(getDestinationMDN())) {
+			
+			getXmlWriter().writeStartElement("destinationMDN");
+			getXmlWriter().writeCharacters(getDestinationMDN(),false);
 			getXmlWriter().writeEndElement();
 		}
 
