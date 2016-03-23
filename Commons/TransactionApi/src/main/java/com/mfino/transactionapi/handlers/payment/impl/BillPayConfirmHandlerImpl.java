@@ -154,6 +154,9 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		}
 		log.info("Handling Subscriber bill pay confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
+		
+		serviceName = transactionDetails.getServiceName();
+		
 		//2FA
 		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(billPay.getParentTransactionID());
 		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getID())){
