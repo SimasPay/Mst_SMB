@@ -214,44 +214,11 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASH_OUT);
 			}
 			transactionRequestValidationService.validateCashOutInquiryDetails(transactionDetails);
-			String mfaTransaction = transactionDetails.getMfaTransaction();
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, ServiceAndTransactionConstants.TRANSACTION_CASHOUT, channelCode.getID()) == true) {
-				if(mfaTransaction != null
-						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
-									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
-					xmlResult = (XMLResult) subscriberCashOutInquiryHandler.handle(transactionDetails);
-				}
-				else{
-					log.info("mfaTransaction parameter is Invalid");
-				}
-			}else{
-				xmlResult = new XMLResult();
-				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-				xmlResult.setLanguage(language);
-				xmlResult.setTransactionTime(new Timestamp());
-				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
-			}
+			xmlResult = (XMLResult) subscriberCashOutInquiryHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT.equalsIgnoreCase(transactionName)) {
 			transactionRequestValidationService.validateCashOutConfirmDetails(transactionDetails);
-			//xmlResult = (XMLResult) subscriberCashOutConfirmHandler.handle(transactionDetails);
-			String mfaTransaction = transactionDetails.getMfaTransaction();
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, transactionName, channelCode.getID()) == true) {
-				if(mfaTransaction != null
-						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
-									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
-					xmlResult = (XMLResult) subscriberCashOutConfirmHandler.handle(transactionDetails);
-				}
-				else{
-					log.info("mfaTransaction parameter is Invalid");
-				}
-			}else{
-				xmlResult = new XMLResult();
-				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-				xmlResult.setLanguage(language);
-				xmlResult.setTransactionTime(new Timestamp());
-				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
-			}
+			xmlResult = (XMLResult) subscriberCashOutConfirmHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM_INQUIRY.equalsIgnoreCase(transactionName)) {
 			

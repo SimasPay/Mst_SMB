@@ -303,9 +303,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 			subscriberCashOutInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
-			
-			result.setMfaMode("OTP");
-			mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
+
 		}
 		if (!transactionResponse.isResult() && sctl!=null) 
 		{
@@ -326,6 +324,18 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		result.setDestinationMDN(destAgentMDN.getMDN());
 		result.setName(destAgentMDN.getSubscriber().getFirstName());
 		log.info("End SubscriberCashOutInquiryHandlerImpl :: handle method");
+		
+		
+		result.setMfaMode("None");
+		
+		//For 2 factor authentication
+		if(transactionResponse.isResult()){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHOUT, cc.getID()) == true){
+				result.setMfaMode("OTP");
+				mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
+			}
+		}
+		
 		return result;
 	}
 }

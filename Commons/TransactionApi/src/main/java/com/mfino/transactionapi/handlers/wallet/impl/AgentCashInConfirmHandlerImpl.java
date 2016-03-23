@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -181,12 +182,12 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 			return result;
 		}
 		
-		if(!(mfaService.isValidOTP(mfaOneTimeOTP , sctl.getID(), srcSubscriberMDN.getMDN()))){
-			log.info("Invalid OTP Entered");
-			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
-			result.setSctlID(sctl.getID());
-			result.setMessage("Invalid OTP Entered");
-			return result;
+		//2FA
+		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHIN, cc.getID())){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), srcSubscriberMDN.getMDN()))){
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				return result;
+			}
 		}
 		
 		Pocket srcAgentPocket;

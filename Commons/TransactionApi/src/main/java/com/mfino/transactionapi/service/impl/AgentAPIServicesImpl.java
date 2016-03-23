@@ -172,48 +172,13 @@ public class AgentAPIServicesImpl extends BaseAPIService implements AgentAPIServ
 			if (StringUtils.isBlank(sourceMessage)) {
 				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASH_IN);
 			}
-			//xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
-			
-			String mfaTransaction = transactionDetails.getMfaTransaction();
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, ServiceAndTransactionConstants.TRANSACTION_CASHIN, channelCode.getID()) == true) {
-				if(mfaTransaction != null
-						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
-									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
-					xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
-				}
-				else{
-					log.info("mfaTransaction parameter is Invalid");
-				}
-			}else{
-				xmlResult = new XMLResult();
-				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-				xmlResult.setLanguage(language);
-				xmlResult.setTransactionTime(new Timestamp());
-				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
-			}
+			xmlResult = (XMLResult) agentCashInInquiryHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHIN.equalsIgnoreCase(transactionName)) {
 			log.info("AgentAPIService :: handleRequest() TRANSACTION_CASHIN ") ;
 
 			transactionRequestValidationService.validateCashInConfirmDetails(transactionDetails);
-			//xmlResult = (XMLResult) agentCashInConfirmHandlerImpl.handle(transactionDetails);
-			String mfaTransaction = transactionDetails.getMfaTransaction();
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_AGENT, transactionName, channelCode.getID()) == true) {
-				if(mfaTransaction != null
-						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
-									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
-					xmlResult = (XMLResult) agentCashInConfirmHandlerImpl.handle(transactionDetails);
-				}
-				else{
-					log.info("mfaTransaction parameter is Invalid");
-				}
-			}else{
-				xmlResult = new XMLResult();
-				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-				xmlResult.setLanguage(language);
-				xmlResult.setTransactionTime(new Timestamp());
-				xmlResult.setNotificationCode(CmFinoFIX.NotificationCode_TransactionNotAvailable);
-			}
+			xmlResult = (XMLResult) agentCashInConfirmHandlerImpl.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED_INQUIRY.equalsIgnoreCase(transactionName)) {
 			log.info("AgentAPIService :: handleRequest() TRANSACTION_CASHOUT_UNREGISTERED_INQUIRY");

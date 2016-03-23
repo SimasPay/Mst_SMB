@@ -288,9 +288,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			cashIn.setTransactionID(transactionResponse.getTransactionId());			
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
-			
-			result.setMfaMode("OTP");
-			mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
+
 		}
 
 		result.setSctlID(sctl.getID());
@@ -304,6 +302,16 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
 		result.setName(destinationMDN.getSubscriber().getFirstName());
+		
+		result.setMfaMode("None");
+		
+		//For 2 factor authentication
+		if(transactionResponse.isResult()){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHIN, cc.getID()) == true){
+				result.setMfaMode("OTP");
+				mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
+			}
+		}
 		return result;
 	}
 }
