@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
@@ -26,6 +27,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.CommodityTransferService;
+import com.mfino.service.MFAService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
@@ -44,6 +46,8 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 
 	private static Logger log = LoggerFactory.getLogger(MoneyTransferHandlerImpl.class);
 	
+	private String transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
+	
 	@Autowired
 	@Qualifier("CommodityTransferServiceImpl")
 	private CommodityTransferService commodityTransferService;
@@ -60,7 +64,6 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
 
-
 	@Autowired
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
@@ -69,12 +72,17 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
 	
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	public Result handle(TransactionDetails transactionDetails) {
 
 		String SourcePocketCode = transactionDetails.getSourcePocketCode();
 		String DestPocketCode	= transactionDetails.getDestPocketCode();
 		String sourcePocketId	= transactionDetails.getSourcePocketId();
 		String destPocketId  	= transactionDetails.getDestPocketId();
+		String mfaOneTimeOTP 	= transactionDetails.getTransactionOTP();
 
 		ChannelCode cc = transactionDetails.getCc();
 
@@ -179,6 +187,36 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
 			return result;
 		}
+		
+		
+		/*
+		 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
+		 */
+		
+		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
+			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER;
+			}
+			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER;
+			}
+		}
+		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
+			}
+			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER;
+			}
+		}		
+		
+		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, transactionName, cc.getID())){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), sourceMDN.getMDN()))){
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				return result;
+			}
+		}
+		
 		transferConfirmation.setRemarks(sctl.getDescription());
 		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
 			
