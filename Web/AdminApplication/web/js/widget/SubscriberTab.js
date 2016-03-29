@@ -170,13 +170,19 @@ Ext.extend(mFino.widget.SubscriberTab, Ext.TabPanel, {
             this.pocketEditFormWindow.show();
             var status = record.get(CmFinoFIX.message.JSPocket.Entries.PocketStatus._name);
             //           this.pocketEditFormWindow.form.onStatusDropdown(status);
-            this.pocketEditFormWindow.setRecord(record);
+            this.pocketEditFormWindow.setRecord(record);         
             this.pocketEditFormWindow.form.onStatusDropdown(status);
             var subStatus = this.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
-            var approvalStatus = this.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeState._name);
-			if((subStatus == CmFinoFIX.SubscriberStatus.Initialized) || (approvalStatus == CmFinoFIX.UpgradeStateSearch.Applied)){
-				this.pocketEditFormWindow.form.get("sub.pocket.status").disable();
+            var approvalStatus = this.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeState._name);				
+				//if((subStatus == CmFinoFIX.SubscriberStatus.Initialized) || (approvalStatus == CmFinoFIX.UpgradeStateSearch.Applied)  ){
+					if((subStatus == CmFinoFIX.SubscriberStatus.Initialized) || (approvalStatus == CmFinoFIX.UpgradeStateSearch.Approved)  ){
+				//this.pocketEditFormWindow.form.get("sub.pocket.status").disable();
+					if( record.get(CmFinoFIX.message.JSPocket.Entries.PocketTemplDescription._name)=='LakuPandaiAdvancedTemplate'){
+						//this.pocketEditFormWindow.form.disable();
+						this.pocketEditFormWindow.form.get("sub.pocket.template").disable(); 
+					}							
 			}
+			
             this.pocketEditFormWindow.setStore(grid.store);
             this.pocketEditFormWindow.form.disableNotPermittedItems();
             }
