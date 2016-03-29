@@ -315,7 +315,19 @@ public abstract class Result{
         
         return df.format(date);
     }
-
+	protected String formatDateTimeForTransaction(Date date){
+    	DateFormat df = new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss");
+    	// Making timezone as a configurable property
+        TimeZone zone = ConfigurationUtil.getLocalTimeZone();
+        df.setTimeZone(zone);
+        
+        if(date==null) {
+        	
+        	date = new Timestamp();
+        }
+        
+        return df.format(date);
+    }
 	/**
 	 * @return the multixResponse
 	 */
