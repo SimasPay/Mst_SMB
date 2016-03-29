@@ -54,6 +54,26 @@ public class BankAccountCheckBalanceXMLResult extends XMLResult {
 				getXmlWriter().writeCharacters(formatDate(getTransactionTime()),false);
 				getXmlWriter().writeEndElement();
 				
+				String dateNTime=formatDateTimeForTransaction(getTransactionTime());
+				String date="";
+				String time="";
+				if(dateNTime!=null && dateNTime.contains("-")){
+					String[] dateNTimeArray=dateNTime.split("-");
+					if(dateNTimeArray!=null && dateNTimeArray.length==2){
+						
+						date=dateNTimeArray[0];
+						time=dateNTimeArray[1];
+						
+						getXmlWriter().writeStartElement("date");
+						getXmlWriter().writeCharacters(date,false);
+						getXmlWriter().writeEndElement();
+						
+						getXmlWriter().writeStartElement("time");
+						getXmlWriter().writeCharacters(time,false);
+						getXmlWriter().writeEndElement();
+					}
+				}
+				
 				if(getSctlID()!=null){
 					getXmlWriter().writeStartElement("sctlID");
 					getXmlWriter().writeCharacters(getSctlID().toString(),true);
