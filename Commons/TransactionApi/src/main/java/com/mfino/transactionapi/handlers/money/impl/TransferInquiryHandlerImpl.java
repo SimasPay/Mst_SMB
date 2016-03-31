@@ -176,9 +176,22 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		
 		Pocket destPocket = null;
 		if (StringUtils.isNotBlank(transactionDetails.getDestPocketId())) {
+			
 			destPocket = pocketService.getById(Long.parseLong(transactionDetails.getDestPocketId()));
+			
 		}
 		else {
+			
+			if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				
+			} else if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			} 
+
 			destPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
 		}
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);

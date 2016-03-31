@@ -150,9 +150,22 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		}
 		Pocket destinationPocket = null;
 		if(StringUtils.isNotBlank(destPocketId)){
+			
 			destinationPocket = pocketService.getById(new Long(destPocketId));
+			
 		}else{
-			destinationPocket = pocketService.getDefaultPocket(destinationMdn, DestPocketCode);
+			
+			if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				
+			} else if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			} 
+			
+			destinationPocket = pocketService.getDefaultPocket(destinationMdn, transactionDetails.getDestPocketCode());
 		}
 		if(destinationPocket==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_DestinationMoneyPocketNotFound);
@@ -210,8 +223,10 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			}
 		}		
 		
-		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, transactionName, cc.getID())){
+		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getID())){
+			
 			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), sourceMDN.getMDN()))){
+				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
 				return result;
 			}

@@ -64,6 +64,7 @@
 		<td>DestinationPocketCode</td>
 		<td>
 		<select name="destPocketCode">
+  				<option value=""></option>
   				<option value="1">1-E-Money</option>
   				<option value="2">2-Bank</option>
   				<option value="6">6-Laku Pandia</option>

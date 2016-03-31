@@ -286,6 +286,13 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		}
 	}
 	
+	public void validateSourcePocketCode(TransactionDetails transactionDetails) throws InvalidDataException {
+		if (StringUtils.isBlank(transactionDetails.getSourcePocketCode())) {
+			throw new InvalidDataException("Invalid authentication string", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PARAMETER_SRC_POCKET_CODE);
+		}
+	}
+	
 	public void validateSourceAndDestinationPocketCodes(TransactionDetails transactionDetails) throws InvalidDataException {
 		if (StringUtils.isBlank(transactionDetails.getSourcePocketCode())) {
 			throw new InvalidDataException("Invalid authentication string", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
@@ -473,7 +480,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateSourcePin(transactionDetails);
 		validateAmount(transactionDetails);
 		validateDesttinationMDN(transactionDetails);
-		validateSourceAndDestinationPocketCodes(transactionDetails);
+		validateSourcePocketCode(transactionDetails);
 	}
 
 	public void validateTransferConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException {
