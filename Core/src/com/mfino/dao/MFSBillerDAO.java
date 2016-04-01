@@ -37,7 +37,9 @@ public class MFSBillerDAO extends BaseDAO<MFSBiller> {
 		if (StringUtils.isNotBlank(query.getBillerType())) {
 			criteria.add(Restrictions.eq(CmFinoFIX.CRMFSBiller.FieldName_MFSBillerType, query.getBillerType()).ignoreCase());
 		}
-		
+		// Paging
+		processPaging(query, criteria);
+
 		@SuppressWarnings("unchecked")
 			List<MFSBiller> lst = criteria.list();
 			

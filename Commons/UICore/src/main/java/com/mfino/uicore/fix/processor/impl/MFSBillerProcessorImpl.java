@@ -84,7 +84,10 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 			query.setBillerCode(realMsg.getBillerCodeSearch());
 			query.setBillerType(realMsg.getBillerTypeSearch());
 			
-        	List<MFSBiller> results = dao.get(query);
+			query.setStart(realMsg.getstart());
+			query.setLimit(realMsg.getlimit());
+        	
+			List<MFSBiller> results = dao.get(query);
         	if (CollectionUtils.isNotEmpty(results)) {
         		realMsg.allocateEntries(results.size());
         		
