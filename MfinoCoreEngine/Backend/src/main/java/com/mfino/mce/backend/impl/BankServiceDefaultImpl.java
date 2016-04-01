@@ -1791,7 +1791,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											if (ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)) {
 												coreDataWrapper.save(objSrcPocket);
 											}
-											//coreDataWrapper.save(lstMfsLedgers);
+											
+											coreDataWrapper.save(lstMfsLedgers);
+											
 											/*
 											 * Send ISO message to transfer
 											 * amount, and rest of the logic in

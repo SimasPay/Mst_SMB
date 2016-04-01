@@ -382,7 +382,8 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 				(PARAMETER_SECRETE_CODE.equals(parameterName)) ||
 				(PARAMETER_KTP_DOCUMENT.equals(parameterName)) ||
 				(PARAMETER_SUBSCRIBER_FORM_DOCUMENT.equals(parameterName)) ||
-				(PARAMETER_SUPPORTING_DOCUMENT.equals(parameterName))){
+				(PARAMETER_SUPPORTING_DOCUMENT.equals(parameterName)) ||
+				(PARAMETER_MFA_OTP.equals(parameterName))){
 			isSecure = true;
 		}
 		return isSecure;
