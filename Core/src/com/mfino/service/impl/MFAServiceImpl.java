@@ -81,10 +81,18 @@ public class MFAServiceImpl implements MFAService{
 		Integer subLang = smdn.getSubscriber().getLanguage();
 		String message = null;
 		if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
-			message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
+			
+			//Your Simaspay code is 1168. Please click the link to go back to Simaspay. Link: simaspay://?token=1168
+			//message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
+			
+			message = "Kode OTP Simaspay anda : " + oneTimePin + ". Atau silahkan klik link berikut simaspay://?token=" + oneTimePin;
 		}
 		else {
-			message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
+			
+			//Kode OTP Simaspay anda : 1168. Atau silahkan klik link berikut simaspay://?token=1168
+			//message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
+			
+			message = "Your Simaspay code is " + oneTimePin + ". Please click the link to go back to Simaspay. Link: simaspay://?token=" + oneTimePin;
 		}
 		smsService.setDestinationMDN(sourceMDN);
 		smsService.setMessage(message);
