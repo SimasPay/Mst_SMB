@@ -57,6 +57,7 @@ copy MfinoCoreEngine\NotificationService\target\NotificationService-0.1-SNAPSHOT
 copy MfinoCoreEngine\JPOSComponent\target\JPOSComponent-0.1-SNAPSHOT.jar %1\servicemix
 copy MfinoCoreEngine\InterBankService\target\InterBankService-0.1-SNAPSHOT.jar %1\servicemix
 copy MfinoCoreEngine\HSM\ThalesAdapator\target\ThalesAdaptor-0.1-SNAPSHOT.jar %1\servicemix
+copy Hub\ZenzivaSMS\target\ZenzivaSMS-0.1-SNAPSHOT.jar %1\servicemix
 
 copy MfinoCoreEngine\HSM\ThalesConfiguration\src\main\resources\META-INF\Spring\mce_thales_configuration.xml %1\servicemix\
 copy MfinoCoreEngine\MCEConfiguration\src\main\resources\META-INF\spring\mce_auto_reversal_configuration.xml %1\servicemix\
@@ -82,6 +83,7 @@ copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_iso_conf
 rem copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_sms_configuration.xml %1\servicemix\
 copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_new_bsim_sms_configuration.xml %1\servicemix\
 copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_interbanktransfer_configuration.xml %1\servicemix\
+copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_zenziva_sms_configuration.xml %1\servicemix\
 copy BSIM\BSIMBillPayment\target\BSIMBillPayment-0.1-SNAPSHOT.jar %1\servicemix\
 copy BSIM\BSIMInterBankTransfer\target\BSIMInterBankTransfer-0.1-SNAPSHOT.jar %1\servicemix\
 copy BSIM\BSIMISO8583\target\BSIMISO8583-0.1-SNAPSHOT.jar %1\servicemix\
