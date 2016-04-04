@@ -31,7 +31,7 @@
 		<module>FlashizBillPayment</module>
 		<module>HubSMS</module>
 		<module>UangkuInterBank</module>
-		<module>ZenzivaSMS</module>
+		<!-- <module>ZenzivaSMS</module> -->
 		<!--<module>XMLRPCDefinitions</module>-->
     </modules>	
 	
