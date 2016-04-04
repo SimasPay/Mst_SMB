@@ -4,7 +4,25 @@ import com.mfino.result.XMLResult;
 
 public class ActivationXMLResult extends XMLResult
 {
-    public ActivationXMLResult()
+    
+	String name;
+	
+	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public ActivationXMLResult()
     {
 	super();
     }
@@ -14,6 +32,13 @@ public class ActivationXMLResult extends XMLResult
 	writeStartOfDocument();
 	
 	super.render();
+	
+	if(getName()!=null) {
+		
+	    getXmlWriter().writeStartElement("name");
+	    getXmlWriter().writeCharacters(getName(),true);
+	    getXmlWriter().writeEndElement();
+	}
 	
 	writeEndOfDocument();
 	

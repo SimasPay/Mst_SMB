@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
@@ -280,7 +278,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
                 
                 pocketDAO.save(eachPocket);
                 
-                isMoneyMoved = true;
+                isMoneyMoved = false;
         	}
         }
                

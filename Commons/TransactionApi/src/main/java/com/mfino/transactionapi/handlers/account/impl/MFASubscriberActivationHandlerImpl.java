@@ -114,7 +114,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		ServiceChargeTransactionLog sctl = null;
 
 		log.info("Handling subscriber services activation webapi request");
-		XMLResult result = new ActivationXMLResult();
+		ActivationXMLResult result = new ActivationXMLResult();
 
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberActivation, subscriberActivation.DumpFields());
@@ -308,7 +308,10 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 				subscriber.setApproveOrRejectComment("Approved for No Emoney");
 				subscriber.setApprovedOrRejectedBy("System");
 				subscriber.setApproveOrRejectTime(new Timestamp());
+				
+				result.setName(subscriber.getFirstName());
 			}
+			
 			result.setNotificationCode(code);
 			result.setSctlID(sctl.getID());
  		}

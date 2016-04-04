@@ -23104,6 +23104,20 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</Bahasa>
 				</C1>
+			</value>
+			<value description="LoginFailedForSimobiUser" enum="2168">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Login Failed for Simobi User</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Login Failed for Simobi User</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
 			</value>		
 		</field>
 		

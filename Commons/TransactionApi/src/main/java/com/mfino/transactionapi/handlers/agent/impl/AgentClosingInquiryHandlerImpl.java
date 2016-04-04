@@ -279,6 +279,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
     	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 		String mdn2 = subscriberMDN.getMDN();
 		
+		log.info("smsMessage:" + smsMessage);
+		
 		SMSValues smsValues= new SMSValues();
 		smsValues.setDestinationMDN(mdn2);
 		smsValues.setMessage(smsMessage);

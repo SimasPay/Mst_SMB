@@ -34,6 +34,10 @@
 		<td><input type="text" name="channelID" value="" /></td>
 	</tr>
 	<tr>
+		<td>Is Simaspay Activity</td>
+		<td><input type="text" name="isSimaspayActivity" value="" /><em>true or false</em></td>
+	</tr>
+	<tr>
 		<td>AppOS</td>
 		<td><input type="text" name="appos" value="" /></td>
 	</tr>

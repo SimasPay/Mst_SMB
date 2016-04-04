@@ -36,6 +36,7 @@ import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.definition.MobileappVersionCheckerService;
 import com.mfino.service.impl.appversionchecker.VersionCheckerFactory;
+import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.subscriber.LoginHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LoginXMLResult;
 import com.mfino.transactionapi.service.AppTypeCheckService;
@@ -108,6 +109,13 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		MobileappVersionCheckerService checkerService = VersionCheckerFactory.getInstance().getService(VersionCheckerFactory.VERSION_DB);
 		result.setValidVersion(checkerService.isValidVersion(request));
 		result.setNewAppURL(checkerService.checkForNewVersionOfMobileApp(request));
+		
+		if(!transDetails.isSimaspayActivity()) {
+			
+			log.info("Login Failed for Simobi User");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_LoginFailedForSimobiUser);
+			return result;
+		}
 		
 		if(result.isValidVersion()){
 
