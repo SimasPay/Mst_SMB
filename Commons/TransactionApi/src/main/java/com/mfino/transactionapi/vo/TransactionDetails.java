@@ -163,6 +163,9 @@ public class TransactionDetails {
 	private String loyalityName;
 	private String discountType;
 	private String numberOfCoupons;
+	private BigDecimal tippingAmount;
+	private Long pointsRedeemed;
+	private BigDecimal amountRedeemed;	
 	
 	private String ktpId;
 	private Date ktpValidUntil;
@@ -1456,5 +1459,23 @@ public class TransactionDetails {
 	}
 	public void setNumberOfCoupons(String numberOfCoupons) {
 		this.numberOfCoupons = numberOfCoupons;
+	}
+	public BigDecimal getTippingAmount() {
+		return tippingAmount;
+	}
+	public void setTippingAmount(BigDecimal tippingAmount) {
+		this.tippingAmount = tippingAmount;
+	}
+	public Long getPointsRedeemed() {
+		return pointsRedeemed;
+	}
+	public void setPointsRedeemed(Long pointsRedeemed) {
+		this.pointsRedeemed = pointsRedeemed;
+	}
+	public BigDecimal getAmountRedeemed() {
+		return amountRedeemed;
+	}
+	public void setAmountRedeemed(BigDecimal amountRedeemed) {
+		this.amountRedeemed = amountRedeemed;
 	}
 }

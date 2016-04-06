@@ -4086,6 +4086,9 @@
 			<field name="LoyalityName" required="N"/>
 			<field name="DiscountType" required="N"/>
 			<field name="NumberOfCoupons" required="N"/>
+			<field name="TippingAmount" required="N"/>
+			<field name="PointsRedeemed" required="N"/>
+			<field name="AmountRedeemed" required="N"/>			
 		</message>
 		<message name="BillPay" msgtype="1370" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
 			<field name="BillerCode" required="Y"/>
@@ -4102,6 +4105,9 @@
 			<field name="LoyalityName" required="N"/>
 			<field name="DiscountType" required="N"/>
 			<field name="NumberOfCoupons" required="N"/>
+			<field name="TippingAmount" required="N"/>
+			<field name="PointsRedeemed" required="N"/>
+			<field name="AmountRedeemed" required="N"/>			
 		</message>
 		<message name="JSSystemParameters" msgtype="1371" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="ParameterNameSearch" required="N" />
@@ -5067,6 +5073,9 @@
 		<field name="LoyalityName" required="N"/>
 		<field name="DiscountType" required="N"/>
 		<field name="NumberOfCoupons" required="N"/>
+		<field name="TippingAmount" required="N"/>
+		<field name="PointsRedeemed" required="N"/>
+		<field name="AmountRedeemed" required="N"/>		
 	</message>	
 	<message name="QRPaymentFromBank" msgtype="1751" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">
 	 	<field name="Info1" required="N"/>		
@@ -5106,6 +5115,9 @@
 		<field name="LoyalityName" required="N" />
 		<field name="DiscountType" required="N" />
 		<field name="NumberOfCoupons" required="N" />
+		<field name="TippingAmount" required="N"/>
+		<field name="PointsRedeemed" required="N"/>
+		<field name="AmountRedeemed" required="N"/>			
 		<field name="IsAdvice" required="N"/>
 	</message>
 	<message name="PaymentAcknowledgementFromBankForBsim" msgtype="1756" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentFromBank">
@@ -5121,7 +5133,10 @@
 		<field name="DiscountAmount" required="N"/>
 		<field name="LoyalityName" required="N"/>
 		<field name="DiscountType" required="N"/>
-		<field name="NumberOfCoupons" required="N"/>	
+		<field name="NumberOfCoupons" required="N"/>
+		<field name="TippingAmount" required="N"/>
+		<field name="PointsRedeemed" required="N"/>
+		<field name="AmountRedeemed" required="N"/>			
 		<field name="UserAPIKey" required="N" />
 		<field name="MerchantData" required="N" />
 	</message>			
@@ -5144,6 +5159,9 @@
 		<field name="LoyalityName" required="N" />
 		<field name="DiscountType" required="N" />
 		<field name="NumberOfCoupons" required="N" />
+		<field name="TippingAmount" required="N"/>
+		<field name="PointsRedeemed" required="N"/>
+		<field name="AmountRedeemed" required="N"/>		
 	</message>
 	<message name="PaymentAuthorizationFromBankForBsim" msgtype="1764"	msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentInquiryFromBank">
 	</message>
@@ -7325,6 +7343,9 @@
 			<field name="Info3" required="N"/>
 			<field name="Info4" required="N"/>
 			<field name="Info5" required="N"/>
+			<field name="Info6" required="N"/>
+			<field name="Info7" required="N"/>
+			<field name="Info8" required="N"/>
 			<field name="OperatorMessage" required="N"/>
 			<field name="BillData" required="N"/>
 			<field name="NominalAmount" required="N"/>
@@ -26691,6 +26712,12 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8187" name="DiscountType" type="STRING" />
 	<field number="8188" name="NumberOfCoupons" type="STRING" />
 	<field number="8193" name="IsSystemPocket" type="BOOLEAN"/>
+	<field number="8194" name="Info6" type="STRING"/>
+	<field number="8195" name="Info7" type="STRING"/>
+	<field number="8196" name="Info8" type="STRING"/>
+	<field number="8197" name="TippingAmount" type="Amount" />
+	<field number="8198" name="PointsRedeemed" type="RecordID" />
+	<field number="8199" name="AmountRedeemed" type="Amount" />	
 	<field number="8231" name="BranchCodeID" type="INT64" />
     <field number="8232" name="BranchCodeNo" type="STRING" />
     <field number="8233" name="BranchCode" type="STRING" />

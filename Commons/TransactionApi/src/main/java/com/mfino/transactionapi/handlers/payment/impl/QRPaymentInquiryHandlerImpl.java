@@ -136,6 +136,9 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
         qrPaymentInquiry.setDiscountType(transactionDetails.getDiscountType());
         qrPaymentInquiry.setLoyalityName(transactionDetails.getLoyalityName());
         qrPaymentInquiry.setNumberOfCoupons(transactionDetails.getNumberOfCoupons());
+        qrPaymentInquiry.setTippingAmount(transactionDetails.getTippingAmount());
+        qrPaymentInquiry.setPointsRedeemed(transactionDetails.getPointsRedeemed());
+        qrPaymentInquiry.setAmountRedeemed(transactionDetails.getAmountRedeemed());
 		log.info("Handling Subscriber qr payment Inquiry webapi request");
 		XMLResult result = new TransferInquiryXMLResult();
 

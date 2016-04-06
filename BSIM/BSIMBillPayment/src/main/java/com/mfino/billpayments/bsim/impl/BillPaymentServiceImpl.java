@@ -412,6 +412,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
         response.setLoyalityName(billPayInquiry.getLoyalityName());
         response.setMerchantData(billPayInquiry.getMerchantData());
         response.setUserAPIKey(billPayInquiry.getUserAPIKey());
+        response.setTippingAmount(billPayInquiry.getTippingAmount());
+        response.setPointsRedeemed(billPayInquiry.getPointsRedeemed());
+        response.setAmountRedeemed(billPayInquiry.getAmountRedeemed());
 		mceMessage.setResponse(response);
 		}
 		else if(bankInqres instanceof BackendResponse){
@@ -812,6 +815,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
         response.setDiscountType(qrPayment.getDiscountType());
         response.setNumberOfCoupons(qrPayment.getNumberOfCoupons());
         response.setLoyalityName(qrPayment.getLoyalityName());
+        response.setTippingAmount(qrPayment.getTippingAmount());
+        response.setPointsRedeemed(qrPayment.getPointsRedeemed());
+        response.setAmountRedeemed(qrPayment.getAmountRedeemed());
 		mceMessage.setRequest(qrPayment);
 //		mceMessage.setDestinationQueue(sourceToDestQueue);
 		response.setInfo1(qrPayment.getInvoiceNumber());

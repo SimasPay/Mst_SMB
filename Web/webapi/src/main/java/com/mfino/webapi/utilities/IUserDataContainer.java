@@ -351,6 +351,9 @@ public interface IUserDataContainer {
 	public String getLoyalityName();
 	public String getDiscountType();
 	public String getNumberOfCoupons();
+	public abstract String getTippingAmount();
+	public abstract String getPointsRedeemed();
+	public abstract String getAmountRedeemed();
 	
 	public String getKtpDocument();
 	public String getSubscriberFormDocument();

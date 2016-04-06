@@ -68,6 +68,9 @@ public class FlashizCommunicator {
 				ackToBank.setDiscountType(paymentRequest.getDiscountType());
 				ackToBank.setNumberOfCoupons(paymentRequest.getNumberOfCoupons());
 				ackToBank.setLoyalityName(paymentRequest.getLoyalityName());
+				ackToBank.setTippingAmount(paymentRequest.getTippingAmount());
+				ackToBank.setPointsRedeemed(paymentRequest.getPointsRedeemed());
+				ackToBank.setAmountRedeemed(paymentRequest.getAmountRedeemed());
 				mceMsg.setResponse(ackToBank);
 			}
 			return mceMsg;
@@ -86,6 +89,9 @@ public class FlashizCommunicator {
 				authToBank.setDiscountType(paymentInquiryRequest.getDiscountType());
 				authToBank.setNumberOfCoupons(paymentInquiryRequest.getNumberOfCoupons());
 				authToBank.setLoyalityName(paymentInquiryRequest.getLoyalityName());
+				authToBank.setTippingAmount(paymentInquiryRequest.getTippingAmount());
+				authToBank.setPointsRedeemed(paymentInquiryRequest.getPointsRedeemed());
+				authToBank.setAmountRedeemed(paymentInquiryRequest.getAmountRedeemed());
 				//authToBank.setInfo3(paymentInquiryRequest.getInfo3());
 				authToBank.setBillerCode(paymentInquiryRequest.getBillerCode());
 				mceMsg.setResponse(authToBank);

@@ -18,7 +18,6 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.transactionapi.handlers.account.GetRegistrationMediumHandler;
 import com.mfino.transactionapi.handlers.account.GetUserAPIKeyHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.UserAPIKeyXMLResult;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -61,6 +60,12 @@ public class GetUserAPIKeyHandlerImpl extends FIXMessageHandler implements GetUs
 			log.error("No Subscriber found with the given MDN in subscriber table");
 			return result;
 		}
+		if (StringUtils.isNotBlank(sourceMDN.getUserAPIKey())) {
+			log.info("Returning the user api key from local db ...");
+			result.setUserAPIKey(sourceMDN.getUserAPIKey());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_GetUserAPIKeySuccess);
+			return result;
+		}		
 		CFIXMsg response = super.process(getUserAPIKey);
 		if(response instanceof CMGetUserAPIKeyFromBank){
 			CMGetUserAPIKeyFromBank bankResponse = (CMGetUserAPIKeyFromBank) response;

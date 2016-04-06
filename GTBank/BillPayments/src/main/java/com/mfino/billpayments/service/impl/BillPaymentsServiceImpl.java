@@ -84,6 +84,15 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		if(StringUtils.isNotBlank(billPayInquiry.getLoyalityName())){
 			billPayments.setInfo5(billPayInquiry.getLoyalityName());
 		}
+		if (billPayInquiry.getPointsRedeemed() != null) {
+			billPayments.setInfo6(billPayInquiry.getPointsRedeemed().toString());
+		}
+		if (billPayInquiry.getAmountRedeemed() != null) {
+			billPayments.setInfo7(billPayInquiry.getAmountRedeemed().toString());
+		}
+		if (billPayInquiry.getTippingAmount() != null) {
+			billPayments.setInfo8(billPayInquiry.getTippingAmount().toString());
+		}		
 		/*Added as part of flash new requirements -- Ends */
 		
 		// Data specific to Bayar.Net

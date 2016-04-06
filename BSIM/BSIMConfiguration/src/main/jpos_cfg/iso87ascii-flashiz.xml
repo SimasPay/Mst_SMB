@@ -249,7 +249,7 @@
   <isofield
       id="48"
       length="40"
-      name="ADITIONAL DATA - PRIVATE"
+      name="USER API KEY"
       class="org.jpos.iso.IF_CHAR"/>
   <isofield
       id="49"
@@ -278,9 +278,10 @@
       class="org.jpos.iso.IFA_NUMERIC"/>
   <isofield
       id="54"
-      length="120"
-      name="ADDITIONAL AMOUNTS"
-      class="org.jpos.iso.IFA_LLLCHAR"/>
+      length="18"
+      name="AMOUNT TIP, TRANSACTION"
+      pad="true"
+      class="org.jpos.iso.IFB_NUMERIC"/>
   <isofield
       id="55"
       length="999"
@@ -613,7 +614,7 @@
       class="org.jpos.iso.IFA_LLLCHAR"/>
   <isofield
       id="121"
-      length="1"
+      length="999"
       name="RESERVED PRIVATE USE"
       class="org.jpos.iso.IFA_LLLCHAR"/>
   <isofield

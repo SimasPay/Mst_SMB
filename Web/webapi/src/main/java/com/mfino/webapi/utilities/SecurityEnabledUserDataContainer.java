@@ -885,6 +885,24 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 	}
 	
 	@Override
+	public String getTippingAmount() {
+		// TODO Auto-generated method stub
+		return this.container.getTippingAmount();
+	}
+
+	@Override
+	public String getPointsRedeemed() {
+		// TODO Auto-generated method stub
+		return this.container.getPointsRedeemed();
+	}
+
+	@Override
+	public String getAmountRedeemed() {
+		// TODO Auto-generated method stub
+		return this.container.getAmountRedeemed();
+	}
+
+	@Override
 	public String getKtpDocument() {
 		return this.container.getKtpDocument();
 	}

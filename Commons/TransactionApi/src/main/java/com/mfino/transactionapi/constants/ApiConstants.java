@@ -337,6 +337,12 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	
 	public static final String PARAMETER_NOOF_COUPONS = "numberOfCoupons";
 	
+	public static final String PARAMETER_TIPPING_AMOUNT = "tippingAmount";
+	
+	public static final String PARAMETER_POINTS_REDEEMED = "pointsRedeemed";
+	
+	public static final String PARAMETER_AMOUNT_REDEEMED = "amountRedeemed";	
+	
 	public static final String PARAMETER_KTPID = "ktpId";
 	public static final String PARAMETER_KTP_VALID_UNTIL = "ktpValidUntil";
 	public static final String PARAMETER_KTP_LIFETIME = "ktpLifetime";
