@@ -15,7 +15,20 @@ public class LoginXMLResult extends XMLResult {
 	private String userAPIKey;
 	private boolean isBank;
 	private String name;
+	private String bankAccountNumber;
 	
+	/**
+	 * @return the bankAccountNumber
+	 */
+	public String getBankAccountNumber() {
+		return bankAccountNumber;
+	}
+	/**
+	 * @param bankAccountNumber the bankAccountNumber to set
+	 */
+	public void setBankAccountNumber(String bankAccountNumber) {
+		this.bankAccountNumber = bankAccountNumber;
+	}
 	/**
 	 * @return the name
 	 */
@@ -131,6 +144,10 @@ public class LoginXMLResult extends XMLResult {
 			getXmlWriter().writeEndElement();
 			
 		}
+		
+		getXmlWriter().writeStartElement("bankAccountNumber");
+		getXmlWriter().writeCharacters(bankAccountNumber,false);
+		getXmlWriter().writeEndElement();
 		
 		writeEndOfDocument();
 	}

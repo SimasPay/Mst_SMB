@@ -264,19 +264,29 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			}
 			int subscriberType=srcSubscriberMDN.getSubscriber().getType();
 			boolean isBankTypePocket=false;
+			
+			Pocket bankPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			
 			if(subscriberType==CmFinoFIX.SubscriberType_Partner){
+				
 				isBankTypePocket=true;
-			}else if(subscriberType==CmFinoFIX.SubscriberType_Subscriber){
-				Pocket bankPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+				
+			} else if(subscriberType==CmFinoFIX.SubscriberType_Subscriber){
 				
 				if(bankPocket != null && bankPocket.getStatus().intValue() == CmFinoFIX.PocketStatus_Active){
 					
 					isBankTypePocket=true;
+				
 				}else{
+					
 					isBankTypePocket=false;
 				}
 			}
 			
+			if(isBankTypePocket) {
+				
+				result.setBankAccountNumber(bankPocket.getCardPAN());
+			}
 			
 			byte[] encryptedAESKey = CryptographyService.encryptWithPBE(aesKey, authToken.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
 			byte[] encryptedZeroes = CryptographyService.encryptWithAES(aesKey, GeneralConstants.ZEROES_STRING.getBytes(GeneralConstants.UTF_8));
