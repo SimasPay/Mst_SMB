@@ -25,6 +25,7 @@ import com.lowagie.text.DocumentException;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.BillPayments;
+import com.mfino.domain.BookingDatedBalance;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.InterbankTransfer;
@@ -44,6 +45,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.service.BillPaymentsService;
+import com.mfino.service.BookingDateBalanceService;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.IBTService;
@@ -374,19 +376,54 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	
 	private void createPDF(TransactionDetails txnDetails, SubscriberMDN subscriberMDN,	Pocket pocket, List<CommodityTransfer> transactionHistoryList, String filePath, Long sctlId) throws IOException, DocumentException 
 	{
+		 
+		 BookingDateBalanceService balanceService = new BookingDateBalanceService();
+		 BookingDatedBalance bookingFromDatedBalance = balanceService.getBookingDatedBalances(pocket, txnDetails.getFromDate());
+		 BigDecimal openingBalance= new BigDecimal(0);
+		 if(bookingFromDatedBalance!=null){
+			 openingBalance=bookingFromDatedBalance.getOpeningBalance();
+		 }
+		 BookingDatedBalance bookingToDatedBalance = null;
+		 BigDecimal endingBalance = new BigDecimal(0);
+		 
+		 
+		 Calendar cal = Calendar.getInstance();
+		    cal.set(Calendar.HOUR_OF_DAY, 0);
+		    cal.set(Calendar.MINUTE, 0);
+		    cal.set(Calendar.SECOND, 0);
+		    cal.set(Calendar.MILLISECOND, 0);
+		    Date currentDate = cal.getTime();
+		 if(txnDetails.getToDate().compareTo(currentDate)==0){
+			 endingBalance=pocket.getCurrentBalance();
+		
+		 }else{
+			 bookingToDatedBalance = balanceService.getBookingDatedBalances(pocket, txnDetails.getToDate());
+			 if(bookingToDatedBalance!=null){
+				 endingBalance= bookingToDatedBalance.getClosingBalance();
+			 }
+		 }
+		 
 		File file = new File(filePath);
 		PDFDocument pdfDocument = new PDFDocument(file, txnDetails.getSourcePIN());
 		
 		//String headerRow = "Tanggal | Transaksi | Jumlah";
-		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transactions") + " | " + LanguageTranslator.translate(language, "Amount");
+		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transaction type") + " | " + LanguageTranslator.translate(language, "Amount(dalam Rp)");
 		pdfDocument.addLogo();
-		pdfDocument.addSubscriberDetailsTable(txnDetails, subscriberMDN, pocket);
+		
 		pdfDocument.addHeaderRow(headerRow);
 		
 		Iterator<CommodityTransfer> it = transactionHistoryList.iterator();
+		BigDecimal totalCreditAmount=new BigDecimal(0);
+		BigDecimal totalDetbitAmount=new BigDecimal(0);
+		int rowCount=0;
+		boolean isLastRow=false;
 		while(it.hasNext())
 		{
 			CommodityTransfer ct = it.next();
+			rowCount++;
+			if(rowCount == transactionHistoryList.size()){
+				isLastRow=true;
+			}
 			String txnType = ct.getGeneratedTxnDescription();
 			boolean isCredit ;
 			if (ct.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
@@ -398,12 +435,18 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			BigDecimal txnAmount = ct.getAmount();
 			if (!isCredit) {
 				txnAmount = txnAmount.add(ct.getCharges());
+				totalDetbitAmount=totalDetbitAmount.add(txnAmount);
+			}else{
+				totalCreditAmount=totalCreditAmount.add(txnAmount);
 			}
 			String rowContent = dateFormat.format(ct.getStartTime())
 								+ "|"+ txnType
-								+ "|"+ "Rp. " + MfinoUtil.getNumberFormat().format(txnAmount)  + (! isCredit ? "(-)" : "(+)");
-			pdfDocument.addRowContent(rowContent);
+								+ "|"+ (! isCredit ? "-" : "+")+ MfinoUtil.getNumberFormat().format(txnAmount) ;
+			pdfDocument.addRowContent(rowContent,isLastRow);
+			
 		}
+		pdfDocument.addSubscriberDetailsTable(txnDetails, subscriberMDN, pocket,totalCreditAmount,totalDetbitAmount,openingBalance,endingBalance);
+		
 		pdfDocument.closePdfReport();		
 	}
 	
@@ -509,4 +552,6 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 //			smsService.asyncSendSMS();
 //		}
 //	}
+	
+	
 }

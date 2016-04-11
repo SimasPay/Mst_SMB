@@ -388,7 +388,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 								//+ "|" + getTxnType(entry.getBankTransactionCode())
 								+ "|" + LanguageTranslator.translate(subscriberMDN.getSubscriber().getLanguage(), entry.getBankTransactionCode())
 								+ "|" + "Rp. " + MfinoUtil.getNumberFormat().format(entry.getAmount())  + (TRANSACTION_FLAG_CREDIT == entry.getBankTransactionFlag()?"(+)":"(-)");
-			pdfDocument.addRowContent(rowContent);
+			pdfDocument.addRowContent(rowContent,false);
 		}
 		pdfDocument.closePdfReport();		
 		
