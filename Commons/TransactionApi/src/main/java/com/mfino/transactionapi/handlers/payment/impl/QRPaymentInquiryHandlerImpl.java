@@ -139,6 +139,9 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
         qrPaymentInquiry.setTippingAmount(transactionDetails.getTippingAmount());
         qrPaymentInquiry.setPointsRedeemed(transactionDetails.getPointsRedeemed());
         qrPaymentInquiry.setAmountRedeemed(transactionDetails.getAmountRedeemed());
+        if (transactionDetails.getTippingAmount() != null) {
+        	qrPaymentInquiry.setAmount(transactionDetails.getAmount().add(transactionDetails.getTippingAmount()));
+        }
 		log.info("Handling Subscriber qr payment Inquiry webapi request");
 		XMLResult result = new TransferInquiryXMLResult();
 
