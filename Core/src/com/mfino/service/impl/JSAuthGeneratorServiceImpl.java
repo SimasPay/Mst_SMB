@@ -102,10 +102,8 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private static final String APPUPLOADER_TAB="appUploader";
     private static final String ADJUSTMENTS_TAB="adjustments";
     private static final String PERMISSIONS_TAB="permissions";
-    private static final String PROMOS_TAB="promos";
-    private static final String PRODUCTREFERRAL_TAB="productReferral";
-    
-
+    private static final String PROMOS_TAB="promos";  
+    private static final String PREFERRAL_TAB="pReferral";
 	@Autowired
 	@Qualifier("UserServiceImpl")
 	private UserService userService;
@@ -281,9 +279,10 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         jsBuf.append(getCodeForSingleTabEnabled(PERMISSIONS_TAB));
         jsBuf.append(ELSE);
         jsBuf.append(getCodeForSingleTabEnabled(PROMOS_TAB));
-        jsBuf.append(ELSE);
-        jsBuf.append(getCodeForSingleTabEnabled(PRODUCTREFERRAL_TAB));
+        jsBuf.append(ELSE);       
+       jsBuf.append(getCodeForSingleTabEnabled(PREFERRAL_TAB));       
 		jsBuf.append("};");
+        
         return jsBuf.toString();
     }
 
@@ -302,7 +301,8 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
             return authorizationService.isAuthorized(CmFinoFIX.Permission_DCT_View);
         } else if (tabName.equals(NOTIFICATION_TAB)) {
             return authorizationService.isAuthorized(CmFinoFIX.Permission_Notification_View);
-        } else if (tabName.equals(SETTINGS_TAB)) {
+        }
+        else if (tabName.equals(SETTINGS_TAB)) {
             return (authorizationService.isAuthorized(CmFinoFIX.Permission_Brand_View) || 
             			authorizationService.isAuthorized(CmFinoFIX.Permission_Bulk_Upload_View) ||
             				authorizationService.isAuthorized(CmFinoFIX.Permission_Notification_View) ||            					
@@ -323,7 +323,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
             																			authorizationService.isAuthorized(CmFinoFIX.Permission_AppUploader) ||
             																				authorizationService.isAuthorized(CmFinoFIX.Permission_Permissions)||            																				
                 																				authorizationService.isAuthorized(CmFinoFIX.Permission_Promos) ||
-            																						authorizationService.isAuthorized(CmFinoFIX.Permission_ProductReferrals));
+            																						authorizationService.isAuthorized(CmFinoFIX.Permission_ProductReferrals  	));
         } else if (tabName.equals(Channel_CODES_TAB)) {
             return authorizationService.isAuthorized(CmFinoFIX.Permission_Channel_Codes_View);
         }else if (tabName.equals(MNO_PARAMS_TAB)) {
@@ -394,9 +394,11 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_AppUploader);
         } else if(tabName.equals(PROMOS_TAB)){
             return authorizationService.isAuthorized(CmFinoFIX.Permission_Promos);
-        } else if(tabName.equals(PRODUCTREFERRAL_TAB)){
-            return authorizationService.isAuthorized(CmFinoFIX.Permission_ProductReferrals);}         
-         else if(tabName.equals(ACTOR_CHANNEL_MAPPING_TAB)){
+        }    
+        else if(tabName.equals(PREFERRAL_TAB)){
+            return authorizationService.isAuthorized(CmFinoFIX.Permission_ProductReferrals);
+        }
+        else if(tabName.equals(ACTOR_CHANNEL_MAPPING_TAB)){
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_ActorChannelMapping);
         } else if(tabName.equals(ADJUSTMENTS_TAB)){
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_Adjustments);
@@ -404,7 +406,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_Permissions);
         } else if(tabName.equals(TRANSACTIONS_MAIN_TAB)){
         	return authorizationService.isAuthorized(CmFinoFIX.Permission_ServiceChargeTransaction_View) || 
-        				authorizationService.isAuthorized(CmFinoFIX.Permission_Adjustments);
+        	authorizationService.isAuthorized(CmFinoFIX.Permission_Adjustments);
         }
         return false;
     }

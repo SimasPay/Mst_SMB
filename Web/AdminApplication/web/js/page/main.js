@@ -54,8 +54,8 @@ mFino.page.main = function(config){
 		"appUploader":mFino.page.appUploader,
 		"adjustments":mFino.page.adjustments,
 		"permissions":mFino.page.permissions,
-		"promos":mFino.page.promos,
-		"productReferral":mFino.page.productReferral
+		"promos":mFino.page.promos,		
+		"pReferral":mFino.page.pReferral,
 		
     };
 
@@ -262,21 +262,25 @@ mFino.page.main = function(config){
         { 
             id: 'promos', 
 		    layout : "fit"
-        },
-        
+        },   
+       
         { 
-            id: 'productReferral', 
+            id: 'pReferral', 
 		    layout : "fit"
-        }
-        
+        }        
         ]
     });
   
     var activeTab;
     for(var i = 0; i < center.items.items.length; i++){
+    	//alert("length :- "+center.items.items.length);
         var tabId = center.items.items[i].getId();
+       // alert("message: tabId :- "+tabId);
         if(mFino.auth.isEnabledTab(tabId)){
+        	//alert("message:tabauthenticationtab:-  "+mFino.auth.isEnabledTab(tabId));
             var tabComponent = center.getComponent(tabId);
+            //alert("tabComponent:-  "+center.getComponent(tabId));
+           // alert("tabItems[tabId] name= :- "+tabItems[tabId]);
             tabComponent.add(tabItems[tabId]({
                 dataUrl : config.dataUrl
             }));

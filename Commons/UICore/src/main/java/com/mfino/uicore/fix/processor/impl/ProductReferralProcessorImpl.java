@@ -36,44 +36,59 @@ import com.mfino.uicore.web.WebContextError;
 public class ProductReferralProcessorImpl extends BaseFixProcessor implements ProductReferralProcessor{
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
-	/*@Autowired
-	@Qualifier("EnumTextServiceImpl")
-	private EnumTextService enumTextService;*/
 	
 	private ProductReferralDAO productReferralDAO = DAOFactory.getInstance().getProductReferralDAO();
+	
+	private void updateEntity(ProductReferral productReferral, CMJSProductReferral.CGEntries e) {
+		if (StringUtils.isNotBlank(e.getAgentMDN())) {
+			productReferral.setAgentMDN(e.getAgentMDN());
+		}
+
+		if (StringUtils.isNotBlank(e.getSubscriberMDN())) {		
+			productReferral.setSubscriberMDN(e.getSubscriberMDN());
+		}
+
+		if (StringUtils.isNotBlank(e.getFullName())) {
+			productReferral.setFullName(e.getFullName());
+		}
+		
+		if (StringUtils.isNotBlank(e.getEmail())) {
+			productReferral.setEmail(e.getEmail());
+		}
+		
+		if (StringUtils.isNotBlank(e.getProductDesired())) {
+			productReferral.setProductDesired(e.getProductDesired());
+		}
+		
+		if (StringUtils.isNotBlank(e.getOthers())) {
+			productReferral.setOthers(e.getOthers());
+		}
+
+	}
+
+	
+	private void updateMessage(ProductReferral productReferral, CMJSProductReferral.CGEntries e) {
+		e.setID(productReferral.getID());
+		e.setAgentMDN(productReferral.getAgentMDN());
+		e.setSubscriberMDN(productReferral.getSubscriberMDN());
+		e.setFullName(productReferral.getFullName());
+		e.setEmail(productReferral.getEmail());		
+		e.setProductDesired(productReferral.getProductDesired());
+		e.setOthers(productReferral.getOthers());
+		e.setRecordVersion(productReferral.getVersion());
+		e.setCreatedBy(productReferral.getCreatedBy());
+		e.setCreateTime(productReferral.getCreateTime());
+		e.setUpdatedBy(productReferral.getUpdatedBy());
+		e.setLastUpdateTime(productReferral.getLastUpdateTime());
+		
+		
+	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED, rollbackFor=Throwable.class)		
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
 
 		CMJSProductReferral realMsg = (CMJSProductReferral) msg;
-
-		/*if (CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())) {
-			CMJSProductReferral.CGEntries[] entries = realMsg.getEntries();
-
-			for (CMJSProductReferral.CGEntries e : entries) {
-				ProductReferral productReferral = productReferralDAO.getById(e.getID());
-
-				// Check for Stale Data
-				if (!e.getRecordVersion().equals(productReferral.getVersion())) {
-					handleStaleDataException();
-				}
-				updateEntity(productReferral, e);
-				try {
-					validate(productReferral);
-					productReferralDAO.save(productReferral);
-				} catch (Exception ex) {
-					handleException(ex);
-				}
-				updateMessage(productReferral, e);
-			}
-
-			realMsg.setsuccess(CmFinoFIX.Boolean_True);
-			realMsg.settotal(entries.length);
-		} 
-		
-		
-		else if
-*/		if
+		if
 		(CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
 			ProductReferralQuery query = new ProductReferralQuery();
 
@@ -92,12 +107,11 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 			}
 			
 			if (realMsg.getStartDateSearch() != null) {
-				query.setCreateTimeGE(realMsg.getStartDateSearch());
+				query.setStartDate(realMsg.getStartDateSearch());
 			}
 			if (realMsg.getEndDateSearch() != null) {
-				query.setCreateTimeLT(realMsg.getEndDateSearch());
+				query.setEndDate(realMsg.getEndDateSearch());
 			}
-			
 			
 			if(realMsg.getstart() != null){
 				query.setStart(realMsg.getstart());
@@ -149,62 +163,16 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 		Iterator<ProductReferral> it = entries.iterator();
 		while(it.hasNext())
 		{
-			ProductReferral existingSystemParameter = it.next();
-			// *FindbugsChange*
-        	// Previous -- if(s.getParameterName().equals(existingSystemParameter.getParameterName())  && s.getID() != existingSystemParameter.getID())
-			if(s.getAgentMDN().equals(existingSystemParameter.getAgentMDN())  && (s.getID()!=null && !(s.getID().equals(existingSystemParameter.getID()))))
+			ProductReferral existingProductReferral = it.next();
+			
+			if(s.getAgentMDN().equals(existingProductReferral.getAgentMDN())  && (s.getID()!=null && !(s.getID().equals(existingProductReferral.getID()))))
 			{				
 				throw new Exception("ProductReferral already exists");
 			}
 		}
 	}
 
-	private void updateEntity(ProductReferral productReferral, CMJSProductReferral.CGEntries e) {
-		if (StringUtils.isNotBlank(e.getAgentMDN())) {
-			productReferral.setAgentMDN(e.getAgentMDN());
-		}
-
-		if (StringUtils.isNotBlank(e.getSubscriberMDN())) {
-		//	log.info("Updated the value for " + productReferral.getParameterName() + " from " + systemParameters.getParameterValue() + " to " + 
-		//			e.getParameterValue() + " by user:"+getLoggedUserNameWithIP());
-			productReferral.setSubscriberMDN(e.getSubscriberMDN());
-		}
-
-		if (StringUtils.isNotBlank(e.getFullName())) {
-			productReferral.setFullName(e.getFullName());
-		}
-		
-		if (StringUtils.isNotBlank(e.getEmail())) {
-			productReferral.setEmail(e.getEmail());
-		}
-		
-		if (StringUtils.isNotBlank(e.getProductDesired())) {
-			productReferral.setProductDesired(e.getProductDesired());
-		}
-		
-		if (StringUtils.isNotBlank(e.getOthers())) {
-			productReferral.setOthers(e.getOthers());
-		}
-
-	}
-
-	private void updateMessage(ProductReferral productReferral, CMJSProductReferral.CGEntries e) {
-		e.setID(productReferral.getID());
-		e.setAgentMDN(productReferral.getAgentMDN());
-		e.setSubscriberMDN(productReferral.getSubscriberMDN());
-		e.setFullName(productReferral.getFullName());
-		e.setEmail(productReferral.getEmail());		
-		e.setProductDesired(productReferral.getProductDesired());
-		e.setOthers(productReferral.getOthers());
-		e.setRecordVersion(productReferral.getVersion());
-		e.setCreatedBy(productReferral.getCreatedBy());
-		e.setCreateTime(productReferral.getCreateTime());
-		e.setUpdatedBy(productReferral.getUpdatedBy());
-		e.setLastUpdateTime(productReferral.getLastUpdateTime());
-		
-		
-	}
-
+	
 	private CFIXMsg handleException(Exception e) throws Exception {
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 		CmFinoFIX.CMJSError.CGEntries[] newEntries = errorMsg.allocateEntries(1);
@@ -220,8 +188,4 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 	}
 
 	
-	
-	
-	
-
 }

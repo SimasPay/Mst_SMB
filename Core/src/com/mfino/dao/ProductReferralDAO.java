@@ -42,9 +42,7 @@ private Logger log = LoggerFactory.getLogger(this.getClass());
                 
         return null;
 	}
-	
-	//@Transactional(readOnly=false, propagation = Propagation.REQUIRED, rollbackFor=Throwable.class)
-	public List<ProductReferral> get(ProductReferralQuery query) {
+		public List<ProductReferral> get(ProductReferralQuery query) {
 
         Criteria criteria = createCriteria();
 
@@ -68,6 +66,12 @@ private Logger log = LoggerFactory.getLogger(this.getClass());
             criteria.add(Restrictions.like(CmFinoFIX.CRProductReferral.FieldName_Others, query.getOthers()).ignoreCase());
         }
         
+        if (query.getStartDate() != null) {
+			criteria.add(Restrictions.ge(CmFinoFIX.CRProductReferral.FieldName_CreateTime, query.getStartDate()));
+		}
+		if (query.getEndDate() != null) {
+			criteria.add(Restrictions.le(CmFinoFIX.CRProductReferral.FieldName_CreateTime, query.getEndDate()));
+		}		
         
         processPaging(query, criteria);
         
@@ -76,11 +80,6 @@ private Logger log = LoggerFactory.getLogger(this.getClass());
 
         return results;
     }
-	
-	
-	
-	
-	
 	
 
 }

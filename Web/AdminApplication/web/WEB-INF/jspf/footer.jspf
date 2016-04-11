@@ -909,28 +909,23 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/RoleForm.js" />">
 </script>
-
 <script type="text/javascript" src="<c:url value="/js/widget/FormWindowWithValidation.js" />">
 </script>
-
 <script type="text/javascript" src="<c:url value="/js/widget/PartnerTransfer.js" />">
 </script>
 
+ 
+<!-- PReferral related java script files-->
+<script type="text/javascript" src="<c:url value="/js/page/pReferral.js"/>">
+</script>
+<%-- <script type="text/javascript" src="<c:url value="/js/widget/PReferralForm.js"/>">
+</script> --%>
+<script type="text/javascript" src="<c:url value="/js/widget/PReferralGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PReferralViewForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PReferralSearchForm.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/PReferralDetails.js"/>">
+</script>
 
-<!-- Product Referral related files -->
- <script type="text/javascript" src="<c:url value="/js/page/productReferral.js"/>">
-</script>
- <script type="text/javascript" src="<c:url value="/js/widget/ProductReferralGrid.js"/>">
-</script>
- <%-- <script type="text/javascript" src="<c:url value="/js/widget/ProductReferralEditForm.js"/>">
-</script>  --%>
-<script type="text/javascript" src="<c:url value="/js/widget/ProductReferralSearchForm.js"/>">
-</script>
-<script type="text/javascript" src="<c:url value="/js/widget/ProductReferralViewForm.js"/>">
-</script>
-<script type="text/javascript" src="<c:url value="/js/widget/ProductReferralDetails.js"/>">
-</script>
- <%-- <script type="text/javascript" src="<c:url value="/js/widget/ProductReferralAddForm.js"/>">
-</script>   --%>
- 
- 
