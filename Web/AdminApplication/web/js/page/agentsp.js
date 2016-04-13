@@ -64,6 +64,8 @@ mFino.page.agentsp = function(config){
         mode:"closeaccount"
     },config));
     
+    var approveAgentClosing = new mFino.widget.ApproveRejectWindowCloseAccount(config);
+    
     var listBox = new mFino.widget.ServicePartnerListsp(Ext.apply({
        	height : 300,
        	anchor : "100%, -255",
@@ -354,8 +356,9 @@ mFino.page.agentsp = function(config){
                 }
             },
             {
-            	iconCls: 'mfino-button-close-account',
+            	iconCls: 'mfino-button-delete-agent',
             	tooltip : _('Agent Account Closing'),
+            	itemId : 'close.account',
             	handler : function() {
             		if(!detailsForm.record){
             			Ext.MessageBox.alert(_("Alert"), _("No Agent selected!"));
@@ -372,11 +375,48 @@ mFino.page.agentsp = function(config){
             				return;
             			}
             			
+            			if(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.CloseAcctStatus._name) == CmFinoFIX.CloseAcctStatus.Validated) {
+            				Ext.MessageBox.alert(_("Alert"), _("Agent Closing Request has already been taken."));
+            				return;
+            			}
+            			
             			agentClosing.show();
             			agentClosing.form.setDetails(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.NameInAccordanceIdentity._name),detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.AgentCode._name),detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.MDN._name));            			
             		}
             	}
-	        }
+	        },
+            {
+                iconCls : "mfino-button-delete-agent-approve",
+                tooltip : _('Approve/Reject Agent Closing'),
+                itemId : 'agent.approveClose',
+                handler : function(){
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No Agent selected!"));
+                        
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.PartnerStatus._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	
+                    	Ext.MessageBox.alert(_("Info"), _("Agent Should be Active!"));
+                    	 
+                    }else{
+                    	
+                    	if(detailsForm.record.get(CmFinoFIX.message.JSAgent.Entries.CloseAcctStatus._name)==CmFinoFIX.CloseAcctStatus.Validated){
+                    		
+                    		approveAgentClosing.show();
+                    		approveAgentClosing.setRecord(detailsForm.record);  
+                    		
+                        } else {
+                        	
+                        	Ext.Msg.show({
+                                title: _('Alert !'),
+                                minProgressWidth:250,
+                                msg: _("Agent Closing Status Should be Initialized State Only!"),
+                                buttons: Ext.MessageBox.OK,
+                                multiline: false
+                            });
+                        }
+                    }
+                }
+            }
             ],
             items: [ detailsForm ]
         },

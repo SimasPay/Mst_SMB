@@ -199,7 +199,10 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			if(sctl!=null){
 				transactionChargingService.saveServiceTransactionLog(sctl);
 			}
+			
+			result.setName(subscribermdn.getSubscriber().getFirstName());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberActivationInquirySuccessful);
+			
  			return result;			
 		}
 		

@@ -32,6 +32,7 @@ import com.mfino.fix.CmFinoFIX.CMJSActorChannelMappingValidator;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustments;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustmentsPocket;
 import com.mfino.fix.CmFinoFIX.CMJSAgent;
+import com.mfino.fix.CmFinoFIX.CMJSAgentCloseApproveReject;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosing;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosingInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
@@ -640,6 +641,10 @@ public class FixController {
 	@Autowired
 	@Qualifier("AgentClosingProcessorImpl")
 	private AgentClosingProcessor agentClosingProcessor;
+	
+	@Autowired
+	@Qualifier("ApproveorRejectAgentClosingProcessorImpl")
+	private ApproveorRejectAgentClosingProcessor approveOrRejectAgentClosingProcessor;
 
 	@Autowired
 	@Qualifier("ProvinceProcessorImpl")
@@ -1279,9 +1284,13 @@ public class FixController {
 					.getName())) {
 				fixProcessor = agentClosingProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentClosing);
-			}
-
-			else if (msgClassName.equals(CMJSProductReferral.class.getName())) {
+				
+			} else if (msgClassName.equals(CMJSAgentCloseApproveReject.class.getName())) {
+				
+				fixProcessor = approveOrRejectAgentClosingProcessor;
+				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentCloseApproveReject);
+				
+			} else if (msgClassName.equals(CMJSProductReferral.class.getName())) {
 				fixProcessor = productReferralProcessor;
 				tl.setMessageCode(CmFinoFIX.MsgType_JSProductReferral);
 			}

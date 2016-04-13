@@ -65,7 +65,7 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(true);
-		transferConfirmation.setIsSystemIntiatedTransaction(true);
+		transferConfirmation.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
 		transferConfirmation.setChannelCode(cc.getChannelCode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
@@ -83,7 +83,7 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		
 		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
 
-		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
+		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN, transferConfirmation.getIsSystemIntiatedTransaction());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+transferConfirmation.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);

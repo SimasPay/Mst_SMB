@@ -22,6 +22,7 @@ import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
@@ -138,6 +139,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 			return result;
 		}
 		
+		Partner partner = partnerService.getPartner(subMDN);
+		
 		if (subMDN != null) {
 			
 			Pocket destPocket = null;	
@@ -196,6 +199,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							
 							sendOTPSMS(subMDN,sctl.getID());
 							
+							partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Initialized);
+							
 							log.debug("SMS for OTP has been sent....");
 							
 						} else {
@@ -203,6 +208,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed));
 							result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed);
+							
+							partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
 							
 							log.debug("Agent has pending transactions....");
 						}
@@ -213,6 +220,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MDNIsNotActive));
 						result.setNotificationCode(CmFinoFIX.NotificationCode_MDNIsNotActive);
 						
+						partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+						
 						log.debug("Agent is not active....");
 					}
 					
@@ -222,6 +231,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 					result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance));
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance);
 					
+					partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+					
 					log.debug("Agent balance is > 100....");
 				}
 			}			
@@ -230,8 +241,12 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
+			partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+			
 			log.debug("Agent not found....");
-		}		
+		}
+		
+		partnerService.savePartner(partner);
 		
 		return result;
 	}

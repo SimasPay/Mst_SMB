@@ -586,6 +586,8 @@
 <script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerFormspEdit.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/widget/ServicePartnerFormspView.js"/>"></script>
 
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectWindowCloseAccount.js"/>"></script>
+
 <script type="text/javascript" src="<c:url value="/js/widget/AgentClosingInquiry.js" />">
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/AgentClosing.js" />">

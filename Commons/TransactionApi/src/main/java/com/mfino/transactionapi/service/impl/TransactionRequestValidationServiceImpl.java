@@ -597,7 +597,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateDesttinationMDN(transactionDetails);
 		validateFirstName(transactionDetails);
 		//validateLastName(transactionDetails);
-		validateDateOfBirth(transactionDetails);
+		//validateDateOfBirth(transactionDetails);
 		if(transactionDetails.getMothersMaidenName()!=null) {
 			
 			validateMothersMaidenName(transactionDetails);	

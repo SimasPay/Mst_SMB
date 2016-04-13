@@ -16,6 +16,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
@@ -176,6 +177,16 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 						subMDN.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
 						subMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 						subMDN.setCloseComments(transactionDetails.getDescription());
+						
+						if(!transactionDetails.isSystemIntiatedTransaction()) {
+							
+							Partner partner = partnerService.getPartner(agentMDN);
+							subMDN.setCloseAgent(String.valueOf(partner.getID()));
+							
+						} else {
+							
+							subMDN.setCloseUser(transactionDetails.getAuthorizedRepresentative());
+						}
 						
 						Subscriber subscriber = subMDN.getSubscriber();
 						subscriber.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);

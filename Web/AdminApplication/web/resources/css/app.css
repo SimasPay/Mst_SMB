@@ -402,7 +402,7 @@ div#mainDiv{
     background-image:url(../images/distribute.png) !important;
 }
 .mfino-button-close-account {
-    background-image:url(../images/delete.gif) !important;
+    background-image:url(../images/Delete_Resized.png) !important;
 }
 .mfino-button-recharge {
     background-image:url(../images/recharge.png) !important;
@@ -990,4 +990,10 @@ color:red;
 }
 .mfino-button-upgrade-approve {
     background-image:url(../images/upgrade-approve-16.png) !important;
+}
+.mfino-button-delete-agent {
+    background-image:url(../images/Delete_Resized.png) !important;
+}
+.mfino-button-delete-agent-approve {
+    background-image:url(../images/Delete_Approve.png) !important;
 }

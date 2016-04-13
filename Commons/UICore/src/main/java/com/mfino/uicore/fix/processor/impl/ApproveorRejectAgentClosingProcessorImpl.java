@@ -10,29 +10,28 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
+import com.mfino.fix.CmFinoFIX.CMJSAgentCloseApproveReject;
 import com.mfino.fix.CmFinoFIX.CMJSError;
-import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosing;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.ChannelCodeService;
 import com.mfino.service.UserService;
 import com.mfino.transactionapi.constants.ApiConstants;
-import com.mfino.transactionapi.handlers.account.SubscriberClosingHandler;
+import com.mfino.transactionapi.handlers.agent.ApproveorRejectAgentClosingHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.SubscriberAccountClosingXMLResult;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.uicore.fix.processor.ApproveorRejectAgentClosingProcessor;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
-import com.mfino.uicore.fix.processor.SubscriberClosingProcessor;
 
-@Service("SubscriberClosingProcessorImpl")
-public class SubscriberClosingProcessorImpl extends BaseFixProcessor implements SubscriberClosingProcessor{
+@Service("ApproveorRejectAgentClosingProcessorImpl")
+public class ApproveorRejectAgentClosingProcessorImpl extends BaseFixProcessor implements ApproveorRejectAgentClosingProcessor{
 	
 	@Autowired
 	@Qualifier("ChannelCodeServiceImpl")
 	private ChannelCodeService channelCodeService;
 	
-	
 	@Autowired
-	@Qualifier("SubscriberClosingHandlerImpl")
-	private SubscriberClosingHandler subscriberClosingHandler;
+	@Qualifier("ApproveorRejectAgentClosingHandlerImpl")
+	private ApproveorRejectAgentClosingHandler agentClosingHandler;
 	
 	@Autowired
 	@Qualifier("UserServiceImpl")
@@ -42,33 +41,34 @@ public class SubscriberClosingProcessorImpl extends BaseFixProcessor implements 
 	public CFIXMsg process(CFIXMsg msg) throws Exception  {
 		
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
-		CMJSSubscriberClosing realMsg = (CMJSSubscriberClosing) msg;
+		CMJSAgentCloseApproveReject realMsg = (CMJSAgentCloseApproveReject) msg;
 		
 		errorMsg.setsuccess(false);
 
 		if (CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())) {
-
-		} else if (CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
 			
-
-		} else if (CmFinoFIX.JSaction_Insert.equalsIgnoreCase(realMsg.getaction())) {
+			log.info("Procesing the Close Account Request for " + realMsg.getMDNID());
 			
-			log.info("Procesing the Close Account Request for " + realMsg.getDestMDN());
-			
-			if (realMsg.getDestMDN() == null ) {
+			if (realMsg.getMDNID() == null ) {
 				log.error("Dest MDN is null");
-				errorMsg.setErrorDescription(MessageText._("Invalid Subscriber MDN"));
+				errorMsg.setErrorDescription(MessageText._("Invalid Agent MDN"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
 			
-			errorMsg = validateSubscriberClosing(realMsg,errorMsg);
+			errorMsg = validateAgentClosing(realMsg,errorMsg);
 			
 			if(CmFinoFIX.ErrorCode_Generic.equals(errorMsg.getErrorCode())){
 				return errorMsg;
 			}
 			
 			return errorMsg;
+
+		} else if (CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
+			
+
+		} else if (CmFinoFIX.JSaction_Insert.equalsIgnoreCase(realMsg.getaction())) {
+			
 
 		} else if (CmFinoFIX.JSaction_Delete.equalsIgnoreCase(realMsg.getaction())) {
 
@@ -77,29 +77,27 @@ public class SubscriberClosingProcessorImpl extends BaseFixProcessor implements 
 		return realMsg;
 	}
 	
-	private CMJSError validateSubscriberClosing(CMJSSubscriberClosing realMsg, CMJSError errorMsg) throws InvalidDataException {
+	private CMJSError validateAgentClosing(CMJSAgentCloseApproveReject realMsg, CMJSError errorMsg) throws InvalidDataException {
 		
 		TransactionDetails td =new TransactionDetails();
 		
 		ChannelCode channelCode = getChannelCode(String.valueOf(CmFinoFIX.SourceApplication_WebAPI));
 		td.setCc(channelCode);
 		
-		td.setDestMDN(realMsg.getDestMDN());
-		td.setParentTxnId(realMsg.getSctlId());
-		td.setActivationOTP(realMsg.getOneTimePassCode());
+		td.setDestMDN(String.valueOf(realMsg.getMDNID()));
 		td.setSystemIntiatedTransaction(true);
 		td.setHttps(true);
-		td.setDescription(realMsg.getComments());
+		td.setDescription(realMsg.getCloseApproverComments());
 		td.setAuthorizedRepresentative(userService.getCurrentUser().getUsername());
 		
-		SubscriberAccountClosingXMLResult result = (SubscriberAccountClosingXMLResult)subscriberClosingHandler.handle(td);
+		SubscriberAccountClosingXMLResult result = (SubscriberAccountClosingXMLResult)agentClosingHandler.handle(td);
 		
 		if(null != result) {
 			
-			if(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingSuccess).equals(result.getCode())) {
+			if(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingSuccess).equals(result.getCode())) {
 			
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-				errorMsg.setErrorDescription("Subscriber Account Request taken successfully");
+				errorMsg.setErrorDescription("Agent Account Closed successfully");
 				
 			}   else {
 				

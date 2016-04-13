@@ -980,7 +980,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         					subscriberGroupDao.save(sg);
         				}
         			}
-        		}            	
+        		}
         }
     
 	private void updateEntity(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,CMJSAgent.CGEntries entry) {
@@ -1366,6 +1366,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
 	        }
 	        entry.setRestrictions(subscriberMdn.getRestrictions());
+	        entry.setCloseAcctStatus(partner.getCloseAcctStatus());
         }
         if(subscriber != null){
         	if(subscriber.getFirstName() != null){
@@ -1625,6 +1626,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
 	        	entry.setAgentType(String.valueOf(partner.getBusinessPartnerType()));
 	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
+	        	entry.setCloseAcctStatus(partner.getCloseAcctStatus());
 	        }
 	        entry.setRestrictions(subscriberMdn.getRestrictions());
         }

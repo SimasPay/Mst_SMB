@@ -90,7 +90,7 @@ public class AgentClosingProcessorImpl extends BaseFixProcessor implements Agent
 		
 		if(null != result) {
 			
-			if(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingSuccess).equals(result.getCode())) {
+			if(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess).equals(result.getCode())) {
 			
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 				errorMsg.setErrorDescription("Agent Account Request taken successfully");

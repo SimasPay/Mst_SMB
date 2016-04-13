@@ -5373,6 +5373,10 @@
 				<field name="BusinessPartnerTypeAgent" required="N"/>
 				<field name="BusinessPartnerTypeAgentText" required="N"/>
 				<field name="BankBranchCode" required="N" />
+				<field name="CloseAcctStatus" required="N" />
+				<field name="CloseAcctApprovedBy" required="N" />
+				<field name="CloseAcctTime" required="N" />
+				<field name="CloseApproverComments" required="N" />
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
 				<field name="PartnerID" id="ID" required="N"  />
 				<field name="SubscriberID" required="N"  />
@@ -5539,6 +5543,7 @@
 				<field name="BusinessPartnerTypeAgent" required="N"/>
 				<field name="BusinessPartnerTypeAgentText" required="N"/>
 				<field name="BankBranchCode" required="N" />
+				<field name="CloseAcctStatus" required="N" />
 			</group>
 		</message>
 		<message name="JSAgentError" msgtype="1769" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSError">
@@ -5670,7 +5675,12 @@
 		<field name="SctlId" required="N" />
 		<field name="Comments" required="N" />
 	</message>
-			
+	<message name="JSAgentCloseApproveReject" msgtype="1781" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="MDNID" required="Y"/>
+		<field name="CloseAcctApprovedBy" required="N"/>
+		<field name="CloseAcctStatus" required="N"/>
+		<field name="CloseApproverComments" required="N"/>
+	</message>		
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -6073,6 +6083,8 @@
 			<field name="UpgradeAcctApprovedBy" required="N" />
 			<field name="UpgradeAcctTime" required="N" />
 			<field name="UpgradeAcctComments" required="N" />
+			<field name="CloseAgent" required="N" />
+			<field name="CloseUser" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -6999,7 +7011,11 @@
 			<field name="BranchSequence" required="N" />
 			<field name="AccountnumberofBankSinarmas" required="N" />
 			<field name="CompanyEmailId" required="N" />
-			<field name="CloseComments" required="N" />		
+			<field name="CloseComments" required="N" />
+			<field name="CloseAcctStatus" required="N" />
+			<field name="CloseAcctApprovedBy" required="N" />
+			<field name="CloseAcctTime" required="N" />
+			<field name="CloseApproverComments" required="N" />
 		</record>
 		<!-- <record name="ServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 				<field name="MSPID" required="Y" References="mFinoServiceProvider" />  
@@ -8311,7 +8327,8 @@
 			<value enum="1777" description="JSSubscriberUpgrade"/>
 			<value enum="1778" description="JSProductReferral"/>
 			<value enum="1779" description="JSAgentClosingInquiry"/>
-			<value enum="1780" description="JSAgentClosing"/>			
+			<value enum="1780" description="JSAgentClosing"/>
+			<value enum="1781" description="JSAgentCloseApproveReject"/>			
 			
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
@@ -23139,6 +23156,20 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</Bahasa>
 				</C1>
+			</value>
+			<value description="AgentPlacedClosingRequest" enum="2169">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Agent Cannot perform any Transactions due to Closing Request Placed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Agent Cannot perform any Transactions due to Closing Request Placed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
 			</value>		
 		</field>
 		
@@ -24494,6 +24525,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="10243" description="PocketTransactions_Download_Excel" />
 			<value enum="10244" description="SubscriberUpgrade" />
 			<value enum="10245" description="SubscriberUpgradeApproveReject" />
+			<value enum="10246" description="AgetntClosingApproveReject" />
+			<value enum="10247" description="ClosingAccount" />
 			<!-- Merchant Tab Permissions -->
 			<!--  <value enum="10301" description="Merchant_Details_All_Merchants_View" />
 			<value enum="10302" description="Merchant_Details_Self_Downline_View" />
@@ -26893,6 +26926,19 @@ ERROR:Mismatch of  mdn type and app type
    		<value enum="0" description="False" />
 		<value enum="1" description="True" />
    	</field>
+   	<field number="8439" name="CloseAgent" type="STRING"/>
+   	<field number="8440" name="CloseUser" type="STRING"/>
+   	<field number="8441" name="CloseAcctStatus" type="INT32">
+   		<value enum="0" description="Initialized" />
+		<value enum="1" description="Validated" />
+		<value enum="2" description="InquiryFailed" />
+		<value enum="3" description="Failed" />
+		<value enum="4" description="Approve" />
+		<value enum="5" description="Reject" />
+   	</field>	
+	<field number="8442" name="CloseApproverComments" type="STRING" />
+	<field number="8443" name="CloseAcctApprovedBy" type="STRING" />
+	<field number="8444" name="CloseAcctTime" type="UTCTIMESTAMP" />	
     </fields>
     <primitives>
 		<dbtype name="mysql">

@@ -67,7 +67,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		bankAccountToBankAccount.setSourceMDN(transactionDetails.getSourceMDN());
 		bankAccountToBankAccount.setDestMDN(transactionDetails.getDestMDN());
 		bankAccountToBankAccount.setAmount(transactionDetails.getAmount());
-		bankAccountToBankAccount.setIsSystemIntiatedTransaction(true);
+		bankAccountToBankAccount.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMessage(StringUtils.isNotBlank(sourceMessage) ? sourceMessage : ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
@@ -85,7 +85,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		
 		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(bankAccountToBankAccount.getSourceMDN());
 
-		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
+		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN, bankAccountToBankAccount.getIsSystemIntiatedTransaction());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+bankAccountToBankAccount.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);

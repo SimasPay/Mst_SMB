@@ -21,6 +21,8 @@ public interface TransactionApiValidationService {
 	 */
 	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN);
 	
+	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN, boolean isCheck);
+	
 	/**
 	 * validates whether the subscriberMDN is allowed to receive funds as destination
 	 * @param subscriberMDN

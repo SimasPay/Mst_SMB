@@ -98,6 +98,59 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_MDNIsNotActive;
 		}
 		
+		if(CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
+			
+			Partner partner = partnerService.getPartner(subscriberMDN);
+			
+			if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+				
+				return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
+			}
+		}
+		
+		return CmFinoFIX.ResponseCode_Success;
+		
+	}
+	
+	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN, boolean isCheck){
+		if(subscriberMDN==null){
+			log.error("SourceMDN is null");
+			return CmFinoFIX.NotificationCode_MDNNotFound;
+		}
+		Subscriber subscriber = subscriberMDN.getSubscriber();
+		
+		if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriber.getStatus()))
+		{
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is not registered");
+			return CmFinoFIX.NotificationCode_SubscriberNotRegistered;
+		}
+		
+		// First Restrictions should be checked as we are allowing InActive Subscribers(of no activity) to login
+		if (!(CmFinoFIX.SubscriberRestrictions_None.equals(subscriberMDN.getRestrictions())) &&
+				!(CmFinoFIX.SubscriberRestrictions_NoFundMovement.equals(subscriberMDN.getRestrictions()))) {
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is restricted");
+			return CmFinoFIX.NotificationCode_MDNIsRestricted;
+		}
+		
+		if( !(CmFinoFIX.MDNStatus_Active.equals(subscriberMDN.getStatus())&& CmFinoFIX.SubscriberStatus_Active.equals(subscriber.getStatus())) &&
+				!(CmFinoFIX.MDNStatus_InActive.equals(subscriberMDN.getStatus())&& CmFinoFIX.SubscriberStatus_InActive.equals(subscriber.getStatus())) ){
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is not active");
+			return CmFinoFIX.NotificationCode_MDNIsNotActive;
+		}
+		
+		if(!isCheck) {
+			
+			if(CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
+				
+				Partner partner = partnerService.getPartner(subscriberMDN);
+				
+				if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+					
+					return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
+				}
+			}
+		}
+		
 		return CmFinoFIX.ResponseCode_Success;
 		
 	}
@@ -141,6 +194,18 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		if (CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(subscriberMDN.getRestrictions())) {
 			return CmFinoFIX.NotificationCode_DestinationMDNIsRestricted;
 		}
+		
+		
+		if(CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
+			
+			Partner partner = partnerService.getPartner(subscriberMDN);
+			
+			if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+				
+				return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
+			}
+		}
+		
 		return CmFinoFIX.ResponseCode_Success;
 	}
 	
@@ -217,6 +282,12 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		if (!(CmFinoFIX.SubscriberRestrictions_None.equals(agentsubscriber.getRestrictions())&&CmFinoFIX.SubscriberRestrictions_None.equals(subscriberMDN.getRestrictions()))) {
 			return CmFinoFIX.NotificationCode_MDNIsRestricted;
 		}
+		
+		if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+			
+			return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
+		}
+		
 		return CmFinoFIX.ResponseCode_Success;
  		
 	}

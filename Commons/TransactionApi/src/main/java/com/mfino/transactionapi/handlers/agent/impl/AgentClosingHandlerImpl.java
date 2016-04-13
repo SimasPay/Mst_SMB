@@ -3,10 +3,6 @@
  */
 package com.mfino.transactionapi.handlers.agent.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,37 +10,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
-import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.constants.SystemParameterKeys;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.PartnerDAO;
-import com.mfino.dao.PocketDAO;
-import com.mfino.dao.SubscriberDAO;
-import com.mfino.dao.UserDAO;
-import com.mfino.dao.query.PartnerQuery;
-import com.mfino.dao.query.PocketQuery;
-import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Partner;
-import com.mfino.domain.Pocket;
-import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.User;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosing;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
-import com.mfino.service.MFAService;
 import com.mfino.service.PartnerService;
-import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
-import com.mfino.service.SubscriberService;
-import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.agent.AgentClosingHandler;
-import com.mfino.transactionapi.handlers.wallet.MoveBalanceConfirmHandler;
-import com.mfino.transactionapi.handlers.wallet.MoveBalanceInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.SubscriberAccountClosingXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -76,34 +52,8 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 	private TransactionLogService transactionLogService;
 	
 	@Autowired
-	@Qualifier("SystemParametersServiceImpl")
-	private SystemParametersService systemParametersService ;
-	
-	@Autowired
-	@Qualifier("PocketServiceImpl")
-	private PocketService pocketService;
-	
-	@Autowired
-	@Qualifier("MFAServiceImpl")
-	private MFAService mfaService;
-	
-	@Autowired
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
-	
-	@Autowired
-	@Qualifier("SubscriberServiceImpl")
-	private SubscriberService subscriberService;
-	
-	@Autowired
-	@Qualifier("MoveBalanceInquiryHandlerImpl")
-	private MoveBalanceInquiryHandler moveBalanceInquiryHandler;
-	
-	@Autowired
-	@Qualifier("MoveBalanceConfirmHandlerImpl")
-	private MoveBalanceConfirmHandler moveBalanceConfirmHandler;
-	
-	boolean isMoneyAvailable = false;
 	
 	/* (non-Javadoc)
 	 * @see com.mfino.transactionapi.handlers.subscriber.SubscriberKtpValidation#handle(com.mfino.transactionapi.vo.TransactionDetails)
@@ -131,6 +81,8 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			return result;
 		}
 		
+		Partner partner = partnerService.getPartner(subMDN);
+		
 		if (subMDN != null) {
 			
 			boolean isHttps = transactionDetails.isHttps();
@@ -138,48 +90,19 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			String oneTimeOTP = transactionDetails.getActivationOTP();
 			
 			if(CmFinoFIX.NotificationCode_OTPValidationSuccessful.equals(ValidationUtil.validateOTP(subMDN, isHttps, isHashedPin, oneTimeOTP))) {
-			
-				try {
 				
-					if(moveMoneyToTreasuaryAndRetirePockets(transactionDetails, subMDN.getID())) {
-						
-						if(!isMoneyAvailable) {
-						
-							retirePartner(subMDN.getID(), transactionDetails.getDescription());
-						}
-						
-						Subscriber subscriber = subMDN.getSubscriber();
-						
-						subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
-						
-						SubscriberDAO subscriberDAO = DAOFactory.getInstance().getSubscriberDAO();
-						subscriberDAO.save(subscriber);
-						
-						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingSuccess));
-						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
-						result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingSuccess);
-						
-						log.info("Agent state modifeid to retired....");
-						
-					} else {
-						
-						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-						result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
-						
-						log.info("Failed due to Agent money movenent to Treasuary....");
-					}
-					
-				} catch (Exception ex) {
-					
-					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-					result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
-					
-					log.info("Agent state is not modified to retired due to some error....");
-				}
+				partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Validated);
+				
+				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess));
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess);
+
 			} else {
 				
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed);
+				
+				partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
 				
 				log.info("Agent state is not modified to retired due to otp validation failure....");
 			}
@@ -189,350 +112,14 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
+			partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+			
 			log.info("Agent not found....");
-		}		
+		}
+		
+		partner.setCloseComments(transactionDetails.getDescription());
+		partnerService.savePartner(partner);
 		
 		return result;
 	}
-	
-	private boolean moveMoneyToTreasuaryAndRetirePockets(TransactionDetails transactionDetails, Long mdnId) {
-        
-		boolean isMoneyMoved = true;
-		
-		isMoneyAvailable = false;
-		
-		Pocket destNationalTreasuryPocket = pocketService.getById(systemParametersService.getLong(SystemParameterKeys.NATIONAL_TREASURY_POCKET));
-		SubscriberMDN destMDN = null;
-		
-		if(destNationalTreasuryPocket != null){
-			
-			destMDN = destNationalTreasuryPocket.getSubscriberMDNByMDNID();
-			
-			if(destMDN == null){
-				
-				log.info("Failed to move money from system collector pocket to National Treasury as pocket code is not set for National Treasury in System Parameters for subscriber ID -->" + mdnId) ;
-				return isMoneyMoved;
-			}
-		
-		} else{
-			
-			log.info("Fail to move money from system collector pocket to National Treasury as pocket code is not set for National Treasury in System Parameters for subscriber ID -->" + mdnId) ;
-			return isMoneyMoved;
-		}
-		
-		transactionDetails.setSourceMDN(transactionDetails.getDestMDN());
-		transactionDetails.setSourcePocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
-		transactionDetails.setDestMDN(destMDN.getMDN());
-		transactionDetails.setDestPocketCode(String.valueOf(destNationalTreasuryPocket.getPocketTemplate().getType()));
-		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY_INQUIRY);
-		transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
-		transactionDetails.setSourcePIN("1");
-		
-		// Here we need to get the Records from pocket table for MdnId.        
-		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();			
-        PocketQuery pocketQuery = new PocketQuery();
-        pocketQuery.setMdnIDSearch(mdnId);
-        
-        List<Pocket> resultantPockets = pocketDAO.get(pocketQuery);
-
-        for (Pocket eachPocket : resultantPockets) {
-        	
-        	if(eachPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)) {
-        		
-        		continue;
-        	}
-
-        	if(!(eachPocket.getCurrentBalance().compareTo(new BigDecimal(0)) == 0) && eachPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) <= 0) {
-        		
-        		transactionDetails.setAmount(eachPocket.getCurrentBalance());
-        		
-	        	if(moveMoneyToNationalTreasury(transactionDetails, destMDN)) {
-	        			
-	        		isMoneyMoved = true;
-	        		isMoneyAvailable = true;
-	        		
-        		} else {
-        			
-        			isMoneyMoved = false;
-        			break;
-        		}
-	        	
-        	} else {
-        		
-        		String cardPanStringToReplace = null;
-                String cardPan = eachPocket.getCardPAN();
-                
-                if (StringUtils.isNotBlank(cardPan)) {
-                	
-                	cardPanStringToReplace = cardPan + "R";
-                }
-
-                if (StringUtils.isBlank(cardPanStringToReplace)) {
-                	
-                	cardPanStringToReplace = cardPan;
-                }
-
-                eachPocket.setCardPAN(cardPanStringToReplace);
-                eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-                eachPocket.setIsDefault(false);
-                
-                pocketDAO.save(eachPocket);
-                
-                isMoneyMoved = false;
-        	}
-        }
-               
-        return isMoneyMoved;
-	}
-	
-	private XMLResult sendMoneyTransferInquiry(TransactionDetails txnDetails) {
-
-		log.info("Agent Closure Confirm::sendMoneyTransferInquiry :Begin");
-		
-		XMLResult xmlResult = null;
-		xmlResult = (XMLResult) moveBalanceInquiryHandler.handle(txnDetails);
-
-		log.info("Inquiry Response for Retired Subscriber " + " got result: " + xmlResult);
-		log.info("Agent Closure Confirm::sendMoneyTransferInquiry :End");
-		
-		return xmlResult;
-	}
-		
-	private XMLResult sendMoneyTransferConfirm(TransactionDetails txnDetails) {
-		
-		log.info("Agent Closure Confirm::sendMoneyTransferConfirm :Begin");
-		log.info("Sending TransferConfirm for Settlement of Retired subscriber ");
-		
-		XMLResult xmlResult = null;
-		txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
-		txnDetails.setCc(txnDetails.getCc());
-
-		xmlResult = (XMLResult) moveBalanceConfirmHandler.handle(txnDetails);
-		log.info("TransferConfirm return code for Settlement of Retired subscriber " + " and the result is: " + xmlResult);
-		log.info("Agent Closure Confirm::sendMoneyTransferConfirm :End");
-		
-		return xmlResult;
-	}
-	
-	private boolean moveMoneyToNationalTreasury(TransactionDetails txnDetails, SubscriberMDN mdn) {
-		
-		XMLResult inquiryResult;
-		XMLResult confirmResult;
-		
-		log.info("Agent Closure Confirm::moveMoneyToNationalTreasury :Begin");
-		log.info("Sending Money transfer Inquiry for subscriber MDN ID -->" + mdn.getID());
-		inquiryResult = sendMoneyTransferInquiry(txnDetails);
-		
-		if (inquiryResult != null && !CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(inquiryResult.getCode())) {
-			
-			log.info("Inquiry for money transfer failed with notification code :" + inquiryResult.getNotificationCode());
-			return false;
-		}
-
-		txnDetails.setConfirmString("true");
-		txnDetails.setTransferId(inquiryResult.getTransferID());
-		txnDetails.setParentTxnId(inquiryResult.getParentTransactionID());
-		txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY);
-		
-		log.info("Sending Money transfer Confirm for subscriber MDN ID -->" + mdn.getID());
-		
-		confirmResult = sendMoneyTransferConfirm(txnDetails);
-
-		if (confirmResult != null && !(CmFinoFIX.NotificationCode_BankAccountToBankAccountCompletedToSenderMDN.toString().equals(confirmResult.getCode())
-				|| CmFinoFIX.NotificationCode_EMoneytoEMoneyCompleteToSender.toString().equals(confirmResult.getCode()))) {
-			
-			log.info("Confirm for money transfer failed with notification code :" + confirmResult.getCode() + " while moving to National Treasury for subscriber--> " + mdn.getID());
-			
-			return false;
-		}
-
-		log.info("Money transfer successful with notification code :" + confirmResult.getCode() + " for agent closure ");
-		log.info("Agent Closure Confirm::moveMoneyToNationalTreasury :End");
-		
-		return true;
-
-	}
-	
-	public void retirePartner(Long subscriberId, String comments) {
-		
-		// TODO Auto-generated method stub
-		PartnerQuery partnerQuery = new PartnerQuery();
-		partnerQuery.setSubscriberID(subscriberId);
-		String tradeNameStringToReplace = null;
-		String codeStringToReplace = null;
-		String userNameStringToReplace = null;
-
-		PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
-		List<Partner> partnerLst = partnerDAO.get(partnerQuery);
-		Partner partner = partnerLst.get(0);
-		
-		tradeNameStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getTradeName(),false);
-		
-		if(tradeNameStringToReplace != null) {
-			
-			partner.setTradeName(tradeNameStringToReplace);
-		}
-
-		codeStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getPartnerCode(),true);
-		
-		if(codeStringToReplace != null) {
-			
-			partner.setPartnerCode(codeStringToReplace);
-		}
-
-		UserQuery userQuery = new UserQuery();
-		userQuery.setUserName(partner.getUser().getUsername());
-		UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-		List <User> userLst = userDAO.get(userQuery);
-
-		User user = null;
-		
-		if(userLst != null) {
-			user = userLst.get(0);
-		}
-		
-		if(user != null){
-			
-			userNameStringToReplace = getUserNameStringForUserName(user.getUsername());
-			
-			if(userNameStringToReplace != null)
-				user.setUsername(userNameStringToReplace);
-			
-			user.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
-			userDAO.save(user);
-		}
-
-		if(userNameStringToReplace != null) {
-			
-			partner.getUser().setUsername(userNameStringToReplace);
-		}
-		
-		partner.setCloseComments(comments);
-		partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Retired);
-		
-		partnerDAO.save(partner);
-	}
-	
-	private String getPartnerFieldStringForThisPartnerField(String field, boolean isPartnerCode){
-		
-    	PartnerQuery partnerQuery = new PartnerQuery();
-    	
-    	if(isPartnerCode){
-    		partnerQuery.setPartnerCode(field);
-    		
-    	} else {
-    		
-    		partnerQuery.setTradeName(field);
-    	}
-    	
-    	partnerQuery.setPartnerCodeLike(true);
-    	
-    	PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
-    	List <Partner> results = partnerDAO.get(partnerQuery);
-    	int noOfTimesRetired=0;
-    	
-    	for( Partner partner : results ){
-    		
-    		String partnerField = null;
-    		if(isPartnerCode){
-    			
-    			partnerField = partner.getPartnerCode();
-    			
-    		} else {
-    			
-    			partnerField = partner.getTradeName();
-    		}
-    		
-    		if(StringUtils.isBlank(partnerField)){
-    			
-    			continue;
-    		}
-    		
-    		String[] splitComponents = partnerField.split("R");
-            if (splitComponents.length != 2) {
-                
-            	continue;
-            }
-    		
-            String timesRetiredIndicator = splitComponents[1];
-            int timesRetired = 0;
-            
-            try {
-                
-            	timesRetired = Integer.parseInt(timesRetiredIndicator);
-            	
-            } catch (NumberFormatException nfe) {
-            	
-            	log.error("Getting partner field count" + nfe.getMessage(), nfe);
-            }
-
-            if (timesRetired >= noOfTimesRetired) {
-                
-            	noOfTimesRetired = timesRetired + 1;
-            }            
-    	}
-    	
-    	if (field.contains("R")) {
-            // If we reach here then we already have R0.
-            String str = field;
-            String strWithoutR = str.substring(0, str.indexOf("R"));
-            
-            return strWithoutR + "R" + noOfTimesRetired;
-            
-        } else {
-            
-        	return field + "R" + noOfTimesRetired;
-        }    	
-    }
-	
-	private String getUserNameStringForUserName(String userName) {
-        
-		UserQuery userQuery = new UserQuery();
-        userQuery.setUserNameLike(userName);
-        
-        UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-        List<User> results = userDAO.get(userQuery);
-        
-        int noOfTimesRetired = 0;
-        for (User user : results) {
-            
-        	String name = user.getUsername();
-            
-        	if (StringUtils.isBlank(name)) {
-                continue;
-            }
-
-            // here check if the MDN has R and Number after it.
-            
-        	String[] splitComponents = name.split("R");
-            if (splitComponents.length != 2) {
-                continue;
-            }
-
-            String timesRetiredIndicator = splitComponents[1];
-            int timesRetired = 0;
-            try {
-                
-            	timesRetired = Integer.parseInt(timesRetiredIndicator);
-            } catch (NumberFormatException nfe) {
-            	log.error("Getting userName count" + nfe.getMessage(), nfe);
-            }
-
-            if (timesRetired >= noOfTimesRetired) {
-                noOfTimesRetired = timesRetired + 1;
-            }
-        }
-        
-        if (userName.contains("R")) {
-            // If we reach here then we already have R0.
-            String field = userName;
-            String mdnWithoutR = field.substring(0, field.indexOf("R"));
-            
-            return mdnWithoutR + "R" + noOfTimesRetired;
-            
-        } else {
-            
-        	return userName + "R" + noOfTimesRetired;
-        }
-    }
 }

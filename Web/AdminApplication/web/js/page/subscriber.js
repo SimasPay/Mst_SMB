@@ -395,6 +395,7 @@ mFino.page.subscriber = function(config){
             {
             	iconCls: 'mfino-button-close-account',
             	tooltip : _('Subscriber Account Closing'),
+            	itemId : 'close.account',
             	handler : function() {
             		if(!detailsForm.record){
             			Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
