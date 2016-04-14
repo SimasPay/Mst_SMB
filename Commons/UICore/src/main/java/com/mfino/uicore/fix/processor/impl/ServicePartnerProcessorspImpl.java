@@ -418,16 +418,16 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                      return errorMsg;
         		}
         		
-/*        		query.setPartnerCode(null);
-        		query.setTradeName(e.getTradeName());
-        		results = dao.get(query);
-        		if (CollectionUtils.isNotEmpty(results) && results.size() > 0) {
-        			  errorMsg.setErrorDescription(MessageText._(" TradeName already exists in DB, please enter different TradeName."));
-                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-                     return errorMsg;
-        		}*/
+        		String tr=realMsg.getTradeName();
+        		Partner p = dao.getPartnerByTradeName(tr);
+        		if(tr.equals(p.getTradeName()))
+        		{
+        			errorMsg.setErrorDescription(MessageText._("Trade name exists"));
+                    errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+                    return errorMsg;        			
+        		}
+        	
         		
-                //String username = realMsg.getUsername();
         		String username = agentCode;
                 log.info("User name = " + username);
                 User user = userDAO.getByUserName(username);
