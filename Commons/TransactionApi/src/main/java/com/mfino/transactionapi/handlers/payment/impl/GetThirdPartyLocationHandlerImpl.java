@@ -36,7 +36,10 @@ public class GetThirdPartyLocationHandlerImpl extends FIXMessageHandler implemen
 		province = transDetails.getState();
 		region = transDetails.getRegionName();
 		district = transDetails.getCity();
-		String parentPath = "../webapps/webapi/WEB-INF";
+		//String parentPath = "../webapps/webapi/WEB-INF";
+		
+		String parentPath = "../mfino_conf/CategoryFiles";
+		
 		//String parentPath = "D://json//";
 		String fileName = "";
 		
