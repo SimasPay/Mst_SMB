@@ -18,17 +18,12 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
-import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.SCTLSettlementMapDAO;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
-import com.mfino.dao.UserDAO;
-import com.mfino.dao.query.PartnerQuery;
-import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.ActivitiesLog;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.MFSLedger;
 import com.mfino.domain.NoISOResponseMsg;
-import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
@@ -38,7 +33,6 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SystemParameters;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAgentToAgentTransfer;
@@ -1694,11 +1688,6 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											returnFix
 													.setResult(CmFinoFIX.ResponseCode_Success);
 											
-											if(CmFinoFIX.IsRetirePartner_True.equals(confirmationToBank.getIsRetirePartner())) {
-												
-												retirePartner(objSrcSubMdn.getID(), confirmationToBank.getDescription());
-											}
-											
 											handlePCTonSuccess(pct);
 										
 										// TODO: BUG, in case of exception we
@@ -2197,193 +2186,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				.getServiceChargeTransactionLogID());
 		return returnFix;
 	}
-
-	private void retirePartner(Long subscriberId, String comments) {
-		
-		// TODO Auto-generated method stub
-		PartnerQuery partnerQuery = new PartnerQuery();
-		partnerQuery.setSubscriberID(subscriberId);
-		String tradeNameStringToReplace = null;
-		String codeStringToReplace = null;
-		String userNameStringToReplace = null;
-
-		PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
-		List<Partner> partnerLst = partnerDAO.get(partnerQuery);
-		Partner partner = partnerLst.get(0);
-		
-		if(CmFinoFIX.SubscriberStatus_Active.equals(partner.getPartnerStatus())) {
-		
-			tradeNameStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getTradeName(),false);
-		
-			if(tradeNameStringToReplace != null) {
-				
-				partner.setTradeName(tradeNameStringToReplace);
-			}
 	
-			codeStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getPartnerCode(),true);
-			
-			if(codeStringToReplace != null) {
-				
-				partner.setPartnerCode(codeStringToReplace);
-			}
-	
-			UserQuery userQuery = new UserQuery();
-			userQuery.setUserName(partner.getUser().getUsername());
-			UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-			List <User> userLst = userDAO.get(userQuery);
-	
-			User user = null;
-			
-			if(userLst != null) {
-				user = userLst.get(0);
-			}
-			
-			if(user != null){
-				
-				userNameStringToReplace = getUserNameStringForUserName(user.getUsername());
-				
-				if(userNameStringToReplace != null)
-					user.setUsername(userNameStringToReplace);
-				
-				user.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
-				userDAO.save(user);
-			}
-	
-			if(userNameStringToReplace != null) {
-				
-				partner.getUser().setUsername(userNameStringToReplace);
-			}
-			
-			partner.setCloseComments(comments);
-			partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Retired);
-			
-			partnerDAO.save(partner);
-		}
-	}
-	
-	private String getPartnerFieldStringForThisPartnerField(String field, boolean isPartnerCode){
-		
-    	PartnerQuery partnerQuery = new PartnerQuery();
-    	
-    	if(isPartnerCode){
-    		partnerQuery.setPartnerCode(field);
-    		
-    	} else {
-    		
-    		partnerQuery.setTradeName(field);
-    	}
-    	
-    	partnerQuery.setPartnerCodeLike(true);
-    	
-    	PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
-    	List <Partner> results = partnerDAO.get(partnerQuery);
-    	int noOfTimesRetired=0;
-    	
-    	for( Partner partner : results ){
-    		
-    		String partnerField = null;
-    		if(isPartnerCode){
-    			
-    			partnerField = partner.getPartnerCode();
-    			
-    		} else {
-    			
-    			partnerField = partner.getTradeName();
-    		}
-    		
-    		if(StringUtils.isBlank(partnerField)){
-    			
-    			continue;
-    		}
-    		
-    		String[] splitComponents = partnerField.split("R");
-            if (splitComponents.length != 2) {
-                
-            	continue;
-            }
-    		
-            String timesRetiredIndicator = splitComponents[1];
-            int timesRetired = 0;
-            
-            try {
-                
-            	timesRetired = Integer.parseInt(timesRetiredIndicator);
-            	
-            } catch (NumberFormatException nfe) {
-            	
-            	log.error("Getting partner field count" + nfe.getMessage(), nfe);
-            }
-
-            if (timesRetired >= noOfTimesRetired) {
-                
-            	noOfTimesRetired = timesRetired + 1;
-            }            
-    	}
-    	
-    	if (field.contains("R")) {
-            // If we reach here then we already have R0.
-            String str = field;
-            String strWithoutR = str.substring(0, str.indexOf("R"));
-            
-            return strWithoutR + "R" + noOfTimesRetired;
-            
-        } else {
-            
-        	return field + "R" + noOfTimesRetired;
-        }    	
-    }
-	
-	private String getUserNameStringForUserName(String userName) {
-        
-		UserQuery userQuery = new UserQuery();
-        userQuery.setUserNameLike(userName);
-        
-        UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-        List<User> results = userDAO.get(userQuery);
-        
-        int noOfTimesRetired = 0;
-        for (User user : results) {
-            
-        	String name = user.getUsername();
-            
-        	if (StringUtils.isBlank(name)) {
-                continue;
-            }
-
-            // here check if the MDN has R and Number after it.
-            
-        	String[] splitComponents = name.split("R");
-            if (splitComponents.length != 2) {
-                continue;
-            }
-
-            String timesRetiredIndicator = splitComponents[1];
-            int timesRetired = 0;
-            try {
-                
-            	timesRetired = Integer.parseInt(timesRetiredIndicator);
-            } catch (NumberFormatException nfe) {
-            	log.error("Getting userName count" + nfe.getMessage(), nfe);
-            }
-
-            if (timesRetired >= noOfTimesRetired) {
-                noOfTimesRetired = timesRetired + 1;
-            }
-        }
-        
-        if (userName.contains("R")) {
-            // If we reach here then we already have R0.
-            String field = userName;
-            String mdnWithoutR = field.substring(0, field.indexOf("R"));
-            
-            return mdnWithoutR + "R" + noOfTimesRetired;
-            
-        } else {
-            
-        	return userName + "R" + noOfTimesRetired;
-        }
-    }
-
 	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW)
 	public CFIXMsg onChargeDistribution(CMChargeDistribution chargeDistribution) {
 		log.info("BankServiceDefaultImpl :: onChargeDistribution BEGIN");

@@ -201,6 +201,21 @@ public class TransactionDetails {
 	private String productDesired;
 	private String others;
 	
+	private String closeAccountStatus;
+	
+	/**
+	 * @return the closeAccountStatus
+	 */
+	public String getCloseAccountStatus() {
+		return closeAccountStatus;
+	}
+	/**
+	 * @param closeAccountStatus the closeAccountStatus to set
+	 */
+	public void setCloseAccountStatus(String closeAccountStatus) {
+		this.closeAccountStatus = closeAccountStatus;
+	}
+
 	public boolean isSimaspayActivity() {
 		return isSimaspayActivity;
 	}

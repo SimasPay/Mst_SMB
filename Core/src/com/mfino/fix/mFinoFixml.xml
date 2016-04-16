@@ -118,7 +118,7 @@
 			<field name="OriginalReferenceID" required="N"/>   
 			<field name="DestinationBankAccountNo" required="N"/>
 			<field name="SourceBankAccountNo" required="N"/>
-			<field name="Description" required="N"/> 
+			<field name="Description" required="N"/>
 		</message>
 		<message name="BankAccountToBankAccountConfirmation" msgtype="1032" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="TransferID" required="Y" />
@@ -131,7 +131,10 @@
 			<field name="SourceBankAccountNo" required="N"/>     
 			<field name="INTxnId" required="N"/>
 			<field name="Description" required="N"/>
-			<field name="IsRetirePartner" required="N"/>   
+			<field name="IsRetirePartner" required="N"/>
+			<field name="CloseAcctApprovedBy" required="N"/>
+			<field name="CloseAcctStatus" required="N"/>
+			<field name="CloseApproverComments" required="N"/>
 		</message>
 		<message name="BankAccountBalanceInquiry" msgtype="1009" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="BankAccountPin" id="Pin" required="Y" isSecure="Y"/>
@@ -23167,6 +23170,20 @@ ERROR:Mismatch of  mdn type and app type
 					<Bahasa>
 						<SMS>
 							<Text>Agent Cannot perform any Transactions due to Closing Request Placed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="AgentClosingRequestRejectedByApprover" enum="2170">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Agent Closing Request Rejected by Approver</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Agent Closing Request Rejected by Approver</Text>
 						</SMS>
 					</Bahasa>
 				</C1>

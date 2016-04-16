@@ -14,4 +14,49 @@ ALTER TABLE PARTNER  ADD CLOSEACCTAPPROVEDBY VARCHAR2(255);
 ALTER TABLE PARTNER  ADD CLOSEACCTTIME TIMESTAMP(0);
 ALTER TABLE PARTNER  ADD CLOSEAPPROVERCOMMENTS VARCHAR2(255);
 
+DELETE FROM notification WHERE CODE = 2169;
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '1', 'Agent Cannot perform any Transactions due to Closing Request Placed', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '2', 'Agent Cannot perform any Transactions due to Closing Request Placed', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '4', 'Agent Cannot perform any Transactions due to Closing Request Placed', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '8', 'Agent Cannot perform any Transactions due to Closing Request Placed', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '16', 'Agent Cannot perform any Transactions due to Closing Request Placed', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '1', 'Agent Cannot perform any Transactions due to Closing Request Placed', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '2', 'Agent Cannot perform any Transactions due to Closing Request Placed', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '4', 'Agent Cannot perform any Transactions due to Closing Request Placed', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '8', 'Agent Cannot perform any Transactions due to Closing Request Placed', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2169', 'AgentPlacedClosingRequest', '16', 'Agent Cannot perform any Transactions due to Closing 
+Request Placed', '1', '0', sysdate, '1', '1');
+
+DELETE FROM notification WHERE CODE = 2170;
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '1', 'Agent Closing Request Rejected by Approver', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '2', 'Agent Closing Request Rejected by Approver', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '4', 'Agent Closing Request Rejected by Approver', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '8', 'Agent Closing Request Rejected by Approver', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '16', 'Agent Closing Request Rejected by Approver', '0', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '1', 'Agent Closing Request Rejected by Approver', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '2', 'Agent Closing Request Rejected by Approver', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '4', 'Agent Closing Request Rejected by Approver', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '8', 'Agent Closing Request Rejected by Approver', '1', '0', sysdate, '1', '1');
+
+INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2170', 'AgentClosingRequestRejectedByApprover', '16', 'Agent Closing Request Rejected by Approver', '1', '0', sysdate, '1', '1');
+
 COMMIT;

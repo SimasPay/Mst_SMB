@@ -89,6 +89,7 @@ public class ApproveorRejectAgentClosingProcessorImpl extends BaseFixProcessor i
 		td.setHttps(true);
 		td.setDescription(realMsg.getCloseApproverComments());
 		td.setAuthorizedRepresentative(userService.getCurrentUser().getUsername());
+		td.setCloseAccountStatus(String.valueOf(realMsg.getCloseAcctStatus()));
 		
 		SubscriberAccountClosingXMLResult result = (SubscriberAccountClosingXMLResult)agentClosingHandler.handle(td);
 		
@@ -99,6 +100,11 @@ public class ApproveorRejectAgentClosingProcessorImpl extends BaseFixProcessor i
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 				errorMsg.setErrorDescription("Agent Account Closed successfully");
 				
+			} else if(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingRequestRejectedByApprover).equals(result.getCode())) {
+			
+				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+				errorMsg.setErrorDescription("Approver Rejected Agent Account Closing");
+								
 			}   else {
 				
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
