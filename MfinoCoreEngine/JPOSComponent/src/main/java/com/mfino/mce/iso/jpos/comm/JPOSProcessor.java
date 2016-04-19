@@ -101,7 +101,7 @@ public class JPOSProcessor implements Processor {
 				// throwing exception here causes retrials for reversals from
 				// onException exception policy
 				//Condition added to send repeated requests in case of there is no response for payment advice from flashiz
-				if (msg.getMTI().equals("0420") || (msg.getMTI().equals("0220") && msg.getString("3").startsWith("51"))) {
+				if (msg.getMTI().equals("0420") || (msg.getMTI().equals("0220") && msg.getString("3").startsWith("50"))) {
 					log.info("Message MTI is "+ msg.getMTI() + " , throwing NoISOResponseException so that onException takes over "+muxName);
 //					log.info("Reversal retrial count = "+exchange.);
 					throw new NoISOResponseException(muxName+" no response for isomsg with RRN=" + msg.getString(37));

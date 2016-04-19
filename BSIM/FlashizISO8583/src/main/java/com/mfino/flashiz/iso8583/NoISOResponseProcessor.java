@@ -37,33 +37,28 @@ public class NoISOResponseProcessor {
 
 		if( msg.getResponse().getClass().equals(CMPaymentAcknowledgementFromBankForBsim.class))
 		{
+			if (msg.getRequest() instanceof CMPaymentAcknowledgementToBankForBsim && 
+					msg.getResponse() instanceof CMPaymentAcknowledgementFromBankForBsim) {
+				CMPaymentAcknowledgementToBankForBsim isoRequest = (CMPaymentAcknowledgementToBankForBsim) msg.getRequest();
+				CMPaymentAcknowledgementFromBankForBsim isoResponse = (CMPaymentAcknowledgementFromBankForBsim) msg.getResponse();
+				if ((isoRequest.getCount() == 3) && (isoResponse.getResponseCode().equals("68"))) {
+					log.info("As the Advice tried more than 3 times so treating the response as no response from flashiz...");
+			        NoISOResponseMsg noResponse = new NoISOResponseMsg();
+					noResponse.copy(isoRequest);
+					noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
+					noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+					msg.setRequest(isoRequest);
+					msg.setResponse(noResponse);
+					msg.setDestinationQueue("jms:bsimsourceToDestQueue");
+					return msg;					
+				}
+			}			
 			return msg;
-//			CMPaymentAcknowledgementFromBankForBsim paymentAcknowledgementFromBank  = (CMPaymentAcknowledgementFromBankForBsim) msg.getResponse();
-//			if( paymentAcknowledgementFromBank.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success) )
-//			{
-//				return msg;
-//			}
-//
-//			//if response code is not success then initiate the reversal.
-//			else
-//			{
-//				ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
-//				CFIXMsg rfresponse = proc.construct(msg);
-//				//msg.setResponse(proc.construct(paymentAcknowledgementFromBank));
-//				
-//				NoISOResponseMsg noResponse = new NoISOResponseMsg();
-//				noResponse.copy(paymentAcknowledgementFromBank);
-//				noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
-//				noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
-//				
-//				msg.setRequest(noResponse);
-//				msg.setResponse(rfresponse);
-//				msg.setDestinationQueue(reversalQueue);
-//				return msg;
-//			}
 		}
 		//if the request is of type PaymentAckToBank and the NMStatus failed we need to trigger reversal as the money is deducted from Bank AC
-		else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)) && (!(StatusRegistrar.getSignonStatus("flashizmux").equals(NMStatus.Successful)) || !(StatusRegistrar.getEchoStatus("flashizmux").equals(NMStatus.Successful))))
+		else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)) && 
+				(!(StatusRegistrar.getSignonStatus("flashizmux").equals(NMStatus.Successful)) || 
+				 !(StatusRegistrar.getEchoStatus("flashizmux").equals(NMStatus.Successful))))
 		{
 			ReversalFailureResponseConstructor proc = new ReversalFailureResponseConstructor();
 			CFIXMsg rfresponse = proc.construct(msg);
@@ -72,24 +67,30 @@ public class NoISOResponseProcessor {
 			msg.setResponse(rfresponse);
 			msg.setDestinationQueue(reversalQueue);
 			return msg;
-		}else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)))
+		}
+		else if((msg.getResponse().getClass().equals(CMPaymentAcknowledgementToBankForBsim.class)))
 		{
-			log.info("Request for the Flashiz advice call as there is no response from flashiz...");
-//			CMPaymentAcknowledgementToBankForBsim isoRequest = (CMPaymentAcknowledgementToBankForBsim) msg.getResponse();
-//	        NoISOResponseMsg noResponse = new NoISOResponseMsg();
-//			noResponse.copy(isoRequest);
-//			noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
-//			noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
-//			msg.setRequest(isoRequest);
-//			msg.setResponse(noResponse);
-//			msg.setDestinationQueue("jms:flashizPendingQueue");
-			msg.setDestinationQueue("jms:postBankResponseQueue");
-			return msg;
+			CMPaymentAcknowledgementToBankForBsim isoRequest = (CMPaymentAcknowledgementToBankForBsim) msg.getResponse();
+			if ((isoRequest.getCount() == 3) && (isoRequest.getIsAdvice()!= null && isoRequest.getIsAdvice())){
+				log.info("No response from flashiz for Advice call also, sending the NoIsoResponse msg...");
+		        NoISOResponseMsg noResponse = new NoISOResponseMsg();
+				noResponse.copy(isoRequest);
+				noResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
+				noResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+				msg.setRequest(isoRequest);
+				msg.setResponse(noResponse);
+				msg.setDestinationQueue("jms:bsimsourceToDestQueue");
+				return msg;
+			}			
+			else {
+				log.info("Request for the Flashiz advice call as there is no response from flashiz...");
+				msg.setDestinationQueue("jms:postBankResponseQueue");
+				return msg;				
+			}
 		}
 		else{
 			return msg;
 		}
-
 	}
 
 	public ISOMsg processMessage(ISOMsg msg) {

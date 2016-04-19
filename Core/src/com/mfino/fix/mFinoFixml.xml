@@ -5091,6 +5091,7 @@
 		<field name="PointsRedeemed" required="N"/>
 		<field name="AmountRedeemed" required="N"/>			
 		<field name="IsAdvice" required="N"/>
+		<field name="Count" required="N"/>
 	</message>
 	<message name="PaymentAcknowledgementFromBankForBsim" msgtype="1756" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentFromBank">
 	</message>

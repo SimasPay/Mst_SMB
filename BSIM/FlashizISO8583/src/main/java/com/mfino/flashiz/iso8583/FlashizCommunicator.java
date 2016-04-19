@@ -42,12 +42,16 @@ public class FlashizCommunicator {
 		CFIXMsg response = mceMsg.getResponse();
 		if (response instanceof CMPaymentAcknowledgementToBankForBsim) {
 			CMPaymentAcknowledgementToBankForBsim ackToBank = (CMPaymentAcknowledgementToBankForBsim) response;
+			int count = ackToBank.getCount();
+			ackToBank.setCount(count + 1);
 			ackToBank.setIsAdvice(true);
 			mceMsg.setResponse(ackToBank);
 			return mceMsg;
 		}
 		else if (request instanceof CMPaymentAcknowledgementToBankForBsim) {
 			CMPaymentAcknowledgementToBankForBsim ackToBank = (CMPaymentAcknowledgementToBankForBsim) request;
+			int count = ackToBank.getCount();
+			ackToBank.setCount(count + 1);
 			ackToBank.setIsAdvice(true);
 			mceMsg.setResponse(ackToBank);
 			return mceMsg;
@@ -71,6 +75,7 @@ public class FlashizCommunicator {
 				ackToBank.setTippingAmount(paymentRequest.getTippingAmount());
 				ackToBank.setPointsRedeemed(paymentRequest.getPointsRedeemed());
 				ackToBank.setAmountRedeemed(paymentRequest.getAmountRedeemed());
+				ackToBank.setCount(0);
 				mceMsg.setResponse(ackToBank);
 			}
 			return mceMsg;
