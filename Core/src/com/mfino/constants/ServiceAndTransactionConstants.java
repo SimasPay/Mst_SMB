@@ -271,6 +271,8 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_DONATION_INQUIRY = "DonationInquiry";
 	
 	public static final String TRANSACTION_DONATION = "Donation";
+	
+	public static final String TRANSACTION_RESEND_MFAOTP = "ResendMFAOTP";
 
 	// Messages
 	

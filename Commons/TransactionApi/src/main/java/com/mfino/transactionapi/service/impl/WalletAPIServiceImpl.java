@@ -19,7 +19,6 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.MFAService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
-import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
 import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
@@ -34,11 +33,11 @@ import com.mfino.transactionapi.handlers.wallet.FundAllocationConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.FundAllocationInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.FundWithdrawalConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.FundWithdrawalInquiryHandler;
+import com.mfino.transactionapi.handlers.wallet.ResendMFAOTPHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutInquiryHandler;
-import com.mfino.transactionapi.handlers.wallet.impl.SubscriberCashOutInquiryHandlerImpl;
 import com.mfino.transactionapi.handlers.wallet.impl.SubscriberDonationConfirmHandlerImpl;
 import com.mfino.transactionapi.handlers.wallet.impl.SubscriberDonationInquiryHandlerImpl;
 import com.mfino.transactionapi.service.BaseAPIService;
@@ -152,6 +151,10 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService ;
+	
+	@Autowired
+	@Qualifier("ResendMFAOTPHandlerImpl")
+	private ResendMFAOTPHandler resendMFAOTPHandler;
 	
 	@Autowired
 	@Qualifier("MFAServiceImpl")
@@ -321,6 +324,13 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 
 			transactionRequestValidationService.validateDonationConfirmDetails(transactionDetails);
 			xmlResult = (XMLResult) donationConfirmHandler.handle(transactionDetails);			
+		
+		}else if (ServiceAndTransactionConstants.TRANSACTION_RESEND_MFAOTP.equals(transactionName)) {
+		
+			transactionRequestValidationService.validateResendMFAOTPDetails(transactionDetails);
+			transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+			
+			xmlResult = (XMLResult) resendMFAOTPHandler.handle(transactionDetails);
 		}
 		else
 		{

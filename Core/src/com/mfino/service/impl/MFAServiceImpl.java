@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFAAuthenticationDAO;
@@ -72,6 +73,7 @@ public class MFAServiceImpl implements MFAService{
 		mfaAuth.setSctlId(sctlID);
 		mfaAuth.setMFAMode(CmFinoFIX.MFAMode_OTP);
 		mfaAuth.setMFAValue(digestPin1);
+		mfaAuth.setRetryAttempt(0);
 		
 		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
 		authDAO.save(mfaAuth);
@@ -100,6 +102,56 @@ public class MFAServiceImpl implements MFAService{
 		smsService.asyncSendSMS();
 		log.info("sms sent successfully");
 		log.info("MFAService::handleMFATransaction End");
+	}
+	
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public void resendHandleMFATransaction(Long sctlID, String sourceMDN, int retryAttempt){
+		
+		log.info("MFAService::resendHandleMFATransaction Begin");
+		Integer OTPLength = systemParametersService.getOTPLength();
+		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
+		String digestPin1 = MfinoUtil.calculateDigestPin(sourceMDN, oneTimePin);
+		
+		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
+		
+		MFAAuthenticationQuery query = new MFAAuthenticationQuery();
+		query.setSctlId(sctlID);
+		
+		List<MFAAuthentication> mfaResults = authDAO.get(query);
+		
+		if(!CollectionUtils.isEmpty(mfaResults)) {
+			
+			MFAAuthentication mfaAuthentication = mfaResults.get(0);
+			
+			mfaAuthentication.setMFAValue(digestPin1);
+			mfaAuthentication.setRetryAttempt(++retryAttempt);
+			
+			authDAO.save(mfaAuthentication);
+			
+			SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
+			SubscriberMDN smdn = smdnDAO.getByMDN(sourceMDN);
+			Integer subLang = smdn.getSubscriber().getLanguage();
+			String message = null;
+			if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
+				
+				message = "Kode OTP Simaspay anda : " + oneTimePin + ". Atau silahkan klik link berikut simaspay://?token=" + oneTimePin;
+			}
+			else {
+				
+				message = "Your Simaspay code is " + oneTimePin + ". Please click the link to go back to Simaspay. Link: simaspay://?token=" + oneTimePin;
+			}
+			smsService.setDestinationMDN(sourceMDN);
+			smsService.setMessage(message);
+			smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
+			smsService.asyncSendSMS();
+			log.info("sms sent successfully");
+			log.info("MFAService::resendHandleMFATransaction End");
+			
+		} else {
+			
+			log.info("sms sent successfully");
+			log.info("MFAService::resendHandleMFATransaction End");
+		}
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)

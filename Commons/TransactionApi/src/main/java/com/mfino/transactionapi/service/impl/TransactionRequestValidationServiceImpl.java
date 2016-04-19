@@ -448,6 +448,12 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		validateSourcePin(transactionDetails);
 	}
 	
+	public void validateResendMFAOTPDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		
+		validateSourcePin(transactionDetails);
+		validateSctlId(transactionDetails);
+	}
+	
 	public void validateTransactionHistoryDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateSourcePin(transactionDetails);
 		validateRegisteringMDN(transactionDetails.getSourceMDN());

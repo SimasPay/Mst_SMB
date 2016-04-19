@@ -269,4 +269,6 @@ public interface TransactionRequestValidationService {
 
 	public void validateProductReferralDetails(TransactionDetails transactionDetails)throws InvalidDataException;
 	
+	public void validateResendMFAOTPDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 }

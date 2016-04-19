@@ -5683,6 +5683,10 @@
 		<field name="CloseAcctApprovedBy" required="N"/>
 		<field name="CloseAcctStatus" required="N"/>
 		<field name="CloseApproverComments" required="N"/>
+	</message>
+	<message name="JSResendMFAOTP" msgtype="1782" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="SourceMDN" required="Y"/>
+		<field name="SctlId" required="N"/>
 	</message>		
 	</messages>
 	<records>
@@ -7730,6 +7734,7 @@
 			<field name="SctlId" required="Y" />
 			<field name="MFAMode" required="Y" />
 			<field name="MFAValue" required="Y" />
+			<field name="RetryAttempt" required="N" />
 		</record>
 		<record name="AuditLog" ExtendsRecord="Base" Java="Y" SQLTable="audit_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MessageName" required="Y" />
@@ -8331,7 +8336,8 @@
 			<value enum="1778" description="JSProductReferral"/>
 			<value enum="1779" description="JSAgentClosingInquiry"/>
 			<value enum="1780" description="JSAgentClosing"/>
-			<value enum="1781" description="JSAgentCloseApproveReject"/>			
+			<value enum="1781" description="JSAgentCloseApproveReject"/>
+			<value enum="1782" description="JSResendMFAOTP"/>			
 			
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
@@ -23187,7 +23193,49 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</Bahasa>
 				</C1>
-			</value>		
+			</value>
+			<value description="MFAOTPResendSuccessfullyCompleted" enum="2171">
+				<C1>
+					<English>
+						<SMS>
+							<Text>MFA OTP Resend Successfully Completed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>MFA OTP Resend Successfully Completed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="MFAOTPResendFailed" enum="2172">
+				<C1>
+					<English>
+						<SMS>
+							<Text>MFA OTP Resend Failed</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>MFA OTP Resend Failed</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="MFAOTPResendMaxRetryAttempts" enum="2173">
+				<C1>
+					<English>
+						<SMS>
+							<Text>MFA OTP Maximum Retry Attempts Over</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>MFA OTP Maximum Retry Attempts Over</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -26955,7 +27003,8 @@ ERROR:Mismatch of  mdn type and app type
    	</field>	
 	<field number="8442" name="CloseApproverComments" type="STRING" />
 	<field number="8443" name="CloseAcctApprovedBy" type="STRING" />
-	<field number="8444" name="CloseAcctTime" type="UTCTIMESTAMP" />	
+	<field number="8444" name="CloseAcctTime" type="UTCTIMESTAMP" />
+	<field number="8445" name="RetryAttempt" type="INT32" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

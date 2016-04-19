@@ -277,6 +277,12 @@
 		</td>
 	</tr>
 	
+	<tr>
+		<td>
+			<a href="jsp/s_resend_mfa_otp.jsp">Resend MFA OTP</a>
+		</td>
+	</tr>
+	
 	</table></td>
 	
 	</tr>
