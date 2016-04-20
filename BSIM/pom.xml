@@ -31,7 +31,8 @@
 		<module>BSIMBillPayment</module>
 		<module>FlashizISO8583</module>
 		<!--module>BSMPPOBISO8583</module-->
-    </modules>	
+		<module>TestBSIMSMS</module>
+	</modules>	
 	
 	<dependencies>
 		<dependency>
