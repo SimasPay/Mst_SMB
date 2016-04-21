@@ -112,6 +112,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                         xtype : 'textfield',
                         fieldLabel:firstname,
                         itemId : 'sub.form.firstname',
+                        maxLength     : 255,
                         allowBlank: false,
                         anchor : '100%',
                         name: CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name
@@ -119,6 +120,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     {
                         xtype : 'textfield',
                         fieldLabel: lastname,
+                        maxLength     : 255,
                         allowBlank: false,
                         itemId : 'sub.form.lastname',
                         anchor : '100%',
@@ -128,6 +130,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                         xtype : 'textfield',
                         //fieldLabel: nickname,
                         fieldLabel: _("Nickname"),
+                        maxLength     : 255,
                         itemId : 'sub.form.nickname',
                         allowBlank: true,
                         anchor : '100%',
@@ -151,6 +154,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     {
                         xtype : 'textfield',
                         fieldLabel: city,
+                        maxLength : 255,
                         allowBlank: true,
                         itemId : 'sub.form.city',
                         anchor : '100%',
@@ -159,6 +163,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     {
                         xtype : 'textfield',
                         fieldLabel: email,
+                        maxLength     : 255,
                         itemId : 'sub.form.email',
                         vtype: 'email',
                         anchor : '100%',
@@ -172,6 +177,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     {
                         xtype : 'textfield',
                         fieldLabel: _("Reg Branch Code"),
+                        maxLength     :255,
                         allowBlank: false,
                         itemId : 'sub.form.applicationid',
 						vtype: 'name',
@@ -180,7 +186,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
                     },
                     {
                 	    xtype : 'textfield',
-                	    fieldLabel: subsrefaccount,
+                	    fieldLabel: subsrefaccount,                	    
                 	    itemId : 'sub.form.subsrefaccount',
                 	    //allowBlank: false,
                 	    anchor : '100%',
@@ -654,7 +660,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 		var bankTemplate = this.find('itemId','sub.form.bankPocketTemplate')[0];
 		if(isVisible) {
 			accNo.show();
-			//accNo.enable();
+			accNo.enable();
 			bankTemplate.show();
 			//bankTemplate.enable();
 			accNo.getEl().up('.x-form-item').setDisplayed(true);
@@ -681,36 +687,42 @@ var subsAdditional = {
     items: [{
 		 xtype : 'textfield',
 		 fieldLabel: plotno,
+		 maxLength     :255,
 		 itemId : 'sub.form.plotno',
 		 anchor : '100%',
 		 name: CmFinoFIX.message.JSSubscriberMDN.Entries.PlotNo._name
 	 },{
    	 xtype : 'textfield',
 	 fieldLabel: streetaddress,
+	 maxLength     :255,
 	 itemId : 'sub.form.streetaddress',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.StreetAddress._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: regionname,
+	 maxLength     :255,
 	 itemId : 'sub.form.regionname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.RegionName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: country,
+	 maxLength   :255,
 	 itemId : 'sub.form.country',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Country._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: idtype,
+	 maxLength     :255,
 	 itemId : 'sub.form.idtype',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDType._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: idnumber,
+	 maxLength     :255,
 	 itemId : 'sub.form.idnumber',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDNumber._name
@@ -726,18 +738,19 @@ var subsAdditional = {
  },{
 	 xtype : 'textfield',
 	 fieldLabel: proofofaddress,
+	 maxLength     :255,
 	 itemId : 'sub.form.proofofaddress',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.ProofofAddress._name
  },{
      xtype : 'textfield',
-     itemId : 'sub.form.typeofbankaccount',
+     itemId : 'sub.form.typeofbankaccount',    
      hidden:true,
      anchor : '100%',
      name: CmFinoFIX.message.JSSubscriberMDN.Entries.TypeofBankAccount._name
  },{
 	 xtype : 'textfield',
-	 itemId : 'sub.form.bankaccid',
+	 itemId : 'sub.form.bankaccid',	
 	 hidden:true,
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.PANBankAccountID._name
@@ -873,6 +886,7 @@ var subsMoreDetail = {
         xtype : 'textfield',
         anchor : '100%',
         allowBlank: true,
+        maxLength   :255,
         itemId : 'sub.form.securityquestion',
         fieldLabel : secretquestion,
         name : CmFinoFIX.message.JSSubscriberMDN.Entries.SecurityQuestion._name
@@ -880,6 +894,7 @@ var subsMoreDetail = {
     {
         xtype : 'textfield',
         fieldLabel : secretanswer,
+        maxLength   :255,
         anchor : '100%',
         allowBlank: true,
         itemId : 'sub.form.secretanswer',
@@ -915,30 +930,35 @@ var subsOtherDetail = {
     items: [{
 	 xtype : 'textfield',
 	 fieldLabel: birthplace,
+	 maxLength   :255,
 	 itemId : 'sub.form.birthplace',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.BirthPlace._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: nationality,
+	 maxLength   :255,
 	 itemId : 'sub.form.nationality',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Nationality._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: companyname,
+	 maxLength   :255,
 	 itemId : 'sub.form.companyname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CompanyName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: subscribermobilecompany,
+	 maxLength   :255,
 	 itemId : 'sub.form.subscribermobilecompany',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberMobileCompany._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: coi,
+	 maxLength   :255,
 	 itemId : 'sub.form.coi',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CertofIncorporation._name
@@ -955,18 +975,21 @@ var subsAthorizingDetail = {
     items: [{
 	 xtype : 'textfield',
 	 fieldLabel: firstname,
+	 maxLength   :255,
 	 itemId : 'sub.form.authofirstname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoFirstName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: lastname,
+	 maxLength   :255,
 	 itemId : 'sub.form.autholastname',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoLastName._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: idnumber,
+	 maxLength   :255,
 	 itemId : 'sub.form.authorizingpersonid',
 //	 vtype:'number19',
 	 anchor : '100%',
@@ -987,6 +1010,7 @@ var subsAthorizingDetail = {
  },{
 	 xtype : 'textfield',
 	 fieldLabel: description,
+	 maxLength   :255,
 	 itemId : 'sub.form.authoiddescription',
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.AuthoIDDescription._name
@@ -1060,6 +1084,7 @@ var subsBasicDetail = {
 {
     xtype : 'textfield',
     fieldLabel: _("Next Of Kin"),
+    maxLength   :255,
     itemId : 'sub.form.kinname',
     allowBlank: true,
     anchor : '100%',
@@ -1068,6 +1093,7 @@ var subsBasicDetail = {
 {
     xtype : 'textfield',
     fieldLabel: 'Next Of Kin No',
+    maxLength   :255,
     itemId : 'sub.form.kinmdn',
     allowBlank: true,
     anchor : '100%',
@@ -1127,7 +1153,7 @@ var subsBasicDetail = {
 },
 {
     xtype : 'textfield',
-    fieldLabel: _("Other MDN:"),
+    fieldLabel: _("Other MDN:"),    
     itemId : 'sub.form.otherMDN',
     vtype:'smarttelcophoneAdd',
     labelSeparator : '',
@@ -1162,12 +1188,14 @@ var subsotdetail = {
 	    items: [{
 	   	 xtype : 'textfield',
 		 fieldLabel: creditcheck,
+		 maxLength   :255,
 		 itemId : 'sub.form.creditcheck',
 		 anchor : '100%',
 		 name: CmFinoFIX.message.JSSubscriberMDN.Entries.CreditCheck._name
 	 },{
 	  	 xtype : 'textfield',
 		 itemId : 'sub.form.streetname',
+		 maxLength :255,
 		 hidden:true,
 		 anchor : '100%',
 		 name: CmFinoFIX.message.JSSubscriberMDN.Entries.StreetName._name
