@@ -420,14 +420,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		
         		String tr=realMsg.getTradeName();
         		Partner p = dao.getPartnerByTradeName(tr);
-        		if(tr.equals(p.getTradeName()))
-        		{
+        		if(p!= null && tr.equals(p.getTradeName())) {
         			errorMsg.setErrorDescription(MessageText._("Trade name exists"));
                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                     return errorMsg;        			
         		}
         	
-        		
         		String username = agentCode;
                 log.info("User name = " + username);
                 User user = userDAO.getByUserName(username);
