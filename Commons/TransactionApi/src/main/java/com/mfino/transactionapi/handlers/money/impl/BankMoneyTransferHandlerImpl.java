@@ -3,6 +3,7 @@
  */
 package com.mfino.transactionapi.handlers.money.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,6 +151,19 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 			return result;
 		}		
 
+		if(StringUtils.isBlank(DestPocketCode)){
+			
+			if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+				
+				DestPocketCode = (String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				
+			} else if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)) {
+				
+				DestPocketCode = (String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			}
+		}
+		
 		Pocket destPocket = pocketService.getDefaultPocket(destinationMDN, DestPocketCode);
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {

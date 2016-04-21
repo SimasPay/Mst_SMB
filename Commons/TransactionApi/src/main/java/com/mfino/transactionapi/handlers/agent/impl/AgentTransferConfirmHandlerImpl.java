@@ -166,6 +166,17 @@ public class AgentTransferConfirmHandlerImpl extends FIXMessageHandler implement
 		if(StringUtils.isNotBlank(destPocketId)){
 			destinationPocket = pocketService.getById(new Long(destPocketId));
 		}else{
+			
+			if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				
+			} else if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			}
+
 			destinationPocket = pocketService.getDefaultPocket(destinationMdn, DestPocketCode);
 		}
 		if(destinationPocket==null){
