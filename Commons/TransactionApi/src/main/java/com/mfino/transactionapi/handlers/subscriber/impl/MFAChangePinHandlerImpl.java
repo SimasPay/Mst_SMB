@@ -207,7 +207,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 			ServiceChargeTransactionLog sctlForMFA = sctlService.getBySCTLID(changePin.getParentTransactionID());
 			sctl=sctlForMFA;
 			if(this.transactionOtp == null || !(mfaService.isValidOTP(this.transactionOtp,sctlForMFA.getID(), changePin.getSourceMDN()))){
-					result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+					result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 					return result;
 				}
 			

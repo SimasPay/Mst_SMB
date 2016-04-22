@@ -215,7 +215,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getID()) == true){
 				
 				if(transactionOTP == null || !(mfaService.isValidOTP(transactionOTP,sctlForMFA.getID(), subscriberActivation.getSourceMDN()))){
-						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 						return result;
 				}
 			}

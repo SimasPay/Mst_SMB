@@ -95,7 +95,7 @@ public class AgentTransferConfirmHandlerImpl extends FIXMessageHandler implement
 
 		if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctlForMFA.getID(), transactionDetails.getSourceMDN()))){
 			log.info("Invalid OTP Entered");
-			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 			result.setSctlID(sctlForMFA.getID());
 			result.setMessage("Invalid OTP Entered");
 			return result;

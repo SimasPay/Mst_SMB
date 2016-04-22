@@ -112,7 +112,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 
 		if(mfaService.isMFATransaction(serviceName, ServiceAndTransactionConstants.TRANSACTION_TRANSFER, channelCodeId)){
 			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp, sctlForMFA.getID(), transferConfirmation.getSourceMDN()))){
-				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}

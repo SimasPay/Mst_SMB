@@ -164,7 +164,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 			
 			if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getID(), agentMDN.getMDN()))){
 				
-				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 					
 			} else {
 					

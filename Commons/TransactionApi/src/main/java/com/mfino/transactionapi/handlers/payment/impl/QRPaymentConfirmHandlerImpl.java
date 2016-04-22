@@ -143,7 +143,7 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(qrPayment.getParentTransactionID());
 		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getID())){
 			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), qrPayment.getSourceMDN()))){
-				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}

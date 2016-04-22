@@ -183,7 +183,7 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 		//2FA
 		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, ServiceAndTransactionConstants.TRANSACTION_CASHOUT, cc.getID())){
 			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), srcSubscriberMDN.getMDN()))){
-				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}

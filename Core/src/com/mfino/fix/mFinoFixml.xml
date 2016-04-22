@@ -23236,6 +23236,20 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
+			<value description="InvalidMFAOTP" enum="2174">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Kode OTP salah. Pastikan kode yang Anda masukkan sudah sesuai dengan SMS OTP terbaru dari kami.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Kode OTP salah. Pastikan kode yang Anda masukkan sudah sesuai dengan SMS OTP terbaru dari kami.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

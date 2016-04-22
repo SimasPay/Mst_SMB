@@ -137,7 +137,7 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(ibtConfirm.getParentTransactionID());
 		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getID())){
 			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), ibtConfirm.getSourceMDN()))){
-				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}

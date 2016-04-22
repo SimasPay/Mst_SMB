@@ -118,7 +118,7 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		
 		MFAAuthentication mfaAuthentication = mfaResults.get(0);
 		
-		if(mfaAuthentication.getRetryAttempt() >= noOfRetryAttemptsForMFAOTP) {
+		if(mfaAuthentication.getRetryAttempt() >= (noOfRetryAttemptsForMFAOTP - 1)) {
 			
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts);
 			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts));
