@@ -27,7 +27,6 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.MFSBillerPartner;
@@ -52,6 +51,7 @@ import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountFromBiller;
 import com.mfino.fix.CmFinoFIX.CMBSIMGetAmountToBiller;
+import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
 import com.mfino.fix.CmFinoFIX.CMBillPayInquiry;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferFromBank;
@@ -61,7 +61,6 @@ import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBankForBsim;
 import com.mfino.fix.CmFinoFIX.CMPaymentAuthorizationToBankForBsim;
 import com.mfino.fix.CmFinoFIX.CMQRPayment;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiry;
-import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiryFromBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalFromBank;
 import com.mfino.fix.CmFinoFIX.CMQRPaymentReversalToBank;
@@ -81,7 +80,6 @@ import com.mfino.service.SubscriberService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
-import com.mfino.util.UniqueNumberGen;
 
 public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implements BillPaymentService{
 
@@ -1387,6 +1385,13 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		}
 		
 	}
+	
+	public void setSCTLStatusToPending(MCEMessage mceMceMessage) {
+		log.info("BillPaymentServiceImpl :: setSCTLStatusToPending() BEGIN mceMessage="+mceMceMessage);
+		CMBase requestFix = (CMBase)mceMceMessage.getRequest();
+		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
+		transactionChargingService.changeStatusToPending(sctl);
+	}	
 	
 	public boolean isPlnBiller(String billerCode){
 		if(plnPrepaidBillers.contains(billerCode) || plnPostpaidBillers.contains(billerCode) || plnNonTaglisBillers.contains(billerCode)){	

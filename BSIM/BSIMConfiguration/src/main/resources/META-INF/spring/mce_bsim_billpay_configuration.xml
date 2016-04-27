@@ -372,6 +372,11 @@
             </filter>
            <filter>
                <simple>${body.response} is 'com.mfino.domain.NoISOResponseMsg'</simple>
+               	<filter>
+               		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMPaymentAcknowledgementToBankForBsim'</simple>
+               		<to uri="bean:billPayService?method=setSCTLStatusToPending"/>
+               		<stop/>
+               	</filter>               
                <filter>
                		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMQRPaymentToBank'</simple>
                		<to uri="bean:billPayService?method=qrPaymentReversalToBank"/>
@@ -381,7 +386,7 @@
                		<simple>${body.request} is 'com.mfino.fix.CmFinoFIX$CMBSIMBillPaymentToBank'</simple>
                		<to uri="bean:billPayService?method=billPayReversalToBank"/>
                		<to uri="jms:frontendRequestServiceQueue?disableReplyTo=true"/>
-               	</filter>     	
+               	</filter>
            </filter>
         </route>
         <route>

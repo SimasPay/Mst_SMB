@@ -41,6 +41,6 @@ public interface BillPaymentService {
 	
 	public MCEMessage qrPaymentUpdateToBillerConfirmPending(MCEMessage mceMessage);
 
-
+	public void setSCTLStatusToPending(MCEMessage mceMceMessage);
 	
 }
