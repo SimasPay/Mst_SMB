@@ -81,7 +81,7 @@ public class SubscriberClosingProcessorImpl extends BaseFixProcessor implements 
 		
 		TransactionDetails td =new TransactionDetails();
 		
-		ChannelCode channelCode = getChannelCode(String.valueOf(CmFinoFIX.SourceApplication_WebAPI));
+		ChannelCode channelCode = getChannelCode(String.valueOf(CmFinoFIX.SourceApplication_Web));
 		td.setCc(channelCode);
 		
 		td.setDestMDN(realMsg.getDestMDN());
