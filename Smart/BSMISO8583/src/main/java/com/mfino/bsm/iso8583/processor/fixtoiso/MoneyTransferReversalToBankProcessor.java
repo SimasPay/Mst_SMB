@@ -123,7 +123,7 @@ public class MoneyTransferReversalToBankProcessor extends BankRequestProcessor {
 
 			isoMsg.set(102, msg.getSourceCardPAN()); 
 			isoMsg.set(103, msg.getDestCardPAN());
-			isoMsg.set(127, msg.getBankCode().toString());//Destination Institution Code.
+			isoMsg.set(127, String.valueOf(msg.getBankCode()));//Destination Institution Code.
 			
 		}
 		catch (ISOException ex) {

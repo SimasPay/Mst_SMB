@@ -40,7 +40,10 @@ public class PaymentAuthorizationToBankProcessor extends BankRequestProcessor{
 			transactionID = transactionID % 1000000;
 			String processingCode = "380000";
 			isoMsg.set(3, processingCode);
-			long amount = request.getAmount().longValue()*(100);
+			
+			long tippingAmount = (request.getTippingAmount()!=null) ? request.getTippingAmount().longValue()*100: 0;
+			long amount = (request.getAmount().longValue() - ((request.getTippingAmount()!=null) ? request.getTippingAmount().longValue(): 0)) * 100;
+			
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
 			log.info("Bsim PaymentAuthorizationToBankProcessor :: process timestamp in de-7 =" + DateTimeFormatter.getMMDDHHMMSS(ts));
@@ -63,7 +66,6 @@ public class PaymentAuthorizationToBankProcessor extends BankRequestProcessor{
 			}
 			isoMsg.set(48,request.getUserAPIKey());
 			isoMsg.set(49, constantFieldsMap.get("49"));
-			long tippingAmount = (request.getTippingAmount()!=null) ? request.getTippingAmount().longValue()*100: 0;
 			isoMsg.set(54,StringUtilities.leftPadWithCharacter(tippingAmount + "", 18, "0"));
 			isoMsg.set(61,request.getInvoiceNo());
 			String fieldDe62 = createDe62(request);
