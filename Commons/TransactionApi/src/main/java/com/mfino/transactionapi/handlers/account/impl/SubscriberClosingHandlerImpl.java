@@ -207,14 +207,14 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 						result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingSuccess);
 						
-						log.debug("Subscriber state modifeid to retired....");
+						log.info("Subscriber state modifeid to retired....");
 						
 					} else {
 						
 						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 						result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingFailed);
 						
-						log.debug("Subscriber state is not modified to retired due to some error....");
+						log.info("Subscriber state is not modified to retired due to some error....");
 					}
 
 					
@@ -223,7 +223,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingFailed);
 					
-					log.debug("Subscriber state is not modified to retired due to some error....");
+					log.info("Subscriber state is not modified to retired due to some error....");
 				}
 			}
 			
@@ -232,7 +232,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			log.debug("Subscriber not found....");
+			log.info("Subscriber not found....");
 		}		
 		
 		return result;

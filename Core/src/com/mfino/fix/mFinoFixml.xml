@@ -23251,6 +23251,20 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
+			<value description="NotAValidLakuPandia" enum="2175">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Not a valid Laku Pandia Customer.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Not a valid Laku Pandia Customer.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

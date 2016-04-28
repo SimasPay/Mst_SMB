@@ -242,7 +242,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							
 							sendOTPSMS(subMDN,sctl.getID());
 							
-							log.debug("SMS for OTP has been sent....");
+							log.info("SMS for OTP has been sent....");
 							
 						} else {
 							
@@ -250,7 +250,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingInquiryFailed));
 							result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingInquiryFailed);
 							
-							log.debug("Subscriber has pending transactions....");
+							log.info("Subscriber has pending transactions....");
 						}
 						
 					} else {
@@ -259,7 +259,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MDNIsNotActive));
 						result.setNotificationCode(CmFinoFIX.NotificationCode_MDNIsNotActive);
 						
-						log.debug("Subscriber is not active....");
+						log.info("Subscriber is not active....");
 					}
 					
 				} else {
@@ -268,15 +268,22 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 					result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance));
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance);
 					
-					log.debug("Subscriber balance is > 100....");
+					log.info("Subscriber balance is > 100....");
 				}
-			}			
+			} else {
+				
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_NotAValidLakuPandia);
+				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_NotAValidLakuPandia));
+				
+				log.info("Laku Pandia Subscriber not found....");
+			}
 		} else {
 		
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			log.debug("Subscriber not found....");
+			log.info("Subscriber not found....");
 		}		
 		
 		return result;
