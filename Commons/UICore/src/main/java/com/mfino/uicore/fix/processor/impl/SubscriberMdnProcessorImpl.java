@@ -7,6 +7,7 @@ package com.mfino.uicore.fix.processor.impl;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import com.mfino.dao.AuthorizingPersonDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.GroupDao;
 import com.mfino.dao.KYCLevelDAO;
+import com.mfino.dao.KtpDetailsDAO;
 import com.mfino.dao.MerchantDAO;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PocketDAO;
@@ -35,6 +37,7 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscribersAdditionalFieldsDAO;
+import com.mfino.dao.query.KtpDetailsQuery;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.Address;
@@ -43,6 +46,7 @@ import com.mfino.domain.BankAdmin;
 import com.mfino.domain.Company;
 import com.mfino.domain.Group;
 import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KtpDetails;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -100,6 +104,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 	private PocketTemplateConfigDAO ptcDao = DAOFactory.getInstance().getPocketTemplateConfigDao();
 	private  boolean sendOTPOnIntialized;
 	private  boolean isEMoneyPocketRequired;
+	
+	private KtpDetailsDAO ktpDetailsDAO= DAOFactory.getInstance().getKtpDetailsDAO();
+	private KtpDetailsQuery ktpDetailsQuery= new KtpDetailsQuery();
+	
 	
 	@Autowired
     private HttpServletRequest httpServletRequest;
@@ -240,6 +248,21 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
         		log.info("Subscriber MDN:"+ID+" MDN updated to "+mdn+" by user:"+getLoggedUserNameWithIP());
         	}
 			s.setMDN(mdn);
+		}
+		if(e.getIsIdLifetimeText()!=null){
+			if(e.getIsIdLifetimeText().equals("true")){
+				s.setISIDLifetime(CmFinoFIX.ISIDLifetime_LifeTime_True);
+			}else{
+				s.setISIDLifetime(CmFinoFIX.ISIDLifetime_LifeTime_False);
+				if(e.getIDValidUntil()!=null){
+					s.getSubscriber().setIDExiparetionTime(e.getIDValidUntil());
+				}
+			}
+			
+		}else{
+			if(e.getIDValidUntil()!=null){
+				s.getSubscriber().setIDExiparetionTime(e.getIDValidUntil());
+			}
 		}
 		if (e.getAuthenticationPhoneNumber() != null) {
 			if(!e.getAuthenticationPhoneNumber().equals(s.getAuthenticationPhoneNumber())){
@@ -545,6 +568,21 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		if(e.getNationality()!=null){
 			saf.setNationality(e.getNationality());
 		}
+		if(e.getIncome()!=null){
+			saf.setIncome(e.getIncome());
+		}
+		if(e.getGoalOfAcctOpening()!=null){
+			saf.setGoalOfAcctOpening(e.getGoalOfAcctOpening());
+		}
+		if(e.getSourceOfFund()!=null){
+			saf.setSourceOfFund(e.getSourceOfFund());
+		}
+		if(e.getWork()!=null){
+			saf.setWork(e.getWork());
+		}
+		if( e.getOtherWork()!=null){
+			saf.setOtherWork(e.getOtherWork());
+		}
 	}
 	private void updateAuthorizing( AuthorizingPerson ap, CMJSSubscriberMDN.CGEntries e) {
 		if (e.getAuthoFirstName() != null) {
@@ -589,11 +627,27 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		if (e.getRegionName()!=null){
 			ads.setRegionName(e.getRegionName());
 		}
+		if(e.getRT()!=null){
+			ads.setRT(e.getRT());
+		}
+		if(e.getRW()!=null){
+			ads.setRW(e.getRW());
+		}
+		if(e.getState()!=null){
+			ads.setState(e.getState());
+		}
+		if(e.getSubState()!=null){
+			ads.setSubState(e.getSubState());
+		}
+		if(e.getZipCode()!=null){
+			ads.setZipCode(e.getZipCode());
+		}
+		
 	}
 
-	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Address adsktp, Boolean isExcelDownload,String str_tomcatPath) {
+	private void updateMessage(SubscriberMDN s, CMJSSubscriberMDN.CGEntries entry, SubscribersAdditionalFields saf, AuthorizingPerson ap, Address ads, Address adsktp, Boolean isExcelDownload,String str_tomcatPath,KtpDetails ktpDetails) {
 		entry.setID(s.getID());
-
+		
 		if (s.getActivationTime() != null) {
 			entry.setActivationTime(s.getActivationTime());
 		}
@@ -854,6 +908,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					if(saf.getNationality()!=null){
 						entry.setNationality(saf.getNationality());
 					}
+					if(saf.getOtherWork()!=null){
+						entry.setOtherWork(saf.getOtherWork());
+					}
+					
 				}
 				if(ap!=null){
 					if (ap.getFirstName() != null) {
@@ -887,6 +945,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					}
 					if(ads.getState()!=null){
 						//	ads.setTownVillage(e.getTownVillage());
+						entry.setState(ads.getState());
 					}
 					if (ads.getCountry()!=null){
 						entry.setCountry(ads.getCountry());
@@ -894,38 +953,65 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					if (ads.getRegionName()!=null){
 						entry.setRegionName(ads.getRegionName());
 					}
+					if(ads.getSubState()!=null){
+						entry.setSubState(ads.getSubState());
+					}
+					if(ads.getRT()!=null){
+						entry.setRT(ads.getRT());
+					}
+					if(ads.getRW()!=null){
+						entry.setRW(ads.getRW());
+					}
+					if(ads.getZipCode()!=null){
+						entry.setZipCode(ads.getZipCode());
+					}
 				}
 				
 				if(adsktp!=null){
 					if (adsktp.getLine1() != null) {
-						entry.setPlotNo(adsktp.getLine1());
+//						entry.setPlotNo(adsktp.getLine1());
+						entry.setKTPPlotNo(adsktp.getLine1());
 					}
 					if(adsktp.getLine2()!=null){
-						entry.setStreetAddress(adsktp.getLine2());
+//						entry.setStreetAddress(adsktp.getLine2());
 					}
 					if (adsktp.getCity()!=null){
-						entry.setCity(adsktp.getCity());
+//						entry.setCity(adsktp.getCity());
+						entry.setKTPCity(adsktp.getCity());
 					}
 					if(adsktp.getState()!=null){
-						entry.setStreetAddress(adsktp.getState());
+//						entry.setStreetAddress(adsktp.getState());
+						entry.setKTPState(adsktp.getState());
 					}
 					if (adsktp.getSubState()!=null){
-						entry.setSubState(adsktp.getSubState());
+//						entry.setSubState(adsktp.getSubState());
+						entry.setKTPSubState(adsktp.getSubState());
 					}
 					if (adsktp.getRegionName()!=null){
-						entry.setRegionName(adsktp.getRegionName());
+//						entry.setRegionName(adsktp.getRegionName());
+						entry.setKTPRegionName(adsktp.getRegionName());
 					}
 					if (adsktp.getZipCode()!=null){
-						entry.setZipCode(adsktp.getZipCode());
+//						entry.setZipCode(adsktp.getZipCode());
+						entry.setKTPZipCode(adsktp.getZipCode());
 					}
 					if (adsktp.getRT()!=null){
-						entry.setRT(adsktp.getRT());
+//						entry.setRT(adsktp.getRT());
+						entry.setKTPRT(adsktp.getRT());
 					}
 					if (adsktp.getRW()!=null){
-						entry.setRW(adsktp.getRW());
+//						entry.setRW(adsktp.getRW());
+						entry.setKTPRW(adsktp.getRW());
 					}
 				}
 
+				if(s.getDomAddrIdentity()!=null && s.getDomAddrIdentity().intValue() == CmFinoFIX.DomAddrIdentity_According_to_Identity.intValue()){
+					
+					entry.setIsDomesticAddrIdentity(true);
+				}else{
+					entry.setIsDomesticAddrIdentity(false);
+				}
+				
 				if((s.getSubscriber().getSubscriberGroupFromSubscriberID() != null) && (s.getSubscriber().getSubscriberGroupFromSubscriberID().size() > 0)) {
 					SubscriberGroup sg = s.getSubscriber().getSubscriberGroupFromSubscriberID().iterator().next();
 					entry.setGroupName(sg.getGroup().getGroupName());
@@ -984,6 +1070,38 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
+				
+				
+				if(ktpDetails!=null && ktpDetails.getDateOfBirth()!=null){
+					entry.setKTPDateOfBirth(ktpDetails.getDateOfBirth());
+				}
+				Set<SubscribersAdditionalFields> subscriberAdditionalFiedlsSet=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID();
+				SubscribersAdditionalFields subscribersAdditionalFields=null;
+				if(subscriberAdditionalFiedlsSet!=null && subscriberAdditionalFiedlsSet.size()>0){
+					Iterator it_subAddfields=subscriberAdditionalFiedlsSet.iterator();
+					
+					while(it_subAddfields.hasNext()){
+						subscribersAdditionalFields=(SubscribersAdditionalFields)it_subAddfields.next();
+					}
+				}
+				if(subscribersAdditionalFields!=null){
+					
+					if(subscribersAdditionalFields.getWork()!=null){
+						entry.setWork(subscribersAdditionalFields.getWork());
+					}
+					if(subscribersAdditionalFields.getIncome()!=null){
+						entry.setIncome(subscribersAdditionalFields.getIncome());
+					}
+					if(subscribersAdditionalFields.getSourceOfFund()!=null){
+						entry.setSourceOfFund(subscribersAdditionalFields.getSourceOfFund());
+					}
+					if(subscribersAdditionalFields.getGoalOfAcctOpening()!=null){
+						entry.setGoalOfAcctOpening(subscribersAdditionalFields.getGoalOfAcctOpening());
+					}
+					
+				}
+				
+				
 	}
 
 	public void updateForwardMessage(CMJSForwardNotificationRequest newMsg, CMJSSubscriberMDN.CGEntries e, Integer oldRestristions) throws Exception{
@@ -1165,8 +1283,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					if (findR == -1) {
 						//chk whether he is a merchant if yes try to see the mdnrange is valid or not
 						Merchant merchant = s.getSubscriber().getMerchant();
-						log.info("Checking MDN range is valid for merchant: " + merchant.getID());
+						
 						if (merchant != null) {
+							log.info("Checking MDN range is valid for merchant: " + merchant.getID());
 							if (merchant.getMerchantByParentID() != null) {
 								Merchant merchantparent = merchant.getMerchantByParentID();
 								if (!mdnRangeService.isMDNInParentsRange(Long.parseLong(e.getMDN().substring(2)), merchantparent)) {
@@ -1213,6 +1332,25 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if (ads == null && checkAddress(e)){
 					ads = new Address();
 				}
+				if(e.getIsDomesticAddrIdentity()!=null ){
+					if(e.getIsDomesticAddrIdentity()){
+						s.setDomAddrIdentity(1);
+					}else{
+						ads = new Address();
+						s.setDomAddrIdentity(2);
+					}
+				}
+				ktpDetailsQuery.setMdn(s.getMDN());
+				ktpDetailsQuery.setOrder("desc");
+				
+				List<KtpDetails> ktpDetailsList=ktpDetailsDAO.getByMDN(ktpDetailsQuery);
+				KtpDetails ktpDetails=null;
+				if(ktpDetailsList!=null && ktpDetailsList.size()>0){
+					 ktpDetails=ktpDetailsList.get(0);
+				}
+				if(e.getKTPDateOfBirth()!=null){
+					ktpDetails.setDateOfBirth(e.getKTPDateOfBirth());
+				}
 /*				Address adsktp=s.getSubscriber().getAddressBySubscriberAddressKTPID();
 				if (adsktp == null && checkAddress(e)){
 					adsktp = new Address();
@@ -1242,7 +1380,12 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					updateAddress(ads, e);
 					addressDAO.save(ads);
 					log.info("Address updated for " + e.getID());
-					sub.setAddressBySubscriberAddressID(ads);
+					if(s.getDomAddrIdentity().intValue()==CmFinoFIX.DomAddrIdentity_According_to_Identity.intValue()){
+						sub.setAddressBySubscriberAddressID(sub.getAddressBySubscriberAddressKTPID());
+					}else{
+						sub.setAddressBySubscriberAddressID(ads);	
+					}
+					
 				}
 				//Generate OTP for the subscriber if the status is changed from Suspend to Initialise or Inactive to Initialise.
 				if(e.getStatus() != null && CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus())){
@@ -1274,7 +1417,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				
 				mdnDao.save(s);
-				updateMessage(s, e, saf, ap, ads,null,false,str_tomcatPath);
+				
+				ktpDetailsDAO.save(ktpDetails);
+				
+				updateMessage(s, e, saf, ap, sub.getAddressBySubscriberAddressID(),sub.getAddressBySubscriberAddressKTPID(),false,str_tomcatPath,ktpDetails);
 
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
@@ -1401,7 +1547,15 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(! s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 					saf=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 				}
-				updateMessage(s, entry, saf, ap, ads,adsktp,realMsg.getIsExcelDownload(),str_tomcatPath);
+				ktpDetailsQuery.setMdn(s.getMDN());
+				ktpDetailsQuery.setOrder("desc");
+				
+				List<KtpDetails> ktpDetailsList=ktpDetailsDAO.getByMDN(ktpDetailsQuery);
+				KtpDetails ktpDetails=null;
+				if(ktpDetailsList!=null && ktpDetailsList.size()>0){
+					 ktpDetails=ktpDetailsList.get(0);
+				}
+				updateMessage(s, entry, saf, ap, ads,adsktp,realMsg.getIsExcelDownload(),str_tomcatPath,ktpDetails);
 				realMsg.getEntries()[i] = entry;
 				log.info("Subscriber:"+s.getID()+" details viewed completed by user:"+getLoggedUserNameWithIP());
 			}
@@ -1640,7 +1794,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
-				updateMessage(mdn, e,saf,ap,ads,null, false,str_tomcatPath);
+				updateMessage(mdn, e,saf,ap,ads,null, false,str_tomcatPath,null);
 			}
 
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);

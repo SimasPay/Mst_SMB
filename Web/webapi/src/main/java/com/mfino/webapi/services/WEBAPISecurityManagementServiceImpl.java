@@ -368,7 +368,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String fullName = request.getParameter(ApiConstants.PARAMETER_FULL_NAME);
 		String productDesired = request.getParameter(ApiConstants.PARAMETER_PRODUCT_DESIRED);
 		String others = request.getParameter(ApiConstants.PARAMETER_OTHERS);
-		
+		String otherWork=request.getParameter(ApiConstants.PARAMETER_OTHER_WORK);
 		
 		
 		
@@ -543,6 +543,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setFullName(fullName);
 		rudContainer.setProductDesired(productDesired);
 		rudContainer.setOthers(others);
+		
+		rudContainer.setOtherWork(otherWork);
 		
 		log.info("initUserDataContainer: End");
 		return rudContainer;

@@ -386,5 +386,6 @@ public interface IUserDataContainer {
 	public String getFullName();
 	public String getProductDesired();
 	public String getOthers();
-	
+
+	public String getOtherWork();
 }

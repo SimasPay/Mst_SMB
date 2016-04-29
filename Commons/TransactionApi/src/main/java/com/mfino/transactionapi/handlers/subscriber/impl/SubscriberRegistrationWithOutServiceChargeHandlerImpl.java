@@ -340,6 +340,9 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		}
 		
 		subscriberAddiFields.setWork(txnDetails.getWork());
+		if(txnDetails.getWork()!=null && txnDetails.getWork().equalsIgnoreCase("lainnya")){
+			subscriberAddiFields.setOtherWork(txnDetails.getOtherWork());
+		}
 		subscriberAddiFields.setIncome(txnDetails.getIncome());
 		subscriberAddiFields.setGoalOfAcctOpening(txnDetails.getGoalOfOpeningAccount());
 		subscriberAddiFields.setSourceOfFund(txnDetails.getSourceOfFunds());

@@ -203,6 +203,14 @@ public class TransactionDetails {
 	
 	private String closeAccountStatus;
 	
+	private String otherWork;
+	
+	public String getOtherWork() {
+		return otherWork;
+	}
+	public void setOtherWork(String otherWork) {
+		this.otherWork = otherWork;
+	}
 	/**
 	 * @return the closeAccountStatus
 	 */

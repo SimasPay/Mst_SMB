@@ -897,6 +897,24 @@
 				<field name="SubState" required="N" />
 				<field name="DateOfBirthText" required="N" />
 				<field name="IDValidUntilText" required="N" />
+				<field name="KTPDateOfBirth" required="N" />
+				<field name="Work" required="N" />
+				<field name="Income" required="N" />
+				<field name="GoalOfAcctOpening" required="N" />
+				<field name="SourceOfFund" required="N" />
+				<field name="BranchName" required="N" />
+				<field name="KTPRT" required="N" />
+				<field name="KTPRW" required="N" />
+				<field name="KTPZipCode" required="N" />
+				<field name="KTPSubState" required="N" />
+				<field name="KTPPlotNo" required="N" />
+				<field name="KTPStreetAddress" required="N" />
+				<field name="KTPCity" required="N" />
+				<field name="KTPRegionName" required="N" />
+				<field name="KTPState" required="N" />
+				<field name="State" required="N" />
+				<field name="IsDomesticAddrIdentity" required="N" />
+				<field name="OtherWork" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplate" msgtype="1040" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -3316,6 +3334,7 @@
 				<field name="KinName" required="N" />
 				<field name="KinMDN" required="N" />
 				<field name="SubscriberMobileCompany" required="N" />
+				<field name="OtherWork" required="N" />
 			</group>
 		</message>
 		<message name="SignOnFromBank" msgtype="1245" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
@@ -7288,6 +7307,7 @@
 			<field name="BankAcountStatus" required="N"/>
 			<field name="AgrementDate" required="N" />
 			<field name="Implementatindate" required="N" />
+			<field name="OtherWork" required="N" />
 		</record>
 
 		<record name="SystemParameters" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="system_parameters" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -27034,6 +27054,26 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8443" name="CloseAcctApprovedBy" type="STRING" />
 	<field number="8444" name="CloseAcctTime" type="UTCTIMESTAMP" />
 	<field number="8445" name="RetryAttempt" type="INT32" />
+	<field number="8446" name="KTPDateOfBirth" type="UTCTIMESTAMP" />
+	<field number="8447" name="KTPRT" type="STRING" required="N" />
+	<field number="8448" name="KTPRW" type="STRING" required="N" />
+	<field number="8449" name="KTPZipCode" type="STRING" required="N" />
+	<field number="8450" name="KTPSubState" type="STRING" required="N" />
+	<field number="8451" name="KTPPlotNo"  type="STRING" required="N" />
+	<field number="8452" name="KTPStreetAddress" type="STRING" required="N" />
+	<field number="8453" name="KTPCity" type="STRING" required="N" />
+	<field number="8454" name="KTPRegionName" type="STRING" required="N" />
+	<field number="8455" name="KTPState" type="STRING" required="N" />
+	<field number="8456" name="IsDomesticAddrIdentity" type="BOOLEAN" required="N" />
+	<field number="8457" name="WorkList" type="INT32">
+			<value enum="1" description="Kartu Kredit" />
+			<value enum="2" description="Kredit Kepemilikan Mobil" />
+			<value enum="3" description="Pinjaman Modal Kerja" />
+			<value enum="4" description="Kredit Investasi" />
+			<value enum="5" description="Kredit Usaha Mikro"/>
+			<value enum="6" description="Lainnya"/>
+		</field>
+	<field number="8458" name="OtherWork" type="STRING" required="N" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

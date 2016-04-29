@@ -174,6 +174,17 @@ public class ReceivedUserDataContainer {
 	private String ktpRW;
 	private String ktpRT;
 	private String fullName;
+	
+	private String otherWork;
+	
+	public String getOtherWork() {
+		return otherWork;
+	}
+
+	public void setOtherWork(String otherWork) {
+		this.otherWork = otherWork;
+	}
+
 	public String getFullName() {
 		return fullName;
 	}

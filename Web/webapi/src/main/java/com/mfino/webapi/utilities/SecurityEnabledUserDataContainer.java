@@ -1098,6 +1098,12 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 	public String getOthers() {
 		return this.container.getOthers();
 	}
+
+	@Override
+	public String getOtherWork() {
+		// TODO Auto-generated method stub
+		return this.container.getOtherWork();
+	}
 	
 	
 	

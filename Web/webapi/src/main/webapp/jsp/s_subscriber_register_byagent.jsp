@@ -138,6 +138,10 @@
 		<td><input type="text" name="work" value="" /></td>
 	</tr>
 	<tr>
+		<td>Other Work</td>
+		<td><input type="text" name="otherwork" value="" /></td>
+	</tr>
+	<tr>
 		<td>Income</td>
 		<td><input type="text" name="income" value="" /></td>
 	</tr>

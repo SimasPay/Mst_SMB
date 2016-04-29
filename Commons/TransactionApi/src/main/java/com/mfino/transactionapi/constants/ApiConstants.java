@@ -371,6 +371,7 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	public static final String PARAMETER_FULL_NAME = "fullName";
 	public static final String PARAMETER_PRODUCT_DESIRED = "productDesired";
 	public static final String PARAMETER_OTHERS = "others";
+	public static final String PARAMETER_OTHER_WORK = "otherwork";
 
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;

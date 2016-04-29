@@ -1125,4 +1125,9 @@ public class SecurityDisabledUserDataContainer implements IUserDataContainer {
 		// TODO Auto-generated method stub
 		return this.container.getOthers();
 	}
+	@Override
+	public String getOtherWork() {
+		// TODO Auto-generated method stub
+		return this.container.getOtherWork();
+	}
 }

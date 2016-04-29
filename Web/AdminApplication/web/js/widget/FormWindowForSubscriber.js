@@ -115,10 +115,15 @@ Ext
 				}
 				for(var i=0;i<items.length;i++){
 					//alert(items[i]);
-					if (this.form.find('itemId',items[i])[0].isVisible( )  == true)// checking that fields are hidden or not
-					{
-						this.form.find('itemId',items[i])[0].allowBlank = false;
+					try{
+						if (this.form.find('itemId',items[i])[0].isVisible( )  == true)// checking that fields are hidden or not
+						{
+							this.form.find('itemId',items[i])[0].allowBlank = false;
+						}	
+					}catch(e){
+						console.log('error :'+e)
 					}
+					
 				}
 				/*  End KYC Mandatory fields  */
 				var isGroupIdValid = true;

@@ -301,6 +301,7 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setKtpRW(userDataContainer.getKtpRW());
 		txnDetails.setRT(userDataContainer.getRT());
 		txnDetails.setRW(userDataContainer.getRW());
+		txnDetails.setOtherWork(userDataContainer.getOtherWork());
 		
 		return txnDetails;
 	}

@@ -12,11 +12,24 @@ mFino.page.subscriber = function(config){
     	//anchor: '100%'
     	//width: browserWidth
     },config));
+    var gridEditLakupandaiForm = new mFino.widget.FormWindowForSubscriber(Ext.apply({
+        form : new mFino.widget.SubscriberLakupandaiFormView(config),
+        width:770,
+    	height:600
+    	//anchor: '100%'
+    	//width: browserWidth
+    },config));
     
     var gridEditFormview = new mFino.widget.FormWindowForSubscriber(Ext.apply({
-        //form : new mFino.widget.SubscriberForm(config),
-    	form : new mFino.widget.SubscriberFormSPView(config),
-        width:750,
+        form : new mFino.widget.SubscriberForm(config),
+        width:770,
+    	height:600
+    	//anchor: '100%'
+    	//width: browserWidth
+    },config));
+    var gridLakupadaiFormview = new mFino.widget.FormWindowForSubscriber(Ext.apply({
+    	form : new mFino.widget.SubscriberLakupandaiViewForm(config),
+        width:770,
     	height:600
     	//anchor: '100%'
     	//width: browserWidth
@@ -129,18 +142,47 @@ mFino.page.subscriber = function(config){
                     } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)==CmFinoFIX.SubscriberStatus.NotRegistered){
                     	 Ext.MessageBox.alert(_("Info"), _("Unregistered Subscriber not allowed to edit"));
                     }else{
-                        gridEditForm.setTitle( _("Edit Subscriber"));
-                        gridEditForm.setMode("edit");
-                        gridEditForm.form.resetAll();
-                        gridEditForm.show();                        
-                        gridEditForm.setRecord(detailsForm.record);
-                        gridEditForm.setStore(detailsForm.store);
-                        var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
-                        gridEditForm.form.onStatusDropdown(status); //this shld be called after setRecord or else field values will be taken as empty by this methods
-                        gridEditForm.form.onKYCDropdown(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name));
-                        gridEditForm.form.disableNotPermittedItems();
-                        gridEditForm.form.find('itemId','sub.form.mobileno')[0].disable();
-                        gridEditForm.form.setAccountAndTemplateDisplay(false);
+                    	var actualCount=tabPanel.pocketGrid.store.getCount();
+                    	var isLakupandai=false;
+                    	var count=0;
+            			tabPanel.pocketGrid.store.each(function(record){
+//            				alert(record.get(CmFinoFIX.message.JSPocket.Entries.PocketTypeText._name))
+            				count++;
+            				if(record.get(CmFinoFIX.message.JSPocket.Entries.PocketTypeText._name)== 'Laku Pandai' ){
+            					isLakupandai=true;
+            				}
+            				if(count==actualCount){
+            					
+            					if(isLakupandai){
+            						gridEditLakupandaiForm.setTitle( _("Edit Subscriber"));
+            						gridEditLakupandaiForm.setMode("edit");
+            						gridEditLakupandaiForm.form.resetAll();
+            						gridEditLakupandaiForm.show();                        
+            						gridEditLakupandaiForm.setRecord(detailsForm.record);
+            						gridEditLakupandaiForm.setStore(detailsForm.store);
+                                    var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
+                                    gridEditLakupandaiForm.form.onStatusDropdown(status); //this shld be called after setRecord or else field values will be taken as empty by this methods
+                                    gridEditLakupandaiForm.form.onKYCDropdown(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name));
+                                    gridEditLakupandaiForm.form.disableNotPermittedItems();
+                                    gridEditLakupandaiForm.form.find('itemId','sub.form.mobileno')[0].disable();
+                                    gridEditLakupandaiForm.form.setAccountAndTemplateDisplay(false);
+            					}else{
+            						gridEditForm.setTitle( _("Edit Subscriber"));
+                                    gridEditForm.setMode("edit");
+                                    gridEditForm.form.resetAll();
+                                    gridEditForm.show();                        
+                                    gridEditForm.setRecord(detailsForm.record);
+                                    gridEditForm.setStore(detailsForm.store);
+                                    var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
+                                    gridEditForm.form.onStatusDropdown(status); //this shld be called after setRecord or else field values will be taken as empty by this methods
+                                    gridEditForm.form.onKYCDropdown(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name));
+                                    gridEditForm.form.disableNotPermittedItems();
+                                    gridEditForm.form.find('itemId','sub.form.mobileno')[0].disable();
+                                    gridEditForm.form.setAccountAndTemplateDisplay(false);
+            					}
+            				}
+            			})
+                        
                     }
                 }
             },
@@ -218,29 +260,41 @@ mFino.page.subscriber = function(config){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
                     }else{
-                    	//var kyc=detailsForm.record.get(CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name);
-                    	var kyc=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name);
-                		if(kyc == CmFinoFIX.RecordType.SubscriberUnBanked)
-                		{
-                			gridEditFormview.setTitle( _("PERSETUJUAN NASABAH LAKU PANDAI BANK SINARMAS"));
-                			gridEditFormview.setMode("close");
-                			gridEditFormview.form.setReadOnly(true);
-                			gridEditFormview.show();
-                			gridEditFormview.setRecord(detailsForm.record);
-                			gridEditFormview.setStore(detailsForm.store);
-                			gridEditFormview.form.setAccountAndTemplateDisplay(true);
-                		}else{
-	                        gridEditForm.setTitle( _(" Subscriber Details"));
-	                        gridEditForm.setMode("close");
-	                        gridEditForm.form.setReadOnly(true);
-	                        gridEditForm.show();
-	                       /* var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
-	                        gridEditForm.form.onStatusDropdown(status);
-	                        gridEditForm.form.disableNotPermittedItems();*/
-	                        gridEditForm.setRecord(detailsForm.record);
-	                        gridEditForm.setStore(detailsForm.store);
-	                        gridEditForm.form.setAccountAndTemplateDisplay(true);
-                		}
+                    	var actualCount=tabPanel.pocketGrid.store.getCount();
+                    	var isLakupandai=false;
+                    	var count=0;
+            			tabPanel.pocketGrid.store.each(function(record){
+//            				alert(record.get(CmFinoFIX.message.JSPocket.Entries.PocketTypeText._name))
+            				count++;
+            				if(record.get(CmFinoFIX.message.JSPocket.Entries.PocketTypeText._name)== 'Laku Pandai' ){
+            					isLakupandai=true;
+            				}
+            				if(count==actualCount){
+            					
+            					if(isLakupandai){
+            						gridLakupadaiFormview.setTitle( _("PERSETUJUAN NASABAH LAKU PANDAI BANK SINARMAS"));
+            						gridLakupadaiFormview.setMode("close");
+//                        			gridEditFormview.form.setReadOnly(true);
+            						gridLakupadaiFormview.show();
+            						gridLakupadaiFormview.setRecord(detailsForm.record);
+            						gridLakupadaiFormview.setStore(detailsForm.store);
+            						gridLakupadaiFormview.form.setAccountAndTemplateDisplay(true);
+            					}else{
+            						  gridEditForm.setTitle( _(" Subscriber Details"));
+          	                        gridEditForm.setMode("close");
+          	                        gridEditForm.form.setReadOnly(true);
+          	                        gridEditForm.show();
+          	                       /* var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
+          	                        gridEditForm.form.onStatusDropdown(status);
+          	                        gridEditForm.form.disableNotPermittedItems();*/
+          	                        gridEditForm.setRecord(detailsForm.record);
+          	                        gridEditForm.setStore(detailsForm.store);
+          	                        gridEditForm.form.setAccountAndTemplateDisplay(true);
+            					}
+            					
+            				}
+            			})
+                    	
                     }
                 }
             },
