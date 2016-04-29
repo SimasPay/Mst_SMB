@@ -244,7 +244,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
-			if(mfaService.isMFATransaction(serviceName, transactionName, channelCode.getID()) == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, channelCode.getID()) == true){
 				result.setMfaMode("OTP");
 				mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}
