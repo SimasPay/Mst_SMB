@@ -5567,6 +5567,9 @@
 				<field name="BusinessPartnerTypeAgentText" required="N"/>
 				<field name="BankBranchCode" required="N" />
 				<field name="CloseAcctStatus" required="N" />
+				<field name="AuthenticationPhrase" required="N" isSecure="Y"/>
+				<field name="SecurityQuestion" required="N" />
+				<field name="NotificationMethod" required="N" />
 			</group>
 		</message>
 		<message name="JSAgentError" msgtype="1769" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSError">

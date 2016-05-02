@@ -32,7 +32,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
             //width:860,
             items : [
             {
-                columnWidth: 0.5,
+                columnWidth: 0.7,
                 xtype: 'panel',
                 itemId:'details',
                 layout: 'form',
@@ -570,7 +570,188 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                      		   enumId: CmFinoFIX.TagID.BankAccountStatus,
                      		   itemId : 'servicepartner.form.BankAccountStatus',
                      		   name : CmFinoFIX.message.JSAgent.BankAccountStatus._name
-                     	   }
+                     	   },
+                     	  {
+                     		   xtype : "hidden",
+                     		   name : CmFinoFIX.message.JSAgent.PartnerStatus._name,
+                     		   itemId:'servicepartner.form.status'
+                     	   },
+                           {
+
+
+                               xtype:'tabpanel',
+                               frame:true,
+                               activeTab: 0,
+                               border : false,
+                               deferredRender:false,
+                               itemId:'tabpanelmerchant',
+                               defaults:{
+                                   bodyStyle:'padding:10px'
+                               },
+                               items:[
+                               {
+                                   title: _('Keamanan'),
+                                   layout:'column',
+                                   frame:true,
+                                   autoHeight: true,
+                                   items:[
+                                   {
+                                       columnWidth:1,
+                                       xtype: 'panel',
+                                       layout: 'form',
+                                       items:[
+
+                                              {
+                                  			xtype: 'fieldset',
+                                  			title: 'Pertanyaan Keamanan',
+                                  			autoHeight: true,
+//                                  			width: 280,
+                                  			layout: 'form',
+                                  			items: [
+                                              {
+                                          xtype : 'textfield',
+                                          anchor : '100%',
+                                          allowBlank: true,
+                                          itemId : 'sub.form.securityquestion',
+                                          fieldLabel : 'Pertayaan Rohasia',
+                                          name : CmFinoFIX.message.JSAgent.Entries.SecurityQuestion._name
+                                      },
+                                      {
+                                          xtype : 'textfield',
+                                          fieldLabel : 'Jawaban Rahasia',
+                                          anchor : '100%',
+                                          allowBlank: true,
+                                          itemId : 'sub.form.secretanswer',
+                                          blankText : _('Answer is required'),
+                                          vtype: 'numberchar',
+                                          name : CmFinoFIX.message.JSAgent.Entries.AuthenticationPhrase._name
+                                      }
+                                      
+                                      
+                                      ]
+                                  },
+                                  {
+                                  	xtype: 'fieldset',
+                                  	title: 'Informasi',
+                                  	autoHeight: true,
+//                                  	width: 280,
+                                  	layout: 'form',
+                                  	items: [
+                                  	        {
+
+                                  	          title: _(''),
+                                  	          autoHeight: true,
+//                                  	          width: 600,
+                                  	          layout: 'form',
+                                  	          items : [{
+                                  	              layout : 'column',
+                                  	              autoHeight: true,
+                                  	              columns: 2,
+                                  	              style : {
+                                  	                  margin: '5px'
+                                  	              },
+                                  	              items: [{
+                                  	              columnWidth: 0.5,
+                                  	              xtype : 'checkbox',
+                                  	              itemId : 'SMS',
+                                  	              boxLabel: sms
+                                  	          },
+                                  	          {
+                                  	              columnWidth: 0.5,
+                                  	              xtype : 'checkbox',
+                                  	              itemId : 'Email1',
+                                  	              boxLabel: email,
+                                  	      		listeners: {
+                                  	                  check: function() {
+                                  	                      this.findParentByType("ServicePartnerFormspEdit").onCheckEmail();  //commented to fix #3381
+                                  	                  }
+                                  	              }
+                                  	          }]
+                                  	          }]
+
+                                  	        }
+                                  	        ]
+                                  },
+                                  {
+                                  	xtype: 'fieldset',
+                                  	title: 'Keamanan',
+                                  	autoHeight: true,
+//                                  	width: 280,
+                                  	layout: 'form',
+                                  	items: [
+                                  	        {
+
+                                  	          title: _(''),
+                                  	          autoHeight: true,
+//                                  	          width: 600,
+                                  	          layout: 'form',
+                                  	          items : [{
+                                  	              layout : 'column',
+                                  	              autoHeight: true,
+                                  	              columns: 2,
+                                  	              style : {
+                                  	                  margin: '5px'
+                                  	              },
+                                  	              items: [
+                                  	              {
+                                  	                  columnWidth: 0.5,
+                                  	                  xtype : 'checkbox',
+                                  	                  itemId : 'SecurityLocked',
+                                  	                  boxLabel: 'Keamanan Terkunci',
+                                  	                  listeners: {
+                                  	                      check: function() {
+                                  	                          this.findParentByType("ServicePartnerFormspEdit").onSecurityLockClick();
+                                  	                      }
+                                  	                  }
+                                  	              },
+                                  	              {
+                                  	                  columnWidth: 0.5,
+                                  	                  xtype : 'checkbox',
+                                  	                  itemId : 'AbsoluteLocked',
+                                  	                  boxLabel: 'Terkunci Mutlak(Sepenuhnya)',
+                                  	                  listeners: {
+                                  	                      check: function() {
+                                  	                          this.findParentByType("ServicePartnerFormspEdit").onAbsoluteLockClick();
+                                  	                      }
+                                  	                  }
+                                  	              },
+                                  	              {
+                                  	                  columnWidth: 0.5,
+                                  	                  xtype : 'checkbox',
+                                  	                  itemId : 'Suspended',
+                                  	                  boxLabel: 'Ditangguhkan',
+                                  	                  listeners: {
+                                  	                      check: function() {
+                                  	                          this.findParentByType("ServicePartnerFormspEdit").onSuspendClick();
+                                  	                      }
+                                  	                  }
+                                  	              },
+                                  	              {
+                                  	                  columnWidth: 0.5,
+                                  	                  xtype : 'checkbox',
+                                  	                  itemId : 'NoFundMovement',
+                                  	                  boxLabel: 'Tidak Ada Pergerakan Dana',
+                                  	                  listeners: {
+                                  	                      check: function() {
+                                  	                          this.findParentByType("ServicePartnerFormspEdit").onNoFundMovementClick();
+                                  	                      }
+                                  	                  }
+                                  	              }]
+                                  	          }]
+
+                                  	        }
+                                  	        ]
+                                  }
+                                      
+                                              ]
+                                   }
+                                   ]
+                               }
+                               ]
+                           
+                           }
+                    
+                     	   
                 ]
             },
             {
@@ -579,8 +760,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                 layout: 'form',
                 itemId:'details2',
                 labelWidth:120,
-                items:[
-                ]
+                items:[]
             },
             {
                 columnWidth: 1,
@@ -642,6 +822,13 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
           //  checkItem.enable();
         }
     },
+    onCheckEmail: function(){
+	    var isEmailChecked = this.form.items.get("Email1").getValue();
+	       if (this.form.items.get("servicepartner.form.email").getValue() === "" && isEmailChecked) {
+	       	alert("Enter a valid email");
+			this.form.items.get("Email1").setValue(false);
+	    }     
+	},
     onPartnerType : function(partnerType){
     	var st_combo = this.find('itemId','servicepartner.form.type')[0];
     	st_combo.clearValue();
@@ -731,12 +918,17 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
     	if(this.getForm().isValid()){
             this.getForm().updateRecord(this.record);
             var notiValue = 0;
-            
+            if(this.form.items.get("SMS").checked){
+                notiValue = notiValue + CmFinoFIX.NotificationMethod.SMS;
+            }
+            if(this.form.items.get("Email1").checked){
+                notiValue = notiValue + CmFinoFIX.NotificationMethod.Email;
+            }
             var resValue = 0;
-//            if(this.form.items.get("SelfSuspended").checked){
-//                resValue = resValue + CmFinoFIX.SubscriberRestrictions.SelfSuspended;
-//            }
-/*            if(this.form.items.get("Suspended").checked){
+            if(this.form.items.get("NoFundMovement").checked){
+                resValue = resValue + CmFinoFIX.SubscriberRestrictions.NoFundMovement;
+            }
+            if(this.form.items.get("Suspended").checked){
                 resValue = resValue + CmFinoFIX.SubscriberRestrictions.Suspended;
             }
             if(this.form.items.get("SecurityLocked").checked){
@@ -744,9 +936,10 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
             }
             if(this.form.items.get("AbsoluteLocked").checked){
                 resValue = resValue + CmFinoFIX.SubscriberRestrictions.AbsoluteLocked;
-            }*/
+            }
 
             this.record.beginEdit();
+            this.record.set(CmFinoFIX.message.JSAgent.Entries.NotificationMethod._name, notiValue);
             this.record.set(CmFinoFIX.message.JSAgent.Entries.Restrictions._name, resValue);
             this.record.endEdit();
 
@@ -771,13 +964,18 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
         }
 /*        var pt_combo = this.find('itemId','servicepartner.form.type')[0];
         pt_combo.setRawValue(this.record.get(CmFinoFIX.message.JSAgent.Entries.BusinessPartnerTypeText._name));
+        */
+      
+        var notiValue = record.get(CmFinoFIX.message.JSAgent.Entries.NotificationMethod._name);
+        this.form.items.get("SMS").setValue( (notiValue & CmFinoFIX.NotificationMethod.SMS) > 0);
+        this.form.items.get("Email1").setValue( ( notiValue & CmFinoFIX.NotificationMethod.Email) > 0);
         
         var resValue = record.get(CmFinoFIX.message.JSAgent.Entries.Restrictions._name);
-//        this.form.items.get("SelfSuspended").setValue( (resValue & CmFinoFIX.SubscriberRestrictions.SelfSuspended) > 0);
+        this.form.items.get("NoFundMovement").setValue( (resValue & CmFinoFIX.SubscriberRestrictions.NoFundMovement) > 0);
         this.form.items.get("Suspended").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.Suspended) > 0);
         this.form.items.get("SecurityLocked").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.SecurityLocked) > 0);
         this.form.items.get("AbsoluteLocked").setValue((resValue & CmFinoFIX.SubscriberRestrictions.AbsoluteLocked) > 0);
-        */
+        
         this.getForm().clearInvalid();
     },
     resetAll : function() {
@@ -854,6 +1052,29 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
     },
     setCombo : function(combo){
     	subscribercombo = combo;
+    },
+    onNoFundMovementClick: function(){
+    	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
+    	if (partnerType === CmFinoFIX.BusinessPartnerType.ServicePartner) {
+    		Ext.MessageBox.alert(_("Alert"), _("Service Partner can't be Locked"));
+            this.form.items.get("AbsoluteLocked").setValue(false);
+    	} else {
+    	var currentStatus = this.record.data[CmFinoFIX.message.JSAgent.Entries.PartnerStatus._name];
+        if(this.form.items.get("NoFundMovement").checked) {
+            this.form.items.get("servicepartner.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            if(this.form.items.get("Suspended").checked) {
+                this.form.items.get("servicepartner.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+            }
+        } else {
+        	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
+        		currentStatus = CmFinoFIX.SubscriberStatus.Active;
+        		if(this.form.items.get("Suspended").checked) {
+                	currentStatus = CmFinoFIX.SubscriberStatus.Suspend;
+            	}
+        	}
+            this.form.items.get("servicepartner.form.status").setValue(currentStatus);
+        }
+    	}
     },
     onSuspendClick: function(){
     	var partnerType = this.record.data[CmFinoFIX.message.JSAgent.Entries.BusinessPartnerType._name];
@@ -1138,7 +1359,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
 /*
  * Partner / Agent Restrictions
  **/
-var partnerRestrictions = {
+/*var partnerRestrictions = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -1196,7 +1417,7 @@ var partnerRestrictions = {
             }
         }]
     }]
-};
+};*/
 
 
 

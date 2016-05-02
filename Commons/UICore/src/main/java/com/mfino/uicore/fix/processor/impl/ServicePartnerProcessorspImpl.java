@@ -287,12 +287,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriberDao.save(objSubscriber);
                 partnerDao.save(objPartner);
                 
-        		if(StringUtils.isNotBlank(objPartner.getAuthorizedEmail())) {
-        			objSubscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
-        		} else {
-        			objSubscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-        		}
-        		subscriberDao.save(objSubscriber);
+//        		if(StringUtils.isNotBlank(objPartner.getAuthorizedEmail())) {
+//        			objSubscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+//        		} else {
+//        			objSubscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+//        		}
+//        		subscriberDao.save(objSubscriber);
                 
                 if(entry.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(objSubscriber, entry.getAuthorizedEmail());					
@@ -1163,6 +1163,19 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         				}
         			}
         		}            	
+        		
+        		if(entry.getNotificationMethod()!=null){
+					subscriber.setNotificationMethod(entry.getNotificationMethod());
+				}
+        		
+    			if (entry.getSecurityQuestion() != null) {
+    				subscriber.setSecurityQuestion(entry.getSecurityQuestion());
+				}
+	
+				if (entry.getAuthenticationPhrase() != null) {
+					subscriber.setSecurityAnswer(entry.getAuthenticationPhrase());
+				}
+				
         }
     
     private void updateMessagesp(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,  CMJSAgent entry) {
@@ -1682,7 +1695,28 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				entry.setGroupName(sg.getGroup().getGroupName());
 				entry.setGroupID(""+sg.getGroup().getID());
 			}
+			try{
+				
+			
+				if (subscriber.getSecurityQuestion() != null) {
+					entry.setSecurityQuestion(subscriber.getSecurityQuestion());
+				}
+	
+				if (subscriber.getSecurityAnswer() != null) {
+					entry.setAuthenticationPhrase(subscriber.getSecurityAnswer());
+				}
+				if(subscriber.getNotificationMethod()!=null){
+					entry.setNotificationMethod(subscriber.getNotificationMethod());
+				}
+				
+			}catch(Exception e){
+				log.error("Error :"+e.getMessage(),e);
+			}
         }
+        if(partner.getPartnerStatus()!=null){
+        	entry.setPartnerStatus(partner.getPartnerStatus());
+        }
+        
 /*        if(partner.getUser()!=null){
         	entry.setUsername(partner.getUser().getUsername());
         	entry.setNameInAccordanceIdentity(partner.getUser().getUsername());
