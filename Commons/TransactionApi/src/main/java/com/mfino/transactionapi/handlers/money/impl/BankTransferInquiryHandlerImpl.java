@@ -251,6 +251,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			}
 		}else{
 			result.setDestinationMDN(bankAccountToBankAccount.getDestMDN());
+			result.setDestinationAccountNumber(bankAccountToBankAccount.getDestinationBankAccountNo());
 		}
        	String receiverAccountName = (StringUtils.isNotBlank(destSubscriber.getFirstName()) ? destSubscriber.getFirstName() : "")
 					+ " " + (StringUtils.isNotBlank(destSubscriber.getLastName()) ? destSubscriber.getLastName() : "");

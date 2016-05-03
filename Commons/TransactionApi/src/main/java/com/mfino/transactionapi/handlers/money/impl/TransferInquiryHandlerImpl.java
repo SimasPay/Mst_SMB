@@ -180,6 +180,11 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 			destPocket = pocketService.getById(Long.parseLong(transactionDetails.getDestPocketId()));
 			
 		}
+		
+		if(StringUtils.isNotBlank(transactionDetails.getDestPocketCode())) {
+			
+			destPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
+		}
 		else {
 			
 			if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
@@ -194,6 +199,7 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 
 			destPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
 		}
+		
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
