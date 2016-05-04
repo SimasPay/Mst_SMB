@@ -3,6 +3,9 @@
  */
 package com.mfino.scheduler.service.impl;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
@@ -11,12 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +31,14 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.scheduler.service.AverageMonthlyBalanceService;
 import com.mfino.service.AgentCommissionFeeService;
 import com.mfino.service.BookingDatedBalanceService;
+import com.mfino.service.MailService;
 import com.mfino.service.MoneyService;
 import com.mfino.service.MonthlyBalanceService;
+import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
+import com.mfino.util.ConfigurationUtil;
 
 /**
  * @author Bala Sunku
@@ -72,6 +76,14 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
 	
+	@Autowired
+	@Qualifier("PartnerServiceImpl")
+	private PartnerService partnerService;
+	
+	@Autowired
+	@Qualifier("MailServiceImpl")
+	private MailService mailService;
+	
 	private HibernateTransactionManager txManager;
 	private int currentMonth;
 	private int currentYear;
@@ -79,6 +91,7 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 	private Date endDate;
 	private int startDay = 1;
 	private int endDay = 31;
+	private BigDecimal cFee = BigDecimal.ZERO;
 	
 	public HibernateTransactionManager getTxManager() {
 		return txManager;
@@ -92,16 +105,29 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 		log.info("calculateAverageMonthlyBalanceForLakupandai :: BEGIN");
 		calculateStartAndEndDates();
 		try {
-			
+			cFee = systemParametersService.getBigDecimal(SystemParameterKeys.CUSTOMER_BALANCE_FEE);
+		
 			List<Long> lst = pocketService.getLakuPandaiPockets();
 			if (CollectionUtils.isNotEmpty(lst)) {
+				File file = createFile("Interest_" + currentMonth + "_" + currentYear + ".csv");
+				FileWriter writer = openFile(file);
 				for (Long pocketId:lst) {
 					try {
-						calculateAverageMonthlyBalance(pocketId);
+						String data = calculateAverageMonthlyBalance(pocketId);
+						writer.append(data);
+						writer.append('\n');
 					} catch (Exception e) {
 						log.error("Error while calculating the average monthly balance for pocketid: " + pocketId , e);
 					}
 				}
+				try {
+					writer.flush();
+					writer.close();
+				} catch (IOException e) {
+					log.error("Error in closing the document for interest", e);
+				}
+				sendMail(ConfigurationUtil.getCapitalizationAuthorizedEmail(), "Interest report for " + currentMonth + "/" + currentYear, 
+						"Attached Interest report for " + currentMonth + "/" + currentYear, file.toString());
 			}
 			// Calculates the Agent commission fee after monthly balance of the customers is calculated
 			calculateAgentCommissionFee();
@@ -110,81 +136,100 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 		} 
 		log.info("calculateAverageMonthlyBalanceForLakupandai :: END");
 	}
+	
+	private File createFile(String fileName) {
+		String outputDir = ConfigurationUtil.getReportDir() + File.separator + "capitalization";
+		if (!new File(outputDir).exists()) {
+			new File(outputDir).mkdirs();
+		}
+		File file = new File(outputDir + File.separator + fileName);
+		return file;
+	}
+	
+	private FileWriter openFile(File file) {
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(file);
+		} catch (IOException e) {
+			log.error("Failed to create a document: " + file.getAbsolutePath(), e);
+		}
+		return writer;
+	}
 
-	private void calculateAverageMonthlyBalance(Long pocketId) {
+	private String calculateAverageMonthlyBalance(Long pocketId) {
 		log.info("Calculating the Avergare monthly balance for pocket id: "+ pocketId);
 		List<BookingDatedBalance> lstBookingDatedBalances = null;
 		BigDecimal totalMonthlyBalance = BigDecimal.ZERO;
 		HashMap<Integer, BigDecimal> monthlyBalances = new HashMap<Integer, BigDecimal>();
+		String result = "";
 		
 		Pocket p = pocketService.getById(pocketId);
-
-		log.info("Getting the balance detaild for pocket:"+ pocketId + " start date:" + startDate + "  end date:" + endDate);
-		lstBookingDatedBalances = bookingDatedBalanceService.getDailyBalanceForPocket(pocketId, startDate, endDate);
-		
-		if (CollectionUtils.isNotEmpty(lstBookingDatedBalances)) {
-			for (BookingDatedBalance bdb:lstBookingDatedBalances) {
-				Date bookingDate = bdb.getBookingDate();
-				BigDecimal bookingBalance = bdb.getClosingBalance();
-				monthlyBalances.put(bookingDate.getDate(), bookingBalance);
-			}
-		}
-		SubscriberMDN subMdn = p.getSubscriberMDNByMDNID();
-		int closingDay = 0;
-		if ( (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subMdn.getStatus().intValue()) || 
-				(CmFinoFIX.SubscriberStatus_Retired.intValue() == subMdn.getStatus().intValue()) ) {
-			closingDay = subMdn.getStatusTime().getDate();	
-		}
-		log.info("Mdn Close day = "+ closingDay);
-		
-		for (int i=startDay; i<=endDay; i++) {
-			if (monthlyBalances.get(i) == null) {
-				if ((closingDay > 0) && (i >= closingDay)) {
-					monthlyBalances.put(i, BigDecimal.ZERO);
+		MonthlyBalance mBalance = monthlyBalanceService.getByDetails(p, currentMonth+"", currentYear);
+		if (mBalance == null) {
+			log.info("Getting the balance detaild for pocket:"+ pocketId + " start date:" + startDate + "  end date:" + endDate);
+			lstBookingDatedBalances = bookingDatedBalanceService.getDailyBalanceForPocket(pocketId, startDate, endDate);
+			
+			if (CollectionUtils.isNotEmpty(lstBookingDatedBalances)) {
+				for (BookingDatedBalance bdb:lstBookingDatedBalances) {
+					Date bookingDate = bdb.getBookingDate();
+					BigDecimal bookingBalance = bdb.getClosingBalance();
+					monthlyBalances.put(bookingDate.getDate(), bookingBalance);
 				}
-				else {
-					if (i == startDay) { 
-						BookingDatedBalance preDayBalance = bookingDatedBalanceService.getPreDatedEntry(p, startDate);
-						if (preDayBalance != null) 
-							monthlyBalances.put(i, preDayBalance.getClosingBalance());
-						else 
-							monthlyBalances.put(i, BigDecimal.ZERO);
+			}
+			SubscriberMDN subMdn = p.getSubscriberMDNByMDNID();
+			int closingDay = 0;
+			if ( (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subMdn.getStatus().intValue()) || 
+					(CmFinoFIX.SubscriberStatus_Retired.intValue() == subMdn.getStatus().intValue()) ) {
+				closingDay = subMdn.getStatusTime().getDate();	
+			}
+			log.info("Mdn Close day = "+ closingDay);
+			
+			for (int i=startDay; i<=endDay; i++) {
+				if (monthlyBalances.get(i) == null) {
+					if ((closingDay > 0) && (i >= closingDay)) {
+						monthlyBalances.put(i, BigDecimal.ZERO);
 					}
 					else {
-						monthlyBalances.put(i, monthlyBalances.get(i-1));
+						if (i == startDay) { 
+							BookingDatedBalance preDayBalance = bookingDatedBalanceService.getPreDatedEntry(p, startDate);
+							if (preDayBalance != null) 
+								monthlyBalances.put(i, preDayBalance.getClosingBalance());
+							else 
+								monthlyBalances.put(i, BigDecimal.ZERO);
+						}
+						else {
+							monthlyBalances.put(i, monthlyBalances.get(i-1));
+						}
 					}
 				}
+				log.info("Balance for day "+ i + " is: " + monthlyBalances.get(i));
+				totalMonthlyBalance = totalMonthlyBalance.add(monthlyBalances.get(i));
 			}
-			log.info("Balance for day "+ i + " is: " + monthlyBalances.get(i));
-			totalMonthlyBalance = totalMonthlyBalance.add(monthlyBalances.get(i));
-		}
-		
-		MonthlyBalance mBalance = new MonthlyBalance();
-		mBalance.setPocket(p);
-		mBalance.setMonth(currentMonth+"");
-		mBalance.setYear(currentYear);
-		
-		BigDecimal avgMonthlyBalance = totalMonthlyBalance.divide(new BigDecimal(endDay), 2, RoundingMode.HALF_EVEN);
-		mBalance.setAverageMonthlyBalance(avgMonthlyBalance);
-		
-		BigDecimal roi = p.getPocketTemplate().getInterestRate();
-		if (roi == null) {
-			roi = BigDecimal.ZERO;
-		}
-		mBalance.setInterestCalculated(calculateFee(avgMonthlyBalance, roi));
-		
-		BigDecimal cFee = systemParametersService.getBigDecimal(SystemParameterKeys.CUSTOMER_BALANCE_FEE);
-		if (cFee == null) {
-			cFee = BigDecimal.ZERO;
-		}
-		mBalance.setAgentCommissionCalculated(calculateFee(avgMonthlyBalance, cFee));
-		try {
+			
+			mBalance = new MonthlyBalance();
+			mBalance.setPocket(p);
+			mBalance.setMonth(currentMonth+"");
+			mBalance.setYear(currentYear);
+			
+			BigDecimal avgMonthlyBalance = totalMonthlyBalance.divide(new BigDecimal(endDay), 2, RoundingMode.HALF_EVEN);
+			mBalance.setAverageMonthlyBalance(avgMonthlyBalance);
+			
+			BigDecimal roi = p.getPocketTemplate().getInterestRate();
+			if (roi == null) {
+				roi = BigDecimal.ZERO;
+			}
+			mBalance.setInterestCalculated(calculateFee(avgMonthlyBalance, roi));
+
+			mBalance.setAgentCommissionCalculated(calculateFee(avgMonthlyBalance, cFee));
 			monthlyBalanceService.save(mBalance);
-		} catch (DataIntegrityViolationException e) {
-			log.info("Monthly balance for pocket:"+ pocketId + " is already calculated.");
-		} catch (ConstraintViolationException e) {
-			log.info("Monthly balance for pocket:"+ pocketId + " is already calculated.");
+			
+			result = subMdn.getMDN()+","+mBalance.getInterestCalculated();
 		}
+		else {
+			log.info(String.format("Avergare monthly balance for pocket id:%S for month/year:%S/%S is already calculated", 
+					pocketId.toString(),currentMonth,currentYear));			
+		}
+		return result;
 	}
 	
 	private void calculateAgentCommissionFee() {
@@ -192,6 +237,8 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 		log.info("Calculating the Agent Commission Fee for month : "+ currentMonth + " and year: " + currentYear);
 		List<Object[]> lst = monthlyBalanceService.getCommissionFeeDetails(currentMonth+"", currentYear);
 		if (CollectionUtils.isNotEmpty(lst)) {
+			File file = createFile("AgentCommissionFee_"+currentMonth+"_"+currentYear+".csv");
+			FileWriter writer = openFile(file);
 			for (Object[] obj:lst) {
 				try {
 					Long agentId = (Long)obj[0];
@@ -210,10 +257,22 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 					}
 					log.info("Saving the Agent commission balance for agent Id: "+ agentId);
 					agentCommissionFeeService.save(agentCommissionFee);
+					String agentMDN = partnerService.getMDN(agentId);
+					writer.append(agentMDN+","+cFee);
+					writer.append('\n');
 				} catch (Exception e) {
 					log.error("Error while calculating the commission fee for agent Id: "+ obj[0] , e);
 				}
 			}
+
+			try {
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				log.error("Error in closing the document for agentCommissionFee", e);
+			}
+			sendMail(ConfigurationUtil.getCapitalizationAuthorizedEmail(), "Agent Commission Fee report for " + currentMonth + "/" + currentYear, 
+					"Attached Agent Commission Fee report for " + currentMonth + "/" + currentYear, file.toString());
 		}
 	}
 	
@@ -227,6 +286,8 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 		}
 		List<Object[]> lst = subscriberService.getNewSubscribersCount(startDate, endDate);
 		if (CollectionUtils.isNotEmpty(lst)) {
+			File file = createFile("AccountOpeningFeeToAgents_"+currentMonth+"_"+currentYear+".csv");
+			FileWriter writer = openFile(file);
 			for (Object[] obj:lst) {
 				try {
 					Long agentId = (Long)obj[0];
@@ -246,10 +307,23 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 					}
 					log.info("Saving the opening account fee value to agent Id: "+ agentId);
 					agentCommissionFeeService.save(agentCommissionFee);
+					String agentMDN = partnerService.getMDN(agentId);
+					writer.append(agentMDN+","+openAccFee);
+					writer.append('\n');
 				} catch (Exception e) {
 					log.error("Error while calculating the LakupandaiAccountOpeningFeeToAgent:" + obj[0],e);
 				}
 			}
+			
+			try {
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				log.error("Error in closing the document for AccountOpeningFeeToAgents", e);
+			}
+			sendMail(ConfigurationUtil.getCapitalizationAuthorizedEmail(), "Account Opening Fee To Agents report for " + currentMonth + "/" + currentYear, 
+					"Attached Account Opening Fee To Agents report for " + currentMonth + "/" + currentYear, file.toString());
+
 		}
 		log.info("Calculating the LakupandaiAccountOpeningFeeToAgents :: END");
 	}
@@ -294,5 +368,21 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 	
 	private BigDecimal calculateFee(BigDecimal avgBalance, BigDecimal roi) {
 		return moneyService.round(avgBalance.multiply(roi).divide(new BigDecimal(1200), 2, RoundingMode.HALF_EVEN));
+	}
+	
+	private void sendMail(String emailRecipients,String subject, String message, String attachmentFileName){
+		log.info("sending mail to " + emailRecipients);
+		try{
+			String[] emailRecipientsList = emailRecipients.split(",");
+			File attachmentFile = new File(attachmentFileName);
+			for(int i=0; i< emailRecipientsList.length; i++){
+				if(mailService.isValidEmailAddress(emailRecipientsList[i])){
+					mailService.asyncSendEmailWithAttachment(emailRecipientsList[i].trim(), "", subject, message, attachmentFileName);
+				}
+			}
+		}catch(Exception e){
+			log.error("Error while sending the mail for: "+ attachmentFileName, e);
+		}
+		
 	}
 }

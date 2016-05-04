@@ -99,6 +99,8 @@ public class XMLResult extends Result {
 	private String	            destinationMDN;
 	private int	                numberOfTriesLeft;
 	private boolean				isUnRegistered;
+	private boolean isTrfToSuspense;
+	private int txnStatus; 
 	
 	private BigDecimal minAmount;
 	private BigDecimal maxAmount;
@@ -1036,6 +1038,22 @@ public class XMLResult extends Result {
 
 	public void setRemainingBlockTimeHours(String remainingBlockTimeHours) {
 		this.remainingBlockTimeHours = remainingBlockTimeHours;
+	}
+
+	public boolean isTrfToSuspense() {
+		return isTrfToSuspense;
+	}
+
+	public void setTrfToSuspense(boolean isTrfToSuspense) {
+		this.isTrfToSuspense = isTrfToSuspense;
+	}
+
+	public int getTxnStatus() {
+		return txnStatus;
+	}
+
+	public void setTxnStatus(int txnStatus) {
+		this.txnStatus = txnStatus;
 	}
 
 }

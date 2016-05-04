@@ -16,7 +16,7 @@ mFino.widget.BulkTransferFileGrid = function (config) {
         enableToggle: false,
         iconCls: 'mfino-button-excel',
         text: _('Export to Excel'),
-        tooltip : _('Export data to Excel Sheet'),
+        tooltip : _('Export all transactions to excel sheet'),
         handler : this.excelView.createDelegate(this)
     });
     
@@ -67,9 +67,9 @@ mFino.widget.BulkTransferFileGrid = function (config) {
         autoScroll : true,
         sm:sm2,
         columns: [
-        sm2,                  
+//        sm2,                  
         {
-            header: _('Line No.'),
+            header: _('S. No.'),
             dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.LineNumber._name,
             width: 50
         },                  
@@ -78,28 +78,16 @@ mFino.widget.BulkTransferFileGrid = function (config) {
             dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.ServiceChargeTransactionLogID._name
         },
         {
+            header: _('Destination MDN'),
+            dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.DestMDN._name
+        },        
+        {
             header: _('First Name'),
             dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.FirstName._name
         },
         {
             header: _('Last Name'),
             dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.LastName._name
-        },        
-        {
-            header: _('Destination MDN'),
-            dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.DestMDN._name
-        },
-        {
-            header: _('Non Registered'),
-            dataIndex: CmFinoFIX.message.JSBulkUploadEntry.Entries.IsUnRegistered._name,
-			width : 75,
-            renderer: function(value) {
-				if (value) {
-					return "Yes";
-				} else {
-					return "No";
-				}
-			}
         },        
         {
             header: _('Amount'),

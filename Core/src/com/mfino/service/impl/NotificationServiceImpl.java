@@ -110,6 +110,10 @@ public class NotificationServiceImpl implements NotificationService{
 		List<Notification> notification = DAOFactory.getInstance().getNotificationDAO().getLanguageBasedNotifications(notificationQuery);
 		return notification;
 	}
+	
+	public Notification getByNotificationCodeAndLang(Integer code, Integer lang) {
+		return DAOFactory.getInstance().getNotificationDAO().getByNotificationCodeAndLang(code, lang);
+	}	
 }
 
 

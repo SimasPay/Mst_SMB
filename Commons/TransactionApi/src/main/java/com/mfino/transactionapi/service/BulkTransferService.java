@@ -3,11 +3,10 @@
  */
 package com.mfino.transactionapi.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
-import com.mfino.dao.BulkUploadDAO;
 import com.mfino.domain.BulkUpload;
+import com.mfino.domain.BulkUploadEntry;
+import com.mfino.domain.ChannelCode;
+import com.mfino.domain.Pocket;
 
 /**
  * @author Shashank
@@ -15,16 +14,12 @@ import com.mfino.domain.BulkUpload;
  */
 public interface BulkTransferService {
 
-	void failTheBulkTransfer(BulkUpload bulkUpload,
-			String string);
+	public boolean processEntry(BulkUploadEntry bue, BulkUpload bulkUpload, Pocket srcPocket, ChannelCode channelCode, int i);
 
-	BulkUpload processBulkTransferData(BulkUpload bulkUpload) throws IOException;
+	void failTheBulkTransfer(BulkUpload bulkUpload, String string);
 
-	void sendEmailBulkUploadSummary(BulkUpload bulkUpload,
-			BigDecimal moneyAvailbleBeforeTheJob,
-			BigDecimal moneyAvailbleAfterTheJob);
+	void sendEmailBulkUploadSummary(BulkUpload bulkUpload);
 
-	void sendNotification(BulkUpload bulkUpload,
-			Integer notificationcodeBulktransfercompletedtopartner);
+	void sendNotification(BulkUpload bulkUpload, Integer notificationcodeBulktransfercompletedtopartner);	
 
 }

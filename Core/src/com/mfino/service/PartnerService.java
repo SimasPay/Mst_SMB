@@ -77,5 +77,6 @@ public interface PartnerService {
 	public List<PartnerServices> getPartnerServices(Long partnerId, Long serviceProviderId, Long serviceId);
 
 	public Partner registerPartner(CMPartnerRegistrationThroughAPI partnerRegistration) throws Exception;
-
+	
+	public String getMDN(Long partnerId);
 }

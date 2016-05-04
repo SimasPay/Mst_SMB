@@ -1404,6 +1404,7 @@
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="BulkUploadID" id="ID" required="Y" />
 				<field name="SubscriberID" required="Y" References="Subscriber" />
+				<field name="Name" required="N"/>
 				<field name="UserID" required="Y" References="User" />
 				<field name="FileName" required="Y" />
 				<field name="TotalLineCount" required="Y" />
@@ -4805,6 +4806,14 @@
 	</message>
 	<message name="QRPaymentReversalFromBank" msgtype="1441" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferReversalFromBank">
 	</message>
+	<message name="BulkDistribution" msgtype="1443" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="SourcePocketID" required="Y"/>
+		<field name="DestMDN" required="Y"/>
+		<field name="DestPocketID" required="Y"/>
+		<field name="Amount" required="Y" />
+		<field name="Charges" required="N" default="0" />
+		<field name="SourceMessage" required="Y" />
+	</message>	
     <message name="JSShowBalanceDetails" msgtype="1500" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="StartTime" required="N"/>
 			<field name="EndTime" required="N"/>
@@ -6215,6 +6224,7 @@
 			<field name="IsUnRegistered" required="N"/>      
 			<field name="FailureReason" required="N"/>
 			<field name="ServiceChargeTransactionLogID" required="N"/>
+			<field name="IsTrfToSuspense" required="N"/>
 			<index name="UploadID" Unique="Y">
 				<field name="BulkUploadID" />
 				<field name="BulkUploadLineNumber" required="N" SQLDir="Desc" />
@@ -6223,6 +6233,7 @@
 		<record name="BulkUpload" ExtendsRecord="Base" Java="Y" SQLTable="bulk_upload" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
+			<field name="Name" required="N"/>
 			<field name="Description" required="Y" />
 			<field name="SourceSubscriberID" id="SubscriberID" required="N" References="Subscriber" />
 			<field name="SourceUserID" id="UserID" required="Y" References="User" />
@@ -24469,6 +24480,7 @@ ERROR:Mismatch of  mdn type and app type
 		<!-- This is Similar to Transfer Status Just that the user should see only Completed and Failed we are creating this
 -->
 		<field number="5415" name="TransactionsTransferStatus" type="INT32" unused="Y">
+			<value enum="0" description="Initialized" />
 			<value enum="1" description="Completed" />
 			<value enum="2" description="Failed" />
 			<value enum="3" description="Pending" />
@@ -24563,19 +24575,20 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="40" description="BankAccountTransfer" />
 		</field>
 		<field number="5475" name="BulkUploadDeliveryStatus" type="INT32">
-			<value enum="0" description="Uploaded" />
-			<value enum="1" description="Processing" />
-			<value enum="2" description="Processed" />
-			<value enum="3" description="Terminated" />
-			<value enum="4" description="ReadyForBankUpload" />
-			<value enum="5" description="UploadedToBank" />
-			<value enum="6" description="Complete" />
-			<value enum="7" description="Approved"/>
-			<value enum="8" description="Rejected"/>
-			<value enum="9" description="Scheduled"/>
-			<value enum="10" description="Failed"/>
-			<value enum="11" description="Pending"/>
-			<value enum="12" description="Settlement_Pending"/>
+			<value enum="0" description="Initialized" />
+			<value enum="1" description="Uploaded" />
+			<value enum="2" description="Processing" />
+			<value enum="3" description="Processed" />
+			<value enum="4" description="Terminated" />
+			<value enum="5" description="ReadyForBankUpload" />
+			<value enum="6" description="UploadedToBank" />
+			<value enum="7" description="Complete" />
+			<value enum="8" description="Approved"/>
+			<value enum="9" description="Rejected"/>
+			<value enum="10" description="Scheduled"/>
+			<value enum="11" description="Failed"/>
+			<value enum="12" description="Pending"/>
+			<value enum="13" description="Settlement_Pending"/>
 		</field>
 		<field number="5476" name="BulkUploadDeliveryDate" type="UTCTIMESTAMP" />
 		<field number="5477" name="BulkUploadFailedTransactionsCount" type="INT32" />
@@ -26571,6 +26584,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="7111" name="AgentCommissionCalculated" type="NEWAMT"/>
 	<field number="7112" name="OpenAccountFee" type="NEWAMT"/>
 	<field number="7113" name="CustomerBalanceFee" type="NEWAMT"/>
+	<field number="7114" name="IsTrfToSuspense" type="BOOLEAN"/>
 	<field number="8000" name="GenerationOfOTPOnFailure" type="RecordID"/>
 	<field number="8001" name="ExpiryID" type="RecordID" />
 	<field number="8002" name="FundAllocationId" type="RecordID"/>

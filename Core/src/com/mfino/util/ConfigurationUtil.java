@@ -313,8 +313,8 @@ public class ConfigurationUtil {
 		SendOTPBeforeApproval("mfino.send.otp.before.approval", "true"),
 		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd"),
 		KTPServerURL("mfino.ktpserver.base.url","null"),
-		KTPServerTimeout("mfino.ktpserver.server.timeout","10000");
-		
+		KTPServerTimeout("mfino.ktpserver.server.timeout","10000"),
+		CapitalizationAuthorizedEmail("mfino.capitalization.authorized.email","abc@abc.com");
 		
 		private final String key;
 		private final String defaultValue;
@@ -1256,5 +1256,9 @@ public class ConfigurationUtil {
 	
 	public static boolean getSendOTPBeforeApproval() {
 		return getBoolean(ConfigurationKey.SendOTPBeforeApproval);
+	}
+	
+	public static String getCapitalizationAuthorizedEmail() {
+		return get(ConfigurationKey.CapitalizationAuthorizedEmail);
 	}
 }

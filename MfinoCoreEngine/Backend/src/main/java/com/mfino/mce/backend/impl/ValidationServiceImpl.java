@@ -609,8 +609,8 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		}
 	
 		responseFix.setInternalErrorCode(notificationCode);
-		srcPocket.setLastTransactionTime(now);
-		destPocket.setLastTransactionTime(now);
+//		srcPocket.setLastTransactionTime(now);
+//		destPocket.setLastTransactionTime(now);
 		
 		return responseFix;
 	}

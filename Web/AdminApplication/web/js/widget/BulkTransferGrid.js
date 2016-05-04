@@ -18,12 +18,7 @@ mFino.widget.BulkTransferGrid = function (config) {
         actions:[
         {
             iconCls:'mfino-button-View',
-            tooltip: _('View Subscriber Transfer Details'),
-            align:'right'
-        },
-        {
-            iconCls:'mfino-button-history',
-            tooltip: _('View Reverse Transfer Details'),
+            tooltip: _('View Individual Transfer Details'),
             align:'right'
         }
         ]
@@ -57,16 +52,17 @@ mFino.widget.BulkTransferGrid = function (config) {
           this.action,
           {
               header: _('ID'),
-              width : 80,
+              width : 70,
               dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.ID._name
           },
           {
+              header:_("Name"),
+              dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.Name._name
+          },
+          
+          {
               header:_("File Name"),
               dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.FileName._name
-          },
-          {
-              header: _("File Type"),
-              dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.BulkUploadFileTypeText._name
           },
           {
               header: _("Description"),
@@ -81,9 +77,25 @@ mFino.widget.BulkTransferGrid = function (config) {
               dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.FailureReason._name
           },
           {
-              header: _("No. of Txns"),
+              header: _("No. of MDNs"),
+              width: 60,
               dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.TransactionsCount._name
           },
+          {
+              header: _("No. of Failed Txns"),
+              width: 60,
+              dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.FailedTransactionsCount._name
+          },
+          {
+              header: _("Total Amount To Be Disbursed"),
+              width: 60,
+              dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.TotalAmount._name
+          },
+          {
+              header: _("Amount Disbursed"),
+              width: 60,
+              dataIndex: CmFinoFIX.message.JSBulkUpload.Entries.SuccessAmount._name
+          },          
           {
               header: _("Last Update Time"),
               width:150,

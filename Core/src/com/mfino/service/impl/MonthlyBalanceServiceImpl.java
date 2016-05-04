@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MonthlyBalanceDAO;
 import com.mfino.domain.MonthlyBalance;
+import com.mfino.domain.Pocket;
 import com.mfino.service.MonthlyBalanceService;
 
 @Service("MonthlyBalanceServiceImpl")
@@ -23,5 +24,9 @@ public class MonthlyBalanceServiceImpl implements MonthlyBalanceService {
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public List<Object[]> getCommissionFeeDetails(String month, int year) {
 		return monthlyBalanceDAO.getCommissionFeeDetails(month, year);
+	}
+	
+	public MonthlyBalance getByDetails(Pocket pocket, String month, int year) {
+		return monthlyBalanceDAO.getByDetails(pocket, month, year);
 	}
 }

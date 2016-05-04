@@ -43,6 +43,7 @@ import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
+import com.mfino.fix.CmFinoFIX.CMBulkDistribution;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
@@ -2186,6 +2187,138 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				.getServiceChargeTransactionLogID());
 		return returnFix;
 	}
+	
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRED, rollbackFor=Throwable.class)
+	public CFIXMsg onBulkDistribution(CMBulkDistribution bulkDistribution) {
+		log.info("BankServiceDefaultImpl :: onBulkDistribution BEGIN");
+
+		BackendResponse returnFix = createResponseObject();
+		Subscriber sourceSubscriber = null;
+		Subscriber destinationSubscriber = null;
+
+		BigDecimal amount = bulkDistribution.getAmount();
+		BigDecimal charges = bulkDistribution.getCharges();
+		BigDecimal totalTransactionAmount = amount.add(charges);
+		String sourceMdnStr = bulkDistribution.getSourceMDN();
+
+		SubscriberMDN sourceSubcriberMdn = coreDataWrapper.getSubscriberMdn(sourceMdnStr);
+		SubscriberMDN destinationSubcriberMdn = coreDataWrapper.getSubscriberMdn(bulkDistribution.getDestMDN());
+		if (sourceSubcriberMdn != null) {
+			sourceSubscriber = sourceSubcriberMdn.getSubscriber();
+		}
+		if (destinationSubcriberMdn != null) {
+			destinationSubscriber = destinationSubcriberMdn.getSubscriber();
+		}
+		// Here the Source pocket is always suspense pocket of from agent, so no need to acquire the lock.
+		Pocket sourcePocket = coreDataWrapper.getPocketById(bulkDistribution.getSourcePocketID());
+		Pocket destinationPocket = coreDataWrapper
+				.getPocketById(bulkDistribution.getDestPocketID(), LockMode.UPGRADE);
+		boolean isSystemInitiatedTransaction = true;
+
+		PendingCommodityTransfer pct = null;
+
+		log.info("BankServiceDefaultImpl :: onBulkDistribution sourceSubscriber="
+				+ sourceSubscriber
+				+ ", destinationSubscriber="
+				+ destinationSubscriber
+				+ ", sourceSubcriberMdn="
+				+ sourceSubcriberMdn
+				+ ", destinationSubcriberMdn="
+				+ destinationSubcriberMdn
+				+ ", sourcePocket="
+				+ sourcePocket
+				+ ", destinationPocket=" + destinationPocket);
+		
+		if (CmFinoFIX.PocketType_SVA.intValue() != sourcePocket.getPocketTemplate().getType().intValue()) {
+			returnFix.setInternalErrorCode(NotificationCodes.SourceMoneyPocketNotFound.getInternalErrorCode());
+		} else if ((CmFinoFIX.PocketType_SVA.intValue() != destinationPocket.getPocketTemplate().getType().intValue()) &&
+				!isLakupandaiPocketType(destinationPocket)) {
+			returnFix.setInternalErrorCode(NotificationCodes.DestinationEMoneyPocketNotFound.getInternalErrorCode());
+		} else if (isNullorZero(returnFix.getInternalErrorCode())) {
+//			returnFix = validationService.validateBankAccountSubscriber(sourceSubscriber, sourceSubcriberMdn, sourcePocket,
+//					"mFino260", true, false, false, false);
+
+			log.info("BankServiceDefaultImpl:onBulkDistribution: Source subcriber validated ErrorCode=" + returnFix.getInternalErrorCode());
+	
+			if (isNullorZero(returnFix.getInternalErrorCode())) {
+				returnFix = validationService.validateBankAccountSubscriber(destinationSubscriber, destinationSubcriberMdn,
+							destinationPocket, "", false, false, false, false);
+	
+				log.info("BankServiceDefaultImpl:onBulkDistribution: Dest subcriber validated ErrorCode="	+ returnFix.getInternalErrorCode());
+	
+				if (isNullorZero(returnFix.getInternalErrorCode())) {
+					if (!(sourcePocket.getID().equals(destinationPocket.getID()))) {
+	
+						pct = commodityTransferService.createPCT(bulkDistribution, sourceSubscriber, destinationSubscriber, sourcePocket,
+								destinationPocket, sourceSubcriberMdn, destinationSubcriberMdn, bulkDistribution.getSourceMessage(),
+								amount, charges, null, CmFinoFIX.BucketType_Special_Bank_Account, CmFinoFIX.BillingType_None,
+								CmFinoFIX.TransferStatus_Initialized);
+	
+						returnFix = validationService.validatePocketsForBulkTransfer(sourcePocket, destinationPocket, totalTransactionAmount);
+						log.info("After validatePocketsForBulkTransfer returnFix.getInternalErrorCode()=" + returnFix.getInternalErrorCode());
+						if (returnFix != null && isNullorZero(returnFix.getInternalErrorCode())) {
+							setPocketLimits(sourcePocket, amount);
+							setPocketLimits(destinationPocket, amount);
+	
+							if (bulkDistribution.getChannelCode() != null) {
+								pct.setISO8583_MerchantType(bulkDistribution.getChannelCode());
+							} else if (pct.getISO8583_MerchantType() == null) {
+								pct.setISO8583_MerchantType(CmFinoFIX.ISO8583_Mobile_Operator_Merchant_Type_Other);
+							}
+	
+							if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+								coreDataWrapper.save(destinationPocket);
+							}								
+							coreDataWrapper.save(pct);
+								
+							pct.setSourcePocketBalance(sourcePocket.getCurrentBalance());
+							pct.setDestPocketBalance(destinationPocket.getCurrentBalance());
+							List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,bulkDistribution.getServiceChargeTransactionLogID(), 
+									pct.getID(),sourcePocket, destinationPocket, coreDataWrapper.getChargesPocket(),
+									amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
+							coreDataWrapper.save(lstMfsLedgers);
+							
+							returnFix.setInternalErrorCode(NotificationCodes.BulkTransferCompletedToSubscriber_Dummy.getInternalErrorCode());
+							pct.setNotificationCode(NotificationCodes.BulkTransferCompletedToSubscriber_Dummy.getNotificationCode());
+							pct.setLocalBalanceRevertRequired(CmFinoFIX.Boolean_True);
+							coreDataWrapper.save(pct);
+							if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+								coreDataWrapper.save(destinationPocket);
+							}
+							handlePCTonSuccess(pct);
+							returnFix.setTransactionID(pct.getID());
+							returnFix.setTransferID(pct.getID());
+							returnFix.setAmount(pct.getAmount());
+							returnFix.setCurrency(pct.getCurrency());
+							returnFix.setResult(CmFinoFIX.ResponseCode_Success);
+							
+						} else {
+							pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_BankAccountToBankAccountSourcePocketLimits);
+							pct.setNotificationCode(NotificationCodes.getNotificationCodeFromInternalCode(returnFix.getInternalErrorCode()));
+							pct.setEndTime(pct.getStartTime());
+							pct.setTransferStatus(CmFinoFIX.TransferStatus_Failed);
+							pct.setLocalRevertRequired(CmFinoFIX.Boolean_False);
+							pct.setLocalBalanceRevertRequired(CmFinoFIX.Boolean_False);
+							coreDataWrapper.save(pct);
+							handlePCTonFailure(pct);
+						}
+					} else {
+							returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyFailed_SelfTransfer.getInternalErrorCode());
+					}
+				}
+			}
+		}
+
+		returnFix.setSourceMDN(sourceSubcriberMdn.getMDN());
+		returnFix.setSenderMDN(sourceSubcriberMdn.getMDN());
+		returnFix.setLanguage(sourceSubscriber.getLanguage());
+		returnFix.setReceiverMDN(destinationSubcriberMdn.getMDN());
+		returnFix.setReceiveTime(bulkDistribution.getReceiveTime());
+		returnFix.setCustomerServiceShortCode(sourceSubscriber.getCompany().getCustomerServiceNumber());
+		returnFix.setMSPID(bulkDistribution.getMSPID());
+		return returnFix;
+	}
+	
 	
 	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW)
 	public CFIXMsg onChargeDistribution(CMChargeDistribution chargeDistribution) {

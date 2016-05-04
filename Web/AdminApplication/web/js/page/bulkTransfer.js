@@ -24,9 +24,9 @@ mFino.page.bulkTransfer = function(config){
     
     var uploadFile = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.UploadTransferFile(config),
-        title : _("Upload Transfer File"),
-        height :350,
-        width:450,
+        title : _("BULK TRANSFER FORM"),
+        height :230,
+        width:550,
         mode:"bulkTransfer"
     },config));
     
@@ -60,7 +60,8 @@ mFino.page.bulkTransfer = function(config){
                 id: 'bulktransfer.cancel',
                 handler: function(){
                 	var id = detailsForm.record.get(CmFinoFIX.message.JSBulkUpload.Entries.ID._name);
-                    Ext.Msg.confirm(_("Confirm?"), _("Do you want to cancel the Bulk Transfer " + id),
+                	var name = detailsForm.record.get(CmFinoFIX.message.JSBulkUpload.Entries.Name._name);
+                    Ext.Msg.confirm(_("Confirm?"), _("Do you want to cancel the Bulk Transfer " + id + " - " + name),
                         function(btn){
                             if(btn !== "yes"){
                                 return;
@@ -88,7 +89,7 @@ mFino.page.bulkTransfer = function(config){
                         approveWindow.setRecord(detailsForm.record);
                     }
                     else {
-                    	Ext.MessageBox.alert(_("Alert"), _("No Transfer is selected"));
+                    	Ext.MessageBox.alert(_("Alert"), _("No Bulk Transfer record is selected"));
                     }
               	}
             }            
@@ -133,7 +134,7 @@ mFino.page.bulkTransfer = function(config){
         action:function(grid, record, action, row, col) {
             if(action === 'mfino-button-View'){
                 var transferFileView = new mFino.widget.BulkTransferViewGridWindow(Ext.apply({
-                    title : "Details for "+ record.get(CmFinoFIX.message.JSBulkUpload.Entries.FileName._name),
+                    title : "Details for "+ record.get(CmFinoFIX.message.JSBulkUpload.Entries.ID._name) + " - " + record.get(CmFinoFIX.message.JSBulkUpload.Entries.Name._name),
                     grid : new mFino.widget.BulkTransferFileGrid(config)
                 },config));
                 transferFileView.grid.store.lastOptions = {
@@ -149,7 +150,7 @@ mFino.page.bulkTransfer = function(config){
             }
             if(action === 'mfino-button-history'){
                 var transferFileView = new mFino.widget.BulkUploadViewGridWindow(Ext.apply({
-                    title : "Reverse Transaction Details for "+ record.get(CmFinoFIX.message.JSBulkUpload.Entries.FileName._name),
+                    title : "Reverse Transaction Details for "+ record.get(CmFinoFIX.message.JSBulkUpload.Entries.ID._name) + " - " + record.get(CmFinoFIX.message.JSBulkUpload.Entries.Name._name), 
                     grid : new mFino.widget.BulkTransferReverseTxnsGrid(config)
                 },config));
                 transferFileView.grid.store.lastOptions = {

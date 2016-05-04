@@ -68,7 +68,7 @@
                         </ul>
                         </td></tr></table>
         </li>   
-        <li id="bulkTransfer_tab"><a href="#" onclick="return false">Bulk Payment</a></li>                        
+        <li id="bulkTransfer_tab"><a href="#" onclick="return false">Bulk Transfer</a></li>                        
     </ul>
 </div>
 

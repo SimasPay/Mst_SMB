@@ -62,4 +62,18 @@ public class BulkUploadEntryDAO extends BaseDAO<BulkUploadEntry> {
         return results;
     	
     }
+    
+    public List<BulkUploadEntry> getNotCompleteBulkUploadEntriesForBulkUpload(Long BulkUploadId)
+    {
+    	Criteria criteria = createCriteria();
+    	if (BulkUploadId != null) {
+            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_BulkUploadID, BulkUploadId));
+            criteria.add(Restrictions.disjunction()
+            		.add(Restrictions.ne(CmFinoFIX.CRBulkUploadEntry.FieldName_TransferStatus, CmFinoFIX.TransactionsTransferStatus_Completed))
+            		.add(Restrictions.ne(CmFinoFIX.CRBulkUploadEntry.FieldName_TransferStatus, CmFinoFIX.TransactionsTransferStatus_Reversed)));
+        }
+    	List<BulkUploadEntry> results = criteria.list();
+        return results;
+    	
+    }    
 }

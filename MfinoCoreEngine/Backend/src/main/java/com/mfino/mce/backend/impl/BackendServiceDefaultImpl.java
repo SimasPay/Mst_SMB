@@ -28,6 +28,7 @@ import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
 import com.mfino.fix.CmFinoFIX.CMBase;
+import com.mfino.fix.CmFinoFIX.CMBulkDistribution;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
@@ -341,7 +342,10 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				}
 				else if(baseMessage instanceof CMChargeDistribution){
 					returnFix = bankService.onChargeDistribution((CMChargeDistribution)baseMessage);
-				}	
+				}
+				else if(baseMessage instanceof CMBulkDistribution){
+					returnFix = bankService.onBulkDistribution((CMBulkDistribution)baseMessage);
+				}				
 				else if(baseMessage instanceof CMSettlementOfCharge){
 					returnFix = bankService.onSettlementOfCharge((CMSettlementOfCharge)baseMessage);
 				}

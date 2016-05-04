@@ -30,4 +30,6 @@ public interface BulkUploadEntryService {
 	 * @param bulkUploadEntry
 	 */
 	public List<BulkUploadEntry> getBulkUploadEntriesForBulkUpload(Long bulkUploadEntryId);
+	
+	public List<BulkUploadEntry> getNotCompleteBulkUploadEntriesForBulkUpload(Long bulkUploadId);
 }

@@ -2,9 +2,15 @@ package com.mfino.dao;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 
 import com.mfino.domain.MonthlyBalance;
+import com.mfino.domain.PartnerServices;
+import com.mfino.domain.Pocket;
+import com.mfino.fix.CmFinoFIX;
 
 public class MonthlyBalanceDAO extends BaseDAO<MonthlyBalance> {
 	
@@ -21,5 +27,20 @@ public class MonthlyBalanceDAO extends BaseDAO<MonthlyBalance> {
 		queryObj.setParameter("year", year);
 		List<Object[]> results = queryObj.list();
 		return results;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public MonthlyBalance getByDetails(Pocket pocket, String month, int year) {
+		MonthlyBalance result = null;
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(CmFinoFIX.CRMonthlyBalance.FieldName_Pocket, pocket));
+		criteria.add(Restrictions.eq(CmFinoFIX.CRMonthlyBalance.FieldName_Month, month));
+		criteria.add(Restrictions.eq(CmFinoFIX.CRMonthlyBalance.FieldName_Year, year));
+		
+		List<MonthlyBalance> lst = criteria.list();
+		if (CollectionUtils.isNotEmpty(lst)) {
+			result = lst.get(0);
+		}
+		return result;
 	}
 }

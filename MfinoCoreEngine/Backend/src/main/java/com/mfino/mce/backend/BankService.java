@@ -10,6 +10,7 @@ import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBankAccountBalanceInquiry;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
+import com.mfino.fix.CmFinoFIX.CMBulkDistribution;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
@@ -78,6 +79,8 @@ public interface BankService {
 	 * @return
 	 */
 	public CFIXMsg onSubscriberRegistrationCashIn(CMSubscriberRegistrationCashIn subscriberRegistrationCashIn) throws Exception;
+	
+	public CFIXMsg onBulkDistribution(CMBulkDistribution bulkDistribution);
 	
 	/**
 	 * For distribution of charges to a partner.

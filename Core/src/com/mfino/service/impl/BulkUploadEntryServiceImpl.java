@@ -55,14 +55,24 @@ public class BulkUploadEntryServiceImpl implements BulkUploadEntryService{
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public List<BulkUploadEntry> getBulkUploadEntriesForBulkUpload(Long bulkUploadEntryId){
+	public List<BulkUploadEntry> getBulkUploadEntriesForBulkUpload(Long bulkUploadId){
 		List<BulkUploadEntry> bulkUploadEntries = null;
-		if(bulkUploadEntryId!=null){
-			log.info("Getting the BulkUploadEntry record with the Id: "+bulkUploadEntryId);
+		if(bulkUploadId!=null){
+			log.info("Getting the BulkUploadEntries for bulk transfer id: "+bulkUploadId);
 			BulkUploadEntryDAO bulkUploadEntryDAO = DAOFactory.getInstance().getBulkUploadEntryDAO();
-			bulkUploadEntries = bulkUploadEntryDAO.getBulkUploadEntriesForBulkUpload(bulkUploadEntryId);
+			bulkUploadEntries = bulkUploadEntryDAO.getBulkUploadEntriesForBulkUpload(bulkUploadId);
 		}
 		return bulkUploadEntries;		
 	}
 
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public List<BulkUploadEntry> getNotCompleteBulkUploadEntriesForBulkUpload(Long bulkUploadId){
+		List<BulkUploadEntry> bulkUploadEntries = null;
+		if(bulkUploadId!=null){
+			log.info("Getting the not completed BulkUploadEntrys for bulk cashin Id: "+bulkUploadId);
+			BulkUploadEntryDAO bulkUploadEntryDAO = DAOFactory.getInstance().getBulkUploadEntryDAO();
+			bulkUploadEntries = bulkUploadEntryDAO.getNotCompleteBulkUploadEntriesForBulkUpload(bulkUploadId);
+		}
+		return bulkUploadEntries;		
+	}
 }

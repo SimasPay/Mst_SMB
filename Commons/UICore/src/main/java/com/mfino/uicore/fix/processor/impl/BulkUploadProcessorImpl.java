@@ -33,7 +33,6 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSBulkUpload;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.BulkUploadProcessor;
 
@@ -64,9 +63,9 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
                 query.setCompany(userService.getUserCompany());
             }
             User loggedInUser = userService.getCurrentUser();
-            if (CmFinoFIX.Role_Corporate_User.equals(loggedInUser.getRole())) {
-            	query.setUserId(loggedInUser.getID());
-            }
+//            if (CmFinoFIX.Role_Corporate_User.equals(loggedInUser.getRole())) {
+//            	query.setUserId(loggedInUser.getID());
+//            }
             
             query.setAssociationOrdered(true);
             if (realMsg.getStartDateSearch() != null) {
@@ -174,6 +173,9 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
         }
         if (bu.getUpdatedBy() != null) {
         	entry.setUpdatedBy(bu.getUpdatedBy());
+        }
+        if (bu.getName() != null) {
+        	entry.setName(bu.getName());
         }
         if (bu.getFileType().equals(CmFinoFIX.BulkUploadFileType_BankAccountTransfer)) {
             CommodityTransferDAO dao = DAOFactory.getInstance().getCommodityTransferDAO();

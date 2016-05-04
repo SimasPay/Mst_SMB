@@ -293,7 +293,7 @@
     <bean id="processBulkTransferTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="processBulkTransfer" />       
 		<property name="timeZone" ref="timeZone" />
-        <property name="cronExpression" value="0 0 21 * * ?" />        
+        <property name="cronExpression" value="0 0 0 1/1 * ? *" />        
     </bean>
     
     	<!-- for Teller EMoney Clearance -->
@@ -437,7 +437,7 @@
     <bean id="AccountOpeningFeeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="AccountOpeningFeeJob" />       
 		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0 0 2 1/1 ? *" />     
+		<property name="cronExpression" value="0 0 0 3 1/1 ? *" />     
     </bean>         
     
 	<!-- All triggers need to be added here to work -->
@@ -459,11 +459,11 @@
             	<ref bean="updatePocketBalancesFromLedgerTrigger"/>
             	<ref bean="AvgMonthlyBalanceTrigger"/>
             	<ref bean="AccountOpeningFeeTrigger"/>
-            	
+            	<ref bean="processBulkTransferTrigger"/>
+
             <!-- <ref bean="settlementConfigUpdateTrigger"/>
             	 <ref bean="partnerServiceSettlementTrigger"/> 
              	 <ref bean="fundReimburseTrigger"/>
-	             <ref bean="processBulkTransferTrigger"/>
     	         <ref bean="tellerEMoneyClearanceTrigger"/>
              	 <ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
              	 <ref bean="reverseFundsTrigger"/>

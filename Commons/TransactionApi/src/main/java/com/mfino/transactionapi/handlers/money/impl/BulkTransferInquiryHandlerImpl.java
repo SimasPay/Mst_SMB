@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -26,13 +24,10 @@ import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
-import com.mfino.service.PocketService;
-import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.money.BulkTransferInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
-import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
 
 /**
@@ -45,24 +40,12 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	@Qualifier("TransactionApiValidationServiceImpl")
-	private TransactionApiValidationService transactionApiValidationService;
-	
-	@Autowired
-	@Qualifier("SubscriberMdnServiceImpl")
-	private SubscriberMdnService subscriberMdnService;
-
-	@Autowired
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
 
 	@Autowired
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
-	
-	@Autowired
-	@Qualifier("PocketServiceImpl")
-	private PocketService pocketService;
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		ChannelCode channelCode = transactionDetails.getCc();
@@ -79,14 +62,23 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		bankAccountToBankAccount.setSourcePocketID(transactionDetails.getSrcPocketId());
 		bankAccountToBankAccount.setDestPocketID(transactionDetails.getDestinationPocketId());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
+		bankAccountToBankAccount.setIsSystemIntiatedTransaction(BOOL_TRUE);
+		
+		if (ServiceAndTransactionConstants.MESSAGE_BULK_TRANSFER.equals(transactionDetails.getSourceMessage())) {
+			bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Bulk_Transfer);
+		} 
+		else if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(transactionDetails.getSourceMessage())) {
+			bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Settle_Bulk_Transfer);
+		} 
 
-		log.info("Handling Bulk Transfer Inquiry request of " + bankAccountToBankAccount.getSourceMDN() + " For Amount = " + bankAccountToBankAccount.getAmount());
+		log.info("Handling Bulk Transfer Inquiry request of " + bankAccountToBankAccount.getSourceMDN() + " For Amount = " + 
+				bankAccountToBankAccount.getAmount());
 		
 		Transaction transaction = null;
 		XMLResult result = new TransferInquiryXMLResult();
 		
-
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
+		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, 
+				bankAccountToBankAccount.DumpFields());
 		bankAccountToBankAccount.setTransactionID(transactionsLog.getID());
 		
 		result.setTransactionTime(transactionsLog.getTransactionTime());
@@ -94,46 +86,12 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		result.setTransactionID(transactionsLog.getID());
 		result.setDestinationMDN(bankAccountToBankAccount.getDestMDN());
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(bankAccountToBankAccount.getSourceMDN());
-
-
-		Integer validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
-		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
-			result.setNotificationCode(validationResult);
-			return result;
-		}
-
-		Pocket srcPocket = pocketService.getById(bankAccountToBankAccount.getSourcePocketID());
-		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
-		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
-			result.setNotificationCode(validationResult);
-			return result;
-		}		
-			
-		addCompanyANDLanguageToResult(sourceMDN, result);
-
-		// Check the Destination pocket status
-		Pocket destPocket = pocketService.getById(bankAccountToBankAccount.getDestPocketID());
-		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
-		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
-			result.setNotificationCode(validationResult);
-			return result;
-		}
-		bankAccountToBankAccount.setDestPocketID(destPocket.getID());
-
-
 		ServiceCharge serviceCharge = new ServiceCharge();
 		serviceCharge.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
 		serviceCharge.setDestMDN(bankAccountToBankAccount.getDestMDN());
 		serviceCharge.setChannelCodeId(channelCode.getID());
 		serviceCharge.setServiceName(bankAccountToBankAccount.getServiceName());
-		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_BULK_TRANSFER);
-		if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(bankAccountToBankAccount.getSourceMessage())) {
-			serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SETTLE_BULK_TRANSFER);
-		}
+		serviceCharge.setTransactionTypeName(transactionDetails.getTransactionName());
 		serviceCharge.setTransactionAmount(bankAccountToBankAccount.getAmount());
 		serviceCharge.setTransactionLogId(transactionsLog.getID());
 
@@ -152,6 +110,10 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		}
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getID());
+		if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(transactionDetails.getSourceMessage()) && 
+				transactionDetails.getSctlId() != null) {
+			sctl.setParentSCTLID(transactionDetails.getSctlId());
+		}		
 		log.info("Sending the Bulk transfer inquiry request to Backend");
 		
 		CFIXMsg response = super.process(bankAccountToBankAccount);

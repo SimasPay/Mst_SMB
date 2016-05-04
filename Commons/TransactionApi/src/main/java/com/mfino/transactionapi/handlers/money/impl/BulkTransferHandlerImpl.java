@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -22,13 +20,10 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
 import com.mfino.service.CommodityTransferService;
-import com.mfino.service.PocketService;
-import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.money.BulkTransferHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.MoneyTransferXMLResult;
-import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
 
 /**
@@ -45,24 +40,12 @@ public class BulkTransferHandlerImpl extends FIXMessageHandler implements BulkTr
 	private CommodityTransferService commodityTransferService;
 
 	@Autowired
-	@Qualifier("TransactionApiValidationServiceImpl")
-	private TransactionApiValidationService transactionApiValidationService;
-	
-	@Autowired
-	@Qualifier("SubscriberMdnServiceImpl")
-	private SubscriberMdnService subscriberMdnService;
-
-	@Autowired
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
 
 	@Autowired
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
-	
-	@Autowired
-	@Qualifier("PocketServiceImpl")
-	private PocketService pocketService;
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Handling Bulk transfer confirmation request");
@@ -82,43 +65,13 @@ public class BulkTransferHandlerImpl extends FIXMessageHandler implements BulkTr
 		
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
+		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,
+				transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
 		transferConfirmation.setTransactionID(transactionsLog.getID());
 		
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		result.setSourceMessage(transferConfirmation);
 		result.setTransactionID(transactionsLog.getID());
-		
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
-
-		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(smdn);
-		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+smdn.getMDN()+" has failed validations");
-			result.setNotificationCode(validationResult);
-			return result;
-		}
- 		// Source and Destination are same so no need of Destination MDN validation.
-		addCompanyANDLanguageToResult(smdn, result);
-
-		//Check the Source pocket status
-		Pocket srcPocket = pocketService.getById(transferConfirmation.getSourcePocketID());
-		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
-		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
-			result.setNotificationCode(validationResult);
-			return result;
-		}		
-
-		//Check the Destination pocket status
-		Pocket destPocket = pocketService.getById(transferConfirmation.getDestPocketID());
-		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
-		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
-			result.setNotificationCode(validationResult);
-			return result;
-		}		
-
-		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 
 		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
 		if (sctl != null) {
@@ -161,7 +114,6 @@ public class BulkTransferHandlerImpl extends FIXMessageHandler implements BulkTr
 			}
 		}
 
-		//		sendSMS(transferConfirmation, result);
 		result.setMessage(transactionResponse.getMessage());
 		return result;
 	}

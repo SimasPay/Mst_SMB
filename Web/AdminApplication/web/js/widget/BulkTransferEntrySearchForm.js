@@ -31,18 +31,6 @@ mFino.widget.BulkTransferEntrySearchForm = function (config) {
                         	   }]
         			},
         			{
-                        columnWidth:0.25,
-                        layout: 'form',
-						labelWidth: 120,
-                        items: [{
-		                            xtype:'checkbox',
-		                            fieldLabel: _('Non Registered Only'),
-		                            itemId:'unRegistered',
-									anchor: '90%',
-		                            name: CmFinoFIX.message.JSBulkUploadEntry.IsUnRegistered._name
-				                }]
-        			},
-        			{
                         columnWidth:0.15,
                         layout: 'form',
                         items: [{

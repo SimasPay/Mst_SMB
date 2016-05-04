@@ -67,11 +67,6 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             handler: this.changePin.createDelegate(this)
         }
         ,{
-            itemId: "uploadTransfer",
-            text: _('Upload'),
-            handler: this.onUploadTransfer.createDelegate(this)
-        }        
-        ,{
             itemId: "cancelTransfer",
             text: _('Cancel'),
             handler: this.onCancelTransfer.createDelegate(this)
@@ -83,7 +78,22 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             itemId: "closeaccount",
             text: _('Close Account'),
             handler: this.onCloseAccount.createDelegate(this)
-        }        
+        },
+        {
+            itemId: "uploadTransfer",
+            text: _('Submit'),
+            handler: this.onUploadTransfer.createDelegate(this)
+        },
+        {
+            itemId: "cancelConfirm",
+            text: _('Cancel'),
+            handler: this.onCancelConfirm.createDelegate(this)
+        },        
+        {
+            itemId: "confirmTransfer",
+            text: _('Confirm & Proceed'),
+            handler: this.onConfirmTransfer.createDelegate(this)
+        } 
         ];
 
         this.items = [this.form];
@@ -137,6 +147,12 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             if(mode === "confirm" && (item.itemId === "confirm" || item.itemId === "cancel")){
                 item.show();
             }
+            if(mode === "confirmTransfer" && (item.itemId === "confirmTransfer" || item.itemId === "cancelConfirm")){
+                item.show();
+            }
+            if(mode === "cancel" && (item.itemId === "cancel")){
+                item.show();
+            }             
         });
     },
     setFormWindow : function(){
@@ -360,7 +376,7 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
     },
     
     onCancelTransfer : function(){
-        Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to cancel the upload?"),
+        Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to cancel the Bulk Transfer?"),
             function(btn){
                 if(btn !== "yes"){
                     return;
@@ -371,42 +387,27 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
     },
     
     onUploadTransfer: function(){
-        
         if(this.form.getForm().isValid()){
-
-            var status;
-
-            this.form.getForm().submit({
-                url: 'bulkTransfer.htm',
-                waitMsg: _('Uploading your file...'),
-                reset: false,
-                success : function(fp, action){
-                    Ext.Msg.show({
-                        title: _('Info'),
-                        minProgressWidth:250,
-                        msg: _('Successfully, Uploaded the '+ action.result.file+  ' file to the server and the Bulk Transfer Id is: ' + action.result.id),
-                        buttons: Ext.MessageBox.OK,
-                        multiline: false
-                    });
-                },
-                failure : function(fp, action){
-                    Ext.Msg.show({
-                        title: _('Error'),
-                        minProgressWidth:250,
-                        msg: action.result.Error,
-                        buttons: Ext.MessageBox.OK,
-                        multiline: false
-                    });
-                }
-                ,
-                params: {
-                    markAs:status
-                }
-            });
-            this.hide();
+        	this.form.onUploadTransfer(this);
         }
     },
-
+    
+    onConfirmTransfer: function(){
+        if(this.form.getForm().isValid()){
+        	this.form.onConfirmTransfer(this);
+        }
+    },
+    
+    onCancelConfirm: function() {
+        Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to cancel the Bulk Transfer?"),
+            function(btn){
+                if(btn !== "yes"){
+                    return;
+                }
+                this.form.onCancelConfirm(this);
+            }, this);
+    },
+    
     setRecord : function(record){
         this.form.setRecord(record);
     },

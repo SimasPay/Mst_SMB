@@ -31,28 +31,28 @@ mFino.widget.BulkTransferDetails = function (config)
                 xtype : 'displayfield',
                 fieldLabel: 'Description',
                 name: CmFinoFIX.message.JSBulkUpload.Entries.Description._name
-            },            
+            },
             {
                 xtype : 'displayfield',
-                fieldLabel: 'Source Pocket',
-                name: CmFinoFIX.message.JSBulkUpload.Entries.SourcePocketDispText._name
-            },            
-            {
-                xtype : 'displayfield',
-                fieldLabel: 'Payment Date',
+                fieldLabel: 'Execution Date Time',
                 renderer: 'date',
                 name: CmFinoFIX.message.JSBulkUpload.Entries.PaymentDate._name
             },            
             {
                 xtype : 'displayfield',
-                fieldLabel: 'No. of Txns',
+                fieldLabel: 'No. of MDNs',
                 name: CmFinoFIX.message.JSBulkUpload.Entries.TransactionsCount._name
             },            
             {
                 xtype : 'displayfield',
-                fieldLabel: 'Total Amount',
+                fieldLabel: 'Total Amount To Be Disbursed',
                 name: CmFinoFIX.message.JSBulkUpload.Entries.TotalAmount._name
-            }
+            },
+            {
+                xtype : 'displayfield',
+                fieldLabel: 'Source Pocket',
+                name: CmFinoFIX.message.JSBulkUpload.Entries.SourcePocketDispText._name
+            }            
             ]
         },
         {
@@ -60,15 +60,35 @@ mFino.widget.BulkTransferDetails = function (config)
             layout: 'form',
             items : [
             {
+     			xtype : 'displayfield',
+     			fieldLabel: 'Name',
+     			name: CmFinoFIX.message.JSBulkUpload.Entries.Name._name
+ 			},                     
+            {
+                xtype : 'displayfield',
+                fieldLabel: 'Reference Id',
+                name: CmFinoFIX.message.JSBulkUpload.Entries.ServiceChargeTransactionLogID._name
+            },
+            {
                 xtype : 'displayfield',
                 fieldLabel: 'Status',
                 name: CmFinoFIX.message.JSBulkUpload.Entries.BulkUploadDeliveryStatusText._name
             },
             {
                 xtype : 'displayfield',
-                fieldLabel: 'Reference Id',
-                name: CmFinoFIX.message.JSBulkUpload.Entries.ServiceChargeTransactionLogID._name
+                fieldLabel: 'Failure Reason',
+                name: CmFinoFIX.message.JSBulkUpload.Entries.FailureReason._name
             },
+            {
+                xtype : 'displayfield',
+                fieldLabel: 'No. of Failed Txns',
+                name: CmFinoFIX.message.JSBulkUpload.Entries.FailedTransactionsCount._name
+            },
+            {
+                xtype : 'displayfield',
+                fieldLabel: 'Amount Disbursed',
+                name: CmFinoFIX.message.JSBulkUpload.Entries.SuccessAmount._name
+            },            
             {
                 xtype : 'displayfield',
                 fieldLabel: 'Created By',
@@ -101,7 +121,7 @@ mFino.widget.BulkTransferDetails = function (config)
 
 Ext.extend(mFino.widget.BulkTransferDetails , Ext.form.FormPanel, {
     initComponent : function () {
-        this.labelWidth = 120;
+        this.labelWidth = 150;
         this.labelPad = 5;
         mFino.widget.BulkTransferDetails.superclass.initComponent.call(this);
     },

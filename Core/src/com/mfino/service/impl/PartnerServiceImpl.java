@@ -1108,4 +1108,18 @@ public class PartnerServiceImpl implements PartnerService {
     		outletAddress.setCountry(StringUtils.isNotBlank(partnerRegistration.getOutletAddressCountry())?partnerRegistration.getOutletAddressCountry():partnerRegistration.getMerchantAddressCountry());
           	addressDAO.save(outletAddress);	
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public String getMDN(Long partnerId){
+		log.info("PartnerService : getMDN BEGIN");
+		String result = "";
+		PartnerDAO partnerDao = DAOFactory.getInstance().getPartnerDAO();
+		Partner partner = partnerDao.getById(partnerId);
+		if (partner != null && partner.getSubscriber()!= null) {
+			result = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next().getMDN();
+		}
+		
+		log.info("PartnerService : getMDN END");
+		return result;
+	}
 }

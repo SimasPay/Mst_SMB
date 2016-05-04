@@ -21,6 +21,8 @@ public interface NotificationService {
     public  List<Notification> getByQuery(NotificationQuery notificationQuery);
     
 	public List<Notification> getLanguageBasedNotificationsByQuery(NotificationQuery notificationQuery);
+	
+	public Notification getByNotificationCodeAndLang(Integer code, Integer lang);
 
 }
 
