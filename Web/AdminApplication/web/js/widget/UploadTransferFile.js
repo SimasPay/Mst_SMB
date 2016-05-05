@@ -52,7 +52,7 @@ Ext.extend(mFino.widget.UploadTransferFile, Ext.FormPanel, {
           	emptyText: _(''),
           	itemId : 'transfer.form.paymentdate',
           	name: CmFinoFIX.message.JSBulkUpload.Entries.PaymentDate._name,
-            minValue:new Date().add('d', -2).clearTime()
+            minValue:new Date().add('d', 1).clearTime()
             //disabledDates: [new Date()],
             //minText:'Date must be future date'
        	},
