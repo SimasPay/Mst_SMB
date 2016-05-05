@@ -22,12 +22,9 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.User;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
@@ -37,9 +34,6 @@ import com.mfino.service.BulkUploadService;
 import com.mfino.service.MailService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.NotificationService;
-import com.mfino.service.SMSService;
-import com.mfino.service.ServiceChargeTransactionLogService;
-import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.money.BulkDistributionHandler;
@@ -54,10 +48,6 @@ import com.mfino.transactionapi.vo.TransactionDetails;
 public class BulkTransferServiceImpl implements BulkTransferService{
 
 	private Logger log = LoggerFactory.getLogger(BulkTransferServiceImpl.class);
-	
-	@Autowired
-	@Qualifier("SMSServiceImpl")
-	private SMSService smsService;
 	
 	@Autowired
 	@Qualifier("MailServiceImpl")
@@ -78,14 +68,6 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	@Autowired
 	@Qualifier("BulkUploadServiceImpl")
 	private BulkUploadService bulkUploadService;
-	
-	@Autowired
-	@Qualifier("SubscriberMdnServiceImpl")
-	private SubscriberMdnService subscriberMdnService;
-	
-	@Autowired
-	@Qualifier("ServiceChargeTransactionLogServiceImpl")
-	private ServiceChargeTransactionLogService serviceChargeTransactionLogService;
 	
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -173,7 +155,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 		bulkUpload.setDeliveryDate(new Timestamp());
 		bulkUpload.setFailureReason(failureReason);
 		bulkUploadService.save(bulkUpload);
-		sendNotification(bulkUpload, CmFinoFIX.NotificationCode_BulkTransferRequestFailedToPartner);
+		sendNotification(bulkUpload, "Bulk transfer failed", CmFinoFIX.NotificationCode_BulkTransferRequestFailedToPartner);
 	}
 
 	/**
@@ -182,48 +164,37 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	 * @param notificationCode
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void sendNotification(BulkUpload bulkupload, Integer notificationCode) {
+	public void sendNotification(BulkUpload bulkupload, String subject, Integer notificationCode) {
 
-		String mdn = bulkupload.getMDN();
+		User bulkTrfUser = bulkupload.getUser();
 		NotificationWrapper notification = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		notification.setLanguage(language);
-		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 		notification.setCode(notificationCode);
 		notification.setBulkTransferId(bulkupload.getID());
 		notification.setSctlID(bulkupload.getServiceChargeTransactionLogID());
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(mdn);
-		if(smdn != null)
-		{
-			notification.setFirstName(smdn.getSubscriber().getFirstName());
-			notification.setLastName(smdn.getSubscriber().getLastName());
-		}
+		notification.setFirstName(bulkTrfUser.getUsername());
 		String message = notificationMessageParserService.buildMessage(notification,true);
-
-		smsService.setDestinationMDN(mdn);
-		smsService.setMessage(message);
-		smsService.setNotificationCode(notification.getCode());
-		smsService.setSctlId(notification.getSctlID());
-		smsService.asyncSendSMS();
+		
+		mailService.asyncSendEmail(bulkTrfUser.getEmail(),bulkTrfUser.getUsername(), subject, message);
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void sendEmailBulkUploadSummary(BulkUpload bulkUpload)
 	{
-		Subscriber subscriber = subscriberMdnService.getByMDN(bulkUpload.getMDN()).getSubscriber();
-		String to=subscriber.getEmail();
-		String name= subscriber.getFirstName();
+		User bulkTrfUser = bulkUpload.getUser();
+		String to=bulkTrfUser.getEmail();
+		String name= bulkTrfUser.getUsername();
 
-		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getBulkUploadEntriesForBulkUpload(bulkUpload.getID());
+		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getNotCompleteBulkUploadEntriesForBulkUpload(bulkUpload.getID());
 		int nofSuccessfulTransactions = bulkUpload.getTransactionsCount().intValue() - bulkUpload.getFailedTransactionsCount();
-		ServiceChargeTransactionLog  serviceChargeTransactionLog = serviceChargeTransactionLogService.getById(bulkUpload.getServiceChargeTransactionLogID());
 
 		String emailMsg = 	"Bulk Upload ID:" + bulkUpload.getID() +
 							"\nTotal Amount to be distributed:" + bulkUpload.getTotalAmount() +
 							"\nMoney distributed:" + bulkUpload.getSuccessAmount() +
-							"\nService charge applied:" + ((serviceChargeTransactionLog != null) ? serviceChargeTransactionLog.getCalculatedCharge().toString() : "") +
 							"\nTotal number of successful transfers:" + nofSuccessfulTransactions +
-							"\nNo of failed transactions:" + bulkUpload.getFailedTransactionsCount() +
+							"\nNo of failed transfers:" + bulkUpload.getFailedTransactionsCount() +
 							"\nList of failed transfers:";
 		Iterator<BulkUploadEntry> it = bulkUploadEntries.iterator();
 		while(it.hasNext())
@@ -237,11 +208,6 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 				emailMsg = emailMsg.concat("\n\tDestinationMDN = " + destMDN + ", Amount="+ amount + ", Failure Reason:"+ failureReason);
 			}
 		}
-
 		mailService.asyncSendEmail(to,name, "Bulk Upload Summary", emailMsg);
 	}
-
-
-
-
 }

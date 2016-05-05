@@ -20,6 +20,6 @@ public interface BulkTransferService {
 
 	void sendEmailBulkUploadSummary(BulkUpload bulkUpload);
 
-	void sendNotification(BulkUpload bulkUpload, Integer notificationcodeBulktransfercompletedtopartner);	
+	void sendNotification(BulkUpload bulkUpload, String subject, Integer notificationcodeBulktransfercompletedtopartner);	
 
 }
