@@ -116,7 +116,6 @@ public class BulkTransferJob {
 		bulkUpload.setDeliveryDate(new Timestamp());
 		bulkuploadService.save(bulkUpload);
 		btService.sendEmailBulkUploadSummary(bulkUpload);	
-		btService.sendNotification(bulkUpload, CmFinoFIX.NotificationCode_BulkTransferCompletedToPartner);
 	}
 
 	private BulkUpload processBulkTransferData(BulkUpload bulkUpload) throws IOException {

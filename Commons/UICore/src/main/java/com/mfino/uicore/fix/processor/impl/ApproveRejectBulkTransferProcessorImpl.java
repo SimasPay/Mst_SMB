@@ -18,14 +18,10 @@ import com.mfino.fix.CmFinoFIX.CMJSApproveRejectBulkTranfer;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
-import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.XMLResult;
 import com.mfino.service.BulkUploadService;
 import com.mfino.service.ChannelCodeService;
-import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PocketService;
-import com.mfino.service.SMSService;
-import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.handlers.money.BulkTransferHandler;
 import com.mfino.transactionapi.handlers.money.BulkTransferInquiryHandler;
@@ -51,16 +47,8 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 	private PocketService pocketService;
 	
 	@Autowired
-	@Qualifier("NotificationMessageParserServiceImpl")
-	private NotificationMessageParserService notificationMessageParserService;
-	
-	@Autowired
 	@Qualifier("BulkTransferServiceImpl")
 	private BulkTransferService bulkTransferService;
-	
-	@Autowired
-	@Qualifier("SMSServiceImpl")
-	private SMSService smsService;
 
 	@Autowired
 	@Qualifier("BulkUploadServiceImpl")
@@ -69,10 +57,6 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 	@Autowired
 	@Qualifier("ChannelCodeServiceImpl")
 	private ChannelCodeService channelCodeService;
-	
-	@Autowired
-	@Qualifier("SubscriberMdnServiceImpl")
-	private SubscriberMdnService subscriberMdnService;
 	
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -115,7 +99,7 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 					bulkUploadService.save(bu);
 					err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					err.setErrorDescription(MessageText._("Rejected the Bulk Transfer."));
-					sendNotification(bu, CmFinoFIX.NotificationCode_BulkTransferRequestRejectedToPartner);
+					bulkTransferService.sendNotification(bu, "Bulk transfer rejected", CmFinoFIX.NotificationCode_BulkTransferRequestRejectedToPartner);
 				}
 				else {
 					log.info("Approve / Reject failed because of invalid action");
@@ -262,35 +246,5 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
             err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getID() + " as the Inquiry result is null"));
 			return err;
 		}
-	}
-
-
-	/**
-	 * Send SMS Notification
-	 * @param bulkupload
-	 * @param notificationCode
-	 */
-	private void sendNotification(BulkUpload bulkupload, Integer notificationCode) {
-
-		String mdn = bulkupload.getMDN();
-		NotificationWrapper notification = new NotificationWrapper();
-		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-		notification.setLanguage(language);
-		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-		notification.setCode(notificationCode);
-		notification.setBulkTransferId(bulkupload.getID());
-		notification.setSctlID(bulkupload.getServiceChargeTransactionLogID());
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(mdn);
-		if(smdn != null)
-		{
-			notification.setFirstName(smdn.getSubscriber().getFirstName());
-			notification.setLastName(smdn.getSubscriber().getLastName());
-		}
-
-		String message = notificationMessageParserService.buildMessage(notification,true);
-		smsService.setDestinationMDN(mdn);
-		smsService.setMessage(message);
-		smsService.setNotificationCode(notification.getCode());
-		smsService.asyncSendSMS();
 	}
 }
