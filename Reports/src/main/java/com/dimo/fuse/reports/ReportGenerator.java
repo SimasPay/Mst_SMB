@@ -97,7 +97,7 @@ public abstract class ReportGenerator {
 		int maxNoColumnsInReportHeader = 0;
 		try {
 			JSONArray headerRows = reportProperties
-					.getJSONArray(ReportPropertyConstants.REPORT_HEADER);
+					.getJSONArray(property);
 			for (int i = 0; i < headerRows.length(); i++) {
 				JSONArray headerRow = headerRows.getJSONArray(i);
 				if (maxNoColumnsInReportHeader < headerRow.length())

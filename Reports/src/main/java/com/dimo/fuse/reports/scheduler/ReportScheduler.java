@@ -41,7 +41,7 @@ public abstract class ReportScheduler {
 	protected Date endTime;
 	protected String zipFile = "";
 	protected String outputDirectory;
-	private Map<String, Boolean> ReportSchedules = new HashMap<String, Boolean>();
+	private Map<String, Boolean> ReportSchedules = null;
 	
 	private boolean isValidPath(File dir) {
 		if (!dir.exists()) {
@@ -128,6 +128,9 @@ public abstract class ReportScheduler {
 			String inputFileName = inputFileList.get(i);
 			String inputFileNameWithoutExtension = inputFileName.substring(0, inputFileName.indexOf(".json"));
 			if(ReportSchedules.containsKey(inputFileNameWithoutExtension) && !ReportSchedules.get(inputFileNameWithoutExtension)){
+				inputFileList.remove(inputFileName);
+			}
+			else if(!ReportSchedules.containsKey(inputFileNameWithoutExtension)) {
 				inputFileList.remove(inputFileName);
 			}
 		}
@@ -239,6 +242,7 @@ public abstract class ReportScheduler {
 		try {
 			qe = new QueryExecutor();
 			ResultSet rs = qe.getResultSet(getQuery());
+			ReportSchedules = new HashMap<String, Boolean>();
 			while (rs.next()) {
 				String[] rowContent = qe.fetchNextRowData(rs);
 				ReportSchedules.put(rowContent[0], new Boolean((rowContent[1].equals("1")) ? "true" : "false"));
