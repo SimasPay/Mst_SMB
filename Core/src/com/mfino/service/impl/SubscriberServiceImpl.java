@@ -52,7 +52,6 @@ import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
-import com.mfino.util.MfinoUtil;
 
 /**
  *
@@ -799,7 +798,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if (startsWithCounrtyCode) 
 			return countryCode + MDN.substring(start);
 		else 
-			return MDN;
+			return countryCode + MDN;
 	}
 
 	
