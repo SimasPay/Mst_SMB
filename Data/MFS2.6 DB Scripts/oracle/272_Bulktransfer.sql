@@ -59,7 +59,7 @@ INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy
 INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','BulkUploadDeliveryStatus','5475','11','Failed','Failed');
 INSERT INTO enum_text (VERSION, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, LANGUAGE, TagName, TagID, EnumCode, EnumValue, DisplayText) VALUES ('1',sysdate,'system',sysdate,'system','0','BulkUploadDeliveryStatus','5475','13','Settlement_Pending','Settlement_Pending');
 
-INSERT INTO pocket VALUES (pocket_id_seq.nextval,1,sysdate,'System',sysdate,'System',7,1,NULL,'/YST2/P0lVQ=',0.0000,0.0000,0.0000,0,0,0,NULL,NULL,NULL,'wl1Hb4D+Yojm6MOu7FCeUQ==',0,1,1,sysdate,sysdate,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1, NULL, 0.0000,0.0000,0.0000,0,0,0);
+INSERT INTO pocket VALUES (pocket_id_seq.nextval,1,sysdate,'System',sysdate,'System',7,1,NULL,'/YST2/P0lVQ=',0.0000,0.0000,0.0000,0,0,0,NULL,NULL,NULL,'wl1Hb4D+Yojm6MOu7FCeUQ==',0,1,1,sysdate,sysdate,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1, NULL);
 
 -- Define the Reverse pockey system Parameter
 Delete from system_parameters where ParameterName = 'interest.commission.funding.pocket.id';
