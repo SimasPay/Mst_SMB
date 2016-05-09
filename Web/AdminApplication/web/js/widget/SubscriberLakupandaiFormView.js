@@ -44,6 +44,7 @@ Ext.extend(mFino.widget.SubscriberLakupandaiFormView, Ext.form.FormPanel, {
 							    xtype : 'textfield',
 							    fieldLabel: 'Nama (Sesuai KTP)',
 							    itemId : 'sub.form.authofirstname',
+							    maxLength : 255,
 							    name: CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name,
 							    allowBlank: false,
 							    listeners: {
@@ -92,6 +93,7 @@ Ext.extend(mFino.widget.SubscriberLakupandaiFormView, Ext.form.FormPanel, {
                                xtype : 'textfield',
                                fieldLabel: 'Email',
                                itemId : 'sub.form.email',
+                               maxLength : 255,
                                name: CmFinoFIX.message.JSSubscriberMDN.Entries.Email._name,
                                allowBlank: true,
 //                               vtype: 'smarttelcophoneAddMore',
@@ -1128,7 +1130,7 @@ var subsAdditionalLaku = {
 	 xtype : 'textfield',
 	 fieldLabel: 'Kode Pos',
 	 disabled: true,
-	 itemId : 'sub.form.KTPzipcode',
+	 itemId : 'sub.form.KTPzipcode',	
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPZipCode._name
  },
@@ -1163,18 +1165,21 @@ var subsAdditionalLaku = {
 	 xtype : 'textarea',
 	 fieldLabel: 'Alamat (Domisili)',
 	 itemId : 'sub.form.plotno',
+	 maxLength : 255,
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.PlotNo._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: 'RT',
 	 itemId : 'sub.form.RT',
+	 maxLength : 255,
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.RT._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: 'RW',
 	 itemId : 'sub.form.RW',
+	 maxLength : 255,
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.RW._name
  }]
@@ -1319,6 +1324,7 @@ var subsMoreDetailLaku = {
         anchor : '100%',
         allowBlank: true,
         itemId : 'sub.form.securityquestion',
+        maxLength : 255,
         fieldLabel : 'Pertayaan Rohasia',
         name : CmFinoFIX.message.JSSubscriberMDN.Entries.SecurityQuestion._name
     },
@@ -1328,6 +1334,7 @@ var subsMoreDetailLaku = {
         anchor : '100%',
         allowBlank: true,
         itemId : 'sub.form.secretanswer',
+        maxLength : 255,
         blankText : _('Answer is required'),
         vtype: 'numberchar',
         name : CmFinoFIX.message.JSSubscriberMDN.Entries.AuthenticationPhrase._name
@@ -1437,11 +1444,13 @@ var subsAthorizingDetailLaku = {
 	 fieldLabel: 'Tempat Lahir',
 	 anchor : '100%',
 	 itemId : 'sub.form.birthplace',
+	 maxLength : 255,
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.BirthPlace._name
  },{
 	 xtype : 'textfield',
 	 fieldLabel: 'Kewarganegaraan',
 	 itemId : 'sub.form.nationality',
+	 maxLength : 255,
 	 anchor : '100%',
 	 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Nationality._name
  },
@@ -1515,10 +1524,12 @@ var subsAthorizingDetailLaku = {
         layout: 'form',
         items: [
 				{
-					 xtype : 'textfield',
+					// xtype : 'textfield',
+					 xtype : 'numberfield',
 					 fieldLabel: 'Pendapatan Per Bulan',
 //					 itemId : 'sub.form.authoiddescription',
 					 anchor : '100%',
+					 maxLength : 19,
 					 name: CmFinoFIX.message.JSSubscriberMDN.Entries.Income._name
 				},
 				{
@@ -1526,6 +1537,7 @@ var subsAthorizingDetailLaku = {
 					 fieldLabel: 'Tujuan Pembukaan Rekening',
 //					 itemId : 'sub.form.authoiddescription',
 					 anchor : '100%',
+					 maxLength : 100,
 					 name: CmFinoFIX.message.JSSubscriberMDN.Entries.GoalOfAcctOpening._name
 				},
 
@@ -1534,6 +1546,7 @@ var subsAthorizingDetailLaku = {
 					 fieldLabel: 'Sumber Dana',
 //					 itemId : 'sub.form.authoiddescription',
 					 anchor : '100%',
+					 maxLength : 100,
 					 name: CmFinoFIX.message.JSSubscriberMDN.Entries.SourceOfFund._name
 				},
 				{
@@ -1815,6 +1828,7 @@ var subsotdetailLaku = {
 		   	 xtype : 'textfield',
 			 fieldLabel: 'Kode Pos',
 			 itemId : 'sub.form.zipcode',
+			 maxLength : 255,
 			 anchor : '100%',
 			 name: CmFinoFIX.message.JSSubscriberMDN.Entries.ZipCode._name
 		 }
