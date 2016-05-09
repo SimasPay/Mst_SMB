@@ -153,7 +153,13 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			
 			destinationPocket = pocketService.getById(new Long(destPocketId));
 			
-		}else{
+		}
+		
+		if(StringUtils.isNotBlank(transactionDetails.getDestPocketCode())) {
+			
+			destinationPocket = pocketService.getDefaultPocket(destinationMdn, transactionDetails.getDestPocketCode());
+			
+		} else{
 			
 			if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
 				
@@ -167,6 +173,7 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			
 			destinationPocket = pocketService.getDefaultPocket(destinationMdn, transactionDetails.getDestPocketCode());
 		}
+		
 		if(destinationPocket==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_DestinationMoneyPocketNotFound);
 			return result;
