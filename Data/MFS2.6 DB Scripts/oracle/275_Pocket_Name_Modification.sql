@@ -1,0 +1,4 @@
+
+UPDATE POCKET_TEMPLATE SET DESCRIPTION = 'LakuPandai-Agent' WHERE DESCRIPTION = 'Emoney-FullyBanked';
+
+COMMIT;
