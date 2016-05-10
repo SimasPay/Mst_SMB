@@ -305,8 +305,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = sdf.format(new Date());
-			String fileName =  srcSubscriberMDN.getMDN() + "_" + dateString + ".pdf";
 			String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
+			
+			String filePath = "D:/Temp/" + fileName;
+			
 			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
 			{
 				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getID());
@@ -495,14 +497,14 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoiceNumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
-			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
+			/*BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			String acctNum = null;
 			String acctName = null;
 			if (bp != null) {
 				acctName = bp.getInfo3();
 				acctNum = bp.getInvoiceNumber();
-			}
-			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + acctNum + " , " + acctName; 
+			}*/
+			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + ct.getDestCardPAN(); 
 		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoiceNumber() : "");
