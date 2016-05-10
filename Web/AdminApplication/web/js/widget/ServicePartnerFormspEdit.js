@@ -613,6 +613,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                                           anchor : '100%',
                                           allowBlank: true,
                                           itemId : 'sub.form.securityquestion',
+                                          maxLength : 255,
                                           fieldLabel : 'Pertayaan Rohasia',
                                           name : CmFinoFIX.message.JSAgent.Entries.SecurityQuestion._name
                                       },
@@ -622,6 +623,7 @@ Ext.extend(mFino.widget.ServicePartnerFormspEdit, Ext.form.FormPanel, {
                                           anchor : '100%',
                                           allowBlank: true,
                                           itemId : 'sub.form.secretanswer',
+                                          maxLength : 255,
                                           blankText : _('Answer is required'),
                                           vtype: 'numberchar',
                                           name : CmFinoFIX.message.JSAgent.Entries.AuthenticationPhrase._name
