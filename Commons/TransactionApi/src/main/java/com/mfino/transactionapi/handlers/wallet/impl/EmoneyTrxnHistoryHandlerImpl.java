@@ -28,7 +28,6 @@ import com.mfino.domain.BillPayments;
 import com.mfino.domain.BookingDatedBalance;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
@@ -305,31 +304,30 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = sdf.format(new Date());
+			
+			String fileName =  srcSubscriberMDN.getMDN() + "_" + dateString + ".pdf";
 			String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
 			
-			String filePath = "D:/Temp/" + fileName;
-			
-			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
-			{
+			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
+				
 				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getID());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryEmailWasSent);
-			}
-			else if(ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
-			{
+			
+			} else if(ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
+				
 				result.setFilePath(filePath);
 				createPDF(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath, sctl.getID());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
 				String downloadURL = "Emoney_Txn_History" + File.separatorChar + fileName;
 				result.setDownloadURL(downloadURL);
-			}
-			else
-			{
+			
+			} else {
+				
 				Long txnCount = commodityTransferService.getTranscationsCount(srcPocket, srcSubscriberMDN,transactionsHistory);
 				result.setTotalTxnCount(txnCount);
 				if(txnCount > (transactionsHistory.getPageNumber() + 1) * transactionsHistory.getNumRecords()){
 					result.setMoreRecordsAvailable(true);
-				}
-				else{
+				} else{
 					result.setMoreRecordsAvailable(false);
 				}
 			}		
