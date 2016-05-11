@@ -868,6 +868,7 @@ Ext.extend(mFino.widget.SubscriberLakupandaiFormView, Ext.form.FormPanel, {
 			mFino.widget.SubscriberLakupandaiFormView.isLoadRecord=true;
         this.getForm().loadRecord(record);
         this.form.items.get("sub.form.mobileno").setDisabled(true);
+        this.form.items.get("sub.form.cifno").setDisabled(true);
         this.form.items.get("sub.form.ktpid").setDisabled(true);
         this.form.items.get("sub.form.KYCLevel").setDisabled(true);
         this.form.items.get("sub.form.authodateofbirth").setDisabled(true);
@@ -1617,6 +1618,17 @@ var subsBasicDetailLaku = {
     items: [
 			{
 			    xtype : 'textfield',
+			    fieldLabel: _("CIF No."),
+			    allowBlank: false,
+			    labelSeparator : '',
+			    anchor : '100%',
+			    disabled: false,
+			    maxLength : 255,
+				itemId  : 'sub.form.cifno',
+				name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApplicationID._name           
+			},
+			{
+			    xtype : 'textfield',
 			    fieldLabel: _("No. KTP"),
 			    allowBlank: false,
 			    labelSeparator : '',
@@ -1624,7 +1636,7 @@ var subsBasicDetailLaku = {
 			    disabled: false,
 			    maxLength : 255,
 				itemId  : 'sub.form.ktpid',
-				name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApplicationID._name           
+				name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPID._name           
 			},
 			{
 			    xtype : 'datefield',

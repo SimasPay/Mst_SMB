@@ -52,6 +52,7 @@ import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberRegistration;
 import com.mfino.fix.CmFinoFIX.CMSubscriberRegistrationThroughWeb;
 import com.mfino.hibernate.Timestamp;
+import com.mfino.i18n.MessageText;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.MailService;
 import com.mfino.service.MfinoUtilService;
@@ -471,6 +472,23 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setCreateTime(new Timestamp());
 			subscriberMDN.setUpdatedBy(createdByName);
 			subscriberMdnDao.save(subscriberMDN);
+			
+			Long subid = subscriberMDN.getID();
+            
+            int cifnoLength = systemParametersService.getInteger(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH);
+    		String cifnoPrefix = systemParametersService.getString(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO);
+    		
+    		if((cifnoPrefix.length() + String.valueOf(subid).length()) >= cifnoLength) {
+    			
+    			log.info("CIF No number length is invalid.....");
+    			return CmFinoFIX.NotificationCode_SubscriberRegistrationfailed;
+       		}
+    		
+    		String cifno = cifnoPrefix + StringUtils.leftPad(String.valueOf(subid),(cifnoLength - cifnoPrefix.length()),"0");
+    		
+    		subscriberMDN.setApplicationID(cifno);
+    		
+    		subscriberMdnDao.save(subscriberMDN);
 			
 			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 			

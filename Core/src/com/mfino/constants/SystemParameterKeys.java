@@ -125,4 +125,6 @@ public class SystemParameterKeys {
 	public static final String MAXIMUM_AGENT_CLOSING_AMOUNT = "max.agent.account.closing.amount";
 	public static final String MAXIMUM_NO_OF_RETRIE_ATTEMPTS = "max.no.of.retries.mfa.otp";
 	public static final String INTEREST_COMMISSION_FUNDING_POCKET_ID = "interest.commission.funding.pocket.id";
+	public static final String LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO = "lakupandia.subscriber.prefix.cifno";
+	public static final String LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH = "lakupandia.subscriber.cifno.length";
 }

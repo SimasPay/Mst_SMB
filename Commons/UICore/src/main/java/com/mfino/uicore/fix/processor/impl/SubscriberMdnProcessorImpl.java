@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -707,6 +706,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 		if ( s.getApplicationID()!= null){
 			entry.setApplicationID(s.getApplicationID());
+		}
+		
+		if ( s.getKTPID()!= null){
+			entry.setKTPID(s.getKTPID());
 		}
 
 		entry.setMDNRestrictions(s.getRestrictions());

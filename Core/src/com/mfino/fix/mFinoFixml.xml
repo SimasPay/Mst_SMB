@@ -884,7 +884,6 @@
 				<field name="UpgradeAcctTime" required="N" />
 				<field name="UpgradeAcctComments" required="N" />
 				<field name="UpgradeAcctStatusText" required="N" />
-				
 				<field name="IDValidUntil" required="N" />
 				<field name="IsIdLifetimeText" required="N" />
 				<field name="MothersMaidenName" required="N" />
@@ -915,6 +914,7 @@
 				<field name="State" required="N" />
 				<field name="IsDomesticAddrIdentity" required="N" />
 				<field name="OtherWork" required="N" />
+				<field name="KTPID" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplate" msgtype="1040" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -6124,6 +6124,7 @@
 			<field name="UpgradeAcctComments" required="N" />
 			<field name="CloseAgent" required="N" />
 			<field name="CloseUser" required="N" />
+			<field name="KTPID" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />

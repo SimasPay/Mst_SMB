@@ -1579,13 +1579,24 @@ var subsBasicDetailLakuView = {
     items: [
 			{
 			    xtype : 'displayfield',
+			    fieldLabel: _("CIF No."),
+			    allowBlank: false,
+			    labelSeparator : '',
+			    anchor : '100%',
+			    disabled: false,
+			    maxLength : 255,
+				itemId  : 'sub.form.cifno',
+				name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApplicationID._name           
+			},
+			{
+			    xtype : 'displayfield',
 			    fieldLabel: _("No. KTP"),
 			    allowBlank: false,
 			    anchor : '100%',
 			    disabled: false,
 			    maxLength : 255,
 				itemId  : 'sub.form.ktpid',
-				name: CmFinoFIX.message.JSSubscriberMDN.Entries.ApplicationID._name           
+				name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPID._name           
 			},
 			{
 			    xtype : 'displayfield',

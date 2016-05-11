@@ -136,7 +136,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	@Qualifier("SubscriberStatusEventServiceImpl")
 	private SubscriberStatusEventService subscriberStatusEventService;
 	
-	@SuppressWarnings("null")
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
@@ -503,6 +502,27 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriberMdnDao.save(subscriberMdn);
                 partnerDao.save(partner);
                 
+                Long subid = subscriberMdn.getID();
+                
+                int cifnoLength = systemParametersService.getInteger(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH);
+        		String cifnoPrefix = systemParametersService.getString(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO);
+        		
+        		if((cifnoPrefix.length() + String.valueOf(subid).length()) >= cifnoLength) {
+        			
+        			errorMsg.setErrorDescription(MessageText._("Agent Creation Failed..."));
+    				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+    				
+    				log.warn("Agent Creation Failed..." + subscriberMdn.getID());
+    				
+    				return errorMsg;
+        		}
+        		
+        		String cifno = cifnoPrefix + StringUtils.leftPad(String.valueOf(subid),(cifnoLength - cifnoPrefix.length()),"0");
+        		
+        		subscriberMdn.setApplicationID(cifno);
+        		
+        		subscriberMdnDao.save(subscriberMdn);
+                
                 updateEntityAddInfosp(subscriber,realMsg);
                 
         		if(StringUtils.isNotBlank(partner.getAuthorizedEmail())) {
@@ -806,7 +826,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     		subscriberMdn.setMDN(subscriberService.normalizeMDN(entry.getMDN()));
     	}
     	if(entry.getKTPID()!= null){
-    		subscriberMdn.setApplicationID(entry.getKTPID());
+    		subscriberMdn.setKTPID(entry.getKTPID());
+    	}
+    	if(entry.getApplicationID()!= null){
+    		subscriberMdn.setApplicationID(entry.getApplicationID());
     	}
         if (entry.getPartnerStatus() != null) {
             if (!(entry.getPartnerStatus().equals(partner.getPartnerStatus()))) {
@@ -1185,8 +1208,11 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		entry.setMDN(subscriberMdn.getMDN());
         		entry.setMobilePhoneNumber(subscriberMdn.getMDN());
         	}
+	    	if(subscriberMdn.getKTPID()!= null){
+	    		entry.setKTPID(subscriberMdn.getKTPID());
+	    	}
 	    	if(subscriberMdn.getApplicationID()!= null){
-	    		entry.setKTPID(subscriberMdn.getApplicationID());
+	    		entry.setApplicationID(subscriberMdn.getApplicationID());
 	    	}
 			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
 				SubscribersAdditionalFields saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
