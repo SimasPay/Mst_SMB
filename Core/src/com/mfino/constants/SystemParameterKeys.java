@@ -127,4 +127,5 @@ public class SystemParameterKeys {
 	public static final String INTEREST_COMMISSION_FUNDING_POCKET_ID = "interest.commission.funding.pocket.id";
 	public static final String LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO = "lakupandia.subscriber.prefix.cifno";
 	public static final String LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH = "lakupandia.subscriber.cifno.length";
+	public static final String TRANSFER_TO_UANGKU_PREFIX_NUMBER = "transfer.to.uangku.prefix.number";
 }

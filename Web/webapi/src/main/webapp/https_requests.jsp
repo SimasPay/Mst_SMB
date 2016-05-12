@@ -391,6 +391,16 @@
 				<a href="jsp/s_agent_interbank_transfer.jsp"> Inter Bank Transfer Confirmation</a>
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<a href="jsp/s_agent_transfer_to_uangku_inquiry.jsp">Agent Transfer To Uangku Inquiry</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="jsp/s_agent_transfer_to_uangku.jsp">Agent Transfer To Uangku Confirmation</a>
+			</td>
+		</tr>
 		<!-- <tr>
 		<td>
 		<a href="jsp/s_agent_frsc_payment_inquiry.jsp"> Agent FRSC Payment inquiry</a>
@@ -528,17 +538,17 @@
 			<a href="jsp/s_qr_payment_confirm.jsp">QR Payment Confirm</a>
 		</td>
 	</tr>
-	<!-- <tr>
+	<tr>
 		<td>
-			<a href="jsp/s_uangku_interbank_transfer_inquiry.jsp">Uangku Inter Bank Transfer Inquiry</a>
+			<a href="jsp/s_transfer_uangku_inquiry.jsp">Transfer To Uangku Inquiry</a>
 		</td>
 	</tr>
 	
 	<tr>
 		<td>
-			<a href="jsp/s_uangku_interbank_transfer.jsp">Uangku Inter Bank Transfer Confirmation</a>
+			<a href="jsp/s_transfer_uangku.jsp">Transfer To Uangku Confirmation</a>
 		</td>
-	</tr> -->
+	</tr>
 	
 	</table></td></tr>
 

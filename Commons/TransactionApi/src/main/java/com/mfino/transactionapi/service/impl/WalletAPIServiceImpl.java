@@ -23,6 +23,8 @@ import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
 import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.MoneyTransferHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
+import com.mfino.transactionapi.handlers.money.TransferToUangkuHandler;
+import com.mfino.transactionapi.handlers.money.TransferToUangkuInquiryHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayConfirmHandler;
 import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.AgentToAgentTransferConfirmHandler;
@@ -139,6 +141,14 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Autowired
 	@Qualifier("InterBankTransferHandlerImpl")
 	private InterBankTransferHandler interBankTransferHandler;
+	
+	@Autowired
+	@Qualifier("TransferToUangkuInquiryHandlerImpl")
+	private TransferToUangkuInquiryHandler transferToUangkuInquiryHandler;
+	
+	@Autowired
+	@Qualifier("TransferToUangkuHandlerImpl")
+	private TransferToUangkuHandler transferToUangkuHandler;
 	
 	@Autowired
 	@Qualifier("SubscriberDonationInquiryHandlerImpl")
@@ -294,8 +304,28 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			
 			transactionRequestValidationService.validateFundWithdrawalConfirmDetails(transactionDetails);
 			xmlResult = (XMLResult) fundWithdrawalConfirmHandler.handle(transactionDetails);
-		}
-		else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName)){
+		
+		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU_INQUIRY.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateTransferToUangkuInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_TRANSFER_TO_UANGKU;
+				transactionDetails.setSourceMessage(sourceMessage);
+			}
+			
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
+			
+			xmlResult = (XMLResult) transferToUangkuInquiryHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateTransferToUangkuConfirmDetails(transactionDetails);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
+			
+			xmlResult = (XMLResult) transferToUangkuHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER_INQUIRY.equalsIgnoreCase(transactionName)){
 
 			transactionRequestValidationService.validateInterBankTransferInquiryDetails(transactionDetails);
 			if (StringUtils.isBlank(sourceMessage)) {

@@ -246,7 +246,6 @@ public interface TransactionRequestValidationService {
 	
 	public void validateFavoriteDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
-
 	public void validatePartnerRegistrationDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateStarTimesPaymentInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
@@ -270,5 +269,8 @@ public interface TransactionRequestValidationService {
 	public void validateProductReferralDetails(TransactionDetails transactionDetails)throws InvalidDataException;
 	
 	public void validateResendMFAOTPDetails(TransactionDetails transactionDetails) throws InvalidDataException;
-	
+
+	public void validateTransferToUangkuInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+
+	public void validateTransferToUangkuConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 }

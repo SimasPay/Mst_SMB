@@ -115,6 +115,10 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_INTERBANK_TRANSFER		= "InterBankTransfer";
 	
+	public static final String TRANSACTION_TRANSFER_TO_UANGKU_INQUIRY = "TransferToUangkuInquiry";
+	
+	public static final String TRANSACTION_TRANSFER_TO_UANGKU		= "TransferToUangku";
+	
 	public static final String TRANSACTION_CASHOUT_UNREGISTERED_INQUIRY = "CashOutInquiryToUnregistered";
 	
 	public static final String TRANSACTION_BULK_TRANSFER_INQUIRY = "BulkTransferInquiry";
@@ -305,6 +309,8 @@ public class ServiceAndTransactionConstants {
 	public static final String	MESSAGE_REVERSE_TRANSACTION        	= "Reverse Transaction";
 	
 	public static final String	MESSAGE_INTERBANK_TRANSFER	        = "InterBank Transfer";
+	
+	public static final String MESSAGE_TRANSFER_TO_UANGKU = "Transfer to Uangku";
 	
 	public static final String MESSAGE_CASHOUT_UNREGISTERED         = "CashOut_Unregistered";
 

@@ -21,6 +21,8 @@ import com.mfino.transactionapi.handlers.money.BankTransactionsHistoryHandler;
 import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
 import com.mfino.transactionapi.handlers.money.InterBankTransferInquiryHandler;
 import com.mfino.transactionapi.handlers.money.TransferInquiryHandler;
+import com.mfino.transactionapi.handlers.money.TransferToUangkuHandler;
+import com.mfino.transactionapi.handlers.money.TransferToUangkuInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.CheckBalanceHandler;
 import com.mfino.transactionapi.service.BankAPIService;
 import com.mfino.transactionapi.service.BaseAPIService;
@@ -74,6 +76,14 @@ public class BankAPIServiceImpl extends BaseAPIService implements BankAPIService
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService ;
+	
+	@Autowired
+	@Qualifier("TransferToUangkuInquiryHandlerImpl")
+	private TransferToUangkuInquiryHandler transferToUangkuInquiryHandler;
+	
+	@Autowired
+	@Qualifier("TransferToUangkuHandlerImpl")
+	private TransferToUangkuHandler transferToUangkuHandler;
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		XMLResult xmlResult = null;
@@ -125,8 +135,27 @@ public class BankAPIServiceImpl extends BaseAPIService implements BankAPIService
 
 			transactionRequestValidationService.validateInterBankTransferConfirmDetails(transactionDetails);
 			xmlResult = (XMLResult) interBankTransferHandler.handle(transactionDetails);			
-		}
-		else{
+		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU_INQUIRY.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateTransferToUangkuInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_TRANSFER_TO_UANGKU;
+				transactionDetails.setSourceMessage(sourceMessage);
+			}
+			
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
+			
+			xmlResult = (XMLResult) transferToUangkuInquiryHandler.handle(transactionDetails);
+			
+		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU.equalsIgnoreCase(transactionName)){
+
+			transactionRequestValidationService.validateTransferToUangkuConfirmDetails(transactionDetails);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
+			
+			xmlResult = (XMLResult) transferToUangkuHandler.handle(transactionDetails);
+			
+		} else{
 			
 			xmlResult = new XMLResult();
 			Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
