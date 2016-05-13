@@ -86,8 +86,10 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 			return result;
 		}
 		
-		
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(pReferral.getSubscriberMDN());
+		/*
+		 * Commented the code since the information needs to be captured even for unregistered numbers too.
+		 */
+		/*SubscriberMDN subMDN = subscriberMdnService.getByMDN(pReferral.getSubscriberMDN());
 		
 		if(null == subMDN) {
 			
@@ -96,7 +98,7 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ProductReferralFailed);	
 			
 			return result;
-		}
+		}*/
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
