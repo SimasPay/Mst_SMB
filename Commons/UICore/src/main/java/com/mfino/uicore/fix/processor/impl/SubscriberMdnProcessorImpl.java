@@ -1173,6 +1173,18 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				SubscriberMDN s = mdnDao.getById(e.getID());
 				Subscriber sub=s.getSubscriber();
 				log.info("SubscriberMDN:"+s.getID()+" details edit requested by user:"+getLoggedUserNameWithIP());
+				boolean isLakuapandiaSubscriber = false;
+				
+				Set<Pocket> subPockets = s.getPocketFromMDNID();
+				for (Iterator iterator = subPockets.iterator(); iterator.hasNext();) {
+					
+					Pocket pocket = (Pocket) iterator.next();
+					
+					if(pocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)) {
+						
+						isLakuapandiaSubscriber = true;
+					}
+				}
 
 				Integer oldRestrictions = s.getRestrictions();
 
@@ -1383,12 +1395,15 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					updateAddress(ads, e);
 					addressDAO.save(ads);
 					log.info("Address updated for " + e.getID());
-					if(s.getDomAddrIdentity().intValue()==CmFinoFIX.DomAddrIdentity_According_to_Identity.intValue()){
-						sub.setAddressBySubscriberAddressID(sub.getAddressBySubscriberAddressKTPID());
-					}else{
-						sub.setAddressBySubscriberAddressID(ads);	
-					}
 					
+					if(null != s.getDomAddrIdentity()) {
+						
+						if(s.getDomAddrIdentity().intValue()==CmFinoFIX.DomAddrIdentity_According_to_Identity.intValue()){
+							sub.setAddressBySubscriberAddressID(sub.getAddressBySubscriberAddressKTPID());
+						}else{
+							sub.setAddressBySubscriberAddressID(ads);	
+						}
+					}
 				}
 				//Generate OTP for the subscriber if the status is changed from Suspend to Initialise or Inactive to Initialise.
 				if(e.getStatus() != null && CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus())){
@@ -1421,7 +1436,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				
 				mdnDao.save(s);
 				
-				ktpDetailsDAO.save(ktpDetails);
+				if(isLakuapandiaSubscriber) {
+				
+					ktpDetailsDAO.save(ktpDetails);
+				}
 				
 				updateMessage(s, e, saf, ap, sub.getAddressBySubscriberAddressID(),sub.getAddressBySubscriberAddressKTPID(),false,str_tomcatPath,ktpDetails);
 
