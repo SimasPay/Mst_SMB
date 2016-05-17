@@ -32,7 +32,6 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.AgentService;
 import com.mfino.service.MFAService;
 import com.mfino.service.NotificationService;
@@ -40,6 +39,7 @@ import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberServiceExtended;
+import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.MFASubscriberActivationHandler;
@@ -87,6 +87,10 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 	@Qualifier("AgentServiceImpl")
 	private AgentService agentService;
 	
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService;
+	
 	public Result handle(TransactionDetails transactionDetails) {
 		
 		boolean isHttps = 		transactionDetails.isHttps();
@@ -128,11 +132,19 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		SubscriberMDN subscribermdn = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 		Integer code = null;
 		
-		if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscribermdn.getStatus())) {
-			
-			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation);
+		if(null == subscribermdn) {
+		
+			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			return result;
 			
+		} else {
+			
+			if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscribermdn.getStatus())) {
+				
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation);
+				return result;
+				
+			}
 		}
 		
 		ChannelCode cc = transactionDetails.getCc();
@@ -267,6 +279,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		if(subscribermdn != null)
 		{
 			subscribermdn.setWrongPINCount(0);
+			
 			subscriberMdnService.saveSubscriberMDN(subscribermdn);
  
 			boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();			
