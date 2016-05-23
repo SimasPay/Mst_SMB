@@ -82,7 +82,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	private  boolean isLoginStatusValid(String transactionName, String sourceMDN) {
-		if (ApiConstants.TRANSACTION_LOGIN.equals(transactionName) || ApiConstants.TRANSACTION_LOGOUT.equals(transactionName))
+		if (ApiConstants.TRANSACTION_LOGIN.equals(transactionName) || ApiConstants.TRANSACTION_LOGOUT.equals(transactionName) || ApiConstants.TRANSACTION_RESEND_MFAOTP.equals(transactionName))
 			return true;
 		return isUserSessionValid(sourceMDN);
 	}
