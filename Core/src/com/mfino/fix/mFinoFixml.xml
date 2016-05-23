@@ -5138,6 +5138,12 @@
 	</message>
 	<message name="PaymentAuthorizationFromBankForBsim" msgtype="1764"	msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BSIMBillPaymentInquiryFromBank">
 	</message>
+	<message name="TransferToUangkuInquiry" msgtype="1765" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
+			<field name="DestBankCode" required="Y"/>
+			<field name="DestAccountNumber" required="Y"/>
+	</message>
+	<message name="TransferToUangku" msgtype="1766" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -7662,6 +7668,8 @@
 			<value enum="1731" description="JSMoneyTransfer"/>
 			<value enum="1732" description="ModifyNFCCardAlias"/>
 			<value enum="1741" description="BalanceInquiryFromNFC"/>
+			<value enum="1765" description="TransferToUangkuInquiry"/>
+			<value enum="1766" description="TransferToUangku"/>	
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -22216,6 +22224,20 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="InvalidMFAOTP" enum="2126">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Kode OTP salah. Pastikan kode yang Anda masukkan sudah sesuai dengan SMS OTP terbaru dari kami.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Kode OTP salah. Pastikan kode yang Anda masukkan sudah sesuai dengan SMS OTP terbaru dari kami.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -23959,6 +23981,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="58" description="NFC_Card_Topup_Reversal"/>
 			<value enum="59" description="NFC_Pocket_Topup"/>
 			<value enum="60" description="Donation"/>
+			<value enum="61" description="Transfer_To_Uangku"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />

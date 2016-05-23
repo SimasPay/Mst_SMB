@@ -468,6 +468,17 @@
 			<a href="jsp/s_uangku_interbank_transfer.jsp">Uangku Inter Bank Transfer Confirmation</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_transfer_uangku_inquiry.jsp">Transfer To Uangku Inquiry</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<td>
+			<a href="jsp/s_transfer_uangku.jsp">Transfer To Uangku Confirmation</a>
+		</td>
+	</tr>
 	
 	</table></td></tr>
 

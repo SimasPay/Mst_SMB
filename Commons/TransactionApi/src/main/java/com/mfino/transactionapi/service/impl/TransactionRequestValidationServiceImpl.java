@@ -1181,4 +1181,17 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		}		
 	}
 	
+	
+	public void validateTransferToUangkuInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException{
+		validateSourcePin(transactionDetails);
+		validateAmount(transactionDetails);
+		validateDestinationAccountNo(transactionDetails);
+	}
+	
+	public void validateTransferToUangkuConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateconfirmString(transactionDetails);
+		validateTransferId(transactionDetails);
+		validateParentTxnId(transactionDetails);
+	}
+	
 }

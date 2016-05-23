@@ -69,6 +69,10 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_PARTNER_REGISTRATION_THROUGH_API = "PartnerRegistrationThroughAPI";
 
+	public static final String TRANSACTION_TRANSFER_TO_UANGKU_INQUIRY = "TransferToUangkuInquiry";
+	
+	public static final String TRANSACTION_TRANSFER_TO_UANGKU		= "TransferToUangku";
+	
 	public static final String TRANSACTION_CASHIN = "CashIn";
 	
 	public static final String TRANSACTION_PURCHASE = "Purchase";
@@ -339,4 +343,6 @@ public class ServiceAndTransactionConstants {
 	public static final String MESSAGE_QR_PAYMENT 			=	"QR Payment";
 	
 	public static final String MESSAGE_DONATION = "Donation";
+	
+	public static final String MESSAGE_TRANSFER_TO_UANGKU = "Transfer to Uangku";
 }
