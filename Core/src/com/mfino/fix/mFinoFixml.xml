@@ -22238,7 +22238,7 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
-			<value description="TransferToUangkuAccountCompletedToSender" enum="2127">
+			<value description="TransferToUangkuAccountCompletedToSender" enum="2176">
 				<C1>
 					<English>
 						<SMS>
@@ -23990,7 +23990,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="58" description="NFC_Card_Topup_Reversal"/>
 			<value enum="59" description="NFC_Pocket_Topup"/>
 			<value enum="60" description="Donation"/>
-			<value enum="61" description="Transfer_To_Uangku"/>
+			<value enum="64" description="Transfer_To_Uangku"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />
