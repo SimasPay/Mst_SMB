@@ -595,7 +595,8 @@ public enum NotificationCodes {
 	QRPaymentCompletedToReceiver(12112,2112,true),
 	InternalLoginError(12125,2125,false),
 	AgentSubscriberCashinSuccessToSender(12156,2156,true),
-	AgentSubscriberCashinSuccessToReceiver(12157,2157,true);
+	AgentSubscriberCashinSuccessToReceiver(12157,2157,true),
+	TransferToUangkuToSender(12176,2176,true);
 	
 	private static Map<Integer,NotificationCodes> nofificationCodeMap = null;
 	private static Map<Integer, Integer> notificationCodetoInternalErroCodeMap = null;
