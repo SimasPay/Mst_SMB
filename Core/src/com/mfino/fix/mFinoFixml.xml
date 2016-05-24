@@ -22238,6 +22238,15 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
+			<value description="TransferToUangkuAccountCompletedToSender" enum="2127">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Transaction ID: $(TransferID). Dear Customer, you have successfully transferred $(Currency) $(Amount) to $(ReceiverMDN) and  Service Charge $(Currency) $(serviceCharge).</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

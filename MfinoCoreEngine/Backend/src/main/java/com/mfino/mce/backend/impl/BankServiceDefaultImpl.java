@@ -170,6 +170,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		returnFix.setReceiverAccountNo(objDestPocket.getCardPAN());
 		returnFix.setSourcePocketId(objSrcPocket.getID());
 		returnFix.setDestPocketId(objDestPocket.getID());
+		returnFix.setOnBehalfOfMDN(toBank.getDestCardPAN());
 		
 		PendingCommodityTransfer pct = coreDataWrapper.getPCTById(toBank
 				.getTransferID());
@@ -265,6 +266,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							.intValue()) {
 						pct.setNotificationCode(NotificationCodes.FundAllocationConfirmationPrompt
 								.getNotificationCode());
+					} else if (uiCategory.intValue() == CmFinoFIX.TransactionUICategory_Transfer_To_Uangku.intValue()) {
+						
+						pct.setNotificationCode(NotificationCodes.TransferToUangkuToSender.getNotificationCode());
+						
 					} else if (uiCategory.intValue() == CmFinoFIX.TransactionUICategory_Fund_Withdrawal
 							.intValue()) {
 						FundServiceImpl fundServiceImpl = new FundServiceImpl();
