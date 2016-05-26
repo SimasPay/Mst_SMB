@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.mfino.application</groupId>
+  <artifactId>SimaspaySMS</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+
+  <name>SimaspaySMS</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <dependencies>
+    	<dependency>
+		<groupId>com.mfino.mce</groupId>
+		<artifactId>NotificationService</artifactId>
+		<version>${project.version}</version>
+		<scope>compile</scope>
+		</dependency>
+  </dependencies>
+  
+   <build>
+		<plugins>
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>maven-bundle-plugin</artifactId>
+			    <version>1.4.0</version>
+			    <extensions>true</extensions>
+			    <configuration>
+			        <instructions>
+			            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+			            <Bundle-Name>${project.artifactId}</Bundle-Name>
+			            <Bundle-Version>${project.version}</Bundle-Version>
+			            <Buildtime>${buildtime}</Buildtime>
+			          		  <Release>${release}</Release>
+			         <Revision>${revision}</Revision>
+			            <Import-Package>*;
+			            </Import-Package>
+			            <Export-Package>com.mfino.hub.sms.*</Export-Package>
+			        </instructions>
+			    </configuration>
+			</plugin>
+		</plugins>
+	</build> 
+  
+</project>
