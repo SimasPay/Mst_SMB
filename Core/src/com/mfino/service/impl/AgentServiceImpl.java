@@ -44,6 +44,7 @@ import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberServiceExtended;
 import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.SystemParametersService;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 import com.mfino.util.PasswordGenUtil;
 
@@ -210,30 +211,42 @@ public class AgentServiceImpl implements AgentService {
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroup().getID();
 		}
-		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, agent.getBusinessPartnerType(), groupID);
-		Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), svaPocketTemplate.getID());
+		
+		String tradeName=agent.getTradeName();
+		
+		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
+		Pocket emoneyPocket = null;
+		
+		if(isEMoneyPocketRequired == true){
+		
+			PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, agent.getBusinessPartnerType(), groupID);
+			emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), svaPocketTemplate.getID());
 
-		if (emoneyPocket == null) {
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_MoneySVAPocketNotFound);
-			return notificationWrapper;
+			if (emoneyPocket == null) {
+				notificationWrapper.setCode(CmFinoFIX.NotificationCode_MoneySVAPocketNotFound);
+				return notificationWrapper;
+			}
+			
+			if (emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement) || emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired) || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)
+			        || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
+				notificationWrapper.setCode(CmFinoFIX.NotificationCode_PocketStatusDoesNotEnableActivation);
+				return notificationWrapper;
+			}
+			
+			if (!emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+				emoneyPocket.setActivationTime(new Timestamp());
+				emoneyPocket.setIsDefault(true);
+				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
+				emoneyPocket.setStatusTime(new Timestamp());
+				emoneyPocket.setUpdatedBy(tradeName);
+			}
 		}
+		
 		if (bankPocket == null) {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_DefaultBankAccountPocketNotFound);
 			return notificationWrapper;
 		}
-		if (emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement) || emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired) || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)
-		        || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_PocketStatusDoesNotEnableActivation);
-			return notificationWrapper;
-		}
-		String tradeName=agent.getTradeName();
-		if (!emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
-			emoneyPocket.setActivationTime(new Timestamp());
-			emoneyPocket.setIsDefault(true);
-			emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-			emoneyPocket.setStatusTime(new Timestamp());
-			emoneyPocket.setUpdatedBy(tradeName);
-		}
+		
 		if (!bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
 			bankPocket.setActivationTime(new Timestamp());
 			bankPocket.setIsDefault(true);
@@ -242,6 +255,34 @@ public class AgentServiceImpl implements AgentService {
 			bankPocket.setUpdatedBy(tradeName);
 			pocketDao.save(bankPocket);
 			log.info("AgentActivation : bankPocket activation id:" + bankPocket.getID() + " agentid" + agent.getID());
+		}
+		
+		Pocket lakuPocket = null;
+		PocketTemplate lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Partner, agent.getBusinessPartnerType(), groupID);
+		lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), lakuPocketTemplate.getID());
+
+		if (lakuPocket == null) {
+			
+			notificationWrapper.setCode(CmFinoFIX.NotificationCode_MoneySVAPocketNotFound);
+			return notificationWrapper;
+		}
+		
+		if (lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement) || lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired) || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)
+		        || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
+			
+			notificationWrapper.setCode(CmFinoFIX.NotificationCode_PocketStatusDoesNotEnableActivation);
+			return notificationWrapper;
+		}
+		
+		if (!lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+			
+			lakuPocket.setActivationTime(new Timestamp());
+			lakuPocket.setIsDefault(true);
+			lakuPocket.setStatus(CmFinoFIX.PocketStatus_Active);
+			lakuPocket.setStatusTime(new Timestamp());
+			lakuPocket.setUpdatedBy(tradeName);
+			pocketDao.save(lakuPocket);
+			log.info("AgentActivation : lakuPocket activation id:" + lakuPocket.getID() + " agentid" + agent.getID());
 		}
 
 		String calcPIN = null;

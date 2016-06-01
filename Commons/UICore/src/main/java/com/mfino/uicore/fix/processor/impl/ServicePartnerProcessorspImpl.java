@@ -559,32 +559,40 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				}
 				StringBuilder  errDescription = new StringBuilder();
 				boolean isError = false;
-                PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, realMsg.getBusinessPartnerType(), groupID);
-                if (svaPocketTemplate == null) {
-					log.info("No Default SVA Pocket template set for " + subscriber.getID());
-					isError = true;
-					errDescription.append("No Default SVA pocket template set for this group and partner type<br/>");
+                
+				boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
+				if(isEMoneyPocketRequired == true){
+				
+					PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, realMsg.getBusinessPartnerType(), groupID);
+                
+					if (svaPocketTemplate == null) {
+						
+						log.info("No Default SVA Pocket template set for " + subscriber.getID());
+						isError = true;
+						errDescription.append("No Default SVA pocket template set for this group and partner type<br/>");
+						
+					} else {
+	                	
+						if(epocket!=null&&!(epocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)||epocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired))){
+	                		epocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
+	                		epocket.setStatusTime(new Timestamp());
+	                		epocket.setPocketTemplateByOldPocketTemplateID(epocket.getPocketTemplate());
+	                		epocket.setPocketTemplate(svaPocketTemplate);
+	                		epocket.setPocketTemplateChangedBy(userService.getCurrentUser().getUsername());
+	                		epocket.setPocketTemplateChangeTime(new Timestamp());
+	                		pocketDao.save(epocket);
+	
+	                	}else{
+	                		try{
+	                		epocket = pocketService.createPocket(svaPocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, cardPan);
+	                		}catch(Exception ex){
+	                			log.error("Exception in creating pocket",ex);
+	                		}
+	                		log.info("Default emoney pocket successfully created for the partner -->"+partner.getID());
+	                	}
+	                }
 				}
-                else
-                {
-                	if(epocket!=null&&!(epocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)||epocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired))){
-                		epocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-                		epocket.setStatusTime(new Timestamp());
-                		epocket.setPocketTemplateByOldPocketTemplateID(epocket.getPocketTemplate());
-                		epocket.setPocketTemplate(svaPocketTemplate);
-                		epocket.setPocketTemplateChangedBy(userService.getCurrentUser().getUsername());
-                		epocket.setPocketTemplateChangeTime(new Timestamp());
-                		pocketDao.save(epocket);
-
-                	}else{
-                		try{
-                		epocket = pocketService.createPocket(svaPocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, cardPan);
-                		}catch(Exception ex){
-                			log.error("Exception in creating pocket",ex);
-                		}
-                		log.info("Default emoney pocket successfully created for the partner -->"+partner.getID());
-                	}
-                }
+				
                 Pocket collectorPocket = null;
                 PocketTemplate collectorPocketTemplate = null;
                 try {
@@ -660,6 +668,32 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 					log.info("Default Bank Pocket creation failed for the Partner --> " + partner.getID());
 					isError = true;
 					errDescription.append("Default Bank Pocket creation failed for the Partner<br/>");
+				}
+                
+                Pocket lakuPocket = null;
+                PocketTemplate lakuPocketTemplate = null;
+                try {
+                	
+                	lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, false, false, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Partner, realMsg.getBusinessPartnerType(), groupID);
+                	
+                	if(lakuPocketTemplate == null) {
+                		
+                		log.error("There is no laku pocket configured for the Partner type and group");
+						isError = true;
+                		errDescription.append("There is no Laku pocket configured for this Partner type and group<br/>" );
+                		
+					} else {
+						
+                		String lakuPocketCardPan = pocketService.generateLakupandia16DigitCardPAN(subscriberMdn.getMDN());
+                		lakuPocket = pocketService.createPocket(lakuPocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, lakuPocketCardPan);
+                		log.info("Default collector pocket Id --> " + lakuPocket.getID());
+                	}
+                	
+				} catch (Exception e1) {
+					
+					log.info("Default Laku Pocket creation is failed for the Partner --> " + partner.getID());
+					isError = true;
+					errDescription.append("Default Laku Pocket creation failed for the Partner<br/>");
 				}
                 
                 

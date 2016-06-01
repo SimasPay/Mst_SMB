@@ -161,37 +161,75 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
 		Pocket bankPocket = null;
 		Pocket emoneyPocket = null;
+		Pocket lakuPocket = null;
 		KYCLevel kyclevel=kycLevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
 		
 		Long groupID = null;
 		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
-		if(subscriberGroups != null && !subscriberGroups.isEmpty())
-		{
+		if(subscriberGroups != null && !subscriberGroups.isEmpty()) {
+			
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroup().getID();
 		}
-		PocketTemplate emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_SVA, subscriber.getType(), partner.getBusinessPartnerType(), groupID);	
-		if(emoneyPocketTemplate == null) {
-         	log.info("Valid emoneyPocketTemplate not found" + realMsg.getPartnerID());
-            errorMsg.setErrorDescription(MessageText._("Valid emoneyPocketTemplate not found"));
+		
+		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
+		
+		PocketTemplate emoneyPocketTemplate = null;
+		PocketTemplate lakuPocketTemplate = null;
+		
+		if(isEMoneyPocketRequired == true){
+		
+			emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_SVA, subscriber.getType(), partner.getBusinessPartnerType(), groupID);
+			
+			if(emoneyPocketTemplate == null) {
+	         	log.info("Valid emoneyPocketTemplate not found" + realMsg.getPartnerID());
+	            errorMsg.setErrorDescription(MessageText._("Valid emoneyPocketTemplate not found"));
+	            errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+	            return errorMsg;
+	         }
+			
+			emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(),emoneyPocketTemplate.getID());
+		}
+		
+        bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+        
+        lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_LakuPandai, subscriber.getType(), partner.getBusinessPartnerType(), groupID);
+		
+		if(lakuPocketTemplate == null) {
+         	log.info("Valid lakuPocketTemplate not found" + realMsg.getPartnerID());
+            errorMsg.setErrorDescription(MessageText._("Valid lakuPocketTemplate not found"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
          }
-		emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(),emoneyPocketTemplate.getID());
-        bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
        
         log.info("Admin action -- " + realMsg.getAdminAction()+" for PartnerID"+realMsg.getPartnerID());
         
+        lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
+        
         if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
-        	if(emoneyPocket== null||
-        			!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-        			emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
-             	log.info("valid emoney pocket not found" + realMsg.getPartnerID());
-                 errorMsg.setErrorDescription(MessageText._("valid emoney pocket not found"));
+        	
+    		if(isEMoneyPocketRequired == true){
+        	
+    			if(emoneyPocket== null||
+	        			!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
+	        			emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+	             	log.info("valid emoney pocket not found" + realMsg.getPartnerID());
+	                 errorMsg.setErrorDescription(MessageText._("valid emoney pocket not found"));
+	                 errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+	                 return errorMsg;
+	             }
+    		}
+    		
+    		if(lakuPocket == null||
+        			!(lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
+        			lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+             	log.info("valid laku pocket not found" + realMsg.getPartnerID());
+                 errorMsg.setErrorDescription(MessageText._("valid laku pocket not found"));
                  errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                  return errorMsg;
              }
-             if(bankPocket== null||
+    		
+            if(bankPocket== null||
          			!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
          					bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))
          					||bankPocket.getCardPAN()==null){
@@ -218,7 +256,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     		subscriberDao.save(subscriber);
     		subscriberMdnDao.save(subscriberMDN);
     		partnerDAO.save(partner);
-    		Integer response = updatePockets(subscriber, emoneyPocket,bankPocket, realMsg.getAdminAction());
+    		Integer response = updatePockets(subscriber, emoneyPocket,bankPocket, realMsg.getAdminAction(), lakuPocket);
 			if (!SubscriberSyncErrors.Success.equals(response)) {
 				log.info(SubscriberSyncErrors.errorCodesMap.get(response)+ realMsg.getPartnerID());
 				errorMsg.setErrorDescription(MessageText._(SubscriberSyncErrors.errorCodesMap.get(response)));
@@ -299,19 +337,24 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     }
 
 
-	private Integer updatePockets(Subscriber subscriber, Pocket emoneyPocket,
-			Pocket bankPocket, Integer adminAction) {
+	private Integer updatePockets(Subscriber subscriber, Pocket emoneyPocket, Pocket bankPocket, Integer adminAction, Pocket lakuPocket) {
+		
 		if(emoneyPocket!=null){
-		emoneyPocket.setStatus(subscriber.getStatus());
-		pocketDao.save(emoneyPocket);
+		
+			emoneyPocket.setStatus(subscriber.getStatus());
+			pocketDao.save(emoneyPocket);
 		}
+		
+		if(lakuPocket!=null){
+			
+			lakuPocket.setStatus(subscriber.getStatus());
+			pocketDao.save(lakuPocket);
+		}
+		
 		if (bankPocket != null) {			
 			bankPocket.setStatus(subscriber.getStatus());
 			pocketDao.save(bankPocket);
 		}
 		return SubscriberSyncErrors.Success;
-
 	}
-
-
 }
