@@ -45,7 +45,8 @@ mFino.page.subscriber = function(config){
     var detailsForm = new mFino.widget.SubscriberDetails(config);
 
     var searchBox = new mFino.widget.SubscriberSearchForm(Ext.apply({
-        height : 255
+        height : 255,
+        autoScroll:true
     }, config));
 
     var checkBalanceWindow = new mFino.widget.CheckBalanceSubscriber(Ext.apply({

@@ -82,6 +82,34 @@ mFino.widget.SubscriberSearchForm = function (config) {
         }
         },
         {
+            xtype : "combo",
+            anchor : '98%',
+            labelSeparator : '',
+            fieldLabel :_('KYC'),
+            emptyText : _('<select one..>'),
+            store : new FIX.FIXStore("fix.htm",CmFinoFIX.message.JSKYCCheck),
+            displayField: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
+            valueField : CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name,
+            name: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
+            triggerAction: 'all',
+            listeners: {
+                select: function(field) {
+                	var kyc= field.getValue();
+                	if(kyc === 0) {
+                		Ext.MessageBox.alert(_("Alert"), _("Subscriber with NoKyc is not allowed to create"));
+                		field.clearValue();
+                		return;
+                	}
+                	
+                	var kf_combo = Ext.getCmp("sub.form.kycfield");
+                	kf_combo.store.reload({
+        				params: {KYCFieldsLevelID : kyc },
+        				callback:function(){}
+        			});
+                }
+            }
+        },
+        {
             xtype : "enumdropdown",
             fieldLabel: _('Status'),
             labelSeparator : '',
@@ -93,7 +121,24 @@ mFino.widget.SubscriberSearchForm = function (config) {
             listeners   : {
                 specialkey: this.enterKeyHandler.createDelegate(this)
             }
-            }
+          },
+          {
+          	xtype : "combo",
+              itemId : 'sub.form.kycfield',
+              id : 'sub.form.kycfield',
+              hidden:true,
+              lastQuery: '',
+              store : new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSKYCCheckFields),
+              displayField: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsName._name,
+              valueField : CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name,            
+              name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name,
+              listeners: {
+                  reload: function(field) {
+                  	var kf_combo = Ext.getCmp("sub.form.kycfield");
+                  	alert("      "+kf_combo.store.getCount());
+                  	                            }
+              		}
+           }
         ]
     });
 

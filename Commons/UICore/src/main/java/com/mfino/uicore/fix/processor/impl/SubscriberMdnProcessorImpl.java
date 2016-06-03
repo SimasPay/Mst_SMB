@@ -1535,6 +1535,12 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if (StringUtils.isEmpty(realMsg.getExactMDNSearch())) {
 				query.setAssociationOrdered(true);
 			}
+			
+			if(StringUtils.isNotEmpty(realMsg.getKYCLevelName())) {
+				
+				query.setKycLevelName(realMsg.getKYCLevelName());
+			}
+			
 			if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {
 				User user = userService.getCurrentUser();
 				Set<BankAdmin> admins = user.getBankAdminFromUserID();

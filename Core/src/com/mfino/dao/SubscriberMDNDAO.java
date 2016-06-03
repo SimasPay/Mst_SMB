@@ -22,8 +22,10 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 
 import com.mfino.constants.DAOConstants;
+import com.mfino.dao.query.KYCLevelQuery;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.KYCLevel;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
@@ -87,23 +89,32 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             String countString = "select count(distinct mdn)";
             String mdnString = "select distinct mdn";
             String orderString = " order by mdn";
-            String queryString = " from Subscriber s, SubscriberMDN mdn, Pocket p, PocketTemplate pt where s.id = mdn.Subscriber and mdn.id=p.SubscriberMDNByMDNID and pt.id=p.PocketTemplate and pt.BankCode= :bankcode";
-
+            StringBuffer queryString = new StringBuffer();
+            
+            queryString.append(" from Subscriber s, SubscriberMDN mdn, Pocket p, PocketTemplate pt, KYCLevel k ");
+            queryString.append("where s.id = mdn.Subscriber and mdn.id=p.SubscriberMDNByMDNID and pt.id=p.PocketTemplate and pt.BankCode= :bankcode");
+            
             if (StringUtils.isNotBlank(query.getFirstName())) {
-                queryString = queryString +" and s.FirstName = :firstName";
+            	queryString.append(" and s.FirstName = :firstName");
             }
             if (StringUtils.isNotBlank(query.getLastName())) {
-                queryString = queryString +" and s.LastName = :lastName";
+            	queryString.append(" and s.LastName = :lastName");
             }
             if (StringUtils.isNotBlank(query.getMdn())) {
-                queryString = queryString +" and mdn.MDN = :mdn";
+            	queryString.append(" and mdn.MDN = :mdn");
             }
             if (query.getStartRegistrationDate() != null) {
-                queryString = queryString + " and mdn.CreateTime >= :startTime";
+            	queryString.append(" and mdn.CreateTime >= :startTime");
             }
             if (query.getEndRegistrationDate() != null) {
-                queryString = queryString + " and mdn.CreateTime < :endTime";
+            	queryString.append(" and mdn.CreateTime < :endTime");
             }
+            
+            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+        		
+            	queryString.append(" and k.KYCLevelName = :kycLevelName and s.KYCLevel = k.KYCLevel");
+            }
+            
             // This query is for getting total number of results i.e count(distinct mdn)
             Query newQuery = getSession().createQuery(countString + queryString + orderString); // .addEntity("SubscriberMDN", SubscriberMDN.class);
             newQuery.setInteger("bankcode", query.getBankCode());
@@ -122,6 +133,11 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             }
             if (query.getEndRegistrationDate() != null) {
                 newQuery.setTimestamp("endTime", query.getEndRegistrationDate());
+            }
+            
+            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            	
+                newQuery.setString("kycLevelName", query.getKycLevelName());
             }
 
 //            Integer count = (Integer) newQuery.uniqueResult();
@@ -161,6 +177,12 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
                 newQuery.setFirstResult(query.getStart());
                 newQuery.setMaxResults(query.getLimit());
             }
+            
+            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            	
+                newQuery.setString("kycLevelName", query.getKycLevelName());
+            }
+            
             @SuppressWarnings("unchecked")
             List<SubscriberMDN> list = newQuery.list();
             return list;
@@ -216,23 +238,42 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
         if (null != statusNE) {
             criteria.add(Restrictions.ne(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, statusNE));
         }
-
+        
+        KYCLevel kycLevel = null;
+        if(StringUtils.isNotBlank(query.getKycLevelName())) {
+        	
+        	KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
+        	
+        	KYCLevelQuery kycQuery = new KYCLevelQuery();
+        	kycQuery.set_KycLevelName(query.getKycLevelName());
+        	
+        	List<KYCLevel> kycResults = kycLevelDao.get(kycQuery);
+        	
+        	if(kycResults != null && kycResults.size() > 0) {
+        		
+        		kycLevel = kycResults.get(0);
+        	}
+        }
+        
         final String subcriberTableNameAlias = SUBSCRIBER_TABLE_NAME + DAOConstants.ALIAS_SUFFIX;
         final String firstNameWithAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_FirstName;
         final String lastNameWithAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_LastName;
         final String companyIDAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_Company;
         final String onlySubscribersAlias = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_SubscriberType;
         final String subscriberState = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_UpgradeState;
+        final String kycLevelAlias = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_KYCLevelByKYCLevel;
+        
         criteria.createAlias(SUBSCRIBER_TABLE_NAME, subcriberTableNameAlias);
         processColumn(query, CmFinoFIX.CRSubscriber.FieldName_FirstName, firstNameWithAlias);
         processColumn(query, CmFinoFIX.CRSubscriber.FieldName_LastName, lastNameWithAlias);
         processColumn(query, CmFinoFIX.CRSubscriber.FieldName_Company, companyIDAlias);
         processColumn(query, CmFinoFIX.CRSubscriber.FieldName_SubscriberType, onlySubscribersAlias);
         processColumn(query, CmFinoFIX.CRSubscriber.FieldName_UpgradeState, subscriberState);
+        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_KYCLevel, kycLevelAlias);
        
         if (query.getFirstName() != null || query.getLastName() != null 
         		|| query.getCompany() != null || query.isOnlySubscribers()
-        		|| query.getState()!=null) {
+        		|| query.getState()!=null || StringUtils.isNotBlank(query.getKycLevelName())) {
 
             //criteria.createAlias(SUBSCRIBER_TABLE_NAME, subcriberTableNameAlias);
 
@@ -253,6 +294,11 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             }
             if(query.getState()!=null){
             	criteria.add(Restrictions.eq(subscriberState, query.getState()));
+            }
+            
+            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            	
+            	criteria.add(Restrictions.eq(kycLevelAlias, kycLevel));
             }
         }
         if(StringUtils.isNotBlank(query.getAccountNumber())){
@@ -276,7 +322,8 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
 				&& query.getStartRegistrationDate() == null
 				&& query.getEndRegistrationDate() == null
 				&& StringUtils.isBlank(query.getAccountNumber())
-				&& query.getStatusEQ() == null) {
+				&& query.getStatusEQ() == null
+				&& StringUtils.isBlank(query.getKycLevelName())) {
             // If we reach here then we have Default Search.
             // For paging use the processPaging locally without the use of inner
             // join.

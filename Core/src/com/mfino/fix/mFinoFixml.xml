@@ -780,6 +780,8 @@
 			<field name="SubscriberSearch" required="N" />
 			<field name="UpgradeStateSearch" required="N" />
 			<field name="MDNStatus" required="N" />
+			<field name="KYCFieldsLevelID" required="N"/>
+			<field name="KYCLevelName" required="N"/>
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="MDNID" id="ID" required="N" />
 				<field name="SubscriberID" required="N" />

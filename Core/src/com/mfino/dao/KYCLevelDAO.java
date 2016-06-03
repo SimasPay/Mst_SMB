@@ -23,9 +23,16 @@ public class KYCLevelDAO extends BaseDAO<KYCLevel> {
         if (query.getKycLevel() != null) {
             criteria.add(Restrictions.eq(CmFinoFIX.CRKYCLevel.FieldName_KYCLevel, query.getKycLevel()));
         }
-         processBaseQuery(query, criteria);
-         List<KYCLevel> results = criteria.list();
-         return results;
+        
+        if (query.getKycLevelName() != null) {
+        	
+            criteria.add(Restrictions.eq(CmFinoFIX.CRKYCLevel.FieldName_KYCLevelName, query.getKycLevelName()));
+        }
+        
+        processBaseQuery(query, criteria);
+        List<KYCLevel> results = criteria.list();
+        
+        return results;
 	}
 
 	public KYCLevel getByKycLevel(Long kyclevel) {
