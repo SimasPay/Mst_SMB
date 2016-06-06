@@ -144,7 +144,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		if (subMDN != null) {
 			
 			Pocket destPocket = null;	
-			destPocket = pocketService.getDefaultPocket(subMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+			destPocket = pocketService.getDefaultPocket(subMDN, String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 			
 			if(null != destPocket) {
 			
