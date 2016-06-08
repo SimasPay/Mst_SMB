@@ -742,6 +742,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 
 			if((null != realMsg.getTradeNameSearch()) && !("".equals(realMsg.getTradeNameSearch()))){
 				partnerQuery.setTradeName(realMsg.getTradeNameSearch());
+				partnerQuery.setPartnerCodeLike(Boolean.TRUE);
 			}
 			if((null != realMsg.getAuthorizedEmailSearch()) && !("".equals(realMsg.getAuthorizedEmailSearch()))){
 				partnerQuery.setAuthorizedEmail(realMsg.getAuthorizedEmailSearch());
