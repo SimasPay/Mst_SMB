@@ -1536,9 +1536,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				query.setAssociationOrdered(true);
 			}
 			
-			if(StringUtils.isNotEmpty(realMsg.getKYCLevelName())) {
+			if(null != realMsg.getKYCFieldsLevelID()) {
 				
-				query.setKycLevelName(realMsg.getKYCLevelName());
+				query.setKycLevelId(realMsg.getKYCFieldsLevelID());
 			}
 			
 			if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {

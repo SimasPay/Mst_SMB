@@ -87,25 +87,24 @@ mFino.widget.SubscriberSearchForm = function (config) {
             labelSeparator : '',
             fieldLabel :_('KYC'),
             emptyText : _('<select one..>'),
+            addEmpty : false,
             store : new FIX.FIXStore("fix.htm",CmFinoFIX.message.JSKYCCheck),
             displayField: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
             valueField : CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name,
             name: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
             triggerAction: 'all',
             listeners: {
-                select: function(field) {
-                	var kyc= field.getValue();
+                select: function(field,record) {
+                	var KYCLevel = record.get(CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name);
+                	/*var kyc= field.getValue();
                 	if(kyc === 0) {
                 		Ext.MessageBox.alert(_("Alert"), _("Subscriber with NoKyc is not allowed to create"));
                 		field.clearValue();
                 		return;
-                	}
+                	}*/
                 	
                 	var kf_combo = Ext.getCmp("sub.form.kycfield");
-                	kf_combo.store.reload({
-        				params: {KYCFieldsLevelID : kyc },
-        				callback:function(){}
-        			});
+                	kf_combo.setValue(KYCLevel)
                 }
             }
         },
@@ -123,22 +122,11 @@ mFino.widget.SubscriberSearchForm = function (config) {
             }
           },
           {
-          	xtype : "combo",
-              itemId : 'sub.form.kycfield',
-              id : 'sub.form.kycfield',
-              hidden:true,
-              lastQuery: '',
-              store : new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSKYCCheckFields),
-              displayField: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsName._name,
-              valueField : CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name,            
-              name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name,
-              listeners: {
-                  reload: function(field) {
-                  	var kf_combo = Ext.getCmp("sub.form.kycfield");
-                  	alert("      "+kf_combo.store.getCount());
-                  	                            }
-              		}
-           }
+            	xtype : "hidden",
+                itemId : 'sub.form.kycfield',
+                id : 'sub.form.kycfield',
+                name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name
+          }
         ]
     });
 
@@ -170,6 +158,7 @@ Ext.extend(mFino.widget.SubscriberSearchForm, Ext.FormPanel, {
 
     searchHandler : function(){
         if(this.getForm().isValid()){
+        	
             var values = this.getForm().getValues();
             var currdatetime= new Date();
             var edate1=values.endDate;
@@ -194,3 +183,4 @@ Ext.extend(mFino.widget.SubscriberSearchForm, Ext.FormPanel, {
         this.getForm().reset();
     }
 });
+Ext.reg("subscribersearchform", mFino.widget.SubscriberSearchForm);

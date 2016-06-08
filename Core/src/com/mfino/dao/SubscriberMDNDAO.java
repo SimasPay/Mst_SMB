@@ -110,9 +110,9 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             	queryString.append(" and mdn.CreateTime < :endTime");
             }
             
-            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            if(null != query.getKycLevelId()) {
         		
-            	queryString.append(" and k.KYCLevelName = :kycLevelName and s.KYCLevel = k.KYCLevel");
+            	queryString.append(" and k.KYCLevel = :kycLevel and s.KYCLevel = k.KYCLevel");
             }
             
             // This query is for getting total number of results i.e count(distinct mdn)
@@ -135,9 +135,9 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
                 newQuery.setTimestamp("endTime", query.getEndRegistrationDate());
             }
             
-            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            if(null != query.getKycLevelId()) {
             	
-                newQuery.setString("kycLevelName", query.getKycLevelName());
+                newQuery.setLong("kycLevel", query.getKycLevelId());
             }
 
 //            Integer count = (Integer) newQuery.uniqueResult();
@@ -178,9 +178,9 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
                 newQuery.setMaxResults(query.getLimit());
             }
             
-            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            if(null != query.getKycLevelId()) {
             	
-                newQuery.setString("kycLevelName", query.getKycLevelName());
+                newQuery.setLong("kycLevel", query.getKycLevelId());
             }
             
             @SuppressWarnings("unchecked")
@@ -240,12 +240,13 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
         }
         
         KYCLevel kycLevel = null;
-        if(StringUtils.isNotBlank(query.getKycLevelName())) {
+        if(null != query.getKycLevelId()) {
         	
         	KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
         	
         	KYCLevelQuery kycQuery = new KYCLevelQuery();
-        	kycQuery.set_KycLevelName(query.getKycLevelName());
+        	kycQuery.setId(query.getKycLevelId());
+        	//kycQuery.set_KycLevel(query.getKycLevelId().intValue());
         	
         	List<KYCLevel> kycResults = kycLevelDao.get(kycQuery);
         	
@@ -273,7 +274,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
        
         if (query.getFirstName() != null || query.getLastName() != null 
         		|| query.getCompany() != null || query.isOnlySubscribers()
-        		|| query.getState()!=null || StringUtils.isNotBlank(query.getKycLevelName())) {
+        		|| query.getState()!=null || null != query.getKycLevelId()) {
 
             //criteria.createAlias(SUBSCRIBER_TABLE_NAME, subcriberTableNameAlias);
 
@@ -296,7 +297,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             	criteria.add(Restrictions.eq(subscriberState, query.getState()));
             }
             
-            if(StringUtils.isNotBlank(query.getKycLevelName())) {
+            if(null != query.getKycLevelId()) {
             	
             	criteria.add(Restrictions.eq(kycLevelAlias, kycLevel));
             }
@@ -323,7 +324,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
 				&& query.getEndRegistrationDate() == null
 				&& StringUtils.isBlank(query.getAccountNumber())
 				&& query.getStatusEQ() == null
-				&& StringUtils.isBlank(query.getKycLevelName())) {
+				&& query.getKycLevelId() == null) {
             // If we reach here then we have Default Search.
             // For paging use the processPaging locally without the use of inner
             // join.

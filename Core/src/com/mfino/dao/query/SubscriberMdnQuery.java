@@ -33,20 +33,20 @@ public class SubscriberMdnQuery extends BaseQuery{
     private Integer state;
     private String accountNumber;
     private Boolean isForceCloseRequested;
-    private String kycLevelName;
+    private Long kycLevelId;
     
     /**
-	 * @return the kycLevelName
+	 * @return the kycLevelId
 	 */
-	public String getKycLevelName() {
-		return kycLevelName;
+	public Long getKycLevelId() {
+		return kycLevelId;
 	}
 
 	/**
-	 * @param kycLevelName the kycLevelName to set
+	 * @param kycLevelId the kycLevelId to set
 	 */
-	public void setKycLevelName(String kycLevelName) {
-		this.kycLevelName = kycLevelName;
+	public void setKycLevelId(Long kycLevelId) {
+		this.kycLevelId = kycLevelId;
 	}
 
 	public Integer getBankCode() {
