@@ -99,7 +99,7 @@ public class ConversionToReversalRequestProcessor {
 			// get the transaction id from the NOISOResponse
 			reversalFixMsg.setTransactionID(responseFix.getTransactionID());
 			reversalFixMsg.setBankRetrievalReferenceNumber(reversalFixMsg.getTransactionID() + "");
-			reversalFixMsg.setBankCode(((CMMoneyTransferToBank) requestFixMsg).getBankCode());
+			//reversalFixMsg.setBankCode(((CMMoneyTransferToBank) requestFixMsg).getBankCode());
 
 			// Setting DestBankCode separately as it is not part of MoneyTransferToBank - Hence would not copy from original message
 			InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
@@ -110,7 +110,11 @@ public class ConversionToReversalRequestProcessor {
 			if(ibtList!=null && !ibtList.isEmpty()) {
 				//Only there should be one record for a given sctld
 				reversalFixMsg.setDestBankCode(ibtList.get(0).getDestBankCode());
-				reversalFixMsg.setBankCode(Integer.parseInt(ibtList.get(0).getDestBankCode()));
+				//reversalFixMsg.setBankCode(Integer.parseInt(ibtList.get(0).getDestBankCode()));
+				
+			} else {
+				
+				reversalFixMsg.setDestBankCode(String.valueOf(((CMMoneyTransferToBank) requestFixMsg).getBankCode()));
 			}
 			
 			constructAndSetDE3(reversalFixMsg);
