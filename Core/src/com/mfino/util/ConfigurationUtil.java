@@ -314,7 +314,12 @@ public class ConfigurationUtil {
 		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd"),
 		KTPServerURL("mfino.ktpserver.base.url","null"),
 		KTPServerTimeout("mfino.ktpserver.server.timeout","10000"),
-		CapitalizationAuthorizedEmail("mfino.capitalization.authorized.email","abc@abc.com");
+		CapitalizationAuthorizedEmail("mfino.capitalization.authorized.email","abc@abc.com"),
+		MailSesTransport("mfino.mail.transport.protocol", "aws"),
+		MailAwsUser("mfino.mail.aws.user", "AKIAIZW252ECC7BIJ5QQ"),
+		MailAwsSecret("mfino.mail.aws.password", "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"),
+		MailAwsFrom("mfino.mail.aws.from", "noreply@dimo.co.id"),
+		MailUseSmtp("mfino.mail.use.smtp", "true");
 		
 		private final String key;
 		private final String defaultValue;
@@ -1260,5 +1265,24 @@ public class ConfigurationUtil {
 	
 	public static String getCapitalizationAuthorizedEmail() {
 		return get(ConfigurationKey.CapitalizationAuthorizedEmail);
+	}
+	
+	public static String getMailSesTransport() {
+		return get(ConfigurationKey.MailSesTransport);
+	}
+	
+	public static String getMailAwsUser() {
+		return get(ConfigurationKey.MailAwsUser);
+	}
+	
+	public static String getMailAwsPassword() {
+		return get(ConfigurationKey.MailAwsSecret);
+	}
+
+	public static String getMailAwsFrom() {
+		return get(ConfigurationKey.MailAwsFrom);
+	}
+	public static boolean isUseSmtp() {
+		return getBoolean(ConfigurationKey.MailUseSmtp);
 	}
 }
