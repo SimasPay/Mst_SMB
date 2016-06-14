@@ -775,10 +775,21 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 			if (realMsg.getUpgradeStateSearch()!=null&&!realMsg.getUpgradeStateSearch().equals(CmFinoFIX.UpgradeStateSearch_All)) {
 				partnerQuery.setUpgradeStateSearch(realMsg.getUpgradeStateSearch());
 			}
-			 if (!CmFinoFIX.JSmFinoAction_Update.equals(realMsg.getmfinoaction())) {
+			
+			if (!CmFinoFIX.JSmFinoAction_Update.equals(realMsg.getmfinoaction())) {
 				 partnerQuery.setStart(realMsg.getstart());
 				 partnerQuery.setLimit(realMsg.getlimit());
-	            }
+	        }
+			
+			if (realMsg.getStartDateSearch() != null) {
+				
+				partnerQuery.setLastUpdateTimeGE(realMsg.getStartDateSearch());
+			}
+			
+			if (realMsg.getEndDateSearch() != null) {
+				
+				partnerQuery.setLastUpdateTimeLT(realMsg.getEndDateSearch());
+			}
 			
             List<Partner> results = partnerDao.get(partnerQuery);
             realMsg.allocateEntries(results.size());
