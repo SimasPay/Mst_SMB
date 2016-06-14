@@ -215,10 +215,10 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		
 		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
 			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
-				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER;
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER;
 			}
 			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
-				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER;
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2LTRANSFER;
 			}
 		}
 		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
@@ -226,7 +226,7 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
 			}
 			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
-				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER;
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER;
 			}
 		}		
 		
