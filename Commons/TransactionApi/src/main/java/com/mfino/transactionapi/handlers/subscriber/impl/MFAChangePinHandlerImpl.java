@@ -194,7 +194,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 			result.setMfaMode("None");
 			
 			result.setMfaMode("OTP");
-			mfaService.handleMFATransaction(sctl.getID(), changePin.getSourceMDN());
+			//mfaService.handleMFATransaction(sctl.getID(), changePin.getSourceMDN());
 			
 			if(sctl!=null){
 				transactionChargingService.saveServiceTransactionLog(sctl);

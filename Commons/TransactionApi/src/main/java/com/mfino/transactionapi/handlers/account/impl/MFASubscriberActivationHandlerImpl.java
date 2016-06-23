@@ -205,7 +205,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getID()) == true){
 			
 				result.setMfaMode("OTP");
-				mfaService.handleMFATransaction(sctl.getID(), subscriberActivation.getSourceMDN());
+				//mfaService.handleMFATransaction(sctl.getID(), subscriberActivation.getSourceMDN());
 			}
 			
 			if(sctl!=null){

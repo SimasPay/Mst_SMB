@@ -109,25 +109,23 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		
 		if(CollectionUtils.isEmpty(mfaResults)) {
 			
-			result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendFailed);
-			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MFAOTPResendFailed));
-			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+			mfaService.handleMFATransaction(sctlid, sourceMDN.getMDN());
+		
+		} else {
+		
+			MFAAuthentication mfaAuthentication = mfaResults.get(0);
 			
-			return result;
+			if(mfaAuthentication.getRetryAttempt() >= (noOfRetryAttemptsForMFAOTP - 1)) {
+				
+				result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts);
+				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts));
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+				
+				return result;
+			}
+			
+			mfaService.resendHandleMFATransaction(sctlid, resendMfaOtp.getSourceMDN(), mfaAuthentication.getRetryAttempt());
 		}
-		
-		MFAAuthentication mfaAuthentication = mfaResults.get(0);
-		
-		if(mfaAuthentication.getRetryAttempt() >= (noOfRetryAttemptsForMFAOTP - 1)) {
-			
-			result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts);
-			result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts));
-			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-			
-			return result;
-		}
-		
-		mfaService.resendHandleMFATransaction(sctlid, resendMfaOtp.getSourceMDN(), mfaAuthentication.getRetryAttempt());
 		
 		result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendSuccessfullyCompleted);
 		result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MFAOTPResendSuccessfullyCompleted));

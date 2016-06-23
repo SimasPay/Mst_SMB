@@ -38,7 +38,6 @@ import com.mfino.fix.CmFinoFIX.CMCashOutInquiry;
 import com.mfino.fix.CmFinoFIX.CMSubscriberCashOutInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.MFAService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
@@ -332,7 +331,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		if(transactionResponse.isResult()){
 			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHOUT, cc.getID()) == true){
 				result.setMfaMode("OTP");
-				mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
+				//mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
 			}
 		}
 		

@@ -237,7 +237,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction) {
 							
 								result.setMfaMode("OTP");
-								mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
+								//mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
 							}
 							
 							sendOTPSMS(subMDN,sctl.getID());

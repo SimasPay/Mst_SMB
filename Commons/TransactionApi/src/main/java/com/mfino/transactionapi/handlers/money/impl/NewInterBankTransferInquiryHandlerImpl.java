@@ -4,7 +4,6 @@
 package com.mfino.transactionapi.handlers.money.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +15,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.commons.hierarchyservice.HierarchyService;
-import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.InterbankCodesDao;
-import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.InterBankCodesQuery;
-import com.mfino.dao.query.MFSDenominationsQuery;
-import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.InterBankCode;
 import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
-import com.mfino.domain.MFSDenominations;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -311,7 +305,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		if(transactionResponse.isResult() == true){
 			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionTypeName(), cc.getID()) == true){
 				result.setMfaMode("OTP");
-				mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
+				//mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}
 		}
 		return result;

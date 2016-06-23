@@ -341,7 +341,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 		if(transactionResponse.isResult() == true){
 			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionTypeName(), cc.getID()) == true){
 				result.setMfaMode("OTP");
-				mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
+				//mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}
 		}
 		return result;

@@ -33,7 +33,6 @@ import com.mfino.fix.CmFinoFIX.CMAgentCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.MFAService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
@@ -309,7 +308,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		if(transactionResponse.isResult()){
 			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHIN, cc.getID()) == true){
 				result.setMfaMode("OTP");
-				mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
+				//mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
 			}
 		}
 		return result;

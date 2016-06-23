@@ -154,7 +154,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 			result.setMfaMode("None");
 			result.setMfaMode("OTP");
 
-			mfaService.handleMFATransaction(sctl.getID(), subscriberReactivation.getSourceMDN());
+			//mfaService.handleMFATransaction(sctl.getID(), subscriberReactivation.getSourceMDN());
 
 			if(sctl!=null){
 				transactionChargingService.saveServiceTransactionLog(sctl);
