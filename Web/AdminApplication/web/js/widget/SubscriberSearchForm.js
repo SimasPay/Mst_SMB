@@ -103,7 +103,7 @@ mFino.widget.SubscriberSearchForm = function (config) {
                 		return;
                 	}*/
                 	
-                	var kf_combo = Ext.getCmp("sub.form.kycfield");
+                	var kf_combo = Ext.getCmp("sub.form.kycfield.search");
                 	kf_combo.setValue(KYCLevel)
                 }
             }
@@ -123,8 +123,8 @@ mFino.widget.SubscriberSearchForm = function (config) {
           },
           {
             	xtype : "hidden",
-                itemId : 'sub.form.kycfield',
-                id : 'sub.form.kycfield',
+                itemId : 'sub.form.kycfield.search',
+                id : 'sub.form.kycfield.search',
                 name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name
           }
         ]
