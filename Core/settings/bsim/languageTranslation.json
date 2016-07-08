@@ -31,7 +31,11 @@
    "Donation" : "Donasi",   
    "Date" : "Tanggal",
    "Transactions" : "Transaksi",
-   "Amount" : "Jumlah"
+   "Amount" : "Jumlah",
+   "Begining Balance" : "Saldo Awal",
+   "Ending Balance" : "Saldo Akhir",
+   "Transaction Type" : "Jenis Transaksi"
+   
     },
  "0" : {
    "language" : "English",
@@ -65,6 +69,9 @@
    "Donation" : "Donation",
    "Date" : "Date",
    "Transactions" : "Transactions",
-   "Amount" : "Amount"
+   "Amount" : "Amount",
+   "Begining Balance" : "Begining Balance",
+   "Ending Balance" : "Ending Balance",
+   "Transaction Type" : "Transaction Type"
     }
 }

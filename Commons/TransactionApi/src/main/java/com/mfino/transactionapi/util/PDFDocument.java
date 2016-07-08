@@ -290,7 +290,7 @@ public class PDFDocument {
 	
 	private void addSubscriberDetailsSpecificToEmoneyTxnHistory(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket, BigDecimal openingBalance,BigDecimal endingBalance)
 	{
-		String currentBalance = "Ending balance";
+		String currentBalance = "Ending Balance";
 		String 	name = "Full Name";
 		String mdn = "No. Account";
 		String beginingBalance="Begining Balance";
@@ -312,10 +312,10 @@ public class PDFDocument {
 		currentBalanceVal += MfinoUtil.getNumberFormat().format(pocket.getCurrentBalance());
 					
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, name), nameVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, beginingBalance), "Rp. "+MfinoUtil.getNumberFormat().format(openingBalance));
+		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, beginingBalance), "Rp "+MfinoUtil.getNumberFormat().format(openingBalance));
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, mdn), txnDetails.getSourceMDN());
 //		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, currentBalance), currentBalanceVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, currentBalance), "Rp. "+MfinoUtil.getNumberFormat().format(endingBalance));
+		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, currentBalance), "Rp "+MfinoUtil.getNumberFormat().format(endingBalance));
 		
 		
 	}
@@ -359,9 +359,9 @@ public class PDFDocument {
 			addSubscriberDetailsSpecificToEmoneyTxnHistory(txnDetails, subscriberMDN, pocket,openingBalance,endingBalance);	
 		}
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, period), periodVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, totalCredit),MfinoUtil.getNumberFormat().format(totalCrediAmount));
+		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, totalCredit),"Rp " + MfinoUtil.getNumberFormat().format(totalCrediAmount));
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, date), dateVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, totalDetbilt), MfinoUtil.getNumberFormat().format(totalDebitAmount));
+		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, totalDetbilt), "Rp " + MfinoUtil.getNumberFormat().format(totalDebitAmount));
 		
 		addEmptyCellToSubscriberDetailsTable(this.table, 2, 10.0f);
 		addEmptyCellToSubscriberDetailsTable(this.table, 4, 10.0f);
@@ -425,6 +425,7 @@ public class PDFDocument {
 	}
 	public void addSubscriberDetailsTable(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket,BigDecimal totalCreditAmount,BigDecimal totalDebitAmount,BigDecimal openingBalance,BigDecimal endingBalance)throws IOException, DocumentException 
 	{
+		language = subscriberMDN.getSubscriber().getLanguage();
 		
 //		addSubscriberDetailsHeader(txnDetails, subscriberMDN, pocket);
 		addOtherSubscriberDetails(txnDetails, subscriberMDN, pocket,totalCreditAmount,totalDebitAmount,openingBalance,endingBalance);

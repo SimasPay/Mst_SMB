@@ -407,7 +407,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		PDFDocument pdfDocument = new PDFDocument(file, txnDetails.getSourcePIN());
 		
 		//String headerRow = "Tanggal | Transaksi | Jumlah";
-		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transaction type") + " | " + LanguageTranslator.translate(language, "Amount(dalam Rp)");
+		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transaction Type") + " | " + LanguageTranslator.translate(language, "Amount") + "(dalam Rp)";
 		pdfDocument.addLogo();
 		
 		pdfDocument.addHeaderRow(headerRow);
