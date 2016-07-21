@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +40,7 @@ import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LoginXMLResult;
 import com.mfino.transactionapi.service.AppTypeCheckService;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 
 @Service("LoginHandlerImpl")
@@ -219,7 +221,42 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					}
 				}
 			}
-
+			
+			String configuredStrDate = systemParametersService.getString(SystemParameterKeys.DATE_TO_EXPIRE_MOBILE_APP_PIN);
+			
+			if(StringUtils.isNotBlank(configuredStrDate)) {
+			
+				Date configureDate = DateUtil.getDate(configuredStrDate);
+				Date currentDate = new Date();
+				
+				if(configureDate.before(currentDate)) {
+					
+					Timestamp lastAppPinChange = srcSubscriberMDN.getLastAppPinChange();
+					if(null != lastAppPinChange) {
+						
+						if(lastAppPinChange.before(configureDate)) {
+							
+							log.info("Subscriber is forced to change the Pin");
+							result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+							result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+							return result;
+						}
+						
+					} else {
+						
+						log.info("Subscriber is forced to change the Pin");
+						result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+						result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+						return result;
+					}
+				}
+			}
+			
+			/*if(srcSubscriberMDN.getSubscriber().getDateOfBirth() == null) {
+				
+				getDateOfBirthOfCustomer
+			}*/
+			
 			log.info("generating salt, aes key");
 			byte[] salt = CryptographyService.generateSalt();
 			byte[] aesKey = KeyService.generateAESKey();
@@ -277,6 +314,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 
 		return result;
 	}
+	
+	
 
 	private void recalculateWrongPinCounts(SubscriberMDN mdn, LoginXMLResult result) {
 		int wrongPinCount = systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT);

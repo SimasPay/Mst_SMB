@@ -5536,6 +5536,7 @@
 			<field name="UserAPIKey" required="N"/>
 			<field name="OtpRetryCount" required="N" />
 			<field name="CashinFirstTimeID" required="N" />
+			<field name="LastAppPinChange" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -22247,6 +22248,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="ForceUpgradeAppForUsers" enum="2177">
+				<C1>
+					<English>
+						<SMS>
+							<Text>A new vesion of App is available so upgrade the App.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -25809,6 +25819,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8197" name="TippingAmount" type="Amount" />
 	<field number="8198" name="PointsRedeemed" type="RecordID" />
 	<field number="8199" name="AmountRedeemed" type="Amount" />
+	<field number="8200" name="LastAppPinChange" type="UTCTIMESTAMP" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

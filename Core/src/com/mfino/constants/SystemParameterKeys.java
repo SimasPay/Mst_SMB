@@ -118,4 +118,5 @@ public class SystemParameterKeys {
 	public static final String UANGKU_IBT_BILLER_CODE = "uangku.ibt.biller.code";
 	
 	public static final String TRANSFER_TO_UANGKU_PREFIX_NUMBER = "transfer.to.uangku.prefix.number";
+	public static final String DATE_TO_EXPIRE_MOBILE_APP_PIN = "date.to.expire.mobile.app.pin";
 }
