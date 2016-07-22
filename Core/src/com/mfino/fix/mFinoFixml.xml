@@ -22257,6 +22257,24 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="SequenceNumberAsPin" enum="2178">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Please don't use sequence numbers as your mPIN.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="SameNumbersAsPin" enum="2179">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Please don't use same numbers as your mPIN.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

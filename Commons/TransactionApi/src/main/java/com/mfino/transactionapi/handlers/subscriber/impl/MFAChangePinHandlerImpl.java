@@ -24,6 +24,7 @@ import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMChangePin;
 import com.mfino.handlers.FIXMessageHandler;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
@@ -141,11 +142,26 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		}
 		
 		log.info("checking for new pin strength for subscribermdn "+changePin.getSourceMDN() );
-		if(!MfinoUtil.isPinStrongEnough(changePin.getNewPin())){
+		/*if(!MfinoUtil.isPinStrongEnough(changePin.getNewPin())){
 		   log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() );
 		   result.setNotificationCode(CmFinoFIX.NotificationCode_PinNotStrongEnough);
 			return result;
+		}*/
+		
+		if(MfinoUtil.containsSequenceOfDigits(changePin.getNewPin())){
+			
+			log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for sequence of digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+			return result;
+			
+		} else if(MfinoUtil.containsRepetitiveDigits(changePin.getNewPin())){
+			
+			log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for repetitive digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+			return result;
+			
 		}
+		
 		log.info("Pin passed strength conditions");
 		}
 		else
@@ -220,6 +236,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 			srcSubscriberMDN.setDigestedPIN(calcPIN);
 			String authToken = MfinoUtil.calculateAuthorizationToken(changePin.getSourceMDN(), changePin.getNewPin());
 			srcSubscriberMDN.setAuthorizationToken(authToken);
+			srcSubscriberMDN.setLastAppPinChange(new Timestamp());
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 		}
 		catch (Exception ex) {
