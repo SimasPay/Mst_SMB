@@ -62,6 +62,9 @@ public class MFAServiceImpl implements MFAService{
 		return false;
 	}
 	
+	/**
+	 * Since the message for Bahasa and English is same, we dont need to get user's language.
+	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public void handleMFATransaction(Long sctlID, String sourceMDN){
 		log.info("MFAService::handleMFATransaction Begin");
@@ -75,17 +78,11 @@ public class MFAServiceImpl implements MFAService{
 		
 		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
 		authDAO.save(mfaAuth);
-							
-		SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN smdn = smdnDAO.getByMDN(sourceMDN);
-		Integer subLang = smdn.getSubscriber().getLanguage();
-		String message = null;
-		if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
-			message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
-		}
-		else {
-			message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
-		}
+		
+		String message = "Your Simobi Code is "
+				+ oneTimePin+ "(ref no: "+ sctlID
+				+ "). WASPADAI PENIPUAN! JANGAN berikan kode ini kepada siapapun! Bank Sinarmas CARE 1500153";
+		
 		smsService.setDestinationMDN(sourceMDN);
 		smsService.setMessage(message);
 		smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
