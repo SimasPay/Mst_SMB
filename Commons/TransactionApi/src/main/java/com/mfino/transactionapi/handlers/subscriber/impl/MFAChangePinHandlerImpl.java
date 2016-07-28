@@ -130,43 +130,44 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		 * no need of these validations when using hashed pin since pin would be 
 		 * generated from the hash and it bound be correct length
 		 */ 
-		if(!ConfigurationUtil.getuseHashedPIN())
-		{
-		if (changePin.getNewPin().length() != systemParametersService.getPinLength()) {
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ChangeEPINFailedInvalidPINLength);
-			return result;
-		}
-		if (!StringUtils.isNumeric(changePin.getNewPin())) {
-			result.setNotificationCode(CmFinoFIX.NotificationCode_OnlyNumericPinAllowed);
-			return result;
-		}
-		
-		log.info("checking for new pin strength for subscribermdn "+changePin.getSourceMDN() );
-		/*if(!MfinoUtil.isPinStrongEnough(changePin.getNewPin())){
-		   log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() );
-		   result.setNotificationCode(CmFinoFIX.NotificationCode_PinNotStrongEnough);
-			return result;
-		}*/
-		
-		if(MfinoUtil.containsSequenceOfDigits(changePin.getNewPin())){
+		if(!ConfigurationUtil.getuseHashedPIN()) {
 			
-			log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for sequence of digits");
-			result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
-			return result;
+			if (changePin.getNewPin().length() != systemParametersService.getPinLength()) {
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ChangeEPINFailedInvalidPINLength);
+				return result;
+			}
+			if (!StringUtils.isNumeric(changePin.getNewPin())) {
+				result.setNotificationCode(CmFinoFIX.NotificationCode_OnlyNumericPinAllowed);
+				return result;
+			}
 			
-		} else if(MfinoUtil.containsRepetitiveDigits(changePin.getNewPin())){
+			/*if(!MfinoUtil.isPinStrongEnough(changePin.getNewPin())){
+			   log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() );
+			   result.setNotificationCode(CmFinoFIX.NotificationCode_PinNotStrongEnough);
+				return result;
+			}*/
 			
-			log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for repetitive digits");
-			result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
-			return result;
+		} else {
 			
-		}
-		
-		log.info("Pin passed strength conditions");
-		}
-		else
-		{
 			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
+			
+			log.info("checking for new pin strength for subscribermdn "+changePin.getSourceMDN() );
+			
+			if(MfinoUtil.containsSequenceOfDigits(changePin.getNewPin())){
+				
+				log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for sequence of digits");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+				return result;
+				
+			} else if(MfinoUtil.containsRepetitiveDigits(changePin.getNewPin())){
+				
+				log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for repetitive digits");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+				return result;
+				
+			}
+			
+			log.info("Pin passed strength conditions");
 		}
 		if (changePin.getOldPin().equals(changePin.getNewPin())) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ChangeEPINFailedIndenticalCurrentPINEntered);
