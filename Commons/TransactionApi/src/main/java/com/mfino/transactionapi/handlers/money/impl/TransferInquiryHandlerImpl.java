@@ -187,7 +187,7 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		}
 		else {
 			
-			if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+			/*if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
 				
 				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 				
@@ -195,9 +195,19 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 				
 				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
 				
-			} 
-
-			destPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
+			}*/
+			
+			destPocket = pocketService.getDefaultPocket(destinationMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+			
+			if(null != destPocket) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			} else {
+				
+				destPocket = pocketService.getDefaultPocket(destinationMDN, String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+			}
 		}
 		
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
