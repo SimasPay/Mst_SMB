@@ -222,6 +222,26 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				}
 			}
 			
+			log.info("generating salt, aes key");
+			byte[] salt = CryptographyService.generateSalt();
+			byte[] aesKey = KeyService.generateAESKey();
+			String hexEncodedKey = new String(CryptographyService.binToHex(aesKey));
+
+			log.info("recalculating channelsession management data");
+			ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getID());
+			if (csm == null)
+				csm = new ChannelSessionManagement();
+			csm.setSubscriberMDNByMDNID(srcSubscriberMDN);
+			csm.setCreatedBy("System");
+			csm.setCreateTime(tLog.getTransactionTime());
+			csm.setLastLoginTime(tLog.getTransactionTime());
+			csm.setLastUpdateTime(tLog.getTransactionTime());
+			csm.setLastRequestTime(tLog.getTransactionTime());
+			csm.setRequestCountAfterLogin(0);
+			csm.setSessionKey(hexEncodedKey);
+			channelSessionManagementService.saveCSM(csm);
+			log.info("channelsessionmanagement data saved");
+			
 			String configuredStrDate = systemParametersService.getString(SystemParameterKeys.DATE_TO_EXPIRE_MOBILE_APP_PIN);
 			
 			if(StringUtils.isNotBlank(configuredStrDate)) {
@@ -251,31 +271,6 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					}
 				}
 			}
-			
-			/*if(srcSubscriberMDN.getSubscriber().getDateOfBirth() == null) {
-				
-				getDateOfBirthOfCustomer
-			}*/
-			
-			log.info("generating salt, aes key");
-			byte[] salt = CryptographyService.generateSalt();
-			byte[] aesKey = KeyService.generateAESKey();
-			String hexEncodedKey = new String(CryptographyService.binToHex(aesKey));
-
-			log.info("recalculating channelsession management data");
-			ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getID());
-			if (csm == null)
-				csm = new ChannelSessionManagement();
-			csm.setSubscriberMDNByMDNID(srcSubscriberMDN);
-			csm.setCreatedBy("System");
-			csm.setCreateTime(tLog.getTransactionTime());
-			csm.setLastLoginTime(tLog.getTransactionTime());
-			csm.setLastUpdateTime(tLog.getTransactionTime());
-			csm.setLastRequestTime(tLog.getTransactionTime());
-			csm.setRequestCountAfterLogin(0);
-			csm.setSessionKey(hexEncodedKey);
-			channelSessionManagementService.saveCSM(csm);
-			log.info("channelsessionmanagement data saved");
 			
 			log.info("setting login response data to LoginXMLResult");
 			authToken =srcSubscriberMDN.getAuthorizationToken();
