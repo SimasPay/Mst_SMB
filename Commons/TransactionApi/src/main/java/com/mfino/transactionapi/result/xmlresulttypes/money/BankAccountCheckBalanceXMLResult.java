@@ -2,6 +2,8 @@ package com.mfino.transactionapi.result.xmlresulttypes.money;
 
 import java.text.NumberFormat;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.result.XMLResult;
 import com.mfino.util.MfinoUtil;
@@ -63,6 +65,12 @@ public class BankAccountCheckBalanceXMLResult extends XMLResult {
 					getXmlWriter().writeStartElement("amount");
 					NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 					getXmlWriter().writeCharacters(numberFormat.format(getAmount()),true);
+					getXmlWriter().writeEndElement();
+				}
+				
+				if (StringUtils.isNotBlank(getCardPan())) {
+					getXmlWriter().writeStartElement("accountNumber");
+					getXmlWriter().writeCharacters(getCardPan(), true);
 					getXmlWriter().writeEndElement();
 				}
 			}
