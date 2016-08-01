@@ -88,7 +88,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		String transactionOtp   = transactionDetails.getTransactionOTP();
  		String serviceName 		= transactionDetails.getServiceName();
  		String SourcePocketCode = transactionDetails.getSourcePocketCode();
- 		String DestPocketCode   = transactionDetails.getDestPocketCode();
+ 		//String DestPocketCode   = transactionDetails.getDestPocketCode();
  		Long channelCodeId      = transactionDetails.getCc().getID();
 
 		ChannelCode cc= transactionDetails.getCc();
@@ -151,7 +151,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 			return result;
 		}		
 
-		if(StringUtils.isBlank(DestPocketCode)){
+		/*if(StringUtils.isBlank(DestPocketCode)){
 			
 			if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
 				
@@ -162,9 +162,39 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 				DestPocketCode = (String.valueOf(CmFinoFIX.PocketType_SVA));
 				
 			}
+		}*/
+		
+		Pocket destPocket = null;
+		
+		if(StringUtils.isNotBlank(transactionDetails.getDestPocketCode())) {
+			
+			destPocket = pocketService.getDefaultPocket(destinationMDN, transactionDetails.getDestPocketCode());
+		}
+		else {
+			
+			/*if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				
+			} else if(destinationMDN.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			}*/
+			
+			destPocket = pocketService.getDefaultPocket(destinationMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+			
+			if(null != destPocket) {
+				
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+			} else {
+				
+				destPocket = pocketService.getDefaultPocket(destinationMDN, String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
+			}
 		}
 		
-		Pocket destPocket = pocketService.getDefaultPocket(destinationMDN, DestPocketCode);
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
