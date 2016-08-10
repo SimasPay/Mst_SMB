@@ -177,6 +177,21 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 		</property>
 		<property name="logAbandoned">
 			<value>${mfino.dbcp.logAbandoned}</value>
+		</property>		
+		<property name="timeBetweenEvictionRunsMillis">
+			<value>${mfino.dbcp.timeBetweenEvictionRunsMillis}</value>
+		</property>
+		<property name="minEvictableIdleTimeMillis">
+			<value>${mfino.dbcp.minEvictableIdleTimeMillis}</value>
+		</property>
+		<property name="testWhileIdle">
+			<value>${mfino.dbcp.testWhileIdle}</value>
+		</property>
+		<property name="maxWait">
+			<value>${mfino.dbcp.maxWait}</value>
+		</property>
+		<property name="numTestsPerEvictionRun">
+			<value>${mfino.dbcp.numTestsPerEvictionRun}</value>
 		</property>
 	</bean>
 	
@@ -345,9 +360,7 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 
 	<!-- Hibernate Transaction Manager Definition -->
 	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory">
-			<ref local="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 
     <bean id="hibernateSessionHolder" class="com.mfino.hibernate.session.HibernateSessionHolder"/>
