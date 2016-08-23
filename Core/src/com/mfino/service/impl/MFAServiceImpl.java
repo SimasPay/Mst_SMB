@@ -12,13 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFAAuthenticationDAO;
 import com.mfino.dao.MFATransactionInfoDAO;
-import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.MFAAuthenticationQuery;
 import com.mfino.dao.query.MFATransactionInfoQuery;
 import com.mfino.domain.MFAAuthentication;
 import com.mfino.domain.MFATransactionInfo;
 import com.mfino.domain.Service;
-import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.MFAService;
@@ -81,7 +79,7 @@ public class MFAServiceImpl implements MFAService{
 		
 		String message = "Your Simobi Code is "
 				+ oneTimePin+ "(ref no: "+ sctlID
-				+ "). WASPADAI PENIPUAN! JANGAN berikan kode ini kepada siapapun! Bank Sinarmas CARE 1500153";
+				+ ") WASPADAI PENIPUAN! JANGAN berikan kode ini kepada siapapun! Bank Sinarmas CARE 1500153";
 		
 		smsService.setDestinationMDN(sourceMDN);
 		smsService.setMessage(message);
