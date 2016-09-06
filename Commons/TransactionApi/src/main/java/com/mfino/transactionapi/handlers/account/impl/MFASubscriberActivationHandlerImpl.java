@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.crypto.CryptographyService;
 import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
@@ -44,6 +45,7 @@ import com.mfino.transactionapi.handlers.account.MFASubscriberActivationHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ActivationXMLResult;
 import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.MfinoUtil;
 
 @Service("MFASubscriberActivationHandlerImpl")
 public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implements MFASubscriberActivationHandler{
@@ -123,7 +125,24 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		SubscriberMDN subscribermdn = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 		Integer code = null;
 		if(mfaTransactionType.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY)){
-
+			String newpin = null;
+	 		try{
+	 			newpin = CryptographyService.decryptWithPrivateKey(subscriberActivation.getPin());
+	 		}
+	 		catch(Exception e){
+	 			log.error("Exception occured while decrypting pin ", e);
+	 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing);
+	 			return result; 
+	 		}
+			if(MfinoUtil.containsSequenceOfDigits(newpin)){
+				log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for sequence of digits");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+				return result;
+			} else if(MfinoUtil.containsRepetitiveDigits(newpin)){
+				log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for repetitive digits");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+				return result;
+			}
 
 			Transaction transaction = null;
 			ServiceCharge serviceCharge = new ServiceCharge();
