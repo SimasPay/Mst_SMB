@@ -209,15 +209,15 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					log.info("DONOT update wrong pin counts as the error is due to internal failure");
 					result.setNotificationCode(CmFinoFIX.NotificationCode_InternalLoginError);
 					return result;
-				}else if(GeneralConstants.LOGIN_RESPONSE_SUCCESS.equals(pinValidationResponse))
-				{
-					log.info("checking for new pin strength for subscribermdn "+srcSubscriberMDN.getMDN() );
-					if(!MfinoUtil.isPinStrongEnough(userPwd) || StringUtils.length(userPwd) != 6){
-						log.info("Subscriber is forced to change the Pin");
-						result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
-						result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
-						return result;
-					}
+				}
+				
+				log.info("checking for new pin strength for subscribermdn "+srcSubscriberMDN.getMDN() );
+				int pinLength = systemParametersService.getPinLength();
+				if(!MfinoUtil.isPinStrongEnough(userPwd) || StringUtils.length(userPwd) != pinLength){
+					log.info("Subscriber is forced to change the Pin");
+					result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+					result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+					return result;
 				}
 //			}
 			if (StringUtils.isNotBlank(Apptype)) {
