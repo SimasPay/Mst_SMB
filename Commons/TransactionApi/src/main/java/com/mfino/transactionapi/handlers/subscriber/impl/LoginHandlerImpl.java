@@ -219,7 +219,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 						return result;
 					}
 				}
-//			} 
+//			}
 			if (StringUtils.isNotBlank(Apptype)) {
 				if(request.getIsAppTypeCheckEnabled() == null || (request.getIsAppTypeCheckEnabled()!=null && request.getIsAppTypeCheckEnabled().booleanValue())) {
 					App_Type = AppTypeCheckService.appTypeCheck(srcSubscriberMDN,Apptype);
