@@ -130,8 +130,7 @@ public class HSMHandler extends FIXMessageHandler
 			CMHSMOffsetForATMResponse offsetResponse = (CMHSMOffsetForATMResponse) response;
 			if("00".equals(offsetResponse.getHSMResponseCode()))
 			{
-
-				log.info("HSMHandler :: generateOffsetForATMRequest :: offset="+((CMHSMOffsetResponse) response).getoffset());
+				log.info("HSMHandler :: generateOffsetForATMRequest :: offset=******F");
 				return ((CMHSMOffsetResponse) response).getoffset();
 			}
 			throw new Exception("Error generating offset");
