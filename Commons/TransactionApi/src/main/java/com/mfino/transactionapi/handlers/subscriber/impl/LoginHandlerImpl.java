@@ -211,13 +211,6 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					return result;
 				}
 				
-				log.info("checking for pin strength with Subscriber MDN "+srcSubscriberMDN.getMDN() );
-				if(!MfinoUtil.isPinStrongEnough(userPwd)){
-					log.info("Subscriber is Registered with weak mPIN and forced to change the Pin");
-					result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
-					result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
-					return result;
-				}
 //			}
 			if (StringUtils.isNotBlank(Apptype)) {
 				if(request.getIsAppTypeCheckEnabled() == null || (request.getIsAppTypeCheckEnabled()!=null && request.getIsAppTypeCheckEnabled().booleanValue())) {
@@ -249,6 +242,14 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			csm.setSessionKey(hexEncodedKey);
 			channelSessionManagementService.saveCSM(csm);
 			log.info("channelsessionmanagement data saved");
+			
+			log.info("checking for pin strength with Subscriber MDN "+srcSubscriberMDN.getMDN() );
+			if(!MfinoUtil.isPinStrongEnough(userPwd)){
+				log.info("Subscriber is Registered with weak mPIN and forced to change the Pin");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+				result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+				return result;
+			}
 			
 			String configuredStrDate = systemParametersService.getString(SystemParameterKeys.DATE_TO_EXPIRE_MOBILE_APP_PIN);
 			
