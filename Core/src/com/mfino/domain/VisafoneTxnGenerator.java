@@ -1,6 +1,6 @@
 package com.mfino.domain;
 
-// Generated Sep 27, 2016 2:09:23 PM by Hibernate Tools 3.4.0.CR1
+// Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
 import java.io.Serializable;
 import javax.persistence.Column;
