@@ -33,7 +33,7 @@ public class IntegrationPartnerMap extends Base implements java.io.Serializable 
 	private Short isauthenticationkeyenabled;
 	private Short isloginenabled;
 	private Short isapptypecheckenabled;
-	private Set<IpMapping> ipMappings = new HashSet<IpMapping>(0);
+	private Set<IPMapping> ipMappings = new HashSet<IPMapping>(0);
 
 	public IntegrationPartnerMap() {
 	}
@@ -54,7 +54,7 @@ public class IntegrationPartnerMap extends Base implements java.io.Serializable 
 			Timestamp createtime, String createdby, String institutionid,
 			String integrationname, String authenticationkey,
 			Short isauthenticationkeyenabled, Short isloginenabled,
-			Short isapptypecheckenabled, Set<IpMapping> ipMappings) {
+			Short isapptypecheckenabled, Set<IPMapping> ipMappings) {
 		this.id = id;
 		this.partner = partner;
 		this.mfsBiller = mfsBiller;
@@ -148,11 +148,11 @@ public class IntegrationPartnerMap extends Base implements java.io.Serializable 
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "integrationPartnerMap")
-	public Set<IpMapping> getIpMappings() {
+	public Set<IPMapping> getIpMappings() {
 		return this.ipMappings;
 	}
 
-	public void setIpMappings(Set<IpMapping> ipMappings) {
+	public void setIpMappings(Set<IPMapping> ipMappings) {
 		this.ipMappings = ipMappings;
 	}
 

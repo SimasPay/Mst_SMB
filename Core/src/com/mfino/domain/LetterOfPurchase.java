@@ -59,7 +59,7 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 			0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
-	private Set<LopHistory> lopHistories = new HashSet<LopHistory>(0);
+	private Set<LOPHistory> lopHistories = new HashSet<LOPHistory>(0);
 
 	public LetterOfPurchase() {
 	}
@@ -96,7 +96,7 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 			Short iscommissionchanged,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<LopHistory> lopHistories) {
+			Set<LOPHistory> lopHistories) {
 		this.id = id;
 		this.subscriberMdn = subscriberMdn;
 		this.transactionLog = transactionLog;
@@ -400,11 +400,11 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "letterOfPurchase")
-	public Set<LopHistory> getLopHistories() {
+	public Set<LOPHistory> getLopHistories() {
 		return this.lopHistories;
 	}
 
-	public void setLopHistories(Set<LopHistory> lopHistories) {
+	public void setLopHistories(Set<LOPHistory> lopHistories) {
 		this.lopHistories = lopHistories;
 	}
 

@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "MFINO_BLOB_TRIGGERS")
-public class MfinoBlobTriggers implements java.io.Serializable {
+public class MfinoBlobTriggers  implements java.io.Serializable {
 
 	private MfinoBlobTriggersId id;
 	private MfinoTriggers mfinoTriggers;

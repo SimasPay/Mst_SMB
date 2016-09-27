@@ -22,14 +22,14 @@ import com.mfino.hibernate.Timestamp;
 public class KYCFields extends Base implements java.io.Serializable {
 
 	
-	private KycLevel kycLevel;
+	private KYCLevel kycLevel;
 	private String kycfieldsname;
 	private String kycfieldsdescription;
 
 	public KYCFields() {
 	}
 
-	public KYCFields(BigDecimal id, KycLevel kycLevel,
+	public KYCFields(BigDecimal id, KYCLevel kycLevel,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String kycfieldsname) {
 		this.id = id;
@@ -41,7 +41,7 @@ public class KYCFields extends Base implements java.io.Serializable {
 		this.kycfieldsname = kycfieldsname;
 	}
 
-	public KYCFields(BigDecimal id, KycLevel kycLevel,
+	public KYCFields(BigDecimal id, KYCLevel kycLevel,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String kycfieldsname,
 			String kycfieldsdescription) {
@@ -59,11 +59,11 @@ public class KYCFields extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCFIELDSLEVELID", nullable = false)
-	public KycLevel getKycLevel() {
+	public KYCLevel getKycLevel() {
 		return this.kycLevel;
 	}
 
-	public void setKycLevel(KycLevel kycLevel) {
+	public void setKycLevel(KYCLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 
