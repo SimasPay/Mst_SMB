@@ -21,18 +21,13 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = "FUND_DEFINITION")
-public class FundDefinition implements java.io.Serializable {
+public class FundDefinition extends Base implements java.io.Serializable {
 
-	private BigDecimal id;
-	private long version;
+	
 	private FundEvents fundEventsByOnfailedattemptsexceeded;
 	private FundEvents fundEventsByOnfundallocationtimeexpiry;
 	private FundEvents fundEventsByGenerationofotponfailure;
 	private ExpirationType expirationType;
-	private Serializable lastupdatetime;
-	private String updatedby;
-	private Serializable createtime;
-	private String createdby;
 	private BigDecimal mspid;
 	private BigDecimal purposeid;
 	private Long faclength;
@@ -45,8 +40,8 @@ public class FundDefinition implements java.io.Serializable {
 	public FundDefinition() {
 	}
 
-	public FundDefinition(BigDecimal id, Serializable lastupdatetime,
-			String updatedby, Serializable createtime, String createdby,
+	public FundDefinition(BigDecimal id, Timestamp lastupdatetime,
+			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal mspid) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
@@ -60,8 +55,8 @@ public class FundDefinition implements java.io.Serializable {
 			FundEvents fundEventsByOnfailedattemptsexceeded,
 			FundEvents fundEventsByOnfundallocationtimeexpiry,
 			FundEvents fundEventsByGenerationofotponfailure,
-			ExpirationType expirationType, Serializable lastupdatetime,
-			String updatedby, Serializable createtime, String createdby,
+			ExpirationType expirationType, Timestamp lastupdatetime,
+			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal mspid, BigDecimal purposeid, Long faclength,
 			String facprefix, Long maxfailattemptsallowed,
 			Short ismultiplewithdrawalallowed,
@@ -84,25 +79,7 @@ public class FundDefinition implements java.io.Serializable {
 		this.unregisteredTxnInfos = unregisteredTxnInfos;
 	}
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, scale = 0)
-	public BigDecimal getId() {
-		return this.id;
-	}
-
-	public void setId(BigDecimal id) {
-		this.id = id;
-	}
-
-	@Version
-	@Column(name = "VERSION", nullable = false, precision = 10, scale = 0)
-	public long getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(long version) {
-		this.version = version;
-	}
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ONFAILEDATTEMPTSEXCEEDED")
@@ -147,41 +124,7 @@ public class FundDefinition implements java.io.Serializable {
 		this.expirationType = expirationType;
 	}
 
-	@Column(name = "LASTUPDATETIME", nullable = false)
-	public Serializable getLastupdatetime() {
-		return this.lastupdatetime;
-	}
-
-	public void setLastupdatetime(Serializable lastupdatetime) {
-		this.lastupdatetime = lastupdatetime;
-	}
-
-	@Column(name = "UPDATEDBY", nullable = false)
-	public String getUpdatedby() {
-		return this.updatedby;
-	}
-
-	public void setUpdatedby(String updatedby) {
-		this.updatedby = updatedby;
-	}
-
-	@Column(name = "CREATETIME", nullable = false)
-	public Serializable getCreatetime() {
-		return this.createtime;
-	}
-
-	public void setCreatetime(Serializable createtime) {
-		this.createtime = createtime;
-	}
-
-	@Column(name = "CREATEDBY", nullable = false)
-	public String getCreatedby() {
-		return this.createdby;
-	}
-
-	public void setCreatedby(String createdby) {
-		this.createdby = createdby;
-	}
+	
 
 	@Column(name = "MSPID", nullable = false, scale = 0)
 	public BigDecimal getMspid() {
