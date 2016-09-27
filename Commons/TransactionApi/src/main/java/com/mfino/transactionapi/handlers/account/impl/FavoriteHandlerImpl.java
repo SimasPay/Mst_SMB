@@ -18,7 +18,7 @@ import com.mfino.domain.FavoriteCategory;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberFavorite;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -88,8 +88,8 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		favoriteMessage.setFavoriteCode(transactionDetails.getFavoriteCode());
 		favoriteMessage.setFavoriteLabel(transactionDetails.getFavoriteLabel());
 		favoriteMessage.setFavoriteValue(transactionDetails.getFavoriteValue());
-		favoriteMessage.setSourceApplication(cc.getChannelSourceApplication());
-		favoriteMessage.setChannelCode(cc.getChannelCode());
+		favoriteMessage.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
+		favoriteMessage.setChannelCode(cc.getChannelcode());
 		favoriteMessage.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());		
 		XMLResult result = new ChangeEmailXMLResult();
 		TransactionLogServiceImpl transactionLogService = new TransactionLogServiceImpl();
@@ -99,7 +99,7 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		result.setTransactionTime(transactionLog.getTransactionTime());
 		result.setTransactionID(transactionLog.getID());
 		// Subscriber MDN validation
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+ transactionDetails.getSourceMDN()+" has failed validations");
@@ -110,13 +110,13 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		validationResult = transactionApiValidationService.validatePin(subscriberMDN, transactionDetails.getSourcePIN());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: " + transactionDetails.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft(new Integer(String.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongpincount())));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
  		addCompanyANDLanguageToResult(subscriberMDN, result);		
  		//Check if the favorite category exists
- 		Long subscriberID = subscriberMDN.getSubscriber().getID();
+ 		Long subscriberID = subscriberMDN.getSubscriber().getId().longValue();
  		FavoriteCategory favoriteCategory = favoriteCategoryService.getByID(favoriteCategoryID);
  		if(favoriteCategory == null) {
  			log.error("Fav category with the ID: " + favoriteCategoryID + " not exists");

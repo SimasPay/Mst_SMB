@@ -14,7 +14,7 @@ import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -80,17 +80,17 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 		XMLResult result 			= new ReactivationXMLResult();
 
 		boolean isHttps = transactionDetails.isHttps();
-		subscriberReactivation.setChannelCode(channelCode.getChannelCode());
+		subscriberReactivation.setChannelCode(channelCode.getChannelcode());
  		subscriberReactivation.setSourceMDN(transactionDetails.getSourceMDN());
 		subscriberReactivation.setPin(transactionDetails.getSourcePIN());
-		subscriberReactivation.setSourceApplication(channelCode.getChannelSourceApplication());
+		subscriberReactivation.setSourceApplication(new Integer(String.valueOf(channelCode.getChannelsourceapplication())));
 		subscriberReactivation.setSourceCardPAN(transactionDetails.getCardPAN());
 		subscriberReactivation.setNewPin(transactionDetails.getNewPIN());
 		subscriberReactivation.setConfirmPin(transactionDetails.getConfirmPIN());
   		subscriberReactivation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
   		
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ExistingSubscriberReactivation, subscriberReactivation.DumpFields());
 		result.setSourceMessage(subscriberReactivation);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
@@ -111,14 +111,14 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 		
 		Pocket srcpocket = pocketService.getDefaultPocket(sourceMDN, "2");
 
-		subscriberReactivation.setSourcePocketID(srcpocket.getID());
+		subscriberReactivation.setSourcePocketID(srcpocket.getId().longValue());
 		subscriberReactivation.setTransactionID(transactionsLog.getID());
 
 		log.info("ExistingSubscriberReactivationHandler::Handle "+transactionDetails.getSourcePocketId());
  	
 		serviceCharge.setSourceMDN(subscriberReactivation.getSourceMDN());
 		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(channelCode.getID());
+		serviceCharge.setChannelCodeId(channelCode.getId().longValue());
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REACTIVATION);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
@@ -170,7 +170,7 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 				String notificationName = null;
 				
 				if(notification != null){
-					notificationName = notification.getCodeName();
+					notificationName = notification.getCodename();
 				}else{
 					log.error("Could not find the failure notification code: "+code);
 				}
@@ -192,7 +192,7 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 				Notification notification = notificationService.getByNoticationCode(Integer.parseInt(code));
 				String notificationName = null;
 				if(notification != null){
-					notificationName = notification.getCodeName();
+					notificationName = notification.getCodename();
 				}else{
 					log.error("Could not find the failure notification code: "+code);
 				}

@@ -13,13 +13,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.fix.processor.MultixCommunicationHandler;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.i18n.MessageText;
@@ -74,8 +72,8 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		subscriberActivation.setPin(transactionDetails.getNewPIN());
 		subscriberActivation.setSourceMDN(transactionDetails.getSourceMDN());
 		subscriberActivation.setOTP(transactionDetails.getActivationOTP());
-		subscriberActivation.setSourceApplication(cc.getChannelSourceApplication());
-		subscriberActivation.setChannelCode(cc.getChannelCode());
+		subscriberActivation.setSourceApplication(cc.getChannelsourceapplication());
+		subscriberActivation.setChannelCode(cc.getChannelcode());
 		subscriberActivation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 		boolean isHttps = transactionDetails.isHttps();
@@ -88,10 +86,10 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 
  		result.setSourceMessage(subscriberActivation);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberActivation.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId());
+		subscriberActivation.setTransactionID(transactionsLog.getId());
 	
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 
 		addCompanyANDLanguageToResult(subscriberMDN,result);
 
@@ -99,7 +97,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		serviceCharge.setSourceMDN(subscriberActivation.getSourceMDN());
 		serviceCharge.setOnBeHalfOfMDN(subscriberActivation.getSourceMDN());
 		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(cc.getID());
+		serviceCharge.setChannelCodeId(cc.getId().longValue());
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AGENTACTIVATION);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
@@ -119,7 +117,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		}
 		
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		subscriberActivation.setServiceChargeTransactionLogID(sctl.getID());
+		subscriberActivation.setServiceChargeTransactionLogID(sctl.getId());
 
 //		NotificationWrapper wrapper = agentService.activeAgent(subscriberActivation,isHttps);
 		NotificationWrapper wrapper = agentService.activeAgent(subscriberActivation,isHttps, ConfigurationUtil.getuseHashedPIN());		
@@ -137,7 +135,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 			log.info("AgentActivationHandlerImpl :: Agent Activation failed for "+transactionDetails.getSourceMDN());
 
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+code);
 			}
@@ -147,7 +145,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		
 		result.setPartnerCode(wrapper.getPartnerCode());
 		result.setNotificationCode(code);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId());
 
 		return result;
 	}

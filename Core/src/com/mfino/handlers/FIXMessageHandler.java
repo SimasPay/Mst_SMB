@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.domain.Company;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CMultiXBuffer;
@@ -198,10 +198,10 @@ public abstract class FIXMessageHandler extends MultixCommunicationHandler {
 	 * @author Gurram Karthik
 	 */
 
-	public void addCompanyANDLanguageToResult(SubscriberMDN subscriberMDN, Result result) {
+	public void addCompanyANDLanguageToResult(SubscriberMdn subscriberMDN, Result result) {
 		if (subscriberMDN != null) {
 			Company company = subscriberMDN.getSubscriber().getCompany();
-			Integer language = subscriberMDN.getSubscriber().getLanguage();
+			Integer language = new Integer(String.valueOf(subscriberMDN.getSubscriber().getLanguage()));
 			result.setCompany(company);
 			result.setLanguage(language);
 		}
