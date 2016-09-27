@@ -76,42 +76,47 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.3.2.GA</version>
+			<version>4.2.19.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>3.3.2.GA</version>
+			<version>4.2.19.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.2.19.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.1.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.1.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-net</groupId>
@@ -152,19 +157,19 @@
 			<version>2.4</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.code.guice</groupId>
-			<artifactId>guice</artifactId>
-			<version>2.0</version>
+		    <groupId>com.google.inject</groupId>
+		    <artifactId>guice</artifactId>
+		    <version>3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.4.4</version>
+			<version>4.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore-nio</artifactId>
-			<version>4.4.4</version>
+			<version>4.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -177,9 +182,9 @@
 			<version>3.8</version>
 		</dependency>
 		<dependency>
-			<groupId>javassist</groupId>
+			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.11.0.GA</version>
+			<version>3.18.1-GA</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -189,17 +194,17 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.2</version>
+			<version>4.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>bouncycastle</groupId>
@@ -216,11 +221,6 @@
 			<artifactId>oro</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>de.congrace</groupId>
-			<artifactId>exp4j</artifactId>
-			<version>0.2.9</version>
-		</dependency> -->
 		<dependency>
 			<groupId>de.congrace</groupId>
 			<artifactId>exp4jCustom</artifactId>
@@ -237,7 +237,11 @@
 		    <artifactId>aws-java-sdk-ses</artifactId>
 		    <version>1.11.7</version>
 		</dependency>
-				
+		<dependency>
+		   <groupId>org.apache.activemq</groupId>
+		   <artifactId>activemq-pool</artifactId>
+		   <version>5.6.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
