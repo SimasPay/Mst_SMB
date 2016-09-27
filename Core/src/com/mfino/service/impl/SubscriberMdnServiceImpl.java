@@ -20,7 +20,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.service.SubscriberMdnService;
@@ -44,8 +44,8 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	public String getMDNFromSubscriber(Subscriber subscriber) {
 		String mdn = null;
 		if (subscriber != null) {
-			for (SubscriberMDN record : subscriber.getSubscriberMDNFromSubscriberID()) {
-				mdn = record.getMDN();
+			for (SubscriberMdn record : subscriber.getSubscriberMDNFromSubscriberID()) {
+				mdn = record.getMdn();
 				break;
 			}
 		}
@@ -75,7 +75,7 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public SubscriberMDN getByMDN(String MDN) {
+	public SubscriberMdn getByMDN(String MDN) {
 		if(StringUtils.isNotBlank(MDN)){
 			SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 			return mdnDAO.getByMDN(MDN);
@@ -90,7 +90,7 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	 * @param subscriberMDN
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void saveSubscriberMDN(SubscriberMDN subscriberMDN){
+	public void saveSubscriberMDN(SubscriberMdn subscriberMDN){
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		subscriberMDNDAO.save(subscriberMDN);
 	}
@@ -101,8 +101,8 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public SubscriberMDN getSubscriberMDNById(Long subscriberMDNId){
-		SubscriberMDN subscriberMDN = null;
+	public SubscriberMdn getSubscriberMDNById(Long subscriberMDNId){
+		SubscriberMdn subscriberMDN = null;
 		if(subscriberMDNId!=null){
 			log.info("Getting subscriberMDN with id: "+subscriberMDNId);
 			SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
@@ -113,24 +113,24 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public List<SubscriberMDN> getByQuery(SubscriberMdnQuery query){
+	public List<SubscriberMdn> getByQuery(SubscriberMdnQuery query){
 
 		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		List<SubscriberMDN> results = mdnDAO.get(query);
+		List<SubscriberMdn> results = mdnDAO.get(query);
 		return results;
 	}
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public SubscriberMDN getById(Long id, LockMode lockMode){
+	public SubscriberMdn getById(Long id, LockMode lockMode){
 
 		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = mdnDAO.getById(id,lockMode);
+		SubscriberMdn subscriberMdn = mdnDAO.getById(id,lockMode);
 		return subscriberMdn;
 	}
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public SubscriberMDN getById(Long id){
+	public SubscriberMdn getById(Long id){
 
 		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = mdnDAO.getById(id);
+		SubscriberMdn subscriberMdn = mdnDAO.getById(id);
 		return subscriberMdn;
 	}
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
@@ -140,7 +140,7 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 		return  mdnDAO.getCountForStatusForMdns(query);
 	}
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public List<SubscriberMDN> getStatusForMdns(SubscriberMdnQuery query){
+	public List<SubscriberMdn> getStatusForMdns(SubscriberMdnQuery query){
 
 		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		return  mdnDAO.getStatusForMdns(query);
@@ -158,7 +158,7 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public SubscriberMDN getNotRetiredSubscriberMDN(String MDN) {
+	public SubscriberMdn getNotRetiredSubscriberMDN(String MDN) {
 		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		return mdnDAO.getByMDNAndNotRetiredStatus(subscriberService.normalizeMDN(MDN));
 	}

@@ -8,11 +8,9 @@ import java.util.List;
 
 import org.hibernate.LockMode;
 
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
 
@@ -37,26 +35,26 @@ public interface SubscriberMdnService {
 	 */
 	public String denormalizeMDN(String mdn) throws EmptyStringException, InvalidMDNException;
 
-	public SubscriberMDN getByMDN(String MDN);
+	public SubscriberMdn getByMDN(String MDN);
 	
 	/**
 	 * Saves the given subscriberMDN record into the databases
 	 * @param subscriberMDN
 	 */
-	public void saveSubscriberMDN(SubscriberMDN subscriberMDN);
+	public void saveSubscriberMDN(SubscriberMdn subscriberMDN);
 	/**
 	 * Gets the subscriberMDN from the subscriberMDN table by subscriberMDN ID
 	 * @param subscriberMDNId
 	 * @return
 	 */
-	public SubscriberMDN getSubscriberMDNById(Long subscriberMDNId);
+	public SubscriberMdn getSubscriberMDNById(Long subscriberMDNId);
 
-	public List<SubscriberMDN> getByQuery(SubscriberMdnQuery query);
+	public List<SubscriberMdn> getByQuery(SubscriberMdnQuery query);
 
-	public SubscriberMDN getById(Long id ,LockMode lockMode);
-	public SubscriberMDN getById(Long id);
+	public SubscriberMdn getById(Long id ,LockMode lockMode);
+	public SubscriberMdn getById(Long id);
 	public int getCountForStatusForMdns(SubscriberMdnQuery query);
-	public List<SubscriberMDN> getStatusForMdns(SubscriberMdnQuery query);
+	public List<SubscriberMdn> getStatusForMdns(SubscriberMdnQuery query);
  	public Subscriber getSubscriberFromMDN(String MDN);
-	public SubscriberMDN getNotRetiredSubscriberMDN(String MDN);
+	public SubscriberMdn getNotRetiredSubscriberMDN(String MDN);
 	}

@@ -61,7 +61,7 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 		XMLResult result = new ChangeEmailXMLResult();
 		
 		// Subscriber MDN validation
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+ transactionDetails.getSourceMDN()+" has failed validations");
