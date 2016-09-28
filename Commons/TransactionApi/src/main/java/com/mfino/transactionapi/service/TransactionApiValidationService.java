@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidDataException;
 
 /**
@@ -19,44 +19,44 @@ public interface TransactionApiValidationService {
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN);
+	public Integer validateSubscriberAsSource(SubscriberMdn subscriberMDN);
 	
-	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN, boolean isCheck);
+	public Integer validateSubscriberAsSource(SubscriberMdn subscriberMDN, boolean isCheck);
 	
 	/**
 	 * validates whether the subscriberMDN is allowed to receive funds as destination
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberAsDestination(SubscriberMDN subscriberMDN);
+	public Integer validateSubscriberAsDestination(SubscriberMdn subscriberMDN);
 	
 	/**
 	 * validates if a partner is allowed to transfer or receive funds
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validatePartnerMDN(SubscriberMDN subscriberMDN);
+	public Integer validatePartnerMDN(SubscriberMdn subscriberMDN);
 	
 	/**
 	 * validates if an agent is allowed to transfer or receive funds
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateAgentMDN(SubscriberMDN subscriberMDN);
+	public Integer validateAgentMDN(SubscriberMdn subscriberMDN);
 	
 	/**
 	 * validates if a teller is allowed to transfer or receive funds
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateTellerMDN(SubscriberMDN subscriberMDN);
+	public Integer validateTellerMDN(SubscriberMdn subscriberMDN);
 	
 	/**
 	 * validates if a merchant is allowed to transfer or receive funds
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateMerchantMDN(SubscriberMDN subscriberMDN);
+	public Integer validateMerchantMDN(SubscriberMdn subscriberMDN);
 	
 	/**
 	 * Validates the sourcePocket for not null and checks if it is active and returns source related  notification codes
@@ -114,7 +114,7 @@ public interface TransactionApiValidationService {
 	 * @param pin
 	 * @return validation related notifcation code
 	 */
-	public Integer validatePin(SubscriberMDN subscriberMDN,String pin);
+	public Integer validatePin(SubscriberMdn subscriberMDN,String pin);
 	
 
 	/**
@@ -154,7 +154,7 @@ public interface TransactionApiValidationService {
 	 * Changes the status of an inactived subscriber due to no fund movement to active when there has been a fund movement
 	 * @param subscriberMDN
 	 */
-	public void checkAndChangeStatus(SubscriberMDN subscriberMDN);
+	public void checkAndChangeStatus(SubscriberMdn subscriberMDN);
 
 	/**
 	 *  converts the date in string format to simpleDateFormat ddMMyyyy
@@ -173,8 +173,8 @@ public interface TransactionApiValidationService {
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberForResetPinRequest(SubscriberMDN subscriberMDN);
+	public Integer validateSubscriberForResetPinRequest(SubscriberMdn subscriberMDN);
 	
-	public Integer validateSubscriberForResetPinInquiryRequest(SubscriberMDN subscriberMDN);
+	public Integer validateSubscriberForResetPinInquiryRequest(SubscriberMdn subscriberMDN);
 
 }

@@ -79,13 +79,13 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	
 	public boolean processEntry(BulkUploadEntry bue, BulkUpload bulkUpload, Pocket srcPocket, ChannelCode channelCode, int i) {
 		boolean isTxnSuccess = false;
-		log.info("Transfering the Amount " + bue.getAmount() + " To destination " + bue.getDestMDN() + 
-				" As part of Bulk Transfer --> " + bulkUpload.getID());
+		log.info("Transfering the Amount " + bue.getAmount() + " To destination " + bue.getDestmdn() + 
+				" As part of Bulk Transfer --> " + bulkUpload.getId());
 		// creating the Transaction Details object to make Transfer Inquiry call
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSourceMDN(bulkUpload.getMDN());
-		transactionDetails.setSrcPocketId(srcPocket.getID());
-		transactionDetails.setDestMDN(bue.getDestMDN());
+		transactionDetails.setSourceMDN(bulkUpload.getMdn());
+		transactionDetails.setSrcPocketId(srcPocket.getId().longValue());
+		transactionDetails.setDestMDN(bue.getDestmdn());
 		transactionDetails.setSourcePIN("mFino260");
 		transactionDetails.setAmount(bue.getAmount());
 		transactionDetails.setSourceMessage(bulkUpload.getDescription());
@@ -100,15 +100,15 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 			result = (XMLResult)bulkDistributionHandler.handle(transactionDetails);
 			
 			if (result != null) {
-				bue.setServiceChargeTransactionLogID(result.getSctlID());
-				bue.setFirstName(result.getFirstName());
-				bue.setLastName(result.getLastName());
-				bue.setIsTrfToSuspense(result.isTrfToSuspense());
+				bue.setServicechargetransactionlogid(BigDecimal.valueOf(result.getSctlID()));
+				bue.setFirstname(result.getFirstName());
+				bue.setLastname(result.getLastName());
+				bue.setIstrftosuspense(result.isTrfToSuspense());
 				
 				if (GeneralConstants.RESPONSE_CODE_SUCCESS.equals(result.getResponseStatus())) {
 					if (result.getTxnStatus() == 0) {
 						isTxnSuccess = true;
-						bue.setFailureReason("");
+						bue.setFailurereason("");
 						log.info("Setting the bulk upload entry " + i + " status to completed");
 						bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Completed);
 					}
@@ -116,7 +116,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 						log.info("Setting the bulk upload entry " + i + " status to failed");
 						bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Failed);
 						String failureReason = StringUtils.isNotBlank(result.getMessage()) ? result.getMessage() : getMessage(result, bulkUpload);
-						bue.setFailureReason(failureReason);
+						bue.setFailurereason(failureReason);
 					}
 					else {
 						log.info("Setting the bulk upload entry " + i + " status to pending --> " + CmFinoFIX.TransactionsTransferStatus_Pending);
@@ -127,13 +127,13 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 					log.info("Setting the bulk upload entry " + i + " status to failed --> " + CmFinoFIX.TransactionsTransferStatus_Failed);
 					bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Failed);
 					String failureReason = StringUtils.isNotBlank(result.getMessage()) ? result.getMessage() : getMessage(result, bulkUpload);
-					bue.setFailureReason(failureReason);
+					bue.setFailurereason(failureReason);
 				}
 			}
 			else {
 				log.info("Setting the bulk upload entry " + i + " status to failed as the result is null");
 				bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Failed);
-				bue.setFailureReason("Fails the transaction as result is null");
+				bue.setFailurereason("Fails the transaction as result is null");
 			}
 		bulkUploadEntryService.saveBulkUploadEntry(bue);
 		return isTxnSuccess;
@@ -143,17 +143,17 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 		String msg = result.getNotificationCode() + "";
 		Notification notification = notificationService.getByNotificationCodeAndLang(result.getNotificationCode(), CmFinoFIX.Language_English);
 		if (notification != null) {
-			msg = notification.getCodeName();
+			msg = notification.getCodename();
 		}
 		return msg;
 	}	
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void failTheBulkTransfer(BulkUpload bulkUpload, String  failureReason) {
-		log.info("Bulk Transfer Failed --> " + bulkUpload.getID());
-		bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Failed);
-		bulkUpload.setDeliveryDate(new Timestamp());
-		bulkUpload.setFailureReason(failureReason);
+		log.info("Bulk Transfer Failed --> " + bulkUpload.getId());
+		bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Failed);
+		bulkUpload.setDeliverydate(new Timestamp());
+		bulkUpload.setFailurereason(failureReason);
 		bulkUploadService.save(bulkUpload);
 		sendNotification(bulkUpload, "Bulk transfer failed", CmFinoFIX.NotificationCode_BulkTransferRequestFailedToPartner);
 	}
@@ -172,8 +172,8 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 		notification.setLanguage(language);
 		notification.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 		notification.setCode(notificationCode);
-		notification.setBulkTransferId(bulkupload.getID());
-		notification.setSctlID(bulkupload.getServiceChargeTransactionLogID());
+		notification.setBulkTransferId(bulkupload.getId().longValue());
+		notification.setSctlID(bulkupload.getServicechargetransactionlogid().longValue());
 		notification.setFirstName(bulkTrfUser.getUsername());
 		String message = notificationMessageParserService.buildMessage(notification,true);
 		
@@ -187,23 +187,23 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 		String to=bulkTrfUser.getEmail();
 		String name= bulkTrfUser.getUsername();
 
-		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getNotCompleteBulkUploadEntriesForBulkUpload(bulkUpload.getID());
-		int nofSuccessfulTransactions = bulkUpload.getTransactionsCount().intValue() - bulkUpload.getFailedTransactionsCount();
+		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getNotCompleteBulkUploadEntriesForBulkUpload(bulkUpload.getId().longValue());
+		int nofSuccessfulTransactions = (int)(bulkUpload.getTransactionscount() - bulkUpload.getFailedtransactionscount());
 
-		String emailMsg = 	"Bulk Upload ID:" + bulkUpload.getID() +
-							"\nTotal Amount to be distributed:" + bulkUpload.getTotalAmount() +
-							"\nMoney distributed:" + bulkUpload.getSuccessAmount() +
+		String emailMsg = 	"Bulk Upload ID:" + bulkUpload.getId() +
+							"\nTotal Amount to be distributed:" + bulkUpload.getTotalamount() +
+							"\nMoney distributed:" + bulkUpload.getSuccessamount() +
 							"\nTotal number of successful transfers:" + nofSuccessfulTransactions +
-							"\nNo of failed transfers:" + bulkUpload.getFailedTransactionsCount() +
+							"\nNo of failed transfers:" + bulkUpload.getFailedtransactionscount() +
 							"\nList of failed transfers:";
 		Iterator<BulkUploadEntry> it = bulkUploadEntries.iterator();
 		while(it.hasNext())
 		{
 			BulkUploadEntry bulkUploadEntry = it.next();
-			String destMDN = bulkUploadEntry.getDestMDN();
+			String destMDN = bulkUploadEntry.getDestmdn();
 			BigDecimal amount = bulkUploadEntry.getAmount();
-			String failureReason = bulkUploadEntry.getFailureReason();
-			if(bulkUploadEntry.getStatus().equals(CmFinoFIX.TransactionsTransferStatus_Failed))
+			String failureReason = bulkUploadEntry.getFailurereason();
+			if(bulkUploadEntry.getStatus()==(CmFinoFIX.TransactionsTransferStatus_Failed))
 			{
 				emailMsg = emailMsg.concat("\n\tDestinationMDN = " + destMDN + ", Amount="+ amount + ", Failure Reason:"+ failureReason);
 			}

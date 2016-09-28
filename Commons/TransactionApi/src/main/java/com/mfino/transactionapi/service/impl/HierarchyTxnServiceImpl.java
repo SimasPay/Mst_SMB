@@ -26,7 +26,7 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.i18n.MessageText;
@@ -114,7 +114,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 	public Map<Subscriber, CMJSError> transferToChildren(Subscriber parent, Map<Subscriber, BigDecimal> childSubscriberVsAmt, String sourcePin, BigDecimal totalAmt, Long dctId)
 	{
 		
-		log.info("BEGIN:: Request to transfer to children from Subscriber: "+parent.getID()+" refId: "+refid);
+		log.info("BEGIN:: Request to transfer to children from Subscriber: "+parent.getId()+" refId: "+refid);
 		Map<Subscriber, CMJSError> resultMap = new HashMap<Subscriber, CMJSError>();
 		Partner partner = getPartner(parent);
 		BigDecimal failedAmt = BigDecimal.ZERO;
@@ -147,16 +147,16 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 			
 			if(suspensePocket==null)
 			{				
-				log.info("Creating default suspense pocket for partner: "+parent.getID());
+				log.info("Creating default suspense pocket for partner: "+parent.getId());
 				long suspensePocketTemplateId = -1;
                 try {
                 	suspensePocketTemplateId = systemParametersService.getLong(SystemParameterKeys.SUSPENCE_POCKET_TEMPLATE_ID_KEY);
-                	SubscriberMDN subscriberMdn = parent.getSubscriberMDNFromSubscriberID().iterator().next();
-					String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMDN());
+                	SubscriberMdn subscriberMdn = parent.getSubscriberMdns().iterator().next();
+					String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getId().toPlainString());
 					suspensePocket = pocketService.createPocket(suspensePocketTemplateId, subscriberMdn, CmFinoFIX.PocketStatus_Active, 
 							true, suspensePocketCardPan);
 				} catch (Exception e1) {
-					log.error("Default Suspense Pocket creation failed for partner: "+parent.getID());					
+					log.error("Default Suspense Pocket creation failed for partner: "+parent.getId());					
 				}
                 if(suspensePocket==null){
                 	errorCode = CmFinoFIX.ErrorCode_MoneySVAPocketNotFound;
@@ -172,12 +172,12 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 			
 			if(sourcePocket!=null && suspensePocket!=null)
 			{
-				log.info("Source to Suspense pocket Transfer requested for partner: "+partner.getID()+" amount: "+totalAmount+" refId: "+refid);
+				log.info("Source to Suspense pocket Transfer requested for partner: "+partner.getId()+" amount: "+totalAmount+" refId: "+refid);
 				
 				//Step 2.1 Move amount from source to suspense
 				XMLResult result = processTransfer(cc, partner, partner, sourcePin, totalAmount, sourcePocket, suspensePocket, dct);
 				
-				log.info("Source to Suspense pocket Transfer completed for partner: "+partner.getID()+" amount: "+totalAmount+" notification message: "+result.getMessage()+" refId: "+refid);
+				log.info("Source to Suspense pocket Transfer completed for partner: "+partner.getId()+" amount: "+totalAmount+" notification message: "+result.getMessage()+" refId: "+refid);
 				if(CmFinoFIX.NotificationCode_AgentToAgentTransferCompletedToSender.toString().equals(result.getCode()))
 				{
 					//Step 2.1.2
@@ -198,11 +198,11 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 						else
 						{
 							Pocket destPocket = getPocket(childPartner, false, dct);
-							log.info("Suspense to Child pocket Transfer requested for child partner: "+childPartner.getID()+" amount: "+entry.getValue()+" refId: "+refid);
+							log.info("Suspense to Child pocket Transfer requested for child partner: "+childPartner.getId()+" amount: "+entry.getValue()+" refId: "+refid);
 							
 							XMLResult childResult = processTransfer(cc, partner, childPartner, sourcePin, entry.getValue(), suspensePocket, destPocket, dct);
 							
-							log.info("Suspense to Child pocket Transfer completed for child partner: "+childPartner.getID()+" amount: "+entry.getValue()+" notification message: "+result.getMessage()+" refId: "+refid);
+							log.info("Suspense to Child pocket Transfer completed for child partner: "+childPartner.getId()+" amount: "+entry.getValue()+" notification message: "+result.getMessage()+" refId: "+refid);
 							
 							if(CmFinoFIX.NotificationCode_AgentToAgentTransferCompletedToSender.toString().equals(childResult.getCode()))
 							{
@@ -230,11 +230,11 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 					}
 					if(failedAmt!=BigDecimal.ZERO)
 					{
-						log.info("Suspense to Source pocket Transfer requested for partner: "+partner.getID()+" amount: "+failedAmt+" refId: "+refid);
+						log.info("Suspense to Source pocket Transfer requested for partner: "+partner.getId()+" amount: "+failedAmt+" refId: "+refid);
 						//2.4 reverse failed amount
 						XMLResult reverseResult = processTransfer(cc, partner, partner, sourcePin, failedAmt, suspensePocket, sourcePocket, dct);
 						
-						log.info("Suspense to Child pocket Transfer completed for child partner: "+partner.getID()+" amount: "+failedAmt+" notification message: "+reverseResult.getMessage()+" refId: "+refid);
+						log.info("Suspense to Child pocket Transfer completed for child partner: "+partner.getId()+" amount: "+failedAmt+" notification message: "+reverseResult.getMessage()+" refId: "+refid);
 					}
 				}
 				else
@@ -243,11 +243,11 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 					errorCode = CmFinoFIX.ErrorCode_TransferAbortedAndUnresovled;
 					if(result.getCode()!=null)
 					{
-						description = "Message: "+result.getMessage()+ "Notification code: "+result.getCode()+ " for subscriber: "+parent.getID();
+						description = "Message: "+result.getMessage()+ "Notification code: "+result.getCode()+ " for subscriber: "+parent.getId();
 					}
 					else
 					{
-						description = "Message: "+result.getMessage()+ " for subscriber: "+parent.getID();
+						description = "Message: "+result.getMessage()+ " for subscriber: "+parent.getId();
 					}
 					CMJSError error = getError(errorCode, description);
 					resultMap.put(parent, error);
@@ -256,7 +256,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 			}
 		}
 		
-		log.info("END:: Request to transfer to children from Subscriber: "+parent.getID());
+		log.info("END:: Request to transfer to children from Subscriber: "+parent.getId());
 		
 		return resultMap;
 	}
@@ -266,20 +266,20 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 			Pocket sourcePocket, Pocket destPocket, DistributionChainTemplate dct)
 	{
 		String sourceMessage = ServiceAndTransactionConstants.MESSAGE_AGENT_AGENT_TRANSFER;
-		Set<SubscriberMDN> mdn = sourcePartner.getSubscriber().getSubscriberMDNFromSubscriberID();
+		Set<SubscriberMdn> mdn = sourcePartner.getSubscriber().getSubscriberMdns();
 
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSourceMDN(mdn.iterator().next().getMDN());
-		transactionDetails.setPartnerCode(destPartner.getPartnerCode());
+		transactionDetails.setSourceMDN(mdn.iterator().next().getMdn());
+		transactionDetails.setPartnerCode(destPartner.getPartnercode());
 		transactionDetails.setSourcePIN(sourcePin);
 		transactionDetails.setAmount(amount);
 		transactionDetails.setCc(cc);
-		transactionDetails.setChannelCode(cc.getChannelCode());
+		transactionDetails.setChannelCode(cc.getChannelcode());
 		transactionDetails.setSourceMessage(sourceMessage);
-		transactionDetails.setServiceName(dct.getService().getServiceName());
+		transactionDetails.setServiceName(dct.getService().getServicename());
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
-		transactionDetails.setSrcPocketId(sourcePocket.getID());
-		transactionDetails.setDestinationPocketId(destPocket.getID());
+		transactionDetails.setSrcPocketId(sourcePocket.getId().longValue());
+		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
 
 		XMLResult result = (XMLResult)agentToAgentTransferInquiryHandler.handle(transactionDetails);
 		if (result != null) {
@@ -297,7 +297,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 	
 	private Partner getPartner(Subscriber subscriber)
 	{
-		Set<Partner> partners = subscriber.getPartnerFromSubscriberID();
+		Set<Partner> partners = subscriber.getPartners();
 		if(!partners.isEmpty())
 		{
 			return partners.iterator().next();
@@ -320,16 +320,16 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 			log.error("HierarchyTxnService :: Exception in constructor ", e);
 		}
 		
-		List<PartnerServices> partnerServices = partnerServicesService.getPartnerServicesList(partner.getID(), serviceProviderId, service.getID());
+		List<PartnerServices> partnerServices = partnerServicesService.getPartnerServicesList(partner.getId().longValue(), serviceProviderId, service.getId().longValue());
 		if((null != partnerServices) && (partnerServices.size() > 0)){
 			PartnerServices partnerService = partnerServices.iterator().next();
 			if(isOutgoingPocket)
 			{
-				pocket = partnerService.getPocketBySourcePocket();
+				pocket = partnerService.getPocketBySourcepocket();
 			}
 			else
 			{
-				pocket = partnerService.getPocketByDestPocketID();
+				pocket = partnerService.getPocketByDestpocketid();
 			}
 		}
 		return pocket;

@@ -20,7 +20,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -72,7 +72,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN){
+	public Integer validateSubscriberAsSource(SubscriberMdn subscriberMDN){
 		if(subscriberMDN==null){
 			log.error("SourceMDN is null");
 			return CmFinoFIX.NotificationCode_MDNNotFound;
@@ -81,20 +81,20 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		
 		if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriber.getStatus()))
 		{
-			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is not registered");
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMdn()+"is not registered");
 			return CmFinoFIX.NotificationCode_SubscriberNotRegistered;
 		}
 		
 		// First Restrictions should be checked as we are allowing InActive Subscribers(of no activity) to login
 		if (!(CmFinoFIX.SubscriberRestrictions_None.equals(subscriberMDN.getRestrictions())) &&
 				!(CmFinoFIX.SubscriberRestrictions_NoFundMovement.equals(subscriberMDN.getRestrictions()))) {
-			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is restricted");
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMdn()+"is restricted");
 			return CmFinoFIX.NotificationCode_MDNIsRestricted;
 		}
 		
 		if( !(CmFinoFIX.MDNStatus_Active.equals(subscriberMDN.getStatus())&& CmFinoFIX.SubscriberStatus_Active.equals(subscriber.getStatus())) &&
 				!(CmFinoFIX.MDNStatus_InActive.equals(subscriberMDN.getStatus())&& CmFinoFIX.SubscriberStatus_InActive.equals(subscriber.getStatus())) ){
-			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is not active");
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMdn()+"is not active");
 			return CmFinoFIX.NotificationCode_MDNIsNotActive;
 		}
 		
@@ -102,7 +102,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			
 			Partner partner = partnerService.getPartner(subscriberMDN);
 			
-			if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+			if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseacctstatus()))) {
 				
 				return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
 			}
@@ -112,7 +112,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		
 	}
 	
-	public Integer validateSubscriberAsSource(SubscriberMDN subscriberMDN, boolean isCheck){
+	public Integer validateSubscriberAsSource(SubscriberMdn subscriberMDN, boolean isCheck){
 		if(subscriberMDN==null){
 			log.error("SourceMDN is null");
 			return CmFinoFIX.NotificationCode_MDNNotFound;
@@ -121,20 +121,20 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		
 		if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriber.getStatus()))
 		{
-			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is not registered");
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMdn()+"is not registered");
 			return CmFinoFIX.NotificationCode_SubscriberNotRegistered;
 		}
 		
 		// First Restrictions should be checked as we are allowing InActive Subscribers(of no activity) to login
 		if (!(CmFinoFIX.SubscriberRestrictions_None.equals(subscriberMDN.getRestrictions())) &&
 				!(CmFinoFIX.SubscriberRestrictions_NoFundMovement.equals(subscriberMDN.getRestrictions()))) {
-			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is restricted");
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMdn()+"is restricted");
 			return CmFinoFIX.NotificationCode_MDNIsRestricted;
 		}
 		
 		if( !(CmFinoFIX.MDNStatus_Active.equals(subscriberMDN.getStatus())&& CmFinoFIX.SubscriberStatus_Active.equals(subscriber.getStatus())) &&
 				!(CmFinoFIX.MDNStatus_InActive.equals(subscriberMDN.getStatus())&& CmFinoFIX.SubscriberStatus_InActive.equals(subscriber.getStatus())) ){
-			log.error("Source Subscriber with mdn: "+subscriberMDN.getMDN()+"is not active");
+			log.error("Source Subscriber with mdn: "+subscriberMDN.getMdn()+"is not active");
 			return CmFinoFIX.NotificationCode_MDNIsNotActive;
 		}
 		
@@ -144,7 +144,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 				
 				Partner partner = partnerService.getPartner(subscriberMDN);
 				
-				if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+				if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseacctstatus()))) {
 					
 					return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
 				}
@@ -162,7 +162,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public Integer validateSubscriberAsDestinationString(String mdn){
-	    SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(mdn);
+	    SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(mdn);
 
 		Integer result = validateSubscriberAsDestination(subscriberMDN);
 		return result;
@@ -174,7 +174,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberAsDestination(SubscriberMDN subscriberMDN){
+	public Integer validateSubscriberAsDestination(SubscriberMdn subscriberMDN){
 		if(subscriberMDN==null){
 			return CmFinoFIX.NotificationCode_DestinationMDNNotFound;
 		}
@@ -200,7 +200,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			
 			Partner partner = partnerService.getPartner(subscriberMDN);
 			
-			if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+			if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseacctstatus()))) {
 				
 				return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
 			}
@@ -214,7 +214,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validatePartnerMDN(SubscriberMDN subscriberMDN) {
+	public Integer validatePartnerMDN(SubscriberMdn subscriberMDN) {
 		if(subscriberMDN==null){
 			log.error("Partner SubscriberMDN is null");
 			return CmFinoFIX.NotificationCode_MDNNotFound;
@@ -223,17 +223,17 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		Partner partner = partnerService.getPartner(subscriberMDN);
 		
 		if(partner==null){
-			log.error("Partner with mdn: "+subscriberMDN.getMDN()+"not found");
+			log.error("Partner with mdn: "+subscriberMDN.getMdn()+"not found");
 			return CmFinoFIX.NotificationCode_PartnerNotFound;
 		}
 		Subscriber subscriber = partner.getSubscriber();	
 
 		if (!(CmFinoFIX.SubscriberStatus_Active.equals(subscriber.getStatus())&&CmFinoFIX.SubscriberStatus_Active.equals(subscriberMDN.getStatus()))) {
-			log.error("Partner with mdn: "+subscriberMDN.getMDN()+"is not active");
+			log.error("Partner with mdn: "+subscriberMDN.getMdn()+"is not active");
 			return CmFinoFIX.NotificationCode_MDNIsNotActive;
 		}
 		if (!(CmFinoFIX.SubscriberRestrictions_None.equals(subscriber.getRestrictions())&&CmFinoFIX.SubscriberRestrictions_None.equals(subscriberMDN.getRestrictions()))) {
-			log.error("Partner with mdn: "+subscriberMDN.getMDN()+"is restricted");
+			log.error("Partner with mdn: "+subscriberMDN.getMdn()+"is restricted");
 			return CmFinoFIX.NotificationCode_MDNIsRestricted;
 		}
 		return CmFinoFIX.ResponseCode_Success;
@@ -245,7 +245,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateAgentMDN(SubscriberMDN subscriberMDN) {
+	public Integer validateAgentMDN(SubscriberMdn subscriberMDN) {
 		if(subscriberMDN==null){
 			log.error("Agent SubscriberMDN is null");
 			return CmFinoFIX.NotificationCode_MDNNotFound;
@@ -255,13 +255,13 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		Partner partner=null;
 		Subscriber agentsubscriber=subscriberMDN.getSubscriber();
 
-		if(!(agentsubscriber.getType().equals(CmFinoFIX.SubscriberType_Partner))){
+		if(!(agentsubscriber.getType()==(CmFinoFIX.SubscriberType_Partner))){
 			if(isAgent)
 				return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found			
 		}
 		if(partner==null){
-			Set<Partner> agentPartner = agentsubscriber.getPartnerFromSubscriberID();
+			Set<Partner> agentPartner = agentsubscriber.getPartners();
 			if(!agentPartner.isEmpty()){
 				partner=agentPartner.iterator().next();
 			}
@@ -272,7 +272,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 				return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found			
 		}
-		if(isAgent && !partnerService.isAgentType(partner.getBusinessPartnerType()) && !(partner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
+		if(isAgent && !partnerService.isAgentType(partner.getBusinesspartnertype().intValue()) && !(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
 			//return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
@@ -283,7 +283,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_MDNIsRestricted;
 		}
 		
-		if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus()))) {
+		if((CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseacctstatus()))) {
 			
 			return CmFinoFIX.NotificationCode_AgentPlacedClosingRequest;
 		}
@@ -297,7 +297,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateTellerMDN(SubscriberMDN subscriberMDN){
+	public Integer validateTellerMDN(SubscriberMdn subscriberMDN){
 		if(subscriberMDN==null){
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
@@ -306,7 +306,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		if(partner==null){
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
-		if(!(partner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
+		if(!(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//teller Not found
 		}
 		
@@ -325,7 +325,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateMerchantMDN(SubscriberMDN subscriberMDN){
+	public Integer validateMerchantMDN(SubscriberMdn subscriberMDN){
 		if(subscriberMDN==null){
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
@@ -334,7 +334,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		if(partner==null){
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
-		if(!(partner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_Merchant))){
+		if(!(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_Merchant))){
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//Merchant Not found
 		}
 		
@@ -361,7 +361,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_PartnerNotFound;
 		}
 		else{
-			SubscriberMDN subscriberMDN = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+			SubscriberMdn subscriberMDN = partner.getSubscriber().getSubscriberMdns().iterator().next();
 			return validatePartnerMDN(subscriberMDN);
 		}
 	}
@@ -378,7 +378,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
 		else{
-			SubscriberMDN subscriberMDN = agent.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+			SubscriberMdn subscriberMDN = agent.getSubscriber().getSubscriberMdns().iterator().next();
 			return validateAgentMDN(subscriberMDN);
 		}
 	}
@@ -395,7 +395,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
 		else{
-			SubscriberMDN subscriberMDN = teller.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+			SubscriberMdn subscriberMDN = teller.getSubscriber().getSubscriberMdns().iterator().next();
 			return validateTellerMDN(subscriberMDN);
 		}
 	}
@@ -412,7 +412,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
 		else{
-			SubscriberMDN subscriberMDN = merchant.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+			SubscriberMdn subscriberMDN = merchant.getSubscriber().getSubscriberMdns().iterator().next();
 			return validateMerchantMDN(subscriberMDN);
 		}
 	}
@@ -427,7 +427,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			log.error("Source pocket obtained null");
 			return CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound;
 		}
-		else if(!srcPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)){
+		else if(!(srcPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))){
 			log.error("Source pocket is not active");
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 		}
@@ -444,7 +444,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			log.error("Destination pocket obtained null");
 			return CmFinoFIX.NotificationCode_DestinationMoneyPocketNotFound;
 		}
-		else if(!destPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)){
+		else if(!(destPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))){
 			log.error("Destination pocket is not active");
 			return CmFinoFIX.NotificationCode_DestinationMoneySVAPocketNotActive;
 		}
@@ -461,7 +461,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param pin
 	 * @return validation related notifcation code
 	 */
-	public Integer validatePin(SubscriberMDN subscriberMDN,String pin){
+	public Integer validatePin(SubscriberMdn subscriberMDN,String pin){
 		if (subscriberMDN == null) {
 				return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
@@ -476,17 +476,17 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	//	String calcPIN = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), pin);
 		String digestedPin = null;
 
-		digestedPin = subscriberMDN.getDigestedPIN();
+		digestedPin = subscriberMDN.getDigestedpin();
 
 		if(StringUtils.isBlank(digestedPin)){
 			return CmFinoFIX.NotificationCode_PINResetRequired;
 		}
 		String storedPin = digestedPin;
-		String pinValidationResponse = mfinoUtilService.validatePin(subscriberMDN.getMDN(), pin, storedPin, systemParametersService.getPinLength());
+		String pinValidationResponse = mfinoUtilService.validatePin(String.valueOf(subscriberMDN.getId()), pin, storedPin, systemParametersService.getPinLength());
 		if (GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse)) {
-			log.error("Invalid PIN entered MDN="+subscriberMDN.getMDN());
-			int wrongPINCount = subscriberMDN.getWrongPINCount();
-			subscriberMDN.setWrongPINCount(wrongPINCount + 1);
+			log.error("Invalid PIN entered MDN="+subscriberMDN.getId());
+			int wrongPINCount = (int)subscriberMDN.getWrongpincount();
+			subscriberMDN.setWrongpincount(wrongPINCount + 1);
 			recalculateMDNRestrictions(subscriberMDN);
 			subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 
@@ -496,9 +496,9 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		}
 		else if(GeneralConstants.LOGIN_RESPONSE_SUCCESS.equals(pinValidationResponse)) {
 			// reset wrong pin count and allow them to login
-			if (subscriberMDN.getWrongPINCount() > 0) {
+			if (subscriberMDN.getWrongpincount() > 0) {
 				log.info("Setting wrong pin count to zero");
-				subscriberMDN.setWrongPINCount(0);
+				subscriberMDN.setWrongpincount(0);
 				subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 				return CmFinoFIX.ResponseCode_Success;
 			}
@@ -515,28 +515,28 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * subscriber restrictions
 	 * @param subscriberMDN
 	 */
-	private void recalculateMDNRestrictions(SubscriberMDN subscriberMDN) {
+	private void recalculateMDNRestrictions(SubscriberMdn subscriberMDN) {
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		log.info("recalculating subscriber restriction for the wrong pin entered");
 		if ((subscriberMDN.getRestrictions() & CmFinoFIX.SubscriberRestrictions_SecurityLocked) != 0) {
 			return;
 		}
-		if (subscriberMDN.getWrongPINCount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
+		if (subscriberMDN.getWrongpincount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
 			Timestamp now = new Timestamp();
 			subscriberMDN.setRestrictions(subscriberMDN.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 			subscriberMDN .setStatus(CmFinoFIX.SubscriberStatus_InActive);
-			subscriberMDN.setStatusTime(now);
+			subscriberMDN.setStatustime(now);
 			subscriber.setRestrictions(subscriber.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-			subscriber.setStatusTime(now);
+			subscriber.setStatustime(now);
 			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 			
 			// Check if the Subscriber is of Partner type
 			if (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
-				Set<Partner> setPartners = subscriber.getPartnerFromSubscriberID();
+				Set<Partner> setPartners = subscriber.getPartners();
 				if (CollectionUtils.isNotEmpty(setPartners)) {
 					Partner partner = setPartners.iterator().next();
-					partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+					partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 					partnerService.savePartner(partner);
 				}
 			}
@@ -579,7 +579,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			log.error("The destination pocket for unregistered is null");
 			return CmFinoFIX.NotificationCode_DestinationMoneyPocketNotFound;
 		}
-		if (!destPocket.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive)) {
+		if (!(destPocket.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive))) {
 			log.error("The destination pocket status for unregistered is not OneTimeActive");
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 		}
@@ -599,7 +599,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			log.error("The source pocket for unregistered is null");
 			return CmFinoFIX.NotificationCode_DestinationEMoneyPocketNotFound;
 		}
-		if (!srcSubscriberPocket.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive)) {
+		if (!(srcSubscriberPocket.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive))) {
 			log.error("The destination pocket status for unregistered is not OneTimeActive");
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 		}
@@ -617,8 +617,8 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			log.error("Destination Money Pocket not Found");
 			return CmFinoFIX.NotificationCode_DestinationMoneyPocketNotFound;
 		}
-		if (! ((destSubscriberPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) ||
-			  (destSubscriberPocket.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive))) ){
+		if (! ((destSubscriberPocket.getStatus()==(CmFinoFIX.PocketStatus_Active)) ||
+			  (destSubscriberPocket.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive))) ){
 			log.error("Destination Money Pocket not Active");
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 		}
@@ -636,8 +636,8 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			log.error("Source Money Pocket not Found for atmWithdrawal");
 			return CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound;
 		}
-		if (! ((srcSubscriberPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) ||
-			  (srcSubscriberPocket.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive))) ){
+		if (! ((srcSubscriberPocket.getStatus()==(CmFinoFIX.PocketStatus_Active)) ||
+			  (srcSubscriberPocket.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive))) ){
 			log.error("Source Money Pocket not Active for atmWithdrawal");
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 		}
@@ -649,18 +649,18 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public void checkAndChangeStatus(SubscriberMDN subscriberMDN) {
+	public void checkAndChangeStatus(SubscriberMdn subscriberMDN) {
 		if(subscriberMDN != null){
 			if(CmFinoFIX.SubscriberRestrictions_NoFundMovement.equals(subscriberMDN.getRestrictions()) &&
 					CmFinoFIX.SubscriberStatus_InActive.equals(subscriberMDN.getStatus())){
 				Timestamp now = new Timestamp();
 				subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 				subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-				subscriberMDN.setStatusTime(now);
+				subscriberMDN.setStatustime(now);
 				Subscriber subscriber= subscriberMDN.getSubscriber();
 				subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-				subscriber.setStatusTime(now);
+				subscriber.setStatustime(now);
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 
 				subscriberService.saveSubscriber(subscriber);
@@ -678,7 +678,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberForResetPinInquiryRequest(SubscriberMDN subscriberMDN) {
+	public Integer validateSubscriberForResetPinInquiryRequest(SubscriberMdn subscriberMDN) {
 		if(subscriberMDN == null){
 			log.error("SourceMDN is null");
 			return CmFinoFIX.NotificationCode_MDNNotFound;
@@ -701,7 +701,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public Integer validateSubscriberForResetPinRequest(SubscriberMDN subscriberMDN) {
+	public Integer validateSubscriberForResetPinRequest(SubscriberMdn subscriberMDN) {
 		if(subscriberMDN == null){
 			log.error("SourceMDN is null");
 			return CmFinoFIX.NotificationCode_MDNNotFound;

@@ -18,7 +18,7 @@ import com.mfino.crypto.CryptographyService;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.IntegrationPartnerMapping;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -292,7 +292,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			validationService.validateChangePinDetails(transactionDetails);
 			String mfaTransaction = transactionDetails.getMfaTransaction();
 
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getID()) == true){
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getId().longValue()) == true){
 				if(mfaTransaction != null && (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) ||
 						mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
 					xmlResult = (XMLResult) mfaChangePinHandler.handle(transactionDetails);
@@ -379,7 +379,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			Long parentTxnIdStr = transactionDetails.getParentTxnId();
 			String mfaTransaction = transactionDetails.getMfaTransaction();
 			
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getID()) == true){
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getId().longValue()) == true){
 				if(mfaTransaction != null && (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) ||
 								mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
 					long parentTrxnId = -1;
@@ -519,7 +519,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 					CmFinoFIX.SubscriberStatus_Suspend,
 					CmFinoFIX.SubscriberStatus_InActive,
 					CmFinoFIX.SubscriberStatus_NotRegistered});
-			List<SubscriberMDN> results =subscriberMdnService.getByQuery(query);
+			List<SubscriberMdn> results =subscriberMdnService.getByQuery(query);
 			
 			if (results.size() >= subscribersLimit) {
 				return true;

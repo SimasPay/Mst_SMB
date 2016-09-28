@@ -17,7 +17,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -28,7 +28,6 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.transactionapi.handlers.TransactionRequestHandler;
-import com.mfino.transactionapi.handlers.impl.TransactionRequestHandlerImpl;
 import com.mfino.transactionapi.service.AgentCashInService;
 import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.validators.PartnerValidator;
@@ -76,7 +75,7 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 		
 		ChannelCode cc = DAOFactory.getInstance().getChannelCodeDao().getByChannelSourceApplication(CmFinoFIX.SourceApplication_Web);
 				
-		transactionDetails.setChannelCode(cc.getID().toString());
+		transactionDetails.setChannelCode(cc.getId().toString());
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY);
 		transactionDetails.setDestPocketCode(ServiceAndTransactionConstants.EMONEY_POCKET_CODE);
 		
@@ -107,11 +106,11 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 			    
 			    //confirmation fails
 				if (transactionResponse == null || !transactionResponse.isResult()) {
-					log.error("Transaction ID:"+result.getSctlID()+". Cash-in to agent confirmation failed for agent with trade name: " + agent.getTradeName()+
+					log.error("Transaction ID:"+result.getSctlID()+". Cash-in to agent confirmation failed for agent with trade name: " + agent.getTradename()+
 							". Failure message: "+result.getMessage());
-					errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradeName()+
+					errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradename()+
 							". Failure reason code: "+result.getCode()));
-					failTheAgentCashInTrxn(actl, "Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradeName()+
+					failTheAgentCashInTrxn(actl, "Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradename()+
 							". Failure reason code: "+result.getCode());
 					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 					return errorMsg;
@@ -120,24 +119,24 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 			}
 			else{
 				//Inquiry failed due to notification code not of confirmation
-				log.error("Transaction ID:"+result.getSctlID()+" Cash-in to agent Inquiry Failed for agent with trade name " + agent.getTradeName()+". Failure message: "+result.getMessage());
-				errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradeName()+". Failure reason code: "+result.getCode()));
-				failTheAgentCashInTrxn(actl, "Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradeName()+". Failure reason code: "+result.getCode());
+				log.error("Transaction ID:"+result.getSctlID()+" Cash-in to agent Inquiry Failed for agent with trade name " + agent.getTradename()+". Failure message: "+result.getMessage());
+				errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradename()+". Failure reason code: "+result.getCode()));
+				failTheAgentCashInTrxn(actl, "Transaction ID:"+result.getSctlID()+". Failed to cash-in to agent " + agent.getTradename()+". Failure reason code: "+result.getCode());
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
 		}
 		else{
 			//No Inquiry response
-			log.error("Cash-in to agent Inquiry, Failed for agent with trade name " + agent.getTradeName()+". Failure code: "+result.getNotificationCode());
-			errorMsg.setErrorDescription(MessageText._("Cash-in to agent Inquiry, Failed for agent with trade name " + agent.getTradeName()+". Failure code: "+result.getNotificationCode()));
-			failTheAgentCashInTrxn(actl, "Cash-in to agent Inquiry, Failed for agent with trade name " + agent.getTradeName()+". Failure code: "+result.getNotificationCode());
+			log.error("Cash-in to agent Inquiry, Failed for agent with trade name " + agent.getTradename()+". Failure code: "+result.getNotificationCode());
+			errorMsg.setErrorDescription(MessageText._("Cash-in to agent Inquiry, Failed for agent with trade name " + agent.getTradename()+". Failure code: "+result.getNotificationCode()));
+			failTheAgentCashInTrxn(actl, "Cash-in to agent Inquiry, Failed for agent with trade name " + agent.getTradename()+". Failure code: "+result.getNotificationCode());
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
 		
 		actl.setAgentCashInTrxnStatus(CmFinoFIX.AgentCashInTrxnStatus_Completed);
-		errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Successfully Cashed-in " + agent.getTradeName()+ " wallet with amount "+result.getCreditAmount()
+		errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Successfully Cashed-in " + agent.getTradename()+ " wallet with amount "+result.getCreditAmount()
 																				+"and service charge: "+result.getServiceCharge()));
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 		return errorMsg;
@@ -160,13 +159,13 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		SubscriberMDN agentmdn=agent.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn agentmdn=agent.getSubscriber().getSubscriberMdns().iterator().next();
 		
 
 		PartnerServices agentService = null;
 		Pocket agentPocket =null;
 		try {
-			agentService = transactionChargingService.getPartnerService(agent.getID(), transactionChargingService.getServiceProviderId(null), transactionChargingService.getServiceId(ServiceAndTransactionConstants.SERVICE_AGENT));
+			agentService = transactionChargingService.getPartnerService(agent.getId().longValue(), transactionChargingService.getServiceProviderId(null), transactionChargingService.getServiceId(ServiceAndTransactionConstants.SERVICE_AGENT));
 			if(agentService==null){
 				log.error("Valid agent service not found. Cash-in to agent is not possible");
 				errorMsg.setErrorDescription(MessageText._("Valid agent service not found. Cash-in to agent is not possible"));
@@ -174,7 +173,7 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 				return errorMsg;
 			}
 			//getting destination pocket
-			agentPocket = agentService.getPocketBySourcePocket();
+			agentPocket = agentService.getPocketBySourcepocket();
 			log.info("validating destination agent pocket ");
 			if(agentPocket==null){
 				log.error("Valid agent emoney pocket not found");
@@ -228,7 +227,7 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 		}	
 
 		//getting the funding partner MDN
-		SubscriberMDN sourceMDN = srcPocket.getSubscriberMDNByMDNID();
+		SubscriberMdn sourceMDN = srcPocket.getSubscriberMdn();
 		if(sourceMDN == null){
 			log.error("sourcePocket has SubscriberMDN as null" );
 			errorMsg.setErrorDescription(MessageText._("SourcePocket has SubscriberMDN as null"));
@@ -250,11 +249,11 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 		}
 		
 		
-		actl.setSourceMDN(sourceMDN.getMDN());
+		actl.setSourceMDN(sourceMDN.getMdn());
 		actl.setSourcePocketID(sourcePocketID);
-		actl.setDestPartnerID(agent.getID());
-		actl.setDestMDN(agentmdn.getMDN());
-		actl.setDestPocketID(agentPocket.getID());
+		actl.setDestPartnerID(agent.getId().longValue());
+		actl.setDestMDN(agentmdn.getMdn());
+		actl.setDestPocketID(agentPocket.getId().longValue());
 		return errorMsg;
 
 		
