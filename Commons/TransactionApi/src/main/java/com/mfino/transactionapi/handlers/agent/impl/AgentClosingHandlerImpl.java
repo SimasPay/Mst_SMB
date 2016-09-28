@@ -3,6 +3,8 @@
  */
 package com.mfino.transactionapi.handlers.agent.impl;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.domain.Partner;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosing;
 import com.mfino.handlers.FIXMessageHandler;
@@ -69,7 +71,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 		
 		transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_JSAgentClosing,agentClosing.DumpFields());
 		
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(agentClosing.getDestMDN());
+		SubscriberMdn subMDN = subscriberMdnService.getByMDN(agentClosing.getDestMDN());
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
@@ -91,7 +93,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			
 			if(CmFinoFIX.NotificationCode_OTPValidationSuccessful.equals(ValidationUtil.validateOTP(subMDN, isHttps, isHashedPin, oneTimeOTP))) {
 				
-				partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Validated);
+				partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Validated));
 				
 				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess));
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
@@ -102,7 +104,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed);
 				
-				partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+				partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
 				
 				log.info("Agent state is not modified to retired due to otp validation failure....");
 			}
@@ -112,12 +114,12 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+			partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
 			
 			log.info("Agent not found....");
 		}
 		
-		partner.setCloseComments(transactionDetails.getDescription());
+		partner.setClosecomments(transactionDetails.getDescription());
 		partnerService.savePartner(partner);
 		
 		return result;

@@ -28,7 +28,7 @@ import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -129,7 +129,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(agentClosing.getDestMDN());
+		SubscriberMdn subMDN = subscriberMdnService.getByMDN(agentClosing.getDestMDN());
 		
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsDestination(subMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -148,19 +148,19 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 			
 			if(null != destPocket) {
 			
-				if(!checkBalanceInAllPockets(subMDN.getID())) {
+				if(!checkBalanceInAllPockets(subMDN.getId().longValue())) {
 					
 					if(CmFinoFIX.SubscriberStatus_Active.equals(subMDN.getSubscriber().getStatus())) {
 					
 						ServiceChargeTransactionsLogQuery query = new ServiceChargeTransactionsLogQuery();
-						query.setSourceMdn(subMDN.getMDN());
+						query.setSourceMdn(subMDN.getMdn());
 						query.setStatus(CmFinoFIX.SCTLStatus_Pending);
 						
 						List<ServiceChargeTransactionLog> sctlData = sctlService.getSubscriberPendingTransactions(query);
 						
 						if(null == sctlData || (null != sctlData && sctlData.size() == 0)) {
 						
-							result.setName(subMDN.getSubscriber().getFirstName());
+							result.setName(subMDN.getSubscriber().getFirstname());
 							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess));
 							result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess);
 							result.setMessage("Agent Closing Inquiry successfull");
@@ -169,8 +169,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							Transaction transaction = null;
 							
 							ServiceCharge sc=new ServiceCharge();
-							sc.setChannelCodeId(channelCode.getID());
-							sc.setDestMDN(subMDN.getMDN());
+							sc.setChannelCodeId(channelCode.getId().longValue());
+							sc.setDestMDN(subMDN.getMdn());
 							sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 							sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT);							
 							sc.setTransactionAmount(BigDecimal.ZERO);
@@ -199,7 +199,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							
 							sendOTPSMS(subMDN,sctl.getID());
 							
-							partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Initialized);
+							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Initialized));
 							
 							log.debug("SMS for OTP has been sent....");
 							
@@ -209,7 +209,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed));
 							result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed);
 							
-							partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
 							
 							log.debug("Agent has pending transactions....");
 						}
@@ -220,7 +220,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MDNIsNotActive));
 						result.setNotificationCode(CmFinoFIX.NotificationCode_MDNIsNotActive);
 						
-						partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
 						
 						log.debug("Agent is not active....");
 					}
@@ -231,7 +231,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 					result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance));
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance);
 					
-					partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+					partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
 					
 					log.debug("Agent balance is > 100....");
 				}
@@ -241,7 +241,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
+			partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
 			
 			log.debug("Agent not found....");
 		}
@@ -263,7 +263,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 
         for (Pocket eachPocket : resultantPockets) {
         
-        	if(eachPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) == 1) {
+        	if(new BigDecimal(eachPocket.getCurrentbalance()).compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) == 1) {
         		
         		isBalanceAvailable = true;
         		break;
@@ -273,26 +273,26 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
         return isBalanceAvailable;
 	}
 	
-	private void sendOTPSMS (SubscriberMDN subscriberMDN , Long sctlID) {
+	private void sendOTPSMS (SubscriberMdn subscriberMDN , Long sctlID) {
 		
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-		subscriberMDN.setOTP(digestPin1);
-		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
+		subscriberMDN.setOtp(digestPin1);
+		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subscriberMDNDAO.save(subscriberMDN);
 		
 		NotificationWrapper smsNotificationWrapper = subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS,CmFinoFIX.NotificationCode_AgentClosingInquirySuccess);
-		smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-		smsNotificationWrapper.setLanguage(subscriber.getLanguage());
-		smsNotificationWrapper.setFirstName(subscriber.getFirstName());
-    	smsNotificationWrapper.setLastName(subscriber.getLastName());
+		smsNotificationWrapper.setDestMDN(subscriberMDN.getMdn());
+		smsNotificationWrapper.setLanguage(new Integer(String.valueOf(subscriber.getLanguage())));
+		smsNotificationWrapper.setFirstName(subscriber.getFirstname());
+    	smsNotificationWrapper.setLastName(subscriber.getLastname());
 		
     	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
-		String mdn2 = subscriberMDN.getMDN();
+		String mdn2 = subscriberMDN.getMdn();
 		
 		log.info("smsMessage:" + smsMessage);
 		

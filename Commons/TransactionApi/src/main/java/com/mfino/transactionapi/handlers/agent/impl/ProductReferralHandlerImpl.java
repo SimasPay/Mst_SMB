@@ -11,7 +11,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ProductReferralDAO;
 import com.mfino.domain.ProductReferral;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CRProductReferral;
 import com.mfino.handlers.FIXMessageHandler;
@@ -67,7 +67,7 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 		transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ProductReferral, pReferral.DumpFields());
 		
 		
-		SubscriberMDN agentMDN = subscriberMdnService.getByMDN(pReferral.getAgentMDN());
+		SubscriberMdn agentMDN = subscriberMdnService.getByMDN(pReferral.getAgentMDN());
 		
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(agentMDN);
 		
@@ -82,7 +82,7 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft(new Integer(String.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongpincount())));
 			return result;
 		}
 		
@@ -103,11 +103,11 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
 		ProductReferral productReferral = new ProductReferral();
-		productReferral.setAgentMDN(transactionDetails.getSourceMDN());
-		productReferral.setFullName(transactionDetails.getFullName());
-		productReferral.setSubscriberMDN(transactionDetails.getDestMDN());
+		productReferral.setAgentmdn(transactionDetails.getSourceMDN());
+		productReferral.setFullname(transactionDetails.getFullName());
+		productReferral.setSubscribermdn(transactionDetails.getDestMDN());
 		productReferral.setEmail(transactionDetails.getEmail());
-		productReferral.setProductDesired(transactionDetails.getProductDesired());
+		productReferral.setProductdesired(transactionDetails.getProductDesired());
 		productReferral.setOthers(transactionDetails.getOthers());						
 		ProductReferralDAO productReferralDAO = DAOFactory.getInstance().getProductReferralDAO();
 		
@@ -136,7 +136,7 @@ public class ProductReferralHandlerImpl extends FIXMessageHandler implements
 		result.setEmail(transactionDetails.getEmail());
 		result.setProductDesired(transactionDetails.getProductDesired());
 		result.setOthers(transactionDetails.getOthers());
-		result.setTransID(productReferral.getID().toString());
+		result.setTransID(productReferral.getId().toString());
 		return result;
 										
 	}		

@@ -25,7 +25,7 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAgentCloseApproveReject;
 import com.mfino.handlers.FIXMessageHandler;
@@ -116,7 +116,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		
 		transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_JSAgentCloseApproveReject,agentClosing.DumpFields());
 		
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(String.valueOf(agentClosing.getMDNID()));
+		SubscriberMdn subMDN = subscriberMdnService.getByMDN(String.valueOf(agentClosing.getMDNID()));
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
@@ -128,16 +128,16 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 			
 				try {
 				
-					partner.setCloseAcctTime(new Timestamp());
-					partner.setCloseApproverComments(transactionDetails.getDescription());
-					partner.setCloseAcctApprovedBy(transactionDetails.getAuthorizedRepresentative());
+					partner.setCloseaccttime(new Timestamp());
+					partner.setCloseapprovercomments(transactionDetails.getDescription());
+					partner.setCloseacctapprovedby(transactionDetails.getAuthorizedRepresentative());
 					
 					if(transactionDetails.getCloseAccountStatus().equals(String.valueOf(CmFinoFIX.CloseAcctStatus_Approve))) {
 						
-						partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Approve);
+						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Approve));
 						transactionDetails.setCloseAccountStatus(String.valueOf(CmFinoFIX.CloseAcctStatus_Approve));
 						
-						if(moveMoneyToTreasuaryAndRetirePockets(transactionDetails, subMDN.getID())) {
+						if(moveMoneyToTreasuaryAndRetirePockets(transactionDetails, subMDN.getId())) {
 							
 							Subscriber subscriber = subMDN.getSubscriber();
 							
@@ -157,7 +157,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 							result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
 							
-							partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
 							
 							log.info("Failed due to Agent money movenent to Treasuary....");
 						}
@@ -167,7 +167,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 						result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingRequestRejectedByApprover);
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingRequestRejectedByApprover));
 						
-						partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Reject);
+						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Reject));
 						transactionDetails.setCloseAccountStatus(String.valueOf(CmFinoFIX.CloseAcctStatus_Reject));
 						
 						log.info("Agent closing rejected by the Approver....");
@@ -177,7 +177,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
 					
-					partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+					partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
 					
 					log.info("Agent state is not modified to retired due to some error....");
 				}
@@ -186,7 +186,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
 				
-				partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+				partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
 				
 				log.info("Agent state is not modified to retired due to not valid state....");
 			}
@@ -196,7 +196,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			partner.setCloseAcctStatus(CmFinoFIX.CloseAcctStatus_Failed);
+			partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
 			
 			log.info("Agent not found....");
 		}
@@ -216,11 +216,11 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		isMoneyAvailable = false;
 		
 		Pocket destNationalTreasuryPocket = pocketService.getById(systemParametersService.getLong(SystemParameterKeys.NATIONAL_TREASURY_POCKET));
-		SubscriberMDN destMDN = null;
+		SubscriberMdn destMDN = null;
 		
 		if(destNationalTreasuryPocket != null){
 			
-			destMDN = destNationalTreasuryPocket.getSubscriberMDNByMDNID();
+			destMDN = destNationalTreasuryPocket.getSubscriberMdn();
 			
 			if(destMDN == null){
 				
@@ -236,7 +236,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		
 		transactionDetails.setSourceMDN(transactionDetails.getDestMDN());
 		transactionDetails.setSourcePocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
-		transactionDetails.setDestMDN(destMDN.getMDN());
+		transactionDetails.setDestMDN(destMDN.getMdn());
 		transactionDetails.setDestPocketCode(String.valueOf(destNationalTreasuryPocket.getPocketTemplate().getType()));
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY_INQUIRY);
 		transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
@@ -251,14 +251,14 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 
         for (Pocket eachPocket : resultantPockets) {
         	
-        	if(eachPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)) {
+        	if(eachPocket.getPocketTemplate().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())) {
         		
         		continue;
         	}
 
-        	if(!(eachPocket.getCurrentBalance().compareTo(new BigDecimal(0)) == 0) && eachPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) <= 0) {
+        	if(!(new BigDecimal(eachPocket.getCurrentbalance()).compareTo(new BigDecimal(0)) == 0) && new BigDecimal(eachPocket.getCurrentbalance()).compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) <= 0) {
         		
-        		transactionDetails.setAmount(eachPocket.getCurrentBalance());
+        		transactionDetails.setAmount(new BigDecimal(eachPocket.getCurrentbalance()));
         		
 	        	if(moveMoneyToNationalTreasury(transactionDetails, destMDN)) {
 	        			
@@ -274,7 +274,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
         	} else {
         		
         		String cardPanStringToReplace = null;
-                String cardPan = eachPocket.getCardPAN();
+                String cardPan = eachPocket.getCardpan();
                 
                 if (StringUtils.isNotBlank(cardPan)) {
                 	
@@ -286,9 +286,9 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
                 	cardPanStringToReplace = cardPan;
                 }
 
-                eachPocket.setCardPAN(cardPanStringToReplace);
+                eachPocket.setCardpan(cardPanStringToReplace);
                 eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-                eachPocket.setIsDefault(false);
+                eachPocket.setIsdefault(Short.valueOf("0"));
                 
                 pocketDAO.save(eachPocket);
                 
@@ -334,13 +334,13 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		return xmlResult;
 	}
 	
-	private boolean moveMoneyToNationalTreasury(TransactionDetails txnDetails, SubscriberMDN mdn) {
+	private boolean moveMoneyToNationalTreasury(TransactionDetails txnDetails, SubscriberMdn mdn) {
 		
 		XMLResult inquiryResult;
 		XMLResult confirmResult;
 		
 		log.info("Agent Closure Confirm::moveMoneyToNationalTreasury :Begin");
-		log.info("Sending Money transfer Inquiry for subscriber MDN ID -->" + mdn.getID());
+		log.info("Sending Money transfer Inquiry for subscriber MDN ID -->" + mdn.getId());
 		
 		//txnDetails.set
 		inquiryResult = sendMoneyTransferInquiry(txnDetails);
@@ -356,14 +356,14 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		txnDetails.setParentTxnId(inquiryResult.getParentTransactionID());
 		txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY);
 		
-		log.info("Sending Money transfer Confirm for subscriber MDN ID -->" + mdn.getID());
+		log.info("Sending Money transfer Confirm for subscriber MDN ID -->" + mdn.getId());
 		
 		confirmResult = sendMoneyTransferConfirm(txnDetails);
 
 		if (confirmResult != null && !(CmFinoFIX.NotificationCode_BankAccountToBankAccountCompletedToSenderMDN.toString().equals(confirmResult.getCode())
 				|| CmFinoFIX.NotificationCode_EMoneytoEMoneyCompleteToSender.toString().equals(confirmResult.getCode()))) {
 			
-			log.info("Confirm for money transfer failed with notification code :" + confirmResult.getCode() + " while moving to National Treasury for subscriber--> " + mdn.getID());
+			log.info("Confirm for money transfer failed with notification code :" + confirmResult.getCode() + " while moving to National Treasury for subscriber--> " + mdn.getId());
 			
 			return false;
 		}
@@ -384,13 +384,13 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		List<Partner> partnerLst = partnerDAO.get(partnerQuery);
 		Partner partner = partnerLst.get(0);
 		
-		if(CmFinoFIX.SubscriberStatus_Active.equals(partner.getPartnerStatus())) {
+		if(CmFinoFIX.SubscriberStatus_Active.equals(partner.getPartnerstatus())) {
 		
-			partner.setTradeName(partner.getTradeName() + "R");
-			partner.setCloseApproverComments(transactionDetails.getDescription());
-			partner.setCloseAcctApprovedBy(transactionDetails.getAuthorizedRepresentative());
-			partner.setCloseAcctTime(new Timestamp());
-			partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Retired);
+			partner.setTradename(partner.getTradename() + "R");
+			partner.setCloseapprovercomments(transactionDetails.getDescription());
+			partner.setCloseacctapprovedby(transactionDetails.getAuthorizedRepresentative());
+			partner.setCloseaccttime(new Timestamp());
+			partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Retired);
 			
 			partnerDAO.save(partner);
 		}
