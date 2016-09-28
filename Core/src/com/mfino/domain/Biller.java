@@ -2,20 +2,19 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -27,6 +26,11 @@ import com.mfino.hibernate.Timestamp;
 		@UniqueConstraint(columnNames = { "BANKCODE", "BILLERCODE" }) })
 public class Biller extends Base  implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_BankCodeForRouting = "bankcode";
+	public static final String FieldName_BillerName = "billername";
+	public static final String FieldName_BillerCode = "billercode";
+	public static final String FieldName_BillerType = "billertype";
 	
 	private Company company;
 	private long bankcode;

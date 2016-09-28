@@ -2,16 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 2:09:23 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -20,7 +19,14 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "ACTIVITIES_LOG")
 public class ActivitiesLog extends Base implements java.io.Serializable {
-
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_ParentTransactionID = "parenttransactionid";
+	public static final String FieldName_TransferID = "transferid";
+	public static final String FieldName_MsgType = null;
+	public static final String FieldName_Commodity = "commodity";
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_ISO8583_AcquiringInstIdCode = "iso8583Acquiringinstidcode";
+	public static final String FieldName_SourceSubscriberID = "sourcesubscriberid";
 	
 	private Company company;
 	private BigDecimal parenttransactionid;

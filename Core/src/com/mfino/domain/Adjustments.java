@@ -23,6 +23,9 @@ import com.mfino.hibernate.Timestamp;
 public class Adjustments extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_ServiceChargeTransactionLogBySctlId = null;
+	public static final String FieldName_AdjustmentStatus = "adjustmentstatus";
+	
 	private Pocket pocketByDestpocketid;
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private Pocket pocketBySourcepocketid;

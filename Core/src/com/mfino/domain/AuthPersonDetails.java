@@ -26,6 +26,7 @@ public class AuthPersonDetails extends Base implements java.io.Serializable {
 
 	
 	private Address address;
+	mFinoServiceProvider
 	private MfinoServiceProvider mfinoServiceProvider;
 	private String firstname;
 	private String lastname;

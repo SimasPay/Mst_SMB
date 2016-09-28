@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -26,6 +28,19 @@ import com.mfino.hibernate.Timestamp;
 				"SERVICEID", "TRANSACTIONTYPEID", "CHANNELCODEID", "GROUPID" }) })
 public class ActorChannelMapping extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	public static final String FieldName_SubscriberType = "subscribertype";
+	public static final String FieldName_BusinessPartnerType = "businesspartnertype";
+	public static final String FieldName_Service = "service";
+
+	public static final String FieldName_TransactionType = "transactionType";
+
+	public static final String FieldName_ChannelCode = "channelCode";
+
+	public static final String FieldName_KYCLevelByKYCLevel = "kycLevel";
+
+	public static final String FieldName_Group = "groups";
 	
 	private ChannelCode channelCode;
 	private Service service;
