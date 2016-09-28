@@ -8,7 +8,8 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.AdjustmentsQuery;
 import com.mfino.domain.Adjustments;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 
 /**
  * @author Srikanth
@@ -19,19 +20,19 @@ public class AdjustmentsDAO extends BaseDAO<Adjustments> {
 	public List<Adjustments> get(AdjustmentsQuery query) {
 		Criteria criteria = createCriteria();
 		if (query.getSctlID() != null ) {			
-			criteria.createAlias(CmFinoFIX.CRAdjustments.FieldName_ServiceChargeTransactionLogBySctlId, "sctl");
-			criteria.add(Restrictions.eq("sctl." + CmFinoFIX.CRServiceChargeTransactionLog.FieldName_RecordID, query.getSctlID()));
+			criteria.createAlias(Adjustments.FieldName_ServiceChargeTransactionLogBySctlId, "sctl");
+			criteria.add(Restrictions.eq("sctl." + ServiceChargeTxnLog.FieldName_RecordID, query.getSctlID()));
 		}
 		if(query.getAdjustmentStatus() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRAdjustments.FieldName_AdjustmentStatus, query.getAdjustmentStatus()));
+			criteria.add(Restrictions.eq(Adjustments.FieldName_AdjustmentStatus, query.getAdjustmentStatus()));
 		}
 		if (query.getStartDate() != null) {
-			criteria.add(Restrictions.ge(CmFinoFIX.CRAdjustments.FieldName_CreateTime, query.getStartDate()));
+			criteria.add(Restrictions.ge(Adjustments.FieldName_CreateTime, query.getStartDate()));
 		}
 		if (query.getEndDate() != null) {
-			criteria.add(Restrictions.le(CmFinoFIX.CRAdjustments.FieldName_CreateTime, query.getEndDate()));
+			criteria.add(Restrictions.le(Adjustments.FieldName_CreateTime, query.getEndDate()));
 		}
-		criteria.addOrder(Order.asc(CmFinoFIX.CRAdjustments.FieldName_RecordID));
+		criteria.addOrder(Order.asc(Adjustments.FieldName_RecordID));
 		processPaging(query, criteria);
 		
 		@SuppressWarnings("unchecked")

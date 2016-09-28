@@ -10,18 +10,18 @@ import java.util.List;
 import org.hibernate.Criteria;
 
 import com.mfino.dao.query.AgentCashInTransactionQuery;
-import com.mfino.domain.AgentCashInTransactions;
+import com.mfino.domain.AgentCashinTxnLog;
 
 
-public class AgentCashinTransactionLogDAO extends BaseDAO<AgentCashInTransactions> {
+public class AgentCashinTransactionLogDAO extends BaseDAO<AgentCashinTxnLog> {
 
-    public List<AgentCashInTransactions> get(AgentCashInTransactionQuery query) {
+    public List<AgentCashinTxnLog> get(AgentCashInTransactionQuery query) {
         Criteria criteria = createCriteria();
 
                
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
-        List<AgentCashInTransactions> results = criteria.list();
+        List<AgentCashinTxnLog> results = criteria.list();
 
         return results;
     }

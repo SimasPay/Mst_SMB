@@ -4,14 +4,14 @@
  */
 package com.mfino.dao;
 
-import com.mfino.constants.DAOConstants;
-import com.mfino.dao.query.BrandQuery;
-import com.mfino.domain.Brand;
-import com.mfino.domain.Company;
-import com.mfino.fix.CmFinoFIX;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+
+import com.mfino.dao.query.BrandQuery;
+import com.mfino.domain.Brand;
+import com.mfino.fix.CmFinoFIX;
 
 /**
  *

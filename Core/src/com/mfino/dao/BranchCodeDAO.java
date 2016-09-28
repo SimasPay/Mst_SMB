@@ -23,11 +23,11 @@ public class BranchCodeDAO extends BaseDAO<BranchCodes> {
 		
 		if (query.getBranchName() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRBranchCodes.FieldName_BranchName,
+					BranchCodes.FieldName_BranchName,
 					query.getBranchName()).ignoreCase());
 		}
 
-		addOrder(QueryConstants.ASC_STRING, CmFinoFIX.CRBranchCodes.FieldName_BranchCode, criteria);		
+		addOrder(QueryConstants.ASC_STRING, BranchCodes.FieldName_BranchCode, criteria);		
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		

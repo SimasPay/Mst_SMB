@@ -12,7 +12,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.BankQuery;
 import com.mfino.domain.Bank;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -26,7 +25,7 @@ public class BankDAO extends BaseDAO<Bank> {
         Criteria criteria = createCriteria();
 
         if (query.getBankcode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBank.FieldName_BankCodeForRouting, query.getBankcode()));
+            criteria.add(Restrictions.eq(Bank.FieldName_BankCodeForRouting, query.getBankcode()));
         }
          processBaseQuery(query, criteria);
          List<Bank> results = criteria.list();

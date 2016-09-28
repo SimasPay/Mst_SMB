@@ -15,8 +15,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CRBillPayments;
 
 /**
  *
@@ -28,7 +26,7 @@ public class BillPaymentsDAO extends BaseDAO<BillPayments> {
 		Criteria criteria = createCriteria();
 		if (sctlLst != null) {
 			List<Long> tempLst = new ArrayList<Long>(sctlLst);
-			addCriteriaIn(CmFinoFIX.CRBillPayments.FieldName_SctlId, tempLst, criteria);
+			addCriteriaIn(BillPayments.FieldName_SctlId, tempLst, criteria);
 		}
 		@SuppressWarnings("unchecked")
 		List<BillPayments> results = criteria.list();
@@ -55,21 +53,21 @@ public class BillPaymentsDAO extends BaseDAO<BillPayments> {
 		 Criteria criteria = createCriteria();
 		 
 		 if(query.getSctlID()!=null){
-			 criteria.add(Restrictions.eq(CmFinoFIX.CRBillPayments.FieldName_SctlId,query.getSctlID()));
+			 criteria.add(Restrictions.eq(BillPayments.FieldName_SctlId,query.getSctlID()));
 		 }
 		 if(query.getBillerCode()!=null){
-			 criteria.add(Restrictions.eq(CmFinoFIX.CRBillPayments.FieldName_BillerCode, query.getBillerCode()).ignoreCase());
+			 criteria.add(Restrictions.eq(BillPayments.FieldName_BillerCode, query.getBillerCode()).ignoreCase());
 		 }
 		 if (StringUtils.isNotBlank(query.getIntegrationTxnRefId())) {
-			 criteria.add(Restrictions.eq(CmFinoFIX.CRBillPayments.FieldName_INTxnId, query.getIntegrationTxnRefId()).ignoreCase());
+			 criteria.add(Restrictions.eq(BillPayments.FieldName_INTxnId, query.getIntegrationTxnRefId()).ignoreCase());
 		 }
 		 if (StringUtils.isNotBlank(query.getIntegrationCode())) {
-			 criteria.add(Restrictions.eq(CmFinoFIX.CRBillPayments.FieldName_IntegrationCode, query.getIntegrationCode()));
+			 criteria.add(Restrictions.eq(BillPayments.FieldName_IntegrationCode, query.getIntegrationCode()));
 		 }
 		         
 		 
 		 if((null != query.getBillPayStatuses()) && (query.getBillPayStatuses().size() > 0)){
-			 criteria.add(Restrictions.in(CRBillPayments.FieldName_BillPayStatus, query.getBillPayStatuses()));
+			 criteria.add(Restrictions.in(BillPayments.FieldName_BillPayStatus, query.getBillPayStatuses()));
 		 }
 		 
 		 processBaseQuery(query, criteria);

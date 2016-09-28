@@ -21,7 +21,7 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 			return null;
 
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocket.getID()));
+		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocket.getId()));
 		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, date));
 
 		@SuppressWarnings("unchecked")
@@ -34,7 +34,7 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 			return null;
 
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocket.getID()));
+		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocket.getId()));
 		criteria.add(Restrictions.lt(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, date));
 		criteria.addOrder(Order.desc(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate));
 		

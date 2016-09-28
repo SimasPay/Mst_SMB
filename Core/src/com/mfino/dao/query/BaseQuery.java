@@ -196,7 +196,7 @@ public class BaseQuery {
     	StringBuffer buffer = new StringBuffer();
     	if(getCompany()!=null){
     		buffer.append("getCompany:");
-    		buffer.append(getCompany().getID());
+    		buffer.append(getCompany().getId());
     		buffer.append(" ");
     	}
     	    	
