@@ -20,7 +20,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFINO_SERVICE_PROVIDER")
-public class mFinoServiceProvider extends Base implements java.io.Serializable {
+public class MfinoServiceProvider extends Base implements java.io.Serializable {
 
 	
 	private String name;

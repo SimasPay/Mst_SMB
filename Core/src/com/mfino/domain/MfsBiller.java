@@ -22,7 +22,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFS_BILLER")
-public class MFSBiller  extends Base implements java.io.Serializable {
+public class MfsBiller  extends Base implements java.io.Serializable {
 
 	
 	private mFinoServiceProvider mfinoServiceProvider;

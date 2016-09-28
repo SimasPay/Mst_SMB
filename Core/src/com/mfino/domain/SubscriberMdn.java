@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SUBSCRIBER_MDN", uniqueConstraints = @UniqueConstraint(columnNames = "MDN"))
-public class SubscriberMDN extends Base implements java.io.Serializable {
+public class SubscriberMdn extends Base implements java.io.Serializable {
 
 	
 	private Subscriber subscriber;
