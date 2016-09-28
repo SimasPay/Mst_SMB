@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
@@ -54,7 +54,7 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 		log.info("Subscriber Status request: BEGIN");
 		SubscriberStatusXMLResult result = new SubscriberStatusXMLResult();
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(txnDetails.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(txnDetails.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 
 		addCompanyANDLanguageToResult(srcSubscriberMDN, result);
@@ -65,9 +65,9 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 		
 		Subscriber subscriber = srcSubscriberMDN!=null ? srcSubscriberMDN.getSubscriber() : null;
 		if(subscriber != null) {
-			result.setFirstName(subscriber.getFirstName());
-			result.setLastName(subscriber.getLastName());
-			String kycLevel = subscriber.getKYCLevelByKYCLevel().getKYCLevel().toString();
+			result.setFirstName(subscriber.getFirstname());
+			result.setLastName(subscriber.getLastname());
+			String kycLevel = subscriber.getKycLevel().getKyclevel().toString();
 			result.setKycLevel(kycLevel);
 			String txnList = "All";
 			String alertMsg = "";

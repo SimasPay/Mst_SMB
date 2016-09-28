@@ -27,7 +27,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
@@ -121,8 +121,8 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		subscriberRegistration.setApplicationID(txnDetails.getApplicationId());
 		subscriberRegistration.setDateOfBirth(new Timestamp(txnDetails.getDateOfBirth()));
 		subscriberRegistration.setKYCLevel(Long.parseLong(String.valueOf(CmFinoFIX.SubscriberKYCLevel_UnBanked)));
-		subscriberRegistration.setChannelCode(cc.getChannelCode());
-		subscriberRegistration.setSourceApplication(cc.getChannelSourceApplication());
+		subscriberRegistration.setChannelCode(cc.getChannelcode());
+		subscriberRegistration.setSourceApplication((int)cc.getChannelsourceapplication());
 		subscriberRegistration.setPin(txnDetails.getSourcePIN());
 		subscriberRegistration.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 		
@@ -139,7 +139,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 
 		result.setActivityStatus(false);
 		
-		SubscriberMDN agentMDN = subscriberMdnService.getByMDN(subscriberRegistration.getSourceMDN());
+		SubscriberMdn agentMDN = subscriberMdnService.getByMDN(subscriberRegistration.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(agentMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
@@ -152,12 +152,12 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongpincount()));
 			
 			return result;
 		}
 		
-		SubscriberMDN destMDN = subscriberMdnService.getByMDN(txnDetails.getDestMDN());
+		SubscriberMdn destMDN = subscriberMdnService.getByMDN(txnDetails.getDestMDN());
 		
 		if(destMDN != null) {
 			
@@ -172,7 +172,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberRegistration.getSourceMDN());
 		sc.setDestMDN(subscriberRegistration.getMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -242,49 +242,49 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		ktpAddress.setLine1(txnDetails.getKtpLine1());
 		ktpAddress.setCity(txnDetails.getKtpCity());
 		ktpAddress.setState(txnDetails.getKtpState());
-		ktpAddress.setSubState(txnDetails.getKtpSubState());
-		ktpAddress.setRegionName(txnDetails.getKtpRegionName());
-		ktpAddress.setZipCode(txnDetails.getKtpZipCode());
-		ktpAddress.setRT(txnDetails.getKtpRT());
-		ktpAddress.setRW(txnDetails.getKtpRW());
+		ktpAddress.setSubstate(txnDetails.getKtpSubState());
+		ktpAddress.setRegionname(txnDetails.getKtpRegionName());
+		ktpAddress.setZipcode(txnDetails.getKtpZipCode());
+		ktpAddress.setRt(txnDetails.getKtpRT());
+		ktpAddress.setRw(txnDetails.getKtpRW());
 		
 		
 		Address domesticAddress = new Address();
 		domesticAddress.setLine1(txnDetails.getAddressLine1());
 		domesticAddress.setCity(txnDetails.getCity());
 		domesticAddress.setState(txnDetails.getState());
-		domesticAddress.setSubState(txnDetails.getSubState());
-		domesticAddress.setRegionName(txnDetails.getRegionName());
-		domesticAddress.setZipCode(txnDetails.getZipCode());
-		domesticAddress.setRT(txnDetails.getRT());
-		domesticAddress.setRW(txnDetails.getRW());
+		domesticAddress.setSubstate(txnDetails.getSubState());
+		domesticAddress.setRegionname(txnDetails.getRegionName());
+		domesticAddress.setZipcode(txnDetails.getZipCode());
+		domesticAddress.setRt(txnDetails.getRT());
+		domesticAddress.setRw(txnDetails.getRW());
 
 		Subscriber subscriber = new Subscriber();
-		SubscriberMDN subscriberMDN = new SubscriberMDN();
+		SubscriberMdn subscriberMDN = new SubscriberMdn();
 		SubscribersAdditionalFields subscriberAddiFields = new SubscribersAdditionalFields();
 		Pocket epocket = new Pocket();
 		Partner partner = partnerService.getPartner(agentMDN);
-		subscriber.setRegisteringPartnerID(partner.getID());
+		subscriber.setRegisteringpartnerid(partner.getId());
 		
 		if(txnDetails.isKtpLifetime()) {
 			
-			subscriberMDN.setISIDLifetime(CmFinoFIX.ISIDLifetime_LifeTime_True);
+			subscriberMDN.setIsidlifetime(CmFinoFIX.ISIDLifetime_LifeTime_True.toString());
 			
 		} else {
 			
-			subscriberMDN.setISIDLifetime(CmFinoFIX.ISIDLifetime_LifeTime_False);
-			subscriber.setIDExiparetionTime(new Timestamp(txnDetails.getKtpValidUntil()));
+			subscriberMDN.setIsidlifetime(CmFinoFIX.ISIDLifetime_LifeTime_False.toString());
+			subscriber.setIdexiparetiontime(new Timestamp(txnDetails.getKtpValidUntil()));
 		}
 		
 		if(StringUtils.isNotBlank(txnDetails.getDomesticIdentity())) {
 		
-			subscriberMDN.setDomAddrIdentity(Integer.parseInt(txnDetails.getDomesticIdentity()));
+			subscriberMDN.setDomaddridentity(txnDetails.getDomesticIdentity());
 		}
 		
-		subscriberMDN.setKTPID(txnDetails.getKtpId());
+		subscriberMDN.setKtpid(txnDetails.getKtpId());
 		subscriberMDN.setSubscriber(subscriber);
 		subscriberMDN.getSubscriber().setEmail(txnDetails.getEmail());
-		subscriberMDN.getSubscriber().setMothersmaidenName(txnDetails.getMothersMaidenName());
+		subscriberMDN.getSubscriber().setMothersmaidenname(txnDetails.getMothersMaidenName());
 		
 		String ktpDocument = txnDetails.getKtpDocument();
 		String subscriberFormDoc = txnDetails.getSubscriberFormDocument();
@@ -309,7 +309,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				fileOuputStream.write(ktpDocImageByteArray);
 				fileOuputStream.close();
 				  
-				subscriberMDN.setKTPDocumentPath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "KTP_Document.jpg");
+				subscriberMDN.setKtpdocumentpath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "KTP_Document.jpg");
 			}
 			
 			if(StringUtils.isNotBlank(subscriberFormDoc)) {
@@ -320,7 +320,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				fileOuputStream.write(subFormDocImageByteArray);
 				fileOuputStream.close();
 				  
-				subscriberMDN.setSubscriberFormPath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "Subscriber_Form_Document.jpg");
+				subscriberMDN.setSubscriberformpath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "Subscriber_Form_Document.jpg");
 			}
 			
 			if(StringUtils.isNotBlank(supportingDoc)) {
@@ -331,7 +331,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				fileOuputStream.write(supportingDocImageByteArray);
 				fileOuputStream.close();
 				  
-				subscriberMDN.setSupportingDocumentPath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "Supporting_Document.jpg");
+				subscriberMDN.setSupportingdocumentpath("Documents" + File.separator + txnDetails.getDestMDN() + File.separator + "Supporting_Document.jpg");
 			}
 			
 		} catch (Exception ex) {
@@ -355,7 +355,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			String notificationName = null;
 			
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+regResponse);
 			}
@@ -405,15 +405,15 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 				
 				KtpDetails ktpDetail = ktpDetails.get(0);
 				
-				if(ktpDetail.getKTPID().equals(transactionDetails.getKtpId())) {
+				if(ktpDetail.getKtpid().equals(transactionDetails.getKtpId())) {
 					
 					log.debug("KTP ID Matched.....");
 					
-					if(ktpDetail.getFullName().equals(transactionDetails.getFirstName())) {
+					if(ktpDetail.getFullname().equals(transactionDetails.getFirstName())) {
 						
 						log.debug("Name Matched.....");
 						
-						if(getDateOfBirth(ktpDetail.getDateOfBirth()).equals(getDateOfBirth(new java.sql.Timestamp(transactionDetails.getDateOfBirth().getTime())))) {
+						if(getDateOfBirth(ktpDetail.getDateofbirth()).equals(getDateOfBirth(new java.sql.Timestamp(transactionDetails.getDateOfBirth().getTime())))) {
 							
 							log.debug("Date of Birth Matched....");
 							isDataValid  = true;

@@ -14,7 +14,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -66,8 +66,8 @@ public class ChangeOtherMDNHandlerImpl extends FIXMessageHandler implements Chan
 		changeOtherMDN.setPin(transactionDetails.getSourcePIN());
 		changeOtherMDN.setSourceMDN(transactionDetails.getSourceMDN());
 		changeOtherMDN.setOtherMDN(transactionDetails.getOtherMdn());	
-		changeOtherMDN.setSourceApplication(cc.getChannelSourceApplication());
-		changeOtherMDN.setChannelCode(cc.getChannelCode());
+		changeOtherMDN.setSourceApplication((int)cc.getChannelsourceapplication());
+		changeOtherMDN.setChannelCode(cc.getChannelcode());
 		changeOtherMDN.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 
@@ -81,7 +81,7 @@ public class ChangeOtherMDNHandlerImpl extends FIXMessageHandler implements Chan
 		result.setTransactionTime(transactionLog.getTransactionTime());
 		result.setTransactionID(transactionLog.getID());
 
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(changeOtherMDN.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changeOtherMDN.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+changeOtherMDN.getSourceMDN()+" has failed validations");
@@ -92,7 +92,7 @@ public class ChangeOtherMDNHandlerImpl extends FIXMessageHandler implements Chan
 		validationResult = transactionApiValidationService.validatePin(subscriberMDN, changeOtherMDN.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: " + changeOtherMDN.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -124,7 +124,7 @@ public class ChangeOtherMDNHandlerImpl extends FIXMessageHandler implements Chan
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 		result.setSctlID(sctl.getID());
 		try {	
-			subscriberMDN.setOtherMDN(changeOtherMDN.getOtherMDN());
+			subscriberMDN.setOthermdn(changeOtherMDN.getOtherMDN());
 			subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 		}
 		catch (Exception ex) {

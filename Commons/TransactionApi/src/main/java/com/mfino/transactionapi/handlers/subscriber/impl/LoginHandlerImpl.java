@@ -19,7 +19,7 @@ import com.mfino.crypto.KeyService;
 import com.mfino.domain.ChannelSessionManagement;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMWebApiLoginRequest;
@@ -118,7 +118,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		
 		if(result.isValidVersion()){
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(request.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(request.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+request.getSourceMDN()+" has failed validations");
@@ -130,8 +130,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		
 	//	addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 
-		String password = srcSubscriberMDN.getDigestedPIN();
-		String authToken = srcSubscriberMDN.getAuthorizationToken();
+		String password = srcSubscriberMDN.getDigestedpin();
+		String authToken = srcSubscriberMDN.getAuthorizationtoken();
 		// for deployments which dont have this new code we need to use the digested pin.
 		// also set this value for use later on 
 		if(authToken==null||authToken.trim().equalsIgnoreCase(""))
@@ -204,7 +204,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				//if (!password.equals(userPwd)) {
 				//done this change for introducing HSM for validation
 				log.info("validating pin");
-				String pinValidationResponse = mfinoUtilService.validatePin(srcSubscriberMDN.getMDN(), userPwd, password, 
+				String pinValidationResponse = mfinoUtilService.validatePin(srcSubscriberMDN.getMdn(), userPwd, password, 
 						systemParametersService.getPinLength());
 				if(GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse))
 				{
@@ -240,7 +240,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			String hexEncodedKey = new String(CryptographyService.binToHex(aesKey));
 
 			log.info("recalculating channelsession management data");
-			ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getID());
+			ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
 			if (csm == null)
 				csm = new ChannelSessionManagement();
 			csm.setSubscriberMDNByMDNID(srcSubscriberMDN);
@@ -255,17 +255,17 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			log.info("channelsessionmanagement data saved");
 			
 			log.info("setting login response data to LoginXMLResult");
-			authToken =srcSubscriberMDN.getAuthorizationToken();
+			authToken =srcSubscriberMDN.getAuthorizationtoken();
 			if(authToken==null||StringUtils.isBlank(authToken))
 			{
 				authToken = MfinoUtil.calculateAuthorizationToken(request.getSourceMDN(),userPwd);
-				srcSubscriberMDN.setAuthorizationToken(authToken);
+				srcSubscriberMDN.setAuthorizationtoken(authToken);
 				subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 			}
-			int subscriberType=srcSubscriberMDN.getSubscriber().getType();
+			int subscriberType=(int)srcSubscriberMDN.getSubscriber().getType();
 			boolean isBankTypePocket=false;
 			
-			Pocket bankPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			Pocket bankPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 			
 			if(subscriberType==CmFinoFIX.SubscriberType_Partner){
 				
@@ -273,7 +273,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				
 			} else if(subscriberType==CmFinoFIX.SubscriberType_Subscriber){
 				
-				if(bankPocket != null && bankPocket.getStatus().intValue() == CmFinoFIX.PocketStatus_Active){
+				if(bankPocket != null && bankPocket.getStatus() == CmFinoFIX.PocketStatus_Active){
 					
 					isBankTypePocket=true;
 				
@@ -285,7 +285,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			
 			if(isBankTypePocket) {
 				
-				result.setBankAccountNumber(bankPocket.getCardPAN());
+				result.setBankAccountNumber(bankPocket.getCardpan());
 			}
 			
 			byte[] encryptedAESKey = CryptographyService.encryptWithPBE(aesKey, authToken.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
@@ -298,13 +298,13 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setAuthentication(hexEncodedEncZeroes);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_WebapiLoginSuccessful);
 			result.setSubscriberType(subscriberType);
-			result.setUserAPIKey(srcSubscriberMDN.getUserAPIKey());
+			result.setUserAPIKey(srcSubscriberMDN.getUserapikey());
 			result.setIsBank(isBankTypePocket);
-			result.setName(srcSubscriberMDN.getSubscriber().getFirstName());
+			result.setName(srcSubscriberMDN.getSubscriber().getFirstname());
 			
-			if(srcSubscriberMDN.getWrongPINCount() > 0){
+			if(srcSubscriberMDN.getWrongpincount() > 0){
 				log.info("setting wrong pin count to 0, and saving subscribermdn status");
-				srcSubscriberMDN.setWrongPINCount(0);
+				srcSubscriberMDN.setWrongpincount(0);
 				subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 			}
 		}
@@ -321,52 +321,52 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		return result;
 	}
 
-	private void recalculateWrongPinCounts(SubscriberMDN mdn, LoginXMLResult result) {
+	private void recalculateWrongPinCounts(SubscriberMdn mdn, LoginXMLResult result) {
 		int wrongPinCount = systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT);
-		if (mdn.getWrongPINCount() <wrongPinCount )
-			mdn.setWrongPINCount(mdn.getWrongPINCount() + 1);
-		if(mdn.getWrongPINCount()==wrongPinCount)
+		if (mdn.getWrongpincount() <wrongPinCount )
+			mdn.setWrongpincount(mdn.getWrongpincount() + 1);
+		if(mdn.getWrongpincount()==wrongPinCount)
 			recalculateMDNRestrictions(mdn);
-		result.setNumberOfTriesLeft(wrongPinCount - mdn.getWrongPINCount());
+		result.setNumberOfTriesLeft((int)(wrongPinCount - mdn.getWrongpincount()));
 		
 	}
 
-	private void recalculateMDNRestrictions(SubscriberMDN subscriberMDN) {
+	private void recalculateMDNRestrictions(SubscriberMdn subscriberMDN) {
 		if ((subscriberMDN.getRestrictions() & CmFinoFIX.SubscriberRestrictions_SecurityLocked) != 0) {
 			return;
 		}
-		if (subscriberMDN.getWrongPINCount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
+		if (subscriberMDN.getWrongpincount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
 			Timestamp now = new Timestamp();
 			subscriberMDN.setRestrictions(subscriberMDN.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
-			Integer mdnStatus = subscriberMDN.getStatus();
+			Integer mdnStatus = (int)subscriberMDN.getStatus();
 			if( !CmFinoFIX.MDNStatus_Retired.equals(mdnStatus)
 					&& !CmFinoFIX.MDNStatus_PendingRetirement.equals(mdnStatus) 
 					&& !CmFinoFIX.MDNStatus_Suspend.equals(mdnStatus) )
 			{
 				subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriberMDN.setStatusTime(now);
+				subscriberMDN.setStatustime(now);
 			}
 			subscriberMDN.getSubscriber().setRestrictions(subscriberMDN.getSubscriber().getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
-			Integer subscriberStatus = subscriberMDN.getSubscriber().getStatus();
+			Integer subscriberStatus = (int)subscriberMDN.getSubscriber().getStatus();
 			if( !CmFinoFIX.SubscriberStatus_Retired.equals(subscriberStatus) 
 					&& !CmFinoFIX.SubscriberStatus_PendingRetirement.equals(subscriberStatus)
 					&& !CmFinoFIX.SubscriberStatus_Suspend.equals(subscriberStatus) )
 			{
 				subscriberMDN.getSubscriber().setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriberMDN.getSubscriber().setStatusTime(now);
+				subscriberMDN.getSubscriber().setStatustime(now);
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriberMDN.getSubscriber(),true);
 			}
 			
 			// Check if the Subscriber is of Partner type
 			if (CmFinoFIX.SubscriberType_Partner.equals(subscriberMDN.getSubscriber().getType())) {
-				Set<Partner> setPartners = subscriberMDN.getSubscriber().getPartnerFromSubscriberID();
+				Set<Partner> setPartners = subscriberMDN.getSubscriber().getPartners();
 				if (CollectionUtils.isNotEmpty(setPartners)) {
 					Partner partner = setPartners.iterator().next();
-					Integer partnerStatus = partner.getPartnerStatus();
+					Integer partnerStatus = (int)partner.getPartnerstatus();
 					if( !CmFinoFIX.PartnerServiceStatus_Retired.equals(partnerStatus) 
 							&& !CmFinoFIX.PartnerServiceStatus_PendingRetirement.equals(partnerStatus) )
 					{
-						partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+						partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 						partnerService.savePartner(partner);
 					}
 				}

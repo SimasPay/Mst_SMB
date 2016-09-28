@@ -16,7 +16,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MdnOtpDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MdnOtp;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMValidateOTP;
@@ -58,8 +58,8 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 		
 		validateOTP.setMDN(txnDetails.getSourceMDN());
 		validateOTP.setOTP(txnDetails.getActivationOTP());
-		validateOTP.setChannelCode(cc.getChannelCode());
-		validateOTP.setSourceApplication(cc.getChannelSourceApplication());
+		validateOTP.setChannelCode(cc.getChannelcode());
+		validateOTP.setSourceApplication((int)cc.getChannelsourceapplication());
 		validateOTP.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 
 		TransactionsLog transactionsLog = null;
@@ -87,13 +87,13 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
 				log.info("OTP validation failed for MDN " + validateOTP.getMDN());
 			}
-			else if (mdnOtp.getOTPExpirationTime().after(new Date()) ) {
-				if(mdnOtp.getOTP().equals(receivedOTPDigest))
+			else if (mdnOtp.getOtpexpirationtime().after(new Date()) ) {
+				if(mdnOtp.getOtp().equals(receivedOTPDigest))
 				{
 					mdnOtp.setStatus(CmFinoFIX.OTPStatus_Validated);
 					mdnOtpDao.save(mdnOtp);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_OTPValidationSuccessful);
-					SubscriberMDN subscriberMDN = subscriberMdnService.getNotRetiredSubscriberMDN(validateOTP.getMDN());
+					SubscriberMdn subscriberMDN = subscriberMdnService.getNotRetiredSubscriberMDN(validateOTP.getMDN());
 					if(subscriberMDN!=null){
 						result.setUnRegistered(false);
 					}
@@ -104,8 +104,8 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 				}
 				else
 				{
-					int currentOtpTrials = mdnOtp.getOtpRetryCount()+1;
-					mdnOtp.setOtpRetryCount(currentOtpTrials);
+					int currentOtpTrials = mdnOtp.getOtpretrycount().intValue()+1;
+					mdnOtp.setOtpretrycount((long)currentOtpTrials);
 					int remainingTrials = getNumberOfRemainingTrials(currentOtpTrials);
 					result.setNumberOfTriesLeft(remainingTrials);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);

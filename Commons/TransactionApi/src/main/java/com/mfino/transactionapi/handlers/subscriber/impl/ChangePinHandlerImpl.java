@@ -14,7 +14,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -78,7 +78,7 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 		changePin.setOldPin(transDetails.getSourcePIN());
 		changePin.setNewPin(transDetails.getNewPIN());
 		changePin.setConfirmPin(transDetails.getConfirmPIN());
-		changePin.setChannelCode(cc.getChannelCode());
+		changePin.setChannelCode(cc.getChannelcode());
 		changePin.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		
 		log.info("Handling Subscriber ResetPin webapi request");
@@ -92,7 +92,7 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 		result.setTransactionID(transactionLog.getID());
 		
 
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+changePin.getSourceMDN()+" has failed validations");
@@ -141,7 +141,7 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 		validationResult = transactionApiValidationService.validatePin(sourceMDN, changePin.getOldPin());
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-sourceMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-sourceMDN.getWrongpincount()));
 			return result;
 		}
 
@@ -174,9 +174,9 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 
 			//String calcPIN = MfinoUtil.calculateDigestPin(changePin.getSourceMDN(), changePin.getNewPin());
 			String calcPIN = mfinoUtilService.modifyPINForStoring(changePin.getSourceMDN(), changePin.getNewPin());
-			sourceMDN.setDigestedPIN(calcPIN);
+			sourceMDN.setDigestedpin(calcPIN);
 			String authToken = MfinoUtil.calculateAuthorizationToken(changePin.getSourceMDN(), changePin.getNewPin());
-			sourceMDN.setAuthorizationToken(authToken);
+			sourceMDN.setAuthorizationtoken(authToken);
 			subscriberMdnService.saveSubscriberMDN(sourceMDN);
 		}
 		catch (Exception ex) {

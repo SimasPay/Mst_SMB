@@ -17,7 +17,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MdnOtpDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MdnOtp;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGenerateOTP;
@@ -60,8 +60,8 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		 ChannelCode cc= txnDetails.getCc();
 		 CMGenerateOTP  generateOTP = new CMGenerateOTP();
 		generateOTP.setMDN(txnDetails.getSourceMDN());
-		generateOTP.setChannelCode(cc.getChannelCode());
-		generateOTP.setSourceApplication(cc.getChannelSourceApplication());
+		generateOTP.setChannelCode(cc.getChannelcode());
+		generateOTP.setSourceApplication((int)cc.getChannelsourceapplication());
 		generateOTP.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 
 		TransactionsLog transactionsLog = null;
@@ -75,12 +75,12 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		generateOTP.setTransactionID(transactionsLog.getID());
 		result.setActivityStatus(false);
 		String sourceMdn = txnDetails.getSourceMDN();
-		SubscriberMDN subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sourceMdn);
-		if(subscriberMDN != null && !subscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered))
+		SubscriberMdn subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMdn(sourceMdn);
+		if(subscriberMDN != null && subscriberMDN.getStatus()!=CmFinoFIX.MDNStatus_NotRegistered)
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source);
-			result.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-			result.setLastName(subscriberMDN.getSubscriber().getLastName());
+			result.setFirstName(subscriberMDN.getSubscriber().getFirstname());
+			result.setLastName(subscriberMDN.getSubscriber().getLastname());
 			result.setNickName(subscriberMDN.getSubscriber().getNickname());
 			return result;
 		}
@@ -92,22 +92,22 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		}
 		
 		MdnOtp mdnOtp = new MdnOtp();
-		mdnOtp.setMDN(subscriberService.normalizeMDN(generateOTP.getMDN()));
+		mdnOtp.setMdn(subscriberService.normalizeMDN(generateOTP.getMDN()));
 
 		int otpLength=systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(otpLength);
-		String digestPin = MfinoUtil.calculateDigestPin(mdnOtp.getMDN(), oneTimePin);
-		mdnOtp.setOTP(digestPin);
+		String digestPin = MfinoUtil.calculateDigestPin(mdnOtp.getMdn(), oneTimePin);
+		mdnOtp.setOtp(digestPin);
 		mdnOtp.setStatus(CmFinoFIX.OTPStatus_Initialized);
-		mdnOtp.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.REGISTRATION_OTP_TIMEOUT_DURATION))));
-		mdnOtp.setOtpRetryCount(0);
+		mdnOtp.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.REGISTRATION_OTP_TIMEOUT_DURATION))));
+		mdnOtp.setOtpretrycount(Long.valueOf(0));
 		mdnOtpDao.save(mdnOtp);
 		result.setActivityStatus(false);
 		result.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 		result.setOneTimePin(oneTimePin);
-		result.setOtpExpirationTime(mdnOtp.getOTPExpirationTime());
-		result.setIdNumber(mdnOtp.getID().toString());
-		sendSMS(generateOTP.getMDN(), oneTimePin, result.getOtpExpirationTime(),mdnOtp.getID());
+		result.setOtpExpirationTime(mdnOtp.getOtpexpirationtime());
+		result.setIdNumber(mdnOtp.getId().toString());
+		sendSMS(generateOTP.getMDN(), oneTimePin, result.getOtpExpirationTime(),mdnOtp.getId().longValue());
 		log.info("OTP generation successful for MDN " + generateOTP.getMDN());
 		return result;
 
@@ -120,7 +120,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		MdnOtp latestRecord = existingRecords.get(0);
 		
 		if(isOtpExpired(latestRecord)){
-			Long remainingTime = getRemainingTimeToUnblockOtp(latestRecord.getCreateTime()); 
+			Long remainingTime = getRemainingTimeToUnblockOtp(latestRecord.getCreatetime()); 
 			if(remainingTime<=0) {
 				deleteOldEntries(existingRecords);
 				return true;
@@ -132,7 +132,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 			}
 		}
 		else if(hasExceededMaxTrials(latestRecord)) {
-			Long remainingTime = getRemainingTimeToUnblockOtp(latestRecord.getLastUpdateTime());
+			Long remainingTime = getRemainingTimeToUnblockOtp(latestRecord.getLastupdatetime());
 			if(remainingTime<=0) {
 				deleteOldEntries(existingRecords);
 				return true;
@@ -161,7 +161,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 	}
 
 	private boolean isOtpExpired(MdnOtp mdnOtp) {
-		if(mdnOtp.getOTPExpirationTime().after(new Date())) {
+		if(mdnOtp.getOtpexpirationtime().after(new Date())) {
 			return false;
 		}
 		return true;

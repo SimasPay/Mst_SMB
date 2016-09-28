@@ -15,7 +15,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -97,8 +97,8 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		else{
 			subscriberRegistration.setKYCLevel(ConfigurationUtil.getIntialKyclevel());
 		}
-		subscriberRegistration.setChannelCode(cc.getChannelCode());
-		subscriberRegistration.setSourceApplication(cc.getChannelSourceApplication());
+		subscriberRegistration.setChannelCode(cc.getChannelcode());
+		subscriberRegistration.setSourceApplication((int)cc.getChannelsourceapplication());
 		subscriberRegistration.setIDType(txnDetails.getIdType());
 		subscriberRegistration.setIDNumber(txnDetails.getIdNumber());
 		subscriberRegistration.setPin(txnDetails.getNewPIN());
@@ -128,7 +128,7 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberRegistration.getSourceMDN());
 		//sc.setDestMDN(subscriberRegistration.getMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REGISTRATION_WITH_ACTIVATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -156,7 +156,7 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 			Notification notification = notificationService.getByNoticationCode(regResponse);
 			String notificationName = null;
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+regResponse);
 			}
@@ -195,11 +195,11 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		}
 
 		NotificationWrapper notificationWrapper=new NotificationWrapper();
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 		if(smdn != null)
 		{
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 		}
 		if(registartionStatus){
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_BOBPocketActivationCompleted);

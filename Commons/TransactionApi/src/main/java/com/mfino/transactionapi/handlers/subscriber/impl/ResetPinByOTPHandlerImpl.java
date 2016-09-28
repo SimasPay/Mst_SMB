@@ -14,7 +14,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -81,8 +81,8 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 		resetPin.setConfirmPin(transDetails.getConfirmPIN());
 		resetPin.setSourceMDN(transDetails.getSourceMDN());
 		resetPin.setOTP(transDetails.getActivationOTP());
-		resetPin.setSourceApplication(cc.getChannelSourceApplication());
-		resetPin.setChannelCode(cc.getChannelCode());
+		resetPin.setSourceApplication((int)cc.getChannelsourceapplication());
+		resetPin.setChannelCode(cc.getChannelcode());
 		resetPin.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		isHttps = transDetails.isHttps();
 		
@@ -108,7 +108,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
  			return result;
  		}
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(resetPin.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(resetPin.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+resetPin.getSourceMDN()+" has failed validations");
@@ -155,14 +155,14 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 		//Validate OTP 
 		
 		String receivedOTP=MfinoUtil.calculateDigestPin(resetPin.getSourceMDN(), resetPin.getOTP());
-		String originalOTP = srcSubscriberMDN.getOTP();
+		String originalOTP = srcSubscriberMDN.getOtp();
 		if(!(receivedOTP.equals(originalOTP)))
 		{
 			log.info("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
 			return result;
 		}
-		srcSubscriberMDN.setOTP(null); // reseting the OTP to null as the OTP is used for new pin generation.
+		srcSubscriberMDN.setOtp(null); // reseting the OTP to null as the OTP is used for new pin generation.
 		
 		log.info("OTP validation Successfull");
 		
@@ -196,9 +196,9 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 
 			//String calcPIN = MfinoUtil.calculateDigestPin(resetPin.getSourceMDN(), resetPin.getNewPin());
 			String calcPIN = mfinoUtilService.modifyPINForStoring(resetPin.getSourceMDN(), resetPin.getNewPin());
-			srcSubscriberMDN.setDigestedPIN(calcPIN);
+			srcSubscriberMDN.setDigestedpin(calcPIN);
 			String authToken = MfinoUtil.calculateAuthorizationToken(resetPin.getSourceMDN(), resetPin.getNewPin());
-			srcSubscriberMDN.setAuthorizationToken(authToken);
+			srcSubscriberMDN.setAuthorizationtoken(authToken);
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 		}
 		catch (Exception ex) {

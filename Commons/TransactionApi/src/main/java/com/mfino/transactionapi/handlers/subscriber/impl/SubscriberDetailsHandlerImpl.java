@@ -39,7 +39,7 @@ public class SubscriberDetailsHandlerImpl extends FIXMessageHandler implements S
 		CMSubscriberRegistrationThroughWeb subscriberRegistration = new CMSubscriberRegistrationThroughWeb();
 		subscriberRegistration.setSourceMDN(txnDetails.getSourceMDN());
 		ChannelCode cc = txnDetails.getCc();
-		subscriberRegistration.setChannelCode(cc.getChannelCode());
+		subscriberRegistration.setChannelCode(cc.getChannelcode());
 		
 		log.info("Handling SubscriberDetails webapi request for MDN:"+subscriberRegistration.getSourceMDN());
 		ZTEDataPush zteDataPush = zteDataPushService.getByMDN(subscriberRegistration.getSourceMDN());

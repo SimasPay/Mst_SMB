@@ -19,7 +19,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KtpDetailsDAO;
 import com.mfino.domain.KtpDetails;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CRKtpDetails;
 import com.mfino.handlers.FIXMessageHandler;
@@ -91,7 +91,7 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		result.setActivityStatus(false);
 		result.setTransactionID(Long.parseLong("-1"));
 		
-		SubscriberMDN agentMDN = subscriberMdnService.getByMDN(ktpDetails.getAgentMDN());
+		SubscriberMdn agentMDN = subscriberMdnService.getByMDN(ktpDetails.getAgentMDN());
 		
 		result.setCompany(agentMDN.getSubscriber().getCompany());
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
@@ -107,11 +107,11 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongpincount()));
 			return result;
 		}
 		
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(ktpDetails.getMDN());
+		SubscriberMdn subMDN = subscriberMdnService.getByMDN(ktpDetails.getMDN());
 		if (subMDN != null) {
 			
 			result.setDestinationMDN(ktpDetails.getMDN());
@@ -124,11 +124,11 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		
 		KtpDetails ktpDetail = new KtpDetails();
-		ktpDetail.setAgentMDN(transactionDetails.getSourceMDN());
-		ktpDetail.setMDN(transactionDetails.getDestMDN());
-		ktpDetail.setDateOfBirth(new Timestamp(transactionDetails.getDateOfBirth()));
-		ktpDetail.setFullName(transactionDetails.getFirstName());
-		ktpDetail.setKTPID(transactionDetails.getKtpId());
+		ktpDetail.setAgentmdn(transactionDetails.getSourceMDN());
+		ktpDetail.setMdn(transactionDetails.getDestMDN());
+		ktpDetail.setDateofbirth(new Timestamp(transactionDetails.getDateOfBirth()));
+		ktpDetail.setFullname(transactionDetails.getFirstName());
+		ktpDetail.setKtpid(transactionDetails.getKtpId());
 		
 		KtpDetailsDAO ktpDetailsDAO = DAOFactory.getInstance().getKtpDetailsDAO();
 		ktpDetailsDAO.save(ktpDetail);
@@ -142,7 +142,7 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 			request.put("nik",transactionDetails.getKtpId());
 			request.put("namalengkap",transactionDetails.getFirstName());
 			request.put("tanggallahir",getKtpDob(transactionDetails.getDateOfBirth()));
-			request.put("reffno",StringUtils.leftPad(String.valueOf(ktpDetail.getID()),12,"0"));
+			request.put("reffno",StringUtils.leftPad(String.valueOf(ktpDetail.getId()),12,"0"));
 			request.put("action","inquiryEKTPPersonal");
 			
 			JSONObject response = wsCall.callHttpsPostService(request.toString(), ConfigurationUtil.getKTPServerURL(), ConfigurationUtil.getKTPServerTimeout(), "KTP Server Validation");
@@ -153,16 +153,16 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 					
 					if(response.toString().length() > 1000){
 					
-						ktpDetail.setBankResponse(response.toString().substring(0, 1000));
+						ktpDetail.setBankresponse(response.toString().substring(0, 1000));
 					}else{
-						ktpDetail.setBankResponse(response.toString());
+						ktpDetail.setBankresponse(response.toString());
 					}
 					ktpDetailsDAO.save(ktpDetail);
 					
 				} else {
 					
-					ktpDetail.setBankResponse(response.toString());
-					ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+					ktpDetail.setBankresponse(response.toString());
+					ktpDetail.setBankresponsestatus(response.get("responsecode").toString());
 					ktpDetailsDAO.save(ktpDetail);
 				
 					/**
@@ -189,7 +189,7 @@ public class SubscriberKtpValidationHandlerImpl  extends FIXMessageHandler imple
 					result.setProvince(response.get("provinsi").toString());
 					result.setPostalCode(response.get("kodepos").toString());
 					result.setBirthPlace(response.get("tempatlahir").toString());
-					result.setTransactionID(ktpDetail.getID());
+					result.setTransactionID(ktpDetail.getId().longValue());
 					result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess));
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberKtpValdiationSuccess);
 					result.setMessage("Subscriber KTP validation successfull");

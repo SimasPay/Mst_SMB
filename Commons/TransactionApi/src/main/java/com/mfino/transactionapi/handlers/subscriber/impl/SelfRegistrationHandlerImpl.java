@@ -15,7 +15,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -99,15 +99,15 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		subscriberRegistration.setMothersMaidenName(transDetails.getMothersMaidenName());
 		subscriberRegistration.setDateOfBirth(new Timestamp(transDetails.getDateOfBirth()));
 		subscriberRegistration.setKYCLevel(ConfigurationUtil.getIntialKyclevel());
-		subscriberRegistration.setChannelCode(cc.getChannelCode());
-		subscriberRegistration.setSourceApplication(cc.getChannelSourceApplication());
+		subscriberRegistration.setChannelCode(cc.getChannelcode());
+		subscriberRegistration.setSourceApplication((int)cc.getChannelsourceapplication());
 		subscriberRegistration.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		email = transDetails.getEmail();
 		
 		TransactionsLog transactionsLog = null;
 		log.info("Handling subscriber services Registration webapi request");
 		XMLResult result = new RegistrationXMLResult();
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(transDetails.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transDetails.getSourceMDN());
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
 		result.setSourceMessage(subscriberRegistration);
@@ -124,7 +124,7 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberRegistration.getSourceMDN());
 		sc.setDestMDN(subscriberRegistration.getMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -147,19 +147,19 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		result.setSctlID(sctl.getID());
 
 		Subscriber subscriber = new Subscriber();
-		SubscriberMDN subscriberMDN = new SubscriberMDN();
+		SubscriberMdn subscriberMDN = new SubscriberMdn();
 		Pocket epocket = new Pocket();
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		subscriber.setEmail(email);
-		subscriber.setIsEmailVerified(BOOL_FALSE);
+		subscriber.setIsemailverified(BOOL_FALSE);
 		Integer regResponse = subscriberServiceExtended.registerSubscriber(subscriber, subscriberMDN, subscriberRegistration,
 				epocket,oneTimePin,null);
 		if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
 			Notification notification = notificationService.getByNoticationCode(regResponse);
 			String notificationName = null;
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+regResponse);
 			}
@@ -205,11 +205,11 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
 			notificationWrapper.setOneTimePin(oneTimePin);
 			notificationWrapper.setDestMDN(subscriberRegistration.getMDN());
-			SubscriberMDN smdn = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
+			SubscriberMdn smdn = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 			if(smdn != null)
 			{
-				notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-				notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+				notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+				notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 			}
 
 		}else{

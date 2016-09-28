@@ -25,7 +25,7 @@ import com.mfino.domain.EnumText;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -97,8 +97,8 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 		setting.setSourceMDN(transDetails.getSourceMDN());
 		setting.setPin(transDetails.getSourcePIN());
 		setting.setEmail(transDetails.getEmail());
-		setting.setChannelCode(cc.getChannelCode());
-		setting.setSourceApplication(cc.getChannelSourceApplication());
+		setting.setChannelCode(cc.getChannelcode());
+		setting.setSourceApplication((int)cc.getChannelsourceapplication());
 		String language = transDetails.getLanguage();
 		String notificationMethod = transDetails.getNotificationMethod();
 		setting.setTransactionIdentifier(transDetails.getTransactionIdentifier());
@@ -113,7 +113,7 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 		result.setTransactionID(transactionLog.getID());
 		
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(setting.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(setting.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+setting.getSourceMDN()+" has failed validations");
@@ -126,7 +126,7 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+setting.getSourceMDN()+" has failed PIN validations");
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-srcSubscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-srcSubscriberMDN.getWrongpincount()));
 			return result;
 		}
 		
@@ -182,9 +182,9 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 			if (StringUtils.isNotBlank(setting.getEmail())
 					&&StringUtils.isNotBlank(email)){
 				subscriber.setEmail(setting.getEmail());
-				subscriber.setIsEmailVerified(BOOL_FALSE);}
+				subscriber.setIsemailverified(BOOL_FALSE);}
 			if (StringUtils.isNotBlank(notificationMethod))
-				subscriber.setNotificationMethod(setting.getNotificationMethod());
+				subscriber.setNotificationmethod(setting.getNotificationMethod().longValue());
 
  			subscriberService.saveSubscriber(subscriber);
 			if(setting.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {

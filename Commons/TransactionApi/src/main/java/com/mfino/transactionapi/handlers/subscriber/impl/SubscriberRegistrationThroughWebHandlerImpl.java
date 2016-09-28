@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
@@ -20,7 +22,7 @@ import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -138,8 +140,8 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		subscriberRegistration.setSubsCompanyName(txnDetails.getCompanyName());
 		subscriberRegistration.setSubscriberMobileCompany(txnDetails.getSubscriberMobileCompany());
 		subscriberRegistration.setCertofIncorporation(txnDetails.getCertOfIncorp());
-		subscriberRegistration.setChannelCode(cc.getChannelCode());
-		subscriberRegistration.setSourceApplication(cc.getChannelSourceApplication());
+		subscriberRegistration.setChannelCode(cc.getChannelcode());
+		subscriberRegistration.setSourceApplication((int)cc.getChannelsourceapplication());
 		subscriberRegistration.setApprovalRequired(txnDetails.getApprovalRequired());
 		subscriberRegistration.setCardPAN(txnDetails.getCardPAN());
 		if(StringUtils.isNotBlank(txnDetails.getBankAccountType())){
@@ -170,7 +172,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberRegistration.getMDN());
 		sc.setDestMDN(subscriberRegistration.getMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBER_REGISTRATION_THROUGH_WEB);
 		sc.setTransactionAmount(ZERO);
@@ -197,7 +199,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 			Notification notification = notificationService.getByNoticationCode(regResponse);
 			String notificationName = null;
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+regResponse);
 			}
@@ -206,7 +208,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 			result.setNotificationCode(regResponse);
 			sendSMS(subscriberRegistration, oneTimePin, false);
 		}else{
-			SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
+			SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 			if(!(CmFinoFIX.RecordType_SubscriberUnBanked.toString().equals(subscriberRegistration.getUpgradableKYCLevel().toString()))){
 				if(!(subscriberRegistration.getApprovalRequired())){  					
 
@@ -229,7 +231,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 
 	}
 
-	private Pocket getBankPocket(SubscriberMDN subscriberMDN){
+	private Pocket getBankPocket(SubscriberMdn subscriberMDN){
 		Long groupID = null;
 		Pocket bankPocket = null;
 		Subscriber subscriber = subscriberMDN.getSubscriber();
@@ -245,7 +247,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 			log.info("No valid Bank Pocket Template configured for this subscriber type");		        	 
 		}
 		else{
-			if(subscriber.getUpgradableKYCLevel()!=null && subscriber.getUpgradableKYCLevel() > CmFinoFIX.RecordType_SubscriberUnBanked){
+			if(subscriber.getUpgradablekyclevel() !=null && subscriber.getUpgradablekyclevel().intValue() > CmFinoFIX.RecordType_SubscriberUnBanked){
 				bankPocket = pocketService.createPocket(bankPocketTemplate, subscriberMDN, CmFinoFIX.PocketStatus_Initialized, true, subscriberRegistration.getCardPAN());
 			}
 		}		
@@ -259,9 +261,9 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 			log.info("Pocket already upgraded");
 		}
 		log.info("EMONEYpOCKET id="+emoneyPocket.getPocketTemplate()+upgradetemplate);
-		emoneyPocket.setPocketTemplateByOldPocketTemplateID(emoneyPocket.getPocketTemplate());
+		emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplate());
 		emoneyPocket.setPocketTemplate(upgradetemplate);
-		emoneyPocket.setPocketTemplateChangeTime(new Timestamp());
+		emoneyPocket.setPockettemplatechangetime(new Timestamp());
 		pocketService.save(emoneyPocket);
 		log.info("in update pocket");
 		return SubscriberSyncErrors.Success;
@@ -271,7 +273,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		// function if approval required is false		
 		
 		log.info("entered autoApproval");
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 
@@ -284,11 +286,11 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 			groupID = subscriberGroup.getGroup().getID();
 		}
 		Long kycLevelNo = null;
-		kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+		kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
-		Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(),svaPocketTemplate.getID());
-        subscriber.setUpgradableKYCLevel(subscriberRegistration
-				.getKYCLevel());// empty
+		Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(),svaPocketTemplate.getId().longValue());
+        subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));// empty
+        
         log.info("KYC LVL="+subscriberRegistration.getKYCLevel());
          PocketTemplate bankPocketTemplate = pocketService.getBankPocketTemplateFromPocketTemplateConfig(subscriberRegistration.getBankAccountType(), true, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
          if(bankPocketTemplate == null)
@@ -300,24 +302,24 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
         
         try{
 		KYCLevel kyclevel = null;
-		if (subscriber.getUpgradableKYCLevel() != null) {
+		if (subscriber.getUpgradablekyclevel() != null) {
 			log.info("kyc if loop");
-			kyclevel = kycLevelService.getByKycLevel(subscriber.getUpgradableKYCLevel());
+			kyclevel = kycLevelService.getByKycLevel(subscriber.getUpgradablekyclevel().longValue());
 		}
 		log.info("KYCLEVEL="+kyclevel.toString());
-		PocketTemplate upgradeTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kyclevel.getKYCLevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+		PocketTemplate upgradeTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kyclevel.getKyclevel().longValue(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 				
 		log.info("UPGRADE TEMPLATE="+upgradeTemplate.toString());
 		if(upgradeTemplate.equals(null)){
 			log.info("upgrade temp is NULL");
 		}
-			subscriber.setKYCLevelByKYCLevel(kyclevel);
-			subscriber.setUpgradableKYCLevel(null);
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-			subscriber.setApproveOrRejectComment(subscriberRegistration.getApprovalComments());
-			subscriber.setApprovedOrRejectedBy(subscriberRegistration.getAuthorizingFirstName()+ " " +subscriberRegistration.getAuthorizingLastName());
-			subscriber.setApprovalIdNumber(subscriberRegistration.getAuthorizingIdNumber());
-			subscriber.setApproveOrRejectTime(new Timestamp());
+			subscriber.setKycLevel(kyclevel);
+			subscriber.setUpgradablekyclevel(null);
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+			subscriber.setApproveorrejectcomment(subscriberRegistration.getApprovalComments());
+			subscriber.setApprovedorrejectedby(subscriberRegistration.getAuthorizingFirstName()+ " " +subscriberRegistration.getAuthorizingLastName());
+			subscriber.setApprovalidnumber(Long.valueOf(subscriberRegistration.getAuthorizingIdNumber()));
+			subscriber.setApproveorrejecttime(new Timestamp());
 			
 			subscriberService.saveSubscriber(subscriber);
 			if(emoneyPocket==null){
@@ -345,11 +347,11 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 
 		smsService.setSctlId(subscriberRegistration.getServiceChargeTransactionLogID());
 		NotificationWrapper notificationWrapper=new NotificationWrapper();
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 		if(smdn != null)
 		{
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 		}
 		if(registrationStatus){
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);

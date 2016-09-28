@@ -15,7 +15,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -72,8 +72,8 @@ public class ChangeNicknameHandlerImpl extends FIXMessageHandler implements Chan
 		changeNickname.setPin(transactionDetails.getSourcePIN());
 		changeNickname.setSourceMDN(transactionDetails.getSourceMDN());
 		changeNickname.setNickname(transactionDetails.getNickname());		
-		changeNickname.setSourceApplication(cc.getChannelSourceApplication());
-		changeNickname.setChannelCode(cc.getChannelCode());
+		changeNickname.setSourceApplication((int)cc.getChannelsourceapplication());
+		changeNickname.setChannelCode(cc.getChannelcode());
 		changeNickname.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 
@@ -87,7 +87,7 @@ public class ChangeNicknameHandlerImpl extends FIXMessageHandler implements Chan
 		result.setTransactionTime(transactionLog.getTransactionTime());
 		result.setTransactionID(transactionLog.getID());
 
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(changeNickname.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changeNickname.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+changeNickname.getSourceMDN()+" has failed validations");
@@ -98,7 +98,7 @@ public class ChangeNicknameHandlerImpl extends FIXMessageHandler implements Chan
 		validationResult = transactionApiValidationService.validatePin(subscriberMDN, changeNickname.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: " + changeNickname.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}

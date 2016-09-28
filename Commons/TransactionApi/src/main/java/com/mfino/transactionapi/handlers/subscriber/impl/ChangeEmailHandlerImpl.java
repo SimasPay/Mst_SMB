@@ -15,7 +15,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -84,8 +84,8 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 		changeEmail.setSourceMDN(transactionDetails.getSourceMDN());
 		changeEmail.setNewEmail(transactionDetails.getNewEmail());
 		changeEmail.setConfirmEmail(transactionDetails.getConfirmEmail());
-		changeEmail.setSourceApplication(cc.getChannelSourceApplication());
-		changeEmail.setChannelCode(cc.getChannelCode());
+		changeEmail.setSourceApplication((int)cc.getChannelsourceapplication());
+		changeEmail.setChannelCode(cc.getChannelcode());
 		changeEmail.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeEmail, changeEmail.DumpFields());
@@ -95,7 +95,7 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 		result.setTransactionTime(transactionLog.getTransactionTime());
 		result.setTransactionID(transactionLog.getID());
 
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(changeEmail.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changeEmail.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+changeEmail.getSourceMDN()+" has failed validations");
@@ -106,7 +106,7 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 		validationResult = transactionApiValidationService.validatePin(subscriberMDN, changeEmail.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: " + changeEmail.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -140,7 +140,7 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		try {			
 			subscriber.setEmail(changeEmail.getNewEmail());
-			subscriber.setIsEmailVerified(BOOL_FALSE);
+			subscriber.setIsemailverified(BOOL_FALSE);
  			subscriberService.saveSubscriber(subscriber);
 		}
 		catch (Exception ex) {

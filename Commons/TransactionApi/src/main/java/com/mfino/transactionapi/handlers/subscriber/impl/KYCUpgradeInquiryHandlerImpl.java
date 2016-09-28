@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMKYCUpgradeInquiry;
@@ -52,8 +52,8 @@ public class KYCUpgradeInquiryHandlerImpl extends FIXMessageHandler	implements K
 
 		CMKYCUpgradeInquiry kycUpgradeInquiry = new CMKYCUpgradeInquiry();
 		kycUpgradeInquiry.setSourceMDN(transactionDetails.getSourceMDN());
-		kycUpgradeInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		kycUpgradeInquiry.setChannelCode(cc.getChannelCode());
+		kycUpgradeInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		kycUpgradeInquiry.setChannelCode(cc.getChannelcode());
 		kycUpgradeInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());				
 		log.info("Handling validate MDN For Upgrade webapi request");
 		XMLResult result = new KYCUpgradeInquiryXMLResult();
@@ -64,7 +64,7 @@ public class KYCUpgradeInquiryHandlerImpl extends FIXMessageHandler	implements K
 		result.setTransactionTime(transactionLog.getTransactionTime());
 		result.setTransactionID(transactionLog.getID());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(kycUpgradeInquiry.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(kycUpgradeInquiry.getSourceMDN());
 		if(subscriberMDN==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			return result;
@@ -76,7 +76,7 @@ public class KYCUpgradeInquiryHandlerImpl extends FIXMessageHandler	implements K
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberStatusNotValidForKYCUpgrade);
 			return result;
 		}
-		if(subscriberMDN.getSubscriber().getKYCLevelByKYCLevel()!=null && !(CmFinoFIX.SubscriberKYCLevel_NoKyc.equals(subscriberMDN.getSubscriber().getKYCLevelByKYCLevel().getKYCLevel().intValue()))){
+		if(subscriberMDN.getSubscriber().getKycLevel() !=null && !(CmFinoFIX.SubscriberKYCLevel_NoKyc.equals(subscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()))){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
 			return result;
 		}

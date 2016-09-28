@@ -16,7 +16,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -92,7 +92,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		changePin.setOldPin(transDetails.getSourcePIN());
 		changePin.setNewPin(transDetails.getNewPIN());
 		changePin.setConfirmPin(transDetails.getConfirmPIN());
-		changePin.setChannelCode(cc.getChannelCode());
+		changePin.setChannelCode(cc.getChannelcode());
 		changePin.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		changePin.setParentTransactionID(transDetails.getParentTxnId());
 		this.setTransactionOtp(transDetails.getTransactionOTP());
@@ -110,7 +110,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		result.setTransactionID(transactionLog.getID());
 		
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+changePin.getSourceMDN()+" has failed validations");
@@ -160,7 +160,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		validationResult = transactionApiValidationService.validatePin(srcSubscriberMDN, changePin.getOldPin());
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-srcSubscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-srcSubscriberMDN.getWrongpincount()));
 			return result;
 		}
 
@@ -217,9 +217,9 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 
 			//String calcPIN = MfinoUtil.calculateDigestPin(changePin.getSourceMDN(), changePin.getNewPin());
 			String calcPIN = mfinoUtilService.modifyPINForStoring(changePin.getSourceMDN(), changePin.getNewPin());
-			srcSubscriberMDN.setDigestedPIN(calcPIN);
+			srcSubscriberMDN.setDigestedpin(calcPIN);
 			String authToken = MfinoUtil.calculateAuthorizationToken(changePin.getSourceMDN(), changePin.getNewPin());
-			srcSubscriberMDN.setAuthorizationToken(authToken);
+			srcSubscriberMDN.setAuthorizationtoken(authToken);
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 		}
 		catch (Exception ex) {

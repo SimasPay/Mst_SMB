@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelSessionManagement;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMWebApiLogoutRequest;
@@ -58,7 +58,7 @@ public class LogoutHandlerImpl extends FIXMessageHandler implements LogoutHandle
 		result.setTransactionTime(tLog.getTransactionTime());
 		result.setSourceMessage(request);
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(request.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(request.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+request.getSourceMDN()+" has failed validations");
@@ -69,7 +69,7 @@ public class LogoutHandlerImpl extends FIXMessageHandler implements LogoutHandle
 		
 		addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 		
-		ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getID());
+		ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
 
 		byte[] encryptedBytes = CryptographyService.hexToBin(request.getAuthMAC().toCharArray());
 		byte[] key = CryptographyService.hexToBin((csm != null) ? csm.getSessionKey().toCharArray() : null);
