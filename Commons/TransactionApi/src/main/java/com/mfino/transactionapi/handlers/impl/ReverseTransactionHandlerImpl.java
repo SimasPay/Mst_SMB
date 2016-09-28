@@ -29,7 +29,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionType;
 import com.mfino.domain.UnRegisteredTxnInfo;
@@ -129,10 +129,10 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 			String transactionTypeName = null;
 
-			if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION.equals(transactionType.getTransactionName()))){
+			if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION.equals(transactionType.getTransactionname()))){
 				transactionTypeName = ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION;
 			}
-			else if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE.equals(transactionType.getTransactionName()))){
+			else if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE.equals(transactionType.getTransactionname()))){
 				transactionTypeName = ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE;
 			}
 			else{
@@ -145,8 +145,8 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			reverseTransactionInquiry.setDestMDN(sctl.getDestMDN());
 			reverseTransactionInquiry.setAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
 			reverseTransactionInquiry.setCharges(sctl.getCalculatedCharge());
-			reverseTransactionInquiry.setChannelCode(cc.getChannelCode());
-			reverseTransactionInquiry.setSourceApplication(cc.getChannelSourceApplication());
+			reverseTransactionInquiry.setChannelCode(cc.getChannelcode());
+			reverseTransactionInquiry.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
 			reverseTransactionInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 			reverseTransactionInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_REVERSE_TRANSACTION);
 			reverseTransactionInquiry.setServiceChargeTransactionLogID(sctl.getID());
@@ -163,18 +163,18 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			if (CollectionUtils.isNotEmpty(lstTxnCommodityTransferMaps)) {
 				for (ChargeTxnCommodityTransferMap ctmap: lstTxnCommodityTransferMaps) {
 					CommodityTransfer ct = commodityTransferService.getCommodityTransferById(ctmap.getCommodityTransferID());
-					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUICategory())) {
+					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUicategory())) {
 						if (minCT == null) {
 							minCT = ct;
 						} 
-						else if (ct.getID().longValue() < minCT.getID().longValue()) {
+						else if (ct.getId().longValue() < minCT.getId().longValue()) {
 							minCT = ct;						
 						}
 						
 						if (maxCT == null) {
 							maxCT = ct;
 						}
-						else if (ct.getID().longValue() > maxCT.getID().longValue()) {
+						else if (ct.getId().longValue() > maxCT.getId().longValue()) {
 							maxCT = ct;
 						}
 					}
@@ -187,25 +187,25 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 				Long parent_transactionTypeId = parentSCTL.getTransactionTypeID();
 				TransactionType parent_transactionType = transactionTypeService.getTransactionTypeById(parent_transactionTypeId);
 				if (parent_transactionType != null && 
-						((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(parent_transactionType.getTransactionName())) || 
-						(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(parent_transactionType.getTransactionName()))) ) {
+						((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(parent_transactionType.getTransactionname())) || 
+						(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(parent_transactionType.getTransactionname()))) ) {
 					List<PartnerServices> lst = partnerServicesService.getPartnerServicesList(parentSCTL.getDestPartnerID(), parentSCTL.getServiceProviderID(), parentSCTL.getServiceID());
 					if (CollectionUtils.isNotEmpty(lst)) {
 						PartnerServices ps = lst.get(0);
-						reverseTransactionInquiry.setSourcePocketID(ps.getPocketBySourcePocket().getID());
+						reverseTransactionInquiry.setSourcePocketID(ps.getPocketBySourcepocket().getId().longValue());
 					}
 				}
 				else {
-					reverseTransactionInquiry.setSourcePocketID(maxCT.getDestPocketID());
+					reverseTransactionInquiry.setSourcePocketID(maxCT.getDestpocketid().longValue());
 				}
 				reverseTransactionInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Reverse_Transaction);
 			}
 			else{
-				reverseTransactionInquiry.setSourcePocketID(reversalFundingPocket.getID());
+				reverseTransactionInquiry.setSourcePocketID(reversalFundingPocket.getId().longValue());
 				reverseTransactionInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Reverse_Charge);
 			}
 
-			reverseTransactionInquiry.setDestPocketID(minCT.getPocketBySourcePocketID().getID());
+			reverseTransactionInquiry.setDestPocketID(minCT.getPocket().getId().longValue());
 			
 			log.debug("Send Inquiry Reverse Request to ServiceMix for processing.......");
 			CFIXMsg response = super.process(reverseTransactionInquiry);
@@ -222,8 +222,8 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 					reverseTransaction.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 					reverseTransaction.setSourceMDN(sctl.getSourceMDN());
 					reverseTransaction.setDestMDN(sctl.getDestMDN());
-					reverseTransaction.setChannelCode(cc.getChannelCode());
-					reverseTransaction.setSourceApplication(cc.getChannelSourceApplication());
+					reverseTransaction.setChannelCode(cc.getChannelcode());
+					reverseTransaction.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
 					reverseTransaction.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 					reverseTransaction.setServiceChargeTransactionLogID(sctl.getID());
 					reverseTransaction.setSourcePocketID(reverseTransactionInquiry.getSourcePocketID());
@@ -283,11 +283,11 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		Long transactionTypeId = parentSCTL.getTransactionTypeID();
 		TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 
-		if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(transactionType.getTransactionName())) {
+		if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(transactionType.getTransactionname())) {
 			BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(parentSCTL.getID());
 			if (bue != null) {
 				bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Expired);
-				bue.setFailureReason(MessageText._("Transaction was Reversed manually"));
+				bue.setFailurereason(MessageText._("Transaction was Reversed manually"));
 				bulkUploadEntryService.saveBulkUploadEntry(bue);
 			}
 		}
@@ -305,10 +305,10 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		List<UnRegisteredTxnInfo> urtiList = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 		if (CollectionUtils.isNotEmpty(urtiList)) {
 			UnRegisteredTxnInfo urti = urtiList.get(0);
-			if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnRegisteredTxnStatus()) || 
-					CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnRegisteredTxnStatus())) {
-				urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED);
-				urti.setFailureReason(MessageText._("Transaction is Reversed."));
+			if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnregisteredtxnstatus()) || 
+					CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnregisteredtxnstatus())) {
+				urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED.longValue());
+				urti.setFailurereason(MessageText._("Transaction is Reversed."));
 				unRegisteredTxnInfoService.save(urti);
 				log.info("UnRegisteredTxnInfo status chnaged to expired for Transfer SCTLId:" + sctlId);
 			}
@@ -328,10 +328,10 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 		String transactionTypeName = null;
 
-		if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION.equals(transactionType.getTransactionName()))){
+		if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION.equals(transactionType.getTransactionname()))){
 			transactionTypeName = ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION;
 		}
-		else if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE.equals(transactionType.getTransactionName()))){
+		else if((null != transactionType) && (ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE.equals(transactionType.getTransactionname()))){
 			transactionTypeName = ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE;
 		}
 		else{
@@ -358,12 +358,12 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		String mdn = parentSCTL.getSourceMDN();
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(mdn);
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(mdn);
 		if(smdn != null)
 		{
-			language = smdn.getSubscriber().getLanguage();
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			language = new Integer(String.valueOf(smdn.getSubscriber().getLanguage()));
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 		}
 		notificationWrapper.setLanguage(language);
 		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
