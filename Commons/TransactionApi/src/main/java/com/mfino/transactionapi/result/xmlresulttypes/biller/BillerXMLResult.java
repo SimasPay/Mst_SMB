@@ -21,15 +21,15 @@ public class BillerXMLResult extends XMLResult
 			for(Biller biller: billers){
 				getXmlWriter().writeStartElement("biller");
 				getXmlWriter().writeStartElement("billerCode");
-				getXmlWriter().writeCharacters(String.valueOf(biller.getBillerCode()),false);
+				getXmlWriter().writeCharacters(String.valueOf(biller.getBillercode()),false);
 				getXmlWriter().writeEndElement();
 				
 				getXmlWriter().writeStartElement("billerName");
-				getXmlWriter().writeCharacters(biller.getBillerName(),false);
+				getXmlWriter().writeCharacters(biller.getBillername(),false);
 				getXmlWriter().writeEndElement();
 				
 				getXmlWriter().writeStartElement("billerType");
-				getXmlWriter().writeCharacters(biller.getBillerType(),false);
+				getXmlWriter().writeCharacters(biller.getBillertype(),false);
 				getXmlWriter().writeEndElement();
 				getXmlWriter().writeEndElement();
 				

@@ -17,15 +17,15 @@ public class MerchantTopupXMLResult extends XMLResult
 	if (getDetailsOfPresentTransaction() != null)
 	{
 	    getXmlWriter().writeStartElement("refID");
-	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getID()),false);
+	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getId()),false);
 	    getXmlWriter().writeEndElement();
 
 	    getXmlWriter().writeStartElement("lastBalanceAfterTransaction");
-	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getSourcePocketBalance()),false);
+	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getSourcepocketbalance()),false);
 	    getXmlWriter().writeEndElement();
 
 	    getXmlWriter().writeStartElement("sourceRefID");
-	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getSourceReferenceID()),false);
+	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getSourcereferenceid()),false);
 	    getXmlWriter().writeEndElement();
 	}
 	writeEndOfDocument();

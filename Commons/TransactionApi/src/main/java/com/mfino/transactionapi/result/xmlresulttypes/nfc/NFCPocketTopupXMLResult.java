@@ -45,7 +45,7 @@ public class NFCPocketTopupXMLResult extends XMLResult {
 		if(getDetailsOfPresentTransaction()!=null)
 		{
 		    getXmlWriter().writeStartElement("refID");
-		    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getID()),true);
+		    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getId()),true);
 		    getXmlWriter().writeEndElement();
 		}
 		

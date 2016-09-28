@@ -22,23 +22,23 @@ public class BillerInfoXMLResult extends XMLResult
 		if(biller != null && biller.size()>0){
 				getXmlWriter().writeStartElement("biller");
 				getXmlWriter().writeStartElement("billerCode");
-				getXmlWriter().writeCharacters(String.valueOf(biller.get(0).getBillerCode()),false);
+				getXmlWriter().writeCharacters(String.valueOf(biller.get(0).getBillercode()),false);
 				getXmlWriter().writeEndElement();
 				
 				getXmlWriter().writeStartElement("billerName");
-				getXmlWriter().writeCharacters(biller.get(0).getBillerName(),false);
+				getXmlWriter().writeCharacters(biller.get(0).getBillername(),false);
 				getXmlWriter().writeEndElement();
 				
 				getXmlWriter().writeStartElement("billerType");
-				getXmlWriter().writeCharacters(biller.get(0).getBillerType(),false);
+				getXmlWriter().writeCharacters(biller.get(0).getBillertype(),false);
 				getXmlWriter().writeEndElement();
 								
-				if(biller.get(0).getBillerType().equals(CmFinoFIX.BillerType_Topup_Denomination)){
+				if(biller.get(0).getBillertype().equals(CmFinoFIX.BillerType_Topup_Denomination)){
 					getXmlWriter().writeStartElement("denominations");
 					if(getDenominations()!=null && getDenominations().size()>0){
 						for(Denomination denom : getDenominations()){
 							getXmlWriter().writeStartElement("denominationAmount");
-							getXmlWriter().writeCharacters(String.valueOf(denom.getDenominationAmount()),false);
+							getXmlWriter().writeCharacters(String.valueOf(denom.getDenominationamount()),false);
 							getXmlWriter().writeEndElement();
 						}
 						

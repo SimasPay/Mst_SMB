@@ -26,7 +26,7 @@ public class ResendOtpXMLResult extends XMLResult {
 			
 				if (getDetailsOfPresentTransaction() != null) {
 					getXmlWriter().writeStartElement("transactionTime");
-					getXmlWriter().writeCharacters(formatDate(getDetailsOfPresentTransaction().getStartTime()), false);
+					getXmlWriter().writeCharacters(formatDate(getDetailsOfPresentTransaction().getStarttime()), false);
 					getXmlWriter().writeEndElement();
 				}
 				else {

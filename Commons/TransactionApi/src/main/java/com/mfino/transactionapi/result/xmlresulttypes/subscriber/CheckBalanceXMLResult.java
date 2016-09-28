@@ -35,10 +35,10 @@ public class CheckBalanceXMLResult extends XMLResult {
 				getXmlWriter().writeEndElement();
 
 				getXmlWriter().writeStartElement("balance");
-				if (pocket.getCurrentBalance() == null)
+				if (pocket.getCurrentbalance() == null)
 					getXmlWriter().writeCharacters("0",true);
 				else
-					getXmlWriter().writeCharacters(String.valueOf(pocket.getCurrentBalance()),true);
+					getXmlWriter().writeCharacters(String.valueOf(pocket.getCurrentbalance()),true);
 				getXmlWriter().writeEndElement();
 
 				getXmlWriter().writeEndElement();

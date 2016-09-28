@@ -18,11 +18,11 @@ public class AirtimeTransferXMLResult extends XMLResult
 	if (getDetailsOfPresentTransaction() != null)
 	{
 	    getXmlWriter().writeStartElement("refID");
-	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getID()),true);
+	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getId()),true);
 	    getXmlWriter().writeEndElement();
 
 	    getXmlWriter().writeStartElement("lastBalanceAfterTransaction");
-	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getSourcePocketBalance()),true);
+	    getXmlWriter().writeCharacters(String.valueOf(getDetailsOfPresentTransaction().getSourcepocketbalance()),true);
 	    getXmlWriter().writeEndElement();
 	}
 	writeEndOfDocument();

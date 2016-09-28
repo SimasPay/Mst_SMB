@@ -60,7 +60,7 @@ public class BillPaymentTopupInquiryXMLResult extends XMLResult
 		if(denominations != null && denominations.size()>0){
 			for(Denomination denomination:denominations ){
 				getXmlWriter().writeStartElement("denominationAmount");
-				getXmlWriter().writeCharacters(String.valueOf(denomination.getDenominationAmount()),false);
+				getXmlWriter().writeCharacters(String.valueOf(denomination.getDenominationamount()),false);
 				getXmlWriter().writeEndElement();
 				}
 			}

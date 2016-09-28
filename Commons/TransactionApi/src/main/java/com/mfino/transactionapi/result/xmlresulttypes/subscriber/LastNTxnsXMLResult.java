@@ -139,16 +139,16 @@ public class LastNTxnsXMLResult extends XMLResult {
 					getXmlWriter().writeEndElement();
 
 					getXmlWriter().writeStartElement("sourceMDN");
-					getXmlWriter().writeCharacters(ct.getSourceMDN(),false);
+					getXmlWriter().writeCharacters(ct.getSourcemdn(),false);
 					getXmlWriter().writeEndElement();
 					
-					if(ct.getUICategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup)){
+					if(ct.getUicategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup)){
 						getXmlWriter().writeStartElement("destMDN");
-						getXmlWriter().writeCharacters(ct.getDestCardPAN(),false);
+						getXmlWriter().writeCharacters(ct.getDestcardpan(),false);
 						getXmlWriter().writeEndElement();
 					}else{
 						getXmlWriter().writeStartElement("destMDN");
-						getXmlWriter().writeCharacters(ct.getDestMDN(),false);
+						getXmlWriter().writeCharacters(ct.getDestmdn(),false);
 						getXmlWriter().writeEndElement();
 					}
 					
@@ -157,11 +157,11 @@ public class LastNTxnsXMLResult extends XMLResult {
 					getXmlWriter().writeCharacters(EnumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUICategory()),false);
 					getXmlWriter().writeEndElement();*/
 					getXmlWriter().writeStartElement("transactionType");
-					getXmlWriter().writeCharacters(ct.getSourceMessage(), false);
+					getXmlWriter().writeCharacters(ct.getSourcemessage(), false);
 					getXmlWriter().writeEndElement();
 
 					getXmlWriter().writeStartElement("transactionTime");
-					getXmlWriter().writeCharacters(formatDateForTransaction(ct.getStartTime()),false);
+					getXmlWriter().writeCharacters(formatDateForTransaction(ct.getStarttime()),false);
 					getXmlWriter().writeEndElement();
 					
 					getXmlWriter().writeStartElement("transactionDescription");
@@ -170,7 +170,7 @@ public class LastNTxnsXMLResult extends XMLResult {
 
 					getXmlWriter().writeStartElement("isCredit");
 					boolean isCredit ;
-					if(ct.getPocketBySourcePocketID().getID().equals(getSourcePocket().getID())){
+					if(ct.getPocket().getId().equals(getSourcePocket().getId())){
 						isCredit = false;
 					}
 					else{
@@ -203,21 +203,21 @@ public class LastNTxnsXMLResult extends XMLResult {
 					getXmlWriter().writeStartElement("transactionDetail");
 
 					getXmlWriter().writeStartElement("refID");
-					getXmlWriter().writeCharacters(String.valueOf(pendingSettlement.getID()),true);
+					getXmlWriter().writeCharacters(String.valueOf(pendingSettlement.getId()),true);
 					getXmlWriter().writeEndElement();
 
-					Partner partner = DAOFactory.getInstance().getPartnerDAO().getById(pendingSettlement.getPartnerID());
+					Partner partner = DAOFactory.getInstance().getPartnerDAO().getById(pendingSettlement.getPartner().getId().longValue());
             		getXmlWriter().writeStartElement("TradeName");
-					getXmlWriter().writeCharacters(String.valueOf(partner!=null?partner.getTradeName():""),false);
+					getXmlWriter().writeCharacters(String.valueOf(partner!=null?partner.getTradename():""),false);
 					getXmlWriter().writeEndElement();
 
-					Service service = DAOFactory.getInstance().getServiceDAO().getById(pendingSettlement.getServiceID());
+					Service service = DAOFactory.getInstance().getServiceDAO().getById(pendingSettlement.getService().getId().longValue());
 					getXmlWriter().writeStartElement("Service");
-					getXmlWriter().writeCharacters(String.valueOf(service!=null?service.getDisplayName():""),false);
+					getXmlWriter().writeCharacters(String.valueOf(service!=null?service.getDisplayname():""),false);
 					getXmlWriter().writeEndElement();
 					
 					getXmlWriter().writeStartElement("SCTLID");
-					getXmlWriter().writeCharacters(String.valueOf(pendingSettlement.getSctlId()),false);
+					getXmlWriter().writeCharacters(String.valueOf(pendingSettlement.getServiceChargeTxnLog().getId()),false);
 					getXmlWriter().writeEndElement();
 					
 					getXmlWriter().writeStartElement("SettlementStatus");
