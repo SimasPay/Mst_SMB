@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.util.HashSet;
@@ -15,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -23,7 +23,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "TRANSACTION_LOG")
 public class TransactionLog  extends Base implements java.io.Serializable {
-
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_LastUpdateTime = "lastupdatetime";
 	private mFinoServiceProvider mfinoServiceProvider;
 	private BigDecimal parenttransactionid;
