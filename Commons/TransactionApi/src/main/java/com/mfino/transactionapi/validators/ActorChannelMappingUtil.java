@@ -35,7 +35,7 @@ public Long getTransactionID(TransactionDetails transactionDetails){
 	
 	if(StringUtils.isNotBlank(transactionName) && null!=tDAO.getTransactionTypeByName(transactionName))
 	{
-	return tDAO.getTransactionTypeByName(transactionName).getID();
+		return tDAO.getTransactionTypeByName(transactionName).getId().longValue();
 	}
 	return null;
 	

@@ -11,7 +11,7 @@ import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.ActorChannelMappingQuery;
 import com.mfino.domain.ActorChannelMapping;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.vo.TransactionDetails;
@@ -45,7 +45,7 @@ public class ChannelRestrictionsValidator{
 			ServiceDAO serviceDAO=DAOFactory.getInstance().getServiceDAO();
 			if(null!=serviceDAO.getServiceByName(transactionDetails.getServiceName()))
 			{
-			acmQuery.setServiceID(serviceDAO.getServiceByName(transactionDetails.getServiceName()).getID());
+				acmQuery.setServiceID(serviceDAO.getServiceByName(transactionDetails.getServiceName()).getId().longValue());
 			}
 			// handling getting transactionTypeID from transactionDetails separately
 			ActorChannelMappingUtil acmUtil=new ActorChannelMappingUtil();
@@ -54,11 +54,11 @@ public class ChannelRestrictionsValidator{
 			}
 			SubscriberMDNDAO subMDNDAO=DAOFactory.getInstance().getSubscriberMdnDAO();
 			Subscriber sub = null;
-			SubscriberMDN subMDN=null;
+			SubscriberMdn subMDN=null;
 			PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
-			if(null!= subMDNDAO.getByMDN(transactionDetails.getSourceMDN()))
+			if(null!= subMDNDAO.getByMDN(transactionDetails.getSourceMDN());
 			{	
-			subMDN= subMDNDAO.getByMDN(transactionDetails.getSourceMDN());
+				subMDN= subMDNDAO.getByMDN(transactionDetails.getSourceMDN());
 			}
 			if(null!=subMDN)
 			{
@@ -66,16 +66,15 @@ public class ChannelRestrictionsValidator{
 			}
 			if(null!=sub)
 			{
-			acmQuery.setSubscriberType(sub.getType());
+			acmQuery.setSubscriberType((int)sub.getType());
 			//kyc level is set in query only when the subscriber is of type subscriber
 			//When the subscriber is of partner or agent type the kyclevel is null in actor mapping table
-			if(CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType()))
-					{
-			acmQuery.setKycLevel(sub.getKYCLevelByKYCLevel().getKYCLevel());
+			if(CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())) {
+			acmQuery.setKycLevel(sub.getKycLevel().getKyclevel().longValue());
 					}
 			if(null!=partnerDAO.getPartnerBySubscriber(sub))
 			{
-			acmQuery.setPartnerType(partnerDAO.getPartnerBySubscriber(sub).getBusinessPartnerType());
+				acmQuery.setPartnerType(partnerDAO.getPartnerBySubscriber(sub).getBusinesspartnertype().intValue());
 			}
 			
 			/*
@@ -91,7 +90,7 @@ public class ChannelRestrictionsValidator{
 			
 			
 			SubscriberGroupDao subGroupDAO=DAOFactory.getInstance().getSubscriberGroupDao();
-			long subID=sub.getID();
+			long subID=sub.getId().longValue();
 			if(null!=subGroupDAO.getBySubscriberID(subID)){
 			acmQuery.setGroup(subGroupDAO.getBySubscriberID(subID).getGroup().getID());
 			}else{
@@ -103,7 +102,7 @@ public class ChannelRestrictionsValidator{
 			//Setting false only when the isAllowed is explicitly set as false in the ActorChannelMapping table so that the existing transactions are not affected
 			if(CollectionUtils.isNotEmpty(list))
 			{
-			allow=list.get(0).getIsAllowed();
+				allow=list.get(0).getIsallowed()==0?false:true;
 			}else
 			{	
 			//do nothing

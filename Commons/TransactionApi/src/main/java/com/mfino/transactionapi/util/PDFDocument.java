@@ -39,7 +39,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.ConfigurationUtil;
@@ -136,14 +136,14 @@ public class PDFDocument {
 
 	}
 	
-	public void addSubscriberDetails(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket)throws IOException, DocumentException 
+	public void addSubscriberDetails(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket)throws IOException, DocumentException 
 	{
 		this.table = new PdfPTable(2);
 		
 		int[] widths = {3,2};
 		this.table.setWidths(widths);
 		this.table.setHorizontalAlignment(Element.ALIGN_LEFT);
-		Integer Language = subscriberMDN.getSubscriber().getLanguage();
+		Integer Language = (int)subscriberMDN.getSubscriber().getLanguage();
 		
 		String title;
 		String name;
@@ -201,7 +201,7 @@ public class PDFDocument {
 		nameCell.setBorder(0);
 		this.table.addCell(nameCell);
 		
-		currentBalance = currentBalance + pocket.getCurrentBalance();
+		currentBalance = currentBalance + pocket.getCurrentbalance();
 		PdfPCell currentBalanceCell = new PdfPCell(new Phrase(currentBalance));
 		currentBalanceCell.setBorder(0);
 		this.table.addCell(currentBalanceCell);
@@ -241,7 +241,7 @@ public class PDFDocument {
 	}
 
 	
-	private void addSubscriberDetailsHeader(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket)throws IOException, DocumentException
+	private void addSubscriberDetailsHeader(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket)throws IOException, DocumentException
 	{
 	        
 		this.table = new PdfPTable(4); 
@@ -249,7 +249,7 @@ public class PDFDocument {
 		this.table.setTotalWidth(this.document.getPageSize().getWidth()-20);
 		int[] widths = {1,2,1,1};
      	this.table.setWidths(widths);
-		language = subscriberMDN.getSubscriber().getLanguage();
+		language = (int)subscriberMDN.getSubscriber().getLanguage();
 				
 		addEmptyCellToSubscriberDetailsTable(this.table, 4, 0.1f);
 		
@@ -271,8 +271,8 @@ public class PDFDocument {
 		String currentBalance = "Current Balance";
 		String cardNo = "Card Number";
 		
-		String cardNameVal = pocket.getCardAlias() != null ? pocket.getCardAlias() : "";
-		String cardPANVal = pocket.getCardPAN();
+		String cardNameVal = pocket.getCardalias() != null ? pocket.getCardalias() : "";
+		String cardPANVal = pocket.getCardpan();
 		
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, cardName), cardNameVal);
 		String currentBalanceVal;
@@ -288,7 +288,7 @@ public class PDFDocument {
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, cardNo), cardPANVal);
 	}
 	
-	private void addSubscriberDetailsSpecificToEmoneyTxnHistory(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket, BigDecimal openingBalance,BigDecimal endingBalance)
+	private void addSubscriberDetailsSpecificToEmoneyTxnHistory(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket, BigDecimal openingBalance,BigDecimal endingBalance)
 	{
 		String currentBalance = "Ending Balance";
 		String 	name = "Full Name";
@@ -298,18 +298,18 @@ public class PDFDocument {
 		
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		String nameVal = StringUtils.EMPTY;
-		if (subscriber.getKYCLevelByKYCLevel().getKYCLevel() != null && 
-				CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue() == (subscriber.getKYCLevelByKYCLevel().getKYCLevel().intValue())) {
+		if (subscriber.getKycLevel().getKyclevel() != null && 
+				CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue() == (subscriber.getKycLevel().getKyclevel().intValue())) {
 			nameVal = subscriber.getNickname();
 		}
 		else {
-			String firstName = subscriber.getFirstName();
-			String lastName = subscriber.getLastName();
+			String firstName = subscriber.getFirstname();
+			String lastName = subscriber.getLastname();
 			nameVal = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
 		}
 
 		String currentBalanceVal = "Rp. ";
-		currentBalanceVal += MfinoUtil.getNumberFormat().format(pocket.getCurrentBalance());
+		currentBalanceVal += MfinoUtil.getNumberFormat().format(pocket.getCurrentbalance());
 					
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, name), nameVal);
 		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, beginingBalance), "Rp "+MfinoUtil.getNumberFormat().format(openingBalance));
@@ -319,7 +319,7 @@ public class PDFDocument {
 		
 		
 	}
-	private void addOtherSubscriberDetails(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket,BigDecimal totalCrediAmount, BigDecimal totalDebitAmount,BigDecimal openingBalance,BigDecimal endingBalance)throws IOException, DocumentException
+	private void addOtherSubscriberDetails(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket,BigDecimal totalCrediAmount, BigDecimal totalDebitAmount,BigDecimal openingBalance,BigDecimal endingBalance)throws IOException, DocumentException
 	{
 
 		PdfPTable emptyTable = new PdfPTable(1);
@@ -416,16 +416,16 @@ public class PDFDocument {
 		return LanguageTranslator.translate(language, title);
 	}
 	
-	public void addSubscriberDetailsTable(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket)throws IOException, DocumentException 
+	public void addSubscriberDetailsTable(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket)throws IOException, DocumentException 
 	{
 		
 //		addSubscriberDetailsHeader(txnDetails, subscriberMDN, pocket);
 		addOtherSubscriberDetails(txnDetails, subscriberMDN, pocket,new BigDecimal(0),new BigDecimal(0),new BigDecimal(0),new BigDecimal(0));
 
 	}
-	public void addSubscriberDetailsTable(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket pocket,BigDecimal totalCreditAmount,BigDecimal totalDebitAmount,BigDecimal openingBalance,BigDecimal endingBalance)throws IOException, DocumentException 
+	public void addSubscriberDetailsTable(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket,BigDecimal totalCreditAmount,BigDecimal totalDebitAmount,BigDecimal openingBalance,BigDecimal endingBalance)throws IOException, DocumentException 
 	{
-		language = subscriberMDN.getSubscriber().getLanguage();
+		language = (int)subscriberMDN.getSubscriber().getLanguage();
 		
 //		addSubscriberDetailsHeader(txnDetails, subscriberMDN, pocket);
 		addOtherSubscriberDetails(txnDetails, subscriberMDN, pocket,totalCreditAmount,totalDebitAmount,openingBalance,endingBalance);
