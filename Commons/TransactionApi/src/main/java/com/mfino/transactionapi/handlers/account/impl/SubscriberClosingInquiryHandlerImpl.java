@@ -25,7 +25,7 @@ import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -127,7 +127,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		
 		ChannelCode channelCode = transactionDetails.getCc();
 		
-		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
+		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getId()) == true) {
 			
 			isMfATransaction = true;
 			
@@ -141,8 +141,8 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
-		SubscriberMDN agentMDN = null;
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(subscriberClosing.getDestMDN());
+		SubscriberMdn agentMDN = null;
+		SubscriberMdn subMDN = subscriberMdnService.getByMDN(subscriberClosing.getDestMDN());
 		
 		if(!transactionDetails.isSystemIntiatedTransaction()) {
 		
@@ -160,7 +160,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 				validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 				result.setNotificationCode(validationResult);
-				result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+				result.setNumberOfTriesLeft(new Integer(String.valueOf((systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongpincount()))));
 				return result;
 			}
 		} else {
@@ -176,14 +176,14 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 			
 			if(null != destPocket) {
 			
-				result.setName(subMDN.getSubscriber().getFirstName());
+				result.setName(subMDN.getSubscriber().getFirstname());
 				
-				if(destPocket.getCurrentBalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT))) == -1) {
+				if(new BigDecimal(destPocket.getCurrentbalance()).compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT))) == -1) {
 					
 					if(CmFinoFIX.SubscriberStatus_Active.equals(subMDN.getSubscriber().getStatus())) {
 					
 						ServiceChargeTransactionsLogQuery query = new ServiceChargeTransactionsLogQuery();
-						query.setSourceMdn(subMDN.getMDN());
+						query.setSourceMdn(subMDN.getMdn());
 						query.setStatus(CmFinoFIX.SCTLStatus_Pending);
 						
 						List<ServiceChargeTransactionLog> sctlData = sctlService.getSubscriberPendingTransactions(query);
@@ -194,20 +194,20 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingInquirySuccess);
 							result.setMessage("Subscriber Closing Inquiry successfull");
 							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
-							result.setDestinationMDN(subMDN.getMDN());
+							result.setDestinationMDN(subMDN.getMdn());
 							
 							Transaction transaction = null;
 							
 							ServiceCharge sc=new ServiceCharge();
-							sc.setChannelCodeId(channelCode.getID());
-							sc.setDestMDN(subMDN.getMDN());
+							sc.setChannelCodeId(channelCode.getId().longValue());
+							sc.setDestMDN(subMDN.getMdn());
 							sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 							sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT);
 							
 							if(null != agentMDN) {
 								
-								sc.setSourceMDN(agentMDN.getMDN());
-								sc.setOnBeHalfOfMDN(agentMDN.getMDN());
+								sc.setSourceMDN(agentMDN.getMdn());
+								sc.setOnBeHalfOfMDN(agentMDN.getMdn());
 							}
 							
 							sc.setTransactionAmount(BigDecimal.ZERO);
@@ -289,7 +289,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		return result;
 	}
 	
-	private void sendOTPSMS (SubscriberMDN subscriberMDN, Long sctlID) {
+	private void sendOTPSMS (SubscriberMdn subscriberMDN, Long sctlID) {
 		
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		Subscriber subscriber = subscriberMDN.getSubscriber();
@@ -297,21 +297,21 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-		subscriberMDN.setOTP(digestPin1);
-		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+		subscriberMDN.setOtp(digestPin1);
+		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subscriberMDNDAO.save(subscriberMDN);
 		
 		log.info("oneTimePin:" + oneTimePin);
 		
 		NotificationWrapper smsNotificationWrapper = subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS,CmFinoFIX.NotificationCode_SubscriberClosingInquirySuccess);
-		smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-		smsNotificationWrapper.setLanguage(subscriber.getLanguage());
-		smsNotificationWrapper.setFirstName(subscriber.getFirstName());
-    	smsNotificationWrapper.setLastName(subscriber.getLastName());
+		smsNotificationWrapper.setDestMDN(subscriberMDN.getMdn());
+		smsNotificationWrapper.setLanguage(new Integer(String.valueOf(subscriber.getLanguage())));
+		smsNotificationWrapper.setFirstName(subscriber.getFirstname());
+    	smsNotificationWrapper.setLastName(subscriber.getLastname());
     	smsNotificationWrapper.setOneTimePin(oneTimePin);
 		
     	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
-		String mdn2 = subscriberMDN.getMDN();
+		String mdn2 = subscriberMDN.getMdn();
 		
 		SMSValues smsValues= new SMSValues();
 		smsValues.setDestinationMDN(mdn2);

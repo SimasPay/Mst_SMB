@@ -14,7 +14,7 @@ import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -88,10 +88,10 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 
 		String mfaTransactionType = transactionDetails.getMfaTransaction();
 		
-		subscriberReactivation.setChannelCode(cc.getChannelCode());
+		subscriberReactivation.setChannelCode(cc.getChannelcode());
  		subscriberReactivation.setSourceMDN(transactionDetails.getSourceMDN());
 		subscriberReactivation.setPin(transactionDetails.getSourcePIN());
-		subscriberReactivation.setSourceApplication(cc.getChannelSourceApplication());
+		subscriberReactivation.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
 		subscriberReactivation.setSourceCardPAN(transactionDetails.getCardPAN());
 		subscriberReactivation.setNewPin(transactionDetails.getNewPIN());
 		subscriberReactivation.setConfirmPin(transactionDetails.getConfirmPIN());
@@ -129,7 +129,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 		
 			serviceCharge.setSourceMDN(subscriberReactivation.getSourceMDN());
 			serviceCharge.setDestMDN(null);
-			serviceCharge.setChannelCodeId(cc.getID());
+			serviceCharge.setChannelCodeId(cc.getId().longValue());
 			serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 			serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REACTIVATION);
 			serviceCharge.setTransactionAmount(BigDecimal.ZERO);
@@ -176,13 +176,13 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 			}			
 		}
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
 		Pocket srcpocket = pocketService.getDefaultPocket(sourceMDN, "2");
 
 		log.info("ExistingSubscriberReactivationHandler::Handle"+transactionDetails.getSourcePocketId());
 
-		subscriberReactivation.setSourcePocketID(srcpocket.getID());
+		subscriberReactivation.setSourcePocketID(srcpocket.getId().longValue());
 		subscriberReactivation.setServiceChargeTransactionLogID(sctl.getID());
 		
 		CFIXMsg response = super.process(subscriberReactivation);
@@ -212,7 +212,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 
  				String notificationName = null;
 				if(notification != null){
-					notificationName = notification.getCodeName();
+					notificationName = notification.getCodename();
 				}else{
 					log.error("Could not find the failure notification code: "+code);
 				}
@@ -235,11 +235,10 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 				
 				String notificationName = null;
 				if(notification != null){
-					notificationName = notification.getCodeName();
+					notificationName = notification.getCodename();
 				}else{
 					log.error("Could not find the failure notification code: "+respCode);
 				}
-				
 
 				transactionChargingService.failTheTransaction(sctl, MessageText._("Reactivation Failed. Notification Code: "+respCode+" NotificationName: "+notificationName));
 			}

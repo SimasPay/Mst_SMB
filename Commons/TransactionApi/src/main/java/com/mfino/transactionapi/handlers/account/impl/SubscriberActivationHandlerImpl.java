@@ -20,7 +20,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -82,8 +82,8 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
  		subscriberActivation.setPin(transactionDetails.getNewPIN());
 		subscriberActivation.setSourceMDN(transactionDetails.getSourceMDN());
 		subscriberActivation.setOTP(transactionDetails.getActivationOTP());
-		subscriberActivation.setSourceApplication(cc.getChannelSourceApplication());
-		subscriberActivation.setChannelCode(cc.getChannelCode());
+		subscriberActivation.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
+		subscriberActivation.setChannelCode(cc.getChannelcode());
 		subscriberActivation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		if (transactionDetails.getDateOfBirth() != null) {
@@ -94,7 +94,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 		log.info("Handling subscriber services activation webapi request");
 
 		XMLResult result = new ActivationXMLResult();
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberActivation, subscriberActivation.DumpFields());
@@ -110,7 +110,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberActivation.getSourceMDN());
 		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_ACTIVATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -155,7 +155,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 			String notificationName = null;
 		
 			if(CollectionUtils.isNotEmpty(notification)){
-				notificationName = notification.get(0).getCodeName();
+				notificationName = notification.get(0).getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+code);
 			}
@@ -165,21 +165,21 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 
 		if(sourceMDN != null)
 		{
-			sourceMDN.setWrongPINCount(0);
+			sourceMDN.setWrongpincount(0);
 			subscriberMdnService.saveSubscriberMDN(sourceMDN);
  
 			if(isEMoneyPocketRequired==false){
 				log.info("isEmoneyPocketRequired = " + isEMoneyPocketRequired + " hence activating and approving");
-				Set<Pocket> pockets = sourceMDN.getPocketFromMDNID();
+				Set<Pocket> pockets = sourceMDN.getPockets();
 				boolean bankPocketFound = false;
 				Pocket bankPocket = null;
  			
 				for (Pocket pocket : pockets) {
 					if (!bankPocketFound 
-							&& pocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)
-							&& pocket.getCardPAN() != null
-							&& (pocket.getStatus().equals(CmFinoFIX.PocketStatus_Active) || 
-								pocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized))) {
+							&& pocket.getPocketTemplate().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())
+							&& pocket.getCardpan() != null
+							&& (pocket.getStatus() == (CmFinoFIX.PocketStatus_Active.longValue()) || 
+								pocket.getStatus() == (CmFinoFIX.PocketStatus_Initialized.longValue()))) {
 						bankPocketFound = true;
 						bankPocket = pocket;
 						break;
@@ -188,24 +188,24 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 				
 				log.info("Bank Pocket Found = " + bankPocketFound);
 				Subscriber subscriber = sourceMDN.getSubscriber();
-				String subscriberName = subscriber.getFirstName();
+				String subscriberName = subscriber.getFirstname();
 				if(bankPocketFound)
 				{
-					bankPocket.setActivationTime(new Timestamp());
-					bankPocket.setIsDefault(true);
+					bankPocket.setActivationtime(new Timestamp());
+					bankPocket.setIsdefault(Short.valueOf("1"));
 					bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-					bankPocket.setStatusTime(new Timestamp());
-					bankPocket.setUpdatedBy(subscriberName);
+					bankPocket.setStatustime(new Timestamp());
+					bankPocket.setUpdatedby(subscriberName);
 					pocketService.save(bankPocket);
 					log.info("SubscriberActivation : bankPocket activation id:"
-							+ bankPocket.getID() + " subscriberid"
-							+ subscriber.getID());
+							+ bankPocket.getId() + " subscriberid"
+							+ subscriber.getId());
 				}
-				subscriber.setUpgradableKYCLevel(null);
-                subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-				subscriber.setApproveOrRejectComment("Approved for No Emoney");
-				subscriber.setApprovedOrRejectedBy("System");
-				subscriber.setApproveOrRejectTime(new Timestamp());
+				subscriber.setUpgradablekyclevel(null);
+                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+				subscriber.setApproveorrejectcomment("Approved for No Emoney");
+				subscriber.setApprovedorrejectedby("System");
+				subscriber.setApproveorrejecttime(new Timestamp());
 			}
 			result.setNotificationCode(code);
 			result.setSctlID(sctl.getID());

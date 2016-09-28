@@ -13,7 +13,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -23,15 +23,12 @@ import com.mfino.fix.CmFinoFIX.CMGetTransactionStatus;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.service.impl.TransactionChargingServiceImpl;
-import com.mfino.service.impl.TransactionLogServiceImpl;
 import com.mfino.transactionapi.handlers.account.TransactionStatusHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LastNTxnsXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -81,8 +78,8 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		transactionStatus.setSourceMDN(transactionDetails.getSourceMDN());
 		transactionStatus.setPin(transactionDetails.getSourcePIN());
 		transactionStatus.setTransferID(transactionDetails.getTransferId());
-		transactionStatus.setSourceApplication(cc.getChannelSourceApplication());
-		transactionStatus.setChannelCode(cc.getChannelCode());
+		transactionStatus.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
+		transactionStatus.setChannelCode(cc.getChannelcode());
 		transactionStatus.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());		
 		
 		LastNTxnsXMLResult result = new LastNTxnsXMLResult();
@@ -96,7 +93,7 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		result.setTransactionID(transactionsLog.getID());
 
-		SubscriberMDN sourceMDN=subscriberMdnService.getByMDN(transactionStatus.getSourceMDN());
+		SubscriberMdn sourceMDN=subscriberMdnService.getByMDN(transactionStatus.getSourceMDN());
 		
 
 		Integer validationResult =transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
@@ -108,7 +105,7 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		validationResult =transactionApiValidationService.validatePin(sourceMDN, transactionStatus.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: "+transactionStatus.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft(new Integer(String.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongpincount())));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -120,7 +117,7 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		ServiceCharge serviceCharge = new ServiceCharge();
 		serviceCharge.setSourceMDN(transactionStatus.getSourceMDN());
 		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(cc.getID());
+		serviceCharge.setChannelCodeId(cc.getId().longValue());
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSACTIONSTATUS);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
@@ -165,8 +162,8 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		
 		ServiceChargeTransactionLog sctlrecord =sctlList;
 		
-		if( (sctlrecord.getSourceMDN() !=null && sctlrecord.getSourceMDN().equals(sourceMDN.getMDN()))
-				|| (sctlrecord.getDestMDN()!=null && sctlrecord.getDestMDN().equals(sourceMDN.getMDN())) ){
+		if( (sctlrecord.getSourceMDN() !=null && sctlrecord.getSourceMDN().equals(sourceMDN.getMdn()))
+				|| (sctlrecord.getDestMDN()!=null && sctlrecord.getDestMDN().equals(sourceMDN.getMdn())) ){
 			result.setAmount(sctlrecord.getTransactionAmount());
 			result.setSctlID(sctl.getID());
 			result.setSCTLList(sctlrecord);

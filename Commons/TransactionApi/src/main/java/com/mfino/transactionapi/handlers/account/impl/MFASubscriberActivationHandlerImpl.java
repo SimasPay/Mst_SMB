@@ -20,7 +20,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -104,11 +104,11 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		
 		CMSubscriberActivation subscriberActivation = new CMSubscriberActivation();
 		
-		subscriberActivation.setChannelCode(channelCode.getChannelCode());
+		subscriberActivation.setChannelCode(channelCode.getChannelcode());
 		subscriberActivation.setPin(transactionDetails.getNewPIN());
 		subscriberActivation.setOTP(transactionDetails.getActivationOTP());
 		subscriberActivation.setSourceMDN(transactionDetails.getSourceMDN());
-		subscriberActivation.setSourceApplication(channelCode.getChannelSourceApplication());
+		subscriberActivation.setSourceApplication(new Integer(String.valueOf(channelCode.getChannelsourceapplication())));
 		subscriberActivation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 		if(dateOfBirth!=null){
@@ -129,7 +129,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		
 		subscriberActivation.setTransactionID(transactionsLog.getID());
 
-		SubscriberMDN subscribermdn = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
+		SubscriberMdn subscribermdn = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 		Integer code = null;
 		
 		if(null == subscribermdn) {
@@ -157,7 +157,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			
 			serviceCharge.setSourceMDN(subscriberActivation.getSourceMDN());
 			serviceCharge.setDestMDN(null);
-			serviceCharge.setChannelCodeId(channelCode.getID());
+			serviceCharge.setChannelCodeId(channelCode.getId());
 			serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 			serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_ACTIVATION);
 			serviceCharge.setTransactionAmount(BigDecimal.ZERO);
@@ -202,7 +202,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			result.setSctlID(sctl.getID());
 			result.setMfaMode("None");
 			
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getID()) == true){
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getId()) == true){
 			
 				result.setMfaMode("OTP");
 				mfaService.handleMFATransaction(sctl.getID(), subscriberActivation.getSourceMDN());
@@ -212,7 +212,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 				transactionChargingService.saveServiceTransactionLog(sctl);
 			}
 			
-			result.setName(subscribermdn.getSubscriber().getFirstName());
+			result.setName(subscribermdn.getSubscriber().getFirstname());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberActivationInquirySuccessful);
 			
  			return result;			
@@ -224,7 +224,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 
 			sctl=sctlForMFA;
 
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getID()) == true){
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getId()) == true){
 				
 				if(transactionOTP == null || !(mfaService.isValidOTP(transactionOTP,sctlForMFA.getID(), subscriberActivation.getSourceMDN()))){
 						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
@@ -238,7 +238,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		
 		if(subscribermdn!=null){
 			Subscriber subscriber=subscribermdn.getSubscriber();
-			int int_subscriberType=subscriber.getType();
+			int int_subscriberType = new Integer(String.valueOf(subscriber.getType()));
 			if(int_subscriberType==CmFinoFIX.SubscriberType_Partner){
 				NotificationWrapper wrapper = agentService.activeAgent(subscriberActivation,isHttps, ConfigurationUtil.getuseHashedPIN());		
 				 code= wrapper.getCode();
@@ -268,7 +268,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 
 			String notificationName = null;
 			if(CollectionUtils.isNotEmpty(notification)){
-				notificationName = notification.get(0).getCodeName();
+				notificationName = notification.get(0).getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+code);
 			}
@@ -278,23 +278,23 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 
 		if(subscribermdn != null)
 		{
-			subscribermdn.setWrongPINCount(0);
+			subscribermdn.setWrongpincount(0);
 			
 			subscriberMdnService.saveSubscriberMDN(subscribermdn);
  
 			boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();			
 			if(isEMoneyPocketRequired==false){
 				log.info("isEmoneyPocketRequired = " + isEMoneyPocketRequired + " hence activating and approving");
-				Set<Pocket> pockets = subscribermdn.getPocketFromMDNID();
+				Set<Pocket> pockets = subscribermdn.getPockets();
 				boolean bankPocketFound = false;
 				Pocket bankPocket = null;
 
 				for (Pocket pocket : pockets) {
 					if (!bankPocketFound
-							&& pocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)
-							&& pocket.getCardPAN() != null
-							&& (pocket.getStatus().equals(CmFinoFIX.PocketStatus_Active) 
-									|| pocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized))) {
+							&& pocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())
+							&& pocket.getCardpan() != null
+							&& (pocket.getStatus() == CmFinoFIX.PocketStatus_Active.longValue() 
+									|| pocket.getStatus() == CmFinoFIX.PocketStatus_Initialized.longValue())) {
 						bankPocketFound = true;
 						bankPocket = pocket;
 						break;
@@ -303,29 +303,29 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 				
 				log.info("Bank Pocket Found = " + bankPocketFound);
 				Subscriber subscriber = subscribermdn.getSubscriber();
-				String subscriberName = subscriber.getFirstName();
+				String subscriberName = subscriber.getFirstname();
 				if(bankPocketFound)
 				{
-					bankPocket.setActivationTime(new Timestamp());
-					bankPocket.setIsDefault(true);
+					bankPocket.setActivationtime(new Timestamp());
+					bankPocket.setIsdefault(Short.valueOf("1"));
 					bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-					bankPocket.setStatusTime(new Timestamp());
-					bankPocket.setUpdatedBy(subscriberName);
+					bankPocket.setStatustime(new Timestamp());
+					bankPocket.setUpdatedby(subscriberName);
 
 					pocketService.save(bankPocket);
 
 					log.info("SubscriberActivation : bankPocket activation id:"
-							+ bankPocket.getID() 
+							+ bankPocket.getId() 
 							+ " subscriberid"
-							+ subscriber.getID());
+							+ subscriber.getId());
 				}
-				subscriber.setUpgradableKYCLevel(null);
-                subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-				subscriber.setApproveOrRejectComment("Approved for No Emoney");
-				subscriber.setApprovedOrRejectedBy("System");
-				subscriber.setApproveOrRejectTime(new Timestamp());
+				subscriber.setUpgradablekyclevel(null);
+                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+				subscriber.setApproveorrejectcomment("Approved for No Emoney");
+				subscriber.setApprovedorrejectedby("System");
+				subscriber.setApproveorrejecttime(new Timestamp());
 				
-				result.setName(subscriber.getFirstName());
+				result.setName(subscriber.getFirstname());
 			}
 			
 			result.setNotificationCode(code);

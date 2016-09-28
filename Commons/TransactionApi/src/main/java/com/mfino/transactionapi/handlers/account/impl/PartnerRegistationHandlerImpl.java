@@ -13,7 +13,7 @@ import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -141,7 +141,7 @@ public class PartnerRegistationHandlerImpl extends FIXMessageHandler implements 
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(partnerRegistration.getMDN());
 		sc.setDestMDN(partnerRegistration.getMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_PARTNER_REGISTRATION_THROUGH_API);
 		sc.setTransactionAmount(ZERO);
@@ -180,7 +180,7 @@ public class PartnerRegistationHandlerImpl extends FIXMessageHandler implements 
 			Notification notification = notificationService.getByNoticationCode(CmFinoFIX.NotificationCode_PartnerRegistrationFailed);
 			String notificationName = null;
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+CmFinoFIX.NotificationCode_PartnerRegistrationFailed);
 			}
@@ -197,11 +197,11 @@ public class PartnerRegistationHandlerImpl extends FIXMessageHandler implements 
 
 		smsService.setSctlId(partnerRegistration2.getServiceChargeTransactionLogID());
 		NotificationWrapper notificationWrapper=new NotificationWrapper();
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(partnerRegistration2.getMDN());
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(partnerRegistration2.getMDN());
 		if(smdn != null)
 		{
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 		}
 		if(registrationStatus){
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_PartnerRegistrationSuccessful);

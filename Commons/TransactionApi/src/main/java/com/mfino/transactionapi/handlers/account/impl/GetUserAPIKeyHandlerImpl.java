@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -48,7 +48,7 @@ public class GetUserAPIKeyHandlerImpl extends FIXMessageHandler implements GetUs
 		result.setSourceMessage(getUserAPIKey);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(getUserAPIKey.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(getUserAPIKey.getSourceMDN());
 		if(sourceMDN==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			log.error("Entered MDN is not registered");
@@ -60,9 +60,9 @@ public class GetUserAPIKeyHandlerImpl extends FIXMessageHandler implements GetUs
 			log.error("No Subscriber found with the given MDN in subscriber table");
 			return result;
 		}
-		if (StringUtils.isNotBlank(sourceMDN.getUserAPIKey())) {
+		if (StringUtils.isNotBlank(sourceMDN.getUserapikey())) {
 			log.info("Returning the user api key from local db ...");
-			result.setUserAPIKey(sourceMDN.getUserAPIKey());
+			result.setUserAPIKey(sourceMDN.getUserapikey());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_GetUserAPIKeySuccess);
 			return result;
 		}		
@@ -71,7 +71,7 @@ public class GetUserAPIKeyHandlerImpl extends FIXMessageHandler implements GetUs
 			CMGetUserAPIKeyFromBank bankResponse = (CMGetUserAPIKeyFromBank) response;
 				if(StringUtils.isNotBlank(bankResponse.getUserAPIKey()))
 				{
-					sourceMDN.setUserAPIKey(bankResponse.getUserAPIKey());
+					sourceMDN.setUserapikey(bankResponse.getUserAPIKey());
 					subscriberMdnService.saveSubscriberMDN(sourceMDN);
 					result.setUserAPIKey(bankResponse.getUserAPIKey());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_GetUserAPIKeySuccess);

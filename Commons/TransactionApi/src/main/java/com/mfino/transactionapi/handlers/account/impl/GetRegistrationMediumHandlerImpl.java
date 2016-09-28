@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetRegistrationMedium;
@@ -60,7 +60,7 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
 		result.setSourceMessage(getRegistrationMedium);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 	
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(getRegistrationMedium.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(getRegistrationMedium.getSourceMDN());
 		if(sourceMDN==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			log.error("Entered MDN is not registered");
@@ -75,35 +75,35 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
 
 		EnumTextQuery enumTextQuery = new EnumTextQuery();
 		enumTextQuery.setTagId(CmFinoFIX.TagID_RegistrationMedium);
-		enumTextQuery.setEnumCode(subscriber.getRegistrationMedium().toString());
+		enumTextQuery.setEnumCode(subscriber.getRegistrationmedium().toString());
 		enumTextQuery.setLanguage(CmFinoFIX.Language_English);
 
 		List<EnumText> lstEnumTexts = enumTextService.getEnumText(enumTextQuery);
 
 		String registrationMedium;
 		if(CollectionUtils.isNotEmpty(lstEnumTexts)){
-			registrationMedium = lstEnumTexts.get(0).getEnumValue();
+			registrationMedium = lstEnumTexts.get(0).getEnumvalue();
 		}
 		else{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_Failure);
-			log.error("empty result obtained from enumText table for tagID:"+CmFinoFIX.TagID_RegistrationMedium+" and enumCode: "+subscriber.getRegistrationMedium().toString());
+			log.error("empty result obtained from enumText table for tagID:"+CmFinoFIX.TagID_RegistrationMedium+" and enumCode: "+subscriber.getRegistrationmedium().toString());
  			return result;
 		}
 		log.info("Successfully obtained registration medium:"+registrationMedium);
-		result.setDestinationMDN(sourceMDN.getMDN());
+		result.setDestinationMDN(sourceMDN.getMdn());
 		result.setRegistrationMedium(registrationMedium);
 		
 		String status = enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberStatus, CmFinoFIX.Language_English, subscriber.getStatus());
 		result.setStatus(status);
 		
 		log.info("Successfully obtained subscriber status :" + status );
-		if(sourceMDN.getDigestedPIN()==null && sourceMDN.getOTP()!=null 
-				&& subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)){
+		if(sourceMDN.getDigestedpin()==null && sourceMDN.getOtp()!=null 
+				&& subscriber.getStatus() == CmFinoFIX.SubscriberStatus_Active){
 			result.setResetPinRequested(BOOL_TRUE);
 		}else{
 			result.setResetPinRequested(BOOL_FALSE);
 		}
-		if(subscriber.getActivationTime()!=null){
+		if(subscriber.getActivationtime()!=null){
 			result.setIsAlreadyActivated(BOOL_TRUE);
 		}
 		else{

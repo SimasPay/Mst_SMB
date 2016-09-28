@@ -15,20 +15,18 @@ import com.mfino.dao.query.SCTLSettlementMapQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.SCTLSettlementMap;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetPendingSettlementsForPartner;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
-import com.mfino.result.XMLResult;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.SCTLSettlementMapService;
 import com.mfino.service.SubscriberMdnService;
-import com.mfino.service.TransactionLogService;
 import com.mfino.service.SystemParametersService;
-import com.mfino.service.impl.TransactionLogServiceImpl;
+import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.PendingSettlementsForPartnerHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LastNTxnsXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -78,15 +76,15 @@ public class PendingSettlementsForPartnerHandlerImpl extends FIXMessageHandler i
 		pendingSettlements.setSourceMDN(transactionDetails.getSourceMDN());
 		pendingSettlements.setPin(transactionDetails.getSourcePIN());
 		pendingSettlements.setPartnerCode(transactionDetails.getPartnerCode());
-		pendingSettlements.setSourceApplication(cc.getChannelSourceApplication());
-		pendingSettlements.setChannelCode(cc.getChannelCode());
+		pendingSettlements.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
+		pendingSettlements.setChannelCode(cc.getChannelcode());
 		pendingSettlements.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		log.info("Handling Pending Settlements for Partner webapi request");
 		
 		LastNTxnsXMLResult result = new LastNTxnsXMLResult();
 		result.setEnumTextService(enumTextService);
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(pendingSettlements.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(pendingSettlements.getSourceMDN());
 		
 
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetPendingSettlementsForPartner, pendingSettlements.DumpFields());
@@ -120,7 +118,7 @@ public class PendingSettlementsForPartnerHandlerImpl extends FIXMessageHandler i
 		}
 
 		SCTLSettlementMapQuery query = new SCTLSettlementMapQuery();
-		query.setPartnerID(partner.getID());
+		query.setPartnerID(partner.getId().longValue());
 		query.setSettlementStatus(CmFinoFIX.SettlementStatus_Initiated);
 		List<SCTLSettlementMap> pendingSettlementsList = sctlSettlementMapService.get(query);
 		
@@ -131,7 +129,7 @@ public class PendingSettlementsForPartnerHandlerImpl extends FIXMessageHandler i
 		
 		Collections.sort(pendingSettlementsList, new Comparator<SCTLSettlementMap>() {
 			public int compare(SCTLSettlementMap ps1, SCTLSettlementMap ps2) {
-				return ((int) (ps2.getID() - ps1.getID()));
+				return ((int) (ps2.getId().intValue() - ps1.getId().intValue()));
 			}
 		});
 		

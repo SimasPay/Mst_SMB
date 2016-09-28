@@ -19,7 +19,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.errorcodes.Codes;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosing;
@@ -107,7 +107,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 		
 		ChannelCode channelCode = transactionDetails.getCc();
 		
-		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getID()) == true) {
+		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getId()) == true) {
 			
 			isMfATransaction = true;
 			
@@ -119,8 +119,8 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 		
 		transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_JSSubscriberClosing,subscriberClosing.DumpFields());
 		
-		SubscriberMDN agentMDN = null;
-		SubscriberMDN subMDN = subscriberMdnService.getByMDN(subscriberClosing.getDestMDN());
+		SubscriberMdn agentMDN = null;
+		SubscriberMdn subMDN = subscriberMdnService.getByMDN(subscriberClosing.getDestMDN());
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
@@ -141,7 +141,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 				validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 				result.setNotificationCode(validationResult);
-				result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongPINCount());
+				result.setNumberOfTriesLeft(new Integer(String.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-agentMDN.getWrongpincount())));
 				return result;
 			}
 			
@@ -162,7 +162,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 			
 			ServiceChargeTransactionLog sctlForMFA = sctlService.getBySCTLID(parentTxnId);
 			
-			if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getID(), agentMDN.getMDN()))){
+			if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getID(), agentMDN.getMdn()))){
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 					
@@ -176,16 +176,16 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 					
 						subMDN.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
 						subMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-						subMDN.setCloseComments(transactionDetails.getDescription());
+						subMDN.setClosecomments(transactionDetails.getDescription());
 						
 						if(!transactionDetails.isSystemIntiatedTransaction()) {
 							
 							Partner partner = partnerService.getPartner(agentMDN);
-							subMDN.setCloseAgent(String.valueOf(partner.getID()));
+							subMDN.setCloseagent(partner.getId());
 							
 						} else {
 							
-							subMDN.setCloseUser(transactionDetails.getAuthorizedRepresentative());
+							subMDN.setCloseuser(transactionDetails.getAuthorizedRepresentative());
 						}
 						
 						Subscriber subscriber = subMDN.getSubscriber();
@@ -201,8 +201,8 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 						
 						subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 						
-						result.setName(subscriber.getFirstName());
-						result.setDestinationMDN(subMDN.getMDN());
+						result.setName(subscriber.getFirstname());
+						result.setDestinationMDN(subMDN.getMdn());
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingSuccess));
 						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 						result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingSuccess);
