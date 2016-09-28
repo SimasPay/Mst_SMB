@@ -18,7 +18,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -91,8 +91,8 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 		cashOutInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		cashOutInquiry.setPin(transactionDetails.getSourcePIN());
 		cashOutInquiry.setAmount(transactionDetails.getAmount());
-		cashOutInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		cashOutInquiry.setChannelCode(cc.getChannelCode());
+		cashOutInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		cashOutInquiry.setChannelCode(cc.getChannelcode());
 		cashOutInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		cashOutInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		cashOutInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -114,7 +114,7 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 			return result;
 		}
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(cashOutInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(cashOutInquiry.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -126,7 +126,7 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 		Pocket srcSubscriberPocket = pocketService.getDefaultPocket(srcSubscriberMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -143,7 +143,7 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 			return result;
 		}
 
-		SubscriberMDN destPartnerMDN = subscriberMdnService.getByMDN(ATMPartnerMDN);
+		SubscriberMdn destPartnerMDN = subscriberMdnService.getByMDN(ATMPartnerMDN);
 		validationResult = transactionApiValidationService.validatePartnerMDN(destPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination Agent has failed validations");
@@ -155,7 +155,7 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 		Pocket destPocket= pocketService.getSuspencePocket(partnerService.getPartner(destPartnerMDN));
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -164,11 +164,11 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 
 		log.info("creating the serviceCharge object....");
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(destPartnerMDN.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(destPartnerMDN.getMdn());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM);
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setTransactionAmount(cashOutInquiry.getAmount());
 		sc.setTransactionLogId(cashOutInquiry.getTransactionID());
 		sc.setTransactionIdentifier(cashOutInquiry.getTransactionIdentifier());
@@ -199,9 +199,9 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 		}
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 
-		cashOutInquiry.setDestMDN(destPartnerMDN.getMDN());
-		cashOutInquiry.setSourcePocketID(srcSubscriberPocket.getID());
-		cashOutInquiry.setDestPocketID(destPocket.getID());
+		cashOutInquiry.setDestMDN(destPartnerMDN.getMdn());
+		cashOutInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		cashOutInquiry.setDestPocketID(destPocket.getId().longValue());
 		cashOutInquiry.setServiceChargeTransactionLogID(sctl.getID());
 
 		log.info("sending the cashOutInquiry request to backend for processing");

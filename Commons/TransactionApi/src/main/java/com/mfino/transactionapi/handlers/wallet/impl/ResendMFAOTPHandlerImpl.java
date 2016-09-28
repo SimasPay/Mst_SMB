@@ -18,7 +18,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFAAuthenticationDAO;
 import com.mfino.dao.query.MFAAuthenticationQuery;
 import com.mfino.domain.MFAAuthentication;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSResendMFAOTP;
 import com.mfino.handlers.FIXMessageHandler;
@@ -78,7 +78,7 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		
 		result.setLanguage(CmFinoFIX.Language_Bahasa);
 		
-		SubscriberMDN sourceMDN = null;
+		SubscriberMdn sourceMDN = null;
 		
 		sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		result.setCompany(sourceMDN.getSubscriber().getCompany());
@@ -94,7 +94,7 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-sourceMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-sourceMDN.getWrongpincount()));
 			return result;
 		}
 		
@@ -109,13 +109,13 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		
 		if(CollectionUtils.isEmpty(mfaResults)) {
 			
-			mfaService.handleMFATransaction(sctlid, sourceMDN.getMDN());
+			mfaService.handleMFATransaction(sctlid, sourceMDN.getMdn());
 		
 		} else {
 		
 			MFAAuthentication mfaAuthentication = mfaResults.get(0);
 			
-			if(mfaAuthentication.getRetryAttempt() >= (noOfRetryAttemptsForMFAOTP - 1)) {
+			if(mfaAuthentication.getRetryattempt().intValue() >= (noOfRetryAttemptsForMFAOTP - 1)) {
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts);
 				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MFAOTPResendMaxRetryAttempts));
@@ -124,7 +124,7 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 				return result;
 			}
 			
-			mfaService.resendHandleMFATransaction(sctlid, resendMfaOtp.getSourceMDN(), mfaAuthentication.getRetryAttempt());
+			mfaService.resendHandleMFATransaction(sctlid, resendMfaOtp.getSourceMDN(), mfaAuthentication.getRetryattempt().intValue());
 		}
 		
 		result.setNotificationCode(CmFinoFIX.NotificationCode_MFAOTPResendSuccessfullyCompleted);

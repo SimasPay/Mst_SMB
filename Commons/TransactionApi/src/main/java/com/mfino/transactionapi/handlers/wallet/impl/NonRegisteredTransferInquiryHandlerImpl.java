@@ -17,7 +17,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -94,8 +94,8 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		transferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		transferInquiry.setSourceMessage(transactionDetails.getSourceMessage());
-		transferInquiry.setSourceApplication(channelCode.getChannelSourceApplication());
-		transferInquiry.setChannelCode(channelCode.getChannelCode());
+		transferInquiry.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		transferInquiry.setChannelCode(channelCode.getChannelcode());
 		transferInquiry.setServiceName(transactionDetails.getServiceName());
 		transferInquiry.setSourcePocketID(transactionDetails.getSrcPocketId());
 		transferInquiry.setRemarks(transactionDetails.getDescription());
@@ -103,11 +103,11 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		
 		XMLResult result = new TransferInquiryXMLResult();
 		
-		SubscriberMDN srcMdn = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn srcMdn = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		Subscriber srcSub = srcMdn.getSubscriber();
-		KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
-		if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
-			log.info(String.format("TransferToUnregistered is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",srcMdn.getMDN()));
+		KYCLevel srcKyc = srcSub.getKycLevel();
+		if(srcKyc.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
+			log.info(String.format("TransferToUnregistered is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",srcMdn.getMdn()));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);
 			return result;
 		}
@@ -130,12 +130,12 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 			String sourceMsg = ServiceAndTransactionConstants.MESSAGE_SUB_BULK_TRANSFER.equals(transactionDetails.getSourceMessage()) ? 
 					transactionDetails.getSourceMessage() : ServiceAndTransactionConstants.MESSAGE_TRANSFER_UNREGISTERED;
 			transferInquiry.setSourceMessage(sourceMsg);
-			SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
+			SubscriberMdn destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
 			if(destMDN==null)
 			{
 				log.info("The destinationMDN: "+transactionDetails.getDestMDN()+"does not exist in our system");
 				Subscriber subscriber = new Subscriber();
-				SubscriberMDN subscriberMDN = new SubscriberMDN();
+				SubscriberMdn subscriberMDN = new SubscriberMdn();
 				Pocket epocket = new Pocket();
 				String oneTimePin = null;
 				//String oneTimePin = MfinoUtil.generateOTP();
@@ -155,7 +155,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 				log.info("Registering the destination mdn...");
 				Integer regResponse = subscriberServiceExtended.registerSubscriber(subscriber, subscriberMDN, subscriberRegistration, 
 						epocket,oneTimePin,null);
-				transferInquiry.setDestPocketID(epocket.getID());
+				transferInquiry.setDestPocketID(epocket.getId().longValue());
 				if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) 
 				{
 					//Send Failure notification
@@ -170,17 +170,17 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 			}
 			else if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(destMDN.getSubscriber().getStatus()))
 			{
-				log.info("The destinationMDN: "+destMDN.getMDN()+"is an unregistered subscriber");
+				log.info("The destinationMDN: "+destMDN.getMdn()+"is an unregistered subscriber");
 				Pocket destPocket = pocketService.getDefaultPocket(destMDN, transactionDetails.getDestPocketCode());
 
 				Integer validationResult = transactionApiValidationService.validateDestinationPocketForUnregistered(destPocket);
 				if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-					log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+					log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 					result.setNotificationCode(validationResult);
 					return result;
 				}
 
-				transferInquiry.setDestPocketID(destPocket.getID());
+				transferInquiry.setDestPocketID(destPocket.getId().longValue());
 				result = handleTransfer(transferInquiry,transactionDetails);
 			}
 			else
@@ -216,7 +216,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		result.setTransactionID(transactionsLog.getID());
 		result.setDestinationMDN(transferInquiry.getDestMDN());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(transferInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transferInquiry.getSourceMDN());
 		addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 
 
@@ -224,7 +224,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(transferInquiry.getSourceMDN());
 		sc.setDestMDN(transferInquiry.getDestMDN());
-		sc.setChannelCodeId(transactionDetails.getCc().getID());
+		sc.setChannelCodeId(transactionDetails.getCc().getId().longValue());
 		sc.setServiceName(transferInquiry.getServiceName());
 		if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER_INQUIRY.equals(transactionDetails.getTransactionName())) {
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER);

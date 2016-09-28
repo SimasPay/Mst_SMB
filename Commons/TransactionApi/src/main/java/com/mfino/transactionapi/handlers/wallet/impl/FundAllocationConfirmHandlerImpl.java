@@ -14,7 +14,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -89,8 +89,8 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		fundAllocationConfirm.setTransferID(transactionDetails.getTransferId());
 		fundAllocationConfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		fundAllocationConfirm.setConfirmed(confirmed);
-		fundAllocationConfirm.setSourceApplication(cc.getChannelSourceApplication());
-		fundAllocationConfirm.setChannelCode(cc.getChannelCode());
+		fundAllocationConfirm.setSourceApplication((int)cc.getChannelsourceapplication());
+		fundAllocationConfirm.setChannelCode(cc.getChannelcode());
 		if(StringUtils.isNotEmpty(transactionDetails.getPartnerCode())){
 			fundAllocationConfirm.setPartnerCode(transactionDetails.getPartnerCode());
 		}
@@ -108,7 +108,7 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		result.setSourceMessage(fundAllocationConfirm);
 		result.setTransactionID(fundAllocationConfirm.getTransactionID());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(fundAllocationConfirm.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(fundAllocationConfirm.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -120,7 +120,7 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		Pocket srcSubscriberPocket = pocketService.getDefaultPocket(srcSubscriberMDN, null);
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -137,7 +137,7 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 			return result;
 		}
 
-		SubscriberMDN destPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
+		SubscriberMdn destPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
 		validationResult = transactionApiValidationService.validatePartnerMDN(destPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination Agent has failed validations");
@@ -150,7 +150,7 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		Pocket destPocket= pocketService.getSuspencePocket(partnerService.getPartner(destPartnerMDN));
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -184,9 +184,9 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		}
 		
 		fundAllocationConfirm.setWithdrawalMDN(sctl.getOnBeHalfOfMDN());
-		fundAllocationConfirm.setDestMDN(destPartnerMDN.getMDN());
-		fundAllocationConfirm.setSourcePocketID(srcSubscriberPocket.getID());
-		fundAllocationConfirm.setDestPocketID(destPocket.getID());
+		fundAllocationConfirm.setDestMDN(destPartnerMDN.getMdn());
+		fundAllocationConfirm.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		fundAllocationConfirm.setDestPocketID(destPocket.getId().longValue());
 		fundAllocationConfirm.setServiceChargeTransactionLogID(sctl.getID());
 		
 		log.info("Sending fundAllocationConfirm request to backend for processing");

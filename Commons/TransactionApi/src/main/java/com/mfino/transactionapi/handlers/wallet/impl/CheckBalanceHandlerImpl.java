@@ -22,7 +22,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -92,8 +92,8 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 		bankAccountBalanceInquiry.setPin(transactionDetails.getSourcePIN());
 		bankAccountBalanceInquiry.setServletPath(CmFinoFIX.ServletPath_BankAccount);
 		bankAccountBalanceInquiry.setSourceMDN(transactionDetails.getSourceMDN());
-		bankAccountBalanceInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		bankAccountBalanceInquiry.setChannelCode(cc.getChannelCode());
+		bankAccountBalanceInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		bankAccountBalanceInquiry.setChannelCode(cc.getChannelcode());
 		bankAccountBalanceInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		bankAccountBalanceInquiry.setCardPAN(transactionDetails.getCardPAN());
 		bankAccountBalanceInquiry.setCardAlias(transactionDetails.getCardAlias());
@@ -117,7 +117,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 		result.setTransactionID(transactionsLog.getID());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		result.setTransID(transactionDetails.getTransID());
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(bankAccountBalanceInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(bankAccountBalanceInquiry.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -142,7 +142,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 				pquery.setCardPan(transactionDetails.getCardPAN());
 				pquery.setCardAlias(transactionDetails.getCardAlias());
 				pquery.setPocketType(CmFinoFIX.PocketType_NFC);
-				pquery.setMdnIDSearch(srcSubscriberMDN.getID());
+				pquery.setMdnIDSearch(srcSubscriberMDN.getId().longValue());
 				List<Pocket> lstPockets = pocketService.get(pquery);
 				if (CollectionUtils.isNotEmpty(lstPockets)) {
 					srcSubscriberPocket = lstPockets.get(0);
@@ -155,19 +155,19 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 			
 			if(srcSubscriberPocket != null)
 			{
-				bankAccountBalanceInquiry.setPocketID(srcSubscriberPocket.getID());
-				result.setCardPan(srcSubscriberPocket.getCardPAN());
-				result.setCardAlias(srcSubscriberPocket.getCardAlias());
+				bankAccountBalanceInquiry.setPocketID(srcSubscriberPocket.getId().longValue());
+				result.setCardPan(srcSubscriberPocket.getCardpan());
+				result.setCardAlias(srcSubscriberPocket.getCardalias());
 			}
 
 			validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-				log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+				log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 				result.setNotificationCode(validationResult);
 				return result;
 			}
 
-			if(srcSubscriberPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
+			if(srcSubscriberPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
 			{
 				if(!systemParametersService.getBankServiceStatus())
 				{
@@ -182,7 +182,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(bankAccountBalanceInquiry.getSourceMDN());
 		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(transactionDetails.getServiceName());
 		sc.setTransactionTypeName(transactionDetails.getTransactionName());
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -229,7 +229,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 						Pocket pocket = pocketService.getByCardPan(nfcCardBalance.getSourceCardPAN());
 						if(pocket != null)
 						{
-							nfcCardBalance.setCardAlias(pocket.getCardAlias());
+							nfcCardBalance.setCardAlias(pocket.getCardalias());
 						}
 					}
 

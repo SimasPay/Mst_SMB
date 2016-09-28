@@ -57,32 +57,32 @@ public class ReverseDistributionHandlerImpl implements ReverseDistributionHandle
 
 
 	private void processReversal(FundDistributionInfo fundDistributionInfo) {
-			log.info("The Fund Distribution inquiry request has timed out.Reversing Fund Distribution with id:"+fundDistributionInfo.getID()+"Starting....");
+			log.info("The Fund Distribution inquiry request has timed out.Reversing Fund Distribution with id:"+fundDistributionInfo.getId()+"Starting....");
 			UnRegisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
-			fundDistributionInfo.setFailureReason("Confirmation not received.failed by scheduler");
-			fundDistributionInfo.setDistributionStatus(CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
-			BigDecimal availableAmount = unRegisteredTxnInfo.getAvailableAmount().add(fundDistributionInfo.getDistributedAmount());
-			unRegisteredTxnInfo.setAvailableAmount(availableAmount);
-			Integer status = unRegisteredTxnInfo.getUnRegisteredTxnStatus();
+			fundDistributionInfo.setFailurereason("Confirmation not received.failed by scheduler");
+			fundDistributionInfo.setDistributionstatus((long)CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
+			BigDecimal availableAmount = unRegisteredTxnInfo.getAvailableamount().add(fundDistributionInfo.getDistributedamount());
+			unRegisteredTxnInfo.setAvailableamount(availableAmount);
+			Integer status = unRegisteredTxnInfo.getUnregisteredtxnstatus().intValue();
 			if(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN.equals(status) || 
 					CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN.equals(status)){
 				if(availableAmount.equals(unRegisteredTxnInfo.getAmount())){
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
 				}
 				else{
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 				}
-			}else if(!CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE.equals(unRegisteredTxnInfo.getUnRegisteredTxnStatus())){
-				unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+			}else if(!CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE.equals(unRegisteredTxnInfo.getUnregisteredtxnstatus())){
+				unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 			}
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 			fundStorageService.withdrawFunds(fundDistributionInfo);
-			log.info("Reversal Completed successfully for Fund Distribution id: "+fundDistributionInfo.getID());
+			log.info("Reversal Completed successfully for Fund Distribution id: "+fundDistributionInfo.getId());
 			
 	}
 
 	private boolean checkTimeOut(FundDistributionInfo fundDistributionInfo) {
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(fundDistributionInfo.getTransferSCTLId());
+		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(fundDistributionInfo.getTransfersctlid().longValue());
 		if(CmFinoFIX.SCTLStatus_Failed.equals(sctl.getStatus()) && TIMEOUT.equals(sctl.getFailureReason())){
 			return true;
 		}

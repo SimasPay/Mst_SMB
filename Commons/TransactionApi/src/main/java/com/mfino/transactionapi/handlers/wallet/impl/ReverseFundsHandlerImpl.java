@@ -13,7 +13,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -88,10 +88,10 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 	public Result handle(UnRegisteredTxnInfo unRegisteredTxnInfo) {
 		log.info("Creating CMFundWithdrawalInquiry message...");
 		CMFundWithdrawalInquiry fundWithdrawalInquiry = new CMFundWithdrawalInquiry();
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferSCTLId());
+		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
 		fundWithdrawalInquiry.setSourceMDN(SystemParameterKeys.THIRDPARTY_PARTNER_MDN);
 		fundWithdrawalInquiry.setDestMDN(sctl.getSourceMDN());
-		fundWithdrawalInquiry.setAmount(unRegisteredTxnInfo.getAvailableAmount());
+		fundWithdrawalInquiry.setAmount(unRegisteredTxnInfo.getAvailableamount());
 		fundWithdrawalInquiry.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		
 		log.info("Handling Fund Reversal Inquiry request:: " + fundWithdrawalInquiry.getSourceMDN() + 
@@ -113,7 +113,7 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 			return result;
 		}
 
-		SubscriberMDN  srcPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
+		SubscriberMdn  srcPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
 
 		Integer validationResult = transactionApiValidationService.validatePartnerMDN(srcPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -126,12 +126,12 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 		Pocket srcPocket= pocketService.getSuspencePocket(partnerService.getPartner(srcPartnerMDN));
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
 
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(fundWithdrawalInquiry.getDestMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(fundWithdrawalInquiry.getDestMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsDestination(destinationMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			result.setNotificationCode(validationResult);
@@ -142,7 +142,7 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 		Pocket destPocket = pocketService.getDefaultPocket(destinationMDN, ServiceAndTransactionConstants.EMONEY_POCKET_CODE);
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -151,21 +151,21 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 
 		log.info("Csreating service charge object....");
 		ServiceCharge sc=new ServiceCharge();
-		sc.setDestMDN(destinationMDN.getMDN());
+		sc.setDestMDN(destinationMDN.getMdn());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_FUND_REVERSAL);
-		sc.setSourceMDN(srcPartnerMDN.getMDN());
+		sc.setSourceMDN(srcPartnerMDN.getMdn());
 		sc.setTransactionAmount(fundWithdrawalInquiry.getAmount());
 		sc.setTransactionLogId(fundWithdrawalInquiry.getTransactionID());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		sc.setChannelCodeId(CmFinoFIX.SourceApplication_BackEnd);
 		
 		fundWithdrawalInquiry.setSourceMDN(thirdPartyPartnerMDN);
-		fundWithdrawalInquiry.setSourcePocketID(srcPocket.getID());
-		fundWithdrawalInquiry.setDestMDN(destinationMDN.getMDN());
-		fundWithdrawalInquiry.setDestPocketID(destPocket.getID());
+		fundWithdrawalInquiry.setSourcePocketID(srcPocket.getId().longValue());
+		fundWithdrawalInquiry.setDestMDN(destinationMDN.getMdn());
+		fundWithdrawalInquiry.setDestPocketID(destPocket.getId().longValue());
 		fundWithdrawalInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		fundWithdrawalInquiry.setOneTimePassCode(DUMMY_VALUE);
-		fundWithdrawalInquiry.setWithdrawalMDN(unRegisteredTxnInfo.getWithdrawalMDN());
+		fundWithdrawalInquiry.setWithdrawalMDN(unRegisteredTxnInfo.getWithdrawalmdn());
 		fundWithdrawalInquiry.setPin(DUMMY_VALUE);
 		fundWithdrawalInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_FUND_REVERSAL);
 
@@ -204,16 +204,16 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 				.equals(transactionResponse.getCode())) {
 
 			transactionChargingService.chnageStatusToProcessing(sctl);
-			sctl.setParentSCTLID(unRegisteredTxnInfo.getTransferSCTLId());
+			sctl.setParentSCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
 			sctl.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 			
 			CMFundWithdrawalConfirm	fundWithdrawalConfirm = new CMFundWithdrawalConfirm();
 			fundWithdrawalConfirm.setSourceMDN(thirdPartyPartnerMDN);
-			fundWithdrawalConfirm.setDestMDN(destinationMDN.getMDN());
+			fundWithdrawalConfirm.setDestMDN(destinationMDN.getMdn());
 			fundWithdrawalConfirm.setIsSystemIntiatedTransaction(true);
-			fundWithdrawalConfirm.setSourcePocketID(srcPocket.getID());
-			fundWithdrawalConfirm.setDestPocketID(destPocket.getID());
+			fundWithdrawalConfirm.setSourcePocketID(srcPocket.getId().longValue());
+			fundWithdrawalConfirm.setDestPocketID(destPocket.getId().longValue());
 			fundWithdrawalConfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 			fundWithdrawalConfirm.setSourceApplication(fundWithdrawalInquiry.getSourceApplication());
 			fundWithdrawalConfirm.setParentTransactionID(transactionResponse.getTransactionId());
@@ -237,7 +237,7 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 					log.info("changing parent sctl status to expired");
 					ServiceChargeTransactionLog parentSctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctl.getParentSCTLID());
 					parentSctl.setStatus(CmFinoFIX.SCTLStatus_Expired);
-					parentSctl.setFailureReason(unRegisteredTxnInfo.getReversalReason());
+					parentSctl.setFailureReason(unRegisteredTxnInfo.getReversalreason());
 					transactionChargingService.saveServiceTransactionLog(parentSctl);
 					commodityTransferService.addCommodityTransferToResult(result, transactionResponse.getTransferId());
 					log.info("Fund Reversal has been Successfully Completed from "+fundWithdrawalConfirm.getSourceMDN()+"with amount "+fundWithdrawalConfirm.getAmount()+

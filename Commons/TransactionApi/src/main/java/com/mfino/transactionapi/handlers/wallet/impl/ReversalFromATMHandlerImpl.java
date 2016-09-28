@@ -22,7 +22,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnRegisteredTxnInfo;
@@ -128,7 +128,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		result.setSourceMessage(thirdPartyCashOut);
 	
 		String sourceMDN = subscriberService.normalizeMDN(mobileNum);
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(sourceMDN);
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(sourceMDN);
 		boolean isUnRegistered = false;
 		if (! CmFinoFIX.SubscriberStatus_NotRegistered.equals(srcSubscriberMDN.getStatus())) {
 			isUnRegistered = false;
@@ -142,7 +142,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		status[0] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED;
 		
 		UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-		urtiQuery.setSubscriberMDNID(srcSubscriberMDN.getID());
+		urtiQuery.setSubscriberMDNID(srcSubscriberMDN.getId().longValue());
 		urtiQuery.setFundAccessCode(digestedFAC);
 		urtiQuery.setAmount(amount);
 		urtiQuery.setMultiStatus(status);
@@ -155,12 +155,12 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		}
 
 		if (unRegisteredTxnInfo != null) {
-			result.setSctlID(unRegisteredTxnInfo.getTransferSCTLId());
+			result.setSctlID(unRegisteredTxnInfo.getTransferctid().longValue());
 			result.setAmount(amount);
 			
 			//save the transactionidentifier along with sctl to db
 
-			transactionIdentifierService.createTrxnIdentifierDbEntry(thirdPartyCashOut.getTransactionIdentifier(), unRegisteredTxnInfo.getTransferSCTLId());
+			transactionIdentifierService.createTrxnIdentifierDbEntry(thirdPartyCashOut.getTransactionIdentifier(), unRegisteredTxnInfo.getTransferctid().longValue());
 			
 			log.info("Processing the Reversal request From ATM ");
 			result = (XMLResult)processReversal(unRegisteredTxnInfo, result, isUnRegistered,thirdPartyCashOut);
@@ -175,10 +175,10 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 	}
 	
 	private Result processReversal(UnRegisteredTxnInfo unRegisteredTxnInfo, XMLResult result, boolean isUnRegistered, CMThirdPartyCashOut thirdPartyCashOut) {
-		SubscriberMDN destPartnerMDN = null;
+		SubscriberMdn destPartnerMDN = null;
 		Pocket destPocket = null;
 
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferSCTLId());
+		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
 		
 		//Getting the QuickTeller Partner details and Bank Pocket Details (Source details)
 		String institutionId = thirdPartyCashOut.getInstitutionID();
@@ -205,28 +205,28 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 			return result;
 		}
 		
-		SubscriberMDN srcSubscriberMDN = QTPartner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn srcSubscriberMDN = QTPartner.getSubscriber().getSubscriberMdns().iterator().next();
 
 		// Modified as the destination pocket in Withdraw from ATM is changed and getting the pocket based on the Partner service incoming pocket.
 		Pocket srcPocket = null;
 	//	PartnerServices partnerServices = transactionChargingService.getPartnerService(QTPartner.getID(), sctl.getmFinoServiceProviderByMSPID().getID(), sctl.getServiceID());
-		PartnerServices partnerServices = transactionChargingService.getPartnerService(QTPartner.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerServices = transactionChargingService.getPartnerService(QTPartner.getId(), sctl.getServiceProviderID(), sctl.getServiceID());
 		if (partnerService == null ){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 			log.info("Institution Partner is not opt for the required service");
 			return result;
 		}
-		srcPocket = partnerServices.getPocketByDestPocketID();
+		srcPocket = partnerServices.getPocketByDestpocketid();
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 
 		if (isUnRegistered) {
 			// Get the UnRegistered SubscriberMDN and  Emoney pocket
-			destPartnerMDN = unRegisteredTxnInfo.getSubscriberMDNByMDNID();
+			destPartnerMDN = unRegisteredTxnInfo.getSubscriberMdn();
 			destPocket = pocketService.getDefaultPocket(destPartnerMDN, null);
 		}
 		else {
@@ -250,7 +250,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 
 		validationResult = transactionApiValidationService.validateDestinationPocketForATMReversal(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -258,18 +258,18 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 
 		// Generating the Reverse From ATM Inquiry Object 
 		CMBankAccountToBankAccount inquiry = new CMBankAccountToBankAccount();
-		inquiry.setSourceMDN(srcSubscriberMDN.getMDN());
-		inquiry.setDestMDN(destPartnerMDN.getMDN());
+		inquiry.setSourceMDN(srcSubscriberMDN.getMdn());
+		inquiry.setDestMDN(destPartnerMDN.getMdn());
 		inquiry.setAmount(thirdPartyCashOut.getAmount());
 		inquiry.setPin("dummy");
 		inquiry.setIsSystemIntiatedTransaction(true);
 		inquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		inquiry.setSourceMessage(thirdPartyCashOut.getSourceMessage());
 		inquiry.setSourceApplication(thirdPartyCashOut.getSourceApplication());
-		inquiry.setSourcePocketID(srcPocket.getID());
-		inquiry.setDestPocketID(destPocket.getID());
+		inquiry.setSourcePocketID(srcPocket.getId().longValue());
+		inquiry.setDestPocketID(destPocket.getId().longValue());
 		inquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
-		inquiry.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getTransferSCTLId());
+		inquiry.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getTransferctid().longValue());
 		inquiry.setUICategory(CmFinoFIX.TransactionUICategory_Reverse_From_ATM);
 		inquiry.setTerminalID(thirdPartyCashOut.getCATerminalId());
 		inquiry.setSourceBankAccountNo(thirdPartyCashOut.getAccountNumber());
@@ -284,17 +284,17 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		if (transactionResponse != null && CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString()
 				.equals(transactionResponse.getCode())) {
 			CMBankAccountToBankAccountConfirmation confirm = new CMBankAccountToBankAccountConfirmation();
-			confirm.setSourceMDN(srcSubscriberMDN.getMDN());
-			confirm.setDestMDN(destPartnerMDN.getMDN());
+			confirm.setSourceMDN(srcSubscriberMDN.getMdn());
+			confirm.setDestMDN(destPartnerMDN.getMdn());
 			confirm.setIsSystemIntiatedTransaction(true);
-			confirm.setSourcePocketID(srcPocket.getID());
-			confirm.setDestPocketID(destPocket.getID());
+			confirm.setSourcePocketID(srcPocket.getId().longValue());
+			confirm.setDestPocketID(destPocket.getId().longValue());
 			confirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 			confirm.setSourceApplication(thirdPartyCashOut.getSourceApplication());
 			confirm.setParentTransactionID(transactionResponse.getTransactionId());
 			confirm.setTransferID(transactionResponse.getTransferId());
 			confirm.setConfirmed(CmFinoFIX.Boolean_True);
-			confirm.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getTransferSCTLId());
+			confirm.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getTransferctid().longValue());
 			confirm.setTerminalID(thirdPartyCashOut.getCATerminalId());
 			confirm.setSourceBankAccountNo(thirdPartyCashOut.getAccountNumber());
 			confirm.setTransactionIdentifier(thirdPartyCashOut.getTransactionIdentifier());
@@ -306,7 +306,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 			log.info("Got the confirmation response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 
-			sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferSCTLId());
+			sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
 
 			if (!("Your request is queued. Please check after sometime.".equals(transactionResponse.getMessage()))) {
 				if (transactionResponse.isResult()) {
@@ -314,23 +314,23 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 					commodityTransferService.addCommodityTransferToResult(result, transactionResponse.getTransferId());
 					log.info("ATM Reversal has been Successfully Completed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SuccessfulReversalFromATM);
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
-					unRegisteredTxnInfo.setFailureReason("Reversal Request From ATM");
-					unRegisteredTxnInfo.setCashoutCTId(null);
-					unRegisteredTxnInfo.setCashoutSCTLId(null);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+					unRegisteredTxnInfo.setFailurereason("Reversal Request From ATM");
+					unRegisteredTxnInfo.setCashoutctid(null);
+					unRegisteredTxnInfo.setCashoutsctlid(null);
 					unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 				}
 				else {
 					log.info("ATM Reversal has failed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_FailedReversalFromATM);
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 					unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 				}
 			} 
 		}
 		else { // Inquiry fails
 			log.info("ATM Reversal inquiry has failed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
-			unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+			unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FailedReversalFromATM);
 			unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 		}

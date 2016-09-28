@@ -17,7 +17,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -100,8 +100,8 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 		fundAllocationInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		fundAllocationInquiry.setPin(transactionDetails.getSourcePIN());
 		fundAllocationInquiry.setAmount(transactionDetails.getAmount());
-		fundAllocationInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		fundAllocationInquiry.setChannelCode(cc.getChannelCode());
+		fundAllocationInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		fundAllocationInquiry.setChannelCode(cc.getChannelcode());
 		fundAllocationInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		fundAllocationInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		if(StringUtils.isBlank(transactionDetails.getOnBehalfOfMDN())){
@@ -130,7 +130,7 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(fundAllocationInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(fundAllocationInquiry.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -142,7 +142,7 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 		Pocket srcSubscriberPocket = pocketService.getDefaultPocket(srcSubscriberMDN, srcpocketcode);
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -159,7 +159,7 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 			return result;
 		}
 
-		SubscriberMDN destPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
+		SubscriberMdn destPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
 		validationResult = transactionApiValidationService.validatePartnerMDN(destPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination Agent has failed validations");
@@ -171,7 +171,7 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 		Pocket destPocket= pocketService.getSuspencePocket(partnerService.getPartner(destPartnerMDN));
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -188,11 +188,11 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 
 		log.info("creating the serviceCharge object....");
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(destPartnerMDN.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(destPartnerMDN.getMdn());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION);
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setTransactionAmount(fundAllocationInquiry.getAmount());
 		sc.setTransactionLogId(fundAllocationInquiry.getTransactionID());
 		sc.setOnBeHalfOfMDN(fundAllocationInquiry.getWithdrawalMDN());
@@ -224,9 +224,9 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 		}
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 
-		fundAllocationInquiry.setDestMDN(destPartnerMDN.getMDN());
-		fundAllocationInquiry.setSourcePocketID(srcSubscriberPocket.getID());
-		fundAllocationInquiry.setDestPocketID(destPocket.getID());
+		fundAllocationInquiry.setDestMDN(destPartnerMDN.getMdn());
+		fundAllocationInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		fundAllocationInquiry.setDestPocketID(destPocket.getId().longValue());
 		fundAllocationInquiry.setServiceChargeTransactionLogID(sctl.getID());
 
 		log.info("sending fundAllocationInquiry request to backend for processing");

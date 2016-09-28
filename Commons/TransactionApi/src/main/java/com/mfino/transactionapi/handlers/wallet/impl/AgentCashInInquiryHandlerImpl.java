@@ -21,7 +21,7 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -107,8 +107,8 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		agentCashinInquiry.setAmount(amount);
 		agentCashinInquiry.setPin(transactionDetails.getSourcePIN());
 		agentCashinInquiry.setDestMDN(subscriberService.normalizeMDN(transactionDetails.getDestMDN()));
-		agentCashinInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		agentCashinInquiry.setChannelCode(cc.getChannelCode());
+		agentCashinInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		agentCashinInquiry.setChannelCode(cc.getChannelcode());
 		agentCashinInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		agentCashinInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		agentCashinInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -125,7 +125,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		result.setDestinationMDN(agentCashinInquiry.getDestMDN());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(agentCashinInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(agentCashinInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Agent with mdn : "+agentCashinInquiry.getSourceMDN()+" has failed validations");
@@ -133,7 +133,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(agentCashinInquiry.getDestMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(agentCashinInquiry.getDestMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsDestination(destinationMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Destination subscriber with mdn : "+agentCashinInquiry.getDestMDN()+" has failed validations");
@@ -144,7 +144,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		Pocket destSubscriberPocket = pocketService.getDefaultPocket(destinationMDN, destpocketcode);
 		validationResult = transactionApiValidationService.validateDestinationPocket(destSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with pocket id : "+(destSubscriberPocket!=null? destSubscriberPocket.getID():null)+" of the subscriber "+destinationMDN.getMDN()+
+			log.error("Destination pocket with pocket id : "+(destSubscriberPocket!=null? destSubscriberPocket.getId():null)+" of the subscriber "+destinationMDN.getMdn()+
 					" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
@@ -153,11 +153,11 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		log.info("creating the serviceCharge object....");
 		Transaction transDetails = null;
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(destinationMDN.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(destinationMDN.getMdn());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHIN);
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setTransactionAmount(agentCashinInquiry.getAmount());
 		sc.setMfsBillerCode(agentCashinInquiry.getPartnerCode());
 		sc.setTransactionLogId(agentCashinInquiry.getTransactionID());
@@ -213,10 +213,10 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 				return result;
 			}
-			srcAgentPocket = partnerService.getPocketBySourcePocket();
+			srcAgentPocket = partnerService.getPocketBySourcepocket();
 			validationResult = transactionApiValidationService.validateSourcePocket(srcAgentPocket);
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-				log.error("Source pocket with id "+(srcAgentPocket!=null? srcAgentPocket.getID():null)+" has failed validations");
+				log.error("Source pocket with id "+(srcAgentPocket!=null? srcAgentPocket.getId():null)+" has failed validations");
 				result.setNotificationCode(validationResult);
 				return result;
 			}
@@ -239,8 +239,8 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		if(destSubscriberPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount) || 
-				srcAgentPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
+		if(destSubscriberPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount) || 
+				srcAgentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 			if(!systemParametersService.getBoolean("SystemParameterKeys.BANK_SERVICE_STATUS"))
 			{
@@ -253,16 +253,16 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
 		
 		CMCashInInquiry cashIn = new CMCashInInquiry();
-		cashIn.setSourceMDN(srcSubscriberMDN.getMDN());
-		cashIn.setDestMDN(destinationMDN.getMDN());
+		cashIn.setSourceMDN(srcSubscriberMDN.getMdn());
+		cashIn.setDestMDN(destinationMDN.getMdn());
 		cashIn.setAmount(agentCashinInquiry.getAmount());
 		cashIn.setCharges(agentCashinInquiry.getCharges());
 		cashIn.setTransactionID(agentCashinInquiry.getTransactionID());
-		cashIn.setChannelCode(cc.getChannelCode());
+		cashIn.setChannelCode(cc.getChannelcode());
 		cashIn.setPin(agentCashinInquiry.getPin());
-		cashIn.setSourcePocketID(srcAgentPocket.getID());
-		cashIn.setDestPocketID(destSubscriberPocket.getID());
-		cashIn.setSourceApplication(cc.getChannelSourceApplication());
+		cashIn.setSourcePocketID(srcAgentPocket.getId().longValue());
+		cashIn.setDestPocketID(destSubscriberPocket.getId().longValue());
+		cashIn.setSourceApplication((int)cc.getChannelsourceapplication());
 		cashIn.setSourceMessage(agentCashinInquiry.getSourceMessage());
 		cashIn.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		cashIn.setUICategory(CmFinoFIX.TransactionUICategory_Cashin_At_Agent);
@@ -300,13 +300,13 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setName(destinationMDN.getSubscriber().getFirstName());
+		result.setName(destinationMDN.getSubscriber().getFirstname());
 		
 		result.setMfaMode("None");
 		
 		//For 2 factor authentication
 		if(transactionResponse.isResult()){
-			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHIN, cc.getID()) == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHIN, cc.getId().longValue()) == true){
 				result.setMfaMode("OTP");
 				//mfaService.handleMFATransaction(sctl.getID(), srcSubscriberMDN.getMDN());
 			}

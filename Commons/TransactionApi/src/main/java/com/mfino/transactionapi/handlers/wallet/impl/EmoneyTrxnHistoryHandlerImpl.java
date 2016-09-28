@@ -32,7 +32,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -145,8 +145,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		CMGetTransactions transactionsHistory = new CMGetTransactions();
 		transactionsHistory.setSourceMDN(transactionDetails.getSourceMDN());
 		transactionsHistory.setPin(transactionDetails.getSourcePIN());
-		transactionsHistory.setSourceApplication(cc.getChannelSourceApplication());
-		transactionsHistory.setChannelCode(cc.getChannelCode());
+		transactionsHistory.setSourceApplication((int)cc.getChannelsourceapplication());
+		transactionsHistory.setChannelCode(cc.getChannelcode());
 		transactionsHistory.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		LastNTxnsXMLResult result = new LastNTxnsXMLResult();
@@ -199,7 +199,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 		result.setTransactionID(transactionsLog.getID());
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+transactionsHistory.getSourceMDN()+" has failed validations");
@@ -210,7 +210,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		validationResult = transactionApiValidationService.validatePin(srcSubscriberMDN, transactionsHistory.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: "+transactionsHistory.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - srcSubscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - srcSubscriberMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -220,7 +220,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		Pocket srcPocket = pocketService.getDefaultPocket(srcSubscriberMDN, pocketCode);
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -246,7 +246,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			ServiceCharge sc = new ServiceCharge();
 			sc.setSourceMDN(transactionsHistory.getSourceMDN());
 			sc.setDestMDN(null);
-			sc.setChannelCodeId(cc.getID());
+			sc.setChannelCodeId(cc.getId().longValue());
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 			sc.setTransactionTypeName(transactionDetails.getTransactionName());
 			sc.setTransactionAmount(BigDecimal.ZERO);
@@ -284,19 +284,19 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			Collections.sort(transactionHistoryList, new Comparator<CommodityTransfer>() {
 				@Override
 				public int compare(CommodityTransfer ct1, CommodityTransfer ct2) {
-					return ((int) (ct2.getID() - ct1.getID()));
+					return ( (ct2.getId().intValue() - ct1.getId().intValue()));
 				}
 			});
-			language = srcSubscriberMDN.getSubscriber().getLanguage();
+			language = (int)srcSubscriberMDN.getSubscriber().getLanguage();
 			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()) ||
 					ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionDetails.getTransactionName()) )
 			{
 				result.setTransactionList(transactionHistoryList);
 			}
 			for(CommodityTransfer ct : transactionHistoryList){
-				if(ct.getUICategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup) && ct.getDestCardPAN() == null){
-					Pocket dtPk = pocketService.getById(ct.getDestPocketID());
-					ct.setDestCardPAN(dtPk.getCardPAN());
+				if(ct.getUicategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup) && ct.getDestcardpan() == null){
+					Pocket dtPk = pocketService.getById(ct.getDestpocketid().longValue());
+					ct.setDestcardpan(dtPk.getCardpan());
 				}
 				ct.setGeneratedTxnDescription(getTxnType(ct, srcPocket, language));
 			}
@@ -305,7 +305,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = sdf.format(new Date());
 			
-			String fileName =  srcSubscriberMDN.getMDN() + "_" + dateString + ".pdf";
+			String fileName =  srcSubscriberMDN.getMdn() + "_" + dateString + ".pdf";
 			String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
 			
 			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
@@ -351,18 +351,18 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	}
 	
 	
-	private void createPDFAndSendEmail(TransactionDetails txnDetails, SubscriberMDN subscriberMDN, Pocket srcPocket, List<CommodityTransfer> transactionHistoryList, String filepath, Long sctlId) throws IOException, DocumentException
+	private void createPDFAndSendEmail(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket srcPocket, List<CommodityTransfer> transactionHistoryList, String filepath, Long sctlId) throws IOException, DocumentException
 	{
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		String email = txnDetails.getEmail();
 		String to = StringUtils.EMPTY;
-		if (subscriber.getKYCLevelByKYCLevel().getKYCLevel() != null && 
-				CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue() == (subscriber.getKYCLevelByKYCLevel().getKYCLevel().intValue())) {
+		if (subscriber.getKycLevel().getKyclevel() != null && 
+				CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue() == (subscriber.getKycLevel().getKyclevel().intValue())) {
 			to = subscriber.getNickname();
 		}
 		else {
-			String firstName = subscriber.getFirstName();
-			String lastName = subscriber.getLastName();
+			String firstName = subscriber.getFirstname();
+			String lastName = subscriber.getLastname();
 			to = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
 		}
 
@@ -374,14 +374,14 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		mailService.asyncSendEmailWithAttachment(email, to, subject, body, filepath);
 	}
 	
-	private void createPDF(TransactionDetails txnDetails, SubscriberMDN subscriberMDN,	Pocket pocket, List<CommodityTransfer> transactionHistoryList, String filePath, Long sctlId) throws IOException, DocumentException 
+	private void createPDF(TransactionDetails txnDetails, SubscriberMdn subscriberMDN,	Pocket pocket, List<CommodityTransfer> transactionHistoryList, String filePath, Long sctlId) throws IOException, DocumentException 
 	{
 		 
 		 BookingDateBalanceService balanceService = new BookingDateBalanceService();
 		 BookingDatedBalance bookingFromDatedBalance = balanceService.getBookingDatedBalances(pocket, txnDetails.getFromDate());
 		 BigDecimal openingBalance= new BigDecimal(0);
 		 if(bookingFromDatedBalance!=null){
-			 openingBalance=bookingFromDatedBalance.getOpeningBalance();
+			 openingBalance=new BigDecimal(bookingFromDatedBalance.getOpeningbalance());
 		 }
 		 BookingDatedBalance bookingToDatedBalance = null;
 		 BigDecimal endingBalance = new BigDecimal(0);
@@ -394,12 +394,12 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		    cal.set(Calendar.MILLISECOND, 0);
 		    Date currentDate = cal.getTime();
 		 if(txnDetails.getToDate().compareTo(currentDate)==0){
-			 endingBalance=pocket.getCurrentBalance();
+			 endingBalance=new BigDecimal(pocket.getCurrentbalance());
 		
 		 }else{
 			 bookingToDatedBalance = balanceService.getBookingDatedBalances(pocket, txnDetails.getToDate());
 			 if(bookingToDatedBalance!=null){
-				 endingBalance= bookingToDatedBalance.getClosingBalance();
+				 endingBalance= new BigDecimal(bookingToDatedBalance.getClosingbalance());
 			 }
 		 }
 		 
@@ -426,7 +426,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			}
 			String txnType = ct.getGeneratedTxnDescription();
 			boolean isCredit ;
-			if (ct.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+			if (ct.getPocket().getId().equals(pocket.getId())) {
 				isCredit = false;
 			}
 			else{
@@ -439,7 +439,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			}else{
 				totalCreditAmount=totalCreditAmount.add(txnAmount);
 			}
-			String rowContent = dateFormat.format(ct.getStartTime())
+			String rowContent = dateFormat.format(ct.getStarttime())
 								+ "|"+ txnType
 								+ "|"+ (! isCredit ? "-" : "+")+ MfinoUtil.getNumberFormat().format(txnAmount) ;
 			pdfDocument.addRowContent(rowContent,isLastRow);
@@ -451,27 +451,27 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	}
 	
 	public String getTxnType(CommodityTransfer ct, Pocket pk, Integer language){
-		String sourceMsg = ct.getSourceMessage();
-		boolean isCredit = !(ct.getPocketBySourcePocketID().getID().equals(pk.getID()));
+		String sourceMsg = ct.getSourcemessage();
+		boolean isCredit = !(ct.getPocket().getId().equals(pk.getId()));
 		String txnType = null;
 		if(sourceMsg.equalsIgnoreCase("Mobile Transfer")){
 			if (isCredit) {
 				//txnType = "Transfer dari "+ ct.getSourceMDN();
-				txnType = LanguageTranslator.translate(language, "Transfer From") +  ct.getSourceMDN();
+				txnType = LanguageTranslator.translate(language, "Transfer From") +  ct.getSourcemdn();
 			}else{
 				//txnType = "Transfer ke "+ ct.getDestMDN();
-				txnType = LanguageTranslator.translate(language, "Transfer To") +  ct.getDestMDN();
+				txnType = LanguageTranslator.translate(language, "Transfer To") +  ct.getDestmdn();
 			}
 		}else if(sourceMsg.equalsIgnoreCase("UnRegistered Transfer")){
 			if (isCredit) {
 				//txnType = "Transfer dari "+ ct.getSourceMDN();
-				txnType = LanguageTranslator.translate(language, "Transfer From") +  ct.getSourceMDN();
+				txnType = LanguageTranslator.translate(language, "Transfer From") +  ct.getSourcemdn();
 			}else{
 				//txnType = "Transfer ke "+ ct.getDestMDN();
-				txnType = LanguageTranslator.translate(language, "Transfer To") +  ct.getDestMDN();
+				txnType = LanguageTranslator.translate(language, "Transfer To") +  ct.getDestmdn();
 			}
 		}else if(sourceMsg.equalsIgnoreCase("NFC Pocket Topup") || sourceMsg.equalsIgnoreCase("NFC Pocket Topup Inquiry")){
-			String data=ct.getDestCardPAN();
+			String data=ct.getDestcardpan();
 			String separtedData = null;
 			try{
 				separtedData=data.substring(0, 4)+"-"+data.substring(4, 8)+"-"+data.substring(8, 12)+"-"+data.substring(12, 16);
@@ -484,16 +484,16 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			//txnType = "Pengembalian ";
 			txnType = LanguageTranslator.translate(language, "Auto Reverse");
 		}else if(sourceMsg.equalsIgnoreCase("Cash Out")){
-			txnType = LanguageTranslator.translate(language, "Cash Out")+ct.getDestSubscriberName();
+			txnType = LanguageTranslator.translate(language, "Cash Out")+ct.getDestsubscribername();
 		}else if(sourceMsg.equalsIgnoreCase("Cash In")){
-			txnType = LanguageTranslator.translate(language, "Cash In")+ct.getSourceSubscriberName();
+			txnType = LanguageTranslator.translate(language, "Cash In")+ct.getSourcesubscribername();
 		}else if(sourceMsg.equalsIgnoreCase("from BSM")){
 			txnType = LanguageTranslator.translate(language, "from BSM");
 		}else if(sourceMsg.equalsIgnoreCase("Purchase")){
-			txnType = LanguageTranslator.translate(language, "Purchase") + ct.getSourceSubscriberName();
+			txnType = LanguageTranslator.translate(language, "Purchase") + ct.getSourcesubscribername();
 		}else if(ServiceAndTransactionConstants.MESSAGE_BILL_PAY.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoiceNumber() : "");
+			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoicenumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
 			/*BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			String acctNum = null;
@@ -502,10 +502,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				acctName = bp.getInfo3();
 				acctNum = bp.getInvoiceNumber();
 			}*/
-			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + ct.getDestCardPAN(); 
+			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + ct.getDestcardpan(); 
 		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoiceNumber() : "");
+			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoicenumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "QR Payment") + ((bp != null) ? bp.getInfo1() : "");

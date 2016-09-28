@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -66,8 +66,8 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(true);
 		transferConfirmation.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
-		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(cc.getChannelCode());
+		transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
+		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
 		transferConfirmation.setIsRetirePartner(CmFinoFIX.IsRetirePartner_True);
 		transferConfirmation.setDescription(transactionDetails.getDescription());
@@ -81,7 +81,7 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		result.setSourceMessage(transferConfirmation);
 		result.setTransactionID(transactionsLog.getID());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN, transferConfirmation.getIsSystemIntiatedTransaction());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -101,12 +101,12 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		}
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
 
-		SubscriberMDN destSubscriberMDN = subscriberMdnService.getByMDN(transferConfirmation.getDestMDN());
+		SubscriberMdn destSubscriberMDN = subscriberMdnService.getByMDN(transferConfirmation.getDestMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsDestination(destSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Destination subscriber with mdn : "+transferConfirmation.getDestMDN()+" has failed validations");
@@ -124,13 +124,13 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		}
 		validationResult = transactionApiValidationService.validateDestinationPocket(destSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destSubscriberPocket!=null? destSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destSubscriberPocket!=null? destSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
-		transferConfirmation.setSourcePocketID(srcSubscriberPocket.getID());
-		transferConfirmation.setDestPocketID(destSubscriberPocket.getID());
+		transferConfirmation.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		transferConfirmation.setDestPocketID(destSubscriberPocket.getId().longValue());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 

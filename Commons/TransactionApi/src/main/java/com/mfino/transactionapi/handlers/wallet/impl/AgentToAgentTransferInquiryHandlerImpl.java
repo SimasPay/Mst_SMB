@@ -23,7 +23,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -104,8 +104,8 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 		agentToAgentTrfInquiry.setPartnerCode(transactionDetails.getPartnerCode());
 		agentToAgentTrfInquiry.setPin(transactionDetails.getSourcePIN());
 		agentToAgentTrfInquiry.setAmount(amount);
-		agentToAgentTrfInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		agentToAgentTrfInquiry.setChannelCode(cc.getChannelCode());
+		agentToAgentTrfInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		agentToAgentTrfInquiry.setChannelCode(cc.getChannelcode());
 		agentToAgentTrfInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		agentToAgentTrfInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		agentToAgentTrfInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -120,7 +120,7 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 		result.setSourceMessage(agentToAgentTrfInquiry);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(agentToAgentTrfInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(agentToAgentTrfInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Source Agent with mdn : "+agentToAgentTrfInquiry.getSourceMDN()+" has failed validations");
@@ -139,7 +139,7 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 		}
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -157,7 +157,7 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		SubscriberMDN destAgentMDN = destAgent.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn destAgentMDN = destAgent.getSubscriber().getSubscriberMdns().iterator().next();
 		
 		Pocket destAgentPocket; 
 		if(transactionDetails.getDestinationPocketId()!=null){
@@ -169,7 +169,7 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 		}
 		validationResult = transactionApiValidationService.validateDestinationPocket(destAgentPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -178,11 +178,11 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 
 		log.info("creating the serviceCharge object....");
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(destAgentMDN.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(destAgentMDN.getMdn());
 		sc.setServiceName(serviceName);//change to service
 		sc.setTransactionTypeName(txnName);
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setTransactionAmount(agentToAgentTrfInquiry.getAmount());
 		sc.setMfsBillerCode(agentToAgentTrfInquiry.getPartnerCode());
 		sc.setTransactionLogId(agentToAgentTrfInquiry.getTransactionID());
@@ -212,9 +212,9 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 		}
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 		agentToAgentTrfInquiry.setServiceChargeTransactionLogID(sctl.getID());
-		agentToAgentTrfInquiry.setDestMDN(destAgentMDN.getMDN());
-		agentToAgentTrfInquiry.setSourcePocketID(srcSubscriberPocket.getID());
-		agentToAgentTrfInquiry.setDestPocketID(destAgentPocket.getID());
+		agentToAgentTrfInquiry.setDestMDN(destAgentMDN.getMdn());
+		agentToAgentTrfInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		agentToAgentTrfInquiry.setDestPocketID(destAgentPocket.getId().longValue());
 		
 		log.info("sending the agentToAgentTrfInquiry request to backend for processing");
 		CFIXMsg response = super.process(agentToAgentTrfInquiry);

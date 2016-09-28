@@ -18,7 +18,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -93,8 +93,8 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 		unregisteredsubscribercashoutconfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		unregisteredsubscribercashoutconfirm.setTransferID(transactionDetails.getTransferId());
 		unregisteredsubscribercashoutconfirm.setConfirmed(confirmed);
-		unregisteredsubscribercashoutconfirm.setSourceApplication(cc.getChannelSourceApplication());
-		unregisteredsubscribercashoutconfirm.setChannelCode(cc.getChannelCode());
+		unregisteredsubscribercashoutconfirm.setSourceApplication((int)cc.getChannelsourceapplication());
+		unregisteredsubscribercashoutconfirm.setChannelCode(cc.getChannelcode());
 		unregisteredsubscribercashoutconfirm.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 		log.info("Handling Unregistered Subscriber Cashout confirmation WebAPI request");
@@ -108,7 +108,7 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 		result.setTransactionID(unregisteredsubscribercashoutconfirm.getTransactionID());
 	
 		//Agent Validation
-		SubscriberMDN destAgentMDN = subscriberMdnService.getByMDN(unregisteredsubscribercashoutconfirm.getDestMDN());
+		SubscriberMdn destAgentMDN = subscriberMdnService.getByMDN(unregisteredsubscribercashoutconfirm.getDestMDN());
 
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(destAgentMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -118,9 +118,9 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 			return result;
 		}
 		Partner destAgent = partnerService.getPartner(destAgentMDN);
-		unregisteredsubscribercashoutconfirm.setPartnerCode(destAgent.getPartnerCode());
+		unregisteredsubscribercashoutconfirm.setPartnerCode(destAgent.getPartnercode());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(unregisteredsubscribercashoutconfirm.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(unregisteredsubscribercashoutconfirm.getSourceMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!(CmFinoFIX.ResponseCode_Success.equals(validationResult)||
 				CmFinoFIX.NotificationCode_SubscriberNotRegistered.equals(validationResult))){
@@ -129,10 +129,10 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 			return result;
 		}
 		
-		Pocket srcSubscriberPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(),systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
+		Pocket srcSubscriberPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(),systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
 		validationResult = transactionApiValidationService.validateSourcePocketForUnregistered(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -141,8 +141,8 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 		result.setPocketList(pocketList);
 				
 		
-		unregisteredsubscribercashoutconfirm.setPartnerCode(destAgent.getPartnerCode());
-		unregisteredsubscribercashoutconfirm.setSourcePocketID(srcSubscriberPocket.getID());
+		unregisteredsubscribercashoutconfirm.setPartnerCode(destAgent.getPartnercode());
+		unregisteredsubscribercashoutconfirm.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 	
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
@@ -163,21 +163,21 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 		}		
 		
 		Pocket destAgentPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
 		if (partnerService == null) {
 			log.error("Partner service NULL");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 			return result;
 		}
-		destAgentPocket = partnerService.getPocketByDestPocketID();
+		destAgentPocket = partnerService.getPocketByDestpocketid();
 		validationResult = transactionApiValidationService.validateDestinationPocket(destAgentPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		unregisteredsubscribercashoutconfirm.setServiceChargeTransactionLogID(sctl.getID());
-		unregisteredsubscribercashoutconfirm.setDestPocketID(destAgentPocket.getID());
+		unregisteredsubscribercashoutconfirm.setDestPocketID(destAgentPocket.getId().longValue());
 		unregisteredsubscribercashoutconfirm.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		
 		log.info("sending the unregisteredSubscriberCashOutInquiry request to backend for processing");

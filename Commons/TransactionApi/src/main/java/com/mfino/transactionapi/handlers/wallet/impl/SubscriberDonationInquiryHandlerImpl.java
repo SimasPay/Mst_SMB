@@ -22,7 +22,7 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -91,8 +91,8 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 		txnInquiry.setPin(transactionDetails.getSourcePIN());
 		txnInquiry.setAmount(transactionDetails.getAmount());
 		txnInquiry.setRemarks(transactionDetails.getDescription());
-		txnInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		txnInquiry.setChannelCode(cc.getChannelCode());
+		txnInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		txnInquiry.setChannelCode(cc.getChannelcode());
 		txnInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		txnInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		txnInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -106,7 +106,7 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 		result.setSourceMessage(txnInquiry);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(txnInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(txnInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+txnInquiry.getSourceMDN()+" has failed validations");
@@ -117,17 +117,17 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 		Pocket srcSubscriberPocket = pocketService.getDefaultPocket(srcSubscriberMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		List<Pocket> pocketList = new ArrayList<Pocket>();
 		pocketList.add(srcSubscriberPocket);
 		result.setPocketList(pocketList);
-		txnInquiry.setSourcePocketID(srcSubscriberPocket.getID());
+		txnInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		
 		String donationPartnerMDN = systemParametersService.getString(SystemParameterKeys.DONATION_PARTNER_MDN);
-		SubscriberMDN destSubscriberMDN = subscriberMdnService.getByMDN(donationPartnerMDN);
+		SubscriberMdn destSubscriberMDN = subscriberMdnService.getByMDN(donationPartnerMDN);
 		validationResult = transactionApiValidationService.validatePartnerMDN(destSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Donation Partner mdn : "+donationPartnerMDN+" has failed validations");
@@ -140,15 +140,15 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 			Partner donationPartner = partnerService.getPartner(destSubscriberMDN);
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(transactionDetails.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(donationPartner.getID(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(donationPartner.getId().longValue(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 				return result;
 			}
-			destPocket = partnerService.getPocketByDestPocketID();
+			destPocket = partnerService.getPocketByDestpocketid();
 			validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-				log.error("Donation partner pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+				log.error("Donation partner pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 				result.setNotificationCode(validationResult);
 				return result;
 			}	
@@ -158,13 +158,13 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 			return result;
 		}
 		txnInquiry.setDestMDN(donationPartnerMDN);
-		txnInquiry.setDestPocketID(destPocket.getID());
+		txnInquiry.setDestPocketID(destPocket.getId().longValue());
 
 		// Calculate Service charge if applicable and crerates SCTL.
 		ServiceCharge sc=new ServiceCharge();
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setDestMDN(donationPartnerMDN);
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_DONATION);
 		sc.setTransactionAmount(txnInquiry.getAmount());

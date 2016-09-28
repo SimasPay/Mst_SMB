@@ -12,7 +12,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -71,8 +71,8 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMessage(StringUtils.isNotBlank(sourceMessage) ? sourceMessage : ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
-		bankAccountToBankAccount.setSourceApplication(channelCode.getChannelSourceApplication());
-		bankAccountToBankAccount.setChannelCode(channelCode.getChannelCode());
+		bankAccountToBankAccount.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		bankAccountToBankAccount.setChannelCode(channelCode.getChannelcode());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
 		bankAccountToBankAccount.setDestinationBankAccountNo(transactionDetails.getDestAccountNumber());
 		
@@ -83,7 +83,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		result.setDestinationMDN(transactionDetails.getDestMDN());
 		result.setSourceMessage(bankAccountToBankAccount);
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(bankAccountToBankAccount.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(bankAccountToBankAccount.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN, bankAccountToBankAccount.getIsSystemIntiatedTransaction());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -102,13 +102,13 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		}
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		bankAccountToBankAccount.setSourcePocketID(srcSubscriberPocket.getID());
+		bankAccountToBankAccount.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 
-		SubscriberMDN destSubscriberMDN = subscriberMdnService.getByMDN(bankAccountToBankAccount.getDestMDN());
+		SubscriberMdn destSubscriberMDN = subscriberMdnService.getByMDN(bankAccountToBankAccount.getDestMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsDestination(destSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Destination subscriber with mdn : "+bankAccountToBankAccount.getDestMDN()+" has failed validations");
@@ -130,13 +130,13 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		}
 		validationResult = transactionApiValidationService.validateDestinationPocket(destSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destSubscriberPocket!=null? destSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destSubscriberPocket!=null? destSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
-		bankAccountToBankAccount.setDestPocketID(destSubscriberPocket.getID());
-		bankAccountToBankAccount.setSourcePocketID(srcSubscriberPocket.getID());
+		bankAccountToBankAccount.setDestPocketID(destSubscriberPocket.getId().longValue());
+		bankAccountToBankAccount.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(true);
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		
@@ -152,7 +152,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
 		sc.setDestMDN(bankAccountToBankAccount.getDestMDN());
-		sc.setChannelCodeId(channelCode.getID());
+		sc.setChannelCodeId(channelCode.getId().longValue());
 		sc.setServiceName(bankAccountToBankAccount.getServiceName());
 		if(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY_INQUIRY.equals(transactionDetails.getTransactionName())) {
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY);			

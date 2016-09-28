@@ -20,7 +20,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnRegisteredTxnInfo;
@@ -105,8 +105,8 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 		fundWithdrawalConfirm.setTransferID(transactionDetails.getTransferId());
 		fundWithdrawalConfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		fundWithdrawalConfirm.setConfirmed(confirmed);
-		fundWithdrawalConfirm.setSourceApplication(cc.getChannelSourceApplication());
-		fundWithdrawalConfirm.setChannelCode(cc.getChannelCode());
+		fundWithdrawalConfirm.setSourceApplication((int)cc.getChannelsourceapplication());
+		fundWithdrawalConfirm.setChannelCode(cc.getChannelcode());
 		fundWithdrawalConfirm.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		log.info("Handling Fund Withdrawal confirmation WebAPI request for Parent Txn Id = " + fundWithdrawalConfirm.getParentTransactionID());
 		XMLResult result = new MoneyTransferXMLResult();
@@ -146,11 +146,11 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 		
 		fundWithdrawalConfirm.setWithdrawalMDN(sctl.getOnBeHalfOfMDN());
 		FundDistributionInfo fundDistributionInfo = fundValidationService.queryFundDistributionInfo(sctl.getID());
-		UnRegisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
+		UnRegisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
 		FundDefinition fundDefinition= unRegisteredTxnInfo.getFundDefinition();
 		int notificationCode;		
-		fundWithdrawalConfirm.setPartnerCode(unRegisteredTxnInfo.getPartnerCode());
-		fundWithdrawalConfirm.setAmount(fundDistributionInfo.getDistributedAmount());
+		fundWithdrawalConfirm.setPartnerCode(unRegisteredTxnInfo.getPartnercode());
+		fundWithdrawalConfirm.setAmount(fundDistributionInfo.getDistributedamount());
 		fundWithdrawalConfirm.setDistributionType(CmFinoFIX.DistributionType_Withdrawal);
 
 		//Source partner(Third party suspence)--------------------------------------------------------------------------------
@@ -161,8 +161,8 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 			failTheTransaction("Third Party Partner MDN Value in System Parameters is Null",sctl.getID());
 			notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
 			
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 			}else{
 				onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 			}
@@ -181,7 +181,7 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 			return result;
 		}
 
-		SubscriberMDN srcPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
+		SubscriberMdn srcPartnerMDN = subscriberMdnService.getByMDN(thirdPartyPartnerMDN);
 
 		Integer validationResult= transactionApiValidationService.validatePartnerMDN(srcPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -191,8 +191,8 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 			notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
 			validationResult = processValidationResultForDestinationAgent(validationResult,notificationCode);
 
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 			}else{
 				onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 			}
@@ -211,13 +211,13 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundWithdrawalFailedToMerchant);
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			failTheTransaction("Source Pocket failed validations",sctl.getID());
 
 			notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
 			
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 			}else{
 				onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 			}
@@ -235,19 +235,19 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 		
 		//Destination MDN(Merchant)------------------------------------------------------------------------------------------------------
 		log.info("validating merchant details");
-		SubscriberMDN destPartnerMDN = subscriberMdnService.getByMDN(fundWithdrawalConfirm.getSourceMDN());
+		SubscriberMdn destPartnerMDN = subscriberMdnService.getByMDN(fundWithdrawalConfirm.getSourceMDN());
 		validationResult = transactionApiValidationService.validatePartnerMDN(destPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination partner with mdn : "+transactionDetails.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundWithdrawalFailedToMerchant);
-			String enteredPartnerCode = (DAOFactory.getInstance().getPartnerDAO().getById(sctl.getDestPartnerID())).getPartnerCode();
+			String enteredPartnerCode = (DAOFactory.getInstance().getPartnerDAO().getById(sctl.getDestPartnerID())).getPartnercode();
 			onBehalfOfMDNResult.setPartnerCode(enteredPartnerCode);
 			failTheTransaction("Destination merchant failed partner validations",sctl.getID());
 			notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
 			validationResult = processValidationResultForDestinationAgent(validationResult,notificationCode);
 
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 			}else{
 				onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 			}
@@ -261,23 +261,23 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 			
 			return result;
 		}
-		Set<Partner> partnerSet = destPartnerMDN.getSubscriber().getPartnerFromSubscriberID();
+		Set<Partner> partnerSet = destPartnerMDN.getSubscriber().getPartners();
 		Partner destPartner = partnerSet.iterator().next();
-		fundWithdrawalConfirm.setSourceMDN(srcPartnerMDN.getMDN());
-		fundWithdrawalConfirm.setDestMDN(destPartnerMDN.getMDN());
-		fundWithdrawalConfirm.setSourcePocketID(srcPocket.getID());
+		fundWithdrawalConfirm.setSourceMDN(srcPartnerMDN.getMdn());
+		fundWithdrawalConfirm.setDestMDN(destPartnerMDN.getMdn());
+		fundWithdrawalConfirm.setSourcePocketID(srcPocket.getId().longValue());
 		fundWithdrawalConfirm.setIsSystemIntiatedTransaction(true);
 		
 		Pocket destPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(destPartner.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(destPartner.getId(), sctl.getServiceProviderID(), sctl.getServiceID());
 		if (partnerService == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundWithdrawalFailedToMerchant);
 			log.error("Partner service NULL");
 			failTheTransaction("Service not available for agent",sctl.getID());
 			notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
 			
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 			}else{
 				onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 			}
@@ -295,15 +295,15 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 			
 			return result;
 		}
-		destPocket = partnerService.getPocketByDestPocketID();
+		destPocket = partnerService.getPocketByDestpocketid();
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			failTheTransaction("Destination Money Pocket has failed validations",sctl.getID());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundWithdrawalFailedToMerchant);
 			notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
 			
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 			}else{
 				onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 			}
@@ -317,7 +317,7 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 			sendSms(fundWithdrawalConfirm.getWithdrawalMDN(),onBehalfOfMDNResult);
 			return result;
 		}
-		fundWithdrawalConfirm.setDestPocketID(destPocket.getID());
+		fundWithdrawalConfirm.setDestPocketID(destPocket.getId().longValue());
 		
 		log.info("Sending the fundWithdrawalConfirm request to backend for processing");
 		CFIXMsg response = super.process(fundWithdrawalConfirm);
@@ -345,8 +345,8 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 				failTheTransaction(errorMsg,sctl.getID());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_FundWithdrawalFailedToMerchant);
 				notificationCode=fundValidationService.updateFailureAttempts(unRegisteredTxnInfo, fundDefinition);
-				if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-					onBehalfOfMDNResult.setNumberOfTriesLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegisteredTxnInfo.getWithdrawalFailureAttempt());
+				if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+					onBehalfOfMDNResult.setNumberOfTriesLeft((int)(fundDefinition.getMaxfailattemptsallowed()-unRegisteredTxnInfo.getWithdrawalfailureattempt()));
 				}else{
 					onBehalfOfMDNResult.setNumberOfTriesLeft(99999999);
 				}
@@ -451,8 +451,8 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 	private void failTheTransaction(String failureReason,Long sctlId){
 		log.error("Transaction with sctl "+sctlId+" failed.Reason: "+failureReason);
 		FundDistributionInfo fundDistributionInfo = fundValidationService.queryFundDistributionInfo(sctlId);
-		fundDistributionInfo.setDistributionStatus(CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
-		fundDistributionInfo.setFailureReason(failureReason);
+		fundDistributionInfo.setDistributionstatus((long)CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
+		fundDistributionInfo.setFailurereason(failureReason);
 		fundStorageService.withdrawFunds(fundDistributionInfo);
 	}
 	

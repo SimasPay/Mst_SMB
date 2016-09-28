@@ -5,6 +5,7 @@
 
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -110,8 +111,8 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		unregisteredSubscriberCashOutInquiry.setSourceMDN(transactionDetails.getDestMDN());
 		unregisteredSubscriberCashOutInquiry.setDestMDN(transactionDetails.getSourceMDN());
 		unregisteredSubscriberCashOutInquiry.setPin(transactionDetails.getSourcePIN());
-		unregisteredSubscriberCashOutInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		unregisteredSubscriberCashOutInquiry.setChannelCode(cc.getChannelCode());
+		unregisteredSubscriberCashOutInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		unregisteredSubscriberCashOutInquiry.setChannelCode(cc.getChannelcode());
 		unregisteredSubscriberCashOutInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		unregisteredSubscriberCashOutInquiry.setSourceMessage(transactionDetails.getSourcePIN());
 		//unregisteredSubscriberCashOutInquiry.setTransferID(transactionDetails.getTransferId());
@@ -129,7 +130,7 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 
 		//Agent Validation
-		SubscriberMDN destAgentMDN = subscriberMdnService.getByMDN(unregisteredSubscriberCashOutInquiry.getDestMDN());
+		SubscriberMdn destAgentMDN = subscriberMdnService.getByMDN(unregisteredSubscriberCashOutInquiry.getDestMDN());
 
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(destAgentMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -139,20 +140,20 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 			return result;
 		}
 		Partner destAgent = partnerService.getPartner(destAgentMDN);
-		unregisteredSubscriberCashOutInquiry.setPartnerCode(destAgent.getPartnerCode());
+		unregisteredSubscriberCashOutInquiry.setPartnerCode(destAgent.getPartnercode());
 		
-		if(!cc.getChannelSourceApplication().equals(CmFinoFIX.SourceApplication_SMS)){
+		if(!(cc.getChannelsourceapplication()==(CmFinoFIX.SourceApplication_SMS))){
 			validationResult = transactionApiValidationService.validatePin(destAgentMDN, unregisteredSubscriberCashOutInquiry.getPin());
 		}else{
 			validationResult = CmFinoFIX.ResponseCode_Success;
 		}
 		if(!validationResult.equals(CmFinoFIX.ResponseCode_Success)){
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-destAgentMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)-destAgentMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(unregisteredSubscriberCashOutInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(unregisteredSubscriberCashOutInquiry.getSourceMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		//Cashout allowed for Unregistered subscriber also
 		if(!(CmFinoFIX.ResponseCode_Success.equals(validationResult)||
@@ -162,10 +163,10 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 			return result;
 		}
 		
-		Pocket srcSubscriberPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(),systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
+		Pocket srcSubscriberPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(),systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
 		validationResult = transactionApiValidationService.validateSourcePocketForUnregistered(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -176,18 +177,18 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 
 		UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
 		query.setTransferSctlId(transferId);
-		query.setSubscriberMDNID(srcSubscriberMDN.getID());
+		query.setSubscriberMDNID(srcSubscriberMDN.getId().longValue());
 
 		List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
 		if(unRegisteredTxnInfo==null||unRegisteredTxnInfo.isEmpty()){
-			log.error("Could not find the Unregistered trxn info record with sctlID: "+transferId+"and subscriberMDNID: "+srcSubscriberMDN.getID());
+			log.error("Could not find the Unregistered trxn info record with sctlID: "+transferId+"and subscriberMDNID: "+srcSubscriberMDN.getId());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
 			return result;
 		}
 		UnRegisteredTxnInfo unTxnInfo = unRegisteredTxnInfo.get(0);
-		if(!(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(unTxnInfo.getUnRegisteredTxnStatus())
-				||CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(unTxnInfo.getUnRegisteredTxnStatus()))){
-			if(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(unTxnInfo.getUnRegisteredTxnStatus())){
+		if(!(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(unTxnInfo.getUnregisteredtxnstatus())
+				||CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(unTxnInfo.getUnregisteredtxnstatus()))){
+			if(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(unTxnInfo.getUnregisteredtxnstatus())){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_CashOutAlreadyRequested);				
 			}else{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
@@ -201,24 +202,24 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		if(secreteCode.length() < (otpLength+prefix.length()))
 			secreteCode = prefix + secreteCode;
 		
-		String securecode = MfinoUtil.calculateDigestPin(srcSubscriberMDN.getMDN(), secreteCode);
-		if(!securecode.equals(unTxnInfo.getDigestedPIN())){
+		String securecode = MfinoUtil.calculateDigestPin(srcSubscriberMDN.getMdn(), secreteCode);
+		if(!securecode.equals(unTxnInfo.getDigestedpin())){
 			log.error("Invalid FundAccessCode: "+secreteCode);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidFundAccessCode);
 			return result;
 		}
 
-		CommodityTransfer ct = commodityTransferService.getCommodityTransferById(unTxnInfo.getTransferCTId());
+		CommodityTransfer ct = commodityTransferService.getCommodityTransferById(unTxnInfo.getTransferctid().longValue());
 		// add service charge to amount
 
 		log.info("creating serviceCharge object..." );
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(destAgentMDN.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(destAgentMDN.getMdn());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED);
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setTransactionAmount(ct.getAmount());
-		sc.setMfsBillerCode(destAgent.getPartnerCode());
+		sc.setMfsBillerCode(destAgent.getPartnercode());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
 		sc.setTransactionLogId(unregisteredSubscriberCashOutInquiry.getTransactionID());
 		sc.setTransactionIdentifier(unregisteredSubscriberCashOutInquiry.getTransactionIdentifier());
@@ -227,16 +228,16 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(sc.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getID(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				log.error("PartnerService obtained null ");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 				return result;
 			}
-			destAgentPocket = partnerService.getPocketByDestPocketID();
+			destAgentPocket = partnerService.getPocketByDestpocketid();
 			validationResult = transactionApiValidationService.validateDestinationPocket(destAgentPocket);
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-				log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getID():null)+" has failed validations");
+				log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getId():null)+" has failed validations");
 				result.setNotificationCode(validationResult);
 				return result;
 			}
@@ -270,12 +271,12 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		}
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 
-		unregisteredSubscriberCashOutInquiry.setSourcePocketID(srcSubscriberPocket.getID());
-		unregisteredSubscriberCashOutInquiry.setDestPocketID(destAgentPocket.getID());
+		unregisteredSubscriberCashOutInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		unregisteredSubscriberCashOutInquiry.setDestPocketID(destAgentPocket.getId().longValue());
 		unregisteredSubscriberCashOutInquiry.setServiceChargeTransactionLogID(sctl.getID());
 		
-		unTxnInfo.setCashoutSCTLId(sctl.getID());
-		unTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
+		unTxnInfo.setCashoutsctlid(new BigDecimal(sctl.getID()));
+		unTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
 		unRegisteredTxnInfoService.save(unTxnInfo);
 		unregisteredSubscriberCashOutInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		log.info("sending the unregisteredSubscriberCashOutInquiry request to backend for processing");

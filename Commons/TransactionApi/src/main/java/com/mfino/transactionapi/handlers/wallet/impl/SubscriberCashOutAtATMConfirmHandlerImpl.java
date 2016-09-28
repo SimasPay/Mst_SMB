@@ -19,7 +19,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -94,8 +94,8 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 		cashoutConfirm.setTransferID(transactionDetails.getTransferId());
 		cashoutConfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		cashoutConfirm.setConfirmed(confirmed);
-		cashoutConfirm.setSourceApplication(cc.getChannelSourceApplication());
-		cashoutConfirm.setChannelCode(cc.getChannelCode());
+		cashoutConfirm.setSourceApplication((int)cc.getChannelsourceapplication());
+		cashoutConfirm.setChannelCode(cc.getChannelcode());
 		cashoutConfirm.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		log.info("Handling Subscriber Cashout At ATM confirmation WebAPI request for Parent Txn Id = " + cashoutConfirm.getParentTransactionID());
 		XMLResult result = new MoneyTransferXMLResult();
@@ -107,7 +107,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 		result.setSourceMessage(cashoutConfirm);
 		result.setTransactionID(cashoutConfirm.getTransactionID());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(cashoutConfirm.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(cashoutConfirm.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -119,7 +119,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 		Pocket srcSubscriberPocket = pocketService.getDefaultPocket(srcSubscriberMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -138,7 +138,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 			return result;
 		}
 
-		SubscriberMDN destPartnerMDN = subscriberMdnService.getByMDN(ATMPartnerMDN);
+		SubscriberMdn destPartnerMDN = subscriberMdnService.getByMDN(ATMPartnerMDN);
 		validationResult = transactionApiValidationService.validatePartnerMDN(destPartnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination Agent has failed validations");
@@ -150,7 +150,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 		Pocket destPocket= pocketService.getSuspencePocket(partnerService.getPartner(destPartnerMDN));
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -173,9 +173,9 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 			return result;
 		}
 
-		cashoutConfirm.setDestMDN(destPartnerMDN.getMDN());
-		cashoutConfirm.setSourcePocketID(srcSubscriberPocket.getID());
-		cashoutConfirm.setDestPocketID(destPocket.getID());
+		cashoutConfirm.setDestMDN(destPartnerMDN.getMdn());
+		cashoutConfirm.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		cashoutConfirm.setDestPocketID(destPocket.getId().longValue());
 		cashoutConfirm.setServiceChargeTransactionLogID(sctl.getID());
 		
 		log.info("sending the cashoutConfirm request to backend for processing");

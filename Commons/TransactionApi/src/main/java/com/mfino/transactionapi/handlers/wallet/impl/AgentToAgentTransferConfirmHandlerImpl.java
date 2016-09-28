@@ -16,7 +16,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -87,8 +87,8 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 		agentToAgentTransfer.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		agentToAgentTransfer.setTransferID(transactionDetails.getTransferId());
 		agentToAgentTransfer.setConfirmed(confirmed);
-		agentToAgentTransfer.setSourceApplication(cc.getChannelSourceApplication());
-		agentToAgentTransfer.setChannelCode(cc.getChannelCode());
+		agentToAgentTransfer.setSourceApplication((int)cc.getChannelsourceapplication());
+		agentToAgentTransfer.setChannelCode(cc.getChannelcode());
 		agentToAgentTransfer.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		Long sourcePocketId = transactionDetails.getSrcPocketId();
 		Long destPocketId = transactionDetails.getDestinationPocketId();
@@ -103,7 +103,7 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 		result.setSourceMessage(agentToAgentTransfer);
 		result.setTransactionID(agentToAgentTransfer.getTransactionID());
 		
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(agentToAgentTransfer.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(agentToAgentTransfer.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Source Agent with mdn : "+agentToAgentTransfer.getSourceMDN()+" has failed validations");
@@ -122,7 +122,7 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 		}
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -140,7 +140,7 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		SubscriberMDN destAgentMDN = destAgent.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn destAgentMDN = destAgent.getSubscriber().getSubscriberMdns().iterator().next();
 
 		Pocket destAgentPocket; 
 		if(destPocketId!=null){
@@ -152,7 +152,7 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 		}
 		validationResult = transactionApiValidationService.validateDestinationPocket(destAgentPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destAgentPocket!=null? destAgentPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -176,9 +176,9 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 		}		
 		
 		agentToAgentTransfer.setServiceChargeTransactionLogID(sctl.getID());
-		agentToAgentTransfer.setDestMDN(destAgentMDN.getMDN());
-		agentToAgentTransfer.setSourcePocketID(srcSubscriberPocket.getID());
-		agentToAgentTransfer.setDestPocketID(destAgentPocket.getID());
+		agentToAgentTransfer.setDestMDN(destAgentMDN.getMdn());
+		agentToAgentTransfer.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		agentToAgentTransfer.setDestPocketID(destAgentPocket.getId().longValue());
 
 		log.info("sending the agentToAgentTransfer request to backend for processing");
 		CFIXMsg response = super.process(agentToAgentTransfer);
