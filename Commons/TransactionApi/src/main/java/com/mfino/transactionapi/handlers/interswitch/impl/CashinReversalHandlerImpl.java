@@ -12,7 +12,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -26,7 +26,6 @@ import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.impl.TransactionIdentifierServiceImpl;
-import com.mfino.service.impl.TransactionLogServiceImpl;
 import com.mfino.transactionapi.handlers.interswitch.CashinReversalHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.wallet.WalletConfirmXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -73,14 +72,14 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 
 		log.info("validating dest mdn");
 
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(cashinDetails.getDestMDN());
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(cashinDetails.getSourceMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(cashinDetails.getDestMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(cashinDetails.getSourceMDN());
 
 		/*Destination MDN validation */
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsDestination(destinationMDN);
  		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Destination subscriber with mdn : "+destinationMDN.getMDN()+" has failed validations");
+			log.error("Destination subscriber with mdn : "+destinationMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -90,12 +89,12 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 		Pocket subPocket = pocketService.getDefaultPocket(destinationMDN, "1");
 		validationResult = transactionApiValidationService.validateSourcePocket(subPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(subPocket!=null? subPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(subPocket!=null? subPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
 
-		log.info("default emoney pocket for destmdn=" + destinationMDN + " is " + subPocket.getID());
+		log.info("default emoney pocket for destmdn=" + destinationMDN + " is " + subPocket.getId());
 
 		log.info("retrieving sctl from paymentLogID");
 
@@ -138,8 +137,8 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 
 		log.info("constructing autoreversal object");
 		CMAutoReversal reversal = new CMAutoReversal();
-		reversal.setSourcePocketID(ct.getPocketBySourcePocketID().getID());
-		reversal.setDestPocketID(subPocket.getID());
+		reversal.setSourcePocketID(ct.getPocket().getId().longValue());
+		reversal.setDestPocketID(subPocket.getId().longValue());
 		reversal.setServiceChargeTransactionLogID(sctl.getID());
 		reversal.setAmount(ct.getAmount());
 		reversal.setCharges(ct.getCharges());

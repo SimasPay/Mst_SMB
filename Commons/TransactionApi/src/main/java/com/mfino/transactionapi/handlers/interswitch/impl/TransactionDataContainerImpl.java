@@ -3,7 +3,7 @@ package com.mfino.transactionapi.handlers.interswitch.impl;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.transactionapi.handlers.interswitch.TransactionDataContainer;
@@ -16,8 +16,8 @@ import com.mfino.transactionapi.handlers.interswitch.TransactionDataContainer;
 @Service("TransactionDataContainerImpl")
 public class TransactionDataContainerImpl implements TransactionDataContainer{
 
-	private SubscriberMDN partnerMDN;
-	private SubscriberMDN destinationMDN;
+	private SubscriberMdn partnerMDN;
+	private SubscriberMdn destinationMDN;
 	private Long	      parentTxnID;
 	private boolean	      confirmed;
 	private Long	      transferID;
@@ -54,16 +54,16 @@ public class TransactionDataContainerImpl implements TransactionDataContainer{
 		this.confirmed = confirmed;
 	}
 	
-	public SubscriberMDN getPartnerMDN() {
+	public SubscriberMdn getPartnerMDN() {
 		return partnerMDN;
 	}
-	public void setPartnerMDN(SubscriberMDN partnerMDN) {
+	public void setPartnerMDN(SubscriberMdn partnerMDN) {
 		this.partnerMDN = partnerMDN;
 	}
-	public SubscriberMDN getDestinationMDN() {
+	public SubscriberMdn getDestinationMDN() {
 		return destinationMDN;
 	}
-	public void setDestinationMDN(SubscriberMDN destinationMDN) {
+	public void setDestinationMDN(SubscriberMdn destinationMDN) {
 		this.destinationMDN = destinationMDN;
 	}
 

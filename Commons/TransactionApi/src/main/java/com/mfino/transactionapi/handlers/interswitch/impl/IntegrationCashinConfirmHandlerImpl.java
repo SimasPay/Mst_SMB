@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.domain.CashinFirstTime;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -20,11 +20,11 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
 import com.mfino.fix.CmFinoFIX.CMInterswitchCashin;
 import com.mfino.handlers.FIXMessageHandler;
+import com.mfino.service.CashinFirstTimeService;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.service.CashinFirstTimeService;
 import com.mfino.transactionapi.handlers.interswitch.IntegrationCashinConfirmHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.wallet.WalletConfirmXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -78,7 +78,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		}
 		result.setMultixResponse(response);
 		Long transferId = transactionDetailsContainer.getTransferID();
-		SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetailsContainer.getDestinationMDN().getMDN());
+		SubscriberMdn destMDN = subscriberMdnService.getByMDN(transactionDetailsContainer.getDestinationMDN().getMdn());
 		// Changing the Service_charge_transaction_log status based on the
 		// response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -97,17 +97,17 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 
 				transactionApiValidationService.checkAndChangeStatus(destMDN);
 				//Updating records for First-time CashIn
-				if(destMDN != null && destMDN.getCashinFirstTimeID()==null){
-					log.info("Cashin First Time for MDN: "+destMDN.getMDN());
+				if(destMDN != null && destMDN.getCashinfirsttimeid()==null){
+					log.info("Cashin First Time for MDN: "+destMDN.getMdn());
 					CashinFirstTime cft = new CashinFirstTime();
-					cft.setSubscriberMDNByMDNID(destMDN);
-					cft.setMDN(destMDN.getMDN());
-					cft.setSctlId(sctl.getID());
-					cft.setTransactionAmount(sctl.getTransactionAmount());
+					//cft.setSubscriberMDNByMDNID(destMDN);
+					cft.setMdn(destMDN.getMdn());
+					//cft.setSctlId(sctl.getID());
+					//cft.setTransactionAmount(sctl.getTransactionAmount());
 					cashinFirstTimeService.saveCashinFirstTime(cft);
 					
-					cft = cashinFirstTimeService.getByMDN(destMDN.getMDN());
-					destMDN.setCashinFirstTimeID(cft.getID());
+					cft = cashinFirstTimeService.getByMDN(destMDN.getMdn());
+					destMDN.setCashinfirsttimeid(cft.getId());
 					subscriberMdnService.saveSubscriberMDN(destMDN);
 				}
 			}
@@ -145,8 +145,8 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 			throw new IllegalArgumentException();
 		}
 		log.info("constructing CMCashin object for cashin confirmation");
-		SubscriberMDN destMDN = cashinDataConatiner.getDestinationMDN();
-		SubscriberMDN partnerMDN = cashinDataConatiner.getPartnerMDN();
+		SubscriberMdn destMDN = cashinDataConatiner.getDestinationMDN();
+		SubscriberMdn partnerMDN = cashinDataConatiner.getPartnerMDN();
 		Long transferId = cashinDataConatiner.getTransferID();
 		Long parentTxnId = cashinDataConatiner.getParentTxnID();
 		boolean confirmed = cashinDataConatiner.isConfirmed();
@@ -154,15 +154,15 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		ServiceChargeTransactionLog sctl = cashinDataConatiner.getSctl();
 
 		CMCashIn cashinConfirm = new CMCashIn();
-		cashinConfirm.setSourceMDN(partnerMDN.getMDN());
-		cashinConfirm.setDestMDN(destMDN.getMDN());
+		cashinConfirm.setSourceMDN(partnerMDN.getMdn());
+		cashinConfirm.setDestMDN(destMDN.getMdn());
 		cashinConfirm.setParentTransactionID(parentTxnId);
 		cashinConfirm.setTransferID(transferId);
 		cashinConfirm.setConfirmed(confirmed);
-		cashinConfirm.setChannelCode(channel.getChannelCode());
+		cashinConfirm.setChannelCode(channel.getChannelcode());
 		cashinConfirm.setDestPocketID(cashinDataConatiner.getDestPocketID());
 		cashinConfirm.setSourcePocketID(cashinDataConatiner.getSourcePocketID());
-		cashinConfirm.setSourceApplication(channel.getChannelSourceApplication());
+		cashinConfirm.setSourceApplication(new Integer(String.valueOf(channel.getChannelsourceapplication())));
 		cashinConfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		cashinConfirm.setIsSystemIntiatedTransaction(true);
 		cashinConfirm.setPassword("");
@@ -189,7 +189,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 			log.error("Input data is null.cashinDataConatiner:"+details+"channel:"+channel);
 			throw new IllegalArgumentException();
 		}
-		SubscriberMDN partnerMDN = details.getPartnerMDN();
+		SubscriberMdn partnerMDN = details.getPartnerMDN();
 		Long parentTxnId = details.getParentTxnID();
 
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) details.getMsg();

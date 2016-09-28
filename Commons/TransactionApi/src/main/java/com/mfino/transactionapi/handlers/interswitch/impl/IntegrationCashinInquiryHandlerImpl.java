@@ -22,7 +22,8 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -160,15 +161,15 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 
 		String pIdStr = systemParameterService.getString(SystemParameterKeys.SERVICE_PARTNER__ID_KEY);
 		Partner cashinPartner = partnerService.getPartnerById(Long.parseLong(pIdStr));
- 		SubscriberMDN sourceMDN = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+ 		SubscriberMdn sourceMDN = cashinPartner.getSubscriber().getSubscriberMdns().iterator().next();
 
 		log.info("transactionchargingservice -->");
 		ServiceCharge sc = new ServiceCharge();
-		sc.setChannelCodeId(channel.getID());
+		sc.setChannelCodeId(channel.getId().longValue());
 		sc.setDestMDN(cashinDetails.getDestMDN());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
 		sc.setTransactionTypeName(cashinDetails.getPaymentMethod());
-		sc.setSourceMDN(sourceMDN.getMDN());
+		sc.setSourceMDN(sourceMDN.getMdn());
 		sc.setTransactionAmount(cashinDetails.getAmount());
 		// sc.setMfsBillerCode(cashinDetails.getPartnerCode());
 		sc.setTransactionLogId(cashinDetails.getTransactionID());
@@ -213,7 +214,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 
 		log.info("getting the partner mdn and setting it as sourcemdn in cashindetails object");
 		//Set<SubscriberMDN> set = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID();
- 		cashinDetails.setSourceMDN(sourceMDN.getMDN());
+ 		cashinDetails.setSourceMDN(sourceMDN.getMdn());
 		addCompanyANDLanguageToResult(sourceMDN,result);
 
 		validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
@@ -225,7 +226,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 
 		cashinDataConatiner.setPartnerMDN(sourceMDN);
 
-		log.info("mdn of the partner=" +cashinDataConatiner.getPartnerMDN().getMDN());
+		log.info("mdn of the partner=" +cashinDataConatiner.getPartnerMDN().getMdn());
 
 		log.info("validating the partner");
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -239,7 +240,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		log.info("normalizing destination mdn");
 
 		cashinDetails.setDestMDN(subscriberService.normalizeMDN(cashinDetails.getDestMDN()));
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(cashinDetails.getDestMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(cashinDetails.getDestMDN());
 		log.info("validating dest mdn");
 		
 		validationResult = transactionApiValidationService.validateSubscriberAsDestination(destinationMDN);
@@ -257,13 +258,13 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		Pocket subPocket = pocketService.getDefaultPocket(destinationMDN, "1");
 		validationResult = transactionApiValidationService.validateSourcePocket(subPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(subPocket!=null? subPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(subPocket!=null? subPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			transactionChargingService.failTheTransaction(sctl, "validateSourcePocket failed. Error code " + validationResult);
 			return result;
 		}
 
-		log.info("default emoney pocket for destmdn=" + destinationMDN + " is " + subPocket.getID());
+		log.info("default emoney pocket for destmdn=" + destinationMDN + " is " + subPocket.getId());
 
 		
 
@@ -291,7 +292,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			partnerPocket = pocketService.getById(Long.parseLong(ppid));
 			validationResult = transactionApiValidationService.validateSourcePocket(partnerPocket);
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-				log.error("Source pocket with id "+(partnerPocket!=null? partnerPocket.getID():null)+" has failed validations");
+				log.error("Source pocket with id "+(partnerPocket!=null? partnerPocket.getId():null)+" has failed validations");
 				result.setNotificationCode(validationResult);
 				transactionChargingService.failTheTransaction(sctl, "validateSourcePocket for Partner failed. Error code " + validationResult);
 				return result;
@@ -307,8 +308,8 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		
 		cashinDataConatiner.setTransDetails(transDetails);
 
-		cashinDataConatiner.setSourcePocketID(partnerPocket.getID());
-		cashinDataConatiner.setDestPocketID(subPocket.getID());
+		cashinDataConatiner.setSourcePocketID(partnerPocket.getId().longValue());
+		cashinDataConatiner.setDestPocketID(subPocket.getId().longValue());
 		return result;		
 	}
 	
@@ -323,7 +324,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			throw new IllegalArgumentException();
 		}
 		Transaction transDetails = cashinDataConatiner.getTransDetails();
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
 		log.info("building CMCashinInquiry object for processing -->");
 		CMCashInInquiry cashIn = new CMCashInInquiry();
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) cashinDataConatiner.getMsg();
@@ -331,19 +332,19 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		//Saving integration details 
 		saveIntegrationSummary(sctl, cashinDetails);
 		
-		cashIn.setSourceMDN(cashinDataConatiner.getPartnerMDN().getMDN());
-		cashIn.setDestMDN(cashinDataConatiner.getDestinationMDN().getMDN());
+		cashIn.setSourceMDN(cashinDataConatiner.getPartnerMDN().getMdn());
+		cashIn.setDestMDN(cashinDataConatiner.getDestinationMDN().getMdn());
 		cashIn.setAmount(cashinDetails.getAmount());
 		cashIn.setCharges(transDetails.getAmountTowardsCharges());
 		cashIn.setTransactionID(cashinDetails.getTransactionID());
-		cashIn.setChannelCode(channel.getChannelCode());
+		cashIn.setChannelCode(channel.getChannelcode());
 		cashIn.setPin("a");
 		cashIn.setSourcePocketID(cashinDataConatiner.getSourcePocketID());
 		cashIn.setDestPocketID(cashinDataConatiner.getDestPocketID());
 		cashIn.setSourceApplication(cashinDetails.getSourceApplication());
 		cashIn.setSourceMessage("from BSM");
 		cashIn.setServletPath(cashinDetails.getServletPath());
-		cashIn.setServiceChargeTransactionLogID(sctl.getID());
+		cashIn.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashIn.setIsSystemIntiatedTransaction(true);
 		cashIn.setTransactionIdentifier(cashinDetails.getTransactionIdentifier());
 		log.info("sending cashin inquiry to backend -->");
@@ -394,14 +395,14 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 	
 	/** Saving integration details separately. Can be used in report requirements etc. */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	private void saveIntegrationSummary(ServiceChargeTransactionLog sctl, CMInterswitchCashin cashinDetails) {
+	private void saveIntegrationSummary(ServiceChargeTxnLog sctl, CMInterswitchCashin cashinDetails) {
 		IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummary isummary = new IntegrationSummary();
-		isummary.setSctlId(sctl.getID());
-		isummary.setReconcilationID1(sctl.getDestMDN());
-		isummary.setReconcilationID2(cashinDetails.getReceiptNo());
-		isummary.setReconcilationID3(cashinDetails.getPaymentLogID());
-		isummary.setInstitutionID(cashinDetails.getInstitutionID());
+		isummary.setSctlid(sctl.getId());
+		isummary.setReconcilationid1(sctl.getDestmdn());
+		isummary.setReconcilationid2(cashinDetails.getReceiptNo());
+		isummary.setReconcilationid3(cashinDetails.getPaymentLogID());
+		isummary.setInstitutionid(cashinDetails.getInstitutionID());
 		isdao.save(isummary);
     }
 

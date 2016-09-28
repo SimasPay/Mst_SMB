@@ -18,7 +18,7 @@ import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -95,9 +95,9 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 			return result;
 		}
 
- 		SubscriberMDN sourceMDN = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+ 		SubscriberMdn sourceMDN = cashinPartner.getSubscriber().getSubscriberMdns().iterator().next();
 
-		transactionStatus.setSourceMDN(sourceMDN.getMDN());
+		transactionStatus.setSourceMDN(sourceMDN.getMdn());
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		
 		validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
@@ -110,7 +110,7 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 		ServiceCharge serviceCharge = new ServiceCharge();
 		serviceCharge.setSourceMDN(transactionStatus.getSourceMDN());
 		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(channel.getID());
+		serviceCharge.setChannelCodeId(channel.getId().longValue());
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSACTIONSTATUS);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
