@@ -36,7 +36,7 @@ public class DestPocketLimitsValidator implements IValidator {
             
 			
 //		if(amount<pocketTemplate.getMinAmountPerTransaction()){
-        if(amount.add(pocket.getCurrentBalance()).compareTo(pocketTemplate.getMaximumStoredValue())> 0){            
+        if(amount.add(pocket.getCurrentBalance()).compareTo(pocketTemplate.getMaximumstoredvalue())> 0){            
 		return CmFinoFIX.NotificationCode_BalanceTooHigh;
 		}
 		

@@ -104,7 +104,7 @@ public class PINValidator implements IValidator {
 		// we will not check length when the pin check happens, because PIN length might have been changed in config file
 		// after the PIN has been set by the subscriber. We take care of PIN length in case of changing PIN.
 		
-		String calcPIN = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), pin);
+		String calcPIN = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), pin);
 		String digestedPin = null;
 
 		// If merchant and the merchant pin exists use it otherwise use the regular pin
@@ -113,7 +113,7 @@ public class PINValidator implements IValidator {
 		//				if(StringUtils.isBlank(digestedPin))
 		//					digestedPin = subscriberMDN.getDigestedPIN();
 		//			} else {
-		digestedPin = subscriberMDN.getDigestedPIN();
+		digestedPin = subscriberMDN.getDigestedpin();
 		//			}
 
 		if(StringUtils.isBlank(digestedPin)){
@@ -154,10 +154,10 @@ public class PINValidator implements IValidator {
 			Timestamp now = new Timestamp();
 			subscriberMDN.setRestrictions(subscriberMDN.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 			subscriberMDN .setStatus(CmFinoFIX.SubscriberStatus_InActive);
-			subscriberMDN.setStatusTime(now);
+			subscriberMDN.setStatustime(now);
 			subscriber.setRestrictions(subscriber.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-			subscriber.setStatusTime(now);
+			subscriber.setStatustime(now);
 			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 			
 			// Check if the Subscriber is of Partner type
@@ -166,7 +166,7 @@ public class PINValidator implements IValidator {
 				if (CollectionUtils.isNotEmpty(setPartners)) {
 					PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
 					Partner partner = setPartners.iterator().next();
-					partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+					partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 					partnerDAO.save(partner);
 				}
 			}

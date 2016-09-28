@@ -26,7 +26,8 @@ import com.mfino.hibernate.Timestamp;
 public class Pocket extends Base implements java.io.Serializable {
 
 	
-	private SubscriberMdn subscriberMdn;
+	private SubscriberMDN subscriberMdn;
+	private PocketTemplate pocketTemplate;
 	private PocketTemplate pocketTemplateByPockettemplateid;
 	private Company company;
 	private PocketTemplate pocketTemplateByOldpockettemplateid;
@@ -87,7 +88,7 @@ public class Pocket extends Base implements java.io.Serializable {
 	public Pocket() {
 	}
 
-	public Pocket(BigDecimal id, SubscriberMdn subscriberMdn,
+	public Pocket(BigDecimal id, SubscriberMDN subscriberMdn,
 			PocketTemplate pocketTemplateByPockettemplateid,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
@@ -114,7 +115,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.statustime = statustime;
 	}
 
-	public Pocket(BigDecimal id, SubscriberMdn subscriberMdn,
+	public Pocket(BigDecimal id, SubscriberMDN subscriberMdn,
 			PocketTemplate pocketTemplateByPockettemplateid, Company company,
 			PocketTemplate pocketTemplateByOldpockettemplateid,
 			Timestamp lastupdatetime, String updatedby,
@@ -201,12 +202,20 @@ public class Pocket extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID", nullable = false)
-	public SubscriberMdn getSubscriberMdn() {
+	public SubscriberMDN getSubscriberMdn() {
 		return this.subscriberMdn;
 	}
 
-	public void setSubscriberMdn(SubscriberMdn subscriberMdn) {
+	public void setSubscriberMdn(SubscriberMDN subscriberMdn) {
 		this.subscriberMdn = subscriberMdn;
+	}
+
+	public PocketTemplate getPocketTemplate() {
+		return pocketTemplate;
+	}
+
+	public void setPocketTemplate(PocketTemplate pocketTemplate) {
+		this.pocketTemplate = pocketTemplate;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

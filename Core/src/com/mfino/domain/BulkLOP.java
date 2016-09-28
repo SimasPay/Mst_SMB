@@ -26,7 +26,7 @@ import com.mfino.hibernate.Timestamp;
 public class BulkLOP extends Base implements java.io.Serializable {
 
 	
-	private SubscriberMdn subscriberMdn;
+	private SubscriberMDN subscriberMdn;
 	private DistributionChainTemp distributionChainTemp;
 	private Merchant merchant;
 	private Company company;
@@ -52,7 +52,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	public BulkLOP() {
 	}
 
-	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
+	public BulkLOP(BigDecimal id, SubscriberMDN subscriberMdn,
 			Merchant merchant, Company company, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long sourceapplication) {
@@ -67,7 +67,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 		this.sourceapplication = sourceapplication;
 	}
 
-	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
+	public BulkLOP(BigDecimal id, SubscriberMDN subscriberMdn,
 			DistributionChainTemp distributionChainTemp, Merchant merchant,
 			Company company, DistributionChainLvl distributionChainLvl,
 			Timestamp lastupdatetime, String updatedby,
@@ -109,11 +109,11 @@ public class BulkLOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID", nullable = false)
-	public SubscriberMdn getSubscriberMdn() {
+	public SubscriberMDN getSubscriberMdn() {
 		return this.subscriberMdn;
 	}
 
-	public void setSubscriberMdn(SubscriberMdn subscriberMdn) {
+	public void setSubscriberMdn(SubscriberMDN subscriberMdn) {
 		this.subscriberMdn = subscriberMdn;
 	}
 

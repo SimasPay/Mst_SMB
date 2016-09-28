@@ -119,14 +119,14 @@ public class PartnerValidator implements IValidator {
 				return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found			
 		}
-		if(isAgent && !partnerService.isAgentType(partner.getBusinessPartnerType()) && !(partner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
+		if(isAgent && !partnerService.isAgentType(partner.getBusinesspartnertype()) && !(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
 			//return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
-		if(isTeller && !(partner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
+		if(isTeller && !(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//teller Not found
 		}
-		if(isMerchant && !(partner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_Merchant))){
+		if(isMerchant && !(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_Merchant))){
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//Merchant Not found
 		}
 		if (!(CmFinoFIX.SubscriberStatus_Active.equals(agentsubscriber.getStatus())&&CmFinoFIX.SubscriberStatus_Active.equals(subscriberMDN.getStatus()))) {

@@ -32,45 +32,45 @@ public class PocketLimitsValidator implements IValidator {
 	public Integer validate() {
 		Timestamp now = new Timestamp();
 		
-		if (pocket.getPocketTemplate().getIsCollectorPocket()!=null && pocket.getPocketTemplate().getIsCollectorPocket()){
-			pocket.setLastTransactionTime(now);
+		if (pocket.getPocketTemplate().getIscollectorpocket()!=null && pocket.getPocketTemplate().getIscollectorpocket()){
+			pocket.setLasttransactiontime(now);
 			return CmFinoFIX.ResponseCode_Success;
 		}
-
-		if (pocket.getLastTransactionTime() == null) {
-			pocket.setLastTransactionTime(now);
-			pocket.setCurrentDailyExpenditure(BigDecimal.ZERO);
-			pocket.setCurrentDailyTxnsCount(0);
-			pocket.setCurrentMonthlyExpenditure(BigDecimal.ZERO);
-			pocket.setCurrentMonthlyTxnsCount(0);
-			pocket.setCurrentWeeklyExpenditure(BigDecimal.ZERO);
-			pocket.setCurrentWeeklyTxnsCount(0);
+		
+		if (pocket.getLasttransactiontime() == null) {
+			pocket.setLasttransactiontime(now);
+			pocket.setCurrentdailyexpenditure(BigDecimal.ZERO);
+			pocket.setCurrentdailytxnscount(0);
+			pocket.setCurrentmonthlyexpenditure(BigDecimal.ZERO);
+			pocket.setCurrentmonthlytxnscount(0);
+			pocket.setCurrentweeklyexpenditure(BigDecimal.ZERO);
+			pocket.setCurrentweeklytxnscount(0);
 		} 
 		else {
 			// Reset the pocket counters based on the last transaction date 
 			Calendar calendarNow = Calendar.getInstance();
 			calendarNow.setTimeInMillis(now.getTime());
 			Calendar lastTransationTime = Calendar.getInstance();
-			lastTransationTime.setTimeInMillis(pocket.getLastTransactionTime().getTime()); 
+			lastTransationTime.setTimeInMillis(pocket.getLasttransactiontime().getTime()); 
 			if (calendarNow.get(Calendar.DATE) != lastTransationTime.get(Calendar.DATE)) {
-				pocket.setCurrentDailyTxnsCount(0);
-				pocket.setCurrentDailyExpenditure(BigDecimal.ZERO);
+				pocket.setCurrentdailytxnscount(0);
+				pocket.setCurrentdailyexpenditure(BigDecimal.ZERO);
 			} 
 			
 			if (lastTransationTime.get(Calendar.DAY_OF_WEEK)>calendarNow.get(Calendar.DAY_OF_WEEK) || 
 					(calendarNow.getTimeInMillis() - lastTransationTime.getTimeInMillis()) > 7  * 24 * 60 * 60 * 1000) {
-				pocket.setCurrentWeeklyTxnsCount(0);
-				pocket.setCurrentWeeklyExpenditure(BigDecimal.ZERO);
+				pocket.setCurrentweeklytxnscount(0);
+				pocket.setCurrentweeklyexpenditure(BigDecimal.ZERO);
 			} 
 			
 			if (calendarNow.get(Calendar.MONTH) != lastTransationTime.get(Calendar.MONTH)) {
-				pocket.setCurrentMonthlyTxnsCount(0);
-				pocket.setCurrentMonthlyExpenditure(BigDecimal.ZERO);
+				pocket.setCurrentmonthlytxnscount(0);
+				pocket.setCurrentmonthlyexpenditure(BigDecimal.ZERO);
 			} 
 		}
 		
 		if (pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA) {
-			if (null == pocket.getCurrentBalance()) {
+			if (null == pocket.getCurrentbalance()) {
 				pocket.setCurrentBalance(BigDecimal.ZERO);
 			}
 		}
@@ -87,47 +87,47 @@ public class PocketLimitsValidator implements IValidator {
 				notificationCode = CmFinoFIX.NotificationCode_ReceiverSVAPocketRestricted;
 			}
 		}
-		else if (isSource && (pocket.getPocketTemplate().getMinTimeBetweenTransactions() > 0) && 
-				(pocket.getPocketTemplate().getMinTimeBetweenTransactions()*1000 > (now.getTime() - pocket.getLastTransactionTime().getTime()))) {
+		else if (isSource && (pocket.getPocketTemplate().getMintimebetweentransactions() > 0) && 
+				(pocket.getPocketTemplate().getMintimebetweentransactions()*1000 > (now.getTime() - pocket.getLasttransactiontime().getTime()))) {
 			notificationCode = CmFinoFIX.NotificationCode_TransactionFailedDueToTimeLimitTransactionReached;
 		}
 		else if (pocket.getPocketTemplate().getType().intValue()	==	CmFinoFIX.PocketType_SVA) {
 			if (isSource) {
-				if (((pocket.getCurrentBalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumStoredValue())) == -1)) {
+				if (((pocket.getCurrentBalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == -1)) {
 					notificationCode = CmFinoFIX.NotificationCode_BalanceTooLow;
 				}
 			}
-			else if (((pocket.getCurrentBalance().add(amount).compareTo(pocket.getPocketTemplate().getMaximumStoredValue())) == 1)) {
+			else if (((pocket.getCurrentBalance().add(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == 1)) {
 				notificationCode = CmFinoFIX.NotificationCode_BalanceTooHigh;
 			}
 		}
 		
-		if (amount.compareTo(pocket.getPocketTemplate().getMaxAmountPerTransaction()) == 1) {
+		if (amount.compareTo(pocket.getPocketTemplate().getMaxamountpertransaction()) == 1) {
 			notificationCode = CmFinoFIX.NotificationCode_TransferAmountAboveMaximumAllowed;
 		}
-		else if (amount.compareTo(pocket.getPocketTemplate().getMinAmountPerTransaction()) == -1) { 
+		else if (amount.compareTo(pocket.getPocketTemplate().getMinamountpertransaction()) == -1) { 
 			notificationCode = CmFinoFIX.NotificationCode_TransferAmountBelowMinimumAllowed;
 		}
-		else if (pocket.getCurrentDailyTxnsCount()	>=	pocket.getPocketTemplate().getMaxTransactionsPerDay()) {
+		else if (pocket.getCurrentdailytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionsperday()) {
 			notificationCode = CmFinoFIX.NotificationCode_AboveDailyTransactionsCountLimit;
 		}
-		else if (pocket.getCurrentWeeklyTxnsCount()	>=	pocket.getPocketTemplate().getMaxTransactionsPerWeek()) {
+		else if (pocket.getCurrentweeklytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionsperweek()) {
 			notificationCode = CmFinoFIX.NotificationCode_AboveWeeklyTransactionsCountLimit;
 		}
-		else if (pocket.getCurrentMonthlyTxnsCount() >=	pocket.getPocketTemplate().getMaxTransactionsPerMonth()) {
+		else if (pocket.getCurrentmonthlytxnscount() >=	pocket.getPocketTemplate().getMaxtransactionspermonth()) {
 			notificationCode = CmFinoFIX.NotificationCode_AboveMonthlyTransactionsCountLimit;
 		}
-		else if (pocket.getCurrentDailyExpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxAmountPerDay()) == 1) {
+		else if (pocket.getCurrentdailyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountperday()) == 1) {
 			notificationCode = CmFinoFIX.NotificationCode_AboveDailyExpenditureLimit;
 		}
-		else if (pocket.getCurrentWeeklyExpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxAmountPerWeek()) == 1) {
+		else if (pocket.getCurrentweeklyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountperweek()) == 1) {
 			notificationCode = CmFinoFIX.NotificationCode_AboveWeeklyExpenditureLimit;
 		}
-		else if (pocket.getCurrentMonthlyExpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxAmountPerMonth()) == 1) {
+		else if (pocket.getCurrentmonthlyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountpermonth()) == 1) {
 			notificationCode = CmFinoFIX.NotificationCode_AboveMonthlyExpenditureLimit;
 		}
 	
-		pocket.setLastTransactionTime(now);
+		pocket.setLasttransactiontime(now);
 		
 		return notificationCode;
 	}

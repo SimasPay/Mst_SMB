@@ -55,7 +55,7 @@ public class DefaultBOBPocketValidator implements IValidator {
         if (!CmFinoFIX.SubscriberRestrictions_None.equals(defaultBOBPocket.getRestrictions())) {
             return CmFinoFIX.NotificationCode_BOBPocketIsRestricted;
         }
-        if (defaultBOBPocket.getPocketTemplate().getOperatorCode() == null) {
+        if (defaultBOBPocket.getPocketTemplate().getOperatorcode() == null) {
             return CmFinoFIX.NotificationCode_PocketTemplateOperatorCodeMissing;
         }
         return CmFinoFIX.ResponseCode_Success;

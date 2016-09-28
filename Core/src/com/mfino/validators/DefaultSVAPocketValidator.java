@@ -75,7 +75,7 @@ public class DefaultSVAPocketValidator implements IValidator {
 		{
 			return CmFinoFIX.NotificationCode_SenderSVAPocketRestricted;
 		}
-		if (defaultSVAPocket.getPocketTemplate().getOperatorCode() == null) {
+		if (defaultSVAPocket.getPocketTemplate().getOperatorcode() == null) {
 			return CmFinoFIX.NotificationCode_PocketTemplateOperatorCodeMissing;
 		}
 		return CmFinoFIX.ResponseCode_Success;
