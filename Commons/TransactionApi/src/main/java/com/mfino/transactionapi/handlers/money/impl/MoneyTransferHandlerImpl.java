@@ -16,7 +16,7 @@ import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -92,8 +92,8 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
-		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(cc.getChannelCode());
+		transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
+		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
 		transferConfirmation.setDestinationBankAccountNo(transactionDetails.getDestinationBankAccountNo());
 		transferConfirmation.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
@@ -111,17 +111,17 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		result.setTransactionID(transactionsLog.getID());
 
 
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
 		Subscriber srcSub = sourceMDN.getSubscriber();
-		KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
-		if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
+		KYCLevel srcKyc = srcSub.getKycLevel();
+		if(srcKyc.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
 			log.info(String.format("MoneyTransfer is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);
 			return result;
@@ -136,11 +136,11 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		}
 		 validationResult=transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		SubscriberMDN destinationMdn = subscriberMdnService.getByMDN(transferConfirmation.getDestMDN());
+		SubscriberMdn destinationMdn = subscriberMdnService.getByMDN(transferConfirmation.getDestMDN());
 		
 		validationResult=transactionApiValidationService.validateSubscriberAsDestination(destinationMdn);
 		boolean isNonRegisteredDestination = CmFinoFIX.NotificationCode_SubscriberNotRegistered.equals(validationResult);
@@ -161,11 +161,11 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			
 		} else{
 			
-			if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Subscriber)) {
+			if(destinationMdn.getSubscriber().getType()==(CmFinoFIX.SubscriberType_Subscriber)) {
 				
 				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 				
-			} else if(destinationMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)) {
+			} else if(destinationMdn.getSubscriber().getType()==(CmFinoFIX.SubscriberType_Partner)) {
 				
 				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
 				
@@ -179,14 +179,14 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			return result;
 		}
 		
-		transferConfirmation.setSourcePocketID(srcPocket.getID());
-		transferConfirmation.setDestPocketID(destinationPocket.getID());
+		transferConfirmation.setSourcePocketID(srcPocket.getId().longValue());
+		transferConfirmation.setDestPocketID(destinationPocket.getId().longValue());
 
-		if(isNonRegisteredDestination && destinationPocket.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive)){
+		if(isNonRegisteredDestination && destinationPocket.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive)){
 			CMTransferToNonRegistered transferConfirmForNonRegistered = new CMTransferToNonRegistered();
 			transferConfirmForNonRegistered.copy(transferConfirmation);
 			transferConfirmation = transferConfirmForNonRegistered;
-		}else if (!destinationPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		}else if (!(destinationPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 			return result;
 		}
@@ -213,26 +213,26 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
 		 */
 		
-		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
-			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai)){
+			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER;
 			}
-			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2LTRANSFER;
 			}
 		}
-		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
-			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
+			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
 			}
-			if(destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER;
 			}
 		}		
 		
-		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getID())){
+		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getId().longValue())){
 			
-			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), sourceMDN.getMDN()))){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), sourceMDN.getMdn()))){
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
@@ -267,8 +267,8 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			}
 		}
 		Subscriber destSubscriber = destinationMdn.getSubscriber();
-       	String receiverAccountName = (StringUtils.isNotBlank(destSubscriber.getFirstName()) ? destSubscriber.getFirstName() : "")
-					+ " " + (StringUtils.isNotBlank(destSubscriber.getLastName()) ? destSubscriber.getLastName() : "");
+       	String receiverAccountName = (StringUtils.isNotBlank(destSubscriber.getFirstname()) ? destSubscriber.getFirstname() : "")
+					+ " " + (StringUtils.isNotBlank(destSubscriber.getLastname()) ? destSubscriber.getLastname() : "");
        	result.setReceiverAccountName(receiverAccountName);
 
 		//		sendSMS(transferConfirmation, result);

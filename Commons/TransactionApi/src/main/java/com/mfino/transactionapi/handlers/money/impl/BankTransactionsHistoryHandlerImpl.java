@@ -20,7 +20,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -97,8 +97,8 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		transactionsHistory.setSourceMDN(transactionDetails.getSourceMDN());
 		transactionsHistory.setPin(transactionDetails.getSourcePIN());
 		transactionsHistory.setMaxCount(maxCount);
-		transactionsHistory.setSourceApplication(cc.getChannelSourceApplication());
-		transactionsHistory.setChannelCode(cc.getChannelCode());
+		transactionsHistory.setSourceApplication((int)cc.getChannelsourceapplication());
+		transactionsHistory.setChannelCode(cc.getChannelcode());
 		transactionsHistory.setServletPath(CmFinoFIX.ServletPath_BankAccount);
 		transactionsHistory.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		transactionsHistory.setCardPAN(transactionDetails.getCardPAN());
@@ -116,11 +116,11 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		result.setSourceMDN(transactionsHistory.getSourceMDN());
 		result.setTransactionID(transactionsLog.getID());
 
-		SubscriberMDN sourceMDN= subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
+		SubscriberMdn sourceMDN= subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -135,13 +135,13 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 			return result;
 		}
 
-		if (sourcePocket.getCardPAN() == null) {
+		if (sourcePocket.getCardpan() == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_BankAccountCardPANMissing);
 			return result;
 		}
 
-		result.setBankCode(sourcePocket.getPocketTemplate().getBankCode());
-		if(!sourcePocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
+		result.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
+		if(!(sourcePocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)))
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NotBankAccount);
 			return result;
@@ -149,7 +149,7 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 
 		validationResult = transactionApiValidationService.validateSourcePocket(sourcePocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(sourcePocket!=null? sourcePocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(sourcePocket!=null? sourcePocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
@@ -162,7 +162,7 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(transactionsHistory.getSourceMDN());
 		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(transactionDetails.getServiceName());
 		sc.setTransactionTypeName(transactionDetails.getTransactionName());
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -182,14 +182,14 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		}
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 
-		transactionsHistory.setPocketID(sourcePocket.getID());
+		transactionsHistory.setPocketID(sourcePocket.getId().longValue());
 		CMGetBankAccountTransactions bankTransactionsReq = new CMGetBankAccountTransactions();
 		bankTransactionsReq.setSourceMDN(transactionsHistory.getSourceMDN());
 		bankTransactionsReq.setPin(transactionsHistory.getPin());
 		bankTransactionsReq.setSourceApplication(transactionsHistory.getSourceApplication());
 		bankTransactionsReq.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		bankTransactionsReq.setBankCode(sourcePocket.getPocketTemplate().getBankCode());
-		bankTransactionsReq.setPocketID(sourcePocket.getID());
+		bankTransactionsReq.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
+		bankTransactionsReq.setPocketID(sourcePocket.getId().longValue());
 		bankTransactionsReq.setTransactionID(transactionsLog.getID());
 		bankTransactionsReq.setServiceChargeTransactionLogID(sctl.getID());
 		bankTransactionsReq.setMaxCount(transactionsHistory.getMaxCount());

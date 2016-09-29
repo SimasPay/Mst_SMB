@@ -10,7 +10,7 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -75,8 +75,8 @@ public class NFCPocketTopupHandlerImpl  extends FIXMessageHandler implements NFC
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
-		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(cc.getChannelCode());
+		transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
+		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
 		transferConfirmation.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		transferConfirmation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -95,10 +95,10 @@ public class NFCPocketTopupHandlerImpl  extends FIXMessageHandler implements NFC
 		result.setTransactionID(transactionsLog.getID());
 
 
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("NFC Pocket Topup Transfer confirmation: Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("NFC Pocket Topup Transfer confirmation: Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -111,7 +111,7 @@ public class NFCPocketTopupHandlerImpl  extends FIXMessageHandler implements NFC
 		
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("NFC Pocket Topup Transfer confirmation: Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("NFC Pocket Topup Transfer confirmation: Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -123,22 +123,22 @@ public class NFCPocketTopupHandlerImpl  extends FIXMessageHandler implements NFC
 					
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("NFC Pocket Topup Transfer confirmation: Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("NFC Pocket Topup Transfer confirmation: Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		
 		log.info("NFC Pocket Topup Transfer confirmation: TransferInquiryHandler destMdn="+destinationMDN+", destPocketCode="+transactionDetails.getDestPocketCode());
 		
 		
 		
-		transferConfirmation.setSourcePocketID(srcPocket.getID());
-		transferConfirmation.setDestPocketID(destPocket.getID());
-		transferConfirmation.setDestinationBankAccountNo(destPocket.getCardPAN());
+		transferConfirmation.setSourcePocketID(srcPocket.getId().longValue());
+		transferConfirmation.setDestPocketID(destPocket.getId().longValue());
+		transferConfirmation.setDestinationBankAccountNo(destPocket.getCardpan());
 
-		result.setCardPan(destPocket.getCardPAN());
-		result.setCardAlias(destPocket.getCardAlias());
+		result.setCardPan(destPocket.getCardpan());
+		result.setCardAlias(destPocket.getCardalias());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 

@@ -52,15 +52,15 @@ public class AutoReverseHandlerImpl extends FIXMessageHandler implements AutoRev
 		ServiceChargeTransactionLog sctl =sctlService.getBySCTLID(transactionDetails.getSctlId());
 		CommodityTransfer ct = sctlService.getCTfromSCTL(sctl);
 		
- 		log.info("Reversing the Transaction SCTLId=" + sctl.getID() + " CTId="+ ct.getID() + " And CT Status=" + ct.getTransferStatus());
+ 		log.info("Reversing the Transaction SCTLId=" + sctl.getID() + " CTId="+ ct.getId() + " And CT Status=" + ct.getTransferstatus());
 
 		XMLResult result = new TransferInquiryXMLResult();
 		result.setTransactionTime(new Timestamp());
 		
-		if (CmFinoFIX.TransactionsTransferStatus_Completed.equals(ct.getTransferStatus())) {
+		if (CmFinoFIX.TransactionsTransferStatus_Completed.equals(ct.getTransferstatus())) {
 			autoReversal = new CMAutoReversal();
-			autoReversal.setSourcePocketID(ct.getPocketBySourcePocketID().getID());
-			autoReversal.setDestPocketID(ct.getDestPocketID());
+			autoReversal.setSourcePocketID(ct.getPocket().getId().longValue());
+			autoReversal.setDestPocketID(ct.getDestpocketid().longValue());
 			autoReversal.setServiceChargeTransactionLogID(sctl.getID());
 			autoReversal.setAmount(ct.getAmount());
 			
@@ -81,10 +81,10 @@ public class AutoReverseHandlerImpl extends FIXMessageHandler implements AutoRev
 
 				AutoReversals ar = sctlService.getAutoReversalsFromSCTL(sctl);
 				if (ar != null &&
-					(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_COMPLETED.equals(ar.getAutoRevStatus()) || CmFinoFIX.AutoRevStatus_COMPLETED.equals(ar.getAutoRevStatus()) ||
-					 CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.equals(ar.getAutoRevStatus()) || CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.equals(ar.getAutoRevStatus()) ||
-					 CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.equals(ar.getAutoRevStatus()) || CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.equals(ar.getAutoRevStatus()) ||
-					 CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_FAILED.equals(ar.getAutoRevStatus()) || CmFinoFIX.AutoRevStatus_TRANSIT_SRC_FAILED.equals(ar.getAutoRevStatus())) ) {
+					(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_COMPLETED.equals(ar.getAutorevstatus()) || CmFinoFIX.AutoRevStatus_COMPLETED.equals(ar.getAutorevstatus()) ||
+					 CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.equals(ar.getAutorevstatus()) || CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.equals(ar.getAutorevstatus()) ||
+					 CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.equals(ar.getAutorevstatus()) || CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.equals(ar.getAutorevstatus()) ||
+					 CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_FAILED.equals(ar.getAutorevstatus()) || CmFinoFIX.AutoRevStatus_TRANSIT_SRC_FAILED.equals(ar.getAutorevstatus())) ) {
 					log.info("Auto Reverse of Transaction: " + sctl.getID() + " for amount " + sctl.getTransactionAmount() + 
 							" Is Initiated and Transfer Id is : " + transactionResponse.getTransferId());
 					commodityTransferService.addCommodityTransferToResult(result, transactionResponse.getTransferId());

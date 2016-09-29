@@ -14,7 +14,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -121,8 +121,8 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMDN(transactionDetails.getSourceMDN());
 		bankAccountToBankAccount.setSourceMessage(StringUtils.isNotBlank(sourceMessage) ? sourceMessage : "NFC Pocket Topup");
-		bankAccountToBankAccount.setSourceApplication(cc.getChannelSourceApplication());
-		bankAccountToBankAccount.setChannelCode(cc.getChannelCode());
+		bankAccountToBankAccount.setSourceApplication((int)cc.getChannelsourceapplication());
+		bankAccountToBankAccount.setChannelCode(cc.getChannelcode());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup);
@@ -130,11 +130,11 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		result.setDestinationMDN(transactionDetails.getSourceMDN());
 		result.setSourceMessage(bankAccountToBankAccount);
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
 		Integer validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -146,13 +146,13 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("NFC Pocket Topup Transfer Inquiry: Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("NFC Pocket Topup Transfer Inquiry: Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
-		bankAccountToBankAccount.setSourcePocketID(srcPocket.getID());
-		transactionDetails.setSrcPocketId(srcPocket.getID());
+		bankAccountToBankAccount.setSourcePocketID(srcPocket.getId().longValue());
+		transactionDetails.setSrcPocketId(srcPocket.getId().longValue());
 		
 		Pocket destPocket = null;
 		if (StringUtils.isNotBlank(transactionDetails.getCardPAN())) {
@@ -161,23 +161,23 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("NFC Pocket Topup Transfer Inquiry: Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("NFC Pocket Topup Transfer Inquiry: Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
 	//	addCompanyANDLanguageToResult(sourceMDN, result);
 
 		log.info("NFC Pocket Topup Transfer Inquiry: destMdn="+destinationMDN+", destPocketCode="+transactionDetails.getDestPocketCode());
 		
 
- 		bankAccountToBankAccount.setDestPocketID(destPocket.getID());
- 		bankAccountToBankAccount.setDestinationBankAccountNo(destPocket.getCardPAN());
- 		transactionDetails.setDestinationPocketId(destPocket.getID());
- 		result.setCardPan(destPocket.getCardPAN());
- 		result.setCardAlias(destPocket.getCardAlias()); 		
+ 		bankAccountToBankAccount.setDestPocketID(destPocket.getId().longValue());
+ 		bankAccountToBankAccount.setDestinationBankAccountNo(destPocket.getCardpan());
+ 		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
+ 		result.setCardPan(destPocket.getCardpan());
+ 		result.setCardAlias(destPocket.getCardalias()); 		
 
 		Transaction transaction = null;
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
@@ -194,7 +194,7 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		
 		sc.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
 		sc.setDestMDN(bankAccountToBankAccount.getDestMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(bankAccountToBankAccount.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_POCKET_TOPUP);
 		
@@ -238,12 +238,12 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getID());
 		
 		CMNFCCardStatus nfcCardStatus = new CMNFCCardStatus();
-		nfcCardStatus.setSourceMDN(sourceMDN.getMDN());
+		nfcCardStatus.setSourceMDN(sourceMDN.getMdn());
 		nfcCardStatus.setSourceCardPAN(transactionDetails.getCardPAN());
 		nfcCardStatus.setServiceChargeTransactionLogID(sctl.getID());
 		nfcCardStatus.setTransactionID(transactionsLog.getID());
-		nfcCardStatus.setSourceApplication(cc.getChannelSourceApplication());
-		nfcCardStatus.setChannelCode(cc.getChannelCode());
+		nfcCardStatus.setSourceApplication((int)cc.getChannelsourceapplication());
+		nfcCardStatus.setChannelCode(cc.getChannelcode());
 		
 		CMJSError nFCCardStatusFromCMS = (CMJSError) nFCCardStatusHandlerImpl.handle(nfcCardStatus);
 		if(!nFCCardStatusFromCMS.getCode().equals(CmFinoFIX.NotificationCode_NFCCardActive)){

@@ -21,7 +21,7 @@ import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -80,7 +80,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		nfcCardLink.setPin(transactionDetails.getSourcePIN());
 		nfcCardLink.setSourceMDN(transactionDetails.getSourceMDN());
 		//nfcCardLink.setServletPath(CmFinoFIX.ServletPath_BankAccount);
-		nfcCardLink.setChannelCode(cc.getChannelCode());
+		nfcCardLink.setChannelCode(cc.getChannelcode());
 		nfcCardLink.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		nfcCardLink.setCardAlias(transactionDetails.getCardAlias());
 		nfcCardLink.setSourceCardPAN(transactionDetails.getCardPAN());
@@ -91,7 +91,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		
 		XMLResult result = new NFCXMLResult();
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardLink, nfcCardLink.DumpFields());
-		nfcCardLink.setSourceApplication(cc.getChannelSourceApplication());
+		nfcCardLink.setSourceApplication((int)cc.getChannelsourceapplication());
 		nfcCardLink.setTransactionID(transactionsLog.getID());
 		result.setSourceMessage(nfcCardLink);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
@@ -99,7 +99,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		result.setCardAlias(transactionDetails.getCardAlias());
 		result.setCardPan(transactionDetails.getCardPAN());
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(nfcCardLink.getSourceMDN());
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(nfcCardLink.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(smdn);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+nfcCardLink.getSourceMDN()+" has failed validations");
@@ -125,7 +125,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroup().getID();
 		}
-		PocketTemplate nfcPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_NFC, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+		PocketTemplate nfcPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKYCLevel(), true, CmFinoFIX.PocketType_NFC, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		if(nfcPocketTemplate == null)
          {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound);
@@ -136,7 +136,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(nfcCardLink.getSourceMDN());
 		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_LINK);
 		sc.setTransactionAmount(BigDecimal.ZERO);
@@ -200,7 +200,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		result.setSourceMDN(transactionDetails.getSourceMDN());
 		return result;
 		}
-	private void createNFCPocket(PocketTemplate nfcPocketTemplate,SubscriberMDN subscriberMDN,CMNFCCardLink nfcCardLink) {
+	private void createNFCPocket(PocketTemplate nfcPocketTemplate,SubscriberMdn subscriberMDN,CMNFCCardLink nfcCardLink) {
          pocketService.createPocket(nfcPocketTemplate, subscriberMDN, CmFinoFIX.PocketStatus_Active, false, nfcCardLink.getSourceCardPAN(),nfcCardLink.getCardAlias());
 	}
 }

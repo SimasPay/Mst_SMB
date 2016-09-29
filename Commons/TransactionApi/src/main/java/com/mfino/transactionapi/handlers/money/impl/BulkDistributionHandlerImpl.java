@@ -18,7 +18,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -98,8 +98,8 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 		bulkDistribution.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bulkDistribution.setSourceMDN(transactionDetails.getSourceMDN());
 		bulkDistribution.setSourceMessage(transactionDetails.getSourceMessage());
-		bulkDistribution.setSourceApplication(channelCode.getChannelSourceApplication());
-		bulkDistribution.setChannelCode(channelCode.getChannelCode());
+		bulkDistribution.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		bulkDistribution.setChannelCode(channelCode.getChannelcode());
 		bulkDistribution.setServiceName(transactionDetails.getServiceName());
 		bulkDistribution.setUICategory(CmFinoFIX.TransactionUICategory_Sub_Bulk_Transfer);
 		bulkDistribution.setSourcePocketID(transactionDetails.getSrcPocketId());
@@ -114,7 +114,7 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 		result.setDestinationMDN(transactionDetails.getDestMDN());
 		result.setSourceMessage(bulkDistribution);
 		
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
 		Integer validationResult= transactionApiValidationService.validateSubscriberAsDestination(destinationMDN); 
 
 		Pocket destPocket = null;
@@ -122,7 +122,7 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 			log.info("Dest MDN failed validation. So transfering to National Treasury pocket");
 			long ntpocketId = systemParametersService.getLong(SystemParameterKeys.NATIONAL_TREASURY_POCKET);
 			destPocket = pocketService.getById(ntpocketId);
-			bulkDistribution.setDestMDN(destPocket.getSubscriberMDNByMDNID().getMDN());
+			bulkDistribution.setDestMDN(destPocket.getSubscriberMdn().getMDN());
 			result.setTrfToSuspense(true);
 		}
 		else {
@@ -134,23 +134,23 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 				destPocketCode = CmFinoFIX.PocketType_LakuPandai + "";
 			}
 			destPocket = pocketService.getDefaultPocket(destinationMDN, destPocketCode);
-			result.setFirstName(destinationMDN.getSubscriber().getFirstName());
-			result.setLastName(destinationMDN.getSubscriber().getLastName());
+			result.setFirstName(destinationMDN.getSubscriber().getFirstname());
+			result.setLastName(destinationMDN.getSubscriber().getLastname());
 		}
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 
-		bulkDistribution.setDestPocketID(destPocket.getID());	
+		bulkDistribution.setDestPocketID(destPocket.getId().longValue());	
 		
 		log.info("creating the serviceCharge object....");
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(transactionDetails.getSourceMDN());
 		sc.setDestMDN(transactionDetails.getDestMDN());
-		sc.setChannelCodeId(transactionDetails.getCc().getID());
+		sc.setChannelCodeId(transactionDetails.getCc().getId().longValue());
 		sc.setServiceName(transactionDetails.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER);
 		sc.setTransactionAmount(transactionDetails.getAmount());
