@@ -21,16 +21,16 @@ import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.MFSDenominationsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.MFSDenominations;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -127,8 +127,8 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		paymentInquiry.setInvoiceNumber(transDetails.getBillNum());
 		paymentInquiry.setPin(transDetails.getSourcePIN());
 		paymentInquiry.setAmount(transDetails.getAmount());
-		paymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		paymentInquiry.setChannelCode(cc.getChannelCode());
+		paymentInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		paymentInquiry.setChannelCode(cc.getChannelcode());
 		paymentInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		paymentInquiry.setSourceMessage(transDetails.getSourceMessage());
 		paymentInquiry.setMessageType(CmFinoFIX.MessageType_BillPayInquiry);
@@ -147,7 +147,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		result.setSourceMessage(paymentInquiry);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(paymentInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(paymentInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+paymentInquiry.getSourceMDN()+" has failed agent validations");
@@ -164,12 +164,12 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		}
 		
 		Subscriber billPartnerSub = billPartner.getSubscriber();
-		SubscriberMDN billPartnerMdn = billPartnerSub.getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn billPartnerMdn = billPartnerSub.getSubscriberMdns().iterator().next();
 
 		paymentInquiry.setEmail(srcSubscriberMDN.getSubscriber().getEmail());
 		//paymentInquiry.setPartnerBillerCode(billPartner.getMFSBillerPartnerFromPartnerID().iterator().next().getPartnerBillerCode());
 		
-		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(paymentInquiry.getBillerCode());
+		MfsBiller mfsBiller = mfsBillerService.getByBillerCode(paymentInquiry.getBillerCode());
 		MFSBillerPartner results = mfsBiller.getMFSBillerPartnerFromMFSBillerId().iterator().next();
 		if(results != null){
 			paymentInquiry.setIntegrationCode(results.getIntegrationCode());
@@ -185,11 +185,11 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 					boolean isValid = false;
 					StringBuffer validDenominations = new StringBuffer();
 					for(int i=0; i < res.size(); i++){
-						if(res.get(i).getDenominationAmount().compareTo(paymentInquiry.getAmount()) == 0 ){
-							paymentInquiry.setPartnerBillerCode(res.get(i).getProductCode());
+						if(res.get(i).getDenominationamount().compareTo(paymentInquiry.getAmount()) == 0 ){
+							paymentInquiry.setPartnerBillerCode(res.get(i).getProductcode());
 							isValid=true;
 						}
-						validDenominations.append((res.get(i).getDenominationAmount().setScale(2, RoundingMode.HALF_EVEN)).toString()+" ");
+						validDenominations.append((res.get(i).getDenominationamount().setScale(2, RoundingMode.HALF_EVEN)).toString()+" ");
 					}
 					if(isValid == false){
 						result.setBillAmount(paymentInquiry.getAmount().setScale(2, RoundingMode.HALF_EVEN));
@@ -207,8 +207,8 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		log.info("calculating and adding service charges to the trnasactions " + transactionsLog.getID());
 		// add service charge to amount
 		ServiceCharge sc = new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(billPartnerMdn.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(billPartnerMdn.getMdn());
 		sc.setServiceName(getServiceName());
 		sc.setOnBeHalfOfMDN(paymentInquiry.getOnBeHalfOfMDN());
 		if(transDetails.getTransactionTypeName() != null && !transDetails.getTransactionTypeName().isEmpty()){
@@ -216,7 +216,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		}else{
 			sc.setTransactionTypeName(getTransactionName());
 		}
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());        
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());        
 		sc.setTransactionAmount(paymentInquiry.getAmount());
 		sc.setMfsBillerCode(paymentInquiry.getBillerCode());
 		sc.setTransactionLogId(paymentInquiry.getTransactionID());
@@ -236,7 +236,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		partnerService = transactionChargingService.getPartnerService(billPartner.getID(), servicePartnerId, serviceId);
+		partnerService = transactionChargingService.getPartnerService(billPartner.getId().longValue(), servicePartnerId, serviceId);
 		log.info("checking whether the partner has the required service enabled for him ");
 		if (partnerService == null) {
 			log.info("service=" + sc.getServiceName() + " is not available for the partner");
@@ -250,7 +250,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		List<Pocket> pocketList = new ArrayList<Pocket>();
 		pocketList.add(srcAgentPocket);
 		result.setPocketList(pocketList);
-		log.info("source pocket ID of the agent="+srcAgentPocket.getID());
+		log.info("source pocket ID of the agent="+srcAgentPocket.getId());
 
 		long billerServiceId = -1;
 		try {
@@ -262,18 +262,18 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 			return result;
 		}
 		
-		PartnerServices billerPartnerService = partnerServicesService.getPartnerServices(billPartner.getID(), servicePartnerId, billerServiceId);
+		PartnerServices billerPartnerService = partnerServicesService.getPartnerServices(billPartner.getId().longValue(), servicePartnerId, billerServiceId);
 		if (billerPartnerService == null) {
 			log.warn("service=" + ServiceAndTransactionConstants.SERVICE_PAYMENT + " is not available for the biller partner");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 			return result;
 		}
-		Pocket destBillerPartnerPocket = billerPartnerService.getPocketByDestPocketID();
-		if(!isDestPocketValid(destBillerPartnerPocket, result, destBillerPartnerPocket.getSubscriberMDNByMDNID()))
+		Pocket destBillerPartnerPocket = billerPartnerService.getPocketByDestpocketid();
+		if(!isDestPocketValid(destBillerPartnerPocket, result, destBillerPartnerPocket.getSubscriberMdn()))
 			return result;
-		log.info("ID of the incoming funds pocket for agent services="+destBillerPartnerPocket.getID());
+		log.info("ID of the incoming funds pocket for agent services="+destBillerPartnerPocket.getId());
 		
-		if(srcAgentPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)||destBillerPartnerPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
+		if(srcAgentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||destBillerPartnerPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 			if(!systemParametersService.getBankServiceStatus())
 			{
@@ -298,7 +298,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 			return result;
 		}
 		
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(paymentInquiry.getOnBeHalfOfMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(paymentInquiry.getOnBeHalfOfMDN());
 		validationResult = hierarchyService.validate(srcSubscriberMDN.getSubscriber(), ((destinationMDN != null) ? destinationMDN.getSubscriber() : null), sc.getServiceName(), sc.getTransactionTypeName());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			result.setNotificationCode(validationResult);
@@ -319,12 +319,12 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		}
 		
 		paymentInquiry.setServiceChargeTransactionLogID(sctl.getID());
-		paymentInquiry.setDestMDN(billPartnerMdn.getMDN());
+		paymentInquiry.setDestMDN(billPartnerMdn.getMdn());
 		paymentInquiry.setCharges(transaction.getAmountTowardsCharges());
-		paymentInquiry.setChannelCode(cc.getChannelCode());
-		paymentInquiry.setSourcePocketID(srcAgentPocket.getID());
-		paymentInquiry.setDestPocketID(destBillerPartnerPocket.getID());
-		paymentInquiry.setSourceApplication(cc.getChannelSourceApplication());
+		paymentInquiry.setChannelCode(cc.getChannelcode());
+		paymentInquiry.setSourcePocketID(srcAgentPocket.getId().longValue());
+		paymentInquiry.setDestPocketID(destBillerPartnerPocket.getId().longValue());
+		paymentInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
 
 		log.info("sending request to backend");
 		CFIXMsg response = super.process(paymentInquiry);
@@ -352,29 +352,29 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		return result;
 	}
 
-	public boolean isSourcePocketValid(Pocket srcPocket, XMLResult result, SubscriberMDN agentMDN) {
+	public boolean isSourcePocketValid(Pocket srcPocket, XMLResult result, SubscriberMdn agentMDN) {
 
 		if (srcPocket == null) {
 			log.info("sourcepocket is null");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 			return false;
 		}
-		if (!srcPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
-			log.info("sourcepocket with id= " + srcPocket.getID() + " is not active");
+		if (!(srcPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
+			log.info("sourcepocket with id= " + srcPocket.getId() + " is not active");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 			return false;
 		}
 		return true;
 	}
 
-	private boolean isDestPocketValid(Pocket destPocket, XMLResult result, SubscriberMDN subMDN) {
+	private boolean isDestPocketValid(Pocket destPocket, XMLResult result, SubscriberMdn subMDN) {
 		if (destPocket == null) {
 			log.info("the service of the partner doesn't have a source pocket");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 			return false;
 		}
-		if (!destPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
-			log.info("the source pocket with ID=" + destPocket.getID() + " of the service is not active");
+		if (!(destPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
+			log.info("the source pocket with ID=" + destPocket.getId() + " of the service is not active");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 			return false;
 		}

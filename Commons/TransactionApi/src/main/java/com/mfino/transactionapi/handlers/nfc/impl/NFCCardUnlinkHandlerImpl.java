@@ -18,7 +18,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -80,14 +80,14 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Extracting data from transactionDetails in NFCCardUnlinkHandlerImpl for sourceMDN: "+transactionDetails.getSourceMDN());
 		ChannelCode cc = transactionDetails.getCc();
-		log.debug("Channel code is :" + cc.getChannelCode());
+		log.debug("Channel code is :" + cc.getChannelcode());
 		CMNFCCardUnlink nfcCardUnlink = new CMNFCCardUnlink();
 		nfcCardUnlink.setPin(transactionDetails.getSourcePIN());
 		nfcCardUnlink.setSourceMDN(transactionDetails.getSourceMDN());
 		//nfcCardUnlink.setServletPath(CmFinoFIX.ServletPath_BankAccount);
 		nfcCardUnlink.setSourceCardPAN(transactionDetails.getCardPAN());
-		nfcCardUnlink.setSourceApplication(cc.getChannelSourceApplication());
-		nfcCardUnlink.setChannelCode(cc.getChannelCode());
+		nfcCardUnlink.setSourceApplication((int)cc.getChannelsourceapplication());
+		nfcCardUnlink.setChannelCode(cc.getChannelcode());
 		nfcCardUnlink.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		
@@ -102,18 +102,18 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		result.setCardAlias("");
 		result.setCardPan(transactionDetails.getCardPAN());
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(nfcCardUnlink.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(nfcCardUnlink.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+nfcCardUnlink.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}	
-		if(!CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelCode())) {
+		if(!CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) {
 			validationResult = transactionApiValidationService.validatePin(srcSubscriberMDN, nfcCardUnlink.getPin());
 			if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 				log.error("Pin validation failed for mdn: "+nfcCardUnlink.getSourceMDN());
-				result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - srcSubscriberMDN.getWrongPINCount());
+				result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - srcSubscriberMDN.getWrongpincount()));
 				result.setNotificationCode(validationResult);
 				return result;
 			}
@@ -128,8 +128,8 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);			
 			return result;
 		}
-		result.setCardAlias(nfcPocket.getCardAlias());
-		if (!nfcPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		result.setCardAlias(nfcPocket.getCardalias());
+		if (!(nfcPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 			log.info("NFC Pocket with Card Pan " + transactionDetails.getCardPAN() +" is already unlinked");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_PocketAlreadyUnlinked);
 			return result;
@@ -142,10 +142,10 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(nfcCardUnlink.getSourceMDN());
 		sc.setDestMDN(null);
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_UNLINK);
-		sc.setTransactionAmount(nfcPocket.getCurrentBalance());
+		sc.setTransactionAmount(new BigDecimal(nfcPocket.getCurrentbalance()));
 		sc.setTransactionLogId(transactionsLog.getID());
 		sc.setTransactionIdentifier(nfcCardUnlink.getTransactionIdentifier());
 
@@ -168,7 +168,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				cmsCardUnlinkSuccess = false;
 		String message = null;
 		Integer code = CmFinoFIX.NotificationCode_NFCCardUnlinkFailed;
-		if(!CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelCode())) {
+		if(!CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) {
 			log.info("sending the request to CMS(backend) for processing");
 			CFIXMsg response = super.process(nfcCardUnlink);
 			TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -186,11 +186,11 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				message = errorMsg;				
 			}
 		}
-		if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelCode())) { //set the transID if the request is from CMS channel
+		if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) { //set the transID if the request is from CMS channel
 			sctl.setIntegrationTransactionID(Long.valueOf(transactionDetails.getTransID()));
 		}
 		if(proceedWithCardUnlink) {						
-			if(BigDecimal.ZERO.compareTo(nfcPocket.getCurrentBalance()) == 0) {
+			if(BigDecimal.ZERO.compareTo(new BigDecimal(nfcPocket.getCurrentbalance())) == 0) {
 				log.info("NFC Pocket has zero balance... so straightaway deactivate it");
 				isSuccess = true;
 			} else {				
@@ -201,7 +201,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);				
 					return result;
 				}
-				if (!emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+				if (!(emoneyPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 					log.info("Default Emoney Pocket is not active");
 					result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 					return result;
@@ -211,17 +211,17 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				transferInquiry.setSourceMDN(nfcCardUnlink.getSourceMDN());
 				transferInquiry.setServiceChargeTransactionLogID(sctl.getID());
 				transferInquiry.setDestMDN(nfcCardUnlink.getSourceMDN());
-				transferInquiry.setSourcePocketID(nfcPocket.getID());
-				transferInquiry.setDestPocketID(emoneyPocket.getID());
-				transferInquiry.setAmount(nfcPocket.getCurrentBalance());
+				transferInquiry.setSourcePocketID(nfcPocket.getId().longValue());
+				transferInquiry.setDestPocketID(emoneyPocket.getId().longValue());
+				transferInquiry.setAmount(new BigDecimal(nfcPocket.getCurrentbalance()));
 				transferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_EMoney_EMoney_Trf);
-				if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelCode())) {					
+				if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) {					
 					transferInquiry.setIsSystemIntiatedTransaction(BOOL_TRUE);
 				}
 				transferInquiry.setPin(nfcCardUnlink.getPin());
 				transferInquiry.setTransactionID(transactionsLog.getID());
-				transferInquiry.setChannelCode(cc.getChannelCode());
-				transferInquiry.setSourceApplication(cc.getChannelSourceApplication());
+				transferInquiry.setChannelCode(cc.getChannelcode());
+				transferInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
 				transferInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
 				transferInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 				
@@ -233,10 +233,10 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 					CMBankAccountToBankAccountConfirmation transferConfirmation = new CMBankAccountToBankAccountConfirmation();
 					transferConfirmation.setSourceMDN(nfcCardUnlink.getSourceMDN());
 					transferConfirmation.setDestMDN(nfcCardUnlink.getSourceMDN());
-					transferConfirmation.setSourcePocketID(nfcPocket.getID());
-					transferConfirmation.setDestPocketID(emoneyPocket.getID());				
-					transferConfirmation.setChannelCode(cc.getChannelCode());
-					transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
+					transferConfirmation.setSourcePocketID(nfcPocket.getId().longValue());
+					transferConfirmation.setDestPocketID(emoneyPocket.getId().longValue());				
+					transferConfirmation.setChannelCode(cc.getChannelcode());
+					transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
 					transferConfirmation.setParentTransactionID(inquiryTxnResponse.getTransactionId());
 					transferConfirmation.setTransferID(inquiryTxnResponse.getTransferId());
 					transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
@@ -279,9 +279,9 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				cardUnlinkReversal.setSourceMDN(transactionDetails.getSourceMDN());
 				cardUnlinkReversal.setPin(transactionDetails.getSourcePIN());
 				cardUnlinkReversal.setSourceCardPAN(transactionDetails.getCardPAN());
-				cardUnlinkReversal.setSourceApplication(cc.getChannelSourceApplication());
+				cardUnlinkReversal.setSourceApplication((int)cc.getChannelsourceapplication());
 				cardUnlinkReversal.setTransactionID(transactionsLog.getID());
-				cardUnlinkReversal.setChannelCode(cc.getChannelCode());
+				cardUnlinkReversal.setChannelCode(cc.getChannelcode());
 				cardUnlinkReversal.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 				CFIXMsg reversalResponse = super.process(cardUnlinkReversal);
 				TransactionResponse reversalTxnResponse = checkBackEndResponse(reversalResponse);

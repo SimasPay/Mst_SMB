@@ -27,7 +27,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -113,8 +113,8 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		CMGetBankAccountTransactions transactionsHistory = new CMGetBankAccountTransactions();
 		transactionsHistory.setSourceMDN(transactionDetails.getSourceMDN());
 		transactionsHistory.setPin(transactionDetails.getSourcePIN());
-		transactionsHistory.setSourceApplication(cc.getChannelSourceApplication());
-		transactionsHistory.setChannelCode(cc.getChannelCode());
+		transactionsHistory.setSourceApplication((int)cc.getChannelsourceapplication());
+		transactionsHistory.setChannelCode(cc.getChannelcode());
 		transactionsHistory.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transactionsHistory.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		transactionsHistory.setCardPAN(transactionDetails.getCardPAN());
@@ -177,18 +177,18 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		result.setSourceMDN(transactionsHistory.getSourceMDN());
 		result.setTransactionID(transactionsLog.getID());
 		
-		SubscriberMDN sourceMDN= subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
+		SubscriberMdn sourceMDN= subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		validationResult=transactionApiValidationService.validatePin(sourceMDN, transactionsHistory.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Pin validation failed for mdn: "+sourceMDN.getMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongPINCount());
+			log.error("Pin validation failed for mdn: "+sourceMDN.getMdn());
+			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongpincount());
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -204,7 +204,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		{
 			sourcePocket = pocketService.getByCardAlias(transactionsHistory.getCardAlias());
 			if(sourcePocket != null) 
-				transactionsHistory.setCardPAN(sourcePocket.getCardPAN());
+				transactionsHistory.setCardPAN(sourcePocket.getCardpan());
 		}
 
 		if (sourcePocket == null) 
@@ -212,11 +212,11 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NoPocketWithGivenCardPAN);
 			return result;
 		}
-		result.setCardPan(sourcePocket.getCardPAN());
-		result.setCardAlias(sourcePocket.getCardAlias());
-		result.setLanguage(sourceMDN.getSubscriber().getLanguage());
-		result.setBankCode(sourcePocket.getPocketTemplate().getBankCode());
-		if(!sourcePocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_NFC))
+		result.setCardPan(sourcePocket.getCardpan());
+		result.setCardAlias(sourcePocket.getCardalias());
+		result.setLanguage((int)sourceMDN.getSubscriber().getLanguage());
+		result.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
+		if(!(sourcePocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_NFC)))
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NotNFCAccount);
 			return result;
@@ -224,7 +224,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 
 		validationResult = transactionApiValidationService.validateSourcePocket(sourcePocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(sourcePocket!=null? sourcePocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(sourcePocket!=null? sourcePocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
@@ -251,7 +251,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			ServiceCharge sc = new ServiceCharge();
 			sc.setSourceMDN(transactionsHistory.getSourceMDN());
 			sc.setDestMDN(null);
-			sc.setChannelCodeId(cc.getID());
+			sc.setChannelCodeId(cc.getId().longValue());
 			sc.setServiceName(transactionDetails.getServiceName());
 			sc.setTransactionTypeName(transactionDetails.getTransactionName());
 			sc.setTransactionAmount(BigDecimal.ZERO);
@@ -272,8 +272,8 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			sctl = transaction.getServiceChargeTransactionLog();
 		}
 		
-		transactionsHistory.setPocketID(sourcePocket.getID());
-		transactionsHistory.setBankCode(sourcePocket.getPocketTemplate().getBankCode());
+		transactionsHistory.setPocketID(sourcePocket.getId().longValue());
+		transactionsHistory.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
 		transactionsHistory.setServiceChargeTransactionLogID(sctl.getID());
 				
 		try {
@@ -314,7 +314,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			if (CollectionUtils.isNotEmpty(nfcTransactionHistory)) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
 				String dateString = sdf.format(new Date());
-				String fileName =  sourcePocket.getCardPAN() + "_" + dateString + ".pdf";
+				String fileName =  sourcePocket.getCardpan() + "_" + dateString + ".pdf";
 				String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "NFC_Txn_History" + File.separatorChar + fileName;
 				if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
 				{
@@ -353,12 +353,12 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
  		return result;
 	}
 
-	private void createPDFAndSendEmail(TransactionDetails transactionDetails, SubscriberMDN subscriberMDN, Pocket pocket,
+	private void createPDFAndSendEmail(TransactionDetails transactionDetails, SubscriberMdn subscriberMDN, Pocket pocket,
 			List<CGEntries> nfcTransactionHistory, String filePath, Long sctlId) throws IOException, DocumentException, ParseException 
 	{
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		String email = transactionDetails.getEmail();
-		String to = subscriber.getFirstName() + subscriber.getLastName();
+		String to = subscriber.getFirstname() + subscriber.getLastname();
 
 		createPDF(transactionDetails, subscriberMDN, pocket, nfcTransactionHistory, filePath, sctlId);
 		String subject = "Smartfren Uangku: DIMO Electronic Statement";
@@ -366,7 +366,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		mailService.asyncSendEmailWithAttachment(email, to, subject, body, filePath);		
 	}
 
-	private void createPDF(TransactionDetails transactionDetails, SubscriberMDN subscriberMDN, Pocket pocket,	List<CGEntries> nfcTransactionHistory, String filePath, Long id) 
+	private void createPDF(TransactionDetails transactionDetails, SubscriberMdn subscriberMDN, Pocket pocket,	List<CGEntries> nfcTransactionHistory, String filePath, Long id) 
 			throws IOException, DocumentException, ParseException
 	{
 		File file = new File(filePath);
@@ -386,7 +386,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			String rowContent = printDateFormat.format(parsedateFormat.parse(entry.getBankTransactionDate()))
 								//+ "|"+ txnType
 								//+ "|" + getTxnType(entry.getBankTransactionCode())
-								+ "|" + LanguageTranslator.translate(subscriberMDN.getSubscriber().getLanguage(), entry.getBankTransactionCode())
+								+ "|" + LanguageTranslator.translate((int)subscriberMDN.getSubscriber().getLanguage(), entry.getBankTransactionCode())
 								+ "|" + "Rp. " + MfinoUtil.getNumberFormat().format(entry.getAmount())  + (TRANSACTION_FLAG_CREDIT == entry.getBankTransactionFlag()?"(+)":"(-)");
 			pdfDocument.addRowContent(rowContent,false);
 		}
