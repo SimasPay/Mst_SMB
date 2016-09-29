@@ -9,8 +9,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.LedgerQuery;
 import com.mfino.domain.Ledger;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CRLedger;
 
 @Deprecated
 public class LedgerDAO extends BaseDAO<Ledger> {
@@ -21,21 +19,21 @@ public class LedgerDAO extends BaseDAO<Ledger> {
 		 Criteria criteria = createCriteria();
 		 
 		 if(query.getSourceDestnPocketID()!=null){
-			 criteria.add(Restrictions.disjunction().add(Restrictions.eq(CRLedger.FieldName_SourcePocketID, query.getSourceDestnPocketID())).add(Restrictions.eq(CmFinoFIX.CRLedger.FieldName_DestPocketID, query.getSourceDestnPocketID())));
+			 criteria.add(Restrictions.disjunction().add(Restrictions.eq(Ledger.FieldName_SourcePocketID, query.getSourceDestnPocketID())).add(Restrictions.eq(Ledger.FieldName_DestPocketID, query.getSourceDestnPocketID())));
 		 }
 		 if(query.getSourcenDestMDN()!=null){
-			 criteria.add(Restrictions.disjunction().add(Restrictions.eq(CRLedger.FieldName_SourceMDN, query.getSourcenDestMDN())).add(Restrictions.eq(CmFinoFIX.CRLedger.FieldName_DestMDN, query.getSourcenDestMDN()))); 
+			 criteria.add(Restrictions.disjunction().add(Restrictions.eq(Ledger.FieldName_SourceMDN, query.getSourcenDestMDN())).add(Restrictions.eq(Ledger.FieldName_DestMDN, query.getSourcenDestMDN()))); 
 		 }
 		 if(query.getCreateTimeLT()!=null){
-			 criteria.add(Restrictions.le(CRLedger.FieldName_CreateTime, query.getCreateTimeLT()));	 
+			 criteria.add(Restrictions.le(Ledger.FieldName_CreateTime, query.getCreateTimeLT()));	 
 		 }
 		 if(query.getCreateTimeGE()!=null){
-			 criteria.add(Restrictions.ge(CRLedger.FieldName_CreateTime, query.getCreateTimeGE()));	 
+			 criteria.add(Restrictions.ge(Ledger.FieldName_CreateTime, query.getCreateTimeGE()));	 
 		 }
 		 if(query.getTransferIDs()!=null){
-			 criteria.add(Restrictions.in(CRLedger.FieldName_CommodityTransferID, query.getTransferIDs()));	 
+			 criteria.add(Restrictions.in(Ledger.FieldName_CommodityTransferID, query.getTransferIDs()));	 
 		 }
-		 criteria.addOrder(Order.desc(CmFinoFIX.CRLedger.FieldName_RecordID));
+		 criteria.addOrder(Order.desc(Ledger.FieldName_RecordID));
 		 processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		applyOrder(query, criteria) ;
@@ -50,8 +48,8 @@ public class LedgerDAO extends BaseDAO<Ledger> {
 			return null;
 		}
 		 Criteria criteria = createCriteria();
-		 criteria.add(Restrictions.eq(CmFinoFIX.CRLedger.FieldName_CommodityTransferID, commodityTransferId));
-		 criteria.addOrder(Order.asc(CmFinoFIX.CRLedger.FieldName_RecordID));
+		 criteria.add(Restrictions.eq(Ledger.FieldName_CommodityTransferID, commodityTransferId));
+		 criteria.addOrder(Order.asc(Ledger.FieldName_RecordID));
 		return criteria.list();
 	}
 	

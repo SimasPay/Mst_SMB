@@ -4,12 +4,14 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -20,6 +22,12 @@ import com.mfino.hibernate.Timestamp;
 		"LANGUAGE", "TAGID", "ENUMCODE" }))
 public class EnumText extends Base implements java.io.Serializable {
 
+	public static final String FieldName_TagID = "tagid";
+	public static final String FieldName_EnumCode = "enumcode";
+	public static final String FieldName_TagName = "tagname";
+	public static final String FieldName_Language = "language";
+	public static final String FieldName_EnumValue = "enumvalue";
+	public static final String FieldName_DisplayText = "displaytext";
 	
 	private long language;
 	private String tagname;

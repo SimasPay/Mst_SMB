@@ -4,20 +4,25 @@
  */
 package com.mfino.dao;
 
-import com.mfino.constants.GeneralConstants;
-import com.mfino.dao.query.MerchantQuery;
-import com.mfino.domain.Company;
-import com.mfino.domain.Merchant;
-import com.mfino.fix.CmFinoFIX;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+
+import com.mfino.constants.GeneralConstants;
+import com.mfino.dao.query.MerchantQuery;
+import com.mfino.domain.Company;
+import com.mfino.domain.Merchant;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.User;
+import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -26,7 +31,7 @@ import java.util.List;
 public class MerchantDAO extends BaseDAO<Merchant> {
 
     public static final String SUBSCRIBER_TABLE_NAME = "Subscriber";
-    public static final String SUBSCRIBERMDN_ASSOC_NAME = "SubscriberMDNFromSubscriberID";
+    public static final String SubscriberMdn_ASSOC_NAME = "SubscriberMdnFromSubscriberID";
     public static final String FIX_MESSAGE_CLASS_NAME = "com.mfino.fix.CmFinoFIX$CMJSMerchant";
 
     public List<Merchant> get(MerchantQuery query) {
@@ -40,73 +45,73 @@ public class MerchantDAO extends BaseDAO<Merchant> {
 
         String fromClause = "FROM Merchant as merchant ";
         String joinSubscriberClause = "JOIN merchant.Subscriber as subscriber";
-        String joinSubscriberMDNClause = "JOIN merchant.Subscriber.SubscriberMDNFromSubscriberID as subscribermdn";
+        String joinSubscriberMdnClause = "JOIN merchant.Subscriber.SubscriberMdnFromSubscriberID as SubscriberMdn";
         String joinUserClause = "JOIN merchant.Subscriber.User as user";
-        String joinMSPClause = "JOIN merchant.Subscriber.User.mFinoServiceProviderByMSPID as MSP";
+        String joinMSPClause = "JOIN merchant.Subscriber.User.MfinoServiceProviderByMSPID as MSP";
         //String orderClause = " order by subscriber.LastName asc ";
 
         ArrayList<String> whereClauses = new ArrayList<String>();
         ArrayList<String> joinClauses = new ArrayList<String>();
 
         if (query.getId() != null) {
-            String idClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_RecordID + " = " + query.getId();
+            String idClause = "merchant." + Merchant.FieldName_RecordID + " = " + query.getId();
             whereClauses.add(idClause);
         }
 
 //        // Search by Mechant Status
 //        if (query.getStatus() != null) {
-//            String statsClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_SubscriberStatus + " = " + query.getStatus();
+//            String statsClause = "merchant." + Merchant.FieldName_SubscriberStatus + " = " + query.getStatus();
 //            whereClauses.add(statsClause);
 //        }
 
         if (query.getParentID() != null) {
-            String parentIDClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_MerchantByParentID + " = " + query.getParentID();
+            String parentIDClause = "merchant." + Merchant.FieldName_MerchantByParentID + " = " + query.getParentID();
             whereClauses.add(parentIDClause);
         }
 
         if (query.getExactGroupID() != null) {
-            String groupIDClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_GroupID + " = '" + query.getExactGroupID() + "'";
+            String groupIDClause = "merchant." + Merchant.FieldName_GroupID + " = '" + query.getExactGroupID() + "'";
             whereClauses.add(groupIDClause);
         }
 
         // Search by self and parent
         if (query.getParentAndSelfID() != null) {
-            String parentAndSelfClause = "((" + "merchant." + CmFinoFIX.CRMerchant.FieldName_RecordID + " = " + query.getParentAndSelfID() + ") OR (" + "merchant." + CmFinoFIX.CRMerchant.FieldName_MerchantByParentID + " = " + query.getParentAndSelfID() + "))";
+            String parentAndSelfClause = "((" + "merchant." + Merchant.FieldName_RecordID + " = " + query.getParentAndSelfID() + ") OR (" + "merchant." + Merchant.FieldName_MerchantByParentID + " = " + query.getParentAndSelfID() + "))";
             whereClauses.add(parentAndSelfClause);
         }
 
 
         // Search by start registration date.
         if (query.getStartRegistrationDate() != null) {
-            String startRegTimeClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_CreateTime + " > :startdate";
+            String startRegTimeClause = "merchant." + Merchant.FieldName_CreateTime + " > :startdate";
             whereClauses.add(startRegTimeClause);
         }
 
         // Search by end registration date.
         if (query.getEndRegistrationDate() != null) {
-            String endRegTimeClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_CreateTime + " < :enddate";
+            String endRegTimeClause = "merchant." + Merchant.FieldName_CreateTime + " < :enddate";
             whereClauses.add(endRegTimeClause);
         }
 
         if (query.getLastUpdateTimeGE() != null) {
-            String lastUpdateTimeGEClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_LastUpdateTime + " >= :lastUpdateTimeGE";
+            String lastUpdateTimeGEClause = "merchant." + Merchant.FieldName_LastUpdateTime + " >= :lastUpdateTimeGE";
             whereClauses.add(lastUpdateTimeGEClause);
         }
 
 
         if (query.getLastUpdateTimeLT() != null) {
-            String lastUpdateTimeLTClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_LastUpdateTime + " < :lastUpdateTimeLT";
+            String lastUpdateTimeLTClause = "merchant." + Merchant.FieldName_LastUpdateTime + " < :lastUpdateTimeLT";
             whereClauses.add(lastUpdateTimeLTClause);
         }
 
         if (query.getStatusTimeGE() != null) {
-            String statusTimeGEClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_StatusTime + " >= :statusTimeGE";
+            String statusTimeGEClause = "merchant." + Merchant.FieldName_StatusTime + " >= :statusTimeGE";
             whereClauses.add(statusTimeGEClause);
         }
 
 
         if (query.getStatusTimeLT() != null) {
-            String statusTimeLTClause = "merchant." + CmFinoFIX.CRMerchant.FieldName_StatusTime + " < :statusTimeLT";
+            String statusTimeLTClause = "merchant." + Merchant.FieldName_StatusTime + " < :statusTimeLT";
             whereClauses.add(statusTimeLTClause);
         }
 
@@ -121,7 +126,7 @@ public class MerchantDAO extends BaseDAO<Merchant> {
 ////                    throw new Exception("Bad query parameter for CommodityTransferDAO - SourceDestMDNAndID");
 ////                }
 
-            String stClause = "merchant." + CmFinoFIX.CRSubscriber.FieldName_SubscriberStatus + " in (:statusList)";
+            String stClause = "merchant." + Subscriber.FieldName_SubscriberStatus + " in (:statusList)";
             whereClauses.add(stClause);
         }
 
@@ -132,24 +137,24 @@ public class MerchantDAO extends BaseDAO<Merchant> {
 
             // Search by first name.
             if (query.getFirstName() != null && query.getFirstName().length() > 0) {
-                //String fnClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_FirstName + " like '%" + firstName + "%'";
-                String fnClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_FirstName + " like :firstName";
+                //String fnClause = "subscriber." + Subscriber.FieldName_FirstName + " like '%" + firstName + "%'";
+                String fnClause = "subscriber." + Subscriber.FieldName_FirstName + " like :firstName";
                 whereClauses.add(fnClause);
             }
 
             // Search by last name.
             if (query.getLastName() != null && query.getLastName().length() > 0) {
-                //      String lnClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_LastName + " like '%" + query.getLastName() + "%'";
-                String lnClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_LastName + " like :lastName";
+                //      String lnClause = "subscriber." + Subscriber.FieldName_LastName + " like '%" + query.getLastName() + "%'";
+                String lnClause = "subscriber." + Subscriber.FieldName_LastName + " like :lastName";
                 whereClauses.add(lnClause);
             }
             if (query.getCompany() != null) {
-                String cpClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_Company + "=" + query.getCompany().getID();
+                String cpClause = "subscriber." + Subscriber.FieldName_Company + "=" + query.getCompany().getId();
                 whereClauses.add(cpClause);
             }
             // Search by status.
             if (query.getMerchantStatus() != null) {
-                String stClause = "merchant." + CmFinoFIX.CRSubscriber.FieldName_SubscriberStatus + "=" + query.getMerchantStatus();
+                String stClause = "merchant." + Subscriber.FieldName_SubscriberStatus + "=" + query.getMerchantStatus();
                 whereClauses.add(stClause);
             }
 
@@ -160,12 +165,12 @@ public class MerchantDAO extends BaseDAO<Merchant> {
 
                 int rest = query.getMerchantRestrictions();
                 if (rest > 0) {
-                    String restClause = "bitwise_and(subscriber." + CmFinoFIX.CRSubscriber.FieldName_SubscriberRestrictions + "," + query.getMerchantRestrictions() + ") > 0";
+                    String restClause = "bitwise_and(subscriber." + Subscriber.FieldName_SubscriberRestrictions + "," + query.getMerchantRestrictions() + ") > 0";
                     whereClauses.add(restClause);
 
                 } else {
                     //When user restrictions equal
-                    String restClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_SubscriberRestrictions + "=" + CmFinoFIX.SubscriberRestrictions_None;
+                    String restClause = "subscriber." + Subscriber.FieldName_SubscriberRestrictions + "=" + CmFinoFIX.SubscriberRestrictions_None;
                     whereClauses.add(restClause);
                 }
             }
@@ -173,14 +178,14 @@ public class MerchantDAO extends BaseDAO<Merchant> {
 
         // Search by MDN.
         if (query.getMdn() != null && query.getMdn().length() > 0) {
-            joinClauses.add(joinSubscriberMDNClause);
-            String usClause = "subscribermdn." + CmFinoFIX.CRSubscriberMDN.FieldName_MDN + " like '" + query.getMdn() + "%'";
+            joinClauses.add(joinSubscriberMdnClause);
+            String usClause = "SubscriberMdn." + SubscriberMdn.FieldName_MDN + " like '" + query.getMdn() + "%'";
             whereClauses.add(usClause);
         }
 
         if (query.getExactMDN() != null) {
-            joinClauses.add(joinSubscriberMDNClause);
-            String usClause = "subscribermdn." + CmFinoFIX.CRSubscriberMDN.FieldName_MDN + "='" + query.getExactMDN() + "'";
+            joinClauses.add(joinSubscriberMdnClause);
+            String usClause = "SubscriberMdn." + SubscriberMdn.FieldName_MDN + "='" + query.getExactMDN() + "'";
             whereClauses.add(usClause);
         }
 
@@ -188,16 +193,16 @@ public class MerchantDAO extends BaseDAO<Merchant> {
         if (query.getUserName() != null) {
             joinClauses.add(joinUserClause);
             joinClauses.add(joinMSPClause);
-            //    String usClause = "user." + CmFinoFIX.CRUser.FieldName_Username + " like '%" + userName + "%'";
-            String usClause = "user." + CmFinoFIX.CRUser.FieldName_Username + " like :userName and MSP." + CmFinoFIX.CRmFinoServiceProvider.FieldName_RecordID + " = :mspid";
+            //    String usClause = "user." + User.FieldName_Username + " like '%" + userName + "%'";
+            String usClause = "user." + User.FieldName_Username + " like :userName and MSP." + MfinoServiceProvider.FieldName_RecordID + " = :mspid";
             whereClauses.add(usClause);
         }
 
         if (query.getExactUser() != null) {
             joinClauses.add(joinUserClause);
             joinClauses.add(joinMSPClause);
-            // String usClause = "user." + CmFinoFIX.CRUser.FieldName_Username + "='" + query.getExactUser() + "'";
-            String usClause = "user." + CmFinoFIX.CRUser.FieldName_Username + "= :exactUserName and MSP." + CmFinoFIX.CRmFinoServiceProvider.FieldName_RecordID + " = :mspid";
+            // String usClause = "user." + User.FieldName_Username + "='" + query.getExactUser() + "'";
+            String usClause = "user." + User.FieldName_Username + "= :exactUserName and MSP." + MfinoServiceProvider.FieldName_RecordID + " = :mspid";
             whereClauses.add(usClause);
         }
 
@@ -208,9 +213,9 @@ public class MerchantDAO extends BaseDAO<Merchant> {
 //        if (!StringUtils.isEmpty(query.getFirstName())) {
 //             orderClause+=", subscriber.FirstName asc ";
 //        } else if (!StringUtils.isEmpty(query.getMdn())) {
-//            orderClause+=", subscribermdn." + CmFinoFIX.CRSubscriberMDN.FieldName_MDN;
+//            orderClause+=", SubscriberMdn." + SubscriberMdn.FieldName_MDN;
 //        } else if(!StringUtils.isEmpty(query.getUserName())) {
-//            orderClause+=", user." + CmFinoFIX.CRUser.FieldName_Username ;
+//            orderClause+=", user." + User.FieldName_Username ;
 //        }
 
         // Here by default we have the Last Name Search.
@@ -221,15 +226,15 @@ public class MerchantDAO extends BaseDAO<Merchant> {
         // then if nthing is present then by Last Name.
         String orderClause = null;
         if (!StringUtils.isEmpty(query.getMdn())) {
-            orderClause = "order by subscribermdn." + CmFinoFIX.CRSubscriberMDN.FieldName_MDN + " asc ";
+            orderClause = "order by SubscriberMdn." + SubscriberMdn.FieldName_MDN + " asc ";
         } else if (!StringUtils.isEmpty(query.getFirstName())) {
             orderClause = "order by subscriber.FirstName asc ";
         } else if (!StringUtils.isEmpty(query.getLastName())) {
             orderClause = "order by subscriber.LastName asc ";
         } else if (!StringUtils.isEmpty(query.getUserName())) {
-            orderClause = "order by user." + CmFinoFIX.CRUser.FieldName_Username + " asc ";
+            orderClause = "order by user." + User.FieldName_Username + " asc ";
         } else if (query.isIDOrdered()) {
-            orderClause = "order by merchant." + CmFinoFIX.CRMerchant.FieldName_RecordID + " asc ";
+            orderClause = "order by merchant." + Merchant.FieldName_RecordID + " asc ";
         }
         // This is causing the system to be extremely slow so taking it out as it doesn't provide much value
 //        else {
@@ -360,8 +365,8 @@ public class MerchantDAO extends BaseDAO<Merchant> {
         HashMap hm = new HashMap();
         Merchant merchant = getById(merchantParentId);
 
-        while (merchant != null && merchant.getID() != 0 && merchant.getDistributionChainTemplateID() == null) {
-            Merchant tempMerchant = merchant.getMerchantByParentID();
+        while (merchant != null && merchant.getId().compareTo(new BigDecimal(0)) != 0 && merchant.getDistributionchaintemplateid() == null) {
+            Merchant tempMerchant = merchant.getMerchant();
             if (tempMerchant == null) {
                 break;
             } else {
@@ -369,8 +374,8 @@ public class MerchantDAO extends BaseDAO<Merchant> {
             }
             level++;
         }
-        if (merchant != null && merchant.getID() != 0 && merchant.getDistributionChainTemplateID() != null) {
-            DCTID = merchant.getDistributionChainTemplateID();
+        if (merchant != null && merchant.getId().compareTo(new BigDecimal(0)) != 0 && merchant.getDistributionchaintemplateid() != null) {
+            DCTID = merchant.getDistributionchaintemplateid().longValue();
         } else {
             DCTID = -1;
             level = -1;
@@ -417,9 +422,9 @@ public class MerchantDAO extends BaseDAO<Merchant> {
         ArrayList<String> whereClauses = new ArrayList<String>();
         ArrayList<String> joinClauses = new ArrayList<String>();
 
-        String idClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_RecordID + "=" + "merchant." + CmFinoFIX.CRMerchant.FieldName_RecordID;
+        String idClause = "subscriber." + Subscriber.FieldName_RecordID + "=" + "merchant." + Merchant.FieldName_RecordID;
         whereClauses.add(idClause);
-        String companyClause = "subscriber." + CmFinoFIX.CRSubscriber.FieldName_Company + " = :company";
+        String companyClause = "subscriber." + Subscriber.FieldName_Company + " = :company";
         whereClauses.add(companyClause);
         String parentIdClause = "merchant.MerchantByParentID IS NULL OR merchant.MerchantByParentID=0";
         whereClauses.add(parentIdClause);

@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.MdnOtpQuery;
 import com.mfino.domain.MdnOtp;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.NotificationLog;
 
 /**
  * 
@@ -21,11 +21,11 @@ public class MdnOtpDAO extends BaseDAO<MdnOtp>{
         Criteria criteria = createCriteria();
 
         if(query.getMdn() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRMdnOtp.FieldName_MDN, query.getMdn().toString()));
+            criteria.add(Restrictions.eq(MdnOtp.FieldName_MDN, query.getMdn().toString()));
         }
         
         if(query.getOtpStatus() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRMdnOtp.FieldName_OTPStatus, query.getOtpStatus()));
+            criteria.add(Restrictions.eq(MdnOtp.FieldName_OTPStatus, query.getOtpStatus()));
         }
         
         processBaseQuery(query, criteria);
@@ -34,7 +34,7 @@ public class MdnOtpDAO extends BaseDAO<MdnOtp>{
         processPaging(query, criteria);
 
         if(query.isIDOrdered()) {
-          criteria.addOrder(Order.desc(CmFinoFIX.CRNotificationLog.FieldName_RecordID));
+          criteria.addOrder(Order.desc(NotificationLog.FieldName_RecordID));
         }
         
         //applying Order
@@ -48,8 +48,8 @@ public class MdnOtpDAO extends BaseDAO<MdnOtp>{
     @SuppressWarnings("unchecked")
 	public List<MdnOtp> getByMdn(String Mdn) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRMdnOtp.FieldName_MDN, Mdn));
-    	criteria.addOrder(Order.desc(CmFinoFIX.CRMdnOtp.FieldName_RecordID));
+    	criteria.add(Restrictions.eq(MdnOtp.FieldName_MDN, Mdn));
+    	criteria.addOrder(Order.desc(MdnOtp.FieldName_RecordID));
     	List<MdnOtp> mdnList = criteria.list();
    		return mdnList;
     }
@@ -58,8 +58,8 @@ public class MdnOtpDAO extends BaseDAO<MdnOtp>{
     @SuppressWarnings("unchecked")
 	public MdnOtp getByMDNAndId(String MDN,Long id) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRMdnOtp.FieldName_MDN, MDN));
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRMdnOtp.FieldName_RecordID, id));
+    	criteria.add(Restrictions.eq(MdnOtp.FieldName_MDN, MDN));
+    	criteria.add(Restrictions.eq(MdnOtp.FieldName_RecordID, id));
     	List<MdnOtp> mdnList = criteria.list();
     	if((null != mdnList) && (mdnList.size() > 0)){
     		return mdnList.get(0);

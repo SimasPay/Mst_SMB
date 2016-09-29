@@ -2,17 +2,16 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 
@@ -24,13 +23,58 @@ import com.mfino.hibernate.Timestamp;
 		"BULKUPLOADID", "BULKUPLOADLINENUMBER" }))
 public class PendingCommodityTransfer extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	public static final String FieldName_DestPocketID = "destpocketid";
+	public static final String FieldName_PocketBySourcePocketID = "pocket";
+	public static final String FieldName_BankReversalRequired = "bankreversalrequired";
+	public static final String FieldName_OperatorActionRequired = "operatoractionrequired";
+	public static final String FieldName_TransferStatus = "transferstatus";
+
+	public static final String FieldName_StartTime = "starttime";
+
+	public static final String FieldName_EndTime = "endtime";
+
+	public static final String FieldName_TransferAmount = "amount";
+
+	public static final String FieldName_TransactionID = "transactionLog";
+
+	public static final String FieldName_TransactionUICategory = "uicategory";
+
+	public static final String FieldName_Company = "company";
+
+	public static final String FieldName_SourceMDN = "sourcemdn";
+
+	public static final String FieldName_DestMDN = "destmdn";
+
+	public static final String FieldName_DestMDNID = "destmdnid";
+
+	public static final String FieldName_SourceReferenceID = "sourcereferenceid";
+
+	public static final String FieldName_ISO8583_SystemTraceAuditNumber = "iso8583Systemtraceauditnumber";
+
+	public static final String FieldName_BankAuthorizationCode = "bankauthorizationcode";
+
+	public static final String FieldName_OperatorAuthorizationCode = "operatorauthorizationcode";
+
+	public static final String FieldName_BankReversalAuthorizationCode = "bankreversalauthorizationcode";
+
+	public static final String FieldName_SourceApplication = "sourceapplication";
+
+	public static final String FieldName_BulkUploadID = "bulkuploadid";
+
+	public static final String FieldName_ISO8583_AcquiringInstIdCode = "iso8583Acquiringinstidcode";
+
+	public static final String FieldName_BankCodeForRouting = "bankcode";
+
+	public static final String FieldName_Commodity = "commodity";
 	
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
 	private CreditCardTransaction creditCardTransaction;
 	private LetterOfPurchase letterOfPurchase;
 	private Subscriber subscriber;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
 	private DistributionChainLvl distributionChainLvl;
 	private Pocket pocket;
@@ -126,10 +170,6 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private BigDecimal denomination;
 	private BigDecimal transactionchargeid;
 	private Short ispartofsharedupchain;
-	private Timestamp lastupdatetime;
-	private String updatedby;
-	private Timestamp createtime;
-	private String createdby;
 	private short localbalancerevertrequired;
 	private short localrevertrequired;
 	private short bankreversalrequired;
@@ -140,7 +180,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 
 	public PendingCommodityTransfer(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog, Subscriber subscriber,
-			mFinoServiceProvider mfinoServiceProvider, Company company,
+			MfinoServiceProvider mfinoServiceProvider, Company company,
 			Pocket pocket, long msgtype, long transferstatus,
 			Timestamp starttime, long expirationtimeout, String sourcemdn,
 			long sourcepockettype, BigDecimal amount, BigDecimal charges,
@@ -181,7 +221,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 			TransactionLog transactionLog,
 			CreditCardTransaction creditCardTransaction,
 			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
-			mFinoServiceProvider mfinoServiceProvider, Company company,
+			MfinoServiceProvider mfinoServiceProvider, Company company,
 			DistributionChainLvl distributionChainLvl, Pocket pocket,
 			long msgtype, Long uicategory, long transferstatus,
 			Long transferfailurereason, Long notificationcode,
@@ -399,12 +439,12 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

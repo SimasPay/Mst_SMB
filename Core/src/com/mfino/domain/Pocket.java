@@ -2,20 +2,19 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -26,7 +25,7 @@ import com.mfino.hibernate.Timestamp;
 public class Pocket extends Base implements java.io.Serializable {
 
 	
-	private SubscriberMDN subscriberMdn;
+	private SubscriberMdn subscriberMdn;
 	private PocketTemplate pocketTemplate;
 	private PocketTemplate pocketTemplateByPockettemplateid;
 	private Company company;
@@ -88,7 +87,7 @@ public class Pocket extends Base implements java.io.Serializable {
 	public Pocket() {
 	}
 
-	public Pocket(BigDecimal id, SubscriberMDN subscriberMdn,
+	public Pocket(BigDecimal id, SubscriberMdn subscriberMdn,
 			PocketTemplate pocketTemplateByPockettemplateid,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
@@ -115,7 +114,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.statustime = statustime;
 	}
 
-	public Pocket(BigDecimal id, SubscriberMDN subscriberMdn,
+	public Pocket(BigDecimal id, SubscriberMdn subscriberMdn,
 			PocketTemplate pocketTemplateByPockettemplateid, Company company,
 			PocketTemplate pocketTemplateByOldpockettemplateid,
 			Timestamp lastupdatetime, String updatedby,
@@ -202,11 +201,11 @@ public class Pocket extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID", nullable = false)
-	public SubscriberMDN getSubscriberMdn() {
+	public SubscriberMdn getSubscriberMdn() {
 		return this.subscriberMdn;
 	}
 
-	public void setSubscriberMdn(SubscriberMDN subscriberMdn) {
+	public void setSubscriberMdn(SubscriberMdn subscriberMdn) {
 		this.subscriberMdn = subscriberMdn;
 	}
 

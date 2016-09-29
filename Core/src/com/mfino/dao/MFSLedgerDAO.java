@@ -25,7 +25,7 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 		 Criteria criteria = createCriteria();
 		 
 		 if (query.getPocketId() != null) {
-			 criteria.add(Restrictions.eq(CmFinoFIX.CRMFSLedger.FieldName_PocketID, query.getPocketId()));
+			 criteria.add(Restrictions.eq(MFSLedger.FieldName_PocketID, query.getPocketId()));
 		 }
 		 
 		 if (query.getMdnId() != null) {
@@ -37,26 +37,26 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 				 Long[] pocketArray = new Long[lstPockets.size()];
 				 int i = 0;
 				 for (Pocket p:lstPockets) {
-					 pocketArray[i] = p.getID();
+					 pocketArray[i] = p.getId().longValue();
 					 i++;
 				 }
-				 criteria.add(Restrictions.in(CmFinoFIX.CRMFSLedger.FieldName_PocketID, pocketArray));
+				 criteria.add(Restrictions.in(MFSLedger.FieldName_PocketID, pocketArray));
 			 }
 		 }
 		 
 		 if(query.getCreateTimeLT()!=null){
-			 criteria.add(Restrictions.le(CmFinoFIX.CRMFSLedger.FieldName_CreateTime, query.getCreateTimeLT()));	 
+			 criteria.add(Restrictions.le(MFSLedger.FieldName_CreateTime, query.getCreateTimeLT()));	 
 		 }
 		 if(query.getCreateTimeGE()!=null){
-			 criteria.add(Restrictions.ge(CmFinoFIX.CRMFSLedger.FieldName_CreateTime, query.getCreateTimeGE()));	 
+			 criteria.add(Restrictions.ge(MFSLedger.FieldName_CreateTime, query.getCreateTimeGE()));	 
 		 }
 		 if(query.getTransferIDs()!=null){
-			 criteria.add(Restrictions.in(CmFinoFIX.CRMFSLedger.FieldName_CommodityTransferID, query.getTransferIDs()));	 
+			 criteria.add(Restrictions.in(MFSLedger.FieldName_CommodityTransferID, query.getTransferIDs()));	 
 		 }		 
 		 
 		 
-		 criteria.addOrder(Order.desc(CmFinoFIX.CRMFSLedger.FieldName_CreateTime));
-		 criteria.addOrder(Order.asc(CmFinoFIX.CRMFSLedger.FieldName_RecordID));
+		 criteria.addOrder(Order.desc(MFSLedger.FieldName_CreateTime));
+		 criteria.addOrder(Order.asc(MFSLedger.FieldName_RecordID));
 		 processBaseQuery(query, criteria);
 		 processPaging(query, criteria);
 		 applyOrder(query, criteria) ;
@@ -76,8 +76,8 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 			return null;
 		}
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRMFSLedger.FieldName_CommodityTransferID, ctId));
-		criteria.addOrder(Order.desc(CmFinoFIX.CRMFSLedger.FieldName_CreateTime));
+		criteria.add(Restrictions.eq(MFSLedger.FieldName_CommodityTransferID, ctId));
+		criteria.addOrder(Order.desc(MFSLedger.FieldName_CreateTime));
 		return criteria.list();
 	}
 	
@@ -93,8 +93,8 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 		}
 		
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRMFSLedger.FieldName_LedgerStatus, ledgerStatus));
-		criteria.addOrder(Order.asc(CmFinoFIX.CRMFSLedger.FieldName_CreateTime));
+		criteria.add(Restrictions.eq(MFSLedger.FieldName_LedgerStatus, ledgerStatus));
+		criteria.addOrder(Order.asc(MFSLedger.FieldName_CreateTime));
 		return criteria.list();
 	}
 	
@@ -105,8 +105,8 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 		}
 		
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRMFSLedger.FieldName_SctlId, sctlId));
-		criteria.addOrder(Order.asc(CmFinoFIX.CRMFSLedger.FieldName_CreateTime));
+		criteria.add(Restrictions.eq(MFSLedger.FieldName_SctlId, sctlId));
+		criteria.addOrder(Order.asc(MFSLedger.FieldName_CreateTime));
 		return criteria.list();
 	}
 	public List<LedgerBalance> getConsolidateBalance(Date startDate, Date endDate) {

@@ -24,8 +24,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "BULK_LOP")
 public class BulkLOP extends Base implements java.io.Serializable {
-
-	
+	private static final long serialVersionUID = 1L;
 	private SubscriberMDN subscriberMdn;
 	private DistributionChainTemp distributionChainTemp;
 	private Merchant merchant;

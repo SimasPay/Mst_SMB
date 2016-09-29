@@ -11,7 +11,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SCTLSettlementMapQuery;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -19,9 +19,9 @@ import com.mfino.fix.CmFinoFIX;
  * @author Hemanth
  *
  */
-public class SCTLSettlementMapDAO extends BaseDAO<SCTLSettlementMap> {
+public class SCTLSettlementMapDAO extends BaseDAO<SctlSettlementMap> {
 
-    public List<SCTLSettlementMap> get(SCTLSettlementMapQuery query) {
+    public List<SctlSettlementMap> get(SCTLSettlementMapQuery query) {
         Criteria criteria = createCriteria();
 
         if (query.getSctlID() != null) {
@@ -50,7 +50,7 @@ public class SCTLSettlementMapDAO extends BaseDAO<SCTLSettlementMap> {
        // criteria.addOrder(Order.desc(CmFinoFIX.CRScheduleTemplate.FieldName_RecordID));
         //applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<SCTLSettlementMap> results = criteria.list();
+        List<SctlSettlementMap> results = criteria.list();
         return results;
     }
 

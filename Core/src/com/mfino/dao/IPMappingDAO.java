@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mfino.dao.query.IPMappingQuery;
 import com.mfino.domain.IPMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.fix.CmFinoFIX;
 
@@ -25,11 +26,11 @@ public class IPMappingDAO extends BaseDAO<IPMapping>{
 		log.info("IPMappingDAO :: getByIntegrationName() "+integrationName);
 
 		if((null == integrationName) || ("".equals(integrationName))) return null;
-		IntegrationPartnerMapping integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByIntegrationName(integrationName);		
+		IntegrationPartnerMap integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByIntegrationName(integrationName);		
 		Criteria criteria = createCriteria();
 		if(integrationPartnerMapping != null)
 		{
-			criteria.add(Restrictions.eq(CmFinoFIX.CRIPMapping.FieldName_IntegrationPartnerMappingByIntegrationID, integrationPartnerMapping));
+			criteria.add(Restrictions.eq(IPMapping.FieldName_IntegrationPartnerMappingByIntegrationID, integrationPartnerMapping));
 		}
 		@SuppressWarnings("unchecked")
 		List<IPMapping> results = criteria.list();
@@ -40,11 +41,11 @@ public class IPMappingDAO extends BaseDAO<IPMapping>{
 
 		Criteria criteria = createCriteria();
 		if (query.getIntegrationID() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRIPMapping.FieldName_IntegrationPartnerMappingByIntegrationID, 
+			criteria.add(Restrictions.eq(IPMapping.FieldName_IntegrationPartnerMappingByIntegrationID, 
 					DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getById(query.getIntegrationID())));
 		}
 		if (StringUtils.isNotBlank(query.getIpAddress())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRIPMapping.FieldName_IPAddress, query.getIpAddress()));
+			criteria.add(Restrictions.eq(IPMapping.FieldName_IPAddress, query.getIpAddress()));
 		}
 
 		processPaging(query, criteria);

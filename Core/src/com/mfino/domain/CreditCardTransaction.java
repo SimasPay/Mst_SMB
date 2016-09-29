@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,6 +26,16 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "CREDIT_CARD_TRANSACTION")
 public class CreditCardTransaction extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
+	public static final String FieldName_CCFailureReason = "ccfailurereason";
+	public static final String FieldName_MDN = "mdn";
+	public static final String FieldName_TransactionID = "transactionid";
+	public static final String FieldName_AuthID = "authid";
+	public static final String FieldName_BankReference = "bankreference";
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_TransStatus = "transstatus";
+	public static final String FieldName_Operation = "operation";
 	
 	private Pocket pocket;
 	private Subscriber subscriber;

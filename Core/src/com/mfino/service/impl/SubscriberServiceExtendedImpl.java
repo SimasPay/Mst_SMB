@@ -43,7 +43,7 @@ import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.domain.SubscribersAdditionalFields;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.fix.CmFinoFIX;
@@ -1383,7 +1383,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
 				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getID());
 				txnInfoQuery.setMultiStatus(status);
-				List<UnRegisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
+				List<UnregisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
 						.get(txnInfoQuery);
 				String prefix = systemParametersService
 						.getString(SystemParameterKeys.FAC_PREFIX_VALUE);
@@ -1396,7 +1396,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 				String receivedFACDigest = MfinoUtil.calculateDigestPin(
 						subscriberMDN.getMDN(), receivedFAC);
-				for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
+				for (UnregisteredTxnInfo txnInfo : txnInfoList) {
 					if (txnInfo.getDigestedPIN().equals(receivedFACDigest)) {
 						isValidFac = true;
 						break;
@@ -1404,7 +1404,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				}
 
 				if (isValidFac == true) {
-					for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
+					for (UnregisteredTxnInfo txnInfo : txnInfoList) {
 						if (StringUtils.isBlank(txnInfo.getTransactionName())) { 
 							txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
 						}
@@ -1482,9 +1482,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		status[0] = CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED;
 		status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
 		txnInfoQuery.setMultiStatus(status);
-		List<UnRegisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
+		List<UnregisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
 				.get(txnInfoQuery);
-		for (UnRegisteredTxnInfo txnInfo : txnInfoList) {
+		for (UnregisteredTxnInfo txnInfo : txnInfoList) {
 			if (StringUtils.isBlank(txnInfo.getTransactionName())) {
 				txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
 			}

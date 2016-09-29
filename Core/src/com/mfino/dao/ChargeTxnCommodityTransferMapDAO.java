@@ -11,31 +11,31 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 
 /**
  * @author Chaitanya
  *
  */
 public class ChargeTxnCommodityTransferMapDAO extends
-		BaseDAO<ChargeTxnCommodityTransferMap> {
+		BaseDAO<ChargetxnTransferMap> {
 
-	public List<ChargeTxnCommodityTransferMap> get(ChargeTxnCommodityTransferMapQuery query){
+	public List<ChargetxnTransferMap> get(ChargeTxnCommodityTransferMapQuery query){
 		
 		Criteria criteria = createCriteria();
 		if(query.getSctlID()!=null){
-			criteria.add(Restrictions.eq(ChargeTxnCommodityTransferMap.FieldName_SctlId, query.getSctlID()));
+			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, query.getSctlID()));
 		}
 		if(query.getCommodityTransferID()!=null){
-			criteria.add(Restrictions.eq(ChargeTxnCommodityTransferMap.FieldName_CommodityTransferID, query.getCommodityTransferID()));
+			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_CommodityTransferID, query.getCommodityTransferID()));
 		}
 		
         processBaseQuery(query, criteria);
         processPaging(query, criteria);
 		
-        criteria.addOrder(Order.desc(ChargeTxnCommodityTransferMap.FieldName_RecordID));
+        criteria.addOrder(Order.desc(ChargetxnTransferMap.FieldName_RecordID));
         
-        List<ChargeTxnCommodityTransferMap> map = criteria.list();
+        List<ChargetxnTransferMap> map = criteria.list();
  		return map;
 	}
 	
@@ -47,11 +47,11 @@ public class ChargeTxnCommodityTransferMapDAO extends
 	public Long getSCTLIdByCommodityTransferId(Long ctId) {
 		Long sctlId = null;
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(ChargeTxnCommodityTransferMap.FieldName_CommodityTransferID, ctId));
+		criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_CommodityTransferID, ctId));
 		
-		ChargeTxnCommodityTransferMap ctMap = (ChargeTxnCommodityTransferMap)criteria.uniqueResult();
+		ChargetxnTransferMap ctMap = (ChargetxnTransferMap)criteria.uniqueResult();
 		if (ctMap != null) {
-			sctlId = ctMap.getSctlId();
+			sctlId = ctMap.getSctlid().longValue();
 		}
 		return sctlId;
 	}
@@ -62,14 +62,16 @@ public class ChargeTxnCommodityTransferMapDAO extends
 	 */
 	public List<Long> geTransferIdsBySCTLId(Long sctlId) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(ChargeTxnCommodityTransferMap.FieldName_SctlId, sctlId));
+		criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, sctlId));
 		List<Long> transferIDs = null; 
 		@SuppressWarnings("unchecked")
-		List<ChargeTxnCommodityTransferMap> ctMapList = criteria.list();
+		List<ChargetxnTransferMap> ctMapList = criteria.list();
 		if(ctMapList !=null && ctMapList.size()>0)
 			transferIDs = new ArrayList<Long>();
-		for(ChargeTxnCommodityTransferMap ctxMap :ctMapList) {
-			transferIDs.add(ctxMap.getCommodityTransferID());
+		for(ChargetxnTransferMap ctxMap :ctMapList) {
+			if (ctxMap.getCommoditytransferid() != null) {
+				transferIDs.add(ctxMap.getCommoditytransferid().longValue());
+			}
 		}
 		return transferIDs;
 	}

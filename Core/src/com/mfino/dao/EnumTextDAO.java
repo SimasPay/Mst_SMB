@@ -4,12 +4,13 @@
  */
 package com.mfino.dao;
 
-import com.mfino.dao.query.EnumTextQuery;
-import com.mfino.domain.EnumText;
-import com.mfino.fix.CmFinoFIX;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+
+import com.mfino.dao.query.EnumTextQuery;
+import com.mfino.domain.EnumText;
 
 /**
  *
@@ -22,30 +23,30 @@ public class EnumTextDAO extends BaseDAO<EnumText> {
 
         Criteria criteria = createCriteria();
         if (query.getTagId() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CREnumText.FieldName_TagID, query.getTagId()));
+            criteria.add(Restrictions.eq(EnumText.FieldName_TagID, query.getTagId()));
         }
 //        if (query.getLanguage() != null) {
-//            criteria.add(Restrictions.eq(CmFinoFIX.CREnumText.FieldName_Language, query.getLanguage()));
+//            criteria.add(Restrictions.eq(EnumText.FieldName_Language, query.getLanguage()));
 //        } else {
-//            criteria.add(Restrictions.eq(CmFinoFIX.CREnumText.FieldName_Language, CmFinoFIX.Language_English));
+//            criteria.add(Restrictions.eq(EnumText.FieldName_Language, CmFinoFIX.Language_English));
 //        }
         if (query.getEnumCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CREnumText.FieldName_EnumCode, query.getEnumCode()).ignoreCase());
+            criteria.add(Restrictions.eq(EnumText.FieldName_EnumCode, query.getEnumCode()).ignoreCase());
         }
         if(query.getTagName() != null)
         {
-            addLikeStartRestriction(criteria, CmFinoFIX.CREnumText.FieldName_TagName, query.getTagName());
+            addLikeStartRestriction(criteria, EnumText.FieldName_TagName, query.getTagName());
         }
         if (query.getLanguage() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CREnumText.FieldName_Language, query.getLanguage()));
+            criteria.add(Restrictions.eq(EnumText.FieldName_Language, query.getLanguage()));
         }
         if(query.getFieldName() != null)
         {
-            addLikeStartRestriction(criteria, CmFinoFIX.CREnumText.FieldName_EnumValue, query.getFieldName());
+            addLikeStartRestriction(criteria, EnumText.FieldName_EnumValue, query.getFieldName());
         }
         if(query.getDisplayText() != null)
         {
-            addLikeStartRestriction(criteria, CmFinoFIX.CREnumText.FieldName_DisplayText, query.getDisplayText());
+            addLikeStartRestriction(criteria, EnumText.FieldName_DisplayText, query.getDisplayText());
         }
         
          // Paging

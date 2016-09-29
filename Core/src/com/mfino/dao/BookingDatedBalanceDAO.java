@@ -10,7 +10,6 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.dao.query.BookingDatedBalanceQuery;
 import com.mfino.domain.BookingDatedBalance;
 import com.mfino.domain.Pocket;
-import com.mfino.fix.CmFinoFIX;
 import com.mfino.util.DateUtil;
 
 public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
@@ -21,8 +20,8 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 			return null;
 
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocket.getId()));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, date));
+		criteria.add(Restrictions.eq(BookingDatedBalance.FieldName_PocketID, pocket.getId()));
+		criteria.add(Restrictions.eq(BookingDatedBalance.FieldName_BookingDate, date));
 
 		@SuppressWarnings("unchecked")
 		List<BookingDatedBalance> list = criteria.list();
@@ -34,9 +33,9 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 			return null;
 
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocket.getId()));
-		criteria.add(Restrictions.lt(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, date));
-		criteria.addOrder(Order.desc(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate));
+		criteria.add(Restrictions.eq(BookingDatedBalance.FieldName_PocketID, pocket.getId()));
+		criteria.add(Restrictions.lt(BookingDatedBalance.FieldName_BookingDate, date));
+		criteria.addOrder(Order.desc(BookingDatedBalance.FieldName_BookingDate));
 		
 		@SuppressWarnings("unchecked")
 		List<BookingDatedBalance> list = criteria.list();
@@ -67,10 +66,10 @@ public class BookingDatedBalanceDAO extends BaseDAO<BookingDatedBalance> {
 	public List<BookingDatedBalance> getDailyBalanceForPocket(Long pocketId, Date startDate, Date endDate) {
 		List<BookingDatedBalance> result = null;
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBookingDatedBalance.FieldName_PocketID, pocketId));
-		criteria.add(Restrictions.ge(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, startDate));
-		criteria.add(Restrictions.le(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate, endDate));
-		criteria.addOrder(Order.asc(CmFinoFIX.CRBookingDatedBalance.FieldName_BookingDate));
+		criteria.add(Restrictions.eq(BookingDatedBalance.FieldName_PocketID, pocketId));
+		criteria.add(Restrictions.ge(BookingDatedBalance.FieldName_BookingDate, startDate));
+		criteria.add(Restrictions.le(BookingDatedBalance.FieldName_BookingDate, endDate));
+		criteria.addOrder(Order.asc(BookingDatedBalance.FieldName_BookingDate));
 		result = criteria.list();
 		return result;
 	}

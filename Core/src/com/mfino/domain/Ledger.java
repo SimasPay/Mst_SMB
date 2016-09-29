@@ -4,11 +4,13 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -18,6 +20,13 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "LEDGER")
 public class Ledger extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
+	public static final String FieldName_SourcePocketID = "sourcepocketid";
+	public static final String FieldName_SourceMDN = "sourcemdn";
+	public static final String FieldName_CommodityTransferID = "commoditytransferid";
+	public static final String FieldName_DestPocketID = "destpocketid";
+	public static final String FieldName_DestMDN = "destmdn";
 	
 	private BigDecimal commoditytransferid;
 	private String sourcemdn;

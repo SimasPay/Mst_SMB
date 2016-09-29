@@ -15,11 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import com.mfino.dao.query.PartnerQuery;
 import com.mfino.dao.query.PocketQuery;
+import com.mfino.domain.DistributionChainTemplate;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.Partner;
+import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionRule;
 import com.mfino.fix.CmFinoFIX;
 
@@ -35,9 +37,9 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		if (query.getTransactionRuleId() != null) {
 			TransactionRuleDAO trDAO = DAOFactory.getInstance().getTransactionRuleDAO();
 			TransactionRule tr = trDAO.getById(query.getTransactionRuleId());
-			criteria.createAlias(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID,"ps");
-			criteria.add(Restrictions.eq("ps." + CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID, tr.getPartnerByServiceProviderID()));
-			criteria.add(Restrictions.eq("ps." + CmFinoFIX.CRPartnerServices.FieldName_Service,	tr.getService()));
+			criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID,"ps");
+			criteria.add(Restrictions.eq("ps." + PartnerServices.FieldName_PartnerByServiceProviderID, tr.getPartner()));
+			criteria.add(Restrictions.eq("ps." + PartnerServices.FieldName_Service,	tr.getService()));
 		}
 		if (StringUtils.isNotBlank(query.getPartnerTypeSearchString())) {
 			String[] strArray = query.getPartnerTypeSearchString().split(",");
@@ -47,18 +49,18 @@ public class PartnerDAO extends BaseDAO<Partner> {
 				intArray[i] = new Integer(s);
 				i++;
 			}
-			criteria.add(Restrictions.in(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,	intArray));
+			criteria.add(Restrictions.in(Partner.FieldName_BusinessPartnerType,	intArray));
 		}
 		if (StringUtils.isNotBlank(query.getTradeName())) {
 			if (Boolean.TRUE == query.isPartnerCodeLike()) {
-				addLikeStartRestriction(criteria, CmFinoFIX.CRPartner.FieldName_TradeName, query.getTradeName());
+				addLikeStartRestriction(criteria, Partner.FieldName_TradeName, query.getTradeName());
 			} else {
-				criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_TradeName, query.getTradeName()).ignoreCase());
+				criteria.add(Restrictions.eq(Partner.FieldName_TradeName, query.getTradeName()).ignoreCase());
 			}
 		}
 		if (StringUtils.isNotBlank(query.getAuthorizedEmail())) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRPartner.FieldName_AuthorizedEmail,
+					Partner.FieldName_AuthorizedEmail,
 					query.getAuthorizedEmail()).ignoreCase());
 		}
 		if (StringUtils.isNotBlank(query.getCardPAN())) {
@@ -68,20 +70,20 @@ public class PartnerDAO extends BaseDAO<Partner> {
 			List<Pocket> pockets = pocketDAO.get(pocketQuery);
 			if (CollectionUtils.isNotEmpty(pockets)) {
 				Pocket pocket = pockets.get(0);
-				SubscriberMDN subscriberMDN = pocket.getSubscriberMDNByMDNID();
+				SubscriberMdn subscriberMDN = pocket.getSubscriberMdn();
 				criteria.add(Restrictions.eq(
-						CmFinoFIX.CRPartner.FieldName_Subscriber,
+						Partner.FieldName_Subscriber,
 						subscriberMDN.getSubscriber()));
 			} else {
 				criteria.add(Restrictions.eq(
-						CmFinoFIX.CRPartner.FieldName_Subscriber, null));
+						Partner.FieldName_Subscriber, null));
 			}
 		}
 		if (StringUtils.isNotBlank(query.getPartnerCode())) {
 			if (Boolean.TRUE == query.isPartnerCodeLike()) {
-				addLikeStartRestriction(criteria, CmFinoFIX.CRPartner.FieldName_PartnerCode, query.getPartnerCode());
+				addLikeStartRestriction(criteria, Partner.FieldName_PartnerCode, query.getPartnerCode());
             } else {
-            	criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_PartnerCode,query.getPartnerCode()).ignoreCase());
+            	criteria.add(Restrictions.eq(Partner.FieldName_PartnerCode,query.getPartnerCode()).ignoreCase());
             }			
 		}
 		if (null != query.getPartnerType()) {
@@ -92,8 +94,8 @@ public class PartnerDAO extends BaseDAO<Partner> {
 						|| query.getPartnerType().equals(
 								CmFinoFIX.TagID_BusinessPartnerTypePartner)) {
 					DetachedCriteria partner = DetachedCriteria.forClass(EnumText.class).
-												setProjection(Property.forName(CmFinoFIX.CREnumText.FieldName_EnumCode))
-												.add(Restrictions.eq(CmFinoFIX.CREnumText.FieldName_TagID, query.getPartnerType()));
+												setProjection(Property.forName(EnumText.FieldName_EnumCode))
+												.add(Restrictions.eq(EnumText.FieldName_TagID, query.getPartnerType()));
 //					HashMap<String, String> results = enumTextService
 //							.getEnumTextSet(query.getPartnerType(), null);
 //					if (!results.isEmpty()) {
@@ -103,26 +105,26 @@ public class PartnerDAO extends BaseDAO<Partner> {
 //						}
 //					}
 //					criteria.add(Restrictions.in(
-//							CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,
+//							Partner.FieldName_BusinessPartnerType,
 //							partnerTypes));
-					criteria.add(Property.forName(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType).in(partner));
+					criteria.add(Property.forName(Partner.FieldName_BusinessPartnerType).in(partner));
 				} else {
 					criteria.add(Restrictions.eq(
-							CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,
+							Partner.FieldName_BusinessPartnerType,
 							query.getPartnerType()));
 				}
 			}
 		}
 		if (null != query.getNotPartnerType()) {
 			criteria.add(Restrictions.ne(
-					CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,
+					Partner.FieldName_BusinessPartnerType,
 					query.getNotPartnerType()));
 		}
 		if (query.getUpgradeStateSearch() != null) {
-			criteria.createAlias(CmFinoFIX.CRPartner.FieldName_Subscriber,
+			criteria.createAlias(Partner.FieldName_Subscriber,
 					"sub");
 			criteria.add(Restrictions.eq("sub."
-					+ CmFinoFIX.CRSubscriber.FieldName_UpgradeState,
+					+ Subscriber.FieldName_UpgradeState,
 					query.getUpgradeStateSearch()));
 		}
 
@@ -133,55 +135,55 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		// spsDAO.getServiceProviderServices(query.getServiceProviderId(),
 		// query.getServiceId());
 		// if (CollectionUtils.isNotEmpty(lst)) {
-		// criteria.createCriteria(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID).
-		// add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_ServiceProviderServices,
+		// criteria.createCriteria(Partner.FieldName_PartnerServicesFromPartnerID).
+		// add(Restrictions.eq(PartnerServices.FieldName_ServiceProviderServices,
 		// lst.get(0))).
-		// add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_PartnerServiceStatus,
+		// add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus,
 		// CmFinoFIX.PartnerServiceStatus_Active));
 		// }
 		// }
 		if (query.getServiceId() != null) {
 			ServiceDAO serviceDAO = DAOFactory.getInstance().getServiceDAO();
 			criteria.createCriteria(
-					CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID)
+					Partner.FieldName_PartnerServicesFromPartnerID)
 					.add(Restrictions.eq(
-							CmFinoFIX.CRPartnerServices.FieldName_Service,
+							PartnerServices.FieldName_Service,
 							serviceDAO.getById(query.getServiceId())));
 		}
 
         if((null != query.getDistributionChainTemplateId()) && (null != query.getParentId())){
-        	criteria.createAlias(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID, "partnerService");
-        	criteria.createAlias("partnerService."+CmFinoFIX.CRPartnerServices.FieldName_DistributionChainTemplate, "psDct");
-        	criteria.add(Restrictions.eq("psDct."+CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
-        	criteria.createAlias("partnerService."+CmFinoFIX.CRPartnerServices.FieldName_PartnerByParentID, "psParent");
-        	criteria.add(Restrictions.eq("psParent."+CmFinoFIX.CRPartner.FieldName_RecordID, query.getParentId()));
+        	criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID, "partnerService");
+        	criteria.createAlias("partnerService."+PartnerServices.FieldName_DistributionChainTemplate, "psDct");
+        	criteria.add(Restrictions.eq("psDct."+DistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
+        	criteria.createAlias("partnerService."+PartnerServices.FieldName_PartnerByParentID, "psParent");
+        	criteria.add(Restrictions.eq("psParent."+Partner.FieldName_RecordID, query.getParentId()));
         }
         else if(null != query.getDistributionChainTemplateId()){
-        	criteria.createAlias(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID, "partnerService");
-//        	criteria.createAlias("partnerService."+CmFinoFIX.CRPartnerServices.FieldName_PartnerByParentID, "parent");
-        	criteria.createAlias("partnerService."+CmFinoFIX.CRPartnerServices.FieldName_DistributionChainTemplate, "psDct");
-        	criteria.add(Restrictions.eq("psDct."+CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
+        	criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID, "partnerService");
+//        	criteria.createAlias("partnerService."+PartnerServices.FieldName_PartnerByParentID, "parent");
+        	criteria.createAlias("partnerService."+PartnerServices.FieldName_DistributionChainTemplate, "psDct");
+        	criteria.add(Restrictions.eq("psDct."+DistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
         	
         	if(query.isFirstLevelPartnerSearch()){
-        		criteria.add(Restrictions.isNull("partnerService."+CmFinoFIX.CRPartnerServices.FieldName_PartnerByParentID));
+        		criteria.add(Restrictions.isNull("partnerService."+PartnerServices.FieldName_PartnerByParentID));
         	}
         	
-//        	Criteria partnerServiceCriteria = criteria.createCriteria(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID);
-//        	Criteria distributionChainTemplateCriteria = partnerServiceCriteria.createCriteria(CmFinoFIX.CRPartnerServices.FieldName_DistributionChainTemplate);
-//        	distributionChainTemplateCriteria.add(Restrictions.eq(CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
+//        	Criteria partnerServiceCriteria = criteria.createCriteria(Partner.FieldName_PartnerServicesFromPartnerID);
+//        	Criteria distributionChainTemplateCriteria = partnerServiceCriteria.createCriteria(PartnerServices.FieldName_DistributionChainTemplate);
+//        	distributionChainTemplateCriteria.add(Restrictions.eq(DistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
         }
         else if(null != query.getParentId()){
-        	criteria.createAlias(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID, "partnerService1");
-        	criteria.createAlias("partnerService1."+CmFinoFIX.CRPartnerServices.FieldName_PartnerByParentID, "psParent");
-        	criteria.add(Restrictions.eq("psParent."+CmFinoFIX.CRPartner.FieldName_RecordID, query.getParentId()));
+        	criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID, "partnerService1");
+        	criteria.createAlias("partnerService1."+PartnerServices.FieldName_PartnerByParentID, "psParent");
+        	criteria.add(Restrictions.eq("psParent."+Partner.FieldName_RecordID, query.getParentId()));
         	
-//        	Criteria partnerServiceCriteria = criteria.createCriteria(CmFinoFIX.CRPartner.FieldName_PartnerServicesFromPartnerID);
-//        	Criteria partnerServiceParentCriteria = partnerServiceCriteria.createCriteria(CmFinoFIX.CRPartnerServices.FieldName_PartnerByParentID);
-//        	partnerServiceParentCriteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_RecordID, query.getParentId()));
+//        	Criteria partnerServiceCriteria = criteria.createCriteria(Partner.FieldName_PartnerServicesFromPartnerID);
+//        	Criteria partnerServiceParentCriteria = partnerServiceCriteria.createCriteria(PartnerServices.FieldName_PartnerByParentID);
+//        	partnerServiceParentCriteria.add(Restrictions.eq(Partner.FieldName_RecordID, query.getParentId()));
         }
         
         if(null != query.getPartnerId()){
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_RecordID, query.getPartnerId()));
+        	criteria.add(Restrictions.eq(Partner.FieldName_RecordID, query.getPartnerId()));
         }
 		
 		processBaseQuery(query, criteria);
@@ -190,7 +192,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		processPaging(query, criteria);
 
 		// applying Order
-		criteria.addOrder(Order.desc(CmFinoFIX.CRPartner.FieldName_RecordID));
+		criteria.addOrder(Order.desc(Partner.FieldName_RecordID));
 		applyOrder(query, criteria);
 		@SuppressWarnings("unchecked")
 		List<Partner> results = criteria.list();
@@ -201,7 +203,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	@SuppressWarnings("unchecked")
 	public Partner getPartnerByTradeName(String tradeName) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_TradeName,
+		criteria.add(Restrictions.eq(Partner.FieldName_TradeName,
 				tradeName).ignoreCase());
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
@@ -213,7 +215,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 
 	public Partner getPartnerByPartnerCode(String code) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_PartnerCode,
+		criteria.add(Restrictions.eq(Partner.FieldName_PartnerCode,
 				code).ignoreCase());
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
@@ -227,7 +229,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	public Partner getServiceProvider() {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(
-				CmFinoFIX.CRPartner.FieldName_BusinessPartnerType,
+				Partner.FieldName_BusinessPartnerType,
 				CmFinoFIX.BusinessPartnerType_ServicePartner));
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
@@ -240,7 +242,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	@SuppressWarnings("unchecked")
 	public Partner getPartnerBySubscriber(Subscriber sub) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_Subscriber,
+		criteria.add(Restrictions.eq(Partner.FieldName_Subscriber,
 				sub));
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
@@ -253,8 +255,8 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	@SuppressWarnings("unchecked")
 	public Partner getBranchSequence(PartnerQuery query) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_BranchCode, query.getBranchCode()));
+		criteria.add(Restrictions.eq(Partner.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
+		criteria.add(Restrictions.eq(Partner.FieldName_BranchCode, query.getBranchCode()));
 		criteria.addOrder(Order.desc("ID"));
 		criteria.setMaxResults(1);
 		List<Partner> results = criteria.list();

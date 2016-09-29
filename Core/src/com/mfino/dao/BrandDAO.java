@@ -11,7 +11,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.BrandQuery;
 import com.mfino.domain.Brand;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -24,21 +23,21 @@ public class BrandDAO extends BaseDAO<Brand> {
         Criteria criteria = createCriteria();
 
         if (query.getPrefixCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBrand.FieldName_PrefixCode, query.getPrefixCode()).ignoreCase());
+            criteria.add(Restrictions.eq(Brand.FieldName_PrefixCode, query.getPrefixCode()).ignoreCase());
         }
         if (query.getPrefixCodeLike() != null) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRBrand.FieldName_PrefixCode, query.getPrefixCodeLike());
+            addLikeStartRestriction(criteria, Brand.FieldName_PrefixCode, query.getPrefixCodeLike());
         }
         if (query.getBrandName() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBrand.FieldName_BrandName, query.getBrandName()).ignoreCase());
+            criteria.add(Restrictions.eq(Brand.FieldName_BrandName, query.getBrandName()).ignoreCase());
         }
         if (query.getCompany() != null) {
 //         final String companyAlias = COMPANY_ASSOC_NAME + DAOConstants.ALIAS_SUFFIX;
 //            criteria.createAlias(COMPANY_ASSOC_NAME, companyAlias);
-//            final String companyWithAlias = companyAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRCompany.FieldName_Company;
+//            final String companyWithAlias = companyAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + Company.FieldName_Company;
 //            criteria.add(Restrictions.eq(companyWithAlias, query.getCompanyName()));
-//            processColumn(query, CmFinoFIX.CRCompany.FieldName_CompanyName, companyWithAlias);
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBrand.FieldName_Company, query.getCompany()));
+//            processColumn(query, Company.FieldName_CompanyName, companyWithAlias);
+            criteria.add(Restrictions.eq(Brand.FieldName_Company, query.getCompany()));
         }
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
@@ -50,7 +49,7 @@ public class BrandDAO extends BaseDAO<Brand> {
 	@SuppressWarnings("unchecked")
 	public Brand getBrandbyPrefix(String brandPrefix) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRBrand.FieldName_PrefixCode, brandPrefix));
+		criteria.add(Restrictions.eq(Brand.FieldName_PrefixCode, brandPrefix));
 		List<Brand> results = criteria.list();
 		if(results.size()>0){
 		return results.get(0);

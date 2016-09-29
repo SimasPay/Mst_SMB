@@ -10,11 +10,12 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.PartnerServicesQuery;
+import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 
 public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
@@ -23,17 +24,17 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 		Criteria partnerServicesCriteria = createCriteria();
 		
 		if(query.getId()!=null){
-			partnerServicesCriteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_RecordID, query.getId()));
+			partnerServicesCriteria.add(Restrictions.eq(PartnerServices.FieldName_RecordID, query.getId()));
 		}
 		
 		if (query.getPartnerId() != null) {
-			partnerServicesCriteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Partner, "p");
-			partnerServicesCriteria.add(Restrictions.eq("p." +CmFinoFIX.CRPartner.FieldName_RecordID, query.getPartnerId()));
+			partnerServicesCriteria.createAlias(PartnerServices.FieldName_Partner, "p");
+			partnerServicesCriteria.add(Restrictions.eq("p." +Partner.FieldName_RecordID, query.getPartnerId()));
 		}
 		
 		if(null != query.getServiceId()){
-			partnerServicesCriteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Service, "service");
-			partnerServicesCriteria.add(Restrictions.eq("service." + CmFinoFIX.CRPartnerServices.FieldName_RecordID, query.getServiceId()));
+			partnerServicesCriteria.createAlias(PartnerServices.FieldName_Service, "service");
+			partnerServicesCriteria.add(Restrictions.eq("service." + PartnerServices.FieldName_RecordID, query.getServiceId()));
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -44,13 +45,13 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 	@SuppressWarnings("unchecked")
 	public List<PartnerServices> getPartnerServices(Long partnerId, Long serviceProviderId, Long serviceId) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
-		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Partner, "partner");
-		criteria.add(Restrictions.eq("partner."+CmFinoFIX.CRPartner.FieldName_RecordID, partnerId));
-		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Service, "service");
-		criteria.add(Restrictions.eq("service."+CmFinoFIX.CRService.FieldName_RecordID, serviceId));
-		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID, "sp");
-		criteria.add(Restrictions.eq("sp."+CmFinoFIX.CRPartner.FieldName_RecordID, serviceProviderId));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
+		criteria.createAlias(PartnerServices.FieldName_Partner, "partner");
+		criteria.add(Restrictions.eq("partner."+Partner.FieldName_RecordID, partnerId));
+		criteria.createAlias(PartnerServices.FieldName_Service, "service");
+		criteria.add(Restrictions.eq("service."+Service.FieldName_RecordID, serviceId));
+		criteria.createAlias(PartnerServices.FieldName_PartnerByServiceProviderID, "sp");
+		criteria.add(Restrictions.eq("sp."+Partner.FieldName_RecordID, serviceProviderId));
 		
 		List<PartnerServices> partnerServices = criteria.list();
 		return partnerServices;
@@ -59,13 +60,13 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 	@SuppressWarnings("unchecked")
 	public List<PartnerServices> getPartnerServices(Long partnerId, Long serviceProviderId, Long serviceId,List<Integer> status) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.in(CmFinoFIX.CRPartnerServices.FieldName_PartnerServiceStatus,status));
-		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Partner, "partner");
-		criteria.add(Restrictions.eq("partner."+CmFinoFIX.CRPartner.FieldName_RecordID, partnerId));
-		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Service, "service");
-		criteria.add(Restrictions.eq("service."+CmFinoFIX.CRService.FieldName_RecordID, serviceId));
-		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID, "sp");
-		criteria.add(Restrictions.eq("sp."+CmFinoFIX.CRPartner.FieldName_RecordID, serviceProviderId));
+		criteria.add(Restrictions.in(PartnerServices.FieldName_PartnerServiceStatus,status));
+		criteria.createAlias(PartnerServices.FieldName_Partner, "partner");
+		criteria.add(Restrictions.eq("partner."+Partner.FieldName_RecordID, partnerId));
+		criteria.createAlias(PartnerServices.FieldName_Service, "service");
+		criteria.add(Restrictions.eq("service."+Service.FieldName_RecordID, serviceId));
+		criteria.createAlias(PartnerServices.FieldName_PartnerByServiceProviderID, "sp");
+		criteria.add(Restrictions.eq("sp."+Partner.FieldName_RecordID, serviceProviderId));
 		
 		List<PartnerServices> partnerServices = criteria.list();
 		return partnerServices;
@@ -74,9 +75,9 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 	@SuppressWarnings("unchecked")
 	public List<PartnerServices> getPartnerServices(Partner partner, Partner serviceProvider, Service service) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_Partner, partner));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID, serviceProvider));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_Service, service));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_Partner, partner));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerByServiceProviderID, serviceProvider));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_Service, service));
 		
 		List<PartnerServices> partnerServices = criteria.list();
 		return partnerServices;
@@ -84,10 +85,10 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 	
     @Override
     public void save(PartnerServices ps) {
-        if (ps.getmFinoServiceProviderByMSPID() == null) {
+        if (ps.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            ps.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            ps.setMfinoServiceProvider(msp);
         }
         super.save(ps);
     }	
@@ -106,38 +107,38 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 //    		ServiceProviderServiceDAO spsDAO = new ServiceProviderServiceDAO();
 //    		List<ServiceProviderServices> lst = spsDAO.getServiceProviderServices(serviceProviderId, serviceId);
 //    		if (CollectionUtils.isNotEmpty(lst)) {
-//    			criteria.createCriteria(CmFinoFIX.CRPartnerServices.FieldName_ServiceProviderServices).
-//    				add(Restrictions.eq(CmFinoFIX.CRServiceProviderServices.FieldName_RecordID, lst.get(0).getID()));
+//    			criteria.createCriteria(PartnerServices.FieldName_ServiceProviderServices).
+//    				add(Restrictions.eq(ServiceProviderServices.FieldName_RecordID, lst.get(0).getID()));
 //    		}
 //    	}
     	
     	if (serviceProviderId != null) {
-    		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_PartnerByServiceProviderID, "sp");
-    		criteria.add(Restrictions.eq("sp."+CmFinoFIX.CRPartner.FieldName_RecordID, serviceProviderId));
+    		criteria.createAlias(PartnerServices.FieldName_PartnerByServiceProviderID, "sp");
+    		criteria.add(Restrictions.eq("sp."+Partner.FieldName_RecordID, serviceProviderId));
     	}
     	
     	if (serviceId != null) {
-    		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Service, "service");
-    		criteria.add(Restrictions.eq("service."+CmFinoFIX.CRService.FieldName_RecordID, serviceId));
+    		criteria.createAlias(PartnerServices.FieldName_Service, "service");
+    		criteria.add(Restrictions.eq("service."+Service.FieldName_RecordID, serviceId));
     	}
     	
     	if (dctId != null) {
-    		criteria.createCriteria(CmFinoFIX.CRPartnerServices.FieldName_DistributionChainTemplate).
-    			add(Restrictions.eq(CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, dctId));
+    		criteria.createCriteria(PartnerServices.FieldName_DistributionChainTemplate).
+    			add(Restrictions.eq(DistributionChainTemplate.FieldName_RecordID, dctId));
     	}
     	if (partnerId != null) {
-    		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_Partner, "partner");
-    		criteria.add(Restrictions.ne("partner."+CmFinoFIX.CRPartner.FieldName_RecordID, partnerId));
+    		criteria.createAlias(PartnerServices.FieldName_Partner, "partner");
+    		criteria.add(Restrictions.ne("partner."+Partner.FieldName_RecordID, partnerId));
     	}
 
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
+    	criteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
     	
     	@SuppressWarnings("unchecked")
     	List<PartnerServices> lstPS = criteria.list();
     	
     	if (CollectionUtils.isNotEmpty(lstPS)) {
     		for (PartnerServices ps:lstPS) {
-    			result.add(ps.getPartner());
+    			result.add(ps.getPartnerByParentid());
     		}
     	}
     	return result;
@@ -156,7 +157,7 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
     	if (CollectionUtils.isNotEmpty(lst)) {
     		result = new ArrayList<Service>();
     		for (PartnerServices ps: lst) {
-    			if (ps.getStatus().equals(CmFinoFIX.PartnerServiceStatus_Active)) {
+    			if (ps.getStatus() == CmFinoFIX.PartnerServiceStatus_Active.longValue()) {
     				result.add(ps.getService());
     			}
     		}
@@ -167,8 +168,8 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 	@SuppressWarnings("unchecked")
 	public List<PartnerServices> getPartnerServicesWithSameCollectorPocket(Partner partner, Pocket collectorPocket) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_Partner, partner));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_CollectorPocket, collectorPocket));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_Partner, partner));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_CollectorPocket, collectorPocket));
 		List<PartnerServices> partnerServices = criteria.list();
 		return partnerServices;
 	}
@@ -183,15 +184,15 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
     	Criteria criteria = createCriteria();
     	
     	if (dctId != null) {
-    		criteria.createCriteria(CmFinoFIX.CRPartnerServices.FieldName_DistributionChainTemplate).
-    			add(Restrictions.eq(CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, dctId));
+    		criteria.createCriteria(PartnerServices.FieldName_DistributionChainTemplate).
+    			add(Restrictions.eq(DistributionChainTemplate.FieldName_RecordID, dctId));
     	}
     	if (partnerId != null) {
-    		criteria.createAlias(CmFinoFIX.CRPartnerServices.FieldName_PartnerByParentID, "partner");
-    		criteria.add(Restrictions.eq("partner."+CmFinoFIX.CRPartner.FieldName_RecordID, partnerId));
+    		criteria.createAlias(PartnerServices.FieldName_PartnerByParentID, "partner");
+    		criteria.add(Restrictions.eq("partner."+Partner.FieldName_RecordID, partnerId));
     	}
 
-    	//criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
+    	//criteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
     	
     	@SuppressWarnings("unchecked")
     	List<PartnerServices> lstPS = criteria.list();

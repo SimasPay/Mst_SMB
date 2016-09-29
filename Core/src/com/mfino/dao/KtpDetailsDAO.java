@@ -11,7 +11,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.KtpDetailsQuery;
 import com.mfino.domain.KtpDetails;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Sunil
@@ -26,7 +25,7 @@ public class KtpDetailsDAO extends BaseDAO<KtpDetails> {
 		
 		if(null != query.getId()) {
 			
-			criteria.add(Restrictions.eq(CmFinoFIX.CRKtpDetails.FieldName_RecordID,query.getId()));
+			criteria.add(Restrictions.eq(KtpDetails.FieldName_RecordID,query.getId()));
 		}
 		
 		List<KtpDetails> results = criteria.list();
@@ -40,13 +39,13 @@ public class KtpDetailsDAO extends BaseDAO<KtpDetails> {
 		
 		if(null != query.getMdn()) {
 			
-			criteria.add(Restrictions.eq(CmFinoFIX.CRKtpDetails.FieldName_MDN,query.getMdn()));
+			criteria.add(Restrictions.eq(KtpDetails.FieldName_MDN,query.getMdn()));
 		}
 		if(query.getOrder()!=null){
 			if(query.getOrder().equalsIgnoreCase("desc")){
-				criteria.addOrder(Order.desc(CmFinoFIX.CRKtpDetails.FieldName_RecordID));
+				criteria.addOrder(Order.desc(KtpDetails.FieldName_RecordID));
 			}else if(query.getOrder().equalsIgnoreCase("asc")){
-				criteria.addOrder(Order.asc(CmFinoFIX.CRKtpDetails.FieldName_RecordID));
+				criteria.addOrder(Order.asc(KtpDetails.FieldName_RecordID));
 			}
 		}
 		

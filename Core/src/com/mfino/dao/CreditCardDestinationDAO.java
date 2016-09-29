@@ -6,7 +6,6 @@
 package com.mfino.dao;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -14,7 +13,6 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.CreditCardDestinationQuery;
-import com.mfino.domain.CardInfo;
 import com.mfino.domain.CreditCardDestinations;
 import com.mfino.domain.Subscriber;
 import com.mfino.fix.CmFinoFIX;
@@ -30,13 +28,13 @@ public class CreditCardDestinationDAO extends BaseDAO<CreditCardDestinations> {
 	public List<CreditCardDestinations> get(CreditCardDestinationQuery query) {
 		Criteria criteria = createCriteria();
 		 if (query.getSubscriber() != null) {
-        	 criteria.add(Restrictions.eq(CmFinoFIX.CRCreditCardDestinations.FieldName_Subscriber, query.getSubscriber()));
+        	 criteria.add(Restrictions.eq(CreditCardDestinations.FieldName_Subscriber, query.getSubscriber()));
         }
 		 if(query.getMdnstatus()!= null){
-			 criteria.add(Restrictions.eq(CmFinoFIX.CRCreditCardDestinations.FieldName_CCMDNStatus, query.getMdnstatus()));
+			 criteria.add(Restrictions.eq(CreditCardDestinations.FieldName_CCMDNStatus, query.getMdnstatus()));
 		 }
 		 if(query.getCreateTimeGE()!=null&&query.getCreateTimeLT()!=null){
-			 criteria.add(Restrictions.between(CmFinoFIX.CRCreditCardDestinations.FieldName_CreateTime, query.getCreateTimeGE(), query.getCreateTimeLT()));
+			 criteria.add(Restrictions.between(CreditCardDestinations.FieldName_CreateTime, query.getCreateTimeGE(), query.getCreateTimeLT()));
 		 }
 		 
 //		 processBaseQuery(query, criteria);

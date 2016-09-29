@@ -3,11 +3,8 @@ package com.mfino.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 import com.mfino.domain.CurrentBalanceInfo;
-
-import com.mfino.fix.CmFinoFIX;
 
 public class CurrentBalanceInfoDAO extends BaseDAO<CurrentBalanceInfo> {
 	public List<CurrentBalanceInfo> get(){

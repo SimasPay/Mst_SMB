@@ -19,7 +19,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SCTL_SETTLEMENT_MAP")
-public class SCTLSettlementMap extends Base implements java.io.Serializable {
+public class SctlSettlementMap extends Base implements java.io.Serializable {
 
 	
 	private Partner partner;
@@ -30,10 +30,10 @@ public class SCTLSettlementMap extends Base implements java.io.Serializable {
 	private long status;
 	private BigDecimal mspid;
 
-	public SCTLSettlementMap() {
+	public SctlSettlementMap() {
 	}
 
-	public SCTLSettlementMap(BigDecimal id, Service service,
+	public SctlSettlementMap(BigDecimal id, Service service,
 			ServiceChargeTxnLog serviceChargeTxnLog,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal amount,
@@ -50,7 +50,7 @@ public class SCTLSettlementMap extends Base implements java.io.Serializable {
 		this.mspid = mspid;
 	}
 
-	public SCTLSettlementMap(BigDecimal id, Partner partner, Service service,
+	public SctlSettlementMap(BigDecimal id, Partner partner, Service service,
 			SettlementTxnLog settlementTxnLog,
 			ServiceChargeTxnLog serviceChargeTxnLog,
 			Timestamp lastupdatetime, String updatedby,

@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -22,6 +24,8 @@ import com.mfino.hibernate.Timestamp;
 public class CreditCardDestinations extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_Subscriber = "subscriber";
+	public static final String FieldName_CCMDNStatus = "ccmdnstatus";
 	private Subscriber subscriber;
 	private String destmdn;
 	private String olddestmdn;

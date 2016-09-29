@@ -21,37 +21,37 @@ public class CardInfoDAO extends BaseDAO<CardInfo> {
     public static final String SUBSCRIBER_RELATION_NAME = "Subscriber";
     public static final String SUBSCRIBER_TABLE_NAME = "Subscriber";
     public static final String subcriberTableNameAlias = SUBSCRIBER_TABLE_NAME + DAOConstants.ALIAS_SUFFIX;
-    public static final String companyIDAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_Company;
+    public static final String companyIDAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_Company;
     public List<CardInfo> get(CardInfoQuery query) {
 
         Criteria criteria = createCriteria();
 
        
           if(query.getCardStatus()!=null){
-             criteria.add(Restrictions.eq(CmFinoFIX.CRCardInfo.FieldName_CardStatus, query.getCardStatus()));
+             criteria.add(Restrictions.eq(CardInfo.FieldName_CardStatus, query.getCardStatus()));
           }
         if(query.ShowBothConfirmAndActiveCards()!=null && Boolean.TRUE.equals(query.ShowBothConfirmAndActiveCards())){
             Set<Integer> collection = new HashSet<Integer>();
             collection.add(CmFinoFIX.UserStatus_Active);
             collection.add(CmFinoFIX.UserStatus_Confirmed);
-            criteria.add(Restrictions.in(CmFinoFIX.CRCardInfo.FieldName_CardStatus, collection));
+            criteria.add(Restrictions.in(CardInfo.FieldName_CardStatus, collection));
         }
         
         if(query.showBothRegisteredAndActiveCards()!=null && Boolean.TRUE.equals(query.showBothRegisteredAndActiveCards())){
             Set<Integer> collection = new HashSet<Integer>();
             collection.add(CmFinoFIX.UserStatus_Registered);
             collection.add(CmFinoFIX.UserStatus_Active);
-            criteria.add(Restrictions.in(CmFinoFIX.CRCardInfo.FieldName_CardStatus, collection));
+            criteria.add(Restrictions.in(CardInfo.FieldName_CardStatus, collection));
         }
 
 //        if (query.getCreateTimeLT() != null) {
-//            criteria.add(Restrictions.lt(CmFinoFIX.CRCardInfo.FieldName_CreateTime, query.getCreateTimeLT()));
+//            criteria.add(Restrictions.lt(CardInfo.FieldName_CreateTime, query.getCreateTimeLT()));
 //        }
 //        if (query.getCreateTimeGE() != null) {
-//            criteria.add(Restrictions.ge(CmFinoFIX.CRCardInfo.FieldName_CreateTime, query.getCreateTimeGE()));
+//            criteria.add(Restrictions.ge(CardInfo.FieldName_CreateTime, query.getCreateTimeGE()));
 //        }
         if(query.getCreateTimeGE()!=null && query.getCreateTimeLT()!=null){
-        	criteria.add(Restrictions.between(CmFinoFIX.CRCardInfo.FieldName_CreateTime, query.getCreateTimeGE(),query.getCreateTimeLT()));
+        	criteria.add(Restrictions.between(CardInfo.FieldName_CreateTime, query.getCreateTimeGE(),query.getCreateTimeLT()));
         	query.setCreateTimeGE(null);
         	query.setCreateTimeLT(null);
         	}
@@ -62,17 +62,17 @@ public class CardInfoDAO extends BaseDAO<CardInfo> {
         }
         if(query.getSubscriber() != null){
 //            criteria.createAlias(SUBSCRIBER_TABLE_NAME, subcriberTableNameAlias);
-//            criteria.add(Restrictions.eq(CmFinoFIX.CRCardInfo.FieldName_Subscriber, query.getSubscriber()));
+//            criteria.add(Restrictions.eq(CardInfo.FieldName_Subscriber, query.getSubscriber()));
               criteria.add(Restrictions.eq(SUBSCRIBER_RELATION_NAME,query.getSubscriber()));
         }
         if(query.getIsConfirmationRequired()!=null){
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRCardInfo.FieldName_isConformationRequired, query.getIsConfirmationRequired()));
+        	criteria.add(Restrictions.eq(CardInfo.FieldName_isConformationRequired, query.getIsConfirmationRequired()));
         }
         processBaseQuery(query, criteria);
         // Paging
         processPaging(query, criteria);
         //applying Order
-        criteria.addOrder(Order.asc(CmFinoFIX.CRCardInfo.FieldName_RecordID));
+        criteria.addOrder(Order.asc(CardInfo.FieldName_RecordID));
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
         List<CardInfo> results = criteria.list();

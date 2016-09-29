@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,7 +26,12 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "BRAND", uniqueConstraints = @UniqueConstraint(columnNames = "BRANDNAME"))
 public class Brand extends Base  implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
 
+	public static final String FieldName_PrefixCode = "prefixcode";
+	public static final String FieldName_BrandName = "brandname";
+
+	public static final String FieldName_Company = "company";
 	
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;

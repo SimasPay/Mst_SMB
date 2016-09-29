@@ -11,8 +11,8 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.NotificationQuery;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Notification;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -34,26 +34,26 @@ public class NotificationDAO extends BaseDAO<Notification> {
         Disjunction dis = Restrictions.disjunction();
         
         if (query.getLanguage() != null) {
-            dis.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, query.getLanguage()));
+            dis.add(Restrictions.eq(Notification.FieldName_Language, query.getLanguage()));
         }
         if (query.getNotificationCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, query.getNotificationCode()));
+            criteria.add(Restrictions.eq(Notification.FieldName_NotificationCode, query.getNotificationCode()));
         }
         if (query.getNotificationMethod() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationMethod, query.getNotificationMethod()));
+            criteria.add(Restrictions.eq(Notification.FieldName_NotificationMethod, query.getNotificationMethod()));
         }
         if (query.getNotificationText() != null && !(query.getNotificationText().equals(""))) {
-            addLikeAnywhereRestriction(criteria, CmFinoFIX.CRNotification.FieldName_NotificationText, query.getNotificationText());
+            addLikeAnywhereRestriction(criteria, Notification.FieldName_NotificationText, query.getNotificationText());
         }
 
         if (query.getNotificationID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_RecordID, query.getNotificationID()));
+            criteria.add(Restrictions.eq(Notification.FieldName_RecordID, query.getNotificationID()));
         }
         if (query.getNotificationCodeName() != null && !(query.getNotificationCodeName().equals(""))) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRNotification.FieldName_NotificationCodeName, query.getNotificationCodeName());
+            addLikeStartRestriction(criteria, Notification.FieldName_NotificationCodeName, query.getNotificationCodeName());
         }
         if (query.getCompany() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(Notification.FieldName_Company, query.getCompany()));
         }
         criteria.add(dis);
         processBaseQuery(query, criteria);
@@ -66,7 +66,7 @@ public class NotificationDAO extends BaseDAO<Notification> {
                 
         if(results == null || results.size() == 0)
         {
-        	dis.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, CmFinoFIX.Language_English));
+        	dis.add(Restrictions.eq(Notification.FieldName_Language, CmFinoFIX.Language_English));
         	processBaseQuery(query, criteria);
             // Paging
             processPaging(query, criteria);
@@ -84,26 +84,26 @@ public class NotificationDAO extends BaseDAO<Notification> {
         Criteria criteria = createCriteria();
 
         if (query.getLanguage() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, query.getLanguage()));
+            criteria.add(Restrictions.eq(Notification.FieldName_Language, query.getLanguage()));
         }
         if (query.getNotificationCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, query.getNotificationCode()));
+            criteria.add(Restrictions.eq(Notification.FieldName_NotificationCode, query.getNotificationCode()));
         }
         if (query.getNotificationMethod() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationMethod, query.getNotificationMethod()));
+            criteria.add(Restrictions.eq(Notification.FieldName_NotificationMethod, query.getNotificationMethod()));
         }
         if (query.getNotificationText() != null && !(query.getNotificationText().equals(""))) {
-            addLikeAnywhereRestriction(criteria, CmFinoFIX.CRNotification.FieldName_NotificationText, query.getNotificationText());
+            addLikeAnywhereRestriction(criteria, Notification.FieldName_NotificationText, query.getNotificationText());
         }
 
         if (query.getNotificationID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_RecordID, query.getNotificationID()));
+            criteria.add(Restrictions.eq(Notification.FieldName_RecordID, query.getNotificationID()));
         }
         if (query.getNotificationCodeName() != null && !(query.getNotificationCodeName().equals(""))) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRNotification.FieldName_NotificationCodeName, query.getNotificationCodeName());
+            addLikeStartRestriction(criteria, Notification.FieldName_NotificationCodeName, query.getNotificationCodeName());
         }
         if (query.getCompany() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(Notification.FieldName_Company, query.getCompany()));
         }
         processBaseQuery(query, criteria);
         // Paging
@@ -129,9 +129,9 @@ public class NotificationDAO extends BaseDAO<Notification> {
     		return null;
     	}
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, code));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationMethod, CmFinoFIX.NotificationMethod_Web));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, CmFinoFIX.Language_English));
+        criteria.add(Restrictions.eq(Notification.FieldName_NotificationCode, code));
+        criteria.add(Restrictions.eq(Notification.FieldName_NotificationMethod, CmFinoFIX.NotificationMethod_Web));
+        criteria.add(Restrictions.eq(Notification.FieldName_Language, CmFinoFIX.Language_English));
         return (Notification) criteria.uniqueResult();
     }
     
@@ -147,19 +147,19 @@ public class NotificationDAO extends BaseDAO<Notification> {
     		return null;
     	}
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationCode, code));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_NotificationMethod, CmFinoFIX.NotificationMethod_Web));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRNotification.FieldName_Language, lang));
+        criteria.add(Restrictions.eq(Notification.FieldName_NotificationCode, code));
+        criteria.add(Restrictions.eq(Notification.FieldName_NotificationMethod, CmFinoFIX.NotificationMethod_Web));
+        criteria.add(Restrictions.eq(Notification.FieldName_Language, lang));
         return (Notification) criteria.uniqueResult();
     }
 
 
     @Override
     public void save(Notification s) {
-        if (s.getmFinoServiceProviderByMSPID() == null) {
+        if (s.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1L);
-            s.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1L);
+            s.setMfinoServiceProvider(msp);
         }
         super.save(s);
     }

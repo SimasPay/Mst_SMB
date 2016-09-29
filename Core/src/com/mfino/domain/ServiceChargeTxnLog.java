@@ -57,7 +57,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	private Long chargemode;
 	private String description;
 	private BigDecimal parentintegrationtransid;
-	private Set<SCTLSettlementMap> sctlSettlementMaps = new HashSet<SCTLSettlementMap>(
+	private Set<SctlSettlementMap> sctlSettlementMaps = new HashSet<SctlSettlementMap>(
 			0);
 	private Set<BillPayments> billPaymentses = new HashSet<BillPayments>(0);
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundsctlid = new HashSet<MoneyClearanceGraved>(
@@ -103,7 +103,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 			String integrationcode, BigDecimal integrationtransactionid,
 			String info1, Long chargemode, String description,
 			BigDecimal parentintegrationtransid,
-			Set<SCTLSettlementMap> sctlSettlementMaps,
+			Set<SctlSettlementMap> sctlSettlementMaps,
 			Set<BillPayments> billPaymentses,
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundsctlid,
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForSctlid,

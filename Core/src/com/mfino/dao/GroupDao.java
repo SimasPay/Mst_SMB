@@ -8,25 +8,24 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.GroupQuery;
-import com.mfino.domain.Group;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.Groups;
 
 /**
  * 
  * @author Sasi
  *
  */
-public class GroupDao extends BaseDAO<Group>{
+public class GroupDao extends BaseDAO<Groups>{
 	
-	public Group getByName(String name) {
+	public Groups getByName(String name) {
 		Criteria criteria = createCriteria();
 
 		if (StringUtils.isNotBlank(name)) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRGroup.FieldName_GroupName, name).ignoreCase());
+			criteria.add(Restrictions.eq(Groups.FieldName_GroupName, name).ignoreCase());
 		}else{
 			return null;
 		}
-		List<Group> lst = criteria.list();
+		List<Groups> lst = criteria.list();
 		if(lst==null||lst.isEmpty()){
 			return null;
 		}
@@ -34,32 +33,32 @@ public class GroupDao extends BaseDAO<Group>{
 		return lst.get(0);
 	}
 	
-	public List<Group> get(GroupQuery query) {
+	public List<Groups> get(GroupQuery query) {
 		Criteria criteria = createCriteria();
 
 		if (StringUtils.isNotBlank(query.getGroupName())) {
-			addLikeStartRestriction(criteria, CmFinoFIX.CRGroup.FieldName_GroupName, query.getGroupName());
+			addLikeStartRestriction(criteria, Groups.FieldName_GroupName, query.getGroupName());
 		}
 		
 		if(!query.isIncludeSystemGroups()){
-			criteria.add(Restrictions.eq(CmFinoFIX.CRGroup.FieldName_SystemGroup, Boolean.FALSE));
+			criteria.add(Restrictions.eq(Groups.FieldName_SystemGroup, Boolean.FALSE));
 		}
 		
-		criteria.addOrder(Order.asc(CmFinoFIX.CRGroup.FieldName_RecordID));
+		criteria.addOrder(Order.asc(Groups.FieldName_RecordID));
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		
-		List<Group> lst = criteria.list();
+		List<Groups> lst = criteria.list();
 			
 		return lst;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Group getSystemGroup() {
+	public Groups getSystemGroup() {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRGroup.FieldName_SystemGroup, Boolean.TRUE));
+		criteria.add(Restrictions.eq(Groups.FieldName_SystemGroup, Boolean.TRUE));
 		
-		List<Group> groups = criteria.list();
+		List<Groups> groups = criteria.list();
 		if(groups != null  && !groups.isEmpty())
 		{
 			return groups.get(0);

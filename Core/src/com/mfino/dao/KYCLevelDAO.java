@@ -21,12 +21,12 @@ public class KYCLevelDAO extends BaseDAO<KYCLevel> {
 		Criteria criteria = createCriteria();
 
         if (query.getKycLevel() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRKYCLevel.FieldName_KYCLevel, query.getKycLevel()));
+            criteria.add(Restrictions.eq(KYCLevel.FieldName_KYCLevel, query.getKycLevel()));
         }
         
         if (query.getKycLevelName() != null) {
         	
-            criteria.add(Restrictions.eq(CmFinoFIX.CRKYCLevel.FieldName_KYCLevelName, query.getKycLevelName()));
+            criteria.add(Restrictions.eq(KYCLevel.FieldName_KYCLevelName, query.getKycLevelName()));
         }
         
         processBaseQuery(query, criteria);
@@ -40,7 +40,7 @@ public class KYCLevelDAO extends BaseDAO<KYCLevel> {
 		 if (kyclevel == null) {
 		 return null;
 		 }
-	  criteria.add(Restrictions.eq(CmFinoFIX.CRKYCLevel.FieldName_KYCLevel, kyclevel));
+	  criteria.add(Restrictions.eq(KYCLevel.FieldName_KYCLevel, kyclevel));
 	  List<KYCLevel> results = criteria.list();
 	  if(results.size()>0){
 		  return results.get(0);

@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -23,6 +25,10 @@ import com.mfino.hibernate.Timestamp;
 		"POCKETID", "MONTH", "YEAR" }))
 public class MonthlyBalance extends Base implements java.io.Serializable {
 
+	
+	public static final String FieldName_Pocket = "pocket";
+	public static final String FieldName_Month = "month";
+	public static final String FieldName_Year = "year";
 	
 	private Pocket pocket;
 	private String month;

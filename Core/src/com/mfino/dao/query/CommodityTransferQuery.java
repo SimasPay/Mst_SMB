@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 
 /**
  *
@@ -67,8 +67,8 @@ public class CommodityTransferQuery extends BaseQuery {
     
     private Pocket sourcePocket;
     private Pocket sourceDestnPocket;
-    private SubscriberMDN subscriberMDN;
-    private SubscriberMDN sourceSubscMDN;
+    private SubscriberMdn subscriberMdn;
+    private SubscriberMdn sourceSubscMDN;
     private String sourceMessage;
     
 
@@ -534,30 +534,30 @@ public class CommodityTransferQuery extends BaseQuery {
 	}
 
 	/**
-	 * @return the subscriberMDN
+	 * @return the SubscriberMdn
 	 */
-	public SubscriberMDN getSubscriberMDN() {
-		return subscriberMDN;
+	public SubscriberMdn getSubscriberMDN() {
+		return subscriberMdn;
 	}
 
 	/**
-	 * @param subscriberMDN the subscriberMDN to set
+	 * @param SubscriberMdn the SubscriberMdn to set
 	 */
-	public void setSubscriberMDN(SubscriberMDN subscriberMDN) {
-		this.subscriberMDN = subscriberMDN;
+	public void setSubscriberMDN(SubscriberMdn SubscriberMdn) {
+		this.subscriberMdn = SubscriberMdn;
 	}
 
 	/**
 	 * @return the sourceSubscMDN
 	 */
-	public SubscriberMDN getSourceSubscMDN() {
+	public SubscriberMdn getSourceSubscMDN() {
 		return sourceSubscMDN;
 	}
 
 	/**
 	 * @param sourceSubscMDN the sourceSubscMDN to set
 	 */
-	public void setSourceSubscMDN(SubscriberMDN sourceSubscMDN) {
+	public void setSourceSubscMDN(SubscriberMdn sourceSubscMDN) {
 		this.sourceSubscMDN = sourceSubscMDN;
 	}
 

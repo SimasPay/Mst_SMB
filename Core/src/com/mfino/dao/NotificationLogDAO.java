@@ -16,22 +16,22 @@ public class NotificationLogDAO extends BaseDAO<NotificationLog>{
         Criteria criteria = createCriteria();
 
         if(query.getSctlID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLog.FieldName_SctlId, query.getSctlID()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_SctlId, query.getSctlID()));
         }
         if(query.getCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLog.FieldName_NotificationCode, query.getCode()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationCode, query.getCode()));
         }
         if(query.getNotificationMethod() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLog.FieldName_NotificationMethod, query.getNotificationMethod()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationMethod, query.getNotificationMethod()));
         }
         if(query.getSourceAddress() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLog.FieldName_SourceAddress, query.getSourceAddress()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_SourceAddress, query.getSourceAddress()));
         }
         if(query.getNotificationReceiverType() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLog.FieldName_NotificationReceiverType, query.getNotificationReceiverType()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationReceiverType, query.getNotificationReceiverType()));
         }
         if(query.isSensitiveData() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLog.FieldName_IsSensitiveData, query.isSensitiveData()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_IsSensitiveData, query.isSensitiveData()));
         }
         
         processBaseQuery(query, criteria);
@@ -40,7 +40,7 @@ public class NotificationLogDAO extends BaseDAO<NotificationLog>{
         processPaging(query, criteria);
 
         if(query.isIDOrdered()) {
-          criteria.addOrder(Order.desc(CmFinoFIX.CRNotificationLog.FieldName_RecordID));
+          criteria.addOrder(Order.desc(NotificationLog.FieldName_RecordID));
         }
         
         //applying Order

@@ -23,7 +23,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Denomination;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.Service;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
@@ -294,7 +294,7 @@ public class XMLResult extends Result {
 		String message = null;
 		Pocket pocket = null;
 		List<CommodityTransfer> ctList = null;
-		List<SCTLSettlementMap> psList = null;
+		List<SctlSettlementMap> psList = null;
 		
 		List<CMGetLastTransactionsFromBank.CGEntries> lastBankTrxnsList = null;
 		List<CMGetLastTransactionsFromBank.CGEntries> nfcTrxHistory = null;
@@ -380,7 +380,7 @@ public class XMLResult extends Result {
 				}
 				else if(psList != null)
 				{
-					for (SCTLSettlementMap pendingSettlement : psList) {
+					for (SctlSettlementMap pendingSettlement : psList) {
 						notificationWrapper.setPendingSettlement(pendingSettlement);
 						notificationWrapper.setAmount(pendingSettlement.getAmount());
 						Service service = getMfinoService().getByServiceID(pendingSettlement.getServiceID());

@@ -12,7 +12,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.PartnerDefaultServicesQuery;
 import com.mfino.domain.PartnerDefaultServices;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -26,7 +25,7 @@ public class PartnerDefaultServicesDAO extends BaseDAO<PartnerDefaultServices> {
         Criteria criteria = createCriteria();
 
         if (query.getBusinessPartnerType() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRPartnerDefaultServices.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
+            criteria.add(Restrictions.eq(PartnerDefaultServices.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
         }
          processBaseQuery(query, criteria);
          List<PartnerDefaultServices> results = criteria.list();

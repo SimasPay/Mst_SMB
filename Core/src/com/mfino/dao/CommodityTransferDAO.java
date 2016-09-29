@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,8 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Company;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.util.ConfigurationUtil;
 
@@ -62,54 +63,54 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 
         // Adding Restrictions
         if (query.getTransferStatus() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus, query.getTransferStatus()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, query.getTransferStatus()));
         }
         if (query.getTransferFailureReason() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransferFailureReason, query.getTransferFailureReason()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferFailureReason, query.getTransferFailureReason()));
         }
         if (query.getStartDate() != null) {
-            criteria.add(Restrictions.gt(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, query.getStartDate()));
+            criteria.add(Restrictions.gt(CommodityTransfer.FieldName_StartTime, query.getStartDate()));
         }
         if (query.getEndDate() != null) {
-            criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_EndTime, query.getEndDate()));
+            criteria.add(Restrictions.lt(CommodityTransfer.FieldName_EndTime, query.getEndDate()));
         }
 
         if (query.getStartTimeGE() != null) {
-            criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, query.getStartTimeGE()));
+            criteria.add(Restrictions.ge(CommodityTransfer.FieldName_StartTime, query.getStartTimeGE()));
         }
         if (query.getStartTimeLT() != null) {
-            criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, query.getStartTimeLT()));
+            criteria.add(Restrictions.lt(CommodityTransfer.FieldName_StartTime, query.getStartTimeLT()));
         }
 
         if (query.getEndTimeLT() != null) {
-            criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_EndTime, query.getEndTimeLT()));
+            criteria.add(Restrictions.lt(CommodityTransfer.FieldName_EndTime, query.getEndTimeLT()));
         }
         if (query.getCreateTimeSearchLE() != null) {
-            criteria.add(Restrictions.le(CmFinoFIX.CRCommodityTransfer.FieldName_CreateTime, query.getCreateTimeSearchLE()));
-            criteria.add(Restrictions.gt(CmFinoFIX.CRCommodityTransfer.FieldName_CreateTime, query.getCreateTimeSearchGT()));
+            criteria.add(Restrictions.le(CommodityTransfer.FieldName_CreateTime, query.getCreateTimeSearchLE()));
+            criteria.add(Restrictions.gt(CommodityTransfer.FieldName_CreateTime, query.getCreateTimeSearchGT()));
         }
         if (query.getTransactionAmount() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransferAmount, query.getTransactionAmount()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferAmount, query.getTransactionAmount()));
         }
         if (query.getTransactionID() != null) {
-//            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionID, query.getTransactionID()));
-        	criteria.createAlias(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionsLogByTransactionID, "tl");
-        	criteria.add(Restrictions.eq("tl."+CmFinoFIX.CRTransactionsLog.FieldName_RecordID, query.getTransactionID()));
+//            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransactionID, query.getTransactionID()));
+        	criteria.createAlias(CommodityTransfer.FieldName_TransactionsLogByTransactionID, "tl");
+        	criteria.add(Restrictions.eq("tl."+TransactionsLog.FieldName_RecordID, query.getTransactionID()));
         }
         if (query.getSubscriberMDN() != null) {
             criteria.add(Restrictions.disjunction().add(
                     Restrictions.eq(SubscriberMDNBySourceMDNID , query.getSubscriberMDN())).add(
-                    Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestMDNID, query.getSubscriberMDN().getID())));
+                    Restrictions.eq(CommodityTransfer.FieldName_DestMDNID, query.getSubscriberMDN().getId())));
         }
 
         // adding restrictions for checking if the record is a bank channel record.
         if (query.isIsBankChannel() != null && query.isIsBankChannel()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_BankChannel));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_BankChannel));
         }
 
         // query by UICategory
         if (query.getUiCategory() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, query.getUiCategory()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransactionUICategory, query.getUiCategory()));
         }
         
 
@@ -118,23 +119,23 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             uiCategories.add(CmFinoFIX.TransactionUICategory_Dompet_Money_Transfer);
             uiCategories.add(CmFinoFIX.TransactionUICategory_Dompet_Self_Topup);
             uiCategories.add(CmFinoFIX.TransactionUICategory_Dompet_Topup_Another);
-            criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, uiCategories));
+            criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, uiCategories));
         }
 
         if (query.hasExternalCall()) {
-            criteria.add(Restrictions.disjunction().add(Restrictions.isNotNull(CmFinoFIX.CRCommodityTransfer.FieldName_BankCodeForRouting)).add(Restrictions.isNotNull(CmFinoFIX.CRCommodityTransfer.FieldName_BankResponseCode)).add(Restrictions.isNotNull(CmFinoFIX.CRCommodityTransfer.FieldName_OperatorResponseCode)));
+            criteria.add(Restrictions.disjunction().add(Restrictions.isNotNull(CommodityTransfer.FieldName_BankCodeForRouting)).add(Restrictions.isNotNull(CommodityTransfer.FieldName_BankResponseCode)).add(Restrictions.isNotNull(CommodityTransfer.FieldName_OperatorResponseCode)));
         }
 
         if (query.getMsgType() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, query.getMsgType()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransactionUICategory, query.getMsgType()));
         }
 
 //        criteria.createAlias(SubscriberMDNBySourceMDNID, SubscriberMDNBySourceMDNID + DAOConstants.ALIAS_SUFFIX);
 
         if (query.getSourceDestnMDN() != null) {
             criteria.add(Restrictions.disjunction().add(
-                    Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceMDN, query.getSourceDestnMDN())).add(
-                    Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestMDN, query.getSourceDestnMDN())));
+                    Restrictions.eq(CommodityTransfer.FieldName_SourceMDN, query.getSourceDestnMDN())).add(
+                    Restrictions.eq(CommodityTransfer.FieldName_DestMDN, query.getSourceDestnMDN())));
         }
         if (query.getSourceDestMDNAndID() != null) {
             boolean isBadRequest = false;
@@ -149,13 +150,13 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
                 throw new Exception("Bad query parameter for CommodityTransferDAO - SourceDestMDNAndID");
             }
             SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-            SubscriberMDN subscMDN = subscriberMDNDAO.getById((Long)mdnAndID[1]);
-            criteria.add(Restrictions.disjunction().add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestMDN, mdnAndID[0])).add(Restrictions.eq(SubscriberMDNBySourceMDNID , subscMDN)).add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestMDNID, mdnAndID[1])));
+            SubscriberMdn subscMDN = subscriberMDNDAO.getById((Long)mdnAndID[1]);
+            criteria.add(Restrictions.disjunction().add(Restrictions.eq(CommodityTransfer.FieldName_DestMDN, mdnAndID[0])).add(Restrictions.eq(SubscriberMDNBySourceMDNID , subscMDN)).add(Restrictions.eq(CommodityTransfer.FieldName_DestMDNID, mdnAndID[1])));
         }
         if (query.getSourceMDN() != null) {
             if (!query.getSourceMDN().equals("")) {
-//                addLikeStartRestriction(criteria, CmFinoFIX.CRCommodityTransfer.FieldName_SourceMDN, query.getSourceMDN());
-                criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceMDN, query.getSourceMDN()));
+//                addLikeStartRestriction(criteria, CommodityTransfer.FieldName_SourceMDN, query.getSourceMDN());
+                criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourceMDN, query.getSourceMDN()));
             }
         }
         
@@ -164,67 +165,67 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         }
         
         if (query.getExactSourceMDN() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceMDN, query.getExactSourceMDN()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourceMDN, query.getExactSourceMDN()));
         }
 
         if (null != query.getExactBankCode()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_ISO8583_AcquiringInstIdCode, query.getExactBankCode()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_ISO8583_AcquiringInstIdCode, query.getExactBankCode()));
         }
         if (null != query.getBankRoutingCode()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_BankCodeForRouting, query.getBankRoutingCode()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_BankCodeForRouting, query.getBankRoutingCode()));
         }
 
         if (query.getDestinationMDN() != null) {
             if (!query.getDestinationMDN().equals("")) {
-                addLikeStartRestriction(criteria, CmFinoFIX.CRCommodityTransfer.FieldName_DestMDN, query.getDestinationMDN());
+                addLikeStartRestriction(criteria, CommodityTransfer.FieldName_DestMDN, query.getDestinationMDN());
             }
         }
         if (query.getSourceReferenceID() != null) {
             if (!query.getSourceReferenceID().equals("")) {
                 criteria.add(Restrictions.disjunction().add(
-                        Restrictions.ilike(CmFinoFIX.CRCommodityTransfer.FieldName_SourceReferenceID, query.getSourceReferenceID())).add(
-                        Restrictions.ilike(CmFinoFIX.CRCommodityTransfer.FieldName_ISO8583_SystemTraceAuditNumber, query.getSourceReferenceID())));
+                        Restrictions.ilike(CommodityTransfer.FieldName_SourceReferenceID, query.getSourceReferenceID())).add(
+                        Restrictions.ilike(CommodityTransfer.FieldName_ISO8583_SystemTraceAuditNumber, query.getSourceReferenceID())));
             }
         }
 
         if (query.getDestinationRefID() != null) {
             if (!query.getDestinationRefID().equals("")) {
                 criteria.add(Restrictions.disjunction().add(
-                        Restrictions.ilike(CmFinoFIX.CRCommodityTransfer.FieldName_OperatorAuthorizationCode, query.getDestinationRefID())).add(
-                        Restrictions.ilike(CmFinoFIX.CRCommodityTransfer.FieldName_BankAuthorizationCode, query.getDestinationRefID())).add(
-                        Restrictions.ilike(CmFinoFIX.CRCommodityTransfer.FieldName_BankReversalAuthorizationCode, query.getDestinationRefID())));
+                        Restrictions.ilike(CommodityTransfer.FieldName_OperatorAuthorizationCode, query.getDestinationRefID())).add(
+                        Restrictions.ilike(CommodityTransfer.FieldName_BankAuthorizationCode, query.getDestinationRefID())).add(
+                        Restrictions.ilike(CommodityTransfer.FieldName_BankReversalAuthorizationCode, query.getDestinationRefID())));
             }
         }
         if (query.getSourcePocket() != null) {
-            //criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourcePocketID, query.getsourcePocketID()));
+            //criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourcePocketID, query.getsourcePocketID()));
 //            criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
             criteria.add(Restrictions.eq(PocketBySourcePocketID, query.getSourcePocket()));
         }
         if (query.getDestinationPocketID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, query.getDestinationPocketID()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, query.getDestinationPocketID()));
         }
         // Mapping Source application(Access Method) to SourceApplication..
         if (query.getSourceApplicationSearch() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, query.getSourceApplicationSearch()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, query.getSourceApplicationSearch()));
         }
 //        if (query.getSourceApplicationSearch() != null && 0 != query.getSourceApplicationSearch()) {
 //            @SuppressWarnings("unchecked")
 //            List<Object> property = new ArrayList();
 //
 //            if ((query.getSourceApplicationSearch() & CmFinoFIX.SourceApplicationSearch_Web) == CmFinoFIX.SourceApplicationSearch_Web) {
-//                //Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_Web);
+//                //Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_Web);
 //                property.add(CmFinoFIX.SourceApplication_Web);
 //            }
 //            if ((query.getSourceApplicationSearch() & CmFinoFIX.SourceApplicationSearch_BackEnd) == CmFinoFIX.SourceApplicationSearch_BackEnd) {
-//                //criteria.add(Restrictions.disjunction().add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_BackEnd)));
+//                //criteria.add(Restrictions.disjunction().add(Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_BackEnd)));
 //                property.add(CmFinoFIX.SourceApplication_BackEnd);
 //            }
 //            if ((query.getSourceApplicationSearch() & CmFinoFIX.SourceApplicationSearch_Phone) == CmFinoFIX.SourceApplicationSearch_Phone) {
-//                //criteria.add(Restrictions.disjunction().add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_Phone)));
+//                //criteria.add(Restrictions.disjunction().add(Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_Phone)));
 //                property.add(CmFinoFIX.SourceApplication_Phone);
 //            }
 //            if ((query.getSourceApplicationSearch() & CmFinoFIX.SourceApplicationSearch_WebService) == CmFinoFIX.SourceApplicationSearch_WebService) {
-//                //criteria.add(Restrictions.disjunction().add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_WebService)));
+//                //criteria.add(Restrictions.disjunction().add(Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, CmFinoFIX.SourceApplication_WebService)));
 //                property.add(CmFinoFIX.SourceApplication_WebService);
 //            }
 //            if ((query.getSourceApplicationSearch() & CmFinoFIX.SourceApplicationSearch_SMS) == CmFinoFIX.SourceApplicationSearch_SMS) {
@@ -235,7 +236,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 //
 //                property.add(CmFinoFIX.SourceApplication_WebAPI);
 //            }
-//            criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, property));
+//            criteria.add(Restrictions.in(CommodityTransfer.FieldName_SourceApplication, property));
 //        }
         if(useSrcDestPocketCriteria)
         {
@@ -243,27 +244,27 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	//            criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
 	            criteria.add(Restrictions.disjunction().add(
 	                    Restrictions.eq(PocketBySourcePocketID,query.getSourceDestnPocket())).add(
-	                    Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, 
-	                    		query.getSourceDestnPocket().getID())));
+	                    Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, 
+	                    		query.getSourceDestnPocket().getId())));
 	        }
         }
         if (query.getBulkuploadID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_BulkUploadID, query.getBulkuploadID()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_BulkUploadID, query.getBulkuploadID()));
         }
 
         if (null != query.hasCSRAction()) {
             if (query.hasCSRAction()) {
-                criteria.add(Restrictions.isNotNull(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction));
+                criteria.add(Restrictions.isNotNull(CommodityTransfer.FieldName_CSRAction));
             } else {
-                criteria.add(Restrictions.isNull(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction));
+                criteria.add(Restrictions.isNull(CommodityTransfer.FieldName_CSRAction));
             }
         }
         if (query.getBulkUploadLineNumber() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_BulkUploadLineNumber, query.getBulkUploadLineNumber()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_BulkUploadLineNumber, query.getBulkUploadLineNumber()));
         }
 
         if (query.getCommodity() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_Commodity, query.getCommodity()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_Commodity, query.getCommodity()));
         }
 
         // Add the Only E-Money Criteria
@@ -279,7 +280,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             collection.add(CmFinoFIX.TransactionUICategory_EMoney_Topup_Another);
             collection.add(CmFinoFIX.TransactionUICategory_EMoney_Empty_SVA);
 
-            criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, collection));
+            criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, collection));
         }
 
         // Add the Only Bank Criteria
@@ -293,23 +294,23 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             collection.add(CmFinoFIX.TransactionUICategory_EMoney_CashIn);
             collection.add(CmFinoFIX.TransactionUICategory_EMoney_CashOut);
 
-            criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, collection));
+            criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, collection));
         }
         
         if (query.getMessageTypes() != null) {
-            criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_MsgType, query.getMessageTypes()));
+            criteria.add(Restrictions.in(CommodityTransfer.FieldName_MsgType, query.getMessageTypes()));
         }
         
         // Mysql is picking the company index, so not adding company to the query in few cases where source subscriber is known
         
         if ( query.getCompany() != null && isCompanyRequired(query)) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_Company, query.getCompany()));
         }
         if(StringUtils.isNotBlank(query.getBankRRN())){
-        	 criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_BankRetrievalReferenceNumber, query.getBankRRN()).ignoreCase());
+        	 criteria.add(Restrictions.eq(CommodityTransfer.FieldName_BankRetrievalReferenceNumber, query.getBankRRN()).ignoreCase());
         }
         if(StringUtils.isNotBlank(query.getSourceMessage())){
-       	 criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceMessage, query.getSourceMessage()).ignoreCase());
+       	 criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourceMessage, query.getSourceMessage()).ignoreCase());
        }
         
     }
@@ -334,42 +335,42 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 		List<CommodityTransfer> result = new ArrayList<CommodityTransfer>();
 		
 		Criteria criteria = createCriteria();
-		criteria.createAlias(CmFinoFIX.CRCommodityTransfer.FieldName_PocketBySourcePocketID, "sourcePocket");
-		Criterion sourcePocket = Restrictions.eq("sourcePocket." + CmFinoFIX.CRPocket.FieldName_RecordID, query.getSourceDestnPocket().getID());
-		Criterion destPocket = Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, query.getSourceDestnPocket().getID());
+		criteria.createAlias(CommodityTransfer.FieldName_PocketBySourcePocketID, "sourcePocket");
+		Criterion sourcePocket = Restrictions.eq("sourcePocket." + Pocket.FieldName_RecordID, query.getSourceDestnPocket().getId());
+		Criterion destPocket = Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, query.getSourceDestnPocket().getId());
 		
 		criteria.add(Restrictions.or(sourcePocket, destPocket));
 		
 		boolean requiresSuccfullTxns = ConfigurationUtil.getRequiresSuccessfullTransactionsInEmoneyHistory();
 		if(requiresSuccfullTxns){
-			criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus, CmFinoFIX.TransferState_Complete));
+			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, CmFinoFIX.TransferState_Complete));
 		}
 		
 		if (query.getStartTimeGE() != null) {
-			criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, query.getStartTimeGE()));
+			criteria.add(Restrictions.ge(CommodityTransfer.FieldName_StartTime, query.getStartTimeGE()));
 		}
 		
 		if (query.getStartTimeLT() != null) {
-			criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, query.getStartTimeLT()));
+			criteria.add(Restrictions.lt(CommodityTransfer.FieldName_StartTime, query.getStartTimeLT()));
 		}
 		
 		if (query.getTransferStatus() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus, query.getTransferStatus()));
+			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, query.getTransferStatus()));
 		}
 		
 		if (query.getId() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID, query.getId()));
+			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_RecordID, query.getId()));
 		}
 		
 		if (query.getMsgType() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, query.getMsgType()));
+			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransactionUICategory, query.getMsgType()));
 		}
 		
 		if (query.getSourceApplicationSearch() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication, query.getSourceApplicationSearch()));
+			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_SourceApplication, query.getSourceApplicationSearch()));
 		}
 		
-		criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+		criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 		processPaging(query, criteria);
 		
 		log.info("Total Number of completed transaction for given query is -->" + query.getTotal());
@@ -380,18 +381,18 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	
 	private List<CommodityTransfer> getTransferList(CommodityTransferQuery query, String sqlQueryStr ) {
     	StringBuilder sb = new StringBuilder("select ");
-    	sb.append(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID);
+    	sb.append(CommodityTransfer.FieldName_RecordID);
     	sb.append(sqlQueryStr);
     	sb.append(" union all ");
     	sb.append("select ");
-    	sb.append(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID);
-    	sb.append(sqlQueryStr.replace(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, CmFinoFIX.CRCommodityTransfer.FieldName_SourcePocketID));
+    	sb.append(CommodityTransfer.FieldName_RecordID);
+    	sb.append(sqlQueryStr.replace(CommodityTransfer.FieldName_DestPocketID, CommodityTransfer.FieldName_SourcePocketID));
     	sb.append(" order by 1 desc limit ");
     	sb.append(query.getStart());
 		sb.append(" , ");
 		sb.append(query.getLimit());
 		SQLQuery sqlQuery = getSession().createSQLQuery(sb.toString());
-		sqlQuery.setLong("pocketId", query.getSourceDestnPocket().getID());
+		sqlQuery.setLong("pocketId", query.getSourceDestnPocket().getId().longValue());
 		if(query.getStartTimeGE() != null) {
 			sqlQuery.setTimestamp("startTimeGE", query.getStartTimeGE());
 		}
@@ -427,13 +428,13 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 //			}
 //			sqlQuery.setParameterList("srcApp", srcAppList);
 //		}
-		sqlQuery.addScalar("id",Hibernate.LONG);
+		sqlQuery.addScalar("id", StandardBasicTypes.LONG);
                 @SuppressWarnings("unchecked")
 		List<Long> results = sqlQuery.list();
 		if(results != null && results.size() >0){
                     Criteria criteria = createCriteria();
-                    criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID, results));
-		    criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_EndTime));
+                    criteria.add(Restrictions.in(CommodityTransfer.FieldName_RecordID, results));
+		    criteria.addOrder(Order.desc(CommodityTransfer.FieldName_EndTime));
                     @SuppressWarnings("unchecked")
                     List<CommodityTransfer> commoditTransferResults = criteria.list();
                     return commoditTransferResults;
@@ -446,10 +447,10 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	sb.append(sqlQueryStr);
     	String queryStr = sb.toString();
     	if (!src) {
-    		queryStr = queryStr.replace(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, CmFinoFIX.CRCommodityTransfer.FieldName_SourcePocketID);
+    		queryStr = queryStr.replace(CommodityTransfer.FieldName_DestPocketID, CommodityTransfer.FieldName_SourcePocketID);
     	}
 		SQLQuery sqlQuery = getSession().createSQLQuery(queryStr);
-		sqlQuery.setLong("pocketId", query.getSourceDestnPocket().getID());
+		sqlQuery.setLong("pocketId", query.getSourceDestnPocket().getId().longValue());
 		if(query.getStartTimeGE() != null) {
 			sqlQuery.setTimestamp("startTimeGE", query.getStartTimeGE());
 		}
@@ -484,7 +485,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 //			}
 //			sqlQuery.setParameterList("srcApp", srcAppList);
 //		}
-		sqlQuery.addScalar("count",Hibernate.LONG);
+		sqlQuery.addScalar("count", StandardBasicTypes.LONG);
                 @SuppressWarnings("unchecked")
 		List<Long> countList = sqlQuery.list();
 		Long srcRowCnt = countList.get(0);
@@ -526,7 +527,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     		if (query.getSourceDestnPocket() != null)
     		{
     			newQuery.setParameter("sourcePocket" , query.getSourceDestnPocket());
-    			newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getID());
+    			newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getId());
     		}
     		if(requiresSuccfullTxns){
     			List<Integer> statusList = getListOfSuccessTransferStatus();
@@ -585,7 +586,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	if (query.getSourceDestnPocket() != null)
     	{
     		newQuery.setParameter("sourcePocket" , query.getSourceDestnPocket());
-    		newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getID());
+    		newQuery.setParameter("destPocketID" , query.getSourceDestnPocket().getId());
     	}
     	if(requiresSuccfullTxns){
     		List<Integer> statusList = getListOfSuccessTransferStatus();
@@ -631,36 +632,36 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 //    		StringBuilder srcQueryStrBuilder = new StringBuilder();
 //    		srcQueryStrBuilder = new StringBuilder();
 //    		srcQueryStrBuilder.append(" from commodity_transfer where ");
-//    		srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID);
+//    		srcQueryStrBuilder.append(CommodityTransfer.FieldName_DestPocketID);
 //    		srcQueryStrBuilder.append(" = :pocketId ");
 //    		if(query.getStartTimeGE() != null) {
 //    			srcQueryStrBuilder.append(" and ");
-//    			srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime);
+//    			srcQueryStrBuilder.append(CommodityTransfer.FieldName_StartTime);
 //    			srcQueryStrBuilder.append(" >= :startTimeGE");
 //    		}
 //    		if(query.getStartTimeLT() != null) {
 //    			srcQueryStrBuilder.append(" and ");
-//    			srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime);
+//    			srcQueryStrBuilder.append(CommodityTransfer.FieldName_StartTime);
 //    			srcQueryStrBuilder.append(" < :startTimeLT");
 //    		}
 //    		if(query.getTransferStatus() != null) {
 //    			srcQueryStrBuilder.append(" and ");
-//    			srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus);
+//    			srcQueryStrBuilder.append(CommodityTransfer.FieldName_TransferStatus);
 //    			srcQueryStrBuilder.append(" = :transferStatus");
 //    		}
 //    		if(query.getId() != null) {
 //    			srcQueryStrBuilder.append(" and ");
-//    			srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID);
+//    			srcQueryStrBuilder.append(CommodityTransfer.FieldName_RecordID);
 //    			srcQueryStrBuilder.append(" = :referenceId");
 //    		}
 //    		if(query.getMsgType() != null) {
 //    			srcQueryStrBuilder.append(" and ");
-//    			srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory);
+//    			srcQueryStrBuilder.append(CommodityTransfer.FieldName_TransactionUICategory);
 //    			srcQueryStrBuilder.append(" = :msgType");
 //    		}
 //    		if(query.getSourceApplicationSearch() != null && query.getSourceApplicationSearch() != 0) {
 //    			srcQueryStrBuilder.append(" and ");
-//    			srcQueryStrBuilder.append(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication);
+//    			srcQueryStrBuilder.append(CommodityTransfer.FieldName_SourceApplication);
 //    			srcQueryStrBuilder.append(" in (:srcApp)");
 //    		}
 //    		long destRowCnt = getRowCount(query,srcQueryStrBuilder.toString(),false);
@@ -694,7 +695,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	       // processPaging(query, sourcePocketCriteria);
 	
 	        //applying Order
-	        sourcePocketCriteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+	        sourcePocketCriteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 	        applyOrder(query, sourcePocketCriteria);
 	        
 	        /**
@@ -717,7 +718,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	       // processPaging(query, destPocketCriteria);
 	
 	        //applying Order
-//	        destPocketCriteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+//	        destPocketCriteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 //	        applyOrder(query, destPocketCriteria);
 
 	        /**
@@ -750,7 +751,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	        // Paging
 	        processPaging(query, criteria);
 	
-        	criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+        	criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 	        applyOrder(query, criteria);
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> results = criteria.list();
@@ -769,7 +770,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         	@Override
 			public int compare(CommodityTransfer ct1, CommodityTransfer ct2)
         	{
-				return ((int)( ct2.getID() - ct1.getID()));
+				return ct2.getId().subtract(ct1.getId()).intValue();
 			}
         });
         List<CommodityTransfer> sortedMergedResult;
@@ -795,7 +796,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     {
     	 if (query.getSourceDestnPocket() != null) {
 //           criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-           criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, query.getSourceDestnPocket().getID()));
+           criteria.add(Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, query.getSourceDestnPocket().getId()));
        }
     }
 
@@ -808,23 +809,23 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         ProjectionList projList = Projections.projectionList();
 
         if (query.getSubTotalBy() == CmFinoFIX.SubtotalBy_Access_Method) {
-            projList.add(Projections.groupProperty(CmFinoFIX.CRCommodityTransfer.FieldName_SourceApplication));
+            projList.add(Projections.groupProperty(CommodityTransfer.FieldName_SourceApplication));
         } else if (query.getSubTotalBy() == CmFinoFIX.SubtotalBy_Commodity_Type) {
-            projList.add(Projections.groupProperty(CmFinoFIX.CRCommodityTransfer.FieldName_Commodity));
+            projList.add(Projections.groupProperty(CommodityTransfer.FieldName_Commodity));
         } else if (query.getSubTotalBy() == CmFinoFIX.SubtotalBy_Transaction_Status) {
-            projList.add(Projections.groupProperty(CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus));
+            projList.add(Projections.groupProperty(CommodityTransfer.FieldName_TransferStatus));
         } else if (query.getSubTotalBy() == CmFinoFIX.SubtotalBy_Transaction_Type) {
-            projList.add(Projections.groupProperty(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory));
+            projList.add(Projections.groupProperty(CommodityTransfer.FieldName_TransactionUICategory));
         } else if (query.getSubTotalBy() == CmFinoFIX.SubtotalBy_Buy_Sell) {
             if (query.getSourcePocket() != null) {
-                //projList.add(Projections.groupProperty(CmFinoFIX.CRPendingCommodityTransfer.FieldName_SourcePocketID));
+                //projList.add(Projections.groupProperty(PendingCommodityTransfer.FieldName_SourcePocketID));
                 //criteria.createAlias(POCEKTBYSOURCEPOCKETID, POCEKTBYSOURCEPOCKETID+DAOConstants.ALIAS_SUFFIX);
                 projList.add(Projections.groupProperty(PocketBySourcePocketID));
             } else {
-                projList.add(Projections.groupProperty(CmFinoFIX.CRPendingCommodityTransfer.FieldName_DestPocketID));
+                projList.add(Projections.groupProperty(PendingCommodityTransfer.FieldName_DestPocketID));
             }
         }
-        projList.add(Projections.sum(CmFinoFIX.CRCommodityTransfer.FieldName_TransferAmount));
+        projList.add(Projections.sum(CommodityTransfer.FieldName_TransferAmount));
 
         criteria.setProjection(projList);
         @SuppressWarnings("unchecked")
@@ -834,7 +835,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     }
 
     public List<Integer> getAllDistinctBankCodes(Date startGE, Date startLT) {
-        String sqlQuery = "SELECT distinct " + CmFinoFIX.CRCommodityTransfer.FieldName_ISO8583_AcquiringInstIdCode + " FROM CommodityTransfer where startTime >= :startGE and startTime < :startLT";
+        String sqlQuery = "SELECT distinct " + CommodityTransfer.FieldName_ISO8583_AcquiringInstIdCode + " FROM CommodityTransfer where startTime >= :startGE and startTime < :startLT";
 
         Query queryObj = getQuery(sqlQuery);
         queryObj.setTimestamp("startGE", startGE);
@@ -850,10 +851,10 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         // But we might not have any, so make do with the immediate transfer preceding this time.
         Criteria criteria = createCriteria();
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-        criteria.add(Restrictions.eq(CmFinoFIX.CRPendingCommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
-                pocket.getID()));
-        criteria.add(Restrictions.le(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, date));
-        criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime));
+        criteria.add(Restrictions.eq(PendingCommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
+                pocket.getId()));
+        criteria.add(Restrictions.le(CommodityTransfer.FieldName_StartTime, date));
+        criteria.addOrder(Order.desc(CommodityTransfer.FieldName_StartTime));
 
         criteria.setMaxResults(1);
         @SuppressWarnings("unchecked")
@@ -865,7 +866,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 
         CommodityTransfer ct = results.get(0);
         BigDecimal transferAmount = new BigDecimal(0);
-        if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferStatus())) {
+        if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferstatus())) {
             transferAmount = ct.getAmount();
         }
 
@@ -874,10 +875,12 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
   		//if (ct.getPocketBySourcePocketID().getID() == pocket.getID()) {
   	
   	  //After Correcting the errors reported by Findbugs
-        if (ct.getPocketBySourcePocketID().getID()!=null && ct.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
-            balance = ct.getSourcePocketBalance().subtract(transferAmount);
+        if (ct.getPocket().getId() != null && ct.getPocket().getId().equals(pocket.getId())) {
+        	BigDecimal sourcePocketBalance = new BigDecimal(ct.getSourcepocketbalance());
+            balance = sourcePocketBalance.subtract(transferAmount);
         } else {
-            balance = ct.getDestPocketBalance().add(transferAmount);
+        	BigDecimal destPocketBalance = new BigDecimal(ct.getDestpocketbalance());
+            balance = destPocketBalance.add(transferAmount);
         }
 
         return balance;
@@ -899,7 +902,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             return ctDest;
         } else if (null == ctDest) {
             return ctSource;
-        } else if (ctSource.getID() > ctDest.getID()) {
+        } else if (ctSource.getId().compareTo(ctDest.getId()) > 0) {
             return ctSource;
         } else {
             return ctDest;
@@ -916,7 +919,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         return ctDest;
       } else if (null == ctDest) {
         return ctSource;
-      } else if (ctSource.getID() < ctDest.getID()) {
+      } else if (ctSource.getId().compareTo(ctDest.getId()) < 0) {
         return ctSource;
       } else {
         return ctDest;
@@ -930,9 +933,9 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     
     @SuppressWarnings("unchecked")
 	private CommodityTransfer getFirstTransferAfter(Pocket pocket, Date date, boolean isSource) {
-    	String pocketField =  CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID;
+    	String pocketField =  CommodityTransfer.FieldName_DestPocketID;
     	if(isSource) {
-    		pocketField = CmFinoFIX.CRCommodityTransfer.FieldName_SourcePocketID;
+    		pocketField = CommodityTransfer.FieldName_SourcePocketID;
     	}
     	
     	/**
@@ -945,10 +948,10 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	
     	
     	String hql = "from CommodityTransfer where " +	pocketField + " = :pocketID and " +
-    			CmFinoFIX.CRCommodityTransfer.FieldName_StartTime + " >= :startTime " + 
-    			"order by " + CmFinoFIX.CRCommodityTransfer.FieldName_StartTime + ", ID ";
+    			CommodityTransfer.FieldName_StartTime + " >= :startTime " + 
+    			"order by " + CommodityTransfer.FieldName_StartTime + ", ID ";
         Query queryObj = getQuery(hql);
-        queryObj.setLong("pocketID", pocket.getID());
+        queryObj.setLong("pocketID", pocket.getId().longValue());
         queryObj.setTimestamp("startTime", date);
         queryObj.setMaxResults(1);
         
@@ -963,13 +966,13 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     private CommodityTransfer getLastTransferAsSourceBefore(Pocket pocket, Date date) {
         Criteria criteria = createCriteria();
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-        Criterion sourcePocketIDCriterion = Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
-                pocket.getID());
+        Criterion sourcePocketIDCriterion = Restrictions.eq(CommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
+                pocket.getId());
 
         criteria.add(sourcePocketIDCriterion);
-        criteria.add(Restrictions.le(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, date));
-        criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
-        //criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime));
+        criteria.add(Restrictions.le(CommodityTransfer.FieldName_StartTime, date));
+        criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
+        //criteria.addOrder(Order.desc(CommodityTransfer.FieldName_StartTime));
 
         criteria.setMaxResults(1);
 
@@ -988,11 +991,11 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         Criteria criteria = createCriteria();
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
 
-        Criterion destPocketIDCriterion = Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, pocket.getID());
+        Criterion destPocketIDCriterion = Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, pocket.getId());
         criteria.add(destPocketIDCriterion);
-        criteria.add(Restrictions.le(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, date));
-        //criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime));
-        criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+        criteria.add(Restrictions.le(CommodityTransfer.FieldName_StartTime, date));
+        //criteria.addOrder(Order.desc(CommodityTransfer.FieldName_StartTime));
+        criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 
         criteria.setMaxResults(1);
 
@@ -1011,14 +1014,14 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         Criteria criteria = createCriteria();
 
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-        criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
-                pocket.getID()));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus, CmFinoFIX.TransferStatus_Failed));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
-        criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_CSRActionTime, start));
-        criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_CSRActionTime, end));
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
+                pocket.getId()));
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, CmFinoFIX.TransferStatus_Failed));
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
+        criteria.add(Restrictions.ge(CommodityTransfer.FieldName_CSRActionTime, start));
+        criteria.add(Restrictions.lt(CommodityTransfer.FieldName_CSRActionTime, end));
 
-        // criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_CSRActionTime));
+        // criteria.addOrder(Order.desc(CommodityTransfer.FieldName_CSRActionTime));
 
 
         @SuppressWarnings("unchecked")
@@ -1038,8 +1041,8 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             CmFinoFIX.TransactionUICategory_Distribute_LOP
         };
 
-        criteria.add(Restrictions.le(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, end));
-        criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, uiCategories));
+        criteria.add(Restrictions.le(CommodityTransfer.FieldName_StartTime, end));
+        criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, uiCategories));
         criteria.setProjection(Projections.rowCount());
         Integer count = (Integer) criteria.uniqueResult();
         return count;
@@ -1056,9 +1059,9 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             CmFinoFIX.TransactionUICategory_Distribute_LOP
         };
 
-        criteria.add(Restrictions.le(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime, end));
-        criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, uiCategories));
-        criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_StartTime));
+        criteria.add(Restrictions.le(CommodityTransfer.FieldName_StartTime, end));
+        criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, uiCategories));
+        criteria.addOrder(Order.desc(CommodityTransfer.FieldName_StartTime));
         criteria.setFirstResult(start);
         criteria.setMaxResults(maxResults);
 
@@ -1070,9 +1073,9 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     public List<CommodityTransfer> getAllRAFTxns(int start, int maxResults) {
         Criteria criteria = createCriteria();
 
-        criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
 
-        criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+        criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
         criteria.setFirstResult(start);
         criteria.setMaxResults(maxResults);
 
@@ -1084,7 +1087,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     public int getAllRAFTxnCount() {
         Criteria criteria = createCriteria();
 
-        criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
 
         criteria.setProjection(Projections.rowCount());
         Integer count = (Integer) criteria.uniqueResult();
@@ -1095,14 +1098,14 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     public List<CommodityTransfer> getAllRAFTxnsAfter(int start, int maxResults, Date date, Long companyId){
       Criteria criteria = createCriteria();
       
-      criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
-      criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_CSRActionTime, date));
+      criteria.add(Restrictions.eq(CommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
+      criteria.add(Restrictions.ge(CommodityTransfer.FieldName_CSRActionTime, date));
       if(companyId != null) {
         Company company = companyDao.getById(companyId);
-        criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_Company, company));
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_Company, company));
       }
       
-      criteria.addOrder(Order.desc(CmFinoFIX.CRCommodityTransfer.FieldName_RecordID));
+      criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
       criteria.setFirstResult(start);
       criteria.setMaxResults(maxResults);
 
@@ -1130,11 +1133,11 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     public int getCountOfAllRAFTxnAfter(Date date, Long companyId){
       Criteria criteria = createCriteria();
       
-      criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));      
-      criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_CSRActionTime, date));
+      criteria.add(Restrictions.eq(CommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));      
+      criteria.add(Restrictions.ge(CommodityTransfer.FieldName_CSRActionTime, date));
       if(companyId != null) {
           Company company = companyDao.getById(companyId);
-          criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_Company, company));
+          criteria.add(Restrictions.eq(CommodityTransfer.FieldName_Company, company));
       }
       criteria.setProjection(Projections.rowCount());
       Integer count = (Integer) criteria.uniqueResult();
@@ -1198,7 +1201,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     }
     public CommodityTransfer Copy(PendingCommodityTransfer pendingCommodityTransfer)
     {
-        Long pId = pendingCommodityTransfer.getID();
+        Long pId = pendingCommodityTransfer.getId().longValue();
         String properties = GetProperties();
         Query queryObj = getQuery("insert into commodity_transfer (" + properties +") values (select ("+ properties +") from pending_commodity_transfer where id =" +pId +")");
         queryObj.executeUpdate();
@@ -1236,15 +1239,15 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     List<Integer> collection = new ArrayList<Integer>();
     collection.add(CmFinoFIX.TransactionUICategory_CC_Payment);
     collection.add(CmFinoFIX.TransactionUICategory_CC_Topup);
-    criteria.add(Restrictions.in(CmFinoFIX.CRCommodityTransfer.FieldName_TransactionUICategory, collection));
+    criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, collection));
     if(startDate!=null){
-    criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_CreateTime, startDate));
+    criteria.add(Restrictions.ge(CommodityTransfer.FieldName_CreateTime, startDate));
     }
     if(endDate!=null){
-    criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_CreateTime, endDate));
+    criteria.add(Restrictions.lt(CommodityTransfer.FieldName_CreateTime, endDate));
     }
     if(company!=null){
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_Company, company));
+    	criteria.add(Restrictions.eq(CommodityTransfer.FieldName_Company, company));
     }
     @SuppressWarnings("unchecked")
     List<CommodityTransfer> results = criteria.list();
@@ -1254,13 +1257,13 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	public List<CommodityTransfer> getByNotificationCode(Date startDate, Date endDate,Integer notificationcode) {
 		 Criteria criteria = createCriteria();
 		 if(startDate!=null){
-			    criteria.add(Restrictions.ge(CmFinoFIX.CRCommodityTransfer.FieldName_CreateTime, startDate));
+			    criteria.add(Restrictions.ge(CommodityTransfer.FieldName_CreateTime, startDate));
 			    }
 			    if(endDate!=null){
-			    criteria.add(Restrictions.lt(CmFinoFIX.CRCommodityTransfer.FieldName_CreateTime, endDate));
+			    criteria.add(Restrictions.lt(CommodityTransfer.FieldName_CreateTime, endDate));
 			    }
 			    if(notificationcode!=null){
-			    	criteria.add(Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_NotificationCode, notificationcode));
+			    	criteria.add(Restrictions.eq(CommodityTransfer.FieldName_NotificationCode, notificationcode));
 			    }
 			    @SuppressWarnings("unchecked")
 			    List<CommodityTransfer> results = criteria.list();
@@ -1299,14 +1302,14 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.disjunction().add(
 	                    Restrictions.eq(PocketBySourcePocketID, pocket)).add(
-	                    Restrictions.eq(CmFinoFIX.CRCommodityTransfer.FieldName_DestPocketID, pocket.getID())));
+	                    Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, pocket.getId())));
 		
 		List<CommodityTransfer> lstCommodityTransfers = criteria.list();
 		
 		if (CollectionUtils.isNotEmpty(lstCommodityTransfers)) {
 			lstCtIds = new ArrayList<Long>();
 			for (CommodityTransfer ct: lstCommodityTransfers) {
-				lstCtIds.add(ct.getID());
+				lstCtIds.add(ct.getId().longValue());
 			}
 		}
 		return lstCtIds; 

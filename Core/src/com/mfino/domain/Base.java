@@ -1,19 +1,11 @@
 package com.mfino.domain;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
-
-import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -23,6 +15,7 @@ public class Base {
 	public static final String FieldName_RecordID = "id";
 	public static final String FieldName_LastUpdateTime = "lastUpdateTime";
 	public static final String FieldName_CreateTime = "createTime";
+	public static final String FieldName_CreatedBy = "createdby";
 	protected BigDecimal id;
 	protected long version;
 	protected Timestamp lastupdatetime;

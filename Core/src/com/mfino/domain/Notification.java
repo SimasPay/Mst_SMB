@@ -5,6 +5,7 @@ package com.mfino.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,8 +22,17 @@ import javax.persistence.Version;
 @Entity
 @Table(name = "NOTIFICATION", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"MSPID", "CODE", "NOTIFICATIONMETHOD", "LANGUAGE", "COMPANYID" }))
-public class Notification implements java.io.Serializable {
+public class Notification extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	public static final String FieldName_Language = "language";
+	public static final String FieldName_NotificationCode = "code";
+	public static final String FieldName_NotificationMethod = "notificationmethod";
+	public static final String FieldName_NotificationText = "text";
+	public static final String FieldName_NotificationCodeName = "codename";
+	public static final String FieldName_Company = "company";
+	
 	private BigDecimal id;
 	private long version;
 	private MfinoServiceProvider mfinoServiceProvider;

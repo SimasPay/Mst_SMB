@@ -40,7 +40,7 @@ public class Service extends Base implements java.io.Serializable {
 	private Set<ServiceTransaction> serviceTransactions = new HashSet<ServiceTransaction>(
 			0);
 	private Set<RuleKey> ruleKeys = new HashSet<RuleKey>(0);
-	private Set<SCTLSettlementMap> sctlSettlementMaps = new HashSet<SCTLSettlementMap>(
+	private Set<SctlSettlementMap> sctlSettlementMaps = new HashSet<SctlSettlementMap>(
 			0);
 
 	public Service() {
@@ -66,7 +66,7 @@ public class Service extends Base implements java.io.Serializable {
 			Set<ServiceDefualtConfig> serviceDefualtConfigs,
 			Set<PartnerServices> partnerServiceses,
 			Set<ServiceTransaction> serviceTransactions, Set<RuleKey> ruleKeys,
-			Set<SCTLSettlementMap> sctlSettlementMaps) {
+			Set<SctlSettlementMap> sctlSettlementMaps) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
 		this.lastupdatetime = lastupdatetime;
@@ -185,11 +185,11 @@ public class Service extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "service")
-	public Set<SCTLSettlementMap> getSctlSettlementMaps() {
+	public Set<SctlSettlementMap> getSctlSettlementMaps() {
 		return this.sctlSettlementMaps;
 	}
 
-	public void setSctlSettlementMaps(Set<SCTLSettlementMap> sctlSettlementMaps) {
+	public void setSctlSettlementMaps(Set<SctlSettlementMap> sctlSettlementMaps) {
 		this.sctlSettlementMaps = sctlSettlementMaps;
 	}
 

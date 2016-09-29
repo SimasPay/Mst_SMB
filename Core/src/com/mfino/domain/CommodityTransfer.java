@@ -23,6 +23,43 @@ import com.mfino.hibernate.Timestamp;
 		"BULKUPLOADID", "BULKUPLOADLINENUMBER" }))
 public class CommodityTransfer extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	public static final String FieldName_TransferStatus = "transferstatus";
+	public static final String FieldName_TransferFailureReason = "transferfailurereason";
+	public static final String FieldName_StartTime = "starttime";
+	public static final String FieldName_EndTime = "endtime";
+	public static final String FieldName_TransferAmount = "amount";
+	public static final String FieldName_TransactionsLogByTransactionID = "transactionLog";
+	public static final String FieldName_DestMDNID = "destmdnid";
+	public static final String FieldName_SourceApplication = "sourceapplication";
+	public static final String FieldName_TransactionUICategory = "uicategory";
+	public static final String FieldName_BankCodeForRouting = "bankcode";
+	public static final String FieldName_BankResponseCode = "bankresponsecode";
+	public static final String FieldName_OperatorResponseCode = "operatorresponsecode";
+	public static final String FieldName_SourceMDN = "sourcemdn";
+	public static final String FieldName_DestMDN = "destmdn";
+	public static final String FieldName_ISO8583_AcquiringInstIdCode = "iso8583Acquiringinstidcode";
+	public static final String FieldName_SourceReferenceID = "sourcereferenceid";
+	public static final String FieldName_ISO8583_SystemTraceAuditNumber = "iso8583Systemtraceauditnumber";
+	public static final String FieldName_OperatorAuthorizationCode = "operatorauthorizationcode";
+	public static final String FieldName_BankAuthorizationCode = "bankauthorizationcode";
+	public static final String FieldName_BankReversalAuthorizationCode = "bankreversalauthorizationcode";
+	public static final String FieldName_DestPocketID = "destpocketid";
+	public static final String FieldName_BulkUploadID = "bulkuploadid";
+	public static final String FieldName_CSRAction = "csraction";
+	public static final String FieldName_BulkUploadLineNumber = "bulkuploadlinenumber";
+	public static final String FieldName_Commodity = "commodity";
+	public static final String FieldName_MsgType = "msgtype";
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_BankRetrievalReferenceNumber = "bankretrievalreferencenumber";
+	public static final String FieldName_SourceMessage = "sourcemessage";
+	public static final String FieldName_PocketBySourcePocketID = "pocket";
+
+	public static final String FieldName_SourcePocketID = "pocket";
+
+	public static final String FieldName_CSRActionTime = "csractiontime";
+	public static final String FieldName_NotificationCode = "notificationcode";
 	
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;

@@ -8,9 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.domain.MonthlyBalance;
-import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.fix.CmFinoFIX;
 
 public class MonthlyBalanceDAO extends BaseDAO<MonthlyBalance> {
 	
@@ -33,9 +31,9 @@ public class MonthlyBalanceDAO extends BaseDAO<MonthlyBalance> {
 	public MonthlyBalance getByDetails(Pocket pocket, String month, int year) {
 		MonthlyBalance result = null;
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRMonthlyBalance.FieldName_Pocket, pocket));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRMonthlyBalance.FieldName_Month, month));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRMonthlyBalance.FieldName_Year, year));
+		criteria.add(Restrictions.eq(MonthlyBalance.FieldName_Pocket, pocket));
+		criteria.add(Restrictions.eq(MonthlyBalance.FieldName_Month, month));
+		criteria.add(Restrictions.eq(MonthlyBalance.FieldName_Year, year));
 		
 		List<MonthlyBalance> lst = criteria.list();
 		if (CollectionUtils.isNotEmpty(lst)) {

@@ -2,19 +2,18 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -25,12 +24,19 @@ import com.mfino.hibernate.Timestamp;
 public class PartnerServices extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_Partner = "partnerByPartnerid";
+	public static final String FieldName_PartnerByServiceProviderID = "partnerByServiceproviderid";
+	public static final String FieldName_Service = "service";
+	public static final String FieldName_DistributionChainTemplate = "distributionChainTemp";
+	public static final String FieldName_PartnerByParentID = "partnerByParentid";
+	public static final String FieldName_PartnerServiceStatus = "status";
+	public static final String FieldName_CollectorPocket = "collectorpocket";
 	private Partner partnerByPartnerid;
 	private Service service;
 	private Partner partnerByParentid;
 	private Pocket pocketByDestpocketid;
 	private DistributionChainTemp distributionChainTemp;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private Partner partnerByServiceproviderid;
 	private Pocket pocketBySourcepocket;
 	private Long pslevel;
@@ -44,7 +50,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	}
 
 	public PartnerServices(BigDecimal id, Partner partnerByPartnerid,
-			Service service, mFinoServiceProvider mfinoServiceProvider,
+			Service service, MfinoServiceProvider mfinoServiceProvider,
 			Partner partnerByServiceproviderid, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long status) {
@@ -64,7 +70,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 			Service service, Partner partnerByParentid,
 			Pocket pocketByDestpocketid,
 			DistributionChainTemp distributionChainTemp,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Partner partnerByServiceproviderid, Pocket pocketBySourcepocket,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, Long pslevel,
@@ -145,12 +151,12 @@ public class PartnerServices extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

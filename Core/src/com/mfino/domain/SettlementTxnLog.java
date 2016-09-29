@@ -29,7 +29,7 @@ public class SettlementTxnLog  extends Base implements java.io.Serializable {
 	private String response;
 	private BigDecimal amount;
 	private String description;
-	private Set<SCTLSettlementMap> sctlSettlementMaps = new HashSet<SCTLSettlementMap>(
+	private Set<SctlSettlementMap> sctlSettlementMaps = new HashSet<SctlSettlementMap>(
 			0);
 	private Set<SettlementTxnSctlMap> settlementTxnSctlMaps = new HashSet<SettlementTxnSctlMap>(
 			0);
@@ -55,7 +55,7 @@ public class SettlementTxnLog  extends Base implements java.io.Serializable {
 			BigDecimal commoditytransferid,
 			BigDecimal servicesettlementconfigid, Long transferstatus,
 			String response, BigDecimal amount, String description,
-			Set<SCTLSettlementMap> sctlSettlementMaps,
+			Set<SctlSettlementMap> sctlSettlementMaps,
 			Set<SettlementTxnSctlMap> settlementTxnSctlMaps) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
@@ -150,11 +150,11 @@ public class SettlementTxnLog  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "settlementTxnLog")
-	public Set<SCTLSettlementMap> getSctlSettlementMaps() {
+	public Set<SctlSettlementMap> getSctlSettlementMaps() {
 		return this.sctlSettlementMaps;
 	}
 
-	public void setSctlSettlementMaps(Set<SCTLSettlementMap> sctlSettlementMaps) {
+	public void setSctlSettlementMaps(Set<SctlSettlementMap> sctlSettlementMaps) {
 		this.sctlSettlementMaps = sctlSettlementMaps;
 	}
 

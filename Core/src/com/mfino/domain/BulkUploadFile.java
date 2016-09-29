@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.sql.Clob;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,7 +26,11 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "BULK_UPLOAD_FILE")
 public class BulkUploadFile extends Base implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
 
+	public static final String FieldName_RecordType = "recordtype";
+	public static final String FieldName_UploadFileStatus = "uploadfilestatus";
+	public static final String FieldName_Company = "company";
 	
 	private Company company;
 	private String filename;

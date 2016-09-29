@@ -4,12 +4,14 @@
  */
 package com.mfino.dao;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
 import com.mfino.dao.query.BulkBankAccountQuery;
 import com.mfino.domain.BulkBankAccount;
 import com.mfino.fix.CmFinoFIX;
-import java.util.List;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -22,23 +24,23 @@ public class BulkBankAccountDAO extends BaseDAO<BulkBankAccount> {
 
         if (query.getStartDate() != null) {
             criteria.add(Restrictions.disjunction()
-                    .add(Restrictions.ge(CmFinoFIX.CRBulkBankAccount.FieldName_CreateTime, query.getStartDate()))
-                    .add(Restrictions.ge(CmFinoFIX.CRBulkBankAccount.FieldName_LastUpdateTime, query.getStartDate())));
+                    .add(Restrictions.ge(BulkBankAccount.FieldName_CreateTime, query.getStartDate()))
+                    .add(Restrictions.ge(BulkBankAccount.FieldName_LastUpdateTime, query.getStartDate())));
         }
         if (query.getEndDate() != null) {
             criteria.add(Restrictions.disjunction()
-                    .add(Restrictions.ge(CmFinoFIX.CRBulkBankAccount.FieldName_CreateTime, query.getEndDate()))
-                    .add(Restrictions.ge(CmFinoFIX.CRBulkBankAccount.FieldName_LastUpdateTime, query.getEndDate())));
+                    .add(Restrictions.ge(BulkBankAccount.FieldName_CreateTime, query.getEndDate()))
+                    .add(Restrictions.ge(BulkBankAccount.FieldName_LastUpdateTime, query.getEndDate())));
         }
 
         if (null != query.getLastUpdateDateTime()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkBankAccount.FieldName_LastUpdateTime, query.getLastUpdateDateTime()));
+            criteria.add(Restrictions.eq(BulkBankAccount.FieldName_LastUpdateTime, query.getLastUpdateDateTime()));
         }
 
         if (query.isStatusUploadToBankOrCompleted() != null && query.isStatusUploadToBankOrCompleted()) {
             criteria.add(Restrictions.disjunction()
-                    .add(Restrictions.eq(CmFinoFIX.CRBulkBankAccount.FieldName_UploadFileStatus, CmFinoFIX.UploadFileStatus_Processed))
-                    .add(Restrictions.eq(CmFinoFIX.CRBulkBankAccount.FieldName_UploadFileStatus, CmFinoFIX.UploadFileStatus_Uploaded)));
+                    .add(Restrictions.eq(BulkBankAccount.FieldName_UploadFileStatus, CmFinoFIX.UploadFileStatus_Processed))
+                    .add(Restrictions.eq(BulkBankAccount.FieldName_UploadFileStatus, CmFinoFIX.UploadFileStatus_Uploaded)));
         }
 
         processPaging(query, criteria);

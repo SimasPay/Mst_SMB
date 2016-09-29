@@ -9,6 +9,9 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.Partner;
+import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -24,29 +27,27 @@ public class DCTRestrictionsDao extends BaseDAO<DCTRestrictions>{
     	Criteria dctRestrictionsCriteria = createCriteria();
     	
     	if(null != query.getDctRestrictionsId()){
-    		dctRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRDCTRestrictions.FieldName_RecordID, query.getDctRestrictionsId()));
+    		dctRestrictionsCriteria.add(Restrictions.eq(DCTRestrictions.FieldName_RecordID, query.getDctRestrictionsId()));
     	}
     	
     	if(null != query.getDctId()){
-    		dctRestrictionsCriteria.createAlias(CmFinoFIX.CRDCTRestrictions.FieldName_DistributionChainTemplateByDCTID, "dct");
-    		dctRestrictionsCriteria.add(Restrictions.eq("dct."+CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, query.getDctId()));
+    		dctRestrictionsCriteria.add(Restrictions.eq(DCTRestrictions.FieldName_DistributionChainTemplateByDCTID, query.getDctId()));
     	}
     	
     	if(null != query.getTransactionTypeId()){
-    		dctRestrictionsCriteria.createAlias(CmFinoFIX.CRDCTRestrictions.FieldName_TransactionType, "transactionType");
-    		dctRestrictionsCriteria.add(Restrictions.eq("transactionType."+CmFinoFIX.CRTransactionType.FieldName_RecordID, query.getTransactionTypeId()));
+    		dctRestrictionsCriteria.add(Restrictions.eq(DCTRestrictions.FieldName_TransactionType, query.getTransactionTypeId()));
     	}
     	
     	if(null != query.getRelationshipType()){
-    		dctRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRDCTRestrictions.FieldName_RelationShipType, query.getRelationshipType()));
+    		dctRestrictionsCriteria.add(Restrictions.eq(DCTRestrictions.FieldName_RelationShipType, query.getRelationshipType()));
     	}
     	
     	if(null != query.getLevel()){
-    		dctRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRDCTRestrictions.FieldName_DistributionLevel, query.getLevel()));
+    		dctRestrictionsCriteria.add(Restrictions.eq(DCTRestrictions.FieldName_DistributionLevel, query.getLevel()));
     	}
     	
     	if(null != query.getIsAllowed()){
-    		dctRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRDCTRestrictions.FieldName_IsAllowed, query.getIsAllowed()));
+    		dctRestrictionsCriteria.add(Restrictions.eq(DCTRestrictions.FieldName_IsAllowed, query.getIsAllowed()));
     	}
     	
         processBaseQuery(query, dctRestrictionsCriteria);
@@ -55,7 +56,7 @@ public class DCTRestrictionsDao extends BaseDAO<DCTRestrictions>{
         processPaging(query, dctRestrictionsCriteria);
 
         //applying Order
-        dctRestrictionsCriteria.addOrder(Order.desc(CmFinoFIX.CRPartner.FieldName_RecordID));
+        dctRestrictionsCriteria.addOrder(Order.desc(Partner.FieldName_RecordID));
         applyOrder(query, dctRestrictionsCriteria);
 
         dctRestrictions = dctRestrictionsCriteria.list();
