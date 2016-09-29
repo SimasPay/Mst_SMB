@@ -17,7 +17,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -75,8 +75,8 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 		modifyNFCCardAlias.setSourceMDN(transactionDetails.getSourceMDN());
 		modifyNFCCardAlias.setCardPAN(transactionDetails.getCardPAN());	
 		modifyNFCCardAlias.setCardAlias(transactionDetails.getCardAlias());	
-		modifyNFCCardAlias.setSourceApplication(cc.getChannelSourceApplication());
-		modifyNFCCardAlias.setChannelCode(cc.getChannelCode());
+		modifyNFCCardAlias.setSourceApplication((int)cc.getChannelsourceapplication());
+		modifyNFCCardAlias.setChannelCode(cc.getChannelcode());
 		modifyNFCCardAlias.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 		log.info("Handling Modify NFC Card Alias webapi request");
@@ -90,7 +90,7 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 		result.setTransactionID(transactionLog.getID());
 		result.setCardPan(modifyNFCCardAlias.getCardPAN());
 
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(modifyNFCCardAlias.getSourceMDN());
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(modifyNFCCardAlias.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+modifyNFCCardAlias.getSourceMDN()+" has failed validations");
@@ -101,7 +101,7 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 		validationResult = transactionApiValidationService.validatePin(subscriberMDN, modifyNFCCardAlias.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: " + modifyNFCCardAlias.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -112,7 +112,7 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);			
 			return result;
 		}
-		if (!pocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		if (!(pocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 			log.info("NFC Pocket with Card Pan " + transactionDetails.getCardPAN() +" is already unlinked");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_PocketAlreadyUnlinked);
 			result.setCardPan(transactionDetails.getCardPAN());
@@ -121,7 +121,7 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 		
 		PocketQuery query = new PocketQuery();
 		query.setCardAlias(transactionDetails.getCardAlias());
-		query.setMdnIDSearch(subscriberMDN.getID());
+		query.setMdnIDSearch(subscriberMDN.getId().longValue());
 		List<Pocket> pocketsWithGivenAlias = pocketService.get(query);
 		if(pocketsWithGivenAlias != null && !pocketsWithGivenAlias.isEmpty())
 		{
@@ -159,8 +159,8 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
 		result.setSctlID(sctl.getID());
 		try {	
-			result.setOldCardAlias(pocket.getCardAlias());
-			pocket.setCardAlias(modifyNFCCardAlias.getCardAlias());
+			result.setOldCardAlias(pocket.getCardalias());
+			pocket.setCardalias(modifyNFCCardAlias.getCardAlias());
 			pocketService.save(pocket);
 		}
 		catch (Exception ex) {

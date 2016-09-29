@@ -21,7 +21,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -117,8 +117,8 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		nfcCardTopupReversal.setSourceMDN(subscriberService.normalizeMDN(txnDetails.getSourceMDN()));
 		nfcCardTopupReversal.setSourceCardPAN(txnDetails.getCardPAN());
 		nfcCardTopupReversal.setIntegrationTransactionID(Long.parseLong(txnDetails.getTransID()));
-		nfcCardTopupReversal.setChannelCode(cc.getChannelCode());
-		nfcCardTopupReversal.setSourceApplication(cc.getChannelSourceApplication());
+		nfcCardTopupReversal.setChannelCode(cc.getChannelcode());
+		nfcCardTopupReversal.setSourceApplication((int)cc.getChannelsourceapplication());
 		nfcCardTopupReversal.setParentTransID(Long.parseLong(txnDetails.getParentTransID()));
 		
 		
@@ -188,13 +188,13 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		
 		String partnerCode = systemParametersService.getString(SystemParameterKeys.NFC_CARD_TOPUP_PARTNER_CODE);
 		Partner pt = partnerService.getPartnerByPartnerCode(partnerCode);
-		Set<SubscriberMDN> subscriberSet= pt.getSubscriber().getSubscriberMDNFromSubscriberID();
+		Set<SubscriberMdn> subscriberSet= pt.getSubscriber().getSubscriberMdns();
 		String srcMdn = null;
 		if(subscriberSet != null && subscriberSet.size() != 0){
-			srcMdn = subscriberSet.iterator().next().getMDN();
+			srcMdn = subscriberSet.iterator().next().getMdn();
 		}
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(srcMdn);
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(srcMdn);
 		Integer validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			if(!CmFinoFIX.NotificationCode_MDNIsNotActive.equals(validationResult)){
@@ -206,7 +206,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		txnDetails.setDestMDN(srcMdn);
 		
 		String destMdn =  subscriberService.normalizeMDN(txnDetails.getSourceMDN());
-		SubscriberMDN destMDN = subscriberMdnService.getByMDN(destMdn);
+		SubscriberMdn destMDN = subscriberMdnService.getByMDN(destMdn);
 		validationResult= transactionApiValidationService.validateSubscriberAsDestination(destMDN);
 		
 		if((CmFinoFIX.NotificationCode_DestinationMDNNotFound.equals(validationResult) ||
@@ -217,7 +217,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 			result.setNotificationCode(validationResult);
 			if(destMDN != null)
 			{
-				String receiverAccountName = destMDN.getSubscriber().getFirstName() + " " + destMDN.getSubscriber().getLastName();
+				String receiverAccountName = destMDN.getSubscriber().getFirstname() + " " + destMDN.getSubscriber().getLastname();
 				result.setReceiverAccountName(receiverAccountName);
 			}
 			return result;
@@ -232,8 +232,8 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(true);
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMessage("NFC CardTopup Reversal Transfer Inquiry");
-		bankAccountToBankAccount.setSourceApplication(cc.getChannelSourceApplication());
-		bankAccountToBankAccount.setChannelCode(cc.getChannelCode());
+		bankAccountToBankAccount.setSourceApplication((int)cc.getChannelsourceapplication());
+		bankAccountToBankAccount.setChannelCode(cc.getChannelcode());
 		bankAccountToBankAccount.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		
 		
@@ -254,7 +254,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 			result.setNotificationCode(CmFinoFIX.NotificationCode_DestinationMoneyPocketNotFound);
 			return result;
 		}
-		result.setCardAlias(destPocket.getCardAlias());				
+		result.setCardAlias(destPocket.getCardalias());				
 		
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		
@@ -266,21 +266,21 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		{
 			log.error("Exception while fetching the ServiceProviderId", e);
 		}
-		List<PartnerServices> psList = partnerService.getPartnerServices(pt.getID(), serviceProviderId, ser.getID());
+		List<PartnerServices> psList = partnerService.getPartnerServices(pt.getId().longValue(), serviceProviderId, ser.getId().longValue());
 		PartnerServices ps = null;
 		if(psList != null && psList.size() != 0){
 			ps = psList.get(0);
 		}
 		Pocket srcPocket = null;
 		if(ps != null){
-			srcPocket = ps.getPocketByDestPocketID();
+			srcPocket = ps.getPocketByDestpocketid();
 		}
 		
 		if(srcPocket == null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 			return result;
 		}		
-		if (!srcPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		if (!(srcPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 			return result;
 		}
@@ -288,13 +288,13 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		result.setSourcePocket(srcPocket);
 		
 		
-		bankAccountToBankAccount.setSourcePocketID(srcPocket.getID());
-		bankAccountToBankAccount.setDestPocketID(destPocket.getID());
+		bankAccountToBankAccount.setSourcePocketID(srcPocket.getId().longValue());
+		bankAccountToBankAccount.setDestPocketID(destPocket.getId().longValue());
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(true);
 		bankAccountToBankAccount.setPin("");
 		
-		txnDetails.setSrcPocketId(destPocket.getID());
-		txnDetails.setDestinationPocketId(srcPocket.getID());
+		txnDetails.setSrcPocketId(destPocket.getId().longValue());
+		txnDetails.setDestinationPocketId(srcPocket.getId().longValue());
 		
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
 		bankAccountToBankAccount.setTransactionID(transactionsLog.getID());
@@ -305,7 +305,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
 		sc.setDestMDN(bankAccountToBankAccount.getDestMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_TOPUP_REVERSAL);
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());
@@ -331,7 +331,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		sctl.setIntegrationTransactionID(Long.parseLong(txnDetails.getTransID()));
 		sctl.setParentIntegrationTransID(Long.parseLong(txnDetails.getParentTransID()));
 		transactionChargingService.saveServiceTransactionLog(sctl);
-		log.info(String.format("NFCCardTopupReversalHandlerImpl::handleNFCCardTopupInquiry() -- Sending NFC CardTopup Inquiry to Backend (soureMDN:%s, srcPocketID:%s, amount:%s, transID:%s, destMDN:%s, destPocketID:%s, sctlID:%s )",txnDetails.getSourceMDN(),srcPocket.getID().toString(),sctl.getTransactionAmount().toString(),txnDetails.getTransID().toString(),destMDN.getMDN(),destPocket.getID(),sctl.getID()));
+		log.info(String.format("NFCCardTopupReversalHandlerImpl::handleNFCCardTopupInquiry() -- Sending NFC CardTopup Inquiry to Backend (soureMDN:%s, srcPocketID:%s, amount:%s, transID:%s, destMDN:%s, destPocketID:%s, sctlID:%s )",txnDetails.getSourceMDN(),srcPocket.getId().toString(),sctl.getTransactionAmount().toString(),txnDetails.getTransID().toString(),destMDN.getMdn(),destPocket.getId(),sctl.getID()));
 		
 		CFIXMsg response = super.process(bankAccountToBankAccount);
 		
@@ -377,8 +377,8 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(new Long(inquiryResult.getTransferID()));
 		transferConfirmation.setConfirmed(true);
-		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(cc.getChannelCode());
+		transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
+		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(new Long(inquiryResult.getParentTransactionID()));
 		transferConfirmation.setUICategory(CmFinoFIX.TransactionUICategory_NFC_Card_Topup_Reversal);
 		
@@ -391,7 +391,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		confirmResult.setTransactionID(confirmTransactionsLog.getID());
 		
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(txnDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(txnDetails.getSourceMDN());
 		
 
 		addCompanyANDLanguageToResult(sourceMDN, confirmResult);

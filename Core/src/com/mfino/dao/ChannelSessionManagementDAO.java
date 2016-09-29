@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.domain.ChannelSessionManagement;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.SubscriberMdn;
 
 /**
  * @author sasidhar
@@ -27,8 +27,8 @@ public class ChannelSessionManagementDAO extends BaseDAO<ChannelSessionManagemen
 		if(null == mdnID) return null;
 		
 		Criteria channelSessionManagementCriteria = createCriteria();
-		Criteria subscriberMdnCriteria = channelSessionManagementCriteria.createCriteria(CmFinoFIX.CRChannelSessionManagement.FieldName_SubscriberMDNByMDNID);
-		subscriberMdnCriteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, mdnID));
+		Criteria subscriberMdnCriteria = channelSessionManagementCriteria.createCriteria(ChannelSessionManagement.FieldName_SubscriberMDNByMDNID);
+		subscriberMdnCriteria.add(Restrictions.eq(SubscriberMdn.FieldName_RecordID, mdnID));
 		
         List<ChannelSessionManagement> results = channelSessionManagementCriteria.list();
         

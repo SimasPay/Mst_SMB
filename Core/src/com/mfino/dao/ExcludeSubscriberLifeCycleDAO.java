@@ -5,35 +5,31 @@
 
 package com.mfino.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import com.mfino.dao.query.ActivitiesLogQuery;
 import com.mfino.dao.query.ExcludeSubscriberLifeCycleQuery;
 import com.mfino.domain.ActivitiesLog;
-import com.mfino.domain.Company;
-import com.mfino.domain.ExcludeSubscriberLifeCycle;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.util.MfinoUtil;
+import com.mfino.domain.Base;
+import com.mfino.domain.ExcludeSubscriberLc;
+import com.mfino.domain.SubscriberMdn;
 
 /**
  *
  * @author Siddhartha Chinthapally
  */
-public class ExcludeSubscriberLifeCycleDAO extends BaseDAO<ExcludeSubscriberLifeCycle> {
+public class ExcludeSubscriberLifeCycleDAO extends BaseDAO<ExcludeSubscriberLc> {
 
-    public List<ExcludeSubscriberLifeCycle> get(ExcludeSubscriberLifeCycleQuery query){
+    public List<ExcludeSubscriberLc> get(ExcludeSubscriberLifeCycleQuery query){
         Criteria criteria = createCriteria();
 
 
         if(query.getMdnId() != null){
-            criteria.add(Restrictions.eq(CmFinoFIX.CRExcludeSubscriberLifeCycle.FieldName_MDNID,
+        	criteria.createAlias(ExcludeSubscriberLc.FieldName_MDN, "mdn");
+            criteria.add(Restrictions.eq("mdn."+Base.FieldName_RecordID,
                     query.getMdnId()));
         }
 
@@ -44,21 +40,21 @@ public class ExcludeSubscriberLifeCycleDAO extends BaseDAO<ExcludeSubscriberLife
         processPaging(query, criteria);
 
         if(query.isIDOrdered()) {
-          criteria.addOrder(Order.desc(CmFinoFIX.CRActivitiesLog.FieldName_RecordID));
+          criteria.addOrder(Order.desc(ActivitiesLog.FieldName_RecordID));
         }
         
         //applying Order
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<ExcludeSubscriberLifeCycle> results = criteria.list();
+        List<ExcludeSubscriberLc> results = criteria.list();
 
         return results;
     }
 
-    public ExcludeSubscriberLifeCycle getBySubscriberMDN(SubscriberMDN subscriberMDN) {
+    public ExcludeSubscriberLc getBySubscriberMDN(SubscriberMdn subscriberMDN) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRExcludeSubscriberLifeCycle.FieldName_SubscriberMDNByMDNID, subscriberMDN));
-    	List<ExcludeSubscriberLifeCycle> excludeSubscriberMDNList = criteria.list();
+    	criteria.add(Restrictions.eq(ExcludeSubscriberLc.FieldName_SubscriberMDNByMDNID, subscriberMDN));
+    	List<ExcludeSubscriberLc> excludeSubscriberMDNList = criteria.list();
     	
     	if((null != excludeSubscriberMDNList) && (excludeSubscriberMDNList.size() > 0)){
     		return excludeSubscriberMDNList.get(0);

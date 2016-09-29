@@ -8,8 +8,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.PartnerRestrictionsQuery;
+import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Sasi
@@ -24,30 +24,27 @@ public class PartnerRestrictionsDao extends BaseDAO<PartnerRestrictions>{
     	Criteria partnerRestrictionsCriteria = createCriteria();
     	
     	if(null != query.getPartnerRestrictionsId()){
-    		partnerRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRPartnerRestrictions.FieldName_RecordID, query.getPartnerRestrictionsId()));
+    		partnerRestrictionsCriteria.add(Restrictions.eq(PartnerRestrictions.FieldName_RecordID, query.getPartnerRestrictionsId()));
     	}
     	
     	if(null != query.getDctId()){
-    		partnerRestrictionsCriteria.createAlias(CmFinoFIX.CRPartnerRestrictions.FieldName_DistributionChainTemplateByDCTID, "dct");
-    		partnerRestrictionsCriteria.add(Restrictions.eq("dct."+CmFinoFIX.CRDistributionChainTemplate.FieldName_RecordID, query.getDctId()));
+    		partnerRestrictionsCriteria.add(Restrictions.eq(PartnerRestrictions.FieldName_DistributionChainTemplateByDCTID, query.getDctId()));
     	}
     	
     	if(null != query.getPartnerId()){
-    		partnerRestrictionsCriteria.createAlias(CmFinoFIX.CRPartnerRestrictions.FieldName_Partner, "partner");
-    		partnerRestrictionsCriteria.add(Restrictions.eq("partner."+CmFinoFIX.CRPartner.FieldName_RecordID, query.getPartnerId()));
+    		partnerRestrictionsCriteria.add(Restrictions.eq(PartnerRestrictions.FieldName_Partner, query.getPartnerId()));
     	}
     	
     	if(null != query.getTransactionTypeId()){
-    		partnerRestrictionsCriteria.createAlias(CmFinoFIX.CRPartnerRestrictions.FieldName_TransactionType, "transactionType");
-    		partnerRestrictionsCriteria.add(Restrictions.eq("transactionType."+CmFinoFIX.CRTransactionType.FieldName_RecordID, query.getTransactionTypeId()));
+    		partnerRestrictionsCriteria.add(Restrictions.eq(PartnerRestrictions.FieldName_TransactionType, query.getTransactionTypeId()));
     	}
 
     	if(null != query.getRelationshipType()){
-    		partnerRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRPartnerRestrictions.FieldName_RelationShipType, query.getRelationshipType()));
+    		partnerRestrictionsCriteria.add(Restrictions.eq(PartnerRestrictions.FieldName_RelationShipType, query.getRelationshipType()));
     	}
     	
     	if(null != query.getIsAllowed()){
-    		partnerRestrictionsCriteria.add(Restrictions.eq(CmFinoFIX.CRPartnerRestrictions.FieldName_IsAllowed, query.getIsAllowed()));
+    		partnerRestrictionsCriteria.add(Restrictions.eq(PartnerRestrictions.FieldName_IsAllowed, query.getIsAllowed()));
     	}
     	
         processBaseQuery(query, partnerRestrictionsCriteria);
@@ -56,7 +53,7 @@ public class PartnerRestrictionsDao extends BaseDAO<PartnerRestrictions>{
         processPaging(query, partnerRestrictionsCriteria);
 
         //applying Order
-        partnerRestrictionsCriteria.addOrder(Order.desc(CmFinoFIX.CRPartner.FieldName_RecordID));
+        partnerRestrictionsCriteria.addOrder(Order.desc(Partner.FieldName_RecordID));
         applyOrder(query, partnerRestrictionsCriteria);
 
         partnerRestrictions = partnerRestrictionsCriteria.list();

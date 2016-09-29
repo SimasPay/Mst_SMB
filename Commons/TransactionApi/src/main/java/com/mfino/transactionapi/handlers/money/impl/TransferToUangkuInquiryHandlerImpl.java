@@ -16,7 +16,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -89,11 +89,11 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		XMLResult result = new TransferInquiryXMLResult();
 
 		ChannelCode channelCode = transactionDetails.getCc();
- 		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+ 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
 		Integer validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -101,7 +101,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		Pocket srcPocket = pocketService.getDefaultPocket(sourceMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -109,19 +109,19 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		String destinationMDN = systemParametersService.getString(SystemParameterKeys.INTERBANK_PARTNER_MDN_KEY);
 		transactionDetails.setDestMDN(destinationMDN);
 		
- 		SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
+ 		SubscriberMdn destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
  		validationResult=transactionApiValidationService.validateSubscriberAsDestination(destMDN);
 		addCompanyANDLanguageToResult(sourceMDN, result);
 
 		Pocket destPocket = pocketService.getDefaultPocket(destMDN, "2");
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)
-				||destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)
+				||destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 
 			if(!systemParametersService.getBankServiceStatus()){
 				
@@ -136,13 +136,13 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		transferToUangkuInquiry.setPin(transactionDetails.getSourcePIN());
 		transferToUangkuInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferToUangkuInquiry.setSourceMDN(transactionDetails.getSourceMDN());
-		transferToUangkuInquiry.setSourceApplication(channelCode.getChannelSourceApplication());
-		transferToUangkuInquiry.setChannelCode(channelCode.getChannelCode());
+		transferToUangkuInquiry.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		transferToUangkuInquiry.setChannelCode(channelCode.getChannelcode());
 		transferToUangkuInquiry.setServiceName(transactionDetails.getServiceName());
 		transferToUangkuInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TRANSFER_TO_UANGKU);
 		transferToUangkuInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Transfer_To_Uangku);
-		transferToUangkuInquiry.setSourcePocketID(srcPocket.getID());
-		transferToUangkuInquiry.setDestPocketID(destPocket.getID());
+		transferToUangkuInquiry.setSourcePocketID(srcPocket.getId().longValue());
+		transferToUangkuInquiry.setDestPocketID(destPocket.getId().longValue());
 		transferToUangkuInquiry.setRemarks(transactionDetails.getDescription());
 		transferToUangkuInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());		
 		
@@ -159,7 +159,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(transferToUangkuInquiry.getSourceMDN());
 		sc.setDestMDN(transferToUangkuInquiry.getDestMDN());
-		sc.setChannelCodeId(channelCode.getID());
+		sc.setChannelCodeId(channelCode.getId().longValue());
 		sc.setServiceName(transferToUangkuInquiry.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
 		sc.setTransactionAmount(transferToUangkuInquiry.getAmount());
@@ -229,7 +229,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
-			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, channelCode.getID()) == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, channelCode.getId().longValue()) == true){
 				result.setMfaMode("OTP");
 				//mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}

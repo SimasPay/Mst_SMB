@@ -5,12 +5,12 @@
 
 package com.mfino.dao;
 
-import com.mfino.domain.OfflineReportForCompany;
+import com.mfino.domain.OfflineReportCompany;
 
 /**
  *
  * @author admin
  */
-public class OfflineReportForCompanyDAO extends BaseDAO<OfflineReportForCompany> {
+public class OfflineReportForCompanyDAO extends BaseDAO<OfflineReportCompany> {
 
 }

@@ -2,19 +2,18 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -23,7 +22,13 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "DISTRIBUTION_CHAIN_TEMP")
 public class DistributionChainTemp extends Base implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
 
+	public static final String FieldName_DistributionChainName = "name";
+
+	public static final String FieldName_ServiceID = "serviceid";
+
+	public static final String FieldName_PartnerServicesFromDistributionChainTemplateID = null;
 	
 	private MfinoServiceProvider mfinoServiceProvider;
 	private String name;

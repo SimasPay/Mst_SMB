@@ -20,21 +20,21 @@ public class BulkUploadEntryDAO extends BaseDAO<BulkUploadEntry> {
     public List<BulkUploadEntry> get(BulkUploadEntryQuery query) throws Exception {
         Criteria criteria = createCriteria();
         if (query.getId() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_BulkUploadID, query.getId()));
+            criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_BulkUploadID, query.getId()));
             
         }
         if (query.getBulkUploadLineNumber() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_BulkUploadLineNumber, query.getBulkUploadLineNumber()));
+            criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_BulkUploadLineNumber, query.getBulkUploadLineNumber()));
             
         }
         if (query.getStatus() != null) {
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_TransferStatus, query.getStatus()));
+        	criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_TransferStatus, query.getStatus()));
         }
         if (query.getIsUnRegistered() != null && query.getIsUnRegistered().booleanValue()) {
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_IsUnRegistered, query.getIsUnRegistered()));
+        	criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_IsUnRegistered, query.getIsUnRegistered()));
         }
         if (query.getUploadLineNumbers() != null) {
-        	criteria.add(Restrictions.in(CmFinoFIX.CRBulkUploadEntry.FieldName_BulkUploadLineNumber, query.getUploadLineNumbers()));
+        	criteria.add(Restrictions.in(BulkUploadEntry.FieldName_BulkUploadLineNumber, query.getUploadLineNumbers()));
         }
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
@@ -45,7 +45,7 @@ public class BulkUploadEntryDAO extends BaseDAO<BulkUploadEntry> {
     public BulkUploadEntry getBySCTLId(long sctlId) {
     	BulkUploadEntry result = null;
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_ServiceChargeTransactionLogID, sctlId));
+    	criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_ServiceChargeTransactionLogID, sctlId));
     	
     	result = (BulkUploadEntry)criteria.uniqueResult();
     	
@@ -56,7 +56,7 @@ public class BulkUploadEntryDAO extends BaseDAO<BulkUploadEntry> {
     {
     	Criteria criteria = createCriteria();
     	if (BulkUploadId != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_BulkUploadID, BulkUploadId));   
+            criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_BulkUploadID, BulkUploadId));   
         }
     	List<BulkUploadEntry> results = criteria.list();
         return results;
@@ -67,10 +67,10 @@ public class BulkUploadEntryDAO extends BaseDAO<BulkUploadEntry> {
     {
     	Criteria criteria = createCriteria();
     	if (BulkUploadId != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadEntry.FieldName_BulkUploadID, BulkUploadId));
+            criteria.add(Restrictions.eq(BulkUploadEntry.FieldName_BulkUploadID, BulkUploadId));
             criteria.add(Restrictions.disjunction()
-            		.add(Restrictions.ne(CmFinoFIX.CRBulkUploadEntry.FieldName_TransferStatus, CmFinoFIX.TransactionsTransferStatus_Completed))
-            		.add(Restrictions.ne(CmFinoFIX.CRBulkUploadEntry.FieldName_TransferStatus, CmFinoFIX.TransactionsTransferStatus_Reversed)));
+            		.add(Restrictions.ne(BulkUploadEntry.FieldName_TransferStatus, CmFinoFIX.TransactionsTransferStatus_Completed))
+            		.add(Restrictions.ne(BulkUploadEntry.FieldName_TransferStatus, CmFinoFIX.TransactionsTransferStatus_Reversed)));
         }
     	List<BulkUploadEntry> results = criteria.list();
         return results;

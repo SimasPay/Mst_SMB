@@ -7,7 +7,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ExpirationTypeQuery;
 import com.mfino.domain.ExpirationType;
-import com.mfino.fix.CmFinoFIX;
 
 public class ExpirationTypeDAO extends BaseDAO<ExpirationType> {
 
@@ -16,7 +15,7 @@ public class ExpirationTypeDAO extends BaseDAO<ExpirationType> {
 			Criteria criteria = createCriteria();
 			if (query.getExpiryType() != null) {
 				criteria.add(Restrictions.eq(
-						CmFinoFIX.CRExpirationType.FieldName_ExpiryType,	query.getExpiryType()));
+						ExpirationType.FieldName_ExpiryType,	query.getExpiryType()));
 			}
 			
 			processBaseQuery(query, criteria);

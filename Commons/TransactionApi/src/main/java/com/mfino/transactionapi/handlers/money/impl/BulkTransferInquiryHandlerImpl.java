@@ -57,8 +57,8 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		bankAccountToBankAccount.setServletPath(transactionDetails.getServletPath());
 		bankAccountToBankAccount.setSourceMessage(transactionDetails.getSourceMessage());
-		bankAccountToBankAccount.setSourceApplication(channelCode.getChannelSourceApplication());
-		bankAccountToBankAccount.setChannelCode(channelCode.getChannelCode());
+		bankAccountToBankAccount.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		bankAccountToBankAccount.setChannelCode(channelCode.getChannelcode());
 		bankAccountToBankAccount.setSourcePocketID(transactionDetails.getSrcPocketId());
 		bankAccountToBankAccount.setDestPocketID(transactionDetails.getDestinationPocketId());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
@@ -89,7 +89,7 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		ServiceCharge serviceCharge = new ServiceCharge();
 		serviceCharge.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
 		serviceCharge.setDestMDN(bankAccountToBankAccount.getDestMDN());
-		serviceCharge.setChannelCodeId(channelCode.getID());
+		serviceCharge.setChannelCodeId(channelCode.getId().longValue());
 		serviceCharge.setServiceName(bankAccountToBankAccount.getServiceName());
 		serviceCharge.setTransactionTypeName(transactionDetails.getTransactionName());
 		serviceCharge.setTransactionAmount(bankAccountToBankAccount.getAmount());

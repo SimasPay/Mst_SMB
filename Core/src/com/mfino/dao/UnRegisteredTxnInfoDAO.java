@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
 
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -18,10 +18,10 @@ import com.mfino.fix.CmFinoFIX;
  * @author Sasi
  *
  */
-public class UnRegisteredTxnInfoDAO extends BaseDAO<UnRegisteredTxnInfo> {
+public class UnRegisteredTxnInfoDAO extends BaseDAO<UnregisteredTxnInfo> {
 
     
-    public List<UnRegisteredTxnInfo> get(UnRegisteredTxnInfoQuery query){
+    public List<UnregisteredTxnInfo> get(UnRegisteredTxnInfoQuery query){
     	Criteria criteria = createCriteria();
     		
     		if(query.getSubscriberMDNID()!=null){
@@ -92,7 +92,7 @@ public class UnRegisteredTxnInfoDAO extends BaseDAO<UnRegisteredTxnInfo> {
           //applying Order
           applyOrder(query, criteria);
           @SuppressWarnings("unchecked")
-          List<UnRegisteredTxnInfo> results = criteria.list();
+          List<UnregisteredTxnInfo> results = criteria.list();
 
           return results;
     	

@@ -5,11 +5,13 @@ package com.mfino.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -18,7 +20,9 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "BULK_BANK_ACCOUNT")
 public class BulkBankAccount extends Base implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
 
+	public static final String FieldName_UploadFileStatus = "uploadfilestatus";
 	
 	private String filename;
 	private Clob filedata;

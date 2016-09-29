@@ -29,7 +29,7 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	private ChannelCode channelCode;
 	private Service service;
 	private KYCLevel kycLevelBySourcekyc;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private Partner partner;
 	private TransactionType transactionType;
 	private KYCLevel kycLevelByDestkyc;
@@ -48,7 +48,7 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	}
 
 	public TransactionRule(BigDecimal id, ChannelCode channelCode,
-			Service service, mFinoServiceProvider mfinoServiceProvider,
+			Service service, MfinoServiceProvider mfinoServiceProvider,
 			Partner partner, TransactionType transactionType,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String name,
@@ -69,7 +69,7 @@ public class TransactionRule extends Base implements java.io.Serializable {
 
 	public TransactionRule(BigDecimal id, ChannelCode channelCode,
 			Service service, KYCLevel kycLevelBySourcekyc,
-			mFinoServiceProvider mfinoServiceProvider, Partner partner,
+			MfinoServiceProvider mfinoServiceProvider, Partner partner,
 			TransactionType transactionType, KYCLevel kycLevelByDestkyc,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String name,
@@ -131,12 +131,12 @@ public class TransactionRule extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

@@ -17,7 +17,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.handlers.FIXMessageHandler;
@@ -84,8 +84,8 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMDN(transactionDetails.getSourceMDN());
 		bankAccountToBankAccount.setSourceMessage(StringUtils.isNotBlank(sourceMessage) ? sourceMessage : ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
-		bankAccountToBankAccount.setSourceApplication(channelCode.getChannelSourceApplication());
-		bankAccountToBankAccount.setChannelCode(channelCode.getChannelCode());
+		bankAccountToBankAccount.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		bankAccountToBankAccount.setChannelCode(channelCode.getChannelcode());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
 	
 		if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
@@ -96,19 +96,19 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		result.setDestinationMDN(transactionDetails.getDestMDN());
 		result.setSourceMessage(bankAccountToBankAccount);
 		
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		
 
 		Integer validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
 		Subscriber srcSub = sourceMDN.getSubscriber();
-		KYCLevel srcKyc = srcSub.getKYCLevelByKYCLevel();
-		if(srcKyc.getKYCLevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
+		KYCLevel srcKyc = srcSub.getKycLevel();
+		if(srcKyc.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
 			log.info(String.format("MoneyTransfer is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);
 			return result;
@@ -123,14 +123,14 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		}
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
-		bankAccountToBankAccount.setSourcePocketID(srcPocket.getID());
-		transactionDetails.setSrcPocketId(srcPocket.getID());
+		bankAccountToBankAccount.setSourcePocketID(srcPocket.getId().longValue());
+		transactionDetails.setSrcPocketId(srcPocket.getId().longValue());
 
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
 		validationResult= transactionApiValidationService.validateSubscriberAsDestination(destinationMDN); 
 
 		if((CmFinoFIX.NotificationCode_DestinationMDNNotFound.equals(validationResult) ||
@@ -162,9 +162,9 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		else if(!CmFinoFIX.ResponseCode_Success.equals(validationResult))
 		{
 			result.setNotificationCode(validationResult);
-			SubscriberMDN rmdn = destinationMDN;
+			SubscriberMdn rmdn = destinationMDN;
 			if(rmdn != null){
-				String receiverAccountName = rmdn.getSubscriber().getFirstName() + " " + rmdn.getSubscriber().getLastName();
+				String receiverAccountName = rmdn.getSubscriber().getFirstname() + " " + rmdn.getSubscriber().getLastname();
 				result.setReceiverAccountName(receiverAccountName);
 			}
 			return result;
@@ -212,11 +212,11 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)||destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 
 			if(!systemParametersService.getBankServiceStatus())	{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
@@ -224,8 +224,8 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 			}
 		}
 
- 		bankAccountToBankAccount.setDestPocketID(destPocket.getID());
- 		transactionDetails.setDestinationPocketId(destPocket.getID());
+ 		bankAccountToBankAccount.setDestPocketID(destPocket.getId().longValue());
+ 		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
  		result = bankTransferInquiryHandler.handle(transactionDetails);
 		return result;
 

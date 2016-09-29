@@ -8,7 +8,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.FundDistributionInfoQuery;
 import com.mfino.domain.FundDistributionInfo;
-import com.mfino.fix.CmFinoFIX;
 
 public class FundDistributionInfoDAO extends BaseDAO<FundDistributionInfo> {
 	
@@ -16,17 +15,17 @@ public class FundDistributionInfoDAO extends BaseDAO<FundDistributionInfo> {
     	Criteria criteria = createCriteria();
     		
     		if(query.getTransferSCTLId()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRFundDistributionInfo.FieldName_TransferSCTLId, query.getTransferSCTLId()));
+    			criteria.add(Restrictions.eq(FundDistributionInfo.FieldName_TransferSCTLId, query.getTransferSCTLId()));
     		}
 
     		if(query.getTransferCTId()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRFundDistributionInfo.FieldName_TransferCTId, query.getTransferCTId()));
+    			criteria.add(Restrictions.eq(FundDistributionInfo.FieldName_TransferCTId, query.getTransferCTId()));
     		}
     		if(query.getDistributionStatus()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRFundDistributionInfo.FieldName_DistributionStatus, query.getDistributionStatus()));
+    			criteria.add(Restrictions.eq(FundDistributionInfo.FieldName_DistributionStatus, query.getDistributionStatus()));
     		}
     		if(query.getDistributionType()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRFundDistributionInfo.FieldName_DistributionType, query.getDistributionType()));
+    			criteria.add(Restrictions.eq(FundDistributionInfo.FieldName_DistributionType, query.getDistributionType()));
     		}
     		
 	
@@ -36,7 +35,7 @@ public class FundDistributionInfoDAO extends BaseDAO<FundDistributionInfo> {
           processPaging(query, criteria);
 
           if(query.isIDOrdered()) {
-            criteria.addOrder(Order.desc(CmFinoFIX.CRFundDistributionInfo.FieldName_RecordID));
+            criteria.addOrder(Order.desc(FundDistributionInfo.FieldName_RecordID));
           }
           
           //applying Order

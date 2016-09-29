@@ -12,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ChargeTypeQuery;
 import com.mfino.domain.ChargeType;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -25,22 +25,22 @@ public class ChargeTypeDAO extends BaseDAO<ChargeType> {
 		Criteria criteria = createCriteria();
 
 		if (StringUtils.isNotBlank(query.getExactName())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRChargeType.FieldName_Name, query.getExactName()).ignoreCase());
+			criteria.add(Restrictions.eq(ChargeType.FieldName_Name, query.getExactName()).ignoreCase());
 		}
 		if (StringUtils.isNotBlank(query.getName())) {
-			addLikeStartRestriction(criteria, CmFinoFIX.CRChargeType.FieldName_Name, query.getName());
+			addLikeStartRestriction(criteria, ChargeType.FieldName_Name, query.getName());
 		}
 		if (query.getNotEqualId() != null) {
-			criteria.add(Restrictions.ne(CmFinoFIX.CRChargeType.FieldName_RecordID, query.getNotEqualId()));
+			criteria.add(Restrictions.ne(ChargeType.FieldName_RecordID, query.getNotEqualId()));
 		}
 		if (query.getStartDate() != null) {
-			criteria.add(Restrictions.ge(CmFinoFIX.CRChargeType.FieldName_CreateTime, query.getStartDate()));
+			criteria.add(Restrictions.ge(ChargeType.FieldName_CreateTime, query.getStartDate()));
 		}
 		if (query.getEndDate() != null) {
-			criteria.add(Restrictions.le(CmFinoFIX.CRChargeType.FieldName_CreateTime, query.getEndDate()));
+			criteria.add(Restrictions.le(ChargeType.FieldName_CreateTime, query.getEndDate()));
 		}		
 
-		criteria.addOrder(Order.asc(CmFinoFIX.CRChargeType.FieldName_RecordID));
+		criteria.addOrder(Order.asc(ChargeType.FieldName_RecordID));
 		processPaging(query, criteria);
 		
 		@SuppressWarnings("unchecked")
@@ -55,7 +55,7 @@ public class ChargeTypeDAO extends BaseDAO<ChargeType> {
 		Criteria criteria = createCriteria();
 
 		if (StringUtils.isNotBlank(Name)) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRChargeType.FieldName_Name, Name).ignoreCase());
+			criteria.add(Restrictions.eq(ChargeType.FieldName_Name, Name).ignoreCase());
 		}else{
 			return null;
 		}
@@ -68,10 +68,10 @@ public class ChargeTypeDAO extends BaseDAO<ChargeType> {
 	
     @Override
     public void save(ChargeType ct) {
-        if (ct.getmFinoServiceProviderByMSPID() == null) {
+        if (ct.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            ct.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            ct.setMfinoServiceProvider(msp);
         }
         super.save(ct);
     }

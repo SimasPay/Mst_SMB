@@ -27,20 +27,20 @@ public class BulkUploadFileDAO extends BaseDAO<BulkUploadFile> {
             criteria.add(Restrictions.eq(ID_COLNAME, query.getId()));
         }
         if (query.getRecordType() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadFile.FieldName_RecordType, query.getRecordType()));
+            criteria.add(Restrictions.eq(BulkUploadFile.FieldName_RecordType, query.getRecordType()));
         }
         if (query.getUploadStatus() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadFile.FieldName_UploadFileStatus, query.getUploadStatus()));
+            criteria.add(Restrictions.eq(BulkUploadFile.FieldName_UploadFileStatus, query.getUploadStatus()));
         }
         if (query.getStartDate() != null) {
-            criteria.add(Restrictions.gt(CmFinoFIX.CRBulkUploadFile.FieldName_CreateTime, query.getStartDate()));
-            criteria.add(Restrictions.le(CmFinoFIX.CRBulkUploadFile.FieldName_CreateTime, query.getEndDate()));
+            criteria.add(Restrictions.gt(BulkUploadFile.FieldName_CreateTime, query.getStartDate()));
+            criteria.add(Restrictions.le(BulkUploadFile.FieldName_CreateTime, query.getEndDate()));
         }
         if (query.getUploadFileStatusSearch() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadFile.FieldName_UploadFileStatus, query.getUploadFileStatusSearch()));
+            criteria.add(Restrictions.eq(BulkUploadFile.FieldName_UploadFileStatus, query.getUploadFileStatusSearch()));
         }
         if(query.getCompany()!=null){
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadFile.FieldName_Company,query.getCompany()));
+            criteria.add(Restrictions.eq(BulkUploadFile.FieldName_Company, query.getCompany()));
         }
         if (query.isAssociationOrdered()) {
             criteria.addOrder(Order.desc(ID_COLNAME));
@@ -58,8 +58,8 @@ public class BulkUploadFileDAO extends BaseDAO<BulkUploadFile> {
     public List<BulkUploadFile> getPendingFiles() {
         Criteria criteria = createCriteria();
         Integer [] statusList = { CmFinoFIX.UploadFileStatus_Uploaded, CmFinoFIX.UploadFileStatus_Processing };
-        criteria.add(Restrictions.in(CmFinoFIX.CRBulkUploadFile.FieldName_UploadFileStatus, statusList));
-        criteria.add(Restrictions.eq(CmFinoFIX.CRBulkUploadFile.FieldName_UploadFileStatus, CmFinoFIX.UploadFileStatus_Uploaded));
+        criteria.add(Restrictions.in(BulkUploadFile.FieldName_UploadFileStatus, statusList));
+        criteria.add(Restrictions.eq(BulkUploadFile.FieldName_UploadFileStatus, CmFinoFIX.UploadFileStatus_Uploaded));
         @SuppressWarnings("unchecked")
         List<BulkUploadFile> results = criteria.list();
 

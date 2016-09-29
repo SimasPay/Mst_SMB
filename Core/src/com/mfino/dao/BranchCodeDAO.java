@@ -8,7 +8,6 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.BranchCodeQuery;
 import com.mfino.domain.BranchCodes;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * 

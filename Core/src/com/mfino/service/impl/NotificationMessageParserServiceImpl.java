@@ -35,7 +35,7 @@ import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.TransactionType;
@@ -230,7 +230,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
         List<TextPart> textParts = extractTextParts(notificationText);
         StringBuilder notificationBuilder = new StringBuilder();
         CommodityTransfer commodityTransfer = notificationWrapper.getCommodityTransfer();
-        SCTLSettlementMap pendingSettlement = notificationWrapper.getPendingSettlement();
+        SctlSettlementMap pendingSettlement = notificationWrapper.getPendingSettlement();
         Pocket sourcePocket = notificationWrapper.getSourcePocket();
         for (TextPart textPart : textParts) {
             if (textPart.isVariable) {

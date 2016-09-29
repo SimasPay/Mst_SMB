@@ -8,7 +8,10 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.MoneyClearanceGravedQuery;
 import com.mfino.domain.MoneyClearanceGraved;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.Pocket;
+import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.UnregisteredTxnInfo;
 /**
  * @author Satya
  *
@@ -19,28 +22,28 @@ public class MoneyClearanceGravedDAO extends BaseDAO<MoneyClearanceGraved>{
 		Criteria criteria = createCriteria();
 		
 		if(query.getMdnId() != null){
-			criteria.createAlias(CmFinoFIX.CRMoneyClearanceGraved.FieldName_SubscriberMDNByMDNID, "SMDN");
-			criteria.add(Restrictions.eq("SMDN." + CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, query.getMdnId()));
+			criteria.createAlias(MoneyClearanceGraved.FieldName_SubscriberMDNByMDNID, "SMDN");
+			criteria.add(Restrictions.eq("SMDN." + SubscriberMdn.FieldName_RecordID, query.getMdnId()));
 		}
 		if(query.getPocketId() != null){
-			criteria.createAlias(CmFinoFIX.CRMoneyClearanceGraved.FieldName_Pocket, "PKT");
-			criteria.add(Restrictions.eq("PKT."+CmFinoFIX.CRPocket.FieldName_RecordID, query.getPocketId()));
+			criteria.createAlias(MoneyClearanceGraved.FieldName_Pocket, "PKT");
+			criteria.add(Restrictions.eq("PKT."+Pocket.FieldName_RecordID, query.getPocketId()));
 		}
 		if(query.getSctlId() != null){
-			criteria.createAlias(CmFinoFIX.CRMoneyClearanceGraved.FieldName_SctlId, "SCTL");
-			criteria.add(Restrictions.eq("SCTL."+CmFinoFIX.CRServiceChargeTransactionLog.FieldName_RecordID, query.getSctlId()));
+			criteria.createAlias(MoneyClearanceGraved.FieldName_SctlId, "SCTL");
+			criteria.add(Restrictions.eq("SCTL."+ServiceChargeTransactionLog.FieldName_RecordID, query.getSctlId()));
 		}
 		if(query.getRefundMdnId() != null){
-			criteria.createAlias(CmFinoFIX.CRMoneyClearanceGraved.FieldName_SubscriberMDNByRefundMDNID, "SMDN");
-			criteria.add(Restrictions.eq("SMDN."+CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, query.getRefundMdnId()));
+			criteria.createAlias(MoneyClearanceGraved.FieldName_SubscriberMDNByRefundMDNID, "SMDN");
+			criteria.add(Restrictions.eq("SMDN."+SubscriberMdn.FieldName_RecordID, query.getRefundMdnId()));
 		}
 		if(query.getRefundPocketId() != null){
-			criteria.createAlias(CmFinoFIX.CRMoneyClearanceGraved.FieldName_RefundPocketID, "PKT");
-			criteria.add(Restrictions.eq("PKT."+CmFinoFIX.CRPocket.FieldName_RecordID, query.getRefundPocketId()));
+			criteria.createAlias(MoneyClearanceGraved.FieldName_RefundPocketID, "PKT");
+			criteria.add(Restrictions.eq("PKT."+Pocket.FieldName_RecordID, query.getRefundPocketId()));
 		}
 		if(query.getRefundSctlId() != null){
-			criteria.createAlias(CmFinoFIX.CRMoneyClearanceGraved.FieldName_RefundSctlID, "SCTL");
-			criteria.add(Restrictions.eq("SCTL."+CmFinoFIX.CRServiceChargeTransactionLog.FieldName_RecordID, query.getRefundSctlId()));
+			criteria.createAlias(MoneyClearanceGraved.FieldName_RefundSctlID, "SCTL");
+			criteria.add(Restrictions.eq("SCTL."+ServiceChargeTransactionLog.FieldName_RecordID, query.getRefundSctlId()));
 		}
 		 processBaseQuery(query, criteria);
 
@@ -48,7 +51,7 @@ public class MoneyClearanceGravedDAO extends BaseDAO<MoneyClearanceGraved>{
          processPaging(query, criteria);
 
          if(query.isIDOrdered()) {
-           criteria.addOrder(Order.desc(CmFinoFIX.CRUnRegisteredTxnInfo.FieldName_RecordID));
+           criteria.addOrder(Order.desc(UnregisteredTxnInfo.FieldName_RecordID));
          }
          
          //applying Order

@@ -21,7 +21,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -101,8 +101,8 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 		billPay.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		billPay.setTransferID(transDetails.getTransferId());
 		billPay.setConfirmed(Boolean.parseBoolean(transDetails.getConfirmString()));
-		billPay.setSourceApplication(cc.getChannelSourceApplication());
-		billPay.setChannelCode(cc.getChannelCode());
+		billPay.setSourceApplication((int)cc.getChannelsourceapplication());
+		billPay.setChannelCode(cc.getChannelcode());
 		billPay.setOnBeHalfOfMDN(transDetails.getOnBehalfOfMDN());
 		billPay.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		
@@ -124,13 +124,13 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 			return result;
 		}
 		
-		Pocket agentPocket = ct.getPocketBySourcePocketID();
-		Pocket billerPocket= pocketService.getById(ct.getDestPocketID());
+		Pocket agentPocket = ct.getPocket();
+		Pocket billerPocket= pocketService.getById(ct.getDestpocketid().longValue());
 		
-		log.info("source pocket id="+agentPocket.getID() +" Dest PocketID="+billerPocket.getID());
+		log.info("source pocket id="+agentPocket.getId() +" Dest PocketID="+billerPocket.getId());
 		
 
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(billPay.getSourceMDN());
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(billPay.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(smdn);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+billPay.getSourceMDN()+" has failed agent validations");
@@ -150,12 +150,12 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 		pocketList.add(agentPocket);
 		result.setPocketList(pocketList);
 
-		billPay.setDestMDN(ct.getDestMDN());
-		billPay.setSourcePocketID(agentPocket.getID());
-		billPay.setDestPocketID(billerPocket.getID());
-		billPay.setSourceApplication(cc.getChannelSourceApplication());
+		billPay.setDestMDN(ct.getDestmdn());
+		billPay.setSourcePocketID(agentPocket.getId().longValue());
+		billPay.setDestPocketID(billerPocket.getId().longValue());
+		billPay.setSourceApplication((int)cc.getChannelsourceapplication());
 		billPay.setEmail(smdn.getSubscriber().getEmail());
-		billPay.setPartnerBillerCode(biller.getMFSBillerPartnerFromPartnerID().iterator().next().getPartnerBillerCode());
+		billPay.setPartnerBillerCode(biller.getMfsbillerPartnerMaps().iterator().next().getPartnerbillercode());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
@@ -167,9 +167,9 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 			bpquery.setSctlID(sctl.getID());
 			List<BillPayments> res = billPaymentsService.get(bpquery);
 			if(res.size() > 0){
-				billPay.setIntegrationCode(res.get(0).getIntegrationCode());
-				billPay.setPartnerBillerCode(res.get(0).getPartnerBillerCode());
-				Iterator<MFSBillerPartner> mfsBillers=biller.getMFSBillerPartnerFromPartnerID().iterator();
+				billPay.setIntegrationCode(res.get(0).getIntegrationcode());
+				billPay.setPartnerBillerCode(res.get(0).getPartnerbillercode());
+				Iterator<MFSBillerPartner> mfsBillers=biller.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
 					MFSBillerPartner mfsbiller = mfsBillers.next();
 					if(mfsbiller.getMFSBiller().getMFSBillerCode().equals(billPay.getBillerCode())){

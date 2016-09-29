@@ -5,13 +5,13 @@
 
 package com.mfino.dao;
 
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 
 /**
  *
  * @author sandeepjs
  */
-public class MfinoServiceProviderDAO extends BaseDAO<mFinoServiceProvider> {
+public class MfinoServiceProviderDAO extends BaseDAO<MfinoServiceProvider> {
 
     public MfinoServiceProviderDAO()
     {

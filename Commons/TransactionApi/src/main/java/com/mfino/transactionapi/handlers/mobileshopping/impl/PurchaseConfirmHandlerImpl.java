@@ -18,7 +18,7 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -94,8 +94,8 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 		purchase.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		purchase.setTransferID(transactionDetails.getTransferId());
 		purchase.setConfirmed(confirmed);
-		purchase.setSourceApplication(cc.getChannelSourceApplication());
-		purchase.setChannelCode(cc.getChannelCode());
+		purchase.setSourceApplication((int)cc.getChannelsourceapplication());
+		purchase.setChannelCode(cc.getChannelcode());
 		purchase.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		log.info("Handling Subscriber Purchase confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
@@ -107,7 +107,7 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 		result.setSourceMessage(purchase);
 		result.setTransactionID(purchase.getTransactionID());
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(purchase.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(purchase.getSourceMDN());
 		
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
@@ -123,11 +123,11 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 		PendingCommodityTransfer pct = pendingCommodityTransferService.getById(purchase.getTransferID());
 		Pocket srcSubscriberPocket = null;
 		if(pct != null){
-			srcSubscriberPocket = pct.getPocketBySourcePocketID();
+			srcSubscriberPocket = pct.getPocket();
 		}
 		validationResult = transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcSubscriberPocket!=null? srcSubscriberPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -144,11 +144,11 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		SubscriberMDN destMerchantMDN = destMerchant.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn destMerchantMDN = destMerchant.getSubscriber().getSubscriberMdns().iterator().next();
 
-		purchase.setDestMDN(destMerchantMDN.getMDN());
-		purchase.setSourcePocketID(srcSubscriberPocket.getID());
-		purchase.setSourceApplication(cc.getChannelSourceApplication());
+		purchase.setDestMDN(destMerchantMDN.getMdn());
+		purchase.setSourcePocketID(srcSubscriberPocket.getId().longValue());
+		purchase.setSourceApplication((int)cc.getChannelsourceapplication());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
@@ -169,19 +169,19 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 		}		
 
 		Pocket destMerchantPocket;
-		PartnerServices partnerServices = transactionChargingService.getPartnerService(destMerchant.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerServices = transactionChargingService.getPartnerService(destMerchant.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
 		if (partnerServices == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 			return result;
 		}
-		destMerchantPocket = partnerServices.getPocketByDestPocketID();
+		destMerchantPocket = partnerServices.getPocketByDestpocketid();
 		validationResult = transactionApiValidationService.validateDestinationPocket(destMerchantPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destMerchantPocket!=null? destMerchantPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destMerchantPocket!=null? destMerchantPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		purchase.setDestPocketID(destMerchantPocket.getID());
+		purchase.setDestPocketID(destMerchantPocket.getId().longValue());
 		purchase.setServiceChargeTransactionLogID(sctl.getID());
 		
 		log.info("sending the purchase request to backend for processing");

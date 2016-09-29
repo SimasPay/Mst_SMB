@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -23,14 +25,26 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SUBSCRIBER")
-public class Subscriber  extends Base implements java.io.Serializable {
+public class Subscriber extends Base implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	public static final String FieldName_Company = "company";
 
+	public static final String FieldName_UpgradeState = "upgradestate";
+
+	public static final String FieldName_SubscriberStatus = "status";
+
+	public static final String FieldName_FirstName = "firstname";
+
+	public static final String FieldName_LastName = "lastname";
+
+	public static final String FieldName_SubscriberRestrictions = "restrictions";
 	
 	private Address addressBySubscriberaddressid;
 	private Address addressBySubscriberaddressktpid;
 	private MfinoUser mfinoUserBySubscriberuserid;
 	private MfinoUser mfinoUserByUserid;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider MfinoServiceProvider;
 	private KYCLevel kycLevel;
 	private Company company;
 	private AuthPersonDetails authPersonDetails;
@@ -98,13 +112,13 @@ public class Subscriber  extends Base implements java.io.Serializable {
 	public Subscriber() {
 	}
 
-	public Subscriber(BigDecimal id, mFinoServiceProvider mfinoServiceProvider,
+	public Subscriber(BigDecimal id, MfinoServiceProvider MfinoServiceProvider,
 			Company company, Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal parentid,
 			long language, String currency, long restrictions, long type,
 			long status, Timestamp statustime, short dompetmerchant) {
 		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
+		this.MfinoServiceProvider = MfinoServiceProvider;
 		this.company = company;
 		this.lastupdatetime = lastupdatetime;
 		this.updatedby = updatedby;
@@ -123,7 +137,7 @@ public class Subscriber  extends Base implements java.io.Serializable {
 	public Subscriber(BigDecimal id, Address addressBySubscriberaddressid,
 			Address addressBySubscriberaddressktpid,
 			MfinoUser mfinoUserBySubscriberuserid, MfinoUser mfinoUserByUserid,
-			mFinoServiceProvider mfinoServiceProvider, KYCLevel kycLevel,
+			MfinoServiceProvider MfinoServiceProvider, KYCLevel kycLevel,
 			Company company, AuthPersonDetails authPersonDetails,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal parentid,
@@ -159,7 +173,7 @@ public class Subscriber  extends Base implements java.io.Serializable {
 		this.addressBySubscriberaddressktpid = addressBySubscriberaddressktpid;
 		this.mfinoUserBySubscriberuserid = mfinoUserBySubscriberuserid;
 		this.mfinoUserByUserid = mfinoUserByUserid;
-		this.mfinoServiceProvider = mfinoServiceProvider;
+		this.MfinoServiceProvider = MfinoServiceProvider;
 		this.kycLevel = kycLevel;
 		this.company = company;
 		this.authPersonDetails = authPersonDetails;
@@ -269,13 +283,13 @@ public class Subscriber  extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
-		return this.mfinoServiceProvider;
+	public MfinoServiceProvider getMfinoServiceProvider() {
+		return this.MfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
-		this.mfinoServiceProvider = mfinoServiceProvider;
+			MfinoServiceProvider MfinoServiceProvider) {
+		this.MfinoServiceProvider = MfinoServiceProvider;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

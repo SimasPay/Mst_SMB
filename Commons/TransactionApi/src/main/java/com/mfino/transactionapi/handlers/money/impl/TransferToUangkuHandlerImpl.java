@@ -13,7 +13,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -88,11 +88,11 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 		ChannelCode channelCode = 	transactionDetails.getCc();
 		
 		XMLResult result = new MoneyTransferXMLResult();
- 		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+ 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
  		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(parentTrxnId);
 
- 		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), channelCode.getID()) == true){
+ 		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), channelCode.getId().longValue()) == true){
 			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), transactionDetails.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
@@ -104,8 +104,8 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
-		transferConfirmation.setSourceApplication(channelCode.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(channelCode.getChannelCode());
+		transferConfirmation.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		transferConfirmation.setChannelCode(channelCode.getChannelcode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
 		transferConfirmation.setDestinationBankAccountNo(transactionDetails.getDestinationBankAccountNo());
 		transferConfirmation.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
@@ -130,26 +130,26 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 		Pocket srcPocket = pocketService.getDefaultPocket(sourceMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
 		String destinationMDN = systemParametersService.getString(SystemParameterKeys.INTERBANK_PARTNER_MDN_KEY);
 		transactionDetails.setDestMDN(destinationMDN);
- 		SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
+ 		SubscriberMdn destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
 
 		Pocket destPocket = pocketService.getDefaultPocket(destMDN, "2");
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		
 		transferConfirmation.setDestMDN(transactionDetails.getDestMDN());
-		transferConfirmation.setSourcePocketID(srcPocket.getID());
-		transferConfirmation.setDestPocketID(destPocket.getID());
+		transferConfirmation.setSourcePocketID(srcPocket.getId().longValue());
+		transferConfirmation.setDestPocketID(destPocket.getId().longValue());
 
 		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
 		if (sctl != null) {

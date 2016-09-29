@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SCTLSettlementMapDAO;
 import com.mfino.dao.query.SCTLSettlementMapQuery;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.service.SCTLSettlementMapService;
 
 /**
@@ -23,17 +23,17 @@ import com.mfino.service.SCTLSettlementMapService;
 public class SCTLSettlementMapServiceImpl implements SCTLSettlementMapService{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public List<SCTLSettlementMap> get(SCTLSettlementMapQuery query){
+	public List<SctlSettlementMap> get(SCTLSettlementMapQuery query){
 		
 		SCTLSettlementMapDAO sctlSettlementMapDAO = DAOFactory.getInstance().getSCTLSettlementMapDao();
 		
-		List<SCTLSettlementMap> pendingSettlements = sctlSettlementMapDAO.get(query);
+		List<SctlSettlementMap> pendingSettlements = sctlSettlementMapDAO.get(query);
 		
 		return pendingSettlements;		
 
 	}
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public void save(SCTLSettlementMap sCTLSettlementMap){
+	public void save(SctlSettlementMap sCTLSettlementMap){
 		SCTLSettlementMapDAO sCTLSettlementMapDao = DAOFactory.getInstance().getSCTLSettlementMapDao();
 		sCTLSettlementMapDao.save(sCTLSettlementMap);
 	}

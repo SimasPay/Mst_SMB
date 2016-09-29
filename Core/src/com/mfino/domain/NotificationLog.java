@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -22,6 +24,13 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "NOTIFICATION_LOG")
 public class NotificationLog extends Base implements java.io.Serializable {
 
+	
+	public static final String FieldName_SctlId = "sctlid";
+	public static final String FieldName_NotificationCode = "code";
+	public static final String FieldName_NotificationMethod = "notificationmethod";
+	public static final String FieldName_SourceAddress = "sourceaddress";
+	public static final String FieldName_NotificationReceiverType = "notificationreceivertype";
+	public static final String FieldName_IsSensitiveData = "issensitivedata";
 	
 	private BigDecimal sctlid;
 	private long code;

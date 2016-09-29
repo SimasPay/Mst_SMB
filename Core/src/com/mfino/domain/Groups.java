@@ -2,16 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -21,6 +20,9 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "GROUPS")
 public class Groups extends Base implements java.io.Serializable {
 
+	public static final String FieldName_GroupName = "groupname";
+	public static final String FieldName_SystemGroup = "systemgroup";
+	
 	private long id;
 	private long version;
 	private String groupname;

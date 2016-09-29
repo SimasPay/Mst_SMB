@@ -10,9 +10,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ChargePricingQuery;
+import com.mfino.domain.ChargeDefinition;
 import com.mfino.domain.ChargePricing;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.MfinoServiceProvider;
 
 /**
  * @author Bala Sunku
@@ -24,11 +24,11 @@ public class ChargePricingDAO extends BaseDAO<ChargePricing> {
 		Criteria criteria = createCriteria();
 
 		if (query.getChargeDefinitionId() != null ) {
-			criteria.createAlias(CmFinoFIX.CRChargePricing.FieldName_ChargeDefinition, "cd");
-			criteria.add(Restrictions.eq("cd." + CmFinoFIX.CRChargeDefinition.FieldName_RecordID, query.getChargeDefinitionId()));
+			criteria.createAlias(ChargePricing.FieldName_ChargeDefinition, "cd");
+			criteria.add(Restrictions.eq("cd." + ChargeDefinition.FieldName_RecordID, query.getChargeDefinitionId()));
 		}
 
-		criteria.addOrder(Order.asc(CmFinoFIX.CRChargePricing.FieldName_MinAmount));
+		criteria.addOrder(Order.asc(ChargePricing.FieldName_MinAmount));
 		
 		@SuppressWarnings("unchecked")
 			List<ChargePricing> lst = criteria.list();
@@ -38,10 +38,10 @@ public class ChargePricingDAO extends BaseDAO<ChargePricing> {
 	
     @Override
     public void save(ChargePricing cp) {
-        if (cp.getmFinoServiceProviderByMSPID() == null) {
+        if (cp.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            cp.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            cp.setMfinoServiceProvider(msp);
         }
         super.save(cp);
     }

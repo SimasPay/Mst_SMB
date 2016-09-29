@@ -12,7 +12,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ChannelCodeQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Deva
@@ -24,22 +23,22 @@ public class ChannelCodeDAO extends BaseDAO<ChannelCode> {
         Criteria criteria = createCriteria();
 
         if (query.getChannelCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRChannelCode.FieldName_ChannelCode, query.getChannelCode()).ignoreCase());
+            criteria.add(Restrictions.eq(ChannelCode.FieldName_ChannelCode, query.getChannelCode()).ignoreCase());
         }
         if (query.getChannelName() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRChannelCode.FieldName_ChannelName, query.getChannelName()).ignoreCase());
+            criteria.add(Restrictions.eq(ChannelCode.FieldName_ChannelName, query.getChannelName()).ignoreCase());
         }
         if(query.getChannelNameLike() != null) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRChannelCode.FieldName_ChannelName, query.getChannelNameLike());
+            addLikeStartRestriction(criteria, ChannelCode.FieldName_ChannelName, query.getChannelNameLike());
         }
         if (query.getSourceApplication() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRChannelCode.FieldName_ChannelSourceApplication, query.getSourceApplication()));
+            criteria.add(Restrictions.eq(ChannelCode.FieldName_ChannelSourceApplication, query.getSourceApplication()));
         }
         processBaseQuery(query, criteria);
         // Paging
         processPaging(query, criteria);
         //applying Order
-        criteria.addOrder(Order.desc(CmFinoFIX.CRChannelCode.FieldName_RecordID));
+        criteria.addOrder(Order.desc(ChannelCode.FieldName_RecordID));
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
         List<ChannelCode> results = criteria.list();
@@ -53,7 +52,7 @@ public class ChannelCodeDAO extends BaseDAO<ChannelCode> {
     }
     public Integer getMaximumChannelSourceValue(){
         Criteria criteria = createCriteria();
-        criteria.setProjection(Projections.max(CmFinoFIX.CRChannelCode.FieldName_ChannelSourceApplication));
+        criteria.setProjection(Projections.max(ChannelCode.FieldName_ChannelSourceApplication));
         List list = criteria.list();
     	return (Integer) (list.get(0)==null?0:list.get(0)); //since projection gives some result it can be null too. Chking before returing the value.
     }

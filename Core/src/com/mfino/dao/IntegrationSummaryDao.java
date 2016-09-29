@@ -1,5 +1,6 @@
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 		Criteria criteria = createCriteria();
 		if (sctlLst != null) {
 			List<Long> tempLst = new ArrayList<Long>(sctlLst);
-			addCriteriaIn(CmFinoFIX.CRIntegrationSummary.FieldName_SctlId, tempLst, criteria);
+			addCriteriaIn(IntegrationSummary.FieldName_SctlId, tempLst, criteria);
 		}
 		@SuppressWarnings("unchecked")
 		List<IntegrationSummary> results = criteria.list();
@@ -50,27 +51,27 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 		Criteria criteria = createCriteria();
 		if (query.getSctlID() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRIntegrationSummary.FieldName_SctlId,
+					IntegrationSummary.FieldName_SctlId,
 					query.getSctlID()));
 		}
 		if (StringUtils.isNotBlank(query.getIntegrationType())) {
 			criteria.add(Restrictions
-					.eq(CmFinoFIX.CRIntegrationSummary.FieldName_IntegrationType,
+					.eq(IntegrationSummary.FieldName_IntegrationType,
 							query.getIntegrationType()));
 		}
 		if (StringUtils.isNotBlank(query.getReconcilationID1())) {
 			criteria.add(Restrictions
-					.eq(CmFinoFIX.CRIntegrationSummary.FieldName_ReconcilationID1,
+					.eq(IntegrationSummary.FieldName_ReconcilationID1,
 							query.getReconcilationID1()));
 		}
 		if (StringUtils.isNotBlank(query.getReconcilationID2())) {
 			criteria.add(Restrictions
-					.eq(CmFinoFIX.CRIntegrationSummary.FieldName_ReconcilationID2,
+					.eq(IntegrationSummary.FieldName_ReconcilationID2,
 							query.getReconcilationID2()));
 		}
 		if (StringUtils.isNotBlank(query.getReconcilationID3())) {
 			criteria.add(Restrictions
-					.eq(CmFinoFIX.CRIntegrationSummary.FieldName_ReconcilationID3,
+					.eq(IntegrationSummary.FieldName_ReconcilationID3,
 							query.getReconcilationID3()));
 		}
 		processBaseQuery(query, criteria);
@@ -83,7 +84,7 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 	public IntegrationSummary getByScltId(Long sctlId,Long pctId){
 		log.info("getByScltId: getting the integration summary details for sctlid = "+ sctlId + " pctid = "+ pctId);
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRIntegrationSummary.FieldName_SctlId,sctlId));
+		criteria.add(Restrictions.eq(IntegrationSummary.FieldName_SctlId,sctlId));
 		List<IntegrationSummary> results = criteria.list();
 		IntegrationSummary iSummary = null;
 		
@@ -100,22 +101,22 @@ public class IntegrationSummaryDao extends BaseDAO<IntegrationSummary> {
 		IntegrationSummary iSummary = getByScltId(sctldId, pctId);
 		if(iSummary == null){
 			iSummary=new IntegrationSummary();
-			iSummary.setSctlId(sctldId);
-			iSummary.setPctId(pctId);
-			iSummary.setCreateTime(timestamp != null ? timestamp : new Timestamp());
-			iSummary.setCreatedBy("System");
+			iSummary.setSctlid(new BigDecimal(sctldId));
+			iSummary.setPctid(new BigDecimal(pctId));
+			iSummary.setCreatetime(timestamp != null ? timestamp : new Timestamp());
+			iSummary.setCreatedby("System");
 		}
-		iSummary.setIntegrationType(IntegrationType);
-		iSummary.setReconcilationID1(reconId1);
-		iSummary.setReconcilationID2(reconId2);
-		iSummary.setReconcilationID3(reconId3);
-		iSummary.setReconcilationID4(reconId4);
+		iSummary.setIntegrationtype(IntegrationType);
+		iSummary.setReconcilationid1(reconId1);
+		iSummary.setReconcilationid2(reconId2);
+		iSummary.setReconcilationid3(reconId3);
+		iSummary.setReconcilationid4(reconId4);
 		if(timestamp!=null){
-		iSummary.setLastUpdateTime(timestamp);
+		iSummary.setLastupdatetime(timestamp);
 		}else{
-		iSummary.setLastUpdateTime(new Timestamp());
+		iSummary.setLastupdatetime(new Timestamp());
 		}
-		iSummary.setUpdatedBy("System");
+		iSummary.setUpdatedby("System");
 		getSession().saveOrUpdate(iSummary);
 	}
 }

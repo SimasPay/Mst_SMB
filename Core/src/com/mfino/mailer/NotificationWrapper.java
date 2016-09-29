@@ -13,7 +13,7 @@ import com.mfino.domain.DistributionChainLevel;
 import com.mfino.domain.LOP;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
@@ -31,7 +31,7 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	
 	private CommodityTransfer commodityTransfer;
 	
-	private SCTLSettlementMap pendingSettlement;
+	private SctlSettlementMap pendingSettlement;
 	
 	private ServiceChargeTransactionLog sctl;
 	
@@ -673,11 +673,11 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	public SCTLSettlementMap getPendingSettlement() {
+	public SctlSettlementMap getPendingSettlement() {
 		return pendingSettlement;
 	}
 
-	public void setPendingSettlement(SCTLSettlementMap pendingSettlement) {
+	public void setPendingSettlement(SctlSettlementMap pendingSettlement) {
 		this.pendingSettlement = pendingSettlement;
 	}
 

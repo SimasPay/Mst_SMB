@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -25,12 +27,21 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "PARTNER", uniqueConstraints = @UniqueConstraint(columnNames = "TRADENAME"))
 public class Partner extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_User = "mfinoUser";
+	public static final String FieldName_PartnerServicesFromPartnerID = "partnerServicesesForPartnerid";
+	public static final String FieldName_BusinessPartnerType = "businesspartnertype";
+	public static final String FieldName_TradeName = "tradename";
+	public static final String FieldName_AuthorizedEmail = "authorizedemail";
+	public static final String FieldName_Subscriber = "subscriber";
+	public static final String FieldName_PartnerCode = "partnercode";
+	public static final String FieldName_BranchCode = "branchcode";
 	
 	private Address addressByMerchantaddressid;
 	private Address addressByFranchiseoutletaddressid;
 	private MfinoUser mfinoUser;
 	private Subscriber subscriber;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private String partnercode;
 	private long partnerstatus;
 	private String tradename;
@@ -85,7 +96,7 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	public Partner(BigDecimal id, MfinoUser mfinoUser, Subscriber subscriber,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long partnerstatus) {
 		this.id = id;
@@ -101,7 +112,7 @@ public class Partner extends Base implements java.io.Serializable {
 
 	public Partner(BigDecimal id, Address addressByMerchantaddressid,
 			Address addressByFranchiseoutletaddressid, MfinoUser mfinoUser,
-			Subscriber subscriber, mFinoServiceProvider mfinoServiceProvider,
+			Subscriber subscriber, MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String partnercode,
 			long partnerstatus, String tradename, String typeoforganization,
@@ -222,12 +233,12 @@ public class Partner extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

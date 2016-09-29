@@ -7,14 +7,12 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.FundDefinitionQuery;
 import com.mfino.domain.FundDefinition;
-import com.mfino.fix.CmFinoFIX;
 
 public class FundDefinitionDAO extends BaseDAO<FundDefinition> {
 	public List<FundDefinition> get(FundDefinitionQuery query) {
 		Criteria criteria = createCriteria();
 		if (query.getPurposeID() != null) {
-			criteria.createAlias(CmFinoFIX.CRFundDefinition.FieldName_Purpose, "p");
-			criteria.add(Restrictions.eq("p."+CmFinoFIX.CRPurpose.FieldName_RecordID,query.getPurposeID()));
+			criteria.add(Restrictions.eq(FundDefinition.FieldName_PurposeID, query.getPurposeID()));
 		}
 
 		processBaseQuery(query, criteria);

@@ -2,18 +2,17 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,7 +23,17 @@ import com.mfino.hibernate.Timestamp;
 		"SUBSCRIBERID", "INFILECREATEDATE", "FILETYPE", "TRANSACTIONSCOUNT",
 		"TOTALAMOUNT", "VERIFICATIONCHECKSUM" }))
 public class BulkUpload extends Base implements java.io.Serializable {
-
+	private static final long serialVersionUID = 1L;
+	
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_BulkUploadFileType = "filetype";
+	public static final String FieldName_BulkUploadDeliveryStatus = "deliverystatus";
+	public static final String FieldName_BulkUploadDeliveryDate = "deliverydate";
+	public static final String FieldName_PaymentDate = "paymentdate";
+	public static final String FieldName_BulkUploadInFileName = "infilename";
+	public static final String FieldName_User = "mfinoUser";
+	public static final String FieldName_ReverseSCTLID = "reversesctlid";
+	public static final String FieldName_ServiceChargeTransactionLogID = "servicechargetransactionlogid";
 	
 	private MfinoUser mfinoUser;
 	private Subscriber subscriber;
@@ -159,8 +168,6 @@ public class BulkUpload extends Base implements java.io.Serializable {
 		this.revertamount = revertamount;
 		this.name = name;
 	}
-
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)

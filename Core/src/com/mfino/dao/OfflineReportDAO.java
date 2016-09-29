@@ -13,7 +13,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.OfflineReportQuery;
 import com.mfino.domain.OfflineReport;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -25,7 +24,7 @@ public class OfflineReportDAO extends BaseDAO<OfflineReport> {
 	public List<OfflineReport> getOfflineReport(OfflineReportQuery query) {
 		  Criteria criteria = createCriteria();
 		  if(query.getReprtClass()!=null){
-			  criteria.add(Restrictions.eq(CmFinoFIX.CROfflineReport.FieldName_ReportClass, query.getReprtClass()).ignoreCase());
+			  criteria.add(Restrictions.eq(OfflineReport.FieldName_ReportClass, query.getReprtClass()).ignoreCase());
 		  }
 		  List<OfflineReport> results = criteria.list();
 	        return results;
@@ -38,7 +37,7 @@ public class OfflineReportDAO extends BaseDAO<OfflineReport> {
 			return null;
 		}
 		 Criteria criteria = createCriteria();
-		 criteria.add(Restrictions.eq(CmFinoFIX.CROfflineReport.FieldName_ReportName, reportName).ignoreCase());
+		 criteria.add(Restrictions.eq(OfflineReport.FieldName_ReportName, reportName).ignoreCase());
 		 List<OfflineReport> results=criteria.list();
 		 if(results==null||results.isEmpty()){
 			 log.info("No entry found with reportClass :"+reportName);
@@ -53,7 +52,7 @@ public class OfflineReportDAO extends BaseDAO<OfflineReport> {
 			return null;
 		}
 		 Criteria criteria = createCriteria();
-		 criteria.add(Restrictions.eq(CmFinoFIX.CROfflineReport.FieldName_ReportClass, className).ignoreCase());
+		 criteria.add(Restrictions.eq(OfflineReport.FieldName_ReportClass, className).ignoreCase());
 		 List<OfflineReport> results=criteria.list();
 		 if(results==null||results.isEmpty()){
 			 log.info("No entry found with reportClass :"+className);
@@ -65,7 +64,7 @@ public class OfflineReportDAO extends BaseDAO<OfflineReport> {
 	@SuppressWarnings("unchecked")
 	public List<OfflineReport> getOnlineReports() {
 		 Criteria criteria = createCriteria();
-		 criteria.add(Restrictions.eq(CmFinoFIX.CROfflineReport.FieldName_IsOnlineReport, true));
+		 criteria.add(Restrictions.eq(OfflineReport.FieldName_IsOnlineReport, true));
 		 List<OfflineReport> results=criteria.list();
 		 if(results==null||results.isEmpty()){
 			 log.info("No entry found with IsOnlineReport true");

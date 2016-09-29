@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -25,6 +27,9 @@ import com.mfino.hibernate.Timestamp;
 		@UniqueConstraint(columnNames = "COMPANYCODE") })
 public class Company extends Base implements java.io.Serializable {
 
+	
+	public static final String FieldName_CompanyCode = "companycode";
+	public static final String FieldName_CompanyName = "companyname";
 	
 	private String companyname;
 	private long companycode;

@@ -7,13 +7,12 @@ import org.hibernate.LockMode;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.domain.CashinFirstTime;
-import com.mfino.fix.CmFinoFIX;
 
 public class CashinFirstTimeDAO extends BaseDAO<CashinFirstTime>{
 
     public CashinFirstTime getByMDN(String MDN, LockMode lockMode) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRCashinFirstTime.FieldName_MDN, MDN));
+    	criteria.add(Restrictions.eq(CashinFirstTime.FieldName_MDN, MDN));
     	
         if(lockMode != null){
             criteria.setLockMode(lockMode);

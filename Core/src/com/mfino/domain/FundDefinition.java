@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,6 +27,7 @@ import com.mfino.hibernate.Timestamp;
 public class FundDefinition extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_PurposeID = "purposeid";
 	private FundEvents fundEventsByOnfailedattemptsexceeded;
 	private FundEvents fundEventsByOnfundallocationtimeexpiry;
 	private FundEvents fundEventsByGenerationofotponfailure;

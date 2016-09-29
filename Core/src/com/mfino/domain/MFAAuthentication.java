@@ -4,11 +4,13 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -19,6 +21,9 @@ import com.mfino.hibernate.Timestamp;
 public class MFAAuthentication extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_SctlId = "sctlid";
+	public static final String FieldName_MFAMode = "mfamode";
+	public static final String FieldName_MFAValue = "mfavalue";
 	private BigDecimal sctlid;
 	private long mfamode;
 	private String mfavalue;

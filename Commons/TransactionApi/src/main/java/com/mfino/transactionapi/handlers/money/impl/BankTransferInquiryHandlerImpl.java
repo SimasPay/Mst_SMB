@@ -16,7 +16,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -87,8 +87,8 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		bankAccountToBankAccount.setAmount(transactionDetails.getAmount());
 		bankAccountToBankAccount.setServletPath(transactionDetails.getServletPath());
-		bankAccountToBankAccount.setSourceApplication(channelCode.getChannelSourceApplication());
-		bankAccountToBankAccount.setChannelCode(channelCode.getChannelCode());
+		bankAccountToBankAccount.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		bankAccountToBankAccount.setChannelCode(channelCode.getChannelcode());
 		bankAccountToBankAccount.setSourceMessage(transactionDetails.getSourceMessage());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
@@ -101,7 +101,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		XMLResult result = new TransferInquiryXMLResult();
 		ChannelCode cc = transactionDetails.getCc();
 
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		Transaction transaction = null;
 
 		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
@@ -131,7 +131,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		
 		sc.setSourceMDN(bankAccountToBankAccount.getSourceMDN());
 		sc.setDestMDN(bankAccountToBankAccount.getDestMDN());
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(bankAccountToBankAccount.getServiceName());
 		
 		if(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER_INQUIRY.equals(transactionDetails.getTransactionName())) {
@@ -150,9 +150,9 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
 			 */
 			
-			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai)){
+			if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai)){
 				
-				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+				if(destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER);
 					transactionName = ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER;
 					if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
@@ -162,7 +162,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 					}
 				}
 				
-				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+				if(destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)){
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_L2LTRANSFER);
 					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 					
@@ -170,16 +170,16 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 				}
 			}
 			
-			if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+			if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 
-				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+				if(destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
 					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
 					
 					transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
 				}
 				
-				if(destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+				if(destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)){
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER);
 					//sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
 					if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
@@ -205,8 +205,8 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			bankAccountToBankAccount.setDestinationBankAccountNo(transactionDetails.getDestinationBankAccountNo());
 		}
 
-		SubscriberMDN sourceSubscriberMdn = sourceMDN;
-		SubscriberMDN destSubscriberMdn =  subscriberMdnService.getByMDN(bankAccountToBankAccount.getDestMDN());
+		SubscriberMdn sourceSubscriberMdn = sourceMDN;
+		SubscriberMdn destSubscriberMdn =  subscriberMdnService.getByMDN(bankAccountToBankAccount.getDestMDN());
 
 		Subscriber sourceSubscriber = (sourceSubscriberMdn != null) ? sourceSubscriberMdn.getSubscriber() : null;
 		Subscriber destSubscriber = (destSubscriberMdn != null) ? destSubscriberMdn.getSubscriber() : null;
@@ -252,8 +252,8 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			result.setDestinationMDN(bankAccountToBankAccount.getDestMDN());
 			result.setDestinationAccountNumber(bankAccountToBankAccount.getDestinationBankAccountNo());
 		}
-       	String receiverAccountName = (StringUtils.isNotBlank(destSubscriber.getFirstName()) ? destSubscriber.getFirstName() : "")
-					+ " " + (StringUtils.isNotBlank(destSubscriber.getLastName()) ? destSubscriber.getLastName() : "");
+       	String receiverAccountName = (StringUtils.isNotBlank(destSubscriber.getFirstname()) ? destSubscriber.getFirstname() : "")
+					+ " " + (StringUtils.isNotBlank(destSubscriber.getLastname()) ? destSubscriber.getLastname() : "");
        	result.setReceiverAccountName(receiverAccountName);
 		result.setDestinationName(transactionResponse.getDestinationUserName());
 		result.setBankName(transactionResponse.getBankName());
@@ -271,7 +271,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
-			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getID()) == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getId().longValue()) == true){
 				result.setMfaMode("OTP");
 				//mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}

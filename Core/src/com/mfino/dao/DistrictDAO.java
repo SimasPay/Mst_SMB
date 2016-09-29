@@ -8,6 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.DistrictQuery;
 import com.mfino.domain.District;
+import com.mfino.domain.Region;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 
@@ -20,9 +21,10 @@ public class DistrictDAO extends BaseDAO<District> {
 	public List<District> get(DistrictQuery query) {
 		Criteria criteria = createCriteria();
 		
-		criteria.add(Restrictions.eq(CmFinoFIX.CRDistrict.FieldName_IdRegion, query.getIdRegion()));
+		criteria.createAlias(District.FieldName_IdRegion, "region");
+		criteria.add(Restrictions.eq("region."+Region.FieldName_RecordID, query.getIdRegion()));
 
-		addOrder(QueryConstants.ASC_STRING, CmFinoFIX.CRDistrict.FieldName_DistrictId, criteria);
+		addOrder(QueryConstants.ASC_STRING, District.FieldName_DistrictId, criteria);
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		
@@ -45,6 +47,6 @@ public class DistrictDAO extends BaseDAO<District> {
             log.info(MessageText._("No District Code defined with the given code : ") + distRecId);
             return null;
         }
-        return district.getDisplayText();
+        return district.getDisplaytext();
     }
 }

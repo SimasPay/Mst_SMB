@@ -7,7 +7,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.KYCFieldsquery;
 import com.mfino.domain.KYCFields;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.KYCLevel;
 
 /**
  *
@@ -21,7 +21,7 @@ public class KYCFieldsDAO extends BaseDAO<KYCFields> {
 		Criteria criteria = createCriteria();
 
         if (query.getkycFieldsLevelID() != null) {
-        	criteria.createCriteria(CmFinoFIX.CRKYCFields.FieldName_KYCLevelByKYCFieldsLevelID).add(Restrictions.le(CmFinoFIX.CRKYCLevel.FieldName_KYCLevel, query.getkycFieldsLevelID()));
+        	criteria.createCriteria(KYCFields.FieldName_KYCLevelByKYCFieldsLevelID).add(Restrictions.le(KYCLevel.FieldName_KYCLevel, query.getkycFieldsLevelID()));
         	}
          processBaseQuery(query, criteria);
          List<KYCFields> results = criteria.list();

@@ -14,7 +14,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
@@ -89,7 +89,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
  		String serviceName 		= transactionDetails.getServiceName();
  		String SourcePocketCode = transactionDetails.getSourcePocketCode();
  		//String DestPocketCode   = transactionDetails.getDestPocketCode();
- 		Long channelCodeId      = transactionDetails.getCc().getID();
+ 		Long channelCodeId      = transactionDetails.getCc().getId().longValue();
 
 		ChannelCode cc= transactionDetails.getCc();
 		transferConfirmation.setSourceMDN(transactionDetails.getSourceMDN());
@@ -97,8 +97,8 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
-		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(cc.getChannelCode());
+		transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
+		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
 		transferConfirmation.setDestinationBankAccountNo(transactionDetails.getDestinationBankAccountNo());
 		transferConfirmation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
@@ -124,19 +124,19 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		result.setSourceMessage(transferConfirmation);
 		result.setTransactionID(transactionsLog.getID());
 		//validating source mdn
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
 
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 		//validation of destination mdn
-		SubscriberMDN destinationMDN = subscriberMdnService.getByMDN(transferConfirmation.getDestMDN());
+		SubscriberMdn destinationMDN = subscriberMdnService.getByMDN(transferConfirmation.getDestMDN());
 		validationResult = transactionApiValidationService.validateSubscriberAsDestination(destinationMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Destination subscriber with mdn : "+destinationMDN.getMDN()+" has failed validations");
+			log.error("Destination subscriber with mdn : "+destinationMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
@@ -146,7 +146,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		//Validation of both source pocket and destination pocket
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
@@ -197,12 +197,12 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}		
-		transferConfirmation.setSourcePocketID(srcPocket.getID());
-		transferConfirmation.setDestPocketID(destPocket.getID());
+		transferConfirmation.setSourcePocketID(srcPocket.getId().longValue());
+		transferConfirmation.setDestPocketID(destPocket.getId().longValue());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 

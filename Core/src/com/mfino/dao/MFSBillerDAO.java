@@ -10,51 +10,50 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.MFSBillerQuery;
-import com.mfino.domain.MFSBiller;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.MfsBiller;
 
 /**
  * @author Bala Sunku
  *
  */
-public class MFSBillerDAO extends BaseDAO<MFSBiller> {
+public class MFSBillerDAO extends BaseDAO<MfsBiller> {
 	
-	public List<MFSBiller> get(MFSBillerQuery query) {
+	public List<MfsBiller> get(MFSBillerQuery query) {
 		Criteria criteria = createCriteria();
 		
 		if (StringUtils.isNotBlank(query.getExactBillerName())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRMFSBiller.FieldName_MFSBillerName, query.getExactBillerName()).ignoreCase());
+			criteria.add(Restrictions.eq(MfsBiller.FieldName_MFSBillerName, query.getExactBillerName()).ignoreCase());
 		}
 		if (StringUtils.isNotBlank(query.getBillerName())) {
-			addLikeStartRestriction(criteria, CmFinoFIX.CRMFSBiller.FieldName_MFSBillerName, query.getBillerName());
+			addLikeStartRestriction(criteria, MfsBiller.FieldName_MFSBillerName, query.getBillerName());
 		}
 		
 		if (StringUtils.isNotBlank(query.getBillerCode())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRMFSBiller.FieldName_MFSBillerCode, query.getBillerCode()).ignoreCase());
+			criteria.add(Restrictions.eq(MfsBiller.FieldName_MFSBillerCode, query.getBillerCode()).ignoreCase());
 		}
 		
 		if (StringUtils.isNotBlank(query.getBillerType())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRMFSBiller.FieldName_MFSBillerType, query.getBillerType()).ignoreCase());
+			criteria.add(Restrictions.eq(MfsBiller.FieldName_MFSBillerType, query.getBillerType()).ignoreCase());
 		}
 		// Paging
 		processPaging(query, criteria);
 
 		@SuppressWarnings("unchecked")
-			List<MFSBiller> lst = criteria.list();
+			List<MfsBiller> lst = criteria.list();
 			
 		return lst;
 	}
 	
-	public MFSBiller getByBillerCode(String billerCode)
+	public MfsBiller getByBillerCode(String billerCode)
 	{
 		Criteria criteria = createCriteria();
 		
 		if (StringUtils.isNotBlank(billerCode)) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRMFSBiller.FieldName_MFSBillerCode, billerCode).ignoreCase());
+			criteria.add(Restrictions.eq(MfsBiller.FieldName_MFSBillerCode, billerCode).ignoreCase());
 		}
 		@SuppressWarnings("unchecked")
-		List<MFSBiller> lst = criteria.list();
+		List<MfsBiller> lst = criteria.list();
 		if(lst.size() > 0)
 		{
 			return lst.get(0);
@@ -63,11 +62,11 @@ public class MFSBillerDAO extends BaseDAO<MFSBiller> {
 	}
 	
     @Override
-    public void save(MFSBiller mb) {
-        if (mb.getmFinoServiceProviderByMSPID() == null) {
+    public void save(MfsBiller mb) {
+        if (mb.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            mb.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            mb.setMfinoServiceProvider(msp);
         }
         super.save(mb);
     }

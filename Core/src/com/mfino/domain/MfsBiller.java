@@ -2,19 +2,18 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,8 +23,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "MFS_BILLER")
 public class MfsBiller  extends Base implements java.io.Serializable {
 
-	
-	private mFinoServiceProvider mfinoServiceProvider;
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_MFSBillerName = "mfsbillername";
+	public static final String FieldName_MFSBillerCode = "mfsbillercode";
+	public static final String FieldName_MFSBillerType = "mfsbillertype";
+	private MfinoServiceProvider mfinoServiceProvider;
 	private String mfsbillername;
 	private String mfsbillercode;
 	private String mfsbillertype;
@@ -34,10 +36,10 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 	private Set<IntegrationPartnerMap> integrationPartnerMaps = new HashSet<IntegrationPartnerMap>(
 			0);
 
-	public MFSBiller() {
+	public MfsBiller() {
 	}
 
-	public MFSBiller(BigDecimal id, mFinoServiceProvider mfinoServiceProvider,
+	public MfsBiller(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mfsbillername,
 			String mfsbillercode, String mfsbillertype) {
@@ -52,7 +54,7 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 		this.mfsbillertype = mfsbillertype;
 	}
 
-	public MFSBiller(BigDecimal id, mFinoServiceProvider mfinoServiceProvider,
+	public MfsBiller(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mfsbillername,
 			String mfsbillercode, String mfsbillertype,
@@ -74,12 +76,12 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

@@ -7,26 +7,23 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.NotificationLogDetailsQuery;
-import com.mfino.dao.query.NotificationLogQuery;
-import com.mfino.domain.NotificationLog;
-import com.mfino.domain.NotificationLogDetails;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.NlogDetails;
 
 /**
  * 
  * @author Amar
  *
  */
-public class NotificationLogDetailsDAO extends BaseDAO<NotificationLogDetails>{
+public class NotificationLogDetailsDAO extends BaseDAO<NlogDetails>{
 
-    public List<NotificationLogDetails> get(NotificationLogDetailsQuery query){
+    public List<NlogDetails> get(NotificationLogDetailsQuery query){
         Criteria criteria = createCriteria();
 
         if(query.getNotificationLog() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLogDetails.FieldName_NotificationLog, query.getNotificationLog()));
+            criteria.add(Restrictions.eq(NlogDetails.FieldName_NotificationLog, query.getNotificationLog()));
         }
         if(query.getSendNotificationtatus() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRNotificationLogDetails.FieldName_SendNotificationStatus, query.getSendNotificationtatus()));
+            criteria.add(Restrictions.eq(NlogDetails.FieldName_SendNotificationStatus, query.getSendNotificationtatus()));
         }
         
         
@@ -36,13 +33,13 @@ public class NotificationLogDetailsDAO extends BaseDAO<NotificationLogDetails>{
         processPaging(query, criteria);
 
         if(query.isIDOrdered()) {
-          criteria.addOrder(Order.desc(CmFinoFIX.CRNotificationLogDetails.FieldName_RecordID));
+          criteria.addOrder(Order.desc(NlogDetails.FieldName_RecordID));
         }
         
         //applying Order
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<NotificationLogDetails> results = criteria.list();
+        List<NlogDetails> results = criteria.list();
 
         return results;
     }

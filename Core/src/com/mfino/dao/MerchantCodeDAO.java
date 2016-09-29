@@ -21,13 +21,13 @@ public class MerchantCodeDAO extends BaseDAO<MerchantCode>{
 public List<MerchantCode> get(MerchantCodeQuery query) {
         Criteria criteria = createCriteria();
         if (query.getCompany() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRMerchantCode.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(MerchantCode.FieldName_Company, query.getCompany()));
         }
         if (query.getMerchantCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRMerchantCode.FieldName_MerchantCode, query.getMerchantCode()).ignoreCase());
+            criteria.add(Restrictions.eq(MerchantCode.FieldName_MerchantCode, query.getMerchantCode()).ignoreCase());
         }
         if (query.getMdn() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRMerchantCode.FieldName_MDN, query.getMdn()));
+            criteria.add(Restrictions.eq(MerchantCode.FieldName_MDN, query.getMdn()));
         }
         
         processPaging(query, criteria);

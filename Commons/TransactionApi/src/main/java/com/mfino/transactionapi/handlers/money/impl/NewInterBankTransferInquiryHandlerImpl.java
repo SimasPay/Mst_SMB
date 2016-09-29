@@ -21,14 +21,14 @@ import com.mfino.dao.InterbankCodesDao;
 import com.mfino.dao.query.InterBankCodesQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.InterBankCode;
-import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -129,8 +129,8 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		ibtInquiry.setPin(transactionDetails.getSourcePIN());
 		ibtInquiry.setBillerCode(transactionDetails.getBillerCode());
 		ibtInquiry.setAmount(transactionDetails.getAmount());
-		ibtInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		ibtInquiry.setChannelCode(cc.getChannelCode());
+		ibtInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		ibtInquiry.setChannelCode(cc.getChannelcode());
 		ibtInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		ibtInquiry.setSourceMessage(transactionDetails.getSourceMessage());
 		ibtInquiry.setMessageType(CmFinoFIX.MessageType_InterBankFundsTransferInquiry);
@@ -149,7 +149,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		result.setSourceMessage(ibtInquiry);
 		result.setTransactionTime(transactionsLog.getTransactionTime());
 
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(ibtInquiry.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(ibtInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+ibtInquiry.getSourceMDN()+" has failed validations");
@@ -157,7 +157,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 			return result;
 		}
 
-		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(ibtInquiry.getBillerCode());
+		MfsBiller mfsBiller = mfsBillerService.getByBillerCode(ibtInquiry.getBillerCode());
 		if (mfsBiller == null) {
 			result.setBillerCode(ibtInquiry.getBillerCode());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidBillerCode);
@@ -178,18 +178,18 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		Pocket subPocket = pocketService.getDefaultPocket(sourceMDN, srcpocketcode);
 		validationResult = transactionApiValidationService.validateSourcePocket(subPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(subPocket!=null? subPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(subPocket!=null? subPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		ibtInquiry.setSourceBankAccountNo(subPocket.getCardPAN()); // Storing SourceCardPAN in SourceBankAccNo to be used later while sending request to BSM
+		ibtInquiry.setSourceBankAccountNo(subPocket.getCardpan()); // Storing SourceCardPAN in SourceBankAccNo to be used later while sending request to BSM
 		
 		List<Pocket> pocketList = new ArrayList<Pocket>();
 		pocketList.add(subPocket);
 		result.setPocketList(pocketList);
 		Partner partner = billerService.getPartner(ibtInquiry.getBillerCode());
 
-		SubscriberMDN partnerMDN = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn partnerMDN = partner.getSubscriber().getSubscriberMdns().iterator().next();
 		validationResult = transactionApiValidationService.validatePartnerMDN(partnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination partner has failed validations");
@@ -200,7 +200,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		
 		ibtInquiry.setEmail(sourceMDN.getSubscriber().getEmail());
 		
-		MFSBillerPartner results = mfsBiller.getMFSBillerPartnerFromMFSBillerId().iterator().next();
+		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
 			ibtInquiry.setIntegrationCode(results.getIntegrationCode());
 			ibtInquiry.setPartnerBillerCode(results.getPartnerBillerCode());
@@ -209,11 +209,11 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		
 		ServiceCharge serviceCharge=new ServiceCharge();
-		serviceCharge.setChannelCodeId(cc.getID());
-		serviceCharge.setDestMDN(partnerMDN.getMDN());
+		serviceCharge.setChannelCodeId(cc.getId().longValue());
+		serviceCharge.setDestMDN(partnerMDN.getMdn());
 		serviceCharge.setServiceName(transactionDetails.getServiceName());//change to service
 		serviceCharge.setTransactionTypeName(transactionDetails.getTransactionTypeName());
-		serviceCharge.setSourceMDN(sourceMDN.getMDN());
+		serviceCharge.setSourceMDN(sourceMDN.getMdn());
 		serviceCharge.setTransactionAmount(ibtInquiry.getAmount()!=null ? ibtInquiry.getAmount() : BigDecimal.ZERO);
 		serviceCharge.setMfsBillerCode(ibtInquiry.getBillerCode());
 		serviceCharge.setTransactionLogId(ibtInquiry.getTransactionID());
@@ -225,17 +225,17 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(serviceCharge.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getID(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 				return result;
 			}
-			agentPocket = partnerService.getPocketByDestPocketID();
+			agentPocket = partnerService.getPocketByDestpocketid();
 			if(agentPocket==null){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 				return result;
 			}
-			if (!agentPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+			if (!(agentPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 				return result;
 			}
@@ -263,12 +263,12 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		sctl.setIntegrationCode(ibtInquiry.getIntegrationCode());
 	
 		ibtInquiry.setServiceChargeTransactionLogID(sctl.getID());
-		ibtInquiry.setDestMDN(partnerMDN.getMDN());
+		ibtInquiry.setDestMDN(partnerMDN.getMdn());
 		ibtInquiry.setCharges(transaction.getAmountTowardsCharges());
-		ibtInquiry.setChannelCode(cc.getChannelCode());
-		ibtInquiry.setSourcePocketID(subPocket.getID());
-		ibtInquiry.setDestPocketID(agentPocket.getID());
-		ibtInquiry.setSourceApplication(cc.getChannelSourceApplication());
+		ibtInquiry.setChannelCode(cc.getChannelcode());
+		ibtInquiry.setSourcePocketID(subPocket.getId().longValue());
+		ibtInquiry.setDestPocketID(agentPocket.getId().longValue());
+		ibtInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
 		
 		response = super.process(ibtInquiry);
 
@@ -303,7 +303,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		result.setBankName(transactionResponse.getBankName());
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
-			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionTypeName(), cc.getID()) == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionTypeName(), cc.getId().longValue()) == true){
 				result.setMfaMode("OTP");
 				//mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}

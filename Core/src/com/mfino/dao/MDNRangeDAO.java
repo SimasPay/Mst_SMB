@@ -5,13 +5,15 @@
 
 package com.mfino.dao;
 
-import com.mfino.constants.DAOConstants;
-import com.mfino.domain.MDNRange;
-import com.mfino.dao.query.MDNRangeQuery;
-import com.mfino.fix.CmFinoFIX;
-import java.util.*;
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+
+import com.mfino.constants.DAOConstants;
+import com.mfino.dao.query.MDNRangeQuery;
+import com.mfino.domain.MDNRange;
+import com.mfino.domain.Merchant;
 
 /**
  *
@@ -26,17 +28,17 @@ public class MDNRangeDAO extends BaseDAO<MDNRange>{
         Criteria criteria = createCriteria();
         
         if (query.getStartPrefix() != null) {
-            criteria.add(Restrictions.like(CmFinoFIX.CRMDNRange.FieldName_StartPrefix, query.getStartPrefix()).ignoreCase());
+            criteria.add(Restrictions.like(MDNRange.FieldName_StartPrefix, query.getStartPrefix()).ignoreCase());
         }
         if (query.getEndPrefix() != null) {
-            criteria.add(Restrictions.like(CmFinoFIX.CRMDNRange.FieldName_EndPrefix, query.getEndPrefix()).ignoreCase());
+            criteria.add(Restrictions.like(MDNRange.FieldName_EndPrefix, query.getEndPrefix()).ignoreCase());
         }
         if (query.getMerchantId() != null) {
             final String merchantAlias = MERCHANT_ASSOC_NAME + DAOConstants.ALIAS_SUFFIX;
             criteria.createAlias(MERCHANT_ASSOC_NAME, merchantAlias);
-            final String merchantWithAlias = merchantAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRMerchant.FieldName_RecordID;
+            final String merchantWithAlias = merchantAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + Merchant.FieldName_RecordID;
             criteria.add(Restrictions.eq(merchantWithAlias, query.getMerchantId()));
-            processColumn(query, CmFinoFIX.CRMerchant.FieldName_RecordID, merchantWithAlias);
+            processColumn(query, Merchant.FieldName_RecordID, merchantWithAlias);
         }
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")

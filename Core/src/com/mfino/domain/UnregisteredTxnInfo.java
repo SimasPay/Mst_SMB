@@ -22,11 +22,11 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "UNREGISTERED_TXN_INFO")
-public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
+public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 
 	private BigDecimal id;
 	private long version;
-	private SubscriberMDN subscriberMdn;
+	private SubscriberMdn subscriberMdn;
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private FundDefinition fundDefinition;
 	private BigDecimal transferctid;
@@ -47,10 +47,10 @@ public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
 	private Set<FundDistributionInfo> fundDistributionInfos = new HashSet<FundDistributionInfo>(
 			0);
 
-	public UnRegisteredTxnInfo() {
+	public UnregisteredTxnInfo() {
 	}
 
-	public UnRegisteredTxnInfo(BigDecimal id,
+	public UnregisteredTxnInfo(BigDecimal id,
 			ServiceChargeTxnLog serviceChargeTxnLog,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
@@ -62,7 +62,7 @@ public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public UnRegisteredTxnInfo(BigDecimal id, SubscriberMDN subscriberMdn,
+	public UnregisteredTxnInfo(BigDecimal id, SubscriberMdn subscriberMdn,
 			ServiceChargeTxnLog serviceChargeTxnLog,
 			FundDefinition fundDefinition, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
@@ -104,11 +104,11 @@ public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID")
-	public SubscriberMDN getSubscriberMdn() {
+	public SubscriberMdn getSubscriberMdn() {
 		return this.subscriberMdn;
 	}
 
-	public void setSubscriberMdn(SubscriberMDN subscriberMdn) {
+	public void setSubscriberMdn(SubscriberMdn subscriberMdn) {
 		this.subscriberMdn = subscriberMdn;
 	}
 
