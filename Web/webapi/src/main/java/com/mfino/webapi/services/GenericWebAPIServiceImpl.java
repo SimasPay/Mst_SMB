@@ -15,13 +15,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.SystemParameterKeys;
-import com.mfino.dao.DAOFactory;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -90,11 +89,11 @@ public class GenericWebAPIServiceImpl implements GenericWebAPIService{
 		List<Pocket> pockets = pocketService.get(query);
 		if(CollectionUtils.isNotEmpty(pockets)){
 			Pocket pocket = pockets.get(0);
-			SubscriberMDN subscriberMDN = pocket.getSubscriberMDNByMDNID();
+			SubscriberMdn subscriberMDN = pocket.getSubscriberMdn();
 
  			Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
 		    if((CmFinoFIX.ResponseCode_Success.equals(validationResult))&& (CmFinoFIX.PocketStatus_Active.equals(pocket.getStatus()))){
-			    return  subscriberMDN.getMDN() ;
+			    return  subscriberMDN.getMdn() ;
 				 
 			}else{
 			    return systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN) ;
@@ -108,13 +107,13 @@ public class GenericWebAPIServiceImpl implements GenericWebAPIService{
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	public XMLResult updateSubscriberDetails(String subscriberMDN, XMLResult xmlResult){
 		
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(subscriberMDN);
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(subscriberMDN);
 
 		if(smdn != null)
 		{
-			xmlResult.setLanguage(smdn.getSubscriber().getLanguage());
-			xmlResult.setFirstName(smdn.getSubscriber().getFirstName());
-			xmlResult.setLastName(smdn.getSubscriber().getLastName());
+			xmlResult.setLanguage((int)smdn.getSubscriber().getLanguage());
+			xmlResult.setFirstName(smdn.getSubscriber().getFirstname());
+			xmlResult.setLastName(smdn.getSubscriber().getLastname());
 		}	
 		
 		return xmlResult;
@@ -148,25 +147,25 @@ public class GenericWebAPIServiceImpl implements GenericWebAPIService{
 	public void activateInactiveSubscriber(String mdn){
 
 		Timestamp now = new Timestamp();
-		SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(mdn);
+		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(mdn);
 		
 		Subscriber subscriber = null;
 		if(subscriberMDN != null && subscriberMDN.getStatus() == CmFinoFIX.SubscriberStatus_InActive.intValue()){
 			if(subscriberMDN.getRestrictions() == CmFinoFIX.SubscriberRestrictions_None.intValue()){
 				subscriber = subscriberMDN.getSubscriber();
 				subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-				subscriberMDN.setStatusTime(now);		
+				subscriberMDN.setStatustime(now);		
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-				subscriber.setStatusTime(now);
+				subscriber.setStatustime(now);
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 				subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 				subscriberService.saveSubscriber(subscriber);
 				Partner partner = getPartnerForSubscriber(subscriber);
 				if (partner != null) {
-					partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Active);
+					partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Active);
 					partnerService.savePartner(partner);
 				}
-				log.info("Activated the Inactive Subscriber because of Activity and his Id is--> " + subscriber.getID());			
+				log.info("Activated the Inactive Subscriber because of Activity and his Id is--> " + subscriber.getId());			
 			}
 		}
 	}
