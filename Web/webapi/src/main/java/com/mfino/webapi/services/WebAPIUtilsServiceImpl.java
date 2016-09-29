@@ -25,7 +25,7 @@ import com.mfino.domain.Company;
 import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
@@ -77,11 +77,11 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		if (StringUtils.isNotBlank(SourceMDN)) {
 			SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-			SubscriberMDN smdn = smdnDAO.getByMDN(SourceMDN);
+			SubscriberMdn smdn = smdnDAO.getByMDN(SourceMDN);
 			if (smdn != null) {
 				Company c = smdn.getSubscriber().getCompany();
 				xmlResult.setCompany(c);
-				language = smdn.getSubscriber().getLanguage();
+				language = (int)smdn.getSubscriber().getLanguage();
 			}
 		}
 
@@ -132,7 +132,7 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 			}
 			if(partner != null)
 			{
-				language = partner.getSubscriber().getLanguage();
+				language =(int) partner.getSubscriber().getLanguage();
 			}
 		}		
 		xmlResult.setLanguage(language);
@@ -156,11 +156,11 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		if (StringUtils.isNotBlank(SourceMDN)) {
 			SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-			SubscriberMDN smdn = smdnDAO.getByMDN(SourceMDN);
+			SubscriberMdn smdn = smdnDAO.getByMDN(SourceMDN);
 			if (smdn != null) {
 				Company c = smdn.getSubscriber().getCompany();
 				xmlResult.setCompany(c);
-				language = smdn.getSubscriber().getLanguage();
+				language = (int)smdn.getSubscriber().getLanguage();
 			}
 		}
 
