@@ -445,5 +445,5 @@ public class Merchant extends Base implements java.io.Serializable {
 	public Merchant getMerchantByParentID(){
 		return m_pMerchantByParentID;
 		}
-
+	
 }
