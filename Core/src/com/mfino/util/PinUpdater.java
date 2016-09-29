@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 
 public class PinUpdater {
 
@@ -15,11 +15,11 @@ public class PinUpdater {
 
 		
 		SubscriberMDNDAO dao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		List<SubscriberMDN> subList = dao.getAll();
-		for(SubscriberMDN mdn:subList) {
+		List<SubscriberMdn> subList = dao.getAll();
+		for(SubscriberMdn mdn:subList) {
 			
-			String newPin = MfinoUtil.calculateDigestPin(mdn.getMDN(), "1234");
-			mdn.setDigestedPIN(newPin);
+			String newPin = MfinoUtil.calculateDigestPin(mdn.getMdn(), "1234");
+			mdn.setDigestedpin(newPin);
 			
 			
 		}

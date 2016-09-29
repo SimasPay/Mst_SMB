@@ -6,8 +6,9 @@ package com.mfino.validators;
 
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
+
 import java.util.Set;
 
 /**
@@ -16,22 +17,22 @@ import java.util.Set;
  */
 public class DefaultBOBPocketValidator implements IValidator {
 
-    private SubscriberMDN subscriberMDN;
+    private SubscriberMdn subscriberMDN;
     private Set<Pocket> pocketSet;
     private Pocket defaultBOBPocket = null; 
     private boolean validateStatus = true;
 
-    public DefaultBOBPocketValidator(SubscriberMDN subscriberMDN) {
+    public DefaultBOBPocketValidator(SubscriberMdn subscriberMDN) {
         this.subscriberMDN = subscriberMDN;
     }
     
-    public DefaultBOBPocketValidator(SubscriberMDN subscriberMDN,boolean validateStatus) {
+    public DefaultBOBPocketValidator(SubscriberMdn subscriberMDN,boolean validateStatus) {
         this.subscriberMDN = subscriberMDN;
         this.validateStatus = validateStatus;
     }
 
     public Integer validate() {
-        pocketSet = subscriberMDN.getPocketFromMDNID();
+        pocketSet = subscriberMDN.getPockets();
         if (pocketSet.size() == 0) {
             return CmFinoFIX.NotificationCode_BOBPocketNotFound;
         }
@@ -39,8 +40,15 @@ public class DefaultBOBPocketValidator implements IValidator {
         for (Pocket pocket : pocketSet) {
             if (pocket.getPocketTemplate() != null) {
                 PocketTemplate pTemplate = pocket.getPocketTemplate();
-                if (pTemplate.getType().equals(CmFinoFIX.PocketType_BOBAccount) &&
-                        pTemplate.getCommodity().equals(CmFinoFIX.Commodity_Airtime) &&BOOL_TRUE.equals(pocket.getIsDefault())) {
+                
+                Long tempTypeL = pTemplate.getType();
+				Integer tempTypeLI = tempTypeL.intValue();
+				
+				Long tempCommodityL = pTemplate.getCommodity();
+				Integer tempCommodityLI = tempCommodityL.intValue();
+                
+                if (tempTypeLI.equals(CmFinoFIX.PocketType_BOBAccount) &&
+                		tempCommodityLI.equals(CmFinoFIX.Commodity_Airtime) &&BOOL_TRUE.equals(pocket.getIsdefault())) {
                     defaultBOBPocket = pocket;
                     break;
                 }

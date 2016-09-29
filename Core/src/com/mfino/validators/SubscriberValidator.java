@@ -6,7 +6,8 @@ package com.mfino.validators;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 
 
@@ -27,7 +28,7 @@ public class SubscriberValidator implements IValidator{
 
 	private String mdn = null;
 	
-	private SubscriberMDN subscriberMDN;
+	private SubscriberMdn subscriberMDN;
 	
 	private Subscriber subscriber;
 	
@@ -51,7 +52,7 @@ public class SubscriberValidator implements IValidator{
 		if ( subscriber == null ) {
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		} 
-		if (subscriber.getmFinoServiceProviderByMSPID().getID() != 1L) {
+		if (subscriber.getMfinoServiceProvider().getId().longValue() != 1L) {
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
 		return CmFinoFIX.ResponseCode_Success;
@@ -59,13 +60,13 @@ public class SubscriberValidator implements IValidator{
 	/**
 	 * @return the subscriberMDN
 	 */
-	public SubscriberMDN getSubscriberMDN() {
+	public SubscriberMdn getSubscriberMDN() {
 		return subscriberMDN;
 	}
 	/**
 	 * @param subscriberMDN the subscriberMDN to set
 	 */
-	public void setSubscriberMDN(SubscriberMDN subscriberMDN) {
+	public void setSubscriberMDN(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 	

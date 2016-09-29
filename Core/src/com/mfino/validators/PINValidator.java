@@ -17,7 +17,7 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
@@ -31,7 +31,7 @@ import com.mfino.util.MfinoUtil;
  */
 public class PINValidator implements IValidator {
 
-	private SubscriberMDN	subscriberMDN;
+	private SubscriberMdn	subscriberMDN;
 	private Subscriber		subscriber;
 
 	private String	      mdn;
@@ -49,13 +49,13 @@ public class PINValidator implements IValidator {
 	@Qualifier("SubscriberStatusEventServiceImpl")
 	private SubscriberStatusEventService subscriberStatusEventService;
 
-	public PINValidator(SubscriberMDN subscriberMDN, String pin) {
+	public PINValidator(SubscriberMdn subscriberMDN, String pin) {
 		this.subscriberMDN = subscriberMDN;
 		this.subscriber = subscriberMDN.getSubscriber();
 		this.pin = pin;
 	}
 
-	public PINValidator(SubscriberMDN subscriberMDN, String pin, XMLResult result) {
+	public PINValidator(SubscriberMdn subscriberMDN, String pin, XMLResult result) {
 		this.subscriberMDN = subscriberMDN;
 		this.subscriber = subscriberMDN.getSubscriber();
 		this.pin = pin;
@@ -120,10 +120,12 @@ public class PINValidator implements IValidator {
 			return CmFinoFIX.NotificationCode_PINResetRequired;
 		}
 		if (!calcPIN.equalsIgnoreCase(digestedPin)) {
-			int wrongPINCount = subscriberMDN.getWrongPINCount();
-			subscriberMDN.setWrongPINCount(wrongPINCount + 1);
+			Long erPinCount = subscriberMDN.getWrongpincount();
+			
+			int wrongPINCount = erPinCount.intValue();
+			subscriberMDN.setWrongpincount(wrongPINCount + 1);
 			if (result != null) {
-				result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+				result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - erPinCount.intValue());
 			}
 			recalculateMDNRestrictions();
 			subscriberMDNDAO.save(subscriberMDN);
@@ -132,8 +134,8 @@ public class PINValidator implements IValidator {
 		}
 		else {
 			// reset wrong pin count and allow them to login
-			if (subscriberMDN.getWrongPINCount() > 0) {
-				subscriberMDN.setWrongPINCount(0);
+			if (subscriberMDN.getWrongpincount() > 0) {
+				subscriberMDN.setWrongpincount(0);
 				subscriberMDNDAO.save(subscriberMDN);
 				newPinDigest = calcPIN;
 				return CmFinoFIX.ResponseCode_Success;
@@ -150,7 +152,7 @@ public class PINValidator implements IValidator {
 		if ((subscriberMDN.getRestrictions() & CmFinoFIX.SubscriberRestrictions_SecurityLocked) != 0) {
 			return;
 		}
-		if (subscriberMDN.getWrongPINCount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
+		if (subscriberMDN.getWrongpincount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
 			Timestamp now = new Timestamp();
 			subscriberMDN.setRestrictions(subscriberMDN.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 			subscriberMDN .setStatus(CmFinoFIX.SubscriberStatus_InActive);
@@ -162,7 +164,7 @@ public class PINValidator implements IValidator {
 			
 			// Check if the Subscriber is of Partner type
 			if (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
-				Set<Partner> setPartners = subscriber.getPartnerFromSubscriberID();
+				Set<Partner> setPartners = subscriber.getPartners();
 				if (CollectionUtils.isNotEmpty(setPartners)) {
 					PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
 					Partner partner = setPartners.iterator().next();

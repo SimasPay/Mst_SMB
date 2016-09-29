@@ -32,7 +32,8 @@ public class PocketLimitsValidator implements IValidator {
 	public Integer validate() {
 		Timestamp now = new Timestamp();
 		
-		if (pocket.getPocketTemplate().getIscollectorpocket()!=null && pocket.getPocketTemplate().getIscollectorpocket()){
+//		if (pocket.getPocketTemplate().getIscollectorpocket()!=null && pocket.getPocketTemplate().getIscollectorpocket()){
+		if (pocket.getPocketTemplate().getIscollectorpocket()!=null){
 			pocket.setLasttransactiontime(now);
 			return CmFinoFIX.ResponseCode_Success;
 		}
@@ -69,9 +70,12 @@ public class PocketLimitsValidator implements IValidator {
 			} 
 		}
 		
-		if (pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA) {
+		Long tempTypeL = pocket.getPocketTemplate().getType();
+		int tempTypeLI = tempTypeL.intValue();
+		
+		if (tempTypeLI == CmFinoFIX.PocketType_SVA) {
 			if (null == pocket.getCurrentbalance()) {
-				pocket.setCurrentBalance(BigDecimal.ZERO);
+				pocket.setCurrentbalance(BigDecimal.ZERO.toString());
 			}
 		}
 
@@ -91,13 +95,15 @@ public class PocketLimitsValidator implements IValidator {
 				(pocket.getPocketTemplate().getMintimebetweentransactions()*1000 > (now.getTime() - pocket.getLasttransactiontime().getTime()))) {
 			notificationCode = CmFinoFIX.NotificationCode_TransactionFailedDueToTimeLimitTransactionReached;
 		}
-		else if (pocket.getPocketTemplate().getType().intValue()	==	CmFinoFIX.PocketType_SVA) {
+		else if (tempTypeLI	==	CmFinoFIX.PocketType_SVA) {
+			BigDecimal currBalance = new BigDecimal(pocket.getCurrentbalance());
 			if (isSource) {
-				if (((pocket.getCurrentBalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == -1)) {
+				
+				if (((currBalance.subtract(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == -1)) {
 					notificationCode = CmFinoFIX.NotificationCode_BalanceTooLow;
 				}
 			}
-			else if (((pocket.getCurrentBalance().add(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == 1)) {
+			else if (((currBalance.add(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == 1)) {
 				notificationCode = CmFinoFIX.NotificationCode_BalanceTooHigh;
 			}
 		}

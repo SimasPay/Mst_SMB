@@ -4,7 +4,7 @@
 package com.mfino.validators;
 
 import com.mfino.domain.Merchant;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -13,15 +13,15 @@ import com.mfino.fix.CmFinoFIX;
  */
 public class MerchantHierarchyValidator implements IValidator {
 
-	private SubscriberMDN childMDN = null;
+	private SubscriberMdn childMDN = null;
 	
-	private SubscriberMDN parentMDN = null;
+	private SubscriberMdn parentMDN = null;
 	
 	private Merchant parentMerchant = null;
 	
 	private Merchant childMerchant = null;
 	
-	public MerchantHierarchyValidator(SubscriberMDN childMDN, SubscriberMDN parentMDN) {
+	public MerchantHierarchyValidator(SubscriberMdn childMDN, SubscriberMdn parentMDN) {
 		this.childMDN = childMDN;
 		this.parentMDN = parentMDN;
 	}
@@ -45,7 +45,7 @@ public class MerchantHierarchyValidator implements IValidator {
 		if (childMerchant == null || parentMerchant == null)
 			return CmFinoFIX.NotificationCode_NotDescendentNotification;
 		
-		if (childMerchant.getMerchantByParentID().getID()!=null && childMerchant.getMerchantByParentID().getID().equals(parentMerchant.getId()))
+		if (childMerchant.getMerchantByParentID().getId()!=null && childMerchant.getMerchantByParentID().getId().equals(parentMerchant.getId()))
 			return CmFinoFIX.NotificationCode_NotDescendentNotification;
 		return CmFinoFIX.ResponseCode_Success;
 	}
@@ -54,7 +54,7 @@ public class MerchantHierarchyValidator implements IValidator {
 	 * @param childMDN2
 	 * @return
 	 */
-	private Merchant loadMerchant(SubscriberMDN mdn) {
+	private Merchant loadMerchant(SubscriberMdn mdn) {
 		return mdn.getSubscriber().getMerchant();
 	}
 

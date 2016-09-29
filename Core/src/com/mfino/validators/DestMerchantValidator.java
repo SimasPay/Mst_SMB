@@ -6,7 +6,7 @@ package com.mfino.validators;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Merchant;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -15,7 +15,7 @@ import com.mfino.fix.CmFinoFIX;
  */
 public class DestMerchantValidator implements IValidator {
 
-private SubscriberMDN subscriberMDN;
+private SubscriberMdn subscriberMDN;
 	
 	private String mdn;
 	
@@ -23,7 +23,7 @@ private SubscriberMDN subscriberMDN;
 	 * 
 	 */
 	
-	public DestMerchantValidator(SubscriberMDN subscriberMDN) {
+	public DestMerchantValidator(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 	
@@ -55,14 +55,14 @@ private SubscriberMDN subscriberMDN;
 	/**
 	 * @return the subscriberMDN
 	 */
-	public SubscriberMDN getSubscriberMDN() {
+	public SubscriberMdn getSubscriberMDN() {
 		return subscriberMDN;
 	}
 
 	/**
 	 * @param subscriberMDN the subscriberMDN to set
 	 */
-	public void setSubscriberMDN(SubscriberMDN subscriberMDN) {
+	public void setSubscriberMDN(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 

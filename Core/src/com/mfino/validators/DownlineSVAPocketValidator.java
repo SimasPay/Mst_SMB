@@ -9,7 +9,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -18,7 +18,7 @@ import com.mfino.fix.CmFinoFIX;
  */
 public class DownlineSVAPocketValidator implements IValidator {
 
-	private SubscriberMDN subscriberMDN;
+	private SubscriberMdn subscriberMDN;
 
 	private String mdn;
 
@@ -26,7 +26,7 @@ public class DownlineSVAPocketValidator implements IValidator {
 
 	private Pocket defaultSVAPocket = null;
 
-	public DownlineSVAPocketValidator(SubscriberMDN subscriberMDN) {
+	public DownlineSVAPocketValidator(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 
@@ -48,7 +48,7 @@ public class DownlineSVAPocketValidator implements IValidator {
 				return CmFinoFIX.NotificationCode_MDNNotFound;
 			}
 		}
-		pocketSet = subscriberMDN.getPocketFromMDNID();
+		pocketSet = subscriberMDN.getPockets();
 		if (pocketSet.size() == 0) {
 			return CmFinoFIX.NotificationCode_NoSVAPocketsWereFound;
 		}
@@ -56,9 +56,16 @@ public class DownlineSVAPocketValidator implements IValidator {
 		for (Pocket pocket : pocketSet) {
 			if (pocket.getPocketTemplate() != null) {
 				PocketTemplate pTemplate = pocket.getPocketTemplate();
-				if (pTemplate.getType().equals(CmFinoFIX.PocketType_SVA)
-						&& pTemplate.getCommodity().equals(
-								CmFinoFIX.Commodity_Airtime) &&BOOL_TRUE.equals(pocket.getIsDefault())) {
+				
+				Long tempTypeL = pTemplate.getType();
+				Integer tempTypeLI = tempTypeL.intValue();
+				
+				Long tempCommodityL = pTemplate.getCommodity();
+				Integer tempCommodityLI = tempCommodityL.intValue();
+				
+				if (tempTypeLI.equals(CmFinoFIX.PocketType_SVA)
+						&& tempCommodityLI.equals(
+								CmFinoFIX.Commodity_Airtime) &&BOOL_TRUE.equals(pocket.getIsdefault())) {
 					defaultSVAPocket = pocket;
 					break;
 				}

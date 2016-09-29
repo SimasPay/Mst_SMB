@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.SubscriberService;
 
@@ -28,14 +28,14 @@ public class SourceMDNValidator implements IValidator {
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
 
-	private SubscriberMDN subscriberMDN;
+	private SubscriberMdn subscriberMDN;
 
 	private String mdn;
 
 	/**
 	 * 
 	 */
-	public SourceMDNValidator(SubscriberMDN subscriberMDN) {
+	public SourceMDNValidator(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 
@@ -86,11 +86,11 @@ public class SourceMDNValidator implements IValidator {
 		return CmFinoFIX.ResponseCode_Success;
 	}
 
-	public SubscriberMDN getSubscriberMDN() {
+	public SubscriberMdn getSubscriberMDN() {
 		return subscriberMDN;
 	}
 
-	public void setSubscriberMDN(SubscriberMDN subscriberMDN) {
+	public void setSubscriberMDN(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 	

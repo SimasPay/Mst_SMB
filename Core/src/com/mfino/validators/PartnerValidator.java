@@ -13,7 +13,7 @@ import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.BillerService;
 import com.mfino.service.PartnerService;
@@ -26,7 +26,7 @@ import com.mfino.service.PartnerService;
  */
 public class PartnerValidator implements IValidator {
 
-	private SubscriberMDN subscriberMDN;
+	private SubscriberMdn subscriberMDN;
 
 	private String mdn;
 
@@ -59,7 +59,7 @@ public class PartnerValidator implements IValidator {
 
 	}
 
-	public PartnerValidator(SubscriberMDN subscriberMDN) {
+	public PartnerValidator(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 	public PartnerValidator(String mdn) {
@@ -79,7 +79,7 @@ public class PartnerValidator implements IValidator {
 				if (subscriberMDN == null) {
 					return CmFinoFIX.NotificationCode_PartnerNotFound;
 				}
-				Set<Partner> partnerSet = subscriberMDN.getSubscriber().getPartnerFromSubscriberID();
+				Set<Partner> partnerSet = subscriberMDN.getSubscriber().getPartners();
 				if(partnerSet==null||partnerSet.isEmpty())
 					return CmFinoFIX.NotificationCode_PartnerNotFound;
 				partner = partnerSet.iterator().next();
@@ -90,7 +90,7 @@ public class PartnerValidator implements IValidator {
 				partner = billerService.getPartner(billerCode);
 			}
 			if(partner!=null){
-				subscriberMDN=partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+				subscriberMDN=partner.getSubscriber().getSubscriberMdns().iterator().next();
 			} else {
 				if(isAgent)
 					return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
@@ -102,13 +102,16 @@ public class PartnerValidator implements IValidator {
 		}
 		Subscriber agentsubscriber=subscriberMDN.getSubscriber();
 
-		if(!(agentsubscriber.getType().equals(CmFinoFIX.SubscriberType_Partner))){
+		Long tempTypeL = agentsubscriber.getType();
+		Integer tempTypeLI = tempTypeL.intValue();
+		
+		if(!(tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner))){
 			if(isAgent)
 				return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found			
 		}
 		if(partner==null){
-			Set<Partner> agentPartner = agentsubscriber.getPartnerFromSubscriberID();
+			Set<Partner> agentPartner = agentsubscriber.getPartners();
 			if(!agentPartner.isEmpty()){
 				partner=agentPartner.iterator().next();
 			}
@@ -119,7 +122,7 @@ public class PartnerValidator implements IValidator {
 				return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 			return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found			
 		}
-		if(isAgent && !partnerService.isAgentType(partner.getBusinesspartnertype()) && !(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
+		if(isAgent && !partnerService.isAgentType(partner.getBusinesspartnertype().intValue()) && !(partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice))){
 			//return CmFinoFIX.NotificationCode_PartnerNotFound;//agent Not found
 			return CmFinoFIX.NotificationCode_DestinationAgentNotFound;
 		}
@@ -141,14 +144,14 @@ public class PartnerValidator implements IValidator {
 	/**
 	 * @return the subscriberMDN
 	 */
-	public SubscriberMDN getSubscriberMDN() {
+	public SubscriberMdn getSubscriberMDN() {
 		return subscriberMDN;
 	}
 
 	/**
 	 * @param subscriberMDN the subscriberMDN to set
 	 */
-	public void setSubscriberMDN(SubscriberMDN subscriberMDN) {
+	public void setSubscriberMDN(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 

@@ -7,7 +7,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MerchantDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Merchant;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -18,7 +18,7 @@ import com.mfino.fix.CmFinoFIX;
  */
 public class SourceMerchantValidator implements IValidator {
 
-	private SubscriberMDN subscriberMDN;
+	private SubscriberMdn subscriberMDN;
 	
 	private String mdn;
 	
@@ -26,7 +26,7 @@ public class SourceMerchantValidator implements IValidator {
 	 * 
 	 */
 	
-	public SourceMerchantValidator(SubscriberMDN subscriberMDN) {
+	public SourceMerchantValidator(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 	
@@ -64,14 +64,14 @@ public class SourceMerchantValidator implements IValidator {
 	/**
 	 * @return the subscriberMDN
 	 */
-	public SubscriberMDN getSubscriberMDN() {
+	public SubscriberMdn getSubscriberMDN() {
 		return subscriberMDN;
 	}
 
 	/**
 	 * @param subscriberMDN the subscriberMDN to set
 	 */
-	public void setSubscriberMDN(SubscriberMDN subscriberMDN) {
+	public void setSubscriberMDN(SubscriberMdn subscriberMDN) {
 		this.subscriberMDN = subscriberMDN;
 	}
 
