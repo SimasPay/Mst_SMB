@@ -12,6 +12,7 @@ import com.mfino.fix.CmFinoFIX;
  * @author Deva
  *
  */
+
 public class Validator {
 
 	private List<IValidator> validatorList = new ArrayList<IValidator>();

@@ -115,5 +115,4 @@ public class DownlineSVAPocketValidator implements IValidator {
 	public void setDefaultSVAPocket(Pocket defaultSVAPocket) {
 		this.defaultSVAPocket = defaultSVAPocket;
 	}
-
 }

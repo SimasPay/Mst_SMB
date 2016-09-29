@@ -52,6 +52,5 @@ public class DestPocketLimitsValidator implements IValidator {
 //		PocketLimitsValidator pocketLimitsValidator = new PocketLimitsValidator(1000L,11L);
 //    	Integer validationResult = pocketLimitsValidator.validate();
 //    	System.out.println("Validation Result " + validationResult);
-//	}    
-
+//	}
 }

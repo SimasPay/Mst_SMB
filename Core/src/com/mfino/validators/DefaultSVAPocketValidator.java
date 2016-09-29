@@ -63,6 +63,7 @@ public class DefaultSVAPocketValidator implements IValidator {
 				Long tempCommodityL = pTemplate.getCommodity();
 				Integer tempCommodityLI = tempCommodityL.intValue();
 				
+				
 				if (tempTypeLI.equals(CmFinoFIX.PocketType_SVA)
 						&& tempCommodityLI.equals(
 								CmFinoFIX.Commodity_Airtime) &&BOOL_TRUE.equals(pocket.getIsdefault())) {

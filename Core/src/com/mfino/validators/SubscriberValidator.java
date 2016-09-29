@@ -24,6 +24,7 @@ import com.mfino.fix.CmFinoFIX;
  * 5. Validates if the Subscriber is active or Not.
  *  
  */
+
 public class SubscriberValidator implements IValidator{
 
 	private String mdn = null;

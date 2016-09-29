@@ -22,6 +22,7 @@ import com.mfino.service.SubscriberService;
  * 1. Validates if the Source Subscriber MDN Status is Active or Pendingretired.
  * 2. Validates if the Source Subscriber MDN has restriction.
  */
+
 public class SourceMDNValidator implements IValidator {
 	
 	@Autowired

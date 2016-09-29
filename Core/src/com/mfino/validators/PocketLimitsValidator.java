@@ -11,7 +11,6 @@ import com.mfino.hibernate.Timestamp;
  * @author Maruthi
  *
  */
-
 public class PocketLimitsValidator implements IValidator {
 	private BigDecimal amount;
 	private Pocket pocket;

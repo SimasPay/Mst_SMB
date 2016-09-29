@@ -37,6 +37,7 @@ public class DefaultBOBPocketValidator implements IValidator {
             return CmFinoFIX.NotificationCode_BOBPocketNotFound;
         }
 
+        
         for (Pocket pocket : pocketSet) {
             if (pocket.getPocketTemplate() != null) {
                 PocketTemplate pTemplate = pocket.getPocketTemplate();
