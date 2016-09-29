@@ -18,7 +18,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
@@ -93,12 +93,12 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		ChannelCode channelCode = transactionDetails.getCc();
  		BigDecimal amount = transactionDetails.getAmount();
 		
- 		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
+ 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
 
 		Integer validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Source subscriber with mdn : "+sourceMDN.getMDN()+" has failed validations");
+			log.error("Source subscriber with mdn : "+sourceMDN.getMdn()+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -106,7 +106,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		Pocket srcPocket = pocketService.getDefaultPocket(sourceMDN, transactionDetails.getSourcePocketCode());
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -128,30 +128,30 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		interBankTransferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		interBankTransferInquiry.setSourceMDN(transactionDetails.getSourceMDN());
 		interBankTransferInquiry.setSourceMessage(transactionDetails.getSourceMessage());
-		interBankTransferInquiry.setSourceApplication(channelCode.getChannelSourceApplication());
-		interBankTransferInquiry.setChannelCode(channelCode.getChannelCode());
+		interBankTransferInquiry.setSourceApplication((int)channelCode.getChannelsourceapplication());
+		interBankTransferInquiry.setChannelCode(channelCode.getChannelcode());
 		interBankTransferInquiry.setServiceName(transactionDetails.getServiceName());
-		interBankTransferInquiry.setSourcePocketID(srcPocket.getID());
-		interBankTransferInquiry.setSourceBankAccountNo(srcPocket.getCardPAN());
+		interBankTransferInquiry.setSourcePocketID(srcPocket.getId().longValue());
+		interBankTransferInquiry.setSourceBankAccountNo(srcPocket.getCardpan());
 		interBankTransferInquiry.setDestAccountNumber(transactionDetails.getDestAccountNumber());
 		interBankTransferInquiry.setDestinationBankAccountNo(transactionDetails.getDestAccountNumber());
 		interBankTransferInquiry.setDestBankCode(transactionDetails.getDestBankCode());
 		interBankTransferInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER);
 		interBankTransferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_InterBank_Transfer);
 		
- 		SubscriberMDN destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
+ 		SubscriberMdn destMDN = subscriberMdnService.getByMDN(transactionDetails.getDestMDN());
  		validationResult=transactionApiValidationService.validateSubscriberAsDestination(destMDN);
 		addCompanyANDLanguageToResult(sourceMDN, result);
 
 		Pocket destPocket = pocketService.getDefaultPocket(destMDN, "2");
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		if(srcPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)
-				||destPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)
+				||destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
 			
 
 			if(!systemParametersService.getBankServiceStatus()){
@@ -160,7 +160,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 				return result;
 			}
 		}
-		interBankTransferInquiry.setDestPocketID(destPocket.getID());
+		interBankTransferInquiry.setDestPocketID(destPocket.getId().longValue());
 		
 		Transaction transaction = null;
 
@@ -177,7 +177,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(interBankTransferInquiry.getSourceMDN());
 		sc.setDestMDN(interBankTransferInquiry.getDestMDN());
-		sc.setChannelCodeId(channelCode.getID());
+		sc.setChannelCodeId(channelCode.getId().longValue());
 		sc.setServiceName(interBankTransferInquiry.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
 		sc.setTransactionAmount(interBankTransferInquiry.getAmount());
@@ -244,7 +244,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		
 		//For 2 factor authentication
 		if(transactionResponse.isResult() == true){
-			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, channelCode.getID()) == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, channelCode.getId().longValue()) == true){
 				result.setMfaMode("OTP");
 				//mfaService.handleMFATransaction(sctl.getID(), sourceMDN.getMDN());
 			}

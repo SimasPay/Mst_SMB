@@ -57,8 +57,8 @@ public class BulkTransferHandlerImpl extends FIXMessageHandler implements BulkTr
 		transferConfirmation.setSourcePocketID(transactionDetails.getSrcPocketId());
 		transferConfirmation.setDestPocketID(transactionDetails.getDestinationPocketId());
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		transferConfirmation.setChannelCode(channelCode.getChannelCode());
-		transferConfirmation.setSourceApplication(channelCode.getChannelSourceApplication());
+		transferConfirmation.setChannelCode(channelCode.getChannelcode());
+		transferConfirmation.setSourceApplication((int)channelCode.getChannelsourceapplication());
 		transferConfirmation.setParentTransactionID(transactionDetails.getParentTxnId());
 		transferConfirmation.setTransferID(transactionDetails.getTransferId());
 		transferConfirmation.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
