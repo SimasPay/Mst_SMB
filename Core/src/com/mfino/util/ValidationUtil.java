@@ -21,6 +21,7 @@ import com.mfino.fix.CmFinoFIX;
  *
  * @author xchen
  */
+
 public class ValidationUtil {
 	
 	private static Logger log = LoggerFactory.getLogger(ValidationUtil.class);
