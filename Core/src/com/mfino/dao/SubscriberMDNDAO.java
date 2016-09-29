@@ -28,7 +28,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 
@@ -36,16 +36,16 @@ import com.mfino.hibernate.Timestamp;
  *
  * @author sandeepjs
  */
-public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
+public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 
     public static final String SUBSCRIBER_TABLE_NAME = "Subscriber";
     
-/*    public SubscriberMDN getByMDN(String MDN) {
+/*    public SubscriberMdn getByMDN(String MDN) {
         SubscriberMdnQuery query = new SubscriberMdnQuery();
         query.setExactMDN(MDN);
         query.setStart(0);
         query.setLimit(1);
-        List<SubscriberMDN> subs = get(query);
+        List<SubscriberMdn> subs = get(query);
         if (subs.size() > 0) {
             return subs.get(0);
         } else {
@@ -53,7 +53,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
         }
     }*/
 
-    public SubscriberMDN getByMDN(String MDN, LockMode lockMode) {
+    public SubscriberMdn getByMDN(String MDN, LockMode lockMode) {
     	Criteria criteria = createCriteria();
     	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDN, MDN));
     	
@@ -61,7 +61,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             criteria.setLockMode(lockMode);
         }
         
-    	List<SubscriberMDN> subscribersList = criteria.list();
+    	List<SubscriberMdn> subscribersList = criteria.list();
     	
     	if((null != subscribersList) && (subscribersList.size() > 0)){
     		return subscribersList.get(0);
@@ -71,16 +71,16 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
     }
 
     
-    public SubscriberMDN getByMDN(String MDN) {
+    public SubscriberMdn getByMDN(String MDN) {
     	return getByMDN(MDN, null);
     }
 
-    public List<SubscriberMDN> get(SubscriberMdnQuery query)
+    public List<SubscriberMdn> get(SubscriberMdnQuery query)
     {
     	return get(query,null);
     }
     
-    public List<SubscriberMDN> get(SubscriberMdnQuery query, LockMode lockmode) {
+    public List<SubscriberMdn> get(SubscriberMdnQuery query, LockMode lockmode) {
 
         Criteria criteria = createCriteria();
 
@@ -91,7 +91,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             String orderString = " order by mdn";
             StringBuffer queryString = new StringBuffer();
             
-            queryString.append(" from Subscriber s, SubscriberMDN mdn, Pocket p, PocketTemplate pt, KYCLevel k ");
+            queryString.append(" from Subscriber s, SubscriberMdn mdn, Pocket p, PocketTemplate pt, KYCLevel k ");
             queryString.append("where s.id = mdn.Subscriber and mdn.id=p.SubscriberMDNByMDNID and pt.id=p.PocketTemplate and pt.BankCode= :bankcode");
             
             if (StringUtils.isNotBlank(query.getFirstName())) {
@@ -116,7 +116,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             }
             
             // This query is for getting total number of results i.e count(distinct mdn)
-            Query newQuery = getSession().createQuery(countString + queryString + orderString); // .addEntity("SubscriberMDN", SubscriberMDN.class);
+            Query newQuery = getSession().createQuery(countString + queryString + orderString); // .addEntity("SubscriberMdn", SubscriberMdn.class);
             newQuery.setInteger("bankcode", query.getBankCode());
 
             if (StringUtils.isNotBlank(query.getFirstName())) {
@@ -148,14 +148,14 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             int total = count.intValue();
             query.setTotal(total);
 
-//            List<SubscriberMDN> list = new ArrayList<SubscriberMDN>();
+//            List<SubscriberMdn> list = new ArrayList<SubscriberMdn>();
             // if total count is zero then returning list
             if(total == 0) {
-                return new ArrayList<SubscriberMDN>();
+                return new ArrayList<SubscriberMdn>();
             }
 
             // This query is for getting total results as a mdn list
-            newQuery = getSession().createQuery(mdnString + queryString + orderString); // .addEntity("SubscriberMDN", SubscriberMDN.class);
+            newQuery = getSession().createQuery(mdnString + queryString + orderString); // .addEntity("SubscriberMdn", SubscriberMdn.class);
             newQuery.setInteger("bankcode", query.getBankCode());
 
             if (StringUtils.isNotBlank(query.getFirstName())) {
@@ -184,7 +184,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             }
             
             @SuppressWarnings("unchecked")
-            List<SubscriberMDN> list = newQuery.list();
+            List<SubscriberMdn> list = newQuery.list();
             return list;
         }
         if (query.getExactMDN() != null) {
@@ -367,7 +367,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
         if(lockmode!=null)
            criteria.setLockMode(lockmode);
         @SuppressWarnings("unchecked")
-        List<SubscriberMDN> results = criteria.list();
+        List<SubscriberMdn> results = criteria.list();
 
         return results;
     }
@@ -389,8 +389,8 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
     }
 
 	@SuppressWarnings("unchecked")
-	public  List<SubscriberMDN> getDeactivatedMdns(Date expireDate) {
-		 List<SubscriberMDN> result = null;
+	public  List<SubscriberMdn> getDeactivatedMdns(Date expireDate) {
+		 List<SubscriberMdn> result = null;
 		if(expireDate!=null){
 		 Criteria criteria = createCriteria();
 		 criteria.add(Restrictions.disjunction()
@@ -575,7 +575,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<SubscriberMDN> getStatusForMdns(SubscriberMdnQuery query){
+	public List<SubscriberMdn> getStatusForMdns(SubscriberMdnQuery query){
         Criteria criteria = createCriteria();
         if (query!=null){
         	Integer[] statuses = query.getStatusIn();
@@ -590,12 +590,12 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
 
 	@SuppressWarnings("unchecked")
 	public Subscriber getIDFromMDN(String MDN){
-		String Query = "select smdn.Subscriber from SubscriberMDN smdn where smdn.MDN=:MDN";
+		String Query = "select smdn.Subscriber from SubscriberMdn smdn where smdn.MDN=:MDN";
 		Query query = getSession().createQuery(Query).setParameter("MDN",MDN);
         return  (Subscriber) query.list().get(0);
 	}
 	
-    public SubscriberMDN getByMDNAndNotRetiredStatus(String MDN, LockMode lockMode) {
+    public SubscriberMdn getByMDNAndNotRetiredStatus(String MDN, LockMode lockMode) {
     	Criteria criteria = createCriteria();
     	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDN, MDN));
     	criteria.add(Restrictions.ne(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, CmFinoFIX.SubscriberStatus_Retired));
@@ -603,7 +603,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
             criteria.setLockMode(lockMode);
         }
         
-    	List<SubscriberMDN> subscribersList = criteria.list();
+    	List<SubscriberMdn> subscribersList = criteria.list();
     	
     	if((null != subscribersList) && (subscribersList.size() > 0)){
     		return subscribersList.get(0);
@@ -612,7 +612,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
     	return null;
     }
     
-    public SubscriberMDN getByMDNAndNotRetiredStatus(String MDN) {
+    public SubscriberMdn getByMDNAndNotRetiredStatus(String MDN) {
     	return getByMDNAndNotRetiredStatus(MDN, null);
     }
 }
