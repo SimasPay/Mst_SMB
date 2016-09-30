@@ -10,7 +10,7 @@ import com.mfino.domain.BulkLOP;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Company;
 import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.LOP;
+import com.mfino.domain.LetterOfPurchase;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
@@ -24,140 +24,95 @@ import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
  *
  */
 public class NotificationWrapper extends CmFinoFIX.CRNotification{
-
-	private Pocket sourcePocket;
 	
-	private Pocket destPocket;
-	
-	private CommodityTransfer commodityTransfer;
-	
-	private SctlSettlementMap pendingSettlement;
-	
-	private ServiceChargeTxnLog sctl;
-	
-	private Company company;
-	
+	private static final long serialVersionUID = 1L;
+	private Pocket sourcePocket;	
+	private Pocket destPocket;	
+	private CommodityTransfer commodityTransfer;	
+	private SctlSettlementMap pendingSettlement;	
+	private ServiceChargeTxnLog sctl;	
+	private Company company;	
 	private Long transactionId;
-
     private String emailId;
-
     private String destMDN;
-
     private String emailSubject;
-
     private DistributionChainLevel dcl;
-
-    private LOP lop;
-
+    private LetterOfPurchase lop;
     private BulkLOP bulkLop;
     private String username;
-
-    private String confirmationCode;
-    
-    private CMGetLastTransactionsFromBank.CGEntries lastBankTrxnEntry;
-    
-    private CMBalanceInquiryFromBank.CGEntries lastNFCCheckBalanceEntry;
-        
-    private String PocketDescription;
-    
-    private String bankName;
-    
-    private BigDecimal billAmount;
-    
+    private String confirmationCode;    
+    private CMGetLastTransactionsFromBank.CGEntries lastBankTrxnEntry;    
+    private CMBalanceInquiryFromBank.CGEntries lastNFCCheckBalanceEntry;        
+    private String PocketDescription;    
+    private String bankName;    
+    private BigDecimal billAmount;    
     private Long billPaymentID;
+    private Bank bank;    
+    private BigDecimal serviceCharge;    
+    private BigDecimal transactionAmount;    
+    private String oneTimePin;    
+    private String KycLevel;    
+    private String partnerCode;    
+    private Integer numberOfTriesLeft;    
+    private String sourceMDN;    
+    private String otherMDN;    
+    private String service;    
+    private String appURL;    
+    private Long sctlID;    
+    private Long OriginalTransferID;    
+    private Long bulkTransferId;    
+    private BigDecimal minAmount;    
+    private BigDecimal maxAmount;    
+    private String currency;    
+    private String CustomerServiceShortCode;    
+    private BigDecimal amount;    
+    private String validDenominations;    
+    private String authenticationKey;    
+    private String integrationName;    
+    private String institutionID;    
+    private String ipAddress;    
+    private String firstName;    
+    private String lastName;    
+    private String receiverAccountName;    
+    private String invoiceNumber;    
+	private String receiverMDN;	
+	private String senderMDN;    
+    private String agentName;    
+    private String tradeName;    
+    private String otpExpirationTime;   
+    private String transID;    
+    private String parentTransID;    
+    private String cardPan;    
+    private String maxFavoriteCount;    
+    private String favoriteLabel;    
+    private String favoriteValue;    
+    private String subscriberStatus;    
+    private String cardAlias;    
+    private String oldCardAlias;    
+    private String nickName;    
+    private String remainingBlockTimeMinutes;    
+    private String remainingBlockTimeHours;    
+    private String subscriberPin;    
+    private Integer maxTrails;    
+    private BigDecimal multiplesOff;    
+    private BigDecimal multiplesIn;    
+    private String contactCenterNo;    
+    private String voucherCode;
+    
+	/**
+	 * @return the multiplesIn
+	 */
+	public BigDecimal getMultiplesIn() {
+		return multiplesIn;
+	}
 
-    private Bank bank;
-    
-    private BigDecimal serviceCharge;
-    
-    private BigDecimal transactionAmount;
-    
-    private String oneTimePin;
-    
-    private String KycLevel;
-    
-    private String partnerCode;
-    
-    private int numberOfTriesLeft;
-    
-    private String sourceMDN;
-    
-    private String otherMDN;
-    
-    private String service;
-    
-    private String appURL;
-    
-    private Long sctlID;
-    
-    private Long OriginalTransferID;
-    
-    private Long bulkTransferId;
-    
-    private BigDecimal minAmount;
-    
-    private BigDecimal maxAmount;
-    
-    private String currency;
-    
-    private String CustomerServiceShortCode;
-    
-    private BigDecimal amount;
-    
-    private String validDenominations;
-    
-    private String authenticationKey;
-    
-    private String integrationName;
-    
-    private String institutionID;
-    
-    private String ipAddress;
-    
-    private String firstName;
-    
-    private String lastName;
-    
-    private String receiverAccountName;
-    
-    private String invoiceNumber;
-    
-	private String receiverMDN;
-	
-	private String senderMDN;
-    
-    private String agentName;
-    
-    private String tradeName;
-    
-    private String otpExpirationTime;
-    
-    private String transID;
-    
-    private String parentTransID;
-    
-    private String cardPan;
-    
-    private String maxFavoriteCount;
-    
-    private String favoriteLabel;
-    
-    private String favoriteValue;
-    
-    private String subscriberStatus;
-    
-    private String cardAlias;
-    
-    private String oldCardAlias;
-    
-    private String nickName;
-    
-    private String remainingBlockTimeMinutes;
-    
-    private String remainingBlockTimeHours;
-    
-    private String subscriberPin;
-    
+	/**
+	 * @param multiplesIn the multiplesIn to set
+	 */
+	public void setMultiplesIn(BigDecimal multiplesIn) {
+		this.multiplesIn = multiplesIn;
+	}
+
 	public String getValidDenominations() {
 		
 		return validDenominations;
@@ -215,12 +170,12 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	 */
 	public NotificationWrapper(Notification notification) {
 		this.setAccessCode(notification.getAccesscode());
-		this.setCode(notification.getCode());
+		this.setCode((int)notification.getCode());
 		this.setCodeName(notification.getCodename());
 		this.setCompany(notification.getCompany());
-		this.setLanguage(notification.getLanguage());
+		this.setLanguage((int)notification.getLanguage());
 		this.setmFinoServiceProviderByMSPID(notification.getMfinoServiceProvider());
-		this.setNotificationMethod(notification.getNotificationMethod());
+		this.setNotificationMethod((int)notification.getNotificationmethod());
 		this.setText(notification.getText());
 	}
 	
@@ -249,14 +204,14 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	/**
 	 * @return the LOP
 	 */
-	public LOP getLOP() {
+	public LetterOfPurchase getLOP() {
 		return lop;
 	}
 
 	/**
 	 * @param lop the lop to set
 	 */
-	public void setLOP(LOP lop) {
+	public void setLOP(LetterOfPurchase lop) {
 		this.lop = lop;
 	}
 
@@ -377,14 +332,14 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	/**
 	 * @return the ServiceChargeTransactionLog
 	 */
-	public ServiceChargeTransactionLog getServiceChargeTransactionLog() {
+	public ServiceChargeTxnLog getServiceChargeTransactionLog() {
 		return sctl;
 	}
 
 	/**
 	 * @param commodityTransfer the commodityTransfer to set
 	 */
-	public void setServiceChargeTransactionLog(ServiceChargeTransactionLog sctl) {
+	public void setServiceChargeTransactionLog(ServiceChargeTxnLog sctl) {
 		this.sctl = sctl;
 	}
 
@@ -479,11 +434,11 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 		return KycLevel;
 	}
 
-	public int getNumberOfTriesLeft() {
+	public Integer getNumberOfTriesLeft() {
 		return numberOfTriesLeft;
 	}
 
-	public void setNumberOfTriesLeft(int numberOfTriesLeft) {
+	public void setNumberOfTriesLeft(Integer numberOfTriesLeft) {
 		this.numberOfTriesLeft = numberOfTriesLeft;
 	}
 
@@ -820,5 +775,37 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 
 	public void setSubscriberPin(String subscriberPin) {
 		this.subscriberPin = subscriberPin;
+	}
+
+	public Integer getMaxTrails() {
+		return maxTrails;
+	}
+
+	public void setMaxTrails(Integer maxTrails) {
+		this.maxTrails = maxTrails;
+	}
+
+	public BigDecimal getMultiplesOff() {
+		return multiplesOff;
+	}
+
+	public void setMultiplesOff(BigDecimal multiplesOff) {
+		this.multiplesOff = multiplesOff;
+	}
+
+	public String getContactCenterNo() {
+		return contactCenterNo;
+	}
+
+	public void setContactCenterNo(String contactCenterNo) {
+		this.contactCenterNo = contactCenterNo;
+	}
+
+	public String getVoucherCode() {
+		return voucherCode;
+	}
+
+	public void setVoucherCode(String voucherCode) {
+		this.voucherCode = voucherCode;
 	}
 }

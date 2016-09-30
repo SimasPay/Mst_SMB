@@ -12,7 +12,7 @@ import java.util.TimeZone;
 
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Environment;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 import org.hibernate.usertype.UserVersionType;
 
@@ -197,6 +197,22 @@ public abstract class HibernateUTC implements UserVersionType, UserType {
         public Object next(Object current, SessionImplementor si) {
             return new java.sql.Date(System.currentTimeMillis());
         }
+
+		@Override
+		public Object nullSafeGet(ResultSet arg0, String[] arg1,
+				SessionImplementor arg2, Object arg3)
+				throws HibernateException, SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void nullSafeSet(PreparedStatement arg0, Object arg1, int arg2,
+				SessionImplementor arg3) throws HibernateException,
+				SQLException {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     /**
@@ -270,6 +286,22 @@ public abstract class HibernateUTC implements UserVersionType, UserType {
         public Object next(Object current, SessionImplementor si) {
             return new java.sql.Time(System.currentTimeMillis());
         }
+
+		@Override
+		public Object nullSafeGet(ResultSet arg0, String[] arg1,
+				SessionImplementor arg2, Object arg3)
+				throws HibernateException, SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void nullSafeSet(PreparedStatement arg0, Object arg1, int arg2,
+				SessionImplementor arg3) throws HibernateException,
+				SQLException {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     /**
@@ -348,6 +380,30 @@ public abstract class HibernateUTC implements UserVersionType, UserType {
             return new Timestamp(System.currentTimeMillis());
             // return new Timestamp(si.getTimestamp());
         }
+
+		@Override
+		public Object nullSafeGet(ResultSet rs, String[] names,
+				SessionImplementor arg2, Object arg3)
+				throws HibernateException, SQLException {
+            Calendar utcCalendar = (Calendar) UTC_CALENDAR.clone();
+            java.sql.Timestamp result = rs.getTimestamp(names[0], utcCalendar);
+            if (result == null) {
+                return null;
+            } else {
+                return new com.mfino.hibernate.Timestamp(result);
+            }
+		}
+
+		@Override
+		public void nullSafeSet(PreparedStatement st, Object value, int index,
+				SessionImplementor arg3) throws HibernateException,
+				SQLException {
+            if (!(value instanceof java.sql.Timestamp)) {
+                value = deepCopy(value);
+            }
+            Calendar utcCalendar = (Calendar) UTC_CALENDAR.clone();
+            st.setTimestamp(index, (java.sql.Timestamp) value, utcCalendar);
+		}
     }
 
     public static class CalendarType extends HibernateUTC {
@@ -452,6 +508,22 @@ public abstract class HibernateUTC implements UserVersionType, UserType {
             cal.setTimeInMillis(System.currentTimeMillis());
             return cal;
         }
+
+		@Override
+		public Object nullSafeGet(ResultSet arg0, String[] arg1,
+				SessionImplementor arg2, Object arg3)
+				throws HibernateException, SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void nullSafeSet(PreparedStatement arg0, Object arg1, int arg2,
+				SessionImplementor arg3) throws HibernateException,
+				SQLException {
+			// TODO Auto-generated method stub
+			
+		}
     }
     /**
      * Note 071107: passing the static sUTCCalendar instance to the setTimestamp(), getTimestamp()
@@ -459,8 +531,8 @@ public abstract class HibernateUTC implements UserVersionType, UserType {
      * instance. Consequence, the calendar is cloned before use.
      */
     /** the Calendar to hold the UTC timezone */
-    private static final TimeZone TZ_UTC;
-    private static final Calendar UTC_CALENDAR;
+    protected static final TimeZone TZ_UTC;
+    protected static final Calendar UTC_CALENDAR;
 
     static {
         TZ_UTC = TimeZone.getTimeZone("UTC");
