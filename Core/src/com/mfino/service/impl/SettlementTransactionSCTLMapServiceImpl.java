@@ -6,14 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SettlementTransactionSCTLMapDAO;
-import com.mfino.domain.SettlementTransactionSCTLMap;
+import com.mfino.domain.SettlementTxnSctlMap;
 import com.mfino.service.SettlementTransactionSCTLMapService;
 
 @Service("SettlementTransactionSCTLMapServiceImpl")
 public class SettlementTransactionSCTLMapServiceImpl implements
 		SettlementTransactionSCTLMapService {
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public void save(SettlementTransactionSCTLMap settlementTransactionSCTLMap){
+	public void save(SettlementTxnSctlMap settlementTransactionSCTLMap){
 		SettlementTransactionSCTLMapDAO settlementTransactionSCTLMapDao = DAOFactory.getInstance().getSettlementTransactionSCTLMapDao();
 		settlementTransactionSCTLMapDao.save(settlementTransactionSCTLMap);
 	}

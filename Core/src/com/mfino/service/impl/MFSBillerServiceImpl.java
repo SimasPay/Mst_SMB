@@ -6,14 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSBillerDAO;
-import com.mfino.domain.MFSBiller;
+import com.mfino.domain.MfsBiller;
 import com.mfino.service.MFSBillerService;
 
 @Service("MFSBillerServiceImpl")
 public class MFSBillerServiceImpl implements MFSBillerService{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public MFSBiller getByBillerCode(String billerCode) {
+	public MfsBiller getByBillerCode(String billerCode) {
 		MFSBillerDAO mfsbDAO = DAOFactory.getInstance().getMFSBillerDAO();
 		return mfsbDAO.getByBillerCode(billerCode);
 	}

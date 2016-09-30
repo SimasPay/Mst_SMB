@@ -89,7 +89,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		List<TreeNode> childNodesList = new ArrayList<TreeNode>();
 		
 		PartnerQuery partnerQuery = new PartnerQuery();
-		partnerQuery.setDistributionChainTemplateId(dct.getID());
+		partnerQuery.setDistributionChainTemplateId(dct.getId().longValue());
 		partnerQuery.setFirstLevelPartnerSearch(true);
 		
 		List<Partner> partnersList = partnerService.get(partnerQuery);
@@ -115,7 +115,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		List<TreeNode> childNodesList = new ArrayList<TreeNode>();
 		
 		PartnerQuery partnerQuery = new PartnerQuery();
-		partnerQuery.setDistributionChainTemplateId(distributionChainTemplate.getID());
+		partnerQuery.setDistributionChainTemplateId(distributionChainTemplate.getId().longValue());
 		partnerQuery.setParentId(parent.getId().longValue());
 		
 		List<Partner> partnersList = partnerService.get(partnerQuery);
@@ -162,7 +162,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 	private TreeNode getTreeNode(DistributionChainTemplate distributionChainTemplate, Partner partner){
 		TreeNode treeNode = new TreeNode();
 		
-		treeNode.setDctId(distributionChainTemplate.getID());
+		treeNode.setDctId(distributionChainTemplate.getId().longValue());
 		treeNode.setServiceId(distributionChainTemplate.getService().getId().longValue());
 		treeNode.setObjectId(partner.getId().longValue());
 		treeNode.setText(partner.getTradename());
@@ -173,7 +173,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		treeNode.setMdn(partner.getSubscriber().getSubscriberMdns().iterator().next().getMdn());
 		treeNode.setSubscriberId(partner.getSubscriber().getId().longValue());
 		treeNode.setBusinessPartnerType(partner.getBusinesspartnertype().intValue());
-		treeNode.setLevels(distributionChainTemplate.getDistributionChainLevelFromTemplateID().size());
+		treeNode.setLevels(distributionChainTemplate.getDistributionChainLvls().size());
 		Pocket p = subscriberService.getDefaultPocket(partner.getSubscriber().getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 		
 		BigDecimal currBalance = new BigDecimal(p.getCurrentbalance());
@@ -184,15 +184,15 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 	private TreeNode getTreeNode(DistributionChainTemplate distributionChainTemplate){
 		TreeNode treeNode = new TreeNode();
 		
-		treeNode.setObjectId(distributionChainTemplate.getID());
+		treeNode.setObjectId(distributionChainTemplate.getId().longValue());
 		treeNode.setText(distributionChainTemplate.getName());
 		treeNode.setIcon("resources/images/distribute.png");
 		treeNode.setNodeType(CmFinoFIX.NodeType_dct);
-		treeNode.setDctId(distributionChainTemplate.getID());
+		treeNode.setDctId(distributionChainTemplate.getId().longValue());
 		treeNode.setServiceId(distributionChainTemplate.getService().getId().longValue());
 		treeNode.setPartnerId(-1L);
 		treeNode.setPermissionType(CmFinoFIX.PermissionType_Read_Write);
-		treeNode.setLevels(distributionChainTemplate.getDistributionChainLevelFromTemplateID().size());
+		treeNode.setLevels(distributionChainTemplate.getDistributionChainLvls().size());
 		
 		return treeNode;
 	}
@@ -211,7 +211,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 			boolean matchedPartnerService = true;
 			
 			/*This logic is for matching with search criteria.*/
-			DistributionChainTemplate dct = partnerService.getDistributionChainTemplate();
+			DistributionChainTemplate dct = partnerService.getDistributionChainTemp();
 			if(dct != null){
 				if(StringUtils.isNotBlank(srchDctName)){
 					if(!(dct.getName().toLowerCase().startsWith(srchDctName.toLowerCase()))){
@@ -231,7 +231,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 			
 			if(matchedPartnerService){
 				
-				TreeNode leafNode = getTreeNode(partnerService.getDistributionChainTemplate(), partner);
+				TreeNode leafNode = getTreeNode(partnerService.getDistributionChainTemp(), partner);
 				leafNode.setSelected(true);
 				leafNode.setPermissionType(CmFinoFIX.PermissionType_Read_Only);
 				TreeNode currentNode = leafNode; //we have to go bot-up
@@ -240,7 +240,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 				if(null != tmpPartnerService.getPartnerByParentid()){
 					while(null != tmpPartnerService.getPartnerByParentid()){
 						Partner parent = tmpPartnerService.getPartnerByParentid();
-						TreeNode parentNode = getTreeNode(tmpPartnerService.getDistributionChainTemplate(), parent);
+						TreeNode parentNode = getTreeNode(tmpPartnerService.getDistributionChainTemp(), parent);
 						parentNode.setDisabled(true);
 						parentNode.setPermissionType(CmFinoFIX.PermissionType_No_Permission);
 						currentNode.addParent(parentNode);
@@ -250,7 +250,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 							if(partnerService.getService().getId().equals(parentPartnerService.getService().getId())){
 								tmpPartnerService = parentPartnerService;
 								if(null == tmpPartnerService.getPartnerByParentid()){
-									TreeNode dctNode = getTreeNode(tmpPartnerService.getDistributionChainTemplate());
+									TreeNode dctNode = getTreeNode(tmpPartnerService.getDistributionChainTemp());
 									dctNode.setDisabled(true);
 									dctNode.setPermissionType(CmFinoFIX.PermissionType_No_Permission);
 									currentNode.addParent(dctNode);
@@ -262,7 +262,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 					}
 				}
 				else{
-					TreeNode dctNode = getTreeNode(tmpPartnerService.getDistributionChainTemplate());
+					TreeNode dctNode = getTreeNode(tmpPartnerService.getDistributionChainTemp());
 					dctNode.setDisabled(true);
 					dctNode.setPermissionType(CmFinoFIX.PermissionType_No_Permission);
 					currentNode.addParent(dctNode);
@@ -279,6 +279,8 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		String icon = "resources/images/customer_green.png";
 		
 		if(partner != null){
+			Long tempPartnerStatus = partner.getPartnerstatus();
+			Long tempSubsRestrictions = partner.getSubscriber().getRestrictions();
 			if((null != partner.getSubscriber().getUpgradestate()) && (CmFinoFIX.UpgradeState_Upgradable.equals(partner.getSubscriber().getUpgradestate()))){
 				icon = "resources/images/customer_white.png";
 			}
@@ -288,23 +290,23 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 			else if((null != partner.getSubscriber().getUpgradestate()) && (CmFinoFIX.UpgradeState_none.equals(partner.getSubscriber().getUpgradestate()))){
 				icon = "resources/images/customer.png";
 			}
-			else if(((null != partner.getPartnerstatus()) && (CmFinoFIX.MDNStatus_Active.equals(partner.getPartnerstatus()))) &&
-					((null != partner.getSubscriber().getRestrictions()) && (partner.getSubscriber().getRestrictions() > CmFinoFIX.SubscriberRestrictions_None))){
+			else if(((null != tempPartnerStatus) && (CmFinoFIX.MDNStatus_Active.equals(partner.getPartnerstatus()))) &&
+					((null != tempSubsRestrictions) && (partner.getSubscriber().getRestrictions() > CmFinoFIX.SubscriberRestrictions_None))){
 				icon = "resources/images/customer_orange.png";
 			}
-			else if((null != partner.getPartnerstatus()) && (CmFinoFIX.MDNStatus_Active.equals(partner.getPartnerstatus()))){
+			else if((null != tempPartnerStatus) && (CmFinoFIX.MDNStatus_Active.equals(partner.getPartnerstatus()))){
 				icon = "resources/images/customer_green.png";
 			}
-			else if((null != partner.getPartnerstatus()) && (CmFinoFIX.MDNStatus_InActive.equals(partner.getPartnerstatus()))){
+			else if((null != tempPartnerStatus) && (CmFinoFIX.MDNStatus_InActive.equals(partner.getPartnerstatus()))){
 				icon = "resources/images/customer_yellow.png";
 			}
-			else if((null != partner.getPartnerstatus()) && (CmFinoFIX.MDNStatus_Suspend.equals(partner.getPartnerstatus()))){
+			else if((null != tempPartnerStatus) && (CmFinoFIX.MDNStatus_Suspend.equals(partner.getPartnerstatus()))){
 				icon = "resources/images/customer_red.png";
 			}
-			else if((null != partner.getPartnerstatus()) && (CmFinoFIX.MDNStatus_Retired.equals(partner.getPartnerstatus()))){
+			else if((null != tempPartnerStatus) && (CmFinoFIX.MDNStatus_Retired.equals(partner.getPartnerstatus()))){
 				icon = "resources/images/customer_grey.png";
 			}
-			else if((null != partner.getPartnerstatus()) && (partner.getPartnerstatus() > CmFinoFIX.MDNStatus_Active)){
+			else if((null != tempPartnerStatus) && (partner.getPartnerstatus() > CmFinoFIX.MDNStatus_Active)){
 				icon = "resources/images/customer_black.png";
 			}
 		}

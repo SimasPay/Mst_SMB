@@ -33,7 +33,7 @@ import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Partner;
@@ -110,7 +110,7 @@ public class PocketServiceImpl implements PocketService{
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
 
-		pocket.setIsdefault(isDefault);
+		pocket.setIsdefault((short) Boolean.compare(isDefault, false));
 
 		if (isDefault) {
 			defaultPocketMaintainerService.setDefaultPocket(pocket, true);
@@ -464,7 +464,7 @@ public class PocketServiceImpl implements PocketService{
 		else if (null == pendingCommodityTransfer) {
 			transferRecord = commodityTransfer;
 		}
-		else if (commodityTransfer.getId() > pendingCommodityTransfer.getId()) {
+		else if (commodityTransfer.getId().longValue() > pendingCommodityTransfer.getId().longValue()) {
 			transferRecord = commodityTransfer;
 		}
 		else {
@@ -492,7 +492,7 @@ public class PocketServiceImpl implements PocketService{
 		else if (null == pendingCommodityTransfer) {
 			transferRecord = commodityTransfer;
 		}
-		else if (commodityTransfer.getId() < pendingCommodityTransfer.getId()) {
+		else if (commodityTransfer.getId().longValue() < pendingCommodityTransfer.getId().longValue()) {
 			transferRecord = commodityTransfer;
 		}
 		else {
@@ -700,14 +700,14 @@ public class PocketServiceImpl implements PocketService{
 		{
 			query.set_businessPartnerType(businessPartnerType);
 		}
-		Group defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
+		Groups defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
 		if(groupID != null)
 		{
 			query.set_GroupID(groupID);
 		}
 		else
 		{
-			query.set_GroupID(defaultGroup.getID());
+			query.set_GroupID(defaultGroup.getId().longValue());
 		}
 		List<PocketTemplateConfig> results = dao.get(query);
 		if (results.size() > 0) {
@@ -719,7 +719,7 @@ public class PocketServiceImpl implements PocketService{
 		 */
 		else if(groupID !=null)
 		{
-			query.set_GroupID(defaultGroup.getID());
+			query.set_GroupID(defaultGroup.getId().longValue());
 			results = dao.get(query);
 			if (results.size() > 0) {
 				return results.get(0).getPocketTemplate();
@@ -752,14 +752,14 @@ public class PocketServiceImpl implements PocketService{
 		}
 		query.set_isCollectorPocket(Boolean.FALSE);
 		query.set_isSuspensePocket(Boolean.FALSE);
-		Group defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
+		Groups defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
 		if(groupID != null)
 		{
 			query.set_GroupID(groupID);
 		}
 		else
 		{
-			query.set_GroupID(defaultGroup.getID());
+			query.set_GroupID(defaultGroup.getId().longValue());
 		}
 		List<PocketTemplateConfig> results = dao.get(query);
 		if (results.size() > 0) {
@@ -780,7 +780,7 @@ public class PocketServiceImpl implements PocketService{
 		 */
 		else if(groupID !=null)
 		{
-			query.set_GroupID(defaultGroup.getID());
+			query.set_GroupID(defaultGroup.getId().longValue());
 			results = dao.get(query);
 			if (results.size() > 0) {
 				Iterator<PocketTemplateConfig> it = results.iterator();
@@ -805,17 +805,17 @@ public class PocketServiceImpl implements PocketService{
 		Subscriber sub=mdn.getSubscriber();
 		
 		//check for not to add collector pocket to subscriber
-		if(pocketTemplate.getIscollectorpocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+		if(Boolean.valueOf(pocketTemplate.getIscollectorpocket().toString())&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
 		
 		//check for not to add suspense pocket to subscriber
-		if(pocketTemplate.getIssuspencepocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+		if(Boolean.valueOf(pocketTemplate.getIscollectorpocket().toString())&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
 		
 		//check for not to add system pocket to subscriber
-		if(pocketTemplate.getIssystempocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+		if(Boolean.valueOf(pocketTemplate.getIscollectorpocket().toString())&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
 		return true;
@@ -953,7 +953,7 @@ public class PocketServiceImpl implements PocketService{
 	public Pocket getSuspencePocket(User user) {
 		Pocket result = null;
 		if (user != null) {
-			Set<Partner> setPartner = user.getPartnerFromUserID();
+			Set<Partner> setPartner = user.getPartners();
 			if (CollectionUtils.isNotEmpty(setPartner)) {
 				Partner partner = setPartner.iterator().next();
 				result = getSuspencePocket(partner);
@@ -991,7 +991,7 @@ public class PocketServiceImpl implements PocketService{
 	public Pocket getNFCPocket(SubscriberMdn subscriberMDN, String cardPAN) {
 		PocketQuery query = new PocketQuery();
 		query.setCardPan(cardPAN);
-		query.setMdnIDSearch(subscriberMDN.getId());
+		query.setMdnIDSearch(subscriberMDN.getId().longValue());
 		query.setPocketType(CmFinoFIX.PocketType_NFC);		
 		List<Pocket> list = pocketDao.get(query);
 		if(!list.isEmpty()) {

@@ -13,7 +13,7 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.AutoReversals;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.service.SCTLService;
 
 /**
@@ -34,7 +34,7 @@ public class SCTLServiceImpl implements SCTLService{
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public List<ServiceChargeTransactionLog> getBySCTLIntegrationTxnID(String TXNID, String Info1){
+	public List<ServiceChargeTxnLog> getBySCTLIntegrationTxnID(String TXNID, String Info1){
  	
 		ServiceChargeTransactionLogDAO sctldao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
@@ -42,7 +42,7 @@ public class SCTLServiceImpl implements SCTLService{
 	 	sctlQuery.setIntegrationTxnID(Long.parseLong(TXNID));
 		sctlQuery.setInfo1(Info1);
 		
-		List<ServiceChargeTransactionLog> sctlList = sctldao.get(sctlQuery);
+		List<ServiceChargeTxnLog> sctlList = sctldao.get(sctlQuery);
 		
 		return sctlList;
 		
@@ -54,7 +54,7 @@ public class SCTLServiceImpl implements SCTLService{
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void updateSCTLStatus(Integer status, ServiceChargeTransactionLog sctl){
+	public void updateSCTLStatus(Integer status, ServiceChargeTxnLog sctl){
 		
 		ServiceChargeTransactionLogDAO sctldao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		sctl.setStatus(status);
@@ -67,54 +67,54 @@ public class SCTLServiceImpl implements SCTLService{
 	 * @return sctl
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public ServiceChargeTransactionLog getBySCTLID(long id){
+	public ServiceChargeTxnLog getBySCTLID(long id){
 		
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDAO.getById(id);
+		ServiceChargeTxnLog sctl = sctlDAO.getById(id);
 		return sctl;
 				
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public ServiceChargeTransactionLog getByTransactionLogId(Long TxnLogID){
+	public ServiceChargeTxnLog getByTransactionLogId(Long TxnLogID){
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctlForMFA = sctlDAO.getByTransactionLogId(TxnLogID);
+		ServiceChargeTxnLog sctlForMFA = sctlDAO.getByTransactionLogId(TxnLogID);
 		return sctlForMFA;
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public List<ServiceChargeTransactionLog> getByQuery(ServiceChargeTransactionsLogQuery sctlQuery){
+	public List<ServiceChargeTxnLog> getByQuery(ServiceChargeTransactionsLogQuery sctlQuery){
 		ServiceChargeTransactionLogDAO sctldao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		List<ServiceChargeTransactionLog> sctlList = sctldao.get(sctlQuery);
+		List<ServiceChargeTxnLog> sctlList = sctldao.get(sctlQuery);
 		return sctlList;
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public CommodityTransfer getCTfromSCTL(ServiceChargeTransactionLog sctl){
-		Long ctId = sctl.getCommodityTransferID();
+	public CommodityTransfer getCTfromSCTL(ServiceChargeTxnLog sctl){
+		Long ctId = sctl.getCommoditytransferid().longValue();
 		CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
 		return  ctDao.getById(ctId);
 		
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public AutoReversals getAutoReversalsFromSCTL(ServiceChargeTransactionLog sctl){
+	public AutoReversals getAutoReversalsFromSCTL(ServiceChargeTxnLog sctl){
 		AutoReversalsDao arDao = DAOFactory.getInstance().getAutoReversalsDao();
-		AutoReversals ar = arDao.getBySctlId(sctl.getID());
+		AutoReversals ar = arDao.getBySctlId(sctl.getId().longValue());
 		return ar;
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRES_NEW,rollbackFor=Throwable.class)
-	public void saveSCTL(ServiceChargeTransactionLog sctl){
+	public void saveSCTL(ServiceChargeTxnLog sctl){
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		sctlDAO.save(sctl);
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRES_NEW,rollbackFor=Throwable.class)
-	public List<ServiceChargeTransactionLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query) {
+	public List<ServiceChargeTxnLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query) {
 		
 		ServiceChargeTransactionLogDAO sctldao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		List<ServiceChargeTransactionLog> sctlList = sctldao.getSubscriberPendingTransactions(query);
+		List<ServiceChargeTxnLog> sctlList = sctldao.getSubscriberPendingTransactions(query);
 		return sctlList;
 	}
 }

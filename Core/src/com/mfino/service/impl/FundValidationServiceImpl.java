@@ -62,7 +62,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	@Override
 	public boolean checkExpiry(UnregisteredTxnInfo unRegisteredTxnInfo) {
 		Timestamp currentDate = new Timestamp();
-		Timestamp fundExpiryTime = unRegisteredTxnInfo.getExpiryTime();
+		Timestamp fundExpiryTime = unRegisteredTxnInfo.getExpirytime();
 		boolean isTxnExpired = false;
 
 		if (currentDate.after(fundExpiryTime)) {
@@ -110,19 +110,19 @@ public class FundValidationServiceImpl implements FundValidationService {
 	@Override
 	public Integer updateFailureAttempts(UnregisteredTxnInfo unRegisteredTxnInfo,FundDefinition fundDefinition) {
 		
-		int currentFailAttempts = unRegisteredTxnInfo.getWithdrawalFailureAttempt();
+		int currentFailAttempts = unRegisteredTxnInfo.getWithdrawalfailureattempt().intValue();
 		currentFailAttempts = currentFailAttempts + 1;
 			//increment value  change here
 		log.info("Transaction Failed.Updating failure attempt:"+currentFailAttempts);
-			unRegisteredTxnInfo.setWithdrawalFailureAttempt(currentFailAttempts);
+			unRegisteredTxnInfo.setWithdrawalfailureattempt((long) currentFailAttempts);
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 			if(fundDefinition.getMaxfailattemptsallowed()<=currentFailAttempts && fundDefinition.getMaxfailattemptsallowed()!=-1){
 				log.info("max fail attempts reached");
 				//query the definition table for fund event id and proceed accordingly
 				if(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
-					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferSCTLId());
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
-					unRegisteredTxnInfo.setReversalReason("Max fail attempts reached");
+					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferctid());
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+					unRegisteredTxnInfo.setReversalreason("Max fail attempts reached");
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					return CmFinoFIX.NotificationCode_ReverseFundRequestInitaited;
 				}else if(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
@@ -161,8 +161,8 @@ public class FundValidationServiceImpl implements FundValidationService {
 	public String regenerateFAC(UnregisteredTxnInfo unRegisteredTxnInfo) {
 	
 		String code = fundStorageService.generateFundAccessCode(unRegisteredTxnInfo.getFundDefinition());
-		String digestedCode = fundStorageService.generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalMDN(), code);
-		unRegisteredTxnInfo.setDigestedPIN(digestedCode);
+		String digestedCode = fundStorageService.generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalmdn(), code);
+		unRegisteredTxnInfo.setDigestedpin(digestedCode);
 		
 		fundStorageService.allocateFunds(unRegisteredTxnInfo);
 		return code;
@@ -178,7 +178,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 */
 	public boolean isValidFAC(String digestedFAC,UnregisteredTxnInfo unRegisteredTxnInfo) {
 		//if both are equal return true
-		if(digestedFAC.equals(unRegisteredTxnInfo.getDigestedPIN())){
+		if(digestedFAC.equals(unRegisteredTxnInfo.getDigestedpin())){
 			return true;
 		}
 		return false;
@@ -200,16 +200,16 @@ public class FundValidationServiceImpl implements FundValidationService {
 		log.info("Updating amount:is debit="+isDebit);
 		if(isDebit){
 			if(CmFinoFIX.DistributionType_Withdrawal.equals(fundWithdrawalInquiry.getDistributionType())){
-				availableAmount = unRegisteredTxnInfo.getAvailableAmount().subtract(fundWithdrawalInquiry.getAmount());
-				unRegisteredTxnInfo.setAvailableAmount(availableAmount);
+				availableAmount = unRegisteredTxnInfo.getAvailableamount().subtract(fundWithdrawalInquiry.getAmount());
+				unRegisteredTxnInfo.setAvailableamount(availableAmount);
 				if(BigDecimal.ZERO.compareTo(availableAmount)==0){
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
 				}
 			}
 			log.info("creating FundDistributionInfo entry......for is debit="+isDebit);
 			FundDistributionInfo fundDistributionInfo = new FundDistributionInfo();
 			fundDistributionInfo.setDistributedamount(amount);
-			fundDistributionInfo.setUnRegisteredTxnInfoByFundAllocationId(unRegisteredTxnInfo);
+			fundDistributionInfo.setUnregisteredTxnInfo(unRegisteredTxnInfo);
 			fundDistributionInfo.setTransferctid(new BigDecimal(fundWithdrawalInquiry.getTransactionID()));
 			fundDistributionInfo.setTransfersctlid(new BigDecimal(fundWithdrawalInquiry.getServiceChargeTransactionLogID()));
 			fundDistributionInfo.setDistributiontype(fundWithdrawalInquiry.getDistributionType().longValue());
@@ -221,12 +221,12 @@ public class FundValidationServiceImpl implements FundValidationService {
 			fundStorageService.withdrawFunds(fundDistributionInfo);
 			
 		}else {
-			availableAmount = unRegisteredTxnInfo.getAvailableAmount().add(amount);
-			unRegisteredTxnInfo.setAvailableAmount(availableAmount);
+			availableAmount = unRegisteredTxnInfo.getAvailableamount().add(amount);
+			unRegisteredTxnInfo.setAvailableamount(availableAmount);
 			if(availableAmount.equals(unRegisteredTxnInfo.getAmount())){
-				unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
-			}else if(unRegisteredTxnInfo.getUnRegisteredTxnStatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN)){
-				unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+				unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
+			}else if(unRegisteredTxnInfo.getUnregisteredtxnstatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN)){
+				unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 			}
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 		}
@@ -278,16 +278,16 @@ public class FundValidationServiceImpl implements FundValidationService {
 			for(int iter=0;iter<lstUnRegisteredTxnInfos.size();iter++){
 				unregTxnInfo = lstUnRegisteredTxnInfos.get(iter);
 				
-				if(digestedFAC.equals(unregTxnInfo.getDigestedPIN())){
-					log.info("Obatined fund with matching fac.The fundAllocation ID is: "+unregTxnInfo.getID());
+				if(digestedFAC.equals(unregTxnInfo.getDigestedpin())){
+					log.info("Obatined fund with matching fac.The fundAllocation ID is: "+unregTxnInfo.getId());
 					return unregTxnInfo;
 				}
-				if(!(ANY_PARTNER.equalsIgnoreCase(unregTxnInfo.getPartnerCode()))){
+				if(!(ANY_PARTNER.equalsIgnoreCase(unregTxnInfo.getPartnercode()))){
 					index=iter;
 				}
 				
 			}
-			log.info("Matching fund allocation record not found.Updating fund allocation record with id: "+lstUnRegisteredTxnInfos.get(index).getID());
+			log.info("Matching fund allocation record not found.Updating fund allocation record with id: "+lstUnRegisteredTxnInfos.get(index).getId());
 			return lstUnRegisteredTxnInfos.get(index) ;
 		}
 		log.error("No fund allocation record found");
@@ -308,7 +308,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 			log.info("Validating the Withdraw request ...");
 			int notificationCode=-1;
 			int validationResult;
-			String digestedFac = fundStorageService.generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalMDN(), OTP);
+			String digestedFac = fundStorageService.generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalmdn(), OTP);
 			
 			log.info("Validating fac...");
 			if(!isValidFAC(digestedFac,unRegisteredTxnInfo)){
@@ -317,7 +317,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 				validationResult=updateFailureAttempts(unRegisteredTxnInfo,fundDefinition);
 				if(CmFinoFIX.NotificationCode_RegenFACAuto.equals(validationResult)){
 					result.setOneTimePin(regenerateFAC(unRegisteredTxnInfo));
-					if(ANY_PARTNER.equalsIgnoreCase(unRegisteredTxnInfo.getPartnerCode())){
+					if(ANY_PARTNER.equalsIgnoreCase(unRegisteredTxnInfo.getPartnercode())){
 						notificationCode = CmFinoFIX.NotificationCode_InvalidFundAccessCodeNewFac;
 					}
 					else{
@@ -335,27 +335,27 @@ public class FundValidationServiceImpl implements FundValidationService {
 				log.info("Allocated Fund expired");
 
 				if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
-					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferSCTLId());
-					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
-					unRegisteredTxnInfo.setReversalReason("Fund Expired");
+					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferctid());
+					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+					unRegisteredTxnInfo.setReversalreason("Fund Expired");
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpiredReversal;
 				}else if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
 					log.info("regerating fac.....");
-					unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationType()));
+					unRegisteredTxnInfo.setExpirytime(getNewExpiryTime(fundDefinition.getExpirationType()));
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					result.setOneTimePin(regenerateFAC(unRegisteredTxnInfo));
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpiredNewFac;
 				}else if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
 					log.info("regenerate fac manually");
-					unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationType()));
+					unRegisteredTxnInfo.setExpirytime(getNewExpiryTime(fundDefinition.getExpirationType()));
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpired;
 				}
 				return notificationCode;
 			}
 			log.info("checking available amount...");
-			if(!checkAvaliableAmount(amount,unRegisteredTxnInfo.getAvailableAmount())){
+			if(!checkAvaliableAmount(amount,unRegisteredTxnInfo.getAvailableamount())){
 				log.error("Requested amount is greater than the fund allocated.Checking No of failure attempts....");
 				validationResult=updateFailureAttempts(unRegisteredTxnInfo,fundDefinition);
 				if(CmFinoFIX.NotificationCode_RegenFACAuto.equals(validationResult)){
@@ -371,7 +371,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 				return notificationCode;
 			}
 			log.info("validating entered partner...");
-			if(!checkValidPartner(unRegisteredTxnInfo.getPartnerCode(),partnerCode)){
+			if(!checkValidPartner(unRegisteredTxnInfo.getPartnercode(),partnerCode)){
 				log.info("Invalid merchant.entered merchant is not eligible for fund transfer");
 				validationResult=updateFailureAttempts(unRegisteredTxnInfo,fundDefinition);
 				if(CmFinoFIX.NotificationCode_RegenFACAuto.equals(validationResult)){

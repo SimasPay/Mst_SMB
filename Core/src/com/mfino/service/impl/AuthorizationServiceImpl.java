@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PermissionItemsDAO;
 import com.mfino.domain.Partner;
-import com.mfino.domain.PermissionItems;
+import com.mfino.domain.PermissionItem;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
@@ -38,7 +38,7 @@ import com.mfino.service.UserService;
 public class AuthorizationServiceImpl implements AuthorizationService{
 
     // Caching the PermisionItems Objects.
-    private static List<PermissionItems> permissionItemsList = null;
+    private static List<PermissionItem> permissionItemsList = null;
 
 	@Autowired
 	@Qualifier("UserServiceImpl")
@@ -134,8 +134,10 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
         //Check if there is at least one of the permission items is authorized!
         for(Integer match : matches){
-            PermissionItems aItem = (PermissionItems) getPermissionItemsList().get(match);
-            retValueBoolean = isAuthorized(aItem.getPermission());
+            PermissionItem aItem = (PermissionItem) getPermissionItemsList().get(match);
+            Long temp = aItem.getPermission();
+            Integer tempI = temp.intValue();
+            retValueBoolean = isAuthorized(tempI);
             if(true == retValueBoolean)
                 break;
         }
@@ -156,17 +158,17 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             ptype =2;
         }
 
-        PermissionItems pItem = new PermissionItems();
+        PermissionItem pItem = new PermissionItem();
 
         pItem.setAction(action);
-        pItem.setFieldID(fieldID);
-        pItem.setItemID(itemID);
-        pItem.setItemType(ptype);
+        pItem.setFieldid(fieldID);
+        pItem.setItemid(itemID);
+        pItem.setItemtype(ptype);
 
         List<Integer> matches = new ArrayList<Integer>();
 
         for(int i = 0; i < getPermissionItemsList().size(); i++) {
-            PermissionItems listItem = (PermissionItems) getPermissionItemsList().get(i);
+            PermissionItem listItem = (PermissionItem) getPermissionItemsList().get(i);
             if(exactMatch){
                 if(pItem.equals(listItem))
                     matches.add(i);                
@@ -190,13 +192,13 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         Collection<GrantedAuthority> permissions = (Collection<GrantedAuthority>) auth.getAuthorities();
 
         for (int i = 0; i < getPermissionItemsList().size(); i++) {
-            PermissionItems item = (PermissionItems) getPermissionItemsList().get(i);
-            Integer perm = item.getPermission();
-            Integer itemType = item.getItemType();
+            PermissionItem item = (PermissionItem) getPermissionItemsList().get(i);
+            Integer perm = (int) item.getPermission();
+            Integer itemType = (int) item.getItemtype();
             if (itemType.intValue() == type) {
                 GrantedAuthority currentPerm = new GrantedAuthorityService(perm);
                 if (permissions.contains(currentPerm)) {
-                	pItems.add(item.getItemID());
+                	pItems.add(item.getItemid());
                 }
                 
 //                int index = Arrays.binarySearch(permissions, currentPerm);
@@ -208,14 +210,14 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         return pItems.toArray(new String[0]);
     }
 
-	public List<PermissionItems> getPermissionItemsList() {
+	public List<PermissionItem> getPermissionItemsList() {
 		if(permissionItemsList == null){
 			Init();
 		}
 		return permissionItemsList;
 	}
 
-	public void setPermissionItemsList(List<PermissionItems> permissionItemsList) {
+	public void setPermissionItemsList(List<PermissionItem> permissionItemsList) {
 		AuthorizationServiceImpl.permissionItemsList = permissionItemsList;
 	}
 	
@@ -228,7 +230,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 			return false;
 		}
 		if(isAuthorized(CmFinoFIX.Permission_PinPrompt)){
-			Set<Partner> partners =user.getPartnerFromUserID();
+			Set<Partner> partners =user.getPartners();
 			if(partners==null||partners.isEmpty()){
 				return false;
 			}

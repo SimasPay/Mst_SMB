@@ -53,7 +53,7 @@ public class LOPServiceImpl implements LOPService {
 
         // Now Convert this timestamp
         Calendar lopCreatedTimeCalendar = Calendar.getInstance(ConfigurationUtil.getLocalTimeZone());
-        lopCreatedTimeCalendar.setTime(lop.getCreateTime());
+        lopCreatedTimeCalendar.setTime(lop.getCreatetime());
         lopCreatedTimeCalendar.set(Calendar.HOUR_OF_DAY, 00);
         lopCreatedTimeCalendar.set(Calendar.SECOND, 00);
         lopCreatedTimeCalendar.set(Calendar.MINUTE, 00);
@@ -91,7 +91,7 @@ public class LOPServiceImpl implements LOPService {
         // the amount that is added to the current weekly purchase should
         // be deducted and must allow the max usage as the distributed amount in
         // the LOP is not used.
-        BigDecimal lopAmount = lop.getAmountDistributed();
+        BigDecimal lopAmount = lop.getAmountdistributed();
 
         Merchant merchantForThisLOP = lop.getMerchantBySubscriberID();
         BigDecimal currentAmount = merchantForThisLOP.getCurrentweeklypurchaseamount();

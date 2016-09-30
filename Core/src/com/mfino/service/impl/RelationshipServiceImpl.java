@@ -281,7 +281,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 				log.error("ERROR in RelationshipServiceImpl ", e);
 			}
 			
-			List<PartnerServices> partnerServices = partnerServicesDao.getPartnerServices(partner.getId().longValue(), serviceProviderId, dct.getService().getId().longValue());
+			List<PartnerServices> partnerServices = partnerServicesDao.getPartnerServices(partner.getId().longValue(), serviceProviderId, dct.getServiceid());
 			
 			
 			if((null != partnerServices) && (partnerServices.size() > 0)){
@@ -315,7 +315,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	public List<Partner> getDescendents(Partner partner, DistributionChainTemplate dct){
 		List<Partner> partnersList = new ArrayList<Partner>();
 		PartnerQuery partnerQuery = new PartnerQuery();
-		partnerQuery.setDistributionChainTemplateId(dct.getID());
+		partnerQuery.setDistributionChainTemplateId(dct.getId().longValue());
 		partnersList = partnerDao.get(partnerQuery);
 		
 		List<Partner> descendentList = new ArrayList<Partner>();

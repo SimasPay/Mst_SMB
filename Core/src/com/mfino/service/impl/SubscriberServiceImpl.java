@@ -753,10 +753,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 	public boolean isPasswordExpired(User user) {
 		int expiredays = systemParametersService.getInteger(SystemParameterKeys.DAYS_TO_EXPIRE_PASSWORD);
 		if(expiredays>0){
-			if(user.getLastPasswordChangeTime()==null){
+			if(user.getLastpasswordchangetime()==null){
 				return true;
 			}
-			Date expiryDate = DateUtil.addDays(user.getLastPasswordChangeTime(), expiredays);
+			Date expiryDate = DateUtil.addDays(user.getLastpasswordchangetime(), expiredays);
 			if(DateUtils.truncate(new Date(),  Calendar.DATE).after(DateUtils.truncate(expiryDate,Calendar.DATE))){
 				return true;
 			}

@@ -34,7 +34,7 @@ import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Address;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -43,7 +43,7 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.SubscribersAdditionalFields;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
@@ -177,13 +177,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroup().getID();
+				groupID = subscriberGroup.getGroupid();
 			}
 			Long kycLevelNo = null;
 			if(null != subscriber.getUpgradablekyclevel())
@@ -192,7 +192,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			else
 			{
-				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+				kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 			}
 			PocketTemplate emoneyTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 			if (emoneyTemplate == null) {
@@ -254,7 +254,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			//handling adding default group if the group doesnot exist here
 			if(groupID==null){
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-			Group defaultGroup =groupDao.getSystemGroup();
+			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroup sg = new SubscriberGroup();
 			sg.setSubscriber(subscriber);
@@ -298,8 +298,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			} catch (Exception e) {
 				log.error("Cardpan creation failed", e);
 			}
-			epocket.setID(pocketService.createPocket(emoneyTemplate,
-					subscriberMDN, pocketStatus, true, cardPan).getID());
+			epocket.setId(pocketService.createPocket(emoneyTemplate,
+					subscriberMDN, pocketStatus, true, cardPan).getId());
 			}
 			return CmFinoFIX.ResponseCode_Success;
 		}
@@ -308,7 +308,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMdn subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
-			Pocket lakuPandiaPocket, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscribersAdditionalFields subscriberAddiFields) {
+			Pocket lakuPandiaPocket, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscriberAddiInfo subscriberAddiFields) {
 		
 		SubscriberMdn existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
 		
@@ -385,14 +385,14 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty()){
 				
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroup().getID();
+				groupID = subscriberGroup.getGroupid();
 			}
 			
 			Long kycLevelNo = null;
@@ -425,7 +425,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setAddressBySubscriberaddressid(domesticAddress);
 			}
 			
-			subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel().longValue());
+			subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
 			
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
@@ -496,7 +496,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if(groupID==null){
 				
 				GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-				Group defaultGroup =groupDao.getSystemGroup();
+				Groups defaultGroup =groupDao.getSystemGroup();
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				SubscriberGroup sg = new SubscriberGroup();
 				sg.setSubscriber(subscriber);
@@ -541,8 +541,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				.getByMDN(subscriberRegistration.getSourceMDN());
 		
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
-		
-		if (existingSubscriberMDN == null || existingSubscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered)) {
+		Long tempL = existingSubscriberMDN.getStatus();
+		Integer tempLI = tempL.intValue();
+		if (existingSubscriberMDN == null || tempLI.equals(CmFinoFIX.MDNStatus_NotRegistered)) {
 			Subscriber subscriber = new Subscriber();
 			SubscriberMdn subscriberMDN = new SubscriberMdn();
 			
@@ -590,7 +591,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			subscriber.setKycLevel(kycLevel);
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
 			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
 			subscriber.setActivationtime(new Timestamp());
@@ -647,7 +648,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			Long groupID = null;
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-			Group defaultGroup =groupDao.getSystemGroup();
+			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroup sg = new SubscriberGroup();
 			sg.setSubscriber(subscriber);
@@ -656,7 +657,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
 			}
-			groupID = sg.getID();
+			groupID = sg.getId().longValue();
 			Long kycLevelNo = null;
 			if(null != subscriber.getUpgradablekyclevel())
 			{
@@ -664,7 +665,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			else
 			{
-				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+				kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 			}
 			
 			PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
@@ -702,7 +703,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			String oneTimePin) {
 		Subscriber subscriber = new Subscriber();
 		SubscriberMdn subscriberMDN = new SubscriberMdn();
-		SubscribersAdditionalFields subscribersAdditionalFields = new SubscribersAdditionalFields();
+		SubscriberAddiInfo subscribersAdditionalFields = new SubscriberAddiInfo();
 		Address address = new Address();
 		Pocket epocket = new Pocket();
 		SubscriberMdn existingSubscriberMDN = subscriberMdnDao
@@ -756,13 +757,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroup().getID();
+				groupID = subscriberGroup.getGroupid();
 			}
 			Long kycLevelNo = null;
 			if(null != subscriber.getUpgradablekyclevel())
@@ -771,7 +772,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			else
 			{
-				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+				kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 			}
 			PocketTemplate emoneyTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 			if (emoneyTemplate == null) {
@@ -837,28 +838,28 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 			subscribersAdditionalFields.setSubscriber(subscriber);
 			subscribersAdditionalFields
-					.setProofofAddress(subscriberRegistration
+					.setProofofaddress(subscriberRegistration
 							.getProofofAddress());
 			subscribersAdditionalFields
-					.setSubsCompanyName(subscriberRegistration
+					.setSubscompanyname(subscriberRegistration
 							.getSubsCompanyName());
 			subscribersAdditionalFields
-					.setCertofIncorporation(subscriberRegistration
+					.setCertofincorporation(subscriberRegistration
 							.getCertofIncorporation());
 			subscribersAdditionalFields
-					.setSubscriberMobileCompany(subscriberRegistration
+					.setSubscribermobilecompany(subscriberRegistration
 							.getSubscriberMobileCompany());
 			subscribersAdditionalFields.setNationality(subscriberRegistration
 					.getNationality());
-			subscribersAdditionalFields.setKinName(subscriberRegistration
+			subscribersAdditionalFields.setKinname(subscriberRegistration
 					.getKinName());
-			subscribersAdditionalFields.setKinMDN(subscriberRegistration
+			subscribersAdditionalFields.setKinmdn(subscriberRegistration
 					.getKinMDN());
 			subscribersAdditionalFieldsDao.save(subscribersAdditionalFields);
 			//handling adding default group if the group doesnot exist here
 			if(groupID==null){
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-			Group defaultGroup =groupDao.getSystemGroup();
+			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroup sg = new SubscriberGroup();
 			sg.setSubscriber(subscriber);
@@ -900,8 +901,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			} catch (Exception e) {
 				log.error("Cardpan creation failed", e);
 			}
-			epocket.setID(pocketService.createPocket(emoneyTemplate,
-					subscriberMDN, pocketStatus, true, cardPan).getID());
+			epocket.setId(pocketService.createPocket(emoneyTemplate,
+					subscriberMDN, pocketStatus, true, cardPan).getId());
 			return CmFinoFIX.ResponseCode_Success;
 		}
 		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Destination;
@@ -925,11 +926,14 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if (subscriberMDN.getAuthenticationphrase() == null) {
 			subscriberMDN.setAuthenticationphrase("mFino");
 		}
-		if (subscriberMDN.getRestrictions() == null) {
+		Long tempL = subscriberMDN.getRestrictions();
+		Long tempWrPinCtL = subscriberMDN.getWrongpincount();
+		
+		if ( tempL== null) {
 			subscriberMDN
 					.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if (subscriberMDN.getWrongpincount() == null) {
+		if ( tempWrPinCtL== null) {
 			subscriberMDN.setWrongpincount(0);
 		}
 	}
@@ -946,10 +950,12 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCurrency(systemParametersService
 					.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 		}
-		if (subscriber.getRestrictions() == null) {
+		Long tempL = subscriber.getRestrictions();
+		Long tempX = subscriber.getType();
+		if (tempL == null) {
 			subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if (subscriber.getType() == null) {
+		if ( tempX== null) {
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 		}
 		if (subscriber.getCompany() == null) {
@@ -990,7 +996,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			// subscriber.setLanguage(syncRecord.getLanguage());
 			subscriber
 					.setDateofbirth(new Timestamp(syncRecord.getDateOfBirth()));
-			subscriber.setKYCLevelByKYCLevel(kyclevelDao
+			subscriber.setKycLevel(kyclevelDao
 					.getByKycLevel(ConfigurationUtil.getIntialKyclevel()));
 			// subscriber.setBirthPlace(syncRecord.getPlaceOfBirth());
 			// subscriber.setAliasName(syncRecord.getAliasName());
@@ -1115,7 +1121,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
 		Long kycLevelNo = null;
 		if(null != subscriber.getUpgradablekyclevel())
@@ -1124,7 +1130,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		else
 		{
-			kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+			kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 		}
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		
@@ -1191,10 +1197,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 		if(bankPocketFound)
 		{
-			if (subscriber.getUpgradeState().equals(
+			if (subscriber.getUpgradestate().equals(
 					CmFinoFIX.UpgradeState_Approved)) {
 				bankPocket.setActivationtime(new Timestamp());
-				bankPocket.setIsdefault(true);
+				bankPocket.setIsdefault((short) Boolean.compare(true, false));
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				bankPocket.setStatustime(new Timestamp());
 				bankPocket.setUpdatedby(subscriberName);
@@ -1552,7 +1558,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getID();
+			groupID = subscriberGroup.getId().longValue();
 		}
 		Long kycLevelNo = null;
 		if(null != subscriber.getUpgradablekyclevel())
@@ -1561,7 +1567,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		else
 		{
-			kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+			kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 		}
 		
 		for (Pocket pocket : pockets) {

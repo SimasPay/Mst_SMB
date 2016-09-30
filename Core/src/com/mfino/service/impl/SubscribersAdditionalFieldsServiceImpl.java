@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscribersAdditionalFieldsDAO;
-import com.mfino.domain.SubscribersAdditionalFields;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.service.SubscribersAdditionalFieldsService;
 
 @Service("SubscribersAdditionalFieldsServiceImpl")
@@ -15,7 +15,7 @@ public class SubscribersAdditionalFieldsServiceImpl implements
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public void save(
-			SubscribersAdditionalFields subscribersAdditionalFields) {
+			SubscriberAddiInfo subscribersAdditionalFields) {
 		SubscribersAdditionalFieldsDAO subscribersAdditionalFieldsDAO = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
 		subscribersAdditionalFieldsDAO.save(subscribersAdditionalFields);
 	}

@@ -36,7 +36,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
@@ -288,8 +288,8 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                     String time = null;
                     if (commodityTransfer != null && commodityTransfer.getCreatetime() != null) {
                         time = getDateFormat().format(commodityTransfer.getCreatetime());
-                    }else if(notificationWrapper.getServiceChargeTransactionLog()!=null && notificationWrapper.getServiceChargeTransactionLog().getCreateTime()!=null){
-                        time = getDateFormat().format(notificationWrapper.getServiceChargeTransactionLog().getCreateTime());
+                    }else if(notificationWrapper.getServiceChargeTransactionLog()!=null && notificationWrapper.getServiceChargeTransactionLog().getCreatetime()!=null){
+                        time = getDateFormat().format(notificationWrapper.getServiceChargeTransactionLog().getCreatetime());
                     } else {
                         time = getDateFormat().format(new Date());
                     }
@@ -430,9 +430,9 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                     notificationBuilder.append(notificationWrapper.getCode());
                     notificationBuilder.append(")");
                 } else if (CmFinoFIX.NotificationVariables_LOPID.equals(notificationVariable)) {
-                    notificationBuilder.append(notificationWrapper.getLOP().getID());
+                    notificationBuilder.append(notificationWrapper.getLOP().getId());
                 } else if (CmFinoFIX.NotificationVariables_MaximumLOPAmountLimit.equals(notificationVariable)) {
-                     notificationBuilder.append(notificationWrapper.getDistributionChainLevel().getMaxLOPAmount());
+                     notificationBuilder.append(notificationWrapper.getDistributionChainLevel().getMaxlopamount());
                 }else if (CmFinoFIX.NotificationVariables_WebSite.equals(notificationVariable)) {
                     notificationBuilder.append(ConfigurationUtil.getAppURL());
                 } else if (CmFinoFIX.NotificationVariables_Username.equals(notificationVariable)) {
@@ -629,16 +629,16 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
     	TransactionType tt = null;
     	TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
         if (notificationWrapper.getServiceChargeTransactionLog() != null) {
-        	tt = ttDAO.getById(notificationWrapper.getServiceChargeTransactionLog().getTransactionTypeID());
+        	tt = ttDAO.getById(notificationWrapper.getServiceChargeTransactionLog().getTransactiontypeid().longValue());
 			if(tt != null) {
 				returnValue = tt.getDisplayname();
 			}
         }
         else if (notificationWrapper.getCommodityTransfer() != null) {
         	ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-        	ServiceChargeTransactionLog sctl = sctlDAO.getById(notificationWrapper.getCommodityTransfer().getSctlId());
+        	ServiceChargeTxnLog sctl = sctlDAO.getById(notificationWrapper.getCommodityTransfer().getSctlId());
         	if (sctl != null) {
-        		tt = ttDAO.getById(sctl.getTransactionTypeID());
+        		tt = ttDAO.getById(sctl.getTransactiontypeid().longValue());
 			}
         	returnValue = (tt != null) ? tt.getDisplayname() : notificationWrapper.getCommodityTransfer().getSourcemessage();
         }
@@ -647,7 +647,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
 
     private String buildTransferStatusString(NotificationWrapper notificationWrapper) {
         String returnValue = "Unknown";
-        ServiceChargeTransactionLog sctl = null;
+        ServiceChargeTxnLog sctl = null;
         if (notificationWrapper.getCommodityTransfer() != null) {
         	ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
         	sctl = sctlDAO.getById(notificationWrapper.getCommodityTransfer().getSctlId());
@@ -656,7 +656,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
         	sctl = notificationWrapper.getServiceChargeTransactionLog();
         }
     	if (sctl != null) {
-    		int sctlStatus = sctl.getStatus();
+    		int sctlStatus = (int) sctl.getStatus();
     		switch (sctlStatus) {
 			case 0:
 				returnValue = "Inquiry";

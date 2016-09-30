@@ -26,7 +26,7 @@ import com.mfino.fix.CmFinoFIX.CMGetTransactions;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.result.Result;
 import com.mfino.service.CommodityTransferService;
-import com.mfino.service.SubscriberMDN;
+import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
 
 /**

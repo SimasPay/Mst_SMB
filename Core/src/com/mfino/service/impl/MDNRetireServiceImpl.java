@@ -229,7 +229,7 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 
             eachPocket.setCardpan(cardPanStringToReplace);
             eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-            eachPocket.setIsdefault(false);
+            eachPocket.setIsdefault((short) Boolean.compare(false, true));
             // Now set back the Data into the table.
             try{
             	pocketDAO.save(eachPocket);
@@ -451,7 +451,7 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 		SubscriberMdn smdn = lst.get(0);
 		
 		if(smdn != null){
-			smdn.setIsmdnrecycled(Boolean.TRUE);
+			smdn.setIsmdnrecycled((short) Boolean.compare(true, false));
 			smdn.setMdn(markedMDNRetireString);
 			smdn.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 			smdn.setStatus(CmFinoFIX.SubscriberStatus_Retired);

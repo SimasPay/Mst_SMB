@@ -3,6 +3,8 @@
  */
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,14 +81,14 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 		
 		if(ServiceChargeTransactionLogID != null)
 		{
-			notificationLog.setSctlId(ServiceChargeTransactionLogID);
-			notificationLog.setNotificationMethod(notificationMethod);
-			notificationLog.setNotificationReceiverType(notificationReceiverType);
+			notificationLog.setId(new BigDecimal(ServiceChargeTransactionLogID));
+			notificationLog.setNotificationmethod(notificationMethod);
+			notificationLog.setNotificationreceivertype(notificationReceiverType);
 			notificationLog.setCode(notificationCode);
 			notificationLog.setText(EncryptionUtil.getEncryptedString(text));
-			notificationLog.setSourceAddress(toAddress);
-			notificationLog.setEmailSubject(emailSubject);
-			notificationLog.setIsSensitiveData(false);
+			notificationLog.setSourceaddress(toAddress);
+			notificationLog.setEmailsubject(emailSubject);
+			notificationLog.setIssensitivedata((short) Boolean.compare(false, true));
 			notificationLogService.saveNotificationLog(notificationLog);
 			
 			NotificationLogDetails notificationLogDetails = new NotificationLogDetails();
@@ -94,7 +96,7 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 			notificationLogDetails.setStatus(CmFinoFIX.SendNotificationStatus_Sending);
 			saveNotificationLogDetails(notificationLogDetails);
 			
-			return notificationLogDetails.getID();
+			return notificationLogDetails.getId().longValue();
 		}
 		return null;
 	}
