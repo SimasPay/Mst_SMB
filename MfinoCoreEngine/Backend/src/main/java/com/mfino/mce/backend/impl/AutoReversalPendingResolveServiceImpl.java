@@ -13,7 +13,7 @@ import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.domain.AutoReversals;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMPendingCommodityTransferRequest;
@@ -43,13 +43,13 @@ public class AutoReversalPendingResolveServiceImpl extends BaseServiceImpl imple
 		Long sctlId = pendingRequest.getServiceChargeTransactionLogID();
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		PendingCommodityTransfer pct = getPendingCommodityTransfer(sctl);
 		
 		AutoReversals autoReversals = autoReversalService.getAutoReversalBySctlId(sctlId);
 		
-		if((null != autoReversals.getAutoRevStatus()) && (CmFinoFIX.AutoRevStatus_DEST_TRANSIT_PENDING.equals(autoReversals.getAutoRevStatus()))){
+		if(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_PENDING.equals(autoReversals.getAutorevstatus())){
 			log.info("BillPayPendingResolveServiceImpl :: resolvePendingTransaction() AutoRevStatus_DEST_TRANSIT_PENDING");
 			if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
 				response = bankService.onRevertOfTransferConfirmation(pct, true);
@@ -63,7 +63,7 @@ public class AutoReversalPendingResolveServiceImpl extends BaseServiceImpl imple
 				mceMessage.setDestinationQueue("jms:transitToSourceInquiry?disableReplyTo=true");
 			}
 		}
-		else if((null != autoReversals.getAutoRevStatus()) && (CmFinoFIX.AutoRevStatus_TRANSIT_SRC_PENDING.equals(autoReversals.getAutoRevStatus()))){
+		else if(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_PENDING.equals(autoReversals.getAutorevstatus())){
 			log.info("BillPayPendingResolveServiceImpl :: resolvePendingTransaction() AutoRevStatus_TRANSIT_SRC_PENDING");
 			if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
 				response = bankService.onRevertOfTransferConfirmation(pct, true);
@@ -83,7 +83,7 @@ public class AutoReversalPendingResolveServiceImpl extends BaseServiceImpl imple
 		return mceMessage;
 	}
 	
-	private PendingCommodityTransfer getPendingCommodityTransfer(ServiceChargeTransactionLog sctl){
+	private PendingCommodityTransfer getPendingCommodityTransfer(ServiceChargeTxnLog sctl){
 		PendingCommodityTransfer pct = null;
 		
 		ChargeTxnCommodityTransferMapDAO chargeTxnCommodityTransferMapDao = DAOFactory.getInstance().getTxnTransferMap();
@@ -92,12 +92,12 @@ public class AutoReversalPendingResolveServiceImpl extends BaseServiceImpl imple
 		if(sctl != null)
 		{
 	        ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(sctl.getID());
+			query.setSctlID(sctl.getId().longValue());
 			List<ChargeTxnCommodityTransferMap> ctxnList = chargeTxnCommodityTransferMapDao.get(query);
 			
 			//Assuming there will be only one pending transaction for this sctlid
 			for(ChargeTxnCommodityTransferMap ctxnMap : ctxnList){
-				pct = pctDao.getById(ctxnMap.getCommodityTransferID());
+				pct = pctDao.getById(ctxnMap.getCommoditytransferid().longValue());
 				if(pct != null){
 					break;
 				}

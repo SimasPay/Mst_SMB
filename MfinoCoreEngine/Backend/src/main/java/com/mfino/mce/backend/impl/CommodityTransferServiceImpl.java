@@ -15,17 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.CommodityTransferDAO;
 import com.mfino.dao.DAOFactory;
-import com.mfino.dao.ServiceChargeTransactionLogDAO;
-import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
-import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.hibernate.Timestamp;
@@ -53,7 +49,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public PendingCommodityTransfer createPCT(CMBase requestFix,Subscriber objSourceSubscriber, Subscriber objDestSubscriber, Pocket objSourcePocket, Pocket objDestPocket, 
-			SubscriberMDN objSourceSubMdn, SubscriberMDN objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, String bucketType, Integer billingType, 
+			SubscriberMdn objSourceSubMdn, SubscriberMdn objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, String bucketType, Integer billingType, 
 			Integer initialTransferStatus) {
 		return createPCT(requestFix, objSourceSubscriber, objDestSubscriber, objSourcePocket, objDestPocket, objSourceSubMdn, objDestSubMdn, sourceMessage, amount, charges, 
 				null, bucketType, billingType, initialTransferStatus);
@@ -61,7 +57,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public PendingCommodityTransfer createPCT(CMBase requestFix,Subscriber objSourceSubscriber, Subscriber objDestSubscriber, Pocket objSourcePocket, Pocket objDestPocket, 
-			SubscriberMDN objSourceSubMdn, SubscriberMDN objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, BigDecimal taxAmount, String bucketType, 
+			SubscriberMdn objSourceSubMdn, SubscriberMdn objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, BigDecimal taxAmount, String bucketType, 
 			Integer billingType, Integer initialTransferStatus) {
 		return createPCT(requestFix, objSourceSubscriber, objDestSubscriber, objSourcePocket, objDestPocket, objSourceSubMdn, objDestSubMdn, sourceMessage, amount, charges, 
 				taxAmount, bucketType, billingType, initialTransferStatus, null);
@@ -69,7 +65,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public PendingCommodityTransfer createPCT(CMBase requestFix,Subscriber objSourceSubscriber, Subscriber objDestSubscriber, Pocket objSourcePocket, Pocket objDestPocket, 
-			SubscriberMDN objSourceSubMdn, SubscriberMDN objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, BigDecimal taxAmount, String bucketType, 
+			SubscriberMdn objSourceSubMdn, SubscriberMdn objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, BigDecimal taxAmount, String bucketType, 
 			Integer billingType, Integer initialTransferStatus, String destinationBankAccountNo) {
 		return createPCT(requestFix, objSourceSubscriber, objDestSubscriber, objSourcePocket, objDestPocket, objSourceSubMdn, objDestSubMdn, sourceMessage, amount, charges, 
 				taxAmount, bucketType, billingType, initialTransferStatus, destinationBankAccountNo, null);
@@ -77,58 +73,58 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public PendingCommodityTransfer createPCT(CMBase requestFix,Subscriber objSourceSubscriber, Subscriber objDestSubscriber, Pocket objSourcePocket, Pocket objDestPocket, 
-			SubscriberMDN objSourceSubMdn, SubscriberMDN objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, BigDecimal taxAmount, String bucketType, 
+			SubscriberMdn objSourceSubMdn, SubscriberMdn objDestSubMdn, String sourceMessage, BigDecimal amount, BigDecimal charges, BigDecimal taxAmount, String bucketType, 
 			Integer billingType, Integer initialTransferStatus, String destinationBankAccountNo, String sourceBankAccountNo)
 	{
 		log.info("CommodityTransferServiceImpl : createPCT()");
 		PendingCommodityTransfer pct = new PendingCommodityTransfer();
 	
 		if(CmFinoFIX.PocketType_SVA.equals(objDestPocket.getPocketTemplate().getType())){
-			pct.setDestBankAccountName((safeString(objDestSubscriber.getFirstName()) + " " + safeString(objDestSubscriber.getLastName())));
+			pct.setDestbankaccountname((safeString(objDestSubscriber.getFirstname()) + " " + safeString(objDestSubscriber.getLastname())));
 			
 			if(CmFinoFIX.PocketType_SVA.equals(objDestPocket.getPocketTemplate().getType())){
 				
 			}
 		}
 
-		pct.setTransferStatus(CmFinoFIX.TransferStatus_Initialized);
-		pct.setDestMDN(objDestSubMdn.getMDN());
-		pct.setDestPocketID(objDestPocket.getID());
-		pct.setDestPocketType(objDestPocket.getPocketTemplate().getType());
-		pct.setDestSubscriberID(objDestSubscriber.getID());
-		pct.setDestSubscriberName((safeString(objDestSubscriber.getFirstName()) + " " + safeString(objDestSubscriber.getLastName())));
+		pct.setTransferstatus(CmFinoFIX.TransferStatus_Initialized);
+		pct.setDestmdn(objDestSubMdn.getMdn());
+		pct.setDestpocketid(objDestPocket.getId());
+		pct.setDestpockettype(objDestPocket.getPocketTemplate().getType());
+		pct.setDestsubscriberid(objDestSubscriber.getId());
+		pct.setDestsubscribername((safeString(objDestSubscriber.getFirstname()) + " " + safeString(objDestSubscriber.getLastname())));
 		
-		pct.setPocketBySourcePocketID(objSourcePocket);
+		pct.setPocket(objSourcePocket);
 		
 		if(objDestPocket.getPocketTemplate().getAllowance() != null){
-			pct.setDestPocketAllowance(objDestPocket.getPocketTemplate().getAllowance());
+			pct.setDestpocketallowance(objDestPocket.getPocketTemplate().getAllowance());
 		}
 		
-		pct.setSourceMessage(safeString(sourceMessage));
+		pct.setSourcemessage(safeString(sourceMessage));
 		
-		if(objDestPocket.getPocketTemplate().getType().intValue() ==  CmFinoFIX.PocketType_BankAccount || objDestPocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_NFC){
+		if(objDestPocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_BankAccount || objDestPocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_NFC){
 			if(StringUtils.isNotBlank(destinationBankAccountNo))
 			{
-				pct.setDestCardPAN(destinationBankAccountNo);
+				pct.setDestcardpan(destinationBankAccountNo);
 			}
 			else
 			{
-				pct.setDestCardPAN(safeString(objDestPocket.getCardPAN()));
+				pct.setDestcardpan(safeString(objDestPocket.getCardpan()));
 			}
 		}
-		else if(objDestPocket.getPocketTemplate().getType().intValue() ==  CmFinoFIX.PocketType_SVA){
+		else if(objDestPocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_SVA){
 			
-			pct.setDestPocketBalance(objDestPocket.getCurrentBalance());
+			pct.setDestpocketbalance(objDestPocket.getCurrentbalance());
 			
 			//the source and dest pocket template should be the same
-			if(objDestPocket.getPocketTemplate().getCommodity().intValue() == CmFinoFIX.Commodity_Money) {
+			if(objDestPocket.getPocketTemplate().getCommodity() == CmFinoFIX.Commodity_Money) {
 //				pct.setDestCardPAN(MCEUtil.SOURCE_CARD_NUMBER_OMNIBUS);
-				pct.setDestCardPAN(safeString(objDestPocket.getCardPAN()));
+				pct.setDestcardpan(safeString(objDestPocket.getCardpan()));
 			}
 		}
-		else if(objDestPocket.getPocketTemplate().getType().intValue() ==  CmFinoFIX.PocketType_BOBAccount){
-			if(objDestPocket.getPocketTemplate().getOperatorCode() != null){
-				pct.setOperatorCode(objDestPocket.getPocketTemplate().getOperatorCode());
+		else if(objDestPocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_BOBAccount){
+			if(objDestPocket.getPocketTemplate().getOperatorcode() != null){
+				pct.setOperatorcode(objDestPocket.getPocketTemplate().getOperatorcode());
 			}
 			else{
 				// TODO set default operator code ask sridhar.
@@ -137,26 +133,26 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		//second part starts from here
 		
-		pct.setUpdatedBy(safeString(requestFix.getOperatorName()));
-		pct.setCreatedBy(safeString(requestFix.getOperatorName()));
+		pct.setUpdatedby(safeString(requestFix.getOperatorName()));
+		pct.setCreatedby(safeString(requestFix.getOperatorName()));
 	//	pct.setExpirationTimeout(MCEUtil.timeOut); //TODO change this later put in every fix message
-		pct.setExpirationTimeout(timeout);
+		pct.setExpirationtimeout(timeout);
 		
 		if(!isNullOrEmpty(requestFix.getSourceIP())){
-			pct.setSourceIP(requestFix.getSourceIP());
+			pct.setSourceip(requestFix.getSourceIP());
 		}
 		if(!isNullOrEmpty(requestFix.getWebClientIP())){
-			pct.setWebClientIP(requestFix.getWebClientIP());
+			pct.setWebclientip(requestFix.getWebClientIP());
 		}
 		if(!isNullOrEmpty(requestFix.getServletPath())){
-			pct.setServletPath(requestFix.getServletPath());
+			pct.setServletpath(requestFix.getServletPath());
 		}
 		
 		if(objSourceSubscriber.getCompany() != null){
 			pct.setCompany(objSourceSubscriber.getCompany());
 		}
 		
-		pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_Inititalized);
+		pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Inititalized));
 		pct.setAmount(amount);
 		if(charges != null){
 			pct.setCharges(charges);
@@ -165,81 +161,81 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 			pct.setCharges(BigDecimal.valueOf(0));
 		}
 		if (taxAmount != null) {
-			pct.setTaxAmount(taxAmount);
+			pct.setTaxamount(taxAmount);
 		} else {
-			pct.setTaxAmount(BigDecimal.ZERO);
+			pct.setTaxamount(BigDecimal.ZERO);
 		}
-		pct.setMsgType(requestFix.getMessageType());
+		pct.setMsgtype(requestFix.getMessageType());
 
-		pct.setBucketType(safeString(bucketType));
+		pct.setBuckettype(safeString(bucketType));
 		pct.setCommodity(objSourcePocket.getPocketTemplate().getCommodity());
 		pct.setCurrency(objSourceSubscriber.getCurrency());
 
-		pct.setDestMDN(objDestSubMdn.getMDN());
+		pct.setDestmdn(objDestSubMdn.getMdn());
 		pct.setmFinoServiceProviderByMSPID(coreDataWrapper.getMSPID(requestFix.getMSPID()));
 		
-		if(objSourcePocket.getPocketTemplate().getType().intValue() ==  CmFinoFIX.PocketType_BOBAccount){
-			if(objSourcePocket.getPocketTemplate().getOperatorCode() != null){
-				pct.setOperatorCode(objSourcePocket.getPocketTemplate().getOperatorCode());
+		if(objSourcePocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_BOBAccount){
+			if(objSourcePocket.getPocketTemplate().getOperatorcode() != null){
+				pct.setOperatorcode(objSourcePocket.getPocketTemplate().getOperatorcode());
 			}
 			else{
 				// TODO set default operator code ask sridhar.
 			}
 		}
 		
-		if(objSourcePocket.getPocketTemplate().getBankCode() != null){
-			pct.setBankCode(objSourcePocket.getPocketTemplate().getBankCode());
+		if(objSourcePocket.getPocketTemplate().getBankcode() != null){
+			pct.setBankcode(objSourcePocket.getPocketTemplate().getBankcode());
 		}
 		
 
-		pct.setSourceApplication(requestFix.getSourceApplication());
-		pct.setBillingType(billingType);
-		pct.setSourceMDN(objSourceSubMdn.getMDN());
-		pct.setSourcePocketType(objSourcePocket.getPocketTemplate().getType());
-		pct.setSubscriberBySourceSubscriberID(objSourceSubscriber);
-		pct.setSubscriberMDNBySourceMDNID(objSourceSubMdn);
-		pct.setSourceSubscriberName(safeString(objSourceSubscriber.getFirstName()) + " " + safeString(objSourceSubscriber.getLastName()));
-		pct.setStartTime(new Timestamp());
-		//TransactionsLog tLog =  coreDataWrapper.getTransactionsLogById(requestFix.getTransactionID());
-		TransactionsLog tLog = new TransactionsLog();
-		tLog.setID(requestFix.getTransactionID());
-		pct.setTransactionsLogByTransactionID(tLog);
-		pct.setTransferStatus(initialTransferStatus);
-		pct.setLocalRevertRequired(true);
+		pct.setSourceapplication(requestFix.getSourceApplication());
+		pct.setBillingtype(Long.valueOf(billingType));
+		pct.setSourcemdn(objSourceSubMdn.getMdn());
+		pct.setSourcepockettype(objSourcePocket.getPocketTemplate().getType());
+		pct.setSubscriber(objSourceSubscriber);
+		pct.setSubscriberMdn(objSourceSubMdn);
+		pct.setSourcesubscribername(safeString(objSourceSubscriber.getFirstname()) + " " + safeString(objSourceSubscriber.getLastname()));
+		pct.setStarttime(new Timestamp());
+		//TransactionLog tLog =  coreDataWrapper.getTransactionsLogById(requestFix.getTransactionID());
+		TransactionLog tLog = new TransactionLog();
+		tLog.setId(new BigDecimal(requestFix.getTransactionID()));
+		pct.setTransactionLog(tLog);
+		pct.setTransferstatus((int)initialTransferStatus);
+		pct.setLocalrevertrequired(true);
 		
-		if(objSourcePocket.getPocketTemplate().getType().intValue()	==	CmFinoFIX.PocketType_BankAccount) {
+		if(objSourcePocket.getPocketTemplate().getType()	==	CmFinoFIX.PocketType_BankAccount) {
 			if(StringUtils.isNotBlank(sourceBankAccountNo)) {
-				pct.setSourceCardPAN(sourceBankAccountNo);
+				pct.setSourcecardpan(sourceBankAccountNo);
 			}
 			else {
-				pct.setSourceCardPAN(safeString(objSourcePocket.getCardPAN()));
+				pct.setSourcecardpan(safeString(objSourcePocket.getCardpan()));
 			}
 		}
 
 		if(objSourcePocket.getPocketTemplate().getAllowance() != null)
-			pct.setSourcePocketAllowance(objSourcePocket.getPocketTemplate().getAllowance());
+			pct.setSourcepocketallowance(objSourcePocket.getPocketTemplate().getAllowance());
 
-		if(objSourcePocket.getPocketTemplate().getType().intValue()	==	CmFinoFIX.PocketType_SVA)
+		if(objSourcePocket.getPocketTemplate().getType()	==	CmFinoFIX.PocketType_SVA)
 		{
-			if(objSourcePocket.getCurrentBalance() != null)
-				pct.setSourcePocketBalance(objSourcePocket.getCurrentBalance());
+			if(objSourcePocket.getCurrentbalance() != null)
+				pct.setSourcepocketbalance(objSourcePocket.getCurrentbalance());
 			else
-				pct.setSourcePocketBalance(BigDecimal.valueOf(0));
+				pct.setSourcepocketbalance(String.valueOf(BigDecimal.valueOf(0)));
 
-			if(pct.getCommodity().intValue() == CmFinoFIX.Commodity_Money)
+			if(pct.getCommodity() == CmFinoFIX.Commodity_Money)
 			{
 				/*pct.setSourceCardPAN(MCEUtil.SOURCE_CARD_NUMBER_OMNIBUS); //TODO check with sridhar
 				pct.setBankCode(MCEUtil.SOURCE_BANK_CODE_FOR_OMNIBUS);*/
-				pct.setSourceCardPAN(safeString(objSourcePocket.getCardPAN())); 
-				pct.setBankCode(objSourcePocket.getPocketTemplate().getBankCode());
+				pct.setSourcecardpan(safeString(objSourcePocket.getCardpan())); 
+				pct.setBankcode(objSourcePocket.getPocketTemplate().getBankcode());
 			}
 		}
 		
-		pct.setUICategory(getUiCategory(requestFix, objSourcePocket, objDestPocket));
+		pct.setUicategory(Long.valueOf(getUiCategory(requestFix, objSourcePocket, objDestPocket)));
 		
 		//TODO code for has similar records using channel and uicategory
 		try{
-			pct.setID(commodityTransferSequenceGenerator.getNextTransferID());
+			pct.setId(new BigDecimal(commodityTransferSequenceGenerator.getNextTransferID()));
 			coreDataWrapper.save(pct);
 		}catch(Exception exp){
 			log.error(exp.getMessage(), exp);
@@ -247,8 +243,8 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 		
 		ChargeTxnCommodityTransferMap txnTransferMap = new ChargeTxnCommodityTransferMap();
-		txnTransferMap.setCommodityTransferID(pct.getID());
-		txnTransferMap.setSctlId(requestFix.getServiceChargeTransactionLogID());
+		txnTransferMap.setCommoditytransferid(pct.getId().longValue());
+		txnTransferMap.setSctlid(requestFix.getServiceChargeTransactionLogID().longValue());
 		
 		ChargeTxnCommodityTransferMapDAO txnTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
 		txnTransferMapDAO.save(txnTransferMap);
@@ -259,18 +255,18 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 	public CommodityTransfer movePctToCt(PendingCommodityTransfer pct) {
 		//log.info("CommodityTransferServiceImpl : movePctToCt()");
 		CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
-		CommodityTransfer existingCT = ctDAO.getById(pct.getID());
+		CommodityTransfer existingCT = ctDAO.getById(pct.getId().longValue());
 		if(existingCT != null){
 			//this method is used for only log purposes
 			isExistingCtDifferentFromPct(existingCT,pct);
 			return null;
 		}else{
-			log.info(String.format("CommodityTransferServiceImpl : movePctToCt : Moving pct(ID: %d) to ct, as record is not existing in Ct",pct.getID()));
+			log.info(String.format("CommodityTransferServiceImpl : movePctToCt : Moving pct(ID: %d) to ct, as record is not existing in Ct",pct.getId()));
 			CommodityTransfer ct = new CommodityTransfer();
 			
 			ClassMetadata classMetadata = getSessionFactory().getClassMetadata(CommodityTransfer.class);
 			ct.copy(pct,classMetadata);
-			ct.setID(pct.getID());
+			ct.setId(pct.getId());
 			coreDataWrapper.save(ct);		
 			coreDataWrapper.delete(pct);
 			return ct; 
@@ -285,7 +281,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		List<ChargeTxnCommodityTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlId);
 		
 		for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
-			pendingCT = coreDataWrapper.getPCTById(ctxn.getCommodityTransferID());
+			pendingCT = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 			
 			if(pendingCT != null) break;
 		}
@@ -304,62 +300,62 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 	
 	private boolean isExistingCtDifferentFromPct(CommodityTransfer existingCT, PendingCommodityTransfer pct){
 		boolean different = false;
-		if(!areLongsEqual(pct.getTransactionsLogByTransactionID().getID(), existingCT.getTransactionsLogByTransactionID().getID())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in TransactionID",pct.getID(),existingCT.getID()));
+		if(!areLongsEqual(pct.getTransactionLog().getId().longValue(), existingCT.getTransactionLog().getId().longValue())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in TransactionID",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areIntegersEqual(pct.getMsgType(),existingCT.getMsgType())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in MsgType",pct.getID(),existingCT.getID()));
+		if(!areIntegersEqual((int)pct.getMsgtype(),(int)existingCT.getMsgtype())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in MsgType",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areIntegersEqual(pct.getUICategory(),existingCT.getUICategory())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in UICategory",pct.getID(),existingCT.getID()));
+		if(!areIntegersEqual(pct.getUicategory().intValue(),existingCT.getUicategory().intValue())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in UICategory",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areIntegersEqual(pct.getNotificationCode(),existingCT.getNotificationCode())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in NotificationCode",pct.getID(),existingCT.getID()));
+		if(!areIntegersEqual(pct.getNotificationcode().intValue(),existingCT.getNotificationcode().intValue())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in NotificationCode",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areStringsEqual(pct.getSourceMDN(),existingCT.getSourceMDN())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourceMDN",pct.getID(),existingCT.getID()));
+		if(!areStringsEqual(pct.getSourcemdn(),existingCT.getSourcemdn())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourceMDN",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areLongsEqual(pct.getPocketBySourcePocketID().getID(),existingCT.getPocketBySourcePocketID().getID())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourcePocketID",pct.getID(),existingCT.getID()));
+		if(!areLongsEqual(pct.getPocket().getId().longValue(),existingCT.getPocket().getId().longValue())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourcePocketID",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areStringsEqual(pct.getSourceMessage(),existingCT.getSourceMessage())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourceMessage",pct.getID(),existingCT.getID()));
+		if(!areStringsEqual(pct.getSourcemessage(),existingCT.getSourcemessage())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourceMessage",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areStringsEqual(pct.getDestMDN(),existingCT.getDestMDN())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in DestMDN",pct.getID(),existingCT.getID()));
+		if(!areStringsEqual(pct.getDestmdn(),existingCT.getDestmdn())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in DestMDN",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areLongsEqual(pct.getDestPocketID(),existingCT.getDestPocketID())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in DestPocketID",pct.getID(),existingCT.getID()));
+		if(!areLongsEqual(pct.getDestpocketid().longValue(),existingCT.getDestpocketid().longValue())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in DestPocketID",pct.getId(),existingCT.getId()));
 			different = true;
 		}
 		if(!areBigDecimalsEqual(pct.getAmount(),existingCT.getAmount())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in Amount",pct.getID(),existingCT.getID()));
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in Amount",pct.getId(),existingCT.getId()));
 			different = true;
 		}
 		if(!areBigDecimalsEqual(pct.getCharges(),existingCT.getCharges())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in charges",pct.getID(),existingCT.getID()));
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in charges",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areBigDecimalsEqual(pct.getTaxAmount(),existingCT.getTaxAmount())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in taxAmount",pct.getID(),existingCT.getID()));
+		if(!areBigDecimalsEqual(pct.getTaxamount(),existingCT.getTaxamount())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in taxAmount",pct.getId(),existingCT.getId()));
 			different = true;
 		}
-		if(!areIntegersEqual(pct.getSourceApplication(),existingCT.getSourceApplication())){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourceApplication",pct.getID(),existingCT.getID()));
+		if(!areIntegersEqual((int)pct.getSourceapplication(),(int)existingCT.getSourceapplication())){
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ in sourceApplication",pct.getId(),existingCT.getId()));
 			different = true;
 		}
 		if(different == true){
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ. So, Ingnoring this PCT to Move to CT",pct.getID(),existingCT.getID()));
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) differ. So, Ingnoring this PCT to Move to CT",pct.getId(),existingCT.getId()));
 		}else{
-			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) are Equal. So, Ingnoring this PCT to Move to CT as they are equal",pct.getID(),existingCT.getID()));
+			log.error(String.format("CommodityTransferServiceImpl : movePctToCt : Error moving PCT to CT : pct(ID: %d) and existingCt(ID: %d) are Equal. So, Ingnoring this PCT to Move to CT as they are equal",pct.getId(),existingCT.getId()));
 		}
 		return different;
 	}
