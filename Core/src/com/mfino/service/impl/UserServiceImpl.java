@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public  String getUserString(User userObj) {
-        return String.format("%s %s (%s) Role: %s", userObj.getFirstName(), userObj.getLastName(), userObj.getUsername(), getUserRole(userObj.getRole()));
+        return String.format("%s %s (%s) Role: %s", userObj.getFirstname(), userObj.getLastname(), userObj.getUsername(), getUserRole(userObj.getRole().intValue()));
     }
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
     
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public  void reloadPermissions(User user) {
-        Integer role = user.getRole();
+        Integer role = user.getRole().intValue();
 
         if (null == role) {
             //Shouldn't happen unless the data is corrupted.
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
         if (iter != null) {
             while (iter.hasNext()) {
                 RolePermission rp = (RolePermission) iter.next();
-                permissions.add(rp.getPermission());
+                permissions.add(((Long)rp.getPermission()).intValue());
             }
         }
         
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
 
             try {
                 mailService.sendMailMultiX(email,
-                        userObj.getFirstName() + " " + userObj.getLastName(),
+                        userObj.getFirstname() + " " + userObj.getLastname(),
                         subject, body);
             } catch (Exception e) {
                 log.error("Failed to send email", e);
@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
             log.error(MessageText._("No role defined with the enumCode : ") + enumCode);
             return false;
         }
-        return role.getIsSystemUser();
+        return (role.getIssystemuser() != 0);
     }
     
     public  String getUserRole(Integer enumCode) {      
@@ -247,7 +247,7 @@ public class UserServiceImpl implements UserService {
            log.error(MessageText._("No role defined with the enumCode : ") + enumCode);
            return null;
        }
-        return role.getDisplayText();
+        return role.getDisplaytext();
     }
     
     public  String getUserBranchCode(Integer enumCode) {      
@@ -256,18 +256,18 @@ public class UserServiceImpl implements UserService {
             log.error(MessageText._("No BranchCode defined with the code : ") + enumCode);
             return null;
         }
-        return branchcodes.getBranchCode()+"-"+branchcodes.getBranchName();
+        return branchcodes.getBranchcode()+"-"+branchcodes.getBranchname();
     }
 
     public  String getUserBranchCodeString() {
     	User user=getCurrentUser();
-    	Long enumCode=user.getBranchCodeID();
+    	Long enumCode=user.getBranchcodeid();
         BranchCodes branchcodes = branchCodeDao.getById(enumCode);
         if (branchcodes == null) {
             log.error(MessageText._("No BranchCode defined with the code : ") + enumCode);
             return null;
         }
-        return branchcodes.getBranchCode()+"-"+branchcodes.getBranchName();
+        return branchcodes.getBranchcode()+"-"+branchcodes.getBranchname();
     }
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
         }
         User user=getCurrentUser();
         if(user!=null){
-		Set<Partner> partner=user.getPartnerFromUserID();
+		Set<Partner> partner=user.getPartners();
 		if(partner!=null&&!partner.isEmpty()){
 			Partner curPartner=partner.iterator().next();
 			Subscriber sub=curPartner.getSubscriber();
@@ -320,8 +320,8 @@ public class UserServiceImpl implements UserService {
 				user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 				user.setStatus(CmFinoFIX.UserStatus_Active);
 			}
-			user.setFirstTimeLogin(Boolean.FALSE);
-			user.setLastPasswordChangeTime(new Timestamp());
+			user.setFirsttimelogin((short) 0);
+			user.setLastpasswordchangetime(new Timestamp());
 			userDao.save(user);
         } else {
             throw new UsernameNotFoundException(MessageText._("Invalid username or password"));
@@ -338,7 +338,7 @@ public class UserServiceImpl implements UserService {
 		if(count>0){
 			//check history
 			String newHistory=user.getPassword();
-			String oldHistory = user.getPasswordHistory();
+			String oldHistory = user.getPasswordhistory();
 			if(oldHistory!=null){
 				if(oldHistory.contains(encPassword)){
 					return true;
@@ -356,7 +356,7 @@ public class UserServiceImpl implements UserService {
 					}
 				}
 			}
-			user.setPasswordHistory(newHistory);			
+			user.setPasswordhistory(newHistory);			
 		}
 		return false;
 	}
@@ -372,7 +372,7 @@ public class UserServiceImpl implements UserService {
         List<User> results = (List<User>) userDao.get(query);
         if (results.size() > 0) {
              User userObj = results.get(0);
-             language=userObj.getLanguage();
+             language = ((Long)userObj.getLanguage()).intValue();
 
         }
         return language;
@@ -389,8 +389,8 @@ public class UserServiceImpl implements UserService {
 	            user = results.get(0);
 				Integer OTPLength = systemParametersService.getOTPLength();
 	            String code=MfinoUtil.calculateDigestPin(username,MfinoUtil.generateOTP(OTPLength));
-	            user.setForgotPasswordCode(code);
-	            user.setExpirationTime(new Timestamp(DateUtil.addDays(new Date(), 1)));
+	            user.setForgotpasswordcode(code);
+	            user.setExpirationtime(new Timestamp(DateUtil.addDays(new Date(), 1)));
 	            String mail = user.getEmail();
 	            String sub =" Forgot Password Link";
 	            String msg= MfinoUtil.generateForgotPasswordMail(user.getUsername(),code);
@@ -414,10 +414,10 @@ public class UserServiceImpl implements UserService {
 	        List<User> results = userDao.get(query);
 	        if (results != null && results.size() > 0) {
 	            user = results.get(0);
-	            if(code.equals(user.getForgotPasswordCode())){
-	            	if(user.getExpirationTime()!=null&&(new Timestamp().before(user.getExpirationTime()))){
-	            		user.setExpirationTime(null);
-	            		user.setForgotPasswordCode(null);
+	            if(code.equals(user.getForgotpasswordcode())){
+	            	if(user.getExpirationtime()!=null&&(new Timestamp().before(user.getExpirationtime()))){
+	            		user.setExpirationtime(null);
+	            		user.setForgotpasswordcode(null);
 	            		error=resetPassword(user);
 	            	}else{
 	            		log.info("Reset Password link has been expired for user:"+username+" with code:"+code);
@@ -445,19 +445,19 @@ public class UserServiceImpl implements UserService {
 		    }
 		    user.setPassword(encPassword);
 		    // this triggers the user to change his password when he logs in
-		    user.setFirstTimeLogin(Boolean.TRUE);
+		    user.setFirsttimelogin((short) 1);
 		    String emailMsg =
 		        String.format(
 		            "Dear %s %s,\n\tYour username is %s \n\tYour pwd has been reset to: %s"
 		                + ".\n You can login : " + ConfigurationUtil.getAppURL()
 		                + " \n" + ConfigurationUtil.getAdditionalMsg() + "\n"
-		                + ConfigurationUtil.getEmailSignature(), user.getFirstName(),
-		            user.getLastName(), user.getUsername(), genPwd);
+		                + ConfigurationUtil.getEmailSignature(), user.getFirstname(),
+		            user.getLastname(), user.getUsername(), genPwd);
 
 		    userDao.save(user);
 
-		    CFIXMsg pMsg = mailService.sendMailMultiX(user.getEmail(), user.getFirstName() + " "
-		    		+ user.getLastName(), ConfigurationUtil.getResetPasswordSubject(),
+		    CFIXMsg pMsg = mailService.sendMailMultiX(user.getEmail(), user.getFirstname() + " "
+		    		+ user.getLastname(), ConfigurationUtil.getResetPasswordSubject(),
 		    				emailMsg);
 		    return  (CMErrorNotification)pMsg;
 	}
@@ -475,30 +475,33 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	 
-	  @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-	     public Integer getCurrentUserPriorityLevel(){
-	     try{ 
-	     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	         if (auth == null) {
-	             return null;
-	         }
-	         Integer roleID = ((UserDetailsServiceImpl) auth.getPrincipal()).getRole();
-	         if (roleID == null) {
-	             //Shouldn't happen unless the data is corrupted.
-	             log.error(MessageText._("No role for defined for user : ") + auth.getName());
-	          return null;
-	         }
-	       Role role = roleDao.getById(roleID); 
-	       if(role == null){
-	        log.error(MessageText._("No Role entry for role : ") + roleID);
-	        return null;
-	       }
-	       return role.getPriorityLevel();
-	      }catch(Exception e){
-	       log.error(MessageText._("Exception in getting priority level"));
-	      }
-	     return null;
-	     }
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+	public Integer getCurrentUserPriorityLevel() {
+		try {
+			Authentication auth = SecurityContextHolder.getContext()
+					.getAuthentication();
+			if (auth == null) {
+				return null;
+			}
+			Integer roleID = ((UserDetailsServiceImpl) auth.getPrincipal())
+					.getRole();
+			if (roleID == null) {
+				// Shouldn't happen unless the data is corrupted.
+				log.error(MessageText._("No role for defined for user : ")
+						+ auth.getName());
+				return null;
+			}
+			Role role = roleDao.getById(roleID);
+			if (role == null) {
+				log.error(MessageText._("No Role entry for role : ") + roleID);
+				return null;
+			}
+			return role.getPrioritylevel().intValue();
+		} catch (Exception e) {
+			log.error(MessageText._("Exception in getting priority level"));
+		}
+		return null;
+	}
 
 	@Override
 	public String generateUserName(String userName) {

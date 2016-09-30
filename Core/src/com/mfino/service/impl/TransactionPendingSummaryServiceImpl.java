@@ -1,5 +1,7 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,15 +29,15 @@ public class TransactionPendingSummaryServiceImpl implements TransactionPendingS
 		log.info("Trying to Save TransactionPendingSummary Domain Object corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 	
 		TransactionPendingSummary transactionPendingSummary = new TransactionPendingSummary();
-		transactionPendingSummary.setSctlId(newMsg.getServiceChargeTransactionLogID());
-		transactionPendingSummary.setCSRAction(newMsg.getCSRAction());
-		transactionPendingSummary.setCSRActionTime(new Timestamp());
-		transactionPendingSummary.setCSRComment(newMsg.getCSRComment());
-		transactionPendingSummary.setCSRUserID(newMsg.getCSRUserID());
-		transactionPendingSummary.setCSRUserName(newMsg.getCSRUserName());
+		transactionPendingSummary.setSctlid(new BigDecimal(newMsg.getServiceChargeTransactionLogID()));
+		transactionPendingSummary.setCsraction(newMsg.getCSRAction().longValue());
+		transactionPendingSummary.setCsractiontime(new Timestamp());
+		transactionPendingSummary.setCsrcomment(newMsg.getCSRComment());
+		transactionPendingSummary.setCsruserid(new BigDecimal(newMsg.getCSRUserID()));
+		transactionPendingSummary.setCsrusername(newMsg.getCSRUserName());
 		
 		transactionPendingSummaryDAO.save(transactionPendingSummary);
-		log.info("Successfully saved TransactionPendingSummary Domain Object with Id:"+transactionPendingSummary.getID()+" corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
+		log.info("Successfully saved TransactionPendingSummary Domain Object with Id:"+transactionPendingSummary.getId()+" corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
 		return transactionPendingSummary;
 	}
@@ -45,15 +47,15 @@ public class TransactionPendingSummaryServiceImpl implements TransactionPendingS
 		log.info("Trying to Save TransactionPendingSummary Domain Object corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
 		TransactionPendingSummary transactionPendingSummary = new TransactionPendingSummary();
-		transactionPendingSummary.setSctlId(newMsg.getServiceChargeTransactionLogID());
-		transactionPendingSummary.setCSRAction(newMsg.getCSRAction());
-		transactionPendingSummary.setCSRActionTime(new Timestamp());
-		transactionPendingSummary.setCSRComment(newMsg.getCSRComment());
-		transactionPendingSummary.setCSRUserID(newMsg.getCSRUserID());
-		transactionPendingSummary.setCSRUserName(newMsg.getCSRUserName());
+		transactionPendingSummary.setSctlid(new BigDecimal(newMsg.getServiceChargeTransactionLogID()));
+		transactionPendingSummary.setCsraction(newMsg.getCSRAction().longValue());
+		transactionPendingSummary.setCsractiontime(new Timestamp());
+		transactionPendingSummary.setCsrcomment(newMsg.getCSRComment());
+		transactionPendingSummary.setCsruserid(new BigDecimal(newMsg.getCSRUserID()));
+		transactionPendingSummary.setCsrusername(newMsg.getCSRUserName());
 		
 		transactionPendingSummaryDAO.save(transactionPendingSummary);
-		log.info("Successfully saved TransactionPendingSummary Domain Object with Id:"+transactionPendingSummary.getID()+" corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
+		log.info("Successfully saved TransactionPendingSummary Domain Object with Id:"+transactionPendingSummary.getId()+" corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
 		return transactionPendingSummary;
 	}
@@ -63,15 +65,15 @@ public class TransactionPendingSummaryServiceImpl implements TransactionPendingS
 		log.info("Trying to Save TransactionPendingSummary Domain Object corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
 		TransactionPendingSummary transactionPendingSummary = new TransactionPendingSummary();
-		transactionPendingSummary.setSctlId(newMsg.getServiceChargeTransactionLogID());
-		transactionPendingSummary.setCSRAction(newMsg.getCSRAction());
-		transactionPendingSummary.setCSRActionTime(new Timestamp());
-		transactionPendingSummary.setCSRComment(newMsg.getCSRComment());
-		transactionPendingSummary.setCSRUserID(newMsg.getCSRUserID());
-		transactionPendingSummary.setCSRUserName(newMsg.getCSRUserName());
+		transactionPendingSummary.setSctlid(new BigDecimal(newMsg.getServiceChargeTransactionLogID()));
+		transactionPendingSummary.setCsraction(newMsg.getCSRAction().longValue());
+		transactionPendingSummary.setCsractiontime(new Timestamp());
+		transactionPendingSummary.setCsrcomment(newMsg.getCSRComment());
+		transactionPendingSummary.setCsruserid(new BigDecimal(newMsg.getCSRUserID()));
+		transactionPendingSummary.setCsrusername(newMsg.getCSRUserName());
 		
 		transactionPendingSummaryDAO.save(transactionPendingSummary);
-		log.info("Successfully saved TransactionPendingSummary Domain Object with Id:"+transactionPendingSummary.getID()+" corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
+		log.info("Successfully saved TransactionPendingSummary Domain Object with Id:"+transactionPendingSummary.getId()+" corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
 		return transactionPendingSummary;
 	}

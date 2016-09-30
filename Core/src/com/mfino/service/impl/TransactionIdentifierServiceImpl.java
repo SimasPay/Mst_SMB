@@ -1,5 +1,6 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -43,8 +44,8 @@ public class TransactionIdentifierServiceImpl implements TransactionIdentifierSe
 		//saving into the db table
 		TransactionIdentifierDAO trxnIdentifierDAO = DAOFactory.getInstance().getTransactionIdentifierDAO();
 		TransactionIdentifier trxnIdentifier = new TransactionIdentifier();
-		trxnIdentifier.setTransactionIdentifier(transactionIdentifier);
-		trxnIdentifier.setServiceChargeTransactionLogID(sctlID);
+		trxnIdentifier.setTransactionidentifier(transactionIdentifier);
+		trxnIdentifier.setServicechargetransactionlogid(new BigDecimal(sctlID));
 		trxnIdentifierDAO.save(trxnIdentifier);
 		log.info("Added the sctl ID:" +sctlID+ "to the Transaction Identifier table with transaction identifier ="+transactionIdentifier);
 	}
