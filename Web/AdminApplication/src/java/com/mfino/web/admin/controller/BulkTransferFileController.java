@@ -180,18 +180,18 @@ public class BulkTransferFileController {
                     bulkUpload.setCompany(loggedInUser.getCompany());
                     bulkUpload.setDescription(multipartRequest.getParameter("Description"));
                     bulkUpload.setUser(loggedInUser);
-                    bulkUpload.setUserName(loggedInUser.getUsername());
-                    bulkUpload.setMDN(subscriberService.normalizeMDN(multipartRequest.getParameter("MDN")));
-                    bulkUpload.setInFileName(file.getOriginalFilename());
-                    bulkUpload.setInFileData(new String(file.getBytes()));
-                    bulkUpload.setInFileCreateDate(currentTime.toString());
-                    bulkUpload.setFileType(fileType);
-                    bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Uploaded);
-                    bulkUpload.setDeliveryDate(currentTime);
-                    bulkUpload.setTransactionsCount(count);
-                    bulkUpload.setTotalAmount(totalAmount);
+                    bulkUpload.setUsername(loggedInUser.getUsername());
+                    bulkUpload.setMdn(subscriberService.normalizeMDN(multipartRequest.getParameter("MDN")));
+                    bulkUpload.setInfilename(file.getOriginalFilename());
+                    bulkUpload.setInfiledata(new String(file.getBytes()));
+                    bulkUpload.setInfilecreatedate(currentTime.toString());
+                    bulkUpload.setFiletype(fileType);
+                    bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Uploaded);
+                    bulkUpload.setDeliverydate(currentTime);
+                    bulkUpload.setTransactionscount(count);
+                    bulkUpload.setTotalamount(totalAmount);
                     bulkUpload.setPin(encryptedPin);
-                    bulkUpload.setPaymentDate(new Timestamp(paymentDate));
+                    bulkUpload.setPaymentdate(new Timestamp(paymentDate));
                     bulkUpload.setPocketBySourcePocket(pocketService.getById(new Long(sourcePocket)));
                     bulkUploadService.save(bulkUpload);
                     
@@ -204,7 +204,7 @@ public class BulkTransferFileController {
                     List<Integer> roles = new ArrayList<Integer>();
                     Iterator<RolePermission> iterator = rolePermissions.iterator();
                     while(iterator.hasNext()) {
-                    	roles.add(iterator.next().getRole());
+                    	roles.add((int)iterator.next().getRole());
                     }
                     if(!roles.isEmpty()) {                    	
                     	log.info("Bulk Transfer approve mail is sent to users with Role IDs:" + roles);
@@ -219,8 +219,8 @@ public class BulkTransferFileController {
 
                     responseMap.put("success", true);
                     responseMap.put("file", file.getOriginalFilename());
-                    responseMap.put("id", bulkUpload.getID());
-                    responseMap.put("paymentDate", bulkUpload.getPaymentDate());
+                    responseMap.put("id", bulkUpload.getId());
+                    responseMap.put("paymentDate", bulkUpload.getPaymentdate());
                 }
             }
 

@@ -30,7 +30,7 @@ import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.BulkBankAccount;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -38,7 +38,6 @@ import com.mfino.service.BulkBankAccountService;
 import com.mfino.service.PocketService;
 import com.mfino.service.PocketTemplateService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.SubscriberMdnProcessor;
 import com.mfino.uicore.web.JSONView;
 import com.mfino.util.ConfigurationUtil;
@@ -86,9 +85,9 @@ public class FileBankAccountUploadController {
 					BulkBankAccount bu = new BulkBankAccount();
 					String filename = (String) filenames.next();
 					MultipartFile file = realRequest.getFile(filename);
-					bu.setFileName(file.getOriginalFilename());
+					bu.setFilename(file.getOriginalFilename());
 					byte[] bytes = file.getBytes();
-					bu.setFileData(new String(bytes));
+					bu.setFiledata(new String(bytes));
 					int fileSzMB = Integer.parseInt(ConfigurationUtil.getUploadFileSizeLimit());
 					long maxFileSizeAllowed = fileSzMB * 1048576;
 					if (bytes.length > maxFileSizeAllowed) {
@@ -97,14 +96,14 @@ public class FileBankAccountUploadController {
 						map.put("success", false);
 						return new JSONView(map);
 					}
-					bu.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Uploaded);
+					bu.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Uploaded);
 					bulkBankAccountService.save(bu);
 
 					// Parsing the file for validations
-					BufferedReader reader = new BufferedReader(new StringReader(bu.getFileData()));
+					BufferedReader reader = new BufferedReader(new StringReader(bu.getFiledata()));
 
 					String currentDir = System.getProperty("user.dir");
-					File reportFile = new File(currentDir + "/reportTemp." + bu.getID() + ".txt");
+					File reportFile = new File(currentDir + "/reportTemp." + bu.getId() + ".txt");
 					FileOutputStream fstream = new FileOutputStream(reportFile);
 					PrintStream out = new PrintStream(fstream);
 
@@ -174,7 +173,7 @@ public class FileBankAccountUploadController {
 							continue;
 						}
 						
-						List<SubscriberMDN> mdnResults = subscriberMdnProcessor.get(mdnQuery);
+						List<SubscriberMdn> mdnResults = subscriberMdnProcessor.get(mdnQuery);
 						if (mdnResults.size() < 1) {
 							log.error(String.format("MDN does not exist : %s", strLine));
 							out.println(strLine + ",1,MDN does not exist");
@@ -182,13 +181,13 @@ public class FileBankAccountUploadController {
 							continue;
 						}
 						try{
-							if (bankAccountTemplate.getTypeOfCheck().equals(CmFinoFIX.TypeOfCheck_LuhnCheck) && ValidationUtil.ValidateBankAccount(bankAccount) == false) {
+							if (bankAccountTemplate.getTypeofcheck()==(CmFinoFIX.TypeOfCheck_LuhnCheck) && ValidationUtil.ValidateBankAccount(bankAccount) == false) {
 								log.error(String.format("Bad bank account format: %s", strLine));
 								out.println(strLine + ",1,Wrong ATM card number or Parity check error");
 								errorLineCount++;
 								continue;
 							}
-							else if (bankAccountTemplate.getTypeOfCheck().equals(CmFinoFIX.TypeOfCheck_RegularExpressionCheck) && ValidationUtil.validateRegularExpression(bankAccount,bankAccountTemplate.getRegularExpression()) == false){
+							else if (bankAccountTemplate.getTypeofcheck()==(CmFinoFIX.TypeOfCheck_RegularExpressionCheck) && ValidationUtil.validateRegularExpression(bankAccount,bankAccountTemplate.getRegularexpression()) == false){
 								log.error(String.format("Bad bank account failed due to regular expression check %s", strLine));
 								out.println(strLine + ",1,Wrong ATM card number or Parity check error or Regular Expression check");
 								errorLineCount++;
@@ -213,7 +212,7 @@ public class FileBankAccountUploadController {
 							continue;
 						}
 						query = new PocketQuery();
-						query.setMdnIDSearch(mdnResults.get(0).getID());
+						query.setMdnIDSearch(mdnResults.get(0).getId().longValue());
 						query.setPocketType(CmFinoFIX.PocketType_BankAccount);
 
 						query.setPocketStatus(CmFinoFIX.PocketStatus_Active);
@@ -232,14 +231,14 @@ public class FileBankAccountUploadController {
 							} else {
 								Pocket newPocket = new Pocket();
 								newPocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-								newPocket.setStatusTime(new Timestamp());
+								newPocket.setStatustime(new Timestamp());
 								newPocket.setPocketTemplate(bankAccountTemplate);
-								newPocket.setCardPAN(bankAccount);
-								newPocket.setIsDefault(Boolean.TRUE);
-								newPocket.setSubscriberMDNByMDNID(mdnResults.get(0));
+								newPocket.setCardpan(bankAccount);
+								newPocket.setIsdefault(Boolean.TRUE);
+								newPocket.setSubscriberMdn(mdnResults.get(0));
 								newPocket.setCompany(userService.getUserCompany());
 								pocketService.save(newPocket);                
-								log.info("creation of the pocket is successful: " +  newPocket.getID());
+								log.info("creation of the pocket is successful: " +  newPocket.getId());
 							}
 						} else if (recordType.equals("1")) {
 							// update record
@@ -255,23 +254,23 @@ public class FileBankAccountUploadController {
 								PocketTemplate template = pocket.getPocketTemplate();
 								// *FindbugsChange*
 					        	// Previous -- if(template!=null && (bankAccountTemplate.getID() == (template.getID()))){
-								if(bankAccountTemplate.getID().equals(template.getID())){
+								if(bankAccountTemplate.getId().equals(template.getId())){
 									oldPocket = pocket;
 									//REFACTOR: Limitation to get just the first pocket for the template
 									break;
 								}
 							}
 							if(oldPocket==null){
-								log.error(String.format("Bank account pocket does not exist for pocket template: "+bankAccountTemplate.getID()+" while updating pocket: %s", strLine));
+								log.error(String.format("Bank account pocket does not exist for pocket template: "+bankAccountTemplate.getId()+" while updating pocket: %s", strLine));
 								out.println(strLine + ",1,Bank account pocket does not exist for pocket template");
 								errorLineCount++;
 								continue;
 							}
 
 							oldPocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-							oldPocket.setCardPAN(bankAccount);
+							oldPocket.setCardpan(bankAccount);
 							pocketService.save(oldPocket);
-							log.info("updation of the pocket is successful: " +  oldPocket.getID());
+							log.info("updation of the pocket is successful: " +  oldPocket.getId());
 						} else {
 							log.error(String.format("Bad record type format: %s", strLine));
 							out.println(strLine + ",1,Unknown record type");
@@ -283,17 +282,17 @@ public class FileBankAccountUploadController {
 					}
 					out.close();
 
-					bu.setTotalLineCount(linecount);
-					bu.setErrorLineCount(errorLineCount);
-					bu.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Processed);
+					bu.setTotallinecount((long)linecount);
+					bu.setErrorlinecount((long)errorLineCount);
+					bu.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processed);
 					String reportString = IOUtils.toString(new FileReader(reportFile));
-					bu.setUploadReport(reportString);
+					bu.setUploadreport(reportString);
 					
 					bulkBankAccountService.save(bu);
 
 					// send the email report          
-					userService.sendEmail(String.format(MessageText._("Bulk Link MDN to Card (Ref#%s)"), bu.getID()), reportString);
-					log.info("sending and email to the user about the bulkbankupload: " + bu.getID());
+					userService.sendEmail(String.format(MessageText._("Bulk Link MDN to Card (Ref#%s)"), bu.getId()), reportString);
+					log.info("sending and email to the user about the bulkbankupload: " + bu.getId());
 				}
 			}
 

@@ -42,7 +42,7 @@ public class RolePermissionsByGroupView extends AbstractView {
 																		// generate permGroupId, permItemsList map 
 					PermissionGroup permissionGroup = permissionItem.getPermissionGroup();
 					if(permissionGroup != null) { //skip permission items that are not associated to any permission group
-						long permissionGroupId = permissionGroup.getID();					
+						long permissionGroupId = permissionGroup.getId().longValue();					
 						if(permissionGroupId != presentGroupId) {
 							if(presentGroupId > 0) {
 								jsonPermGroup = new JSONObject();

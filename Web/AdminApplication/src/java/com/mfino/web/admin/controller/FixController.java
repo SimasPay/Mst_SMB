@@ -21,8 +21,8 @@ import org.springframework.web.servlet.View;
 import com.mfino.dao.AuditLogDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.AuditLog;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.enums.ItemType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CMultiXBuffer;
@@ -1411,7 +1411,7 @@ public class FixController {
 				throw new UnsupportedOperationException(msgClassName);
 			}
 			if (action == null || !action.equalsIgnoreCase("read")) {
-				mFinoServiceProvider msp = mFinoServiceProviderProcessor
+				MfinoServiceProvider msp = mFinoServiceProviderProcessor
 						.getById(1);
 				tl.setMessageData(completePostString);
 				tl.setmFinoServiceProviderByMSPID(msp);

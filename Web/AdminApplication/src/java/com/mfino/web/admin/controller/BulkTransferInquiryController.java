@@ -24,17 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
-import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.BulkUpload;
-import com.mfino.domain.Partner;
-import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -141,7 +135,7 @@ public class BulkTransferInquiryController {
                     Pocket srcPocket = pocketService.getById(srcPocketId);
             		Integer validationResult = transactionApiValidationService.validateDestinationPocket(srcPocket);
             		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-            			log.info("Source pocket with id "+(srcPocket!=null? srcPocket.getID():null)+" has failed validations");
+            			log.info("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
                         responseMap.put("Error", String.format(MessageText._("Sorry, Source pocket has failed validations.")));
                         return new JSONView(responseMap);
             		}                	
@@ -155,7 +149,7 @@ public class BulkTransferInquiryController {
                     Pocket destPocket = pocketService.getById(destPocketId);
             		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
             		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-            			log.info("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+            			log.info("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
                         responseMap.put("Error", String.format(MessageText._("Sorry, Destination pocket has failed validations.")));
                         return new JSONView(responseMap);
             		}
@@ -169,7 +163,7 @@ public class BulkTransferInquiryController {
                     Pocket ntPocket = pocketService.getById(ntPocketId);
             		validationResult = transactionApiValidationService.validateDestinationPocket(ntPocket);
             		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-            			log.info("Suspense Account pocket with id "+(ntPocket!=null? ntPocket.getID():null)+" has failed validations");
+            			log.info("Suspense Account pocket with id "+(ntPocket!=null? ntPocket.getId():null)+" has failed validations");
                         responseMap.put("Error", String.format(MessageText._("Sorry, Suspense Account pocket has failed validations.")));
                         return new JSONView(responseMap);
             		}            		
@@ -216,21 +210,21 @@ public class BulkTransferInquiryController {
                     bulkUpload.setCompany(loggedInUser.getCompany());
                     bulkUpload.setDescription(multipartRequest.getParameter("Description"));
                     bulkUpload.setUser(loggedInUser);
-                    bulkUpload.setUserName(loggedInUser.getUsername());
+                    bulkUpload.setUsername(loggedInUser.getUsername());
                     
-                    SubscriberMDN srcSubscriberMDN = srcPocket.getSubscriberMDNByMDNID();
-                    bulkUpload.setMDN(srcSubscriberMDN.getMDN());
-                    bulkUpload.setMDNID(srcSubscriberMDN.getID());
-                    bulkUpload.setInFileName(file.getOriginalFilename());
-                    bulkUpload.setInFileData(new String(file.getBytes()));
-                    bulkUpload.setInFileCreateDate(currentTime.toString());
-                    bulkUpload.setFileType(fileType);
-                    bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Initialized);
-                    bulkUpload.setTransactionsCount(count);
-                    bulkUpload.setTotalAmount(totalAmount);
-                    bulkUpload.setPaymentDate(new Timestamp(paymentDate));
+                    SubscriberMdn srcSubscriberMDN = srcPocket.getSubscriberMdn();
+                    bulkUpload.setMdn(srcSubscriberMDN.getMdn());
+                    bulkUpload.setMdnid(srcSubscriberMDN.getId());
+                    bulkUpload.setInfilename(file.getOriginalFilename());
+                    bulkUpload.setInfiledata(new String(file.getBytes()));
+                    bulkUpload.setInfilecreatedate(currentTime.toString());
+                    bulkUpload.setFiletype(fileType);
+                    bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Initialized);
+                    bulkUpload.setTransactionscount(count);
+                    bulkUpload.setTotalamount(totalAmount);
+                    bulkUpload.setPaymentdate(new Timestamp(paymentDate));
                     
-                    bulkUpload.setPocketBySourcePocket(srcPocket);
+                    bulkUpload.setPocket(srcPocket);
                     bulkUploadService.save(bulkUpload);
                     
                     // Send mail to Approvers to approve the bulk transfer request.
@@ -257,8 +251,8 @@ public class BulkTransferInquiryController {
 
                     responseMap.put("success", true);
                     responseMap.put("file", file.getOriginalFilename());
-                    responseMap.put("id", bulkUpload.getID());
-                    responseMap.put("disPalyId", leftPadWithCharacter(bulkUpload.getID()+"", 8, "0"));
+                    responseMap.put("id", bulkUpload.getId());
+                    responseMap.put("disPalyId", leftPadWithCharacter(bulkUpload.getId()+"", 8, "0"));
                     responseMap.put("paymentDate", convertDate(bulkUpload.getPaymentDate()));
                     responseMap.put("count", count + " MDNs");
                     responseMap.put("totalAmount", "RP "+ MfinoUtil.getNumberFormat().format(totalAmount));

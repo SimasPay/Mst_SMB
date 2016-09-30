@@ -95,7 +95,7 @@ public class BulkTransferConfirmController {
         	log.info("Bulk transfer request: " + bulkUploadId + " is confirmed: "+ confirmStatus);
         	BulkUpload bulkUpload = bulkUploadService.getById(bulkUploadId);
         	if (confirmStatus) {
-        		bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Uploaded);
+        		bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Uploaded);
         		createEntries(bulkUpload);
         		
                 // Send mail to Approvers to approve the bulk transfer request.
@@ -107,7 +107,7 @@ public class BulkTransferConfirmController {
         		List<Integer> roles = new ArrayList<Integer>();
         		Iterator<RolePermission> iterator = rolePermissions.iterator();
         		while(iterator.hasNext()) {
-        			roles.add(iterator.next().getRole());
+        			roles.add((int)iterator.next().getRole());
         		}
         		if (!roles.isEmpty()) {                    	
         			log.info("Bulk Transfer approve mail is sent to users with Role IDs:" + roles);
@@ -121,14 +121,14 @@ public class BulkTransferConfirmController {
         		}
         	}
         	else {
-        		bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Terminated);
-        		bulkUpload.setFailureReason("Cancelled by the user during confirmation level");
+        		bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Terminated);
+        		bulkUpload.setFailurereason("Cancelled by the user during confirmation level");
         	}
         	bulkUploadService.save(bulkUpload);
         	
         	responseMap.put("success", true);
-        	responseMap.put("id", bulkUpload.getID());
-        	responseMap.put("disPalyId", leftPadWithCharacter(bulkUpload.getID()+"", 8, "0"));
+        	responseMap.put("id", bulkUpload.getId());
+        	responseMap.put("disPalyId", leftPadWithCharacter(bulkUpload.getId()+"", 8, "0"));
         	
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -139,8 +139,8 @@ public class BulkTransferConfirmController {
     }
     
     private void createEntries(BulkUpload bulkUpload) throws IOException {
-    	log.info("Creating the entries for bulk transfer id: "+ bulkUpload.getID());
-    	BufferedReader bufferedReader = new BufferedReader(new StringReader(bulkUpload.getInFileData()));
+    	log.info("Creating the entries for bulk transfer id: "+ bulkUpload.getId());
+    	BufferedReader bufferedReader = new BufferedReader(new StringReader(bulkUpload.getInfiledata()));
 		String line = null;
 		BulkUploadEntry bue = null;
 		int i=1;
@@ -152,11 +152,11 @@ public class BulkTransferConfirmController {
 
 			// Setting the Bulk upload entry
 			bue = new BulkUploadEntry();
-			bue.setUploadID(bulkUpload.getID());
-			bue.setLineNumber(i);
+			bue.setUploadid(bulkUpload.getId());
+			bue.setLinenumber(i);
 			bue.setStatus(transferStatus);
 			bue.setAmount(amount);
-			bue.setDestMDN(destMDN);
+			bue.setDestmdn(destMDN);
 			
 			bulkUploadEntryService.saveBulkUploadEntry(bue);
 		}

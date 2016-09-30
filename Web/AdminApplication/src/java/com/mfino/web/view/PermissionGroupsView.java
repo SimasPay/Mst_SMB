@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.mfino.domain.PermissionGroup;
+import com.mfino.domain.PermissionItem;
 import com.mfino.domain.PermissionItems;
 
 /**
@@ -51,17 +52,17 @@ public class PermissionGroupsView extends AbstractView {
 	
 	public JSONObject toJson(PermissionGroup permissionGroup){		
 		JSONObject jsonPermGroup = new JSONObject();
-		jsonPermGroup.put("permGroupId", permissionGroup.getID());
-		jsonPermGroup.put("permGroupName", permissionGroup.getPermissionGroupName());		
+		jsonPermGroup.put("permGroupId", permissionGroup.getId());
+		jsonPermGroup.put("permGroupName", permissionGroup.getPermissiongroupname());		
 		JSONArray permissionItems = new JSONArray();
-		Set<PermissionItems> permItemsSet = permissionGroup.getPermissionItemsFromPermissionGroupID();
-		Iterator<PermissionItems> iterator = permItemsSet.iterator();
+		Set<PermissionItem> permItemsSet = permissionGroup.getPermissionItems();
+		Iterator<PermissionItem> iterator = permItemsSet.iterator();
 		while(iterator.hasNext()) {
 			JSONObject jsonPermItemNode = new JSONObject();
-			PermissionItems permissionItem = iterator.next();
+			PermissionItem permissionItem = iterator.next();
 			jsonPermItemNode.put("permNumber", permissionItem.getPermission());
 			jsonPermItemNode.put("permDescription", permissionItem.getDescription());
-			jsonPermItemNode.put("permItemId", permissionItem.getItemID());
+			jsonPermItemNode.put("permItemId", permissionItem.getItemid());
 			permissionItems.add(jsonPermItemNode);
 		}		
 		if(permItemsSet.size() > 0){

@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -79,14 +79,14 @@ public class FileUploadController extends MultixCommunicationHandler {
         try {
             
             mdn = request.getParameter("mdn");
-            SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(mdn);
+            SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(mdn);
             if (subscriberMDN == null) {
                 log.error("BulkUpload error: cannot find MDN record for id " + mdn);
                 map.put("Error", String.format(MessageText._("Cannot find MDN record for the given ID") + (" %s"), mdn));
                 map.put("success", false);
                 return new JSONView(map);
             }
-            if (subscriberMDN.getSubscriber() == null || subscriberMDN.getSubscriber().getUser() == null) {
+            if (subscriberMDN.getSubscriber() == null || subscriberMDN.getSubscriber().getMfinoUserByUserid() == null) {
                 log.error("BulkUpload error: data inconsistant with MDN record for id " + mdn);
                 map.put("Error", String.format(MessageText._("Data inconsistant with MDN record for the given ID") + "%s." + MessageText._(" Please note down this ID and contact system administrator."), mdn));
                 map.put("success", false);
@@ -243,7 +243,7 @@ public class FileUploadController extends MultixCommunicationHandler {
                 }else {
                     CMTransfersBulkUpload toBeSentMsg = new CmFinoFIX.CMTransfersBulkUpload();
                     toBeSentMsg.setDescription(request.getParameter("filedescription"));
-                    toBeSentMsg.setUserID(subscriberMDN.getSubscriber().getUser().getID());
+                    toBeSentMsg.setUserID(subscriberMDN.getSubscriber().getMfinoUserByUserid().getId().longValue());
                     toBeSentMsg.setSourceMDN(mdn);
                     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                     String userName = (auth != null) ? auth.getName() : " ";
