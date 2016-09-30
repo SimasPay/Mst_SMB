@@ -27,7 +27,7 @@ import com.mfino.domain.FundDefinition;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.Purpose;
 import com.mfino.domain.UnregisteredTxnInfo;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMFundWithdrawalInquiry;
 import com.mfino.hibernate.Timestamp;
@@ -94,8 +94,9 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 */
 	public int getMaxFailAttempts(UnregisteredTxnInfo unRegisteredTxnInfo){
 		//query the fundDefID in the FundDef table and get the max fail attempts allowed.
-		FundDefinition fundDefinition=unRegisteredTxnInfo.getFundDefinition();;
-		return fundDefinition.getMaxFailAttemptsAllowed();
+		FundDefinition fundDefinition=unRegisteredTxnInfo.getFundDefinition();
+		Long temp = fundDefinition.getMaxfailattemptsallowed();
+		return temp.intValue();
 	}
 	
 	
@@ -115,20 +116,20 @@ public class FundValidationServiceImpl implements FundValidationService {
 		log.info("Transaction Failed.Updating failure attempt:"+currentFailAttempts);
 			unRegisteredTxnInfo.setWithdrawalFailureAttempt(currentFailAttempts);
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
-			if(fundDefinition.getMaxFailAttemptsAllowed()<=currentFailAttempts && fundDefinition.getMaxFailAttemptsAllowed()!=-1){
+			if(fundDefinition.getMaxfailattemptsallowed()<=currentFailAttempts && fundDefinition.getMaxfailattemptsallowed()!=-1){
 				log.info("max fail attempts reached");
 				//query the definition table for fund event id and proceed accordingly
-				if(fundDefinition.getFundEventsByOnFailedAttemptsExceeded().getFundEventType().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
+				if(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
 					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferSCTLId());
 					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 					unRegisteredTxnInfo.setReversalReason("Max fail attempts reached");
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					return CmFinoFIX.NotificationCode_ReverseFundRequestInitaited;
-				}else if(fundDefinition.getFundEventsByOnFailedAttemptsExceeded().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
+				}else if(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
 					log.info("regerating fac.....");
 					return CmFinoFIX.NotificationCode_RegenFACAuto;
 					//regenerateFAC(unRegisteredTxnInfo);
-				}else if(fundDefinition.getFundEventsByOnFailedAttemptsExceeded().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
+				}else if(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
 					log.info("regenerate fac manually");
 					return CmFinoFIX.NotificationCode_RegenFACManual;
 				}
@@ -136,11 +137,11 @@ public class FundValidationServiceImpl implements FundValidationService {
 			}
 			else{
 				log.info("Regenerating FAC.......");
-				if(fundDefinition.getFundEventsByGenerationOfOTPOnFailure().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
+				if(fundDefinition.getFundEventsByGenerationofotponfailure().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
 					log.info("regerating fac.....");
 					return CmFinoFIX.NotificationCode_RegenFACAuto;
 					//regenerateFAC(unRegisteredTxnInfo);
-				}else if(fundDefinition.getFundEventsByGenerationOfOTPOnFailure().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
+				}else if(fundDefinition.getFundEventsByGenerationofotponfailure().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
 					log.info("regenerate fac manually");
 					return CmFinoFIX.NotificationCode_RegenFACManual;
 				}	
@@ -207,14 +208,14 @@ public class FundValidationServiceImpl implements FundValidationService {
 			}
 			log.info("creating FundDistributionInfo entry......for is debit="+isDebit);
 			FundDistributionInfo fundDistributionInfo = new FundDistributionInfo();
-			fundDistributionInfo.setDistributedAmount(amount);
+			fundDistributionInfo.setDistributedamount(amount);
 			fundDistributionInfo.setUnRegisteredTxnInfoByFundAllocationId(unRegisteredTxnInfo);
-			fundDistributionInfo.setTransferCTId(fundWithdrawalInquiry.getTransactionID());
-			fundDistributionInfo.setTransferSCTLId(fundWithdrawalInquiry.getServiceChargeTransactionLogID());
-			fundDistributionInfo.setDistributionType(fundWithdrawalInquiry.getDistributionType());
-			fundDistributionInfo.setDistributionStatus(CmFinoFIX.DistributionStatus_INITIALIZED);
+			fundDistributionInfo.setTransferctid(new BigDecimal(fundWithdrawalInquiry.getTransactionID()));
+			fundDistributionInfo.setTransfersctlid(new BigDecimal(fundWithdrawalInquiry.getServiceChargeTransactionLogID()));
+			fundDistributionInfo.setDistributiontype(fundWithdrawalInquiry.getDistributionType().longValue());
+			fundDistributionInfo.setDistributionstatus(CmFinoFIX.DistributionStatus_INITIALIZED.longValue());
 			MfinoServiceProviderDAO mfsDAO= DAOFactory.getInstance().getMfinoServiceProviderDAO();
-			mFinoServiceProvider mfsProvider = mfsDAO.getById(1L);
+			MfinoServiceProvider mfsProvider = mfsDAO.getById(1L);
 			fundDistributionInfo.setmFinoServiceProviderByMSPID(mfsProvider);
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 			fundStorageService.withdrawFunds(fundDistributionInfo);
@@ -333,21 +334,21 @@ public class FundValidationServiceImpl implements FundValidationService {
 			if (checkExpiry(unRegisteredTxnInfo)) {
 				log.info("Allocated Fund expired");
 
-				if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
+				if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
 					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferSCTLId());
 					unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 					unRegisteredTxnInfo.setReversalReason("Fund Expired");
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpiredReversal;
-				}else if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
+				}else if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
 					log.info("regerating fac.....");
-					unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationTypeByExpiryID()));
+					unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationType()));
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					result.setOneTimePin(regenerateFAC(unRegisteredTxnInfo));
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpiredNewFac;
-				}else if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
+				}else if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
 					log.info("regenerate fac manually");
-					unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationTypeByExpiryID()));
+					unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationType()));
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpired;
 				}
@@ -429,10 +430,10 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 */
 	private Timestamp getNewExpiryTime(ExpirationType expirationType) {
 		Long defaultExpirySeconds = 86400L;
-		if(expirationType.getExpiryType().equals(CmFinoFIX.ExpiryType_Fund)){
-			if(expirationType.getExpiryMode().equals(CmFinoFIX.ExpiryMode_DurationInSecs)){
-				return new Timestamp(System.currentTimeMillis() + expirationType.getExpiryValue() * 1000);
-			}else if(expirationType.getExpiryMode().equals(CmFinoFIX.ExpiryMode_CutOffTime)){
+		if(expirationType.getExpirytype().equals(CmFinoFIX.ExpiryType_Fund)){
+			if(expirationType.getExpirymode().equals(CmFinoFIX.ExpiryMode_DurationInSecs)){
+				return new Timestamp(System.currentTimeMillis() + expirationType.getExpiryvalue().intValue() * 1000);
+			}else if(expirationType.getExpirymode().equals(CmFinoFIX.ExpiryMode_CutOffTime)){
 			}
 		}
 		log.debug("Could not find Fund related expiry time.setting a deafult of 1 days");
@@ -495,12 +496,12 @@ public class FundValidationServiceImpl implements FundValidationService {
 		Set<FundDefinition> lstFundDefinitions = purpose.getFundDefinitionFromPurposeID();
 		if(CollectionUtils.isNotEmpty(lstFundDefinitions)){
 			if(lstFundDefinitions.size() > 1){
-				log.error("Multiple fundDefinition found for same purpose ID: "+ purpose.getID());
+				log.error("Multiple fundDefinition found for same purpose ID: "+ purpose.getId());
 				return false;
 			}
 		}
 		else{
-			log.error("No fundDefinition found with given purpose ID: "+purpose.getID());
+			log.error("No fundDefinition found with given purpose ID: "+purpose.getId());
 			return false;
 		}
 		return true;

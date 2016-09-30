@@ -407,11 +407,11 @@ public class MailServiceImpl implements MailService {
 			String email) {
 		String mailBody = ConfigurationUtil.getEmailVerificationMessage();
 		mailBody = mailBody.replace("$(AppURL)", ConfigurationUtil.getAppURL());
-		mailBody = mailBody.replace("$(subscriberID)", subscriber.getID()
+		mailBody = mailBody.replace("$(subscriberID)", subscriber.getId()
 				.toString());
 		mailBody = mailBody.replace("$(email)", email);
 		asyncSendEmail(email,
-				subscriber.getFirstName() + " " + subscriber.getLastName(),
+				subscriber.getFirstname() + " " + subscriber.getLastname(),
 				ConfigurationUtil.getEmailVerificationSubject(), mailBody);
 	}
 }

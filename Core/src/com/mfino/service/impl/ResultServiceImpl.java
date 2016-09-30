@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.result.Result;
 import com.mfino.result.SMSResult;
@@ -56,7 +56,7 @@ public class ResultServiceImpl implements ResultService{
 		}
 	}
 	
-	public Result returnResult(CMBase msg, Integer nc, SubscriberMDN smdn, Result result, boolean sms) {
+	public Result returnResult(CMBase msg, Integer nc, SubscriberMdn smdn, Result result, boolean sms) {
 		result.setNotificationCode(nc);
 		
 		if (sms)

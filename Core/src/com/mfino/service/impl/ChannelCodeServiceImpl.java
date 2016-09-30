@@ -11,7 +11,7 @@ import com.mfino.dao.ChannelCodeDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.service.ChannelCodeService;
 @Service("ChannelCodeServiceImpl")
 public class ChannelCodeServiceImpl implements ChannelCodeService{
@@ -43,8 +43,8 @@ public class ChannelCodeServiceImpl implements ChannelCodeService{
 		String channelName = null;
 		ChannelCode channelCode = getChannelCodebySourceApplication(channelSourceApplication); 
 		if(channelCode!=null){
-			log.info("getting the channel name from channelCode: "+channelCode.getID());
-			channelName = channelCode.getChannelName();
+			log.info("getting the channel name from channelCode: "+channelCode.getId());
+			channelName = channelCode.getChannelname();
 		}else{
 			log.error("Channel code with sourceApplication : "+channelSourceApplication+" is null");
 		}

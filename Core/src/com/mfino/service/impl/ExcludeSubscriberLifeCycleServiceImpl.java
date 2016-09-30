@@ -7,14 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ExcludeSubscriberLifeCycleDAO;
 import com.mfino.domain.ExcludeSubscriberLifeCycle;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.service.ExcludeSubscriberLifeCycleService;
 
 @Service("ExcludeSubscriberLifeCycleServiceImpl")
 public class ExcludeSubscriberLifeCycleServiceImpl implements
 		ExcludeSubscriberLifeCycleService {
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public ExcludeSubscriberLifeCycle getBySubscriberMDN(SubscriberMDN subscriberMDN){
+	public ExcludeSubscriberLifeCycle getBySubscriberMDN(SubscriberMdn subscriberMDN){
 		ExcludeSubscriberLifeCycleDAO eslcDAO = DAOFactory.getInstance().getExcludeSubscriberLifeCycleDao();
 		return eslcDAO.getBySubscriberMDN(subscriberMDN);
 	}

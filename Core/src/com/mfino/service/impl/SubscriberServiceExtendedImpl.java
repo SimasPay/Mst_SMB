@@ -1,5 +1,6 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +41,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.domain.UnregisteredTxnInfo;
@@ -118,44 +119,44 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerSubscriber(Subscriber subscriber,
-			SubscriberMDN subscriberMDN,
+			SubscriberMdn subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
 			String oneTimePin, Partner registeringPartner) {
-		SubscriberMDN existingSubscriberMDN = subscriberMdnDao
+		SubscriberMdn existingSubscriberMDN = subscriberMdnDao
 				.getByMDN(subscriberRegistration.getMDN());
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		if (existingSubscriberMDN == null || isUnRegistered) {
 			if (isUnRegistered) {
-				Long regPartnerID = subscriber.getRegisteringPartnerID();
+				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringPartnerID(regPartnerID);
+				subscriber.setRegisteringpartnerid(new BigDecimal(regPartnerID));
 			}
 
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
 			String createdByName = null;
 			if (registeringPartner != null) {
-				createdByName = registeringPartner.getTradeName();
+				createdByName = registeringPartner.getTradename();
 			} else {
 				createdByName = subscriberRegistration.getFirstName();
 			}
-			subscriber.setFirstName(subscriberRegistration.getFirstName());
-			subscriber.setLastName(subscriberRegistration.getLastName());
-			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
+			subscriber.setFirstname(subscriberRegistration.getFirstName());
+			subscriber.setLastname(subscriberRegistration.getLastName());
+			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
 			String mothersMaidenName = "MothersMaidenName";
-			subscriber.setSecurityQuestion(mothersMaidenName);
+			subscriber.setSecurityquestion(mothersMaidenName);
 			if (subscriberRegistration.getMothersMaidenName() != null) {
-				subscriber.setSecurityAnswer(subscriberRegistration
+				subscriber.setSecurityanswer(subscriberRegistration
 						.getMothersMaidenName());
 			}
-			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
+			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
 			if (registeringPartner != null) {
 				subscriber
-						.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Agent);
+						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent.longValue());
 			} else {
 				subscriber
-						.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Self);
+						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self.longValue());
 			}
 
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
@@ -164,12 +165,12 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
-			subscriber.setStatusTime(new Timestamp());
-			subscriber.setCreatedBy(createdByName);
-			subscriber.setUpdatedBy(createdByName);
-			subscriber.setCreateTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
+			subscriber.setCreatedby(createdByName);
+			subscriber.setUpdatedby(createdByName);
+			subscriber.setCreatetime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil
 					.getIntialKyclevel());
@@ -185,9 +186,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				groupID = subscriberGroup.getGroup().getID();
 			}
 			Long kycLevelNo = null;
-			if(null != subscriber.getUpgradableKYCLevel())
+			if(null != subscriber.getUpgradablekyclevel())
 			{
-				kycLevelNo = subscriber.getUpgradableKYCLevel();
+				kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 			}
 			else
 			{
@@ -198,17 +199,16 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
 			}
 			
-			if (!kycLevel.getKYCLevel().equals(
+			if (!kycLevel.getKyclevel().equals(
 					subscriberRegistration.getKYCLevel())) {
 				kycLevel = kycLevelDAO.getByKycLevel(subscriberRegistration.getKYCLevel());
 				if (kycLevel == null) {
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
-				subscriber.setUpgradableKYCLevel(subscriberRegistration
-						.getKYCLevel());
-				subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
+				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
 			} else {
-				subscriber.setUpgradeState(CmFinoFIX.UpgradeState_none);
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
 			}
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
 			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration
@@ -229,26 +229,26 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					}
 				}
 			}
-			subscriber.setAppliedBy(createdByName);
-			subscriber.setAppliedTime(new Timestamp());
-			subscriber.setDetailsRequired(true);
+			subscriber.setAppliedby(createdByName);
+			subscriber.setAppliedtime(new Timestamp());
+			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
 			subscriberDao.save(subscriber);
 			if(subscriber.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
 				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());				
 			}
 			subscriberMDN.setSubscriber(subscriber);
-			subscriberMDN.setMDN(subscriberRegistration.getMDN());
-			subscriberMDN.setApplicationID(subscriberRegistration
+			subscriberMDN.setMdn(subscriberRegistration.getMDN());
+			subscriberMDN.setApplicationid(subscriberRegistration
 					.getApplicationID());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriberMDN.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setCreatedBy(createdByName);
-			subscriberMDN.setCreateTime(new Timestamp());
-			subscriberMDN.setUpdatedBy(createdByName);
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setCreatedby(createdByName);
+			subscriberMDN.setCreatetime(new Timestamp());
+			subscriberMDN.setUpdatedby(createdByName);
 			setOTPToSubscriber(subscriberMDN, oneTimePin);
 			subscriberMdnDao.save(subscriberMDN);
 			//handling adding default group if the group doesnot exist here
@@ -260,12 +260,12 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			sg.setSubscriber(subscriber);
 			sg.setGroup(defaultGroup);
 			subscriber.getSubscriberGroupFromSubscriberID().add(sg);
-			if(subscriber.getID() != null){
+			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
 			}
 			}
 			if (isUnRegistered) {
-				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+				Set<Pocket> pockets = subscriberMDN.getPockets();
 				// ideally there should be only one pocket
 				if (pockets.size() == 1) {
 					Pocket pocket = null;
@@ -274,7 +274,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						pocket = pocketIterator.next();
 						if (pocket
 								.getPocketTemplate()
-								.getID()
+								.getId()
 								.equals(systemParametersService
 										.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
 							break;
@@ -294,7 +294,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			String cardPan = null;
 			try {
 				cardPan = pocketService
-						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMDN());
+						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 			} catch (Exception e) {
 				log.error("Cardpan creation failed", e);
 			}
@@ -307,19 +307,19 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMDN subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
+	public Integer registerSubscriberByAgent(Subscriber subscriber, SubscriberMdn subscriberMDN, CMSubscriberRegistration subscriberRegistration, 
 			Pocket lakuPandiaPocket, Partner registeringPartner, Address ktpAddress, Address domesticAddress,SubscribersAdditionalFields subscriberAddiFields) {
 		
-		SubscriberMDN existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
+		SubscriberMdn existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
 		
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		if (existingSubscriberMDN == null || isUnRegistered) {
 			
 			if (isUnRegistered) {
-				Long regPartnerID = subscriber.getRegisteringPartnerID();
+				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringPartnerID(regPartnerID);
+				subscriber.setRegisteringpartnerid(new BigDecimal(regPartnerID));
 			}
 
 			fillSubscriberMandatoryFields(subscriber);
@@ -328,32 +328,32 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			if (registeringPartner != null) {
 				
-				createdByName = registeringPartner.getTradeName();
+				createdByName = registeringPartner.getTradename();
 			
 			} else {
 				
 				createdByName = subscriberRegistration.getFirstName();
 			}
 			
-			subscriber.setFirstName(subscriberRegistration.getFirstName());
-			subscriber.setLastName(subscriberRegistration.getLastName());
-			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
+			subscriber.setFirstname(subscriberRegistration.getFirstName());
+			subscriber.setLastname(subscriberRegistration.getLastName());
+			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
 			
 			String mothersMaidenName = "MothersMaidenName";
 			
-			subscriber.setSecurityQuestion(mothersMaidenName);
+			subscriber.setSecurityquestion(mothersMaidenName);
 			
 			if (subscriberRegistration.getMothersMaidenName() != null) {
-				subscriber.setSecurityAnswer(subscriberRegistration.getMothersMaidenName());
+				subscriber.setSecurityanswer(subscriberRegistration.getMothersMaidenName());
 			}
 			
-			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
+			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
 			
 			if (registeringPartner != null) {
-				subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Agent);
+				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent.longValue());
 				
 			} else {
-				subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Self);
+				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self.longValue());
 			}
 
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
@@ -365,18 +365,18 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			if(StringUtils.isNotBlank(subscriber.getEmail())) {
 			
-				subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()|CmFinoFIX.NotificationMethod_Email.longValue());
 				
 			} else {
 				
-				subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			}
 			
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
-			subscriber.setStatusTime(new Timestamp());
-			subscriber.setCreatedBy(createdByName);
-			subscriber.setUpdatedBy(createdByName);
-			subscriber.setCreateTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
+			subscriber.setCreatedby(createdByName);
+			subscriber.setUpdatedby(createdByName);
+			subscriber.setCreatetime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			
 			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
@@ -396,13 +396,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			
 			Long kycLevelNo = null;
-			if(null != subscriber.getUpgradableKYCLevel()){
+			if(null != subscriber.getUpgradablekyclevel()){
 				
-				kycLevelNo = subscriber.getUpgradableKYCLevel();
+				kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 			}
 			else {
 				
-				kycLevelNo = kycLevel.getKYCLevel();
+				kycLevelNo = kycLevel.getKyclevel().longValue();
 			}
 			
 			PocketTemplate lakuPandaiTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
@@ -413,20 +413,20 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			
 			addressDao.save(ktpAddress);
-			subscriber.setAddressBySubscriberAddressKTPID(ktpAddress);
+			subscriber.setAddressBySubscriberaddressktpid(ktpAddress);
 			
-			if(subscriberMDN.getDomAddrIdentity().equals(CmFinoFIX.DomAddrIdentity_According_to_Identity)) {
+			if(subscriberMDN.getDomaddridentity().equals(CmFinoFIX.DomAddrIdentity_According_to_Identity)) {
 				
-				subscriber.setAddressBySubscriberAddressID(ktpAddress);
+				subscriber.setAddressBySubscriberaddressid(ktpAddress);
 				
 			} else {
 			
 				addressDao.save(domesticAddress);
-				subscriber.setAddressBySubscriberAddressID(domesticAddress);
+				subscriber.setAddressBySubscriberaddressid(domesticAddress);
 			}
 			
-			subscriber.setUpgradableKYCLevel(subscriberRegistration.getKYCLevel());
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
+			subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel().longValue());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
 			
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
 			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration.getSubscriberStatus()) {
@@ -446,9 +446,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				}
 			}
 			
-			subscriber.setAppliedBy(createdByName);
-			subscriber.setAppliedTime(new Timestamp());
-			subscriber.setDetailsRequired(true);
+			subscriber.setAppliedby(createdByName);
+			subscriber.setAppliedtime(new Timestamp());
+			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
 			subscriberDao.save(subscriber);
 			
 			subscriberAddiFields.setSubscriber(subscriber);
@@ -460,20 +460,20 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			
 			subscriberMDN.setSubscriber(subscriber);
-			subscriberMDN.setMDN(subscriberRegistration.getMDN());
+			subscriberMDN.setMdn(subscriberRegistration.getMDN());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriberMDN.setStatus(subscriberRegistration.getSubscriberStatus());
 			}
 			
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setCreatedBy(createdByName);
-			subscriberMDN.setCreateTime(new Timestamp());
-			subscriberMDN.setUpdatedBy(createdByName);
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setCreatedby(createdByName);
+			subscriberMDN.setCreatetime(new Timestamp());
+			subscriberMDN.setUpdatedby(createdByName);
 			subscriberMdnDao.save(subscriberMDN);
 			
-			Long subid = subscriberMDN.getID();
+			Long subid = subscriberMDN.getId().longValue();
             
             int cifnoLength = systemParametersService.getInteger(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH);
     		String cifnoPrefix = systemParametersService.getString(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO);
@@ -486,7 +486,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
     		
     		String cifno = cifnoPrefix + StringUtils.leftPad(String.valueOf(subid),(cifnoLength - cifnoPrefix.length()),"0");
     		
-    		subscriberMDN.setApplicationID(cifno);
+    		subscriberMDN.setApplicationid(cifno);
     		
     		subscriberMdnDao.save(subscriberMDN);
 			
@@ -502,7 +502,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				sg.setSubscriber(subscriber);
 				sg.setGroup(defaultGroup);
 				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
-				if(subscriber.getID() != null){
+				if(subscriber.getId() != null){
 					subscriberGroupDao.save(sg);
 				}
 			}
@@ -512,20 +512,20 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			if(null != lakuPocket) {
 				
-				lakuPandiaPocket.setID(lakuPocket.getID());
+				lakuPandiaPocket.setId(lakuPocket.getId());
 				
 				String cardPan = null;
 				
 				try {
 					
-					cardPan = pocketService.generateLakupandia16DigitCardPAN(subscriberMDN.getMDN());
+					cardPan = pocketService.generateLakupandia16DigitCardPAN(subscriberMDN.getMdn());
 					
 				} catch (Exception e) {
 					
 					log.error("Cardpan creation failed", e);
 				}
 				
-				lakuPocket.setCardPAN(cardPan);
+				lakuPocket.setCardpan(cardPan);
 				pocketDao.save(lakuPocket);
 			}
 			
@@ -537,19 +537,19 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration) {
-		SubscriberMDN existingSubscriberMDN = subscriberMdnDao
+		SubscriberMdn existingSubscriberMDN = subscriberMdnDao
 				.getByMDN(subscriberRegistration.getSourceMDN());
 		
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		
 		if (existingSubscriberMDN == null || existingSubscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered)) {
 			Subscriber subscriber = new Subscriber();
-			SubscriberMDN subscriberMDN = new SubscriberMDN();
+			SubscriberMdn subscriberMDN = new SubscriberMdn();
 			
 			if(existingSubscriberMDN == null)
 			{
-				subscriberMDN.setCreateTime(new Timestamp());
-				subscriber.setCreateTime(new Timestamp());
+				subscriberMDN.setCreatetime(new Timestamp());
+				subscriber.setCreatetime(new Timestamp());
 			}
 			else 
 			{
@@ -561,51 +561,51 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			//Set city to "Jakarta", ApplicationId to "881", Currency to "IDR" as this flow is specifically to Smart
 			address.setCity("Jakarta");
 			addressDao.save(address);
-			subscriberMDN.setApplicationID("881");
+			subscriberMDN.setApplicationid("881");
 			subscriber.setCurrency("IDR");
 
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
 			String createdByName = subscriberRegistration.getFirstName();
-			subscriber.setFirstName(subscriberRegistration.getFirstName());
-			subscriber.setLastName(subscriberRegistration.getLastName());
+			subscriber.setFirstname(subscriberRegistration.getFirstName());
+			subscriber.setLastname(subscriberRegistration.getLastName());
 			subscriber.setNickname(subscriberRegistration.getNickname());
-			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
-			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
-			subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Self);
+			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
-            subscriber.setStatusTime(new Timestamp());
+            subscriber.setStatustime(new Timestamp());
             if(createdByName != null)
             {
-            	subscriber.setCreatedBy(createdByName);
-            	subscriber.setUpdatedBy(createdByName);
-            	subscriberMDN.setCreatedBy(createdByName);
-            	subscriberMDN.setUpdatedBy(createdByName);    			
+            	subscriber.setCreatedby(createdByName);
+            	subscriber.setUpdatedby(createdByName);
+            	subscriberMDN.setCreatedby(createdByName);
+            	subscriberMDN.setUpdatedby(createdByName);    			
             }
-			subscriber.setAddressBySubscriberAddressID(address);
+			subscriber.setAddressBySubscriberaddressid(address);
 			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(subscriberRegistration.getKYCLevel());
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			subscriber.setKYCLevelByKYCLevel(kycLevel);
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_none);
-			subscriber.setDetailsRequired(true);
-			subscriber.setActivationTime(new Timestamp());
-			subscriber.setStatusTime(new Timestamp());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
+			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
+			subscriber.setActivationtime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
 			if (subscriberRegistration.getDateOfBirth() != null) {
-				subscriber.setDateOfBirth(subscriberRegistration
+				subscriber.setDateofbirth(subscriberRegistration
 						.getDateOfBirth());
 			}
 			subscriberMDN.setSubscriber(subscriber);
-			subscriberMDN.setMDN(subscriberRegistration.getSourceMDN());
+			subscriberMDN.setMdn(subscriberRegistration.getSourceMDN());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setIDType(subscriberRegistration.getIDType());
-			subscriberMDN.setIDNumber(subscriberRegistration.getIDNumber());
-			subscriberMDN.setOtherMDN(subscriberService.normalizeMDN(subscriberRegistration.getOtherMDN()));
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setIdtype(subscriberRegistration.getIDType());
+			subscriberMDN.setIdnumber(subscriberRegistration.getIDNumber());
+			subscriberMDN.setOthermdn(subscriberService.normalizeMDN(subscriberRegistration.getOtherMDN()));
 			/*String digestpin = MfinoUtil.calculateDigestPin(
 					subscriberMDN.getMDN(), subscriberRegistration.getPin());
 			subscriberMDN.setDigestedPIN(digestpin);*/
@@ -622,18 +622,18 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			String calcPIN = null;
 			try
 			{
-				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMDN(), subscriberRegistration.getPin());
+				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), subscriberRegistration.getPin());
 			}
 			catch(Exception e)
 			{
 				log.error("Error during PIN conversion "+e);
 				return CmFinoFIX.NotificationCode_Failure;
 			}
-			subscriberMDN.setDigestedPIN(calcPIN);
-			String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMDN(), subscriberRegistration.getPin());
-			subscriberMDN.setAuthorizationToken(authToken);
+			subscriberMDN.setDigestedpin(calcPIN);
+			String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMdn(), subscriberRegistration.getPin());
+			subscriberMDN.setAuthorizationtoken(authToken);
 			
-			subscriberMDN.setActivationTime(new Timestamp());
+			subscriberMDN.setActivationtime(new Timestamp());
 			subscriberDao.save(subscriber);
 			subscriberMdnDao.save(subscriberMDN);
 			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
@@ -641,7 +641,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			String cardPan = null;
 			try {
 				cardPan = pocketService
-						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMDN());
+						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 			} catch (Exception e) {
 				log.error("Cardpan creation failed", e);
 			}
@@ -653,14 +653,14 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			sg.setSubscriber(subscriber);
 			sg.setGroup(defaultGroup);
 			subscriber.getSubscriberGroupFromSubscriberID().add(sg);
-			if(subscriber.getID() != null){
+			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
 			}
 			groupID = sg.getID();
 			Long kycLevelNo = null;
-			if(null != subscriber.getUpgradableKYCLevel())
+			if(null != subscriber.getUpgradablekyclevel())
 			{
-				kycLevelNo = subscriber.getUpgradableKYCLevel();
+				kycLevelNo = subscriber.getUpgradablekyclevel();
 			}
 			else
 			{
@@ -672,7 +672,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (isUnRegistered) {
 				log.info("Updating the Unregistered transfers status as Subscriver Active and changing the pocket status to Active");
 				updateUnRegisteredTxnInfoToActivated(subscriberMDN);
-				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+				Set<Pocket> pockets = subscriberMDN.getPockets();
 				// ideally there should be only one pocket
 				if (pockets.size() == 1) {
 					Pocket pocket = pockets.iterator().next();
@@ -701,19 +701,19 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			CMSubscriberRegistrationThroughWeb subscriberRegistration,
 			String oneTimePin) {
 		Subscriber subscriber = new Subscriber();
-		SubscriberMDN subscriberMDN = new SubscriberMDN();
+		SubscriberMdn subscriberMDN = new SubscriberMdn();
 		SubscribersAdditionalFields subscribersAdditionalFields = new SubscribersAdditionalFields();
 		Address address = new Address();
 		Pocket epocket = new Pocket();
-		SubscriberMDN existingSubscriberMDN = subscriberMdnDao
+		SubscriberMdn existingSubscriberMDN = subscriberMdnDao
 				.getByMDN(subscriberRegistration.getMDN());
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		if (existingSubscriberMDN == null || isUnRegistered) {
 			if (isUnRegistered) {
-				Long regPartnerID = subscriber.getRegisteringPartnerID();
+				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringPartnerID(regPartnerID);
+				subscriber.setRegisteringpartnerid(new BigDecimal(regPartnerID));
 			}
 
 			fillSubscriberMandatoryFields(subscriber);
@@ -722,35 +722,35 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			address.setLine1(subscriberRegistration.getPlotNo());
 			address.setLine2(subscriberRegistration.getStreetAddress());
 			address.setCity(subscriberRegistration.getCity());
-			address.setRegionName(subscriberRegistration.getRegionName());
+			address.setRegionname(subscriberRegistration.getRegionName());
 			address.setCountry(subscriberRegistration.getCountry());
 			addressDao.save(address);
 
-			subscriber.setAddressBySubscriberAddressID(address);
-			subscriber.setFirstName(subscriberRegistration.getFirstName());
-			subscriber.setLastName(subscriberRegistration.getLastName());
-			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
-			subscriber.setBirthPlace(subscriberRegistration.getBirthPlace());
+			subscriber.setAddressBySubscriberaddressid(address);
+			subscriber.setFirstname(subscriberRegistration.getFirstName());
+			subscriber.setLastname(subscriberRegistration.getLastName());
+			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
+			subscriber.setBirthplace(subscriberRegistration.getBirthPlace());
 			subscriber.setEmail(subscriberRegistration.getEmail());
-			subscriber.setIsEmailVerified(false);
-			subscriber.setIDExiparetionTime(subscriberRegistration
+			subscriber.setIsemailverified((short) Boolean.compare(false, true));
+			subscriber.setIdexiparetiontime(subscriberRegistration
 					.getIDExpiryDate());
-			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
+			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
 			subscriber
-					.setRegistrationMedium(CmFinoFIX.RegistrationMedium_Web);
+					.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Web.longValue());
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriber.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriber.setUpgradableKYCLevel(subscriberRegistration.getUpgradableKYCLevel());
-			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getUpgradableKYCLevel()));
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
-			subscriber.setStatusTime(new Timestamp());
-			subscriber.setCreatedBy("Web Registration");
-			subscriber.setUpdatedBy("Web Registration");
-			subscriber.setCreateTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
+			subscriber.setCreatedby("Web Registration");
+			subscriber.setUpdatedby("Web Registration");
+			subscriber.setCreatetime(new Timestamp());
 			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil
 					.getIntialKyclevel());
 			if (kycLevel == null ) {
@@ -765,9 +765,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				groupID = subscriberGroup.getGroup().getID();
 			}
 			Long kycLevelNo = null;
-			if(null != subscriber.getUpgradableKYCLevel())
+			if(null != subscriber.getUpgradablekyclevel())
 			{
-				kycLevelNo = subscriber.getUpgradableKYCLevel();
+				kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 			}
 			else
 			{
@@ -778,18 +778,18 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
 			}
 
-			if (!kycLevel.getKYCLevel().equals(
+			if (!kycLevel.getKyclevel().equals(
 					subscriberRegistration.getKYCLevel())) {
 				kycLevel = kycLevelDAO.getByKycLevel(subscriberRegistration
 						.getKYCLevel());
 				if (kycLevel == null) {
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
-				subscriber.setUpgradableKYCLevel(subscriberRegistration
-						.getKYCLevel());
-				subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
+				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration
+						.getKYCLevel()));
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
 			} else {
-				subscriber.setUpgradeState(CmFinoFIX.UpgradeState_none);
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
 			}
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
 			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration
@@ -810,28 +810,28 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					}
 				}
 			}
-			subscriber.setAppliedBy("self");
-			subscriber.setAppliedTime(new Timestamp());
-			subscriber.setDetailsRequired(true);
+			subscriber.setAppliedby("self");
+			subscriber.setAppliedtime(new Timestamp());
+			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
 			subscriberDao.save(subscriber);
 			if(subscriberRegistration.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
 				mailService.generateEmailVerificationMail(subscriber, subscriberRegistration.getEmail());
 			}
 			subscriberMDN.setSubscriber(subscriber);
-			subscriberMDN.setMDN(subscriberRegistration.getMDN());
-			subscriberMDN.setApplicationID(subscriberRegistration
+			subscriberMDN.setMdn(subscriberRegistration.getMDN());
+			subscriberMDN.setApplicationid(subscriberRegistration
 					.getApplicationID());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-			subscriberMDN.setIDType(subscriberRegistration.getIDType());
-			subscriberMDN.setIDNumber(subscriberRegistration.getIDNumber());
+			subscriberMDN.setIdtype(subscriberRegistration.getIDType());
+			subscriberMDN.setIdnumber(subscriberRegistration.getIDNumber());
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriberMDN.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setCreatedBy("Web Registration");
-			subscriberMDN.setCreateTime(new Timestamp());
-			subscriberMDN.setUpdatedBy("Web Registration");
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setCreatedby("Web Registration");
+			subscriberMDN.setCreatetime(new Timestamp());
+			subscriberMDN.setUpdatedby("Web Registration");
 			setOTPToSubscriber(subscriberMDN, oneTimePin);
 			subscriberMdnDao.save(subscriberMDN);
 
@@ -864,12 +864,12 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			sg.setSubscriber(subscriber);
 			sg.setGroup(defaultGroup);
 			subscriber.getSubscriberGroupFromSubscriberID().add(sg);
-			if(subscriber.getID() != null){
+			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
 			}
 			}
 			if (isUnRegistered) {
-				Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+				Set<Pocket> pockets = subscriberMDN.getPockets();
 				// ideally there should be only one pocket
 				if (pockets.size() == 1) {
 					Pocket pocket = null;
@@ -878,7 +878,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						pocket = pocketIterator.next();
 						if (pocket
 								.getPocketTemplate()
-								.getID()
+								.getId()
 								.equals(systemParametersService
 										.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
 							break;
@@ -896,7 +896,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			String cardPan = null;
 			try {
 				cardPan = pocketService
-						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMDN());
+						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 			} catch (Exception e) {
 				log.error("Cardpan creation failed", e);
 			}
@@ -908,37 +908,37 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void setOTPToSubscriber(SubscriberMDN subscriberMDN,
+	public void setOTPToSubscriber(SubscriberMdn subscriberMDN,
 			String oneTimePin) {
 		Integer OTPTimeoutDuration = systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION);
 		if (subscriberMDN != null && oneTimePin != null) {
 			String digestPin1 = MfinoUtil.calculateDigestPin(
-					subscriberMDN.getMDN(), oneTimePin);
-			subscriberMDN.setOTP(digestPin1);
-			subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(
+					subscriberMDN.getMdn(), oneTimePin);
+			subscriberMDN.setOtp(digestPin1);
+			subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(
 					new Date(), OTPTimeoutDuration)));
 		}
 	}
 
 	private void fillSubscriberMDNMandatoryFields(
-			SubscriberMDN subscriberMDN) {
-		if (subscriberMDN.getAuthenticationPhrase() == null) {
-			subscriberMDN.setAuthenticationPhrase("mFino");
+			SubscriberMdn subscriberMDN) {
+		if (subscriberMDN.getAuthenticationphrase() == null) {
+			subscriberMDN.setAuthenticationphrase("mFino");
 		}
 		if (subscriberMDN.getRestrictions() == null) {
 			subscriberMDN
 					.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if (subscriberMDN.getWrongPINCount() == null) {
-			subscriberMDN.setWrongPINCount(0);
+		if (subscriberMDN.getWrongpincount() == null) {
+			subscriberMDN.setWrongpincount(0);
 		}
 	}
 
 	private void fillSubscriberMandatoryFields(Subscriber subscriber) {
-		if (subscriber.getmFinoServiceProviderByMSPID() == null) {
+		if (subscriber.getMfinoServiceProvider() == null) {
 			MfinoServiceProviderDAO mfinoServiceProviderDAO = DAOFactory
 					.getInstance().getMfinoServiceProviderDAO();
-			subscriber.setmFinoServiceProviderByMSPID(mfinoServiceProviderDAO
+			subscriber.setMfinoServiceProvider(mfinoServiceProviderDAO
 					.getById(1));
 		}
 		subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
@@ -961,52 +961,55 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public int createNewSubscriber(SubscriberSyncRecord syncRecord,
-			Subscriber subscriber, SubscriberMDN subscriberMDN,
+			Subscriber subscriber, SubscriberMdn subscriberMDN,
 			String uploadedBy) {
 		try {
 			Integer OTPTimeoutDuration = systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION);
 			if (syncRecord.getMdn() == null) {
 				return CmFinoFIX.SynchError_Failed_Invalid_MDN;
 			}
+			Long subsMDNL = subscriberMDN.getStatus();
+			Integer subsMDNLI = subsMDNL.intValue();
+			
 			if (syncRecord.getId() != null
-					&& (!subscriberMDN.getStatus().equals(
+					&& (!subsMDNLI.equals(
 							CmFinoFIX.MDNStatus_NotRegistered))) {
 				log.info("Create New subscriber failed. Subscriber MDN already exists in DB - "
 						+ syncRecord.getMdn());
 				return CmFinoFIX.SynchError_Failed_Subscriber_already_exists;
 			}
 			if (syncRecord.getId() == null) {
-				subscriberMDN.setMDN(syncRecord.getMdn());
+				subscriberMDN.setMdn(syncRecord.getMdn());
 			}
 			// create subscriber mdn and subscriber
 			KYCLevelDAO kyclevelDao = DAOFactory.getInstance().getKycLevelDAO();
-			subscriber.setFirstName(syncRecord.getFirstName());
-			subscriber.setLastName(syncRecord.getLastName());
+			subscriber.setFirstname(syncRecord.getFirstName());
+			subscriber.setLastname(syncRecord.getLastName());
 			subscriber.setEmail(syncRecord.getEmail());
-			subscriber.setIsEmailVerified(false);
+			subscriber.setIsemailverified((short) Boolean.compare(false, true));
 			// subscriber.setLanguage(syncRecord.getLanguage());
 			subscriber
-					.setDateOfBirth(new Timestamp(syncRecord.getDateOfBirth()));
+					.setDateofbirth(new Timestamp(syncRecord.getDateOfBirth()));
 			subscriber.setKYCLevelByKYCLevel(kyclevelDao
 					.getByKycLevel(ConfigurationUtil.getIntialKyclevel()));
 			// subscriber.setBirthPlace(syncRecord.getPlaceOfBirth());
 			// subscriber.setAliasName(syncRecord.getAliasName());
 			subscriber.setType(syncRecord.getServiceType());
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-			subscriber.setStatusTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
 			// subscriber.setReferenceAccount(syncRecord.getReferenceACNumber());
-			subscriber.setUpdatedBy(uploadedBy);
+			subscriber.setUpdatedby(uploadedBy);
 			if (syncRecord.getIdExpireDate() != null) {
-				subscriber.setIDExiparetionTime(new Timestamp(syncRecord
+				subscriber.setIdexiparetiontime(new Timestamp(syncRecord
 						.getIdExpireDate()));
 			}
 			if (StringUtils.isNotBlank(subscriber.getEmail())) {
 				subscriber
-						.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS
-								| CmFinoFIX.NotificationMethod_Email);
+						.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()
+								| CmFinoFIX.NotificationMethod_Email.longValue());
 			} else {
 				subscriber
-						.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+						.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			}
 			if(ConfigurationUtil.getLocalTimeZone()!=null){
 				subscriber.setTimezone(ConfigurationUtil.getLocalTimeZone().getDisplayName());
@@ -1014,12 +1017,12 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			else{
 				subscriber.setTimezone(systemParametersService.getString(SystemParameterKeys.TIME_ZONE));
 			}			
-			subscriberMDN.setIDType(syncRecord.getIdType());
+			subscriberMDN.setIdtype(syncRecord.getIdType());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setApplicationID(syncRecord.getApplicationId());
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setApplicationid(syncRecord.getApplicationId());
 
-			Address address = subscriber.getAddressBySubscriberAddressID();
+			Address address = subscriber.getAddressBySubscriberaddressid();
 			if (address == null) {
 				address = new Address();
 			}
@@ -1027,24 +1030,24 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			address.setLine1(syncRecord.getAddress());
 			address.setLine2(syncRecord.getAddressline2());
 			address.setCity(syncRecord.getCity());
-			address.setRegionName(syncRecord.getRegion());
+			address.setRegionname(syncRecord.getRegion());
 			address.setCountry(syncRecord.getCountry());
 			// mandatory in db remove it
 			if (address.getCountry() == null) {
 				address.setCountry("");
 			}
 			addressDAO.save(address);
-			subscriber.setAddressBySubscriberAddressID(address);
+			subscriber.setAddressBySubscriberaddressid(address);
 
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
 			Integer OTPLength = systemParametersService.getOTPLength();
 			String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 			String digestPin = MfinoUtil.calculateDigestPin(
-					subscriberMDN.getMDN(), oneTimePin);
+					subscriberMDN.getMdn(), oneTimePin);
 			syncRecord.setOneTimePin(oneTimePin);
-			subscriberMDN.setOTP(digestPin);
-			subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(
+			subscriberMDN.setOtp(digestPin);
+			subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(
 					new Date(), OTPTimeoutDuration)));
 		} catch (Exception e) {
 			log.error("Exception while creating new subscriber", e);
@@ -1063,7 +1066,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	public  Integer activeSubscriber(CMSubscriberActivation subscriberActivation, boolean isHttps, boolean isHashedPin) {
 		String mdn = subscriberActivation.getSourceMDN();
 
-		SubscriberMDN subscriberMDN = subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(mdn));
+		SubscriberMdn subscriberMDN = subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(mdn));
 		
 		int int_code=validateOTP(subscriberActivation, isHttps, isHashedPin);
 		
@@ -1100,7 +1103,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
 		}
 		Subscriber subscriber = subscriberMDN.getSubscriber();
-		Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+		Set<Pocket> pockets = subscriberMDN.getPockets();
 		Pocket bankPocket = null;
 		Pocket emoneyPocket = null;
 		Pocket lakupandaiPocket = null;
@@ -1115,9 +1118,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			groupID = subscriberGroup.getGroup().getID();
 		}
 		Long kycLevelNo = null;
-		if(null != subscriber.getUpgradableKYCLevel())
+		if(null != subscriber.getUpgradablekyclevel())
 		{
-			kycLevelNo = subscriber.getUpgradableKYCLevel();
+			kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 		}
 		else
 		{
@@ -1126,42 +1129,49 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		
 		for (Pocket pocket : pockets) {
+			Long tempPocketTemplateL = pocket.getPocketTemplate().getType();
+			Integer tempPocketTemplateLI = tempPocketTemplateL.intValue();
+			
+			Long tempPocketSTatusL = pocket.getPocketTemplate().getType();
+			Integer tempPocketSTatusLI = tempPocketSTatusL.intValue();
+			
 			if (!bankPocketFound
-					&& pocket.getPocketTemplate().getType()
+					&& tempPocketTemplateLI
 							.equals(CmFinoFIX.PocketType_BankAccount)
-					&& pocket.getCardPAN() != null
-					&& (pocket.getStatus()
-							.equals(CmFinoFIX.PocketStatus_Active) || pocket
-							.getStatus().equals(
+					&& pocket.getCardpan() != null
+					&& (tempPocketSTatusLI
+							.equals(CmFinoFIX.PocketStatus_Active) || tempPocketSTatusLI.equals(
 									CmFinoFIX.PocketStatus_Initialized))) {
 				bankPocketFound = true;
 				bankPocket = pocket;
 				continue;
 			}
 			if (!lakupandaiPocketFound
-					&& pocket.getPocketTemplate().getType()
+					&& tempPocketTemplateLI
 							.equals(CmFinoFIX.PocketType_LakuPandai)
-					&& pocket.getCardPAN() != null
-					&& (pocket.getStatus()
-							.equals(CmFinoFIX.PocketStatus_Active) || pocket
-							.getStatus().equals(
+					&& pocket.getCardpan() != null
+					&& (tempPocketSTatusLI
+							.equals(CmFinoFIX.PocketStatus_Active) || tempPocketSTatusLI.equals(
 									CmFinoFIX.PocketStatus_Initialized))) {
 				lakupandaiPocketFound = true;
 				lakupandaiPocket = pocket;
 				continue;
 			}			
+			
+			Long tempPocketComodityL = pocket.getPocketTemplate().getCommodity();
+			Integer tempPocketComodityLI = tempPocketComodityL.intValue();
+			
 			if (!emoneyPocketFound
-					&& pocket.getPocketTemplate().getType()
+					&& tempPocketTemplateLI
 							.equals(CmFinoFIX.PocketType_SVA)
-					&& pocket.getPocketTemplate().getCommodity()
+					&& tempPocketComodityLI
 							.equals(CmFinoFIX.Commodity_Money)
-					&& (pocket.getStatus().equals(
-							CmFinoFIX.PocketStatus_Initialized) || pocket
-							.getStatus().equals(CmFinoFIX.PocketStatus_Active))
+					&& (tempPocketSTatusLI.equals(
+							CmFinoFIX.PocketStatus_Initialized) || tempPocketSTatusLI.equals(CmFinoFIX.PocketStatus_Active))
 					&& pocket
 							.getPocketTemplate()
-							.getID()
-							.equals(svaPocketTemplate.getID())) {
+							.getId()
+							.equals(svaPocketTemplate.getId())) {
 				emoneyPocketFound = true;
 				emoneyPocket = pocket;
 				continue;
@@ -1170,34 +1180,34 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				break;
 			}
 		}
-		String subscriberName = subscriber.getFirstName();
+		String subscriberName = subscriber.getFirstname();
 		if (emoneyPocket != null) {
-			emoneyPocket.setActivationTime(new Timestamp());
-			emoneyPocket.setIsDefault(true);
+			emoneyPocket.setActivationtime(new Timestamp());
+			emoneyPocket.setIsdefault((short) Boolean.compare(true, false));
 			emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-			emoneyPocket.setStatusTime(new Timestamp());
-			emoneyPocket.setUpdatedBy(subscriberName);
+			emoneyPocket.setStatustime(new Timestamp());
+			emoneyPocket.setUpdatedby(subscriberName);
 		}
 
 		if(bankPocketFound)
 		{
 			if (subscriber.getUpgradeState().equals(
 					CmFinoFIX.UpgradeState_Approved)) {
-				bankPocket.setActivationTime(new Timestamp());
-				bankPocket.setIsDefault(true);
+				bankPocket.setActivationtime(new Timestamp());
+				bankPocket.setIsdefault(true);
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-				bankPocket.setStatusTime(new Timestamp());
-				bankPocket.setUpdatedBy(subscriberName);
+				bankPocket.setStatustime(new Timestamp());
+				bankPocket.setUpdatedby(subscriberName);
 				pocketDao.save(bankPocket);
 				log.info("SubscriberActivation : bankPocket activation id:"
-						+ bankPocket.getID() + " subscriberid"
-						+ subscriber.getID());
+						+ bankPocket.getId() + " subscriberid"
+						+ subscriber.getId());
 			}
 		}
 		
 		if (lakupandaiPocketFound && lakupandaiPocket != null) {
-			lakupandaiPocket.setActivationTime(new Timestamp());
-			lakupandaiPocket.setIsDefault(true);
+			lakupandaiPocket.setActivationtime(new Timestamp());
+			lakupandaiPocket.setIsdefault(true);
 			lakupandaiPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			lakupandaiPocket.setStatusTime(new Timestamp());
 			lakupandaiPocket.setUpdatedBy(subscriberName);
@@ -1206,15 +1216,15 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
 				.getStatus())) {
 			PocketQuery pq = new PocketQuery();
-			pq.setMdnIDSearch(subscriberMDN.getID());
+			pq.setMdnIDSearch(subscriberMDN.getId());
 			List<Pocket> pocketList = pocketDao.get(pq);
 			if (pocketList.size() > 0) {
 				emoneyPocket = pocketList.get(0);
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
 				emoneyPocket.setPocketTemplate(svaPocketTemplate);
 				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-				emoneyPocket.setActivationTime(new Timestamp());
-				emoneyPocket.setIsDefault(true);
+				emoneyPocket.setActivationtime(new Timestamp());
+				emoneyPocket.setIsdefault(true);
 				emoneyPocket.setUpdatedBy(subscriberName);
 			}
 		}
@@ -1225,20 +1235,20 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 */		
 		String calcPIN = null;
 		try	{
-			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMDN(), newpin);
+			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), newpin);
 		}
 		catch(Exception e){
 			log.error("Error during PIN conversion "+e);
 			return CmFinoFIX.NotificationCode_Failure;
 		}
 		subscriberMDN.setDigestedPIN(calcPIN);
-		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMDN(), newpin);
+		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMdn(), newpin);
 		subscriberMDN.setAuthorizationToken(authToken);
 		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 		subscriberMDN.setStatusTime(new Timestamp());
-		subscriberMDN.setActivationTime(new Timestamp());
+		subscriberMDN.setActivationtime(new Timestamp());
 		subscriberMDN.setUpdatedBy(subscriberName);
-		subscriber.setActivationTime(new Timestamp());
+		subscriber.setActivationtime(new Timestamp());
 		subscriber.setUpdatedBy(subscriberName);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
 		subscriber.setStatusTime(new Timestamp());
@@ -1251,17 +1261,17 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if (emoneyPocket != null) {
 			pocketDao.save(emoneyPocket);
 			log.info("SubscriberActivation : emoneyPocket with id:"
-					+ emoneyPocket.getID() + " subscriberid:"
-					+ subscriber.getID());
+					+ emoneyPocket.getId() + " subscriberid:"
+					+ subscriber.getId());
 		} else {
 			boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 			if(isEMoneyPocketRequired == true){
 			log.info("SubscriberActivation: creating emaoneyPocket for subscriberID:"
-					+ subscriber.getID());
+					+ subscriber.getId());
 			String cardPan = "";
 			try {
 				cardPan = pocketService
-						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMDN());
+						.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 			} catch (InvalidMDNException e) {
 				log.error("", e);
 			} catch (EmptyStringException e) {
@@ -1286,7 +1296,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			// add notifications
 			NotificationWrapper notificationWrapper = new NotificationWrapper();
 			notificationWrapper.setLanguage(subscriber.getLanguage());
-			notificationWrapper.setFirstName(subscriber.getFirstName());
+			notificationWrapper.setFirstName(subscriber.getFirstname());
 			notificationWrapper.setLastName(subscriber.getLastName());				
 			notificationWrapper.setCompany(subscriber.getCompany());
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
@@ -1299,7 +1309,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		} catch (Exception e) {
 			log.error("failed to generate message:", e);
 		}
-		String mdn1 = subscriberMDN.getMDN();
+		String mdn1 = subscriberMDN.getMdn();
 		smsService.setDestinationMDN(mdn1);
 		// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
 		smsService.setSctlId(subscriberActivation.getServiceChargeTransactionLogID());
@@ -1322,7 +1332,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 		String mdn = subscriberActivation.getSourceMDN();
 
-		SubscriberMDN subscriberMDN = subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(mdn));
+		SubscriberMdn subscriberMDN = subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(mdn));
 		if (subscriberMDN == null) {
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
@@ -1343,11 +1353,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		if (!(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
 				.getStatus()))
-				&& subscriberMDN.getOTPExpirationTime().before(new Date())) {
+				&& subscriberMDN.getOtpexpirationtime().before(new Date())) {
 			return CmFinoFIX.NotificationCode_OTPExpired;
 		}
 
-		String originalOTP =subscriberMDN.getOTP();
+		String originalOTP =subscriberMDN.getOtp();
 
 		
 		if (!isHttps) {
@@ -1366,7 +1376,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				 */
 			} catch (Exception ex) {
 				log.info("OTP Check failed for the subscriber "
-						+ subscriberMDN.getMDN());
+						+ subscriberMDN.getMdn());
 				return CmFinoFIX.NotificationCode_OTPInvalid;
 			}
 		} else {
@@ -1381,7 +1391,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
 
 				UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
-				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getID());
+				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getId());
 				txnInfoQuery.setMultiStatus(status);
 				List<UnregisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
 						.get(txnInfoQuery);
@@ -1395,7 +1405,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					receivedFAC = prefix + receivedOTP;
 
 				String receivedFACDigest = MfinoUtil.calculateDigestPin(
-						subscriberMDN.getMDN(), receivedFAC);
+						subscriberMDN.getMdn(), receivedFAC);
 				for (UnregisteredTxnInfo txnInfo : txnInfoList) {
 					if (txnInfo.getDigestedPIN().equals(receivedFACDigest)) {
 						isValidFac = true;
@@ -1414,7 +1424,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 				if (isValidFac == false) {
 					log.info("OTP Check failed for the subscriber "
-							+ subscriberMDN.getMDN());
+							+ subscriberMDN.getMdn());
 					return CmFinoFIX.NotificationCode_OTPInvalid;
 				}
 			} else {
@@ -1423,7 +1433,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 								.generateSHA256Hash(mdn, receivedOTP));
 				if (!originalOTP.equals(receivedOTP)) {
 					log.info("OTP Check failed for the subscriber "
-							+ subscriberMDN.getMDN());
+							+ subscriberMDN.getMdn());
 					return CmFinoFIX.NotificationCode_OTPInvalid;
 				}
 			}
@@ -1458,7 +1468,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	}
 	
 	private boolean isRegistrationForUnRegistered(
-			SubscriberMDN subscriberMDN) {
+			SubscriberMdn subscriberMDN) {
 		boolean isUnRegistered = false;
 		if (subscriberMDN != null) {
 			if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
@@ -1473,11 +1483,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public boolean updateUnRegisteredTxnInfoToActivated(
-			SubscriberMDN subscriberMDN) {
+			SubscriberMdn subscriberMDN) {
 		UnRegisteredTxnInfoDAO unRegisteredTxnInfoDAO = DAOFactory
 				.getInstance().getUnRegisteredTxnInfoDAO();
 		UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
-		txnInfoQuery.setSubscriberMDNID(subscriberMDN.getID());
+		txnInfoQuery.setSubscriberMDNID(subscriberMDN.getId().longValue());
 		Integer[] status = new Integer[2];
 		status[0] = CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED;
 		status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
@@ -1499,7 +1509,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			boolean isHttps) {
 		String mdn = subscriberReactivation.getSourceMDN();
 
-		SubscriberMDN subscriberMDN = subscriberMdnDao.getByMDN(subscriberService
+		SubscriberMdn subscriberMDN = subscriberMdnDao.getByMDN(subscriberService
 				.normalizeMDN(mdn));
 		if (subscriberMDN == null) {
 			return CmFinoFIX.NotificationCode_MDNNotFound;
@@ -1527,7 +1537,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
  		}
 
 		Subscriber subscriber = subscriberMDN.getSubscriber();
-		Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+		Set<Pocket> pockets = subscriberMDN.getPockets();
 		Pocket bankPocket = null;
 		boolean bankPocketFound = false;
 		Long groupID = null;
@@ -1538,9 +1548,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			groupID = subscriberGroup.getID();
 		}
 		Long kycLevelNo = null;
-		if(null != subscriber.getUpgradableKYCLevel())
+		if(null != subscriber.getUpgradablekyclevel())
 		{
-			kycLevelNo = subscriber.getUpgradableKYCLevel();
+			kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 		}
 		else
 		{
@@ -1653,7 +1663,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	
 	public boolean isSubscriberEmailVerified(Subscriber sub) {		
 		if(systemParametersService.getIsEmailVerificationNeeded() && StringUtils.isNotBlank(sub.getEmail())) {
-			return sub.getIsEmailVerified();
+			return sub.getIsemailverified();
 		}		
 		return true;
 	}

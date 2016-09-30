@@ -52,8 +52,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 		
 		if(((null != dct) &&
 				(null != sourcePartnerService) && (null != destPartnerService)) && 
-				((null != sourcePartnerService.getDistributionChainTemplate()) && (null != destPartnerService.getDistributionChainTemplate())) &&
-				((sourcePartnerService.getDistributionChainTemplate().equals(dct)) && (destPartnerService.getDistributionChainTemplate().equals(dct))))
+				((null != sourcePartnerService.getDistributionChainTemp()) && (null != destPartnerService.getDistributionChainTemp())) &&
+				((sourcePartnerService.getDistributionChainTemp().equals(dct)) && (destPartnerService.getDistributionChainTemp().equals(dct))))
 		{
 			if(isSibling(sourcePartner, destinationPartner,dct)){
 				relationshipTypes.add(CmFinoFIX.RelationShipType_SIBLING);
@@ -111,8 +111,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 		PartnerServices destPartnerService = getPartnerService(destinationPartner,dct);
 		
 		if(null != sourcePartnerService && null !=destPartnerService) {
-			Partner sourceParent = sourcePartnerService.getPartnerByParentID(); 
-			Partner destParent = destPartnerService.getPartnerByParentID();
+			Partner sourceParent = sourcePartnerService.getPartnerByParentid(); 
+			Partner destParent = destPartnerService.getPartnerByParentid();
 			
 			if((null != sourceParent) && (null != destParent)){
 				if(sourceParent.equals(destParent)){
@@ -136,7 +136,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		
 		PartnerServices destPartnerService = getPartnerService(destinationPartner,dct);
 		if(null != destPartnerService){
-			Partner destParent = destPartnerService.getPartnerByParentID();
+			Partner destParent = destPartnerService.getPartnerByParentid();
 			if((null != destParent) && (destParent.equals(sourcePartner))){
 				flag = Boolean.TRUE;
 			}
@@ -157,7 +157,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		
 		PartnerServices sourcePartnerService = getPartnerService(sourcePartner,dct);	
 		if(null != sourcePartnerService) {
-			Partner sourceParent = sourcePartnerService.getPartnerByParentID();
+			Partner sourceParent = sourcePartnerService.getPartnerByParentid();
 			if((null != sourceParent) && (destinationPartner.equals(sourceParent))){
 				flag = Boolean.TRUE;
 			}
@@ -180,7 +180,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		PartnerServices destPartnerService = getPartnerService(destinationPartner,dct);
 
 		if(null != destPartnerService){
-			Partner destParent = destPartnerService.getPartnerByParentID();
+			Partner destParent = destPartnerService.getPartnerByParentid();
 			
 			while(destParent != null){
 				log.info("RelationshipServiceImpl :: destParent="+destParent);
@@ -192,7 +192,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 				PartnerServices partnerService = getPartnerService(destParent,dct);
 				log.info("RelationshipServiceImpl :: sourcePartnerService = "+partnerService);
 				if(partnerService != null){
-					destParent = partnerService.getPartnerByParentID();
+					destParent = partnerService.getPartnerByParentid();
 				}
 				else{
 					break;
@@ -259,7 +259,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		PartnerServices destPartnerService = getPartnerService(destinationPartner,dct);
 		
 		if( null !=sourcePartnerService && null != destPartnerService){
-			if(sourcePartnerService.getDistributionChainTemplate().equals(destPartnerService.getDistributionChainTemplate())){
+			if(sourcePartnerService.getDistributionChainTemp().equals(destPartnerService.getDistributionChainTemp())){
 				flag = Boolean.TRUE;
 			}			
 		}		
@@ -281,7 +281,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 				log.error("ERROR in RelationshipServiceImpl ", e);
 			}
 			
-			List<PartnerServices> partnerServices = partnerServicesDao.getPartnerServices(partner.getID(), serviceProviderId, dct.getService().getID());
+			List<PartnerServices> partnerServices = partnerServicesDao.getPartnerServices(partner.getId().longValue(), serviceProviderId, dct.getService().getId().longValue());
 			
 			
 			if((null != partnerServices) && (partnerServices.size() > 0)){
@@ -296,11 +296,11 @@ public class RelationshipServiceImpl implements RelationshipService {
 		Integer level = 1;
 		
 		PartnerServices partnerService = getPartnerService(partner,dct);
-		Partner parent = (partnerService != null) ? partnerService.getPartnerByParentID() : null;
+		Partner parent = (partnerService != null) ? partnerService.getPartnerByParentid() : null;
 		while(parent != null){
 			partnerService = getPartnerService(parent,dct);
 //			parent = partnerService.getPartnerByParentID();
-			parent = (partnerService != null) ? partnerService.getPartnerByParentID() : null;
+			parent = (partnerService != null) ? partnerService.getPartnerByParentid() : null;
 			level++;
 		}
 		

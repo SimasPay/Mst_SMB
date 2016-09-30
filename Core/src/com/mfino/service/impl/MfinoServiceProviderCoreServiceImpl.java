@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.service.MfinoServiceProviderCoreService;
 
 @Service("MfinoServiceProviderCoreServiceImpl")

@@ -22,7 +22,7 @@ import com.mfino.dao.PermissionItemsDAO;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PermissionItems;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.enums.ItemType;
 import com.mfino.fix.CmFinoFIX;
@@ -63,7 +63,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             return false;
         }
 
-        Collection<GrantedAuthority> permissions = auth.getAuthorities();    
+        Collection<GrantedAuthority> permissions = (Collection<GrantedAuthority>) auth.getAuthorities();    
         if (CollectionUtils.isEmpty(permissions)) {
             return false;
         } 
@@ -187,7 +187,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             return new String[0];
         }
 
-        Collection<GrantedAuthority> permissions = auth.getAuthorities();
+        Collection<GrantedAuthority> permissions = (Collection<GrantedAuthority>) auth.getAuthorities();
 
         for (int i = 0; i < getPermissionItemsList().size(); i++) {
             PermissionItems item = (PermissionItems) getPermissionItemsList().get(i);
@@ -233,11 +233,11 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 				return false;
 			}
 			Subscriber sub = partners.iterator().next().getSubscriber();
-			Set<SubscriberMDN> mdns = sub.getSubscriberMDNFromSubscriberID();
+			Set<SubscriberMdn> mdns = sub.getSubscriberMdns();
 			if(mdns==null||mdns.isEmpty()){
 				return false;
 			}
-			if(StringUtils.isBlank(mdns.iterator().next().getDigestedPIN())){
+			if(StringUtils.isBlank(mdns.iterator().next().getDigestedpin())){
 				return true;
 			}
 		}

@@ -35,7 +35,7 @@ import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.RetiredCardPANInfo;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -67,20 +67,20 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		SubscriberMdnQuery query = new SubscriberMdnQuery();
 		query.setId(subscriberMDNId);
-		List <SubscriberMDN> lst = subscriberMDNDAO.get(query);
-		SubscriberMDN subscriberMDN = lst.get(0);
+		List <SubscriberMdn> lst = subscriberMDNDAO.get(query);
+		SubscriberMdn subscriberMDN = lst.get(0);
 		boolean isPartner=false;
 		Subscriber subscriber = null;
 		
 		if (subscriberMDN != null) {
-			log.info("Retiring the MDN -->" + subscriberMDN.getMDN());
+			log.info("Retiring the MDN -->" + subscriberMDN.getMdn());
 			//Check for the Pending transactions for the MDN
 			subscriber = subscriberMDN.getSubscriber();
 			if(CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())){
 				isPartner = true;
 			}
 			CommodityTransferQuery ctQuery = new CommodityTransferQuery();
-			ctQuery.setSourceDestnMDN(subscriberMDN.getMDN());
+			ctQuery.setSourceDestnMDN(subscriberMDN.getMdn());
 			
 			PendingCommodityTransferDAO pctDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
 			try {
@@ -89,22 +89,22 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 				if (CollectionUtils.isEmpty(lstPCT)) {
 					String markedMDN = getRXString(subscriberMDN);
 					
-					updateAllCommodityTransferRecords(subscriberMDN.getID(), subscriberMDN.getMDN(), markedMDN);
+					updateAllCommodityTransferRecords(subscriberMDN.getId().longValue(), subscriberMDN.getMdn(), markedMDN);
 					
-					retireAllCardPans(subscriberMDN.getID());
+					retireAllCardPans(subscriberMDN.getId().longValue());
 					
 					if(isPartner == true){
-						retirePartner(subscriberMDN.getID());
+						retirePartner(subscriberMDN.getId().longValue());
 					}
 				
-					suffixMDNWithRX(subscriberMDN.getID(), markedMDN);
+					suffixMDNWithRX(subscriberMDN.getId().longValue(), markedMDN);
 					result = CmFinoFIX.ResolveAs_success;
 				} else {
 					log.info("Number of Pending transactions to be resolved are --> " + lstPCT.size());
 					result = CmFinoFIX.ResolveAs_failed;
 				}
 			} catch (Exception e) {
-				log.error("Error while getting the pending transactions for MDN --> " + subscriberMDN.getMDN(), e);
+				log.error("Error while getting the pending transactions for MDN --> " + subscriberMDN.getMdn(), e);
 				result = CmFinoFIX.ResolveAs_failed;
 			}
 		}
@@ -125,16 +125,16 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 		List<Partner> partnerLst = partnerDAO.get(partnerQuery);
 		Partner partner = partnerLst.get(0);
 		
-		tradeNameStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getTradeName(),false);				
+		tradeNameStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getTradename(),false);				
 		if(tradeNameStringToReplace != null)
-			partner.setTradeName(tradeNameStringToReplace);
+			partner.setTradename(tradeNameStringToReplace);
 
-		codeStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getPartnerCode(),true);
+		codeStringToReplace = getPartnerFieldStringForThisPartnerField(partner.getPartnercode(),true);
 		if(codeStringToReplace != null)
-			partner.setPartnerCode(codeStringToReplace);
+			partner.setPartnercode(codeStringToReplace);
 
 		UserQuery userQuery = new UserQuery();
-		userQuery.setUserName(partner.getUser().getUsername());
+		userQuery.setUserName(partner.getMfinoUser().getUsername());
 		UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 		List <User> userLst = userDAO.get(userQuery);
 
@@ -150,21 +150,21 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 		}
 
 		if(userNameStringToReplace != null)
-			partner.getUser().setUsername(userNameStringToReplace);
+			partner.getMfinoUser().setUsername(userNameStringToReplace);
 		partnerDAO.save(partner);
 	}	
 	
 
-	private String getRXString(SubscriberMDN subscriberMDN) {
+	private String getRXString(SubscriberMdn subscriberMDN) {
         SubscriberMdnQuery subscriberMdnQuery = new SubscriberMdnQuery();
-        subscriberMdnQuery.setMdn(subscriberMDN.getMDN());
+        subscriberMdnQuery.setMdn(subscriberMDN.getMdn());
 
         SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-        List<SubscriberMDN> subscriberMDNLikeRecords = subscriberMDNDAO.get(subscriberMdnQuery);
+        List<SubscriberMdn> subscriberMDNLikeRecords = subscriberMDNDAO.get(subscriberMdnQuery);
 
         int noOfTimesRetired = 0;
-        for (SubscriberMDN subscriberLikeMDN : subscriberMDNLikeRecords) {
-            String mdn = subscriberLikeMDN.getMDN();
+        for (SubscriberMdn subscriberLikeMDN : subscriberMDNLikeRecords) {
+            String mdn = subscriberLikeMDN.getMdn();
             if (StringUtils.isBlank(mdn)) {
                 continue;
             }
@@ -187,13 +187,13 @@ public class MDNRetireServiceImpl implements MDNRetireService{
                 noOfTimesRetired = timesRetired + 1;
             }
         }
-        if (subscriberMDN.getMDN().contains("R")) {
+        if (subscriberMDN.getMdn().contains("R")) {
             // If we reach here then we already have R1.
-            String mdn = subscriberMDN.getMDN();
+            String mdn = subscriberMDN.getMdn();
             String mdnWithoutR = mdn.substring(0, mdn.indexOf("R"));
             return mdnWithoutR + "R" + noOfTimesRetired;
         } else {
-            return subscriberMDN.getMDN() + "R" + noOfTimesRetired;
+            return subscriberMDN.getMdn() + "R" + noOfTimesRetired;
         }
     }
     
@@ -215,7 +215,7 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 
         for (Pocket eachPocket : resultantPockets) {
         	String cardPanStringToReplace = null;
-            String cardPan = eachPocket.getCardPAN();
+            String cardPan = eachPocket.getCardpan();
             int timesRetired = 0;            
             if (StringUtils.isNotBlank(cardPan)) {
             	//cardPanStringToReplace = getCardPanRetiredStringForThisCardPan(cardPan);
@@ -227,9 +227,9 @@ public class MDNRetireServiceImpl implements MDNRetireService{
             	cardPanStringToReplace = cardPan;
             }
 
-            eachPocket.setCardPAN(cardPanStringToReplace);
+            eachPocket.setCardpan(cardPanStringToReplace);
             eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-            eachPocket.setIsDefault(false);
+            eachPocket.setIsdefault(false);
             // Now set back the Data into the table.
             try{
             	pocketDAO.save(eachPocket);
@@ -268,10 +268,10 @@ public class MDNRetireServiceImpl implements MDNRetireService{
     	for( Partner partner : results ){
     		String partnerField = null;
     		if(isPartnerCode){
-    			partnerField = partner.getPartnerCode();
+    			partnerField = partner.getPartnercode();
     		}
     		else {
-    			partnerField = partner.getTradeName();
+    			partnerField = partner.getTradename();
     		}
     		
     		if(StringUtils.isBlank(partnerField)){
@@ -405,7 +405,7 @@ public class MDNRetireServiceImpl implements MDNRetireService{
     	if(results.size() > 0){
 	    	RetiredCardPANInfo retiredCardPANInfo = results.get(0);
 	    	if(retiredCardPANInfo != null){
-	    		timesRetired = retiredCardPANInfo.getRetireCount();    		
+	    		timesRetired = (int) retiredCardPANInfo.getRetirecount();    		
 	    	}
     	}
     	
@@ -427,14 +427,14 @@ public class MDNRetireServiceImpl implements MDNRetireService{
     	if(results.size() > 0){
     		RetiredCardPANInfo retiredCardPANInfo = results.get(0);
     		if(retiredCardPANInfo != null){
-    			retiredCardPANInfo.setRetireCount(timesRetired);
+    			retiredCardPANInfo.setRetirecount(timesRetired);
     			dao.save(retiredCardPANInfo);
     		}    	    	
     	}
     	else{
     		RetiredCardPANInfo retiredCardPANInfo = new RetiredCardPANInfo();
-    		retiredCardPANInfo.setCardPAN(cardPan);
-    		retiredCardPANInfo.setRetireCount(timesRetired);
+    		retiredCardPANInfo.setCardpan(cardPan);
+    		retiredCardPANInfo.setRetirecount(timesRetired);
     		dao.save(retiredCardPANInfo);
     	}
     }
@@ -447,21 +447,21 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 		
 		SubscriberMdnQuery query = new SubscriberMdnQuery();
 		query.setId(subscriberMDNId);
-		List <SubscriberMDN> lst = subscriberMDNDAO.get(query);
-		SubscriberMDN smdn = lst.get(0);
+		List <SubscriberMdn> lst = subscriberMDNDAO.get(query);
+		SubscriberMdn smdn = lst.get(0);
 		
 		if(smdn != null){
-			smdn.setIsMDNRecycled(Boolean.TRUE);
-			smdn.setMDN(markedMDNRetireString);
+			smdn.setIsmdnrecycled(Boolean.TRUE);
+			smdn.setMdn(markedMDNRetireString);
 			smdn.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 			smdn.setStatus(CmFinoFIX.SubscriberStatus_Retired);
-			smdn.setStatusTime(now);
+			smdn.setStatustime(now);
 		}
 		
 		Subscriber subscriber = smdn.getSubscriber();
 		subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Retired);
-		subscriber.setStatusTime(now);
+		subscriber.setStatustime(now);
 		subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 		subscriberMDNDAO.save(smdn);
 		subscriberDAO.save(subscriber);

@@ -60,7 +60,7 @@ public class NotificationServiceImpl implements NotificationService{
         }
         if(null != company){
             query.setCompany(company);
-            cusomerServiceShortCode = company.getCustomerServiceNumber();
+            cusomerServiceShortCode = company.getCustomerservicenumber();
         }
         List<Notification> results = dao.getLanguageBasedNotifications(query);
 
@@ -69,7 +69,7 @@ public class NotificationServiceImpl implements NotificationService{
         }
         if(results.size() > 0)
         {
-            notificationTxt=checkForReplacementValues(results.get(0).getText(), cusomerServiceShortCode);
+            notificationTxt=checkForReplacementValues(results.get(0).getText().toString(), cusomerServiceShortCode);
         }
 
         return notificationTxt;

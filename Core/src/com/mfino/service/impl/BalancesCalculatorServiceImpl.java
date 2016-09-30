@@ -115,27 +115,27 @@ public class BalancesCalculatorServiceImpl implements BalancesCalculatorService{
 
 			if (exactDateEntry == null) {
 				exactDateEntry = new BookingDatedBalance();
-				exactDateEntry.setBookingDate(new Timestamp(date));
+				exactDateEntry.setBookingdate(new Timestamp(date));
 			}
 
 			if (preDateEntry == null)
-				exactDateEntry.setOpeningBalance(BigDecimal.ZERO);
+				exactDateEntry.setOpeningbalance(BigDecimal.ZERO.toString());
 			else
-				exactDateEntry.setOpeningBalance(preDateEntry
-						.getClosingBalance());
-
+				exactDateEntry.setOpeningbalance(preDateEntry.getClosingbalance());
+			
 			creditAmount = credit.get(pocketID) != null ? credit.get(pocketID)
 					: BigDecimal.ZERO;
 			debitAmount = debit.get(pocketID) != null ? debit.get(pocketID)
 					: BigDecimal.ZERO;
 
-			exactDateEntry.setPocketID(pocket.getID());
-			exactDateEntry.setTotalCredit(creditAmount);
-			exactDateEntry.setTotalDebit(debitAmount);
-			exactDateEntry.setNetTurnOver(creditAmount.subtract(debitAmount));
-			exactDateEntry.setClosingBalance(exactDateEntry.getOpeningBalance()
-					.add(exactDateEntry.getNetTurnOver()));
-
+			exactDateEntry.setPocketid(pocket.getId());
+			exactDateEntry.setTotalcredit(creditAmount);
+			exactDateEntry.setTotaldebit(debitAmount);
+			exactDateEntry.setNetturnover(creditAmount.subtract(debitAmount));
+			
+			BigDecimal openingBalanceBD = new BigDecimal(exactDateEntry.getOpeningbalance());
+			exactDateEntry.setClosingbalance((openingBalanceBD.add(exactDateEntry.getNetturnover())).toString());
+			
 			try {
 				bookingDatedBalanceService.save(exactDateEntry);
 			} catch (Exception e) {

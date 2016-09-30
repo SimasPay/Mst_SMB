@@ -45,15 +45,15 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 		DCTRestrictionsDao dctRestrictionsDao = DAOFactory.getInstance().getDctRestrictionsDao();
 		
 		Service service = dct.getService();
-		for(ServiceTransaction serviceTxn: service.getServiceTransactionFromServiceID()){
+		for(ServiceTransaction serviceTxn: service.getServiceTransactions()){
 			TransactionType txnType = serviceTxn.getTransactionType();
 			
 			DCTRestrictions dctRestriction = new DCTRestrictions();
 			dctRestriction.setDistributionChainTemplateByDCTID(dct);
 			dctRestriction.setTransactionType(txnType);
-			dctRestriction.setRelationShipType(CmFinoFIX.RelationShipType_BELONGS_TO_TREE);
-			dctRestriction.setDistributionLevel(dctLevel.getDistributionLevel());
-			dctRestriction.setIsAllowed(Boolean.TRUE);
+			dctRestriction.setRelationshiptype(CmFinoFIX.RelationShipType_BELONGS_TO_TREE.longValue());
+			dctRestriction.setDistributionlevel(dctLevel.getDistributionLevel().longValue());
+			dctRestriction.setIsallowed(Boolean.TRUE);
 			
 			dctRestrictions.add(dctRestriction);
 		}

@@ -37,7 +37,7 @@ import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mailer.NotificationWrapper;
@@ -204,17 +204,17 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
             return null;
         }
         Notification notification = (Notification) list.get(0);
-        notificationWrapper.setSMSNotificationCode(notification.getSMSNotificationCode());
-        notificationWrapper.setAccessCode(notification.getAccessCode());
-        String notificationText = notification.getText();
-        SubscriberMDN senderMdn = null;
+        notificationWrapper.setSMSNotificationCode(notification.getSmsnotificationcode());
+        notificationWrapper.setAccessCode(notification.getAccesscode());
+        String notificationText = notification.getText().toString();
+        SubscriberMdn senderMdn = null;
         if(notificationText.contains("$(SenderFirstName)") || notificationText.contains("$(SenderLastName)"))
         {
         	senderMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(notificationWrapper.getSourceMDN());
         	if(senderMdn == null)
         		senderMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(notificationWrapper.getSenderMDN());			
         }
-        SubscriberMDN receiverMdn = null;
+        SubscriberMdn receiverMdn = null;
         if(notificationText.contains("$(ReceiverFirstName)") || notificationText.contains("$(ReceiverLastName)"))
         {
         	receiverMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(notificationWrapper.getReceiverMDN());
@@ -240,8 +240,8 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                     notificationBuilder.append("Service Name");
                 } else if (CmFinoFIX.NotificationVariables_SourceMDN.equals(notificationVariable)
                         || CmFinoFIX.NotificationVariables_SenderMDN.equals(notificationVariable)) {
-                    if (commodityTransfer != null && commodityTransfer.getSourceMDN() != null) {
-                        notificationBuilder.append(commodityTransfer.getSourceMDN());
+                    if (commodityTransfer != null && commodityTransfer.getSourcemdn() != null) {
+                        notificationBuilder.append(commodityTransfer.getSourcemdn());
                     } else if(notificationWrapper.getSourceMDN()!=null){
                         notificationBuilder.append(notificationWrapper.getSourceMDN());
                     } else {
@@ -263,11 +263,11 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 	if(notificationWrapper.getSctlID()!=null){
                 		notificationBuilder.append(notificationWrapper.getSctlID());
                 	}else{
-                    notificationBuilder.append(commodityTransfer.getID());
+                    notificationBuilder.append(commodityTransfer.getId());
                 	}
                 } else if (CmFinoFIX.NotificationVariables_TransactionID.equals(notificationVariable)) {
                 	if (commodityTransfer != null) {
-                        notificationBuilder.append(commodityTransfer.getSctlId() != null ? commodityTransfer.getSctlId() : commodityTransfer.getID());
+                        notificationBuilder.append(commodityTransfer.getSctlId() != null ? commodityTransfer.getSctlId() : commodityTransfer.getId());
                     }
                 	else if(notificationWrapper.getSctlID()!=null){
                 		notificationBuilder.append(notificationWrapper.getSctlID());
@@ -279,15 +279,15 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                         || CmFinoFIX.NotificationVariables_PostpaidMDN.equals(notificationVariable)) {
                 	if(notificationWrapper.getReceiverMDN()!=null){
                 		notificationBuilder.append(notificationWrapper.getReceiverMDN());
-                	}else if (commodityTransfer != null && commodityTransfer.getDestMDN() != null) {
-                        notificationBuilder.append(commodityTransfer.getDestMDN());
+                	}else if (commodityTransfer != null && commodityTransfer.getDestmdn() != null) {
+                        notificationBuilder.append(commodityTransfer.getDestmdn());
                     } else {
                         log.error("Pass Dest MDN");
                     }
                 } else if (CmFinoFIX.NotificationVariables_TransactionDateTime.equals(notificationVariable)) {
                     String time = null;
-                    if (commodityTransfer != null && commodityTransfer.getCreateTime() != null) {
-                        time = getDateFormat().format(commodityTransfer.getCreateTime());
+                    if (commodityTransfer != null && commodityTransfer.getCreatetime() != null) {
+                        time = getDateFormat().format(commodityTransfer.getCreatetime());
                     }else if(notificationWrapper.getServiceChargeTransactionLog()!=null && notificationWrapper.getServiceChargeTransactionLog().getCreateTime()!=null){
                         time = getDateFormat().format(notificationWrapper.getServiceChargeTransactionLog().getCreateTime());
                     } else {
@@ -298,19 +298,19 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                     notificationBuilder.append(getDateFormat().format(new Date()));
                 } else if (CmFinoFIX.NotificationVariables_CustomerServiceShortCode.equals(notificationVariable)) {
                 	if (notificationWrapper.getCompany() != null) {
-                		notificationBuilder.append(notificationWrapper.getCompany().getCustomerServiceNumber());
+                		notificationBuilder.append(notificationWrapper.getCompany().getCustomerservicenumber());
                 	} else {
                 		notificationBuilder.append("881");
                 	}
                 } else if (CmFinoFIX.NotificationVariables_MinimumTransactionAmountLimit.equals(notificationVariable)) {
-                    if (sourcePocket != null && sourcePocket.getPocketTemplate() != null && sourcePocket.getPocketTemplate().getMinAmountPerTransaction() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMinAmountPerTransaction());
+                    if (sourcePocket != null && sourcePocket.getPocketTemplate() != null && sourcePocket.getPocketTemplate().getMinamountpertransaction() != null) {
+                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMinamountpertransaction());
                     } else {
                         notificationBuilder.append(textPart.text);
                     }
                 } else if (CmFinoFIX.NotificationVariables_MaximumTransactionAmountLimit.equals(notificationVariable)) {
                     if (sourcePocket != null && sourcePocket.getPocketTemplate() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMaxAmountPerTransaction());
+                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMaxamountpertransaction());
                     } else {
                         notificationBuilder.append(textPart.text);
                     }
@@ -321,7 +321,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 } else if (CmFinoFIX.NotificationVariables_AirtimeBalanceValue.equals(notificationVariable) || CmFinoFIX.NotificationVariables_CommodityBalanceValue.equals(notificationVariable)) {
                     if (sourcePocket != null) {
                         NumberFormat numberFormat = MfinoUtil.getNumberFormat();
-                        BigDecimal amount = sourcePocket.getCurrentBalance() == null? BigDecimal.ZERO : sourcePocket.getCurrentBalance();
+                        BigDecimal amount = (BigDecimal) (sourcePocket.getCurrentbalance() == null? BigDecimal.ZERO : sourcePocket.getCurrentbalance());
                         notificationBuilder.append(numberFormat.format(amount));
                     } else {
                         notificationBuilder.append(0);
@@ -336,13 +336,13 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                     notificationBuilder.append(buildTransferStatusString(notificationWrapper));
                 } else if (CmFinoFIX.NotificationVariables_MinimumBalanceAllowed.equals(notificationVariable)) {
                     if (sourcePocket != null && sourcePocket.getPocketTemplate() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMinimumStoredValue());
+                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMinimumstoredvalue());
                     } else {
                         notificationBuilder.append(0);
                     }
                 } else if (CmFinoFIX.NotificationVariables_MaximumBalanceAllowed.equals(notificationVariable)) {
                     if (notificationWrapper.getSourcePocket() != null && notificationWrapper.getSourcePocket().getPocketTemplate() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMaximumStoredValue());
+                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMaximumstoredvalue());
                     } else {
                         notificationBuilder.append(0);
                     }
@@ -421,7 +421,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                     throw new UnhandledException("Unhandled Block ", null);
                 } else if (CmFinoFIX.NotificationVariables_SenderName.equals(notificationVariable)) {
                     if (notificationWrapper.getCommodityTransfer() != null) {
-                        notificationBuilder.append(notificationWrapper.getCommodityTransfer().getSourceSubscriberName());
+                        notificationBuilder.append(notificationWrapper.getCommodityTransfer().getSourcesubscribername());
                     }
                 } else if (CmFinoFIX.NotificationVariables_EmbeddedText.equals(notificationVariable)) {
                     throw new UnhandledException("Unhandled Block ", null);
@@ -457,7 +457,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 	notificationBuilder.append(notificationWrapper.getBillPaymentID()!=null?notificationWrapper.getBillPaymentID():"");
                 }else if(CmFinoFIX.NotificationVariables_ContactCenterNo.equals(notificationVariable)){
                 	if(notificationWrapper.getBank()!=null){
-                    	notificationBuilder.append(notificationWrapper.getBank().getContactNumber()!=null?notificationWrapper.getBank().getContactNumber():"");
+                    	notificationBuilder.append(notificationWrapper.getBank().getContactnumber()!=null?notificationWrapper.getBank().getContactnumber():"");
                     	}else{
                     		notificationBuilder.append("");
                     		}
@@ -515,28 +515,28 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 else if(CmFinoFIX.NotificationVariables_SenderFirstName.equals(notificationVariable)){
                 	if(senderMdn != null)
         			{
-        				notificationBuilder.append(senderMdn.getSubscriber().getFirstName());
+        				notificationBuilder.append(senderMdn.getSubscriber().getFirstname());
         			}
                 	else notificationBuilder.append("");
                 }
                 else if(CmFinoFIX.NotificationVariables_SenderLastName.equals(notificationVariable)){
                 	if(senderMdn != null)
         			{
-        				notificationBuilder.append(senderMdn.getSubscriber().getLastName());
+        				notificationBuilder.append(senderMdn.getSubscriber().getLastname());
         			}
                 	else notificationBuilder.append("");
                 }
                 else if(CmFinoFIX.NotificationVariables_ReceiverFirstName.equals(notificationVariable)){
                 	if(receiverMdn != null)
         			{
-        				notificationBuilder.append(receiverMdn.getSubscriber().getFirstName());
+        				notificationBuilder.append(receiverMdn.getSubscriber().getFirstname());
         			}
                 	else notificationBuilder.append("");
                 }
                 else if(CmFinoFIX.NotificationVariables_ReceiverLastName.equals(notificationVariable)){
                 	if(receiverMdn != null)
         			{
-        				notificationBuilder.append(receiverMdn.getSubscriber().getLastName());
+        				notificationBuilder.append(receiverMdn.getSubscriber().getLastname());
         			}
                 	else notificationBuilder.append("");
                 }
@@ -631,7 +631,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
         if (notificationWrapper.getServiceChargeTransactionLog() != null) {
         	tt = ttDAO.getById(notificationWrapper.getServiceChargeTransactionLog().getTransactionTypeID());
 			if(tt != null) {
-				returnValue = tt.getDisplayName();
+				returnValue = tt.getDisplayname();
 			}
         }
         else if (notificationWrapper.getCommodityTransfer() != null) {
@@ -640,7 +640,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
         	if (sctl != null) {
         		tt = ttDAO.getById(sctl.getTransactionTypeID());
 			}
-        	returnValue = (tt != null) ? tt.getDisplayName() : notificationWrapper.getCommodityTransfer().getSourceMessage();
+        	returnValue = (tt != null) ? tt.getDisplayname() : notificationWrapper.getCommodityTransfer().getSourcemessage();
         }
         return returnValue;
     }

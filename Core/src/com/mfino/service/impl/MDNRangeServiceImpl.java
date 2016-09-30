@@ -33,7 +33,7 @@ public class MDNRangeServiceImpl implements MDNRangeService{
      * MDN used here is without international code and with brand prefix included.
      */
     public boolean isMDNInParentsRange(Long mdn, Merchant parent) {
-        log.info("isMDNInParentsRange: MDN "+mdn + " where parent id is " + parent.getID());
+        log.info("isMDNInParentsRange: MDN "+mdn + " where parent id is " + parent.getId());
         // an exception for top most guys
         if(parent.getMerchantByParentID() == null)
         {
@@ -47,8 +47,8 @@ public class MDNRangeServiceImpl implements MDNRangeService{
         }
         for (MDNRange range : mdnRangeList) {
             try {
-                if ((mdn >= Long.parseLong(range.getBrand().getPrefixCode() + range.getStartPrefix()))
-                        && (mdn <= Long.parseLong(range.getBrand().getPrefixCode() + range.getEndPrefix()))) {
+                if ((mdn >= Long.parseLong(range.getBrand().getPrefixcode() + range.getStartprefix()))
+                        && (mdn <= Long.parseLong(range.getBrand().getPrefixcode() + range.getEndprefix()))) {
                     log.info("isMDNInParentsRange: Success");
                     return Success;
                 }

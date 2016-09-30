@@ -42,7 +42,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
@@ -87,27 +87,30 @@ public class PocketServiceImpl implements PocketService{
 
 		// If the pokcet type is of BankAccount
 		// Status is set to "Initialized".
-		if (pocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)) {
+		Long typeL = pocket.getPocketTemplate().getType();
+		Integer typeLI = typeL.intValue();
+		
+		if (typeLI.equals(CmFinoFIX.PocketType_BankAccount)) {
 			pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
 			log.debug(" changed status");
 		}
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket createDefaultPocket(PocketTemplate defaultPocketTemplate, SubscriberMDN subscriberMDN) {
+	public Pocket createDefaultPocket(PocketTemplate defaultPocketTemplate, SubscriberMdn subscriberMDN) {
 		return createActivePocket(defaultPocketTemplate, subscriberMDN, true);
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket createActivePocket(PocketTemplate defaultPocketTemplate, SubscriberMDN subscriberMDN, boolean isDefault) {
+	public Pocket createActivePocket(PocketTemplate defaultPocketTemplate, SubscriberMdn subscriberMDN, boolean isDefault) {
 		Pocket pocket = new Pocket();
 
 		pocket.setPocketTemplate(defaultPocketTemplate);
-		pocket.setSubscriberMDNByMDNID(subscriberMDN);
-		pocket.setStatusTime(new Timestamp());
+		pocket.setSubscriberMdn(subscriberMDN);
+		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
 
-		pocket.setIsDefault(isDefault);
+		pocket.setIsdefault(isDefault);
 
 		if (isDefault) {
 			defaultPocketMaintainerService.setDefaultPocket(pocket, true);
@@ -125,9 +128,16 @@ public class PocketServiceImpl implements PocketService{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public boolean isDefaultAirTimeSVA(Pocket p) {
 		Boolean bool_true = Boolean.valueOf(true);
-		if (p != null && p.getPocketTemplate() != null && p.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)
-		        && p.getPocketTemplate().getCommodity() != null && p.getPocketTemplate().getCommodity().equals(CmFinoFIX.Commodity_Airtime)
-		        && bool_true.equals(p.getIsDefault())) {
+		
+		Long tempPocketL = p.getPocketTemplate().getType();
+		Integer tempPocketLI = tempPocketL.intValue();
+		
+		Long tempCOmoditytL = p.getPocketTemplate().getCommodity();
+		Integer tempCOmoditytL1 = tempCOmoditytL.intValue();
+		
+		if (p != null && p.getPocketTemplate() != null && tempPocketLI.equals(CmFinoFIX.PocketType_SVA)
+		        && tempCOmoditytL1 != null && tempCOmoditytL1.equals(CmFinoFIX.Commodity_Airtime)
+		        && bool_true.equals(p.getIsdefault())) {
 			return true;
 		}
 		return false;
@@ -138,21 +148,28 @@ public class PocketServiceImpl implements PocketService{
 		if (p == null) {
 			return;
 		}
-		SubscriberMDN sub = p.getSubscriberMDNByMDNID();
+		SubscriberMdn sub = p.getSubscriberMdn();
 		if (sub == null) {
 			return;
 		}
 
 		// @XC: Do we still maintain subscriber status in the backend?
-		if (sub.getStatus().equals(CmFinoFIX.SubscriberStatus_Retired)) {
+		Long tempStatusL = sub.getStatus();
+		Integer tempStatusLI = tempStatusL.intValue();
+		
+		if (tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Retired)) {
 			p.setStatus(CmFinoFIX.PocketStatus_Retired);
 		}
 
-		SubscriberMDN mdn = p.getSubscriberMDNByMDNID();
+		SubscriberMdn mdn = p.getSubscriberMdn();
 		if (mdn == null) {
 			return;
 		}
-		if (mdn.getStatus().equals(CmFinoFIX.SubscriberStatus_Retired)) {
+		
+		Long tempmdnStatusL = mdn.getStatus();
+		Integer tempmdnStatusLI = tempmdnStatusL.intValue();
+		
+		if (tempmdnStatusLI.equals(CmFinoFIX.SubscriberStatus_Retired)) {
 			p.setStatus(CmFinoFIX.PocketStatus_Retired);
 		}
 
@@ -160,7 +177,11 @@ public class PocketServiceImpl implements PocketService{
 		if (merchant == null) {
 			return;
 		}
-		if (merchant.getStatus().equals(CmFinoFIX.SubscriberStatus_Retired)) {
+		
+		Long tempmerchantStatusL = merchant.getStatus();
+		Integer tempmerchantStatusLI = tempmerchantStatusL.intValue();
+		
+		if (tempmerchantStatusLI.equals(CmFinoFIX.SubscriberStatus_Retired)) {
 			if (isDefaultAirTimeSVA(p)) {
 				p.setStatus(CmFinoFIX.PocketStatus_Retired);
 			}
@@ -202,7 +223,7 @@ public class PocketServiceImpl implements PocketService{
 
 		// STEP 2
 		BigDecimal pocketBalance = ZERO;
-		if (transferRecord.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
 			pocketBalance = transferRecord.getSourcePocketBalance();
 		}
 		else {
@@ -221,13 +242,13 @@ public class PocketServiceImpl implements PocketService{
 		// If the Txn is pending, then we don't add the balance to the
 		// destination. We only deduct from the source.
 		Long destPocketID = transferRecord.getDestPocketID();
-		if (transferRecord instanceof PendingCommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getID())) {
+		if (transferRecord instanceof PendingCommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getId())) {
 			transferAmount = ZERO;
 		}
 
 		// For pending transfer (we assume they succeed) and successful
 		// transfers deduct/add the transfer amount to get the final balance.
-		if (transferRecord.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
 //			pocketBalance -= transferAmount;
 			pocketBalance = pocketBalance.subtract(transferAmount);
 		}
@@ -251,12 +272,12 @@ public class PocketServiceImpl implements PocketService{
 			for (CommodityTransfer ct : resolvedAsFailTxns) {
 				// If a resolve as failed Txn is what is used to compute the
 				// current balance, don't include it again.
-				if (ct.getID().equals(transferRecord.getID())) {
+				if (ct.getId().equals(transferRecord.getID())) {
 					continue;
 				}
 //				resolveAsFailAmount += ct.getAmount();
 				resolveAsFailAmount = resolveAsFailAmount.add(ct.getAmount());
-				log.info("RAF Txn = " + ct.getID() + ", Amount = " + ct.getAmount());
+				log.info("RAF Txn = " + ct.getId() + ", Amount = " + ct.getAmount());
 			}
 		}
 
@@ -288,7 +309,7 @@ public class PocketServiceImpl implements PocketService{
 
 		// STEP 2
 		BigDecimal pocketBalance = ZERO;
-		if (transferRecord.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
 			pocketBalance = transferRecord.getSourcePocketBalance();
 		}
 		else {
@@ -307,13 +328,13 @@ public class PocketServiceImpl implements PocketService{
 		// If the Txn is pending, then we don't add the balance to the
 		// destination. We only deduct from the source.
 		Long destPocketID = transferRecord.getDestPocketID();
-		if (transferRecord instanceof PendingCommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getID())) {
+		if (transferRecord instanceof PendingCommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getId())) {
 			transferAmount = ZERO;
 		}
 
 		// For pending transfer (we assume they succeed) and successful
 		// transfers deduct/add the transfer amount to get the final balance.
-		if (transferRecord.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
 //			pocketBalance -= transferAmount;
 			pocketBalance = pocketBalance.subtract(transferAmount);
 		}
@@ -334,12 +355,12 @@ public class PocketServiceImpl implements PocketService{
 			for (CommodityTransfer ct : resolvedAsFailTxns) {
 				// If a resolve as failed Txn is what is used to compute the
 				// current balance, don't include it again.
-				if (ct.getID().equals(transferRecord.getID())) {
+				if (ct.getId().equals(transferRecord.getID())) {
 					continue;
 				}
 //				resolveAsFailAmount += ct.getAmount();
 				resolveAsFailAmount = resolveAsFailAmount.add(ct.getAmount());
-				log.info("RAF Txn = " + ct.getID() + ", Amount = " + ct.getAmount());
+				log.info("RAF Txn = " + ct.getId() + ", Amount = " + ct.getAmount());
 			}
 		}
 
@@ -379,17 +400,17 @@ public class PocketServiceImpl implements PocketService{
 		// STEP 1: Find the first txn started after asOfDate
 		CRCommodityTransfer transfer = getFirstTransferAfter(pocket, asOfDate);
 		if (null != transfer) {
-			log.info("Pocket ID = " + pocket.getID());
-			if (transfer.getPocketBySourcePocketID().getID().equals(pocket.getID())) {
+			log.info("Pocket ID = " + pocket.getId());
+			if (transfer.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
 				pocketBalance = transfer.getSourcePocketBalance();
 			}
-			else if (transfer.getDestPocketID().equals(pocket.getID())) {
+			else if (transfer.getDestPocketID().equals(pocket.getId())) {
 				pocketBalance = transfer.getDestPocketBalance();
 			}
 			end = transfer.getStartTime();
 		}
 		else {
-			pocketBalance = pocket.getCurrentBalance();
+			pocketBalance = new BigDecimal(pocket.getCurrentbalance());
 		}
 
 		// STEP 3: Deduct the RAF between asOfDate and end (the time
@@ -418,7 +439,7 @@ public class PocketServiceImpl implements PocketService{
 
 		List<CommodityTransfer> requiredRAFList = new LinkedList<CommodityTransfer>();
 		for (CommodityTransfer ct : allRAFList) {
-			if (ct.getStartTime().before(start) && ct.getCSRActionTime().compareTo(start) >= 0 && ct.getCSRActionTime().before(end)) {
+			if (ct.getStarttime().before(start) && ct.getCsractiontime().compareTo(start) >= 0 && ct.getCsractiontime().before(end)) {
 				requiredRAFList.add(ct);
 			}
 		}
@@ -443,7 +464,7 @@ public class PocketServiceImpl implements PocketService{
 		else if (null == pendingCommodityTransfer) {
 			transferRecord = commodityTransfer;
 		}
-		else if (commodityTransfer.getID() > pendingCommodityTransfer.getID()) {
+		else if (commodityTransfer.getId() > pendingCommodityTransfer.getId()) {
 			transferRecord = commodityTransfer;
 		}
 		else {
@@ -471,7 +492,7 @@ public class PocketServiceImpl implements PocketService{
 		else if (null == pendingCommodityTransfer) {
 			transferRecord = commodityTransfer;
 		}
-		else if (commodityTransfer.getID() < pendingCommodityTransfer.getID()) {
+		else if (commodityTransfer.getId() < pendingCommodityTransfer.getId()) {
 			transferRecord = commodityTransfer;
 		}
 		else {
@@ -535,14 +556,14 @@ public class PocketServiceImpl implements PocketService{
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMDN subscriberMdn) {
+	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMdn subscriberMdn) {
 		Pocket pocket = new Pocket();
 
 		pocket.setPocketTemplate(pocketTemplate);
-		pocket.setSubscriberMDNByMDNID(subscriberMdn);
-		pocket.setStatusTime(new Timestamp());
+		pocket.setSubscriberMdn(subscriberMdn);
+		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
-		pocket.setIsDefault(Boolean.TRUE);
+		pocket.setIsdefault((short) Boolean.compare(true, false));
 		if (subscriberMdn.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subscriberMdn.getSubscriber().getCompany());
 		}
@@ -554,23 +575,23 @@ public class PocketServiceImpl implements PocketService{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Pocket createDefaultActivePocket(Long pocketTemplateID,
-			SubscriberMDN subscriberMDN) {
+			SubscriberMdn subscriberMDN) {
 		PocketTemplateDAO ptDao = DAOFactory.getInstance().getPocketTemplateDao();
 		return createDefaultActivePocket(ptDao.getById(pocketTemplateID), subscriberMDN);
 	}	
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket createDefaultBankPocket(Long pocketTemplateID,SubscriberMDN subscriberMDN,String cardPan) {
+	public Pocket createDefaultBankPocket(Long pocketTemplateID,SubscriberMdn subscriberMDN,String cardPan) {
 		PocketTemplateDAO ptDao = DAOFactory.getInstance().getPocketTemplateDao();
 		PocketTemplate pocketTemplate = ptDao.getById(pocketTemplateID);
 		Pocket pocket = new Pocket();
 		pocket.setPocketTemplate(pocketTemplate);
-		pocket.setSubscriberMDNByMDNID(subscriberMDN);
-		pocket.setStatusTime(new Timestamp());
+		pocket.setSubscriberMdn(subscriberMDN);
+		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-		pocket.setIsDefault(Boolean.TRUE);
+		pocket.setIsdefault((short) Boolean.compare(true, false));
 		if(cardPan!=null){
-		pocket.setCardPAN(cardPan);
+		pocket.setCardpan(cardPan);
 		}
 		if (subscriberMDN.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subscriberMDN.getSubscriber().getCompany());
@@ -584,7 +605,7 @@ public class PocketServiceImpl implements PocketService{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)	
 	public Pocket createPocket(Long pocketTemplateID,
-			SubscriberMDN subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan) {
+			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan) {
 		PocketTemplateDAO ptDao = DAOFactory.getInstance().getPocketTemplateDao();
 		PocketTemplate pocketTemplate = ptDao.getById(pocketTemplateID);
 		
@@ -594,9 +615,9 @@ public class PocketServiceImpl implements PocketService{
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)	
 	public Pocket createPocket(PocketTemplate pocketTemplate,
-			SubscriberMDN subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan,String CardAlias){
+			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan,String CardAlias){
 		Pocket pocket = createPocket(pocketTemplate, subscriberMDN, pocketstatus, isDefault, CardPan);
-		pocket.setCardAlias(CardAlias);
+		pocket.setCardalias(CardAlias);
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		pocketDAO.save(pocket);
 		return pocket;
@@ -604,17 +625,17 @@ public class PocketServiceImpl implements PocketService{
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Pocket createPocket(PocketTemplate pocketTemplate,
-			SubscriberMDN subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan) {
+			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan) {
 				Pocket pocket = new Pocket();
 		pocket.setPocketTemplate(pocketTemplate);
-		pocket.setSubscriberMDNByMDNID(subscriberMDN);
-		pocket.setStatusTime(new Timestamp());
+		pocket.setSubscriberMdn(subscriberMDN);
+		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(pocketstatus);
 		if(CardPan!=null){
-		pocket.setCardPAN(CardPan);
+		pocket.setCardpan(CardPan);
 		}
 		if(isDefault){
-		pocket.setIsDefault(Boolean.TRUE);
+		pocket.setIsdefault((short) Boolean.compare(true, false));
 		}
 		if (subscriberMDN.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subscriberMDN.getSubscriber().getCompany());
@@ -746,7 +767,7 @@ public class PocketServiceImpl implements PocketService{
 	         while(it.hasNext())
 	         {
 	        	 PocketTemplateConfig pocketTemplateConfig = it.next();
-	        	 if(pocketTemplateConfig.getPocketTemplate().getBankAccountCardType().equals(bankAccountType))
+	        	 if(pocketTemplateConfig.getPocketTemplate().getBankaccountcardtype().equals(bankAccountType))
 	        	 {
 	        		 return pocketTemplateConfig.getPocketTemplate();
 	        	 }
@@ -766,7 +787,7 @@ public class PocketServiceImpl implements PocketService{
 		         while(it.hasNext())
 		         {
 		        	 PocketTemplateConfig pocketTemplateConfig = it.next();
-		        	 if(pocketTemplateConfig.getPocketTemplate().getBankAccountCardType().equals(bankAccountType))
+		        	 if(pocketTemplateConfig.getPocketTemplate().getBankaccountcardtype().equals(bankAccountType))
 		        	 {
 		        		 return pocketTemplateConfig.getPocketTemplate();
 		        	 }
@@ -778,23 +799,23 @@ public class PocketServiceImpl implements PocketService{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public boolean isAllowed(PocketTemplate pocketTemplate,
-			SubscriberMDN mdn) {
+			SubscriberMdn mdn) {
 		KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
 		List<KYCLevel> levels=kycLevelDAO.getAll();
 		Subscriber sub=mdn.getSubscriber();
 		
 		//check for not to add collector pocket to subscriber
-		if(pocketTemplate.getIsCollectorPocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+		if(pocketTemplate.getIscollectorpocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
 		
 		//check for not to add suspense pocket to subscriber
-		if(pocketTemplate.getIsSuspencePocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+		if(pocketTemplate.getIssuspencepocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
 		
 		//check for not to add system pocket to subscriber
-		if(pocketTemplate.getIsSystemPocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
+		if(pocketTemplate.getIssystempocket()&&CmFinoFIX.SubscriberType_Subscriber.equals(sub.getType())){
 			return false;
 		}
 		return true;
@@ -816,9 +837,9 @@ public class PocketServiceImpl implements PocketService{
 		if (partner != null) {
 			Subscriber subscriber = partner.getSubscriber();
 			if (subscriber != null) {
-				 Set<SubscriberMDN> subscriberMdnCol = subscriber.getSubscriberMDNFromSubscriberID();
+				 Set<SubscriberMdn> subscriberMdnCol = subscriber.getSubscriberMdns();
 				 if((subscriberMdnCol != null) && (subscriberMdnCol.size() > 0)){
-					 Long id = subscriberMdnCol.iterator().next().getID();
+					 Long id = subscriberMdnCol.iterator().next().getId().longValue();
 					 query.setMdnIDSearch(id);
 				 }
 			}
@@ -829,7 +850,7 @@ public class PocketServiceImpl implements PocketService{
 		List<Pocket> lst = dao.get(query);
 		if (CollectionUtils.isNotEmpty(lst)) {
 			result = lst.get(0);
-			log.info("Default Pocket Id -- > " + result.getID());
+			log.info("Default Pocket Id -- > " + result.getId());
 		}
 		
 		return result;
@@ -841,7 +862,7 @@ public class PocketServiceImpl implements PocketService{
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket getDefaultPocket(SubscriberMDN sMDN, String pocketCode){
+	public Pocket getDefaultPocket(SubscriberMdn sMDN, String pocketCode){
 		log.info("FIXMessageHandler :: getDefaultPocket sMDN="+sMDN+", pocketCode="+pocketCode);
 		Pocket subPocket = null;
 		if(sMDN==null){
@@ -850,24 +871,24 @@ public class PocketServiceImpl implements PocketService{
 			
 		//For 2.5 If pocket code is 1 then it is EMoney if it is 2 then Bank.
 		if(pocketCode!=null && pocketCode.equals(String.valueOf(2))){
-			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			subPocket = subscriberService.getDefaultPocket(sMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		}
 		else if(pocketCode!=null && CmFinoFIX.PocketType_NFC.toString().equals(pocketCode)) {
-			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_NFC, CmFinoFIX.Commodity_Money);
+			subPocket = subscriberService.getDefaultPocket(sMDN.getId().longValue(), CmFinoFIX.PocketType_NFC, CmFinoFIX.Commodity_Money);
 		}
 		else if(pocketCode!=null && CmFinoFIX.PocketType_LakuPandai.toString().equals(pocketCode)) {
-			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
+			subPocket = subscriberService.getDefaultPocket(sMDN.getId().longValue(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
 		}
 		else {
-			subPocket = subscriberService.getDefaultPocket(sMDN.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
+			subPocket = subscriberService.getDefaultPocket(sMDN.getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 		} 
 		return subPocket;
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public boolean checkCount(PocketTemplate pocketTemplate,
-			SubscriberMDN subMdn) {
-		Set<Pocket> pockets = subMdn.getPocketFromMDNID();
+			SubscriberMdn subMdn) {
+		Set<Pocket> pockets = subMdn.getPockets();
 		int count = 0;
 		for(Pocket pocket:pockets){
 			if(pocketTemplate.equals(pocket.getPocketTemplate())
@@ -876,7 +897,7 @@ public class PocketServiceImpl implements PocketService{
 			}
 		
 	}
-		return count<pocketTemplate.getNumberOfPocketsAllowedForMDN();
+		return count<pocketTemplate.getNumberofpocketsallowedformdn();
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -967,10 +988,10 @@ public class PocketServiceImpl implements PocketService{
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket getNFCPocket(SubscriberMDN subscriberMDN, String cardPAN) {
+	public Pocket getNFCPocket(SubscriberMdn subscriberMDN, String cardPAN) {
 		PocketQuery query = new PocketQuery();
 		query.setCardPan(cardPAN);
-		query.setMdnIDSearch(subscriberMDN.getID());
+		query.setMdnIDSearch(subscriberMDN.getId());
 		query.setPocketType(CmFinoFIX.PocketType_NFC);		
 		List<Pocket> list = pocketDao.get(query);
 		if(!list.isEmpty()) {

@@ -42,7 +42,7 @@ public class PocketTemplateServiceImpl implements PocketTemplateService {
     		log.info("getting pocketTemplate by id: "+pocketTemplateID);
     		template = templateDAO.getById(pocketTemplateID);
     	}
-        return (template != null) ? template.getType() : null;
+        return ((template != null) ? template.getType() : null).intValue();
     }
 
     public boolean areCompatible(PocketTemplate template1, PocketTemplate template2) {
@@ -51,11 +51,17 @@ public class PocketTemplateServiceImpl implements PocketTemplateService {
         }
 
         //template type and commodity are mandatory.
-        if(!template1.getType().equals(template2.getType())){
+        Long tempTemplate2L = template2.getType();
+        Long tempTemplate1L = template1.getType();
+        
+        if(!tempTemplate1L.equals(tempTemplate2L)){
             return false;
         }
+        
+        Long tempCommodity2L = template2.getCommodity();
+        Long tempCommodity1L = template1.getCommodity();
 
-        if(!template1.getCommodity().equals(template2.getCommodity())){
+        if(!tempCommodity1L.equals(template2.getCommodity())){
             return false;
         }
 
@@ -66,13 +72,13 @@ public class PocketTemplateServiceImpl implements PocketTemplateService {
 //        if(!equals(template1.getBillingType(), template2.getBillingType())){
 //            return false;
 //        }
-        if(!equals(template1.getOperatorCode(), template2.getOperatorCode())){
+        if(!equals(template1.getOperatorcode().intValue(), template2.getOperatorcode().intValue())){
             return false;
         }
-        if(!equals(template1.getBankCode(), template2.getBankCode())){
+        if(!equals(template1.getBankcode().intValue(), template2.getBankcode().intValue())){
             return false;
         }
-        if(!equals(template1.getBankAccountCardType(), template2.getBankAccountCardType())){
+        if(!equals(template1.getBankaccountcardtype().intValue(), template2.getBankaccountcardtype().intValue())){
             return false;
         }
 

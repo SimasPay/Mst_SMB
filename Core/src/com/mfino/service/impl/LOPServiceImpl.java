@@ -94,8 +94,8 @@ public class LOPServiceImpl implements LOPService {
         BigDecimal lopAmount = lop.getAmountDistributed();
 
         Merchant merchantForThisLOP = lop.getMerchantBySubscriberID();
-        BigDecimal currentAmount = merchantForThisLOP.getCurrentWeeklyPurchaseAmount();
-        merchantForThisLOP.setCurrentWeeklyPurchaseAmount(currentAmount.subtract(lopAmount));
+        BigDecimal currentAmount = merchantForThisLOP.getCurrentweeklypurchaseamount();
+        merchantForThisLOP.setCurrentweeklypurchaseamount(currentAmount.subtract(lopAmount));
 
         MerchantDAO merchantDAO = DAOFactory.getInstance().getMerchantDAO();
         merchantDAO.save(merchantForThisLOP);

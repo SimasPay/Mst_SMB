@@ -44,7 +44,7 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 	public String getMDNFromSubscriber(Subscriber subscriber) {
 		String mdn = null;
 		if (subscriber != null) {
-			for (SubscriberMdn record : subscriber.getSubscriberMDNFromSubscriberID()) {
+			for (SubscriberMdn record : subscriber.getSubscriberMdns()) {
 				mdn = record.getMdn();
 				break;
 			}

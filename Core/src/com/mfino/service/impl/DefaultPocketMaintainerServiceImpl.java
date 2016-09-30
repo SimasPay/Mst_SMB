@@ -48,11 +48,11 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 		// default
 		try {
 			Boolean bool_true =Boolean.valueOf(true);
-			if (bool_true.equals(pocket.getIsDefault())) {
+			if (bool_true.equals(pocket.getIsdefault())) {
 				for (Pocket simillarPocket : simillarPockets) {
-					if (!simillarPocket.getID().equals( pocket.getID()))
-						if (bool_true.equals(simillarPocket.getIsDefault())) {
-							simillarPocket.setIsDefault(false);
+					if (!simillarPocket.getId().equals( pocket.getId()))
+						if (bool_true.equals(simillarPocket.getIsdefault())) {
+							simillarPocket.setIsdefault(false);
 							pocketDAO.save(simillarPocket);
 						}
 				}
@@ -63,22 +63,22 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 				// another one that is default
 				int thereIsAlreadyAnotherDefault = 0;
 				for (Pocket simillarPocket : simillarPockets) {
-					if (! simillarPocket.getID().equals(pocket.getID()))
-						if (bool_true.equals(simillarPocket.getIsDefault())) {
+					if (! simillarPocket.getId().equals(pocket.getId()))
+						if (bool_true.equals(simillarPocket.getIsdefault())) {
 							thereIsAlreadyAnotherDefault++;
 							if (thereIsAlreadyAnotherDefault > 1) {
 								// if there are more than one that is default,
 								// log error and correct the situation
 								log.error("More than one default pocket for type: " + pocket.getPocketTemplate().getType()
 										+ " and commodity: " + pocket.getPocketTemplate().getCommodity());
-								simillarPocket.setIsDefault(false);
+								simillarPocket.setIsdefault(false);
 								pocketDAO.save(simillarPocket);
 							}
 						}
 				}
 
 				if (isNew) {
-					pocket.setIsDefault(true);
+					pocket.setIsdefault(true);
 				}
 				return Codes.SUCCESS;
 			}
@@ -96,10 +96,13 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 	 */
 	private List<Pocket> getSimillarTypePockets(Pocket p) {
 		PocketQuery query = new PocketQuery();
-		query.setMdnIDSearch(p.getSubscriberMDNByMDNID().getID());
-		query.setPocketType(p.getPocketTemplate().getType());
-		query.setIsCollectorPocket(p.getPocketTemplate().getIsCollectorPocket());
-		query.setIsSuspencePocketAllowed(p.getPocketTemplate().getIsSuspencePocket());
+		query.setMdnIDSearch(p.getSubscriberMdn().getId().longValue());
+		
+		Long pocketTypeL = p.getPocketTemplate().getType();
+		Integer pocketTypeLI = pocketTypeL.intValue();
+		query.setPocketType(pocketTypeLI);
+		query.setIsCollectorPocket(p.getPocketTemplate().getIscollectorpocket());
+		query.setIsSuspencePocketAllowed(p.getPocketTemplate().getIssuspencepocket());
 		return pocketDAO.get(query);
 	}
 }

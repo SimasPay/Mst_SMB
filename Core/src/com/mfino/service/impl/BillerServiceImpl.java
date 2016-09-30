@@ -16,7 +16,7 @@ import com.mfino.dao.MFSBillerDAO;
 import com.mfino.dao.MFSBillerPartnerDAO;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.MFSBillerQuery;
-import com.mfino.domain.MFSBiller;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
 import com.mfino.service.BillerService;
@@ -49,23 +49,24 @@ public class BillerServiceImpl implements BillerService {
 		MFSBillerDAO billerDAO = DAOFactory.getInstance().getMFSBillerDAO();
 		MFSBillerQuery billerQuery = new MFSBillerQuery();
 		billerQuery.setBillerCode(billerCode);
-		List<MFSBiller> billersList = billerDAO.get(billerQuery);
-		MFSBiller biller = null;
+		List<MfsBiller> billersList = billerDAO.get(billerQuery);
+		MfsBiller biller = null;
 		if(billersList.size()==1){
 			biller = billersList.get(0);
 			log.info("Got a single biller with the billerCode: "+billerCode);
 
 		}
 		if(biller!=null){
-			log.info("getting the partner from billerID: "+biller.getID());
+			log.info("getting the partner from billerID: "+biller.getId());
 			MFSBillerPartnerDAO billerPartnerDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 			MFSBillerPartnerQuery billerPartnerQuery = new MFSBillerPartnerQuery();
-			billerPartnerQuery.setMfsBillerId(biller.getID());
+			billerPartnerQuery.setMfsBillerId(biller.getId().longValue());
+//			List<MFSBillerPartner> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
 			List<MFSBillerPartner> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
 			if(billerPartners.size()==1){
 				MFSBillerPartner billerPartner = billerPartners.get(0);
 				partner = billerPartner.getPartner();
-				log.info("got the partner with id: "+partner.getID()+"as the biller partner");
+				log.info("got the partner with id: "+partner.getId()+"as the biller partner");
 			}
 		}
 		return partner;

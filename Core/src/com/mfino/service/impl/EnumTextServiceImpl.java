@@ -91,7 +91,7 @@ public class EnumTextServiceImpl implements EnumTextService{
 
             HashMap<String, String> map = new HashMap<String, String>();
             for (EnumText e : results) {
-                map.put(e.getEnumCode(), e.getDisplayText());
+                map.put(e.getEnumcode(), e.getDisplaytext());
             }
 
             cache.put(cacheKey, map);

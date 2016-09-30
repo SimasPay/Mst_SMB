@@ -21,11 +21,12 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX.CMGetTransactions;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.result.Result;
 import com.mfino.service.CommodityTransferService;
+import com.mfino.service.SubscriberMDN;
 import com.mfino.service.SystemParametersService;
 
 /**
@@ -83,7 +84,7 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 				CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
 				ct = ctDAO.getById(Long.parseLong(refID));
 				result.setDetailsOfPresentTransaction(ct);
-				result.setTransactionTime(ct.getStartTime());
+				result.setTransactionTime(ct.getStarttime());
 			}
 			catch (NumberFormatException ex) {
 				log.info("Error retrieving commodity transfer: "+refID+" is not a number");
@@ -105,7 +106,7 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 			ct = ctDAO.getById(commodityTransferId);
 			if (ct != null) {
 				result.setDetailsOfPresentTransaction(ct);
-				result.setTransactionTime(ct.getStartTime());
+				result.setTransactionTime(ct.getStarttime());
 			}
 		}
 		catch (Exception ex) {
@@ -124,9 +125,9 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 	 * @throws Exception
 	 */
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
-	public List<CommodityTransfer> getTranscationsHistory(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception {
-		log.info("getting the commodityTransfer list for SubscriberMDN: "+(subscriberMDN!=null?subscriberMDN.getMDN():null)+
-				"and on pocket with id: "+(pocket!=null?pocket.getID():null));
+	public List<CommodityTransfer> getTranscationsHistory(Pocket pocket, SubscriberMdn subscriberMDN, CMGetTransactions transactionsHistory) throws Exception {
+		log.info("getting the commodityTransfer list for SubscriberMdn: "+(subscriberMDN!=null?subscriberMDN.getMdn():null)+
+				"and on pocket with id: "+(pocket!=null?pocket.getId():null));
 		CommodityTransferDAO ctd = DAOFactory.getInstance().getCommodityTransferDAO();
 		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();
 		CommodityTransferQuery ctq = new CommodityTransferQuery();
@@ -137,7 +138,7 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 //		}
 
 		ctq.setSourceDestnPocket(pocket);
-		ctq.setSourceDestnMDN(subscriberMDN.getMDN());
+		ctq.setSourceDestnMDN(subscriberMDN.getMdn());
 		if(transactionsHistory.getFromDate() != null && transactionsHistory.getToDate() !=  null)
 		{
 			ctq.setStartTimeGE(transactionsHistory.getFromDate());
@@ -169,9 +170,9 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 	 * @throws Exception
 	 */
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
-	public Long getTranscationsCount(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception {
-		log.info("getting the transaction Count for SubscriberMDN: "+(subscriberMDN!=null?subscriberMDN.getMDN():null)+
-				"and on pocket with id: "+(pocket!=null?pocket.getID():null));
+	public Long getTranscationsCount(Pocket pocket, SubscriberMdn subscriberMDN, CMGetTransactions transactionsHistory) throws Exception {
+		log.info("getting the transaction Count for SubscriberMdn: "+(subscriberMDN!=null?subscriberMDN.getMdn():null)+
+				"and on pocket with id: "+(pocket!=null?pocket.getId():null));
 		CommodityTransferDAO ctd = DAOFactory.getInstance().getCommodityTransferDAO();
 		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();
 		CommodityTransferQuery ctq = new CommodityTransferQuery();
@@ -181,7 +182,7 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 			transactionsHistory.setMaxCount(maxCount);
 		}
 		ctq.setSourceDestnPocket(pocket);
-		ctq.setSourceDestnMDN(subscriberMDN.getMDN());
+		ctq.setSourceDestnMDN(subscriberMDN.getMdn());
 		if(transactionsHistory.getFromDate() != null && transactionsHistory.getToDate() !=  null)
 		{
 			ctq.setStartTimeGE(transactionsHistory.getFromDate());

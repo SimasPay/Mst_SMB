@@ -142,7 +142,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private String getCompanyName() {
         String companyName = "";
         if(userService.getUserCompany() != null){
-            companyName = userService.getUserCompany().getCompanyName();
+            companyName = userService.getUserCompany().getCompanyname();
         }
         companyName = "'" + companyName + "'";
         return getGetterFunction(FN_GET_COMPANY_NAME, companyName);
@@ -151,7 +151,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private String getPartnerId() {
         Integer partnerId = -1;
         if(userService.getPartner() != null){
-        	partnerId = userService.getPartner().getID().intValue();
+        	partnerId = userService.getPartner().getId().intValue();
         }
         return getGetterFunction(FN_GET_PARTNER_ID, partnerId + "");
     }
@@ -159,7 +159,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private String getCompanyId() {
         long companyId = 0;
         if(userService.getUserCompany() != null){
-            companyId = userService.getUserCompany().getID();
+            companyId = userService.getUserCompany().getId().longValue();
         }
         return getGetterFunction(FN_GET_COMPANY_ID, companyId + "");
     }
@@ -466,7 +466,7 @@ public class JSAuthGeneratorServiceImpl implements JSAuthGeneratorService{
     private String getGetTreeRootText() {
         //boolean isMerchant = userService.isMerchant();
         String rootText;
-        if (ROOT_TEXT_ONE.equalsIgnoreCase(userService.getUserCompany().getCompanyName())) {
+        if (ROOT_TEXT_ONE.equalsIgnoreCase(userService.getUserCompany().getCompanyname())) {
             rootText = ROOT_TEXT_ONE;
         } else {
             rootText = ROOT_TEXT_TWO;

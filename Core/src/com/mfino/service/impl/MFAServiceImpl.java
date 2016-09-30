@@ -1,5 +1,6 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import com.mfino.dao.query.MFATransactionInfoQuery;
 import com.mfino.domain.MFAAuthentication;
 import com.mfino.domain.MFATransactionInfo;
 import com.mfino.domain.Service;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.MFAService;
@@ -46,9 +47,9 @@ public class MFAServiceImpl implements MFAService{
 		MFATransactionInfoDAO dao = DAOFactory.getInstance().getMfaTransactionInfoDAO();
 		MFATransactionInfoQuery mfaQuery = new MFATransactionInfoQuery();
 		Service service = DAOFactory.getInstance().getServiceDAO().getServiceByName(serviceName);
-		Long serviceId = service.getID();
+		Long serviceId = service.getId().longValue();
 		TransactionType transactionType = DAOFactory.getInstance().getTransactionTypeDAO().getTransactionTypeByName(transactionName);
-		Long transactionTypeId = transactionType.getID();
+		Long transactionTypeId = transactionType.getId().longValue();
 		mfaQuery.setTransactionTypeId(transactionTypeId);
 		mfaQuery.setServiceId(serviceId);
 		mfaQuery.setChannelCodeId(channelCodeId);
@@ -70,17 +71,17 @@ public class MFAServiceImpl implements MFAService{
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		String digestPin1 = MfinoUtil.calculateDigestPin(sourceMDN, oneTimePin);
 		MFAAuthentication mfaAuth = new MFAAuthentication();
-		mfaAuth.setSctlId(sctlID);
-		mfaAuth.setMFAMode(CmFinoFIX.MFAMode_OTP);
-		mfaAuth.setMFAValue(digestPin1);
-		mfaAuth.setRetryAttempt(0);
+		mfaAuth.setSctlid(new BigDecimal(sctlID));
+		mfaAuth.setMfamode(CmFinoFIX.MFAMode_OTP);
+		mfaAuth.setMfavalue(digestPin1);
+		mfaAuth.setRetryattempt(new BigDecimal(0));
 		
 		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
 		authDAO.save(mfaAuth);
 							
 		SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN smdn = smdnDAO.getByMDN(sourceMDN);
-		Integer subLang = smdn.getSubscriber().getLanguage();
+		SubscriberMdn smdn = smdnDAO.getByMDN(sourceMDN);
+		Integer subLang = (int) smdn.getSubscriber().getLanguage();
 		String message = null;
 		if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
 			
@@ -123,14 +124,14 @@ public class MFAServiceImpl implements MFAService{
 			
 			MFAAuthentication mfaAuthentication = mfaResults.get(0);
 			
-			mfaAuthentication.setMFAValue(digestPin1);
-			mfaAuthentication.setRetryAttempt(++retryAttempt);
+			mfaAuthentication.setMfavalue(digestPin1);
+			mfaAuthentication.setRetryattempt(new BigDecimal(++retryAttempt));
 			
 			authDAO.save(mfaAuthentication);
 			
 			SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-			SubscriberMDN smdn = smdnDAO.getByMDN(sourceMDN);
-			Integer subLang = smdn.getSubscriber().getLanguage();
+			SubscriberMdn smdn = smdnDAO.getByMDN(sourceMDN);
+			Integer subLang = (int) smdn.getSubscriber().getLanguage();
 			String message = null;
 			if (CmFinoFIX.Language_Bahasa.equals(subLang)) {
 				

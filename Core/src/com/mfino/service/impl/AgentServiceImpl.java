@@ -26,7 +26,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
@@ -115,7 +115,7 @@ public class AgentServiceImpl implements AgentService {
 		
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		
-		SubscriberMDN subscriberMDN = subscriberMdnDao.getByMDN(mdn);
+		SubscriberMdn subscriberMDN = subscriberMdnDao.getByMDN(mdn);
 		if (subscriberMDN == null) {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			return notificationWrapper;
@@ -130,25 +130,25 @@ public class AgentServiceImpl implements AgentService {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation);
 			return notificationWrapper;
 		}
-		if (!CmFinoFIX.UpgradeState_Approved.equals(subscriberMDN.getSubscriber().getUpgradeState())) {
+		if (!CmFinoFIX.UpgradeState_Approved.equals(subscriberMDN.getSubscriber().getUpgradestate())) {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation);
 			return notificationWrapper;
 		}
-		Partner agent = subscriberMDN.getSubscriber().getPartnerFromSubscriberID().iterator().next();
-		if (!partnerService.isAgentType(agent.getBusinessPartnerType())) {
+		Partner agent = subscriberMDN.getSubscriber().getPartners().iterator().next();
+		if (!partnerService.isAgentType(agent.getBusinesspartnertype().intValue())) {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 			return notificationWrapper;
 		}
-		if (!(CmFinoFIX.SubscriberStatus_Registered.equals(agent.getPartnerStatus()) || CmFinoFIX.SubscriberStatus_Initialized.equals(agent.getPartnerStatus()))) {
+		if (!(CmFinoFIX.SubscriberStatus_Registered.equals(agent.getPartnerstatus()) || CmFinoFIX.SubscriberStatus_Initialized.equals(agent.getPartnerstatus()))) {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_SubscriberStatusDoesNotEnableActivation);
 			return notificationWrapper;
 		}
-		if (subscriberMDN.getOTPExpirationTime().before(new Date())) {
+		if (subscriberMDN.getOtpexpirationtime().before(new Date())) {
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_OTPExpired);
 			return notificationWrapper;
 		}
 
-		String originalOTP = subscriberMDN.getOTP();
+		String originalOTP = subscriberMDN.getOtp();
 		String newpin = null;
 		if(!isHttps) {
 			String authStr = subscriberActivation.getOTP();
@@ -167,7 +167,7 @@ public class AgentServiceImpl implements AgentService {
 				newpin = new String(decNewPin,GeneralConstants.UTF_8);
 			}
 			catch (Exception ex) {
-				log.info("OTP Check failed for the subscriber "+subscriberMDN.getMDN());
+				log.info("OTP Check failed for the subscriber "+subscriberMDN.getMdn());
 				notificationWrapper.setCode(CmFinoFIX.NotificationCode_OTPInvalid);
 				return notificationWrapper;
 			}
@@ -176,7 +176,7 @@ public class AgentServiceImpl implements AgentService {
 			String receivedOTP = subscriberActivation.getOTP();
 			receivedOTP = new String(CryptographyService.generateSHA256Hash(mdn, receivedOTP));
 			if(!originalOTP.equals(receivedOTP)) {
-				log.info("OTP Check failed for the subscriber "+subscriberMDN.getMDN());
+				log.info("OTP Check failed for the subscriber "+subscriberMDN.getMdn());
 				notificationWrapper.setCode(CmFinoFIX.NotificationCode_OTPInvalid);
 				return notificationWrapper;
 			}
@@ -203,7 +203,7 @@ public class AgentServiceImpl implements AgentService {
 			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
 		}
 		Subscriber subscriber = subscriberMDN.getSubscriber();
-		Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+		Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		Long groupID = null;
 		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
@@ -212,33 +212,42 @@ public class AgentServiceImpl implements AgentService {
 			groupID = subscriberGroup.getGroup().getID();
 		}
 		
-		String tradeName=agent.getTradeName();
+		String tradeName=agent.getTradename();
 		
 		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 		Pocket emoneyPocket = null;
 		
 		if(isEMoneyPocketRequired == true){
 		
-			PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, agent.getBusinessPartnerType(), groupID);
-			emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), svaPocketTemplate.getID());
+			Long tempKycLevelL = subscriber.getKycLevel().getKyclevel().longValue();
+			Boolean tempTrue = true;
+			
+			PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(tempKycLevelL, tempTrue, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, agent.getBusinesspartnertype().intValue(), groupID);
+			emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), svaPocketTemplate.getId().longValue());
 
 			if (emoneyPocket == null) {
 				notificationWrapper.setCode(CmFinoFIX.NotificationCode_MoneySVAPocketNotFound);
 				return notificationWrapper;
 			}
 			
-			if (emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement) || emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired) || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)
-			        || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
+			Long emoneyPocketStatusL = emoneyPocket.getStatus();
+			Integer emoneyPocketStatusLI = emoneyPocketStatusL.intValue();
+			
+			Long bankPocketStatusL = bankPocket.getStatus();
+			Integer bankPocketStatusLI = bankPocketStatusL.intValue();
+			
+			if (emoneyPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement) || emoneyPocketStatusLI.equals(CmFinoFIX.PocketStatus_Retired) || bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement)
+			        || bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_Retired)) {
 				notificationWrapper.setCode(CmFinoFIX.NotificationCode_PocketStatusDoesNotEnableActivation);
 				return notificationWrapper;
 			}
 			
-			if (!emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
-				emoneyPocket.setActivationTime(new Timestamp());
-				emoneyPocket.setIsDefault(true);
+			if (!emoneyPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
+				emoneyPocket.setActivationtime(new Timestamp());
+				emoneyPocket.setIsdefault((short)Boolean.compare(true, false));
 				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-				emoneyPocket.setStatusTime(new Timestamp());
-				emoneyPocket.setUpdatedBy(tradeName);
+				emoneyPocket.setStatustime(new Timestamp());
+				emoneyPocket.setUpdatedby(tradeName);
 			}
 		}
 		
@@ -247,19 +256,26 @@ public class AgentServiceImpl implements AgentService {
 			return notificationWrapper;
 		}
 		
-		if (!bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
-			bankPocket.setActivationTime(new Timestamp());
-			bankPocket.setIsDefault(true);
+		Long bankPocketStatusL = bankPocket.getStatus();
+		Integer bankPocketStatusLI = bankPocketStatusL.intValue();
+		
+		if (!bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
+			bankPocket.setActivationtime(new Timestamp());
+			bankPocket.setIsdefault((short)Boolean.compare(true, false));
 			bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-			bankPocket.setStatusTime(new Timestamp());
-			bankPocket.setUpdatedBy(tradeName);
+			bankPocket.setStatustime(new Timestamp());
+			bankPocket.setUpdatedby(tradeName);
 			pocketDao.save(bankPocket);
-			log.info("AgentActivation : bankPocket activation id:" + bankPocket.getID() + " agentid" + agent.getID());
+			log.info("AgentActivation : bankPocket activation id:" + bankPocket.getId() + " agentid" + agent.getId());
 		}
 		
 		Pocket lakuPocket = null;
-		PocketTemplate lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Partner, agent.getBusinessPartnerType(), groupID);
-		lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), lakuPocketTemplate.getID());
+		
+		Long tempKycLevelL = subscriber.getKycLevel().getKyclevel().longValue();
+		Boolean tempTrue = true;
+		
+		PocketTemplate lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(tempKycLevelL, tempTrue, CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.SubscriberType_Partner, agent.getBusinesspartnertype().intValue(), groupID);
+		lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), lakuPocketTemplate.getId().longValue());
 
 		if (lakuPocket == null) {
 			
@@ -267,58 +283,61 @@ public class AgentServiceImpl implements AgentService {
 			return notificationWrapper;
 		}
 		
-		if (lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement) || lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired) || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)
-		        || bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
+		Long lakuPocketStatusL = emoneyPocket.getStatus();
+		Integer lakuPocketStatusLI = lakuPocketStatusL.intValue();
+		
+		if (lakuPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement) || lakuPocketStatusLI.equals(CmFinoFIX.PocketStatus_Retired) || bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement)
+		        || bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_Retired)) {
 			
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_PocketStatusDoesNotEnableActivation);
 			return notificationWrapper;
 		}
 		
-		if (!lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		if (!lakuPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
 			
-			lakuPocket.setActivationTime(new Timestamp());
-			lakuPocket.setIsDefault(true);
+			lakuPocket.setActivationtime(new Timestamp());
+			lakuPocket.setIsdefault((short)Boolean.compare(true, false));
 			lakuPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-			lakuPocket.setStatusTime(new Timestamp());
-			lakuPocket.setUpdatedBy(tradeName);
+			lakuPocket.setStatustime(new Timestamp());
+			lakuPocket.setUpdatedby(tradeName);
 			pocketDao.save(lakuPocket);
-			log.info("AgentActivation : lakuPocket activation id:" + lakuPocket.getID() + " agentid" + agent.getID());
+			log.info("AgentActivation : lakuPocket activation id:" + lakuPocket.getId() + " agentid" + agent.getId());
 		}
 
 		String calcPIN = null;
 		
 		try	{
 			
-			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMDN(), newpin);
+			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), newpin);
 		}
 		catch(Exception e){
 			log.error("Error during PIN conversion "+e);
 		}
-		subscriberMDN.setDigestedPIN(calcPIN);
+		subscriberMDN.setDigestedpin(calcPIN);
 		
-		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMDN(), newpin);
-		subscriberMDN.setAuthorizationToken(authToken);
+		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMdn(), newpin);
+		subscriberMDN.setAuthorizationtoken(authToken);
 		
 		/*String digestpin = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), newpin);
 		subscriberMDN.setDigestedPIN(digestpin);*/
 		
 		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-		subscriberMDN.setStatusTime(new Timestamp());
-		subscriberMDN.setActivationTime(new Timestamp());
-		subscriberMDN.setUpdatedBy(tradeName);
-		subscriber.setUpdatedBy(tradeName);
+		subscriberMDN.setStatustime(new Timestamp());
+		subscriberMDN.setActivationtime(new Timestamp());
+		subscriberMDN.setUpdatedby(tradeName);
+		subscriber.setUpdatedby(tradeName);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-		subscriber.setStatusTime(new Timestamp());
-		subscriber.setActivationTime(new Timestamp());
-		subscriberMDN.setOTP(null);
-		subscriberMDN.setOTPExpirationTime(null);
+		subscriber.setStatustime(new Timestamp());
+		subscriber.setActivationtime(new Timestamp());
+		subscriberMDN.setOtp(null);
+		subscriberMDN.setOtpexpirationtime(null);
 		subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 		if (emoneyPocket != null) {
 			pocketDao.save(emoneyPocket);
-			log.info("AgentActivation : emoneyPocket with id:" + emoneyPocket.getID() + " agent:" + agent.getID());
+			log.info("AgentActivation : emoneyPocket with id:" + emoneyPocket.getId() + " agent:" + agent.getId());
 		}
 
-		agent.setPartnerStatus(CmFinoFIX.SubscriberStatus_Active);
+		agent.setPartnerstatus(CmFinoFIX.SubscriberStatus_Active);
 		User user = agent.getUser();
 		user.setStatus(CmFinoFIX.UserStatus_Active);
 		user.setStatusTime(new Timestamp());
@@ -331,9 +350,9 @@ public class AgentServiceImpl implements AgentService {
 		String encPassword = encoder.encodePassword(password, user.getUsername());
 		user.setPassword(encPassword);
 		String emailSubject = "Partner Registration";
-		String emailMsg = partnerService.genratePartnerRegistrationMail(agent, user, agent.getBusinessPartnerType(), password);
-		String email = agent.getAuthorizedEmail();
-		String to = agent.getTradeName();
+		String emailMsg = partnerService.genratePartnerRegistrationMail(agent, user, agent.getBusinesspartnertype().intValue(), password);
+		String email = agent.getAuthorizedemail();
+		String to = agent.getTradename();
 		partnerService.activateServices(agent);
 		partnerService.activateNonTransactionable(subscriberMDN);
 		userDao.save(user);
@@ -345,13 +364,15 @@ public class AgentServiceImpl implements AgentService {
 		String smsMsg = "activation notification";
 		try {
 			//add notifications
+			Long languageL = subscriber.getLanguage();
+			Integer languageLI = languageL.intValue();
 		
-			notificationWrapper.setLanguage(subscriber.getLanguage());
+			notificationWrapper.setLanguage(languageLI);
 			notificationWrapper.setCompany(subscriber.getCompany());
-			notificationWrapper.setFirstName(subscriber.getFirstName());
-			notificationWrapper.setLastName(subscriber.getLastName());
+			notificationWrapper.setFirstName(subscriber.getFirstname());
+			notificationWrapper.setLastName(subscriber.getLastname());
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			notificationWrapper.setPartnerCode(agent.getPartnerCode());
+			notificationWrapper.setPartnerCode(agent.getPartnercode());
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_PartnerActivationCompleted);//partneractivation
 			smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); //use thread pool to send message
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
@@ -360,15 +381,15 @@ public class AgentServiceImpl implements AgentService {
 		catch (Exception e) {
 			log.error("failed to generate message:", e);
 		}
-		String mdn1 = subscriberMDN.getMDN();
+		String mdn1 = subscriberMDN.getMdn();
 		smsService.setDestinationMDN(mdn1);
 		// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
 		smsService.setMessage(smsMsg);
 		smsService.setSctlId(subscriberActivation.getServiceChargeTransactionLogID());
 		smsService.asyncSendSMS();
-		if (agent.getAuthorizedEmail() != null) {
-			String email2 = agent.getAuthorizedEmail();
-			String firstName = subscriber.getFirstName();
+		if (agent.getAuthorizedemail() != null) {
+			String email2 = agent.getAuthorizedemail();
+			String firstName = subscriber.getFirstname();
 			Long notificationLogDetailsID = notificationLogDetailsService.persistNotification(email2, "Activation", emailMsg, subscriberActivation.getServiceChargeTransactionLogID(),
 					CmFinoFIX.NotificationCode_BOBPocketActivationCompleted, CmFinoFIX.NotificationMethod_Email, CmFinoFIX.NotificationReceiverType_Source);
 			mailService.asyncSendEmail(email2, firstName, "Activation", emailMsg, notificationLogDetailsID);

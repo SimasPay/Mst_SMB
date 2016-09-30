@@ -63,7 +63,7 @@ public class FundStorageServiceImpl implements FundStorageService {
 	
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
 	public String generateFundAccessCode(FundDefinition fundDef){
-		String prefix = fundDef.getFACPrefix();
+		String prefix = fundDef.getFacprefix();
 		prefix = (prefix == null) ? StringUtils.EMPTY : prefix; 
 		String random = generateOTP(fundDef);
 		
@@ -71,8 +71,8 @@ public class FundStorageServiceImpl implements FundStorageService {
 	}
 	
 	private String generateOTP(FundDefinition fundDef) {
-		int prefixLen = (fundDef.getFACPrefix() == null) ? 0 : fundDef.getFACPrefix().length();
-		Integer length = fundDef.getFACLength()-prefixLen;
+		int prefixLen = (fundDef.getFacprefix() == null) ? 0 : fundDef.getFacprefix().length();
+		Integer length = (int) (fundDef.getFaclength()-prefixLen);
 		if(length==null || length < 4){
 			log.info("fac length in fund Definition is null or is less than 4.Using default length from the system parameter: otp.length");
 			length = systemParametersService.getOTPLength();;
