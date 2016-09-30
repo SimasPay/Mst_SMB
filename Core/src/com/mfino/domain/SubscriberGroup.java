@@ -15,17 +15,17 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SUBSCRIBER_GROUPS")
-public class SubscriberGroups extends Base implements java.io.Serializable {
+public class SubscriberGroup extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_Subscriber = "subscriberid";
 	private Long subscriberid;
 	private Long groupid;
 
-	public SubscriberGroups() {
+	public SubscriberGroup() {
 	}
 
-	public SubscriberGroups(BigDecimal id, Timestamp lastupdatetime,
+	public SubscriberGroup(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
@@ -34,7 +34,7 @@ public class SubscriberGroups extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public SubscriberGroups(BigDecimal id, Timestamp lastupdatetime,
+	public SubscriberGroup(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			Long subscriberid, Long groupid) {
 		this.id = id;
