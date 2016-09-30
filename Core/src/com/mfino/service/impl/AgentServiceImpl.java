@@ -25,6 +25,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CmFinoFIX;
@@ -208,7 +209,7 @@ public class AgentServiceImpl implements AgentService {
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
 		
 		String tradeName=agent.getTradename();
@@ -337,11 +338,15 @@ public class AgentServiceImpl implements AgentService {
 		}
 
 		agent.setPartnerstatus(CmFinoFIX.SubscriberStatus_Active);
-		User user = agent.getUser();
+		User user = agent.getMfinoUser();
 		user.setStatus(CmFinoFIX.UserStatus_Active);
-		user.setStatusTime(new Timestamp());
-		user.setFailedLoginCount(0);
-		user.setFirstTimeLogin(true);
+		user.setStatustime(new Timestamp());
+		user.setFailedlogincount(0);
+		user.setFirsttimelogin((short) 1);
+		user.setUseractivationtime(new Timestamp());
+		user.setStatustime(new Timestamp());
+		user.setFailedlogincount(0);
+		user.setFirsttimelogin((short) Boolean.compare(true, false));
 		user.setUserActivationTime(new Timestamp());
 		user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		String password = PasswordGenUtil.generate();
