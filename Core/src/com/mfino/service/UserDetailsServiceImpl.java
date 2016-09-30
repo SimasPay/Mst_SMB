@@ -13,8 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.mfino.domain.Merchant;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.User;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -25,14 +25,14 @@ import com.mfino.fix.CmFinoFIX;
 public class UserDetailsServiceImpl implements UserDetails {
 
 	private static final long serialVersionUID = 19283719L;
-	private User theUser;
+	private MfinoUser theUser;
 	private Collection<GrantedAuthority> authorities;
 	private boolean isNonLocked = true;
 	private boolean isEnabled = true;
 	private boolean isNonExpired = true;
 
-	public UserDetailsServiceImpl(User aUser) {
-		this.theUser = aUser;
+	public UserDetailsServiceImpl(MfinoUser user) {
+		this.theUser = user;
 		loadAuthorities();
 		loadAuthenticationAttributes();
 	}
@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 
 	private boolean checkIsNonExpired() {
 
-		Integer status = theUser.getStatus();
+		Long status = theUser.getStatus();
 		if (status == null || CmFinoFIX.UserStatus_Retired.equals(status)
 				|| CmFinoFIX.UserStatus_Rejected.equals(status)
 				|| CmFinoFIX.UserStatus_Expired.equals(status)) {
@@ -54,21 +54,21 @@ public class UserDetailsServiceImpl implements UserDetails {
 
 		if (CmFinoFIX.Role_Subscriber.equals(theUser.getRole())) {
 			Set<Subscriber> subscriberSet = theUser
-					.getSubscriberFromSubscriberUserID();
+					.getSubscribersForSubscriberuserid();
 			Iterator<Subscriber> subIter = subscriberSet.iterator();
 			if (subIter.hasNext()) {
 				Subscriber subscriber = subIter.next();
-				Integer subStatus = subscriber.getStatus();
+				Long subStatus = subscriber.getStatus();
 				if (subStatus == null || CmFinoFIX.SubscriberStatus_Retired.equals(subStatus)) {
 					return false;
 				}
 			}
 		} else if (CmFinoFIX.Role_Merchant.equals(theUser.getRole())) {
-			Set<Subscriber> subscriberSet = theUser.getSubscriberFromUserID();
+			Set<Subscriber> subscriberSet = theUser.getSubscribersForUserid();
 			Iterator<Subscriber> subIter = subscriberSet.iterator();
 			if (subIter.hasNext()) {
 				Subscriber subscriber = subIter.next();
-				Integer merStatus = subscriber.getMerchant().getStatus();
+				Long merStatus = subscriber.getMerchant().getStatus();
 				if (merStatus == null || CmFinoFIX.SubscriberStatus_Retired.equals(merStatus)) {
 					return false;
 				}
@@ -80,7 +80,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 
 	private boolean checkIsEnabled() {
 
-		Integer status = theUser.getStatus();
+		Long status = theUser.getStatus();
 		if (CmFinoFIX.UserStatus_Confirmed.equals(status)
 				|| CmFinoFIX.UserStatus_Registered.equals(status)) {
 			return false;
@@ -91,7 +91,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 			// are not real merchants. Just templates.
 
 			Set<Subscriber> subscriberSet = theUser
-					.getSubscriberFromSubscriberUserID();
+					.getSubscribersForSubscriberuserid();
 			Iterator<Subscriber> subIter = subscriberSet.iterator();
 			if (subIter.hasNext()) {
 				Subscriber subscriber = subIter.next();
@@ -106,7 +106,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 	}
 
 	private boolean checkIsNonLocked() {
-		Integer restr = theUser.getRestrictions();
+		Long restr = theUser.getRestrictions();
 
 		// Considered locked whether selfsuspended, suspened, securitylocked or
 		// absolutelocked
@@ -121,20 +121,20 @@ public class UserDetailsServiceImpl implements UserDetails {
 			 * ones from subscriber. There are restrictions in subscriber and 
 			 * subscriber_mdn which are always kept in sync
 			 */
-			Set<Subscriber> subscriberSet = theUser.getSubscriberFromUserID();
+			Set<Subscriber> subscriberSet = theUser.getSubscribersForUserid();
 			Iterator<Subscriber> iter = subscriberSet.iterator();
 			if (iter.hasNext()) {
-				Integer mRestr = iter.next().getRestrictions();
+				Long mRestr = iter.next().getRestrictions();
 				if (mRestr != null && mRestr.intValue() > 0) {
 					return false;
 				}
 			}
 		} else if (CmFinoFIX.Role_Subscriber.equals(theUser.getRole())) {
 			Set<Subscriber> subscriberSet = theUser
-					.getSubscriberFromSubscriberUserID();
+					.getSubscribersForSubscriberuserid();
 			Iterator<Subscriber> iter = subscriberSet.iterator();
 			if (iter.hasNext()) {
-				Integer mRestr = iter.next().getRestrictions();
+				Long mRestr = iter.next().getRestrictions();
 				if (mRestr != null && mRestr.intValue() > 0) {
 					return false;
 				}
@@ -172,7 +172,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 	}
 
 	public boolean isPasswordChangeRequired() {
-		return theUser.getFirstTimeLogin();
+		return (theUser.getFirsttimelogin() != 0);
 	}
 
 	public boolean isCredentialsNonExpired() {
@@ -192,7 +192,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 	}
 
 	public Integer getRole() {
-		return theUser.getRole();
+		return theUser.getRole().intValue();
 	}
 
 	public String getLanguageCode() {

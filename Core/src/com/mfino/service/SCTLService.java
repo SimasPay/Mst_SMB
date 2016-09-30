@@ -5,28 +5,28 @@ import java.util.List;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.AutoReversals;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 
 public interface SCTLService {
 
-	List<ServiceChargeTransactionLog> getBySCTLIntegrationTxnID(
+	List<ServiceChargeTxnLog> getBySCTLIntegrationTxnID(
 			String paymentLogID, String custReference);
 
-	CommodityTransfer getCTfromSCTL(ServiceChargeTransactionLog sctl);
+	CommodityTransfer getCTfromSCTL(ServiceChargeTxnLog sctl);
 
 	void updateSCTLStatus(Integer sctlstatusReverseInitiated,
-			ServiceChargeTransactionLog sctl);
+			ServiceChargeTxnLog sctl);
 	
-	public ServiceChargeTransactionLog getBySCTLID(long id);
+	public ServiceChargeTxnLog getBySCTLID(long id);
 	
-	public ServiceChargeTransactionLog getByTransactionLogId(Long TxnLogID);
+	public ServiceChargeTxnLog getByTransactionLogId(Long TxnLogID);
 	
-	public List<ServiceChargeTransactionLog> getByQuery(ServiceChargeTransactionsLogQuery sctlQuery);
+	public List<ServiceChargeTxnLog> getByQuery(ServiceChargeTransactionsLogQuery sctlQuery);
 	
-	public AutoReversals getAutoReversalsFromSCTL(ServiceChargeTransactionLog sctl);
+	public AutoReversals getAutoReversalsFromSCTL(ServiceChargeTxnLog sctl);
 	
-	public void saveSCTL(ServiceChargeTransactionLog sctl);
+	public void saveSCTL(ServiceChargeTxnLog sctl);
 	
-	public List<ServiceChargeTransactionLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query);
+	public List<ServiceChargeTxnLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query);
 
 }

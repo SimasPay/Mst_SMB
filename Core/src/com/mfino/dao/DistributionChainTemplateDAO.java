@@ -12,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.DistributionChainTemplateQuery;
 import com.mfino.domain.Base;
-import com.mfino.domain.DistributionChainTemp;
+import com.mfino.domain.DistributionChainTemplate;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -23,9 +23,9 @@ import com.mfino.domain.User;
  *
  * @author xchen
  */
-public class DistributionChainTemplateDAO extends BaseDAO<DistributionChainTemp> {
+public class DistributionChainTemplateDAO extends BaseDAO<DistributionChainTemplate> {
 
-    public List<DistributionChainTemp> get(DistributionChainTemplateQuery query) {
+    public List<DistributionChainTemplate> get(DistributionChainTemplateQuery query) {
         Criteria criteria = createCriteria();
 
         if (query.getId() != null) {
@@ -35,19 +35,19 @@ public class DistributionChainTemplateDAO extends BaseDAO<DistributionChainTemp>
         // Have search the tradename of the corresponding merchant.
         if (query.getDistributionChainTemplateName() != null) {
            addLikeStartRestriction(criteria,
-                   DistributionChainTemp.FieldName_DistributionChainName,
+                   DistributionChainTemplate.FieldName_DistributionChainName,
                    query.getDistributionChainTemplateName());
         }
 
         if (query.getExactdistributionChainTemplateName() != null) {
            criteria.add(Restrictions.eq(
-                   DistributionChainTemp.FieldName_DistributionChainName,
+                   DistributionChainTemplate.FieldName_DistributionChainName,
                    query.getExactdistributionChainTemplateName()).ignoreCase());
         }
 
         if(query.getCreatedBy() != null){
             addLikeStartRestriction(criteria,
-                    DistributionChainTemp.FieldName_CreatedBy,
+                    DistributionChainTemplate.FieldName_CreatedBy,
                     query.getCreatedBy());
         }
         
@@ -56,7 +56,7 @@ public class DistributionChainTemplateDAO extends BaseDAO<DistributionChainTemp>
         }
         
         if(null != query.getUserIdSearch()){
-        	Criteria partnerServiceCriteria = criteria.createCriteria(DistributionChainTemp.FieldName_PartnerServicesFromDistributionChainTemplateID);
+        	Criteria partnerServiceCriteria = criteria.createCriteria(DistributionChainTemplate.FieldName_PartnerServicesFromDistributionChainTemplateID);
         	Criteria partnerCriteria = partnerServiceCriteria.createCriteria(PartnerServices.FieldName_Partner);
         	Criteria userCriteria = partnerCriteria.createCriteria(Partner.FieldName_User);
         	
@@ -70,13 +70,13 @@ public class DistributionChainTemplateDAO extends BaseDAO<DistributionChainTemp>
         applyOrder(query, criteria);
 
         @SuppressWarnings("unchecked")
-        List<DistributionChainTemp> results= criteria.list();
+        List<DistributionChainTemplate> results= criteria.list();
         
         return results;
     }
 
     @Override
-    public void save(DistributionChainTemp template){
+    public void save(DistributionChainTemplate template){
         if(template.getMfinoServiceProvider() == null){
             MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
             MfinoServiceProvider msp = mspDAO.getById(1l);

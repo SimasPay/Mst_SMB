@@ -76,7 +76,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
-	private DistributionChainLvl distributionChainLvl;
+	private DistributionChainLevel distributionChainLvl;
 	private Pocket pocket;
 	private long msgtype;
 	private Long uicategory;
@@ -222,7 +222,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 			CreditCardTransaction creditCardTransaction,
 			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
-			DistributionChainLvl distributionChainLvl, Pocket pocket,
+			DistributionChainLevel distributionChainLvl, Pocket pocket,
 			long msgtype, Long uicategory, long transferstatus,
 			Long transferfailurereason, Long notificationcode,
 			Timestamp starttime, Timestamp endtime,
@@ -460,12 +460,12 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLvl getDistributionChainLvl() {
+	public DistributionChainLevel getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLvl distributionChainLvl) {
+			DistributionChainLevel distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 

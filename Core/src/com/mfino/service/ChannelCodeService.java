@@ -4,7 +4,7 @@
 package com.mfino.service;
 
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 
 /**
  * @author Sreenath
@@ -40,5 +40,5 @@ public interface ChannelCodeService {
 	 */
 	public ChannelCode getChannelCodeByChannelId(Long channelID);
 
-	public mFinoServiceProvider getMFSPbyID(int id);
+	public MfinoServiceProvider getMFSPbyID(int id);
 }

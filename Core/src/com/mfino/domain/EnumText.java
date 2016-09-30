@@ -22,6 +22,7 @@ import com.mfino.hibernate.Timestamp;
 		"LANGUAGE", "TAGID", "ENUMCODE" }))
 public class EnumText extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_TagID = "tagid";
 	public static final String FieldName_EnumCode = "enumcode";
 	public static final String FieldName_TagName = "tagname";

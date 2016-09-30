@@ -33,7 +33,7 @@ public class ReportParametersService {
 	public static String getUpdatedValue(String property){
 		ReportParameters parameter=reportParameterDao.getReportParameterByName(property) ;
 		if(parameter!=null){
-		return parameter.getParameterValue();
+		return parameter.getParametervalue();
 		}
 		return null;
 	}	

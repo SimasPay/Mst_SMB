@@ -83,7 +83,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
-	private Set<CloseAcctSetlMdn> closeAcctSetlMdns = new HashSet<CloseAcctSetlMdn>(
+	private Set<ClosedAccountSettlementMDN> closeAcctSetlMdns = new HashSet<ClosedAccountSettlementMDN>(
 			0);
 	private Set<Pocket> pockets = new HashSet<Pocket>(0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
@@ -141,7 +141,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid,
 			Set<BulkLOP> bulkLops,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<CloseAcctSetlMdn> closeAcctSetlMdns, Set<Pocket> pockets,
+			Set<ClosedAccountSettlementMDN> closeAcctSetlMdns, Set<Pocket> pockets,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<ExcludeSubscriberLc> excludeSubscriberLcs,
 			Set<LetterOfPurchase> letterOfPurchases,
@@ -639,11 +639,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<CloseAcctSetlMdn> getCloseAcctSetlMdns() {
+	public Set<ClosedAccountSettlementMDN> getCloseAcctSetlMdns() {
 		return this.closeAcctSetlMdns;
 	}
 
-	public void setCloseAcctSetlMdns(Set<CloseAcctSetlMdn> closeAcctSetlMdns) {
+	public void setCloseAcctSetlMdns(Set<ClosedAccountSettlementMDN> closeAcctSetlMdns) {
 		this.closeAcctSetlMdns = closeAcctSetlMdns;
 	}
 

@@ -42,7 +42,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	private Set<ServiceSettlementCfg> serviceSettlementCfgs = new HashSet<ServiceSettlementCfg>(
 			0);
 	private Set<Brand> brands = new HashSet<Brand>(0);
-	private Set<DistributionChainTemp> distributionChainTemps = new HashSet<DistributionChainTemp>(
+	private Set<DistributionChainTemplate> distributionChainTemps = new HashSet<DistributionChainTemplate>(
 			0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
@@ -96,7 +96,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps,
 			Set<TxnAmountDstrbLog> txnAmountDstrbLogs, Set<Partner> partners,
 			Set<ServiceSettlementCfg> serviceSettlementCfgs, Set<Brand> brands,
-			Set<DistributionChainTemp> distributionChainTemps,
+			Set<DistributionChainTemplate> distributionChainTemps,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<PartnerServices> partnerServiceses,
 			Set<TransactionLog> transactionLogs,
@@ -293,12 +293,12 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoServiceProvider")
-	public Set<DistributionChainTemp> getDistributionChainTemps() {
+	public Set<DistributionChainTemplate> getDistributionChainTemps() {
 		return this.distributionChainTemps;
 	}
 
 	public void setDistributionChainTemps(
-			Set<DistributionChainTemp> distributionChainTemps) {
+			Set<DistributionChainTemplate> distributionChainTemps) {
 		this.distributionChainTemps = distributionChainTemps;
 	}
 

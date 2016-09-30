@@ -3,7 +3,8 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
+
 
 /**
  * @author Sreenath
@@ -15,7 +16,7 @@ public interface TransactionLogService {
 	 * saves transactionLog
 	 * @param transactionLog
 	 */
-	public void save(TransactionsLog transactionLog);
+	public void save(TransactionLog transactionLog);
 	/**
 	 * message , data and mfinoservicepovider with id 1 is set into transactionLog object 
 	 * and saved into transactionlogtable
@@ -24,7 +25,7 @@ public interface TransactionLogService {
 	 * @return
 	 */
 
-	public TransactionsLog saveTransactionsLog(Integer messageCode, String data);
+	public TransactionLog saveTransactionsLog(Integer messageCode, String data);
 	
 /**
  * saves details innto transactionLog
@@ -33,8 +34,8 @@ public interface TransactionLogService {
  * @param parentTxnID
  * @return
  */
-	public TransactionsLog saveTransactionsLog(Integer messageCode, String data,Long parentTxnID);
+	public TransactionLog saveTransactionsLog(Integer messageCode, String data,Long parentTxnID);
 	
-	public TransactionsLog getById(Long txnLogID);
+	public TransactionLog getById(Long txnLogID);
 
 }

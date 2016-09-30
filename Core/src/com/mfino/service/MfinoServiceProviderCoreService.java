@@ -1,7 +1,8 @@
 package com.mfino.service;
 
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
+
 
 public interface MfinoServiceProviderCoreService {
-	    public mFinoServiceProvider getById(long id);
+	    public MfinoServiceProvider getById(long id);
 }

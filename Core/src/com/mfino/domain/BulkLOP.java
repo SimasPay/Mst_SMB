@@ -25,10 +25,10 @@ import com.mfino.hibernate.Timestamp;
 public class BulkLOP extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private SubscriberMdn subscriberMdn;
-	private DistributionChainTemp distributionChainTemp;
+	private DistributionChainTemplate distributionChainTemp;
 	private Merchant merchant;
 	private Company company;
-	private DistributionChainLvl distributionChainLvl;
+	private DistributionChainLevel distributionChainLvl;
 	private Long levelpermissions;
 	private String girorefid;
 	private String transferdate;
@@ -66,8 +66,8 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	}
 
 	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
-			DistributionChainTemp distributionChainTemp, Merchant merchant,
-			Company company, DistributionChainLvl distributionChainLvl,
+			DistributionChainTemplate distributionChainTemp, Merchant merchant,
+			Company company, DistributionChainLevel distributionChainLvl,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, Long levelpermissions,
 			String girorefid, String transferdate, BigDecimal actualamountpaid,
@@ -117,12 +117,12 @@ public class BulkLOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTID")
-	public DistributionChainTemp getDistributionChainTemp() {
+	public DistributionChainTemplate getDistributionChainTemp() {
 		return this.distributionChainTemp;
 	}
 
 	public void setDistributionChainTemp(
-			DistributionChainTemp distributionChainTemp) {
+			DistributionChainTemplate distributionChainTemp) {
 		this.distributionChainTemp = distributionChainTemp;
 	}
 
@@ -148,12 +148,12 @@ public class BulkLOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLvl getDistributionChainLvl() {
+	public DistributionChainLevel getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLvl distributionChainLvl) {
+			DistributionChainLevel distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 

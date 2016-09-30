@@ -1,8 +1,8 @@
 package com.mfino.service;
 
-import com.mfino.domain.AuthorizingPerson;
+import com.mfino.domain.AuthPersonDetails;
 
 public interface AuthorizingPersonService {
 
-	public void save(AuthorizingPerson s);
+	public void save(AuthPersonDetails s);
 }

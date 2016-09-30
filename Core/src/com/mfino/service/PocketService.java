@@ -15,7 +15,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
@@ -27,9 +27,9 @@ public interface PocketService {
 
 	public void handleCardPanChange(Pocket pocket);
 
-	public Pocket createDefaultPocket(PocketTemplate defaultPocketTemplate, SubscriberMDN subscriberMDN);
+	public Pocket createDefaultPocket(PocketTemplate defaultPocketTemplate, SubscriberMdn subscriberMDN);
 
-	public Pocket createActivePocket(PocketTemplate defaultPocketTemplate, SubscriberMDN subscriberMDN, boolean isDefault); 
+	public Pocket createActivePocket(PocketTemplate defaultPocketTemplate, SubscriberMdn subscriberMDN, boolean isDefault); 
 
 	public boolean isDefaultAirTimeSVA(Pocket p);
 
@@ -42,7 +42,7 @@ public interface PocketService {
 	public BigDecimal getPocketBalanceAsOf3(Pocket pocket, Date asOfDate, List<CommodityTransfer> rafTxns);
 	
 	public Pocket createPocket(PocketTemplate pocketTemplate,
-			SubscriberMDN subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan,String CardAlias);
+			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan,String CardAlias);
 	
 	public List<CommodityTransfer> getResolvedAsFailedTxnsBetween(Date start, Date end, List<CommodityTransfer> allRAFList);
 	
@@ -54,18 +54,18 @@ public interface PocketService {
 	
 	public String generateLakupandia16DigitCardPAN(String mdn) throws InvalidMDNException, EmptyStringException;
 
-	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMDN subscriberMdn); 
+	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMdn subscriberMdn); 
 
 	public Pocket createDefaultActivePocket(Long pocketTemplateID,
-			SubscriberMDN subscriberMDN);
+			SubscriberMdn subscriberMDN);
 	
-	public Pocket createDefaultBankPocket(Long pocketTemplateID,SubscriberMDN subscriberMDN,String cardPan);
+	public Pocket createDefaultBankPocket(Long pocketTemplateID,SubscriberMdn subscriberMDN,String cardPan);
 	
 	public Pocket createPocket(Long pocketTemplateID,
-			SubscriberMDN subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan);
+			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan);
 	
 	public Pocket createPocket(PocketTemplate pocketTemplate,
-			SubscriberMDN subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan);
+			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan);
 	
 	public PocketTemplate getPocketTemplateFromPocketTemplateConfig(Long kycLevel, Boolean isDefault, Integer pocketType, 
 			Integer subscriberType, Integer businessPartnerType, Long groupID);
@@ -76,16 +76,16 @@ public interface PocketService {
 	public PocketTemplate getBankPocketTemplateFromPocketTemplateConfig(Integer bankAccountType, boolean isDefault, Integer subscriberType, Integer businessPartnerType, Long groupID);
 
 	public boolean isAllowed(PocketTemplate pocketTemplate,
-			SubscriberMDN mdn); 
+			SubscriberMdn mdn); 
 	
 	public Pocket getDefaultPocket(Partner partner, long pocketTemplateId, boolean isSuspencePocket);
 	
 	public Pocket getDefaultPocket(Partner partner, long pocketTemplateId);
 	
-	public Pocket getDefaultPocket(SubscriberMDN sMDN, String pocketCode);
+	public Pocket getDefaultPocket(SubscriberMdn sMDN, String pocketCode);
 	
 	public boolean checkCount(PocketTemplate pocketTemplate,
-			SubscriberMDN subMdn);
+			SubscriberMdn subMdn);
 	
 	public List<Pocket> get(PocketQuery query) throws MfinoRuntimeException;
 	
@@ -103,7 +103,7 @@ public interface PocketService {
 	
 	public Pocket getById(Long pocketId,LockMode lockmode) throws MfinoRuntimeException;
 	
-	public Pocket getNFCPocket(SubscriberMDN subscriberMDN, String cardPAN);
+	public Pocket getNFCPocket(SubscriberMdn subscriberMDN, String cardPAN);
 
     public Pocket getPocketAferEvicting(Pocket pocket);
     

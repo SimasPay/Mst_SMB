@@ -5,7 +5,7 @@ package com.mfino.service;
 
 import java.util.List;
 
-import com.mfino.domain.PermissionItems;
+import com.mfino.domain.PermissionItem;
 import com.mfino.domain.User;
 import com.mfino.enums.ItemType;
 
@@ -66,13 +66,13 @@ public interface AuthorizationService {
      * 
      * @return
      */
-	public List<PermissionItems> getPermissionItemsList();
+	public List<PermissionItem> getPermissionItemsList();
 
 	/**
 	 * 
 	 * @param permissionItemsList
 	 */
-	public void setPermissionItemsList(List<PermissionItems> permissionItemsList);
+	public void setPermissionItemsList(List<PermissionItem> permissionItemsList);
 	
 	/**
 	 * 

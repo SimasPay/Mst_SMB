@@ -27,11 +27,11 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 	
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
-	private DistributionChainTemp distributionChainTemp;
+	private DistributionChainTemplate distributionChainTemp;
 	private Merchant merchant;
 	private BulkLOP bulkLop;
 	private Company company;
-	private DistributionChainLvl distributionChainLvl;
+	private DistributionChainLevel distributionChainLvl;
 	private Serializable lastupdatetime;
 	private String updatedby;
 	private Serializable createtime;
@@ -82,9 +82,9 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 
 	public LetterOfPurchase(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog,
-			DistributionChainTemp distributionChainTemp, Merchant merchant,
+			DistributionChainTemplate distributionChainTemp, Merchant merchant,
 			BulkLOP bulkLop, Company company,
-			DistributionChainLvl distributionChainLvl,
+			DistributionChainLevel distributionChainLvl,
 			Serializable lastupdatetime, String updatedby,
 			Serializable createtime, String createdby, Long levelpermissions,
 			String girorefid, String transferdate, BigDecimal actualamountpaid,
@@ -157,12 +157,12 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTID")
-	public DistributionChainTemp getDistributionChainTemp() {
+	public DistributionChainTemplate getDistributionChainTemp() {
 		return this.distributionChainTemp;
 	}
 
 	public void setDistributionChainTemp(
-			DistributionChainTemp distributionChainTemp) {
+			DistributionChainTemplate distributionChainTemp) {
 		this.distributionChainTemp = distributionChainTemp;
 	}
 
@@ -198,12 +198,12 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLvl getDistributionChainLvl() {
+	public DistributionChainLevel getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLvl distributionChainLvl) {
+			DistributionChainLevel distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 

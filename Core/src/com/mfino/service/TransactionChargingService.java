@@ -14,15 +14,15 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SharePartner;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionAmountDistributionLog;
 import com.mfino.domain.TransactionCharge;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionRule;
 import com.mfino.domain.TransactionType;
+import com.mfino.domain.TxnAmountDstrbLog;
 import com.mfino.exceptions.DistributionException;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -126,14 +126,14 @@ public interface TransactionChargingService {
 	 * @param sctl
 	 * @return
 	 */
-	public Long saveServiceTransactionLog(ServiceChargeTransactionLog sctl);
+	public Long saveServiceTransactionLog(ServiceChargeTxnLog sctl);
 	/**
 	 * Returns the Service charge Transaction Log entry by Transaction Log Id (Parent Transaction ID)
 	 * @param transactionLogId
 	 * @return
 	 */
 	
-	public ServiceChargeTransactionLog getServiceChargeTransactionLog(long transactionLogId);
+	public ServiceChargeTxnLog getServiceChargeTransactionLog(long transactionLogId);
 	
 	/**
 	 * Adds the sctlID to the transactionIdentifier table and returns the  
@@ -143,20 +143,20 @@ public interface TransactionChargingService {
 	 * @return
 	 */
 
-	public ServiceChargeTransactionLog getServiceChargeTransactionLog(long transactionLogId,String trxnIdentifier);
+	public ServiceChargeTxnLog getServiceChargeTransactionLog(long transactionLogId,String trxnIdentifier);
 	/**
 	 * Updates the SCTL status to Confirmed
 	 * @param sctl
 	 * @param commodityTransaferId
 	 */
-	public void confirmTheTransaction(ServiceChargeTransactionLog sctl, long commodityTransaferId);
+	public void confirmTheTransaction(ServiceChargeTxnLog sctl, long commodityTransaferId);
 	
 	/**
 	 * Updates the SCTL status to Confirmed
 	 * @param sctl
 	 * @param commodityTransaferId
 	 */
-	public void confirmTheTransaction(ServiceChargeTransactionLog sctl);
+	public void confirmTheTransaction(ServiceChargeTxnLog sctl);
 	
 	/**
 	 * Updates the SCTL status to Pending
@@ -169,36 +169,36 @@ public interface TransactionChargingService {
 	 * @param sctl
 	 * @param commodityTransaferId
 	 */
-	public void addTransferID(ServiceChargeTransactionLog sctl, long commodityTransaferId);
+	public void addTransferID(ServiceChargeTxnLog sctl, long commodityTransaferId);
 	
 	/**
 	 * Updates the SCTL status to Distribution completed
 	 * @param sctl
 	 */
-	public void completeTheTransaction(ServiceChargeTransactionLog sctl);
+	public void completeTheTransaction(ServiceChargeTxnLog sctl);
 	
 	/**
 	 * Updates the SCTL status to Failure
 	 * @param sctl
 	 * @param failureReason
 	 */
-	public void failTheTransaction(ServiceChargeTransactionLog sctl, String failureReason);
+	public void failTheTransaction(ServiceChargeTxnLog sctl, String failureReason);
 	
 	/**
 	 * Update the SCTL status to Pending for Agent for Confirmation
 	 * @param sctl
 	 */
-	public void chnageStatusToProcessing(ServiceChargeTransactionLog sctl);
+	public void chnageStatusToProcessing(ServiceChargeTxnLog sctl);
 	
 	/**
 	 * Update the SCTL status to Pending for Agent for Confirmation
 	 * @param sctl
 	 */
-	public void changeStatusToPending(ServiceChargeTransactionLog sctl);
+	public void changeStatusToPending(ServiceChargeTxnLog sctl);
 	
-	public void changeStatusToPendingResolved(ServiceChargeTransactionLog sctl);
+	public void changeStatusToPendingResolved(ServiceChargeTxnLog sctl);
 	
-	public void changeStatusToPendingResolvedProcessing(ServiceChargeTransactionLog sctl);
+	public void changeStatusToPendingResolvedProcessing(ServiceChargeTxnLog sctl);
 	
 	/**
 	 * Stores the Individual Charge amounts to the log table. 
@@ -275,8 +275,8 @@ public interface TransactionChargingService {
 	 * @return
 	 * @throws DistributionException
 	 */
-	List<TransactionAmountDistributionLog> generateTADL(ServiceChargeTransactionLog sctl, TransactionCharge tc, BigDecimal shareAmount,
-			List<TransactionAmountDistributionLog> lstTADL, Long partnerId, boolean isPartner) throws DistributionException;
+	List<TxnAmountDstrbLog> generateTADL(ServiceChargeTxnLog sctl, TransactionCharge tc, BigDecimal shareAmount,
+			List<TxnAmountDstrbLog> lstTADL, Long partnerId, boolean isPartner) throws DistributionException;
 	
 	Long getRegisteringPartner(String mdn);
 	
@@ -291,11 +291,11 @@ public interface TransactionChargingService {
 	 * @param lstTADL
 	 * @return
 	 */
-	List<TransactionAmountDistributionLog> distributeChargeAmongSharedUpChainPartners(long sctlId, long transactionId, 
+	List<TxnAmountDstrbLog> distributeChargeAmongSharedUpChainPartners(long sctlId, long transactionId, 
 			TransactionCharge tc, PartnerServices ps, List<PartnerServices> lstParentPS, BigDecimal amount, Map<Integer, 
-			DistributionChainLevel> mapDCL, List<TransactionAmountDistributionLog> lstTADL);
+			DistributionChainLevel> mapDCL, List<TxnAmountDstrbLog> lstTADL);
 	
-	void failTheDistribution(ServiceChargeTransactionLog sctl, String failureReason);
+	void failTheDistribution(ServiceChargeTxnLog sctl, String failureReason);
 	
 	/**
 	 * Gets the Share percentages for each level in the Distribution chain for the given PartnerServices. 
@@ -311,7 +311,7 @@ public interface TransactionChargingService {
 	 */
 	List<PartnerServices> getParentList(PartnerServices ps, List<PartnerServices> lstParentPS);
 	
-	TransactionAmountDistributionLog getTADL(Long sctlID, Long transactionId, TransactionCharge tc, Partner partner, Subscriber subscriber,  Pocket pocket, 
+	TxnAmountDstrbLog getTADL(Long sctlID, Long transactionId, TransactionCharge tc, Partner partner, Subscriber subscriber,  Pocket pocket, 
 			BigDecimal amount, boolean isPartOfCharge, boolean isActualAmt, boolean isPartOfSharedUpChain, boolean isSelf);
 	
 	/**
@@ -340,7 +340,7 @@ public interface TransactionChargingService {
 	 */
 	public void doServiceAudit(Long serviceProviderId, Long serviceId, Integer sourceType, Long sourceId, Long KYCLevelId, BigDecimal amount);
 	
-	public void updateTransactionStatus(TransactionResponse tr, ServiceChargeTransactionLog sctl);
+	public void updateTransactionStatus(TransactionResponse tr, ServiceChargeTxnLog sctl);
 	
 	public boolean isTransactionSuccessful(TransactionResponse transactionResponse);
 	public Transaction getChargeDetails(ServiceCharge sc)  throws DataException, InvalidServiceException, InvalidChargeDefinitionException;

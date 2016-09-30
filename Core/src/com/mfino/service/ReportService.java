@@ -109,7 +109,7 @@ public class ReportService  {
 		}
 		if(reportParameters.getTransactionTypeID() != null){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONTYPEID, reportParameters.getTransactionTypeID().toString()));
-			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONTYPETEXT, DAOFactory.getInstance().getTransactionTypeDAO().getById(reportParameters.getTransactionTypeID()).getTransactionName()));
+			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONTYPETEXT, DAOFactory.getInstance().getTransactionTypeDAO().getById(reportParameters.getTransactionTypeID()).getTransactionname()));
 		}
 		if(StringUtils.isNotBlank(reportParameters.getTransactionStatus())){
 			qparams.add(new BasicNameValuePair(ReportParameterKeys.REPORT_PARAMETER_TRANSACTIONSTATUSID, reportParameters.getTransactionStatus()));

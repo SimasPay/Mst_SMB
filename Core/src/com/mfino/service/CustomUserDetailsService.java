@@ -15,7 +15,6 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import com.mfino.constants.SecurityConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 
@@ -42,8 +41,8 @@ public class CustomUserDetailsService implements UserDetailsService {
      
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
     public UserDetails loadUserByUsername(String username) {
-        List<User> users;
-        User user;
+        List<MfinoUser> users;
+        MfinoUser user;
         UserDetailsServiceImpl userAdapter = null;
         try {
             UserQuery query = new UserQuery();
@@ -68,19 +67,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             user = users.get(0);
             userService.loadPermissions(user);
-            if (user.getFailedLoginCount() == null) {
-                user.setFailedLoginCount(0);
+            if (user.getFailedlogincount() == 0) {
+                user.setFailedlogincount(0);
             }
             
-            if (user.getFailedLoginCount() >= SecurityConstants.MAX_LOGIN_TRIES) {
-                Integer restr = user.getRestrictions();
+            if (user.getFailedlogincount() >= SecurityConstants.MAX_LOGIN_TRIES) {
+                Long restr = user.getRestrictions();
                 if (restr == null) {
-                    restr = 0;
+                    restr = 0L;
                 }
                 restr += CmFinoFIX.SubscriberRestrictions_SecurityLocked;
                 user.setRestrictions(restr);
                 //reset the failed login count
-                user.setFailedLoginCount(0);
+                user.setFailedlogincount(0);
                 userdao.save(user);
             }
 

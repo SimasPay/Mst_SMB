@@ -3,7 +3,7 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.result.Result;
 import com.mfino.result.SMSResult;
@@ -14,7 +14,7 @@ import com.mfino.result.SMSResult;
  */
 public interface ResultService {
 
-	public Result returnResult(CMBase msg, Integer nc, SubscriberMDN smdn, Result result, boolean sms);
+	public Result returnResult(CMBase msg, Integer nc, SubscriberMdn smdn, Result result, boolean sms);
 	/**
 	 * Sends an SMS to the number that is returned by base.getSourceMDN() <br>
 	 * @param base

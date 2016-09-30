@@ -9,6 +9,7 @@ import org.apache.commons.mail.EmailException;
 
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Company;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.User;
 import com.mfino.exceptions.InvalidPasswordException;
@@ -37,7 +38,7 @@ public interface UserService {
     
      void reloadPermissions(User user);
     
-    public  void loadPermissions(User user);
+    public  void loadPermissions(MfinoUser user);
 
     public  boolean sendEmail(String subject, String body);
     

@@ -1,9 +1,9 @@
 package com.mfino.service;
 
 import com.mfino.domain.ExcludeSubscriberLifeCycle;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 
 public interface ExcludeSubscriberLifeCycleService {
-	public ExcludeSubscriberLifeCycle getBySubscriberMDN(SubscriberMDN subscriberMDN);
+	public ExcludeSubscriberLifeCycle getBySubscriberMDN(SubscriberMdn subscriberMDN);
 
 }

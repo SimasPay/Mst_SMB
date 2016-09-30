@@ -1,8 +1,9 @@
 package com.mfino.service;
 
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
+
 
 public interface TransactionsLogCoreService {
 
-	public void save(TransactionsLog tl);
+	public void save(TransactionLog tl);
 }

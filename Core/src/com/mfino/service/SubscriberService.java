@@ -12,7 +12,7 @@ import com.mfino.domain.Company;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.domain.User;
 
@@ -30,13 +30,13 @@ public interface SubscriberService {
 	 * @param subscriberMDN
 	 * @return
 	 */
-	public int retireSubscriber(SubscriberMDN subscriberMDN);
+	public int retireSubscriber(SubscriberMdn subscriberMDN);
 
 	/**
 	 * updates status to pendingRetired
 	 * @param subscriber
 	 */
-	void retireSubscriberAndPockets(SubscriberMDN subscriber);
+	void retireSubscriberAndPockets(SubscriberMdn subscriber);
 
 	/**
 	 * returns default pocket by mdnId pockettype and commodity
@@ -68,7 +68,7 @@ public interface SubscriberService {
 	 * @param subscriberSyncRecord
 	 * @return
 	 */
-	int fillSubscriberMDN(SubscriberMDN mdn, SubscriberSyncRecord subscriberSyncRecord);
+	int fillSubscriberMDN(SubscriberMdn mdn, SubscriberSyncRecord subscriberSyncRecord);
 
 	/**
 	 * calls createNewSubscriber method to create new subscriber in database
@@ -105,7 +105,7 @@ public interface SubscriberService {
 	 * @param mdn
 	 * @return
 	 */
-	int updatePocket(SubscriberSyncRecord subscriberSyncRecord, SubscriberMDN mdn);
+	int updatePocket(SubscriberSyncRecord subscriberSyncRecord, SubscriberMdn mdn);
 
 	/**
 	 * 
@@ -128,7 +128,7 @@ public interface SubscriberService {
 	 * @param pTemplate
 	 * @param subMDN
 	 */
-	void createPocket(PocketTemplate pTemplate, SubscriberMDN subMDN);
+	void createPocket(PocketTemplate pTemplate, SubscriberMdn subMDN);
 
 	/**
 	 * 

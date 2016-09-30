@@ -1,9 +1,10 @@
 package com.mfino.service;
 
-import com.mfino.domain.SettlementSchedulerLogs;
+import com.mfino.domain.SettlementScheduleLog;
+
 
 public interface SettlementSchedulerLogsService {
-	public SettlementSchedulerLogs getByPartnerServiceId(Long partnerServiceId);
-	public void save(SettlementSchedulerLogs settlementSchedulerLogs);
-	public SettlementSchedulerLogs getByJobId(String jobId);
+	public SettlementScheduleLog getByPartnerServiceId(Long partnerServiceId);
+	public void save(SettlementScheduleLog settlementSchedulerLogs);
+	public SettlementScheduleLog getByJobId(String jobId);
 }

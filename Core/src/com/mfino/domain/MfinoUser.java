@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,6 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.EnumTextDAO;
+import com.mfino.dao.query.EnumTextQuery;
+import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -80,7 +87,44 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private Set<BulkUpload> bulkUploads = new HashSet<BulkUpload>(0);
 	private Set<Partner> partners = new HashSet<Partner>(0);
 	private Set<BankAdmin> bankAdmins = new HashSet<BankAdmin>(0);
+	private Set<Integer> permissions;
+    private String languageCode;
 
+    public Set<Integer> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<Integer> permissions) {
+        this.permissions = permissions;
+    }
+
+
+    /**
+     * @return the languageCode
+     */
+    public String getLanguageCode() {
+        if (languageCode == null && (Long)getLanguage() != null) {
+            EnumTextQuery query = new EnumTextQuery();
+            query.setLanguage(CmFinoFIX.Language_English);
+            query.setTagId(CmFinoFIX.TagID_Language);
+            query.setEnumCode(((Long)getLanguage()).toString());
+            EnumTextDAO dao = DAOFactory.getInstance().getEnumTextDAO();
+            List<EnumText> results = dao.get(query);
+            if (results.size() > 0) {
+                languageCode = results.get(0).getEnumvalue();
+            } else {
+                languageCode = StringUtils.EMPTY;
+            }
+        }
+        return languageCode;
+    }
+
+    /**
+     * @param languageCode the languageCode to set
+     */
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 	public MfinoUser() {
 	}
 

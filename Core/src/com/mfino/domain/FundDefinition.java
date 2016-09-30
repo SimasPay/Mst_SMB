@@ -26,7 +26,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "FUND_DEFINITION")
 public class FundDefinition extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_PurposeID = "purposeid";
 	private FundEvents fundEventsByOnfailedattemptsexceeded;
 	private FundEvents fundEventsByOnfundallocationtimeexpiry;

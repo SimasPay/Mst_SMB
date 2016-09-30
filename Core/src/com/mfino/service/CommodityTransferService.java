@@ -8,7 +8,7 @@ import java.util.List;
 import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX.CMGetTransactions;
 import com.mfino.result.Result;
 
@@ -43,7 +43,7 @@ public interface CommodityTransferService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CommodityTransfer> getTranscationsHistory(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception;
+	public List<CommodityTransfer> getTranscationsHistory(Pocket pocket, SubscriberMdn subscriberMDN, CMGetTransactions transactionsHistory) throws Exception;
 
 	/**
 	 * 
@@ -53,7 +53,7 @@ public interface CommodityTransferService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long getTranscationsCount(Pocket pocket, SubscriberMDN subscriberMDN, CMGetTransactions transactionsHistory) throws Exception;
+	public Long getTranscationsCount(Pocket pocket, SubscriberMdn subscriberMDN, CMGetTransactions transactionsHistory) throws Exception;
 
 	/**
 	 * Gets the Commodity transfer record by the commodity transfer id

@@ -2,16 +2,13 @@ package com.mfino.service;
 
 import java.util.List;
 
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.PartnerServicesDAO;
 import com.mfino.dao.query.PartnerQuery;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.exceptions.MfinoRuntimeException;
-import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.fix.CmFinoFIX.CMPartnerRegistrationThroughAPI;
 import com.mfino.mailer.NotificationWrapper;
 
@@ -30,7 +27,7 @@ public interface PartnerService {
 	
 	public Partner getPartner(String mdn);
 	
-	public Partner getPartner(SubscriberMDN mdn);
+	public Partner getPartner(SubscriberMdn mdn);
 	
 	public Partner getPartnerByPartnerCode(String code);
 
@@ -42,7 +39,7 @@ public interface PartnerService {
 	
 	public boolean checkPocket(Pocket pocket,boolean isCollector);
 
-	public void activateNonTransactionable(SubscriberMDN subscriberMDN);
+	public void activateNonTransactionable(SubscriberMdn subscriberMDN);
 	
 	public void retireServices(Partner objPartner);
 	

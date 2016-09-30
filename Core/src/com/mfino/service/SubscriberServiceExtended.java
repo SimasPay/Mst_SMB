@@ -7,9 +7,9 @@ import com.mfino.domain.Address;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberAddiInfo;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.fix.CmFinoFIX.CMExistingSubscriberReactivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.fix.CmFinoFIX.CMSubscriberRegistration;
@@ -22,14 +22,14 @@ import com.mfino.mailer.NotificationWrapper;
  */
 public interface SubscriberServiceExtended {
 	public Integer registerSubscriber(Subscriber subscriber,
-			SubscriberMDN subscriberMDN,
+			SubscriberMdn subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
 			String oneTimePin, Partner registeringPartner);
 	
 	public Integer registerSubscriberByAgent(Subscriber subscriber,
-			SubscriberMDN subscriberMDN,
+			SubscriberMdn subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
-		    Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscribersAdditionalFields subscriberAddiFields);
+		    Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscriberAddiInfo subscriberAddiFields);
 
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration);
@@ -38,11 +38,11 @@ public interface SubscriberServiceExtended {
 			CMSubscriberRegistrationThroughWeb subscriberRegistration,
 			String oneTimePin);
 
-	public void setOTPToSubscriber(SubscriberMDN subscriberMDN,
+	public void setOTPToSubscriber(SubscriberMdn subscriberMDN,
 			String oneTimePin);
 
 	public int createNewSubscriber(SubscriberSyncRecord syncRecord,
-			Subscriber subscriber, SubscriberMDN subscriberMDN,
+			Subscriber subscriber, SubscriberMdn subscriberMDN,
 			String uploadedBy);
 
 	public Integer activeSubscriber(
@@ -51,7 +51,7 @@ public interface SubscriberServiceExtended {
 	public NotificationWrapper generateOTPMessage(String oneTimePin, Integer notificationMethod);
 
 	public boolean updateUnRegisteredTxnInfoToActivated(
-			SubscriberMDN subscriberMDN);
+			SubscriberMdn subscriberMDN);
 
 	public Integer ReactivateSubscriber(
 			CMExistingSubscriberReactivation subscriberReactivation,

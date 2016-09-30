@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.mfino.dao.query.BulkUploadQuery;
 import com.mfino.domain.BulkUpload;
-import com.mfino.domain.BulkUploadEntry;
 import com.mfino.exceptions.MfinoRuntimeException;
 
 /**

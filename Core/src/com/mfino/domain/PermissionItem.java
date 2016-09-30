@@ -2,17 +2,16 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -23,7 +22,7 @@ import com.mfino.hibernate.Timestamp;
 		"PERMISSION", "ITEMTYPE", "ITEMID", "FIELDID", "ACTION" }))
 public class PermissionItem extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	private PermissionGroup permissionGroup;
 	private long permission;
 	private long itemtype;
@@ -135,5 +134,31 @@ public class PermissionItem extends Base implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	 @Override
+	    public boolean equals(Object newObject)
+	    {
 
+	        if(!(newObject instanceof PermissionItem))
+	            return false;
+
+	        PermissionItem pNewObject = (PermissionItem) newObject;
+
+
+	        if(((Long)this.getItemtype()).equals(pNewObject.getItemtype()) &&
+	            this.getItemid().trim().equals(pNewObject.getItemid().trim()) &&
+	            this.getFieldid().trim().equals(pNewObject.getFieldid().trim()) &&
+	            this.getAction().trim().equals(pNewObject.getAction().trim()))
+	        {
+	            return true;
+	        }
+	        else
+	            return false;
+	        
+	    }
+
+	    public boolean matchesWithoutField(PermissionItem permissionItems){
+	        return ((Long)this.getItemtype()).equals(permissionItems.getItemtype()) &&
+	            this.getItemid().trim().equals(permissionItems.getItemid().trim()) &&
+	            this.getAction().trim().equals(permissionItems.getAction().trim());
+	    }
 }

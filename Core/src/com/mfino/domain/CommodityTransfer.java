@@ -68,7 +68,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
-	private DistributionChainLvl distributionChainLvl;
+	private DistributionChainLevel distributionChainLvl;
 	private Pocket pocket;
 	private long msgtype;
 	private Long uicategory;
@@ -209,7 +209,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 			CreditCardTransaction creditCardTransaction,
 			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
-			DistributionChainLvl distributionChainLvl, Pocket pocket,
+			DistributionChainLevel distributionChainLvl, Pocket pocket,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long msgtype,
 			Long uicategory, long transferstatus, Long transferfailurereason,
@@ -441,12 +441,12 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLvl getDistributionChainLvl() {
+	public DistributionChainLevel getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLvl distributionChainLvl) {
+			DistributionChainLevel distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 
