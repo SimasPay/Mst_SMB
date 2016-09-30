@@ -13,7 +13,7 @@ import com.mfino.service.MfinoServiceProviderService;
 public class MfinoServiceProviderServiceImpl implements MfinoServiceProviderService{
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public mFinoServiceProvider getMFSPbyID(int id){
+	public MfinoServiceProvider getMFSPbyID(int id){
 	
 		MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
 		return mspDao.getById(id);

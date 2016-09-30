@@ -46,7 +46,7 @@ import com.mfino.dao.query.RolePermissionQuery;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.Company;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerDefaultServices;
@@ -55,7 +55,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.RolePermission;
 import com.mfino.domain.ScheduleTemplate;
-import com.mfino.domain.ServiceSettlementConfig;
+import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.domain.SettlementTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
@@ -304,7 +304,7 @@ public class PartnerServiceImpl implements PartnerService {
 		}
 
 		Subscriber subscriber =subscriberMDN.getSubscriber();
-		User user=partner.getUser();
+		User user=partner.getMfinoUser();
 		
 		Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		Long groupID = null;
@@ -312,7 +312,7 @@ public class PartnerServiceImpl implements PartnerService {
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), Boolean.TRUE, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), groupID);
 		Pocket emoneyPocket =subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), svaPocketTemplate.getId().longValue());
@@ -356,7 +356,7 @@ public class PartnerServiceImpl implements PartnerService {
 		
 		RolePermissionQuery query = new RolePermissionQuery();
 		query.setPermission(CmFinoFIX.Permission_PinPrompt);
-		query.setUserRole(user.getRole());
+		query.setUserRole(user.getRole().intValue());
 		RolePermissionDAO rolePermissionDAO = DAOFactory.getInstance().getRolePermissionDAO();
 		List<RolePermission> rolePermission = rolePermissionDAO.get(query);
 		
@@ -386,10 +386,10 @@ public class PartnerServiceImpl implements PartnerService {
 		}
 		partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Active);
 		user.setStatus(CmFinoFIX.UserStatus_Active);
-		user.setStatusTime(new Timestamp());
-		user.setFailedLoginCount(0);
-		user.setFirstTimeLogin(true);
-		user.setUserActivationTime(new Timestamp());
+		user.setStatustime(new Timestamp());
+		user.setFailedlogincount(0);
+		user.setFirsttimelogin((short) Boolean.compare(true, false));
+		user.setUseractivationtime(new Timestamp());
 		user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		String password = PasswordGenUtil.generate();
 		PasswordEncoder encoder = new ShaPasswordEncoder(1);
@@ -477,7 +477,7 @@ public class PartnerServiceImpl implements PartnerService {
 			return isCollector ? false : true;
 		} else if (!(CmFinoFIX.PocketStatus_Active.equals(pocket.getStatus()) || CmFinoFIX.PocketStatus_Initialized.equals(pocket.getStatus()))) {
 			return false;
-		} else if(!isCollector&&!pocket.getIsdefault()&&CmFinoFIX.PocketStatus_Initialized.equals(pocket.getStatus())) {
+		} else if(!isCollector&&!Boolean.valueOf(pocket.getIsdefault().toString())&&CmFinoFIX.PocketStatus_Initialized.equals(pocket.getStatus())) {
 			PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 			pocket.setActivationtime(new Timestamp());
 			pocket.setStatus(CmFinoFIX.PocketStatus_Active);
@@ -497,6 +497,7 @@ public class PartnerServiceImpl implements PartnerService {
 			Integer tempStatusLI = tempStatusL.intValue();
 			if(tempStatusLI.equals(CmFinoFIX.PocketStatus_Initialized)&&
 					(pocket.getPocketTemplate().getIscollectorpocket() || pocket.getPocketTemplate().getIssuspencepocket() || pocket.getPocketTemplate().getIssystempocket())){
+					
 				pocket.setActivationtime(new Timestamp());
 //				pocket.setIsDefault(true);
 				pocket.setStatus(CmFinoFIX.PocketStatus_Active);
@@ -509,7 +510,7 @@ public class PartnerServiceImpl implements PartnerService {
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void retireServices(Partner objPartner) {
-		Set<PartnerServices> partnerServices = objPartner.getPartnerServicesFromPartnerID();
+		Set<PartnerServices> partnerServices = objPartner.getPartnerServicesesForPartnerid();
 		PartnerServicesDAO psDao = DAOFactory.getInstance().getPartnerServicesDAO();
 		for(PartnerServices ps:partnerServices){
 			Long tempStatusL = ps.getStatus();
@@ -530,7 +531,7 @@ public class PartnerServiceImpl implements PartnerService {
 	        List<User> results = userdao.get(query);
 	        if (results != null && results.size() > 0) {
 	            user = results.get(0);
-	            Set<Partner> partners = user.getPartnerFromUserID();
+	            Set<Partner> partners = user.getPartners();
 	            if(StringUtils.isBlank(transactionPin)) {
 	            	throw new InvalidPasswordException("Invalid Pin");
 	            }
@@ -668,7 +669,7 @@ public class PartnerServiceImpl implements PartnerService {
 		user= createUserEntityForPartner(partnerRegistration);        
         
           partner.setSubscriber(subscriber);
-          partner.setUser(user);
+          partner.setMfinoUser(user);
           updatePartner(partner, partnerRegistration);
 
           SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
@@ -746,8 +747,8 @@ public class PartnerServiceImpl implements PartnerService {
 			partnerRegistration.setLanguage(language);
 		}
 		if(partnerRegistration.getGroupID()==null){
-			Group defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
-			partnerRegistration.setGroupID(defaultGroup.getID().toString());
+			Groups defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
+			partnerRegistration.setGroupID(defaultGroup.getId().toString());
 		}
 		if(StringUtils.isBlank(partnerRegistration.getTypeOfOrganization()))
 			partnerRegistration.setTypeOfOrganization(CmFinoFIX.TypeOfOrganization_Others);
@@ -770,13 +771,13 @@ public class PartnerServiceImpl implements PartnerService {
          }
          user.setUsername(username);
          user.setEmail(partnerRegistration.getAuthorizedEmail());
-         user.setFirstName(partnerRegistration.getFirstName());
-         user.setLastName(partnerRegistration.getLastName());
+         user.setFirstname(partnerRegistration.getFirstName());
+         user.setLastname(partnerRegistration.getLastName());
          user.setLanguage(partnerRegistration.getLanguage());
          user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
          user.setStatus(CmFinoFIX.UserStatus_Registered);
          user.setTimezone(partnerRegistration.getTimezone());
-         user.setRole(getRole(partnerRegistration.getBusinessPartnerType()));
+         user.setRole(getRole(partnerRegistration.getBusinessPartnerType()).longValue());
          
          return user;		
 	}
@@ -861,7 +862,7 @@ public class PartnerServiceImpl implements PartnerService {
 			}	
 			subscriber.setCurrency(systemParametersService.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 			subscriber.setEmail(partnerRegistration.getAuthorizedEmail());
-        	subscriber.setIsemailverified(false);
+        	subscriber.setIsemailverified((short) Boolean.compare(false, true));
         	
         	if(StringUtils.isNotBlank(partnerRegistration.getGroupID())){    			
     			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
@@ -870,14 +871,14 @@ public class PartnerServiceImpl implements PartnerService {
     			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)){
     				Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
     				SubscriberGroup sg = subscriberGroups.iterator().next();
-    				if(sg.getGroup().getID().longValue() != Long.valueOf(partnerRegistration.getGroupID()).longValue()){
-    					Group group = (Group)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
+    				if(sg.getGroupid() != Long.valueOf(partnerRegistration.getGroupID()).longValue()){
+    					Groups group = (Groups)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
     					sg.setGroup(group);
     					subscriberGroupDao.save(sg);
     				}
     			}
     			else{
-    				Group group = (Group)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
+    				Groups group = (Groups)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
     				SubscriberGroup sg = new SubscriberGroup();
     				sg.setSubscriber(subscriber);
     				sg.setGroup(group);
@@ -894,15 +895,15 @@ public class PartnerServiceImpl implements PartnerService {
 	private Map<Integer, Pocket> createPocketsForPartner(Partner partner,String bankCardPan) throws Exception{
 		Subscriber subscriber = partner.getSubscriber();
 		SubscriberMdn subscriberMDN = subscriber.getSubscriberMdns().iterator().next();
-		Group group = subscriber.getSubscriberGroupFromSubscriberID().iterator().next().getGroup();
+		Groups group = subscriber.getSubscriberGroupFromSubscriberID().iterator().next().getGroup();
 		Map<Integer, Pocket> defaultPockets = getDefaultPocketsMap(partner);
 		
 		// Emoney Pocket creation
 		if (defaultPockets.get(CmFinoFIX.ServicePocketType_Emoney) == null) {
-				PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), Boolean.TRUE,CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getID());
+				PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), Boolean.TRUE,CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getId().longValue());
 				if (svaPocketTemplate == null) {
-					log.info("No Default SVA Pocket template set for groupID:"+ group.getID() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());
-					throw new PartnerRegistrationException("No Default SVA Pocket template set for groupID:"+ group.getID() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());					
+					log.info("No Default SVA Pocket template set for groupID:"+ group.getId() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());
+					throw new PartnerRegistrationException("No Default SVA Pocket template set for groupID:"+ group.getId() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());					
 				} else {
 					String cardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 					Pocket pocket = pocketService.createPocket(svaPocketTemplate, subscriberMDN,CmFinoFIX.PocketStatus_Initialized, true, cardPan);
@@ -915,10 +916,10 @@ public class PartnerServiceImpl implements PartnerService {
 		// bank Pocket creation
 		if (defaultPockets.get(CmFinoFIX.ServicePocketType_Bank) == null
 				&& StringUtils.isNotBlank(bankCardPan)) {
-				PocketTemplate bankTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), Boolean.TRUE,CmFinoFIX.PocketType_BankAccount,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getID());
+				PocketTemplate bankTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), Boolean.TRUE,CmFinoFIX.PocketType_BankAccount,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getId().longValue());
 				if (bankTemplate == null) {
-					log.info("No Default bank Pocket template set for groupID:"+ group.getID() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());
-					throw new PartnerRegistrationException("No Default bank Pocket template set for groupID:"+ group.getID() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());
+					log.info("No Default bank Pocket template set for groupID:"+ group.getId() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());
+					throw new PartnerRegistrationException("No Default bank Pocket template set for groupID:"+ group.getId() + "(" + group.getDescription()+ ")" + " PartnerType:"+ partner.getBusinesspartnertype());
 				} else {
 					Pocket bankPocket = pocketService.createPocket(bankTemplate, subscriberMDN,CmFinoFIX.PocketStatus_Initialized, true,bankCardPan);
 					log.info("Default bank pocket Id --> " + bankPocket.getId()	+ " partnerid:" + partner.getId());
@@ -929,10 +930,10 @@ public class PartnerServiceImpl implements PartnerService {
 
 		// collector Pocket creation
 		if (defaultPockets.get(CmFinoFIX.ServicePocketType_Collector) == null) {
-				PocketTemplate collectorPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getID());
+				PocketTemplate collectorPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), Boolean.TRUE, Boolean.FALSE, Boolean.TRUE,CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getId().longValue());
 				if (collectorPocketTemplate == null) {
-					log.info("No Default collector Pocket template set for groupID:"+ group.getID()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
-					throw new PartnerRegistrationException("No Default collector Pocket template set for groupID:"+ group.getID()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
+					log.info("No Default collector Pocket template set for groupID:"+ group.getId()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
+					throw new PartnerRegistrationException("No Default collector Pocket template set for groupID:"+ group.getId()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
 				} else {
 					String collectorPocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 					Pocket collectorPocket = pocketService.createPocket(collectorPocketTemplate, subscriberMDN,CmFinoFIX.PocketStatus_Initialized, true,collectorPocketCardPan);
@@ -944,10 +945,10 @@ public class PartnerServiceImpl implements PartnerService {
 
 		// suspence Pocket creation
 		if (defaultPockets.get(CmFinoFIX.ServicePocketType_Suspence) == null) {
-				PocketTemplate suspensePocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, true, false,CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype(), group.getID());
+				PocketTemplate suspensePocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, Boolean.compare(true, false), Boolean.compare(false, true),CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype(), group.getId().longValue());
 				if (suspensePocketTemplate == null) {
-					log.info("No Default suspence Pocket template set for groupID:"+ group.getID()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
-					throw new PartnerRegistrationException("No Default suspence Pocket template set for groupID:"+ group.getID()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());	
+					log.info("No Default suspence Pocket template set for groupID:"+ group.getId()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
+					throw new PartnerRegistrationException("No Default suspence Pocket template set for groupID:"+ group.getId()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());	
 				} else {
 					String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 					Pocket suspensePocket = pocketService.createPocket(suspensePocketTemplate, subscriberMDN,CmFinoFIX.PocketStatus_Initialized, true,suspensePocketCardPan);
@@ -985,11 +986,11 @@ public class PartnerServiceImpl implements PartnerService {
 		List<PartnerServices> partnerServices= new ArrayList<PartnerServices>();		
 		for(PartnerDefaultServices defaultService:partnerDefaultServices){
 			PartnerServices partnerService = new PartnerServices();
-			partnerService.setPartner(partner);
+			partnerService.setPartnerByParentid(partner);
 			partnerService.setMfinoServiceProvider(mspDAO.getById(1l));
 			partnerService.setPartnerByServiceProviderID(defaultService.getServiceDefaultConfiguration().getPartnerByServiceProviderID());
 			partnerService.setService(defaultService.getServiceDefaultConfiguration().getService());
-			partnerService.setPocketByCollectorPocket(pockets.get(CmFinoFIX.ServicePocketType_Collector));
+			partnerService.setCollectorpocket(pockets.get(CmFinoFIX.ServicePocketType_Collector));
 			partnerService.setPocketBySourcePocket(pockets.get(defaultService.getServiceDefaultConfiguration().getSourcePocketType()));
 			partnerService.setPocketByDestPocketID(pockets.get(defaultService.getServiceDefaultConfiguration().getSourcePocketType()));
 			partnerService.setIsservicechargeshare(CmFinoFIX.IsServiceChargeShare_Individual.longValue());
@@ -1002,21 +1003,21 @@ public class PartnerServiceImpl implements PartnerService {
 				
 	}
 	
-	private ServiceSettlementConfig createServiceSettlementConfig(PartnerServices partnerService,SettlementTemplate settlementTemplate) throws Exception {
+	private ServiceSettlementCfg createServiceSettlementConfig(PartnerServices partnerService,SettlementTemplate settlementTemplate) throws Exception {
 		if(partnerService==null||settlementTemplate==null){
 			log.info("ServiceSettlementConfig not created as partnerservice="+partnerService+"SettlementTemplate="+settlementTemplate);
 			throw new PartnerRegistrationException("ServiceSettlementConfig not created as partnerservice="+partnerService+"SettlementTemplate="+settlementTemplate);
 		}
 		ServiceSettlementConfigDAO serviceSettlementConfigDAO = DAOFactory.getInstance().getServiceSettlementConfigDAO();
-		ServiceSettlementConfig serviceSettlementConfig = new ServiceSettlementConfig();
-		serviceSettlementConfig.setIsDefault(true);
-		serviceSettlementConfig.setmFinoServiceProviderByMSPID(serviceSettlementConfig.getmFinoServiceProviderByMSPID());
-		serviceSettlementConfig.setPartnerServicesByPartnerServiceID(partnerService);
-		serviceSettlementConfig.setPocketByCollectorPocket(partnerService.getPocketByCollectorPocket());
-		serviceSettlementConfig.setSchedulerStatus(CmFinoFIX.SchedulerStatus_TobeScheduled);
+		ServiceSettlementCfg serviceSettlementConfig = new ServiceSettlementCfg();
+		serviceSettlementConfig.setIsdefault((short) Boolean.compare(true, false));
+		serviceSettlementConfig.setMfinoServiceProvider(serviceSettlementConfig.getMfinoServiceProvider());
+		serviceSettlementConfig.setPartnerServices(partnerService);
+		serviceSettlementConfig.setPocketByCollectorPocket(partnerService.getCollectorpocket());
+		serviceSettlementConfig.setSchedulerstatus(CmFinoFIX.SchedulerStatus_TobeScheduled.longValue());
 		serviceSettlementConfig.setSettlementTemplate(settlementTemplate);
 		serviceSettlementConfigDAO.save(serviceSettlementConfig);
-		log.info("Servicesettlementconfig ID:"+serviceSettlementConfig.getID()+" for partnerserviceID:"+partnerService.getId());
+		log.info("Servicesettlementconfig ID:"+serviceSettlementConfig.getId()+" for partnerserviceID:"+partnerService.getId());
 		return serviceSettlementConfig;		
 	}
 
@@ -1031,10 +1032,10 @@ public class PartnerServiceImpl implements PartnerService {
 		for(Pocket pocket:pockets){
 			if(!(CmFinoFIX.PocketStatus_Initialized.equals(pocket.getStatus())
 					||CmFinoFIX.PocketStatus_Active.equals(pocket.getStatus()))
-					&&!pocket.getIsdefault())
+					&&!Boolean.valueOf(pocket.getIsdefault().toString()))
 				continue;
 			PocketTemplate pocketTemplate = pocket.getPocketTemplate();
-			if(pocketTemplate.getIscollectorpocket()){
+			if(Boolean.valueOf(pocketTemplate.getIscollectorpocket().toString())){
 				if(!collectorFound)
 					pocketMap.put(CmFinoFIX.ServicePocketType_Collector, pocket);
 				collectorFound =true;
@@ -1046,7 +1047,7 @@ public class PartnerServiceImpl implements PartnerService {
 				bankFound = true;
 				continue;
 			}
-			if(pocketTemplate.getIsSuspencePocket()){
+			if(Boolean.valueOf(pocketTemplate.getIssuspencepocket().toString())){
 				if(!suspenceFound)
 					pocketMap.put(CmFinoFIX.ServicePocketType_Suspence, pocket);
 				suspenceFound = true;
@@ -1074,13 +1075,13 @@ public class PartnerServiceImpl implements PartnerService {
 		List<ScheduleTemplate> scheduleTemplates = scheduleTemplateDAO.getAll();
 		for(ScheduleTemplate scheduleTemplate: scheduleTemplates ){
 			if("3".equals(scheduleTemplate.getModetype())){
-				settlementTemplate.setScheduleTemplate(scheduleTemplate);
+				settlementTemplate.setScheduleTemplateByCutofftime(scheduleTemplate);
 				settlementTemplate.setCutoffTime(scheduleTemplate.getId());
 				break;
 			}
 		}		
 		settlementTemplate.setPartner(partner);
-		settlementTemplate.setSettlementName(partner.getTradename());
+		settlementTemplate.setSettlementname(partner.getTradename());
 		settlementTemplate.setPocketBySettlementPocket(pocket);
 		settlementTemplate.setMfinoServiceProvider(mspDAO.getById(1l));
 		settlementTemplateDAO.save(settlementTemplate);

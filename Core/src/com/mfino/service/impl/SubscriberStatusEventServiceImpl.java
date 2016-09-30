@@ -67,7 +67,7 @@ public class SubscriberStatusEventServiceImpl implements
 						subscriber.getStatustime().getTime()
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(tempI));
-				if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
+				if (subMDN!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString())!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString()) &&
 						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
 				statusNextEvent.setPickupdatetime(nextTimeStamp);
@@ -82,7 +82,7 @@ public class SubscriberStatusEventServiceImpl implements
 						subscriber.getStatustime().getTime()
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(tempI));
-				if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
+				if (subMDN!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString())!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString()) &&
 						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
 				subscriberExistingEvent.setPickupdatetime(nextTimeStamp);
@@ -99,7 +99,7 @@ public class SubscriberStatusEventServiceImpl implements
 					subscriber.getStatustime().getTime()
 							+ subscriberStatusTimeService
 									.getTimeToNextStatus(tempI));
-			if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
+			if (subMDN!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString())!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString()) &&
 					subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 				nextTimeStamp = new Timestamp();
 			statusNextEvent.setPickupdatetime(nextTimeStamp);
@@ -120,10 +120,10 @@ public class SubscriberStatusEventServiceImpl implements
 			if ((subscriberStatusEvents != null)
 					&& (subscriberStatusEvents.size() != 0)) {
 				for (SubscriberStatusEvent statusEvent : subscriberStatusEvents) {
-					if (isOnline&&!statusEvent.getProcessingstatus() ) {
+					if (isOnline&&!Boolean.valueOf(statusEvent.getProcessingstatus().toString()) ) {
 						subscriberStatusEvent = statusEvent;
 						return subscriberStatusEvent;
-					}else if(!isOnline&&statusEvent.getProcessingstatus()){
+					}else if(!isOnline&&Boolean.valueOf(statusEvent.getProcessingstatus().toString())){
 						subscriberStatusEvent = statusEvent;
 						return subscriberStatusEvent;
 					}

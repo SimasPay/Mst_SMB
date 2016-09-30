@@ -19,7 +19,7 @@ import com.mfino.dao.PermissionItemsDAO;
 import com.mfino.dao.RolePermissionDAO;
 import com.mfino.dao.query.RolePermissionQuery;
 import com.mfino.domain.PermissionGroup;
-import com.mfino.domain.PermissionItems;
+import com.mfino.domain.PermissionItem;
 import com.mfino.domain.RolePermission;
 import com.mfino.service.PermissionService;
 
@@ -52,8 +52,8 @@ public class PermissionServiceImpl implements PermissionService{
      * @return
      */
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public List<PermissionItems> loadRolePermissionsByGroup(Integer role) {
-    	List<PermissionItems> list = permissionsDao.loadRolePermissionsByGroup(role);
+    public List<PermissionItem> loadRolePermissionsByGroup(Integer role) {
+    	List<PermissionItem> list = permissionsDao.loadRolePermissionsByGroup(role);
     	return list;
     }
     

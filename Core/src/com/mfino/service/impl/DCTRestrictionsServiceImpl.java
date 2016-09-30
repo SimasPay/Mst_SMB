@@ -40,7 +40,7 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 		List<DCTRestrictions> dctRestrictions = new ArrayList<DCTRestrictions>();
 		log.info("DCTRestrictionsService :: createDefaultRestrictions() dct BEGIN");
 		
-		DistributionChainTemplate dct = dctLevel.getDistributionChainTemplateByTemplateID();
+		DistributionChainTemplate dct = dctLevel.getDistributionChainTemp();
 		
 		DCTRestrictionsDao dctRestrictionsDao = DAOFactory.getInstance().getDctRestrictionsDao();
 		
@@ -52,8 +52,9 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 			dctRestriction.setDistributionChainTemplateByDCTID(dct);
 			dctRestriction.setTransactionType(txnType);
 			dctRestriction.setRelationshiptype(CmFinoFIX.RelationShipType_BELONGS_TO_TREE.longValue());
-			dctRestriction.setDistributionlevel(dctLevel.getDistributionLevel().longValue());
-			dctRestriction.setIsallowed(Boolean.TRUE);
+			Long temp = dctLevel.getDistributionlevel();
+			dctRestriction.setDistributionlevel(temp);
+			dctRestriction.setIsallowed((short) Boolean.compare(true, false));
 			
 			dctRestrictions.add(dctRestriction);
 		}
@@ -76,8 +77,8 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 		
 		for(DistributionChainLevel dctLevel : dctLevels){
 			DCTRestrictionsQuery query = new DCTRestrictionsQuery();
-			query.setDctId(dctLevel.getDistributionChainTemplateByTemplateID().getID());
-			query.setLevel(dctLevel.getDistributionLevel());
+			query.setDctId(dctLevel.getDistributionChainTemp().getId().longValue());
+			query.setLevel((int) dctLevel.getDistributionlevel());
 			
 			List<DCTRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
 			if((null != dctRestrictions) && (dctRestrictions.size() > 0)){

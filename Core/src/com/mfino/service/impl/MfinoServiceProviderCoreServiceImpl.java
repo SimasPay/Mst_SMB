@@ -13,7 +13,7 @@ import com.mfino.service.MfinoServiceProviderCoreService;
 public class MfinoServiceProviderCoreServiceImpl implements
 		MfinoServiceProviderCoreService {
 	 @Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	    public mFinoServiceProvider getById(long id) {
+	    public MfinoServiceProvider getById(long id) {
 			MfinoServiceProviderDAO dao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
 	    	return dao.getById(id);
 	    }
