@@ -38,7 +38,7 @@ public class BackendUtil {
 		if(messageType != null){
 			if(requestFix instanceof CMDSTVPaymentInquiry)
 			{
-				if(sourcePocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA.intValue())
+				if(sourcePocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue())
 				{
 					uiCategory = CmFinoFIX.TransactionUICategory_Bill_Payment_Emoney;
 				}
@@ -59,8 +59,8 @@ public class BackendUtil {
 				else if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(sourceMsg)) {
 					uiCategory = CmFinoFIX.TransactionUICategory_Settle_Bulk_Transfer;
 				}
-				else if(sourcePocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA.intValue() && 
-						destinationPocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_BankAccount.intValue()){
+				else if(sourcePocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_SVA.intValue() && 
+						destinationPocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_BankAccount.intValue()){
 					if(((destinationPocket.getPocketTemplate().getAllowance() & CmFinoFIX.PocketAllowance_MerchantDompet) == 1) ||
 							CmFinoFIX.MessageType_PurchaseInquiry == messageType.intValue() || 
 							CmFinoFIX.MessageType_Purchase == messageType.intValue()) 
@@ -78,8 +78,8 @@ public class BackendUtil {
 						uiCategory = CmFinoFIX.TransactionUICategory_EMoney_Dompet_Trf;
 					}
 				} 
-				else if((sourcePocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA.intValue()) && 
-						(destinationPocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA.intValue())) 
+				else if((sourcePocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue()) && 
+						(destinationPocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue())) 
 				{
 					if (CmFinoFIX.MessageType_CashInInquiry == messageType.intValue() ||
 							CmFinoFIX.MessageType_CashIn == messageType.intValue()) 
@@ -96,8 +96,8 @@ public class BackendUtil {
 						uiCategory = CmFinoFIX.TransactionUICategory_EMoney_EMoney_Trf;
 					}
 				} 
-				else if((sourcePocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_BankAccount.intValue()) && 
-						(destinationPocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA.intValue())) 
+				else if((sourcePocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_BankAccount.intValue()) && 
+						(destinationPocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_SVA.intValue())) 
 				{
 					if(((sourcePocket.getPocketTemplate().getAllowance() & CmFinoFIX.PocketAllowance_CashInDompet) == 1) ||
 							CmFinoFIX.MessageType_CashInInquiry == messageType.intValue() ||
@@ -129,13 +129,13 @@ public class BackendUtil {
 	}
 	
 	public static void setPocketLimits(Pocket pocket, BigDecimal transactionAmount){
-		if(!((pocket.getPocketTemplate().getIsCollectorPocket()) || (pocket.getPocketTemplate().getIsSuspencePocket()) || (pocket.getPocketTemplate().getIsSystemPocket()) )){
-			pocket.setCurrentDailyExpenditure(pocket.getCurrentDailyExpenditure().add(transactionAmount));
-			pocket.setCurrentDailyTxnsCount(pocket.getCurrentDailyTxnsCount() + 1);
-			pocket.setCurrentMonthlyExpenditure(pocket.getCurrentMonthlyExpenditure().add(transactionAmount));
-			pocket.setCurrentMonthlyTxnsCount(pocket.getCurrentMonthlyTxnsCount() + 1);
-			pocket.setCurrentWeeklyExpenditure(pocket.getCurrentWeeklyExpenditure().add(transactionAmount));
-			pocket.setCurrentWeeklyTxnsCount(pocket.getCurrentWeeklyTxnsCount() + 1);
+		if(!((pocket.getPocketTemplate().getIscollectorpocket()) || (pocket.getPocketTemplate().getIssuspencepocket()) || (pocket.getPocketTemplate().getIssystempocket()) )){
+			pocket.setCurrentdailyexpenditure(pocket.getCurrentdailyexpenditure().add(transactionAmount));
+			pocket.setCurrentdailytxnscount(pocket.getCurrentdailytxnscount() + 1);
+			pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().add(transactionAmount));
+			pocket.setCurrentmonthlytxnscount(pocket.getCurrentmonthlytxnscount() + 1);
+			pocket.setCurrentweeklyexpenditure(pocket.getCurrentweeklyexpenditure().add(transactionAmount));
+			pocket.setCurrentweeklytxnscount(pocket.getCurrentweeklytxnscount() + 1);
 		}
 	}
 	
@@ -148,7 +148,7 @@ public class BackendUtil {
 			log.error("Aborting revert of pocket limits, pct is null");
 			return;
 		}
-		Timestamp createTime = pct.getCreateTime();
+		Timestamp createTime = pct.getCreatetime();
 		long createMilliSecs = createTime.getTime();
 		
 		Timestamp now = new Timestamp();
@@ -160,21 +160,21 @@ public class BackendUtil {
 		
 		long mod = diffMilliSecs / milliSecsForDay;
 
-		if(!((pocket.getPocketTemplate().getIsCollectorPocket()) || (pocket.getPocketTemplate().getIsSuspencePocket()) || (pocket.getPocketTemplate().getIsSystemPocket()) )){
+		if(!((pocket.getPocketTemplate().getIscollectorpocket()) || (pocket.getPocketTemplate().getIssuspencepocket()) || (pocket.getPocketTemplate().getIssystempocket()) )){
 			if(mod <= 30){
 				//Within a month
-				pocket.setCurrentMonthlyExpenditure(pocket.getCurrentMonthlyExpenditure().subtract(transactionAmount));
-				pocket.setCurrentMonthlyTxnsCount(pocket.getCurrentMonthlyTxnsCount() - 1);
+				pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().subtract(transactionAmount));
+				pocket.setCurrentmonthlytxnscount(pocket.getCurrentmonthlytxnscount() - 1);
 			}		
 			if(mod <= 7){
 				//Within a week
-				pocket.setCurrentWeeklyExpenditure(pocket.getCurrentWeeklyExpenditure().subtract(transactionAmount));
-				pocket.setCurrentWeeklyTxnsCount(pocket.getCurrentWeeklyTxnsCount() - 1);
+				pocket.setCurrentweeklyexpenditure(pocket.getCurrentweeklyexpenditure().subtract(transactionAmount));
+				pocket.setCurrentweeklytxnscount(pocket.getCurrentweeklytxnscount() - 1);
 			}
 			if(mod < 1){
 				// With in Day
-				pocket.setCurrentDailyExpenditure(pocket.getCurrentDailyExpenditure().subtract(transactionAmount));
-				pocket.setCurrentDailyTxnsCount(pocket.getCurrentDailyTxnsCount() - 1);
+				pocket.setCurrentdailyexpenditure(pocket.getCurrentdailyexpenditure().subtract(transactionAmount));
+				pocket.setCurrentdailytxnscount(pocket.getCurrentdailytxnscount() - 1);
 			}
 		}
 	}

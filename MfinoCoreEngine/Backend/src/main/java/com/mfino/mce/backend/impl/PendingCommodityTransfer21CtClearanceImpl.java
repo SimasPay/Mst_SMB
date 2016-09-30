@@ -33,11 +33,11 @@ public class PendingCommodityTransfer21CtClearanceImpl extends BaseServiceImpl i
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRES_NEW,rollbackFor=Throwable.class)
 	public void calculateFinalState(PendingCommodityTransfer pct) {
 		
-		log.info("Moving PCT to CT: "+pct.getID());
-		pct.setTransferStatus(CmFinoFIX.TransferStatus_Failed);
-		pct.setTransferFailureReason(99);
+		log.info("Moving PCT to CT: "+pct.getId());
+		pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
+		pct.setTransferfailurereason(Long.valueOf(99));
 		getCommodityTransferService().movePctToCt(pct);
-		transactionChargingService.setAsFailed(pct.getID(), "Manually moved from PCT to CT table");
+		transactionChargingService.setAsFailed(pct.getId().longValue(), "Manually moved from PCT to CT table");
 	}
 
 	public void setSessionFactory(SessionFactory sessionFactory)

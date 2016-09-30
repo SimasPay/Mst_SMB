@@ -19,7 +19,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SystemParameters;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -32,7 +32,6 @@ import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.service.MfinoUtilService;
 import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.SystemParametersService;
-import com.mfino.service.impl.SystemParametersServiceImpl;
 
 /**
  * @author sasidhar
@@ -107,15 +106,15 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validateBankAccountSubscriber(Subscriber subscriber, SubscriberMDN subscriberMdn, Pocket pocket, String rPin, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean allowInitialized){
+	public BackendResponse validateBankAccountSubscriber(Subscriber subscriber, SubscriberMdn subscriberMdn, Pocket pocket, String rPin, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean allowInitialized){
 		return validateBankAccountSubscriber(subscriber, subscriberMdn, pocket, rPin, isSource, isMerchant, isValidateBobPocket, allowInitialized, false);
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validateBankAccountSubscriber(Subscriber subscriber, SubscriberMDN subscriberMdn, Pocket pocket, String rPin, boolean isSource, boolean isMerchant, 
+	public BackendResponse validateBankAccountSubscriber(Subscriber subscriber, SubscriberMdn subscriberMdn, Pocket pocket, String rPin, boolean isSource, boolean isMerchant, 
 			boolean isValidateBobPocket, boolean allowInitialized, boolean isSystemInitiatedTransaction){
 		
-		log.info("ValidationServiceImpl :: validateBankAccountSubscriber "+subscriberMdn.getMDN());
+		log.info("ValidationServiceImpl :: validateBankAccountSubscriber "+subscriberMdn.getMdn());
 		BackendResponse returnFix = createResponseObject();
 		
 		returnFix = validateSubscriber(subscriber, subscriberMdn, isSource, isMerchant, isValidateBobPocket, allowInitialized, isSystemInitiatedTransaction);
@@ -142,9 +141,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return returnFix;
 		}
 				
-		if((CmFinoFIX.PocketType_SVA.intValue() == pocket.getPocketTemplate().getType().intValue()) ||
-				(CmFinoFIX.PocketType_NFC.intValue() == pocket.getPocketTemplate().getType().intValue()) ||
-				(CmFinoFIX.PocketType_LakuPandai.intValue() == pocket.getPocketTemplate().getType().intValue())){
+		if((CmFinoFIX.PocketType_SVA.intValue() == pocket.getPocketTemplate().getType()) ||
+				(CmFinoFIX.PocketType_NFC.intValue() == pocket.getPocketTemplate().getType()) ||
+				(CmFinoFIX.PocketType_LakuPandai.intValue() == pocket.getPocketTemplate().getType())){
 			log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() SVA Pocket");
 			
 			if(!isValidSVAPocketStatus(subscriber, pocket, isSource))
@@ -165,7 +164,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				returnFix.setInternalErrorCode(NotificationCodes.SenderEMoneyPocketIsRestricted.getInternalErrorCode()); 
 				return returnFix;
 			}
-			else if(!isSource && ((pocket.getRestrictions().intValue() & CmFinoFIX.SubscriberRestrictions_AbsoluteLocked) == 1))
+			else if(!isSource && ((pocket.getRestrictions() & CmFinoFIX.SubscriberRestrictions_AbsoluteLocked) == 1))
 			{
 				log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() Dest EMoneyPocketIsRestricted");
 				returnFix.setInternalErrorCode(NotificationCodes.DestinationEMoneyPocketIsRestricted.getInternalErrorCode());
@@ -174,11 +173,11 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			
 			return returnFix;
 		}
-		else if(CmFinoFIX.PocketType_BankAccount.intValue() == pocket.getPocketTemplate().getType().intValue()){
+		else if(CmFinoFIX.PocketType_BankAccount.intValue() == pocket.getPocketTemplate().getType()){
 
 			log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() Bank Pocket#");
 
-			if((pocket.getStatus().intValue() != CmFinoFIX.PocketStatus_Active) && !(isSource && pocket.getStatus().intValue() == CmFinoFIX.PocketStatus_PendingRetirement))
+			if((pocket.getStatus() != CmFinoFIX.PocketStatus_Active) && !(isSource && pocket.getStatus() == CmFinoFIX.PocketStatus_PendingRetirement))
 			{
 				log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() Bank Pocket Not active#");
 				if(isSource){
@@ -188,7 +187,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 					returnFix.setInternalErrorCode(NotificationCodes.DestinationBankAccountPocketNotActive.getInternalErrorCode());
 				}
 			}
-			else if(pocket.getRestrictions().intValue() != 0)
+			else if(pocket.getRestrictions() != 0)
 			{
 				log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() BankAccountIsSuspended");
 				if(isSource){
@@ -196,7 +195,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				}
 				
 			}
-			else if(pocket.getCardPAN()	== null)
+			else if(pocket.getCardpan()	== null)
 			{
 				log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() BankAccountCardPANMissing");
 				if(isSource){
@@ -206,7 +205,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 					returnFix.setInternalErrorCode(NotificationCodes.DestinationBankAccountCardPANMissing.getInternalErrorCode());
 				}
 			}	
-			else if(pocket.getPocketTemplate().getBankCode() == null)
+			else if(pocket.getPocketTemplate().getBankcode() == null)
 			{
 				log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() PocketTemplateBankCodeMissing");
 				if(isSource){
@@ -238,51 +237,51 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 
-	public BackendResponse validateSubscriberPin(Subscriber subscriber, SubscriberMDN subscriberMdn, String rPin, boolean isSource, boolean isSystemInitiatedTransaction){
+	public BackendResponse validateSubscriberPin(Subscriber subscriber, SubscriberMdn subscriberMdn, String rPin, boolean isSource, boolean isSystemInitiatedTransaction){
 		BackendResponse returnFix = createResponseObject();
 
 		// Modified to do the mPin validation for all the transactions irrespective of source pocket type.
 		// Skip the mPin validation for System Initiated Transactions
 		if((isSource) && !("mFino260".equals(rPin)) && !(isSystemInitiatedTransaction)){
 			SystemParameters pinLengthParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PIN_LENGTH);
-			int pinlength = Integer.parseInt(pinLengthParam.getParameterValue());
-			String pinValid = mfinoUtilService.validatePin( subscriberMdn.getMDN(), rPin, subscriberMdn.getDigestedPIN(), pinlength);
+			int pinlength = Integer.parseInt(pinLengthParam.getParametervalue());
+			String pinValid = mfinoUtilService.validatePin( subscriberMdn.getMdn(), rPin, subscriberMdn.getDigestedpin(), pinlength);
 
 			if(pinValid.equals(GeneralConstants.LOGIN_RESPONSE_SUCCESS)){
-				if(subscriberMdn.getWrongPINCount() > 0){
-					subscriberMdn.setWrongPINCount(0);
+				if(subscriberMdn.getWrongpincount() > 0){
+					subscriberMdn.setWrongpincount(0);
 					coreDataWrapper.save(subscriberMdn);
 				}
 			}
 			else if(pinValid.equals(GeneralConstants.LOGIN_RESPONSE_FAILED)){
-				log.error("Invalid PIN entered MDN="+subscriberMdn.getMDN());
-				subscriberMdn.setWrongPINCount(subscriberMdn.getWrongPINCount() + 1);
+				log.error("Invalid PIN entered MDN="+subscriberMdn.getMdn());
+				subscriberMdn.setWrongpincount(subscriberMdn.getWrongpincount() + 1);
 				SystemParameters wrongPinCountParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.MAX_WRONGPIN_COUNT);
-				int maxWrongPinCount = (wrongPinCountParam.getParameterValue() != null) ? Integer.parseInt(wrongPinCountParam.getParameterValue()) : 3; 
-				if (subscriberMdn.getWrongPINCount() >= maxWrongPinCount) {
+				int maxWrongPinCount = (wrongPinCountParam.getParametervalue() != null) ? Integer.parseInt(wrongPinCountParam.getParametervalue()) : 3; 
+				if (subscriberMdn.getWrongpincount() >= maxWrongPinCount) {
 					Timestamp now = new Timestamp();
 					subscriberMdn.setRestrictions(subscriberMdn.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 					subscriberMdn.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-					subscriberMdn.setStatusTime(now);
+					subscriberMdn.setStatustime(now);
 					subscriber.setRestrictions(subscriber.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
 					subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-					subscriber.setStatusTime(now);
+					subscriber.setStatustime(now);
 					subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 
 					// Check if the Subscriber is of Partner type
 					if (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
-						Set<Partner> setPartners = subscriber.getPartnerFromSubscriberID();
+						Set<Partner> setPartners = subscriber.getPartners();
 						if (CollectionUtils.isNotEmpty(setPartners)) {
 							PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
 							Partner partner = setPartners.iterator().next();
-							partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+							partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 							partnerDAO.save(partner);
 						}
 					}
 				}
 				coreDataWrapper.save(subscriberMdn);
 				coreDataWrapper.save(subscriber);
-				returnFix.setNumberOfTrailsLeft(maxWrongPinCount - subscriberMdn.getWrongPINCount());
+				returnFix.setNumberOfTrailsLeft((int)(maxWrongPinCount - subscriberMdn.getWrongpincount()));
 				returnFix.setInternalErrorCode(NotificationCodes.WrongPINSpecified.getInternalErrorCode());
 				//return returnFix;
 			}else {
@@ -294,15 +293,15 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validateSubscriber(Subscriber subscriber, SubscriberMDN subscriberMdn, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean isAllowInitialized){
+	public BackendResponse validateSubscriber(Subscriber subscriber, SubscriberMdn subscriberMdn, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean isAllowInitialized){
 		return validateSubscriber(subscriber, subscriberMdn, isSource, isMerchant, isValidateBobPocket, isAllowInitialized, false);
 	}
 
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validateSubscriber(Subscriber subscriber, SubscriberMDN subscriberMdn, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean isAllowInitialized, boolean isSystemInitiatedTransaction){
+	public BackendResponse validateSubscriber(Subscriber subscriber, SubscriberMdn subscriberMdn, boolean isSource, boolean isMerchant, boolean isValidateBobPocket, boolean isAllowInitialized, boolean isSystemInitiatedTransaction){
 		
-		log.info("ValidationServiceImpl :: validateSubscriber() "+ (subscriberMdn != null ? subscriberMdn.getMDN() : "") + ", isSource="+isSource);
+		log.info("ValidationServiceImpl :: validateSubscriber() "+ (subscriberMdn != null ? subscriberMdn.getMdn() : "") + ", isSource="+isSource);
 		
 		BackendResponse responseFix = createResponseObject();
 		
@@ -326,7 +325,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				responseFix.setInternalErrorCode(NotificationCodes.DestinationMDNIsNotActive.getInternalErrorCode()); 
 			}
 		}
-		else if((isSource) && (isNullOrEmpty(subscriberMdn.getDigestedPIN())) && !(isSystemInitiatedTransaction)){
+		else if((isSource) && (isNullOrEmpty(subscriberMdn.getDigestedpin())) && !(isSystemInitiatedTransaction)){
 			log.debug("ValidationServiceImpl :: validateSubscriber() PIN Empty");
 			
 			responseFix.setInternalErrorCode(NotificationCodes.PINResetRequired.getInternalErrorCode()); 
@@ -348,7 +347,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		{
 			if(isValidateBobPocket){
 				
-				Pocket defaultBobPocket = coreDataWrapper.getDefaultBobPocketByMdnId(subscriberMdn.getID());
+				Pocket defaultBobPocket = coreDataWrapper.getDefaultBobPocketByMdnId(subscriberMdn.getId().longValue());
 				if(defaultBobPocket == null){
 					log.debug("ValidationServiceImpl :: validateSubscriber() BOB Pocket Not found");
 					if(isSource){
@@ -360,7 +359,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				}
 				else{
 					if((defaultBobPocket.getStatus()	==	CmFinoFIX.PocketStatus_Retired) || 
-						(!isAllowInitialized && defaultBobPocket.getStatus().intValue() == CmFinoFIX.PocketStatus_Initialized))
+						(!isAllowInitialized && defaultBobPocket.getStatus() == CmFinoFIX.PocketStatus_Initialized))
 						{
 							log.debug("ValidationServiceImpl :: validateSubscriber() BOB Pocket Not Active");
 							
@@ -383,7 +382,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 							}	
 							else
 							{
-								if(isSource	&& defaultBobPocket.getPocketTemplate().getOperatorCode() == null)
+								if(isSource	&& defaultBobPocket.getPocketTemplate().getOperatorcode() == null)
 								{
 									log.debug("ValidationServiceImpl :: validateSubscriber() Operator code missing");
 									responseFix.setInternalErrorCode(NotificationCodes.PocketTemplateOperatorCodeMissing.getInternalErrorCode());
@@ -393,28 +392,28 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 					}
 				}
 		}
-		responseFix.setSourceMDN(subscriberMdn.getMDN());
+		responseFix.setSourceMDN(subscriberMdn.getMdn());
 		return responseFix;
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount,
-			SubscriberMDN srcSubscriberMdn, SubscriberMDN destSubscriberMdn){
+			SubscriberMdn srcSubscriberMdn, SubscriberMdn destSubscriberMdn){
 		//TODO::Handle if the arguments are null;
 		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
-		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParameterValue() : null;
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParametervalue() : null;
 
 		BackendResponse responseFix = createResponseObject();
-		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType().intValue()) && 
-				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplate().getType().intValue()) ) {
+		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType()) && 
+				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplate().getType()) ) {
 			responseFix.setInternalErrorCode(null);
 		} else {
 			responseFix = validateRisksAndLimits(sourcePocket, debitAmount, true);
 		}
 		if(responseFix!=null && isNullorZero(responseFix.getInternalErrorCode())){
-			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType().intValue()) && 
-					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplate().getType().intValue())) ||
-					(destSubscriberMdn.getMDN().equals(dummySubMdn))) {
+			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType()) && 
+					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplate().getType())) ||
+					(destSubscriberMdn.getMdn().equals(dummySubMdn))) {
 				responseFix.setInternalErrorCode(null);
 			} else {
 				responseFix = validateRisksAndLimits(destinationPocket, creditAmount, false);
@@ -442,21 +441,21 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return null;
 		}
 		
-		if(pocket.getPocketTemplate().getIsCollectorPocket()!=null&&pocket.getPocketTemplate().getIsCollectorPocket()){
+		if(pocket.getPocketTemplate().getIscollectorpocket()!=null&&pocket.getPocketTemplate().getIscollectorpocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
-		if(pocket.getPocketTemplate().getIsSuspencePocket()!=null&&pocket.getPocketTemplate().getIsSuspencePocket()){
+		if(pocket.getPocketTemplate().getIssuspencepocket()!=null&&pocket.getPocketTemplate().getIssuspencepocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
-		if(pocket.getPocketTemplate().getIsSystemPocket()!=null&&pocket.getPocketTemplate().getIsSystemPocket()){
+		if(pocket.getPocketTemplate().getIssystempocket()!=null&&pocket.getPocketTemplate().getIssystempocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
@@ -465,41 +464,41 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		/*
 		 * Initializations
 		 */
-		if(pocket.getLastTransactionTime() == null){
+		if(pocket.getLasttransactiontime() == null){
 			
-			pocket.setLastTransactionTime(now);
-			pocket.setCurrentDailyExpenditure(BigDecimal.valueOf(0));
-			pocket.setCurrentDailyTxnsCount(0);
-			pocket.setCurrentMonthlyExpenditure(BigDecimal.valueOf(0));
-			pocket.setCurrentMonthlyTxnsCount(0);
-			pocket.setCurrentWeeklyExpenditure(BigDecimal.valueOf(0));
-			pocket.setCurrentWeeklyTxnsCount(0);
+			pocket.setLasttransactiontime(now);
+			pocket.setCurrentdailyexpenditure(BigDecimal.valueOf(0));
+			pocket.setCurrentdailytxnscount(0);
+			pocket.setCurrentmonthlyexpenditure(BigDecimal.valueOf(0));
+			pocket.setCurrentmonthlytxnscount(0);
+			pocket.setCurrentweeklyexpenditure(BigDecimal.valueOf(0));
+			pocket.setCurrentweeklytxnscount(0);
 		}else{
 			// Reset the pocket counters based on the last transaction date 
 			Calendar calendarNow = Calendar.getInstance();
 			calendarNow.setTimeInMillis(now.getTime());
 			Calendar lastTransationTime = Calendar.getInstance();
-			lastTransationTime.setTimeInMillis(pocket.getLastTransactionTime().getTime()); 
+			lastTransationTime.setTimeInMillis(pocket.getLasttransactiontime().getTime()); 
 			if (calendarNow.get(Calendar.DATE) != lastTransationTime.get(Calendar.DATE)) {
-				pocket.setCurrentDailyTxnsCount(0);
-				pocket.setCurrentDailyExpenditure(BigDecimal.valueOf(0));
+				pocket.setCurrentdailytxnscount(0);
+				pocket.setCurrentdailyexpenditure(BigDecimal.valueOf(0));
 			} 
 			
 			if (lastTransationTime.get(Calendar.DAY_OF_WEEK)>calendarNow.get(Calendar.DAY_OF_WEEK) || 
 					(calendarNow.getTimeInMillis() - lastTransationTime.getTimeInMillis()) > 7  * 24 * 60 * 60 * 1000) {
-				pocket.setCurrentWeeklyTxnsCount(0);
-				pocket.setCurrentWeeklyExpenditure(BigDecimal.valueOf(0));
+				pocket.setCurrentweeklytxnscount(0);
+				pocket.setCurrentweeklyexpenditure(BigDecimal.valueOf(0));
 			} 
 			
 			if (calendarNow.get(Calendar.MONTH) != lastTransationTime.get(Calendar.MONTH)) {
-				pocket.setCurrentMonthlyTxnsCount(0);
-				pocket.setCurrentMonthlyExpenditure(BigDecimal.valueOf(0));
+				pocket.setCurrentmonthlytxnscount(0);
+				pocket.setCurrentmonthlyexpenditure(BigDecimal.valueOf(0));
 			} 
 		}
 		
-		if(pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA){
-			if(null == pocket.getCurrentBalance()){
-				pocket.setCurrentBalance(BigDecimal.valueOf(0));
+		if(pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA){
+			if(null == pocket.getCurrentbalance()){
+				pocket.setCurrentbalance(BigDecimal.valueOf(0));
 			}
 		}
 		
@@ -532,51 +531,51 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				notificationCode = NotificationCodes.ReceiverSVAPocketRestricted.getInternalErrorCode();
 			}
 		}
-		else if(isSource && (pocket.getPocketTemplate().getMinTimeBetweenTransactions() > 0) && 
-				(pocket.getPocketTemplate().getMinTimeBetweenTransactions()*1000 > (now.getTime() - pocket.getLastTransactionTime().getTime()))){
+		else if(isSource && (pocket.getPocketTemplate().getMintimebetweentransactions() > 0) && 
+				(pocket.getPocketTemplate().getMintimebetweentransactions()*1000 > (now.getTime() - pocket.getLasttransactiontime().getTime()))){
 			notificationCode = NotificationCodes.TransactionFailedDueToTimeLimitTransactionReached.getInternalErrorCode();
 		}
-		else if((pocket.getPocketTemplate().getType().intValue() ==	CmFinoFIX.PocketType_SVA || 
-				 pocket.getPocketTemplate().getType().intValue() ==	CmFinoFIX.PocketType_LakuPandai)
+		else if((pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_SVA || 
+				 pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_LakuPandai)
 				&& ledgerService.isImmediateUpdateRequiredForPocket(pocket)){
 			if(isSource){
-				if(((pocket.getCurrentBalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumStoredValue())) == -1)){
+				if(((pocket.getCurrentbalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumstoredvalue())) == -1)){
 					notificationCode = NotificationCodes.BalanceTooLow.getInternalErrorCode();
 				}
 			}
-			else if(((pocket.getCurrentBalance().add(amount).compareTo(pocket.getPocketTemplate().getMaximumStoredValue())) == 1)){
+			else if(((pocket.getCurrentbalance().add(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == 1)){
 				notificationCode = NotificationCodes.BalanceTooHigh.getInternalErrorCode();
 			}
 		}
-		if(amount.compareTo(pocket.getPocketTemplate().getMaxAmountPerTransaction()) == 1){
+		if(amount.compareTo(pocket.getPocketTemplate().getMaxamountpertransaction()) == 1){
 			notificationCode = NotificationCodes.TransferAmountAboveMaximumAllowed.getInternalErrorCode();
-			responseFix.setMaxTransactionLimit(pocket.getPocketTemplate().getMaxAmountPerTransaction());
+			responseFix.setMaxTransactionLimit(pocket.getPocketTemplate().getMaxamountpertransaction());
 		}
-		else if(amount.compareTo(pocket.getPocketTemplate().getMinAmountPerTransaction()) == -1){ 
+		else if(amount.compareTo(pocket.getPocketTemplate().getMinamountpertransaction()) == -1){ 
 			notificationCode = NotificationCodes.TransferAmountBelowMinimumAllowed.getInternalErrorCode();
-			responseFix.setMinTransactionLimit(pocket.getPocketTemplate().getMinAmountPerTransaction());
+			responseFix.setMinTransactionLimit(pocket.getPocketTemplate().getMinamountpertransaction());
 		}
-		else if(pocket.getCurrentDailyTxnsCount()	>=	pocket.getPocketTemplate().getMaxTransactionsPerDay()){
+		else if(pocket.getCurrentdailytxnscount()	>=	pocket.getPocketTemplate().getMaxTransactionsPerDay()){
 			notificationCode = NotificationCodes.AboveDailyTransactionsCountLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentWeeklyTxnsCount()	>=	pocket.getPocketTemplate().getMaxTransactionsPerWeek()){
+		else if(pocket.getCurrentweeklytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionsperweek()){
 			notificationCode = NotificationCodes.AboveWeeklyTransactionsCountLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentMonthlyTxnsCount()	>=	pocket.getPocketTemplate().getMaxTransactionsPerMonth()){
+		else if(pocket.getCurrentmonthlytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionspermonth()){
 			notificationCode = NotificationCodes.AboveMonthlyTransactionsCountLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentDailyExpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxAmountPerDay()) == 1){
+		else if(pocket.getCurrentdailyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountperday()) == 1){
 			notificationCode = NotificationCodes.AboveDailyExpenditureLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentWeeklyExpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxAmountPerWeek()) == 1){
+		else if(pocket.getCurrentweeklyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountperweek()) == 1){
 			notificationCode = NotificationCodes.AboveWeeklyExpenditureLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentMonthlyExpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxAmountPerMonth()) == 1){
+		else if(pocket.getCurrentmonthlyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountpermonth()) == 1){
 			notificationCode = NotificationCodes.AboveMonthlyExpenditureLimit.getInternalErrorCode();
 		}
 	
 		responseFix.setInternalErrorCode(notificationCode);
-		pocket.setLastTransactionTime(now);
+		pocket.setLasttransactiontime(now);
 		
 		return responseFix;
 	}
@@ -600,10 +599,10 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		else if (destPocket.getRestrictions() != 0) {
 			notificationCode = NotificationCodes.ReceiverSVAPocketRestricted.getInternalErrorCode();
 		}
-		else if((srcPocket.getPocketTemplate().getType().intValue()	==	CmFinoFIX.PocketType_SVA ||
-				 srcPocket.getPocketTemplate().getType().intValue()	==	CmFinoFIX.PocketType_LakuPandai) 
+		else if((srcPocket.getPocketTemplate().getType()	==	CmFinoFIX.PocketType_SVA ||
+				 srcPocket.getPocketTemplate().getType()==	CmFinoFIX.PocketType_LakuPandai) 
 				&& ledgerService.isImmediateUpdateRequiredForPocket(srcPocket)) {
-			if(((srcPocket.getCurrentBalance().subtract(amount).compareTo(srcPocket.getPocketTemplate().getMinimumStoredValue())) == -1)) {
+			if(((srcPocket.getCurrentbalance().subtract(amount).compareTo(srcPocket.getPocketTemplate().getMinimumstoredvalue())) == -1)) {
 				notificationCode = NotificationCodes.BalanceTooLow.getInternalErrorCode();
 			}
 		}
@@ -625,9 +624,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return null;
 		}
 		
-		if(pocket.getPocketTemplate().getIsCollectorPocket()!=null&&pocket.getPocketTemplate().getIsCollectorPocket()){
+		if(pocket.getPocketTemplate().getIscollectorpocket()!=null&&pocket.getPocketTemplate().getIscollectorpocket()){
 			responseFix.setInternalErrorCode(null);
-			pocket.setLastTransactionTime(now);
+			pocket.setLasttransactiontime(now);
 			return responseFix;
 		}
 		
@@ -644,59 +643,59 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				notificationCode = NotificationCodes.ReceiverSVAPocketRestricted.getInternalErrorCode();
 			}
 		}
-		else if(isSource && (pocket.getPocketTemplate().getType().intValue() ==	CmFinoFIX.PocketType_SVA || 
-				             pocket.getPocketTemplate().getType().intValue() ==	CmFinoFIX.PocketType_LakuPandai)
+		else if(isSource && (pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_SVA || 
+				             pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_LakuPandai)
 				&& ledgerService.isImmediateUpdateRequiredForPocket(pocket)) 
 		{
-			if(((pocket.getCurrentBalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumStoredValue())) == -1)) 
+			if(((pocket.getCurrentbalance().subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumstoredvalue())) == -1)) 
 			{
 				notificationCode = NotificationCodes.BalanceTooLow.getInternalErrorCode();
 			}
 		}
 	
 		responseFix.setInternalErrorCode(notificationCode);
-		pocket.setLastTransactionTime(now);		
+		pocket.setLasttransactiontime(now);		
 		return responseFix;
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public BackendResponse validatePct(PendingCommodityTransfer pct,Pocket sourcePocket, Pocket destinationPocket, SubscriberMDN sourceMdn, SubscriberMDN destMdn){
+	public BackendResponse validatePct(PendingCommodityTransfer pct,Pocket sourcePocket, Pocket destinationPocket, SubscriberMdn sourceMdn, SubscriberMdn destMdn){
 		//TODO::Handle if the arguments are null;
 		BackendResponse responseFix = createResponseObject();
 		
-		if((sourcePocket != null) && !(pct.getSourceMDN().equals(sourceMdn.getMDN())
-				&&sourcePocket.equals(pct.getPocketBySourcePocketID())))	{
-			log.info("pct with ID="+pct.getID()+" invalidated.Supplied sourcepocket with ID="+sourcePocket.getID()+" pct sourcepocketid="+pct.getPocketBySourcePocketID().getID() +" do not match");
+		if((sourcePocket != null) && !(pct.getSourcemdn().equals(sourceMdn.getMdn())
+				&&sourcePocket.equals(pct.getPocket())))	{
+			log.info("pct with ID="+pct.getId()+" invalidated.Supplied sourcepocket with ID="+sourcePocket.getId()+" pct sourcepocketid="+pct.getPocket().getId() +" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferIDDoesNotBelongToSourceMDN.getInternalErrorCode());
-			pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_Expired);
+			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
 			return responseFix;
 		}else if(destMdn!=null
-				&&pct.getDestMDN()!=null
-				&&(!pct.getDestMDN().equals(destMdn.getMDN()))){
-			log.info("pct with ID="+pct.getID()+" invalidated.Supplied destMDN with="+destMdn.getMDN()+" pct destmdn="+pct.getDestMDN()+" do not match");
+				&&pct.getDestmdn()!=null
+				&&(!pct.getDestmdn().equals(destMdn.getMdn()))){
+			log.info("pct with ID="+pct.getId()+" invalidated.Supplied destMDN with="+destMdn.getMdn()+" pct destmdn="+pct.getDestmdn()+" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferRecordNotFound.getInternalErrorCode());
-			pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_Expired);
+			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
 		}else if(destinationPocket!=null
-				&&pct.getDestPocketID()!=null
-				&&(!pct.getDestPocketID().equals(destinationPocket.getID()))){
-			log.info("pct with ID="+pct.getID()+" invalidated.Supplied destpocket with ID="+destinationPocket.getID()+" pct destpocketid="+pct.getDestPocketID() +" do not match");
+				&&pct.getDestpocketid()!=null
+				&&(!pct.getDestpocketid().equals(destinationPocket.getId()))){
+			log.info("pct with ID="+pct.getId()+" invalidated.Supplied destpocket with ID="+destinationPocket.getId()+" pct destpocketid="+pct.getDestpocketid() +" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferRecordNotFound.getInternalErrorCode());
-			pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_Expired);
+			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
 		}else if((sourcePocket != null) && (CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplate().getType()) || 
 				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplate().getType())) 
 				&& ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)
-				&&((sourcePocket.getCurrentBalance().subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplate().getMinimumStoredValue())) == -1)){
-			log.info("pct with ID="+pct.getID()+" invalidated. Balance will be below the limit if the trxn is allowed");
+				&&((sourcePocket.getCurrentbalance().subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplate().getMinimumstoredvalue())) == -1)){
+			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be below the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooLow.getInternalErrorCode());
-					pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits);
-					pct.setNotificationCode(CmFinoFIX.NotificationCode_BalanceTooLow);
+					pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));
+					pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooLow));
 		}else if((destinationPocket != null) && (CmFinoFIX.PocketType_SVA.equals(destinationPocket.getPocketTemplate().getType()) ||
 				CmFinoFIX.PocketType_LakuPandai.equals(destinationPocket.getPocketTemplate().getType()))
-				&&((destinationPocket.getCurrentBalance().add(pct.getAmount()).compareTo(destinationPocket.getPocketTemplate().getMaximumStoredValue())) == 1)){
-			log.info("pct with ID="+pct.getID()+" invalidated. Balance will be above the limit if the trxn is allowed");
+				&&((destinationPocket.getCurrentbalance().add(pct.getAmount()).compareTo(destinationPocket.getPocketTemplate().getMaximumstoredvalue())) == 1)){
+			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be above the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooHigh.getInternalErrorCode());
-			pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits);//change it destination pocket limits
-			pct.setNotificationCode(CmFinoFIX.NotificationCode_BalanceTooHigh);			
+			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));//change it destination pocket limits
+			pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooHigh));			
 		}else{				
 		responseFix.setInternalErrorCode(NotificationCodes.Success.getInternalErrorCode());
 		}
@@ -710,11 +709,11 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		if((CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplate().getType()) || 
 				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplate().getType()))
 			&& ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)
-			&&((sourcePocket.getCurrentBalance().subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplate().getMinimumStoredValue())) == -1)){
-			log.info("pct with ID="+pct.getID()+" invalidated. Balance will be below the limit if the trxn is allowed");
+			&&((sourcePocket.getCurrentbalance().subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplate().getMinimumstoredvalue())) == -1)){
+			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be below the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooLow.getInternalErrorCode());
-			pct.setTransferFailureReason(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits);
-			pct.setNotificationCode(CmFinoFIX.NotificationCode_BalanceTooLow);
+			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));
+			pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooLow));
 		} 
 		else {				
 			responseFix.setInternalErrorCode(NotificationCodes.Success.getInternalErrorCode());
@@ -725,21 +724,21 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	protected boolean isValidSVAPocketStatus(Subscriber subscriber, Pocket pocket, boolean isSource)
 	{
 		if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriber.getStatus()) &&
-				(pocket.getStatus().intValue() == CmFinoFIX.PocketStatus_OneTimeActive))
+				(pocket.getStatus() == CmFinoFIX.PocketStatus_OneTimeActive))
 		{
 			//This is only allowed for Not Registered
 			return true;
 		}		
 		
-		if((pocket.getStatus().intValue() != CmFinoFIX.PocketStatus_Active) && 
-		!(isSource && pocket.getStatus().intValue() == CmFinoFIX.PocketStatus_PendingRetirement))
+		if((pocket.getStatus() != CmFinoFIX.PocketStatus_Active) && 
+		!(isSource && pocket.getStatus() == CmFinoFIX.PocketStatus_PendingRetirement))
 		{
 			return false;
 		}
 		return true;
 	}
 	
-	protected boolean isValidSubscriberAndMDNStatus(Subscriber subscriber, SubscriberMDN subscriberMdn, boolean isSource)
+	protected boolean isValidSubscriberAndMDNStatus(Subscriber subscriber, SubscriberMdn subscriberMdn, boolean isSource)
 	{
 		if((CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriber.getStatus()) &&
 				CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMdn.getStatus())) ||
@@ -748,10 +747,10 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		{
 			return true;
 		}
-		if((CmFinoFIX.SubscriberStatus_Active.intValue() != subscriber.getStatus().intValue()) &&
-		(CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() != subscriber.getStatus().intValue()) &&
-		(CmFinoFIX.MDNStatus_Active.intValue() != subscriberMdn.getStatus().intValue()) &&
-		(CmFinoFIX.MDNStatus_PendingRetirement.intValue() != subscriberMdn.getStatus().intValue()))
+		if((CmFinoFIX.SubscriberStatus_Active.intValue() != subscriber.getStatus()) &&
+		(CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() != subscriber.getStatus()) &&
+		(CmFinoFIX.MDNStatus_Active.intValue() != subscriberMdn.getStatus()) &&
+		(CmFinoFIX.MDNStatus_PendingRetirement.intValue() != subscriberMdn.getStatus()))
 		{
 			return false;
 		}
