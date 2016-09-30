@@ -40,7 +40,7 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 	private Long transactiontypeid;
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
@@ -72,7 +72,7 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 			BigDecimal mincommission, BigDecimal maxweeklylopamount,
 			BigDecimal maxlopamount, Long transactiontypeid,
 			Set<CommodityTransfer> commodityTransfers,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers) {
 		this.id = id;
 		this.distributionChainTemp = distributionChainTemp;
@@ -190,11 +190,11 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainLvl")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

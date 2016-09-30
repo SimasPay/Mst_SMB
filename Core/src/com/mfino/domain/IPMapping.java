@@ -24,14 +24,14 @@ public class IPMapping extends Base implements java.io.Serializable {
 	public static final String FieldName_IntegrationPartnerMappingByIntegrationID = "integrationPartnerMap";
 	public static final String FieldName_IPAddress = "ipaddress";
 	
-	private IntegrationPartnerMap integrationPartnerMap;
+	private IntegrationPartnerMapping integrationPartnerMap;
 	private String ipaddress;
 
 	public IPMapping() {
 	}
 
 	public IPMapping(BigDecimal id,
-			IntegrationPartnerMap integrationPartnerMap,
+			IntegrationPartnerMapping integrationPartnerMap,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String ipaddress) {
 		this.id = id;
@@ -46,12 +46,12 @@ public class IPMapping extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INTEGRATIONID", nullable = false)
-	public IntegrationPartnerMap getIntegrationPartnerMap() {
+	public IntegrationPartnerMapping getIntegrationPartnerMap() {
 		return this.integrationPartnerMap;
 	}
 
 	public void setIntegrationPartnerMap(
-			IntegrationPartnerMap integrationPartnerMap) {
+			IntegrationPartnerMapping integrationPartnerMap) {
 		this.integrationPartnerMap = integrationPartnerMap;
 	}
 

@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,13 +9,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 /**
@@ -25,8 +22,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "KYC_LEVEL", uniqueConstraints = @UniqueConstraint(columnNames = "KYCLEVEL"))
 public class KYCLevel extends Base implements java.io.Serializable {
-
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_KYCLevel = "kyclevel";
 	public static final String FieldName_KYCLevelName = "kyclevelname";
 	private PocketTemplate pocketTemplate;

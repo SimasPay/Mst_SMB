@@ -44,7 +44,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	private String lopcomment;
 	private Clob filedata;
 	private long sourceapplication;
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 
 	public BulkLOP() {
@@ -75,7 +75,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 			Timestamp distributetime, String approvedby,
 			Timestamp approvaltime, String rejectedby,
 			Timestamp rejecttime, String lopcomment, Clob filedata,
-			long sourceapplication, Set<LetterOfPurchase> letterOfPurchases) {
+			long sourceapplication, Set<LOP> letterOfPurchases) {
 		this.id = id;
 		this.subscriberMdn = subscriberMdn;
 		this.distributionChainTemp = distributionChainTemp;
@@ -294,11 +294,11 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bulkLop")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

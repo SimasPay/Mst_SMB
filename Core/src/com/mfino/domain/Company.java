@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,11 +9,9 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -27,7 +24,7 @@ import com.mfino.hibernate.Timestamp;
 		@UniqueConstraint(columnNames = "COMPANYCODE") })
 public class Company extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_CompanyCode = "companycode";
 	public static final String FieldName_CompanyName = "companyname";
 	
@@ -48,7 +45,7 @@ public class Company extends Base implements java.io.Serializable {
 	private Set<Biller> billers = new HashSet<Biller>(0);
 	private Set<OfflineReportCompany> offlineReportCompanies = new HashSet<OfflineReportCompany>(
 			0);
-	private Set<MfinoUser> mfinoUsers = new HashSet<MfinoUser>(0);
+	private Set<User> mfinoUsers = new HashSet<User>(0);
 	private Set<MerchantCode> merchantCodes = new HashSet<MerchantCode>(0);
 	private Set<ProductIndicator> productIndicators = new HashSet<ProductIndicator>(
 			0);
@@ -56,7 +53,7 @@ public class Company extends Base implements java.io.Serializable {
 	private Set<Region> regions = new HashSet<Region>(0);
 	private Set<ActivitiesLog> activitiesLogs = new HashSet<ActivitiesLog>(0);
 	private Set<BulkUploadFile> bulkUploadFiles = new HashSet<BulkUploadFile>(0);
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
@@ -89,11 +86,11 @@ public class Company extends Base implements java.io.Serializable {
 			Set<BulkUpload> bulkUploads, Set<PendingTxnsFile> pendingTxnsFiles,
 			Set<Biller> billers,
 			Set<OfflineReportCompany> offlineReportCompanies,
-			Set<MfinoUser> mfinoUsers, Set<MerchantCode> merchantCodes,
+			Set<User> mfinoUsers, Set<MerchantCode> merchantCodes,
 			Set<ProductIndicator> productIndicators, Set<Pocket> pockets,
 			Set<Region> regions, Set<ActivitiesLog> activitiesLogs,
 			Set<BulkUploadFile> bulkUploadFiles,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<Notification> notifications) {
 		this.id = id;
@@ -249,11 +246,11 @@ public class Company extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-	public Set<MfinoUser> getMfinoUsers() {
+	public Set<User> getMfinoUsers() {
 		return this.mfinoUsers;
 	}
 
-	public void setMfinoUsers(Set<MfinoUser> mfinoUsers) {
+	public void setMfinoUsers(Set<User> mfinoUsers) {
 		this.mfinoUsers = mfinoUsers;
 	}
 
@@ -312,11 +309,11 @@ public class Company extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

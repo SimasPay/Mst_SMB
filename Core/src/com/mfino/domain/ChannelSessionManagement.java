@@ -21,6 +21,7 @@ import com.mfino.hibernate.Timestamp;
 public class ChannelSessionManagement extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
 	private SubscriberMdn subscriberMdn;
 	private String sessionkey;
 	private Long requestcountafterlogin;

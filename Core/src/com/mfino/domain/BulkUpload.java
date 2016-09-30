@@ -35,7 +35,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	public static final String FieldName_ReverseSCTLID = "reversesctlid";
 	public static final String FieldName_ServiceChargeTransactionLogID = "servicechargetransactionlogid";
 	
-	private MfinoUser mfinoUser;
+	private User mfinoUser;
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
@@ -78,7 +78,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	public BulkUpload() {
 	}
 
-	public BulkUpload(BigDecimal id, MfinoUser mfinoUser,
+	public BulkUpload(BigDecimal id, User mfinoUser,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String description,
@@ -105,7 +105,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 		this.totalamount = totalamount;
 	}
 
-	public BulkUpload(BigDecimal id, MfinoUser mfinoUser,
+	public BulkUpload(BigDecimal id, User mfinoUser,
 			Subscriber subscriber, MfinoServiceProvider mfinoServiceProvider,
 			Company company, Pocket pocket, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
@@ -171,11 +171,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
-	public MfinoUser getMfinoUser() {
+	public User getMfinoUser() {
 		return this.mfinoUser;
 	}
 
-	public void setMfinoUser(MfinoUser mfinoUser) {
+	public void setMfinoUser(User mfinoUser) {
 		this.mfinoUser = mfinoUser;
 	}
 

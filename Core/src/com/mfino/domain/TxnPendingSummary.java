@@ -16,7 +16,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "TXN_PENDING_SUMMARY")
 public class TxnPendingSummary extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	private BigDecimal sctlid;
 	private Long csraction;
 	private Timestamp csractiontime;

@@ -9,30 +9,30 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.IntegrationPartnerMappingQuery;
-import com.mfino.domain.IntegrationPartnerMap;
+import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.fix.CmFinoFIX;
 
 
-public class IntegrationPartnerMappingDAO extends BaseDAO<IntegrationPartnerMap> {
+public class IntegrationPartnerMappingDAO extends BaseDAO<IntegrationPartnerMapping> {
 
-    public IntegrationPartnerMap getByInstitutionID(String institutionID) {
+    public IntegrationPartnerMapping getByInstitutionID(String institutionID) {
     	if(institutionID==null)
     		return null;
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(IntegrationPartnerMap.FieldName_InstitutionID, institutionID).ignoreCase());
-        return (IntegrationPartnerMap) criteria.uniqueResult();
+        criteria.add(Restrictions.eq(IntegrationPartnerMapping.FieldName_InstitutionID, institutionID).ignoreCase());
+        return (IntegrationPartnerMapping) criteria.uniqueResult();
     }
     
-    public IntegrationPartnerMap getByIntegrationName(String integrationName) {
-    	IntegrationPartnerMap ipMapping = null;
+    public IntegrationPartnerMapping getByIntegrationName(String integrationName) {
+    	IntegrationPartnerMapping ipMapping = null;
     	if (StringUtils.isBlank(integrationName)) {
     		return null;
     	}
     	IntegrationPartnerMappingQuery query = new IntegrationPartnerMappingQuery();
     	query.setIntegrationName(integrationName);
-    	List<IntegrationPartnerMap> results = get(query);
+    	List<IntegrationPartnerMapping> results = get(query);
     	if (CollectionUtils.isNotEmpty(results)) {
     		ipMapping = results.get(0);
     	}
@@ -40,7 +40,7 @@ public class IntegrationPartnerMappingDAO extends BaseDAO<IntegrationPartnerMap>
     }
     
         
-    public List<IntegrationPartnerMap> get(IntegrationPartnerMappingQuery query) {
+    public List<IntegrationPartnerMapping> get(IntegrationPartnerMappingQuery query) {
 
         Criteria criteria = createCriteria();
 
@@ -61,7 +61,7 @@ public class IntegrationPartnerMappingDAO extends BaseDAO<IntegrationPartnerMap>
                 
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
-        List<IntegrationPartnerMap> results = criteria.list();
+        List<IntegrationPartnerMapping> results = criteria.list();
 
         return results;
     }

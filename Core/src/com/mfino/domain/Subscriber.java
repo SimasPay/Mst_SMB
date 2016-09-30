@@ -47,8 +47,8 @@ public class Subscriber extends Base implements java.io.Serializable {
 	
 	private Address addressBySubscriberaddressid;
 	private Address addressBySubscriberaddressktpid;
-	private MfinoUser mfinoUserBySubscriberuserid;
-	private MfinoUser mfinoUserByUserid;
+	private User mfinoUserBySubscriberuserid;
+	private User mfinoUserByUserid;
 	private MfinoServiceProvider MfinoServiceProvider;
 	private KYCLevel kycLevel;
 	private Company company;
@@ -141,7 +141,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	public Subscriber(BigDecimal id, Address addressBySubscriberaddressid,
 			Address addressBySubscriberaddressktpid,
-			MfinoUser mfinoUserBySubscriberuserid, MfinoUser mfinoUserByUserid,
+			User mfinoUserBySubscriberuserid, User mfinoUserByUserid,
 			MfinoServiceProvider MfinoServiceProvider, KYCLevel kycLevel,
 			Company company, AuthPersonDetails authPersonDetails,
 			Timestamp lastupdatetime, String updatedby,
@@ -267,22 +267,22 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIBERUSERID")
-	public MfinoUser getMfinoUserBySubscriberuserid() {
+	public User getMfinoUserBySubscriberuserid() {
 		return this.mfinoUserBySubscriberuserid;
 	}
 
 	public void setMfinoUserBySubscriberuserid(
-			MfinoUser mfinoUserBySubscriberuserid) {
+			User mfinoUserBySubscriberuserid) {
 		this.mfinoUserBySubscriberuserid = mfinoUserBySubscriberuserid;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID")
-	public MfinoUser getMfinoUserByUserid() {
+	public User getMfinoUserByUserid() {
 		return this.mfinoUserByUserid;
 	}
 
-	public void setMfinoUserByUserid(MfinoUser mfinoUserByUserid) {
+	public void setMfinoUserByUserid(User mfinoUserByUserid) {
 		this.mfinoUserByUserid = mfinoUserByUserid;
 	}
 

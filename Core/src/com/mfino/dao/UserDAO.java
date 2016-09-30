@@ -17,7 +17,7 @@ import org.hibernate.type.StandardBasicTypes;
 
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.MfinoServiceProvider;
-import com.mfino.domain.MfinoUser;
+import com.mfino.domain.User;
 import com.mfino.domain.Role;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -26,7 +26,7 @@ import com.mfino.hibernate.Timestamp;
  *
  * @author sandeepjs
  */
-public class UserDAO extends BaseDAO<MfinoUser> {
+public class UserDAO extends BaseDAO<User> {
 	  //Before Correcting errors reported by Findbugs:
 		//public static String EXPIRY_TAG = "_EXPIRED_";
     	//public static String RETIRE_TAG = "_RETIRED_";
@@ -37,7 +37,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
     
 
     @Override
-    public void save(MfinoUser theUser) {
+    public void save(User theUser) {
         //FIXME : everyone save it as 1 for now
         if (theUser.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
@@ -51,46 +51,46 @@ public class UserDAO extends BaseDAO<MfinoUser> {
         super.save(theUser);
     }
 
-    public List<MfinoUser> get(UserQuery query) {
+    public List<User> get(UserQuery query) {
         Criteria criteria = createCriteria();
         MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
         MfinoServiceProvider msp = mspDAO.getById(1l);
         
         if (query.getUserName() != null) {
-        	criteria.add(Restrictions.eq(MfinoUser.FieldName_mFinoServiceProviderByMSPID, msp));
-            criteria.add(Restrictions.eq(MfinoUser.FieldName_Username, query.getUserName()).ignoreCase());
+        	criteria.add(Restrictions.eq(User.FieldName_mFinoServiceProviderByMSPID, msp));
+            criteria.add(Restrictions.eq(User.FieldName_Username, query.getUserName()).ignoreCase());
             //It is recommended to declare the general fetch mode in the hbm file
             // and over-ride it as and when required            
         }
         if (query.getUserNameLike() != null) {
-        	criteria.add(Restrictions.eq(MfinoUser.FieldName_mFinoServiceProviderByMSPID, msp));
-            addLikeStartRestriction(criteria, MfinoUser.FieldName_Username, query.getUserNameLike());
+        	criteria.add(Restrictions.eq(User.FieldName_mFinoServiceProviderByMSPID, msp));
+            addLikeStartRestriction(criteria, User.FieldName_Username, query.getUserNameLike());
         }
         if(query.getConfirmationTimeGE() !=null){
-        	criteria.add(Restrictions.ge(MfinoUser.FieldName_ConfirmationTime, query.getConfirmationTimeGE()));
+        	criteria.add(Restrictions.ge(User.FieldName_ConfirmationTime, query.getConfirmationTimeGE()));
         }
         if(query.getConfirmationTimeLT() !=null){
-        	criteria.add(Restrictions.lt(MfinoUser.FieldName_ConfirmationTime, query.getConfirmationTimeLT()));
+        	criteria.add(Restrictions.lt(User.FieldName_ConfirmationTime, query.getConfirmationTimeLT()));
         }
        
         if(query.getActivationTimeGE() !=null){
-        	criteria.add(Restrictions.ge(MfinoUser.FieldName_UserActivationTime, query.getActivationTimeGE()));
+        	criteria.add(Restrictions.ge(User.FieldName_UserActivationTime, query.getActivationTimeGE()));
         }
         if(query.getActivationTimeLT() !=null){
-        	criteria.add(Restrictions.lt(MfinoUser.FieldName_UserActivationTime, query.getActivationTimeLT()));
+        	criteria.add(Restrictions.lt(User.FieldName_UserActivationTime, query.getActivationTimeLT()));
         }
 
         if (query.getFirstNameLike() != null) {
-            addLikeStartRestriction(criteria, MfinoUser.FieldName_FirstName, query.getFirstNameLike());
+            addLikeStartRestriction(criteria, User.FieldName_FirstName, query.getFirstNameLike());
         }
         if (query.getLastNameLike() != null) {
-            addLikeStartRestriction(criteria, MfinoUser.FieldName_LastName, query.getLastNameLike());
+            addLikeStartRestriction(criteria, User.FieldName_LastName, query.getLastNameLike());
         }
         if (query.getStatus() != null) {
-            criteria.add(Restrictions.eq(MfinoUser.FieldName_UserStatus, query.getStatus()));
+            criteria.add(Restrictions.eq(User.FieldName_UserStatus, query.getStatus()));
         }
         if(query.getCompany()!=null){
-        	criteria.add(Restrictions.eq(MfinoUser.FieldName_Company,query.getCompany()));
+        	criteria.add(Restrictions.eq(User.FieldName_Company,query.getCompany()));
         }
         if (query.getRestrictions() != null) {
             int rest = query.getRestrictions();
@@ -98,44 +98,44 @@ public class UserDAO extends BaseDAO<MfinoUser> {
                 criteria.add(Restrictions.sqlRestriction("(Restrictions & ?) > 0", query.getRestrictions(), StandardBasicTypes.INTEGER));
             } else {
                 //When user restrictions equal
-                criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None));
+                criteria.add(Restrictions.eq(User.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None));
             }
         }        
         if(query.getRole() != null) {
-            criteria.add(Restrictions.eq(MfinoUser.FieldName_Role, query.getRole()));
+            criteria.add(Restrictions.eq(User.FieldName_Role, query.getRole()));
         }
         if(query.getRoles() != null) {
-        	criteria.add(Restrictions.in(MfinoUser.FieldName_Role, query.getRoles()));
+        	criteria.add(Restrictions.in(User.FieldName_Role, query.getRoles()));
         }
         if(query.getNotequalsRole() != null) {
-            criteria.add(Restrictions.ne(MfinoUser.FieldName_Role, query.getNotequalsRole()));
+            criteria.add(Restrictions.ne(User.FieldName_Role, query.getNotequalsRole()));
         }
         /*
          * Remove check to add Order to criteria... by default add order by RecordID
          * if(query.getAddOrder()!=null && Boolean.TRUE.equals(query.getAddOrder())){
             criteria.addOrder(Order.desc(MfinoUser.FieldName_RecordID));
         }*/
-        criteria.addOrder(Order.desc(MfinoUser.FieldName_RecordID));
+        criteria.addOrder(Order.desc(User.FieldName_RecordID));
 		if(query.getPriorityLevel() != null){ //fetch users whose priority level is greater than given level(ie., current user level)
 			DetachedCriteria roles = DetachedCriteria.forClass(Role.class)
 					.setProjection(Property.forName(Role.FieldName_RecordID))
 					.add(Restrictions.ge(Role.FieldName_PriorityLevel, query.getPriorityLevel()));
-			criteria.add(Property.forName(MfinoUser.FieldName_Role).in(roles));
+			criteria.add(Property.forName(User.FieldName_Role).in(roles));
 		}
 		
 
         processBaseQuery(query, criteria);
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
-        List<MfinoUser> results = criteria.list();
+        List<User> results = criteria.list();
 
         return results;
     }
 
-    public MfinoUser getByUserName(String userName){
+    public User getByUserName(String userName){
         UserQuery query = new UserQuery();
         query.setUserName(userName);
-        List<MfinoUser> results = get(query);
+        List<User> results = get(query);
         if(results.size() > 0){
             return results.get(0);
         }else{

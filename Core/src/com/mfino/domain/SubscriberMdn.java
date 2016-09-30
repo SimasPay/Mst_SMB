@@ -90,11 +90,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			0);
 	private Set<ExcludeSubscriberLc> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLc>(
 			0);
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
 			0);
-	private Set<ChannelSessionMgmt> channelSessionMgmts = new HashSet<ChannelSessionMgmt>(
+	private Set<ChannelSessionManagement> channelSessionMgmts = new HashSet<ChannelSessionManagement>(
 			0);
 
 	public SubscriberMdn() {
@@ -144,9 +144,9 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			Set<ClosedAccountSettlementMDN> closeAcctSetlMdns, Set<Pocket> pockets,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<ExcludeSubscriberLc> excludeSubscriberLcs,
-			Set<LetterOfPurchase> letterOfPurchases,
+			Set<LOP> letterOfPurchases,
 			Set<UnregisteredTxnInfo> unregisteredTxnInfos,
-			Set<ChannelSessionMgmt> channelSessionMgmts) {
+			Set<ChannelSessionManagement> channelSessionMgmts) {
 		this.id = id;
 		this.subscriber = subscriber;
 		this.lastupdatetime = lastupdatetime;
@@ -676,11 +676,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 
@@ -695,12 +695,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<ChannelSessionMgmt> getChannelSessionMgmts() {
+	public Set<ChannelSessionManagement> getChannelSessionMgmts() {
 		return this.channelSessionMgmts;
 	}
 
 	public void setChannelSessionMgmts(
-			Set<ChannelSessionMgmt> channelSessionMgmts) {
+			Set<ChannelSessionManagement> channelSessionMgmts) {
 		this.channelSessionMgmts = channelSessionMgmts;
 	}
 

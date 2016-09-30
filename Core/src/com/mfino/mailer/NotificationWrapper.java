@@ -10,7 +10,7 @@ import com.mfino.domain.BulkLOP;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Company;
 import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.LetterOfPurchase;
+import com.mfino.domain.LOP;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
@@ -37,7 +37,7 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
     private String destMDN;
     private String emailSubject;
     private DistributionChainLevel dcl;
-    private LetterOfPurchase lop;
+    private LOP lop;
     private BulkLOP bulkLop;
     private String username;
     private String confirmationCode;    
@@ -204,14 +204,14 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	/**
 	 * @return the LOP
 	 */
-	public LetterOfPurchase getLOP() {
+	public LOP getLOP() {
 		return lop;
 	}
 
 	/**
 	 * @param lop the lop to set
 	 */
-	public void setLOP(LetterOfPurchase lop) {
+	public void setLOP(LOP lop) {
 		this.lop = lop;
 	}
 

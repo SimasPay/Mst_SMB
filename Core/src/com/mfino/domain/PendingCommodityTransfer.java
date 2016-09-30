@@ -72,7 +72,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
 	private CreditCardTransaction creditCardTransaction;
-	private LetterOfPurchase letterOfPurchase;
+	private LOP letterOfPurchase;
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
@@ -220,7 +220,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	public PendingCommodityTransfer(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog,
 			CreditCardTransaction creditCardTransaction,
-			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
+			LOP letterOfPurchase, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
 			DistributionChainLevel distributionChainLvl, Pocket pocket,
 			long msgtype, Long uicategory, long transferstatus,
@@ -419,11 +419,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LOPID")
-	public LetterOfPurchase getLetterOfPurchase() {
+	public LOP getLetterOfPurchase() {
 		return this.letterOfPurchase;
 	}
 
-	public void setLetterOfPurchase(LetterOfPurchase letterOfPurchase) {
+	public void setLetterOfPurchase(LOP letterOfPurchase) {
 		this.letterOfPurchase = letterOfPurchase;
 	}
 

@@ -23,7 +23,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "PARTNER_SERVICES")
 public class PartnerServices extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_Partner = "partnerByPartnerid";
 	public static final String FieldName_PartnerByServiceProviderID = "partnerByServiceproviderid";
 	public static final String FieldName_Service = "service";

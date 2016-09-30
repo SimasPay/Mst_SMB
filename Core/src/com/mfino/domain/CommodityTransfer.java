@@ -64,7 +64,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
 	private CreditCardTransaction creditCardTransaction;
-	private LetterOfPurchase letterOfPurchase;
+	private LOP letterOfPurchase;
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
@@ -207,7 +207,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	public CommodityTransfer(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog,
 			CreditCardTransaction creditCardTransaction,
-			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
+			LOP letterOfPurchase, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
 			DistributionChainLevel distributionChainLvl, Pocket pocket,
 			Timestamp lastupdatetime, String updatedby,
@@ -400,11 +400,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LOPID")
-	public LetterOfPurchase getLetterOfPurchase() {
+	public LOP getLetterOfPurchase() {
 		return this.letterOfPurchase;
 	}
 
-	public void setLetterOfPurchase(LetterOfPurchase letterOfPurchase) {
+	public void setLetterOfPurchase(LOP letterOfPurchase) {
 		this.letterOfPurchase = letterOfPurchase;
 	}
 

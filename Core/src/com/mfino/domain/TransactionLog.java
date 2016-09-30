@@ -35,7 +35,7 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 			0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 
 	public TransactionLog() {
@@ -65,7 +65,7 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 			Timestamp transactiontime, long messagecode, String messagedata,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<LetterOfPurchase> letterOfPurchases) {
+			Set<LOP> letterOfPurchases) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
 		this.lastupdatetime = lastupdatetime;
@@ -160,11 +160,11 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transactionLog")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -30,8 +28,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "MERCHANT")
 public class Merchant extends Base implements java.io.Serializable {
-
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_TradeName = "tradename";
 	public static final String FieldName_MerchantByParentID = "merchant";
 	public static final String FieldName_GroupID = "groupid";
@@ -65,7 +62,7 @@ public class Merchant extends Base implements java.io.Serializable {
 	private Timestamp statustime;
 	private Long rangecheck;
 	private Set<MDNRange> mdnRanges = new HashSet<MDNRange>(0);
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
 	private Set<Merchant> merchants = new HashSet<Merchant>(0);
@@ -101,7 +98,7 @@ public class Merchant extends Base implements java.io.Serializable {
 			Long yearestablished, String authorizedfaxnumber,
 			String authorizedemail, String admincomment, long status,
 			Timestamp statustime, Long rangecheck, Set<MDNRange> mdnRanges,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
 			Set<Merchant> merchants) {
 		this.addressByMerchantaddressid = addressByMerchantaddressid;
 		this.addressByFranchiseoutletaddressid = addressByFranchiseoutletaddressid;
@@ -416,11 +413,11 @@ public class Merchant extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "merchant")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

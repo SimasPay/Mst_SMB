@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mfino.dao.query.IPMappingQuery;
 import com.mfino.domain.IPMapping;
-import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.domain.IntegrationPartnerMapping;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Amar
@@ -26,7 +24,7 @@ public class IPMappingDAO extends BaseDAO<IPMapping>{
 		log.info("IPMappingDAO :: getByIntegrationName() "+integrationName);
 
 		if((null == integrationName) || ("".equals(integrationName))) return null;
-		IntegrationPartnerMap integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByIntegrationName(integrationName);		
+		IntegrationPartnerMapping integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByIntegrationName(integrationName);		
 		Criteria criteria = createCriteria();
 		if(integrationPartnerMapping != null)
 		{

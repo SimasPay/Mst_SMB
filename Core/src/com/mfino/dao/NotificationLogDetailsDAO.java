@@ -7,23 +7,23 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.NotificationLogDetailsQuery;
-import com.mfino.domain.NlogDetails;
+import com.mfino.domain.NotificationLogDetails;
 
 /**
  * 
  * @author Amar
  *
  */
-public class NotificationLogDetailsDAO extends BaseDAO<NlogDetails>{
+public class NotificationLogDetailsDAO extends BaseDAO<NotificationLogDetails>{
 
-    public List<NlogDetails> get(NotificationLogDetailsQuery query){
+    public List<NotificationLogDetails> get(NotificationLogDetailsQuery query){
         Criteria criteria = createCriteria();
 
         if(query.getNotificationLog() != null) {
-            criteria.add(Restrictions.eq(NlogDetails.FieldName_NotificationLog, query.getNotificationLog()));
+            criteria.add(Restrictions.eq(NotificationLogDetails.FieldName_NotificationLog, query.getNotificationLog()));
         }
         if(query.getSendNotificationtatus() != null) {
-            criteria.add(Restrictions.eq(NlogDetails.FieldName_SendNotificationStatus, query.getSendNotificationtatus()));
+            criteria.add(Restrictions.eq(NotificationLogDetails.FieldName_SendNotificationStatus, query.getSendNotificationtatus()));
         }
         
         
@@ -33,13 +33,13 @@ public class NotificationLogDetailsDAO extends BaseDAO<NlogDetails>{
         processPaging(query, criteria);
 
         if(query.isIDOrdered()) {
-          criteria.addOrder(Order.desc(NlogDetails.FieldName_RecordID));
+          criteria.addOrder(Order.desc(NotificationLogDetails.FieldName_RecordID));
         }
         
         //applying Order
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<NlogDetails> results = criteria.list();
+        List<NotificationLogDetails> results = criteria.list();
 
         return results;
     }

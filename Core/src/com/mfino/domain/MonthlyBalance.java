@@ -24,8 +24,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "MONTHLY_BALANCE", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"POCKETID", "MONTH", "YEAR" }))
 public class MonthlyBalance extends Base implements java.io.Serializable {
-
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_Pocket = "pocket";
 	public static final String FieldName_Month = "month";
 	public static final String FieldName_Year = "year";

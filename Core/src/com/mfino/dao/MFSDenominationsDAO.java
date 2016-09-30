@@ -11,7 +11,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.MFSDenominationsQuery;
 import com.mfino.domain.MFSDenominations;
-import com.mfino.domain.MfsbillerPartnerMap;
+import com.mfino.domain.MFSBillerPartner;
 
 /**
  * @author Satya
@@ -38,7 +38,7 @@ public class MFSDenominationsDAO extends BaseDAO<MFSDenominations> {
     public void save(MFSDenominations md) {
         if (md.getMfsid() == null) {
             MFSBillerPartnerDAO mbpDao = DAOFactory.getInstance().getMFSBillerPartnerDAO();
-            MfsbillerPartnerMap mbp = mbpDao.getById(1);
+            MFSBillerPartner mbp = mbpDao.getById(1);
             md.setMfsid(mbp.getId());
         }
         super.save(md);

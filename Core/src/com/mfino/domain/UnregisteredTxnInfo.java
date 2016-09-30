@@ -36,8 +36,6 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	public static final String FieldName_FundDefinition = "fundDefinition";
 	public static final String FieldName_PartnerCode = "partnercode";
 	public static final String FieldName_TransactionName = "transactionname";
-	private BigDecimal id;
-	private long version;
 	private SubscriberMdn subscriberMdn;
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private FundDefinition fundDefinition;

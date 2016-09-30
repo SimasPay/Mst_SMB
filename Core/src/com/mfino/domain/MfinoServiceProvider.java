@@ -31,10 +31,10 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	private Set<MfsBiller> mfsBillers = new HashSet<MfsBiller>(0);
 	private Set<ServiceChargeTxnLog> serviceChargeTxnLogs = new HashSet<ServiceChargeTxnLog>(
 			0);
-	private Set<MfinoUser> mfinoUsers = new HashSet<MfinoUser>(0);
+	private Set<User> mfinoUsers = new HashSet<User>(0);
 	private Set<TransactionCharge> transactionCharges = new HashSet<TransactionCharge>(
 			0);
-	private Set<MfsbillerPartnerMap> mfsbillerPartnerMaps = new HashSet<MfsbillerPartnerMap>(
+	private Set<MFSBillerPartner> mfsbillerPartnerMaps = new HashSet<MFSBillerPartner>(
 			0);
 	private Set<TxnAmountDstrbLog> txnAmountDstrbLogs = new HashSet<TxnAmountDstrbLog>(
 			0);
@@ -91,9 +91,9 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 			Timestamp statustime, Set<Person2Person> person2Persons,
 			Set<BulkUpload> bulkUploads, Set<MfsBiller> mfsBillers,
 			Set<ServiceChargeTxnLog> serviceChargeTxnLogs,
-			Set<MfinoUser> mfinoUsers,
+			Set<User> mfinoUsers,
 			Set<TransactionCharge> transactionCharges,
-			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps,
+			Set<MFSBillerPartner> mfsbillerPartnerMaps,
 			Set<TxnAmountDstrbLog> txnAmountDstrbLogs, Set<Partner> partners,
 			Set<ServiceSettlementCfg> serviceSettlementCfgs, Set<Brand> brands,
 			Set<DistributionChainTemplate> distributionChainTemps,
@@ -228,11 +228,11 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoServiceProvider")
-	public Set<MfinoUser> getMfinoUsers() {
+	public Set<User> getMfinoUsers() {
 		return this.mfinoUsers;
 	}
 
-	public void setMfinoUsers(Set<MfinoUser> mfinoUsers) {
+	public void setMfinoUsers(Set<User> mfinoUsers) {
 		this.mfinoUsers = mfinoUsers;
 	}
 
@@ -246,12 +246,12 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoServiceProvider")
-	public Set<MfsbillerPartnerMap> getMfsbillerPartnerMaps() {
+	public Set<MFSBillerPartner> getMfsbillerPartnerMaps() {
 		return this.mfsbillerPartnerMaps;
 	}
 
 	public void setMfsbillerPartnerMaps(
-			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps) {
+			Set<MFSBillerPartner> mfsbillerPartnerMaps) {
 		this.mfsbillerPartnerMaps = mfsbillerPartnerMaps;
 	}
 

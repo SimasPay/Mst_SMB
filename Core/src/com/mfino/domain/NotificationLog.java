@@ -23,8 +23,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "NOTIFICATION_LOG")
 public class NotificationLog extends Base implements java.io.Serializable {
-
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SctlId = "sctlid";
 	public static final String FieldName_NotificationCode = "code";
 	public static final String FieldName_NotificationMethod = "notificationmethod";
@@ -40,7 +39,7 @@ public class NotificationLog extends Base implements java.io.Serializable {
 	private long notificationreceivertype;
 	private String emailsubject;
 	private Short issensitivedata;
-	private Set<NlogDetails> nlogDetailses = new HashSet<NlogDetails>(0);
+	private Set<NotificationLogDetails> nlogDetailses = new HashSet<NotificationLogDetails>(0);
 
 	public NotificationLog() {
 	}
@@ -66,7 +65,7 @@ public class NotificationLog extends Base implements java.io.Serializable {
 			BigDecimal sctlid, long code, String text, long notificationmethod,
 			String sourceaddress, long notificationreceivertype,
 			String emailsubject, Short issensitivedata,
-			Set<NlogDetails> nlogDetailses) {
+			Set<NotificationLogDetails> nlogDetailses) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
 		this.updatedby = updatedby;
@@ -157,11 +156,11 @@ public class NotificationLog extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "notificationLog")
-	public Set<NlogDetails> getNlogDetailses() {
+	public Set<NotificationLogDetails> getNlogDetailses() {
 		return this.nlogDetailses;
 	}
 
-	public void setNlogDetailses(Set<NlogDetails> nlogDetailses) {
+	public void setNlogDetailses(Set<NotificationLogDetails> nlogDetailses) {
 		this.nlogDetailses = nlogDetailses;
 	}
 

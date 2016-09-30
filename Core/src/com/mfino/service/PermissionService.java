@@ -6,7 +6,7 @@ package com.mfino.service;
 import java.util.List;
 
 import com.mfino.domain.PermissionGroup;
-import com.mfino.domain.PermissionItems;
+import com.mfino.domain.PermissionItem;
 import com.mfino.domain.RolePermission;
 
 /**
@@ -25,7 +25,7 @@ public interface PermissionService {
      * @param role
      * @return
      */
-    public List<PermissionItems> loadRolePermissionsByGroup(Integer role);
+    public List<PermissionItem> loadRolePermissionsByGroup(Integer role);
     
     /**
      * Deletes the given permissions for the input role

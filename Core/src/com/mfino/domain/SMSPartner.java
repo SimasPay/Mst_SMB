@@ -25,7 +25,7 @@ public class SMSPartner extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_PartnerName = "partnername";
-	private MfinoUser mfinoUser;
+	private User mfinoUser;
 	private String partnername;
 	private String contactname;
 	private String contactphone;
@@ -41,7 +41,7 @@ public class SMSPartner extends Base implements java.io.Serializable {
 	public SMSPartner() {
 	}
 
-	public SMSPartner(BigDecimal id, MfinoUser mfinoUser,
+	public SMSPartner(BigDecimal id, User mfinoUser,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String partnername,
 			String contactname, String contactphone, String contactemail,
@@ -60,7 +60,7 @@ public class SMSPartner extends Base implements java.io.Serializable {
 		this.apikey = apikey;
 	}
 
-	public SMSPartner(BigDecimal id, MfinoUser mfinoUser,
+	public SMSPartner(BigDecimal id, User mfinoUser,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String partnername,
 			String contactname, String contactphone, String contactemail,
@@ -87,11 +87,11 @@ public class SMSPartner extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
-	public MfinoUser getMfinoUser() {
+	public User getMfinoUser() {
 		return this.mfinoUser;
 	}
 
-	public void setMfinoUser(MfinoUser mfinoUser) {
+	public void setMfinoUser(User mfinoUser) {
 		this.mfinoUser = mfinoUser;
 	}
 

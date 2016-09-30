@@ -22,14 +22,14 @@ import com.mfino.hibernate.Timestamp;
 public class BankAdmin extends Base implements java.io.Serializable {
 
 	
-	private MfinoUser mfinoUser;
+	private User mfinoUser;
 	private Bank bank;
 	
 
 	public BankAdmin() {
 	}
 
-	public BankAdmin(BigDecimal id, MfinoUser mfinoUser, Bank bank,
+	public BankAdmin(BigDecimal id, User mfinoUser, Bank bank,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -45,11 +45,11 @@ public class BankAdmin extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
-	public MfinoUser getMfinoUser() {
+	public User getMfinoUser() {
 		return this.mfinoUser;
 	}
 
-	public void setMfinoUser(MfinoUser mfinoUser) {
+	public void setMfinoUser(User mfinoUser) {
 		this.mfinoUser = mfinoUser;
 	}
 

@@ -34,7 +34,7 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
 	private String name;
 	private String description;
 	private long serviceid;
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
+	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
 	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
 	private Set<DistributionChainLevel> distributionChainLvls = new HashSet<DistributionChainLevel>(
@@ -65,7 +65,7 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String name,
 			String description, long serviceid,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
 			Set<DistributionChainLevel> distributionChainLvls,
 			Set<PartnerServices> partnerServiceses) {
 		this.id = id;
@@ -125,11 +125,11 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainTemp")
-	public Set<LetterOfPurchase> getLetterOfPurchases() {
+	public Set<LOP> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

@@ -22,7 +22,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "POCKET_TEMPLATE")
 public class PocketTemplate  extends Base implements java.io.Serializable {
-
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_PocketType = "type";
 	public static final String FieldName_Commodity = "commodity";
 	public static final String FieldName_IsCollectorPocket = "iscollectorpocket";
@@ -31,13 +31,7 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	public static final String FieldName_Description = "description";
 	public static final String FieldName_PocketCode = "pocketcode";
 	
-	private BigDecimal id;
-	private long version;
 	private MfinoServiceProvider mfinoServiceProvider;
-	private Timestamp lastupdatetime;
-	private String updatedby;
-	private Timestamp createtime;
-	private String createdby;
 	private long type;
 	private Long bankaccountcardtype;
 	private String description;
