@@ -38,7 +38,7 @@ import com.mfino.domain.Company;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.domain.User;
 import com.mfino.errorcodes.Codes;
@@ -154,20 +154,23 @@ public class SubscriberServiceImpl implements SubscriberService{
 	 * New Retire Subscriber As per ticket #486
 	 * 
 	 */
-	public int retireSubscriber(SubscriberMDN subscriberMDN) {
+	public int retireSubscriber(SubscriberMdn subscriberMDN) {
 		retireSubscriberAndPockets(subscriberMDN);
 		return Codes.SUCCESS;
 		//        }
 	}
 
-	public void retireSubscriberAndPockets(SubscriberMDN subscriber) {
-		Set<Pocket> pokects = subscriber.getPocketFromMDNID();
+	public void retireSubscriberAndPockets(SubscriberMdn subscriber) {
+		Set<Pocket> pokects = subscriber.getPockets();
 		Iterator<Pocket> iterator = pokects.iterator();
 		while (iterator.hasNext()) {
 			Pocket pocket = iterator.next();
-			if (!pocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
+			Long a =pocket.getStatus();
+			Integer b = a.intValue();
+			
+			if (!b.equals(CmFinoFIX.PocketStatus_Retired)) {
 				pocket.setStatus(CmFinoFIX.PocketStatus_PendingRetirement);
-				pocket.setIsDefault(false);
+				pocket.setIsdefault((short) Boolean.compare(false, true));
 				PocketDAO pocDAO = daoFactory.getPocketDAO();
 				pocDAO.save(pocket);
 			}
@@ -195,7 +198,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 
 	public BigDecimal checkBalance(Long subscriberMDNId, Integer pocketType, Integer commodity) {
 		Pocket p = getDefaultPocket(subscriberMDNId, pocketType, commodity);
-		return (p != null && p.getCurrentBalance() != null) ? p.getCurrentBalance() : new BigDecimal(0);
+		return (BigDecimal) ((p != null && p.getCurrentbalance() != null) ? p.getCurrentbalance() : new BigDecimal(0));
 	}
 	
 
@@ -208,7 +211,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		List<Brand> results = dao.getAll();
 		if (results.size() > 0) {
 			for (int i = 0; i < results.size(); i++) {
-				if (mdn.startsWith(getCountryCode()+ results.get(i).getPrefixCode())) {
+				if (mdn.startsWith(getCountryCode()+ results.get(i).getPrefixcode())) {
 					company = results.get(i).getCompany();
 					break;
 				}
@@ -218,16 +221,16 @@ public class SubscriberServiceImpl implements SubscriberService{
 		return company;
 	}
 
-	public int fillSubscriberMDN(SubscriberMDN mdn, SubscriberSyncRecord subscriberSyncRecord) {
+	public int fillSubscriberMDN(SubscriberMdn mdn, SubscriberSyncRecord subscriberSyncRecord) {
 		//mdn feilds
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getIdType())) {
-			mdn.setIDType(subscriberSyncRecord.getIdType());
+			mdn.setIdtype(subscriberSyncRecord.getIdType());
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getIdNumber())) {
-			mdn.setIDNumber(subscriberSyncRecord.getIdNumber());
+			mdn.setIdnumber(subscriberSyncRecord.getIdNumber());
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getImsi())) {
-			mdn.setIMSI(subscriberSyncRecord.getImsi());
+			mdn.setImsi(subscriberSyncRecord.getImsi());
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getMarketingCategory())) {
 			try
@@ -235,7 +238,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 				Integer mrkCat = Integer.parseInt(subscriberSyncRecord.getMarketingCategory());
 				if(mrkCat>0 && mrkCat <= ConfigurationUtil.getMaxMarketingCategory())
 				{
-					mdn.setMarketingCategory(subscriberSyncRecord.getMarketingCategory());
+					mdn.setMarketingcategory(subscriberSyncRecord.getMarketingCategory());
 				}
 				else
 				{
@@ -269,7 +272,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			if (subscriberSyncRecord.getMdn() == null || !subscriberSyncRecord.getMdn().startsWith("62")) {
 				return CmFinoFIX.SynchError_Failed_Invalid_MDN;
 			}
-			SubscriberMDN mdn = subscriberMDNDAO.getByMDN(subscriberSyncRecord.getMdn());
+			SubscriberMdn mdn = subscriberMDNDAO.getByMDN(subscriberSyncRecord.getMdn());
 			if (mdn != null) {
 				log.info("Create New subscriber failed. Subscriber MDN already exists in DB - " + subscriberSyncRecord.getMdn());
 				return CmFinoFIX.SynchError_Failed_Subscriber_already_exists;
@@ -277,9 +280,9 @@ public class SubscriberServiceImpl implements SubscriberService{
 			Subscriber subscriber = new Subscriber();
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			subscriber.setTimezone(CmFinoFIX.Timezone_West_Indonesia_Time);
-			subscriber.setStatusTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
 			if (subscriberSyncRecord.isBulkUploadRecord()) {
 				// Product is Mandatory
 				if (!(CmFinoFIX.MDNBrand_Fren.equals(subscriberSyncRecord
@@ -321,7 +324,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			if (companyID != null) {
 				//             UserDAO userdao = new UserDAO();
 				//           User user = userdao.getByUserName(createdBy);
-				if (company != null && (company.getID().equals(companyID))) {
+				if (company != null && (company.getId().equals(companyID))) {
 					subscriber.setCompany(company);
 				}                
 				else {
@@ -355,15 +358,15 @@ public class SubscriberServiceImpl implements SubscriberService{
 				address.setCity(DEFAULT_CITY);
 			}
 			address.setState(DEFAULT_STATE);
-			address.setZipCode(DEFAULT_ZIPCODE);
+			address.setZipcode(DEFAULT_ZIPCODE);
 			address.setCountry(DEFAULT_COUNTRY);
 			addressDao.saveWithoutFlush(address);
-			subscriber.setAddressBySubscriberAddressID(address);
+			subscriber.setAddressBySubscriberaddressid(address);
 			int subscriberCreation = fillSubscriber(subscriber, subscriberSyncRecord, true);
 			//TODO: NEED TO GET THE MSPID
-			if (subscriber.getmFinoServiceProviderByMSPID() == null) {
+			if (subscriber.getMfinoServiceProvider() == null) {
 				MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-				subscriber.setmFinoServiceProviderByMSPID(mspDAO.getById(1L));
+				subscriber.setMfinoServiceProvider(mspDAO.getById(1L));
 			}
 			if (subscriberCreation != Sucess) {
 				log.info("Create New subscriber failed. Invalid parameters - " + subscriberSyncRecord.getMdn());
@@ -373,13 +376,13 @@ public class SubscriberServiceImpl implements SubscriberService{
 			if(StringUtils.isNotBlank(subscriber.getEmail()) && systemParametersService.getIsEmailVerificationNeeded()) {//send Email verification mail 
 				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());
 			}
-			SubscriberMDN subscriberMDN = new SubscriberMDN();
-			subscriberMDN.setAuthenticationPhrase("");
+			SubscriberMdn subscriberMDN = new SubscriberMdn();
+			subscriberMDN.setAuthenticationphrase("");
 			subscriberMDN.setSubscriber(subscriber);
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setMDN(subscriberSyncRecord.getMdn());
-			subscriberMDN.setMDNBrand(subscriberSyncRecord.getProduct());
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setMdn(subscriberSyncRecord.getMdn());
+			subscriberMDN.setMdnbrand(subscriberSyncRecord.getProduct());
 			int subscriberMDNCreation = fillSubscriberMDN(subscriberMDN, subscriberSyncRecord);
 			if (subscriberMDNCreation != Sucess) {
 				log.info("Create New subscriber failed. Invalid parameters - " + subscriberSyncRecord.getMdn());
@@ -409,7 +412,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		try {
 			SubscriberDAO subDAO = daoFactory.getSubscriberDAO();
 			AddressDAO addressDao = daoFactory.getAddressDAO();
-			SubscriberMDN mdn = subscriberMDNDAO.getByMDN(subscriberSyncRecord.getMdn());
+			SubscriberMdn mdn = subscriberMDNDAO.getByMDN(subscriberSyncRecord.getMdn());
 			if (mdn == null) {
 				log.info("Update subscriber failed. There is no subscriber MDN in DB -" + subscriberSyncRecord.getMdn());
 				return CmFinoFIX.SynchError_Failed_Subscriber_MDN_does_not_exist;
@@ -429,7 +432,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			}
 			if (StringUtils.isNotBlank(subscriberSyncRecord.getProduct())) {
 				if (CmFinoFIX.MDNBrand_Fren.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_Hepi.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_Mobi.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_SMART_Postpaid.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_SMART_Prepaid.equals(subscriberSyncRecord.getProduct())) {
-					mdn.setMDNBrand(subscriberSyncRecord.getProduct());
+					mdn.setMdnbrand(subscriberSyncRecord.getProduct());
 				} else {
 					log.info("Product is invalid for MDN = " + subscriberSyncRecord.getMdn());
 					return CmFinoFIX.SynchError_Failed_Invalid_Values;
@@ -460,7 +463,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			if(StringUtils.isNotBlank(subscriber.getEmail()) && systemParametersService.getIsEmailVerificationNeeded()) {//send Email verification mail 
 				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());
 			}
-			Address address = subscriber.getAddressBySubscriberAddressID();
+			Address address = subscriber.getAddressBySubscriberaddressid();
 			if (address != null) {
 				if (StringUtils.isNotBlank(subscriberSyncRecord.getAddress())) {
 					address.setLine1(subscriberSyncRecord.getAddress());
@@ -483,10 +486,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 						newAddress.setCity(subscriberSyncRecord.getCity());
 					}
 					newAddress.setState(DEFAULT_STATE);
-					newAddress.setZipCode(DEFAULT_ZIPCODE);
+					newAddress.setZipcode(DEFAULT_ZIPCODE);
 					newAddress.setCountry(DEFAULT_COUNTRY);
 					addressDao.saveWithoutFlush(newAddress);
-					subscriber.setAddressBySubscriberAddressID(newAddress);
+					subscriber.setAddressBySubscriberaddressid(newAddress);
 				}
 			}
 		} catch (Exception error) {
@@ -500,7 +503,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		try {
 			SubscriberDAO subscriberDAO = daoFactory.getSubscriberDAO();
 
-			SubscriberMDN mdn = subscriberMDNDAO.getByMDN(subscriberSyncRecord.getMdn());
+			SubscriberMdn mdn = subscriberMDNDAO.getByMDN(subscriberSyncRecord.getMdn());
 			if (mdn == null) {
 				log.info("Update subscriber retirement failed. There is no subscriber MDN in DB - " + subscriberSyncRecord.getMdn());
 				return CmFinoFIX.SynchError_Failed_Subscriber_MDN_does_not_exist;
@@ -527,7 +530,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		return CmFinoFIX.SynchError_Success;
 	}
 	
-	public int updatePocket(SubscriberSyncRecord subscriberSyncRecord, SubscriberMDN mdn) {
+	public int updatePocket(SubscriberSyncRecord subscriberSyncRecord, SubscriberMdn mdn) {
 		PocketTemplate cbossPrepaid;
 		PocketTemplate cbossPostpaid;
 		cbossPrepaid = pocketTemplateDAO.getById(ConfigurationUtil.getDefaultPocketTemplateCBOSSPrepaid());
@@ -535,18 +538,18 @@ public class SubscriberServiceImpl implements SubscriberService{
 		
 		PocketDAO pocketDAO = daoFactory.getPocketDAO();
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getActiveAccountType())) {
-			Pocket p = getDefaultPocket(mdn.getID(), CmFinoFIX.PocketType_BOBAccount, CmFinoFIX.Commodity_Airtime);
+			Pocket p = getDefaultPocket(mdn.getId().longValue(), CmFinoFIX.PocketType_BOBAccount, CmFinoFIX.Commodity_Airtime);
 			if (p != null) {
 				PocketTemplate old = p.getPocketTemplate();
-				if (CmFinoFIX.BillingType_PrePaid.equals(old.getBillingType()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(POSTPAID)) {
+				if (CmFinoFIX.BillingType_PrePaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(POSTPAID)) {
 					p.setPocketTemplate(cbossPostpaid);
-					p.setPocketTemplateByOldPocketTemplateID(cbossPrepaid);
-					p.setPocketTemplateChangeTime(new Timestamp());
-				} else if (CmFinoFIX.BillingType_PostPaid.equals(old.getBillingType()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(PREPAID)) {
+					p.setPocketTemplateByOldpockettemplateid(cbossPrepaid);
+					p.setPockettemplatechangetime(new Timestamp());
+				} else if (CmFinoFIX.BillingType_PostPaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(PREPAID)) {
 					p.setPocketTemplate(cbossPrepaid);
-					p.setPocketTemplateByOldPocketTemplateID(cbossPostpaid);
-					p.setPocketTemplateChangeTime(new Timestamp());
-				} else if ((CmFinoFIX.BillingType_PrePaid.equals(old.getBillingType()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(PREPAID)) || (CmFinoFIX.BillingType_PostPaid.equals(old.getBillingType()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(POSTPAID))) {
+					p.setPocketTemplateByOldpockettemplateid(cbossPostpaid);
+					p.setPockettemplatechangetime(new Timestamp());
+				} else if ((CmFinoFIX.BillingType_PrePaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(PREPAID)) || (CmFinoFIX.BillingType_PostPaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(POSTPAID))) {
 					// do nothing as they are as required
 				} else {
 					log.info("Invalid Active Account Type " + subscriberSyncRecord.getActiveAccountType() + " for MDN = " + subscriberSyncRecord.getMdn());
@@ -575,10 +578,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 
 	public int fillSubscriber(Subscriber subscriber, SubscriberSyncRecord subscriberSyncRecord, boolean isNew) {
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getFirstName())) {
-			subscriber.setFirstName(subscriberSyncRecord.getFirstName());
+			subscriber.setFirstname(subscriberSyncRecord.getFirstName());
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getLastName())) {
-			subscriber.setLastName(subscriberSyncRecord.getLastName());
+			subscriber.setLastname(subscriberSyncRecord.getLastName());
 		}
 		if (subscriberSyncRecord.getLanguage()!=null) {
 			Integer lang = getLanguage(subscriberSyncRecord.getLanguage());
@@ -599,23 +602,23 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getProduct())) {
 			if (CmFinoFIX.MDNBrand_Fren.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_Hepi.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_Mobi.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_SMART_Postpaid.equals(subscriberSyncRecord.getProduct()) || CmFinoFIX.MDNBrand_SMART_Prepaid.equals(subscriberSyncRecord.getProduct())) {
-				subscriber.setMDNBrand(subscriberSyncRecord.getProduct());
+				subscriber.setMdnbrand(subscriberSyncRecord.getProduct());
 			} else {
 				log.info("Product is invalid for MDN = " + subscriberSyncRecord.getMdn());
 				return Failed;
 			}
 		}
 		if (subscriberSyncRecord.getDateOfBirth() != null) {          
-			subscriber.setDateOfBirth(new Timestamp(subscriberSyncRecord.getDateOfBirth()));
+			subscriber.setDateofbirth(new Timestamp(subscriberSyncRecord.getDateOfBirth()));
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getBirthPlace())) {
-			subscriber.setBirthPlace(subscriberSyncRecord.getBirthPlace());
+			subscriber.setBirthplace(subscriberSyncRecord.getBirthPlace());
 		}
 
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getEmail())) {
 			subscriber.setEmail(subscriberSyncRecord.getEmail());
 		}
-		subscriber.setIsEmailVerified(false);
+		subscriber.setIsemailverified((short) Boolean.compare(false, true));
 		// If "isNew" is true then he is newSubscriber otherwise he is existing subscriber.
 		if (isNew) {
 			if (StringUtils.isNotBlank(subscriberSyncRecord.getCurrency())) {
@@ -642,14 +645,14 @@ public class SubscriberServiceImpl implements SubscriberService{
 		return Sucess;
 	}
 
-	public void createPocket(PocketTemplate pTemplate, SubscriberMDN subMDN) {
+	public void createPocket(PocketTemplate pTemplate, SubscriberMdn subMDN) {
 		Pocket pocket = new Pocket();
 		PocketDAO pocketDAO = daoFactory.getPocketDAO();
 		pocket.setPocketTemplate(pTemplate);
-		pocket.setSubscriberMDNByMDNID(subMDN);
-		pocket.setStatusTime(new Timestamp());
+		pocket.setSubscriberMdn(subMDN);
+		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-		pocket.setIsDefault(Boolean.TRUE);
+		pocket.setIsdefault((short) Boolean.compare(true, false));
 		if(subMDN.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subMDN.getSubscriber().getCompany());
 		}
@@ -666,11 +669,11 @@ public class SubscriberServiceImpl implements SubscriberService{
 
 	public Pocket getDefaultPocket(String mdn,
 			Integer pockettype, Integer commodity) {
-		SubscriberMDN subscriberMDN= subscriberMDNDAO.getByMDN(normalizeMDN(mdn));
+		SubscriberMdn subscriberMDN= subscriberMDNDAO.getByMDN(normalizeMDN(mdn));
 		if(subscriberMDN==null){
 			return null;
 		}
-		return getDefaultPocket(subscriberMDN.getID(), pockettype, commodity);
+		return getDefaultPocket(subscriberMDN.getId().longValue(), pockettype, commodity);
 	}
 
 	public Pocket getDefaultPocket(Long subscriberMDNId, Long templateId) {
@@ -847,7 +850,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if(!email.equals(subscriber.getEmail())) {
 			throw new Exception("Invalid email");
 		}
-		subscriber.setIsEmailVerified(true);
+		subscriber.setIsemailverified((short) Boolean.compare(true, false));
 		subscriberDAO.save(subscriber);		
 	}
 

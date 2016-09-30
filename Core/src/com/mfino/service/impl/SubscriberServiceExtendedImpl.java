@@ -571,11 +571,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setLastname(subscriberRegistration.getLastName());
 			subscriber.setNickname(subscriberRegistration.getNickname());
 			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
-			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
-			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
+			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self.longValue());
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
             subscriber.setStatustime(new Timestamp());
             if(createdByName != null)
@@ -660,7 +660,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			Long kycLevelNo = null;
 			if(null != subscriber.getUpgradablekyclevel())
 			{
-				kycLevelNo = subscriber.getUpgradablekyclevel();
+				kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 			}
 			else
 			{
@@ -1207,16 +1207,16 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		
 		if (lakupandaiPocketFound && lakupandaiPocket != null) {
 			lakupandaiPocket.setActivationtime(new Timestamp());
-			lakupandaiPocket.setIsdefault(true);
+			lakupandaiPocket.setIsdefault((short) Boolean.compare(true, false));
 			lakupandaiPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-			lakupandaiPocket.setStatusTime(new Timestamp());
-			lakupandaiPocket.setUpdatedBy(subscriberName);
+			lakupandaiPocket.setStatustime(new Timestamp());
+			lakupandaiPocket.setUpdatedby(subscriberName);
 		}
 
 		if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN
 				.getStatus())) {
 			PocketQuery pq = new PocketQuery();
-			pq.setMdnIDSearch(subscriberMDN.getId());
+			pq.setMdnIDSearch(subscriberMDN.getId().longValue());
 			List<Pocket> pocketList = pocketDao.get(pq);
 			if (pocketList.size() > 0) {
 				emoneyPocket = pocketList.get(0);
@@ -1224,8 +1224,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				emoneyPocket.setPocketTemplate(svaPocketTemplate);
 				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				emoneyPocket.setActivationtime(new Timestamp());
-				emoneyPocket.setIsdefault(true);
-				emoneyPocket.setUpdatedBy(subscriberName);
+				emoneyPocket.setIsdefault((short) Boolean.compare(true, false));
+				emoneyPocket.setUpdatedby(subscriberName);
 			}
 		}
 
@@ -1241,23 +1241,23 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			log.error("Error during PIN conversion "+e);
 			return CmFinoFIX.NotificationCode_Failure;
 		}
-		subscriberMDN.setDigestedPIN(calcPIN);
+		subscriberMDN.setDigestedpin(calcPIN);
 		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMdn(), newpin);
-		subscriberMDN.setAuthorizationToken(authToken);
+		subscriberMDN.setAuthorizationtoken(authToken);
 		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-		subscriberMDN.setStatusTime(new Timestamp());
+		subscriberMDN.setStatustime(new Timestamp());
 		subscriberMDN.setActivationtime(new Timestamp());
-		subscriberMDN.setUpdatedBy(subscriberName);
+		subscriberMDN.setUpdatedby(subscriberName);
 		subscriber.setActivationtime(new Timestamp());
-		subscriber.setUpdatedBy(subscriberName);
+		subscriber.setUpdatedby(subscriberName);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-		subscriber.setStatusTime(new Timestamp());
+		subscriber.setStatustime(new Timestamp());
 		subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 		if (subscriberActivation.getDateOfBirth() != null) {
-			subscriber.setDateOfBirth(subscriberActivation.getDateOfBirth());
+			subscriber.setDateofbirth(subscriberActivation.getDateOfBirth());
 		}
-		subscriberMDN.setOTP(null);
-		subscriberMDN.setOTPExpirationTime(null);
+		subscriberMDN.setOtp(null);
+		subscriberMDN.setOtpexpirationtime(null);
 		if (emoneyPocket != null) {
 			pocketDao.save(emoneyPocket);
 			log.info("SubscriberActivation : emoneyPocket with id:"
@@ -1295,9 +1295,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		try {
 			// add notifications
 			NotificationWrapper notificationWrapper = new NotificationWrapper();
-			notificationWrapper.setLanguage(subscriber.getLanguage());
+			
+			Long tempLanguage = subscriber.getLanguage();
+			Integer tempLanguageI = tempLanguage.intValue();
+			
+			notificationWrapper.setLanguage(tempLanguageI);
 			notificationWrapper.setFirstName(subscriber.getFirstname());
-			notificationWrapper.setLastName(subscriber.getLastName());				
+			notificationWrapper.setLastName(subscriber.getLastname());				
 			notificationWrapper.setCompany(subscriber.getCompany());
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_BOBPocketActivationCompleted);
@@ -1316,10 +1320,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		smsService.setMessage(smsMsg);
 		smsService.asyncSendSMS();
 		
-		if ( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0)
+		if ( ((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0)
 			    && subscriber.getEmail() != null && isSubscriberEmailVerified(subscriber)) {
 			String email = subscriber.getEmail();
-			String firstName = subscriber.getFirstName();
+			String firstName = subscriber.getFirstname();
 			Long notificationLogDetailsID = notificationLogDetailsService.persistNotification(email, "Activation", emailMsg, subscriberActivation.getServiceChargeTransactionLogID(), 
 					CmFinoFIX.NotificationCode_BOBPocketActivationCompleted, CmFinoFIX.NotificationMethod_Email, CmFinoFIX.NotificationReceiverType_Source);
 			mailService.asyncSendEmail(email, firstName, "Activation", emailMsg, notificationLogDetailsID);
@@ -1336,7 +1340,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if (subscriberMDN == null) {
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
-		int int_subscriberType=subscriberMDN.getSubscriber().getType();
+		
+		Long tempSubType = subscriberMDN.getSubscriber().getType();
+		
+		int int_subscriberType=tempSubType.intValue();
 
 		if (!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)
 				||CmFinoFIX.SubscriberType_Partner.equals(int_subscriberType))
@@ -1391,7 +1398,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
 
 				UnRegisteredTxnInfoQuery txnInfoQuery = new UnRegisteredTxnInfoQuery();
-				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getId());
+				txnInfoQuery.setSubscriberMDNID(subscriberMDN.getId().longValue());
 				txnInfoQuery.setMultiStatus(status);
 				List<UnregisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
 						.get(txnInfoQuery);
@@ -1407,7 +1414,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				String receivedFACDigest = MfinoUtil.calculateDigestPin(
 						subscriberMDN.getMdn(), receivedFAC);
 				for (UnregisteredTxnInfo txnInfo : txnInfoList) {
-					if (txnInfo.getDigestedPIN().equals(receivedFACDigest)) {
+					if (txnInfo.getDigestedpin().equals(receivedFACDigest)) {
 						isValidFac = true;
 						break;
 					}
@@ -1415,8 +1422,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 				if (isValidFac == true) {
 					for (UnregisteredTxnInfo txnInfo : txnInfoList) {
-						if (StringUtils.isBlank(txnInfo.getTransactionName())) { 
-							txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
+						if (StringUtils.isBlank(txnInfo.getTransactionname())) { 
+							txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE.longValue());
 						}
 					}
 					unRegisteredTxnInfoDAO.save(txnInfoList);
@@ -1495,8 +1502,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		List<UnregisteredTxnInfo> txnInfoList = unRegisteredTxnInfoDAO
 				.get(txnInfoQuery);
 		for (UnregisteredTxnInfo txnInfo : txnInfoList) {
-			if (StringUtils.isBlank(txnInfo.getTransactionName())) {
-				txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
+			if (StringUtils.isBlank(txnInfo.getTransactionname())) {
+				txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE.longValue());
 			}
 		}
 		unRegisteredTxnInfoDAO.save(txnInfoList);
@@ -1558,13 +1565,18 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		
 		for (Pocket pocket : pockets) {
+			Long pocketTypeL = pocket.getPocketTemplate().getType();
+			Integer pocketTypeLI = pocketTypeL.intValue();
+			
+			Long pocketStatusL = pocket.getStatus();
+			Integer pocketStatusLI = pocketStatusL.intValue();
+			
 			if (!bankPocketFound
-					&& pocket.getPocketTemplate().getType()
+					&& pocketTypeLI
 							.equals(CmFinoFIX.PocketType_BankAccount)
-					&& pocket.getCardPAN() != null
-					&& (pocket.getStatus()
-							.equals(CmFinoFIX.PocketStatus_Active) || pocket
-							.getStatus().equals(
+					&& pocket.getCardpan() != null
+					&& (pocketStatusLI
+							.equals(CmFinoFIX.PocketStatus_Active) || pocketStatusLI.equals(
 									CmFinoFIX.PocketStatus_Initialized))) {
 				bankPocketFound = true;
 				bankPocket = pocket;
@@ -1575,64 +1587,66 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 		}
 		
-		String subscriberName = subscriber.getFirstName();
+		String subscriberName = subscriber.getFirstname();
 		if(bankPocketFound)
 		{
-			bankPocket.setActivationTime(new Timestamp());
-			bankPocket.setIsDefault(true);
+			bankPocket.setActivationtime(new Timestamp());
+			bankPocket.setIsdefault((short) Boolean.compare(true, false));
 			bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-			bankPocket.setStatusTime(new Timestamp());
-			bankPocket.setUpdatedBy(subscriberName);
-			bankPocket.setCardPAN(subscriberReactivation.getSourceCardPAN());
+			bankPocket.setStatustime(new Timestamp());
+			bankPocket.setUpdatedby(subscriberName);
+			bankPocket.setCardpan(subscriberReactivation.getSourceCardPAN());
 			pocketDao.save(bankPocket);
 			log.info("SubscriberActivation : bankPocket activation id:"
-					+ bankPocket.getID() + " subscriberid"
-					+ subscriber.getID());
+					+ bankPocket.getId() + " subscriberid"
+					+ subscriber.getId());
 		}
 		String calcPIN = null;
 		try
 		{
-			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMDN(), newpin);
+			calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), newpin);
 		}
 		catch(Exception e)
 		{
 			log.error("Error during PIN conversion "+e);
 			return CmFinoFIX.NotificationCode_Failure;
 		}
-		subscriberMDN.setDigestedPIN(calcPIN);
+		subscriberMDN.setDigestedpin(calcPIN);
 		
 		/*String digestpin = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(),
 		newpin);
 		subscriberMDN.setDigestedPIN(digestpin);*/
 
-		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMDN(), newpin);
-		subscriberMDN.setAuthorizationToken(authToken);
+		String authToken = MfinoUtil.calculateAuthorizationToken(subscriberMDN.getMdn(), newpin);
+		subscriberMDN.setAuthorizationtoken(authToken);
 		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-		subscriberMDN.setStatusTime(new Timestamp());
-		subscriberMDN.setActivationTime(new Timestamp());
-		subscriberMDN.setUpdatedBy(subscriberName);
-		subscriber.setActivationTime(new Timestamp());
-		subscriber.setUpdatedBy(subscriberName);
+		subscriberMDN.setStatustime(new Timestamp());
+		subscriberMDN.setActivationtime(new Timestamp());
+		subscriberMDN.setUpdatedby(subscriberName);
+		subscriber.setActivationtime(new Timestamp());
+		subscriber.setUpdatedby(subscriberName);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-		subscriber.setStatusTime(new Timestamp());
+		subscriber.setStatustime(new Timestamp());
 		subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
-		subscriberMDN.setOTP(null);
-		subscriberMDN.setOTPExpirationTime(null);
-		subscriber.setUpgradableKYCLevel(null);
-		subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-		subscriber.setApproveOrRejectComment("Approved for No Emoney");
-		subscriber.setApprovedOrRejectedBy("System");
-		subscriber.setApproveOrRejectTime(new Timestamp());
+		subscriberMDN.setOtp(null);
+		subscriberMDN.setOtpexpirationtime(null);
+		subscriber.setUpgradablekyclevel(null);
+		subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+		subscriber.setApproveorrejectcomment("Approved for No Emoney");
+		subscriber.setApprovedorrejectedby("System");
+		subscriber.setApproveorrejecttime(new Timestamp());
 		subscriberDao.save(subscriber);
 		subscriberMdnDao.save(subscriberMDN);
 		String smsMsg = "reactivation notification";
 		String emailMsg = "reactivation notification";
 		try {
 			// add notifications
+			Long tempLanguageL = subscriber.getLanguage();
+			
 			NotificationWrapper notificationWrapper = new NotificationWrapper();
-			notificationWrapper.setLanguage(subscriber.getLanguage());
-			notificationWrapper.setFirstName(subscriber.getFirstName());
-			notificationWrapper.setLastName(subscriber.getLastName());				
+			notificationWrapper.setLanguage(tempLanguageL.intValue());
+			notificationWrapper.setFirstName(subscriber.getFirstname());
+			notificationWrapper.setLastName(subscriber.getLastname());				
 			notificationWrapper.setCompany(subscriber.getCompany());
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_NewSubscriberActivation);
@@ -1644,15 +1658,15 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		} catch (Exception e) {
 			log.error("failed to generate message:", e);
 		}
-		String mdn1 = subscriberMDN.getMDN();
+		String mdn1 = subscriberMDN.getMdn();
 		SMSServiceImpl service = new SMSServiceImpl();
 		service.setDestinationMDN(mdn1);
 		service.setMessage(smsMsg);
 		service.setSctlId(subscriberReactivation.getServiceChargeTransactionLogID());
 		service.asyncSendSMS();
-		if (((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && isSubscriberEmailVerified(subscriber)) {
+		if (((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0) && isSubscriberEmailVerified(subscriber)) {
 			String email = subscriber.getEmail();
-			String firstName = subscriber.getFirstName();
+			String firstName = subscriber.getFirstname();
 			mailService.asyncSendEmail(email, firstName, "Reactivation", emailMsg);
 			Long notificationLogDetailsID = notificationLogDetailsService.persistNotification(email, "Activation", emailMsg, subscriberReactivation.getServiceChargeTransactionLogID(), 
 					CmFinoFIX.NotificationCode_BOBPocketActivationCompleted, CmFinoFIX.NotificationMethod_Email, CmFinoFIX.NotificationReceiverType_Source);
@@ -1663,7 +1677,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 	
 	public boolean isSubscriberEmailVerified(Subscriber sub) {		
 		if(systemParametersService.getIsEmailVerificationNeeded() && StringUtils.isNotBlank(sub.getEmail())) {
-			return sub.getIsemailverified();
+			return Boolean.valueOf(sub.getIsemailverified().toString());
 		}		
 		return true;
 	}

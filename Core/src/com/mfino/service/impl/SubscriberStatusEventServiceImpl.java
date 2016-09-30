@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberStatusEventDAO;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberStatusEvent;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -50,59 +50,62 @@ public class SubscriberStatusEventServiceImpl implements
 		SubscriberStatusEventDAO statusEventDAO = DAOFactory.getInstance()
 				.getSubscriberStatusEventDAO();
 		
-		SubscriberMDN subMDN = null;
+		SubscriberMdn subMDN = null;
 		
-		if(subscriber.getSubscriberMDNFromSubscriberID() != null && !(subscriber.getSubscriberMDNFromSubscriberID().size() == 0)){
+		if(subscriber.getSubscriberMdns() != null && !(subscriber.getSubscriberMdns().size() == 0)){
 			
-			subMDN	= subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
+			subMDN	= subscriber.getSubscriberMdns().iterator().next();
 		}
 		 
 		if (subscriberExistingEvent != null) {
-			if (subscriberExistingEvent.getProcessingStatus()) {
+			if (Boolean.valueOf(subscriberExistingEvent.getProcessingstatus().toString())) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
 				statusNextEvent.setSubscriber(subscriber);
+				Long temp = subscriber.getStatus();
+				Integer tempI = temp.intValue();
 				Timestamp nextTimeStamp = new Timestamp(
-						subscriber.getStatusTime().getTime()
+						subscriber.getStatustime().getTime()
 								+ subscriberStatusTimeService
-										.getTimeToNextStatus(subscriber
-												.getStatus()));
-				if (subMDN!=null && subMDN.getIsForceCloseRequested()!=null && subMDN.getIsForceCloseRequested() &&
+										.getTimeToNextStatus(tempI));
+				if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
 						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
-				statusNextEvent.setPickUpDateTime(nextTimeStamp);
-				statusNextEvent.setStatusOnPickup(subscriber.getStatus());
-				statusNextEvent.setSubscriberType(subscriber.getType());
-				statusNextEvent.setProcessingStatus(false);
+				statusNextEvent.setPickupdatetime(nextTimeStamp);
+				statusNextEvent.setStatusonpickup(subscriber.getStatus());
+				statusNextEvent.setSubscribertype(subscriber.getType());
+				statusNextEvent.setProcessingstatus((short) Boolean.compare(false, true));
 				statusEventDAO.save(statusNextEvent);
 			} else {
+				Long temp = subscriber.getStatus();
+				Integer tempI = temp.intValue();
 				Timestamp nextTimeStamp = new Timestamp(
-						subscriber.getStatusTime().getTime()
+						subscriber.getStatustime().getTime()
 								+ subscriberStatusTimeService
-										.getTimeToNextStatus(subscriber
-												.getStatus()));
-				if (subMDN!=null && subMDN.getIsForceCloseRequested()!=null && subMDN.getIsForceCloseRequested() &&
+										.getTimeToNextStatus(tempI));
+				if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
 						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
-				subscriberExistingEvent.setPickUpDateTime(nextTimeStamp);
-				subscriberExistingEvent.setStatusOnPickup(subscriber
+				subscriberExistingEvent.setPickupdatetime(nextTimeStamp);
+				subscriberExistingEvent.setStatusonpickup(subscriber
 						.getStatus());
 				statusEventDAO.save(subscriberExistingEvent);
 			}
 		}else if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscriber.getStatus())){
 			SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
 			statusNextEvent.setSubscriber(subscriber);
+			Long temp = subscriber.getStatus();
+			Integer tempI = temp.intValue();
 			Timestamp nextTimeStamp = new Timestamp(
-					subscriber.getStatusTime().getTime()
+					subscriber.getStatustime().getTime()
 							+ subscriberStatusTimeService
-									.getTimeToNextStatus(subscriber
-											.getStatus()));
-			if (subMDN!=null && subMDN.getIsForceCloseRequested()!=null && subMDN.getIsForceCloseRequested() &&
+									.getTimeToNextStatus(tempI));
+			if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
 					subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 				nextTimeStamp = new Timestamp();
-			statusNextEvent.setPickUpDateTime(nextTimeStamp);
-			statusNextEvent.setStatusOnPickup(subscriber.getStatus());
-			statusNextEvent.setSubscriberType(subscriber.getType());
-			statusNextEvent.setProcessingStatus(false);
+			statusNextEvent.setPickupdatetime(nextTimeStamp);
+			statusNextEvent.setStatusonpickup(subscriber.getStatus());
+			statusNextEvent.setSubscribertype(subscriber.getType());
+			statusNextEvent.setProcessingstatus((short) Boolean.compare(false, true));
 			statusEventDAO.save(statusNextEvent);
 		}
 	}
@@ -117,10 +120,10 @@ public class SubscriberStatusEventServiceImpl implements
 			if ((subscriberStatusEvents != null)
 					&& (subscriberStatusEvents.size() != 0)) {
 				for (SubscriberStatusEvent statusEvent : subscriberStatusEvents) {
-					if (isOnline&&!statusEvent.getProcessingStatus() ) {
+					if (isOnline&&!statusEvent.getProcessingstatus() ) {
 						subscriberStatusEvent = statusEvent;
 						return subscriberStatusEvent;
-					}else if(!isOnline&&statusEvent.getProcessingStatus()){
+					}else if(!isOnline&&statusEvent.getProcessingstatus()){
 						subscriberStatusEvent = statusEvent;
 						return subscriberStatusEvent;
 					}

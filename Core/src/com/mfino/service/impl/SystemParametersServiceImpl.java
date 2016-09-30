@@ -128,7 +128,7 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 		SystemParametersDao systemParameterDao = DAOFactory.getInstance().getSystemParameterDao();
 		SystemParameters parameter=systemParameterDao.getSystemParameterByName(property) ;
 		if(parameter!=null){
-			return parameter.getParameterValue();
+			return parameter.getParametervalue();
 		}
 		return null;
 	}
@@ -143,7 +143,7 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 		if(value!=null){
 		SystemParametersDao systemParameterDao = DAOFactory.getInstance().getSystemParameterDao();
 		SystemParameters parameter=systemParameterDao.getSystemParameterByName(SystemParameterKeys.LAST_BDV_DATE) ;
-		parameter.setParameterValue(DateUtil.getFormattedDate(value));
+		parameter.setParametervalue(DateUtil.getFormattedDate(value));
 		systemParameterDao.save(parameter);
 		}
 	}

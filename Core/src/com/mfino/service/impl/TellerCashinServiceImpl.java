@@ -16,8 +16,8 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -70,9 +70,9 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			return validationResult;
 		}
-		SubscriberMDN destinationMDN = destMdnValidator.getSubscriberMDN();
+		SubscriberMdn destinationMDN = destMdnValidator.getSubscriberMDN();
 		
-		Pocket subPocket = subscriberService.getDefaultPocket(destinationMDN.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
+		Pocket subPocket = subscriberService.getDefaultPocket(destinationMDN.getId(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 		if(subPocket==null){
 			return CmFinoFIX.NotificationCode_DestinationEMoneyPocketNotFound;
 		} 
@@ -90,7 +90,7 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 
 		Transaction transDetails = null;
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId());
 		sc.setDestMDN(destinationMDN.getMDN());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHIN);
@@ -125,9 +125,9 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 			transDetails =transactionChargingService.getCharge(sc);
 			tellerCashinInquiry.setAmount(transDetails.getAmountToCredit());
 			tellerCashinInquiry.setCharges(transDetails.getAmountTowardsCharges());
-			tellerCashinInquiry.setSourcePocketID(tellerPocket.getID());
-			tellerCashinInquiry.setDestPocketID(srcEmoneyPocket.getID());
-		    tellerCashinInquiry.setEndDestPocketID(subPocket.getID());		      
+			tellerCashinInquiry.setSourcePocketID(tellerPocket.getId());
+			tellerCashinInquiry.setDestPocketID(srcEmoneyPocket.getId());
+		    tellerCashinInquiry.setEndDestPocketID(subPocket.getId());		      
 		}catch (InvalidServiceException e) {
 			log.error("Exception occured in getting charges",e);
 			return CmFinoFIX.NotificationCode_ServiceNotAvailable;
@@ -136,8 +136,8 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 			return CmFinoFIX.NotificationCode_InvalidChargeDefinitionException;
 		}
 		
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
-		tellerCashinInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
+		tellerCashinInquiry.setServiceChargeTransactionLogID(sctl.getId());
 		return CmFinoFIX.ResponseCode_Success;
 		
 	}
@@ -162,8 +162,8 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 
 		Partner teller = tellerMdnValidator.getPartner();
 		SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN tellerMDN=tellerMdnValidator.getSubscriberMDN();
-		SubscriberMDN subscriberMDN = subMdndao.getByMDN(tellercashinconfirm.getDestMDN());
+		SubscriberMdn tellerMDN=tellerMdnValidator.getSubscriberMDN();
+		SubscriberMdn subscriberMDN = subMdndao.getByMDN(tellercashinconfirm.getDestMDN());
 		if(tellerMDN==null){
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
@@ -171,14 +171,14 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
 		
-		Pocket subPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
+		Pocket subPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 		if(subPocket==null){
 		return CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound;
 		}
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(tellercashinconfirm.getParentTransactionID());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(tellercashinconfirm.getParentTransactionID());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
@@ -192,7 +192,7 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 		
 		Pocket tellerPocket;
 		Pocket srcEmoneyPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(teller.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(teller.getId(), sctl.getServiceProviderID(), sctl.getServiceID());
 		if (partnerService == null) {
 			return CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner;
 		}
@@ -207,10 +207,10 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 		if (!tellerPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 			}
-		tellercashinconfirm.setServiceChargeTransactionLogID(sctl.getID());
-		tellercashinconfirm.setSourcePocketID(tellerPocket.getID());
-		tellercashinconfirm.setDestPocketID(srcEmoneyPocket.getID()); 
-		tellercashinconfirm.setEndDestPocketID(subPocket.getID());
+		tellercashinconfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		tellercashinconfirm.setSourcePocketID(tellerPocket.getId().longValue());
+		tellercashinconfirm.setDestPocketID(srcEmoneyPocket.getId().longValue()); 
+		tellercashinconfirm.setEndDestPocketID(subPocket.getId());
 		return CmFinoFIX.ResponseCode_Success;
 	}
 	
