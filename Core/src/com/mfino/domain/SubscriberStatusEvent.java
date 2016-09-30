@@ -2,11 +2,12 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -16,7 +17,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SUBSCRIBER_STATUS_EVENT")
 public class SubscriberStatusEvent extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_PickUpDateTime = "pickupdatetime";
+	public static final String FieldName_ProcessingStatus = "processingstatus";
+	public static final String FieldName_StatusOnPickup = "statusonpickup";
+	public static final String FieldName_SubscriberType = "subscribertype";
 	private BigDecimal subscriberid;
 	private Timestamp pickupdatetime;
 	private Short processingstatus;

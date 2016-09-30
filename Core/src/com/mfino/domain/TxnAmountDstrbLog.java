@@ -2,14 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -19,12 +20,15 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "TXN_AMOUNT_DSTRB_LOG")
 public class TxnAmountDstrbLog extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_ServiceChargeTransactionLogID = "servicechargetransactionlogid";
+	public static final String FieldName_Partner = "partner";
+	public static final String FieldName_TADLStatus = "status";
 	private Pocket pocket;
 	private Partner partner;
 	private Subscriber subscriber;
 	private TransactionCharge transactionCharge;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal servicechargetransactionlogid;
 	private BigDecimal transactionid;
 	private BigDecimal shareamount;
@@ -57,7 +61,7 @@ public class TxnAmountDstrbLog extends Base implements java.io.Serializable {
 
 	public TxnAmountDstrbLog(BigDecimal id, Pocket pocket, Partner partner,
 			Subscriber subscriber, TransactionCharge transactionCharge,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			BigDecimal servicechargetransactionlogid, BigDecimal transactionid,
@@ -129,12 +133,12 @@ public class TxnAmountDstrbLog extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID")
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

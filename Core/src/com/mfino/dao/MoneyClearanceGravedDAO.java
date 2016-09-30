@@ -9,7 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.dao.query.MoneyClearanceGravedQuery;
 import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.UnregisteredTxnInfo;
 /**
@@ -31,7 +31,7 @@ public class MoneyClearanceGravedDAO extends BaseDAO<MoneyClearanceGraved>{
 		}
 		if(query.getSctlId() != null){
 			criteria.createAlias(MoneyClearanceGraved.FieldName_SctlId, "SCTL");
-			criteria.add(Restrictions.eq("SCTL."+ServiceChargeTransactionLog.FieldName_RecordID, query.getSctlId()));
+			criteria.add(Restrictions.eq("SCTL."+ServiceChargeTxnLog.FieldName_RecordID, query.getSctlId()));
 		}
 		if(query.getRefundMdnId() != null){
 			criteria.createAlias(MoneyClearanceGraved.FieldName_SubscriberMDNByRefundMDNID, "SMDN");
@@ -43,7 +43,7 @@ public class MoneyClearanceGravedDAO extends BaseDAO<MoneyClearanceGraved>{
 		}
 		if(query.getRefundSctlId() != null){
 			criteria.createAlias(MoneyClearanceGraved.FieldName_RefundSctlID, "SCTL");
-			criteria.add(Restrictions.eq("SCTL."+ServiceChargeTransactionLog.FieldName_RecordID, query.getRefundSctlId()));
+			criteria.add(Restrictions.eq("SCTL."+ServiceChargeTxnLog.FieldName_RecordID, query.getRefundSctlId()));
 		}
 		 processBaseQuery(query, criteria);
 

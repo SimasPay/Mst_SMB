@@ -80,7 +80,7 @@ public class ServiceTransactionDAO extends BaseDAO<ServiceTransaction> {
 				for (ServiceTransaction st: lst) {
 					TransactionType tt = st.getTransactionType();
 					if (tt != null) {
-						result.put(tt.getID(), tt.getDisplayName());
+						result.put(tt.getId().longValue(), tt.getDisplayname());
 					}
 				}
 			}
@@ -98,8 +98,8 @@ public class ServiceTransactionDAO extends BaseDAO<ServiceTransaction> {
 	public boolean isReverseAllowed(Long serviceId, Long transactionTypeId) {
 		boolean result = false;
 		ServiceTransaction st = getServiceTransaction(serviceId, transactionTypeId);
-		if (st != null && st.getIsReverseAllowed() != null) {
-			result = st.getIsReverseAllowed();
+		if (st != null && st.getIsreverseallowed() != null) {
+			result = st.getIsreverseallowed() != 0;
 		}
 		return result;
 	}

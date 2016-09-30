@@ -11,10 +11,11 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
+import com.mfino.domain.KYCLevel;
+import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMJSPocketTemplateConfig;
+import com.mfino.domain.PtcGroupMapping;
 
 /**
  * 
@@ -38,62 +39,62 @@ public class PocketTemplateConfigDAO extends BaseDAO<PocketTemplateConfig> {
 		}
 		if (query.get_subscriberType() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRPocketTemplateConfig.FieldName_SubscriberType,
+					PocketTemplateConfig.FieldName_SubscriberType,
 					query.get_subscriberType()));
 		}
 		if (query.get_businessPartnerType() != null) {
 			criteria.add(Restrictions
-					.eq(CmFinoFIX.CRPocketTemplateConfig.FieldName_BusinessPartnerType,
+					.eq(PocketTemplateConfig.FieldName_BusinessPartnerType,
 							query.get_businessPartnerType()));
 		}
 		if (query.get_KYCLevel() != null) {
 			/*criteria.createAlias(KYCLEVELTABLE, KYCLEVEL_ALIAS);
-			criteria.add(Restrictions.eq(KYCLEVEL_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRKYCLevel.FieldName_RecordID, query.get_KYCLevel()));*/
-			criteria.createAlias(CmFinoFIX.CRPocketTemplateConfig.FieldName_KYCLevelByKYCLevel, "kbk");
-			criteria.add(Restrictions.eq("kbk."+CmFinoFIX.CRKYCLevel.FieldName_KYCLevel, query.get_KYCLevel()));
+			criteria.add(Restrictions.eq(KYCLEVEL_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + KYCLevel.FieldName_RecordID, query.get_KYCLevel()));*/
+			criteria.createAlias(PocketTemplateConfig.FieldName_KYCLevelByKYCLevel, "kbk");
+			criteria.add(Restrictions.eq("kbk."+KYCLevel.FieldName_KYCLevel, query.get_KYCLevel()));
 		}
 		if (query.get_pocketType() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRPocketTemplateConfig.FieldName_PocketType,
+					PocketTemplateConfig.FieldName_PocketType,
 					query.get_pocketType()));
 		}
 		if (query.get_commodity() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRPocketTemplateConfig.FieldName_Commodity,
+					PocketTemplateConfig.FieldName_Commodity,
 					query.get_commodity()));
 		}
 		if (query.get_pocketTemplateID() != null) {
-//			/*criteria.createAlias(CmFinoFIX.CRPocketTemplateConfig.FieldName_PocketTemplate, "pt");
+//			/*criteria.createAlias(PocketTemplateConfig.FieldName_PocketTemplate, "pt");
 //			criteria.add(Restrictions
 //					.eq("pt."+ID_COLNAME,
 //							query.get_pocketTemplateID()));*/
 //			criteria.add(Restrictions.eq(
-//					CmFinoFIX.CRPocketTemplateConfig.FieldName_PocketTemplateID,
+//					PocketTemplateConfig.FieldName_PocketTemplateID,
 //					query.get_pocketTemplateID()));
 			criteria.createAlias(POCKETTEMPLATETABLE, POCKETTEMPLATE_ALIAS);
-			criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_RecordID, query.get_pocketTemplateID()));
+			criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_RecordID, query.get_pocketTemplateID()));
 			
 		}
 		
 		if (query.get_isDefault() != null) {
 			criteria.add(Restrictions
-					.eq(CmFinoFIX.CRPocketTemplateConfig.FieldName_IsDefault,
+					.eq(PocketTemplateConfig.FieldName_IsDefault,
 							query.get_isDefault()));
 		}
 		
 		if (query.get_isSuspensePocket() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRPocketTemplateConfig.FieldName_IsSuspencePocket, query.get_isSuspensePocket()));
+			criteria.add(Restrictions.eq(PocketTemplateConfig.FieldName_IsSuspencePocket, query.get_isSuspensePocket()));
 		}
 		
 		if (query.get_isCollectorPocket() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRPocketTemplateConfig.FieldName_IsCollectorPocket, query.get_isCollectorPocket()));
+			criteria.add(Restrictions.eq(PocketTemplateConfig.FieldName_IsCollectorPocket, query.get_isCollectorPocket()));
 		}
 		
 		//joining ptc and ptc_group_mapping tables
 		if (query.get_GroupID() != null) {
-			Criteria ptcMapCriteria = criteria.createCriteria(CmFinoFIX.CRPocketTemplateConfig.FieldName_PTC_Group_MapFromPtcID);
-			Criteria groupCriteria = ptcMapCriteria.createCriteria(CmFinoFIX.CRPTC_Group_Map.FieldName_Group);
-			groupCriteria.add(Restrictions.eq(CmFinoFIX.CRGroup.FieldName_RecordID, query.get_GroupID()));
+			Criteria ptcMapCriteria = criteria.createCriteria(PocketTemplateConfig.FieldName_PTC_Group_MapFromPtcID);
+			Criteria groupCriteria = ptcMapCriteria.createCriteria(PtcGroupMapping.FieldName_Group);
+			groupCriteria.add(Restrictions.eq(Groups.FieldName_RecordID, query.get_GroupID()));
 		}
 
 		processPaging(query, criteria);

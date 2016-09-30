@@ -2,14 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -19,7 +20,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "TXN_RULE_ADDN_INFO")
 public class TxnRuleAddnInfo extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_TransactionRule = "transactionRule";
+	public static final String FieldName_TxnRuleKey = "txnrulekey";
+	public static final String FieldName_TxnRuleValue = "txnrulevalue";
+	public static final String FieldName_TxnRuleComparator = "txnrulecomparator";
 	private TransactionRule transactionRule;
 	private String txnrulekey;
 	private String txnrulevalue;

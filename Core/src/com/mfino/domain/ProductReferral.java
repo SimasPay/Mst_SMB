@@ -2,13 +2,12 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -18,6 +17,14 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "PRODUCT_REFERRAL")
 public class ProductReferral extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
+	public static final String FieldName_ProductDesired = "productdesired";
+	public static final String FieldName_AgentMDN = "agentmdn";
+	public static final String FieldName_SubscriberMDN = "subscribermdn";
+	public static final String FieldName_Email = "email";
+	public static final String FieldName_FullName = "fullname";
+	public static final String FieldName_Others = "others";
 	
 	private String agentmdn;
 	private String fullname;

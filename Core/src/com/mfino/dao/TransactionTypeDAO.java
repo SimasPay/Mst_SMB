@@ -12,8 +12,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.TransactionTypeQuery;
+import com.mfino.domain.Service;
 import com.mfino.domain.TransactionType;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Bala Sunku
@@ -31,17 +31,17 @@ public class TransactionTypeDAO extends BaseDAO<TransactionType>{
 		if(null != query.getServiceId()){
 			Criteria serviceTransactionFromTransactionTypeCriteria = transactionCriteria.createCriteria("ServiceTransactionFromTransactionTypeID");
 			Criteria serviceCriteria = serviceTransactionFromTransactionTypeCriteria.createCriteria("Service");
-			serviceCriteria.add(Restrictions.eq(CmFinoFIX.CRService.FieldName_RecordID, query.getServiceId()));
+			serviceCriteria.add(Restrictions.eq(Service.FieldName_RecordID, query.getServiceId()));
 		}
 		
 		if (StringUtils.isNotBlank(query.getTransactionName())) {
-			transactionCriteria.add(Restrictions.eq(CmFinoFIX.CRTransactionType.FieldName_TransactionName, query.getTransactionName()).ignoreCase());
+			transactionCriteria.add(Restrictions.eq(TransactionType.FieldName_TransactionName, query.getTransactionName()).ignoreCase());
 		}
 		
         processBaseQuery(query, transactionCriteria);
         processPaging(query, transactionCriteria);
         
-        transactionCriteria.addOrder(Order.desc(CmFinoFIX.CRService.FieldName_RecordID));
+        transactionCriteria.addOrder(Order.desc(Service.FieldName_RecordID));
 //        applyOrder(query, serviceCriteria);
         
 		List<TransactionType> results = transactionCriteria.list(); 

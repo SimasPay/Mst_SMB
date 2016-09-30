@@ -3,12 +3,13 @@
  */
 package com.mfino.dao;
 
-import com.mfino.dao.query.SMSCodeQuery;
-import com.mfino.domain.SMSCode;
-import com.mfino.fix.CmFinoFIX;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+
+import com.mfino.dao.query.SMSCodeQuery;
+import com.mfino.domain.SMSCode;
 
 /**
  * @author Deva
@@ -19,10 +20,10 @@ public class SMSCodeDAO extends BaseDAO<SMSCode> {
     public List<SMSCode> get(SMSCodeQuery query) {
         Criteria criteria = createCriteria();
         if (query.getSmsCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSMSCode.FieldName_SMSCodeText, query.getSmsCode()).ignoreCase());
+            criteria.add(Restrictions.eq(SMSCode.FieldName_SMSCodeText, query.getSmsCode()).ignoreCase());
         }
         if (query.getSmsStatus() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSMSCode.FieldName_SMSCodeStatus, query.getSmsStatus()));
+            criteria.add(Restrictions.eq(SMSCode.FieldName_SMSCodeStatus, query.getSmsStatus()));
         }
         
         processPaging(query, criteria);

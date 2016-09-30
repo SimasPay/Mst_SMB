@@ -7,12 +7,10 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ScheduleTemplateQuery;
 import com.mfino.domain.ScheduleTemplate;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * 
@@ -25,29 +23,29 @@ public class ScheduleTemplateDAO extends BaseDAO<ScheduleTemplate> {
         Criteria criteria = createCriteria();
         
         if (query.getName() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_Name, query.getName()).ignoreCase());
+            criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_Name, query.getName()).ignoreCase());
         }
         if (query.getModeType() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_ModeType, query.getModeType()).ignoreCase());
+            criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_ModeType, query.getModeType()).ignoreCase());
         }
         if (query.getDayOfMonth() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_DayOfMonth, query.getDayOfMonth()).ignoreCase());
+            criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_DayOfMonth, query.getDayOfMonth()).ignoreCase());
         }
         if (query.getDayOfWeek() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_DayOfWeek, query.getDayOfWeek()));
+            criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_DayOfWeek, query.getDayOfWeek()));
         }
         if (query.getCron() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_Cron, query.getCron()).ignoreCase());
+            criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_Cron, query.getCron()).ignoreCase());
         }
         
         if(query.getTimerValueHH()!=null){
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_TimerValueHH, query.getTimerValueHH()));
+        	criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_TimerValueHH, query.getTimerValueHH()));
         }
         if(query.getTimerValueMM()!=null){
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_TimerValueMM, query.getTimerValueMM()));
+        	criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_TimerValueMM, query.getTimerValueMM()));
         }
         if(query.getMonth()!=null){
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRScheduleTemplate.FieldName_Month, query.getMonth()));
+        	criteria.add(Restrictions.eq(ScheduleTemplate.FieldName_Month, query.getMonth()));
         }
              
        
@@ -56,7 +54,7 @@ public class ScheduleTemplateDAO extends BaseDAO<ScheduleTemplate> {
         // Paging
         processPaging(query, criteria);
         //applying Order
-        criteria.addOrder(Order.desc(CmFinoFIX.CRScheduleTemplate.FieldName_RecordID));
+        criteria.addOrder(Order.desc(ScheduleTemplate.FieldName_RecordID));
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
         List<ScheduleTemplate> results = criteria.list();

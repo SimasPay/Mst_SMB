@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -21,6 +23,12 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SCTL_SETTLEMENT_MAP")
 public class SctlSettlementMap extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_SctlId = "serviceChargeTxnLog";
+	public static final String FieldName_PartnerID = "partner";
+	public static final String FieldName_SettlementStatus = "status";
+	public static final String FieldName_ServiceID = "service";
+	public static final String FieldName_StlID = "settlementTxnLog";
 	
 	private Partner partner;
 	private Service service;

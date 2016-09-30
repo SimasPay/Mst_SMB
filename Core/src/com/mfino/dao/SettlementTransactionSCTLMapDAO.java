@@ -6,54 +6,55 @@ package com.mfino.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SettlementTransactionSCTLMapQuery;
-import com.mfino.domain.SettlementTransactionSCTLMap;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SettlementTxnLog;
+import com.mfino.domain.SettlementTxnSctlMap;
 
 /**
  * 
  * @author Hemanth
  *
  */
-public class SettlementTransactionSCTLMapDAO extends BaseDAO<SettlementTransactionSCTLMap> {
+public class SettlementTransactionSCTLMapDAO extends BaseDAO<SettlementTxnSctlMap> {
 
-    public List<SettlementTransactionSCTLMap> get(SettlementTransactionSCTLMapQuery query) {
+    public List<SettlementTxnSctlMap> get(SettlementTransactionSCTLMapQuery query) {
         Criteria criteria = createCriteria();
 
         if (query.getStlID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSettlementTransactionSCTLMap.FieldName_StlID, query.getStlID()));
+        	criteria.createAlias(SettlementTxnSctlMap.FieldName_StlID, "stl");
+            criteria.add(Restrictions.eq("stl."+SettlementTxnLog.FieldName_RecordID, query.getStlID()));
         }
         if (query.getSCTLID() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSettlementTransactionSCTLMap.FieldName_SctlId, query.getSCTLID()));
+        	criteria.createAlias(SettlementTxnSctlMap.FieldName_SctlId, "sctl");
+            criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_RecordID, query.getSCTLID()));
         }
         if(query.getSettlementStatus() != null) {
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRSettlementTransactionSCTLMap.FieldName_SettlementStatus, query.getSettlementStatus()));
+        	criteria.add(Restrictions.eq(SettlementTxnSctlMap.FieldName_SettlementStatus, query.getSettlementStatus()));
         }
         
         processBaseQuery(query, criteria);
         // Paging
         processPaging(query, criteria);
         //applying Order
-       // criteria.addOrder(Order.desc(CmFinoFIX.CRSettlementTransactionSCTLMap.FieldName_RecordID));
+       // criteria.addOrder(Order.desc(SettlementTxnSctlMap.FieldName_RecordID));
       //  applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<SettlementTransactionSCTLMap> results = criteria.list();
+        List<SettlementTxnSctlMap> results = criteria.list();
         return results;
     }
 
-    public SettlementTransactionSCTLMap getByStlID(Long stlID) {
+    public SettlementTxnSctlMap getByStlID(Long stlID) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(SettlementTransactionSCTLMap.FieldName_StlID, stlID));
-        return (SettlementTransactionSCTLMap) criteria.uniqueResult();
+        criteria.add(Restrictions.eq(SettlementTxnSctlMap.FieldName_StlID, stlID));
+        return (SettlementTxnSctlMap) criteria.uniqueResult();
     }
-    public SettlementTransactionSCTLMap getBySCTLID(Long sctlID) {
+    public SettlementTxnSctlMap getBySCTLID(Long sctlID) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(SettlementTransactionSCTLMap.FieldName_SctlId, sctlID));
-        return (SettlementTransactionSCTLMap) criteria.uniqueResult();
+        criteria.add(Restrictions.eq(SettlementTxnSctlMap.FieldName_SctlId, sctlID));
+        return (SettlementTxnSctlMap) criteria.uniqueResult();
     }
 
 }

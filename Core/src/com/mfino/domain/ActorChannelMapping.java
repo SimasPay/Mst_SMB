@@ -2,18 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -44,7 +41,7 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	
 	private ChannelCode channelCode;
 	private Service service;
-	private KycLevel kycLevel;
+	private KYCLevel kycLevel;
 	private Groups groups;
 	private TransactionType transactionType;
 	private short isallowed;
@@ -72,7 +69,7 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	}
 
 	public ActorChannelMapping(BigDecimal id, ChannelCode channelCode,
-			Service service, KycLevel kycLevel, Groups groups,
+			Service service, KYCLevel kycLevel, Groups groups,
 			TransactionType transactionType, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			short isallowed, long subscribertype, Long businesspartnertype) {
@@ -115,11 +112,11 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCLEVEL")
-	public KycLevel getKycLevel() {
+	public KYCLevel getKycLevel() {
 		return this.kycLevel;
 	}
 
-	public void setKycLevel(KycLevel kycLevel) {
+	public void setKycLevel(KYCLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 

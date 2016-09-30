@@ -4,11 +4,13 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -18,7 +20,12 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "ROLE")
 public class Role extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_EnumCode = "enumcode";
+	public static final String FieldName_EnumValue = "enumvalue";
+	public static final String FieldName_DisplayText = "displaytext";
+	public static final String FieldName_IsSystemUser = "issystemuser";
+	public static final String FieldName_PriorityLevel = "prioritylevel";
 	private String enumcode;
 	private String enumvalue;
 	private String displaytext;

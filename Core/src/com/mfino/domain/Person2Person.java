@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,8 +26,10 @@ import com.mfino.hibernate.Timestamp;
 public class Person2Person extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_MDN = "mdn";
+	public static final String FieldName_PeerName = "peername";
 	private Subscriber subscriber;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private String mdn;
 	private String peername;
 	private Timestamp activationtime;
@@ -34,7 +38,7 @@ public class Person2Person extends Base implements java.io.Serializable {
 	}
 
 	public Person2Person(BigDecimal id, Subscriber subscriber,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mdn) {
 		this.id = id;
@@ -48,7 +52,7 @@ public class Person2Person extends Base implements java.io.Serializable {
 	}
 
 	public Person2Person(BigDecimal id, Subscriber subscriber,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mdn,
 			String peername, Timestamp activationtime) {
@@ -78,12 +82,12 @@ public class Person2Person extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

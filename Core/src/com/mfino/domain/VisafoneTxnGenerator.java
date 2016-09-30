@@ -18,8 +18,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "VISAFONE_TXN_GENERATOR")
 public class VisafoneTxnGenerator extends Base implements java.io.Serializable {
 
-	
-	
+	private static final long serialVersionUID = 1L;
 	private Timestamp txntimestamp;
 	private Long txncount;
 

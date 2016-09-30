@@ -25,7 +25,7 @@ public class ReportParametersDao extends BaseDAO<ReportParameters>{
 		if((null == parameterName) || ("".equals(parameterName))) return null;
 		
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRReportParameters.FieldName_ParameterName, parameterName).ignoreCase());
+		criteria.add(Restrictions.eq(ReportParameters.FieldName_ParameterName, parameterName).ignoreCase());
 		
         List<ReportParameters> results = criteria.list();
         

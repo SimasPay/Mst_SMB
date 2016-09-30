@@ -6,15 +6,10 @@ package com.mfino.dao;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import com.mfino.dao.query.TransactionRuleQuery;
 import com.mfino.domain.ServiceAudit;
-import com.mfino.domain.TransactionRule;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Bala Sunku
@@ -28,19 +23,19 @@ public class ServiceAuditDAO extends BaseDAO<ServiceAudit> {
 		Criteria criteria = createCriteria();
 		
 		if (serviceProviderId != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceAudit.FieldName_ServiceProviderID, serviceProviderId));
+			criteria.add(Restrictions.eq(ServiceAudit.FieldName_ServiceProviderID, serviceProviderId));
 		}
 		if (serviceId != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceAudit.FieldName_ServiceID, serviceId));
+			criteria.add(Restrictions.eq(ServiceAudit.FieldName_ServiceID, serviceId));
 		}
 		if (sourceType != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceAudit.FieldName_SourceType, sourceType));
+			criteria.add(Restrictions.eq(ServiceAudit.FieldName_SourceType, sourceType));
 		}
 		if (sourceId != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceAudit.FieldName_SourceID, sourceId));
+			criteria.add(Restrictions.eq(ServiceAudit.FieldName_SourceID, sourceId));
 		}
 		if (KYCLevelId != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceAudit.FieldName_KYCLevelId, KYCLevelId));
+			criteria.add(Restrictions.eq(ServiceAudit.FieldName_KYCLevelId, KYCLevelId));
 		}
 		
 		List<ServiceAudit> lst = criteria.list();

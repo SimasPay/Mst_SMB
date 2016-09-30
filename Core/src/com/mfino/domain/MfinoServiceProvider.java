@@ -2,17 +2,16 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -22,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "MFINO_SERVICE_PROVIDER")
 public class MfinoServiceProvider extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String description;
 	private Long status;
@@ -74,10 +73,10 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	private Set<TransactionType> transactionTypes = new HashSet<TransactionType>(
 			0);
 
-	public mFinoServiceProvider() {
+	public MfinoServiceProvider() {
 	}
 
-	public mFinoServiceProvider(BigDecimal id, Timestamp lastupdatetime,
+	public MfinoServiceProvider(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
@@ -86,7 +85,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public mFinoServiceProvider(BigDecimal id, Timestamp lastupdatetime,
+	public MfinoServiceProvider(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String name, String description, Long status,
 			Timestamp statustime, Set<Person2Person> person2Persons,

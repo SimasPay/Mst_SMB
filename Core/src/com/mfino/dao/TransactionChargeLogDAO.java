@@ -10,9 +10,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TransactionCharge;
 import com.mfino.domain.TransactionChargeLog;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Bala Sunku
@@ -22,10 +22,10 @@ public class TransactionChargeLogDAO extends BaseDAO<TransactionChargeLog> {
 	
     @Override
     public void save(TransactionChargeLog tcl) {
-        if (tcl.getmFinoServiceProviderByMSPID() == null) {
+        if (tcl.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            tcl.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            tcl.setMfinoServiceProvider(msp);
         }
         super.save(tcl);
     }
@@ -34,7 +34,7 @@ public class TransactionChargeLogDAO extends BaseDAO<TransactionChargeLog> {
     public List<TransactionChargeLog> getBySCTLID(long sctlId) {
     	List<TransactionChargeLog> result = null;
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionChargeLog.FieldName_ServiceChargeTransactionLogID, sctlId));
+    	criteria.add(Restrictions.eq(TransactionChargeLog.FieldName_ServiceChargeTransactionLogID, sctlId));
     	result = criteria.list();
     	return result;
     }
@@ -43,11 +43,12 @@ public class TransactionChargeLogDAO extends BaseDAO<TransactionChargeLog> {
     public BigDecimal getCharge(long sctlId, long tcId) {
     	BigDecimal charge = BigDecimal.ZERO;
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionChargeLog.FieldName_ServiceChargeTransactionLogID, sctlId));
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionChargeLog.FieldName_TransactionChargeID, tcId));
+    	criteria.add(Restrictions.eq(TransactionChargeLog.FieldName_ServiceChargeTransactionLogID, sctlId));
+    	criteria.createAlias(TransactionChargeLog.FieldName_TransactionCharge, "trxCharge");
+    	criteria.add(Restrictions.eq("trxCharge."+TransactionCharge.FieldName_RecordID, tcId));
     	List<TransactionChargeLog> lst = criteria.list();
     	if (CollectionUtils.isNotEmpty(lst)) {
-    		charge = lst.get(0).getCalculatedCharge();
+    		charge = lst.get(0).getCalculatedcharge();
     	}
     	return charge;
     }
@@ -59,7 +60,7 @@ public class TransactionChargeLogDAO extends BaseDAO<TransactionChargeLog> {
 			Long startSCTLID, Long endSCTLID) {
 		if(startSCTLID!=null&&endSCTLID!=null){
 		Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.between(CmFinoFIX.CRTransactionChargeLog.FieldName_ServiceChargeTransactionLogID, startSCTLID,endSCTLID));
+    	criteria.add(Restrictions.between(TransactionChargeLog.FieldName_ServiceChargeTransactionLogID, startSCTLID,endSCTLID));
     	List<TransactionChargeLog> result = criteria.list();
     	return result;
 		}

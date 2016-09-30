@@ -3,29 +3,19 @@
  */
 package com.mfino.dao;
 
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
-import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.TransactionMonitoringLog;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.ServiceChargeTxnLog;
 
 /**
  * @author Srinivaas
  *
  */
-public class TransactionMonitoringDAO extends BaseDAO<TransactionMonitoringLog> {
+public class TransactionMonitoringDAO extends BaseDAO<ServiceChargeTxnLog> {
 	
 	public List<Object> getRCFailedTransactions(ServiceChargeTransactionsLogQuery sctlQuery) 
 	{

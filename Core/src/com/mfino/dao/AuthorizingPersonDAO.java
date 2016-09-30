@@ -6,7 +6,7 @@
 package com.mfino.dao;
 
 import com.mfino.domain.AuthPersonDetails;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 
 /**
  *
@@ -19,7 +19,7 @@ public class AuthorizingPersonDAO extends BaseDAO<AuthPersonDetails> {
         //FIXME : everyone save it as 1 for now
         if (s.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
+            MfinoServiceProvider msp = mspDao.getById(1);
             s.setMfinoServiceProvider(msp);
         }
         super.save(s);
@@ -29,7 +29,7 @@ public class AuthorizingPersonDAO extends BaseDAO<AuthPersonDetails> {
     public void saveWithoutFlush(AuthPersonDetails s){
         //FIXME : everyone save it as 1 for now
         if (s.getMfinoServiceProvider() == null) {
-            s.setMfinoServiceProvider((mFinoServiceProvider) this.getSession().load(mFinoServiceProvider.class, 1l));
+            s.setMfinoServiceProvider((MfinoServiceProvider) this.getSession().load(MfinoServiceProvider.class, 1l));
         }
         super.saveWithoutFlush(s);
     }

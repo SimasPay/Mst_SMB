@@ -2,19 +2,18 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,8 +23,25 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SERVICE_CHARGE_TXN_LOG")
 public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_TransactionID = "transactionid";
+	public static final String FieldName_SCTLStatus = "status";
+	public static final String FieldName_ChannelCodeID = "channelcodeid";
+	public static final String FieldName_DestMDN = "destmdn";
+	public static final String FieldName_SourceMDN = "sourcemdn";
+	public static final String FieldName_SourcePartnerID = "sourcepartnerid";
+	public static final String FieldName_DestPartnerID = "destpartnerid";
+	public static final String FieldName_MFSBillerCode = "mfsbillercode";
+	public static final String FieldName_CommodityTransferID = "commoditytransferid";
+	public static final String FieldName_TransactionTypeID = "transactiontypeid";
+	public static final String FieldName_ServiceID = "serviceid";
+	public static final String FieldName_ParentSCTLID = "parentsctlid";
+	public static final String FieldName_IntegrationTransactionID = "integrationtransactionid";
+	public static final String FieldName_AdjustmentsFromSctlId = "adjustmentses";
+	public static final String FieldName_Info1 = "info1";
+	public static final String FieldName_ParentIntegrationTransID = "parentintegrationtransid";
 	
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal transactionid;
 	private String mfsbillercode;
 	private BigDecimal sourcepartnerid;
@@ -86,7 +102,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	public ServiceChargeTxnLog(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			BigDecimal transactionid, String mfsbillercode,
@@ -159,12 +175,12 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID")
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

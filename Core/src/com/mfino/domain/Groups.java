@@ -20,6 +20,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "GROUPS")
 public class Groups extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_GroupName = "groupname";
 	public static final String FieldName_SystemGroup = "systemgroup";
 	

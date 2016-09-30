@@ -7,36 +7,36 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.TransactionRuleAddnInfoQuery;
-import com.mfino.domain.TransactionRuleAddnInfo;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.TransactionRule;
+import com.mfino.domain.TxnRuleAddnInfo;
 
 /**
  * @author Srikanth
  *
  */
-public class TransactionRuleAddnInfoDAO extends BaseDAO<TransactionRuleAddnInfo> {
+public class TransactionRuleAddnInfoDAO extends BaseDAO<TxnRuleAddnInfo> {
 	
-	public List<TransactionRuleAddnInfo> get(TransactionRuleAddnInfoQuery query) {
+	public List<TxnRuleAddnInfo> get(TransactionRuleAddnInfoQuery query) {
 		Criteria criteria = createCriteria();
 		if (query.getTransactionRuleID() != null) {			
-			criteria.createAlias(CmFinoFIX.CRTransactionRuleAddnInfo.FieldName_TransactionRule, "txnRule");
-			criteria.add(Restrictions.eq("txnRule." + CmFinoFIX.CRTransactionRule.FieldName_RecordID, query.getTransactionRuleID()));
+			criteria.createAlias(TxnRuleAddnInfo.FieldName_TransactionRule, "txnRule");
+			criteria.add(Restrictions.eq("txnRule." + TransactionRule.FieldName_RecordID, query.getTransactionRuleID()));
 		}		
 		if (query.getTxnRuleKey() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionRuleAddnInfo.FieldName_TxnRuleKey, query.getTxnRuleKey()));
+			criteria.add(Restrictions.eq(TxnRuleAddnInfo.FieldName_TxnRuleKey, query.getTxnRuleKey()));
 		}
 		if (query.getTxnRuleValue() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionRuleAddnInfo.FieldName_TxnRuleValue, query.getTxnRuleValue()));
+			criteria.add(Restrictions.eq(TxnRuleAddnInfo.FieldName_TxnRuleValue, query.getTxnRuleValue()));
 		}
 		if (query.getTxnRuleComparator() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionRuleAddnInfo.FieldName_TxnRuleComparator, query.getTxnRuleComparator()));
+			criteria.add(Restrictions.eq(TxnRuleAddnInfo.FieldName_TxnRuleComparator, query.getTxnRuleComparator()));
 		}
-		criteria.addOrder(Order.asc(CmFinoFIX.CRTransactionRuleAddnInfo.FieldName_RecordID));
+		criteria.addOrder(Order.asc(TxnRuleAddnInfo.FieldName_RecordID));
 		processPaging(query, criteria);
 		processBaseQuery(query, criteria);
 		
 		@SuppressWarnings("unchecked")
-		List<TransactionRuleAddnInfo> list = criteria.list();			
+		List<TxnRuleAddnInfo> list = criteria.list();			
 		return list;
 	}
 }

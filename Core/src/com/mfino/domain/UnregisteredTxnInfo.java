@@ -2,19 +2,18 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,6 +23,19 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "UNREGISTERED_TXN_INFO")
 public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
+	public static final String FieldName_TransferSCTLId = "cashoutsctlid";
+	public static final String FieldName_TransferCTId = "transferctid";
+	public static final String FieldName_CashoutSCTLId = "cashoutsctlid";
+	public static final String FieldName_UnRegisteredTxnStatus = "unregisteredtxnstatus";
+	public static final String FieldName_DigestedPIN = "digestedpin";
+	public static final String FieldName_Amount = "amount";
+	public static final String FieldName_WithdrawalMDN = "withdrawalmdn";
+	public static final String FieldName_ExpiryTime = "expirytime";
+	public static final String FieldName_FundDefinition = "fundDefinition";
+	public static final String FieldName_PartnerCode = "partnercode";
+	public static final String FieldName_TransactionName = "transactionname";
 	private BigDecimal id;
 	private long version;
 	private SubscriberMdn subscriberMdn;

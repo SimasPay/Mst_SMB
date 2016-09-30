@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.domain.Company;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CMultiXBuffer;
 import com.mfino.fix.CmFinoFIX;
@@ -31,7 +31,7 @@ public abstract class FIXMessageHandler extends MultixCommunicationHandler {
 	public static final String ANY_PARTNER = "any";
 
 	
-	public static mFinoServiceProvider	msp;
+	public static MfinoServiceProvider	msp;
 
 	private ResultType	               resultType;
  	public static final String	       DEFAULT_URL	= ConfigurationUtil.getBackendURL();

@@ -1,11 +1,11 @@
 package com.mfino.dao;
 
-import com.mfino.domain.SettlementTransactionLogs;
+import com.mfino.domain.SettlementTxnLog;
 
 /**
  * @author sasidhar
  *
  */
-public class SettlementTransactionLogsDao extends BaseDAO<SettlementTransactionLogs> {
+public class SettlementTransactionLogsDao extends BaseDAO<SettlementTxnLog> {
 	
 }

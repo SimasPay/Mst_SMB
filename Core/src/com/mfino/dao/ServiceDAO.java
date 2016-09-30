@@ -12,6 +12,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.ServiceQuery;
+import com.mfino.domain.Partner;
+import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Service;
 import com.mfino.fix.CmFinoFIX;
 
@@ -26,7 +28,7 @@ public class ServiceDAO extends BaseDAO<Service>{
 		Criteria serviceCriteria = createCriteria();
 		
 		if(query.getId()!=null){
-			serviceCriteria.add(Restrictions.eq(CmFinoFIX.CRService.FieldName_RecordID, query.getId()));
+			serviceCriteria.add(Restrictions.eq(Service.FieldName_RecordID, query.getId()));
 		}
 		  //Before Correcting errors reported by Findbugs:
 			/*		if((null != query.getServiceProviderId()) && !("".equals(query.getService
@@ -37,22 +39,22 @@ public class ServiceDAO extends BaseDAO<Service>{
 		if((null != query.getServiceProviderId()) && (null != query.getPartnerId())){
 			Criteria serviceProviderFromServicesCriteria = serviceCriteria.createCriteria("ServiceProviderServicesFromServiceID");
 			Criteria serviceProviderCriteria = serviceProviderFromServicesCriteria.createCriteria("PartnerByServiceProviderID");
-			serviceProviderCriteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_RecordID, query.getServiceProviderId()));
+			serviceProviderCriteria.add(Restrictions.eq(Partner.FieldName_RecordID, query.getServiceProviderId()));
 			
 			Criteria partnerServiceFromServicesProviderFromServicesCriteria = serviceProviderFromServicesCriteria.createCriteria("PartnerServicesFromServiceProviderServicesID");
-			partnerServiceFromServicesProviderFromServicesCriteria.add(Restrictions.eq(CmFinoFIX.CRPartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
+			partnerServiceFromServicesProviderFromServicesCriteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
 			Criteria partnerCriteria = partnerServiceFromServicesProviderFromServicesCriteria.createCriteria("Partner");
-			partnerCriteria.add(Restrictions.eq(CmFinoFIX.CRPartner.FieldName_RecordID, query.getPartnerId()));
+			partnerCriteria.add(Restrictions.eq(Partner.FieldName_RecordID, query.getPartnerId()));
 		}
 		
 		if (StringUtils.isNotBlank(query.getServiceName())) {
-			serviceCriteria.add(Restrictions.eq(CmFinoFIX.CRService.FieldName_ServiceName, query.getServiceName()).ignoreCase());
+			serviceCriteria.add(Restrictions.eq(Service.FieldName_ServiceName, query.getServiceName()).ignoreCase());
 		}
 		
         processBaseQuery(query, serviceCriteria);
         processPaging(query, serviceCriteria);
         
-        serviceCriteria.addOrder(Order.desc(CmFinoFIX.CRService.FieldName_RecordID));
+        serviceCriteria.addOrder(Order.desc(Service.FieldName_RecordID));
 //        applyOrder(query, serviceCriteria);
         
 		List<Service> results = serviceCriteria.list(); 

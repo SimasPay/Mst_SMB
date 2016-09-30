@@ -4,11 +4,13 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -18,7 +20,12 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SERVICE_AUDIT")
 public class ServiceAudit extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_ServiceProviderID = "serviceproviderid";
+	public static final String FieldName_ServiceID = "serviceid";
+	public static final String FieldName_SourceType = "sourcetype";
+	public static final String FieldName_SourceID = "sourceid";
+	public static final String FieldName_KYCLevelId = "kyclevelid";
 	private BigDecimal serviceproviderid;
 	private BigDecimal serviceid;
 	private Long sourcetype;

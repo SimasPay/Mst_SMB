@@ -5,13 +5,13 @@
 
 package com.mfino.dao;
 
-import com.mfino.domain.ServiceDefaultConfiguration;
+import com.mfino.domain.ServiceDefualtConfig;
 
 /**
  *
  * @author Maruthi
  */
-public class ServiceDefaultConfigurationDAO extends BaseDAO<ServiceDefaultConfiguration> {
+public class ServiceDefaultConfigurationDAO extends BaseDAO<ServiceDefualtConfig> {
 	
 	
 	

@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mfino.dao.query.SystemParametersQuery;
 import com.mfino.domain.SystemParameters;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author sasidhar
@@ -26,7 +25,7 @@ public class SystemParametersDao extends BaseDAO<SystemParameters>{
 		if((null == parameterName) || ("".equals(parameterName))) return null;
 		
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRSystemParameters.FieldName_ParameterName, parameterName).ignoreCase());
+		criteria.add(Restrictions.eq(SystemParameters.FieldName_ParameterName, parameterName).ignoreCase());
 		
         List<SystemParameters> results = criteria.list();
         
@@ -41,13 +40,13 @@ public class SystemParametersDao extends BaseDAO<SystemParameters>{
         Criteria criteria = createCriteria();
 
         if (StringUtils.isNotBlank(query.getParameterName())) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSystemParameters.FieldName_ParameterName, query.getParameterName()).ignoreCase());
+            criteria.add(Restrictions.eq(SystemParameters.FieldName_ParameterName, query.getParameterName()).ignoreCase());
         }
         if (StringUtils.isNotBlank(query.getParemeterValue())) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSystemParameters.FieldName_ParameterValue, query.getParemeterValue()).ignoreCase());
+            criteria.add(Restrictions.eq(SystemParameters.FieldName_ParameterValue, query.getParemeterValue()).ignoreCase());
         }
         if (StringUtils.isNotBlank(query.getDescription())) {
-            criteria.add(Restrictions.like(CmFinoFIX.CRSystemParameters.FieldName_Description, query.getDescription()).ignoreCase());
+            criteria.add(Restrictions.like(SystemParameters.FieldName_Description, query.getDescription()).ignoreCase());
         }
         
         processPaging(query, criteria);

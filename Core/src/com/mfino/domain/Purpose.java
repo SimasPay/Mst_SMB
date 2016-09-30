@@ -4,11 +4,13 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -18,7 +20,10 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "PURPOSE")
 public class Purpose extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+
+	public static final String FieldName_Code = "code";
+
 	private BigDecimal mspid;
 	private Long category;
 	private String code;

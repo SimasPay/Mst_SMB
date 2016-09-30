@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,8 +24,15 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SUBSCRIBER_MDN", uniqueConstraints = @UniqueConstraint(columnNames = "MDN"))
 public class SubscriberMdn extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MDN = "mdn";
+	public static final String FieldName_StatusTime = "statustime";
+	public static final String FieldName_MDNStatus = "status";
+	public static final String FieldName_IsMDNRecycled = "ismdnrecycled";
+	public static final String FieldName_PocketFromMDNID = "pockets";
+	public static final String FieldName_IsForceCloseRequested = "isforcecloserequested";
+	public static final String FieldName_LastTransactionTime = "lasttransactiontime";
+	public static final String FieldName_Subscriber = "subscriber";
 	private Subscriber subscriber;
 	private String mdn;
 	private String imsi;
@@ -91,10 +97,10 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Set<ChannelSessionMgmt> channelSessionMgmts = new HashSet<ChannelSessionMgmt>(
 			0);
 
-	public SubscriberMDN() {
+	public SubscriberMdn() {
 	}
 
-	public SubscriberMDN(BigDecimal id, Subscriber subscriber,
+	public SubscriberMdn(BigDecimal id, Subscriber subscriber,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mdn, long status,
 			long restrictions, long wrongpincount, Timestamp statustime) {
@@ -111,7 +117,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.statustime = statustime;
 	}
 
-	public SubscriberMDN(BigDecimal id, Subscriber subscriber,
+	public SubscriberMdn(BigDecimal id, Subscriber subscriber,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mdn, String imsi,
 			String marketingcategory, String idtype, String idnumber,

@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.RetiredCardPANInfoQuery;
 import com.mfino.domain.RetiredCardPANInfo;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.UnregisteredTxnInfo;
 
 /**
 *
@@ -18,20 +18,20 @@ public class RetiredCardPANInfoDAO extends BaseDAO<RetiredCardPANInfo>{
 	public List<RetiredCardPANInfo> get(RetiredCardPANInfoQuery query){
 		Criteria criteria = createCriteria();
 		if(query.getRetireCount() != null){
-			criteria.add(Restrictions.eq(CmFinoFIX.CRRetiredCardPANInfo.FieldName_RetireCount, query.getRetireCount()));
+			criteria.add(Restrictions.eq(RetiredCardPANInfo.FieldName_RetireCount, query.getRetireCount()));
 		}
 		if (query.getCardPan() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRRetiredCardPANInfo.FieldName_CardPAN, query.getCardPan()));
+			criteria.add(Restrictions.eq(RetiredCardPANInfo.FieldName_CardPAN, query.getCardPan()));
 		}
 
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 
 		if(query.isIDOrdered()) {
-			criteria.addOrder(Order.desc(CmFinoFIX.CRUnRegisteredTxnInfo.FieldName_RecordID));
+			criteria.addOrder(Order.desc(UnregisteredTxnInfo.FieldName_RecordID));
 		}
 		if(query.getSortString()!=null){
-			criteria.addOrder(Order.asc(CmFinoFIX.CRUnRegisteredTxnInfo.FieldName_CreateTime));
+			criteria.addOrder(Order.asc(UnregisteredTxnInfo.FieldName_CreateTime));
 		}
 
 		//applying Order

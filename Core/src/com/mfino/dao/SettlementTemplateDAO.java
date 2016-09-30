@@ -10,9 +10,8 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SettlementTemplateQuery;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.SettlementTemplate;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author sunil
@@ -24,16 +23,16 @@ public class SettlementTemplateDAO extends BaseDAO<SettlementTemplate>{
 		Criteria criteria = createCriteria();
 		
 		if (StringUtils.isNotBlank(query.getSettlementName())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRSettlementTemplate.FieldName_SettlementName, query.getSettlementName()).ignoreCase());
+			criteria.add(Restrictions.eq(SettlementTemplate.FieldName_SettlementName, query.getSettlementName()).ignoreCase());
 		}
 		
 		if (StringUtils.isNotBlank(query.getExactSettlementName())) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRSettlementTemplate.FieldName_SettlementName, query.getExactSettlementName()).ignoreCase());
+			criteria.add(Restrictions.eq(SettlementTemplate.FieldName_SettlementName, query.getExactSettlementName()).ignoreCase());
 		}
 		
 		if (query.getPartnerId() != null) {
-			criteria.createAlias(CmFinoFIX.CRSettlementTemplate.FieldName_Partner, "p");
-			criteria.add(Restrictions.eq("p."+CmFinoFIX.CRSettlementTemplate.FieldName_RecordID, query.getPartnerId()));
+			criteria.createAlias(SettlementTemplate.FieldName_Partner, "p");
+			criteria.add(Restrictions.eq("p."+SettlementTemplate.FieldName_RecordID, query.getPartnerId()));
 		}
 		
         processBaseQuery(query, criteria);
@@ -50,10 +49,10 @@ public class SettlementTemplateDAO extends BaseDAO<SettlementTemplate>{
 	
     @Override
     public void save(SettlementTemplate s) {
-        if (s.getmFinoServiceProviderByMSPID() == null) {
+        if (s.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            s.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            s.setMfinoServiceProvider(msp);
         }
         super.save(s);
     }

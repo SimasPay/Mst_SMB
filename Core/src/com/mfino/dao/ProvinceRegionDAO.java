@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.ProvinceRegionQuery;
+import com.mfino.domain.Province;
 import com.mfino.domain.ProvinceRegion;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
@@ -19,10 +20,10 @@ public class ProvinceRegionDAO extends BaseDAO<ProvinceRegion> {
 
 	public List<ProvinceRegion> get(ProvinceRegionQuery query) {
 		Criteria criteria = createCriteria();
-		
-		criteria.add(Restrictions.eq(CmFinoFIX.CRProvinceRegion.FieldName_IdProvince, query.getIdProvince()));
+		criteria.createAlias(ProvinceRegion.FieldName_IdProvince, "province");
+		criteria.add(Restrictions.eq("province."+Province.FieldName_RecordID, query.getIdProvince()));
 
-		addOrder(QueryConstants.ASC_STRING, CmFinoFIX.CRProvinceRegion.FieldName_RegionId, criteria);		
+		addOrder(QueryConstants.ASC_STRING, ProvinceRegion.FieldName_RegionId, criteria);		
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		
@@ -45,6 +46,6 @@ public class ProvinceRegionDAO extends BaseDAO<ProvinceRegion> {
             log.info(MessageText._("No Province Region Code defined with the given code : ") + proregRecId);
             return null;
         }
-        return provinceRegion.getDisplayText();
+        return provinceRegion.getDisplaytext();
     }
 }

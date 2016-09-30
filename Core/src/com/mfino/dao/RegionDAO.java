@@ -4,12 +4,13 @@
  */
 package com.mfino.dao;
 
-import com.mfino.dao.query.*;
-import com.mfino.domain.Region;
-import com.mfino.fix.CmFinoFIX;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+
+import com.mfino.dao.query.RegionQuery;
+import com.mfino.domain.Region;
 
 /**
  *
@@ -18,7 +19,7 @@ import org.hibernate.criterion.Restrictions;
 public class RegionDAO extends BaseDAO<Region> {
 
     public static final String ID_COLNAME = "ID";
-    public static final String NAME_COLNAME = CmFinoFIX.CRRegion.FieldName_RegionCode;
+    public static final String NAME_COLNAME = Region.FieldName_RegionCode;
 
     public List<Region> get(RegionQuery query) {
 
@@ -27,13 +28,13 @@ public class RegionDAO extends BaseDAO<Region> {
             criteria.add(Restrictions.eq(ID_COLNAME, query.getRegionID()));
         }
         if (query.getCompany() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRRegion.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(Region.FieldName_Company, query.getCompany()));
         }
         if (query.getRegionName() != null) {
-            criteria.add(Restrictions.like(CmFinoFIX.CRRegion.FieldName_RegionName, query.getRegionName()).ignoreCase());
+            criteria.add(Restrictions.like(Region.FieldName_RegionName, query.getRegionName()).ignoreCase());
         }
         if (query.getRegionCode() != null) {
-            criteria.add(Restrictions.like(CmFinoFIX.CRRegion.FieldName_RegionCode, query.getRegionCode()).ignoreCase());
+            criteria.add(Restrictions.like(Region.FieldName_RegionCode, query.getRegionCode()).ignoreCase());
         }
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")

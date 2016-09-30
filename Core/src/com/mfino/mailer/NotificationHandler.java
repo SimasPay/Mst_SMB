@@ -5,13 +5,14 @@
 
 package com.mfino.mailer;
 
+import java.util.Date;
+
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.TransactionsLogDAO;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TransactionLog;
 import com.mfino.hibernate.Timestamp;
-import java.util.Date;
 
 /**
  *
@@ -24,15 +25,15 @@ public abstract class NotificationHandler {
 	/**
 	 *
 	 */
-	protected TransactionsLog saveTransactionsLog(Integer messageCode, String data) {
+	protected TransactionLog saveTransactionsLog(Integer messageCode, String data) {
 		TransactionsLogDAO transactionsLogDAO = DAOFactory.getInstance().getTransactionsLogDAO();
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
 		MfinoServiceProviderDAO mfinoServiceProviderDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-		mFinoServiceProvider msp = mfinoServiceProviderDAO.getById(1L);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		MfinoServiceProvider msp = mfinoServiceProviderDAO.getById(1L);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 	}

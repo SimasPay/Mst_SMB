@@ -21,7 +21,7 @@ import com.mfino.domain.Denomination;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.ZTEDataPush;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
@@ -48,7 +48,7 @@ public abstract class Result{
 	private List<CommodityTransfer> transactionList = new ArrayList<CommodityTransfer>();
 	
 	private List<SctlSettlementMap> pendingSettlements = new ArrayList<SctlSettlementMap>();
-	private ServiceChargeTransactionLog sctlList = null;
+	private ServiceChargeTxnLog sctlList = null;
 	
 	private List<Pocket> pocketList = new ArrayList<Pocket>();
 	
@@ -194,7 +194,7 @@ public abstract class Result{
 	/**
 	 * @return the ServiceChargeTransactionLog List
 	 */
-	public ServiceChargeTransactionLog getSCTLList() {
+	public ServiceChargeTxnLog getSCTLList() {
 		return sctlList;
 	}
 
@@ -208,7 +208,7 @@ public abstract class Result{
 	/**
 	 * @param ServiceChargeTransactionLog to set
 	 */
-	public void setSCTLList(ServiceChargeTransactionLog sctlList) {
+	public void setSCTLList(ServiceChargeTxnLog sctlList) {
 		this.sctlList = sctlList;
 	}
 

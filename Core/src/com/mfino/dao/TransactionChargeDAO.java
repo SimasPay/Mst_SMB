@@ -11,9 +11,11 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.TransactionChargeQuery;
+import com.mfino.domain.ChargeDefinition;
+import com.mfino.domain.ChargeType;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.TransactionCharge;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.TransactionRule;
 
 /**
  * @author Bala Sunku
@@ -25,25 +27,25 @@ public class TransactionChargeDAO extends BaseDAO<TransactionCharge> {
 		Criteria criteria = createCriteria();
 
 		if (query.getStartDate() != null) {
-			criteria.add(Restrictions.ge(CmFinoFIX.CRTransactionCharge.FieldName_CreateTime, query.getStartDate()));
+			criteria.add(Restrictions.ge(TransactionCharge.FieldName_CreateTime, query.getStartDate()));
 		}
 		if (query.getEndDate() != null) {
-			criteria.add(Restrictions.le(CmFinoFIX.CRTransactionCharge.FieldName_CreateTime, query.getEndDate()));
+			criteria.add(Restrictions.le(TransactionCharge.FieldName_CreateTime, query.getEndDate()));
 		}
 		if (query.getTransactionRuleId() != null) {
-			criteria.createAlias(CmFinoFIX.CRTransactionCharge.FieldName_TransactionRule, "tr");
-			criteria.add(Restrictions.eq("tr."+CmFinoFIX.CRTransactionRule.FieldName_RecordID, query.getTransactionRuleId()));
+			criteria.createAlias(TransactionCharge.FieldName_TransactionRule, "tr");
+			criteria.add(Restrictions.eq("tr."+TransactionRule.FieldName_RecordID, query.getTransactionRuleId()));
 		}
 		if (query.getChargeTypeId() != null ) {
-			criteria.createAlias(CmFinoFIX.CRTransactionCharge.FieldName_ChargeType, "ct");
-			criteria.add(Restrictions.eq("ct." + CmFinoFIX.CRChargeType.FieldName_RecordID, query.getChargeTypeId()));
+			criteria.createAlias(TransactionCharge.FieldName_ChargeType, "ct");
+			criteria.add(Restrictions.eq("ct." + ChargeType.FieldName_RecordID, query.getChargeTypeId()));
 		}
 		if (query.getChargeDefinitionId() != null) {
-			criteria.createAlias(CmFinoFIX.CRTransactionCharge.FieldName_ChargeDefinition, "cd");
-			criteria.add(Restrictions.eq("cd."+CmFinoFIX.CRChargeDefinition.FieldName_RecordID, query.getChargeDefinitionId()));
+			criteria.createAlias(TransactionCharge.FieldName_ChargeDefinition, "cd");
+			criteria.add(Restrictions.eq("cd."+ChargeDefinition.FieldName_RecordID, query.getChargeDefinitionId()));
 		}
 
-		criteria.addOrder(Order.asc(CmFinoFIX.CRTransactionCharge.FieldName_RecordID));
+		criteria.addOrder(Order.asc(TransactionCharge.FieldName_RecordID));
 		processPaging(query, criteria);
 		
 		@SuppressWarnings("unchecked")
@@ -66,10 +68,10 @@ public class TransactionChargeDAO extends BaseDAO<TransactionCharge> {
 	
     @Override
     public void save(TransactionCharge tc) {
-        if (tc.getmFinoServiceProviderByMSPID() == null) {
+        if (tc.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            tc.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            tc.setMfinoServiceProvider(msp);
         }
         super.save(tc);
     }

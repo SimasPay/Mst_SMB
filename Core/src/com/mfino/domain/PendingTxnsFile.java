@@ -5,6 +5,7 @@ package com.mfino.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -23,6 +25,8 @@ import com.mfino.hibernate.Timestamp;
 public class PendingTxnsFile extends Base implements java.io.Serializable {
 
 	
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_UploadFileStatus = "uploadfilestatus";
 	private Company company;
 	private String filename;
 	private Clob filedata;

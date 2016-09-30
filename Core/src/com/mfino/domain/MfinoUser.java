@@ -2,20 +2,19 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -25,9 +24,18 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "MFINO_USER", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"MSPID", "USERNAME" }))
 public class MfinoUser  extends Base implements java.io.Serializable {
-
-	
-	private mFinoServiceProvider mfinoServiceProvider;
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_mFinoServiceProviderByMSPID = "mfinoServiceProvider";
+	public static final String FieldName_Username = "username";
+	public static final String FieldName_ConfirmationTime = "confirmationtime";
+	public static final String FieldName_UserActivationTime = "useractivationtime";
+	public static final String FieldName_FirstName = "firstname";
+	public static final String FieldName_LastName = "lastname";
+	public static final String FieldName_UserStatus = "status";
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_UserRestrictions = "restrictions";
+	public static final String FieldName_Role = "role";
+	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
 	private String username;
 	private String password;
@@ -67,7 +75,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private Long branchcodeid;
 	private Set<Subscriber> subscribersForSubscriberuserid = new HashSet<Subscriber>(
 			0);
-	private Set<SmsPartner> smsPartners = new HashSet<SmsPartner>(0);
+	private Set<SMSPartner> smsPartners = new HashSet<SMSPartner>(0);
 	private Set<Subscriber> subscribersForUserid = new HashSet<Subscriber>(0);
 	private Set<BulkUpload> bulkUploads = new HashSet<BulkUpload>(0);
 	private Set<Partner> partners = new HashSet<Partner>(0);
@@ -113,7 +121,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 			Timestamp lastpasswordchangetime, String passwordhistory,
 			Short isloggedin, Long branchcodeid,
 			Set<Subscriber> subscribersForSubscriberuserid,
-			Set<SmsPartner> smsPartners, Set<Subscriber> subscribersForUserid,
+			Set<SMSPartner> smsPartners, Set<Subscriber> subscribersForUserid,
 			Set<BulkUpload> bulkUploads, Set<Partner> partners,
 			Set<BankAdmin> bankAdmins) {
 		this.id = id;
@@ -170,12 +178,12 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 
@@ -526,11 +534,11 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoUser")
-	public Set<SmsPartner> getSmsPartners() {
+	public Set<SMSPartner> getSmsPartners() {
 		return this.smsPartners;
 	}
 
-	public void setSmsPartners(Set<SmsPartner> smsPartners) {
+	public void setSmsPartners(Set<SMSPartner> smsPartners) {
 		this.smsPartners = smsPartners;
 	}
 

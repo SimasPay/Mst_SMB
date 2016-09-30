@@ -20,9 +20,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "TRANSACTION_CHARGE_LOG")
 public class TransactionChargeLog extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_ServiceChargeTransactionLogID = "servicechargetransactionlogid";
+	public static final String FieldName_TransactionCharge = "transactionCharge";
 	private TransactionCharge transactionCharge;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal servicechargetransactionlogid;
 	private BigDecimal calculatedcharge;
 
@@ -46,7 +48,7 @@ public class TransactionChargeLog extends Base implements java.io.Serializable {
 
 	public TransactionChargeLog(BigDecimal id,
 			TransactionCharge transactionCharge,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			BigDecimal servicechargetransactionlogid,
@@ -75,12 +77,12 @@ public class TransactionChargeLog extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID")
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

@@ -3,6 +3,7 @@
  */
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -14,15 +15,16 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.ActivitiesLog;
+import com.mfino.domain.Adjustments;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.ServiceChargeTxnLog;
 
 /**
  * @author Bala Sunku
  *
  */
-public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransactionLog> {
+public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTxnLog> {
 	
 	/**
 	 * Returns the Service Charge Transaction Log based on the Transaction Log Id.
@@ -31,13 +33,13 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
 	 */
 	private ChannelCodeDAO channelDao = DAOFactory.getInstance().getChannelCodeDao();
 	
-	public ServiceChargeTransactionLog getByTransactionLogId(long transactionLogId) {
-		ServiceChargeTransactionLog sctl = null;
+	public ServiceChargeTxnLog getByTransactionLogId(long transactionLogId) {
+		ServiceChargeTxnLog sctl = null;
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_TransactionID, transactionLogId));
+		criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_TransactionID, transactionLogId));
 		
 		@SuppressWarnings("unchecked")
-		List<ServiceChargeTransactionLog> lst = criteria.list();
+		List<ServiceChargeTxnLog> lst = criteria.list();
 		
 		if (CollectionUtils.isNotEmpty(lst)) {
 			sctl = lst.get(0);
@@ -51,97 +53,97 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ServiceChargeTransactionLog> getByStatus(Integer[] status) {
+	public List<ServiceChargeTxnLog> getByStatus(Integer[] status) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.in(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, status));
-		addOrder(QueryConstants.DESC_STRING, CmFinoFIX.CRServiceChargeTransactionLog.FieldName_CreateTime, criteria);
-		List<ServiceChargeTransactionLog> result = criteria.list();
+		criteria.add(Restrictions.in(ServiceChargeTxnLog.FieldName_SCTLStatus, status));
+		addOrder(QueryConstants.DESC_STRING, ServiceChargeTxnLog.FieldName_CreateTime, criteria);
+		List<ServiceChargeTxnLog> result = criteria.list();
 		return result;
 	}
 	
 		
     @Override
-    public void save(ServiceChargeTransactionLog sctl) {
-        if (sctl.getmFinoServiceProviderByMSPID() == null) {
+    public void save(ServiceChargeTxnLog sctl) {
+        if (sctl.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            sctl.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            sctl.setMfinoServiceProvider(msp);
         }
         super.save(sctl);
     }
     
-    public List<ServiceChargeTransactionLog> get(ServiceChargeTransactionsLogQuery query){
+    public List<ServiceChargeTxnLog> get(ServiceChargeTransactionsLogQuery query){
     	Criteria criteria = createCriteria();
     		
     		if(query.getSourceChannelApplication()!=null){
-    			Long channelID=channelDao.getByChannelSourceApplication(query.getSourceChannelApplication()).getID();
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_ChannelCodeID, channelID));
+    			BigDecimal channelID=channelDao.getByChannelSourceApplication(query.getSourceChannelApplication()).getId();
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_ChannelCodeID, channelID));
     		}
     		if(query.getDestMdn()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestMDN, query.getDestMdn()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_DestMDN, query.getDestMdn()));
     		}
     		if(query.getSourceMdn()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourceMDN, query.getSourceMdn()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_SourceMDN, query.getSourceMdn()));
     		}
     		if(StringUtils.isNotBlank(query.getSourceDestMdn())){
-    			criteria.add(Restrictions.or(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourceMDN, query.getSourceDestMdn()),
-    					Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestMDN, query.getSourceDestMdn())));
+    			criteria.add(Restrictions.or(Restrictions.eq(ServiceChargeTxnLog.FieldName_SourceMDN, query.getSourceDestMdn()),
+    					Restrictions.eq(ServiceChargeTxnLog.FieldName_DestMDN, query.getSourceDestMdn())));
     		}
     		if(query.getSourceDestPartnerID()!=null){
-    			criteria.add(Restrictions.or(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourcePartnerID, query.getSourceDestPartnerID()),
-    					Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestPartnerID, query.getSourceDestPartnerID())));
+    			criteria.add(Restrictions.or(Restrictions.eq(ServiceChargeTxnLog.FieldName_SourcePartnerID, query.getSourceDestPartnerID()),
+    					Restrictions.eq(ServiceChargeTxnLog.FieldName_DestPartnerID, query.getSourceDestPartnerID())));
     		}
     		if(query.getDestPartnerID()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestPartnerID, query.getDestPartnerID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_DestPartnerID, query.getDestPartnerID()));
     		}
     		if(query.getSourcePartnerID()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourcePartnerID, query.getSourcePartnerID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_SourcePartnerID, query.getSourcePartnerID()));
     		}
     		if(query.getBillerCode()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_MFSBillerCode, query.getBillerCode()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_MFSBillerCode, query.getBillerCode()));
     		}
     		if(query.getId()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_RecordID, query.getId()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_RecordID, query.getId()));
     		}
     		
     		if(query.getStatus()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, query.getStatus()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_SCTLStatus, query.getStatus()));
     		} else if(query.getStatusList()!=null){
-    			criteria.add(Restrictions.in(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, query.getStatusList()));
+    			criteria.add(Restrictions.in(ServiceChargeTxnLog.FieldName_SCTLStatus, query.getStatusList()));
     		}
     		if(query.getTransationID()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_TransactionID, query.getTransationID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_TransactionID, query.getTransationID()));
     		}
     		if(query.getTransferID()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_CommodityTransferID, query.getTransferID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_CommodityTransferID, query.getTransferID()));
     		}
     		if(query.getTransactionTypeIds()!=null && !query.getTransactionTypeIds().isEmpty()){
-    			criteria.add(Restrictions.in(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_TransactionTypeID, query.getTransactionTypeIds()));
+    			criteria.add(Restrictions.in(ServiceChargeTxnLog.FieldName_TransactionTypeID, query.getTransactionTypeIds()));
     	    	
     		}
     		if(query.getTransactionTypeID()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_TransactionTypeID, query.getTransactionTypeID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_TransactionTypeID, query.getTransactionTypeID()));
     		}
     		if(query.getServiceID()!=null){
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_ServiceID, query.getServiceID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_ServiceID, query.getServiceID()));
     		}
     		if (query.getParentSCTLID() != null) {
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_ParentSCTLID, query.getParentSCTLID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_ParentSCTLID, query.getParentSCTLID()));
     		}
     		if (query.getIntegrationTxnID()!= null) {
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_IntegrationTransactionID, query.getIntegrationTxnID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_IntegrationTransactionID, query.getIntegrationTxnID()));
     		}
     		if (query.getAdjustmentStatus()!= null) {
-    			criteria.createAlias(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_AdjustmentsFromSctlId, "adjustment");
-    			criteria.add(Restrictions.eq("adjustment." + CmFinoFIX.CRAdjustments.FieldName_AdjustmentStatus, query.getAdjustmentStatus()));
+    			criteria.createAlias(ServiceChargeTxnLog.FieldName_AdjustmentsFromSctlId, "adjustment");
+    			criteria.add(Restrictions.eq("adjustment." + Adjustments.FieldName_AdjustmentStatus, query.getAdjustmentStatus()));
     		}
     		if(query.getInfo1()!=null)
     		{
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_Info1, query.getInfo1()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_Info1, query.getInfo1()));
     		}
     		if(query.getParentIntegrationTransID()!=null)
     		{
-    			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_ParentIntegrationTransID, query.getParentIntegrationTransID()));
+    			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_ParentIntegrationTransID, query.getParentIntegrationTransID()));
     		}
     		
     	  processBaseQuery(query, criteria);
@@ -150,58 +152,58 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
           processPaging(query, criteria);
 
           if(query.isIDOrdered()) {
-            criteria.addOrder(Order.desc(CmFinoFIX.CRActivitiesLog.FieldName_RecordID));
+            criteria.addOrder(Order.desc(ActivitiesLog.FieldName_RecordID));
           }
           
           //applying Order
           applyOrder(query, criteria);
           @SuppressWarnings("unchecked")
-          List<ServiceChargeTransactionLog> results = criteria.list();
+          List<ServiceChargeTxnLog> results = criteria.list();
 
           return results;
     	
     }
     		
-	public List<ServiceChargeTransactionLog> getByParentSctlId(long parentSctlId) {
+	public List<ServiceChargeTxnLog> getByParentSctlId(long parentSctlId) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_ParentSCTLID, parentSctlId));
+		criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_ParentSCTLID, parentSctlId));
 		
 		@SuppressWarnings("unchecked")
-		List<ServiceChargeTransactionLog> lst = criteria.list();
+		List<ServiceChargeTxnLog> lst = criteria.list();
 		
 		return lst;
 	}
-	public ServiceChargeTransactionLog getByIntegrationTransactionsID(long integrationTransactionID) {
+	public ServiceChargeTxnLog getByIntegrationTransactionsID(long integrationTransactionID) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_IntegrationTransactionID, integrationTransactionID));
+		criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_IntegrationTransactionID, integrationTransactionID));
 		
 		@SuppressWarnings("unchecked")
-		List<ServiceChargeTransactionLog> lst = criteria.list();
+		List<ServiceChargeTxnLog> lst = criteria.list();
 		
 		if(criteria.list()==null||criteria.list().isEmpty())
 			return null;
 		return lst.get(0);
 	}
 
-	public List<ServiceChargeTransactionLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query){
+	public List<ServiceChargeTxnLog> getSubscriberPendingTransactions(ServiceChargeTransactionsLogQuery query){
 		
     	Criteria criteria = createCriteria();
     	
     	if(query.getSourceMdn()!=null){
     		
-    		Criterion sourceCriteria = Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourceMDN, query.getSourceMdn());
-        	Criterion destCriteria = Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestMDN, query.getSourceMdn());
+    		Criterion sourceCriteria = Restrictions.eq(ServiceChargeTxnLog.FieldName_SourceMDN, query.getSourceMdn());
+        	Criterion destCriteria = Restrictions.eq(ServiceChargeTxnLog.FieldName_DestMDN, query.getSourceMdn());
         	
     		criteria.add(Restrictions.or(sourceCriteria , destCriteria));
     	}
     		
     	if(query.getStatus()!=null){
     		
-    		criteria.add(Restrictions.eq(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, query.getStatus()));
+    		criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_SCTLStatus, query.getStatus()));
     		
     	} else if(query.getStatusList()!=null){
     		
-    		criteria.add(Restrictions.in(CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SCTLStatus, query.getStatusList()));
+    		criteria.add(Restrictions.in(ServiceChargeTxnLog.FieldName_SCTLStatus, query.getStatusList()));
     	}
     		
     	processBaseQuery(query, criteria);
@@ -210,14 +212,14 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTransac
         processPaging(query, criteria);
 
         if(query.isIDOrdered()) {
-           criteria.addOrder(Order.desc(CmFinoFIX.CRActivitiesLog.FieldName_RecordID));
+           criteria.addOrder(Order.desc(ActivitiesLog.FieldName_RecordID));
         }
           
         //applying Order
         applyOrder(query, criteria);
         
         @SuppressWarnings("unchecked")
-        List<ServiceChargeTransactionLog> results = criteria.list();
+        List<ServiceChargeTxnLog> results = criteria.list();
 
         return results;
     	

@@ -26,7 +26,8 @@ import com.mfino.dao.query.KYCLevelQuery;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.KYCLevel;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.Pocket;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
@@ -55,7 +56,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 
     public SubscriberMdn getByMDN(String MDN, LockMode lockMode) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDN, MDN));
+    	criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDN, MDN));
     	
         if(lockMode != null){
             criteria.setLockMode(lockMode);
@@ -188,55 +189,55 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
             return list;
         }
         if (query.getExactMDN() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDN, query.getExactMDN()));
+            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDN, query.getExactMDN()));
         }
 
         if (query.getId() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, query.getId()));
+            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_RecordID, query.getId()));
         }
         
         if (query.getMdn() != null && query.getMdn().length() > 0) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRSubscriberMDN.FieldName_MDN, query.getMdn());
+            addLikeStartRestriction(criteria, SubscriberMdn.FieldName_MDN, query.getMdn());
         }
 
         if (query.getStartRegistrationDate() != null) {
-            criteria.add(Restrictions.gt(CmFinoFIX.CRSubscriberMDN.FieldName_CreateTime, query.getStartRegistrationDate()));
+            criteria.add(Restrictions.gt(SubscriberMdn.FieldName_CreateTime, query.getStartRegistrationDate()));
         }
         if (query.getEndRegistrationDate() != null) {
             //This is to make today's records return to the user.
             //Date endDatePlus1 = DateUtil.addDays(query.getEndRegistrationDate(), 1);
-            criteria.add(Restrictions.lt(CmFinoFIX.CRSubscriberMDN.FieldName_CreateTime, query.getEndRegistrationDate()));
+            criteria.add(Restrictions.lt(SubscriberMdn.FieldName_CreateTime, query.getEndRegistrationDate()));
         }
 
         if (query.getStatusTimeGE() != null) {
-            criteria.add(Restrictions.ge(CmFinoFIX.CRSubscriberMDN.FieldName_StatusTime, query.getStatusTimeGE()));
+            criteria.add(Restrictions.ge(SubscriberMdn.FieldName_StatusTime, query.getStatusTimeGE()));
         }
 
         if (query.getStatusTimeLT() != null) {
-            criteria.add(Restrictions.lt(CmFinoFIX.CRSubscriberMDN.FieldName_StatusTime, query.getStatusTimeLT()));
+            criteria.add(Restrictions.lt(SubscriberMdn.FieldName_StatusTime, query.getStatusTimeLT()));
         }
 
         if (true == query.isSubscriberMDNStatusRetire()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, CmFinoFIX.MDNStatus_Retired));
+            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDNStatus, CmFinoFIX.MDNStatus_Retired));
         }
 
         Integer[] statuses = query.getStatusIn();
         if (null != statuses && statuses.length > 0) {
-            criteria.add(Restrictions.in(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, statuses));
+            criteria.add(Restrictions.in(SubscriberMdn.FieldName_MDNStatus, statuses));
         }
 
         if (query.isMDNNotRecycled()) {
-            criteria.add(Restrictions.disjunction().add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_IsMDNRecycled, new Boolean(false))).add(Restrictions.isNull(CmFinoFIX.CRSubscriberMDN.FieldName_IsMDNRecycled)));
+            criteria.add(Restrictions.disjunction().add(Restrictions.eq(SubscriberMdn.FieldName_IsMDNRecycled, new Boolean(false))).add(Restrictions.isNull(SubscriberMdn.FieldName_IsMDNRecycled)));
         }
 
         Integer statusEQ = query.getStatusEQ();
         if (null != statusEQ) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, statusEQ));
+            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDNStatus, statusEQ));
         }
 
         Integer statusNE = query.getStatusNE();
         if (null != statusNE) {
-            criteria.add(Restrictions.ne(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, statusNE));
+            criteria.add(Restrictions.ne(SubscriberMdn.FieldName_MDNStatus, statusNE));
         }
         
         KYCLevel kycLevel = null;
@@ -257,20 +258,20 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         }
         
         final String subcriberTableNameAlias = SUBSCRIBER_TABLE_NAME + DAOConstants.ALIAS_SUFFIX;
-        final String firstNameWithAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_FirstName;
-        final String lastNameWithAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_LastName;
-        final String companyIDAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_Company;
-        final String onlySubscribersAlias = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_SubscriberType;
-        final String subscriberState = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_UpgradeState;
-        final String kycLevelAlias = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRSubscriber.FieldName_KYCLevelByKYCLevel;
+        final String firstNameWithAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_FirstName;
+        final String lastNameWithAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_LastName;
+        final String companyIDAlias = subcriberTableNameAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_Company;
+        final String onlySubscribersAlias = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_SubscriberType;
+        final String subscriberState = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_UpgradeState;
+        final String kycLevelAlias = subcriberTableNameAlias+ DAOConstants.ALIAS_COLNAME_SEPARATOR + Subscriber.FieldName_KYCLevelByKYCLevel;
         
         criteria.createAlias(SUBSCRIBER_TABLE_NAME, subcriberTableNameAlias);
-        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_FirstName, firstNameWithAlias);
-        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_LastName, lastNameWithAlias);
-        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_Company, companyIDAlias);
-        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_SubscriberType, onlySubscribersAlias);
-        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_UpgradeState, subscriberState);
-        processColumn(query, CmFinoFIX.CRSubscriber.FieldName_KYCLevel, kycLevelAlias);
+        processColumn(query, Subscriber.FieldName_FirstName, firstNameWithAlias);
+        processColumn(query, Subscriber.FieldName_LastName, lastNameWithAlias);
+        processColumn(query, Subscriber.FieldName_Company, companyIDAlias);
+        processColumn(query, Subscriber.FieldName_SubscriberType, onlySubscribersAlias);
+        processColumn(query, Subscriber.FieldName_UpgradeState, subscriberState);
+        processColumn(query, Subscriber.FieldName_KYCLevel, kycLevelAlias);
        
         if (query.getFirstName() != null || query.getLastName() != null 
         		|| query.getCompany() != null || query.isOnlySubscribers()
@@ -280,12 +281,12 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 
             if (query.getFirstName() != null && query.getFirstName().length() > 0) {
                 addLikeStartRestriction(criteria, firstNameWithAlias, query.getFirstName());
-                //processColumn(query, CmFinoFIX.CRSubscriber.FieldName_FirstName, firstNameWithAlias);
+                //processColumn(query, Subscriber.FieldName_FirstName, firstNameWithAlias);
             }
 
             if (query.getLastName() != null && query.getLastName().length() > 0) {
                 addLikeStartRestriction(criteria, lastNameWithAlias, query.getLastName());
-                //processColumn(query, CmFinoFIX.CRSubscriber.FieldName_LastName, lastNameWithAlias);
+                //processColumn(query, Subscriber.FieldName_LastName, lastNameWithAlias);
             }
             if (query.getCompany() != null) {
                 criteria.add(Restrictions.eq(companyIDAlias, query.getCompany()));
@@ -303,15 +304,15 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
             }
         }
         if(StringUtils.isNotBlank(query.getAccountNumber())){
-        	criteria.createAlias(CmFinoFIX.CRSubscriberMDN.FieldName_PocketFromMDNID, "pocket");
-        	criteria.add(Restrictions.eq("pocket."+CmFinoFIX.CRPocket.FieldName_CardPAN, query.getAccountNumber()));
+        	criteria.createAlias(SubscriberMdn.FieldName_PocketFromMDNID, "pocket");
+        	criteria.add(Restrictions.eq("pocket."+Pocket.FieldName_CardPAN, query.getAccountNumber()));
           }
         if (query.getVersion() != null) {
             criteria.add(Restrictions.eq("Version", query.getVersion()));
         }
 
         if(null != query.getIsForceCloseRequested()) {
-        	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_IsForceCloseRequested, query.getIsForceCloseRequested()));
+        	criteria.add(Restrictions.eq(SubscriberMdn.FieldName_IsForceCloseRequested, query.getIsForceCloseRequested()));
         }
 
         // Paging
@@ -346,21 +347,21 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         }
 
         //applying Order for columns which are not part of criteria
-        //criteria.addOrder(Order.asc(firstNameWithAlias)).addOrder(Order.asc(lastNameWithAlias)).addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_MDN));
+        //criteria.addOrder(Order.asc(firstNameWithAlias)).addOrder(Order.asc(lastNameWithAlias)).addOrder(Order.asc(SubscriberMdn.FieldName_MDN));
         if (query.isAssociationOrdered()) {
             if (StringUtils.isNotBlank(query.getMdn())) {
-                criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_MDN));
+                criteria.addOrder(Order.asc(SubscriberMdn.FieldName_MDN));
             } else if (StringUtils.isNotBlank(query.getLastName())) {
                 criteria.addOrder(Order.asc(lastNameWithAlias));
-                criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID));
+                criteria.addOrder(Order.asc(SubscriberMdn.FieldName_RecordID));
             } else if (StringUtils.isNotBlank(query.getFirstName())) {
                 criteria.addOrder(Order.asc(firstNameWithAlias));
-                criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID));
+                criteria.addOrder(Order.asc(SubscriberMdn.FieldName_RecordID));
             }
         }
 
         if (query.isIDOrdered()) {
-            criteria.addOrder(Order.asc(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID));
+            criteria.addOrder(Order.asc(SubscriberMdn.FieldName_RecordID));
         }
 
         applyOrder(query, criteria);
@@ -394,8 +395,8 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 		if(expireDate!=null){
 		 Criteria criteria = createCriteria();
 		 criteria.add(Restrictions.disjunction()
-				 .add(Restrictions.isNull(CmFinoFIX.CRSubscriberMDN.FieldName_LastTransactionTime))
-				 .add(Restrictions.le(CmFinoFIX.CRSubscriberMDN.FieldName_LastTransactionTime, expireDate)));
+				 .add(Restrictions.isNull(SubscriberMdn.FieldName_LastTransactionTime))
+				 .add(Restrictions.le(SubscriberMdn.FieldName_LastTransactionTime, expireDate)));
 		 result=criteria.list();
 		}
 		 return result ;
@@ -414,19 +415,19 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 	{		
 		Criteria criteria = createCriteria();
 		//join with subscriber table
-		criteria.createAlias(CmFinoFIX.CRSubscriberMDN.FieldName_Subscriber, "subscriber");
+		criteria.createAlias(SubscriberMdn.FieldName_Subscriber, "subscriber");
 		// all subscribers of type partner
-		criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_SubscriberType,CmFinoFIX.SubscriberType_Partner.intValue()));
+		criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_SubscriberType,CmFinoFIX.SubscriberType_Partner.intValue()));
 		// subscriber not activated , activation time is not set means it will be null
-		criteria.add(Restrictions.isNull("subscriber."+CmFinoFIX.CRSubscriber.FieldName_ActivationTime));
+		criteria.add(Restrictions.isNull("subscriber."+Subscriber.FieldName_ActivationTime));
 		// subscriber approved status is Approved
-		criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_UpgradeState,CmFinoFIX.UpgradeState_Approved.intValue()));
+		criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_UpgradeState,CmFinoFIX.UpgradeState_Approved.intValue()));
 		Timestamp currentTime = new Timestamp();
 		Timestamp beforeTimestamp = new Timestamp(currentTime.getTime() - noActivationTimeLimit);
 		// ApproveRejectTime < current time - noActivationTime
-		criteria.add(Restrictions.lt("subscriber."+CmFinoFIX.CRSubscriber.FieldName_ApproveOrRejectTime,beforeTimestamp));
+		criteria.add(Restrictions.lt("subscriber."+Subscriber.FieldName_ApproveOrRejectTime,beforeTimestamp));
 		// status time < current  time - noActivationTime
-		criteria.add(Restrictions.lt("subscriber."+CmFinoFIX.CRSubscriber.FieldName_StatusTime,beforeTimestamp));
+		criteria.add(Restrictions.lt("subscriber."+Subscriber.FieldName_StatusTime,beforeTimestamp));
 		return criteria.scroll(ScrollMode.FORWARD_ONLY);
 	}
 	/**
@@ -444,15 +445,15 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 		Criteria criteria = createCriteria();
 		
 		//join with subscriber table
-		criteria.createAlias(CmFinoFIX.CRSubscriberMDN.FieldName_Subscriber, "subscriber");
+		criteria.createAlias(SubscriberMdn.FieldName_Subscriber, "subscriber");
 		// all subscribers in inactive state
-		criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, status));
+		criteria.add(Restrictions.eq("subscriber."+SubscriberMdn.FieldName_MDNStatus, status));
 		if(onlySubscriber)
-			criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_SubscriberType, CmFinoFIX.SubscriberType_Subscriber));
+			criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_SubscriberType, CmFinoFIX.SubscriberType_Subscriber));
 		// status time < current  time - noActivationTime
 		Timestamp currentTime = new Timestamp();
 		Timestamp beforeTimestamp = new Timestamp(currentTime.getTime() - inActiveTimeLimit);
-		criteria.add(Restrictions.lt("subscriber."+CmFinoFIX.CRSubscriber.FieldName_StatusTime,beforeTimestamp));
+		criteria.add(Restrictions.lt("subscriber."+Subscriber.FieldName_StatusTime,beforeTimestamp));
 		// get a scrollable
 		return criteria.scroll(ScrollMode.FORWARD_ONLY);
 	}
@@ -490,27 +491,27 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 	{
 		Criteria criteria = createCriteria();
 		String subscriberMDNAlias = criteria.getAlias();
-		criteria.createAlias(CmFinoFIX.CRSubscriberMDN.FieldName_Subscriber, "subscriber");
+		criteria.createAlias(SubscriberMdn.FieldName_Subscriber, "subscriber");
 		//subscriber with status active
-		criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_SubscriberStatus, status));
+		criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_SubscriberStatus, status));
 		//if only subscriber add that criteria
 		if(onlySubscriber)
-			criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_SubscriberType, CmFinoFIX.SubscriberType_Subscriber));
-		criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriber.FieldName_SubscriberStatus, status));
+			criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_SubscriberType, CmFinoFIX.SubscriberType_Subscriber));
+		criteria.add(Restrictions.eq(Subscriber.FieldName_SubscriberStatus, status));
 		
 		// join with subscriber table
-		DetachedCriteria sctlCriteria = DetachedCriteria.forClass(ServiceChargeTransactionLog.class,"sctl");
+		DetachedCriteria sctlCriteria = DetachedCriteria.forClass(ServiceChargeTxnLog.class,"sctl");
 		Timestamp currentTime = new Timestamp();
 		Timestamp beforeTimestamp = new Timestamp(currentTime.getTime() - noTransTimeLimit);
 		//get all sctl whose createtime is greater than beforetimestamp
-		sctlCriteria.add(Restrictions.gt("sctl."+CmFinoFIX.CRServiceChargeTransactionLog.FieldName_CreateTime,beforeTimestamp));
+		sctlCriteria.add(Restrictions.gt("sctl."+ServiceChargeTxnLog.FieldName_CreateTime,beforeTimestamp));
 		// sourcemdn or destmdn same the mdn from subscriber_mdn table
 		sctlCriteria.add(Restrictions.or(
-				Restrictions.eqProperty("sctl."+CmFinoFIX.CRServiceChargeTransactionLog.FieldName_SourceMDN,subscriberMDNAlias+"."+CmFinoFIX.CRSubscriberMDN.FieldName_MDN), 
-				Restrictions.eqProperty("sctl."+CmFinoFIX.CRServiceChargeTransactionLog.FieldName_DestMDN,subscriberMDNAlias+"."+CmFinoFIX.CRSubscriberMDN.FieldName_MDN)));
+				Restrictions.eqProperty("sctl."+ServiceChargeTxnLog.FieldName_SourceMDN,subscriberMDNAlias+"."+SubscriberMdn.FieldName_MDN), 
+				Restrictions.eqProperty("sctl."+ServiceChargeTxnLog.FieldName_DestMDN,subscriberMDNAlias+"."+SubscriberMdn.FieldName_MDN)));
 		// all subscribers in inactive state
 		
-		criteria.add(Subqueries.notExists(sctlCriteria.setProjection(Projections.property("sctl."+CmFinoFIX.CRServiceChargeTransactionLog.FieldName_RecordID))));
+		criteria.add(Subqueries.notExists(sctlCriteria.setProjection(Projections.property("sctl."+ServiceChargeTxnLog.FieldName_RecordID))));
 		// get a scrollable
 		return criteria.scroll(ScrollMode.FORWARD_ONLY);
 	}
@@ -528,13 +529,13 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 	{
 		Criteria criteria = createCriteria();
 		String subscriberMDNAlias = criteria.getAlias();
-		criteria.createAlias(CmFinoFIX.CRSubscriberMDN.FieldName_Subscriber, "subscriber");
+		criteria.createAlias(SubscriberMdn.FieldName_Subscriber, "subscriber");
 		//subscriber with status active
-		criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_SubscriberStatus, status));
+		criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_SubscriberStatus, status));
 		//if only subscriber add criteria to get only subscriber
 		if(onlySubscriber)
-			criteria.add(Restrictions.eq("subscriber."+CmFinoFIX.CRSubscriber.FieldName_SubscriberType, CmFinoFIX.SubscriberType_Subscriber));
-		//criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriber.FieldName_SubscriberStatus, status));
+			criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_SubscriberType, CmFinoFIX.SubscriberType_Subscriber));
+		//criteria.add(Restrictions.eq(Subscriber.FieldName_SubscriberStatus, status));
 		
 		// join with subscriber table
 		DetachedCriteria ctCriteria = DetachedCriteria.forClass(CommodityTransfer.class,"ct");
@@ -542,19 +543,19 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 		Timestamp beforeTimestamp = new Timestamp(currentTime.getTime() - noTransTimeLimit);
 		
 		//get all ct whose last update is greater than beforetimestamp
-		ctCriteria.add(Restrictions.gt("ct."+CmFinoFIX.CRCommodityTransfer.FieldName_LastUpdateTime,beforeTimestamp));
+		ctCriteria.add(Restrictions.gt("ct."+CommodityTransfer.FieldName_LastUpdateTime,beforeTimestamp));
 		
 		//transfer status is completed
-		ctCriteria.add(Restrictions.eq("ct."+CmFinoFIX.CRCommodityTransfer.FieldName_TransferStatus,CmFinoFIX.TransactionsTransferStatus_Completed.intValue()));
+		ctCriteria.add(Restrictions.eq("ct."+CommodityTransfer.FieldName_TransferStatus,CmFinoFIX.TransactionsTransferStatus_Completed.intValue()));
 		
 		// sourcemdn or destmdn same the mdn from subscriber_mdn table
 		ctCriteria.add(Restrictions.or(
-				Restrictions.eqProperty("ct."+CmFinoFIX.CRCommodityTransfer.FieldName_SourceMDN,subscriberMDNAlias+"."+CmFinoFIX.CRSubscriberMDN.FieldName_MDN), 
-				Restrictions.eqProperty("ct."+CmFinoFIX.CRCommodityTransfer.FieldName_DestMDN,subscriberMDNAlias+"."+CmFinoFIX.CRSubscriberMDN.FieldName_MDN)));
+				Restrictions.eqProperty("ct."+CommodityTransfer.FieldName_SourceMDN,subscriberMDNAlias+"."+SubscriberMdn.FieldName_MDN), 
+				Restrictions.eqProperty("ct."+CommodityTransfer.FieldName_DestMDN,subscriberMDNAlias+"."+SubscriberMdn.FieldName_MDN)));
 		// all subscribers in inactive state
 		
-		criteria.add(Subqueries.notExists(ctCriteria.setProjection(Projections.property("ct."+CmFinoFIX.CRCommodityTransfer.FieldName_RecordID))));
-		criteria.add(Restrictions.gt("subscriber."+CmFinoFIX.CRSubscriber.FieldName_LastUpdateTime, beforeTimestamp));
+		criteria.add(Subqueries.notExists(ctCriteria.setProjection(Projections.property("ct."+CommodityTransfer.FieldName_RecordID))));
+		criteria.add(Restrictions.gt("subscriber."+Subscriber.FieldName_LastUpdateTime, beforeTimestamp));
 		// get a scrollable
 		return criteria.scroll(ScrollMode.FORWARD_ONLY);
 	}
@@ -565,7 +566,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         if (query!=null){
         	Integer[] statuses = query.getStatusIn();
             if (null != statuses && statuses.length > 0) {
-                criteria.add(Restrictions.in(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, statuses));
+                criteria.add(Restrictions.in(SubscriberMdn.FieldName_MDNStatus, statuses));
             }
         }
         criteria.setProjection(Projections.rowCount());
@@ -580,7 +581,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         if (query!=null){
         	Integer[] statuses = query.getStatusIn();
             if (null != statuses && statuses.length > 0) {
-                criteria.add(Restrictions.in(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, statuses));
+                criteria.add(Restrictions.in(SubscriberMdn.FieldName_MDNStatus, statuses));
             }
         }
         processPaging(query,criteria);
@@ -597,8 +598,8 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 	
     public SubscriberMdn getByMDNAndNotRetiredStatus(String MDN, LockMode lockMode) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_MDN, MDN));
-    	criteria.add(Restrictions.ne(CmFinoFIX.CRSubscriberMDN.FieldName_MDNStatus, CmFinoFIX.SubscriberStatus_Retired));
+    	criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDN, MDN));
+    	criteria.add(Restrictions.ne(SubscriberMdn.FieldName_MDNStatus, CmFinoFIX.SubscriberStatus_Retired));
         if(lockMode != null){
             criteria.setLockMode(lockMode);
         }

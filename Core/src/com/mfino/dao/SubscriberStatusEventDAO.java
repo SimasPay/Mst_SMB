@@ -14,18 +14,18 @@ public class SubscriberStatusEventDAO extends BaseDAO<SubscriberStatusEvent> {
 
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.lt(
-				CmFinoFIX.CRSubscriberStatusEvent.FieldName_PickUpDateTime,
+				SubscriberStatusEvent.FieldName_PickUpDateTime,
 				new java.util.Date()));
 		criteria.add(Restrictions.eq(
-				CmFinoFIX.CRSubscriberStatusEvent.FieldName_ProcessingStatus,
+				SubscriberStatusEvent.FieldName_ProcessingStatus,
 				false));
 
         if (statuses != null && statuses.length > 0) 
-            criteria.add(Restrictions.in(CmFinoFIX.CRSubscriberStatusEvent.FieldName_StatusOnPickup, statuses));
+            criteria.add(Restrictions.in(SubscriberStatusEvent.FieldName_StatusOnPickup, statuses));
 
 		if(!includeParnterInSLC){
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRSubscriberStatusEvent.FieldName_SubscriberType,
+					SubscriberStatusEvent.FieldName_SubscriberType,
 					CmFinoFIX.SubscriberType_Subscriber));
 		}
 		@SuppressWarnings("unchecked")

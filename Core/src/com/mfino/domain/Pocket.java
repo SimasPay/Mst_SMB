@@ -24,6 +24,15 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "POCKET", uniqueConstraints = @UniqueConstraint(columnNames = "CARDPAN"))
 public class Pocket extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	public static final String FieldName_IsDefault = "isdefault";
+	public static final String FieldName_CardPAN = "cardpan";
+	public static final String FieldName_CardAlias = "cardalias";
+	public static final String FieldName_PocketStatus = "status";
+	public static final String FieldName_Company = "company";
+	public static final String FieldName_PocketTemplate = "pocketTemplate";
+	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
 	
 	private SubscriberMdn subscriberMdn;
 	private PocketTemplate pocketTemplate;

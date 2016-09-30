@@ -2,14 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -19,10 +20,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SHARE_PARTNER")
 public class SharePartner extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_TransactionCharge = "transactionCharge";
 	private Partner partner;
 	private TransactionCharge transactionCharge;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal sharepercentage;
 	private String sharetype;
 	private String shareholdertype;
@@ -34,7 +36,7 @@ public class SharePartner extends Base implements java.io.Serializable {
 	}
 
 	public SharePartner(BigDecimal id, TransactionCharge transactionCharge,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -48,7 +50,7 @@ public class SharePartner extends Base implements java.io.Serializable {
 
 	public SharePartner(BigDecimal id, Partner partner,
 			TransactionCharge transactionCharge,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			BigDecimal sharepercentage, String sharetype,
@@ -94,12 +96,12 @@ public class SharePartner extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

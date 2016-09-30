@@ -14,7 +14,7 @@ import com.mfino.domain.LOP;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
@@ -33,7 +33,7 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	
 	private SctlSettlementMap pendingSettlement;
 	
-	private ServiceChargeTransactionLog sctl;
+	private ServiceChargeTxnLog sctl;
 	
 	private Company company;
 	
@@ -214,12 +214,12 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	 * @param notification
 	 */
 	public NotificationWrapper(Notification notification) {
-		this.setAccessCode(notification.getAccessCode());
+		this.setAccessCode(notification.getAccesscode());
 		this.setCode(notification.getCode());
-		this.setCodeName(notification.getCodeName());
+		this.setCodeName(notification.getCodename());
 		this.setCompany(notification.getCompany());
 		this.setLanguage(notification.getLanguage());
-		this.setmFinoServiceProviderByMSPID(notification.getmFinoServiceProviderByMSPID());
+		this.setmFinoServiceProviderByMSPID(notification.getMfinoServiceProvider());
 		this.setNotificationMethod(notification.getNotificationMethod());
 		this.setText(notification.getText());
 	}

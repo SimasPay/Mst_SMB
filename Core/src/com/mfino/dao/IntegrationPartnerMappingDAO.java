@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.IntegrationPartnerMappingQuery;
 import com.mfino.domain.IntegrationPartnerMap;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.fix.CmFinoFIX;
 
@@ -54,7 +55,7 @@ public class IntegrationPartnerMappingDAO extends BaseDAO<IntegrationPartnerMap>
             criteria.add(Restrictions.eq(CmFinoFIX.CRIntegrationPartnerMapping.FieldName_Partner, partner));
         }
         if (query.getMfsBillerId() != null) {
-        	MFSBiller mfsBiller = DAOFactory.getInstance().getMFSBillerDAO().getById(query.getMfsBillerId());
+        	MfsBiller mfsBiller = DAOFactory.getInstance().getMFSBillerDAO().getById(query.getMfsBillerId());
             criteria.add(Restrictions.eq(CmFinoFIX.CRIntegrationPartnerMapping.FieldName_MFSBiller, mfsBiller));
         }
                 

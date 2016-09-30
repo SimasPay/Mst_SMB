@@ -12,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.PendingTransactionsEntryQuery;
 import com.mfino.domain.PendingTxnsEntry;
-import com.mfino.domain.PendingTransactionsFile;
+import com.mfino.domain.PendingTxnsFile;
 
 /**
  *
@@ -41,9 +41,9 @@ public class PendingTransactionsEntryDAO extends BaseDAO<PendingTxnsEntry> {
         return results;
     }
     
-    public int getProcessedLineCount(PendingTransactionsFile pendingTransactionsFile) {
+    public int getProcessedLineCount(PendingTxnsFile pendingTransactionsFile) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(PendingTxnsEntry.FieldName_PendingTransactionsFileID, pendingTransactionsFile.getID()));
+    	criteria.add(Restrictions.eq(PendingTxnsEntry.FieldName_PendingTransactionsFileID, pendingTransactionsFile.getId()));
     	criteria.setProjection(Projections.max(PendingTxnsEntry.FieldName_PendingTransactionsLineNumber));
     	List list = criteria.list();
     	if(list.size() > 0) {

@@ -13,17 +13,17 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.TransactionsLogQuery;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 
 /**
  *
  * @author Venkata Krishna Teja D
  */
-public class TransactionsLogDAO extends BaseDAO<TransactionsLog> {
+public class TransactionsLogDAO extends BaseDAO<TransactionLog> {
 
-    public List<TransactionsLog> get(TransactionsLogQuery query) {
+    public List<TransactionLog> get(TransactionsLogQuery query) {
         Criteria criteria = createCriteria();
 
         if(null != query.getId()) {
@@ -50,7 +50,7 @@ public class TransactionsLogDAO extends BaseDAO<TransactionsLog> {
         processBaseQuery(query, criteria);
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
-        List<TransactionsLog> results = criteria.list();
+        List<TransactionLog> results = criteria.list();
 
         return results;
     }
@@ -65,11 +65,11 @@ public class TransactionsLogDAO extends BaseDAO<TransactionsLog> {
     }
     
     @Override
-    public void save(TransactionsLog tl) {
-        if (tl.getmFinoServiceProviderByMSPID() == null) {
+    public void save(TransactionLog tl) {
+        if (tl.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            tl.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            tl.setMfinoServiceProvider(msp);
         }
         super.save(tl);
     }

@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,13 +9,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -29,16 +26,24 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String FieldName_Company = "company";
-
 	public static final String FieldName_UpgradeState = "upgradestate";
-
 	public static final String FieldName_SubscriberStatus = "status";
-
 	public static final String FieldName_FirstName = "firstname";
-
 	public static final String FieldName_LastName = "lastname";
-
 	public static final String FieldName_SubscriberRestrictions = "restrictions";
+	public static final String FieldName_DompetMerchant = "dompetmerchant";
+	public static final String FieldName_RegistrationMedium = "registrationmedium";
+	public static final String FieldName_ApproveOrRejectTime = "approveorrejecttime";
+	public static final String FieldName_SubscriberType = "type";
+	public static final String FieldName_RegisteringPartnerID = "registeringpartnerid";
+
+	public static final String FieldName_KYCLevelByKYCLevel = "kycLevel";
+
+	public static final String FieldName_KYCLevel = "kycLevel";
+
+	public static final String FieldName_ActivationTime = "activationtime";
+
+	public static final String FieldName_StatusTime = "statustime";
 	
 	private Address addressBySubscriberaddressid;
 	private Address addressBySubscriberaddressktpid;
@@ -778,12 +783,12 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriber")
-	public Set<CreditcardDestinations> getCreditcardDestinationses() {
+	public Set<CreditCardDestinations> getCreditcardDestinationses() {
 		return this.creditcardDestinationses;
 	}
 
 	public void setCreditcardDestinationses(
-			Set<CreditcardDestinations> creditcardDestinationses) {
+			Set<CreditCardDestinations> creditcardDestinationses) {
 		this.creditcardDestinationses = creditcardDestinationses;
 	}
 

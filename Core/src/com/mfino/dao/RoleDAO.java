@@ -7,7 +7,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.RoleQuery;
 import com.mfino.domain.Role;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * 
@@ -29,26 +28,26 @@ public class RoleDAO extends BaseDAO<Role> {
 		Criteria criteria = createCriteria();
 
 		if (query.getEnumCode() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRRole.FieldName_EnumCode,
+			criteria.add(Restrictions.eq(Role.FieldName_EnumCode,
 					query.getEnumCode()));
 		}
 		if (query.getEnumValue() != null) {
-			criteria.add(Restrictions.eq(CmFinoFIX.CRRole.FieldName_EnumValue,
+			criteria.add(Restrictions.eq(Role.FieldName_EnumValue,
 					query.getEnumValue()).ignoreCase());
 		}
 		if (query.getDisplayText() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRRole.FieldName_DisplayText,
+					Role.FieldName_DisplayText,
 					query.getDisplayText()).ignoreCase());
 		}
 		if (query.getIsSystemUser() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRRole.FieldName_IsSystemUser,
+					Role.FieldName_IsSystemUser,
 					query.getIsSystemUser()));
 		}
 		if (query.getPriorityLevel() != null) {
 			criteria.add(Restrictions.ge(
-					CmFinoFIX.CRRole.FieldName_PriorityLevel,
+					Role.FieldName_PriorityLevel,
 					query.getPriorityLevel()));
 		}
 		processBaseQuery(query, criteria);

@@ -10,22 +10,21 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.TransactionAmountDistributionQuery;
-import com.mfino.domain.TransactionAmountDistributionLog;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TxnAmountDstrbLog;
 
 /**
  * @author Bala Sunku
  *
  */
-public class TransactionAmountDistributionLogDAO extends BaseDAO<TransactionAmountDistributionLog> {
+public class TransactionAmountDistributionLogDAO extends BaseDAO<TxnAmountDstrbLog> {
 	
     @Override
-    public void save(TransactionAmountDistributionLog tadl) {
-        if (tadl.getmFinoServiceProviderByMSPID() == null) {
+    public void save(TxnAmountDstrbLog tadl) {
+        if (tadl.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            tadl.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            tadl.setMfinoServiceProvider(msp);
         }
         super.save(tadl);
     }
@@ -35,38 +34,38 @@ public class TransactionAmountDistributionLogDAO extends BaseDAO<TransactionAmou
      * @param sctlId
      * @return
      */
-    public List<TransactionAmountDistributionLog> getLogEntriesBySCTLID(long sctlId) {
+    public List<TxnAmountDstrbLog> getLogEntriesBySCTLID(long sctlId) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionAmountDistributionLog.FieldName_ServiceChargeTransactionLogID, sctlId));
+    	criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, sctlId));
     	
     	@SuppressWarnings("unchecked")
-    	List<TransactionAmountDistributionLog> lst = criteria.list();
+    	List<TxnAmountDstrbLog> lst = criteria.list();
     	
     	return lst;
     }
 
 	@SuppressWarnings("unchecked")
-	public List<TransactionAmountDistributionLog> get(TransactionAmountDistributionQuery query) {
+	public List<TxnAmountDstrbLog> get(TransactionAmountDistributionQuery query) {
 		Criteria criteria = createCriteria();
 		if(query.getPartner()!=null){
-		criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionAmountDistributionLog.FieldName_Partner, query.getPartner()));
+		criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_Partner, query.getPartner()));
 		}
 		if(query.getServiceChargeTransactionLogID()!=null){
-			criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionAmountDistributionLog.FieldName_ServiceChargeTransactionLogID, query.getServiceChargeTransactionLogID()));
+			criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, query.getServiceChargeTransactionLogID()));
 		}
 		if(query.getStatus()!=null){
-			criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionAmountDistributionLog.FieldName_TADLStatus, query.getStatus()));
+			criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_TADLStatus, query.getStatus()));
 		}
-		List<TransactionAmountDistributionLog> result = criteria.list();
+		List<TxnAmountDstrbLog> result = criteria.list();
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<TransactionAmountDistributionLog> getTransactionAmountDistributionLogBySCTLIds(
+	public List<TxnAmountDstrbLog> getTransactionAmountDistributionLogBySCTLIds(
 			Set<Long> sctlids) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.in(CmFinoFIX.CRTransactionAmountDistributionLog.FieldName_ServiceChargeTransactionLogID, sctlids));
-		List<TransactionAmountDistributionLog> result = criteria.list();
+		criteria.add(Restrictions.in(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, sctlids));
+		List<TxnAmountDstrbLog> result = criteria.list();
 		return result;
 	}
 

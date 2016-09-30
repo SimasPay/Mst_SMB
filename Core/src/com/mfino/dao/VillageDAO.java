@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.VillageQuery;
+import com.mfino.domain.District;
 import com.mfino.domain.Village;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
@@ -19,10 +20,10 @@ public class VillageDAO extends BaseDAO<Village> {
 
 	public List<Village> get(VillageQuery query) {
 		Criteria criteria = createCriteria();
-		
-		criteria.add(Restrictions.eq(CmFinoFIX.CRVillage.FieldName_IdDistrict, query.getIdDistrict()));
+		criteria.createAlias(Village.FieldName_IdDistrict, "district");
+		criteria.add(Restrictions.eq("district."+District.FieldName_RecordID, query.getIdDistrict()));
 
-		addOrder(QueryConstants.ASC_STRING, CmFinoFIX.CRVillage.FieldName_VillageId, criteria);	
+		addOrder(QueryConstants.ASC_STRING, Village.FieldName_VillageId, criteria);	
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 		
@@ -45,6 +46,6 @@ public class VillageDAO extends BaseDAO<Village> {
             log.info(MessageText._("No Village Code defined with the given code : ") + villRecId);
             return null;
         }
-        return village.getDisplayText();
+        return village.getDisplaytext();
     }
 }

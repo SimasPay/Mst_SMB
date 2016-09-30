@@ -5,12 +5,12 @@
 
 package com.mfino.dao;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
+
 import com.mfino.dao.query.SAPGroupIDQuery;
 import com.mfino.domain.SAPGroupID;
-import com.mfino.fix.CmFinoFIX;
-import java.util.List;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -21,10 +21,10 @@ public class SAPGroupIDDAO extends BaseDAO<SAPGroupID> {
     public List<SAPGroupID> get(SAPGroupIDQuery query){
                 Criteria criteria = createCriteria();
         if (query.getGroupID() != null) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRSAPGroupID.FieldName_GroupID, query.getGroupID());
+            addLikeStartRestriction(criteria, SAPGroupID.FieldName_GroupID, query.getGroupID());
         }
         if (query.getGroupIDName() != null) {
-            addLikeStartRestriction(criteria, CmFinoFIX.CRSAPGroupID.FieldName_GroupIDName, query.getGroupIDName());
+            addLikeStartRestriction(criteria, SAPGroupID.FieldName_GroupIDName, query.getGroupIDName());
         }
 
         processBaseQuery(query, criteria);

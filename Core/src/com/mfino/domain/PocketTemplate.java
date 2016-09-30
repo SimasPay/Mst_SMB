@@ -2,19 +2,18 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -24,9 +23,17 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "POCKET_TEMPLATE")
 public class PocketTemplate  extends Base implements java.io.Serializable {
 
+	public static final String FieldName_PocketType = "type";
+	public static final String FieldName_Commodity = "commodity";
+	public static final String FieldName_IsCollectorPocket = "iscollectorpocket";
+	public static final String FieldName_IsSuspencePocket = "issuspencepocket";
+	public static final String FieldName_BankCodeForRouting = "bankcode";
+	public static final String FieldName_Description = "description";
+	public static final String FieldName_PocketCode = "pocketcode";
+	
 	private BigDecimal id;
 	private long version;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private Timestamp lastupdatetime;
 	private String updatedby;
 	private Timestamp createtime;
@@ -78,7 +85,7 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	public PocketTemplate(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long type,
 			long commodity, long allowance, BigDecimal maxamountpertransaction,
@@ -109,7 +116,7 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	public PocketTemplate(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long type,
 			Long bankaccountcardtype, String description, long commodity,
@@ -129,7 +136,7 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 			String regularexpression, Short iscollectorpocket,
 			Long numberofpocketsallowedformdn, Short issuspencepocket,
 			Short issystempocket, BigDecimal interestrate,
-			Set<Pocket> pocketsForPockettemplateid, Set<KycLevel> kycLevels,
+			Set<Pocket> pocketsForPockettemplateid, Set<KYCLevel> kycLevels,
 			Set<Pocket> pocketsForOldpockettemplateid,
 			Set<PocketTemplateConfig> pocketTemplateConfigs) {
 		this.id = id;
@@ -184,12 +191,12 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 
@@ -542,11 +549,11 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pocketTemplate")
-	public Set<KycLevel> getKycLevels() {
+	public Set<KYCLevel> getKycLevels() {
 		return this.kycLevels;
 	}
 
-	public void setKycLevels(Set<KycLevel> kycLevels) {
+	public void setKycLevels(Set<KYCLevel> kycLevels) {
 		this.kycLevels = kycLevels;
 	}
 

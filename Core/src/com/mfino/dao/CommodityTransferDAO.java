@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Criterion;
@@ -38,7 +37,7 @@ import com.mfino.domain.Company;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.util.ConfigurationUtil;
 
@@ -95,7 +94,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         if (query.getTransactionID() != null) {
 //            criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransactionID, query.getTransactionID()));
         	criteria.createAlias(CommodityTransfer.FieldName_TransactionsLogByTransactionID, "tl");
-        	criteria.add(Restrictions.eq("tl."+TransactionsLog.FieldName_RecordID, query.getTransactionID()));
+        	criteria.add(Restrictions.eq("tl."+TransactionLog.FieldName_RecordID, query.getTransactionID()));
         }
         if (query.getSubscriberMDN() != null) {
             criteria.add(Restrictions.disjunction().add(

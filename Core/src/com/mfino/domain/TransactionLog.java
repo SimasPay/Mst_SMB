@@ -25,12 +25,12 @@ import com.mfino.hibernate.Timestamp;
 public class TransactionLog  extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_LastUpdateTime = "lastupdatetime";
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal parenttransactionid;
 	private Long multixid;
 	private Timestamp transactiontime;
 	private long messagecode;
-	private Clob messagedata;
+	private String messagedata;
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
@@ -42,10 +42,10 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	}
 
 	public TransactionLog(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
-			Timestamp transactiontime, long messagecode, Clob messagedata) {
+			Timestamp transactiontime, long messagecode, String messagedata) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
 		this.lastupdatetime = lastupdatetime;
@@ -58,11 +58,11 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	}
 
 	public TransactionLog(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			BigDecimal parenttransactionid, Long multixid,
-			Timestamp transactiontime, long messagecode, Clob messagedata,
+			Timestamp transactiontime, long messagecode, String messagedata,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
 			Set<LetterOfPurchase> letterOfPurchases) {
@@ -85,12 +85,12 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 
@@ -132,12 +132,12 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "MESSAGEDATA", nullable = false)
-	public Clob getMessagedata() {
+	public String getMessagedata() {
 		return this.messagedata;
 	}
 
-	public void setMessagedata(Clob messagedata) {
-		this.messagedata = messagedata;
+	public void setMessagedata(String data) {
+		this.messagedata = data;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transactionLog")

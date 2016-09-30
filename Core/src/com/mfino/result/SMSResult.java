@@ -106,7 +106,7 @@ public class SMSResult extends Result
 	    if (list.size() > 0)
 	    {
 		Notification notification = (Notification) list.get(0);
-		setSenderNotificationCode(notification.getSMSNotificationCode());
+		setSenderNotificationCode(notification.getSmsnotificationcode());
 	    }
 	}
 

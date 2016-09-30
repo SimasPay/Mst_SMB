@@ -44,14 +44,14 @@ public class Transaction {
 	
 	private BigDecimal amountToCharge;
 	
-	private ServiceChargeTransactionLog serviceChargeTransactionLog;
+	private ServiceChargeTxnLog serviceChargeTransactionLog;
 
-	public ServiceChargeTransactionLog getServiceChargeTransactionLog() {
+	public ServiceChargeTxnLog getServiceChargeTransactionLog() {
 		return serviceChargeTransactionLog;
 	}
 
 	public void setServiceChargeTransactionLog(
-			ServiceChargeTransactionLog serviceChargeTransactionLog) {
+			ServiceChargeTxnLog serviceChargeTransactionLog) {
 		this.serviceChargeTransactionLog = serviceChargeTransactionLog;
 	}
 

@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
@@ -18,7 +17,8 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SUBSCRIBER_GROUPS")
 public class SubscriberGroups extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_Subscriber = "subscriberid";
 	private Long subscriberid;
 	private Long groupid;
 

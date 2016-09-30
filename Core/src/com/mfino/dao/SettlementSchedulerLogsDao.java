@@ -7,25 +7,25 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mfino.domain.SettlementSchedulerLogs;
+import com.mfino.domain.SettlementScheduleLog;
 
 
 /**
  * @author sasidhar
  *
  */
-public class SettlementSchedulerLogsDao extends BaseDAO<SettlementSchedulerLogs> {
+public class SettlementSchedulerLogsDao extends BaseDAO<SettlementScheduleLog> {
 	
 	protected Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	public SettlementSchedulerLogs getByJobId(String jobId){
+	public SettlementScheduleLog getByJobId(String jobId){
 		log.info("SettlementSchedulerLogsDao :: getByJobId() BEGIN");
 		
-		SettlementSchedulerLogs ssLog = null;
+		SettlementScheduleLog ssLog = null;
 		
         Criteria criteria = createCriteria();
         criteria.add(Restrictions.eq("QrtzJobId", jobId).ignoreCase());
-        List<SettlementSchedulerLogs> results = criteria.list();
+        List<SettlementScheduleLog> results = criteria.list();
         
         if((results != null) && (results.size() > 0)){
         	ssLog = results.get(0);
@@ -35,14 +35,14 @@ public class SettlementSchedulerLogsDao extends BaseDAO<SettlementSchedulerLogs>
         return ssLog;
 	}
 	
-	public SettlementSchedulerLogs getByPartnerServiceId(Long partnerServiceId){
+	public SettlementScheduleLog getByPartnerServiceId(Long partnerServiceId){
 		log.info("SettlementSchedulerLogsDao :: getByPartnerServiceId() BEGIN");
 		
-		SettlementSchedulerLogs ssLog = null;
+		SettlementScheduleLog ssLog = null;
 		
         Criteria criteria = createCriteria();
         criteria.add(Restrictions.eq("PartnerServicesID", partnerServiceId));
-        List<SettlementSchedulerLogs> results = criteria.list();
+        List<SettlementScheduleLog> results = criteria.list();
         
         if((results != null) && (results.size() > 0)){
         	ssLog = results.get(0);

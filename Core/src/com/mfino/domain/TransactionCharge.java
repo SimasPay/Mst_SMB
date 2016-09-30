@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,12 +9,10 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -26,10 +23,13 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "TRANSACTION_CHARGE")
 public class TransactionCharge  extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_TransactionRule = "transactionRule";
+	public static final String FieldName_ChargeType = "chargeType";
+	public static final String FieldName_ChargeDefinition = "chargeDefinition";
 	private TransactionRule transactionRule;
 	private ChargeType chargeType;
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private ChargeDefinition chargeDefinition;
 	private Short isactive;
 	private Short ischrgdstrbapplicabletosrcsub;
@@ -44,7 +44,7 @@ public class TransactionCharge  extends Base implements java.io.Serializable {
 	}
 
 	public TransactionCharge(BigDecimal id, TransactionRule transactionRule,
-			ChargeType chargeType, mFinoServiceProvider mfinoServiceProvider,
+			ChargeType chargeType, MfinoServiceProvider mfinoServiceProvider,
 			ChargeDefinition chargeDefinition, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby) {
 		this.id = id;
@@ -59,7 +59,7 @@ public class TransactionCharge  extends Base implements java.io.Serializable {
 	}
 
 	public TransactionCharge(BigDecimal id, TransactionRule transactionRule,
-			ChargeType chargeType, mFinoServiceProvider mfinoServiceProvider,
+			ChargeType chargeType, MfinoServiceProvider mfinoServiceProvider,
 			ChargeDefinition chargeDefinition, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			Short isactive, Short ischrgdstrbapplicabletosrcsub,
@@ -107,12 +107,12 @@ public class TransactionCharge  extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

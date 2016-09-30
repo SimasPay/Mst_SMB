@@ -20,9 +20,10 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.PocketQuery;
-import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.MFSLedger;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.PocketTemplate;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -43,26 +44,26 @@ public class PocketDAO extends BaseDAO<Pocket> {
 
         if (query.getMdnIDSearch() != null) {
             //TODO : make the associate entity name a constant in the codegen
-            criteria.createCriteria("SubscriberMDNByMDNID").add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, query.getMdnIDSearch()));
+            criteria.createCriteria("SubscriberMDNByMDNID").add(Restrictions.eq(SubscriberMdn.FieldName_RecordID, query.getMdnIDSearch()));
         }
 
         if (query.isIsDefault() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_IsDefault, query.isIsDefault()));
+            criteria.add(Restrictions.eq(Pocket.FieldName_IsDefault, query.isIsDefault()));
         }
 
         if (StringUtils.isNotBlank(query.getCardPan())) {
             if (Boolean.TRUE == query.isPocketCardPanLikeSearch()) {
-                addLikeStartRestriction(criteria, CmFinoFIX.CRPocket.FieldName_CardPAN, query.getCardPan());
+                addLikeStartRestriction(criteria, Pocket.FieldName_CardPAN, query.getCardPan());
             } else {
-                criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_CardPAN, query.getCardPan()));
+                criteria.add(Restrictions.eq(Pocket.FieldName_CardPAN, query.getCardPan()));
             }            
         }
         if (StringUtils.isNotBlank(query.getCardAlias())){
-            criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_CardAlias, query.getCardAlias()));
+            criteria.add(Restrictions.eq(Pocket.FieldName_CardAlias, query.getCardAlias()));
         }
 
         if (query.getPocketStatus() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_PocketStatus, query.getPocketStatus()));
+            criteria.add(Restrictions.eq(Pocket.FieldName_PocketStatus, query.getPocketStatus()));
         }
 
         if (query.getPocketTemplateID() != null || query.getPocketType() != null || query.getCommodity() != null || 
@@ -71,34 +72,34 @@ public class PocketDAO extends BaseDAO<Pocket> {
             criteria.createAlias(POCKETTEMPLATETABLE, POCKETTEMPLATE_ALIAS);
 
             if (query.getPocketTemplateID() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_RecordID, query.getPocketTemplateID()));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_RecordID, query.getPocketTemplateID()));
             }
             if (query.getPocketType() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_PocketType, query.getPocketType()));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_PocketType, query.getPocketType()));
             }
             if (query.getCommodity() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_Commodity, query.getCommodity()));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_Commodity, query.getCommodity()));
             }
             if (query.getIsCollectorPocket() != null) {
             	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + 
-            			CmFinoFIX.CRPocketTemplate.FieldName_IsCollectorPocket, query.getIsCollectorPocket()));
+            			PocketTemplate.FieldName_IsCollectorPocket, query.getIsCollectorPocket()));
             }
             else  if(query.IsCollectorPocketAllowed()==null||!query.IsCollectorPocketAllowed()){
             	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + 
-            			CmFinoFIX.CRPocketTemplate.FieldName_IsCollectorPocket, false));
+            			PocketTemplate.FieldName_IsCollectorPocket, false));
             }
             if (query.getIsSuspencePocketAllowed() == null || !query.getIsSuspencePocketAllowed()) {
-            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_IsSuspencePocket, false));
+            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, false));
             } else {
-            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_IsSuspencePocket, true));
+            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, true));
             }
         }
         if (query.getCompany() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(Pocket.FieldName_Company, query.getCompany()));
         }
         if (query.getBankCode() != null) {
             criteria.createAlias(POCKETTEMPLATETABLE, POCKETTEMPLATE_ALIAS);
-            criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + CmFinoFIX.CRPocketTemplate.FieldName_BankCodeForRouting, query.getBankCode()));
+            criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_BankCodeForRouting, query.getBankCode()));
         }
         if (StringUtils.isNotBlank(query.getStatusSearchString())) {
         	String[] strArray = query.getStatusSearchString().split(",");
@@ -108,7 +109,7 @@ public class PocketDAO extends BaseDAO<Pocket> {
         		intArray[i] = new Integer(s);
         		i++;
         	}
-        	criteria.add(Restrictions.in(CmFinoFIX.CRPocket.FieldName_PocketStatus, intArray));
+        	criteria.add(Restrictions.in(Pocket.FieldName_PocketStatus, intArray));
         }
         
         processPaging(query, criteria);
@@ -133,8 +134,8 @@ public class PocketDAO extends BaseDAO<Pocket> {
     @Override
     public void save(Pocket pocket) {
        //initial balance to 0
-    	if (pocket.getCurrentBalance()==null) {
-            pocket.setCurrentBalance(BigDecimal.ZERO);
+    	if (pocket.getCurrentbalance()==null) {
+            pocket.setCurrentbalance("0");
          }
         super.save(pocket);
     }
@@ -142,8 +143,8 @@ public class PocketDAO extends BaseDAO<Pocket> {
     @Override
     public void saveWithoutFlush(Pocket pocket){
     	 //initial balance to 0
-    	if (pocket.getCurrentBalance()==null) {
-            pocket.setCurrentBalance(BigDecimal.ZERO);
+    	if (pocket.getCurrentbalance()==null) {
+            pocket.setCurrentbalance("0");
          }
         super.saveWithoutFlush(pocket);
     }
@@ -152,13 +153,13 @@ public class PocketDAO extends BaseDAO<Pocket> {
 	public List<Pocket> getLastUpdatedPockets(Date start, Date end) {
 		Criteria criteria = createCriteria();
 		if(start!=null&&end!=null){
-			criteria.add(Restrictions.between(CmFinoFIX.CRPocket.FieldName_LastUpdateTime, start, end));
+			criteria.add(Restrictions.between(Pocket.FieldName_LastUpdateTime, start, end));
 		}else{
 			if(start!=null){
-				criteria.add(Restrictions.gt(CmFinoFIX.CRPocket.FieldName_LastUpdateTime, start));
+				criteria.add(Restrictions.gt(Pocket.FieldName_LastUpdateTime, start));
 			}
 			if(end!=null){
-				criteria.add(Restrictions.lt(CmFinoFIX.CRPocket.FieldName_LastUpdateTime, end));
+				criteria.add(Restrictions.lt(Pocket.FieldName_LastUpdateTime, end));
 			}
 		}
 		 List<Pocket> results = criteria.list();
@@ -209,18 +210,18 @@ public class PocketDAO extends BaseDAO<Pocket> {
 	}
 	
 		public BigDecimal getActualCurrentBalanceForPocket(Pocket pocket){
-			BigDecimal currentBalance = pocket.getCurrentBalance();
+			BigDecimal currentBalance = new BigDecimal(pocket.getCurrentbalance());
 			if(currentBalance ==null){
 				currentBalance = BigDecimal.ZERO;
 			}
-			Criteria crCriteria=getSession().createCriteria(MFSLedger.class).add(Restrictions.eq("PocketID", pocket.getID())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
+			Criteria crCriteria=getSession().createCriteria(MFSLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
 			crCriteria.setProjection(Projections.sum("Amount"));
 			BigDecimal crBalance = (BigDecimal) crCriteria.uniqueResult();
 			if(crBalance == null){
 				crBalance = BigDecimal.ZERO;
 			}
 			
-			Criteria drCriteria=getSession().createCriteria(MFSLedger.class).add(Restrictions.eq("PocketID", pocket.getID())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
+			Criteria drCriteria=getSession().createCriteria(MFSLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
 			drCriteria.setProjection(Projections.sum("Amount"));
 			BigDecimal drBalance = (BigDecimal) drCriteria.uniqueResult();
 			if(drBalance == null){
@@ -232,7 +233,7 @@ public class PocketDAO extends BaseDAO<Pocket> {
 		
 		public Pocket getPocketAfterEvicting(Pocket pocket) {			
 			getSession().evict(pocket);
-			return getById(pocket.getID());
+			return getById(pocket.getId().longValue());
 		}
 		
 	/**
@@ -242,11 +243,11 @@ public class PocketDAO extends BaseDAO<Pocket> {
 	 */
 	public List<Pocket> getDefaultBankPocketByMdnList(List<Long> mdnlist) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(CmFinoFIX.CRPocket.FieldName_IsDefault, Boolean.TRUE));
-		criteria.createAlias(CmFinoFIX.CRPocket.FieldName_PocketTemplate, "pt");
-		criteria.add(Restrictions.eq("pt."+ CmFinoFIX.CRPocketTemplate.FieldName_PocketType, CmFinoFIX.PocketType_BankAccount));
-		criteria.createAlias(CmFinoFIX.CRPocket.FieldName_SubscriberMDNByMDNID, "smdn");
-		addCriteriaIn("smdn."+ CmFinoFIX.CRSubscriberMDN.FieldName_RecordID, mdnlist, criteria);
+		criteria.add(Restrictions.eq(Pocket.FieldName_IsDefault, Boolean.TRUE));
+		criteria.createAlias(Pocket.FieldName_PocketTemplate, "pt");
+		criteria.add(Restrictions.eq("pt."+ PocketTemplate.FieldName_PocketType, CmFinoFIX.PocketType_BankAccount));
+		criteria.createAlias(Pocket.FieldName_SubscriberMDNByMDNID, "smdn");
+		addCriteriaIn("smdn."+ SubscriberMdn.FieldName_RecordID, mdnlist, criteria);
         @SuppressWarnings("unchecked")
         List<Pocket> results = criteria.list();
 

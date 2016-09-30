@@ -48,7 +48,7 @@ public class User extends CmFinoFIX.CRUser {
             EnumTextDAO dao = DAOFactory.getInstance().getEnumTextDAO();
             List<EnumText> results = dao.get(query);
             if (results.size() > 0) {
-                languageCode = results.get(0).getEnumValue();
+                languageCode = results.get(0).getEnumvalue();
             } else {
                 languageCode = StringUtils.EMPTY;
             }

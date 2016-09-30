@@ -4,15 +4,17 @@
  */
 package com.mfino.dao;
 
-import com.mfino.constants.DAOConstants;
-import com.mfino.dao.query.Person2PersonQuery;
-import com.mfino.domain.Person2Person;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
+
+import com.mfino.constants.DAOConstants;
+import com.mfino.dao.query.Person2PersonQuery;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.Person2Person;
+import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -29,10 +31,10 @@ public class Person2PersonDAO extends BaseDAO<Person2Person> {
 
     @Override
     public void save(Person2Person s) {
-        if (s.getmFinoServiceProviderByMSPID() == null) {
+        if (s.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            mFinoServiceProvider msp = mspDao.getById(1);
-            s.setmFinoServiceProviderByMSPID(msp);
+            MfinoServiceProvider msp = mspDao.getById(1);
+            s.setMfinoServiceProvider(msp);
         }
 
         super.save(s);
@@ -43,13 +45,13 @@ public class Person2PersonDAO extends BaseDAO<Person2Person> {
         Criteria criteria = createCriteria();
 
         if (query.getMdn() != null && query.getMdn().length() > 0) {
-            SimpleExpression expression = getLikeAnywhereRestriction(CmFinoFIX.CRPerson2Person.FieldName_MDN, query.getMdn());
+            SimpleExpression expression = getLikeAnywhereRestriction(Person2Person.FieldName_MDN, query.getMdn());
             criteria.add(expression);
-            processColumn(criteria, query, expression, CmFinoFIX.CRPerson2Person.FieldName_MDN);
+            processColumn(criteria, query, expression, Person2Person.FieldName_MDN);
         }
 
         if (query.getPeerName() != null) {
-            criteria.add(Restrictions.gt(CmFinoFIX.CRPerson2Person.FieldName_PeerName, query.getPeerName()));
+            criteria.add(Restrictions.gt(Person2Person.FieldName_PeerName, query.getPeerName()));
         }
         if (query.getSubscriberId() != null) {
             criteria.createAlias(subscriberTableName, subscriberTableName + DAOConstants.ALIAS_SUFFIX);

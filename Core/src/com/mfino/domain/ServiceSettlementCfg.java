@@ -2,14 +2,15 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -19,8 +20,13 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SERVICE_SETTLEMENT_CFG")
 public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_PartnerServicesByPartnerServiceID = "partnerServices";
+	public static final String FieldName_PocketByCollectorPocket = "pocket";
+	public static final String FieldName_SchedulerStatus = "schedulerstatus";
+	public static final String FieldName_StartDate = "startdate";
 	
-	private mFinoServiceProvider mfinoServiceProvider;
+	private MfinoServiceProvider mfinoServiceProvider;
 	private PartnerServices partnerServices;
 	private SettlementTemplate settlementTemplate;
 	private Pocket pocket;
@@ -34,7 +40,7 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 	}
 
 	public ServiceSettlementCfg(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			PartnerServices partnerServices,
 			SettlementTemplate settlementTemplate, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby) {
@@ -49,7 +55,7 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 	}
 
 	public ServiceSettlementCfg(BigDecimal id,
-			mFinoServiceProvider mfinoServiceProvider,
+			MfinoServiceProvider mfinoServiceProvider,
 			PartnerServices partnerServices,
 			SettlementTemplate settlementTemplate, Pocket pocket,
 			Timestamp lastupdatetime, String updatedby,
@@ -76,12 +82,12 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
-	public mFinoServiceProvider getMfinoServiceProvider() {
+	public MfinoServiceProvider getMfinoServiceProvider() {
 		return this.mfinoServiceProvider;
 	}
 
 	public void setMfinoServiceProvider(
-			mFinoServiceProvider mfinoServiceProvider) {
+			MfinoServiceProvider mfinoServiceProvider) {
 		this.mfinoServiceProvider = mfinoServiceProvider;
 	}
 

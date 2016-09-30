@@ -2,20 +2,19 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -25,7 +24,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "BULK_LOP")
 public class BulkLOP extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	private SubscriberMDN subscriberMdn;
+	private SubscriberMdn subscriberMdn;
 	private DistributionChainTemp distributionChainTemp;
 	private Merchant merchant;
 	private Company company;
@@ -51,7 +50,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	public BulkLOP() {
 	}
 
-	public BulkLOP(BigDecimal id, SubscriberMDN subscriberMdn,
+	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
 			Merchant merchant, Company company, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long sourceapplication) {
@@ -66,7 +65,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 		this.sourceapplication = sourceapplication;
 	}
 
-	public BulkLOP(BigDecimal id, SubscriberMDN subscriberMdn,
+	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
 			DistributionChainTemp distributionChainTemp, Merchant merchant,
 			Company company, DistributionChainLvl distributionChainLvl,
 			Timestamp lastupdatetime, String updatedby,
@@ -108,11 +107,11 @@ public class BulkLOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID", nullable = false)
-	public SubscriberMDN getSubscriberMdn() {
+	public SubscriberMdn getSubscriberMdn() {
 		return this.subscriberMdn;
 	}
 
-	public void setSubscriberMdn(SubscriberMDN subscriberMdn) {
+	public void setSubscriberMdn(SubscriberMdn subscriberMdn) {
 		this.subscriberMdn = subscriberMdn;
 	}
 

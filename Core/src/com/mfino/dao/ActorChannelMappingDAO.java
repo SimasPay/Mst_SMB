@@ -9,7 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.dao.query.ActorChannelMappingQuery;
 import com.mfino.domain.ActorChannelMapping;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Service;
 import com.mfino.domain.TransactionType;
@@ -47,7 +47,7 @@ public class ActorChannelMappingDAO extends BaseDAO<ActorChannelMapping> {
 		}		
 		if(query.getGroup() != null){
 			criteria.createAlias(ActorChannelMapping.FieldName_Group, "group");
-			criteria.add(Restrictions.eq("group."+Group.FieldName_RecordID, query.getGroup()));					
+			criteria.add(Restrictions.eq("group."+Groups.FieldName_RecordID, query.getGroup()));					
 		}		
 		criteria.addOrder(Order.asc(ActorChannelMapping.FieldName_RecordID));
 		processPaging(query, criteria);

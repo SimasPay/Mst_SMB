@@ -2,11 +2,12 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -16,7 +17,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "SETTLEMENT_SCHEDULE_LOG")
 public class SettlementScheduleLog extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	private BigDecimal mspid;
 	private BigDecimal partnerservicesid;
 	private BigDecimal servicesettlementconfigid;

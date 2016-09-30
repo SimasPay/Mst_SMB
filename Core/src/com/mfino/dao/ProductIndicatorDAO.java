@@ -5,13 +5,13 @@
 
 package com.mfino.dao;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
 import com.mfino.dao.query.ProductIndicatorQuery;
 import com.mfino.domain.ProductIndicator;
-import com.mfino.fix.CmFinoFIX;
-import java.util.List;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -27,13 +27,13 @@ public class ProductIndicatorDAO extends BaseDAO<ProductIndicator>{
         Criteria criteria = createCriteria();
 
         if (query.getTransactionType() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRProductIndicator.FieldName_TransactionUICategory, query.getTransactionType()));
+            criteria.add(Restrictions.eq(ProductIndicator.FieldName_TransactionUICategory, query.getTransactionType()));
         }
         if (query.getCompany() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRProductIndicator.FieldName_Company, query.getCompany()));
+            criteria.add(Restrictions.eq(ProductIndicator.FieldName_Company, query.getCompany()));
         }
         if (query.getProductCode() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRProductIndicator.FieldName_ProductIndicatorCode, query.getProductCode()).ignoreCase());
+            criteria.add(Restrictions.eq(ProductIndicator.FieldName_ProductIndicatorCode, query.getProductCode()).ignoreCase());
         }
       //  processBaseQuery(query, criteria);
 
@@ -41,7 +41,7 @@ public class ProductIndicatorDAO extends BaseDAO<ProductIndicator>{
         processPaging(query, criteria);
 
         //applying Order
-      //  criteria.addOrder(Order.desc(CmFinoFIX.CRProductIndicator.FieldName_RecordID));
+      //  criteria.addOrder(Order.desc(ProductIndicator.FieldName_RecordID));
         //applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
         List<ProductIndicator> results = criteria.list();

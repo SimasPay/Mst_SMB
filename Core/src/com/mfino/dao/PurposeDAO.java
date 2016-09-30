@@ -9,20 +9,19 @@ import org.hibernate.criterion.SimpleExpression;
 
 import com.mfino.dao.query.PurposeQuery;
 import com.mfino.domain.Purpose;
-import com.mfino.fix.CmFinoFIX;
 
 public class PurposeDAO extends BaseDAO<Purpose> {
 	public List<Purpose> get(PurposeQuery query) {
 		Criteria criteria = createCriteria();
 		if (query.getCode() != null) {
 			criteria.add(Restrictions.eq(
-					CmFinoFIX.CRPurpose.FieldName_Code,
+					Purpose.FieldName_Code,
 					query.getCode()));
 		}
 		if(query.getMultiCode()!=null){
 			Disjunction finalDisjunction = Restrictions.disjunction();
 			for(int i=0;i<query.getMultiCode().length;i++){
-				SimpleExpression se = Restrictions.eq(CmFinoFIX.CRPurpose.FieldName_Code, query.getMultiCode()[i]).ignoreCase();    
+				SimpleExpression se = Restrictions.eq(Purpose.FieldName_Code, query.getMultiCode()[i]).ignoreCase();    
 				finalDisjunction.add(se);  
 			}
 			criteria.add(finalDisjunction);

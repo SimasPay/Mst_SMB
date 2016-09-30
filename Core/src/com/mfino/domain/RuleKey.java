@@ -4,6 +4,7 @@ package com.mfino.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -21,7 +23,13 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "RULE_KEY")
 public class RuleKey extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_Service = "service";
+	public static final String FieldName_TransactionType = "transactionType";
+	public static final String FieldName_TxnRuleKey = "txnrulekey";
+	public static final String FieldName_TxnRuleKeyType = "txnrulekeytype";
+	public static final String FieldName_TxnRuleKeyPriority = "txnrulekeypriority";
+	public static final String FieldName_TxnRuleKeyComparision = "txnrulekeycomparision";
 	private Service service;
 	private TransactionType transactionType;
 	private String txnrulekey;

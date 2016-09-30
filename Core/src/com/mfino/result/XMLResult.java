@@ -367,8 +367,8 @@ public class XMLResult extends Result {
 				
 				if (getSCTLList() != null) {
 						notificationWrapper.setServiceChargeTransactionLog(getSCTLList());
-						notificationWrapper.setSourceMDN(getSCTLList().getSourceMDN());
-						notificationWrapper.setReceiverMDN(getSCTLList().getDestMDN());
+						notificationWrapper.setSourceMDN(getSCTLList().getSourcemdn());
+						notificationWrapper.setReceiverMDN(getSCTLList().getDestmdn());
 				}
 				
 				if (ctList != null) {
@@ -383,11 +383,11 @@ public class XMLResult extends Result {
 					for (SctlSettlementMap pendingSettlement : psList) {
 						notificationWrapper.setPendingSettlement(pendingSettlement);
 						notificationWrapper.setAmount(pendingSettlement.getAmount());
-						Service service = getMfinoService().getByServiceID(pendingSettlement.getServiceID());
-						notificationWrapper.setService(service!=null?service.getDisplayName():"");
+						Service service = getMfinoService().getByServiceID(pendingSettlement.getService().getId().longValue());
+						notificationWrapper.setService(service!=null?service.getDisplayname():"");
 						
-						Partner partner = getPartnerService().getPartnerById(pendingSettlement.getPartnerID());
-	            		notificationWrapper.setTradeName(partner!=null?partner.getTradeName():"");
+						Partner partner = getPartnerService().getPartnerById(pendingSettlement.getPartner().getId().longValue());
+	            		notificationWrapper.setTradeName(partner!=null?partner.getTradename():"");
 						messageBuilder.append(getNotificationMessageParserService().buildMessage(notificationWrapper, false));
 						messageBuilder.append("\r\n");
 					}
@@ -533,7 +533,7 @@ public class XMLResult extends Result {
 
 		if (getDetailsOfPresentTransaction() != null) {
 			getXmlWriter().writeStartElement("transactionTime");
-			getXmlWriter().writeCharacters(formatDate(getDetailsOfPresentTransaction().getStartTime()), false);
+			getXmlWriter().writeCharacters(formatDate(getDetailsOfPresentTransaction().getStarttime()), false);
 			getXmlWriter().writeEndElement();
 		}
 		else {

@@ -8,7 +8,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.AdjustmentsQuery;
 import com.mfino.domain.Adjustments;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.ServiceChargeTxnLog;
 
 /**

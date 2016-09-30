@@ -2,20 +2,19 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -25,6 +24,18 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "TRANSACTION_RULE", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class TransactionRule extends Base implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	public static final String FieldName_Name = "name";
+	public static final String FieldName_Service = "service";
+	public static final String FieldName_TransactionType = "transactionType";
+	public static final String FieldName_ChannelCode = "channelCode";
+	public static final String FieldName_ChargeMode = "chargemode";
+	public static final String FieldName_SourceType = "sourcetype";
+	public static final String FieldName_KYCLevelBySourceKYC = "kycLevelBySourcekyc";
+	public static final String FieldName_DestType = "desttype";
+	public static final String FieldName_KYCLevelByDestKYC = "kycLevelByDestkyc";
+	public static final String FieldName_GroupBySourceGroupID = "sourcegroup";
+	public static final String FieldName_GroupByDestinationGroupID = "destinationgroup";
 	
 	private ChannelCode channelCode;
 	private Service service;

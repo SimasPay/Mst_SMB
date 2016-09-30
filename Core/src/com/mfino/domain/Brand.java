@@ -38,8 +38,8 @@ public class Brand extends Base  implements java.io.Serializable {
 	private String internationalcountrycode;
 	private String prefixcode;
 	private String brandname;
-	private Set<SmsCode> smsCodes = new HashSet<SmsCode>(0);
-	private Set<MdnRange> mdnRanges = new HashSet<MdnRange>(0);
+	private Set<SMSCode> smsCodes = new HashSet<SMSCode>(0);
+	private Set<MDNRange> mdnRanges = new HashSet<MDNRange>(0);
 
 	public Brand() {
 	}
@@ -64,7 +64,7 @@ public class Brand extends Base  implements java.io.Serializable {
 			Company company, Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			String internationalcountrycode, String prefixcode,
-			String brandname, Set<SmsCode> smsCodes, Set<MdnRange> mdnRanges) {
+			String brandname, Set<SMSCode> smsCodes, Set<MDNRange> mdnRanges) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
 		this.company = company;
@@ -131,20 +131,20 @@ public class Brand extends Base  implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "brand")
-	public Set<SmsCode> getSmsCodes() {
+	public Set<SMSCode> getSmsCodes() {
 		return this.smsCodes;
 	}
 
-	public void setSmsCodes(Set<SmsCode> smsCodes) {
+	public void setSmsCodes(Set<SMSCode> smsCodes) {
 		this.smsCodes = smsCodes;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "brand")
-	public Set<MdnRange> getMdnRanges() {
+	public Set<MDNRange> getMdnRanges() {
 		return this.mdnRanges;
 	}
 
-	public void setMdnRanges(Set<MdnRange> mdnRanges) {
+	public void setMdnRanges(Set<MDNRange> mdnRanges) {
 		this.mdnRanges = mdnRanges;
 	}
 
