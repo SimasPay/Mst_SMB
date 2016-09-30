@@ -22,7 +22,7 @@ import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.NoISOResponseMsg;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferReversalToBank;
@@ -109,7 +109,7 @@ public class ConversionToReversalRequestProcessor {
 
 			if(ibtList!=null && !ibtList.isEmpty()) {
 				//Only there should be one record for a given sctld
-				reversalFixMsg.setDestBankCode(ibtList.get(0).getDestBankCode());
+				reversalFixMsg.setDestBankCode(ibtList.get(0).getDestbankcode());
 				//reversalFixMsg.setBankCode(Integer.parseInt(ibtList.get(0).getDestBankCode()));
 				
 			} else {
@@ -143,7 +143,7 @@ public class ConversionToReversalRequestProcessor {
 		IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
-		ServiceChargeTransactionLog sctl = null;
+		ServiceChargeTxnLog sctl = null;
 		Long transferID = reversalFixMsg.getTransferID();
 		log.info("MoneyTransferReversalToBankProcessor :: transferID msg.getTransferID()"+transferID);
 		TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
@@ -153,16 +153,16 @@ public class ConversionToReversalRequestProcessor {
 		if(transferID!=null){
 			sctlQuery.setTransferID(transferID);
 			log.info("MoneyTransferReversalToBankProcessor :: process Transfer ID :"+transferID);
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 			if(CollectionUtils.isNotEmpty(list)){
 				sctl = list.get(0);
-				sctlID = sctl.getID();
+				sctlID = sctl.getId().longValue();
 				log.info("MoneyTransferReversalToBankProcessor :: process Sctl ID :"+sctlID);
 				isQuery.setSctlID(sctlID);
 				List<IntegrationSummary> isList = isDAO.get(isQuery);
 				if(CollectionUtils.isNotEmpty(isList)){
 					iSummary = isList.get(0);
-					reconciliationID1 = iSummary.getReconcilationID1();
+					reconciliationID1 = iSummary.getReconcilationid1();
 					log.info("MoneyTransferReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
 					log.info("MoneyTransferReversalToBankProcessor :: Dumping message fields :" + reversalFixMsg.DumpFields());
 					log.info("MoneyTransferReversalToBankProcessor :: SourceMDN " + reversalFixMsg.getSourceMDN());

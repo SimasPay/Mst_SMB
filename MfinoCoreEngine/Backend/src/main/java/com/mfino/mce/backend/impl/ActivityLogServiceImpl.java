@@ -1,7 +1,6 @@
 package com.mfino.mce.backend.impl;
 
 import com.mfino.domain.ActivitiesLog;
-import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.mce.backend.ActivityLogService;
 import com.mfino.mce.core.CoreDataWrapper;
@@ -23,7 +22,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
 		if(baseMsg!=null){
 			
 			//Define category based on different messages
-			activitiesLog.setActivityCategory(null);
+			activitiesLog.setActivitycategory(null);
 			
 		}		
 		return activitiesLog;

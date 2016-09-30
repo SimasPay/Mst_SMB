@@ -26,12 +26,12 @@ public class PendingCommodityTransfer21CtClearanceJob {
 		List<PendingCommodityTransfer> lst = pct21ctClearance.getAll21NonPendingTransfers();
 		for (PendingCommodityTransfer pct: lst) {
 			try{
-				if(pct.getSourcePocketType() == CmFinoFIX.PocketType_BankAccount && pct.getDestPocketType() == CmFinoFIX.PocketType_BankAccount){
+				if(pct.getSourcepockettype() == CmFinoFIX.PocketType_BankAccount && pct.getDestpockettype().intValue() == CmFinoFIX.PocketType_BankAccount){
 					pct21ctClearance.calculateFinalState(pct);
 				}
 			}
 			catch (Exception e) {
-				log.error("Exception in movePendingToComplete of PCT ID: " + pct.getID(),e);
+				log.error("Exception in movePendingToComplete of PCT ID: " + pct.getId(),e);
 			}
 		}
 		

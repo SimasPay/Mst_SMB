@@ -5,15 +5,13 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBase;
-import com.mfino.fix.CmFinoFIX.CMFIXResponse;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.backend.impl.BackendRuntimeException;
 import com.mfino.mce.core.CoreDataWrapper;
 import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.mce.core.util.NotificationCodes;
 
 /**
@@ -50,17 +48,17 @@ public class FixMessageValidator {
 		
 		try
 		{
-			TransactionsLog transactionLog = coreDataWrapper.saveTransactionsLog(messageCode, fixMessage.DumpFields());
-			fixMessage.setTransactionID(transactionLog.getID());
+			TransactionLog transactionLog = coreDataWrapper.saveTransactionsLog(messageCode, fixMessage.DumpFields());
+			fixMessage.setTransactionID(transactionLog.getId().longValue());
 			if((fixMessage.getParentTransactionID() == null) || (fixMessage.getParentTransactionID() == 0)){
-				fixMessage.setParentTransactionID(transactionLog.getID());
+				fixMessage.setParentTransactionID(transactionLog.getId().longValue());
 			}
 			
 			fixMessage.setReceiveTime(new Timestamp(new Date()));
-			fixMessage.setTransactionID(transactionLog.getID());
+			fixMessage.setTransactionID(transactionLog.getId().longValue());
 			
 			if(fixMessage.getParentTransactionID() == 0){
-				fixMessage.setParentTransactionID(transactionLog.getID());
+				fixMessage.setParentTransactionID(transactionLog.getId().longValue());
 			}
 		}
 		catch(BackendRuntimeException bre){
