@@ -20,25 +20,25 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 	@Deprecated
 	public Ledger createLedgerEntry(Pocket srcPocket, Pocket destPocket, CommodityTransfer ct, PendingCommodityTransfer pct, BigDecimal amount) {
 
-		if (amount.compareTo(BigDecimal.ZERO) < 1 || srcPocket.getID().equals(destPocket.getID()))
+		if (amount.compareTo(BigDecimal.ZERO) < 1 || srcPocket.getId().equals(destPocket.getId()))
 			return null;
 
 		Ledger ledger = new Ledger();
-		ledger.setSourcePocketID(srcPocket.getID());
-		ledger.setSourceMDN(srcPocket.getSubscriberMDNByMDNID().getMDN());
-		ledger.setSourcePocketBalance(srcPocket.getCurrentBalance());
-		ledger.setDestMDN(destPocket.getSubscriberMDNByMDNID().getMDN());
-		ledger.setDestPocketID(destPocket.getID());
-		ledger.setDestPocketBalance(destPocket.getCurrentBalance());
+		ledger.setSourcepocketid(srcPocket.getId());
+		ledger.setSourcemdn(srcPocket.getSubscriberMdn().getMdn());
+		ledger.setSourcepocketbalance(srcPocket.getCurrentbalance());
+		ledger.setDestmdn(destPocket.getSubscriberMdn().getMdn());
+		ledger.setDestpocketid(destPocket.getId());
+		ledger.setDestpocketbalance(destPocket.getCurrentbalance());
 		ledger.setAmount(amount);
 		if (ct != null) {
-			ledger.setCommodityTransferID(ct.getID());
+			ledger.setCommoditytransferid(ct.getId());
 		}
 		else if (pct != null) {
-			ledger.setCommodityTransferID(pct.getID());
+			ledger.setCommoditytransferid(pct.getId());
 		}
-		srcPocket.setCurrentBalance(moneyService.subtract(srcPocket.getCurrentBalance(), amount));
-		destPocket.setCurrentBalance(moneyService.add(destPocket.getCurrentBalance(), amount));
+		srcPocket.setCurrentbalance(String.valueOf(moneyService.subtract(new BigDecimal(srcPocket.getCurrentbalance()), amount)));
+		destPocket.setCurrentbalance(String.valueOf(moneyService.add(new BigDecimal(destPocket.getCurrentbalance()), amount)));
 
 		coreDataWrapper.save(ledger);
 		return ledger;
@@ -61,7 +61,7 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		List<MFSLedger> lstMfsLedgers = null;
 		BigDecimal srcAmount = null;
 		Pocket suspensePocket = coreDataWrapper.getSuspensePocket();
-		if (srcPocket.getID().equals(destPocket.getID())) {
+		if (srcPocket.getId().equals(destPocket.getId())) {
 			return null;
 		}
 		
@@ -82,11 +82,11 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		
 		lstMfsLedgers.add(generateLedgerEntry(isSettlement,sctlId, ctID, srcPocket, srcAmount, true, isImmediateUpdateRequired));
 		if (isSettlement || isImmediateUpdateRequired) {
-			srcPocket.setCurrentBalance(moneyService.subtract(srcPocket.getCurrentBalance(), srcAmount));
+			srcPocket.setCurrentbalance(String.valueOf(moneyService.subtract(new BigDecimal(srcPocket.getCurrentbalance()), srcAmount)));
 		}
 		
 		// Generates the Suspense pocket ledger entries as the Netting is OFF.
-		if ((! isNettingOn) && !(destPocket.getID().equals(suspensePocket.getID())) && !(srcPocket.getID().equals(suspensePocket.getID())) ) {
+		if ((! isNettingOn) && !(destPocket.getId().equals(suspensePocket.getId())) && !(srcPocket.getId().equals(suspensePocket.getId())) ) {
 			lstMfsLedgers.add(generateLedgerEntry(false,sctlId, ctID, suspensePocket, srcAmount, false, false));
 			lstMfsLedgers.add(generateLedgerEntry(false,sctlId, ctID, suspensePocket, amount, true, false));
 		}
@@ -95,12 +95,12 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		
 		lstMfsLedgers.add(generateLedgerEntry(false,sctlId, ctID, destPocket, amount, false, isImmediateUpdateRequired));
 		if (isImmediateUpdateRequired) {
-			destPocket.setCurrentBalance(moneyService.add(destPocket.getCurrentBalance(), amount));
+			destPocket.setCurrentbalance(String.valueOf(moneyService.add(new BigDecimal(destPocket.getCurrentbalance()), amount)));
 		}
 		
 		if (charges.compareTo(BigDecimal.ZERO) == 1) {
 			// Generates the Suspense pocket ledger entries as the Netting is OFF.
-			if ((! isNettingOn) && !(destPocket.getID().equals(suspensePocket.getID())) ) {
+			if ((! isNettingOn) && !(destPocket.getId().equals(suspensePocket.getId())) ) {
 				lstMfsLedgers.add(generateLedgerEntry(false,sctlId, ctID, suspensePocket, charges, true, false));
 			}
 			// Generates the Charges pocket Ledger entry.
@@ -120,18 +120,18 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocket();
 		Pocket taxPocket = coreDataWrapper.getPocket(SystemParameterKeys.TAX_POCKET_ID_KEY);
 		
-		if ((pocket.getPocketTemplate().getIsCollectorPocket() != null) && pocket.getPocketTemplate().getIsCollectorPocket()) {
+		if ((pocket.getPocketTemplate().getIscollectorpocket() != null) && pocket.getPocketTemplate().getIscollectorpocket()) {
 			isImmediateUpdateRequired = false;
 		}
-		else if ((pocket.getPocketTemplate().getIsSuspencePocket() != null) && pocket.getPocketTemplate().getIsSuspencePocket()) {
+		else if ((pocket.getPocketTemplate().getIssuspencepocket() != null) && pocket.getPocketTemplate().getIssuspencepocket()) {
 			isImmediateUpdateRequired = false;
-		}else if ((pocket.getPocketTemplate().getIsSystemPocket() != null) && pocket.getPocketTemplate().getIsSystemPocket()) {
-			isImmediateUpdateRequired = false;
-		}
-		else if (pocket.getID().equals(globalSVAPocket.getID()) ) {
+		}else if ((pocket.getPocketTemplate().getIssystempocket() != null) && pocket.getPocketTemplate().getIssystempocket()) {
 			isImmediateUpdateRequired = false;
 		}
-		else if (pocket.getID().equals(taxPocket.getID()) ) {
+		else if (pocket.getId().equals(globalSVAPocket.getId()) ) {
+			isImmediateUpdateRequired = false;
+		}
+		else if (pocket.getId().equals(taxPocket.getId()) ) {
 			isImmediateUpdateRequired = false;
 		}
 		else {
@@ -153,21 +153,21 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 	 */
 	private MFSLedger generateLedgerEntry(boolean isSettlement,Long sctlId, Long ctID, Pocket pocket, BigDecimal amount, boolean isSource, boolean isImmediateUpdateRequired) {
 		MFSLedger mfsLedger = new MFSLedger();
-		mfsLedger.setSctlId(sctlId);
-		mfsLedger.setCommodityTransferID(ctID);
-		mfsLedger.setPocketID(pocket.getID());
+		mfsLedger.setSctlid(new BigDecimal(sctlId));
+		mfsLedger.setCommoditytransferid(new BigDecimal(ctID));
+		mfsLedger.setPocketid(pocket.getId());
 		mfsLedger.setAmount(amount);
 		
 		if (isSource) {
-			mfsLedger.setLedgerType(DAOConstants.DEBIT_LEDGER_TYPE);
+			mfsLedger.setLedgertype(DAOConstants.DEBIT_LEDGER_TYPE);
 		} else {
-			mfsLedger.setLedgerType(DAOConstants.CREDIT_LEDGER_TYPE);
+			mfsLedger.setLedgertype(DAOConstants.CREDIT_LEDGER_TYPE);
 		}
 		
 		if (isSettlement || isImmediateUpdateRequired) {
-			mfsLedger.setLedgerStatus(DAOConstants.LEDGER_STATUS_UPDATED);
+			mfsLedger.setLedgerstatus(DAOConstants.LEDGER_STATUS_UPDATED);
 		} else {
-			mfsLedger.setLedgerStatus(DAOConstants.LEDGER_STATUS_DEFERED);
+			mfsLedger.setLedgerstatus(DAOConstants.LEDGER_STATUS_DEFERED);
 		}
 		return mfsLedger;
 	}
@@ -184,31 +184,31 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		boolean isImmediateUpdateRequired = false;
 		
 		Pocket reversePocket = null;
-		if (suspensePocket.getID().equals(mfsLedger.getPocketID()) ) {
+		if (suspensePocket.getId().equals(mfsLedger.getPocketid()) ) {
 			reversePocket = suspensePocket;
 		} 
-		else if (globalSVAPocket.getID().equals(mfsLedger.getPocketID()) ) {
+		else if (globalSVAPocket.getId().equals(mfsLedger.getPocketid()) ) {
 			reversePocket = globalSVAPocket;
 		}
-		else if (globalChargePocket.getID().equals(mfsLedger.getPocketID()) ) {
+		else if (globalChargePocket.getId().equals(mfsLedger.getPocketid()) ) {
 			reversePocket = globalChargePocket;
 		} 
 		else {
-			reversePocket = coreDataWrapper.getPocketById(mfsLedger.getPocketID(), LockMode.UPGRADE);
+			reversePocket = coreDataWrapper.getPocketById(mfsLedger.getPocketid().longValue(), LockMode.UPGRADE);
 			isImmediateUpdateRequired = true;
 		}
 
-		boolean isSource = DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgerType()) ? false : true;
+		boolean isSource = DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype()) ? false : true;
 		
-		MFSLedger reverseLedger = generateLedgerEntry(false,mfsLedger.getSctlId(), mfsLedger.getCommodityTransferID(), reversePocket,
+		MFSLedger reverseLedger = generateLedgerEntry(false,mfsLedger.getSctlid().longValue(), mfsLedger.getCommoditytransferid().longValue(), reversePocket,
 				mfsLedger.getAmount(), isSource, isImmediateUpdateRequired);
 		
 		if (isImmediateUpdateRequired) {
-			if (DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgerType())) {
-				reversePocket.setCurrentBalance(moneyService.add(reversePocket.getCurrentBalance(), mfsLedger.getAmount()));
+			if (DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype())) {
+				reversePocket.setCurrentbalance(String.valueOf(moneyService.add(new BigDecimal(reversePocket.getCurrentbalance()), mfsLedger.getAmount())));
 			}
-			else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(mfsLedger.getLedgerType())) {
-				reversePocket.setCurrentBalance(moneyService.subtract(reversePocket.getCurrentBalance(), mfsLedger.getAmount()));
+			else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype())) {
+				reversePocket.setCurrentbalance(String.valueOf(moneyService.subtract(new BigDecimal(reversePocket.getCurrentbalance()), mfsLedger.getAmount())));
 			}
 			coreDataWrapper.save(reversePocket);
 		}

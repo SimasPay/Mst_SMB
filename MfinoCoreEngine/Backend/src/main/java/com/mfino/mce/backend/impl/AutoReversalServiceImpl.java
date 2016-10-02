@@ -20,8 +20,8 @@ import com.mfino.domain.AutoReversals;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAutoReversal;
@@ -78,9 +78,9 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		
 		if(autoReversal == null){
 			autoReversal = initializeAutoReversal((CMAutoReversal)mceMessage.getRequest());
-		}else if((CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())){
-			log.info("doReversal::Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
+		}else if((CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.intValue() != autoReversal.getAutorevstatus())){
+			log.info("doReversal::Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
 			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID());
 		}		
 		if(BigDecimal.ZERO.compareTo(autoReversal.getCharges()) == -1){
@@ -129,21 +129,21 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		CMAutoReversal autoReversalRequest = (CMAutoReversal)mceMessage.getRequest();
 		Long sctlId = autoReversalRequest.getServiceChargeTransactionLogID();
 		AutoReversals autoReversal = getAutoReversalInTxn(sctlId);
-		if ((CmFinoFIX.AutoRevStatus_INITIALIZED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())){
-			log.info("chargesToTransitInquiry::Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
+		if ((CmFinoFIX.AutoRevStatus_INITIALIZED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.intValue() != autoReversal.getAutorevstatus())){
+			log.info("chargesToTransitInquiry::Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
 			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID());
 		}
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		CMBankAccountToBankAccount moneyTransferInquiry = getMoneyTransferInquiryFix(sctl, getChargesPocket(autoReversalRequest), getTransitPocket(), autoReversal.getCharges());
 		
-		TransactionsLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferInquiry.DumpFields());
+		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferInquiry.DumpFields());
 		
-		moneyTransferInquiry.setTransactionID(tLog.getID());
+		moneyTransferInquiry.setTransactionID(tLog.getId().longValue());
 		CFIXMsg retFix=createResponseObject();
 		try {
 		retFix = bankService.onTransferInquiryToBank(moneyTransferInquiry);
@@ -182,14 +182,14 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		BackendResponse inquiryResponse = (BackendResponse)mceMessage.getResponse();
 		Long sctlId = inquiryResponse.getServiceChargeTransactionLogID();
 		AutoReversals autoReversal = getAutoReversalInTxn(sctlId);
-		if(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_COMPLETED.intValue() != autoReversal.getAutoRevStatus().intValue()){
-			log.info("chargesToTransitConfirmation::Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
+		if(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_COMPLETED.intValue() != autoReversal.getAutorevstatus()){
+			log.info("chargesToTransitConfirmation::Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
 			throw new DuplicateAutoReversalException(
 					"Duplicate reversal request for sctlID:"+ autoReversalRequest.getServiceChargeTransactionLogID());
 		}		
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		CMBankAccountToBankAccountConfirmation moneyTransferConfirmation = getMoneyTransferConfirmationFix(sctl, getChargesPocket(autoReversalRequest), getTransitPocket(), inquiryResponse);
 		CFIXMsg retFix=createResponseObject();
@@ -231,27 +231,27 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		
 		AutoReversals autoReversal = getAutoReversal(sctlId);
 		if(BigDecimal.ZERO.compareTo(autoReversal.getCharges()) == -1){
-			if (CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_COMPLETED.intValue() != autoReversal.getAutoRevStatus().intValue()&&
-					(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-					(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())) {
-				log.info("destinationToTransitInquiry::Duplicate reversal request for sctlID:"+ autoReversal.getSctlId()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
-				throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlId());
+			if (CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_COMPLETED.intValue() != autoReversal.getAutorevstatus()&&
+					(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutorevstatus())&&
+					(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.intValue() != autoReversal.getAutorevstatus())) {
+				log.info("destinationToTransitInquiry::Duplicate reversal request for sctlID:"+ autoReversal.getSctlid()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
+				throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlid());
 			}
-		}else if((CmFinoFIX.AutoRevStatus_INITIALIZED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())){
-			log.info("destinationToTransitInquiry::Duplicate reversal request for sctlID:"+ autoReversal.getSctlId()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
-			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlId());
+		}else if((CmFinoFIX.AutoRevStatus_INITIALIZED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.intValue() != autoReversal.getAutorevstatus())){
+			log.info("destinationToTransitInquiry::Duplicate reversal request for sctlID:"+ autoReversal.getSctlid()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
+			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlid());
 		}		
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		CMBankAccountToBankAccount moneyTransferInquiry = getMoneyTransferInquiryFix(sctl, getDestPocket(sctlId), getTransitPocket(), autoReversal.getAmount());
 		
-		TransactionsLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferInquiry.DumpFields());
+		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferInquiry.DumpFields());
 		
-		moneyTransferInquiry.setTransactionID(tLog.getID());
+		moneyTransferInquiry.setTransactionID(tLog.getId().longValue());
 		CFIXMsg retFix = createResponseObject();
 		try {
 		retFix  = bankService.onTransferInquiryToBank(moneyTransferInquiry);
@@ -291,13 +291,13 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		BackendResponse inquiryResponse = (BackendResponse)mceMessage.getResponse();
 		Long sctlId = inquiryResponse.getServiceChargeTransactionLogID();
 		AutoReversals autoReversal = getAutoReversalInTxn(sctlId);
-		if(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_COMPLETED.intValue() != autoReversal.getAutoRevStatus().intValue()){
-			log.info("destinationToTransitConfirmation::Duplicate reversal request for sctlID:"+ autoReversal.getSctlId()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
-			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlId());
+		if(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_COMPLETED.intValue() != autoReversal.getAutorevstatus()){
+			log.info("destinationToTransitConfirmation::Duplicate reversal request for sctlID:"+ autoReversal.getSctlid()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
+			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlid());
 		}	
 				
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		CMBankAccountToBankAccountConfirmation moneyTransferConfirmation = getMoneyTransferConfirmationFix(sctl, getDestPocket(sctlId), getTransitPocket(), inquiryResponse);
 		CFIXMsg retFix=createResponseObject();
@@ -341,16 +341,16 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		Long sctlId = cmBase.getServiceChargeTransactionLogID();
 		
 		AutoReversals autoReversal = getAutoReversalInTxn(sctlId);
-		if((CmFinoFIX.AutoRevStatus_DEST_TRANSIT_COMPLETED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())&&
-				(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_FAILED.intValue() != autoReversal.getAutoRevStatus().intValue())){
-			log.info("transitToSourceInquiry::Duplicate reversal request for sctlID:"+ autoReversal.getSctlId()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
+		if((CmFinoFIX.AutoRevStatus_DEST_TRANSIT_COMPLETED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_FAILED.intValue() != autoReversal.getAutorevstatus())&&
+				(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_FAILED.intValue() != autoReversal.getAutorevstatus())){
+			log.info("transitToSourceInquiry::Duplicate reversal request for sctlID:"+ autoReversal.getSctlid()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
 			throw new DuplicateAutoReversalException(
-					"Duplicate reversal request for sctlID:"+ autoReversal.getSctlId());
+					"Duplicate reversal request for sctlID:"+ autoReversal.getSctlid());
 		}	
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		BigDecimal amount = autoReversal.getAmount().add(autoReversal.getCharges());
 		
@@ -394,13 +394,13 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		BackendResponse inquiryResponse = (BackendResponse)mceMessage.getResponse();
 		Long sctlId = inquiryResponse.getServiceChargeTransactionLogID();
 		AutoReversals autoReversal = getAutoReversalInTxn(sctlId);
-		if(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_COMPLETED.intValue() != autoReversal.getAutoRevStatus().intValue()){
-			log.info("transitToSourceConfirmation::Duplicate reversal request for sctlID:"+ autoReversal.getSctlId()+" AutoreversalStatus:"+ autoReversal.getAutoRevStatus());
-			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlId());
+		if(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_COMPLETED.intValue() != autoReversal.getAutorevstatus()){
+			log.info("transitToSourceConfirmation::Duplicate reversal request for sctlID:"+ autoReversal.getSctlid()+" AutoreversalStatus:"+ autoReversal.getAutorevstatus());
+			throw new DuplicateAutoReversalException("Duplicate reversal request for sctlID:"+ autoReversal.getSctlid());
 		}	
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		CMBankAccountToBankAccountConfirmation moneyTransferConfirmation = getMoneyTransferConfirmationFix(sctl, getTransitPocket(), getSourcePocket(sctlId), inquiryResponse);
 		CFIXMsg retFix=createResponseObject();
@@ -575,12 +575,12 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		AutoReversalsDao autoReversalsDao = DAOFactory.getInstance().getAutoReversalsDao();
 		
 		AutoReversals autoReversal = new AutoReversals();
-		autoReversal.setSourcePocketID(autoReversalRequest.getSourcePocketID());
-		autoReversal.setDestPocketID(autoReversalRequest.getDestPocketID());
-		autoReversal.setSctlId(autoReversalRequest.getServiceChargeTransactionLogID());
+		autoReversal.setSourcepocketid(new BigDecimal(autoReversalRequest.getSourcePocketID()));
+		autoReversal.setDestpocketid(new BigDecimal(autoReversalRequest.getDestPocketID()));
+		autoReversal.setSctlid(new BigDecimal(autoReversalRequest.getServiceChargeTransactionLogID()));
 		autoReversal.setAmount(autoReversalRequest.getAmount());
 		autoReversal.setCharges(autoReversalRequest.getCharges());
-		autoReversal.setAutoRevStatus(CmFinoFIX.AutoRevStatus_INITIALIZED);
+		autoReversal.setAutorevstatus(CmFinoFIX.AutoRevStatus_INITIALIZED);
 		
 		autoReversalsDao.save(autoReversal);
 		
@@ -591,7 +591,7 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 	public void updateAutoReversalStatus(Long sctlId, Integer status){
 		AutoReversalsDao autoReversalsDao = DAOFactory.getInstance().getAutoReversalsDao();
 		AutoReversals autoReversal = autoReversalsDao.getBySctlId(sctlId);
-		autoReversal.setAutoRevStatus(status);
+		autoReversal.setAutorevstatus(status);
 		autoReversalsDao.save(autoReversal);
 	}
 	
@@ -616,7 +616,7 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		AutoReversalsDao autoRevDao = DAOFactory.getInstance().getAutoReversalsDao();
 		AutoReversals autoReversal = autoRevDao.getBySctlId(sctlId);
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-		Pocket sourcePocket = pocketDAO.getById(autoReversal.getSourcePocketID());
+		Pocket sourcePocket = pocketDAO.getById(autoReversal.getSourcepocketid().longValue());
 		return sourcePocket;
 	}
 	
@@ -625,7 +625,7 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		AutoReversalsDao autoRevDao = DAOFactory.getInstance().getAutoReversalsDao();
 		AutoReversals autoReversal = autoRevDao.getBySctlId(sctlId);
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-		Pocket destPocket = pocketDAO.getById(autoReversal.getDestPocketID());
+		Pocket destPocket = pocketDAO.getById(autoReversal.getDestpocketid().longValue());
 		return destPocket;
 	}
 	
@@ -641,7 +641,7 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 	public String getDefaultChannelCode(){
 		ChannelCodeDAO channelCodeDAO = DAOFactory.getInstance().getChannelCodeDao();
 		ChannelCode cc = channelCodeDAO.getByChannelSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
-		return cc.getChannelCode();
+		return cc.getChannelcode();
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -715,13 +715,13 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		return autoReversal;
 	}
 	
-	public CMBankAccountToBankAccount getMoneyTransferInquiryFix(ServiceChargeTransactionLog sctl, Pocket sourcePocket, Pocket destPocket, BigDecimal amount){
+	public CMBankAccountToBankAccount getMoneyTransferInquiryFix(ServiceChargeTxnLog sctl, Pocket sourcePocket, Pocket destPocket, BigDecimal amount){
 		CMBankAccountToBankAccount moneyTransferInquiry = new CMBankAccountToBankAccount();
 		
-		moneyTransferInquiry.setSourcePocketID(sourcePocket.getID());
-		moneyTransferInquiry.setDestPocketID(destPocket.getID());
-		moneyTransferInquiry.setSourceMDN(sourcePocket.getSubscriberMDNByMDNID().getMDN());
-		moneyTransferInquiry.setDestMDN(destPocket.getSubscriberMDNByMDNID().getMDN());
+		moneyTransferInquiry.setSourcePocketID(sourcePocket.getId().longValue());
+		moneyTransferInquiry.setDestPocketID(destPocket.getId().longValue());
+		moneyTransferInquiry.setSourceMDN(sourcePocket.getSubscriberMdn().getMdn());
+		moneyTransferInquiry.setDestMDN(destPocket.getSubscriberMdn().getMdn());
 		moneyTransferInquiry.setAmount(amount);
 		moneyTransferInquiry.setCharges(BigDecimal.ZERO);
 		moneyTransferInquiry.setIsSystemIntiatedTransaction(Boolean.TRUE);
@@ -729,39 +729,39 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		moneyTransferInquiry.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		moneyTransferInquiry.setChannelCode(getDefaultChannelCode());
 		moneyTransferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		moneyTransferInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		moneyTransferInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		moneyTransferInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		moneyTransferInquiry.setParentTransactionID(0L);
 		moneyTransferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Auto_Reverse);
 		moneyTransferInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_AUTO_REVERSE);
 		
-		TransactionsLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferInquiry.DumpFields());
+		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferInquiry.DumpFields());
 		
-		moneyTransferInquiry.setTransactionID(tLog.getID());
+		moneyTransferInquiry.setTransactionID(tLog.getId().longValue());
 		
 		return moneyTransferInquiry;
 	}
 	
-	public CMBankAccountToBankAccountConfirmation getMoneyTransferConfirmationFix(ServiceChargeTransactionLog sctl, Pocket sourcePocket, Pocket destPocket, BackendResponse inquiryResponse){
+	public CMBankAccountToBankAccountConfirmation getMoneyTransferConfirmationFix(ServiceChargeTxnLog sctl, Pocket sourcePocket, Pocket destPocket, BackendResponse inquiryResponse){
 		CMBankAccountToBankAccountConfirmation moneyTransferConfirmation = new CMBankAccountToBankAccountConfirmation();
 
-		moneyTransferConfirmation.setSourcePocketID(sourcePocket.getID());
-		moneyTransferConfirmation.setDestPocketID(destPocket.getID());
-		moneyTransferConfirmation.setSourceMDN(sourcePocket.getSubscriberMDNByMDNID().getMDN());
-		moneyTransferConfirmation.setDestMDN(destPocket.getSubscriberMDNByMDNID().getMDN());
+		moneyTransferConfirmation.setSourcePocketID(sourcePocket.getId().longValue());
+		moneyTransferConfirmation.setDestPocketID(destPocket.getId().longValue());
+		moneyTransferConfirmation.setSourceMDN(sourcePocket.getSubscriberMdn().getMdn());
+		moneyTransferConfirmation.setDestMDN(destPocket.getSubscriberMdn().getMdn());
 		moneyTransferConfirmation.setIsSystemIntiatedTransaction(Boolean.TRUE);
 		moneyTransferConfirmation.setMessageType(moneyTransferConfirmation.header().getMsgType());
 		moneyTransferConfirmation.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		moneyTransferConfirmation.setChannelCode(getDefaultChannelCode());
 		moneyTransferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		moneyTransferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		moneyTransferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		moneyTransferConfirmation.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		moneyTransferConfirmation.setParentTransactionID(inquiryResponse.getParentTransactionID());
 		moneyTransferConfirmation.setTransferID(inquiryResponse.getTransferID());
 		
-		TransactionsLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferConfirmation.DumpFields(), inquiryResponse.getParentTransactionID());
+		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, moneyTransferConfirmation.DumpFields(), inquiryResponse.getParentTransactionID());
 
-		moneyTransferConfirmation.setTransactionID(tLog.getID());
+		moneyTransferConfirmation.setTransactionID(tLog.getId().longValue());
 		moneyTransferConfirmation.setConfirmed(Boolean.TRUE);
 
 		return moneyTransferConfirmation;
@@ -788,7 +788,7 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		List<BillPayments> billPayments = billPaymentsDAO.get(query);
 		if(billPayments!=null
 				&&!billPayments.isEmpty()
-				&&!CmFinoFIX.BillPayStatus_BILLPAY_FAILED.equals(billPayments.get(0).getBillPayStatus())){
+				&&!CmFinoFIX.BillPayStatus_BILLPAY_FAILED.equals(billPayments.get(0).getBillpaystatus())){
 			return false;
 		}
 		return true;
