@@ -38,7 +38,7 @@ public class FundDefinition extends Base implements java.io.Serializable {
 	private String facprefix;
 	private Long maxfailattemptsallowed;
 	private Short ismultiplewithdrawalallowed;
-	private Set<UnRegisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnRegisteredTxnInfo>(
+	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
 			0);
 
 	public FundDefinition() {
@@ -64,7 +64,7 @@ public class FundDefinition extends Base implements java.io.Serializable {
 			BigDecimal mspid, BigDecimal purposeid, Long faclength,
 			String facprefix, Long maxfailattemptsallowed,
 			Short ismultiplewithdrawalallowed,
-			Set<UnRegisteredTxnInfo> unregisteredTxnInfos) {
+			Set<UnregisteredTxnInfo> unregisteredTxnInfos) {
 		this.id = id;
 		this.fundEventsByOnfailedattemptsexceeded = fundEventsByOnfailedattemptsexceeded;
 		this.fundEventsByOnfundallocationtimeexpiry = fundEventsByOnfundallocationtimeexpiry;
@@ -185,12 +185,12 @@ public class FundDefinition extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fundDefinition")
-	public Set<UnRegisteredTxnInfo> getUnregisteredTxnInfos() {
+	public Set<UnregisteredTxnInfo> getUnregisteredTxnInfos() {
 		return this.unregisteredTxnInfos;
 	}
 
 	public void setUnregisteredTxnInfos(
-			Set<UnRegisteredTxnInfo> unregisteredTxnInfos) {
+			Set<UnregisteredTxnInfo> unregisteredTxnInfos) {
 		this.unregisteredTxnInfos = unregisteredTxnInfos;
 	}
 

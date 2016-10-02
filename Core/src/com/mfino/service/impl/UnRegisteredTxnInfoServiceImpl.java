@@ -16,7 +16,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.UnRegisteredTxnInfoService;
 import com.mfino.util.MfinoUtil;
@@ -38,9 +38,9 @@ public class UnRegisteredTxnInfoServiceImpl implements UnRegisteredTxnInfoServic
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public List<UnRegisteredTxnInfo> getUnRegisteredTxnInfoListByQuery(UnRegisteredTxnInfoQuery query) {
+	public List<UnregisteredTxnInfo> getUnRegisteredTxnInfoListByQuery(UnRegisteredTxnInfoQuery query) {
 		UnRegisteredTxnInfoDAO unRegisteredTxnInfoDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
-		List<UnRegisteredTxnInfo> listUnRegisteredTxnInfo = unRegisteredTxnInfoDAO.get(query);
+		List<UnregisteredTxnInfo> listUnRegisteredTxnInfo = unRegisteredTxnInfoDAO.get(query);
 		return listUnRegisteredTxnInfo;
 		
 	}
@@ -49,7 +49,7 @@ public class UnRegisteredTxnInfoServiceImpl implements UnRegisteredTxnInfoServic
 	 * @param unTxnInfo
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void save(UnRegisteredTxnInfo unTxnInfo) {
+	public void save(UnregisteredTxnInfo unTxnInfo) {
 		UnRegisteredTxnInfoDAO unRegisteredTxnInfoDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
 		unRegisteredTxnInfoDAO.save(unTxnInfo);
 		

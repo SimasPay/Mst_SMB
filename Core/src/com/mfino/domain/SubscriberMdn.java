@@ -92,7 +92,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			0);
 	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
-	private Set<UnRegisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnRegisteredTxnInfo>(
+	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
 			0);
 	private Set<ChannelSessionManagement> channelSessionMgmts = new HashSet<ChannelSessionManagement>(
 			0);
@@ -145,7 +145,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			Set<CommodityTransfer> commodityTransfers,
 			Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs,
 			Set<LOP> letterOfPurchases,
-			Set<UnRegisteredTxnInfo> unregisteredTxnInfos,
+			Set<UnregisteredTxnInfo> unregisteredTxnInfos,
 			Set<ChannelSessionManagement> channelSessionMgmts) {
 		this.id = id;
 		this.subscriber = subscriber;
@@ -685,12 +685,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<UnRegisteredTxnInfo> getUnregisteredTxnInfos() {
+	public Set<UnregisteredTxnInfo> getUnregisteredTxnInfos() {
 		return this.unregisteredTxnInfos;
 	}
 
 	public void setUnregisteredTxnInfos(
-			Set<UnRegisteredTxnInfo> unregisteredTxnInfos) {
+			Set<UnregisteredTxnInfo> unregisteredTxnInfos) {
 		this.unregisteredTxnInfos = unregisteredTxnInfos;
 	}
 
