@@ -14,21 +14,21 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.dao.query.ExcludeSubscriberLifeCycleQuery;
 import com.mfino.domain.ActivitiesLog;
 import com.mfino.domain.Base;
-import com.mfino.domain.ExcludeSubscriberLc;
+import com.mfino.domain.ExcludeSubscriberLifeCycle;
 import com.mfino.domain.SubscriberMdn;
 
 /**
  *
  * @author Siddhartha Chinthapally
  */
-public class ExcludeSubscriberLifeCycleDAO extends BaseDAO<ExcludeSubscriberLc> {
+public class ExcludeSubscriberLifeCycleDAO extends BaseDAO<ExcludeSubscriberLifeCycle> {
 
-    public List<ExcludeSubscriberLc> get(ExcludeSubscriberLifeCycleQuery query){
+    public List<ExcludeSubscriberLifeCycle> get(ExcludeSubscriberLifeCycleQuery query){
         Criteria criteria = createCriteria();
 
 
         if(query.getMdnId() != null){
-        	criteria.createAlias(ExcludeSubscriberLc.FieldName_MDN, "mdn");
+        	criteria.createAlias(ExcludeSubscriberLifeCycle.FieldName_MDN, "mdn");
             criteria.add(Restrictions.eq("mdn."+Base.FieldName_RecordID,
                     query.getMdnId()));
         }
@@ -46,15 +46,15 @@ public class ExcludeSubscriberLifeCycleDAO extends BaseDAO<ExcludeSubscriberLc> 
         //applying Order
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<ExcludeSubscriberLc> results = criteria.list();
+        List<ExcludeSubscriberLifeCycle> results = criteria.list();
 
         return results;
     }
 
-    public ExcludeSubscriberLc getBySubscriberMDN(SubscriberMdn subscriberMDN) {
+    public ExcludeSubscriberLifeCycle getBySubscriberMDN(SubscriberMdn subscriberMDN) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(ExcludeSubscriberLc.FieldName_SubscriberMDNByMDNID, subscriberMDN));
-    	List<ExcludeSubscriberLc> excludeSubscriberMDNList = criteria.list();
+    	criteria.add(Restrictions.eq(ExcludeSubscriberLifeCycle.FieldName_SubscriberMDNByMDNID, subscriberMDN));
+    	List<ExcludeSubscriberLifeCycle> excludeSubscriberMDNList = criteria.list();
     	
     	if((null != excludeSubscriberMDNList) && (excludeSubscriberMDNList.size() > 0)){
     		return excludeSubscriberMDNList.get(0);

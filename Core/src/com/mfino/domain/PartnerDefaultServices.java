@@ -20,7 +20,7 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "PARTNER_DEFAULT_SERVICES")
 public class PartnerDefaultServices  extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_BusinessPartnerType = "businesspartnertype";
 	private ServiceDefualtConfig serviceDefualtConfig;
 	private long businesspartnertype;

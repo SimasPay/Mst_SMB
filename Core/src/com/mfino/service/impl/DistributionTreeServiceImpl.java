@@ -163,7 +163,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		TreeNode treeNode = new TreeNode();
 		
 		treeNode.setDctId(distributionChainTemplate.getId().longValue());
-		treeNode.setServiceId(distributionChainTemplate.getService().getId().longValue());
+		treeNode.setServiceId(distributionChainTemplate.getServiceid());
 		treeNode.setObjectId(partner.getId().longValue());
 		treeNode.setText(partner.getTradename());
 		treeNode.setIcon(getIcon(partner));
@@ -189,7 +189,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		treeNode.setIcon("resources/images/distribute.png");
 		treeNode.setNodeType(CmFinoFIX.NodeType_dct);
 		treeNode.setDctId(distributionChainTemplate.getId().longValue());
-		treeNode.setServiceId(distributionChainTemplate.getService().getId().longValue());
+		treeNode.setServiceId(distributionChainTemplate.getServiceid());
 		treeNode.setPartnerId(-1L);
 		treeNode.setPermissionType(CmFinoFIX.PermissionType_Read_Write);
 		treeNode.setLevels(distributionChainTemplate.getDistributionChainLvls().size());
@@ -220,7 +220,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 				}
 				
 				if(srchServiceId != null){
-					if(!(srchServiceId.equals(dct.getService().getId()))){
+					if(!(srchServiceId.equals(dct.getServiceid()))){
 						matchedPartnerService = false;
 					}
 				}

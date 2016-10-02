@@ -92,8 +92,8 @@ public class LOPServiceImpl implements LOPService {
         // be deducted and must allow the max usage as the distributed amount in
         // the LOP is not used.
         BigDecimal lopAmount = lop.getAmountdistributed();
-
-        Merchant merchantForThisLOP = lop.getMerchantBySubscriberID();
+        
+        Merchant merchantForThisLOP = lop.getMerchant();
         BigDecimal currentAmount = merchantForThisLOP.getCurrentweeklypurchaseamount();
         merchantForThisLOP.setCurrentweeklypurchaseamount(currentAmount.subtract(lopAmount));
 

@@ -6,6 +6,7 @@ import static com.mfino.fix.CmFinoFIX.ServletPath_WebAppFEForSubscribers;
 import static com.mfino.mce.core.util.MCEUtil.isNullOrEmpty;
 import static com.mfino.mce.core.util.MCEUtil.isNullorZero;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -15,9 +16,9 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.NoISOResponseMsg;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAgentToAgentTransfer;
@@ -81,7 +82,6 @@ import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.mce.core.util.MessageTypes;
 import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.service.UnRegisteredTxnInfoService;
-import com.mfino.service.impl.UnRegisteredTxnInfoServiceImpl;
 import com.mfino.util.MfinoUtil;
 
 public class BackendServiceDefaultImpl extends BaseServiceImpl implements BackendService
@@ -129,7 +129,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 		 * This code is written since we are unsure if changing the code would cause other issues 
 		 */
 		//HACK BEGIN
-		TransactionsLog transactionLog;
+		TransactionLog transactionLog;
 		if(responseFix instanceof NoISOResponseMsg)
 		{
 			/**
@@ -419,17 +419,17 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 			UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
 			query.setSubscriberMDNID(cashoutForNonRegistered.getSourceMDNID());
 			query.setCashoutSCTLId(cashoutForNonRegistered.getServiceChargeTransactionLogID());
-			List<UnRegisteredTxnInfo> lstUnRegTxnInfo = urtDAO.get(query);
-			UnRegisteredTxnInfo unRegTxnInfo = lstUnRegTxnInfo.iterator().next();
-			unRegTxnInfo.setCashoutCTId(cashoutForNonRegistered.getTransferID());			
+			List<UnregisteredTxnInfo> lstUnRegTxnInfo = urtDAO.get(query);
+			UnregisteredTxnInfo unRegTxnInfo = lstUnRegTxnInfo.iterator().next();
+			unRegTxnInfo.setCashoutctid(new BigDecimal(cashoutForNonRegistered.getTransferID()));			
 			if (CmFinoFIX.ResponseCode_Success.equals(((BackendResponse) returnFix).getResult())) {
 				log.debug("Updating the Status to CashOut complete for the UnRegisteredTxn -->"+ cashoutForNonRegistered.getSourceMDN());
 				// Update the UnRegisteredTxnInfo
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED));
 			}else{
 				log.debug("Updating the Status to CashOut failed for the UnRegisteredTxn -->"+ cashoutForNonRegistered.getSourceMDN());
 				
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
 			}
 			coreDataWrapper.save(unRegTxnInfo);
 		}
@@ -453,21 +453,21 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 			if ( CmFinoFIX.ResponseCode_Success.equals(response.getResult())) { 
 				log.debug("Creating the UnRegisteredTxn with Complete status --> " + transferToNonRegistered.getDestMDN());
 				//Create UnRegisteredTxnRecord
-				SubscriberMDN objDestSubMdn = coreDataWrapper.getSubscriberMdn(transferToNonRegistered.getDestMDN());
+				SubscriberMdn objDestSubMdn = coreDataWrapper.getSubscriberMdn(transferToNonRegistered.getDestMDN());
 				Long sctlid = transferToNonRegistered.getServiceChargeTransactionLogID();
 				Long transferID = response.getTransferID();
 				
-				UnRegisteredTxnInfo unRegTxnInfo = new UnRegisteredTxnInfo();
-				unRegTxnInfo.setTransferCTId(transferID);
-				unRegTxnInfo.setTransferSCTLId(sctlid);
-				unRegTxnInfo.setSubscriberMDNByMDNID(objDestSubMdn);
+				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
+				unRegTxnInfo.setTransferctid(new BigDecimal(transferID));
+				unRegTxnInfo.setTransferSCTLId(sctlid.longValue());
+				unRegTxnInfo.setSubscriberMdn(objDestSubMdn);
 				unRegTxnInfo.setAmount(response.getAmount());
 
 
 				String code = unRegisteredTxnInfoService.generateFundAccessCode();
-				String digestedCode = MfinoUtil.calculateDigestPin(objDestSubMdn.getMDN(), code);
-				unRegTxnInfo.setDigestedPIN(digestedCode);
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED);
+				String digestedCode = MfinoUtil.calculateDigestPin(objDestSubMdn.getMdn(), code);
+				unRegTxnInfo.setDigestedpin(digestedCode);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED));
 				coreDataWrapper.save(unRegTxnInfo);
 				((BackendResponse) returnFix).setOneTimePin(code);
 			}

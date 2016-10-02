@@ -16,7 +16,7 @@ import com.mfino.domain.ExpirationType;
 import com.mfino.domain.FundDefinition;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.Purpose;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMFundAllocationConfirm;
@@ -115,31 +115,31 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				
 				FundDefinitionDAO fundDefinitionDAO = DAOFactory.getInstance().getFundDefinitionDAO();
 				FundDefinitionQuery fundDefinitionQuery = new FundDefinitionQuery();
-				fundDefinitionQuery.setPurposeID(purpose.getID());
+				fundDefinitionQuery.setPurposeID(purpose.getId().longValue());
 				List<FundDefinition> lstFundDefinitions = fundDefinitionDAO.get(fundDefinitionQuery);
 				FundDefinition fundDefinition = lstFundDefinitions.get(0);
 				
-				log.info("using the FundDefinition with id: "+fundDefinition.getID());
+				log.info("using the FundDefinition with id: "+fundDefinition.getId());
 				
-				UnRegisteredTxnInfo unRegTxnInfo = new UnRegisteredTxnInfo();
-				unRegTxnInfo.setTransferCTId(transferID);
+				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
+				unRegTxnInfo.setTransferctid(new BigDecimal(transferID));
 				unRegTxnInfo.setTransferSCTLId(sctlid);
 
 				log.info("unregistered trxn info logging"+fundAllocationConfirm.getWithdrawalMDN());
-				unRegTxnInfo.setWithdrawalMDN(fundAllocationConfirm.getWithdrawalMDN());
-				unRegTxnInfo.setFailureReasonCode(0);
-				unRegTxnInfo.setExpiryTime(getExpiryTime(fundDefinition.getExpirationTypeByExpiryID()));
+				unRegTxnInfo.setWithdrawalmdn(fundAllocationConfirm.getWithdrawalMDN());
+				unRegTxnInfo.setFailurereasoncode(Long.valueOf(0));
+				unRegTxnInfo.setExpirytime(getExpiryTime(fundDefinition.getExpirationType()));
 				unRegTxnInfo.setFundDefinition(fundDefinition);
-				unRegTxnInfo.setWithdrawalFailureAttempt(0);
-				unRegTxnInfo.setAvailableAmount(response.getAmount());
-				unRegTxnInfo.setPartnerCode(fundAllocationConfirm.getPartnerCode());
-				unRegTxnInfo.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION);
+				unRegTxnInfo.setWithdrawalfailureattempt(Long.valueOf(0));
+				unRegTxnInfo.setAvailableamount(response.getAmount());
+				unRegTxnInfo.setPartnercode(fundAllocationConfirm.getPartnerCode());
+				unRegTxnInfo.setTransactionname(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION);
 				unRegTxnInfo.setAmount(response.getAmount());
 				
 				String code = fundStorageService.generateFundAccessCode(fundDefinition);
 				String digestedCode = fundStorageService.generateDigestedFAC(fundAllocationConfirm.getWithdrawalMDN(), code);
-				unRegTxnInfo.setDigestedPIN(digestedCode);
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
+				unRegTxnInfo.setDigestedpin(digestedCode);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE));
 				
 				coreDataWrapper.save(unRegTxnInfo);
 				((BackendResponse) returnFix).setOneTimePin(code);
@@ -152,10 +152,10 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 	}
 	
 	private Timestamp getExpiryTime(ExpirationType expirationType) {
-		if(expirationType.getExpiryType().equals(CmFinoFIX.ExpiryType_Fund)){
-			if(expirationType.getExpiryMode().equals(CmFinoFIX.ExpiryMode_DurationInSecs)){
-				return new Timestamp(System.currentTimeMillis() + expirationType.getExpiryValue() * 1000);
-			}else if(expirationType.getExpiryMode().equals(CmFinoFIX.ExpiryMode_CutOffTime)){
+		if(expirationType.getExpirytype().equals(CmFinoFIX.ExpiryType_Fund)){
+			if(expirationType.getExpirymode().equals(CmFinoFIX.ExpiryMode_DurationInSecs)){
+				return new Timestamp(System.currentTimeMillis() + expirationType.getExpiryvalue().intValue() * 1000);
+			}else if(expirationType.getExpirymode().equals(CmFinoFIX.ExpiryMode_CutOffTime)){
 			}
 		}
 		log.debug("Could not find Fund related expiry time.setting a deafult of 1 days");
@@ -216,37 +216,37 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				Long transferID = response.getTransferID();
 				
 				FundDistributionInfo fundDistributionInfo = fundValidationService.queryFundDistributionInfo(sctlid);
-				UnRegisteredTxnInfo unRegTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
+				UnregisteredTxnInfo unRegTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
 				FundDefinition fundDefinition=unRegTxnInfo.getFundDefinition();
 				
 				if(CmFinoFIX.DistributionType_Withdrawal.equals(fundWithdrawalConfirm.getDistributionType())){
-					if(unRegTxnInfo.getAvailableAmount().compareTo(BigDecimal.ZERO)==0){
-						unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
+					if(unRegTxnInfo.getAvailableamount().compareTo(BigDecimal.ZERO)==0){
+						unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN));
 						((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode());
 					}else{
-						if(fundDefinition.getIsMultipleWithdrawalAllowed()){
+						if(fundDefinition.getIsmultiplewithdrawalallowed()){
 							String code = fundStorageService.generateFundAccessCode(fundDefinition);
-							String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalMDN(), code);
-							unRegTxnInfo.setDigestedPIN(digestedCode);
-							unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+							String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalmdn(), code);
+							unRegTxnInfo.setDigestedpin(digestedCode);
+							unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN));
 							((BackendResponse) returnFix).setOneTimePin(code);
 							((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundPartialWithdrawalConfirmedToMerchant.getInternalErrorCode());
 						}else{
-							unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
-							unRegTxnInfo.setReversalReason("Partial Withdrawal complete.Multiple withdrawal not allowed.");
+							unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+							unRegTxnInfo.setReversalreason("Partial Withdrawal complete.Multiple withdrawal not allowed.");
 						}
 					}
 					((BackendResponse) returnFix).setOnBehalfOfMDN(fundWithdrawalConfirm.getWithdrawalMDN());
 					((BackendResponse) returnFix).setReceiverMDN(fundWithdrawalConfirm.getDestMDN());
 					((BackendResponse) returnFix).setSourceMDN(null);
 				}else{
-					unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED);
+					unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED));
 					((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundAllocationReversalToSender.getInternalErrorCode());
 					((BackendResponse) returnFix).setReceiverMDN(fundWithdrawalConfirm.getDestMDN());
 					((BackendResponse) returnFix).setOnBehalfOfMDN(fundWithdrawalConfirm.getWithdrawalMDN());
 					((BackendResponse) returnFix).setParentTransactionID(unRegTxnInfo.getTransferSCTLId());
 				}
-				fundDistributionInfo.setDistributionStatus(CmFinoFIX.DistributionStatus_TRANSFER_COMPLETED);
+				fundDistributionInfo.setDistributionstatus(Long.valueOf(CmFinoFIX.DistributionStatus_TRANSFER_COMPLETED));
 				coreDataWrapper.save(fundDistributionInfo);
 				coreDataWrapper.save(unRegTxnInfo);
 
@@ -299,32 +299,32 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer getBankNotificationCode(BackendResponse returnFix) {
 		FundDistributionInfo fundDistributionInfo = fundValidationService.queryFundDistributionInfo(returnFix.getServiceChargeTransactionLogID());
-		UnRegisteredTxnInfo unRegTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
+		UnregisteredTxnInfo unRegTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
 		FundDefinition fundDefinition=unRegTxnInfo.getFundDefinition();;
 		int notificationCode = NotificationCodes.FundWithdrawalConfirmedToMerchant.getNotificationCode();
 
 		
-		if(unRegTxnInfo.getAvailableAmount().compareTo(BigDecimal.ZERO)==0){
-			unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
+		if(unRegTxnInfo.getAvailableamount().compareTo(BigDecimal.ZERO)==0){
+			unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN));
 			notificationCode = NotificationCodes.FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode();
 		}else{
-			if(fundDefinition.getIsMultipleWithdrawalAllowed()){
+			if(fundDefinition.getIsmultiplewithdrawalallowed()){
 				String code = fundStorageService.generateFundAccessCode(fundDefinition);
-				String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalMDN(), code);
-				unRegTxnInfo.setDigestedPIN(digestedCode);
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+				String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalmdn(), code);
+				unRegTxnInfo.setDigestedpin(digestedCode);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN));
 				((BackendResponse) returnFix).setOneTimePin(code);
 				notificationCode = NotificationCodes.FundPartialWithdrawalConfirmedToMerchant.getNotificationCode();
 			}else{
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
-				unRegTxnInfo.setReversalReason("Partial Withdrawal complete.Multiple withdrawal not allowed.");
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+				unRegTxnInfo.setReversalreason("Partial Withdrawal complete.Multiple withdrawal not allowed.");
 			}
 		}
-		fundDistributionInfo.setDistributionStatus(CmFinoFIX.DistributionStatus_TRANSFER_COMPLETED);
+		fundDistributionInfo.setDistributionstatus(Long.valueOf(CmFinoFIX.DistributionStatus_TRANSFER_COMPLETED));
 		coreDataWrapper.save(fundDistributionInfo);
 		coreDataWrapper.save(unRegTxnInfo);
 		
-		((BackendResponse) returnFix).setOnBehalfOfMDN(unRegTxnInfo.getWithdrawalMDN());
+		((BackendResponse) returnFix).setOnBehalfOfMDN(unRegTxnInfo.getWithdrawalmdn());
 		((BackendResponse) returnFix).setReceiverMDN(returnFix.getReceiverMDN());
 		((BackendResponse) returnFix).setSourceMDN(null);
 		return notificationCode;
@@ -334,17 +334,17 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 		if(csrAction.equals(CmFinoFIX.CSRAction_Cancel))
 		{
 			FundDistributionInfo fundDistributionInfo = fundValidationService.queryFundDistributionInfo(returnFix.getServiceChargeTransactionLogID());
-			UnRegisteredTxnInfo unRegTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
+			UnregisteredTxnInfo unRegTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
 			FundDefinition fundDefinition=unRegTxnInfo.getFundDefinition();
-			fundValidationService.updateAvailableAmount(unRegTxnInfo, null, false, fundDistributionInfo.getDistributedAmount());
-			if(unRegTxnInfo.getAvailableAmount().compareTo(unRegTxnInfo.getAmount())==0){
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
+			fundValidationService.updateAvailableAmount(unRegTxnInfo, null, false, fundDistributionInfo.getDistributedamount());
+			if(unRegTxnInfo.getAvailableamount().compareTo(unRegTxnInfo.getAmount())==0){
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE));
 			}else{
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN));
 			}
 			int notificationCode = fundValidationService.updateFailureAttempts(unRegTxnInfo, fundDefinition);
-			if(fundDefinition.getMaxFailAttemptsAllowed()!=-1){
-				returnFix.setNumberOfTrailsLeft(fundDefinition.getMaxFailAttemptsAllowed()-unRegTxnInfo.getWithdrawalFailureAttempt());
+			if(fundDefinition.getMaxfailattemptsallowed()!=-1){
+				returnFix.setNumberOfTrailsLeft((fundDefinition.getMaxfailattemptsallowed().intValue()-unRegTxnInfo.getWithdrawalfailureattempt().intValue()));
 			}else{
 				returnFix.setNumberOfTrailsLeft(99999999);
 			}
@@ -353,11 +353,11 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				returnFix.setOneTimePin(fundValidationService.regenerateFAC(unRegTxnInfo));
 			}
 			returnFix.setInternalErrorCode(NotificationCodes.getInternalErrorCodeFromNotificationCode(notificationCode));
-			fundDistributionInfo.setDistributionStatus(CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
-			fundDistributionInfo.setFailureReason("Pending transaction resolved as failed");
+			fundDistributionInfo.setDistributionstatus(Long.valueOf(CmFinoFIX.DistributionStatus_TRANSFER_FAILED));
+			fundDistributionInfo.setFailurereason("Pending transaction resolved as failed");
 			coreDataWrapper.save(fundDistributionInfo);
 			coreDataWrapper.save(unRegTxnInfo);
-			((BackendResponse) returnFix).setOnBehalfOfMDN(unRegTxnInfo.getWithdrawalMDN());
+			((BackendResponse) returnFix).setOnBehalfOfMDN(unRegTxnInfo.getWithdrawalmdn());
 			((BackendResponse) returnFix).setSourceMDN(null);
 			
 			

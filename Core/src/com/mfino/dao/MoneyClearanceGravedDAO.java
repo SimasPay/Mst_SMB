@@ -11,7 +11,7 @@ import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 /**
  * @author Satya
  *
@@ -51,7 +51,7 @@ public class MoneyClearanceGravedDAO extends BaseDAO<MoneyClearanceGraved>{
          processPaging(query, criteria);
 
          if(query.isIDOrdered()) {
-           criteria.addOrder(Order.desc(UnregisteredTxnInfo.FieldName_RecordID));
+           criteria.addOrder(Order.desc(UnRegisteredTxnInfo.FieldName_RecordID));
          }
          
          //applying Order

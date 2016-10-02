@@ -2,7 +2,6 @@ package com.mfino.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -15,10 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.FundDefinitionDAO;
 import com.mfino.dao.FundDistributionInfoDAO;
-import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PurposeDAO;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
+import com.mfino.dao.query.FundDefinitionQuery;
 import com.mfino.dao.query.FundDistributionInfoQuery;
 import com.mfino.dao.query.PurposeQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
@@ -26,8 +26,7 @@ import com.mfino.domain.ExpirationType;
 import com.mfino.domain.FundDefinition;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.Purpose;
-import com.mfino.domain.UnregisteredTxnInfo;
-import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.UnRegisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMFundWithdrawalInquiry;
 import com.mfino.hibernate.Timestamp;
@@ -60,7 +59,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @return
 	 */
 	@Override
-	public boolean checkExpiry(UnregisteredTxnInfo unRegisteredTxnInfo) {
+	public boolean checkExpiry(UnRegisteredTxnInfo unRegisteredTxnInfo) {
 		Timestamp currentDate = new Timestamp();
 		Timestamp fundExpiryTime = unRegisteredTxnInfo.getExpirytime();
 		boolean isTxnExpired = false;
@@ -92,7 +91,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @param unRegisteredTxnInfo
 	 * @return
 	 */
-	public int getMaxFailAttempts(UnregisteredTxnInfo unRegisteredTxnInfo){
+	public int getMaxFailAttempts(UnRegisteredTxnInfo unRegisteredTxnInfo){
 		//query the fundDefID in the FundDef table and get the max fail attempts allowed.
 		FundDefinition fundDefinition=unRegisteredTxnInfo.getFundDefinition();
 		Long temp = fundDefinition.getMaxfailattemptsallowed();
@@ -108,7 +107,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @return
 	 */
 	@Override
-	public Integer updateFailureAttempts(UnregisteredTxnInfo unRegisteredTxnInfo,FundDefinition fundDefinition) {
+	public Integer updateFailureAttempts(UnRegisteredTxnInfo unRegisteredTxnInfo,FundDefinition fundDefinition) {
 		
 		int currentFailAttempts = unRegisteredTxnInfo.getWithdrawalfailureattempt().intValue();
 		currentFailAttempts = currentFailAttempts + 1;
@@ -158,7 +157,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @return
 	 */
 	@Override
-	public String regenerateFAC(UnregisteredTxnInfo unRegisteredTxnInfo) {
+	public String regenerateFAC(UnRegisteredTxnInfo unRegisteredTxnInfo) {
 	
 		String code = fundStorageService.generateFundAccessCode(unRegisteredTxnInfo.getFundDefinition());
 		String digestedCode = fundStorageService.generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalmdn(), code);
@@ -176,7 +175,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @param unRegisteredTxnInfo
 	 * @return
 	 */
-	public boolean isValidFAC(String digestedFAC,UnregisteredTxnInfo unRegisteredTxnInfo) {
+	public boolean isValidFAC(String digestedFAC,UnRegisteredTxnInfo unRegisteredTxnInfo) {
 		//if both are equal return true
 		if(digestedFAC.equals(unRegisteredTxnInfo.getDigestedpin())){
 			return true;
@@ -194,7 +193,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @param amount
 	 */
 	@Transactional(readOnly=false,propagation=Propagation.REQUIRED)
-	public void updateAvailableAmount(UnregisteredTxnInfo unRegisteredTxnInfo,CMFundWithdrawalInquiry fundWithdrawalInquiry,boolean isDebit,BigDecimal amount){
+	public void updateAvailableAmount(UnRegisteredTxnInfo unRegisteredTxnInfo,CMFundWithdrawalInquiry fundWithdrawalInquiry,boolean isDebit,BigDecimal amount){
 		
 		BigDecimal availableAmount;
 		log.info("Updating amount:is debit="+isDebit);
@@ -214,9 +213,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 			fundDistributionInfo.setTransfersctlid(new BigDecimal(fundWithdrawalInquiry.getServiceChargeTransactionLogID()));
 			fundDistributionInfo.setDistributiontype(fundWithdrawalInquiry.getDistributionType().longValue());
 			fundDistributionInfo.setDistributionstatus(CmFinoFIX.DistributionStatus_INITIALIZED.longValue());
-			MfinoServiceProviderDAO mfsDAO= DAOFactory.getInstance().getMfinoServiceProviderDAO();
-			MfinoServiceProvider mfsProvider = mfsDAO.getById(1L);
-			fundDistributionInfo.setmFinoServiceProviderByMSPID(mfsProvider);
+			fundDistributionInfo.setMspid(new BigDecimal(1));
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 			fundStorageService.withdrawFunds(fundDistributionInfo);
 			
@@ -242,7 +239,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 */
 	@Override
 	@Transactional(readOnly=false,propagation=Propagation.REQUIRED)
-	public UnregisteredTxnInfo queryUnRegisteredTxnInfo(String withdrawalMDN, String fac,Long sctlID,String enteredPartnerCode){
+	public UnRegisteredTxnInfo queryUnRegisteredTxnInfo(String withdrawalMDN, String fac,Long sctlID,String enteredPartnerCode){
 		
 		String mdn = subscriberService.normalizeMDN(withdrawalMDN);
 		String digestedFAC = MfinoUtil.calculateDigestPin(mdn, fac);
@@ -267,12 +264,12 @@ public class FundValidationServiceImpl implements FundValidationService {
 		}
 		
 		//getting the list of fundAllocations with query on the given withdrawalMDN, status and partnerCode and sorting in descending order of createTime 
-		List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
+		List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
 		
 		//getting a matching record with the entered fac.If no record is found with given fac returning the oldest record to update failure attempts
 		//in priority order of "specific" merchant fund allocation to "Any" merchant fund allocation
 		if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
-			UnregisteredTxnInfo unregTxnInfo = lstUnRegisteredTxnInfos.get(0);
+			UnRegisteredTxnInfo unregTxnInfo = lstUnRegisteredTxnInfos.get(0);
 			int index = 0;
 			
 			for(int iter=0;iter<lstUnRegisteredTxnInfos.size();iter++){
@@ -304,7 +301,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 	 * @return
 	 */
 	@Override
-	public Integer validate(UnregisteredTxnInfo unRegisteredTxnInfo, XMLResult result, BigDecimal amount, String OTP,FundDefinition fundDefinition, String partnerCode){
+	public Integer validate(UnRegisteredTxnInfo unRegisteredTxnInfo, XMLResult result, BigDecimal amount, String OTP,FundDefinition fundDefinition, String partnerCode){
 			log.info("Validating the Withdraw request ...");
 			int notificationCode=-1;
 			int validationResult;
@@ -492,8 +489,10 @@ public class FundValidationServiceImpl implements FundValidationService {
 		if(purpose==null){
 			purpose = defaultAnyPurpose;
 		}
-		
-		Set<FundDefinition> lstFundDefinitions = purpose.getFundDefinitionFromPurposeID();
+		FundDefinitionDAO fundDefinitionDAO = DAOFactory.getInstance().getFundDefinitionDAO();
+		FundDefinitionQuery query = new FundDefinitionQuery();
+		query.setPurposeID(purpose.getId().longValue());
+		List<FundDefinition> lstFundDefinitions = fundDefinitionDAO.get(query);
 		if(CollectionUtils.isNotEmpty(lstFundDefinitions)){
 			if(lstFundDefinitions.size() > 1){
 				log.error("Multiple fundDefinition found for same purpose ID: "+ purpose.getId());

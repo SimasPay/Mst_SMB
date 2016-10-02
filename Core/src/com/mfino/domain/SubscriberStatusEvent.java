@@ -22,6 +22,7 @@ public class SubscriberStatusEvent extends Base implements java.io.Serializable 
 	public static final String FieldName_ProcessingStatus = "processingstatus";
 	public static final String FieldName_StatusOnPickup = "statusonpickup";
 	public static final String FieldName_SubscriberType = "subscribertype";
+	public static final String FieldName_SubscriberId = "subscriberid";
 	private BigDecimal subscriberid;
 	private Timestamp pickupdatetime;
 	private Short processingstatus;

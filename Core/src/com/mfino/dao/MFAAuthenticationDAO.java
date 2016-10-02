@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.MFAAuthenticationQuery;
 import com.mfino.domain.MFAAuthentication;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 
 public class MFAAuthenticationDAO extends BaseDAO<MFAAuthentication>{
 	public List<MFAAuthentication> get(MFAAuthenticationQuery query){
@@ -27,10 +27,10 @@ public class MFAAuthenticationDAO extends BaseDAO<MFAAuthentication>{
 		processPaging(query, criteria);
 		
 		if(query.isIDOrdered()) {
-            criteria.addOrder(Order.desc(UnregisteredTxnInfo.FieldName_RecordID));
+            criteria.addOrder(Order.desc(UnRegisteredTxnInfo.FieldName_RecordID));
           }
           if(query.getSortString()!=null){
-        	  criteria.addOrder(Order.asc(UnregisteredTxnInfo.FieldName_CreateTime));
+        	  criteria.addOrder(Order.asc(UnRegisteredTxnInfo.FieldName_CreateTime));
           }
           
           //applying Order

@@ -88,11 +88,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Set<Pocket> pockets = new HashSet<Pocket>(0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
-	private Set<ExcludeSubscriberLc> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLc>(
+	private Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLifeCycle>(
 			0);
 	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
 			0);
-	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
+	private Set<UnRegisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnRegisteredTxnInfo>(
 			0);
 	private Set<ChannelSessionManagement> channelSessionMgmts = new HashSet<ChannelSessionManagement>(
 			0);
@@ -143,9 +143,9 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
 			Set<ClosedAccountSettlementMDN> closeAcctSetlMdns, Set<Pocket> pockets,
 			Set<CommodityTransfer> commodityTransfers,
-			Set<ExcludeSubscriberLc> excludeSubscriberLcs,
+			Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs,
 			Set<LOP> letterOfPurchases,
-			Set<UnregisteredTxnInfo> unregisteredTxnInfos,
+			Set<UnRegisteredTxnInfo> unregisteredTxnInfos,
 			Set<ChannelSessionManagement> channelSessionMgmts) {
 		this.id = id;
 		this.subscriber = subscriber;
@@ -666,12 +666,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<ExcludeSubscriberLc> getExcludeSubscriberLcs() {
+	public Set<ExcludeSubscriberLifeCycle> getExcludeSubscriberLcs() {
 		return this.excludeSubscriberLcs;
 	}
 
 	public void setExcludeSubscriberLcs(
-			Set<ExcludeSubscriberLc> excludeSubscriberLcs) {
+			Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs) {
 		this.excludeSubscriberLcs = excludeSubscriberLcs;
 	}
 
@@ -685,12 +685,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<UnregisteredTxnInfo> getUnregisteredTxnInfos() {
+	public Set<UnRegisteredTxnInfo> getUnregisteredTxnInfos() {
 		return this.unregisteredTxnInfos;
 	}
 
 	public void setUnregisteredTxnInfos(
-			Set<UnregisteredTxnInfo> unregisteredTxnInfos) {
+			Set<UnRegisteredTxnInfo> unregisteredTxnInfos) {
 		this.unregisteredTxnInfos = unregisteredTxnInfos;
 	}
 

@@ -40,7 +40,7 @@ public class MDNRangeServiceImpl implements MDNRangeService{
             log.info("isMDNInParentsRange: Success, parent's parent is null");
             return Success;
         }
-        Set<MDNRange> mdnRangeList = parent.getMDNRangeFromMerchantID();
+        Set<MDNRange> mdnRangeList = parent.getMdnRanges();
         if(mdnRangeList == null || mdnRangeList.size()<1){
             log.info("isMDNInParentsRange: Failure, range list is null");
             return Failure;

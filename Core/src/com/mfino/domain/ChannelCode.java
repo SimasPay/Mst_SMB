@@ -32,7 +32,7 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	private String channelname;
 	private String description;
 	private long channelsourceapplication;
-	private Set<MfaTransactionsInfo> mfaTransactionsInfos = new HashSet<MfaTransactionsInfo>(
+	private Set<MFATransactionInfo> mfaTransactionsInfos = new HashSet<MFATransactionInfo>(
 			0);
 	private Set<TransactionRule> transactionRules = new HashSet<TransactionRule>(
 			0);
@@ -60,7 +60,7 @@ public class ChannelCode extends Base implements java.io.Serializable {
 			String updatedby, Timestamp createtime, String createdby,
 			String channelcode, String channelname, String description,
 			long channelsourceapplication,
-			Set<MfaTransactionsInfo> mfaTransactionsInfos,
+			Set<MFATransactionInfo> mfaTransactionsInfos,
 			Set<TransactionRule> transactionRules,
 			Set<ActorChannelMapping> actorChannelMappings) {
 		this.id = id;
@@ -115,12 +115,12 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "channelCode")
-	public Set<MfaTransactionsInfo> getMfaTransactionsInfos() {
+	public Set<MFATransactionInfo> getMfaTransactionsInfos() {
 		return this.mfaTransactionsInfos;
 	}
 
 	public void setMfaTransactionsInfos(
-			Set<MfaTransactionsInfo> mfaTransactionsInfos) {
+			Set<MFATransactionInfo> mfaTransactionsInfos) {
 		this.mfaTransactionsInfos = mfaTransactionsInfos;
 	}
 

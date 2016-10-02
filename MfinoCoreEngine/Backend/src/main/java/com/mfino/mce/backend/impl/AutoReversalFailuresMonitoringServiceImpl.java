@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.domain.AutoReversals;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAutoReversal;
 import com.mfino.mce.backend.AutoReversalFailuresMonitoringService;
@@ -52,15 +52,15 @@ public class AutoReversalFailuresMonitoringServiceImpl extends BaseServiceImpl i
 		List<MCEMessage> mceMessages = new ArrayList<MCEMessage>();
 		
 		for(AutoReversals autoReversal : autoReversals){
-			Long sctlId = autoReversal.getSctlId();
+			Long sctlId = autoReversal.getSctlid().longValue();
 			ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-			ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+			ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 			
 			MCEMessage mceMessage = new MCEMessage();
 			//If integration queue is not set in the config file, message will not go back to approriate service, instead, notification will be sent out to 
 			//customer from auto reversal module itself.
 			
-			String integrationQueue = integrationCodeToQueueMap.get(sctl.getIntegrationCode());
+			String integrationQueue = integrationCodeToQueueMap.get(sctl.getIntegrationcode());
 			
 			if((null != integrationQueue) && !("".equals(integrationQueue))){
 				mceMessage.setDestinationQueue(integrationQueue);
@@ -71,16 +71,16 @@ public class AutoReversalFailuresMonitoringServiceImpl extends BaseServiceImpl i
 			
 			mceMessage.setRequest(cmAutoReversal);
 			
-			if((CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.intValue() == autoReversal.getAutoRevStatus().intValue()) ||
-					(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.intValue() == autoReversal.getAutoRevStatus().intValue())){
+			if((CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_INQ_FAILED.intValue() == (int)autoReversal.getAutorevstatus()) ||
+					(CmFinoFIX.AutoRevStatus_CHARGES_TRANSIT_FAILED.intValue() == (int)autoReversal.getAutorevstatus())){
 				mceMessage.setDestinationQueue("jms:autoReversalQueue?disableReplyTo=true");
 			}
-			else if((CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.intValue() == autoReversal.getAutoRevStatus().intValue()) ||
-					(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.intValue() == autoReversal.getAutoRevStatus().intValue())){
+			else if((CmFinoFIX.AutoRevStatus_DEST_TRANSIT_INQ_FAILED.intValue() == (int)autoReversal.getAutorevstatus()) ||
+					(CmFinoFIX.AutoRevStatus_DEST_TRANSIT_FAILED.intValue() == (int)autoReversal.getAutorevstatus())){
 				mceMessage.setDestinationQueue("jms:destinationToTransitInquiry?disableReplyTo=true");
 			}
-			else if((CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_FAILED.intValue() == autoReversal.getAutoRevStatus().intValue()) ||
-					(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_FAILED.intValue() == autoReversal.getAutoRevStatus().intValue())){
+			else if((CmFinoFIX.AutoRevStatus_TRANSIT_SRC_INQ_FAILED.intValue() == (int)autoReversal.getAutorevstatus()) ||
+					(CmFinoFIX.AutoRevStatus_TRANSIT_SRC_FAILED.intValue() == (int)autoReversal.getAutorevstatus())){
 				mceMessage.setDestinationQueue("jms:transitToSourceInquiry?disableReplyTo=true");
 			}			
 			

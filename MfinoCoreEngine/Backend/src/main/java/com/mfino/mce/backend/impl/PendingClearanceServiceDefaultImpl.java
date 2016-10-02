@@ -1,5 +1,6 @@
 package com.mfino.mce.backend.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -11,9 +12,9 @@ import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMPendingCommodityTransferRequest;
@@ -23,8 +24,6 @@ import com.mfino.mce.backend.PendingClearanceService;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionPendingSummaryService;
-import com.mfino.service.impl.TransactionChargingServiceImpl;
-import com.mfino.service.impl.TransactionPendingSummaryServiceImpl;
 
 /**
  * Pending clearance service would do all to make sure that pending transactions are cleared 
@@ -80,8 +79,8 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 		returnFix.copy(fixPendingRequest);
 		
 		Long sctlID = fixPendingRequest.getTransferID();
-		ServiceChargeTransactionLog sctl = coreDataWrapper.getSCTLById(sctlID);
-		TransactionType trxnType = DAOFactory.getInstance().getTransactionTypeDAO().getById(sctl.getTransactionTypeID());
+		ServiceChargeTxnLog sctl = coreDataWrapper.getSCTLById(sctlID);
+		TransactionType trxnType = DAOFactory.getInstance().getTransactionTypeDAO().getById(sctl.getTransactiontypeid().longValue());
 		
 		if(sctl==null||!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus())){
 			//Should not reach here as this request is only sent if the record is in PendingCommodityTransfer table.
@@ -99,43 +98,43 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 			try{
 				transactionPendingSummaryService.saveTransactionPendingSummary(fixPendingRequest);
 			}catch(Exception e){
-				log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+				log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 			}
 			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
 				PendingCommodityTransfer pct = null;
 				CommodityTransfer ct = null;
-				pct = coreDataWrapper.getPCTById(ctxn.getCommodityTransferID());
-				ct = coreDataWrapper.getCommodityTransferDao().getById(ctxn.getCommodityTransferID());
+				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
+				ct = coreDataWrapper.getCommodityTransferDao().getById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCSRAction(fixPendingRequest.getCSRAction());
-					pct.setCSRActionTime(new Timestamp());
-					pct.setCSRComment(fixPendingRequest.getCSRComment());
-					pct.setCSRUserID(fixPendingRequest.getCSRUserID());
-					pct.setCSRUserName(fixPendingRequest.getCSRUserName());
+					pct.setCsraction(Long.valueOf(fixPendingRequest.getCSRAction()));
+					pct.setCsractiontime(new Timestamp());
+					pct.setCsrcomment(fixPendingRequest.getCSRComment());
+					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)bankService.onRevertOfTransferConfirmation(pct, true);
-					if(sctl.getCommodityTransferID()==null){
-						transactionChargingService.addTransferID(sctl, pct.getID());
+					if(sctl.getCommoditytransferid()==null){
+						transactionChargingService.addTransferID(sctl, pct.getId().longValue());
 					}		
 					
 					// As the money reversed from suspense pocket to Third Party Suspense pocket, we need to change the status of SCTL to processing so that the scheduler
 					// will pickup for expiring the transaction and money will be reversed to source.					
-					if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionName()) &&
-							CmFinoFIX.TransactionUICategory_Withdraw_From_ATM.equals(pct.getUICategory())) {
-						log.info("Changing the status of the SCTL : " + sctl.getID() + " to Processing and URTI to Cashout failed");
+					if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname()) &&
+							CmFinoFIX.TransactionUICategory_Withdraw_From_ATM.equals(pct.getUicategory())) {
+						log.info("Changing the status of the SCTL : " + sctl.getId() + " to Processing and URTI to Cashout failed");
 						transactionChargingService.chnageStatusToProcessing(sctl);
 						UnRegisteredTxnInfoDAO urtiDAO = coreDataWrapper.getUnRegisteredTxnInfoDAO();
 						UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-						urtiQuery.setTransferSctlId(sctl.getID());
-						List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
-						UnRegisteredTxnInfo urti = null;
+						urtiQuery.setTransferSctlId(sctl.getId());
+						List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
+						UnregisteredTxnInfo urti = null;
 						if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 							urti = lstUnRegisteredTxnInfos.get(0);
-							urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+							urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
 							urtiDAO.save(urti);
 						}
 					}
-					else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionName()) &&
-							CmFinoFIX.TransactionUICategory_Reverse_From_ATM.equals(pct.getUICategory())) {
+					else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname()) &&
+							CmFinoFIX.TransactionUICategory_Reverse_From_ATM.equals(pct.getUicategory())) {
 						//TODO
 						// As Reversal from ATM is failed money struck in bank only so need to transfer money from Bank to source again, 
 						// for this ATM has to send Reverse again. If it is not possible the bank has to settle subscriber manually by debit the Bank pocket of ATM 
@@ -144,11 +143,11 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 					}
 					
 				}
-				if(ct!=null&&ct.getTransferStatus().equals(CmFinoFIX.TransferStatus_Completed)){
+				if(ct!=null&&ct.getTransferstatus()==(CmFinoFIX.TransferStatus_Completed)){
 					//FIXME revert transaction
 				}
 			}
-			if (! ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionName())) {
+			if (! ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname())) {
 				String failureReason = "resolve as failed";
 				transactionChargingService.failTheTransaction(sctl, failureReason);
 			}
@@ -158,42 +157,42 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 			try{
 				transactionPendingSummaryService.saveTransactionPendingSummary(fixPendingRequest);
 			}catch(Exception e){
-				log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+				log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 			}
 			
 			//transaction need to be completed
 			//identify the transaction and complete the transaction			
 			PendingCommodityTransfer pct = null;
 			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
-				pct = coreDataWrapper.getPCTById(ctxn.getCommodityTransferID());
+				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCSRAction(fixPendingRequest.getCSRAction());
-					pct.setCSRActionTime(new Timestamp());
-					pct.setCSRComment(fixPendingRequest.getCSRComment());
-					pct.setCSRUserID(fixPendingRequest.getCSRUserID());
-					pct.setCSRUserName(fixPendingRequest.getCSRUserName());
+					pct.setCsraction(Long.valueOf(fixPendingRequest.getCSRAction()));
+					pct.setCsractiontime(new Timestamp());
+					pct.setCsrcomment(fixPendingRequest.getCSRComment());
+					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)bankService.onResolveCompleteOfTransfer(pct);
 					
-					if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionName()) &&
-							CmFinoFIX.TransactionUICategory_Withdraw_From_ATM.equals(pct.getUICategory())) {
+					if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname()) &&
+							CmFinoFIX.TransactionUICategory_Withdraw_From_ATM.equals(pct.getUicategory())) {
 						//TODO 
 						// As the money transfered to Bank pocket of ATM, Bank needs to give money to Subscriber (Physical cash).
 						transactionChargingService.confirmTheTransaction(sctl);
 					}
 					// As the money moved from suspense pocket to Third Party Suspense pocket, we need to change the status of SCTL to processing so that the scheduler
 					// will pickup for expiring the transaction and money will be reversed to source.					
-					else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionName()) &&
-							CmFinoFIX.TransactionUICategory_Reverse_From_ATM.equals(pct.getUICategory())) {
-						log.info("Changing the status of the SCTL : " + sctl.getID() + " to Processing and URTI to Cashout failed");
+					else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname()) &&
+							CmFinoFIX.TransactionUICategory_Reverse_From_ATM.equals(pct.getUicategory())) {
+						log.info("Changing the status of the SCTL : " + sctl.getId() + " to Processing and URTI to Cashout failed");
 						transactionChargingService.chnageStatusToProcessing(sctl);
 						UnRegisteredTxnInfoDAO urtiDAO = coreDataWrapper.getUnRegisteredTxnInfoDAO();
 						UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-						urtiQuery.setTransferSctlId(sctl.getID());
-						List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
-						UnRegisteredTxnInfo urti = null;
+						urtiQuery.setTransferSctlId(sctl.getId());
+						List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
+						UnregisteredTxnInfo urti = null;
 						if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 							urti = lstUnRegisteredTxnInfos.get(0);
-							urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+							urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
 							urtiDAO.save(urti);
 						}
 					}					
@@ -201,17 +200,17 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 					break;
 				}
 			}
-			if (! ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionName())) {
+			if (! ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname())) {
 			    transactionChargingService.confirmTheTransaction(sctl);
 			}
-			if(sctl.getCommodityTransferID()==null&&pct!=null){
-				transactionChargingService.addTransferID(sctl, pct.getID());
+			if(sctl.getCommoditytransferid()==null&&pct!=null){
+				transactionChargingService.addTransferID(sctl, pct.getId().longValue());
 			}						
 		}
 		returnFix.setServiceChargeTransactionLogID(sctlID);
 		FundServiceImpl fundServiceImpl = new FundServiceImpl();
 		fundServiceImpl.setCoreDataWrapper(getCoreDataWrapper());
-		if(trxnType.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_FUND_WITHDRAWAL)){
+		if(trxnType.getTransactionname().equals(ServiceAndTransactionConstants.TRANSACTION_FUND_WITHDRAWAL)){
 			fundServiceImpl.resolvePendingFunds(fixPendingRequest.getCSRAction(),returnFix);
 		}
 		return returnFix;

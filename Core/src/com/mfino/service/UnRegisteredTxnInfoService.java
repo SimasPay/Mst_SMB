@@ -6,7 +6,7 @@ package com.mfino.service;
 import java.util.List;
 
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 
 /**
  * @author Sreenath
@@ -19,13 +19,13 @@ public interface UnRegisteredTxnInfoService {
 	 * @param query
 	 * @return
 	 */
-	public List<UnregisteredTxnInfo> getUnRegisteredTxnInfoListByQuery(UnRegisteredTxnInfoQuery query);
+	public List<UnRegisteredTxnInfo> getUnRegisteredTxnInfoListByQuery(UnRegisteredTxnInfoQuery query);
 
 	/**
 	 * saves the details using UnRegisteredTxnInfoDAO
 	 * @param unTxnInfo
 	 */
-	public void save(UnregisteredTxnInfo unTxnInfo);
+	public void save(UnRegisteredTxnInfo unTxnInfo);
 	
 	/**
 	 * 

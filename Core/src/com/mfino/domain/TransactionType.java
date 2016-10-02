@@ -33,7 +33,7 @@ public class TransactionType extends Base implements java.io.Serializable {
 	private Set<RuleKey> ruleKeys = new HashSet<RuleKey>(0);
 	private Set<TransactionRule> transactionRules = new HashSet<TransactionRule>(
 			0);
-	private Set<MfaTransactionsInfo> mfaTransactionsInfos = new HashSet<MfaTransactionsInfo>(
+	private Set<MFATransactionInfo> mfaTransactionsInfos = new HashSet<MFATransactionInfo>(
 			0);
 	private Set<ServiceTransaction> serviceTransactions = new HashSet<ServiceTransaction>(
 			0);
@@ -59,7 +59,7 @@ public class TransactionType extends Base implements java.io.Serializable {
 			Timestamp createtime, String createdby, String transactionname,
 			String displayname, Set<ActorChannelMapping> actorChannelMappings,
 			Set<RuleKey> ruleKeys, Set<TransactionRule> transactionRules,
-			Set<MfaTransactionsInfo> mfaTransactionsInfos,
+			Set<MFATransactionInfo> mfaTransactionsInfos,
 			Set<ServiceTransaction> serviceTransactions) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
@@ -138,12 +138,12 @@ public class TransactionType extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transactionType")
-	public Set<MfaTransactionsInfo> getMfaTransactionsInfos() {
+	public Set<MFATransactionInfo> getMfaTransactionsInfos() {
 		return this.mfaTransactionsInfos;
 	}
 
 	public void setMfaTransactionsInfos(
-			Set<MfaTransactionsInfo> mfaTransactionsInfos) {
+			Set<MFATransactionInfo> mfaTransactionsInfos) {
 		this.mfaTransactionsInfos = mfaTransactionsInfos;
 	}
 

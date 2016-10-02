@@ -21,9 +21,9 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFA_TRANSACTIONS_INFO")
-public class MfaTransactionsInfo extends Base implements java.io.Serializable {
+public class MFATransactionInfo extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_Service = "service";
 	public static final String FieldName_TransactionType = "transactionType";
 	public static final String FieldName_ChannelCode = "channelCode";
@@ -34,10 +34,10 @@ public class MfaTransactionsInfo extends Base implements java.io.Serializable {
 	private BigDecimal mspid;
 	private long mfamode;
 
-	public MfaTransactionsInfo() {
+	public MFATransactionInfo() {
 	}
 
-	public MfaTransactionsInfo(BigDecimal id, ChannelCode channelCode,
+	public MFATransactionInfo(BigDecimal id, ChannelCode channelCode,
 			Service service, TransactionType transactionType,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal mspid,

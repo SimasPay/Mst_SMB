@@ -22,9 +22,10 @@ import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.PendingTransactionsEntryQuery;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.PendingTransactionsEntry;
-import com.mfino.domain.PendingTransactionsFile;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.PendingTxnsEntry;
+import com.mfino.domain.PendingTxnsFile;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SmsTransactionLog;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -65,19 +66,19 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 		log.info("BulkPendingResolveServiceImpl:: resolve() Begin");
 
 		try {
-			List<PendingTransactionsFile> pendingFiles = coreDataWrapper.getPendingUploadedFiles();
-			List<PendingTransactionsFile> processingFiles = coreDataWrapper.getProcessingFiles();
+			List<PendingTxnsFile> pendingFiles = coreDataWrapper.getPendingUploadedFiles();
+			List<PendingTxnsFile> processingFiles = coreDataWrapper.getProcessingFiles();
 			log.info("Number Pending Uploaded Files to be processed = "	+ pendingFiles.size());
 			log.info("Number Pending Processing Files to be processed = "+ processingFiles.size());
 
-			for (PendingTransactionsFile resolvePendingFile : pendingFiles) {
+			for (PendingTxnsFile resolvePendingFile : pendingFiles) {
 				processFile(resolvePendingFile, false);
 			}
 
 			long currentTime = System.currentTimeMillis();
 
-			for (PendingTransactionsFile resolvePendingFile : processingFiles) {
-				if (resolvePendingFile.getLastUpdateTime().getTime() < currentTime - 30 * 60 * 1000) {
+			for (PendingTxnsFile resolvePendingFile : processingFiles) {
+				if (resolvePendingFile.getLastupdatetime().getTime() < currentTime - 30 * 60 * 1000) {
 					processFile(resolvePendingFile, true);
 				}
 			}
@@ -92,41 +93,41 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 	private void saveFailedRecord(int linecount, long ptid, int status,
 			String resolvefailurereason, BigDecimal amount, Integer noticode,
 			PendingCommodityTransfer ct) {
-		PendingTransactionsEntry fentry = new PendingTransactionsEntry();
-		fentry.setLineNumber(linecount);
-		fentry.setTransactionsFileID(ptid);
+		PendingTxnsEntry fentry = new PendingTxnsEntry();
+		fentry.setLinenumber(linecount);
+		fentry.setTransactionsfileid(new BigDecimal(ptid));
 		fentry.setStatus(status);
-		fentry.setResolveFailureReason(resolvefailurereason);
+		fentry.setResolvefailurereason(resolvefailurereason);
 		fentry.setAmount(amount);
-		fentry.setNotificationCode(noticode);
+		fentry.setNotificationcode(Long.valueOf(noticode));
 		if (ct != null) {
-			fentry.setTransferID(ct.getID());
-			fentry.setSourceMDN(ct.getSourceMDN());
-			fentry.setDestMDN(ct.getDestMDN());
+			fentry.setTransferid(ct.getId());
+			fentry.setSourcemdn(ct.getSourcemdn());
+			fentry.setDestmdn(ct.getDestmdn());
 		}
 		coreDataWrapper.save(fentry);
 	}
 
 	private void saveRecord(int linecount, long ptid, int status,
 			String resolvefailurereason, Integer noticode,
-			ServiceChargeTransactionLog sctl) {
+			ServiceChargeTxnLog sctl) {
 		PendingTransactionsEntryQuery query = new PendingTransactionsEntryQuery();
 		query.setPendingTransactionsFileID(ptid);
 		query.setLineNumber(linecount);
-		List<PendingTransactionsEntry> fentry = coreDataWrapper.get(query);
+		List<PendingTxnsEntry> fentry = coreDataWrapper.get(query);
 		if (fentry.size() > 0) {
-			PendingTransactionsEntry record = fentry.get(0);
+			PendingTxnsEntry record = fentry.get(0);
 			record.setStatus(status);
-			record.setResolveFailureReason(resolvefailurereason);
-			record.setNotificationCode(noticode);
+			record.setResolvefailurereason(resolvefailurereason);
+			record.setNotificationcode(Long.valueOf(noticode));
 			log.info("Saving PendingTransactionsEntry with Linecount,status,resolvefailureason"
 					+ linecount + "," + status + "," + resolvefailurereason);
 			if (sctl != null) {
-				log.info("Transfer ID, SourceMDN, DestMDN" + sctl.getID() + ","
-						+ sctl.getSourceMDN() + "," + sctl.getDestMDN());
-				record.setTransferID(sctl.getID());
-				record.setSourceMDN(sctl.getSourceMDN());
-				record.setDestMDN(sctl.getDestMDN());
+				log.info("Transfer ID, SourceMDN, DestMDN" + sctl.getId() + ","
+						+ sctl.getSourcemdn() + "," + sctl.getDestmdn());
+				record.setTransferid(sctl.getId());
+				record.setSourcemdn(sctl.getSourcemdn());
+				record.setDestmdn(sctl.getDestmdn());
 			}
 			coreDataWrapper.save(record);
 			log.info("Saved the record");
@@ -134,7 +135,7 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	private void processFile(PendingTransactionsFile resolvePendingFile,boolean isProcessingFile) {
+	private void processFile(PendingTxnsFile resolvePendingFile,boolean isProcessingFile) {
 		String strLine = null;
 		int linecount = 0;
 		int errorLineCount = 0;
@@ -148,13 +149,13 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 			if (isProcessingFile) {
 				linecount = coreDataWrapper.getProcessedLineCount(resolvePendingFile);
 			} else {
-				resolvePendingFile.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Processing);
+				resolvePendingFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processing);
 				coreDataWrapper.save(resolvePendingFile);
 			}
 
-			Integer resolveAction = resolvePendingFile.getResolveAs();
-			BufferedReader bufferedReader = new BufferedReader(	new StringReader(resolvePendingFile.getFileData()));
-			ptID = resolvePendingFile.getID();
+			Integer resolveAction = resolvePendingFile.getResolveas().intValue();
+			BufferedReader bufferedReader = new BufferedReader(	new StringReader(resolvePendingFile.getFiledata()));
+			ptID = resolvePendingFile.getId().longValue();
 			// move the file pointer so many lines
 			if (linecount > 0) {
 				int tempLineCount = 0;
@@ -207,21 +208,21 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 						continue;
 					}
 
-					ServiceChargeTransactionLog sctl = coreDataWrapper.getSCTLById(transferID, LockMode.UPGRADE);
+					SmsTransactionLog sctl = coreDataWrapper.getSCTLById(transferID, LockMode.UPGRADE);
 					// Create a PendingTransactionEntry here and persist since
 					// we got a proper line from the file
-					PendingTransactionsEntry pendingTransactionsEntry = new PendingTransactionsEntry();
+					PendingTxnsEntry pendingTransactionsEntry = new PendingTxnsEntry();
 					log.info("Processing Transactions File ID = " + ptID);
 					log.info("Processing Transfer ID = " + transferID);
-					pendingTransactionsEntry.setTransactionsFileID(ptID);
-					pendingTransactionsEntry.setTransferID(transferID);
-					pendingTransactionsEntry.setSourceMDN(mdn);
+					pendingTransactionsEntry.setTransactionsfileid(new BigDecimal(ptID));
+					pendingTransactionsEntry.setTransferid(new BigDecimal(transferID));
+					pendingTransactionsEntry.setSourcemdn(mdn);
 					pendingTransactionsEntry.setAmount(amount);
-					pendingTransactionsEntry.setLineNumber(linecount);
+					pendingTransactionsEntry.setLinenumber(linecount);
 					pendingTransactionsEntry.setStatus(CmFinoFIX.PendingTransationsEntryStatus_pending);
 					coreDataWrapper.save(pendingTransactionsEntry);
 
-					if (sctl == null||(!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus()))) {
+					if (sctl == null||(!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getDeliverystatus()))) {
 						log.info("Invalid Transfer ID = " + transferID);
 						errorLineCount++;
 						status = CmFinoFIX.PendingTransationsEntryStatus_failed;
@@ -263,10 +264,10 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 						saveRecord(linecount, ptID, status,resolvefailurereason, null, null);
 						continue;
 					}
-					if (!mdn.equals(sctl.getSourceMDN())) {
+					if (!mdn.equals(sctl.getSourcemdn())) {
 						log.info("Mismatch of sourceMDN for transferid" + ptID
 								+ "Entered MDN" + mdn + "Transaction SourceMDN"
-								+ sctl.getSourceMDN());
+								+ sctl.getSourcemdn());
 						status = CmFinoFIX.PendingTransationsEntryStatus_failed;
 						String resolvefailurereason = errorCodesMap.get(CmFinoFIX.PendingTransactionsErrors_Invalid_SourceMDN);
 						saveRecord(linecount, ptID, status,resolvefailurereason, null, null);
@@ -297,8 +298,8 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 			// the errorlinecount and save the record
 
 			log.info("Done with Processing the File ID= " + ptID);
-			resolvePendingFile.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Processed);
-			resolvePendingFile.setErrorLineCount(errorLineCount);
+			resolvePendingFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processed);
+			resolvePendingFile.setErrorlinecount(Long.valueOf(errorLineCount));
 			coreDataWrapper.save(resolvePendingFile);
 		} catch (Exception exp) {
 			log.error("Failed" + exp.getMessage(), exp);
@@ -306,34 +307,34 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 
 	}
 
-	private CFIXMsg sendPendingCommmodityRequest(ServiceChargeTransactionLog sctl,PendingTransactionsFile resolvePendingFile) {
+	private CFIXMsg sendPendingCommmodityRequest(ServiceChargeTxnLog sctl,PendingTxnsFile resolvePendingFile) {
 
 		CMPendingCommodityTransferRequest newMsg = new CMPendingCommodityTransferRequest();
-		String userName = resolvePendingFile.getCreatedBy();
+		String userName = resolvePendingFile.getCreatedby();
 		UserDAO userDAO = coreDataWrapper.getUserDAO();
 		UserQuery query = new UserQuery();
 		query.setUserName(userName);
 		List<User> results = (List<User>) userDAO.get(query);
 		if (results.size() > 0) {
 			User userObj = results.get(0);
-			newMsg.setCSRUserID(userObj.getID());
+			newMsg.setCSRUserID(userObj.getId().longValue());
 		}
 		newMsg.setLoginName(userName);
-		if (sctl.getmFinoServiceProviderByMSPID() != null) {
-			newMsg.setMSPID(sctl.getmFinoServiceProviderByMSPID().getID());
+		if (sctl.getMfinoServiceProvider() != null) {
+			newMsg.setMSPID(sctl.getMfinoServiceProvider().getId().longValue());
 		}
 		/*if (sctl.getTransactionID() != null) {
 			newMsg.setParentTransactionID(sctl.getTransactionID());
 		}*/
-		if (sctl.getSourceMDN() != null) {
-			newMsg.setSourceMDN(sctl.getSourceMDN());
+		if (sctl.getSourcemdn() != null) {
+			newMsg.setSourceMDN(sctl.getSourcemdn());
 		}
-		if (sctl.getTransactionID() != null) {
-			newMsg.setTransactionID(sctl.getTransactionID());
+		if (sctl.getTransactionid() != null) {
+			newMsg.setTransactionID(sctl.getTransactionid().longValue());
 		}
 		newMsg.setCSRComment("Bulk Resolve Pending Transactions ");
-		newMsg.setTransferID(sctl.getID());
-		if (CmFinoFIX.ResolveAs_success.equals(resolvePendingFile.getResolveAs())) {
+		newMsg.setTransactionID(sctl.getId().longValue());
+		if (CmFinoFIX.ResolveAs_success.equals(resolvePendingFile.getResolveas())) {
 			newMsg.setCSRAction(CmFinoFIX.CSRAction_Complete);
 		} else {
 			newMsg.setCSRAction(CmFinoFIX.CSRAction_Cancel);

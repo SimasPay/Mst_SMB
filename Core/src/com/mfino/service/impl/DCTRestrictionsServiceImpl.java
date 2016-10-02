@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DCTRestrictionsDao;
+import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
 import com.mfino.domain.DistributionChainLevel;
@@ -44,13 +45,14 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 		
 		DCTRestrictionsDao dctRestrictionsDao = DAOFactory.getInstance().getDctRestrictionsDao();
 		
-		Service service = dct.getService();
+		ServiceDAO serviceDao = DAOFactory.getInstance().getServiceDAO();
+		Service service = serviceDao.getById(dct.getServiceid());
 		for(ServiceTransaction serviceTxn: service.getServiceTransactions()){
 			TransactionType txnType = serviceTxn.getTransactionType();
 			
 			DCTRestrictions dctRestriction = new DCTRestrictions();
-			dctRestriction.setDistributionChainTemplateByDCTID(dct);
-			dctRestriction.setTransactionType(txnType);
+			dctRestriction.setDctid(dct.getId().longValue());
+			dctRestriction.setTransactiontypeid(txnType.getId().longValue());
 			dctRestriction.setRelationshiptype(CmFinoFIX.RelationShipType_BELONGS_TO_TREE.longValue());
 			Long temp = dctLevel.getDistributionlevel();
 			dctRestriction.setDistributionlevel(temp);

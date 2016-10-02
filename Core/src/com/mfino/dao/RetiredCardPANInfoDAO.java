@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.RetiredCardPANInfoQuery;
 import com.mfino.domain.RetiredCardPANInfo;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 
 /**
 *
@@ -28,10 +28,10 @@ public class RetiredCardPANInfoDAO extends BaseDAO<RetiredCardPANInfo>{
 		processPaging(query, criteria);
 
 		if(query.isIDOrdered()) {
-			criteria.addOrder(Order.desc(UnregisteredTxnInfo.FieldName_RecordID));
+			criteria.addOrder(Order.desc(UnRegisteredTxnInfo.FieldName_RecordID));
 		}
 		if(query.getSortString()!=null){
-			criteria.addOrder(Order.asc(UnregisteredTxnInfo.FieldName_CreateTime));
+			criteria.addOrder(Order.asc(UnRegisteredTxnInfo.FieldName_CreateTime));
 		}
 
 		//applying Order

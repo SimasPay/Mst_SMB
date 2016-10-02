@@ -2,17 +2,13 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 /**
@@ -20,18 +16,18 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "EXCLUDE_SUBSCRIBER_LC")
-public class ExcludeSubscriberLc extends Base implements java.io.Serializable {
+public class ExcludeSubscriberLifeCycle extends Base implements java.io.Serializable {
 
-	
+	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MDN = "subscriberMdn";
 	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
 	private SubscriberMdn subscriberMdn;
 	
 
-	public ExcludeSubscriberLc() {
+	public ExcludeSubscriberLifeCycle() {
 	}
 
-	public ExcludeSubscriberLc(BigDecimal id, SubscriberMdn subscriberMdn,
+	public ExcludeSubscriberLifeCycle(BigDecimal id, SubscriberMdn subscriberMdn,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;

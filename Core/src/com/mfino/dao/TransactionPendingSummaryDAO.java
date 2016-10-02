@@ -1,8 +1,8 @@
 package com.mfino.dao;
 
-import com.mfino.domain.TxnPendingSummary;
+import com.mfino.domain.TransactionPendingSummary;
 
-public class TransactionPendingSummaryDAO extends BaseDAO<TxnPendingSummary> {
+public class TransactionPendingSummaryDAO extends BaseDAO<TransactionPendingSummary> {
 
 	
 }

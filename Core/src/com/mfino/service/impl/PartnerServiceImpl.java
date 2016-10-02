@@ -1,5 +1,6 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -308,10 +309,10 @@ public class PartnerServiceImpl implements PartnerService {
 		
 		Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
-		if(subscriberGroups != null && !subscriberGroups.isEmpty())
+		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		SubscriberGroup subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
+		if(subscriberGroup != null)
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), Boolean.TRUE, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), groupID);
@@ -454,7 +455,7 @@ public class PartnerServiceImpl implements PartnerService {
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void activateServices(Partner partner) {
-		Set<PartnerServices> ps=partner.getPartnersServicesFromPartnerID();
+		Set<PartnerServices> ps=partner.getPartnerServicesesForPartnerid();
 		PartnerServicesDAO psDao = DAOFactory.getInstance().getPartnerServicesDAO();
 		for(PartnerServices service:ps){
 			Long tempStatusL = service.getStatus();
@@ -496,7 +497,9 @@ public class PartnerServiceImpl implements PartnerService {
 			Long tempStatusL = pocket.getStatus();
 			Integer tempStatusLI = tempStatusL.intValue();
 			if(tempStatusLI.equals(CmFinoFIX.PocketStatus_Initialized)&&
-					(pocket.getPocketTemplate().getIscollectorpocket() || pocket.getPocketTemplate().getIssuspencepocket() || pocket.getPocketTemplate().getIssystempocket())){
+					(pocket.getPocketTemplate().getIscollectorpocket() != 0
+							|| pocket.getPocketTemplate().getIssuspencepocket() != 0
+							|| pocket.getPocketTemplate().getIssystempocket() != 0)){
 					
 				pocket.setActivationtime(new Timestamp());
 //				pocket.setIsDefault(true);
@@ -680,9 +683,10 @@ public class PartnerServiceImpl implements PartnerService {
           subscriberDAO.save(subscriber);
           subMdndao.save(subscriberMDN);
           partnerDAO.save(partner);
-          if(subscriber.getSubscriberGroupFromSubscriberID().size() > 0){
-				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				for(SubscriberGroup sg: subscriber.getSubscriberGroupFromSubscriberID()){
+          SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+          List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+          if(subscriberGroups!= null && subscriberGroups.size() > 0){
+				for(SubscriberGroup sg: subscriberGroups){
 					subscriberGroupDao.save(sg);
 				}
 			}
@@ -867,22 +871,20 @@ public class PartnerServiceImpl implements PartnerService {
         	if(StringUtils.isNotBlank(partnerRegistration.getGroupID())){    			
     			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
     			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-    			
-    			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)){
-    				Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+
+    	        List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+    			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
     				SubscriberGroup sg = subscriberGroups.iterator().next();
-    				if(sg.getGroupid() != Long.valueOf(partnerRegistration.getGroupID()).longValue()){
-    					Groups group = (Groups)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
-    					sg.setGroup(group);
+    				if(sg.getGroupid() != Long.valueOf(partnerRegistration.getGroupID())){
+    					sg.setGroupid(Long.valueOf(partnerRegistration.getGroupID()));
     					subscriberGroupDao.save(sg);
     				}
     			}
     			else{
     				Groups group = (Groups)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
     				SubscriberGroup sg = new SubscriberGroup();
-    				sg.setSubscriber(subscriber);
-    				sg.setGroup(group);
-    				subscriber.getSubscriberGroupFromSubscriberID().add(sg);    				
+    				sg.setSubscriberid(subscriber.getId().longValue());
+    				sg.setGroupid(group.getId().longValue());
     				if(subscriber.getId() != null){
     					subscriberGroupDao.save(sg);
     				}
@@ -895,7 +897,10 @@ public class PartnerServiceImpl implements PartnerService {
 	private Map<Integer, Pocket> createPocketsForPartner(Partner partner,String bankCardPan) throws Exception{
 		Subscriber subscriber = partner.getSubscriber();
 		SubscriberMdn subscriberMDN = subscriber.getSubscriberMdns().iterator().next();
-		Groups group = subscriber.getSubscriberGroupFromSubscriberID().iterator().next().getGroup();
+		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+		Groups group = groupDao.getById(subscriberGroups.iterator().next().getGroupid());
 		Map<Integer, Pocket> defaultPockets = getDefaultPocketsMap(partner);
 		
 		// Emoney Pocket creation
@@ -942,10 +947,10 @@ public class PartnerServiceImpl implements PartnerService {
 					defaultPockets.put(CmFinoFIX.ServicePocketType_Collector, collectorPocket);
 				}
 			}
-
+		
 		// suspence Pocket creation
 		if (defaultPockets.get(CmFinoFIX.ServicePocketType_Suspence) == null) {
-				PocketTemplate suspensePocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, Boolean.compare(true, false), Boolean.compare(false, true),CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype(), group.getId().longValue());
+				PocketTemplate suspensePocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, true, false,CmFinoFIX.PocketType_SVA,CmFinoFIX.SubscriberType_Partner, partner.getBusinesspartnertype().intValue(), group.getId().longValue());
 				if (suspensePocketTemplate == null) {
 					log.info("No Default suspence Pocket template set for groupID:"+ group.getId()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());
 					throw new PartnerRegistrationException("No Default suspence Pocket template set for groupID:"+ group.getId()+ "("+ group.getDescription()+ ")"+ " PartnerType:"+ partner.getBusinesspartnertype());	
@@ -988,11 +993,11 @@ public class PartnerServiceImpl implements PartnerService {
 			PartnerServices partnerService = new PartnerServices();
 			partnerService.setPartnerByParentid(partner);
 			partnerService.setMfinoServiceProvider(mspDAO.getById(1l));
-			partnerService.setPartnerByServiceProviderID(defaultService.getServiceDefaultConfiguration().getPartnerByServiceProviderID());
-			partnerService.setService(defaultService.getServiceDefaultConfiguration().getService());
-			partnerService.setCollectorpocket(pockets.get(CmFinoFIX.ServicePocketType_Collector));
-			partnerService.setPocketBySourcePocket(pockets.get(defaultService.getServiceDefaultConfiguration().getSourcePocketType()));
-			partnerService.setPocketByDestPocketID(pockets.get(defaultService.getServiceDefaultConfiguration().getSourcePocketType()));
+			partnerService.setPartnerByPartnerid(defaultService.getServiceDefualtConfig().getPartner());
+			partnerService.setService(defaultService.getServiceDefualtConfig().getService());
+			partnerService.setCollectorpocket(new BigDecimal(CmFinoFIX.ServicePocketType_Collector));
+			partnerService.setPocketBySourcepocket(pockets.get(defaultService.getServiceDefualtConfig().getSourcepockettype()));
+			partnerService.setPocketByDestpocketid(pockets.get(defaultService.getServiceDefualtConfig().getSourcepockettype()));
 			partnerService.setIsservicechargeshare(CmFinoFIX.IsServiceChargeShare_Individual.longValue());
 			partnerServicesDAO.save(partnerService);
 			log.info("PartnerService created for Partnerid:"+partner.getId()+"partnerserviceid:"+partnerService.getId());
@@ -1013,7 +1018,8 @@ public class PartnerServiceImpl implements PartnerService {
 		serviceSettlementConfig.setIsdefault((short) Boolean.compare(true, false));
 		serviceSettlementConfig.setMfinoServiceProvider(serviceSettlementConfig.getMfinoServiceProvider());
 		serviceSettlementConfig.setPartnerServices(partnerService);
-		serviceSettlementConfig.setPocketByCollectorPocket(partnerService.getCollectorpocket());
+		Pocket collectorPocket = pocketDAO.getById(partnerService.getCollectorpocket().longValue());
+		serviceSettlementConfig.setPocket(collectorPocket);
 		serviceSettlementConfig.setSchedulerstatus(CmFinoFIX.SchedulerStatus_TobeScheduled.longValue());
 		serviceSettlementConfig.setSettlementTemplate(settlementTemplate);
 		serviceSettlementConfigDAO.save(serviceSettlementConfig);
@@ -1076,13 +1082,12 @@ public class PartnerServiceImpl implements PartnerService {
 		for(ScheduleTemplate scheduleTemplate: scheduleTemplates ){
 			if("3".equals(scheduleTemplate.getModetype())){
 				settlementTemplate.setScheduleTemplateByCutofftime(scheduleTemplate);
-				settlementTemplate.setCutoffTime(scheduleTemplate.getId());
 				break;
 			}
 		}		
 		settlementTemplate.setPartner(partner);
 		settlementTemplate.setSettlementname(partner.getTradename());
-		settlementTemplate.setPocketBySettlementPocket(pocket);
+		settlementTemplate.setPocket(pocket);
 		settlementTemplate.setMfinoServiceProvider(mspDAO.getById(1l));
 		settlementTemplateDAO.save(settlementTemplate);
 		log.info("SettlementTemplate ID:"+settlementTemplate.getId()+" created for partner id:"+partner.getId());

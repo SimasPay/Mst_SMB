@@ -17,7 +17,7 @@ import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.FundDistributionInfoQuery;
 import com.mfino.domain.FundDefinition;
 import com.mfino.domain.FundDistributionInfo;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 import com.mfino.service.FundStorageService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.util.MfinoUtil;
@@ -32,7 +32,7 @@ public class FundStorageServiceImpl implements FundStorageService {
 	private SystemParametersService systemParametersService;
 	
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
-	public void allocateFunds(UnregisteredTxnInfo unRegTxnInfo) {
+	public void allocateFunds(UnRegisteredTxnInfo unRegTxnInfo) {
 		UnRegisteredTxnInfoDAO unregTrxnInfoDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
 		unregTrxnInfoDAO.save(unRegTxnInfo);		
 	}

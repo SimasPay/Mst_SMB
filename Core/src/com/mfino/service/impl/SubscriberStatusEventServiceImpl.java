@@ -1,7 +1,6 @@
 package com.mfino.service.impl;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,7 +59,7 @@ public class SubscriberStatusEventServiceImpl implements
 		if (subscriberExistingEvent != null) {
 			if (Boolean.valueOf(subscriberExistingEvent.getProcessingstatus().toString())) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
-				statusNextEvent.setSubscriber(subscriber);
+				statusNextEvent.setSubscriberid(subscriber.getId());
 				Long temp = subscriber.getStatus();
 				Integer tempI = temp.intValue();
 				Timestamp nextTimeStamp = new Timestamp(
@@ -92,7 +91,7 @@ public class SubscriberStatusEventServiceImpl implements
 			}
 		}else if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscriber.getStatus())){
 			SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
-			statusNextEvent.setSubscriber(subscriber);
+			statusNextEvent.setSubscriberid(subscriber.getId());
 			Long temp = subscriber.getStatus();
 			Integer tempI = temp.intValue();
 			Timestamp nextTimeStamp = new Timestamp(
@@ -115,8 +114,9 @@ public class SubscriberStatusEventServiceImpl implements
 			Subscriber subscriber,boolean  isOnline) {
 		SubscriberStatusEvent subscriberStatusEvent = null;
 		if (subscriber != null) {
-			Set<SubscriberStatusEvent> subscriberStatusEvents = subscriber
-					.getSubscriberStatusEventFromSubscriberID();
+			SubscriberStatusEventDAO subscriberStatusEventDAO = DAOFactory.getInstance().getSubscriberStatusEventDAO();
+			List<SubscriberStatusEvent> subscriberStatusEvents = subscriberStatusEventDAO.getAllBySubscriberId(subscriber.getId());
+			
 			if ((subscriberStatusEvents != null)
 					&& (subscriberStatusEvents.size() != 0)) {
 				for (SubscriberStatusEvent statusEvent : subscriberStatusEvents) {

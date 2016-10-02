@@ -1,5 +1,6 @@
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -32,6 +33,12 @@ public class SubscriberStatusEventDAO extends BaseDAO<SubscriberStatusEvent> {
 		List<SubscriberStatusEvent> statusEventList = criteria.list();
 
 		return statusEventList;
+	}
+
+	public List<SubscriberStatusEvent> getAllBySubscriberId(BigDecimal id) {
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(SubscriberStatusEvent.FieldName_SubscriberId, id));
+		return criteria.list();
 	}
 
 }

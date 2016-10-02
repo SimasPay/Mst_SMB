@@ -5,14 +5,14 @@ import java.util.List;
 import com.mfino.dao.query.FundDistributionInfoQuery;
 import com.mfino.domain.FundDefinition;
 import com.mfino.domain.FundDistributionInfo;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 
 public interface FundStorageService {
 	/**
 	 * Saves the Unregistered trxn info record to database
 	 * @param unRegTxnInfo
 	 */
-	void allocateFunds(UnregisteredTxnInfo unRegTxnInfo);
+	void allocateFunds(UnRegisteredTxnInfo unRegTxnInfo);
 	/**
 	 * digests the code with the subscriberMDN to store in database
 	 * @param subscriberMDN

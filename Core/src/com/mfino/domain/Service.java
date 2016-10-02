@@ -33,7 +33,7 @@ public class Service extends Base implements java.io.Serializable {
 			0);
 	private Set<ActorChannelMapping> actorChannelMappings = new HashSet<ActorChannelMapping>(
 			0);
-	private Set<MfaTransactionsInfo> mfaTransactionsInfos = new HashSet<MfaTransactionsInfo>(
+	private Set<MFATransactionInfo> mfaTransactionsInfos = new HashSet<MFATransactionInfo>(
 			0);
 	private Set<ServiceDefualtConfig> serviceDefualtConfigs = new HashSet<ServiceDefualtConfig>(
 			0);
@@ -64,7 +64,7 @@ public class Service extends Base implements java.io.Serializable {
 			Timestamp createtime, String createdby, String servicename,
 			String displayname, Set<TransactionRule> transactionRules,
 			Set<ActorChannelMapping> actorChannelMappings,
-			Set<MfaTransactionsInfo> mfaTransactionsInfos,
+			Set<MFATransactionInfo> mfaTransactionsInfos,
 			Set<ServiceDefualtConfig> serviceDefualtConfigs,
 			Set<PartnerServices> partnerServiceses,
 			Set<ServiceTransaction> serviceTransactions, Set<RuleKey> ruleKeys,
@@ -139,12 +139,12 @@ public class Service extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "service")
-	public Set<MfaTransactionsInfo> getMfaTransactionsInfos() {
+	public Set<MFATransactionInfo> getMfaTransactionsInfos() {
 		return this.mfaTransactionsInfos;
 	}
 
 	public void setMfaTransactionsInfos(
-			Set<MfaTransactionsInfo> mfaTransactionsInfos) {
+			Set<MFATransactionInfo> mfaTransactionsInfos) {
 		this.mfaTransactionsInfos = mfaTransactionsInfos;
 	}
 

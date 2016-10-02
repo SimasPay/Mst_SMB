@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.mfino.domain.FundDefinition;
 import com.mfino.domain.FundDistributionInfo;
-import com.mfino.domain.UnregisteredTxnInfo;
+import com.mfino.domain.UnRegisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX.CMFundWithdrawalInquiry;
 import com.mfino.result.XMLResult;
 
@@ -15,7 +15,7 @@ public interface FundValidationService {
 	 * @param unRegisteredTxnInfo
 	 * @return
 	 */
-	public boolean checkExpiry(UnregisteredTxnInfo unRegisteredTxnInfo);
+	public boolean checkExpiry(UnRegisteredTxnInfo unRegisteredTxnInfo);
 
 	
 	/**
@@ -31,7 +31,7 @@ public interface FundValidationService {
 	 * @param unRegisteredTxnInfo
 	 * @return
 	 */
-	public int getMaxFailAttempts(UnregisteredTxnInfo unRegisteredTxnInfo);
+	public int getMaxFailAttempts(UnRegisteredTxnInfo unRegisteredTxnInfo);
 	
 	
 	/**
@@ -41,7 +41,7 @@ public interface FundValidationService {
 	 * @param fundDefinition
 	 * @return
 	 */
-	public Integer updateFailureAttempts(UnregisteredTxnInfo unRegisteredTxnInfo,FundDefinition fundDefinition);
+	public Integer updateFailureAttempts(UnRegisteredTxnInfo unRegisteredTxnInfo,FundDefinition fundDefinition);
 	
 
 
@@ -51,7 +51,7 @@ public interface FundValidationService {
 	 * @param unRegisteredTxnInfo
 	 * @return
 	 */
-	public String regenerateFAC(UnregisteredTxnInfo unRegisteredTxnInfo);
+	public String regenerateFAC(UnRegisteredTxnInfo unRegisteredTxnInfo);
 	
 	/**
 	 * Retruns true if the digested fac created from the present transaction is same as the one stored in the 
@@ -60,7 +60,7 @@ public interface FundValidationService {
 	 * @param unRegisteredTxnInfo
 	 * @return
 	 */
-	public boolean isValidFAC(String digestedFAC,UnregisteredTxnInfo unRegisteredTxnInfo);
+	public boolean isValidFAC(String digestedFAC,UnRegisteredTxnInfo unRegisteredTxnInfo);
 	
 	/**
 	 * Creates a new fundDistributionInfo record for fundWithdrawal inquiry request when isDebit is set to true and does appropriate changes 
@@ -71,7 +71,7 @@ public interface FundValidationService {
 	 * @param isDebit
 	 * @param amount
 	 */
-	public void updateAvailableAmount(UnregisteredTxnInfo unRegisteredTxnInfo,CMFundWithdrawalInquiry fundWithdrawalInquiry,boolean isDebit,BigDecimal amount);
+	public void updateAvailableAmount(UnRegisteredTxnInfo unRegisteredTxnInfo,CMFundWithdrawalInquiry fundWithdrawalInquiry,boolean isDebit,BigDecimal amount);
 
 	/**
 	 * gets the unregistered trxn ifno row corresponding to our transaction.Query can be executed with only sctlID also
@@ -80,7 +80,7 @@ public interface FundValidationService {
 	 * @param sctlID
 	 * @return UnRegisteredTxnInfo
 	 */
-	public UnregisteredTxnInfo queryUnRegisteredTxnInfo(String withdrawalMDN, String fac,Long sctlID,String enteredPartnerCode);
+	public UnRegisteredTxnInfo queryUnRegisteredTxnInfo(String withdrawalMDN, String fac,Long sctlID,String enteredPartnerCode);
 	
 	/**
 	 * Valdiates entered fac,available amount,fund expiry time and the partner and return false for failure and true for success
@@ -91,7 +91,7 @@ public interface FundValidationService {
 	 * @param fac
 	 * @return
 	 */
-	public Integer validate(UnregisteredTxnInfo unRegisteredTxnInfo, XMLResult result, BigDecimal amount, String OTP,FundDefinition fundDefinition, String partnerCode);
+	public Integer validate(UnRegisteredTxnInfo unRegisteredTxnInfo, XMLResult result, BigDecimal amount, String OTP,FundDefinition fundDefinition, String partnerCode);
 	
 	/**
 	 * Checks if allowed partner code and entered code are the same.If the allowed partner is "any" then all partners are allowed. 
