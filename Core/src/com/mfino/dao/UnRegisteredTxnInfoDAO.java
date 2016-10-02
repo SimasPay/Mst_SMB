@@ -12,59 +12,59 @@ import org.hibernate.criterion.SimpleExpression;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.FundDefinition;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 
 /**
  * 
  * @author Sasi
  *
  */
-public class UnRegisteredTxnInfoDAO extends BaseDAO<UnRegisteredTxnInfo> {
+public class UnRegisteredTxnInfoDAO extends BaseDAO<UnregisteredTxnInfo> {
 
     
-    public List<UnRegisteredTxnInfo> get(UnRegisteredTxnInfoQuery query){
+    public List<UnregisteredTxnInfo> get(UnRegisteredTxnInfoQuery query){
     	Criteria criteria = createCriteria();
     		
     		if(query.getSubscriberMDNID()!=null){
-    			criteria.createAlias(UnRegisteredTxnInfo.FieldName_SubscriberMDNByMDNID, "SMDN");
+    			criteria.createAlias(UnregisteredTxnInfo.FieldName_SubscriberMDNByMDNID, "SMDN");
     			criteria.add(Restrictions.eq("SMDN." + SubscriberMdn.FieldName_RecordID, query.getSubscriberMDNID()));
     		}
     		if(query.getTransferSctlId()!=null){
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_TransferSCTLId, query.getTransferSctlId()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_TransferSCTLId, query.getTransferSctlId()));
     		}
 
     		if(query.getTransferCTId()!=null){
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_TransferCTId, query.getTransferCTId()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_TransferCTId, query.getTransferCTId()));
     		}
     		
     		if (query.getCashoutSCTLId() != null) {
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_CashoutSCTLId, query.getCashoutSCTLId()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_CashoutSCTLId, query.getCashoutSCTLId()));
     		}
     		
     		if(query.getStatus() != null){
-   				criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_UnRegisteredTxnStatus, query.getStatus()));
+   				criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_UnRegisteredTxnStatus, query.getStatus()));
     		}
     		
     		if (StringUtils.isNotBlank(query.getFundAccessCode())) {
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_DigestedPIN, query.getFundAccessCode()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_DigestedPIN, query.getFundAccessCode()));
     		}
     		
     		if (query.getAmount() != null) {
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_Amount, query.getAmount()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_Amount, query.getAmount()));
     		}
     		
     		if (query.getMultiStatus() != null) {
-    			criteria.add(Restrictions.in(UnRegisteredTxnInfo.FieldName_UnRegisteredTxnStatus, query.getMultiStatus()));
+    			criteria.add(Restrictions.in(UnregisteredTxnInfo.FieldName_UnRegisteredTxnStatus, query.getMultiStatus()));
     		}
     		
     		if (query.getWithdrawalMDN() != null) {
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_WithdrawalMDN,query.getWithdrawalMDN()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_WithdrawalMDN,query.getWithdrawalMDN()));
     		}
     		if(query.getExpiryTime()!=null){
-    			criteria.add(Restrictions.le(UnRegisteredTxnInfo.FieldName_ExpiryTime, query.getExpiryTime()));
+    			criteria.add(Restrictions.le(UnregisteredTxnInfo.FieldName_ExpiryTime, query.getExpiryTime()));
     		}
     		if(query.getFundDefinitionID() != null){
-    			criteria.createAlias(UnRegisteredTxnInfo.FieldName_FundDefinition, "fundDefinition");
+    			criteria.createAlias(UnregisteredTxnInfo.FieldName_FundDefinition, "fundDefinition");
     			criteria.add(Restrictions.eq("fundDefinition."+FundDefinition.FieldName_RecordID, query.getFundDefinitionID()));
     		}
 //    		if(query.getMultiPartnerCode() != null){
@@ -73,13 +73,13 @@ public class UnRegisteredTxnInfoDAO extends BaseDAO<UnRegisteredTxnInfo> {
     		if(query.getMultiPartnerCode() != null){
     			Disjunction finalDisjunction = Restrictions.disjunction();
     			for(int i=0;i<query.getMultiPartnerCode().length;i++){
-    				SimpleExpression se = Restrictions.eq(UnRegisteredTxnInfo.FieldName_PartnerCode, query.getMultiPartnerCode()[i]).ignoreCase();    
+    				SimpleExpression se = Restrictions.eq(UnregisteredTxnInfo.FieldName_PartnerCode, query.getMultiPartnerCode()[i]).ignoreCase();    
     				finalDisjunction.add(se);  
     			}
     			criteria.add(finalDisjunction);
     		}
     		if (StringUtils.isNotBlank(query.getTransactionName())) {
-    			criteria.add(Restrictions.eq(UnRegisteredTxnInfo.FieldName_TransactionName, query.getTransactionName()));
+    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_TransactionName, query.getTransactionName()));
     		}
     		
     	  processBaseQuery(query, criteria);
@@ -88,13 +88,13 @@ public class UnRegisteredTxnInfoDAO extends BaseDAO<UnRegisteredTxnInfo> {
           processPaging(query, criteria);
 
           if(query.isIDOrdered()) {
-            criteria.addOrder(Order.desc(UnRegisteredTxnInfo.FieldName_RecordID));
+            criteria.addOrder(Order.desc(UnregisteredTxnInfo.FieldName_RecordID));
           }
           
           //applying Order
           applyOrder(query, criteria);
           @SuppressWarnings("unchecked")
-          List<UnRegisteredTxnInfo> results = criteria.list();
+          List<UnregisteredTxnInfo> results = criteria.list();
 
           return results;
     	

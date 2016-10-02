@@ -26,7 +26,7 @@ public class FundDistributionInfo extends Base implements java.io.Serializable {
 	public static final String FieldName_DistributionStatus = "distributionstatus";
 	public static final String FieldName_DistributionType = "distributiontype";
 	
-	private UnRegisteredTxnInfo unregisteredTxnInfo;
+	private UnregisteredTxnInfo unregisteredTxnInfo;
 	private BigDecimal mspid;
 	private BigDecimal distributedamount;
 	private Long distributionstatus;
@@ -51,7 +51,7 @@ public class FundDistributionInfo extends Base implements java.io.Serializable {
 	}
 
 	public FundDistributionInfo(BigDecimal id,
-			UnRegisteredTxnInfo unregisteredTxnInfo,
+			UnregisteredTxnInfo unregisteredTxnInfo,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal mspid,
 			BigDecimal distributedamount, Long distributionstatus,
@@ -77,11 +77,11 @@ public class FundDistributionInfo extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FUNDALLOCATIONID")
-	public UnRegisteredTxnInfo getUnregisteredTxnInfo() {
+	public UnregisteredTxnInfo getUnregisteredTxnInfo() {
 		return this.unregisteredTxnInfo;
 	}
 
-	public void setUnregisteredTxnInfo(UnRegisteredTxnInfo unregisteredTxnInfo) {
+	public void setUnregisteredTxnInfo(UnregisteredTxnInfo unregisteredTxnInfo) {
 		this.unregisteredTxnInfo = unregisteredTxnInfo;
 	}
 

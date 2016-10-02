@@ -81,7 +81,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForSctlid = new HashSet<MoneyClearanceGraved>(
 			0);
 	private Set<Adjustments> adjustmentses = new HashSet<Adjustments>(0);
-	private Set<UnRegisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnRegisteredTxnInfo>(
+	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
 			0);
 	private Set<SettlementTxnSctlMap> settlementTxnSctlMaps = new HashSet<SettlementTxnSctlMap>(
 			0);
@@ -124,7 +124,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundsctlid,
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForSctlid,
 			Set<Adjustments> adjustmentses,
-			Set<UnRegisteredTxnInfo> unregisteredTxnInfos,
+			Set<UnregisteredTxnInfo> unregisteredTxnInfos,
 			Set<SettlementTxnSctlMap> settlementTxnSctlMaps) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
@@ -512,12 +512,12 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "serviceChargeTxnLog")
-	public Set<UnRegisteredTxnInfo> getUnregisteredTxnInfos() {
+	public Set<UnregisteredTxnInfo> getUnregisteredTxnInfos() {
 		return this.unregisteredTxnInfos;
 	}
 
 	public void setUnregisteredTxnInfos(
-			Set<UnRegisteredTxnInfo> unregisteredTxnInfos) {
+			Set<UnregisteredTxnInfo> unregisteredTxnInfos) {
 		this.unregisteredTxnInfos = unregisteredTxnInfos;
 	}
 

@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "UNREGISTERED_TXN_INFO")
-public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
+public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
@@ -57,10 +57,10 @@ public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
 	private Set<FundDistributionInfo> fundDistributionInfos = new HashSet<FundDistributionInfo>(
 			0);
 
-	public UnRegisteredTxnInfo() {
+	public UnregisteredTxnInfo() {
 	}
 
-	public UnRegisteredTxnInfo(BigDecimal id,
+	public UnregisteredTxnInfo(BigDecimal id,
 			ServiceChargeTxnLog serviceChargeTxnLog,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
@@ -72,7 +72,7 @@ public class UnRegisteredTxnInfo extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public UnRegisteredTxnInfo(BigDecimal id, SubscriberMdn subscriberMdn,
+	public UnregisteredTxnInfo(BigDecimal id, SubscriberMdn subscriberMdn,
 			ServiceChargeTxnLog serviceChargeTxnLog,
 			FundDefinition fundDefinition, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
