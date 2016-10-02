@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -72,41 +72,41 @@ public class ReverseTransactionApproveRejectProcessorImpl extends BaseFixProcess
 
 		log.info("Approve / Reject the Reverse Transaction --> " + realMsg.getServiceChargeTransactionLogID() );
 		if (realMsg.getServiceChargeTransactionLogID() != null) {
-			ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(realMsg.getServiceChargeTransactionLogID());
+			ServiceChargeTxnLog sctl = sctlService.getBySCTLID(realMsg.getServiceChargeTransactionLogID());
 
-			Long transactionTypeId = sctl.getTransactionTypeID();
+			Long transactionTypeId = sctl.getTransactiontypeid().longValue();
 			TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 			String transactionTypeName = null;
 
-			if((null != transactionType) && (TRANSACTION_REVERSE_TRANSACTION.equals(transactionType.getTransactionName()))){
+			if((null != transactionType) && (TRANSACTION_REVERSE_TRANSACTION.equals(transactionType.getTransactionname()))){
 				transactionTypeName = TRANSACTION_REVERSE_TRANSACTION;
 			}
-			else if((null != transactionType) && (TRANSACTION_REVERSE_CHARGE.equals(transactionType.getTransactionName()))){
+			else if((null != transactionType) && (TRANSACTION_REVERSE_CHARGE.equals(transactionType.getTransactionname()))){
 				transactionTypeName = TRANSACTION_REVERSE_CHARGE;
 			}
 			else{
 				throw new RuntimeException("ReverseTransactionApproveRejectProcessor-transactionType could not be identified");
 			}
 
-			if (sctl != null && sctl.getParentSCTLID() != null) {
-				ServiceChargeTransactionLog parentSCTL = sctlService.getBySCTLID(sctl.getParentSCTLID());
+			if (sctl != null && sctl.getParentsctlid() != null) {
+				ServiceChargeTxnLog parentSCTL = sctlService.getBySCTLID(sctl.getParentsctlid().longValue());
 
 				err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-				sctl.setFailureReason(realMsg.getAdminComment());
+				sctl.setFailurereason(realMsg.getAdminComment());
 
 				if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
 					log.info("Reverse Transaction Request is Approved.");
 					sctl.setStatus(CmFinoFIX.SCTLStatus_Reverse_Start);
-					sctl.setFailureReason(realMsg.getAdminComment());
+					sctl.setFailurereason(realMsg.getAdminComment());
 
 					if(TRANSACTION_REVERSE_TRANSACTION.equals(transactionTypeName)){
-						parentSCTL.setAmtRevStatus(CmFinoFIX.SCTLStatus_Reverse_Approved);
+						parentSCTL.setAmtrevstatus(CmFinoFIX.SCTLStatus_Reverse_Approved.longValue());
 					}
 					else{
-						parentSCTL.setChrgRevStatus(CmFinoFIX.SCTLStatus_Reverse_Approved);
+						parentSCTL.setAmtrevstatus(CmFinoFIX.SCTLStatus_Reverse_Approved.longValue());
 					}
 
-					parentSCTL.setFailureReason(realMsg.getAdminComment());
+					parentSCTL.setFailurereason(realMsg.getAdminComment());
 					sctlService.saveSCTL(parentSCTL);
 					sctlService.saveSCTL(sctl);
 					err.setErrorDescription(MessageText._("Successfully Approved the Reverse Transaction."));
@@ -118,16 +118,16 @@ public class ReverseTransactionApproveRejectProcessorImpl extends BaseFixProcess
 				else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
 					log.info("Reverse Transaction Request is Rejected.");
 					sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
-					sctl.setFailureReason(realMsg.getAdminComment());
+					sctl.setFailurereason(realMsg.getAdminComment());
 
 					if(TRANSACTION_REVERSE_TRANSACTION.equals(transactionTypeName)){
-						parentSCTL.setAmtRevStatus(CmFinoFIX.SCTLStatus_Reverse_Rejected);
+						parentSCTL.setAmtrevstatus(CmFinoFIX.SCTLStatus_Reverse_Rejected.longValue());
 					}
 					else{
-						parentSCTL.setChrgRevStatus(CmFinoFIX.SCTLStatus_Reverse_Rejected);
+						parentSCTL.setAmtrevstatus(CmFinoFIX.SCTLStatus_Reverse_Rejected.longValue());
 					}
 
-					parentSCTL.setFailureReason(realMsg.getAdminComment());
+					parentSCTL.setFailurereason(realMsg.getAdminComment());
 					sctlService.saveSCTL(parentSCTL);
 					sctlService.saveSCTL(sctl);
 					sendNotification(parentSCTL, CmFinoFIX.NotificationCode_ReverseTransactionRequestRejected);
@@ -153,23 +153,23 @@ public class ReverseTransactionApproveRejectProcessorImpl extends BaseFixProcess
 		return err;
 	}
 
-	private void sendNotification(ServiceChargeTransactionLog parentSCTL, Integer notificationCode) {
+	private void sendNotification(ServiceChargeTxnLog parentSCTL, Integer notificationCode) {
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		notificationWrapper.setLanguage(language);
 		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		notificationWrapper.setCode(notificationCode);
-		notificationWrapper.setOriginalTransferID(parentSCTL.getID());
-		SubscriberMDN smdn = subscriberMdnService.getByMDN(parentSCTL.getSourceMDN());
+		notificationWrapper.setOriginalTransferID(parentSCTL.getId().longValue());
+		SubscriberMdn smdn = subscriberMdnService.getByMDN(parentSCTL.getSourcemdn());
 		if(smdn != null)
 		{
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 		}
 
         String message = notificationMessageParserService.buildMessage(notificationWrapper,true);
 
-        smsService.setDestinationMDN(parentSCTL.getSourceMDN());
+        smsService.setDestinationMDN(parentSCTL.getSourcemdn());
         smsService.setMessage(message);
         smsService.setNotificationCode(notificationWrapper.getCode());
         smsService.asyncSendSMS();

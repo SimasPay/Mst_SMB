@@ -66,7 +66,7 @@ public class RoleProcessorImpl extends BaseFixProcessor implements RoleProcessor
 			if(realMsg.getRoleID() != null) {
 				query.setId(realMsg.getRoleID());
 			}
-			query.setPriorityLevel(currentUserRole.getPriorityLevel());
+			query.setPriorityLevel(currentUserRole.getPrioritylevel().intValue());
 			query.setStart(realMsg.getstart());
 			query.setLimit(realMsg.getlimit());
 
@@ -114,24 +114,29 @@ public class RoleProcessorImpl extends BaseFixProcessor implements RoleProcessor
 	
 	private void updateEntity(Role role, CMJSRole.CGEntries e) {		
 		if(e.getPriorityLevel() != null) {
-			role.setPriorityLevel(e.getPriorityLevel());
+			role.setPrioritylevel(e.getPriorityLevel().shortValue());
 		}
 		if(e.getDisplayText() != null) {
-			role.setDisplayText(e.getDisplayText());
+			role.setDisplaytext(e.getDisplayText());
 		}
-		role.setIsSystemUser((e.getIsSystemUser() == null) ? true : e.getIsSystemUser());		
+		role.setIssystemuser((short) Boolean.compare((e.getIsSystemUser() == null) ? true : e.getIsSystemUser(), false));		
 	}
 
 	private void updateMessage(Role r, CMJSRole.CGEntries e) {
-		e.setID(r.getID());
-		e.setDisplayText(r.getDisplayText());
-		e.setIsSystemUser(r.getIsSystemUser());
-		e.setPriorityLevel(r.getPriorityLevel());
-		e.setRecordVersion(r.getVersion());
-		e.setCreatedBy(r.getCreatedBy());
-		e.setCreateTime(r.getCreateTime());
-		e.setUpdatedBy(r.getUpdatedBy());
-		e.setLastUpdateTime(r.getLastUpdateTime());
+		e.setID(r.getId().longValue());
+		e.setDisplayText(r.getDisplaytext());
+		;
+		e.setIsSystemUser(Boolean.valueOf(Short.valueOf(r.getIssystemuser()).toString()));
+		e.setPriorityLevel(r.getPrioritylevel().intValue());
+		
+		Long tempVersionL = r.getVersion();
+		Integer tempVersionLI = tempVersionL.intValue();
+		
+		e.setRecordVersion(tempVersionLI);
+		e.setCreatedBy(r.getCreatedby());
+		e.setCreateTime(r.getCreatetime());
+		e.setUpdatedBy(r.getUpdatedby());
+		e.setLastUpdateTime(r.getLastupdatetime());
 	}
 
 }

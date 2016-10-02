@@ -60,19 +60,23 @@ public class ResendNotificationProcessorImpl extends BaseFixProcessor implements
 				if(notificationLog != null)
 				{
 					String text = EncryptionUtil.getDecryptedString(notificationLog.getText());
-					if(CmFinoFIX.NotificationMethod_SMS.equals(notificationLog.getNotificationMethod())) 
+					
+					Long tempNotLogCodeL = notificationLog.getCode();
+					Integer tempNotLogCodeLI = tempNotLogCodeL.intValue();
+					
+					if(CmFinoFIX.NotificationMethod_SMS.equals(notificationLog.getNotificationmethod())) 
 					{
-						smsService.setDestinationMDN(notificationLog.getSourceAddress());
+						smsService.setDestinationMDN(notificationLog.getSourceaddress());
 						smsService.setMessage(text);
-						smsService.setNotificationCode(notificationLog.getCode());
-						smsService.setSctlId(notificationLog.getSctlId());
+						smsService.setNotificationCode(tempNotLogCodeLI);
+						smsService.setSctlId(notificationLog.getSctlid().longValue());
 						smsService.setDuplicateSMS(true);
-						smsService.setNotificationLogDetailsID(notificationLogDetails.getID());
+						smsService.setNotificationLogDetailsID(notificationLogDetails.getId().longValue());
 						smsService.asyncSendSMS();
 					}
-					else if(CmFinoFIX.NotificationMethod_Email.equals(notificationLog.getNotificationMethod()))
+					else if(CmFinoFIX.NotificationMethod_Email.equals(notificationLog.getNotificationmethod()))
 					{
-						mailService.asyncSendEmail(notificationLog.getSourceAddress(), "", notificationLog.getEmailSubject(), text, notificationLogDetails.getID());
+						mailService.asyncSendEmail(notificationLog.getSourceaddress(), "", notificationLog.getEmailsubject(), text, notificationLogDetails.getId().longValue());
 					}
 					else
 					{

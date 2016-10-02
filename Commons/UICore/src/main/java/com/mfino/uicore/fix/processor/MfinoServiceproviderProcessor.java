@@ -3,7 +3,7 @@
  */
 package com.mfino.uicore.fix.processor;
 
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.fix.processor.IFixProcessor;
 
 /**
@@ -12,5 +12,5 @@ import com.mfino.fix.processor.IFixProcessor;
  */
 public interface MfinoServiceproviderProcessor extends IFixProcessor {
 
-	public mFinoServiceProvider getById(long id);
+	public MfinoServiceProvider getById(long id);
 }

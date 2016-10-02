@@ -16,8 +16,8 @@ import com.mfino.dao.TransactionAmountDistributionLogDAO;
 import com.mfino.dao.TransactionChargeDAO;
 import com.mfino.dao.query.TransactionAmountDistributionQuery;
 import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.TransactionAmountDistributionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.TxnAmountDstrbLog;
 import com.mfino.domain.TransactionCharge;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -61,11 +61,11 @@ public class TransactionAmountDistributorProcessImpl extends BaseFixProcessor im
     	if(realMsg.getTransactionsTransferStatus()!=null){
     		query.setStatus(realMsg.getTransactionsTransferStatus());
     	}
-		List<TransactionAmountDistributionLog>  tran =dao.get(query);
+		List<TxnAmountDstrbLog>  tran =dao.get(query);
 		   	
     	realMsg.allocateEntries(tran.size());
     	int i = 0;
-    	for(TransactionAmountDistributionLog entity: tran){
+    	for(TxnAmountDstrbLog entity: tran){
     		CMJSTransactionAmountDistributionLog.CGEntries e = new CMJSTransactionAmountDistributionLog.CGEntries();
 			updateMessage(entity, e);
 			realMsg.getEntries()[i] = e;
@@ -78,38 +78,38 @@ public class TransactionAmountDistributorProcessImpl extends BaseFixProcessor im
 		return realMsg;
 	}
 
-	private void updateMessage(TransactionAmountDistributionLog transaction,
+	private void updateMessage(TxnAmountDstrbLog transaction,
 			CMJSTransactionAmountDistributionLog.CGEntries e) {
 		ServiceChargeTransactionLogDAO st =DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sr = st.getById(transaction.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sr = st.getById(transaction.getServicechargetransactionlogid().longValue());
 		TransactionCharge tc = transaction.getTransactionCharge();
 		
 		
 //		CommodityTransferDAO ctdao = new CommodityTransferDAO();
 //		CommodityTransfer ct = ctdao.getById(sr.getCommodityTransferID());
-		if(transaction.getIsActualAmount()){
-			e.setIsActualAmount(transaction.getIsActualAmount());
+		if(transaction.getIsactualamount()){
+			e.setIsActualAmount(transaction.getIsactualamount());
 		}
-		if(transaction.getIsPartOfSharedUpChain()){
-			e.setIsPartOfSharedUpChain(transaction.getIsPartOfSharedUpChain());
+		if(transaction.getIspartofsharedupchain()){
+			e.setIsPartOfSharedUpChain(transaction.getIspartofsharedupchain());
 		}
-		if(transaction.getCreatedBy()!=null){
+		if(transaction.getCreatedby()!=null){
 			
 		}
-		e.setMSPID(transaction.getmFinoServiceProviderByMSPID().getID());
+		e.setMSPID(transaction.getMfinoServiceProvider().getId());
 		if(transaction.getPartner() != null)
 		{
-			e.setPartnerID(transaction.getPartner().getID());
-			e.setDestPartnerTradeName(partnerDao.getById(transaction.getPartner().getID()).getTradeName());
+			e.setPartnerID(transaction.getPartner().getId());
+			e.setDestPartnerTradeName(partnerDao.getById(transaction.getPartner().getId()).getTradeName());
 		}
 		if(transaction.getSubscriber() != null)
 		{
-			e.setSubscriberID(transaction.getSubscriber().getID());
+			e.setSubscriberID(transaction.getSubscriber().getId());
 		}
 		e.setChargeTypeName(tc.getChargeType().getName());
 		e.setIsChargeFromCustomer(tc.getChargeDefinition().getIsChargeFromCustomer());
-		e.setPocketID(transaction.getPocket().getID());
-		e.setServiceChargeTransactionLogID(transaction.getServiceChargeTransactionLogID());
+		e.setPocketID(transaction.getPocket().getId());
+		e.setServiceChargeTransactionLogID(transaction.getServicechargetransactionlogid());
 		e.setShareAmount(transaction.getShareAmount());
 		e.setTaxAmount(transaction.getTaxAmount());
 		e.setTransactionID(sr.getCommodityTransferID());
@@ -117,7 +117,7 @@ public class TransactionAmountDistributorProcessImpl extends BaseFixProcessor im
 		e.setSourceMDN(sr.getSourceMDN());
 		//e.setSourceSubscriberName(sr.getSourceSubscriberName());
 		e.setUpdatedBy(transaction.getUpdatedBy());
-		e.setCreatedBy(transaction.getCreatedBy());
+		e.setCreatedBy(transaction.getCreatedby());
 		e.setCreateTime(transaction.getCreateTime());
 		//e.setCurrency(sr.getCurrency());
 		e.setLastUpdateTime(transaction.getLastUpdateTime());

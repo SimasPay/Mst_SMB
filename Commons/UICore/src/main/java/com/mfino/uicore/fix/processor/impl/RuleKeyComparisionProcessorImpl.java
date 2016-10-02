@@ -36,7 +36,7 @@ public class RuleKeyComparisionProcessorImpl extends BaseFixProcessor implements
 			List<RuleKey> lst = dao.get(query);
 			int total = 0;
 			if (CollectionUtils.isNotEmpty(lst)) {
-				String txnRuleKeyComparision = lst.get(0).getTxnRuleKeyComparision();
+				String txnRuleKeyComparision = lst.get(0).getTxnrulekeycomparision();
 				if(txnRuleKeyComparision != null) {
 					String [] comparisions = txnRuleKeyComparision.split(",");
 					total = comparisions.length;

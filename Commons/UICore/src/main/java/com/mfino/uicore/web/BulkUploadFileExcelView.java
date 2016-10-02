@@ -4,6 +4,10 @@
  */
 package com.mfino.uicore.web;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +74,9 @@ public class BulkUploadFileExcelView extends AbstractExcelView {
         		currentRow++;
         		BulkUploadFileEntry bulkUploadFileEntry = iterator.next();
             	HSSFRow row = sheet.createRow(currentRow);
-                row.createCell(0).setCellValue(bulkUploadFileEntry.getLineNumber());
-                String strLine = bulkUploadFileEntry.getLineData();
+                row.createCell(0).setCellValue(bulkUploadFileEntry.getLinenumber());
+//                String strLine = bulkUploadFileEntry.getLinedata();
+                String strLine = readClob(bulkUploadFileEntry.getLinedata());
             	if(strLine != null) {
             		String input[] = strLine.split("\\|"); // Pipe is a special character.
                     if(input.length==1)
@@ -79,15 +84,15 @@ public class BulkUploadFileExcelView extends AbstractExcelView {
                     	input = strLine.split(GeneralConstants.COMMA_STRING);
                     }
                     if (input.length > 2) {
-                        if (CmFinoFIX.RecordType_Agent.equals(bulkUploadFileEntry.getBulkUploadFile().getRecordType())) {
+                        if (CmFinoFIX.RecordType_Agent.equals(bulkUploadFileEntry.getBulkUploadFile().getRecordtype())) {
                         	row.createCell(1).setCellValue(input[0]);
                         } else {
                         	row.createCell(1).setCellValue(input[2]);
                         }                       
                     }
             	}            
-                row.createCell(2).setCellValue(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileEntryStatus, null, bulkUploadFileEntry.getBulkUploadFileEntryStatus()));
-                row.createCell(3).setCellValue(bulkUploadFileEntry.getFailureReason());                
+                row.createCell(2).setCellValue(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileEntryStatus, null, bulkUploadFileEntry.getBulkuploadfileentrystatus()));
+                row.createCell(3).setCellValue(bulkUploadFileEntry.getFailurereason());                
         	}
         }
     }
@@ -103,5 +108,19 @@ public class BulkUploadFileExcelView extends AbstractExcelView {
             return results;
         }
         return null;
+    }
+    
+    private String readClob(Clob c) throws SQLException, IOException
+    {
+    	StringBuffer sb = new StringBuffer( (int) c.length());
+    	Reader r = c.getCharacterStream();
+    	char[] cbuf = new char[2048];
+    	int n = 0;
+    	while ((n = r.read(cbuf, 0, cbuf.length)) != -1) {
+    		if (n > 0) {
+    			sb.append(cbuf, 0, n);
+    		}
+    	}
+    	return sb.toString();
     }
 }

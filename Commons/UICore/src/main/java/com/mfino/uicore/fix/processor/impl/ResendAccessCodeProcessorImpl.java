@@ -18,10 +18,10 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -75,25 +75,25 @@ public class ResendAccessCodeProcessorImpl extends BaseFixProcessor implements R
 		{
 			query.setTransferSctlId(realMsg.getSctlId());
 			UnRegisteredTxnInfoDAO unRegisteredTxnInfoDAO =  DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
-			List<UnRegisteredTxnInfo> list = unRegisteredTxnInfoDAO.get(query);
+			List<UnregisteredTxnInfo> list = unRegisteredTxnInfoDAO.get(query);
 			if(list != null && list.size()>0)
 			{
-				UnRegisteredTxnInfo unRegisteredTxnInfo = list.get(0);
+				UnregisteredTxnInfo unRegisteredTxnInfo = list.get(0);
 				
-				ServiceChargeTransactionLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(realMsg.getSctlId());
-				CommodityTransfer ct = DAOFactory.getInstance().getCommodityTransferDAO().getById(sctl.getCommodityTransferID());
-				TransactionType trxnType = DAOFactory.getInstance().getTransactionTypeDAO().getById(sctl.getTransactionTypeID());
+				ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(realMsg.getSctlId());
+				CommodityTransfer ct = DAOFactory.getInstance().getCommodityTransferDAO().getById(sctl.getCommoditytransferid().longValue());
+				TransactionType trxnType = DAOFactory.getInstance().getTransactionTypeDAO().getById(sctl.getTransactiontypeid().longValue());
 
-				if(unRegisteredTxnInfo.getCashoutCTId() != null)
+				if(unRegisteredTxnInfo.getCashoutctid() != null)
 				{
 					error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					error.setErrorDescription(MessageText._("Transaction Cashed out. New Fund Access Code can't be generated"));
 					return error;
 				}
 				//resend Fac for fund Allocation type transaction only if there is fund and it is not expired
-				if((ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionName())) && 
-						!( (unRegisteredTxnInfo.getUnRegisteredTxnStatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN)) ||
-						(unRegisteredTxnInfo.getUnRegisteredTxnStatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE)) )
+				if((ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionname())) && 
+						!( (unRegisteredTxnInfo.getUnregisteredtxnstatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN)) ||
+						(unRegisteredTxnInfo.getUnregisteredtxnstatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE)) )
 				){
 					error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					error.setErrorDescription(MessageText._("Your Fund is completely withdrawn or has expired. New Fund Access Code can't be generated"));
@@ -102,31 +102,31 @@ public class ResendAccessCodeProcessorImpl extends BaseFixProcessor implements R
 
 				String code;
 				String receiverMDN;
-				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionName())){
+				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionname())){
 					code = fundStorageService.generateFundAccessCode(unRegisteredTxnInfo.getFundDefinition());
-					receiverMDN = unRegisteredTxnInfo.getWithdrawalMDN();
+					receiverMDN = unRegisteredTxnInfo.getWithdrawalmdn();
 				}else{
 					code = unRegisteredTxnInfoService.generateFundAccessCode();
-					receiverMDN = unRegisteredTxnInfo.getSubscriberMDNByMDNID().getMDN();
+					receiverMDN = unRegisteredTxnInfo.getSubscriberMdn().getMdn();
 				}
 					
 				String senderMDN = realMsg.getSenderMDN();
 
 				String digestedCode = MfinoUtil.calculateDigestPin(receiverMDN, code);
-				unRegisteredTxnInfo.setDigestedPIN(digestedCode);
+				unRegisteredTxnInfo.setDigestedpin(digestedCode);
 				unRegisteredTxnInfoDAO.save(unRegisteredTxnInfo);
 				Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 				NotificationWrapper wrapper = new NotificationWrapper();
-				SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(senderMDN);
+				SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(senderMDN);
 				if(smdn != null)
 				{
-					language = smdn.getSubscriber().getLanguage();
-					wrapper.setFirstName(smdn.getSubscriber().getFirstName());
-	            	wrapper.setLastName(smdn.getSubscriber().getLastName());
+					language = (int) smdn.getSubscriber().getLanguage();
+					wrapper.setFirstName(smdn.getSubscriber().getFirstname());
+	            	wrapper.setLastName(smdn.getSubscriber().getLastname());
 				}
 				wrapper.setOneTimePin(code);
 				wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Web);
-				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionName())){
+				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionname())){
 					wrapper.setCode(CmFinoFIX.NotificationCode_ResendAccessCodeForFund);
 					wrapper.setDestMDN(receiverMDN);
 				}
@@ -140,7 +140,7 @@ public class ResendAccessCodeProcessorImpl extends BaseFixProcessor implements R
 				wrapper.setCommodityTransfer(ct);
 
 				String message = notificationMessageParserService.buildMessage(wrapper,true);
-				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionName())){
+				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(trxnType.getTransactionname())){
 					smsService.setDestinationMDN(receiverMDN);
 				}
 				else{

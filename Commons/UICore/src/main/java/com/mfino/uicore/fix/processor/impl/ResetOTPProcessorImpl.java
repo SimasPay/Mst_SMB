@@ -17,7 +17,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -74,33 +74,41 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
         CMJSResetOTP realMsg = (CMJSResetOTP) msg;
         CMJSError error = new CMJSError();
         error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-        SubscriberMDN subscriberMDN = subMdndao.getById(realMsg.getMDNID());
+        SubscriberMdn subscriberMDN = subMdndao.getById(realMsg.getMDNID());
         if(subscriberMDN==null){
         	error.setErrorDescription(MessageText._("Invalid MDN ID"));
         	return error;
         }
         Subscriber subscriber = subscriberMDN.getSubscriber();
-        if(!(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized)
-        		||subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Registered))||subscriberMDN.getOTP()==null){
+        
+        Long tempStatusL = subscriber.getStatus();
+        Integer tempStatusLI = tempStatusL.intValue();
+        
+        if(!(tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Initialized)
+        		||tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Registered))||subscriberMDN.getOtp()==null){
         	error.setErrorDescription(MessageText._("OneTimePin generation not allowed"));
         	return error;
         }
 		Integer OTPLength = systemParametersService.getOTPLength();
         String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-		subscriberMDN.setOTP(digestPin1);
-		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
+		subscriberMDN.setOtp(digestPin1);
+		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subMdndao.save(subscriberMDN);
-		String mdn = subscriberMDN.getMDN();
+		String mdn = subscriberMDN.getMdn();
 		
 		NotificationWrapper wrapper = new NotificationWrapper();
 		wrapper.setOneTimePin(oneTimePin);
 		wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		wrapper.setCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 		wrapper.setDestMDN(mdn);
-		wrapper.setLanguage(subscriberMDN.getSubscriber().getLanguage());
-		wrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-		wrapper.setLastName(subscriberMDN.getSubscriber().getLastName());					
+		
+		Long tempLanguageL = subscriberMDN.getSubscriber().getLanguage();
+		Integer tempLanguageLI = tempLanguageL.intValue();
+		
+		wrapper.setLanguage(tempLanguageLI);
+		wrapper.setFirstName(subscriberMDN.getSubscriber().getFirstname());
+		wrapper.setLastName(subscriberMDN.getSubscriber().getLastname());					
 		
 		String message = notificationMessageParserService.buildMessage(wrapper,true);
 		smsService.setDestinationMDN(mdn);
@@ -109,26 +117,30 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
 		smsService.asyncSendSMS();
 		
 		String email=subscriber.getEmail();
-		String to = subscriber.getFirstName();
+		String to = subscriber.getFirstname();
 		String mailMessage;
 			if(subscriberServiceExtended.isSubscriberEmailVerified(subscriber)) {
-			if(subscriber.getType().equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartnerFromSubscriberID().iterator().next().getAuthorizedEmail()!=null){
+				
+				Long tempTypeL = subscriber.getType();
+				Integer tempTypeLI = tempTypeL.intValue();
+				
+			if(tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartnerFromSubscriberID().iterator().next().getAuthorizedEmail()!=null){
 				Partner partner =subscriber.getPartnerFromSubscriberID().iterator().next();
 				NotificationWrapper notificationWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin, mdn, CmFinoFIX.NotificationMethod_Email);
 				notificationWrapper.setDestMDN(mdn);
 				if(subscriberMDN != null)
 	            {
-	            	notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-	            	notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());					
+	            	notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstname());
+	            	notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastname());					
 	            }
 				mailMessage = notificationMessageParserService.buildMessage(notificationWrapper,true);
 				mailService.asyncSendEmail(email, to, "Activation", mailMessage);
-			}else if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && email != null){
+			}else if(((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0) && email != null){
 				wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 				mailMessage = notificationMessageParserService.buildMessage(wrapper,true);			
 				mailService.asyncSendEmail(email, to, "New OTP", message);
 				} else {
-				log.info("Email is not sent since it is not verified for subscriber with ID ->" + subscriber.getID());
+				log.info("Email is not sent since it is not verified for subscriber with ID ->" + subscriber.getId());
 			}
 		}
 		

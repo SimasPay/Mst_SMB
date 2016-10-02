@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -56,27 +56,27 @@ public class ReverseTransactionConfirmProcessorImpl extends BaseFixProcessor imp
 		log.info("ReverseTransactionConfirmProcessor :: chrgRevSctlId="+chrgRevSctlId);
 
 		if((null != amtRevSctlId) || (null != chrgRevSctlId)){
-			ServiceChargeTransactionLog amountReversalSCTL = (amtRevSctlId != null) ? sctlDao.getById(amtRevSctlId) : null;
-			ServiceChargeTransactionLog chargeReversalSCTL = (chrgRevSctlId != null) ? sctlDao.getById(chrgRevSctlId) : null;
-			ServiceChargeTransactionLog parentSCTL = null;
+			ServiceChargeTxnLog amountReversalSCTL = (amtRevSctlId != null) ? sctlDao.getById(amtRevSctlId) : null;
+			ServiceChargeTxnLog chargeReversalSCTL = (chrgRevSctlId != null) ? sctlDao.getById(chrgRevSctlId) : null;
+			ServiceChargeTxnLog parentSCTL = null;
 
 			if((amountReversalSCTL != null) || (chargeReversalSCTL != null)){
 				if(amountReversalSCTL != null){
-					parentSCTL = sctlDao.getById(amountReversalSCTL.getParentSCTLID());
+					parentSCTL = sctlDao.getById(amountReversalSCTL.getParentsctlid().longValue());
 				}
 				else{
-					parentSCTL = sctlDao.getById(chargeReversalSCTL.getParentSCTLID());
+					parentSCTL = sctlDao.getById(chargeReversalSCTL.getParentsctlid().longValue());
 				}
 
 				if(parentSCTL != null){
-					parentSCTL.setReversalReason(realMsg.getReversalReason());
+					parentSCTL.setReversalreason(realMsg.getReversalReason());
 
 					BigDecimal reversalAmount = BigDecimal.ZERO;
 					BigDecimal serviceCharge = BigDecimal.ZERO;
 
 					if(amountReversalSCTL != null){
 						if((null != realMsg.getIsReverseAmount()) && (realMsg.getIsReverseAmount())){
-							parentSCTL.setAmtRevStatus(CmFinoFIX.SCTLStatus_Reverse_Initiated);
+							parentSCTL.setAmtrevstatus(CmFinoFIX.SCTLStatus_Reverse_Initiated.longValue());
 							amountReversalSCTL.setStatus(CmFinoFIX.SCTLStatus_Reverse_Initiated);
 							sctlDao.save(amountReversalSCTL);
 							
@@ -85,19 +85,19 @@ public class ReverseTransactionConfirmProcessorImpl extends BaseFixProcessor imp
 								//serviceCharge.add(amountReversalSCTL.getCalculatedCharge());
 						
 						    //After Correcting the errors reported by Findbugs:reassigned the variables to themselves.
-							reversalAmount = reversalAmount.add(amountReversalSCTL.getTransactionAmount());
-							serviceCharge = serviceCharge.add(amountReversalSCTL.getCalculatedCharge());
+							reversalAmount = reversalAmount.add(amountReversalSCTL.getTransactionamount());
+							serviceCharge = serviceCharge.add(amountReversalSCTL.getCalculatedcharge());
 						}
 
 					}
 					if(chargeReversalSCTL != null){
 						if((null != realMsg.getIsReverseCharges()) && (realMsg.getIsReverseCharges())){
-							parentSCTL.setChrgRevStatus(CmFinoFIX.SCTLStatus_Reverse_Initiated);
+							parentSCTL.setChrgrevstatus(CmFinoFIX.SCTLStatus_Reverse_Initiated.longValue());
 							chargeReversalSCTL.setStatus(CmFinoFIX.SCTLStatus_Reverse_Initiated);
 							sctlDao.save(chargeReversalSCTL);
 
-							reversalAmount = reversalAmount.add(chargeReversalSCTL.getTransactionAmount());
-							serviceCharge = serviceCharge.add(chargeReversalSCTL.getCalculatedCharge());
+							reversalAmount = reversalAmount.add(chargeReversalSCTL.getTransactionamount());
+							serviceCharge = serviceCharge.add(chargeReversalSCTL.getCalculatedcharge());
 						}
 
 					}
@@ -123,27 +123,27 @@ public class ReverseTransactionConfirmProcessorImpl extends BaseFixProcessor imp
 		return err;
 	}
 	
-	private void sendNotification(ServiceChargeTransactionLog parentSCTL, BigDecimal reversalAmount, BigDecimal serviceCharge, Integer notificationCode) {
+	private void sendNotification(ServiceChargeTxnLog parentSCTL, BigDecimal reversalAmount, BigDecimal serviceCharge, Integer notificationCode) {
 
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-		SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(parentSCTL.getSourceMDN());
+		SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(parentSCTL.getSourcemdn());
 		if(smdn != null)
 		{
-			language = smdn.getSubscriber().getLanguage();
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			language = (int) smdn.getSubscriber().getLanguage();
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 		}
 		notificationWrapper.setLanguage(language);
 		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		notificationWrapper.setCode(notificationCode);
-		notificationWrapper.setOriginalTransferID(parentSCTL.getID());
+		notificationWrapper.setOriginalTransferID(parentSCTL.getId().longValue());
 		notificationWrapper.setTransactionAmount(reversalAmount);
 		notificationWrapper.setServiceCharge(serviceCharge);
 
         String message = notificationMessageParserService.buildMessage(notificationWrapper,true);
 
-        smsService.setDestinationMDN(parentSCTL.getSourceMDN());
+        smsService.setDestinationMDN(parentSCTL.getSourcemdn());
         smsService.setMessage(message);
         smsService.setNotificationCode(notificationWrapper.getCode());
         smsService.asyncSendSMS();

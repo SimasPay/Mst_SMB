@@ -19,8 +19,8 @@ import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -68,7 +68,7 @@ public class VerifyNonRegisteredBulkTransferProcessorImpl extends BaseFixProcess
 		    	BulkUpload bulkUpload = buDao.getById(realMsg.getBulkUploadID());
 		    	// *FindbugsChange*
 		    	// Previous -- if (bulkUpload != null && bulkUpload.getUser().getID() != loggedInUser.getID()) {
-		    	if (bulkUpload != null && !(bulkUpload.getUser().getID().equals(loggedInUser.getID()))) {
+		    	if (bulkUpload != null && !(bulkUpload.getMfinoUser().getId().equals(loggedInUser.getId()))) {
 			        err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			        err.setErrorDescription(MessageText._("You are not authorized to Verify the Bulk Transfer."));
 					return err;
@@ -112,37 +112,41 @@ public class VerifyNonRegisteredBulkTransferProcessorImpl extends BaseFixProcess
 		   * @param bulkUploadEntry
 		   */
 		  private void generateFundAccessCode(BulkUploadEntry bulkUploadEntry) {
-			  if (bulkUploadEntry != null && bulkUploadEntry.getIsUnRegistered()) {
+			  if (bulkUploadEntry != null && Boolean.valueOf(bulkUploadEntry.getIsunregistered().toString())) {
 
 				  //Get the UnRegistered Transaction info using SCTL ID
 				  UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
-				  query.setTransferSctlId(bulkUploadEntry.getServiceChargeTransactionLogID());
+				  query.setTransferSctlId(bulkUploadEntry.getServicechargetransactionlogid().longValue());
 
 				  UnRegisteredTxnInfoDAO urtDao = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
-				  List<UnRegisteredTxnInfo> lstunUnRegisteredTxnInfo= urtDao.get(query);
+				  List<UnregisteredTxnInfo> lstunUnRegisteredTxnInfo= urtDao.get(query);
 				  if (CollectionUtils.isNotEmpty(lstunUnRegisteredTxnInfo)) {
-					  UnRegisteredTxnInfo unRegTxnInfo = lstunUnRegisteredTxnInfo.get(0);
-					  SubscriberMDN destSubscriberMDN = unRegTxnInfo.getSubscriberMDNByMDNID();
+					  UnregisteredTxnInfo unRegTxnInfo = lstunUnRegisteredTxnInfo.get(0);
+					  SubscriberMdn destSubscriberMDN = unRegTxnInfo.getSubscriberMdn();
 					  Subscriber destSubscriber = destSubscriberMDN.getSubscriber();
 
-					  if (destSubscriberMDN.getMDN().equals(bulkUploadEntry.getDestMDN())) {
+					  if (destSubscriberMDN.getMdn().equals(bulkUploadEntry.getDestmdn())) {
 							Integer OTPLength = systemParametersService.getOTPLength();
 							String code = MfinoUtil.generateOTP(OTPLength);
-							String digestedCode = MfinoUtil.calculateDigestPin(destSubscriberMDN.getMDN(), code);
-							unRegTxnInfo.setDigestedPIN(digestedCode);
+							String digestedCode = MfinoUtil.calculateDigestPin(destSubscriberMDN.getMdn(), code);
+							unRegTxnInfo.setDigestedpin(digestedCode);
 							urtDao.save(unRegTxnInfo);
 
 							// Sending the new Fund access code to Destination subscriber
 							NotificationWrapper notification = new NotificationWrapper();
-							notification.setLanguage(destSubscriber.getLanguage());
-							notification.setFirstName(destSubscriber.getFirstName());
-					    	notification.setLastName(destSubscriber.getLastName());
+							
+							Long tempLanguageL = destSubscriber.getLanguage();
+							Integer tempLanguageLI = tempLanguageL.intValue();
+							
+							notification.setLanguage(tempLanguageLI);
+							notification.setFirstName(destSubscriber.getFirstname());
+					    	notification.setLastName(destSubscriber.getLastname());
 							notification.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 							notification.setCode(CmFinoFIX.NotificationCode_SendFundAccessCodeForNonRegisteredBulkTransfer);
 							notification.setOneTimePin(code);
-							notification.setSctlID(bulkUploadEntry.getServiceChargeTransactionLogID());
+							notification.setSctlID(bulkUploadEntry.getServicechargetransactionlogid().longValue());
 							String message = notificationMessageParserService.buildMessage(notification,true);
-							smsService.setDestinationMDN(destSubscriberMDN.getMDN());
+							smsService.setDestinationMDN(destSubscriberMDN.getMdn());
 							smsService.setMessage(message);
 							smsService.setNotificationCode(notification.getCode());
 							smsService.asyncSendSMS();

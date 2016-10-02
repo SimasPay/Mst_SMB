@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -38,11 +38,11 @@ public class ValidatePinProcessorImpl extends BaseFixProcessor implements Valida
 		    	String mdn = subscriberService.normalizeMDN(realMsg.getSourceMDN());
 		    	String pin = realMsg.getPin();
 		    	
-		    	SubscriberMDN subscriberMDN = mdnDAO.getByMDN(mdn);
+		    	SubscriberMdn subscriberMDN = mdnDAO.getByMDN(mdn);
 		    	
 		    	String calcPin = MfinoUtil.calculateDigestPin(mdn, pin);
 		    	
-		    	if (!calcPin.equals(subscriberMDN.getDigestedPIN())) {
+		    	if (!calcPin.equals(subscriberMDN.getDigestedpin())) {
 		    	      err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 		    	      err.setErrorDescription(MessageText._("Please enter correct Pin"));
 		    	      log.info("Pin validation failed for the mdn : " + mdn);
