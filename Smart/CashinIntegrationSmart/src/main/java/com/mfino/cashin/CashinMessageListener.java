@@ -27,8 +27,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.CharacterData;
@@ -42,17 +40,15 @@ import org.xml.sax.InputSource;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMInterswitchCashin;
 import com.mfino.fix.CmFinoFIX.CMInterswitchCashinStatus;
-import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.result.XMLResult;
 import com.mfino.service.TransactionIdentifierService;
-import com.mfino.service.impl.TransactionIdentifierServiceImpl;
 import com.mfino.transactionapi.handlers.interswitch.CashinReversalHandler;
 import com.mfino.transactionapi.handlers.interswitch.impl.InterswitchCashinStatusHandlerImpl;
 import com.mfino.util.DateTimeUtil;
@@ -60,10 +56,10 @@ import com.mfino.validators.DestMDNValidator;
 
 public class CashinMessageListener implements Processor {
 
-	public static mFinoServiceProvider	msp;
+	public static MfinoServiceProvider	msp;
 	Logger	                           log	= LoggerFactory.getLogger(CashinMessageListener.class);
 
-	mFinoServiceProvider	           mfs;
+	MfinoServiceProvider	           mfs;
 
  	public static final String	TEXT_CASHINREQUEST	   = "CashInRequest";
 	public static final String	TEXT_PAYMENT_LOG_ID	   = "PaymentLogId";
@@ -235,9 +231,9 @@ public class CashinMessageListener implements Processor {
 			logID.appendChild(doc.createTextNode(insID));
 			code.appendChild(doc.createTextNode("100"));
 			mdn.appendChild(doc.createTextNode(strMdn));
-			firstName.appendChild(doc.createTextNode(subs.getFirstName()));
-			lastName.appendChild(doc.createTextNode(subs.getLastName()));
-			dob.appendChild(doc.createTextNode(formatDOB(subs.getDateOfBirth().toString())));
+			firstName.appendChild(doc.createTextNode(subs.getFirstname()));
+			lastName.appendChild(doc.createTextNode(subs.getLastname()));
+			dob.appendChild(doc.createTextNode(formatDOB(subs.getDateofbirth().toString())));
 			root.appendChild(logID);
 			root.appendChild(code);
 			root.appendChild(mdn);
@@ -445,7 +441,7 @@ public class CashinMessageListener implements Processor {
 																				  // later
 		status.setIsSecure(false);
 		status.setMessageType(CmFinoFIX.MessageType_InterswitchCashin);
-		status.setMSPID(msp.getID());
+		status.setMSPID(msp.getId().longValue());
 		status.setMSPID(1l);
 		status.setReceiveTime(DateTimeUtil.getLocalTime());
 		status.setIsSystemIntiatedTransaction(false);
@@ -467,7 +463,7 @@ public class CashinMessageListener implements Processor {
 																				   // later
 		details.setIsSecure(false);
 		details.setMessageType(CmFinoFIX.MessageType_InterswitchCashin);
-		details.setMSPID(msp.getID());
+		details.setMSPID(msp.getId().longValue());
 		details.setMSPID(1l);
 		details.setReceiveTime(DateTimeUtil.getLocalTime());
 		details.setIsSystemIntiatedTransaction(false);

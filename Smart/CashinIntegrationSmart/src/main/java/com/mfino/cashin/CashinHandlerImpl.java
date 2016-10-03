@@ -1,5 +1,6 @@
 package com.mfino.cashin;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,11 +20,11 @@ import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -53,8 +54,8 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 	ChannelCode	          channel;
 	CMCashInInquiry	      cashinInquiry;
 
-	SubscriberMDN	      partnerMDN;
-	SubscriberMDN	      destMDN;
+	SubscriberMdn	      partnerMDN;
+	SubscriberMdn	      destMDN;
 
 	Partner	              partner;
 
@@ -166,15 +167,15 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 
 		TransferInquiryXMLResult result = new TransferInquiryXMLResult();
 		//TransactionLogServiceImpl transactionLogServiceImpl = new TransactionLogServiceImpl();
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields());
-		cashinDetails.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields());
+		cashinDetails.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(cashinDetails);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setDestinationMDN(cashinDetails.getDestMDN());
 
 		String originalDestMDN = cashinDetails.getDestMDN();
 		
-		String pIdStr = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.SERVICE_PARTNER__ID_KEY).getParameterValue();
+		String pIdStr = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.SERVICE_PARTNER__ID_KEY).getParametervalue();
 		PartnerDAO pdao = DAOFactory.getInstance().getPartnerDAO();
 		Partner cashinPartner = pdao.getById(Long.parseLong(pIdStr));
 		if (cashinPartner == null) {
@@ -184,7 +185,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		}
 		
 		log.info("getting the partner mdn and setting it as sourcemdn in cashindetauls obejct");
-		Set<SubscriberMDN> set = cashinPartner.getSubscriber().getSubscriberMDNFromSubscriberID();
+		Set<SubscriberMdn> set = cashinPartner.getSubscriber().getSubscriberMdns();
 		PartnerValidator pValidator = new PartnerValidator(set.iterator().next());
 		cashinDetails.setSourceMDN(pValidator.getSubscriberMDN().toString());
 
@@ -218,8 +219,8 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 
 		this.destMDN = destMdnValidator.getSubscriberMDN();
 
-		SubscriberMDN sourceMDN = pValidator.getSubscriberMDN();
-		SubscriberMDN destinationMDN = destMdnValidator.getSubscriberMDN();
+		SubscriberMdn sourceMDN = pValidator.getSubscriberMDN();
+		SubscriberMdn destinationMDN = destMdnValidator.getSubscriberMDN();
 
 		log.info("getting the emoney pocket of destinatiomdn");
 		//PocketServiceImpl pocketService = new PocketServiceImpl();
@@ -230,17 +231,17 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 			// saveActivitiesLog(result, destinationMDN);
 			return result;
 		}
-		log.info("default emoney pocket for destmdn=" + this.destMDN + " is " + subPocket.getID());
+		log.info("default emoney pocket for destmdn=" + this.destMDN + " is " + subPocket.getId());
 
 		log.info("transactionchargingservice -->");
 
 		Transaction transDetails = null;
 		ServiceCharge sc = new ServiceCharge();
-		sc.setChannelCodeId(channel.getID());
-		sc.setDestMDN(destinationMDN.getMDN());
+		sc.setChannelCodeId(channel.getId().longValue());
+		sc.setDestMDN(destinationMDN.getMdn());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
 		sc.setTransactionTypeName(cashinDetails.getPaymentMethod());
-		sc.setSourceMDN(pValidator.getSubscriberMDN().getMDN());
+		sc.setSourceMDN(pValidator.getSubscriberMDN().getMdn());
 		sc.setTransactionAmount(cashinDetails.getAmount());
 		sc.setTransactionLogId(cashinDetails.getTransactionID());
 		sc.setIntegrationTxnID(Long.parseLong(cashinDetails.getPaymentLogID()));
@@ -258,7 +259,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		log.info("getting the partner's agent service pocket");
 		Pocket partnerPocket;
 		try {
-			String ppid = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.GLOBAL_SVA_POCKET_ID_KEY).getParameterValue();
+			String ppid = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.GLOBAL_SVA_POCKET_ID_KEY).getParametervalue();
 			PocketDAO pocketdao = DAOFactory.getInstance().getPocketDAO();
 			partnerPocket = pocketdao.getById(Long.parseLong(ppid));
 		}
@@ -287,25 +288,25 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 			return result;
 		}
 
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
 
 		saveIntegrationSummary(originalDestMDN, sctl);
 		
 		log.info("building CMCashinInquiry object for processing -->");
 		CMCashInInquiry cashIn = new CMCashInInquiry();
-		cashIn.setSourceMDN(pValidator.getSubscriberMDN().getMDN());
-		cashIn.setDestMDN(destinationMDN.getMDN());
+		cashIn.setSourceMDN(pValidator.getSubscriberMDN().getMdn());
+		cashIn.setDestMDN(destinationMDN.getMdn());
 		cashIn.setAmount(cashinDetails.getAmount());
 		cashIn.setCharges(transDetails.getAmountTowardsCharges());
 		cashIn.setTransactionID(cashinDetails.getTransactionID());
-		cashIn.setChannelCode(channel.getChannelCode());
+		cashIn.setChannelCode(channel.getChannelcode());
 		cashIn.setPin("a");
-		cashIn.setSourcePocketID(partnerPocket.getID());
-		cashIn.setDestPocketID(subPocket.getID());
+		cashIn.setSourcePocketID(partnerPocket.getId().longValue());
+		cashIn.setDestPocketID(subPocket.getId().longValue());
 		cashIn.setSourceApplication(cashinDetails.getSourceApplication());
 		cashIn.setSourceMessage("from BSM");
 		cashIn.setServletPath(cashinDetails.getServletPath());
-		cashIn.setServiceChargeTransactionLogID(sctl.getID());
+		cashIn.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashIn.setIsSystemIntiatedTransaction(true);
 		cashIn.setTransactionIdentifier(cashinDetails.getTransactionIdentifier());
 
@@ -319,7 +320,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		log.info("received backend response");
 
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(new BigDecimal(transactionResponse.getTransactionId()));
 			cashinDetails.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -346,24 +347,24 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		log.info("Handling interswitch cashin Confirmation  request");
 		WalletConfirmXMLResult result = new WalletConfirmXMLResult();
 		//TransactionLogServiceImpl transactionLogServiceImpl = new TransactionLogServiceImpl();
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields(), parentTxnId);
-		cashinDetails.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields(), parentTxnId);
+		cashinDetails.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(cashinDetails);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 		log.info("constructing CMCashin object for cashin confirmation");
 		CMCashIn cashin = new CMCashIn();
-		cashin.setSourceMDN(this.partnerMDN.getMDN());
-		cashin.setDestMDN(this.destMDN.getMDN());
+		cashin.setSourceMDN(this.partnerMDN.getMdn());
+		cashin.setDestMDN(this.destMDN.getMdn());
 		cashin.setParentTransactionID(parentTxnId);
 		cashin.setTransferID(transferId);
 		cashin.setConfirmed(confirmed);
-		cashin.setChannelCode(channel.getChannelCode());
+		cashin.setChannelCode(channel.getChannelcode());
 		cashin.setDestPocketID(cashinInquiry.getDestPocketID());
 		cashin.setSourcePocketID(cashinInquiry.getSourcePocketID());
-		cashin.setSourceApplication(channel.getChannelSourceApplication());
+		cashin.setSourceApplication((int)channel.getChannelsourceapplication());
 		cashin.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		cashin.setIsSystemIntiatedTransaction(true);
 		cashin.setPassword("");
@@ -373,7 +374,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		// response from Core engine.
 		log.info("getting sctl from id");
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(parentTxnId);
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(parentTxnId);
 		if (sctl != null) {
 			if (CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				log.info("changing sctl status to processing");
@@ -393,7 +394,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 			return result;
 		}
 
-		cashin.setServiceChargeTransactionLogID(sctl.getID());
+		cashin.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		// cashin.setSourcePocketID(agentPocket.getID());
 		CFIXMsg response = super.process(cashin);
 		result.setMultixResponse(response);
@@ -405,9 +406,9 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 			if (transactionResponse.isResult() && sctl != null) {
 				transactionChargingService.confirmTheTransaction(sctl, transferId);
 				commodityTransferService.addCommodityTransferToResult(result, transferId);
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			}
 			else {
 				String errorMsg = transactionResponse.getMessage();
@@ -428,20 +429,20 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setNotificationCode(Integer.parseInt(transactionResponse.getCode()));
 
 		return result;
 
 	}
 
-	private void saveIntegrationSummary(String originalDestMDN, ServiceChargeTransactionLog sctl) {
+	private void saveIntegrationSummary(String originalDestMDN, ServiceChargeTxnLog sctl) {
 	    IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummary isummary = new IntegrationSummary();
-		isummary.setSctlId(sctl.getID());
-		isummary.setReconcilationID1(originalDestMDN);
-		isummary.setReconcilationID2(cashinDetails.getReceiptNo());
-		isummary.setReconcilationID3(cashinDetails.getPaymentLogID());
+		isummary.setSctlId(sctl.getId());
+		isummary.setReconcilationid1(originalDestMDN);
+		isummary.setReconcilationid2(cashinDetails.getReceiptNo());
+		isummary.setReconcilationid3(cashinDetails.getPaymentLogID());
 		isdao.save(isummary);
     }
 	

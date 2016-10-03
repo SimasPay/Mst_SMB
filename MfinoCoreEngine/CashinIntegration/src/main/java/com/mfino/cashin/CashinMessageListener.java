@@ -33,6 +33,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.mFinoServiceProvider;
@@ -398,13 +399,13 @@ public class CashinMessageListener implements Processor {
 			institutionID.appendChild(doc.createTextNode(insID));
 			code.appendChild(doc.createTextNode("100"));
 			mdn.appendChild(doc.createTextNode(strMdn));
-			firstName.appendChild(doc.createTextNode(subs.getFirstName()));
-			lastName.appendChild(doc.createTextNode(subs.getLastName()));
+			firstName.appendChild(doc.createTextNode(subs.getFirstname()));
+			lastName.appendChild(doc.createTextNode(subs.getLastname()));
 			eMail.appendChild(doc.createTextNode(subs.getEmail()));
 			phone.appendChild(doc.createTextNode(subscriberService.normalizeMDN(strMdn)));
 			tpcode.appendChild(doc.createTextNode(""));
 			amount.appendChild(doc.createTextNode(""));
-			dob.appendChild(doc.createTextNode(formatDOB(subs.getDateOfBirth().toString())));
+			dob.appendChild(doc.createTextNode(formatDOB(subs.getDateofbirth().toString())));
 			pin.appendChild(doc.createTextNode(""));
 			serialNr.appendChild(doc.createTextNode(""));
 			msg.appendChild(doc.createTextNode(""));
@@ -496,7 +497,7 @@ public class CashinMessageListener implements Processor {
 	private String processCashin(Exchange exchange) throws InvalidXMLException {
 		String xmlDoc = exchange.getIn().getBody(String.class);
 		log.info("received xml message -- >" + xmlDoc);
-		mFinoServiceProvider msp =channelCodeService.getMFSPbyID(1);
+		MfinoServiceProvider msp =channelCodeService.getMFSPbyID(1);
 ;
 /*		if (msp == null) {
 			MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
@@ -687,14 +688,14 @@ public class CashinMessageListener implements Processor {
 		return finalXML;
 	}
 
-	private CMInterswitchCashinStatus buildCashinStatusObject(String xmlDoc, Document doc, mFinoServiceProvider msp) {
+	private CMInterswitchCashinStatus buildCashinStatusObject(String xmlDoc, Document doc, MfinoServiceProvider msp) {
 		CMInterswitchCashinStatus status = new CMInterswitchCashinStatus();
 		status.setChannelCode(CmFinoFIX.SourceApplication_Interswitch.toString());// FIXME
 		                                                                          // fix
 		                                                                          // later
 		status.setIsSecure(false);
 		status.setMessageType(CmFinoFIX.MessageType_InterswitchCashin);
-		status.setMSPID(msp.getID());
+		status.setMSPID(msp.getId().longValue());
 		status.setMSPID(1l);
 		status.setReceiveTime(DateTimeUtil.getLocalTime());
 		status.setIsSystemIntiatedTransaction(false);
@@ -718,12 +719,12 @@ public class CashinMessageListener implements Processor {
 		return status;
 	}
 
-	private CMInterswitchCashin buildCashinDetailsObject(String xmlDoc, Document doc, mFinoServiceProvider msp) throws InvalidXMLException {
+	private CMInterswitchCashin buildCashinDetailsObject(String xmlDoc, Document doc, MfinoServiceProvider msp) throws InvalidXMLException {
 		CMInterswitchCashin details = new CMInterswitchCashin();
 		
 		details.setIsSecure(false);
 		details.setMessageType(CmFinoFIX.MessageType_InterswitchCashin);
-		details.setMSPID(msp.getID());
+		details.setMSPID(msp.getId().longValue());
 		details.setMSPID(1l);
 		details.setReceiveTime(DateTimeUtil.getLocalTime());
 		details.setIsSystemIntiatedTransaction(false);
