@@ -20,8 +20,8 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ClosedAccountSettlementMDN;
 import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
@@ -119,7 +119,7 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 		}
 
 		Long subscriberMDNID = realMsg.getSubscriberMDNID();
-		SubscriberMDN subscriberMDN = subscriberMdnService.getSubscriberMDNById(subscriberMDNID);
+		SubscriberMdn subscriberMDN = subscriberMdnService.getSubscriberMDNById(subscriberMDNID);
 
 		if (null == subscriberMDN) {
 			log.info("Invalid subscriberMDN" + realMsg.getSubscriberMDNID());
@@ -135,9 +135,9 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 		
 		
 		Pocket srcSystemProviderPocket = getSrcSystemProvidePocket(systemParametersService.getLong(SystemParameterKeys.RETIRED_SUBSCRIBER_SYSTEM_COLLECTOR_POCKET));
-		SubscriberMDN srcSystemProviderMDN=null;
+		SubscriberMdn srcSystemProviderMDN=null;
 		if(srcSystemProviderPocket != null){
-			srcSystemProviderMDN = srcSystemProviderPocket.getSubscriberMDNByMDNID();
+			srcSystemProviderMDN = srcSystemProviderPocket.getSubscriberMdn();
 		}
 		else{
 			log.info("Failed to move balance from system provider pocket as it is not configured");
@@ -156,9 +156,9 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 		
 		if(casmLst.size() > 0){
 			casm = casmLst.get(0);
-			toBankAccount = casm.getToBankAccount();
-			settlementMDN = casm.getSettlementMDN();
-			settlementAccountNumber = casm.getSettlementAccountNumber();
+			toBankAccount = (casm.getTobankaccount() != 0);
+			settlementMDN = casm.getSettlementmdn();
+			settlementAccountNumber = casm.getSettlementaccountnumber();
 			if(!settlementAccountNumber.isEmpty()){
 				String accountNo = settlementAccountNumber;
 				PocketQuery query = new PocketQuery();
@@ -167,8 +167,8 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 				if(CollectionUtils.isNotEmpty(pockets))
 				{
 					Pocket pocket = pockets.get(0);
-					SubscriberMDN destMDN = pocket.getSubscriberMDNByMDNID();
-					settlementMDN = destMDN.getMDN();
+					SubscriberMdn destMDN = pocket.getSubscriberMdn();
+					settlementMDN = destMDN.getMdn();
 				}
 				else
 				{
@@ -189,8 +189,8 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 			
 			for(MoneyClearanceGraved mcg:lst){
 				TransactionDetails txnDetails = new TransactionDetails();
-				txnDetails.setSourceMDN(srcSystemProviderMDN.getMDN());
-				txnDetails.setSrcPocketId(srcSystemProviderPocket.getID());
+				txnDetails.setSourceMDN(srcSystemProviderMDN.getMdn());
+				txnDetails.setSrcPocketId(srcSystemProviderPocket.getId().longValue());
 				txnDetails.setDestMDN(settlementMDN);
 				if(settlementAccountNumber != null && !settlementAccountNumber.isEmpty()){
 					txnDetails.setDestinationBankAccountNo(settlementAccountNumber);
@@ -199,7 +199,7 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 				txnDetails.setAmount(mcg.getAmount());
 				txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_REFUND_INQUIRY);
 				txnDetails.setSourcePocketCode(ApiConstants.POCKET_CODE_SVA);
-				txnDetails.setChannelCode(channelCode.getChannelCode().toString());
+				txnDetails.setChannelCode(channelCode.getChannelcode().toString());
 				txnDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 				txnDetails.setSourceMessage(ServiceAndTransactionConstants.TRANSACTION_REFUND_INQUIRY);
 				if(toBankAccount){
@@ -223,18 +223,18 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 					return errorMsg;
 				}				
 			}
-			casm.setApprovalState(CmFinoFIX.ApprovalState_Approved);
-			casm.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-			casm.setApproveOrRejectComment(realMsg.getAdminComment());
-			casm.setApproveOrRejectTime(new Timestamp());
+			casm.setApprovalstate(((Integer)CmFinoFIX.ApprovalState_Approved).longValue());
+			casm.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+			casm.setApproveorrejectcomment(realMsg.getAdminComment());
+			casm.setApproveorrejecttime(new Timestamp());
 			closedAccountSettlementMDNService.saveClosedAccountSettlementMDN(casm);
 			errorMsg.setErrorDescription(MessageText._("Successfully approved the subscriber for settlement"));
 
 		} else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
-			casm.setApprovalState(CmFinoFIX.ApprovalState_Rejected);
-			casm.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-			casm.setApproveOrRejectComment(realMsg.getAdminComment());
-			casm.setApproveOrRejectTime(new Timestamp());
+			casm.setApprovalstate(((Integer)CmFinoFIX.ApprovalState_Rejected).longValue());
+			casm.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+			casm.setApproveorrejectcomment(realMsg.getAdminComment());
+			casm.setApproveorrejecttime(new Timestamp());
 			closedAccountSettlementMDNService.saveClosedAccountSettlementMDN(casm);
 			errorMsg.setErrorDescription(MessageText._("Successfully rejected the subscriber for settlement"));
 		} else {
@@ -293,23 +293,23 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 			mcg = new MoneyClearanceGraved();
 		}
 		
-		ServiceChargeTransactionLog sctl = new ServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = new ServiceChargeTxnLog();
 		if(confirmResult != null){
 			log.info("sctl ID from Confirm --> " + confirmResult.getSctlID() + " for Retired Subscriber with ID --> " + subscriberMDNID);
 			sctl = sctlService.getBySCTLID(confirmResult.getSctlID());
-			SubscriberMDN subscriberMDN = subscriberMdnService.getSubscriberMDNById(subscriberMDNID);
-			SubscriberMDN destMDN = subscriberMdnService.getByMDN(confirmResult.getDestinationMDN());
+			SubscriberMdn subscriberMDN = subscriberMdnService.getSubscriberMDNById(subscriberMDNID);
+			SubscriberMdn destMDN = subscriberMdnService.getByMDN(confirmResult.getDestinationMDN());
 			
-			mcg.setSubscriberMDNByMDNID(subscriberMDN);
-			mcg.setServiceChargeTransactionLogByRefundSctlID(sctl);
-			mcg.setMCStatus(CmFinoFIX.MCStatus_REFUNDED);
+			mcg.setSubscriberMdnByMdnid(subscriberMDN);
+			mcg.setServiceChargeTxnLogByRefundsctlid(sctl);
+			mcg.setMcstatus(CmFinoFIX.MCStatus_REFUNDED);
 			mcg.setAmount(confirmResult.getCreditAmount());
-			mcg.setSubscriberMDNByRefundMDNID(destMDN);
-			mcg.setRefundAccountNumber(refundAccountNumber);
-			mcg.setPocketByRefundPocketID(confirmResult.getSourcePocket());
+			mcg.setSubscriberMdnByRefundmdnid(destMDN);
+			mcg.setRefundaccountnumber(refundAccountNumber);
+			mcg.setPocketByRefundpocketid(confirmResult.getSourcePocket());
 			moneyClearanceGravedService.saveMoneyClearanceGraved(mcg);
 			log.info("Successfully saved save money clerance object for Retired Subscriber with ID -->"+subscriberMDNID);
-			return mcg.getID();
+			return mcg.getId().longValue();
 		}
 		return new Long(-1L);
 			

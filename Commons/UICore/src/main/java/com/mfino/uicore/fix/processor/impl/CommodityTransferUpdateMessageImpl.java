@@ -17,9 +17,9 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
@@ -69,14 +69,14 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             
             ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
     		Long sctlId = ctMapDao.getSCTLIdByCommodityTransferId(c.getID());
-    		ServiceChargeTransactionLog sctl = null;
+    		ServiceChargeTxnLog sctl = null;
     		if (sctlId != null) {
     			sctl = sctlDAO.getById(sctlId);
     		}
        		if(sctl != null){
        			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
-       			TransactionType tt = ttDAO.getById(sctl.getTransactionTypeID());
-       			entry.setTransactionTypeText(tt.getDisplayName());
+       			TransactionType tt = ttDAO.getById(sctl.getTransactiontypeid().longValue());
+       			entry.setTransactionTypeText(tt.getDisplayname());
        		}else{
        			entry.setTransactionTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, c.getUICategory()));
        		}
@@ -84,8 +84,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
        		entry.setInternalTxnType(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, c.getUICategory()));
     		
             if (type == CmFinoFIX.TransactionUICategory_Empty_SVA || type == CmFinoFIX.TransactionUICategory_MA_Transfer || type == CmFinoFIX.TransactionUICategory_MA_Topup || type == CmFinoFIX.TransactionUICategory_BulkTransfer || type == CmFinoFIX.TransactionUICategory_BulkTopup) {
-                if (c.getSubscriberBySourceSubscriberID() != null && c.getSubscriberBySourceSubscriberID().getUser() != null) {
-                    entry.setSourceUserName(c.getSubscriberBySourceSubscriberID().getUser().getUsername());
+                if (c.getSubscriberBySourceSubscriberID() != null && c.getSubscriberBySourceSubscriberID().getMfinoUserBySubscriberuserid() != null) {
+                    entry.setSourceUserName(c.getSubscriberBySourceSubscriberID().getMfinoUserBySubscriberuserid().getUsername());
                 }
             }
             if (type == CmFinoFIX.TransactionUICategory_Empty_SVA || type == CmFinoFIX.TransactionUICategory_Distribute_LOP || type == CmFinoFIX.TransactionUICategory_MA_Transfer || type == CmFinoFIX.TransactionUICategory_BulkTransfer) {
@@ -93,8 +93,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
                 SubscriberDAO subdao = DAOFactory.getInstance().getSubscriberDAO();
                 Subscriber sub = subdao.getById(sId);
                 if (sub != null) {
-                    if (sub.getUser() != null) {
-                        entry.setDestinationUserName(sub.getUser().getUsername());
+                    if (sub.getMfinoUserBySubscriberuserid() != null) {
+                        entry.setDestinationUserName(sub.getMfinoUserBySubscriberuserid().getUsername());
                     }
                 }
             }
@@ -112,12 +112,12 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             entry.setSourceMDN(c.getSourceMDN());
         }
         entry.setSourceMDNID(c.getSubscriberMDNBySourceMDNID().getID());
-        entry.setSourceSubscriberID(c.getSubscriberBySourceSubscriberID().getID());
+        entry.setSourceSubscriberID(c.getSubscriberBySourceSubscriberID().getId().longValue());
         if (c.getSourceSubscriberName() != null) {
             entry.setSourceSubscriberName(c.getSourceSubscriberName());
         }
         entry.setSourcePocketType(c.getSourcePocketType());
-        entry.setSourcePocketID(c.getPocketBySourcePocketID().getID());
+        entry.setSourcePocketID(c.getPocketBySourcePocketID().getId().longValue());
         if (c.getSourcePocketBalance() != null) {
             entry.setSourcePocketBalance(c.getSourcePocketBalance());
         }
@@ -125,7 +125,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             entry.setSourcePocketTemplateDescription(c.getPocketBySourcePocketID().getPocketTemplate().getDescription());
             if (c.getSourceCardPAN() != null) {
 //              entry.setSourceCardPAN(c.getSourceCardPAN());
-          	 entry.setSourceCardPAN(c.getPocketBySourcePocketID().getCardPAN()!=null?c.getPocketBySourcePocketID().getCardPAN():"");
+          	 entry.setSourceCardPAN(c.getPocketBySourcePocketID().getCardpan()!=null?c.getPocketBySourcePocketID().getCardpan():"");
           }
         }
        
@@ -143,9 +143,9 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         } else {
             if (c.getDestMDN() != null) {
                 String mdn = c.getDestMDN();
-                SubscriberMDN submdn = subMdnDao.getByMDN(mdn);
+                SubscriberMdn submdn = subMdnDao.getByMDN(mdn);
                 if (submdn != null) {
-                    entry.setDestSubscriberName(submdn.getSubscriber().getFirstName() + " " + submdn.getSubscriber().getLastName());
+                    entry.setDestSubscriberName(submdn.getSubscriber().getFirstname() + " " + submdn.getSubscriber().getLastname());
                 }
             }
         }
@@ -165,7 +165,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             }
             if (c.getDestCardPAN() != null) {
 //              entry.setDestCardPAN(c.getDestCardPAN());
-            	entry.setDestCardPAN(destPocket.getCardPAN()!=null?destPocket.getCardPAN():"");
+            	entry.setDestCardPAN(destPocket.getCardpan()!=null?destPocket.getCardpan():"");
           }
         }
      
@@ -242,7 +242,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             entry.setReversalCount(c.getReversalCount());
         }
         if (c.getDistributionChainLevelByDCTLevelID() != null) {
-            entry.setDistributionLevel(c.getDistributionChainLevelByDCTLevelID().getDistributionLevel());
+            entry.setDistributionLevel(((Long)c.getDistributionChainLevelByDCTLevelID().getDistributionlevel()).intValue());
         }
         if (c.getSourceMessage() != null) {
             entry.setSourceMessage(c.getSourceMessage());
@@ -329,11 +329,11 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             entry.setISO8583_ResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ISO8583_ResponseCode, null, c.getISO8583_ResponseCode()));
         }
         if (c.getLOP() != null) {
-            if (c.getLOP().getActualAmountPaid() != null) {
-                entry.setPaidAmount(c.getLOP().getActualAmountPaid());
+            if (c.getLOP().getActualamountpaid() != null) {
+                entry.setPaidAmount(c.getLOP().getActualamountpaid());
             }
-            if (c.getLOP().getID() != null) {
-                entry.setLOPID(c.getLOP().getID());
+            if (c.getLOP().getId() != null) {
+                entry.setLOPID(c.getLOP().getId().longValue());
             }
         }
         if (pct != null) {
@@ -376,8 +376,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         if (c.getOperatorSTAN() != null) {
             entry.setOperatorSTAN(c.getOperatorSTAN());
         }
-        if (c.getCreditCardTransaction() != null && c.getCreditCardTransaction().getID() != null) {
-            entry.setCreditCardTransactionID(c.getCreditCardTransaction().getID());
+        if (c.getCreditCardTransaction() != null && c.getCreditCardTransaction().getId() != null) {
+            entry.setCreditCardTransactionID(c.getCreditCardTransaction().getId().longValue());
 //            entry.setPaymentMethod(c.getCreditCardTransaction().getPaymentMethod());
 //            entry.setErrCode(c.getCreditCardTransaction().getErrCode());
 //            entry.setUserCode(c.getCreditCardTransaction().getUserCode());
@@ -424,7 +424,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
     	entry.setTransactionID(c.getID());
     	if(realMsg.getSourceDestnPocketID()!=null){
     		if(c.getPocketBySourcePocketID()!=null
-    				&&c.getPocketBySourcePocketID().getID().equals(realMsg.getSourceDestnPocketID())){
+    				&&c.getPocketBySourcePocketID().getId().equals(realMsg.getSourceDestnPocketID())){
     			entry.setDebitAmount(c.getAmount().add(c.getCharges()));
     			entry.setCreditAmount(null);
     			if(c.getSourcePocketBalance()!=null){

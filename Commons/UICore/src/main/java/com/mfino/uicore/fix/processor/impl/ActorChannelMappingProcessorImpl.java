@@ -45,12 +45,12 @@ public class ActorChannelMappingProcessorImpl extends BaseFixProcessor implement
 		GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 		
 		if(e.getSubscriberType() != null) {
-			acm.setSubscriberType(e.getSubscriberType());
+			acm.setSubscribertype(e.getSubscriberType());
 		}
 		if(e.getBusinessPartnerType() != null) {
-			acm.setBusinessPartnerType(e.getBusinessPartnerType());
+			acm.setBusinesspartnertype(e.getBusinessPartnerType().longValue());
 		} else if(e.isRemoteModifiedBusinessPartnerType()) {
-			acm.setBusinessPartnerType(null);
+			acm.setBusinesspartnertype(null);
 		}
 		if (e.getServiceID() != null) {
 			acm.setService(sDAO.getById(e.getServiceID()));
@@ -62,56 +62,56 @@ public class ActorChannelMappingProcessorImpl extends BaseFixProcessor implement
 			acm.setChannelCode(ccDAO.getById(e.getChannelCodeID()));
 		}
 		if (e.getKYCLevel() != null) {
-			acm.setKYCLevelByKYCLevel(kycDAO.getById(e.getKYCLevel()));
+			acm.setKycLevel(kycDAO.getById(e.getKYCLevel()));
 		} else if(e.isRemoteModifiedKYCLevel()) {
-			acm.setKYCLevelByKYCLevel(null);
+			acm.setKycLevel(null);
 		}
 		if(e.getGroupID() != null) {
-			acm.setGroup(groupDao.getById(Long.valueOf(e.getGroupID())));
+			acm.setGroups(groupDao.getById(Long.valueOf(e.getGroupID())));
 		}
 		if(e.getIsAllowed() != null) {
-			acm.setIsAllowed(e.getIsAllowed());
+			acm.setIsallowed((short) (e.getIsAllowed()?1:0));
 		}
 	}
 	
 	private void updateMessage(ActorChannelMapping acm, CMJSActorChannelMapping.CGEntries e) {
-		e.setID(acm.getID());
-		if(acm.getSubscriberType() != null) {
-			e.setSubscriberType(acm.getSubscriberType());
-			e.setSubscriberTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, CmFinoFIX.Language_English, acm.getSubscriberType()));
+		e.setID(acm.getId().longValue());
+		if((Long)acm.getSubscribertype() != null) {
+			e.setSubscriberType(((Long)acm.getSubscribertype()).intValue());
+			e.setSubscriberTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, CmFinoFIX.Language_English, acm.getSubscribertype()));
 		}
-		if(acm.getBusinessPartnerType() != null) {
-			e.setBusinessPartnerType(acm.getBusinessPartnerType());
-			e.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerType, CmFinoFIX.Language_English, acm.getBusinessPartnerType()));
+		if(acm.getBusinesspartnertype() != null) {
+			e.setBusinessPartnerType(acm.getBusinesspartnertype().intValue());
+			e.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerType, CmFinoFIX.Language_English, acm.getBusinesspartnertype()));
 		}
-		if(acm.getIsAllowed() != null) {
-			e.setIsAllowed(acm.getIsAllowed());
+		if(((Short)acm.getIsallowed()) != null) {
+			e.setIsAllowed(acm.getIsallowed() != 0);
 		}
 		if (acm.getService() != null) {
-			e.setServiceID(acm.getService().getID());
-			e.setServiceName(acm.getService().getDisplayName());
+			e.setServiceID(acm.getService().getId().longValue());
+			e.setServiceName(acm.getService().getDisplayname());
 		}
 		if (acm.getTransactionType() != null) {
-			e.setTransactionTypeID(acm.getTransactionType().getID());
-			e.setTransactionName(acm.getTransactionType().getDisplayName());
+			e.setTransactionTypeID(acm.getTransactionType().getId().longValue());
+			e.setTransactionName(acm.getTransactionType().getDisplayname());
 		}
 		if (acm.getChannelCode() != null) {
-			e.setChannelCodeID(acm.getChannelCode().getID());
-			e.setChannelName(acm.getChannelCode().getChannelName());
+			e.setChannelCodeID(acm.getChannelCode().getId().longValue());
+			e.setChannelName(acm.getChannelCode().getChannelname());
 		}
-		if (acm.getKYCLevelByKYCLevel() != null) {
-			e.setKYCLevel(acm.getKYCLevelByKYCLevel().getID());
-			e.setKYCLevelText(acm.getKYCLevelByKYCLevel().getKYCLevelName());
+		if (acm.getKycLevel() != null) {
+			e.setKYCLevel(acm.getKycLevel().getId().longValue());
+			e.setKYCLevelText(acm.getKycLevel().getKyclevelname());
 		}
-		if (acm.getGroup() != null) {
-			e.setGroupID(acm.getGroup().getID().toString());
-			e.setGroupName(acm.getGroup().getGroupName());
+		if (acm.getGroups() != null) {
+			e.setGroupID(acm.getGroups().getId().toString());
+			e.setGroupName(acm.getGroups().getGroupname());
 		}
-		e.setRecordVersion(acm.getVersion());
-		e.setCreatedBy(acm.getCreatedBy());
-		e.setCreateTime(acm.getCreateTime());
-		e.setUpdatedBy(acm.getUpdatedBy());
-		e.setLastUpdateTime(acm.getLastUpdateTime());
+		e.setRecordVersion(((Long)acm.getVersion()).intValue());
+		e.setCreatedBy(acm.getCreatedby());
+		e.setCreateTime(acm.getCreatetime());
+		e.setUpdatedBy(acm.getUpdatedby());
+		e.setLastUpdateTime(acm.getLastupdatetime());
 	}
 
 	@Override

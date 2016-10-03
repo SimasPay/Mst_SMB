@@ -55,51 +55,52 @@ public class ChannelCodeProcessorImpl extends BaseFixProcessor implements Channe
     private void updateEntity(ChannelCode channelCode, CmFinoFIX.CMJSChannelCode.CGEntries e) {
 
         if (e.getChannelCode() != null) {
-            channelCode.setChannelCode(e.getChannelCode());
+            channelCode.setChannelcode(e.getChannelCode());
         }
 
         if (e.getChannelName() != null) {
-            channelCode.setChannelName(e.getChannelName());
+            channelCode.setChannelname(e.getChannelName());
         }
         if (e.getDescription() != null) {
             channelCode.setDescription(e.getDescription());
         }
         if (e.getChannelSourceApplication() != null) {
-            channelCode.setChannelSourceApplication(e.getChannelSourceApplication());
+            channelCode.setChannelsourceapplication(e.getChannelSourceApplication());
         }
     }
 
     private void updateMessage(ChannelCode channelCode, CMJSChannelCode.CGEntries entry) {
 
-        entry.setID(channelCode.getID());
+        entry.setID(channelCode.getId().longValue());
 
         if (channelCode.getDescription() != null) {
             entry.setDescription(channelCode.getDescription());
         }
-        if (channelCode.getChannelCode() != null) {
-            entry.setChannelCode(channelCode.getChannelCode());
+        if (channelCode.getChannelcode() != null) {
+            entry.setChannelCode(channelCode.getChannelcode());
         }
-        if (channelCode.getChannelName() != null) {
-            entry.setChannelName(channelCode.getChannelName());
+        if (channelCode.getChannelname() != null) {
+            entry.setChannelName(channelCode.getChannelname());
         }
-        if (channelCode.getChannelSourceApplication() != null) {
-            entry.setChannelSourceApplication(channelCode.getChannelSourceApplication());
-            entry.setChannelSourceApplicationText(channelCodeService.getChannelNameBySourceApplication(channelCode.getChannelSourceApplication()));
+        if (((Long)channelCode.getChannelsourceapplication()) != null) {
+            entry.setChannelSourceApplication(((Long)channelCode.getChannelsourceapplication()).intValue());
+            entry.setChannelSourceApplicationText(channelCodeService.getChannelNameBySourceApplication(
+            				((Long)channelCode.getChannelsourceapplication()).intValue()));
         }
-        if (channelCode.getCreateTime() != null) {
-            entry.setCreateTime(channelCode.getCreateTime());
+        if (channelCode.getCreatetime() != null) {
+            entry.setCreateTime(channelCode.getCreatetime());
         }
-        if (channelCode.getCreatedBy() != null) {
-            entry.setCreatedBy(channelCode.getCreatedBy());
+        if (channelCode.getCreatedby() != null) {
+            entry.setCreatedBy(channelCode.getCreatedby());
         }
-        if (channelCode.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(channelCode.getLastUpdateTime());
+        if (channelCode.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(channelCode.getLastupdatetime());
         }
-        if (channelCode.getUpdatedBy() != null) {
-            entry.setUpdatedBy(channelCode.getUpdatedBy());
+        if (channelCode.getUpdatedby() != null) {
+            entry.setUpdatedBy(channelCode.getUpdatedby());
         }
-        if (channelCode.getVersion() != null) {
-            entry.setRecordVersion(channelCode.getVersion());
+        if (((Long)channelCode.getVersion()) != null) {
+            entry.setRecordVersion(((Long)channelCode.getVersion()).intValue());
         }
     }
 
@@ -120,7 +121,7 @@ public class ChannelCodeProcessorImpl extends BaseFixProcessor implements Channe
                         handleStaleDataException();
                     }
                     //restrict the user if channelcode is less than 10 (7 are used 3 are kept for reserved)
-                    if (Integer.parseInt(channelCode.getChannelCode()) > 10) {
+                    if (Integer.parseInt(channelCode.getChannelcode()) > 10) {
                         updateEntity(channelCode, e);
                         try {
                             dao.save(channelCode);
@@ -211,7 +212,7 @@ public class ChannelCodeProcessorImpl extends BaseFixProcessor implements Channe
                 for (CMJSChannelCode.CGEntries e : entries) {
                     //restrict the user if channelcode is less than 10 (7 are used 3 are kept for reserved).
                     ChannelCode code = dao.getById(e.getID());
-                    if (Integer.parseInt(code.getChannelCode()) > 10) {
+                    if (Integer.parseInt(code.getChannelcode()) > 10) {
                         dao.deleteById(e.getID());
                     } else {
                         CMJSError errorMsg = new CMJSError();

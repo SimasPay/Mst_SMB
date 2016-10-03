@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
-
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
@@ -25,11 +25,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.User;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -107,7 +107,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		CMJSError errorMsg = new CMJSError();
 
 		User user = userService.getCurrentUser();
-		Set<Partner> partners = user.getPartnerFromUserID();
+		Set<Partner> partners = user.getPartners();
 		if (partners == null || partners.isEmpty()) {
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -116,8 +116,8 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 
 		Partner partner = partners.iterator().next();
 		Subscriber partnersub = partner.getSubscriber();
-		SubscriberMDN partnerMDN = partnersub.getSubscriberMDNFromSubscriberID().iterator().next();
-		SubscriberMDN subscriberMDN = null;
+		SubscriberMdn partnerMDN = partnersub.getSubscriberMdns().iterator().next();
+		SubscriberMdn subscriberMDN = null;
 		if(!CmFinoFIX.MDNStatus_Active.equals(partnerMDN.getStatus())){
 			log.info("PartnerMdn Status is not active");
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
@@ -151,29 +151,29 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 			realMsg.setSourceMDN(subscriberService.normalizeMDN(realMsg.getSourceMDN()));
 			subscriberMDN=subscriberMdnService.getByMDN(realMsg.getSourceMDN());
 			if(subscriberMDN==null){
-				log.info("SubscriberMDN not exist");
+				log.info("SubscriberMdn not exist");
 				errorMsg.setErrorDescription(MessageText._("MDN not exist"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}else if(!CmFinoFIX.MDNStatus_NotRegistered.equals(subscriberMDN.getStatus())){
-				log.info("SubscriberMDN registered ");
+				log.info("SubscriberMdn registered ");
 				errorMsg.setErrorDescription(MessageText._("MDN already registered "));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
 		}
 		XMLResult result = new XMLResult();
-		PINValidator pinValidator = new PINValidator(partnerMDN.getMDN(), realMsg.getPin(),result);
+		PINValidator pinValidator = new PINValidator(partnerMDN.getMdn(), realMsg.getPin(),result);
 		if(!CmFinoFIX.ResponseCode_Success.equals(pinValidator.validate())){
 			log.info("Invalid Partner Pin counts left "+result.getNumberOfTriesLeft());
 			errorMsg.setErrorDescription(MessageText._("Invalid Partner Pin counts left "+result.getNumberOfTriesLeft()));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		realMsg.setDestMDN(partnerMDN.getMDN());
+		realMsg.setDestMDN(partnerMDN.getMdn());
 		UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
 		query.setTransferSctlId(realMsg.getOriginalReferenceID());	
-		query.setSubscriberMDNID(subscriberMDN.getID());		
+		query.setSubscriberMDNID(subscriberMDN.getId().longValue());		
 		List<UnregisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
 		if(unRegisteredTxnInfo==null||unRegisteredTxnInfo.isEmpty()){
 			log.info("unregistered transaction info not exist with sctlid"+realMsg.getOriginalReferenceID());
@@ -182,15 +182,15 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 			return errorMsg;	
 		}
 		UnregisteredTxnInfo txnInfo = unRegisteredTxnInfo.get(0);
-		if(!(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(txnInfo.getUnRegisteredTxnStatus())
-				||CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(txnInfo.getUnRegisteredTxnStatus()))){
-			log.info("unregistered transaction info status "+txnInfo.getUnRegisteredTxnStatus());
+		if(!(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(txnInfo.getUnregisteredtxnstatus())
+				||CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(txnInfo.getUnregisteredtxnstatus()))){
+			log.info("unregistered transaction info status "+txnInfo.getUnregisteredtxnstatus());
 			errorMsg.setErrorDescription(MessageText._("Transfer Record Status does not allow Cashout"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}else{
-			String code = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), realMsg.getDigestedPIN());
-			if(!txnInfo.getDigestedPIN().equals(code)){
+			String code = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), realMsg.getDigestedPIN());
+			if(!txnInfo.getDigestedpin().equals(code)){
 				log.info("Invalid secrete code");
 				errorMsg.setErrorDescription(MessageText._("Invalid secrete code"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -210,20 +210,21 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 	}
 	
  	private CMJSError handleCashOutInquiry(CMJSCashOutUnregisteredInquiry realMsg,
-			UnregisteredTxnInfo txnInfo, SubscriberMDN partnerMDN, SubscriberMDN destMDn, Partner partner) {
+			UnregisteredTxnInfo txnInfo, SubscriberMdn partnerMDN, SubscriberMdn destMDn, Partner partner) {
 		CMJSError errorMsg = new CMJSError();
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-		TransactionsLog transactionsLog = new TransactionsLog();
+		TransactionLog transactionsLog = new TransactionLog();
 
-        transactionsLog.setMessageCode(CmFinoFIX.MsgType_JSCashOutUnregisteredInquiry);
-        transactionsLog.setMessageData(realMsg.DumpFields());
-        transactionsLog.setTransactionTime(new Timestamp(new Date()));
+        transactionsLog.setMessagecode(CmFinoFIX.MsgType_JSCashOutUnregisteredInquiry);
+        transactionsLog.setMessagedata(realMsg.DumpFields());
+        transactionsLog.setTransactiontime(new Timestamp(new Date()));
         transactionLogService.save(transactionsLog); 
         
         ChannelCode cc = channelCodeService.getChannelCodebySourceApplication(CmFinoFIX.SourceApplication_Web);
        
-        Pocket subPocket = subscriberService.getDefaultPocket(destMDn.getID(),systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
-		if(subPocket==null||!subPocket.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive)){
+        Pocket subPocket = subscriberService.getDefaultPocket(destMDn.getId().longValue(), 
+        		systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
+		if(subPocket == null || !((Long)subPocket.getStatus()).equals(CmFinoFIX.PocketStatus_OneTimeActive)){
 			log.info("subscriber pocket Null");
 			errorMsg.setErrorDescription(MessageText._(" vaild Subscriber pocket not found "));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -231,33 +232,34 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		}
 		
 
-		CommodityTransfer ct = commodityTransferService.getCommodityTransferById(txnInfo.getTransferCTId());
+		CommodityTransfer ct = commodityTransferService.getCommodityTransferById(txnInfo.getTransferctid().longValue());
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(partnerMDN.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(partnerMDN.getMdn());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED);
-		sc.setSourceMDN(destMDn.getMDN());
+		sc.setSourceMDN(destMDn.getMdn());
 		sc.setTransactionAmount(ct.getAmount());
-		sc.setMfsBillerCode(partner.getPartnerCode());
+		sc.setMfsBillerCode(partner.getPartnercode());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		Pocket partnerPocket = null;
 		Pocket partnerbankPocket;
 		
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(sc.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getID(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId().longValue(), 
+					servicePartnerId, serviceId);
 			if (partnerService == null) {
 				log.info("Partner service Null");
 				errorMsg.setErrorDescription(MessageText._("You are not registered for this service"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}else{
-			partnerPocket = partnerService.getPocketByDestPocketID();
-			partnerbankPocket = partnerService.getPocketBySourcePocket();
+			partnerPocket = partnerService.getPocketByDestpocketid();
+			partnerbankPocket = partnerService.getPocketBySourcepocket();
 			
-			if(partnerbankPocket==null||(!partnerbankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+			if(partnerbankPocket==null || (!((Long)partnerbankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
 				log.info("Partner bank Pocket Not found");
 				errorMsg.setErrorDescription(MessageText._(" valid bank Pocket not found"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -269,7 +271,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
-			if (!partnerPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+			if (!((Long)partnerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
 				log.info("Partner Pocket Not Active");
 				errorMsg.setErrorDescription(MessageText._("Emoney Pocket not Active"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -297,43 +299,43 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;			
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		realMsg.setServiceChargeTransactionLogID(sctl.getID());
-		txnInfo.setCashoutSCTLId(sctl.getID());
-		txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		realMsg.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		txnInfo.setCashoutsctlid(sctl.getId());
+		txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.longValue());
 		unRegisteredTxnInfoService.save(txnInfo);		
     	
     	CMCashOutInquiryForNonRegistered unregisteredSubscriberCashOutInquiry= new CMCashOutInquiryForNonRegistered();
 		unregisteredSubscriberCashOutInquiry = new CMCashOutInquiryForNonRegistered();
-		unregisteredSubscriberCashOutInquiry.setSourceMDN(destMDn.getMDN());
-		unregisteredSubscriberCashOutInquiry.setDestMDN(partnerMDN.getMDN());
+		unregisteredSubscriberCashOutInquiry.setSourceMDN(destMDn.getMdn());
+		unregisteredSubscriberCashOutInquiry.setDestMDN(partnerMDN.getMdn());
 		unregisteredSubscriberCashOutInquiry.setPin(realMsg.getPin());
-		unregisteredSubscriberCashOutInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		unregisteredSubscriberCashOutInquiry.setChannelCode(cc.getChannelCode());
+		unregisteredSubscriberCashOutInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		unregisteredSubscriberCashOutInquiry.setChannelCode(cc.getChannelcode());
 		unregisteredSubscriberCashOutInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		unregisteredSubscriberCashOutInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CASH_OUT);
-		unregisteredSubscriberCashOutInquiry.setTransactionID(transactionsLog.getID());
-		unregisteredSubscriberCashOutInquiry.setPartnerCode(partner.getPartnerCode());
+		unregisteredSubscriberCashOutInquiry.setTransactionID(transactionsLog.getId().longValue());
+		unregisteredSubscriberCashOutInquiry.setPartnerCode(partner.getPartnercode());
 		unregisteredSubscriberCashOutInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-		unregisteredSubscriberCashOutInquiry.setSourcePocketID(subPocket.getID());
-		unregisteredSubscriberCashOutInquiry.setDestPocketID(partnerPocket.getID());
-		unregisteredSubscriberCashOutInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		unregisteredSubscriberCashOutInquiry.setSourcePocketID(subPocket.getId().longValue());
+		unregisteredSubscriberCashOutInquiry.setDestPocketID(partnerPocket.getId().longValue());
+		unregisteredSubscriberCashOutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		unregisteredSubscriberCashOutInquiry.setAmount(transaction.getAmountToCredit());
 		unregisteredSubscriberCashOutInquiry.setCharges(transaction.getAmountTowardsCharges());
 		unregisteredSubscriberCashOutInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Cashout_To_UnRegistered);
-		realMsg.setSourcePocketID(subPocket.getID());
-		realMsg.setDestPocketID(partnerPocket.getID());
+		realMsg.setSourcePocketID(subPocket.getId().longValue());
+		realMsg.setDestPocketID(partnerPocket.getId().longValue());
 		realMsg.setCharges(transaction.getAmountTowardsCharges());
 		realMsg.setAmount(transaction.getAmountToCredit());
 		errorMsg= (CMJSError) handleRequestResponse(unregisteredSubscriberCashOutInquiry);
 		if(!CmFinoFIX.ErrorCode_NoError.equals(errorMsg.getErrorCode())){
-			txnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+			txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.longValue());
 			if(errorMsg.getTransferID()!=null){
-				txnInfo.setCashoutCTId(errorMsg.getTransferID());
+				txnInfo.setCashoutctid(new BigDecimal(errorMsg.getTransferID()) );
 			}
 			unRegisteredTxnInfoService.save(txnInfo);	
 	    }else{
-		txnInfo.setCashoutCTId(errorMsg.getTransferID());
+		txnInfo.setCashoutctid(new BigDecimal(errorMsg.getTransferID()));
 		unRegisteredTxnInfoService.save(txnInfo);	
 	    }
 		return errorMsg;

@@ -26,7 +26,7 @@ import com.mfino.domain.BulkUpload;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -84,8 +84,8 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
             {
                 SubscriberDAO subsDao = DAOFactory.getInstance().getSubscriberDAO();
                 Subscriber sub = subsDao.getById(realMsg.getMerchantIDSearch());
-                SubscriberMDN subMdn = (SubscriberMDN)sub.getSubscriberMDNFromSubscriberID().toArray()[0];
-                query.setMdnID(subMdn.getID());
+                SubscriberMdn subMdn = (SubscriberMdn)sub.getSubscriberMdns().toArray()[0];
+                query.setMdnID(subMdn.getId().longValue());
             }
             if (realMsg.getPaymentDateSearch() != null) {
             	query.setPaymentDate(realMsg.getPaymentDateSearch());
@@ -117,82 +117,83 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
     }
 
     public void updateMessage(BulkUpload bu, CMJSBulkUpload.CGEntries entry) {
-        entry.setID(bu.getID());
+        entry.setID(bu.getId().longValue());
 
         if (bu.getDescription() != null) {
             entry.setDescription(bu.getDescription());
         }
-        if (bu.getInFileName() != null) {
-            entry.setFileName(bu.getInFileName());
+        if (bu.getInfilename() != null) {
+            entry.setFileName(bu.getInfilename());
         }
-        if (bu.getDeliveryStatus() != null) {
-            entry.setBulkUploadDeliveryStatus(bu.getDeliveryStatus());
+        if ((Long)bu.getDeliverystatus() != null) {
+            entry.setBulkUploadDeliveryStatus(((Long)bu.getDeliverystatus()).intValue());
         }
-        if (bu.getFileType() != null) {
-            entry.setBulkUploadFileType(bu.getFileType());
-            entry.setBulkUploadFileTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileType, null, bu.getFileType()));
+        if ((Long) bu.getFiletype() != null) {
+            entry.setBulkUploadFileType(((Long)bu.getFiletype()).intValue());
+            entry.setBulkUploadFileTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileType, 
+            		null, bu.getFiletype()));
         }
-        if (bu.getDeliveryDate() != null) {
-            entry.setBulkUploadDeliveryDate(bu.getDeliveryDate());
+        if (bu.getDeliverydate() != null) {
+            entry.setBulkUploadDeliveryDate(bu.getDeliverydate());
         }
-        if (bu.getCreatedBy() != null) {
-            entry.setUploadedBy(bu.getCreatedBy());
+        if (bu.getCreatedby() != null) {
+            entry.setUploadedBy(bu.getCreatedby());
         }
-        if (bu.getMDNID() != null) {
-            entry.setMDNID(bu.getMDNID());
+        if (bu.getMdnid() != null) {
+            entry.setMDNID(bu.getMdnid().longValue());
         }
-        if (bu.getTotalAmount() != null) {
-            entry.setTotalAmount(bu.getTotalAmount());
+        if (bu.getTotalamount() != null) {
+            entry.setTotalAmount(bu.getTotalamount());
         }
-        if (bu.getSuccessAmount() != null) {
-            entry.setSuccessAmount(bu.getSuccessAmount());
+        if (bu.getSuccessamount() != null) {
+            entry.setSuccessAmount(bu.getSuccessamount());
         }
-        if (bu.getFailedTransactionsCount() != null) {
-            entry.setFailedTransactionsCount(bu.getFailedTransactionsCount());
+        if (bu.getFailedtransactionscount() != null) {
+            entry.setFailedTransactionsCount(bu.getFailedtransactionscount().intValue());
         }
-        if (bu.getUserName() != null) {
-            entry.setUserName(bu.getUserName());
+        if (bu.getUsername() != null) {
+            entry.setUserName(bu.getUsername());
         }
-        if (bu.getMDN() != null) {
-            entry.setMDN(bu.getMDN());
+        if (bu.getMdn() != null) {
+            entry.setMDN(bu.getMdn());
         }
-        if (bu.getTransactionsCount() != null) {
-            entry.setTransactionsCount(bu.getTransactionsCount());
+        if ((Long)bu.getTransactionscount() != null) {
+            entry.setTransactionsCount(((Long)bu.getTransactionscount()).intValue());
         }
-        if (bu.getVerificationChecksum() != null) {
-            entry.setVerificationChecksum(bu.getVerificationChecksum());
+        if (bu.getVerificationchecksum() != null) {
+            entry.setVerificationChecksum(bu.getVerificationchecksum().longValue());
         }
-        if (bu.getCreateTime() != null) {
-            entry.setCreateTime(bu.getCreateTime());
+        if (bu.getCreatetime() != null) {
+            entry.setCreateTime(bu.getCreatetime());
         }
-        if (bu.getCreatedBy() != null) {
-        	entry.setCreatedBy(bu.getCreatedBy());
+        if (bu.getCreatedby() != null) {
+        	entry.setCreatedBy(bu.getCreatedby());
         }
-        if (bu.getLastUpdateTime() != null) {
-        	entry.setLastUpdateTime(bu.getLastUpdateTime());
+        if (bu.getLastupdatetime() != null) {
+        	entry.setLastUpdateTime(bu.getLastupdatetime());
         }
-        if (bu.getUpdatedBy() != null) {
-        	entry.setUpdatedBy(bu.getUpdatedBy());
+        if (bu.getUpdatedby() != null) {
+        	entry.setUpdatedBy(bu.getUpdatedby());
         }
         if (bu.getName() != null) {
         	entry.setName(bu.getName());
         }
-        if (bu.getFileType().equals(CmFinoFIX.BulkUploadFileType_BankAccountTransfer)) {
+        if (((Long)bu.getFiletype()).equals(CmFinoFIX.BulkUploadFileType_BankAccountTransfer)) {
             CommodityTransferDAO dao = DAOFactory.getInstance().getCommodityTransferDAO();
             PendingCommodityTransferDAO pdao = DAOFactory.getInstance().getPendingCommodityTransferDAO();
             CommodityTransferQuery query = new CommodityTransferQuery();
-            query.setBulkuploadID(bu.getID());
+            query.setBulkuploadID(bu.getId().longValue());
             query.setBulkUploadLineNumber(1);
             try {
                 List<CommodityTransfer> results = dao.get(query);
                 if (results.size() > 0) {
                     entry.setCurrency(results.get(0).getCurrency());
-                    entry.setProcessTime(results.get(0).getStartTime());
+                    entry.setProcessTime(results.get(0).getStarttime());
                 } else {
                     List<PendingCommodityTransfer> presults = pdao.get(query);
                     if (presults.size() > 0) {
                         entry.setCurrency(presults.get(0).getCurrency());
-                        entry.setProcessTime(presults.get(0).getStartTime());
+                        entry.setProcessTime(presults.get(0).getStarttime());
                     }
                 }
             } catch (Exception exp) {
@@ -202,36 +203,37 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
 
         }
         entry.setBulkUploadDeliveryStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadDeliveryStatus, null, entry.getBulkUploadDeliveryStatus()));
-        if (bu.getDeliveryStatus().equals(CmFinoFIX.BulkUploadDeliveryStatus_Processed) || bu.getDeliveryStatus().equals(CmFinoFIX.BulkUploadDeliveryStatus_Complete)) {
-            if (bu.getFailedTransactionsCount() != null && bu.getTransactionsCount() != null) {
-                entry.setSuccessfulTransactionsCount(bu.getTransactionsCount() - bu.getFailedTransactionsCount());
+        if (((Long)bu.getDeliverystatus()).equals(CmFinoFIX.BulkUploadDeliveryStatus_Processed) || ((Long)bu.getDeliverystatus()).equals(CmFinoFIX.BulkUploadDeliveryStatus_Complete)) {
+            if (bu.getFailedtransactionscount() != null && ((Long)bu.getTransactionscount()) != null) {
+            	Long trxSuccessCount = bu.getTransactionscount() - bu.getFailedtransactionscount();
+                entry.setSuccessfulTransactionsCount(trxSuccessCount.intValue());
             }
         } else {
             entry.setSuccessfulTransactionsCount(null);
         }
-        if (bu.getPaymentDate() != null) {
-        	entry.setPaymentDate(bu.getPaymentDate());
+        if (bu.getPaymentdate() != null) {
+        	entry.setPaymentDate(bu.getPaymentdate());
         }
-        if (bu.getPocketBySourcePocket() != null) {
-        	entry.setSourcePocket(bu.getPocketBySourcePocket().getID());
-			if (StringUtils.isNotBlank(bu.getPocketBySourcePocket().getCardPAN()) && bu.getPocketBySourcePocket().getPocketTemplate() != null) {
-	        	String cPan = bu.getPocketBySourcePocket().getCardPAN();
+        if (bu.getPocket() != null) {
+        	entry.setSourcePocket(bu.getPocket().getId().longValue());
+			if (StringUtils.isNotBlank(bu.getPocket().getCardpan()) && bu.getPocket().getPocketTemplate() != null) {
+	        	String cPan = bu.getPocket().getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	entry.setSourcePocketDispText(bu.getPocketBySourcePocket().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (bu.getPocketBySourcePocket().getPocketTemplate() != null) {
-				entry.setSourcePocketDispText(bu.getPocketBySourcePocket().getPocketTemplate().getDescription());
+	        	entry.setSourcePocketDispText(bu.getPocket().getPocketTemplate().getDescription() + " - " + cPan);
+			} else if (bu.getPocket().getPocketTemplate() != null) {
+				entry.setSourcePocketDispText(bu.getPocket().getPocketTemplate().getDescription());
 			}
         }
-        if (bu.getServiceChargeTransactionLogID() != null) {
-        	entry.setServiceChargeTransactionLogID(bu.getServiceChargeTransactionLogID());
+        if (bu.getServicechargetransactionlogid() != null) {
+        	entry.setServiceChargeTransactionLogID(bu.getServicechargetransactionlogid().longValue());
         }
-        if (bu.getReverseSCTLID() != null) {
-        	entry.setReverseSCTLID(bu.getReverseSCTLID());
+        if (bu.getReversesctlid() != null) {
+        	entry.setReverseSCTLID(bu.getReversesctlid().longValue());
         }
-        if (StringUtils.isNotBlank(bu.getFailureReason())) {
-        	entry.setFailureReason(bu.getFailureReason());
+        if (StringUtils.isNotBlank(bu.getFailurereason())) {
+        	entry.setFailureReason(bu.getFailurereason());
         }
     }
 }

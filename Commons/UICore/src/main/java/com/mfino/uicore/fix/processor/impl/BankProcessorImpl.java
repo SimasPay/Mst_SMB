@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -81,7 +82,7 @@ public class BankProcessorImpl extends BaseFixProcessor implements BankProcessor
     public void updateEntity(Bank bank, CMJSBank.CGEntries e) {
 
         if (e.getID() != null) {
-            bank.setID(e.getID());
+            bank.setId(new BigDecimal(e.getID()));
         }
         if (e.getBankName() != null) {
             bank.setName(e.getBankName());
@@ -91,24 +92,24 @@ public class BankProcessorImpl extends BaseFixProcessor implements BankProcessor
         }
 
         if (e.getCreateTime() != null) {
-            bank.setCreateTime(e.getCreateTime());
+            bank.setCreatetime(e.getCreateTime());
         }
         if (e.getLastUpdateTime() != null) {
-            bank.setLastUpdateTime(e.getLastUpdateTime());
+            bank.setLastupdatetime(e.getLastUpdateTime());
         }
         if(e.getBankCode()!=null){
-        	bank.setBankCode(e.getBankCode());
+        	bank.setBankcode(e.getBankCode().longValue());
         }
 
         if (e.getStatusTime() != null) {
-            bank.setStatusTime((e.getStatusTime()));
+            bank.setStatustime((e.getStatusTime()));
         }
     }
 
     public void updateMessage(Bank bank, CMJSBank.CGEntries e) {
 
-        if (bank.getID() != null) {
-            e.setID(bank.getID());
+        if (bank.getId() != null) {
+            e.setID(bank.getId().longValue());
         }
         if (bank.getName() != null) {
             e.setBankName(bank.getName());
@@ -117,23 +118,23 @@ public class BankProcessorImpl extends BaseFixProcessor implements BankProcessor
             e.setDescription(bank.getDescription());
         }
 
-        if (bank.getCreateTime() != null) {
-            e.setCreateTime(bank.getCreateTime());
+        if (bank.getCreatetime() != null) {
+            e.setCreateTime(bank.getCreatetime());
         }
-        if (bank.getLastUpdateTime() != null) {
-            e.setLastUpdateTime(bank.getLastUpdateTime());
-        }
-
-        if (bank.getStatusTime() != null) {
-            e.setStatusTime(bank.getStatusTime());
-        }
-        if(bank.getBankCode()!=null){
-        	e.setBankCode(bank.getBankCode());
+        if (bank.getLastupdatetime() != null) {
+            e.setLastUpdateTime(bank.getLastupdatetime());
         }
 
-        if(bank.getVersion() != null)
+        if (bank.getStatustime() != null) {
+            e.setStatusTime(bank.getStatustime());
+        }
+        if(bank.getBankcode()!=null){
+        	e.setBankCode(bank.getBankcode().intValue());
+        }
+
+        if((Long)bank.getVersion() != null)
         {
-            e.setRecordVersion(bank.getVersion());
+            e.setRecordVersion(((Long)bank.getVersion()).intValue());
         }
     }
 }

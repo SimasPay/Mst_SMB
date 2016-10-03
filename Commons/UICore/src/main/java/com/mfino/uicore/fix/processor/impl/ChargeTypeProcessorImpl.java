@@ -41,15 +41,15 @@ public class ChargeTypeProcessorImpl extends BaseFixProcessor implements ChargeT
 	}
 	
 	private void updateMessage(ChargeType ct, CMJSChargeType.CGEntries e) {
-		e.setID(ct.getID());
-		e.setMSPID(ct.getmFinoServiceProviderByMSPID().getID());
+		e.setID(ct.getId().longValue());
+		e.setMSPID(ct.getMfinoServiceProvider().getId().longValue());
 		e.setName(ct.getName());
 		e.setDescription(ct.getDescription());
-		e.setRecordVersion(ct.getVersion());
-		e.setCreatedBy(ct.getCreatedBy());
-		e.setCreateTime(ct.getCreateTime());
-		e.setUpdatedBy(ct.getUpdatedBy());
-		e.setLastUpdateTime(ct.getLastUpdateTime());
+		e.setRecordVersion(((Long)ct.getVersion()).intValue());
+		e.setCreatedBy(ct.getCreatedby());
+		e.setCreateTime(ct.getCreatetime());
+		e.setUpdatedBy(ct.getUpdatedby());
+		e.setLastUpdateTime(ct.getLastupdatetime());
 	}
 
 	@Override

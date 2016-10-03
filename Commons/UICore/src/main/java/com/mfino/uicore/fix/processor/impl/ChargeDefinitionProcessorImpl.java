@@ -51,74 +51,74 @@ public class ChargeDefinitionProcessorImpl extends BaseFixProcessor implements C
 		}
 */		
 		if (e.getChargeTypeID() != null) {
-			cd.setChargeType(ctDAO.getById(e.getChargeTypeID()));
+			cd.setChargeTypeByChargetypeid(ctDAO.getById(e.getChargeTypeID()));
 		}
 		if (e.isRemoteModifiedIsChargeFromCustomer() || e.getIsChargeFromCustomer() != null) {
-			cd.setIsChargeFromCustomer(e.getIsChargeFromCustomer());
+			cd.setIschargefromcustomer((short) (e.getIsChargeFromCustomer() ? 1 : 0));
 			if (e.getIsChargeFromCustomer().booleanValue()) {
 				if (e.getDependantChargeTypeID() != null) {
-					cd.setChargeTypeByDependantChargeTypeID(ctDAO.getById(e.getDependantChargeTypeID()));
+					cd.setChargeTypeByDependantchargetypeid(ctDAO.getById(e.getDependantChargeTypeID()));
 				}
-				cd.setPartnerByFundingPartnerID(null);
+				cd.setPartner(null);
 				cd.setPocket(null);
 			} else {
 				if (e.getFundingPartnerID() != null) {
-					cd.setPartnerByFundingPartnerID(partnerDAO.getById(e.getFundingPartnerID()));
+					cd.setPartner(partnerDAO.getById(e.getFundingPartnerID()));
 				}
 				if (e.getPocketID() != null) {
 					cd.setPocket(pocketDAO.getById(e.getPocketID()));
 				}
-				cd.setChargeTypeByDependantChargeTypeID(null);
+				cd.setChargeTypeByDependantchargetypeid(null);
 			}
 		}
 		if (e.isRemoteModifiedDependantChargeTypeID())  {
 			if (e.getDependantChargeTypeID() != null) {
-				cd.setChargeTypeByDependantChargeTypeID(ctDAO.getById(e.getDependantChargeTypeID()));
+				cd.setChargeTypeByDependantchargetypeid(ctDAO.getById(e.getDependantChargeTypeID()));
 			} else {
-				cd.setChargeTypeByDependantChargeTypeID(null);
+				cd.setChargeTypeByDependantchargetypeid(null);
 			}
 		}
 		if (e.isRemoteModifiedIsTaxable() || e.getIsTaxable() != null) {
-			cd.setIsTaxable(e.getIsTaxable());
+			cd.setIstaxable((short) (e.getIsTaxable() ? 1: 0));
 		}
 	}
 	
 	private void updateMessage(ChargeDefinition cd, CMJSChargeDefinition.CGEntries e) {
-		e.setID(cd.getID());
-		e.setMSPID(cd.getmFinoServiceProviderByMSPID().getID());
+		e.setID(cd.getId().longValue());
+		e.setMSPID(cd.getMfinoServiceProvider().getId().longValue());
 		e.setName(cd.getName());
 		e.setDescription(cd.getDescription());
 /*		if (cd.getCalculationType() != null) {
 			e.setCalculationType(cd.getCalculationType());
 			e.setCalculationTypeText(EnumTextService.getEnumTextValue(CmFinoFIX.TagID_CalculationType, null, e.getCalculationType()));
 		}*/
-		if (cd.getChargeType() != null) {
-			e.setChargeTypeID(cd.getChargeType().getID());
-			e.setChargeTypeName(cd.getChargeType().getName());
+		if (cd.getChargeTypeByChargetypeid() != null) {
+			e.setChargeTypeID(cd.getChargeTypeByChargetypeid().getId().longValue());
+			e.setChargeTypeName(cd.getChargeTypeByChargetypeid().getName());
 		}
-		if (cd.getIsChargeFromCustomer() != null) {
-			e.setIsChargeFromCustomer(cd.getIsChargeFromCustomer());
+		if ((Short)cd.getIschargefromcustomer() != null) {
+			e.setIsChargeFromCustomer(cd.getIschargefromcustomer() != 0);
 		}
-		if (cd.getChargeTypeByDependantChargeTypeID() != null) {
-			e.setDependantChargeTypeID(cd.getChargeTypeByDependantChargeTypeID().getID());
-			e.setDependantChargeTypeName(cd.getChargeTypeByDependantChargeTypeID().getName());
+		if (cd.getChargeTypeByDependantchargetypeid() != null) {
+			e.setDependantChargeTypeID(cd.getChargeTypeByDependantchargetypeid().getId().longValue());
+			e.setDependantChargeTypeName(cd.getChargeTypeByDependantchargetypeid().getName());
 		}
-		if (cd.getPartnerByFundingPartnerID() != null) {
-			e.setFundingPartnerID(cd.getPartnerByFundingPartnerID().getID());
-			e.setTradeName(cd.getPartnerByFundingPartnerID().getTradeName());
+		if (cd.getPartner() != null) {
+			e.setFundingPartnerID(cd.getPartner().getId().longValue());
+			e.setTradeName(cd.getPartner().getTradename());
 		}
 		if (cd.getPocket() != null) {
-			e.setPocketID(cd.getPocket().getID());
+			e.setPocketID(cd.getPocket().getId().longValue());
 			e.setPocketDispText(MfinoUtil.getPocketDisplayText(cd.getPocket()));
 		}
-		if (cd.getIsTaxable() != null) {
-			e.setIsTaxable(cd.getIsTaxable());
+		if ( (Short) cd.getIstaxable() != null) {
+			e.setIsTaxable(cd.getIstaxable() != 0);
 		}
-		e.setRecordVersion(cd.getVersion());
-		e.setCreatedBy(cd.getCreatedBy());
-		e.setCreateTime(cd.getCreateTime());
-		e.setUpdatedBy(cd.getUpdatedBy());
-		e.setLastUpdateTime(cd.getLastUpdateTime());
+		e.setRecordVersion(((Long)cd.getVersion()).intValue());
+		e.setCreatedBy(cd.getCreatedby());
+		e.setCreateTime(cd.getCreatetime());
+		e.setUpdatedBy(cd.getUpdatedby());
+		e.setLastUpdateTime(cd.getLastupdatetime());
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class ChargeDefinitionProcessorImpl extends BaseFixProcessor implements C
         			handleStaleDataException();
         		}
         		if (e.getIsChargeFromCustomer() == null) {
-        			e.setIsChargeFromCustomer(ct.getIsChargeFromCustomer());
+        			e.setIsChargeFromCustomer(ct.getIschargefromcustomer() != 0);
         		}
         		updateEntity(ct, e);
         		try {

@@ -7,6 +7,8 @@ package com.mfino.uicore.fix.processor.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,18 +75,18 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
         		BulkUploadFile s = bulkUploadFileDAO.getById(realMsg.getIDSearch());
         		int total = 0;        		
         		if (s != null) {        			 
-                     String filedata = s.getUploadReport();
+                     String filedata = s.getUploadreport().getSubString(0, ((Long)s.getUploadreport().length()).intValue());
                      //if filedata is null means it's not processed so  we simply return the realmsg.
                      if (filedata == null) {
                          return realMsg;
                      }
-                     total = s.getTotalLineCount();
+                     total = s.getTotallinecount().intValue();
                      log.info("totalLineCount as per BulkUploadFile filedata is " + total);
-                     realMsg.allocateEntries(s.getTotalLineCount());
+                     realMsg.allocateEntries(s.getTotallinecount().intValue());
                      BufferedReader bufferedReader = new BufferedReader(new StringReader(filedata));
                      String strLine = null;
                      try {
-                    	 for (i = 0; i < s.getTotalLineCount() && (strLine = bufferedReader.readLine()) != null; i++) {
+                    	 for (i = 0; i < s.getTotallinecount() && (strLine = bufferedReader.readLine()) != null; i++) {
                              CmFinoFIX.CMJSBulkUploadFileEntry.CGEntries entry =
                                      new CmFinoFIX.CMJSBulkUploadFileEntry.CGEntries();
                              String input[] = strLine.split("\\|"); // Pipe is a special character.
@@ -101,7 +103,7 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
                              entry.setLineNumber(i + 1);
                              // entry.setRecordData(strLine);
                              if (input.length > 2) {
-                                 if (CmFinoFIX.RecordType_Agent.equals(s.getRecordType())) {
+                                 if (CmFinoFIX.RecordType_Agent.equals(s.getRecordtype())) {
                                      entry.setMDN(input[0]);
                                  } else {
                                      entry.setMDN(input[2]);
@@ -123,10 +125,11 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
                              //filedata column value going further 
                              BulkUploadFileEntry bulkUploadFileEntry = new BulkUploadFileEntry();
                              bulkUploadFileEntry.setBulkUploadFile(s);
-                             bulkUploadFileEntry.setLineData(sbyte[0]);
-                             bulkUploadFileEntry.setLineNumber(i+1);                             
-                             bulkUploadFileEntry.setFailureReason(sbyte[sbyte.length - 1]);
-                             bulkUploadFileEntry.setBulkUploadFileEntryStatus(fileEntryStatus);
+                             
+                             bulkUploadFileEntry.setLinedata(sbyte[0]);
+                             bulkUploadFileEntry.setLinenumber(i+1);                             
+                             bulkUploadFileEntry.setFailurereason(sbyte[sbyte.length - 1]);
+                             bulkUploadFileEntry.setBulkuploadfileentrystatus(fileEntryStatus);
                              bulkUploadFileEntryDAO.save(bulkUploadFileEntry);
                          }
                      } catch (IOException e) {
@@ -142,24 +145,29 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
     }
     
     private void updateMessage(BulkUploadFileEntry fileEntry, CMJSBulkUploadFileEntry.CGEntries e) {
-    	e.setID(fileEntry.getID());
-    	String strLine = fileEntry.getLineData();
-    	e.setLineNumber(fileEntry.getLineNumber());
-    	if(strLine != null) {
-    		String input[] = strLine.split("\\|"); // Pipe is a special character.
-            if(input.length==1)
-            {
-            	input = strLine.split(GeneralConstants.COMMA_STRING);
-            }
-            if (input.length > 2) {
-                if (CmFinoFIX.RecordType_Agent.equals(fileEntry.getBulkUploadFile().getRecordType())) {
-                    e.setMDN(input[0]);
-                } else {
-                    e.setMDN(input[2]);
-                }                       
-            }
-    	}
-    	e.setRecordMessage(fileEntry.getFailureReason()); 
-    	e.setRecordStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileEntryStatus, null, fileEntry.getBulkUploadFileEntryStatus()));
+    	e.setID(fileEntry.getId().longValue());
+    	try {
+			String strLine = fileEntry.getLinedata().getSubString(0, ((Long)fileEntry.getLinedata().length()).intValue());
+			e.setLineNumber(((Long)fileEntry.getLinenumber()).intValue());
+	    	if(strLine != null) {
+	    		String input[] = strLine.split("\\|"); // Pipe is a special character.
+	            if(input.length==1)
+	            {
+	            	input = strLine.split(GeneralConstants.COMMA_STRING);
+	            }
+	            if (input.length > 2) {
+	                if (CmFinoFIX.RecordType_Agent.equals(fileEntry.getBulkUploadFile().getRecordtype())) {
+	                    e.setMDN(input[0]);
+	                } else {
+	                    e.setMDN(input[2]);
+	                }                       
+	            }
+	    	}
+	    	e.setRecordMessage(fileEntry.getFailurereason()); 
+	    	e.setRecordStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileEntryStatus, null, 
+	    			fileEntry.getBulkuploadfileentrystatus()));
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
     }
 }

@@ -22,7 +22,7 @@ import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -82,7 +82,7 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		CMJSError errorMsg = new CMJSError();
 
 		User user = userService.getCurrentUser();
-		Set<Partner> partners = user.getPartnerFromUserID();
+		Set<Partner> partners = user.getPartners();
 		if (partners == null || partners.isEmpty()) {
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -96,11 +96,11 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		Set<PartnerServices> ps = partners.iterator().next().getPartnerServicesFromPartnerID();
+		Set<PartnerServices> ps = partners.iterator().next().getPartnerServicesesForPartnerid();
 		PartnerServices tellerService = null;
 		for(PartnerServices partnerservice:ps){
-			if(partnerservice.getService().getServiceName().equals(ServiceAndTransactionConstants.SERVICE_TELLER)
-					&&partnerservice.getStatus().equals(CmFinoFIX.PartnerServiceStatus_Active)){
+			if(partnerservice.getService().getServicename().equals(ServiceAndTransactionConstants.SERVICE_TELLER)
+					&& ((Long)partnerservice.getStatus()).equals(CmFinoFIX.PartnerServiceStatus_Active)){
 				tellerService = partnerservice;
 				break;
 			}
@@ -113,15 +113,15 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		}
 		CommodityTransfer ct = commodityTransferService.getCommodityTransferById(realMsg.getCommodityTransferID());
 		ChargeTxnCommodityTransferMapQuery query =new ChargeTxnCommodityTransferMapQuery();
-		query.setCommodityTransferID(ct.getID());
+		query.setCommodityTransferID(ct.getId().longValue());
 		List<ChargeTxnCommodityTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 		if(results==null||results.isEmpty()){
-			log.info("SCTL not exist for commodityTransfet with id: "+ct.getID());
+			log.info("SCTL not exist for commodityTransfet with id: "+ct.getId());
 			errorMsg.setErrorDescription(MessageText._("Invalid Transaction"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(results.get(0).getSctlId());
+		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(results.get(0).getSctlid().longValue());
 		cc = channelCodeService.getChannelCodebySourceApplication(CmFinoFIX.SourceApplication_Web);
 	       
 		CMBankTellerCashOut cashOut = generateCashOutInquiry(ct,realMsg,tellerService,sctl);
@@ -157,12 +157,12 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 	}
 
     // Do the Autoreversal if Transfer to Teller Bank pocket fails.
-	private void autoReverse(ServiceChargeTransactionLog sctl, CommodityTransfer ct,  String reverseReason) {
+	private void autoReverse(ServiceChargeTxnLog sctl, CommodityTransfer ct,  String reverseReason) {
 		log.info("constructing autoreversal object for Teller Cashout");
 		CMAutoReversal reversal = new CMAutoReversal();
-		reversal.setSourcePocketID(ct.getPocketBySourcePocketID().getID());
-		reversal.setDestPocketID(ct.getDestPocketID());
-		reversal.setServiceChargeTransactionLogID(sctl.getID());
+		reversal.setSourcePocketID(ct.getPocket().getId().longValue());
+		reversal.setDestPocketID(ct.getDestpocketid().longValue());
+		reversal.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		reversal.setAmount(ct.getAmount());
 		reversal.setCharges(ct.getCharges());
 		CMJSError emsg = (CMJSError) handleRequestResponse(reversal);
@@ -170,39 +170,39 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		transactionChargingService.failTheTransaction(sctl, reverseReason);
 	}
 	
-	private CMBankTellerCashOut generateCashOutInquiry(CommodityTransfer ct,CMJSBankTellerCashOutConfirm realMsg, PartnerServices tellerService, ServiceChargeTransactionLog sctl) {
+	private CMBankTellerCashOut generateCashOutInquiry(CommodityTransfer ct,CMJSBankTellerCashOutConfirm realMsg, PartnerServices tellerService, ServiceChargeTxnLog sctl) {
 		CMBankTellerCashOut cashoutInquiry = new CMBankTellerCashOut();
 		cashoutInquiry.setSourceMDN(realMsg.getMDN());
 		cashoutInquiry.setDestMDN(realMsg.getMDN());
 		cashoutInquiry.setSourcePocketID(realMsg.getPocketID());
-		cashoutInquiry.setDestPocketID(tellerService.getPocketBySourcePocket().getID());
+		cashoutInquiry.setDestPocketID(tellerService.getPocketBySourcepocket().getId().longValue());
 		cashoutInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CASH_OUT_TRANSFERTOBANK);
 		cashoutInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		cashoutInquiry.setSourceApplication(cc.getChannelSourceApplication());
+		cashoutInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
 		cashoutInquiry.setAmount(ct.getAmount());
-		cashoutInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		cashoutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashoutInquiry.setCharges(BigDecimal.ZERO);
 		cashoutInquiry.setPin(realMsg.getPin());
 		cashoutInquiry.setServletPath(CmFinoFIX.ServletPath_BankAccount);
-		cashoutInquiry.setTransactionID(sctl.getTransactionID());
-		cashoutInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		cashoutInquiry.setTransactionID(sctl.getTransactionid().longValue());
+		cashoutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashoutInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Teller_Cashout_TransferToBank);
 		return cashoutInquiry;
 	}
 	
 	
-	private CMBankTellerCashOutConfirm generateCashOutConfirmation(CMJSError errorMsg, CommodityTransfer ct,CMJSBankTellerCashOutConfirm realMsg, PartnerServices tellerService, ServiceChargeTransactionLog sctl) {
+	private CMBankTellerCashOutConfirm generateCashOutConfirmation(CMJSError errorMsg, CommodityTransfer ct,CMJSBankTellerCashOutConfirm realMsg, PartnerServices tellerService, ServiceChargeTxnLog sctl) {
 		CMBankTellerCashOutConfirm confirmation = new CMBankTellerCashOutConfirm();
 		confirmation.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		confirmation.setSourceApplication(cc.getChannelSourceApplication());
+		confirmation.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
 		confirmation.setSourceMDN(realMsg.getMDN());
 		confirmation.setDestMDN(realMsg.getMDN());
 		confirmation.setSourcePocketID(realMsg.getPocketID());
-		confirmation.setDestPocketID(tellerService.getPocketBySourcePocket().getID());
+		confirmation.setDestPocketID(tellerService.getPocketBySourcepocket().getId().longValue());
 		confirmation.setServletPath(CmFinoFIX.ServletPath_BankAccount);
 		confirmation.setTransactionID(errorMsg.getParentTransactionID());
 		confirmation.setTransferID(errorMsg.getTransferID());
-		confirmation.setServiceChargeTransactionLogID(sctl.getID());
+		confirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		confirmation.setConfirmed(CmFinoFIX.Boolean_True);
 		return confirmation;
 	}

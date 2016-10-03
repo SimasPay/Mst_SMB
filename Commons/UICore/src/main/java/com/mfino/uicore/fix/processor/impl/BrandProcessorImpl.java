@@ -50,10 +50,10 @@ public class BrandProcessorImpl extends BaseFixProcessor implements BrandProcess
 
     private void updateEntity(Brand brand, CmFinoFIX.CMJSBrand.CGEntries e) {
         if (e.getBrandName() != null) {
-            brand.setBrandName(e.getBrandName());
+            brand.setBrandname(e.getBrandName());
         }
         if (e.getInternationalCountryCode() != null) {
-            brand.setInternationalCountryCode(e.getInternationalCountryCode());
+            brand.setInternationalcountrycode(e.getInternationalCountryCode());
         }
         if (e.getPrefixCode() != null) {
             BrandQuery query = new BrandQuery();
@@ -67,8 +67,8 @@ public class BrandProcessorImpl extends BaseFixProcessor implements BrandProcess
                 if (prefixCode.length() == 3) {
                     for (int i = 0; i < results.size(); i++) {
                         Brand b = results.get(i);
-                        if (b.getPrefixCode().length() == 2 ||
-                                b.getPrefixCode().equals(prefixCode)) {
+                        if (b.getPrefixcode().length() == 2 ||
+                                b.getPrefixcode().equals(prefixCode)) {
                             isPrefixAllowed = false;
                             break;
                         }
@@ -78,9 +78,9 @@ public class BrandProcessorImpl extends BaseFixProcessor implements BrandProcess
                 }
             }
             if (isPrefixAllowed) {
-                brand.setPrefixCode(prefixCode);
+                brand.setPrefixcode(prefixCode);
             } else {
-                brand.setPrefixCode(null);
+                brand.setPrefixcode(null);
             }
         }
         if (e.getCompanyID() != null) {
@@ -89,44 +89,44 @@ public class BrandProcessorImpl extends BaseFixProcessor implements BrandProcess
             brand.setCompany(company);
         }
         //need to change it
-        if (brand.getmFinoServiceProviderByMSPID() == null) {
-            brand.setmFinoServiceProviderByMSPID(mspDAO.getById(1L));
+        if (brand.getMfinoServiceProvider() == null) {
+            brand.setMfinoServiceProvider(mspDAO.getById(1L));
         }
     }
 
     private void updateMessage(Brand brand, CMJSBrand.CGEntries entry) {
 
-        entry.setID(brand.getID());
+        entry.setID(brand.getId().longValue());
 
-        if (brand.getBrandName() != null) {
-            entry.setBrandName(brand.getBrandName());
+        if (brand.getBrandname() != null) {
+            entry.setBrandName(brand.getBrandname());
         }
-        if (brand.getInternationalCountryCode() != null) {
-            entry.setInternationalCountryCode(brand.getInternationalCountryCode());
-        }
-        if (brand.getCompany() != null) {
-            entry.setCompanyName(brand.getCompany().getCompanyName());
-        }
-        if (brand.getPrefixCode() != null) {
-            entry.setPrefixCode(brand.getPrefixCode());
+        if (brand.getInternationalcountrycode() != null) {
+            entry.setInternationalCountryCode(brand.getInternationalcountrycode());
         }
         if (brand.getCompany() != null) {
-            entry.setCompanyID(brand.getCompany().getID());
+            entry.setCompanyName( ((Long) brand.getCompany().getCompanycode()).toString() );
         }
-        if (brand.getCreateTime() != null) {
-            entry.setCreateTime(brand.getCreateTime());
+        if (brand.getPrefixcode() != null) {
+            entry.setPrefixCode(brand.getPrefixcode());
         }
-        if (brand.getCreatedBy() != null) {
-            entry.setCreatedBy(brand.getCreatedBy());
+        if (brand.getCompany() != null) {
+            entry.setCompanyID(brand.getCompany().getId().longValue());
         }
-        if (brand.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(brand.getLastUpdateTime());
+        if (brand.getCreatetime() != null) {
+            entry.setCreateTime(brand.getCreatetime());
         }
-        if (brand.getUpdatedBy() != null) {
-            entry.setUpdatedBy(brand.getUpdatedBy());
+        if (brand.getCreatedby() != null) {
+            entry.setCreatedBy(brand.getCreatedby());
         }
-        if (brand.getVersion() != null) {
-            entry.setRecordVersion(brand.getVersion());
+        if (brand.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(brand.getLastupdatetime());
+        }
+        if (brand.getUpdatedby() != null) {
+            entry.setUpdatedBy(brand.getUpdatedby());
+        }
+        if ((Long)brand.getVersion() != null) {
+            entry.setRecordVersion(((Long)brand.getVersion()).intValue());
         }
     }
 
@@ -198,7 +198,7 @@ public class BrandProcessorImpl extends BaseFixProcessor implements BrandProcess
                     Brand brand = new Brand();
                     updateEntity(brand, e);
                     // check whether entered prefix is valid or not before saving the file.
-                    if (brand.getPrefixCode() == null) {
+                    if (brand.getPrefixcode() == null) {
                         CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                         errorMsg.setErrorDescription(MessageText._("Prefix Code already exists"));
                         errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);

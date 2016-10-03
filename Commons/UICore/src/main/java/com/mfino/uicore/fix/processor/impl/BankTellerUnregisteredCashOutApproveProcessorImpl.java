@@ -20,7 +20,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
@@ -86,7 +86,7 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 		CMJSError errorMsg = new CMJSError();
 
 		User user = userService.getCurrentUser();
-		Set<Partner> partners = user.getPartnerFromUserID();
+		Set<Partner> partners = user.getPartners();
 		if (partners == null || partners.isEmpty()) {
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -99,11 +99,11 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		Set<PartnerServices> ps = partners.iterator().next().getPartnerServicesFromPartnerID();
+		Set<PartnerServices> ps = partners.iterator().next().getPartnerServicesesForPartnerid();
 		PartnerServices tellerService = null;
 		for(PartnerServices partnerservice:ps){
-			if(partnerservice.getService().getServiceName().equals(ServiceAndTransactionConstants.SERVICE_TELLER)
-					&&partnerservice.getStatus().equals(CmFinoFIX.PartnerServiceStatus_Active)){
+			if(partnerservice.getService().getServicename().equals(ServiceAndTransactionConstants.SERVICE_TELLER)
+					&& ((Long)partnerservice.getStatus()).equals(CmFinoFIX.PartnerServiceStatus_Active)){
 				tellerService = partnerservice;
 				break;
 			}
@@ -115,8 +115,8 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 			return errorMsg;
 		}
 		PendingCommodityTransfer pct = pendingCommodityTransferService.getById(realMsg.getTransferID());
-		if(pct==null||!CmFinoFIX.TransferStatus_ConfirmationPromptSentToSubscriber.equals(pct.getTransferStatus())){
-			log.info("Invalid pct status"+pct.getTransferStatus());
+		if(pct==null||!CmFinoFIX.TransferStatus_ConfirmationPromptSentToSubscriber.equals(pct.getTransferstatus())){
+			log.info("Invalid pct status"+pct.getTransferstatus());
 			errorMsg.setErrorDescription(MessageText._("Invalid Transaction"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
@@ -128,17 +128,17 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 		unregisteredsubscribercashoutconfirm.setDestMDN(realMsg.getDestMDN());
 		unregisteredsubscribercashoutconfirm.setParentTransactionID(realMsg.getParentTransactionID());
 		unregisteredsubscribercashoutconfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		unregisteredsubscribercashoutconfirm.setTransferID(pct.getID());
+		unregisteredsubscribercashoutconfirm.setTransferID(pct.getId().longValue());
 		unregisteredsubscribercashoutconfirm.setConfirmed(realMsg.getConfirmed());
-		unregisteredsubscribercashoutconfirm.setSourceApplication(cc.getChannelSourceApplication());
-		unregisteredsubscribercashoutconfirm.setChannelCode(cc.getChannelCode());
+		unregisteredsubscribercashoutconfirm.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		unregisteredsubscribercashoutconfirm.setChannelCode(cc.getChannelcode());
 		unregisteredsubscribercashoutconfirm.setServiceChargeTransactionLogID(realMsg.getServiceChargeTransactionLogID());
 		unregisteredsubscribercashoutconfirm.setDestPocketID(realMsg.getDestPocketID());
 		unregisteredsubscribercashoutconfirm.setSourcePocketID(realMsg.getSourcePocketID());
 		unregisteredsubscribercashoutconfirm.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-		unregisteredsubscribercashoutconfirm.setPartnerCode(partners.iterator().next().getPartnerCode());
+		unregisteredsubscribercashoutconfirm.setPartnerCode(partners.iterator().next().getPartnercode());
 
-		ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
 		transactionChargingService.chnageStatusToProcessing(sctl);
 		
 		UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
@@ -152,7 +152,7 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 		}
 				
 		errorMsg= (CMJSError) handleRequestResponse(unregisteredsubscribercashoutconfirm);
-		String finalNotification =" Transaction ID:"+sctl.getID()+".You have successfully Cashed-Out to UnregisteredMDN "+realMsg.getSourceMDN()+" with "+sctl.getTransactionAmount()+"\n"+"    Your EmoneyToBank Transfer Result: ";
+		String finalNotification =" Transaction ID:"+sctl.getId()+".You have successfully Cashed-Out to UnregisteredMDN "+realMsg.getSourceMDN()+" with "+sctl.getTransactionamount()+"\n"+"    Your EmoneyToBank Transfer Result: ";
 		if(CmFinoFIX.ErrorCode_NoError.equals(errorMsg.getErrorCode())){
         	Long transferID= errorMsg.getTransferID();
         	errorMsg=(CMJSError) transferToBankAccount(realMsg,errorMsg.getTransferID());

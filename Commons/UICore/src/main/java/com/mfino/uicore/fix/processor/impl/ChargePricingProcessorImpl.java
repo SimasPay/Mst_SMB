@@ -36,18 +36,18 @@ public class ChargePricingProcessorImpl extends BaseFixProcessor implements Char
 		}
 		
 		if (e.getIsDefault() != null) {
-			cp.setIsDefault(e.getIsDefault());
+			cp.setIsdefault((short) (e.getIsDefault() ? 1 : 0));
 		}
 		
 		if (e.getIsDefault() != null && e.getIsDefault().booleanValue()) {
-			cp.setMinAmount(null);
-			cp.setMaxAmount(null);
+			cp.setMinamount(null);
+			cp.setMaxamount(null);
 		} else {
 			if (e.getMinAmount() != null) {
-				cp.setMinAmount(e.getMinAmount());
+				cp.setMinamount(e.getMinAmount());
 			}
 			if (e.getMaxAmount() != null) {
-				cp.setMaxAmount(e.getMaxAmount());
+				cp.setMaxamount(e.getMaxAmount());
 			}
 		}
 		
@@ -56,25 +56,25 @@ public class ChargePricingProcessorImpl extends BaseFixProcessor implements Char
 			cp.setCharge(e.getCharge());
 		}
 		if (e.getMinCharge() != null) {
-			cp.setMinCharge(e.getMinCharge());
+			cp.setMincharge(e.getMinCharge());
 		}
 		if (e.getMaxCharge() != null) {
-			cp.setMaxCharge(e.getMaxCharge());
+			cp.setMaxcharge(e.getMaxCharge());
 		}
 	}
 	
 	private void updateMessage(ChargePricing cp, CMJSChargePricing.CGEntries e) {
-		e.setID(cp.getID());
-		e.setMSPID(cp.getmFinoServiceProviderByMSPID().getID());
-		e.setChargeDefinitionID(cp.getChargeDefinition().getID());
-		e.setIsDefault(cp.getIsDefault());
-		e.setMinAmount(cp.getMinAmount());
-		e.setMaxAmount(cp.getMaxAmount());
+		e.setID(cp.getId().longValue());
+		e.setMSPID(cp.getMfinoServiceProvider().getId().longValue());
+		e.setChargeDefinitionID(cp.getChargeDefinition().getId().longValue());
+		e.setIsDefault(cp.getIsdefault() != 0);
+		e.setMinAmount(cp.getMinamount());
+		e.setMaxAmount(cp.getMaxamount());
 		
 		e.setCharge(cp.getCharge());
-		e.setMaxCharge(cp.getMaxCharge());
-		e.setMinCharge(cp.getMinCharge());
-		e.setRecordVersion(cp.getVersion());
+		e.setMaxCharge(cp.getMaxcharge());
+		e.setMinCharge(cp.getMincharge());
+		e.setRecordVersion(((Long) cp.getVersion()).intValue());
 	}
 
 	@Override

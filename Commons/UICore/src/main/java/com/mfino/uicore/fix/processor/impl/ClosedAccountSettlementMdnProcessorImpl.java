@@ -32,48 +32,48 @@ public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor im
 		SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 				
 		if(e.getMDNID() != null){
-			casmdn.setSubscriberMDNByMDNID(smdnDAO.getById(e.getMDNID()));
+			casmdn.setSubscriberMdn(smdnDAO.getById(e.getMDNID()));
 		}
 		
 		if(e.getToBankAccount() != null){
-			casmdn.setToBankAccount(e.getToBankAccount());
+			casmdn.setTobankaccount((short) (e.getToBankAccount() ? 1 : 0));
 		}
 		
 		if(e.getSettlementMDN() != null){
-			casmdn.setSettlementMDN(e.getSettlementMDN());
+			casmdn.setSettlementmdn(e.getSettlementMDN());
 		}
 		
 		if(e.getSettlementAccountNumber() != null){
-			casmdn.setSettlementAccountNumber(e.getSettlementAccountNumber());
+			casmdn.setSettlementaccountnumber(e.getSettlementAccountNumber());
 		}
 		
 		if(e.getApprovalState() != null){
-			casmdn.setApprovalState(e.getApprovalState());			
+			casmdn.setApprovalstate(e.getApprovalState().longValue());			
 		}
 		
 		if(e.getApprovedOrRejectedBy() != null){
-			casmdn.setApprovedOrRejectedBy(e.getApprovedOrRejectedBy());
+			casmdn.setApprovedorrejectedby(e.getApprovedOrRejectedBy());
 		}
 		
 		if(e.getApproveOrRejectComment() != null){
-			casmdn.setApproveOrRejectComment(e.getApproveOrRejectComment());
+			casmdn.setApproveorrejectcomment(e.getApproveOrRejectComment());
 		}
 		
 		if(e.getApproveOrRejectTime() != null){
-			casmdn.setApproveOrRejectTime(e.getApproveOrRejectTime());
+			casmdn.setApproveorrejecttime(e.getApproveOrRejectTime());
 		}
 	}
 	
 	private void updateMessage(ClosedAccountSettlementMDN casmdn, CMJSClosedAccountSettlementMdn.CGEntries e) {
-		e.setID(casmdn.getID());
-		e.setMDNID(casmdn.getSubscriberMDNByMDNID().getID());
-		e.setToBankAccount(casmdn.getToBankAccount());
-		e.setSettlementMDN(casmdn.getSettlementMDN());
-		e.setSettlementAccountNumber(casmdn.getSettlementAccountNumber());
-		e.setApprovalState(casmdn.getApprovalState());
-		e.setApprovedOrRejectedBy(casmdn.getApprovedOrRejectedBy());
-		e.setApproveOrRejectComment(casmdn.getApproveOrRejectComment());
-		e.setApproveOrRejectTime(casmdn.getApproveOrRejectTime());
+		e.setID(casmdn.getId().longValue());
+		e.setMDNID(casmdn.getSubscriberMdn().getId().longValue());
+		e.setToBankAccount(casmdn.getTobankaccount() != 0);
+		e.setSettlementMDN(casmdn.getSettlementmdn());
+		e.setSettlementAccountNumber(casmdn.getSettlementaccountnumber());
+		e.setApprovalState(casmdn.getApprovalstate().intValue());
+		e.setApprovedOrRejectedBy(casmdn.getApprovedorrejectedby());
+		e.setApproveOrRejectComment(casmdn.getApproveorrejectcomment());
+		e.setApproveOrRejectTime(casmdn.getApproveorrejecttime());
 		}
 
 	@Override
@@ -96,12 +96,12 @@ public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor im
 		List <MoneyClearanceGraved> mcgLst = mcgDAO.get(mcgQuery);
 		if(mcgLst.size() > 0){
 			mcg = mcgLst.get(0);
-			if(mcg.getMCStatus().intValue() == CmFinoFIX.MCStatus_MOVED_TO_NATIONAL_TREASURY){
+			if(((Long)mcg.getMcstatus()).intValue() == CmFinoFIX.MCStatus_MOVED_TO_NATIONAL_TREASURY){
 				errorMsg.setErrorDescription(MessageText._("Money moved to NationalTreasury"));
 				log.warn("Money Moved To National Treasury");
 				return errorMsg;
 			}
-			if(mcg.getMCStatus().intValue() == CmFinoFIX.MCStatus_REFUNDED){
+			if(((Long)mcg.getMcstatus()).intValue() == CmFinoFIX.MCStatus_REFUNDED){
 				errorMsg.setErrorDescription(MessageText._("Money is already refunded"));
 				log.warn("Money is already refunded");
 				return errorMsg;

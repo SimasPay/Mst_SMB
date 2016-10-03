@@ -39,47 +39,47 @@ public class BulkUploadEntryProcessorImpl extends BaseFixProcessor implements Bu
         if (bue.getAmount() != null) {
             entry.setAmount(bue.getAmount());
         }
-        if (bue.getID() != null) {
-            entry.setID(bue.getID());
+        if (bue.getId() != null) {
+            entry.setID(bue.getId().longValue());
         }
-        if (bue.getUploadID() != null) {
-        	entry.setUploadID(bue.getUploadID());
+        if (bue.getUploadid() != null) {
+        	entry.setUploadID(bue.getUploadid().longValue());
         }
-        if (bue.getDestMDN() != null) {
-            entry.setDestMDN(bue.getDestMDN());
+        if (bue.getDestmdn() != null) {
+            entry.setDestMDN(bue.getDestmdn());
         }
-        if (bue.getFailureReason() != null) {
-            entry.setFailureReason(bue.getFailureReason());
+        if (bue.getFailurereason() != null) {
+            entry.setFailureReason(bue.getFailurereason());
         }
-        if (bue.getLineNumber() != null) {
-            entry.setLineNumber(bue.getLineNumber());
+        if ((Long)bue.getLinenumber() != null) {
+            entry.setLineNumber( ((Long)bue.getLinenumber()).intValue() );
         }
-        if (bue.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(bue.getLastUpdateTime());
+        if (bue.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(bue.getLastupdatetime());
         }
-        if (bue.getStatus() != null) {
-            entry.setStatus(bue.getStatus());
+        if ((Long)bue.getStatus() != null) {
+            entry.setStatus( ((Long)bue.getStatus()).intValue() );
         }
-        if (bue.getNotificationCode() != null) {
-            entry.setNotificationCode(bue.getNotificationCode());
+        if (bue.getNotificationcode() != null) {
+            entry.setNotificationCode(bue.getNotificationcode().intValue());
         }
-        if (bue.getTransferFailureReason() != null) {
-            entry.setTransferFailureReason(bue.getTransferFailureReason());
+        if (bue.getTransferfailurereason() != null) {
+            entry.setTransferFailureReason(bue.getTransferfailurereason().intValue());
         }
-        if (bue.getTransferID() != null) {
-            entry.setTransferID(bue.getTransferID());
+        if (bue.getTransferid() != null) {
+            entry.setTransferID(bue.getTransferid().longValue());
         }
-        if (bue.getServiceChargeTransactionLogID() != null) {
-        	entry.setServiceChargeTransactionLogID(bue.getServiceChargeTransactionLogID());
+        if (bue.getServicechargetransactionlogid() != null) {
+        	entry.setServiceChargeTransactionLogID(bue.getServicechargetransactionlogid().longValue());
         }
-        if (StringUtils.isNotBlank(bue.getFirstName())) {
-        	entry.setFirstName(bue.getFirstName());
+        if (StringUtils.isNotBlank(bue.getFirstname())) {
+        	entry.setFirstName(bue.getFirstname());
         }
-        if (StringUtils.isNotBlank(bue.getLastName())) {
-        	entry.setLastName(bue.getLastName());
+        if (StringUtils.isNotBlank(bue.getLastname())) {
+        	entry.setLastName(bue.getLastname());
         }
-        if (bue.getIsUnRegistered() != null) {
-        	entry.setIsUnRegistered(bue.getIsUnRegistered());
+        if (bue.getIsunregistered() != null) {
+        	entry.setIsUnRegistered(bue.getIsunregistered() != 0);
         }
 
         entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionsTransferStatus, null, entry.getStatus()));

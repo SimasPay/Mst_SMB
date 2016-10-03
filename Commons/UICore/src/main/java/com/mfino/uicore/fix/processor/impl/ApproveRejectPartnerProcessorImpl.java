@@ -5,6 +5,7 @@
 package com.mfino.uicore.fix.processor.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubscriberDAO;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
@@ -28,7 +30,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -135,41 +137,42 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         }
        
         Subscriber subscriber = partner.getSubscriber();
-        SubscriberMDN subscriberMDN =subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
-        if((!CmFinoFIX.UpgradeState_Upgradable.equals(subscriber.getUpgradeState()))
-        		&&(!CmFinoFIX.UpgradeState_Rejected.equals(subscriber.getUpgradeState()))
-        	&&(!CmFinoFIX.UpgradeState_RequestForCorrection.equals(subscriber.getUpgradeState()))){
+        SubscriberMdn subscriberMDN =subscriber.getSubscriberMdns().iterator().next();
+        if((!CmFinoFIX.UpgradeState_Upgradable.equals(subscriber.getUpgradestate()))
+        		&&(!CmFinoFIX.UpgradeState_Rejected.equals(subscriber.getUpgradestate()))
+        	&&(!CmFinoFIX.UpgradeState_RequestForCorrection.equals(subscriber.getUpgradestate()))){
         	log.info("Invalid partner status" + realMsg.getPartnerID());
             errorMsg.setErrorDescription(MessageText._("Invalid partner upgradestatus"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
         }
-        if(!(partner.getPartnerStatus().equals(CmFinoFIX.SubscriberStatus_Initialized)
-        		&&subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized))){
+        if(!(((Long)partner.getPartnerstatus()).equals(CmFinoFIX.SubscriberStatus_Initialized)
+        		&& ((Long)subscriber.getStatus()).equals(CmFinoFIX.SubscriberStatus_Initialized))){
         	log.info("Invalid partner status" + realMsg.getPartnerID());
             errorMsg.setErrorDescription(MessageText._("Invalid partner status"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
         }
         
-        if (userService.getCurrentUser().getUsername().equals(subscriber.getAppliedBy())) {
+        if (userService.getCurrentUser().getUsername().equals(subscriber.getAppliedby())) {
 			log.info("You are not authorized to perform this operation");
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-        Set<Pocket> pockets = subscriberMDN.getPocketFromMDNID();
+        Set<Pocket> pockets = subscriberMDN.getPockets();
 		Pocket bankPocket = null;
 		Pocket emoneyPocket = null;
 		Pocket lakuPocket = null;
 		KYCLevel kyclevel=kycLevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
 		
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		List<SubscriberGroup> subscriberGroups = sgDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty()) {
 			
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
 		
 		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
@@ -179,7 +182,8 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		
 		if(isEMoneyPocketRequired == true){
 		
-			emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_SVA, subscriber.getType(), partner.getBusinessPartnerType(), groupID);
+			emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, 
+					CmFinoFIX.PocketType_SVA, ((Long)subscriber.getType()).intValue(), partner.getBusinesspartnertype().intValue(), groupID);
 			
 			if(emoneyPocketTemplate == null) {
 	         	log.info("Valid emoneyPocketTemplate not found" + realMsg.getPartnerID());
@@ -188,12 +192,13 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 	            return errorMsg;
 	         }
 			
-			emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(),emoneyPocketTemplate.getID());
+			emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), emoneyPocketTemplate.getId().longValue());
 		}
 		
-        bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+        bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
         
-        lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKYCLevelByKYCLevel().getKYCLevel(), true, CmFinoFIX.PocketType_LakuPandai, subscriber.getType(), partner.getBusinessPartnerType(), groupID);
+        lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, 
+        		CmFinoFIX.PocketType_LakuPandai, ((Long)subscriber.getType()).intValue(), partner.getBusinesspartnertype().intValue(), groupID);
 		
 		if(lakuPocketTemplate == null) {
          	log.info("Valid lakuPocketTemplate not found" + realMsg.getPartnerID());
@@ -204,15 +209,15 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
        
         log.info("Admin action -- " + realMsg.getAdminAction()+" for PartnerID"+realMsg.getPartnerID());
         
-        lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
+        lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
         
         if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
         	
     		if(isEMoneyPocketRequired == true){
         	
     			if(emoneyPocket== null||
-	        			!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-	        			emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+	        			!(((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+	        			((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
 	             	log.info("valid emoney pocket not found" + realMsg.getPartnerID());
 	                 errorMsg.setErrorDescription(MessageText._("valid emoney pocket not found"));
 	                 errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -221,8 +226,8 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     		}
     		
     		if(lakuPocket == null||
-        			!(lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-        			lakuPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+        			!(((Long)lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+        			((Long)lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
              	log.info("valid laku pocket not found" + realMsg.getPartnerID());
                  errorMsg.setErrorDescription(MessageText._("valid laku pocket not found"));
                  errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -230,27 +235,27 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
              }
     		
             if(bankPocket== null||
-         			!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-         					bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))
-         					||bankPocket.getCardPAN()==null){
+         			!(((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+         					((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
+         					||bankPocket.getCardpan()==null){
              	log.info("valid bank pocket not found" + realMsg.getPartnerID());
                  errorMsg.setErrorDescription(MessageText._("valid bank pocket not found"));
                  errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                  return errorMsg;
              }
              
-        	subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-        	subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-        	subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
-        	subscriber.setApproveOrRejectTime(new Timestamp());
+        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_Approved).longValue());
+        	subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+        	subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
+        	subscriber.setApproveorrejecttime(new Timestamp());
         	subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         	subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-            User u =partner.getUser();
+            User u =partner.getMfinoUser();
     		Integer OTPLength = systemParametersService.getOTPLength();
             String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-    		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-    		subscriberMDN.setOTP(digestPin1);
-			subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+    		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
+    		subscriberMDN.setOtp(digestPin1);
+			subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 
 //    		userDao.save(u);
     		subscriberDao.save(subscriber);
@@ -267,26 +272,26 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 			
 			sendOTPOnIntialized = ConfigurationUtil.getSendOTPOnIntialized();
     		if(!sendOTPOnIntialized){
-    			String responsetext=partnerService.processActivation(subscriberMDN.getMDN(), oneTimePin) ;
+    			String responsetext=partnerService.processActivation(subscriberMDN.getMdn(), oneTimePin) ;
     			log.info(realMsg.getPartnerID() +": " + responsetext);
     		}else{
     		
     			String email=u.getEmail();
-    			String to=u.getFirstName() + " " + u.getLastName();
+    			String to=u.getFirstname() + " " + u.getLastname();
 
-    			String mdn=subscriberMDN.getMDN();
+    			String mdn=subscriberMDN.getMdn();
     			//           String message =SubscriberServiceExtended.generateOTPMessage(oneTimePin);
-    			NotificationWrapper smsWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMDN(), CmFinoFIX.NotificationMethod_SMS);
-    			NotificationWrapper emailWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMDN(), CmFinoFIX.NotificationMethod_Email);
-    			SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(mdn);
+    			NotificationWrapper smsWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMdn(), CmFinoFIX.NotificationMethod_SMS);
+    			NotificationWrapper emailWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMdn(), CmFinoFIX.NotificationMethod_Email);
+    			SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(mdn);
     			if(smdn != null)
     			{
-    				smsWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-    				smsWrapper.setLastName(smdn.getSubscriber().getLastName());	
-    				emailWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-    				emailWrapper.setLastName(smdn.getSubscriber().getLastName());
+    				smsWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+    				smsWrapper.setLastName(smdn.getSubscriber().getLastname());	
+    				emailWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+    				emailWrapper.setLastName(smdn.getSubscriber().getLastname());
     			}
-    			smsWrapper.setDestMDN(subscriberMDN.getMDN());
+    			smsWrapper.setDestMDN(subscriberMDN.getMdn());
     			String smsMessage = notificationMessageParserService.buildMessage(smsWrapper,true);
 
     			smsService.setDestinationMDN(mdn);
@@ -294,34 +299,34 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     			smsService.setNotificationCode(smsWrapper.getCode());
     			smsService.asyncSendSMS();
     			
-    			emailWrapper.setDestMDN(subscriberMDN.getMDN());
+    			emailWrapper.setDestMDN(subscriberMDN.getMdn());
     			String emailMessage = notificationMessageParserService.buildMessage(emailWrapper,true);
     			String sub= ConfigurationUtil.getOTPMailSubsject();
     			mailService.asyncSendEmail(email, to, sub, emailMessage);
     		}
 		} else if (CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())) { 
 			
-        	subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-        	subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
-        	subscriber.setApproveOrRejectTime(new Timestamp());
+        	subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+        	subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
+        	subscriber.setApproveorrejecttime(new Timestamp());
         	subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-        	subscriber.setStatusTime(new Timestamp());
-        	subscriber.setUpgradeState(CmFinoFIX.UpgradeState_RequestForCorrection);
+        	subscriber.setStatustime(new Timestamp());
+        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_RequestForCorrection).longValue());
         	subscriberDao.save(subscriber);
 			errorMsg.setErrorDescription(MessageText._("Requested For Correction of Data for Agent"));
         } else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
             //update subscriber  update pockets
-        	partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Initialized);
-        	subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-        	subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
-        	subscriber.setApproveOrRejectTime(new Timestamp());
+        	partner.setPartnerstatus(((Integer)CmFinoFIX.SubscriberStatus_Initialized).longValue());
+        	subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+        	subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
+        	subscriber.setApproveorrejecttime(new Timestamp());
         	subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
         	subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
         	subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
         	subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
-        	subscriber.setStatusTime(new Timestamp());
-        	subscriberMDN.setStatusTime(new Timestamp());
-        	subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Rejected);
+        	subscriber.setStatustime(new Timestamp());
+        	subscriberMDN.setStatustime(new Timestamp());
+        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_Rejected).longValue());
         	subscriberDao.save(subscriber);
         	subscriberMdnDao.save(subscriberMDN);
             partnerDAO.save(partner);

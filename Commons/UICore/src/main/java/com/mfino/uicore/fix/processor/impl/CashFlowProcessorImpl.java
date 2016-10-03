@@ -28,7 +28,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCashFlow;
@@ -78,15 +78,15 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setSourceMDN(c.getSourceMDN());
         }
         entry.setSourceMDNID(c.getSubscriberMDNBySourceMDNID().getID());
-        entry.setSourceSubscriberID(c.getSubscriberBySourceSubscriberID().getID());
+        entry.setSourceSubscriberID(c.getSubscriberBySourceSubscriberID().getId().longValue());
         if (c.getSourceSubscriberName() != null) {
             entry.setSourceSubscriberName(c.getSourceSubscriberName());
         }
-        if (c.getSubscriberBySourceSubscriberID().getUser() != null) {
-            entry.setSourceUserName(c.getSubscriberBySourceSubscriberID().getUser().getUsername());
+        if (c.getSubscriberBySourceSubscriberID().getMfinoUserBySubscriberuserid() != null) {
+            entry.setSourceUserName(c.getSubscriberBySourceSubscriberID().getMfinoUserBySubscriberuserid().getUsername());
         }
         entry.setSourcePocketType(c.getSourcePocketType());
-        entry.setSourcePocketID(c.getPocketBySourcePocketID().getID());
+        entry.setSourcePocketID(c.getPocketBySourcePocketID().getId().longValue());
         if (c.getSourcePocketBalance() != null) {
             entry.setSourcePocketBalance(c.getSourcePocketBalance());
         }
@@ -104,8 +104,8 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setDestSubscriberID(c.getDestSubscriberID());
             SubscriberDAO destSubDao = DAOFactory.getInstance().getSubscriberDAO();
             Subscriber sub = destSubDao.getById(c.getDestSubscriberID());
-            if (sub.getUser() != null) {
-                entry.setDestnUserName(sub.getUser().getUsername());
+            if (sub.getMfinoUserBySubscriberuserid() != null) {
+                entry.setDestnUserName(sub.getMfinoUserBySubscriberuserid().getUsername());
             }
         }
         if (c.getDestSubscriberName() != null) {
@@ -139,8 +139,8 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setUpdatedBy(c.getUpdatedBy());
         }
         if (c.getLOP() != null) {
-            if (c.getLOP().getActualAmountPaid() != null) {
-                entry.setPaidAmount(c.getLOP().getActualAmountPaid());
+            if (c.getLOP().getActualamountpaid() != null) {
+                entry.setPaidAmount(c.getLOP().getActualamountpaid());
             }
         }
         if (c.getSourceTerminalID() != null) {
@@ -207,7 +207,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setTransactionUICategoryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, (Integer) c[0]));
         } else if (CmFinoFIX.SubtotalBy_Buy_Sell.equals(SubtotalBy)) {
             if (isSource) {
-                entry.setSourcePocketID(((Pocket) c[0]).getID());
+                entry.setSourcePocketID(((Pocket) c[0]).getId().longValue());
             } else {
                 entry.setDestPocketID((Long) c[0]);
             }
@@ -241,10 +241,10 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             query.setSourceDestnMDN(realMsg.getSourceDestnMDN());
             query.setId(realMsg.getIDSearch());
             SubscriberMDNDAO subsriberMdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-            SubscriberMDN subscriberMdn = subsriberMdnDAO.getByMDN(realMsg.getSourceDestnMDN());
+            SubscriberMdn subscriberMdn = subsriberMdnDAO.getByMDN(realMsg.getSourceDestnMDN());
             Long subcriberId = 0L;
             if (subscriberMdn != null) {
-                subcriberId = subscriberMdn.getID();
+                subcriberId = subscriberMdn.getId().longValue();
             }
 
             PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
@@ -262,7 +262,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             Pocket sourcePocket = null;
             if (pocketResults.size() > 0) {
                 sourcePocket = pocketResults.get(0);
-                pocketId = sourcePocket.getID();
+                pocketId = sourcePocket.getId().longValue();
             }
 
             if (pocketId != null) {

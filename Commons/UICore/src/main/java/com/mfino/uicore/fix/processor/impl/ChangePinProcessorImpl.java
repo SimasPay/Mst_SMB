@@ -13,7 +13,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSChangePin;
@@ -66,25 +66,25 @@ public class ChangePinProcessorImpl extends BaseFixProcessor implements ChangePi
         	log.warn("Confirmation does not match with new pin" + getLoggedUserNameWithIP());
         	return error;
         }
-        SubscriberMDN mdn=subMdndao.getByMDN(realMsg.getMDN());
-        if(StringUtils.isBlank(mdn.getDigestedPIN())){
+        SubscriberMdn mdn=subMdndao.getByMDN(realMsg.getMDN());
+        if(StringUtils.isBlank(mdn.getDigestedpin())){
         	error.setErrorDescription("Pin not set for You please try resetPin.");
         	log.warn("Pin not set " + getLoggedUserNameWithIP());
         	return error;
         }
-        String calcPIN = MfinoUtil.calculateDigestPin(mdn.getMDN(), realMsg.getOldPin());
-		if (!calcPIN.equals(mdn.getDigestedPIN())) {
+        String calcPIN = MfinoUtil.calculateDigestPin(mdn.getMdn(), realMsg.getOldPin());
+		if (!calcPIN.equals(mdn.getDigestedpin())) {
 			error.setErrorDescription("Wrong OldPin.");
         	log.warn("Wrong OldPin " + getLoggedUserNameWithIP());
         	return error;
 		}
-		calcPIN = MfinoUtil.calculateDigestPin(mdn.getMDN(), realMsg.getNewPin());
+		calcPIN = MfinoUtil.calculateDigestPin(mdn.getMdn(), realMsg.getNewPin());
 		Subscriber subscriber = mdn.getSubscriber();
-		mdn.setDigestedPIN(calcPIN);
-		mdn.setWrongPINCount(0);
+		mdn.setDigestedpin(calcPIN);
+		mdn.setWrongpincount(0);
         mdn.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-        log.info("Subscriber MDN: " +mdn.getID() + " :new pin updated for subscriber: " + subscriber.getID() + "selected by user: " + getLoggedUserNameWithIP());
+        log.info("Subscriber MDN: " +mdn.getId() + " :new pin updated for subscriber: " + subscriber.getId() + "selected by user: " + getLoggedUserNameWithIP());
         subscriberDAO.save(subscriber);
         subMdndao.save(mdn);
         realMsg.setsuccess(true);

@@ -32,10 +32,10 @@ public class CheckDependantChargeTypeProcessorImpl extends BaseFixProcessor impl
 		TransactionChargeDAO tcDAO = DAOFactory.getInstance().getTransactionChargeDAO();
 		ChargeDefinition cd = cdDAO.getById(realMsg.getChargeDefinitionID());
 		if (cd != null) {
-			if (cd.getChargeTypeByDependantChargeTypeID() != null) {
+			if (cd.getChargeTypeByDependantchargetypeid() != null) {
 				TransactionCharge tc = tcDAO.getTransactionCharge(realMsg.getTransactionRuleID(), 
-						cd.getChargeTypeByDependantChargeTypeID().getID());
-				exists = (tc != null && !(tc.getID().equals(realMsg.getTransactionChargeID()))) ? true : false;				
+						cd.getChargeTypeByDependantchargetypeid().getId().longValue());
+				exists = (tc != null && !(tc.getId().equals(realMsg.getTransactionChargeID()))) ? true : false;				
 			} else {
 				exists = true;
 			}
@@ -45,7 +45,7 @@ public class CheckDependantChargeTypeProcessorImpl extends BaseFixProcessor impl
 
         if(!exists){
             err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-            err.setErrorDescription(MessageText._("Please define the Transaction charge for this rule with the Charge type '" + cd.getChargeTypeByDependantChargeTypeID().getName() + "'."));
+            err.setErrorDescription(MessageText._("Please define the Transaction charge for this rule with the Charge type '" + cd.getChargeTypeByDependantchargetypeid().getName() + "'."));
         }else {
             err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
             err.setErrorDescription(MessageText._(""));

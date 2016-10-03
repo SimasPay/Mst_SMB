@@ -49,7 +49,7 @@ public class ActorChannelMappingValidatorProcessorImpl extends BaseFixProcessor 
 			query.setGroup(Long.valueOf(realMsg.getGroupID()));
 		}
 		List<ActorChannelMapping> list = acmDao.get(query);
-		if(list.size() != 0 && !list.get(0).getID().equals(realMsg.getID())) {
+		if(list.size() != 0 && !list.get(0).getId().equals(realMsg.getID())) {
 			error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			error.setErrorDescription(MessageText._("Actor channel mapping with the same criteria already exists in DB, please enter different criteria."));
 		} else {

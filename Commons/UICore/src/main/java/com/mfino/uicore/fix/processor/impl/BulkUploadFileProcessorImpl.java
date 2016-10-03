@@ -126,37 +126,37 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
     }
 
     public void updateMessage(BulkUploadFile bu, CMJSBulkUploadFile.CGEntries entry) {
-        entry.setID(bu.getID());
+        entry.setID(bu.getId().longValue());
 
         if (bu.getDescription() != null) {
             entry.setDescription(bu.getDescription());
         }
-        if (bu.getFileName() != null) {
-            entry.setFileName(bu.getFileName());
+        if (bu.getFilename() != null) {
+            entry.setFileName(bu.getFilename());
         }
-        if (bu.getUploadFileStatus() != null) {
-            entry.setUploadFileStatus(bu.getUploadFileStatus());
+        if ((Long)bu.getUploadfilestatus() != null) {
+            entry.setUploadFileStatus(((Long)bu.getUploadfilestatus()).intValue());
         }
-        if (bu.getRecordType() != null) {
-            entry.setRecordType(bu.getRecordType());
+        if (bu.getRecordtype() != null) {
+            entry.setRecordType(bu.getRecordtype().intValue());
         }
-        if (bu.getCreateTime() != null) {
-            entry.setCreateTime(bu.getCreateTime());
+        if (bu.getCreatetime() != null) {
+            entry.setCreateTime(bu.getCreatetime());
         }
-        if (bu.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(bu.getLastUpdateTime());
+        if (bu.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(bu.getLastupdatetime());
         }
-        if (bu.getCreatedBy() != null) {
-            entry.setCreatedBy(bu.getCreatedBy());
+        if (bu.getCreatedby() != null) {
+            entry.setCreatedBy(bu.getCreatedby());
         }
-        if (bu.getUpdatedBy() != null) {
-            entry.setUpdatedBy(bu.getUpdatedBy());
+        if (bu.getUpdatedby() != null) {
+            entry.setUpdatedBy(bu.getUpdatedby());
         }
-        if (bu.getTotalLineCount() != null) {
-            entry.setTotalLineCount(bu.getTotalLineCount());
+        if (bu.getTotallinecount() != null) {
+            entry.setTotalLineCount(bu.getTotallinecount().intValue());
         }
-        if (bu.getErrorLineCount() != null) {
-            entry.setErrorLineCount(bu.getErrorLineCount());
+        if (bu.getErrorlinecount() != null) {
+            entry.setErrorLineCount(bu.getErrorlinecount().intValue());
         }
         entry.setUploadStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_UploadFileStatus, null, entry.getUploadFileStatus()));
         entry.setRecordTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_RecordType, null, entry.getRecordType()));
@@ -233,11 +233,11 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
         // set bulk upload status to 'Uploading' and save an entry
         BulkUploadFileDAO bulkUploadFileDAO = DAOFactory.getInstance().getBulkUploadFileDAO();        
         BulkUploadFile bulkUploadFile = new BulkUploadFile();        
-        bulkUploadFile.setFileName(file.getOriginalFilename());
-        bulkUploadFile.setRecordType(recordType);
+        bulkUploadFile.setFilename(file.getOriginalFilename());
+        bulkUploadFile.setRecordtype(((Integer)recordType).longValue());
         bulkUploadFile.setDescription(desc);
-        bulkUploadFile.setRecordCount(count);
-        bulkUploadFile.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Uploading);
+        bulkUploadFile.setRecordcount(((Integer)count).longValue());
+        bulkUploadFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Uploading);
         bulkUploadFile.setCompany(userService.getUserCompany());
         bulkUploadFileDAO.save(bulkUploadFile);
         
@@ -256,16 +256,16 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
 			log.info("Persisting record at line number: " + linecount);
 			BulkUploadFileEntry bulkUploadFileEntry = new BulkUploadFileEntry();
 			bulkUploadFileEntry.setBulkUploadFile(bulkUploadFile);
-			bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Initialized);
-			bulkUploadFileEntry.setLineNumber(linecount);
-			bulkUploadFileEntry.setLineData(strLine);
+			bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Initialized);
+			bulkUploadFileEntry.setLinenumber(linecount);
+			bulkUploadFileEntry.setLinedata(strLine);
 			bulkUploadFileEntryDAO.save(bulkUploadFileEntry);
 		}
 		
 		log.debug("Persisted the file and line entries");
 		//update bulk upload file status
-		bulkUploadFile.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Uploaded);
-		bulkUploadFile.setTotalLineCount(linecount);
+		bulkUploadFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Uploaded);
+		bulkUploadFile.setTotallinecount(((Integer)linecount).longValue());
 		bulkUploadFileDAO.save(bulkUploadFile);
     }
 

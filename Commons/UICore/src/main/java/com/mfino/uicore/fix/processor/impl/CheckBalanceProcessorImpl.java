@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,13 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MerchantDAO;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCheckBalance;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.SubscriberService;
-import com.mfino.service.impl.SubscriberServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.CheckBalanceProcessor;
 
@@ -49,11 +49,12 @@ public class CheckBalanceProcessorImpl extends BaseFixProcessor implements Check
                  
        MerchantDAO merDao = DAOFactory.getInstance().getMerchantDAO();
        Merchant mer = merDao.getById(realMsg.getMerchantID());    
-       Set<SubscriberMDN> mdnSet = mer.getSubscriber().getSubscriberMDNFromSubscriberID();
-       SubscriberMDN subsMDN = (SubscriberMDN) mdnSet.toArray()[0];
+       Set<SubscriberMdn> mdnSet = mer.getSubscriber().getSubscriberMdns();
+       SubscriberMdn subsMDN = (SubscriberMdn) mdnSet.toArray()[0];
        
         
-        Pocket p = subscriberService.getDefaultPocket(subsMDN.getID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Airtime);
+        Pocket p = subscriberService.getDefaultPocket(subsMDN.getId().longValue(), CmFinoFIX.PocketType_SVA, 
+        		CmFinoFIX.Commodity_Airtime);
   	    //Before Correcting errors reported by Findbugs:
         /*if(p == null){
             updateToDefault(realMsg);
@@ -66,11 +67,11 @@ public class CheckBalanceProcessorImpl extends BaseFixProcessor implements Check
   	
   	    //After Correcting the errors reported by Findbugs  :     
         if(p == null){
-            log.error("default pocket for " + subsMDN.getID()+ "for commodity type "+ CmFinoFIX.PocketType_SVA +" is null");
+            log.error("default pocket for " + subsMDN.getId()+ "for commodity type "+ CmFinoFIX.PocketType_SVA +" is null");
                updateToDefault(realMsg);
            } else {
              updateMessage(p, realMsg);
-             log.info(getLoggedUserNameWithIP() + " has successfully checked balance for Merchant " + subsMDN.getID() + " for pocket " + p.getID());
+             log.info(getLoggedUserNameWithIP() + " has successfully checked balance for Merchant " + subsMDN.getId() + " for pocket " + p.getId());
            }    
         
         realMsg.setsuccess(CmFinoFIX.Boolean_True);
@@ -80,21 +81,21 @@ public class CheckBalanceProcessorImpl extends BaseFixProcessor implements Check
     }
 
     private void updateMessage(Pocket pocket, CMJSCheckBalance entry) {
-        if (pocket.getCurrentBalance() != null) {
-            entry.setBalance(pocket.getCurrentBalance());
+        if (pocket.getCurrentbalance() != null) {
+            entry.setBalance(new BigDecimal(pocket.getCurrentbalance()));
         } else {
         	entry.setBalance(ZERO);
         }
         if (null != pocket.getPocketTemplate()) {
-            entry.setCommodity(pocket.getPocketTemplate().getCommodity());
+            entry.setCommodity(((Long)pocket.getPocketTemplate().getCommodity()).intValue());
             String PocketTypeText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null, pocket.getPocketTemplate().getType());
-            Integer commodityType = pocket.getPocketTemplate().getCommodity();
+            Integer commodityType = ((Long)pocket.getPocketTemplate().getCommodity()).intValue();
             String commodityText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, commodityType);
             entry.setPocketTypeText(String.format("%s  %s", commodityText,PocketTypeText));
         }
 
-        if (null != pocket.getLastUpdateTime()) {
-            entry.setLastUpdateTime(pocket.getLastUpdateTime());
+        if (null != pocket.getLastupdatetime()) {
+            entry.setLastUpdateTime(pocket.getLastupdatetime());
         }
     }
 

@@ -22,10 +22,10 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -105,7 +105,7 @@ public class BankTellerCashInInquiryProcessorImpl extends MultixCommunicationHan
             return errorMsg;
         }
     	User user=userService.getCurrentUser();
-    	Set<Partner> partners = user.getPartnerFromUserID();
+    	Set<Partner> partners = user.getPartners();
     	if(partners==null||partners.isEmpty()){
     	  errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
           errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -113,7 +113,7 @@ public class BankTellerCashInInquiryProcessorImpl extends MultixCommunicationHan
     	}
     	Partner partner = partners.iterator().next();
     	Subscriber sourcesubScriber = partner.getSubscriber();
-    	SubscriberMDN sourceSubMdn = sourcesubScriber.getSubscriberMDNFromSubscriberID().iterator().next();
+    	SubscriberMdn sourceSubMdn = sourcesubScriber.getSubscriberMdns().iterator().next();
     	
     	ChannelCode cc = channelCodeService.getChannelCodebySourceApplication(CmFinoFIX.SourceApplication_Web);
         CMJSBankTellerCashInInquiry realMsg = (CMJSBankTellerCashInInquiry) msg;
@@ -142,26 +142,26 @@ public class BankTellerCashInInquiryProcessorImpl extends MultixCommunicationHan
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
         }   
-        TransactionsLog transactionsLog = new TransactionsLog();
-         transactionsLog.setMessageCode(CmFinoFIX.MsgType_JSBankTellerCashInInquiry);
-        transactionsLog.setMessageData(realMsg.DumpFields());
-        transactionsLog.setTransactionTime(new Timestamp(new Date()));
+        TransactionLog transactionsLog = new TransactionLog();
+         transactionsLog.setMessagecode(CmFinoFIX.MsgType_JSBankTellerCashInInquiry);
+        transactionsLog.setMessagedata(realMsg.DumpFields());
+        transactionsLog.setTransactiontime(new Timestamp(new Date()));
         transactionLogService.save(transactionsLog);
         
        
         CMBankTellerCashIn tellerCashinInquiry = new CMBankTellerCashIn();
         tellerCashinInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-        tellerCashinInquiry.setSourceApplication(cc.getChannelSourceApplication());
-        tellerCashinInquiry.setSourceMDN(sourceSubMdn.getMDN());
+        tellerCashinInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+        tellerCashinInquiry.setSourceMDN(sourceSubMdn.getMdn());
         tellerCashinInquiry.setDestMDN(realMsg.getDestMDN());
-        tellerCashinInquiry.setChannelCode(cc.getChannelCode());
+        tellerCashinInquiry.setChannelCode(cc.getChannelcode());
         tellerCashinInquiry.setServletPath(CmFinoFIX.ServletPath_BankAccount);
         tellerCashinInquiry.setIsInDirectCashIn(true);
         tellerCashinInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Teller_Cashin_SelfTransfer);
         tellerCashinInquiry.setPin(realMsg.getPin());
         tellerCashinInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CASHIN_BANKTOEMONEY);
         tellerCashinInquiry.setAmount(realMsg.getAmount());
-        tellerCashinInquiry.setTransactionID(transactionsLog.getID());        
+        tellerCashinInquiry.setTransactionID(transactionsLog.getId().longValue());        
 
         Integer resultCode = tellerCashinService.processInquiry(tellerCashinInquiry, cc);
         log.info("comitting the local transaction\n");
@@ -173,7 +173,7 @@ public class BankTellerCashInInquiryProcessorImpl extends MultixCommunicationHan
         	 
         	 if(CmFinoFIX.ErrorCode_Generic.equals(errorMsg.getErrorCode())||errorMsg.getTransferID()==null){
 
-                ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(tellerCashinInquiry.getServiceChargeTransactionLogID());
+                ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(tellerCashinInquiry.getServiceChargeTransactionLogID());
                 transactionChargingService.failTheTransaction(sctl, errorMsg.getErrorDescription());
               	realMsg.setsuccess(Boolean.FALSE);
               	errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
@@ -189,11 +189,11 @@ public class BankTellerCashInInquiryProcessorImpl extends MultixCommunicationHan
         	NotificationWrapper notificationWrapper = new NotificationWrapper();
         	notificationWrapper.setCode(resultCode);
         	notificationWrapper.setDestMDN(realMsg.getDestMDN());
-        	SubscriberMDN smdn = subscriberMdnService.getByMDN(realMsg.getDestMDN());
+        	SubscriberMdn smdn = subscriberMdnService.getByMDN(realMsg.getDestMDN());
             if(smdn != null)
             {
-            	notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-            	notificationWrapper.setLastName(smdn.getSubscriber().getLastName());					
+            	notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+            	notificationWrapper.setLastName(smdn.getSubscriber().getLastname());					
             }
         	errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
         	notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Web);

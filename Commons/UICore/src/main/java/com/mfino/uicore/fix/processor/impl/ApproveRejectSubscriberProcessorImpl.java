@@ -5,6 +5,7 @@
 package com.mfino.uicore.fix.processor.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubscriberDAO;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
@@ -27,7 +29,7 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSubscriber;
@@ -123,7 +125,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			return errorMsg;
 		}
 
-		SubscriberMDN subscriberMDN = subscriberMdnDao.getById(realMsg.getSubscriberMDNID());
+		SubscriberMdn subscriberMDN = subscriberMdnDao.getById(realMsg.getSubscriberMDNID());
 
 		if (null == subscriberMDN) {
 			log.info("Invalid subscriberMDN" + realMsg.getSubscriberMDNID());
@@ -133,15 +135,15 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		}
 
 		Subscriber subscriber = subscriberMDN.getSubscriber();
-		if ((!CmFinoFIX.UpgradeState_Upgradable.equals(subscriber.getUpgradeState())
-				&&(!CmFinoFIX.UpgradeState_Rejected.equals(subscriber.getUpgradeState())))
-				|| subscriber.getUpgradableKYCLevel() == null) {
+		if ((!CmFinoFIX.UpgradeState_Upgradable.equals(subscriber.getUpgradestate())
+				&&(!CmFinoFIX.UpgradeState_Rejected.equals(subscriber.getUpgradestate())))
+				|| subscriber.getKycLevel() == null) {
 			log.info("subscriber is not upgradable"	+ realMsg.getSubscriberMDNID());
 			errorMsg.setErrorDescription(MessageText._("subscriber is not upgradable"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		if (userService.getCurrentUser().getUsername().equals(subscriber.getAppliedBy())) {
+		if (userService.getCurrentUser().getUsername().equals(subscriber.getAppliedby())) {
 			log.info("You are not authorized to perform this operation");
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -151,27 +153,28 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		Pocket bankPocket = null;
 		Pocket emoneyPocket = null;
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid().longValue();
 		}
-		emoneyPocket = subscriberService.getEmoneyPocket(subscriberMDN.getID(), Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
-        bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+		emoneyPocket = subscriberService.getEmoneyPocket(subscriberMDN.getId().longValue(), Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
+        bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
        
 		KYCLevel kyclevel = null;
-		if (subscriber.getUpgradableKYCLevel() != null) {
-			kyclevel = kycLevelDao.getByKycLevel(subscriber.getUpgradableKYCLevel());
+		if (subscriber.getKycLevel() != null && subscriber.getKycLevel().getId() != null) {
+			kyclevel = kycLevelDao.getByKycLevel(subscriber.getKycLevel().getId().longValue());
 		}
 
 		if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
 			
-			if (ConfigurationUtil.getBulkUploadSubscriberKYClevel().equals(subscriber.getUpgradableKYCLevel())
+			if (ConfigurationUtil.getBulkUploadSubscriberKYClevel().equals(subscriber.getKycLevel())
 					&&(bankPocket== null||
-		         			!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-		         					bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))
-		         					||bankPocket.getCardPAN()==null)) {
+		         			!(((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+		         					((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
+		         					||bankPocket.getCardpan()==null)) {
 				log.info("valid bank pocket not found"+ realMsg.getSubscriberMDNID());
 				errorMsg.setErrorDescription(MessageText._("valid bank pocket not found"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -189,15 +192,16 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 			if(isEMoneyPocketRequired == true){
 				if(emoneyPocket== null||
-	        			!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)||
-	        			emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+	        			!(((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+	        			((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
 					log.info("valid emaoney pocket not found"+ realMsg.getSubscriberMDNID());
 					errorMsg.setErrorDescription(MessageText._("valid Emoney pocket not found"));
 					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 					return errorMsg;
 				}
 				
-				upgradeTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kyclevel.getKYCLevel(), true, CmFinoFIX.PocketType_SVA, subscriber.getType(), null, groupID);
+				upgradeTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kyclevel.getKyclevel().longValue(), true, 
+						CmFinoFIX.PocketType_SVA, ((Long)subscriber.getType()).intValue(), null, groupID);
 	
 				if (upgradeTemplate == null) {
 					log.info("Invalid pocketTemplate for kyclevel to upgrade"+ realMsg.getSubscriberMDNID());
@@ -206,12 +210,12 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 					return errorMsg;
 				}
 			}
-			subscriber.setKYCLevelByKYCLevel(kyclevel);
-			subscriber.setUpgradableKYCLevel(null);
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-			subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
-			subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-			subscriber.setApproveOrRejectTime(new Timestamp());
+			subscriber.setKycLevel(kyclevel);
+			subscriber.setUpgradablekyclevel(null);
+			subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_Approved).longValue());
+			subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
+			subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+			subscriber.setApproveorrejecttime(new Timestamp());
 			subscriberDao.save(subscriber);
 			// if required generate otp
 
@@ -226,20 +230,20 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 
 		} else if (CmFinoFIX.AdminAction_RequestForCorrection.equals(realMsg.getAdminAction())) { 
 			
-			subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-			subscriber.setApproveOrRejectTime(new Timestamp());
-			subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_RequestForCorrection);
+			subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+			subscriber.setApproveorrejecttime(new Timestamp());
+			subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_RequestForCorrection.longValue());
 			subscriberDao.save(subscriber);
 			
 			errorMsg.setErrorDescription(MessageText._("Request For Correction has been sent for Subscriber"));
 			
 		} else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
 			// update subscriber donot update pockets
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Rejected);
-			subscriber.setApprovedOrRejectedBy(userService.getCurrentUser().getUsername());
-			subscriber.setApproveOrRejectTime(new Timestamp());
-			subscriber.setApproveOrRejectComment(realMsg.getAdminComment());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Rejected.longValue());
+			subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
+			subscriber.setApproveorrejecttime(new Timestamp());
+			subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
 			if (bankPocket != null){
 				bankPocket.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
 				pocketDao.save(bankPocket);
@@ -254,14 +258,14 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		}
 		//send sms use async
 		log.info("Sending...");
-		log.info("Sending SMS to the subscriber:" + subscriberMDN.getMDN());
+		log.info("Sending SMS to the subscriber:" + subscriberMDN.getMdn());
 		String smsMsg = "approve or reject notification";
 		String emailMsg = "approve or reject notification";
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		try {
-			 notificationWrapper.setLanguage(subscriber.getLanguage());
+			 notificationWrapper.setLanguage(((Long)subscriber.getLanguage()).intValue());
 			 notificationWrapper.setCompany(subscriber.getCompany());
-			 notificationWrapper.setKycLevel(kyclevel.getKYCLevelName());
+			 notificationWrapper.setKycLevel(kyclevel.getKyclevelname());
 			 if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
 			 
 				 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeSuccess);
@@ -271,12 +275,12 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 				 notificationWrapper.setCode(CmFinoFIX.NotificationCode_UpgradeFail);
 			 }
 			 
-			 notificationWrapper.setDestMDN(subscriberMDN.getMDN());
+			 notificationWrapper.setDestMDN(subscriberMDN.getMdn());
 			 
 			 if(subscriberMDN != null){
 				 
-				 notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-				 notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastName());					
+				 notificationWrapper.setFirstName(subscriberMDN.getSubscriber().getFirstname());
+				 notificationWrapper.setLastName(subscriberMDN.getSubscriber().getLastname());					
 			 }
 			 
 			 notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
@@ -287,20 +291,20 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			 if(!ConfigurationUtil.getSendOTPBeforeApproval()){
 				Integer OTPLength = systemParametersService.getOTPLength();
 				String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-				String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-				subscriberMDN.setOTP(digestPin1);
-				subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+				String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
+				subscriberMDN.setOtp(digestPin1);
+				subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 				subscriberMdnDao.save(subscriberMDN);
 				
 				if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
-					log.info("new OTP set for " + subscriberMDN.getID() + " by user " + getLoggedUserNameWithIP() + " oneTimePin:" + oneTimePin);
+					log.info("new OTP set for " + subscriberMDN.getId() + " by user " + getLoggedUserNameWithIP() + " oneTimePin:" + oneTimePin);
 					NotificationWrapper smsNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_SMS);
-					smsNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-					smsNotificationWrapper.setLanguage(subscriber.getLanguage());
-					smsNotificationWrapper.setFirstName(subscriber.getFirstName());
-		            smsNotificationWrapper.setLastName(subscriber.getLastName());
+					smsNotificationWrapper.setDestMDN(subscriberMDN.getMdn());
+					smsNotificationWrapper.setLanguage(((Long)subscriber.getLanguage()).intValue());
+					smsNotificationWrapper.setFirstName(subscriber.getFirstname());
+		            smsNotificationWrapper.setLastName(subscriber.getLastname());
 					String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
-					String mdn2 = subscriberMDN.getMDN();
+					String mdn2 = subscriberMDN.getMdn();
 					SMSValues smsValues= new SMSValues();
 					smsValues.setDestinationMDN(mdn2);
 					smsValues.setMessage(smsMessage);
@@ -308,15 +312,15 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 						
 					smsService.asyncSendSMS(smsValues);
 					
-					if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
+					if(((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
 						NotificationWrapper emailNotificationWrapper=subscriberServiceExtended.generateOTPMessage(oneTimePin, CmFinoFIX.NotificationMethod_Email);
-						emailNotificationWrapper.setDestMDN(subscriberMDN.getMDN());
-						emailNotificationWrapper.setLanguage(subscriber.getLanguage());
-						emailNotificationWrapper.setFirstName(subscriber.getFirstName());
-						emailNotificationWrapper.setLastName(subscriber.getLastName());
+						emailNotificationWrapper.setDestMDN(subscriberMDN.getMdn());
+						emailNotificationWrapper.setLanguage(((Long)subscriber.getLanguage()).intValue());
+						emailNotificationWrapper.setFirstName(subscriber.getFirstname());
+						emailNotificationWrapper.setLastName(subscriber.getLastname());
 						String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);
 						String to=subscriber.getEmail();
-						String name=subscriber.getFirstName();
+						String name=subscriber.getFirstname();
 						String sub = ConfigurationUtil.getOTPMailSubsject();
 						mailService.asyncSendEmail(to, name, sub, emailMessage);
 					}
@@ -328,7 +332,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			
 		if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
 			
-			String mdn = subscriberMDN.getMDN();
+			String mdn = subscriberMDN.getMdn();
 			//smsService.setDestinationMDN(mdn);
 			// service.setSourceMDN(notificationWrapper.getSMSNotificationCode());
 			//smsService.setMessage(smsMsg);
@@ -340,9 +344,9 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			smsService.asyncSendSMS(smsValues1);
 		}
 		
-		if( ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
+		if( ((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
 			String to=subscriber.getEmail();
-			String name= subscriber.getFirstName();
+			String name= subscriber.getFirstname();
 			mailService.asyncSendEmail(to,name, "UpgradeNotification", emailMsg);
 		}
 		
@@ -365,17 +369,17 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			// return SubscriberSyncErrors.PocketAlreadyUpgraded;
 			log.info("Pocket already upgraded");
 		}
-		emoneyPocket.setPocketTemplateByOldPocketTemplateID(emoneyPocket.getPocketTemplate());
+		emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplate());
 		emoneyPocket.setPocketTemplate(upgradetemplate);
 //		emoneyPocket.setStatus(subscriber.getStatus());
-		emoneyPocket.setPocketTemplateChangedBy(userService.getCurrentUser().getUsername());
-		emoneyPocket.setPocketTemplateChangeTime(new Timestamp());
+		emoneyPocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
+		emoneyPocket.setPockettemplatechangetime(new Timestamp());
 		pocketDao.save(emoneyPocket);
 		}
-		if (bankPocket != null&&subscriber.getKYCLevelByKYCLevel().getKYCLevel().equals(ConfigurationUtil.getBulkUploadSubscriberKYClevel())) {
-			if (subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)) {
+		if (bankPocket != null&&subscriber.getKycLevel().getKyclevel().equals(ConfigurationUtil.getBulkUploadSubscriberKYClevel())) {
+			if (((Long)subscriber.getStatus()).equals(CmFinoFIX.SubscriberStatus_Active)) {
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-				bankPocket.setActivationTime(new Timestamp());
+				bankPocket.setActivationtime(new Timestamp());
 				
 			} else {
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Initialized);

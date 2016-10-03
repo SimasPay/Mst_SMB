@@ -36,7 +36,7 @@ public class CheckChargeDefinitionProcessorImpl extends BaseFixProcessor impleme
 		if(cd!=null && tr!=null)
 		{
 			TransactionType tt = tr.getTransactionType();
-			if (tt!=null && "SubscriberRegistration".equals(tt.getTransactionName()) && cd.getIsChargeFromCustomer() ){
+			if (tt!=null && "SubscriberRegistration".equals(tt.getTransactionname()) && (cd.getIschargefromcustomer() != 0) ){
 				isError = true;
 			} else {
 				isError = false;

@@ -89,15 +89,15 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
         }
 
         if (e.getFirstName() != null) {
-            user.setFirstName(e.getFirstName());
+            user.setFirstname(e.getFirstName());
         }
 
         if (e.getLastName() != null) {
-            user.setLastName(e.getLastName());
+            user.setLastname(e.getLastName());
         }
 
         if (e.getCreatedBy() != null) {
-            user.setCreatedBy(e.getCreatedBy());
+            user.setCreatedby(e.getCreatedBy());
         }
 
         if (e.getLanguage() != null) {
@@ -108,18 +108,18 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
             user.setTimezone(e.getTimezone());
         }
          MfinoServiceProviderDAO mspdao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-         user.setmFinoServiceProviderByMSPID(mspdao.getById(1l));
+         user.setMfinoServiceProvider(mspdao.getById(1l));
         
           
         user.setStatus(CmFinoFIX.UserStatus_Active);
         
         if(e.getBankRoles()!=null){
-        user.setRole(e.getBankRoles());
+        user.setRole(e.getBankRoles().longValue());
         }
         if(e.getAdminComment()!=null){
-        user.setAdminComment(e.getAdminComment());
+        user.setAdmincomment(e.getAdminComment());
         }
-        user.setStatusTime(new Timestamp());
+        user.setStatustime(new Timestamp());
 
 //        if (e.getUpdatedBy() != null) {
 //            user.setUpdatedBy(e.getUpdatedBy());
@@ -134,22 +134,23 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
       }
      UserDAO dao = DAOFactory.getInstance().getUserDAO();
      User  user=null;
-     if(bankAdmin.getUser().getID()!=null && CmFinoFIX.JSaction_Update.equalsIgnoreCase(action) ){
-        user = dao.getById(bankAdmin.getUser().getID());
+     if(bankAdmin.getMfinoUser() != null && bankAdmin.getMfinoUser().getId() != null 
+    		 && CmFinoFIX.JSaction_Update.equalsIgnoreCase(action) ){
+        user = dao.getById(bankAdmin.getMfinoUser().getId().longValue());
         if(e.getFirstName()!=null){
-            user.setFirstName(e.getFirstName());
+            user.setFirstname(e.getFirstName());
         }
         if(e.getLastName()!=null){
-            user.setLastName(e.getLastName());
+            user.setLastname(e.getLastName());
         }
         if(e.getEmail()!=null){
             user.setEmail(e.getEmail());
         }
         if(e.getBankRoles()!=null){
-            user.setRole(e.getBankRoles());
+            user.setRole(e.getBankRoles().longValue());
         }
         if(e.getAdminComment()!=null){
-            user.setAdminComment(e.getAdminComment());
+            user.setAdmincomment(e.getAdminComment());
         }
         if(e.getTimezone()!=null){
             user.setTimezone(e.getTimezone());
@@ -162,89 +163,89 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
     }
 
     private void updateMessage(BankAdmin bankAdmin, CmFinoFIX.CMJSBankAdmin.CGEntries e) {
-        User user = bankAdmin.getUser();
-        e.setUserID(user.getID());
+        User user = bankAdmin.getMfinoUser();
+        e.setUserID(user.getId().longValue());
         if (user.getUsername() != null) {
-            e.setUsername(bankAdmin.getUser().getUsername());
+            e.setUsername(bankAdmin.getMfinoUser().getUsername());
         }
-        if (bankAdmin.getID() != null) {
-            e.setID(bankAdmin.getID());
+        if (bankAdmin.getId() != null) {
+            e.setID(bankAdmin.getId().longValue());
         }
-        if(user.getSecurityAnswer() !=null)
+        if(user.getSecurityanswer() !=null)
         {
-            e.setSecurityAnswer(user.getSecurityAnswer());
+            e.setSecurityAnswer(user.getSecurityanswer());
         }
 
-        if(user.getSecurityQuestion() !=null)
+        if(user.getSecurityquestion() !=null)
         {
-            e.setSecurityQuestion(user.getSecurityQuestion());
+            e.setSecurityQuestion(user.getSecurityquestion());
         }
-        if(user.getConfirmationTime() !=null)
+        if(user.getConfirmationtime() !=null)
         {
-            e.setConfirmationTime(user.getConfirmationTime());
+            e.setConfirmationTime(user.getConfirmationtime());
         }
-        if(user.getUserActivationTime() !=null)
+        if(user.getUseractivationtime() !=null)
         {
-            e.setUserActivationTime(user.getUserActivationTime());
+            e.setUserActivationTime(user.getUseractivationtime());
         }
-        if(user.getRejectionTime() !=null)
+        if(user.getRejectiontime() !=null)
         {
-            e.setRejectionTime(user.getRejectionTime());
+            e.setRejectionTime(user.getRejectiontime());
         }
-        if(user.getDateOfBirth() != null)
+        if(user.getDateofbirth() != null)
         {
-            e.setDateOfBirth(user.getDateOfBirth());
+            e.setDateOfBirth(user.getDateofbirth());
         }
-        if(user.getExpirationTime() !=null)
+        if(user.getExpirationtime() !=null)
         {
-            e.setExpirationTime(user.getExpirationTime());
+            e.setExpirationTime(user.getExpirationtime());
         }
-        if(user.getConfirmationCode() !=null)
+        if(user.getConfirmationcode() !=null)
         {
-            e.setConfirmationCode(user.getConfirmationCode());
+            e.setConfirmationCode(user.getConfirmationcode());
         }
         // Don't send the password back
         e.setPassword(null);
 
-        if (user.getFirstTimeLogin() != null) {
-            e.setFirstTimeLogin(user.getFirstTimeLogin());
+        if (user.getFirsttimelogin() != null) {
+            e.setFirstTimeLogin(user.getFirsttimelogin() != 0);
         }
 
-        if (bankAdmin.getCreateTime() != null) {
-            e.setCreateTime(bankAdmin.getCreateTime());
+        if (bankAdmin.getCreatetime() != null) {
+            e.setCreateTime(bankAdmin.getCreatetime());
         }
 
-        if (bankAdmin.getCreatedBy() != null) {
-            e.setCreatedBy(bankAdmin.getCreatedBy());
+        if (bankAdmin.getCreatedby() != null) {
+            e.setCreatedBy(bankAdmin.getCreatedby());
         }
 
         if (user.getEmail() != null) {
             e.setEmail(user.getEmail());
         }
 
-        if (user.getFirstName() != null) {
-            e.setFirstName(user.getFirstName());
+        if (user.getFirstname() != null) {
+            e.setFirstName(user.getFirstname());
         }
 
-        if (user.getLastName() != null) {
-            e.setLastName(user.getLastName());
+        if (user.getLastname() != null) {
+            e.setLastName(user.getLastname());
         }
 
-        if (user.getLanguage() != null) {
-            e.setLanguage(user.getLanguage());
+        if (((Long)user.getLanguage()) != null) {
+            e.setLanguage(((Long)user.getLanguage()).intValue());
         }
 
-        if (user.getLastLoginTime() != null) {
-            e.setLastLoginTime(user.getLastLoginTime());
+        if (user.getLastlogintime() != null) {
+            e.setLastLoginTime(user.getLastlogintime());
         }
 
-        if (bankAdmin.getLastUpdateTime() != null) {
-            e.setLastUpdateTime(bankAdmin.getLastUpdateTime());
+        if (bankAdmin.getLastupdatetime() != null) {
+            e.setLastUpdateTime(bankAdmin.getLastupdatetime());
         }
-        if(bankAdmin.getBank()!=null){
-            e.setBankID(bankAdmin.getBank().getID());
+        if(bankAdmin.getBank() != null && bankAdmin.getBank().getId() != null){
+            e.setBankID(bankAdmin.getBank().getId().longValue());
         }
-        Integer restr = user.getRestrictions();
+        Integer restr = ((Long)user.getRestrictions()).intValue();
         if (restr != null) {
             e.setUserRestrictions(restr);
             if ((restr & CmFinoFIX.SubscriberRestrictions_Suspended) > 0) {
@@ -259,53 +260,55 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
             }
         }
 
-        Integer status = user.getStatus();
+        Integer status = ((Long)user.getStatus()).intValue();
         if (status != null) {
             e.setUserStatus(status);
             e.setUserStatusText(enumTextService.getEnumTextValue(
-                    CmFinoFIX.TagID_UserStatus, user.getLanguage(), user.getStatus().toString()));
+                    CmFinoFIX.TagID_UserStatus, ((Long)user.getLanguage()).intValue(), ((Long)user.getStatus()).toString()));
         }
 
-        if (user.getStatusTime() != null) {
-            e.setStatusTime(user.getStatusTime());
+        if (user.getStatustime() != null) {
+            e.setStatusTime(user.getStatustime());
         }
 
         if (user.getTimezone() != null) {
             e.setTimezone(user.getTimezone());
         }
 
-        if (bankAdmin.getUpdatedBy() != null) {
-            e.setUpdatedBy(bankAdmin.getUpdatedBy());
+        if (bankAdmin.getUpdatedby() != null) {
+            e.setUpdatedBy(bankAdmin.getUpdatedby());
         }
 
-        e.setBankRoles(user.getRole());
-        e.setRoleText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankRoles, user.getLanguage(), user.getRole()));
+        e.setBankRoles(user.getRole().intValue());
+        e.setRoleText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankRoles, ((Long)user.getLanguage()).intValue(), 
+        		user.getRole().intValue()));
 
         e.setLanguageText(enumTextService.getEnumTextValue(
-                CmFinoFIX.TagID_Language, user.getLanguage(), user.getLanguage()));
+                CmFinoFIX.TagID_Language, ((Long)user.getLanguage()).intValue(), 
+        		user.getRole().intValue()));
 
-        if (user.getAdminComment() != null) {
-            e.setAdminComment(user.getAdminComment());
+        if (user.getAdmincomment() != null) {
+            e.setAdminComment(user.getAdmincomment());
         }
-        if(user.getDateOfBirth()!=null){
-            e.setDateOfBirth(user.getDateOfBirth());
+        if(user.getDateofbirth()!=null){
+            e.setDateOfBirth(user.getDateofbirth());
         }
-		if (user.getUserActivationTime() != null) {
-			e.setUserActivationTime(user.getUserActivationTime());
+		if (user.getUseractivationtime() != null) {
+			e.setUserActivationTime(user.getUseractivationtime());
 		}
-		if (user.getRejectionTime() != null) {
-			e.setRejectionTime(user.getRejectionTime());
+		if (user.getRejectiontime() != null) {
+			e.setRejectionTime(user.getRejectiontime());
 		}
-		if (user.getExpirationTime() != null) {
-			e.setExpirationTime(user.getExpirationTime());
+		if (user.getExpirationtime() != null) {
+			e.setExpirationTime(user.getExpirationtime());
 		}
-		if(user.getConfirmationTime()!=null){
-			e.setConfirmationTime(user.getConfirmationTime());
+		if(user.getConfirmationtime()!=null){
+			e.setConfirmationTime(user.getConfirmationtime());
 		}
-                if(user.getRestrictions()!=null){
+                if((Long)user.getRestrictions() != null){
                     //e.set
                 }
-                e.setRecordVersion(bankAdmin.getVersion());
+                e.setRecordVersion(((Long)bankAdmin.getVersion()).intValue());
     }
     
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -389,7 +392,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
                 userEntry.setPassword(encPassword);
                 userDAO.save(userEntry);
                 BankAdmin bankAdminObj = new BankAdmin();
-                bankAdminObj.setUser(userEntry);
+                bankAdminObj.setMfinoUser(userEntry);
                 updateEntity(bankAdminObj, e);
                 bankAdmindao.save(bankAdminObj);
 
@@ -397,12 +400,12 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
                 log.info("Sending Email to the bank admin with username" + userEntry.getUsername());
                  String emailMsg =
 	                        String.format(
-	                        "Dear %s %s,\n\tYour username is %s \n\tYour pwd is %s" + ".\n You can login : " + ConfigurationUtil.getAppURL() + " \n" + ConfigurationUtil.getAdditionalMsg() + "\n" + ConfigurationUtil.getEmailSignature(), userEntry.getFirstName(),
-	                        userEntry.getLastName(), userEntry .getUsername(), genPwd);
+	                        "Dear %s %s,\n\tYour username is %s \n\tYour pwd is %s" + ".\n You can login : " + ConfigurationUtil.getAppURL() + " \n" + ConfigurationUtil.getAdditionalMsg() + "\n" + ConfigurationUtil.getEmailSignature(), userEntry.getFirstname(),
+	                        userEntry.getLastname(), userEntry .getUsername(), genPwd);
 	            String emailSubject = ConfigurationUtil.getUserInsertSubject();
 
                 try {
-                    mailService.sendMailMultiX(userEntry.getEmail(), userEntry.getFirstName() + " " + userEntry.getLastName(), emailSubject,
+                    mailService.sendMailMultiX(userEntry.getEmail(), userEntry.getFirstname() + " " + userEntry.getLastname(), emailSubject,
                             emailMsg);
                 } catch (Exception exception) {
                     log.error("Failed to send User Add information.", exception);

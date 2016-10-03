@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.domain.Partner;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -49,12 +49,12 @@ public class CheckMDNProcessorImpl extends BaseFixProcessor implements CheckMDNP
     User loggedInUser = userService.getCurrentUser();
     
     if (loggedInUser != null && StringUtils.isNotBlank(realMsg.getMDN())) {
-    	Set<Partner> partners = loggedInUser.getPartnerFromUserID();
+    	Set<Partner> partners = loggedInUser.getPartners();
     	if (CollectionUtils.isNotEmpty(partners)) {
     		Partner partner = partners.iterator().next();
-    		Set<SubscriberMDN> subscriberMDNs = partner.getSubscriber().getSubscriberMDNFromSubscriberID();
-    		SubscriberMDN subscriberMDN = subscriberMDNs.iterator().next();
-    		if (subscriberMDN.getMDN().equals(subscriberService.normalizeMDN(realMsg.getMDN()))) {
+    		Set<SubscriberMdn> subscriberMDNs = partner.getSubscriber().getSubscriberMdns();
+    		SubscriberMdn subscriberMDN = subscriberMDNs.iterator().next();
+    		if (subscriberMDN.getMdn().equals(subscriberService.normalizeMDN(realMsg.getMDN()))) {
     	        err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
     	        err.setErrorDescription(MessageText._(""));
     		} else {

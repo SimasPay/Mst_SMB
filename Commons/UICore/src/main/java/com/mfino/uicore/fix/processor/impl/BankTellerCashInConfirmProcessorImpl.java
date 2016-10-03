@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -88,7 +88,7 @@ public class BankTellerCashInConfirmProcessorImpl extends MultixCommunicationHan
             return errorMsg;
         }
     	User user=userService.getCurrentUser();
-    	Set<Partner> partners = user.getPartnerFromUserID();
+    	Set<Partner> partners = user.getPartners();
     	if(partners==null||partners.isEmpty()){
     	  errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
           errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -96,7 +96,7 @@ public class BankTellerCashInConfirmProcessorImpl extends MultixCommunicationHan
     	}
     	Partner partner = partners.iterator().next();
     	Subscriber sourcesubScriber = partner.getSubscriber();
-    	SubscriberMDN sourceSubMdn = sourcesubScriber.getSubscriberMDNFromSubscriberID().iterator().next();
+    	SubscriberMdn sourceSubMdn = sourcesubScriber.getSubscriberMdns().iterator().next();
     	 CMJSBankTellerCashInConfirm realMsg = (CMJSBankTellerCashInConfirm) msg;
     	 if (realMsg.getServiceChargeTransactionLogID()==null) {
              log.info("ServiceChargeTransactionLogID is null");
@@ -104,15 +104,15 @@ public class BankTellerCashInConfirmProcessorImpl extends MultixCommunicationHan
              errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
              return errorMsg;
          }
-    	ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
+    	ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
     	if (sctl==null) {
             log.info("ServiceChargeTransactionLogID is null");
             errorMsg.setErrorDescription(MessageText._("Invalid request"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
         }
-    	ChannelCode cc = channelCodeService.getChannelCodeByChannelId(sctl.getChannelCodeID());
-        if (StringUtils.isBlank(realMsg.getDestMDN())||!sctl.getDestMDN().equals(realMsg.getDestMDN())) {
+    	ChannelCode cc = channelCodeService.getChannelCodeByChannelId(sctl.getChannelcodeid().longValue());
+        if (StringUtils.isBlank(realMsg.getDestMDN())||!sctl.getDestmdn().equals(realMsg.getDestMDN())) {
             log.info("DestMDN is null");
             errorMsg.setErrorDescription(MessageText._("Invalid Destination MDN"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -133,13 +133,13 @@ public class BankTellerCashInConfirmProcessorImpl extends MultixCommunicationHan
        
         CMBankTellerCashInConfirm tellerCashInconfirm = new CMBankTellerCashInConfirm();
         tellerCashInconfirm.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-        tellerCashInconfirm.setSourceApplication(cc.getChannelSourceApplication());
-        tellerCashInconfirm.setSourceMDN(sourceSubMdn.getMDN());
+        tellerCashInconfirm.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+        tellerCashInconfirm.setSourceMDN(sourceSubMdn.getMdn());
         tellerCashInconfirm.setDestMDN(realMsg.getDestMDN());
-        tellerCashInconfirm.setChannelCode(cc.getChannelCode());
+        tellerCashInconfirm.setChannelCode(cc.getChannelcode());
         tellerCashInconfirm.setServletPath(CmFinoFIX.ServletPath_BankAccount);
-        tellerCashInconfirm.setParentTransactionID(sctl.getTransactionID());        
-        tellerCashInconfirm.setServiceChargeTransactionLogID(sctl.getID());
+        tellerCashInconfirm.setParentTransactionID(sctl.getTransactionid().longValue());        
+        tellerCashInconfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
         tellerCashInconfirm.setIsInDirectCashIn(true);
         tellerCashInconfirm.setTransferID(realMsg.getTransferID());
         tellerCashInconfirm.setConfirmed(true);
@@ -194,14 +194,14 @@ public class BankTellerCashInConfirmProcessorImpl extends MultixCommunicationHan
     }
 
     // Do the Autoreversal if Transfer to Subscriber is fails.
-	private void autoReverse(ServiceChargeTransactionLog sctl, CMBankTellerCashInConfirm tellerCashInconfirm, 
+	private void autoReverse(ServiceChargeTxnLog sctl, CMBankTellerCashInConfirm tellerCashInconfirm, 
 			String reverseReason) {
 		log.info("constructing autoreversal object");
 		CMAutoReversal reversal = new CMAutoReversal();
 		reversal.setSourcePocketID(tellerCashInconfirm.getSourcePocketID());
 		reversal.setDestPocketID(tellerCashInconfirm.getDestPocketID());
-		reversal.setServiceChargeTransactionLogID(sctl.getID());
-		reversal.setAmount(sctl.getTransactionAmount());
+		reversal.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		reversal.setAmount(sctl.getTransactionamount());
 		reversal.setCharges(BigDecimal.ZERO);
 		CMJSError emsg = (CMJSError) handleRequestResponse(reversal);
 		log.info("Auto Reversal Staus : " + emsg.getErrorDescription());

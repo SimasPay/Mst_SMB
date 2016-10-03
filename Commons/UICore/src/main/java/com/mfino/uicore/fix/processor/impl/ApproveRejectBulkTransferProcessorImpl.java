@@ -1,5 +1,7 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,7 +13,7 @@ import com.mfino.domain.BulkUpload;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectBulkTranfer;
@@ -75,15 +77,15 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 		if (realMsg.getBulkUploadID() != null) {
 			BulkUpload bu =  bulkUploadService.getById(realMsg.getBulkUploadID());
 
-			if (bu != null && CmFinoFIX.BulkUploadDeliveryStatus_Uploaded.equals(bu.getDeliveryStatus()) ) {
+			if (bu != null && CmFinoFIX.BulkUploadDeliveryStatus_Uploaded.equals(bu.getDeliverystatus()) ) {
 
-				bu.setApproverComments(realMsg.getAdminComment());
+				bu.setApprovercomments(realMsg.getAdminComment());
 				if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
 					log.info("Bulk Transfer Request is Approved.");
 					err = transferFromSourcePocketToDestinationPocket(realMsg.getBulkUploadID(), err);
 					if (CmFinoFIX.ErrorCode_NoError.equals(err.getErrorCode())) {
-						bu.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Approved);
-						bu.setDeliveryDate(new Timestamp());
+						bu.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Approved);
+						bu.setDeliverydate(new Timestamp());
 						bulkUploadService.save(bu);
 						err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 						err.setErrorDescription(MessageText._("Successfully Approved the Bulk Transfer."));
@@ -94,8 +96,8 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 				}
 				else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
 					log.info("Bulk transfer Request is Rejected.");
-					bu.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Rejected);
-					bu.setDeliveryDate(new Timestamp());
+					bu.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Rejected);
+					bu.setDeliverydate(new Timestamp());
 					bulkUploadService.save(bu);
 					err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					err.setErrorDescription(MessageText._("Rejected the Bulk Transfer."));
@@ -126,19 +128,19 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 		log.info("Transfering the money from Source pocket to Suspense pocket as part of Bulk transfer id: " + bulkTransferId);
  		BulkUpload bulkUpload = bulkUploadService.getById(bulkTransferId);
 
-		Pocket sourcePocket = bulkUpload.getPocketBySourcePocket();
+		Pocket sourcePocket = bulkUpload.getPocket();
 		Integer validationResult = transactionApiValidationService.validateSourcePocket(sourcePocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(sourcePocket!=null? sourcePocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(sourcePocket!=null? sourcePocket.getId():null)+" has failed validations");
             err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             err.setErrorDescription(MessageText._("Sorry, Source pocket has failed validations."));
             return err;
 		}
 		
-		SubscriberMDN sourceSubscriberMDN = sourcePocket.getSubscriberMDNByMDNID();
+		SubscriberMdn sourceSubscriberMDN = sourcePocket.getSubscriberMdn();
 		validationResult=transactionApiValidationService.validateSubscriberAsSource(sourceSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Destination subscriber with mdn : "+sourceSubscriberMDN.getMDN()+" has failed validations");
+			log.error("Destination subscriber with mdn : "+sourceSubscriberMDN.getMdn()+" has failed validations");
             err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             err.setErrorDescription(MessageText._("Sorry, Source subscriber has failed validations."));
             return err;
@@ -154,18 +156,18 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
         Pocket destPocket = pocketService.getById(destPocketId);
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.info("Destination pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.info("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
             err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             err.setErrorDescription(MessageText._("Sorry, Destination pocket has failed validations."));
             return err;
 		}		
 		
-		log.info("Got the Destination pocket for the bulk transfer --> " + destPocket.getID());
+		log.info("Got the Destination pocket for the bulk transfer --> " + destPocket.getId());
 		
-		SubscriberMDN destSubscriberMDN = destPocket.getSubscriberMDNByMDNID();
+		SubscriberMdn destSubscriberMDN = destPocket.getSubscriberMdn();
 		validationResult=transactionApiValidationService.validateSubscriberAsDestination(destSubscriberMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Destination subscriber with mdn : "+destSubscriberMDN.getMDN()+" has failed validations");
+			log.error("Destination subscriber with mdn : "+destSubscriberMDN.getMdn()+" has failed validations");
             err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             err.setErrorDescription(MessageText._("Sorry, Destination subscriber has failed validations."));
             return err;
@@ -175,15 +177,15 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 
 		log.info("Creating the Bulk Transfer Inquiry object");
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSourceMDN(bulkUpload.getMDN());
-		transactionDetails.setDestMDN(destSubscriberMDN.getMDN());
-		transactionDetails.setAmount(bulkUpload.getTotalAmount());
+		transactionDetails.setSourceMDN(bulkUpload.getMdn());
+		transactionDetails.setDestMDN(destSubscriberMDN.getMdn());
+		transactionDetails.setAmount(bulkUpload.getTotalamount());
 		transactionDetails.setSourcePIN("mFino260");
 		transactionDetails.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_BULK_TRANSFER);
-		transactionDetails.setChannelCode(channelCode.getChannelCode());
-		transactionDetails.setSrcPocketId(sourcePocket.getID());
-		transactionDetails.setDestinationPocketId(destPocket.getID());
+		transactionDetails.setChannelCode(channelCode.getChannelcode());
+		transactionDetails.setSrcPocketId(sourcePocket.getId().longValue());
+		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
 		transactionDetails.setCc(channelCode);
 		transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_BULK_TRANSFER);
@@ -191,7 +193,7 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 		XMLResult result = (XMLResult)bulkTransferInquiryHandler.handle(transactionDetails);
 
 		if (result != null) {
-			bulkUpload.setServiceChargeTransactionLogID(result.getSctlID());
+			bulkUpload.setServicechargetransactionlogid(new BigDecimal(result.getSctlID()));
 			bulkUploadService.save(bulkUpload);
 			if (CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(result.getCode())) {
 				log.info("Creating the Bulk Transfer Confirmation object");
@@ -204,25 +206,25 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 
 				if (result != null && result.getDetailsOfPresentTransaction()!= null) {
 					CommodityTransfer ct = result.getDetailsOfPresentTransaction();
-					if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferStatus())) {
+					if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferstatus())) {
 						log.info("Trnasfer from source Pocket to Destination suspense pocket completed");
 						err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 						return err;
 					}
 					else {
-						log.info("Failing the Bulk Transfer " + bulkUpload.getID() + "  as the Transaction is failed.");
+						log.info("Failing the Bulk Transfer " + bulkUpload.getId() + "  as the Transaction is failed.");
 						String failureReason = StringUtils.isNotBlank(result.getMessage()) ? result.getMessage() : result.getNotificationCode()+"";
 						bulkTransferService.failTheBulkTransfer(bulkUpload,  failureReason);
 			            err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-			            err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getID() + "  as the Transaction is failed."));
+			            err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getId() + "  as the Transaction is failed."));
 						return err;
 					}
 				}
 				// No Response from Back end after confirming the transaction. Leave the Bulk transfer in processing state.
 				else {
 					log.info("No Response from Back end -- > " + result.getMessage());
-					bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Pending);
-					bulkUpload.setDeliveryDate(new Timestamp());
+					bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Pending);
+					bulkUpload.setDeliverydate(new Timestamp());
 					bulkUploadService.save(bulkUpload);
 		            err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 		            err.setErrorDescription(MessageText._("Sorry, The transaction is in Pending as there is no response from Backend."));
@@ -230,20 +232,20 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 				}
 			}
 			else {
-				log.info("Failing the Bulk Transfer " + bulkUpload.getID() + " as the Inquiry failed");
+				log.info("Failing the Bulk Transfer " + bulkUpload.getId() + " as the Inquiry failed");
 				String failureReason = StringUtils.isNotBlank(result.getMessage()) ? result.getMessage() : result.getNotificationCode()+"";
 				bulkTransferService.failTheBulkTransfer(bulkUpload, failureReason);
 	            err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-	            err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getID() + " as the Inquiry failed"));
+	            err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getId() + " as the Inquiry failed"));
 				return err;
 			}
 		}
 		else {
-			log.info(" Failing the Bulk Transfer " + bulkUpload.getID() + " as the Inquiry result is null");
+			log.info(" Failing the Bulk Transfer " + bulkUpload.getId() + " as the Inquiry result is null");
 			String failureReason = "Inquiry Result is null";
 			bulkTransferService.failTheBulkTransfer(bulkUpload,  failureReason);
             err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-            err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getID() + " as the Inquiry result is null"));
+            err.setErrorDescription(MessageText._("Sorry, Failing the Bulk Transfer " + bulkUpload.getId() + " as the Inquiry result is null"));
 			return err;
 		}
 	}

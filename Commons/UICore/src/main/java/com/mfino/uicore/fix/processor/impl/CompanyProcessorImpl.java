@@ -54,12 +54,12 @@ public class CompanyProcessorImpl extends BaseFixProcessor implements CompanyPro
         return realMsg;
     }
     private void updateMessage(Company company, CmFinoFIX.CMJSCompany.CGEntries entry) {
-        if (company.getCompanyCode() != null) {
-            entry.setCompanyCode(company.getCompanyCode());
+        if (((Long)company.getCompanycode()) != null) {
+            entry.setCompanyCode(((Long)company.getCompanycode()).intValue());
         }
-        if (company.getCompanyName() != null) {
-            entry.setCompanyName(company.getCompanyName());
+        if (company.getCompanyname() != null) {
+            entry.setCompanyName(company.getCompanyname());
         }
-        entry.setID(company.getID());
+        entry.setID(company.getId().longValue());
     }
 }

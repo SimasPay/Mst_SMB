@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
@@ -21,11 +19,11 @@ import com.mfino.dao.AgentCashinTransactionLogDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.query.AgentCashInTransactionQuery;
-import com.mfino.domain.AgentCashInTransactions;
+import com.mfino.domain.AgentCashinTxnLog;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -89,7 +87,7 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 		log.info("Realmsg.getAdminAction(): "+realMsg.getAdminAction());
 		
 		if(CmFinoFIX.JSaction_Insert.equals(realMsg.getaction())){
-			AgentCashInTransactions actl=new AgentCashInTransactions();
+			AgentCashinTxnLog actl = new AgentCashinTxnLog();
 		    if (!(authorizationService.isAuthorized(CmFinoFIX.Permission_ServicePartner_Distribute) || authorizationService.isAuthorized(CmFinoFIX.Permission_Partner_Funding))) {
 		        log.error("You are not authorized to perform this operation");
 		        errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
@@ -144,10 +142,10 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 			{
 				query.setLimit(realMsg.getlimit());
 			}
-			List<AgentCashInTransactions> results = actlDao.get(query);
+			List<AgentCashinTxnLog> results = actlDao.get(query);
 			realMsg.allocateEntries(results.size());
 			for (int i = 0; i < results.size(); i++) {
-				AgentCashInTransactions agentCashInTransactions = results.get(i);
+				AgentCashinTxnLog agentCashInTransactions = results.get(i);
 				CMAgentCashIn.CGEntries entry = new CMAgentCashIn.CGEntries();
 				updateMessage(agentCashInTransactions, entry);
 				realMsg.getEntries()[i] = entry;
@@ -165,17 +163,17 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 		    }
 			if(realMsg.getTransactionID() != null)
 			{
-				AgentCashInTransactions agentCashInTransactions = actlDao.getById(realMsg.getTransactionID());
+				AgentCashinTxnLog agentCashInTransactions = actlDao.getById(realMsg.getTransactionID());
 				if(CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())){
-					agentCashInTransactions.setAgentCashInTrxnStatusReason(realMsg.getAdminComment());
+					agentCashInTransactions.setAgentcashintrxnstatusreason(realMsg.getAdminComment());
 					errorMsg = agentCashInService.processAgentCashIn(agentCashInTransactions);
 					if(CmFinoFIX.ErrorCode_NoError.equals(errorMsg.getErrorCode())){
 						errorMsg.setErrorDescription(MessageText._("Transaction successfully approved!"));
 					}
 				}
 				else if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())){
-					agentCashInTransactions.setAgentCashInTrxnStatus(CmFinoFIX.AgentCashInTrxnStatus_Failed);
-					agentCashInTransactions.setAgentCashInTrxnStatusReason(realMsg.getAdminComment());
+					agentCashInTransactions.setAgentcashintrxnstatus(CmFinoFIX.AgentCashInTrxnStatus_Failed.longValue());
+					agentCashInTransactions.setAgentcashintrxnstatusreason(realMsg.getAdminComment());
 					errorMsg.setErrorDescription(MessageText._("Transaction successfully rejected!"));
 					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					sendSms(agentCashInTransactions,"sdf");
@@ -191,34 +189,34 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 		return realMsg;
 	}
 	
-	private void sendSms(AgentCashInTransactions agentCashInTransactions,
+	private void sendSms(AgentCashinTxnLog agentCashInTransactions,
 			String string) {
-		smsService.setDestinationMDN(agentCashInTransactions.getDestMDN());
-		smsService.setMessage("Dear agent " + agentCashInTransactions.getDestMDN() + " your cashIn request with AgentCashIn transaction ID: " +
-				agentCashInTransactions.getID()+ " has been rejected " );
+		smsService.setDestinationMDN(agentCashInTransactions.getDestmdn());
+		smsService.setMessage("Dear agent " + agentCashInTransactions.getDestmdn() + " your cashIn request with AgentCashIn transaction ID: " +
+				agentCashInTransactions.getId()+ " has been rejected " );
 		smsService.send();	
 	}
 
-	private void updateMessage(AgentCashInTransactions agentCashInTransactions,
+	private void updateMessage(AgentCashinTxnLog agentCashInTransactions,
 			CMAgentCashIn.CGEntries e) {
-		e.setID(agentCashInTransactions.getID());
-		e.setSourceMDN(agentCashInTransactions.getSourceMDN());
-		e.setDestMDN(agentCashInTransactions.getDestMDN());
-		e.setDestPartnerID(agentCashInTransactions.getDestPartnerID());
-		e.setSourcePocketID(agentCashInTransactions.getSourcePocketID());
-		e.setDestPocketID(agentCashInTransactions.getDestPocketID());
+		e.setID(agentCashInTransactions.getId().longValue());
+		e.setSourceMDN(agentCashInTransactions.getSourcemdn());
+		e.setDestMDN(agentCashInTransactions.getDestmdn());
+		e.setDestPartnerID(agentCashInTransactions.getDestpartnerid().longValue());
+		e.setSourcePocketID(agentCashInTransactions.getSourcepocketid().longValue());
+		e.setDestPocketID(agentCashInTransactions.getDestpocketid().longValue());
 		e.setAmount(agentCashInTransactions.getAmount());
-		e.setAgentCashInTrxnStatus(agentCashInTransactions.getAgentCashInTrxnStatus());
-		e.setAgentCashInTrxnStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AgentCashInTrxnStatus, null, agentCashInTransactions.getAgentCashInTrxnStatus()));
-		e.setAgentCashInTrxnStatusReason(agentCashInTransactions.getAgentCashInTrxnStatusReason());
-		e.setSctlId(agentCashInTransactions.getSctlId());
-		e.setCreatedBy(agentCashInTransactions.getCreatedBy());
-		e.setCreateTime(agentCashInTransactions.getCreateTime());
-		e.setLastUpdateTime(agentCashInTransactions.getLastUpdateTime());
-		e.setUpdatedBy(agentCashInTransactions.getUpdatedBy());		
+		e.setAgentCashInTrxnStatus(agentCashInTransactions.getAgentcashintrxnstatus().intValue());
+		e.setAgentCashInTrxnStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AgentCashInTrxnStatus, null, agentCashInTransactions.getAgentcashintrxnstatus()));
+		e.setAgentCashInTrxnStatusReason(agentCashInTransactions.getAgentcashintrxnstatusreason());
+		e.setSctlId(agentCashInTransactions.getSctlid().longValue());
+		e.setCreatedBy(agentCashInTransactions.getCreatedby());
+		e.setCreateTime(agentCashInTransactions.getCreatetime());
+		e.setLastUpdateTime(agentCashInTransactions.getLastupdatetime());
+		e.setUpdatedBy(agentCashInTransactions.getUpdatedby());		
 	}
 
-	private CMJSError validateAndCreateAgentCashIn(CMAgentCashIn realMsg, CMJSError errorMsg, AgentCashInTransactions actl) {
+	private CMJSError validateAndCreateAgentCashIn(CMAgentCashIn realMsg, CMJSError errorMsg, AgentCashinTxnLog actl) {
 		//Getting Destination
 		Partner agent = partnerDAO.getById(realMsg.getPartnerID()); 
 		if(agent==null){
@@ -239,13 +237,13 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;
 		}
-		SubscriberMDN agentmdn=agent.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn agentmdn=agent.getSubscriber().getSubscriberMdns().iterator().next();
 		
 
 		PartnerServices agentService = null;
 		Pocket agentPocket =null;
 		try {
-			agentService = transactionChargingService.getPartnerService(agent.getID(), transactionChargingService.getServiceProviderId(null), transactionChargingService.getServiceId(ServiceAndTransactionConstants.SERVICE_AGENT));
+			agentService = transactionChargingService.getPartnerService(agent.getId().longValue(), transactionChargingService.getServiceProviderId(null), transactionChargingService.getServiceId(ServiceAndTransactionConstants.SERVICE_AGENT));
 			if(agentService==null){
 				log.error("Valid agent service not found. Cash-in to agent is not possible");
 				errorMsg.setErrorDescription(MessageText._("Valid agent service not found. Cash-in to agent is not possible"));
@@ -253,7 +251,7 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 				return errorMsg;
 			}
 			//getting destination pocket
-			agentPocket = agentService.getPocketBySourcePocket();
+			agentPocket = agentService.getPocketBySourcepocket();
 			log.info("validating destination agent pocket ");
 			if(agentPocket==null){
 				log.error("Valid agent emoney pocket not found");
@@ -268,10 +266,10 @@ public class AgentCashInProcessorImpl extends BaseFixProcessor implements AgentC
 			return errorMsg;
 		}
 		
-		actl.setDestPartnerID(agent.getID());
-		actl.setDestMDN(agentmdn.getMDN());
+		actl.setDestpartnerid(agent.getId());
+		actl.setDestmdn(agentmdn.getMdn());
 		actl.setAmount(realMsg.getAmount());
-		actl.setAgentCashInTrxnStatus(CmFinoFIX.AgentCashInTrxnStatus_Initialized);
+		actl.setAgentcashintrxnstatus(CmFinoFIX.AgentCashInTrxnStatus_Initialized.longValue());
 		return errorMsg;
 	}
 	

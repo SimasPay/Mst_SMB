@@ -17,7 +17,6 @@ import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.CancelBulkTransferProcessor;
 
@@ -45,12 +44,12 @@ public class CancelBulkTransferProcessorImpl extends BaseFixProcessor implements
     	log.info("Cancelling the Bulk transfer request " + realMsg.getBulkUploadID() + " by user " + loggedInUser.getUsername());
     	BulkUpload bulkUpload = buDAO.getById(realMsg.getBulkUploadID());
     	
-    	if (bulkUpload != null && bulkUpload.getUser().getID().equals(loggedInUser.getID())) {
-    		if ( (CmFinoFIX.BulkUploadDeliveryStatus_Uploaded.equals(bulkUpload.getDeliveryStatus())) || 
-    				(CmFinoFIX.BulkUploadDeliveryStatus_Approved.equals(bulkUpload.getDeliveryStatus())) ) {
+    	if (bulkUpload != null && bulkUpload.getMfinoUser().getId().equals(loggedInUser.getId())) {
+    		if ( (CmFinoFIX.BulkUploadDeliveryStatus_Uploaded.equals(bulkUpload.getDeliverystatus())) || 
+    				(CmFinoFIX.BulkUploadDeliveryStatus_Approved.equals(bulkUpload.getDeliverystatus())) ) {
     			
-    			bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Terminated);
-    			bulkUpload.setDeliveryDate(new Timestamp());
+    			bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Terminated);
+    			bulkUpload.setDeliverydate(new Timestamp());
     			buDAO.save(bulkUpload);
     	        err.setErrorCode(CmFinoFIX.ErrorCode_NoError);
     	        err.setErrorDescription("Bulk transfer request " + realMsg.getBulkUploadID() + " is cancelled");

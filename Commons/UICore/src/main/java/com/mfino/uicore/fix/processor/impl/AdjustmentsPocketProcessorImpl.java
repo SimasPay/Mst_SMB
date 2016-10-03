@@ -31,10 +31,10 @@ public class AdjustmentsPocketProcessorImpl extends BaseFixProcessor implements 
 	private SystemParametersService systemParametersService;
 	
 	private void updateMessage(Pocket pocket, CmFinoFIX.CMJSAdjustmentsPocket.CGEntries entry) {
-		entry.setPocketID(pocket.getID());
+		entry.setPocketID(pocket.getId().longValue());
 		if(pocket.getPocketTemplate() != null) {
-			entry.setPocketTemplateID(pocket.getPocketTemplate().getID());
-			entry.setPocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getID() + ")");
+			entry.setPocketTemplateID(pocket.getPocketTemplate().getId().longValue());
+			entry.setPocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getId() + ")");
 		}		
 	}
 	

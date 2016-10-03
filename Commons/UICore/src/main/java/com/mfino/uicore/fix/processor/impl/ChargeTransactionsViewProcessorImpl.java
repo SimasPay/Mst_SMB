@@ -46,7 +46,7 @@ public class ChargeTransactionsViewProcessorImpl extends BaseFixProcessor implem
 					
 					 for(ChargeTxnCommodityTransferMap ctxn:cTxnMap){
 						 CMJSCommodityTransfer.CGEntries entry = new CMJSCommodityTransfer.CGEntries();
-						 Long id = ctxn.getCommodityTransferID();
+						 Long id = ctxn.getCommoditytransferid().longValue();
 						 CRCommodityTransfer ct = ctDao.getById(id);
 						 if(ct!=null){
 							 commodityTransferUpdateMessage.updateMessage(ct, null, entry, realMsg);

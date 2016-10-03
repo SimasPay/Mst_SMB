@@ -48,53 +48,53 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 	private static Logger log = LoggerFactory.getLogger(AdjustmentsProcessorImpl.class);
 	
 	private void updateMessage(Adjustments adj, CMJSAdjustments.CGEntries e) {
-		e.setID(adj.getID());
-		if(adj.getServiceChargeTransactionLogBySctlId()!=  null) {
-			e.setSctlId(adj.getServiceChargeTransactionLogBySctlId().getID());
+		e.setID(adj.getId().longValue());
+		if(adj.getServiceChargeTxnLog() !=  null) {
+			e.setSctlId(adj.getServiceChargeTxnLog().getId().longValue());
 		}
-		if(adj.getPocketBySourcePocketID() != null) {
-			Pocket pocket = adj.getPocketBySourcePocketID();
-			e.setSourcePocketID(pocket.getID());
-			e.setSourcePocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getID() + ")");
+		if(adj.getPocketBySourcepocketid() != null) {
+			Pocket pocket = adj.getPocketBySourcepocketid();
+			e.setSourcePocketID(pocket.getId().longValue());
+			e.setSourcePocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getId() + ")");
 		}
-		if(adj.getPocketByDestPocketID() != null) {
-			Pocket pocket = adj.getPocketByDestPocketID();
-			e.setDestPocketID(pocket.getID());
-			e.setDestPocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getID() + ")");
+		if(adj.getPocketByDestpocketid() != null) {
+			Pocket pocket = adj.getPocketByDestpocketid();
+			e.setDestPocketID(pocket.getId().longValue());
+			e.setDestPocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getId() + ")");
 		}
 		if(adj.getAmount() != null) {
 			e.setAmount(adj.getAmount());
 		}
-		if(adj.getAdjustmentType() != null) {
-			e.setAdjustmentType(adj.getAdjustmentType());
+		if(adj.getAdjustmenttype() != null) {
+			e.setAdjustmentType(adj.getAdjustmenttype().intValue());
 		}
 		if(adj.getDescription() != null) {
 			e.setDescription(adj.getDescription());
 		}
-		if(adj.getAdjustmentStatus() != null) {
-			e.setAdjustmentStatus(adj.getAdjustmentStatus());
-			e.setAdjustmentStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AdjustmentStatus, CmFinoFIX.Language_English, adj.getAdjustmentStatus()));
+		if( ((Long)adj.getAdjustmentstatus() )!= null) {
+			e.setAdjustmentStatus(((Long)adj.getAdjustmentstatus()).intValue());
+			e.setAdjustmentStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AdjustmentStatus, CmFinoFIX.Language_English, adj.getAdjustmentstatus()));
 		}
-		if(adj.getAppliedBy() != null) {
-			e.setAppliedBy(adj.getAppliedBy());
+		if(adj.getAppliedby() != null) {
+			e.setAppliedBy(adj.getAppliedby());
 		}
-		if(adj.getAppliedTime() != null) {
-			e.setAppliedTime(adj.getAppliedTime());
+		if(adj.getAppliedtime() != null) {
+			e.setAppliedTime(adj.getAppliedtime());
 		}
-		if(adj.getApprovedOrRejectedBy() != null) {
-			e.setApprovedOrRejectedBy(adj.getApprovedOrRejectedBy());
+		if(adj.getApprovedorrejectedby() != null) {
+			e.setApprovedOrRejectedBy(adj.getApprovedorrejectedby());
 		}
-		if(adj.getApproveOrRejectComment() != null) {
-			e.setApproveOrRejectComment(adj.getApproveOrRejectComment());
+		if(adj.getApproveorrejectcomment() != null) {
+			e.setApproveOrRejectComment(adj.getApproveorrejectcomment());
 		}
-		if(adj.getApproveOrRejectTime() != null) {
-			e.setApproveOrRejectTime(adj.getApproveOrRejectTime());
+		if(adj.getApproveorrejecttime() != null) {
+			e.setApproveOrRejectTime(adj.getApproveorrejecttime());
 		}
-		e.setRecordVersion(adj.getVersion());
-		e.setCreatedBy(adj.getCreatedBy());
-		e.setCreateTime(adj.getCreateTime());
-		e.setUpdatedBy(adj.getUpdatedBy());
-		e.setLastUpdateTime(adj.getLastUpdateTime());
+		e.setRecordVersion(((Long)adj.getVersion()).intValue());
+		e.setCreatedBy(adj.getCreatedby());
+		e.setCreateTime(adj.getCreatetime());
+		e.setUpdatedBy(adj.getUpdatedby());
+		e.setLastUpdateTime(adj.getLastupdatetime());
 	}
 
 	@Override
@@ -146,28 +146,28 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 			// hence the regular logic cannot be used 
 			Adjustments adj = new Adjustments();
 			if(realMsg.getSctlId() != null) { 
-				adj.setServiceChargeTransactionLogBySctlId(sctlDao.getById(realMsg.getSctlId()));
+				adj.setServiceChargeTxnLog(sctlDao.getById(realMsg.getSctlId()));
 			}
 			if(realMsg.getSourcePocketID() != null) {
-				adj.setPocketBySourcePocketID(pocketDao.getById(realMsg.getSourcePocketID()));
+				adj.setPocketBySourcepocketid(pocketDao.getById(realMsg.getSourcePocketID()));
 			}
 			if(realMsg.getDestPocketID() != null) {
-				adj.setPocketByDestPocketID(pocketDao.getById(realMsg.getDestPocketID()));
+				adj.setPocketByDestpocketid(pocketDao.getById(realMsg.getDestPocketID()));
 			}
 			if(realMsg.getAmount() != null) {
 				adj.setAmount(realMsg.getAmount());
 			}
 			if(realMsg.getAdjustmentType() != null) {
-				adj.setAdjustmentType(realMsg.getAdjustmentType());
+				adj.setAdjustmenttype(realMsg.getAdjustmentType().longValue());
 			}
 			if(realMsg.getDescription() != null) {
 				adj.setDescription(realMsg.getDescription());
 			}
-			adj.setAdjustmentStatus(CmFinoFIX.AdjustmentStatus_Requested);
+			adj.setAdjustmentstatus(CmFinoFIX.AdjustmentStatus_Requested);
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	        String userName = (auth != null) ? auth.getName() : " ";
-			adj.setAppliedBy(userName);
-			adj.setAppliedTime(new Timestamp());
+			adj.setAppliedby(userName);
+			adj.setAppliedtime(new Timestamp());
 			try {
 				dao.save(adj);
 			} catch (ConstraintViolationException ce) {
@@ -182,22 +182,22 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 			if(realMsg.getID() != null) {
 				Adjustments adj = dao.getById(realMsg.getID());
 				if(realMsg.getAdjustmentStatus() != null) {
-					adj.setAdjustmentStatus(realMsg.getAdjustmentStatus());
+					adj.setAdjustmentstatus(realMsg.getAdjustmentStatus());
 				}
 				if(realMsg.getApproveOrRejectComment() != null) {
-					adj.setApproveOrRejectComment(realMsg.getApproveOrRejectComment());
+					adj.setApproveorrejectcomment(realMsg.getApproveOrRejectComment());
 				}
-				adj.setApproveOrRejectTime(new Timestamp());
+				adj.setApproveorrejecttime(new Timestamp());
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		        String userName = (auth != null) ? auth.getName() : " ";
-				adj.setApprovedOrRejectedBy(userName);
+				adj.setApprovedorrejectedby(userName);
 				if(CmFinoFIX.AdjustmentStatus_Approved.equals(realMsg.getAdjustmentStatus())){
-					adj.setAdjustmentStatus(CmFinoFIX.AdjustmentStatus_Processing);
+					adj.setAdjustmentstatus(CmFinoFIX.AdjustmentStatus_Processing);
 					CMTransactionAdjustments txnAdjustments = new CMTransactionAdjustments();
-					txnAdjustments.setSourcePocketID(adj.getPocketBySourcePocketID().getID());
-					txnAdjustments.setDestPocketID(adj.getPocketByDestPocketID().getID());
-					txnAdjustments.setSctlId(adj.getServiceChargeTransactionLogBySctlId().getID());
-					txnAdjustments.setAdjustmentType(adj.getAdjustmentType());
+					txnAdjustments.setSourcePocketID(adj.getPocketBySourcepocketid().getId().longValue());
+					txnAdjustments.setDestPocketID(adj.getPocketByDestpocketid().getId().longValue());
+					txnAdjustments.setSctlId(adj.getServiceChargeTxnLog().getId().longValue());
+					txnAdjustments.setAdjustmentType(adj.getAdjustmenttype().intValue());
 					txnAdjustments.setAmount(adj.getAmount());
 					CFIXMsg response = super.process(txnAdjustments);
 	
@@ -213,12 +213,12 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 					if(!transactionResponse.isResult()){
 						//failure
 						log.info("Got the transaction response as failed");
-						adj.setAdjustmentStatus(CmFinoFIX.AdjustmentStatus_Failed);
+						adj.setAdjustmentstatus(CmFinoFIX.AdjustmentStatus_Failed);
 						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 					}else{
 						log.info("Got the transaction response as success");
 						errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-						adj.setAdjustmentStatus(CmFinoFIX.AdjustmentStatus_Completed);
+						adj.setAdjustmentstatus(CmFinoFIX.AdjustmentStatus_Completed);
 					}
 						
 				}

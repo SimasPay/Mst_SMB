@@ -57,7 +57,7 @@ public class CheckBalanceForSubscriberProcessorImpl extends BaseFixProcessor imp
                     MessageText._("Balance not Available"));
         }else {
             updateMessage(p, realMsg);
-            log.info("User: " + getLoggedUserNameWithIP() + " successfully checked balance for pocket ID: " + p.getID());
+            log.info("User: " + getLoggedUserNameWithIP() + " successfully checked balance for pocket ID: " + p.getId());
         }
         
         realMsg.setsuccess(true);
@@ -66,18 +66,18 @@ public class CheckBalanceForSubscriberProcessorImpl extends BaseFixProcessor imp
 
     private void updateMessage(Pocket pocket, CmFinoFIX.CMJSCheckBalanceForSubscriber entry) {
     	entry.setBalance(pocketDao.getActualCurrentBalanceForPocket(pocket));
-    	entry.setCurrency(pocket.getSubscriberMDNByMDNID().getSubscriber().getCurrency());
+    	entry.setCurrency(pocket.getSubscriberMdn().getSubscriber().getCurrency());
         if (null != pocket.getPocketTemplate()) {
-            entry.setCommodity(pocket.getPocketTemplate().getCommodity());
+            entry.setCommodity(((Long)pocket.getPocketTemplate().getCommodity()).intValue());
             String pocketTypeText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null,
                     pocket.getPocketTemplate().getType());
-            Integer commodityType = pocket.getPocketTemplate().getCommodity();
+            Integer commodityType = ((Long)pocket.getPocketTemplate().getCommodity()).intValue();
             String commodityText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, commodityType);
             entry.setPocketTypeText(String.format("%s  %s", commodityText, pocketTypeText));
         }
 
-        if (null != pocket.getLastUpdateTime()) {
-            entry.setLastUpdateTime(pocket.getLastUpdateTime());
+        if (null != pocket.getLastupdatetime()) {
+            entry.setLastUpdateTime(pocket.getLastupdatetime());
         }
     }
 

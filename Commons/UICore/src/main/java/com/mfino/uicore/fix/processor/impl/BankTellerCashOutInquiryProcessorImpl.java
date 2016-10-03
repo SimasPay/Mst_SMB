@@ -22,9 +22,9 @@ import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -88,7 +88,7 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 		CMJSError errorMsg = new CMJSError();
 
 		User user = userService.getCurrentUser();
-		Set<Partner> partners = user.getPartnerFromUserID();
+		Set<Partner> partners = user.getPartners();
 		if (partners == null || partners.isEmpty()) {
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -97,8 +97,8 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 
 		Partner partner = partners.iterator().next();
 		Subscriber partnersub = partner.getSubscriber();
-		SubscriberMDN partnerMDN = partnersub.getSubscriberMDNFromSubscriberID().iterator().next();
-		realMsg.setDestMDN(partnerMDN.getMDN());
+		SubscriberMdn partnerMDN = partnersub.getSubscriberMdns().iterator().next();
+		realMsg.setDestMDN(partnerMDN.getMdn());
 		
 		if (StringUtils.isBlank(realMsg.getSourceMDN())) {
 			log.info("SubscriberMDn is null");
@@ -123,15 +123,15 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 		query.setSourceMdn(realMsg.getSourceMDN());
 		query.setServiceID(serviceId);
 		query.setTransactionTypeID(transactionTypeId);
-		List<ServiceChargeTransactionLog> results = sctlService.getByQuery(query);
+		List<ServiceChargeTxnLog> results = sctlService.getByQuery(query);
 		
 		CommodityTransfer ct = null;
 		if (results != null && results.size() > 0) {
-			ServiceChargeTransactionLog sctl = results.get(0);
-			if(sctl.getCommodityTransferID()!=null){
-				ct = commodityTransferService.getCommodityTransferById(sctl.getCommodityTransferID());
-				if(ct==null||(!ct.getTransferStatus().equals(CmFinoFIX.TransactionsTransferStatus_Completed))){
-					log.info("No Successful cashout Transaction Found for sctlID"+sctl.getID());
+			ServiceChargeTxnLog sctl = results.get(0);
+			if(sctl.getCommoditytransferid()!=null){
+				ct = commodityTransferService.getCommodityTransferById(sctl.getCommoditytransferid().longValue());
+				if(ct==null||(!((Long)ct.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed))){
+					log.info("No Successful cashout Transaction Found for sctlID"+sctl.getId());
 					errorMsg.setErrorDescription(MessageText._("No Successful Transaction Found"));
 					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 					return errorMsg;
@@ -139,11 +139,11 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 			}
 			
 			CMJSError checkConfirmed =checkAlreadyConfirmed(sctl);
-			ct = commodityTransferService.getCommodityTransferById(sctl.getCommodityTransferID());
+			ct = commodityTransferService.getCommodityTransferById(sctl.getCommoditytransferid().longValue());
 			if(!CmFinoFIX.ErrorCode_NoError.equals(checkConfirmed.getErrorCode())){
 				return checkConfirmed;	
 			}
-			if(!sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Processing)){
+			if(!((Long)sctl.getStatus()).equals(CmFinoFIX.SCTLStatus_Processing)){
 				errorMsg.setErrorDescription(MessageText._("Transaction status does not allow approval"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
@@ -162,30 +162,30 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 		return realMsg;
 	}
 
-	private CMJSError checkAlreadyConfirmed(ServiceChargeTransactionLog sctl) {
+	private CMJSError checkAlreadyConfirmed(ServiceChargeTxnLog sctl) {
 		CMJSError error = new CMJSError();
 		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 		ChargeTxnCommodityTransferMapQuery query =new ChargeTxnCommodityTransferMapQuery();
-		query.setSctlID(sctl.getID());
+		query.setSctlID(sctl.getId().longValue());
  		List<ChargeTxnCommodityTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 		if(results==null||results.isEmpty()){
 			error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			error.setErrorDescription("No Transaction found");
 			return error;
 		}
-		Long ctId = sctl.getCommodityTransferID();
+		Long ctId = sctl.getCommoditytransferid().longValue();
 		for(ChargeTxnCommodityTransferMap txnTransfer:results){
-			if(txnTransfer.getCommodityTransferID().equals(ctId)){
+			if(txnTransfer.getCommoditytransferid().equals(ctId)){
 				continue;
 			}
-			CRCommodityTransfer commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommodityTransferID());
+			CRCommodityTransfer commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommoditytransferid().longValue());
 			if(commodityTransfer==null){
-				commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommodityTransferID());
+				commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommoditytransferid().longValue());
 			}
 			if(ctId==null&&CmFinoFIX.TransactionUICategory_Teller_Cashout.equals(commodityTransfer.getUICategory())){
 				ctId = commodityTransfer.getID();
 				if(commodityTransfer instanceof CommodityTransfer){
-					updateSctl(sctl.getID(), commodityTransfer);
+					updateSctl(sctl.getId(), commodityTransfer);
 					if(!CmFinoFIX.TransactionsTransferStatus_Completed.equals(commodityTransfer.getTransferStatus())){
 						log.info("Cashout failed");
 						error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -211,8 +211,8 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 	}
 
 	private void updateSctl(Long sctlId, CRCommodityTransfer commodityTransfer) {
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(sctlId);
-		if(sctl.getCommodityTransferID()==null){
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(sctlId);
+		if(sctl.getCommoditytransferid()==null){
 
 			transactionChargingService.addTransferID(sctl, commodityTransfer.getID());
 		}

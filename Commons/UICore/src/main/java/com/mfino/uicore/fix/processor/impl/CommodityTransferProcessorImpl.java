@@ -23,7 +23,7 @@ import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.domain.BankAdmin;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -174,12 +174,12 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                 query.setOnlyBankTxns(true);
 
                 User user = userService.getCurrentUser();
-                Set<BankAdmin> admins = user.getBankAdminFromUserID();
+                Set<BankAdmin> admins = user.getBankAdmins();
 
                 if (admins != null && admins.size() > 0) {
                     BankAdmin admin = (BankAdmin) admins.toArray()[0];
                     if (admin != null && admin.getBank() != null) {
-                        query.setBankRoutingCode(admin.getBank().getBankCode());
+                        query.setBankRoutingCode(admin.getBank().getBankcode().intValue());
                          // Setting company is null for bank roles..
                         query.setCompany(null);
                     }
@@ -274,17 +274,17 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
 	 */
 	private void filterCTBasedOnServiceType(List<CommodityTransfer> results,Long serviceId){
 		ServiceChargeTransactionLogDAO sctlDAO= DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = null;
+		ServiceChargeTxnLog sctl = null;
 		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();
 		Long sctlID = null;
 		for(int i=0;i<results.size();i++){
 			CommodityTransfer ct = results.get(i);
-			sctlID = ctMapDao.getSCTLIdByCommodityTransferId(ct.getID());
+			sctlID = ctMapDao.getSCTLIdByCommodityTransferId(ct.getId().longValue());
 			if(sctlID != null){
 				sctl = sctlDAO.getById(sctlID);
 			}
 			if(sctl != null){
-				if(!sctl.getServiceID().equals(serviceId)){
+				if(!sctl.getServiceid().equals(serviceId)){
 					results.remove(i);
 					i--;
 				}

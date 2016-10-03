@@ -89,19 +89,24 @@ public class BranchCodeProcessorImpl extends BaseFixProcessor implements BranchC
 	
 	private void updateEntity(Role role, CMJSRole.CGEntries e) {		
 		if(e.getPriorityLevel() != null) {
-			role.setPriorityLevel(e.getPriorityLevel());
+			role.setPrioritylevel(e.getPriorityLevel().shortValue());
 		}
 		if(e.getDisplayText() != null) {
-			role.setDisplayText(e.getDisplayText());
+			role.setDisplaytext(e.getDisplayText());
 		}
-		role.setIsSystemUser((e.getIsSystemUser() == null) ? true : e.getIsSystemUser());
+		
+		short isSystemUser = 1;
+		if (e.getIsSystemUser() != null) {
+			isSystemUser = (short) (e.getIsSystemUser() ? 1 : 0);
+		}
+		role.setIssystemuser(isSystemUser);
 		
 	}
 
 	private void updateMessage(BranchCodes r, CMJSBranchCodes.CGEntries e) {
-		e.setBranchName(r.getBranchCode()+'-'+r.getBranchName());
-		e.setID(r.getID());
-		e.setBranchCodeNo(r.getBranchCode());
+		e.setBranchName(r.getBranchcode()+'-'+r.getBranchname());
+		e.setID(r.getId().longValue());
+		e.setBranchCodeNo(r.getBranchcode());
 
 	}
 
