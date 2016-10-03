@@ -45,7 +45,7 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(requestFix.getServiceChargeTransactionLogID());
-		toOperator.setDestMDN(subscriberService.normalizeMDN(billPayments.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(billPayments.getInvoicenumber()));
 		toOperator.setTransactionID(backendResponse.getTransferID());//FIXME is it transferid or transactionid
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
 		toOperator.setServiceChargeTransactionLogID(requestFix.getServiceChargeTransactionLogID());
@@ -134,12 +134,12 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 		IntegrationSummary iSummary = null;
 		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
 			iSummary = iSummaryList.get(0);
-			iSummary.setReconcilationID2(de39);
+			iSummary.setReconcilationid2(de39);
 		}
 		else{
 			iSummary = new IntegrationSummary();
-			iSummary.setSctlId(sctlId);
-			iSummary.setReconcilationID2(de39);
+			iSummary.setSctlid(sctlId);
+			iSummary.setReconcilationid2(de39);
 		}
 		
 		integrationSummaryDao.save(iSummary);

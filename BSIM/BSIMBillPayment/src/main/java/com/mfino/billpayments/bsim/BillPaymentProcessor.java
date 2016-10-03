@@ -1,5 +1,6 @@
 package com.mfino.billpayments.bsim;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -114,8 +115,8 @@ public class BillPaymentProcessor implements BSIMProcessorNew {
  		IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
 
  		IntegrationSummary isummary = new IntegrationSummary();
- 		isummary.setSctlId(sctlID);
- 		isummary.setReconcilationID1(transactionID);
+ 		isummary.setSctlid(new BigDecimal(sctlID));
+ 		isummary.setReconcilationid1(transactionID);
  		isdao.save(isummary);
  	}
 
@@ -130,12 +131,12 @@ public class BillPaymentProcessor implements BSIMProcessorNew {
 		IntegrationSummary iSummary = null;
 		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
 			iSummary = iSummaryList.get(0);
-			iSummary.setReconcilationID2(de39);
+			iSummary.setReconcilationid2(de39);
 		}
 		else{
 			iSummary = new IntegrationSummary();
-			iSummary.setSctlId(sctlId);
-			iSummary.setReconcilationID2(de39);
+			iSummary.setSctlid(new BigDecimal(sctlId));
+			iSummary.setReconcilationid2(de39);
 		}
 
 		integrationSummaryDao.save(iSummary);

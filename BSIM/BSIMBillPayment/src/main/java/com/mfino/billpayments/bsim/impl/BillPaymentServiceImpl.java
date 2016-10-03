@@ -34,7 +34,7 @@ import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionCharge;
 import com.mfino.domain.TransactionChargeLog;
@@ -186,10 +186,10 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 					ChargeType chargeType = txnCharge.getChargeType();
 					String chargeTypeName = chargeType.getName();
 					if(chargeTypeName.equalsIgnoreCase("charge")){
-						serviceCharge = tcl.getCalculatedCharge();
+						serviceCharge = tcl.getCalculatedcharge();
 					}
 					if(chargeTypeName.equalsIgnoreCase("tax")){
-						tax = tcl.getCalculatedCharge();
+						tax = tcl.getCalculatedcharge();
 					}				
 				}
 			}
@@ -201,9 +201,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
 		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 			}else {
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
@@ -275,17 +275,17 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 			sctlQuery.setId(inquiryResponse.getServiceChargeTransactionLogID());
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 			Long ttID = null;
 			if(CollectionUtils.isNotEmpty(list))
 			{
-			ttID=list.get(0).getTransactionTypeID();
+			ttID=list.get(0).getTransactiontypeid().longValue();
 			}
 			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
 			String txnName=null;
 			if(null!=ttDAO.getById(ttID))
 			{
-			txnName = ttDAO.getById(ttID).getTransactionName();
+			txnName = ttDAO.getById(ttID).getTransactionname();
 			}
 			if((StringUtils.isNotBlank(txnName)) && (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(txnName) || ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(txnName)))
 			{
@@ -342,9 +342,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
 		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 			}else {
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
@@ -369,10 +369,10 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 					ChargeType chargeType = txnCharge.getChargeType();
 					String chargeTypeName = chargeType.getName();
 					if(chargeTypeName.equalsIgnoreCase("charge")){
-						serviceCharge = tcl.getCalculatedCharge();
+						serviceCharge = tcl.getCalculatedcharge();
 					}
 					if(chargeTypeName.equalsIgnoreCase("tax")){
-						tax = tcl.getCalculatedCharge();
+						tax = tcl.getCalculatedcharge();
 					}				
 				}
 			}
@@ -512,9 +512,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mbpquery.setBillerCode(billPay.getBillerCode());
 		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 			}else {
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
@@ -536,10 +536,10 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
 				TransactionChargeLog tcl = it.next();
 				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
-					serviceCharge = tcl.getCalculatedCharge();
+					serviceCharge = tcl.getCalculatedcharge();
 				}
 				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
-					tax = tcl.getCalculatedCharge();
+					tax = tcl.getCalculatedcharge();
 				}				
 			}
 		}
@@ -578,8 +578,8 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		IntegrationSummary iSummary = null;
 		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
 			iSummary = iSummaryList.get(0);
-			log.info("Processing code"+iSummary.getReconcilationID1());
-			response.setInfo3(iSummary.getReconcilationID2());
+			log.info("Processing code"+iSummary.getReconcilationid1());
+			response.setInfo3(iSummary.getReconcilationid2());
 		}
 		mceMessage.setResponse(response);
 
@@ -613,17 +613,17 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 			sctlQuery.setId(Response.getServiceChargeTransactionLogID());
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 			Long ttID = null;
 			if(CollectionUtils.isNotEmpty(list))
 			{
-			ttID=list.get(0).getTransactionTypeID();
+			ttID=list.get(0).getTransactiontypeid().longValue();
 			}
 			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
 			String txnName=null;
 			if(null!=ttDAO.getById(ttID))
 			{
-			txnName = ttDAO.getById(ttID).getTransactionName();
+			txnName = ttDAO.getById(ttID).getTransactionname();
 			}
 			if((StringUtils.isNotBlank(txnName)) && (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(txnName) || ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE_INQUIRY.equalsIgnoreCase(txnName)))
 			{
@@ -752,9 +752,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mbpquery.setBillerCode(qrPayment.getBillerCode());
 		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 			}else {
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
@@ -776,10 +776,10 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
 				TransactionChargeLog tcl = it.next();
 				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
-					serviceCharge = tcl.getCalculatedCharge();
+					serviceCharge = tcl.getCalculatedcharge();
 				}
 				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
-					tax = tcl.getCalculatedCharge();
+					tax = tcl.getCalculatedcharge();
 				}				
 			}
 		}
@@ -826,8 +826,8 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		IntegrationSummary iSummary = null;
 		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
 			iSummary = iSummaryList.get(0);
-			log.info("Processing code"+iSummary.getReconcilationID1());
-			response.setInfo3(iSummary.getReconcilationID2());
+			log.info("Processing code"+iSummary.getReconcilationid1());
+			response.setInfo3(iSummary.getReconcilationid2());
 		}
 		billPaymentsService.updateBillPayStatus(inquiryResponse.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_PAYMENT_REQUESTED, ts);
 		mceMessage.setResponse(response);
@@ -969,7 +969,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		log.info("BillPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
 		if(sourcePocket!=null){
 			pocketTemplate = sourcePocket.getPocketTemplate();
-			pocketTempType = pocketTemplate.getBankAccountCardType();
+			pocketTempType = pocketTemplate.getBankaccountcardtype().intValue();
 			if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
 				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;
 			}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
@@ -983,23 +983,23 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
-		ServiceChargeTransactionLog sctl;
+		ServiceChargeTxnLog sctl;
 		Long transferID = billPayrevtobank.getTransferID();
 		Long sctlID;
 		String reconciliationID1 = null;
 		if(transferID!=null){
 			sctlQuery.setTransferID(transferID);
 			log.info("BillPaymentReversalToBankProcessor :: process Transfer ID :"+transferID);
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 			if(CollectionUtils.isNotEmpty(list)){
 				sctl = list.get(0);
-				sctlID = sctl.getID();
+				sctlID = sctl.getId().longValue();
 				log.info("BillPaymentReversalToBankProcessor :: process Sctl ID :"+sctlID);
 				isQuery.setSctlID(sctlID);
 				List<IntegrationSummary> isList = isDAO.get(isQuery);
 				if(CollectionUtils.isNotEmpty(isList)){
 					IntegrationSummary iSummary = isList.get(0);
-					reconciliationID1 = iSummary.getReconcilationID1();
+					reconciliationID1 = iSummary.getReconcilationid1();
 					log.info("BillPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
 					log.info("BillPaymentReversalToBankProcessor :: Dumping message fields :" + billPayrevtobank.DumpFields());
 					log.info("BillPaymentReversalToBankProcessor :: SourceMDN " + billPayrevtobank.getSourceMDN());
@@ -1007,7 +1007,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 					if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
 					{
-						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankAccountCardType());
+						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankaccountcardtype());
 						log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
 
 						if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
@@ -1081,7 +1081,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		log.info("QRPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
 		if(sourcePocket!=null){
 			pocketTemplate = sourcePocket.getPocketTemplate();
-			pocketTempType = pocketTemplate.getBankAccountCardType();
+			pocketTempType = pocketTemplate.getBankaccountcardtype().intValue();
 			if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
 				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;
 			}else if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_CheckingAccount)){
@@ -1102,7 +1102,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		if(transferID!=null){
 			sctlQuery.setTransferID(transferID);
 			log.info("QRPaymentReversalToBankProcessor :: process Transfer ID :"+transferID);
-			List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+			List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 			if(CollectionUtils.isNotEmpty(list)){
 				sctl = list.get(0);
 				sctlID = sctl.getID();
@@ -1111,7 +1111,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 				List<IntegrationSummary> isList = isDAO.get(isQuery);
 				if(CollectionUtils.isNotEmpty(isList)){
 					IntegrationSummary iSummary = isList.get(0);
-					reconciliationID1 = iSummary.getReconcilationID1();
+					reconciliationID1 = iSummary.getReconcilationid1();
 					log.info("QRPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
 					log.info("QRPaymentReversalToBankProcessor :: Dumping message fields :" + billPayrevtobank.DumpFields());
 					log.info("QRPaymentReversalToBankProcessor :: SourceMDN " + billPayrevtobank.getSourceMDN());
@@ -1119,7 +1119,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 
 					if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
 					{
-						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankAccountCardType());
+						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankaccountcardtype());
 						log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
 
 						if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
@@ -1181,9 +1181,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
 		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerPartnerType()) ){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerPartnerType()) ){
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 			}else {
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
@@ -1362,11 +1362,11 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 		sctlQuery.setId(sctlID);
-		List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+		List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 		if(CollectionUtils.isNotEmpty(list))
 		{
-		ServiceChargeTransactionLog sctl = list.get(0);
-		sctl.setCalculatedCharge(charges);
+		ServiceChargeTxnLog sctl = list.get(0);
+		sctl.setCalculatedcharge(charges);
 		sctlDAO.save(sctl);
 		}
 		
@@ -1376,11 +1376,11 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 		sctlQuery.setId(sctlID);
-		List<ServiceChargeTransactionLog> list= sctlDAO.get(sctlQuery);
+		List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 		if(CollectionUtils.isNotEmpty(list))
 		{
-			ServiceChargeTransactionLog sctl = list.get(0);
-			sctl.setTransactionAmount(transactionAmount);
+			ServiceChargeTxnLog sctl = list.get(0);
+			sctl.setTransactionamount(transactionAmount);
 			sctlDAO.save(sctl);
 		}
 		
@@ -1389,7 +1389,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 	public void setSCTLStatusToPending(MCEMessage mceMceMessage) {
 		log.info("BillPaymentServiceImpl :: setSCTLStatusToPending() BEGIN mceMessage="+mceMceMessage);
 		CMBase requestFix = (CMBase)mceMceMessage.getRequest();
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
 		transactionChargingService.changeStatusToPending(sctl);
 	}	
 	
