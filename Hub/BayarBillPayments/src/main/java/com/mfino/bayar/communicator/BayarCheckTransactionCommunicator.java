@@ -54,7 +54,7 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 			billPayResponse.setServiceChargeTransactionLogID(sctlId);
 			
 			if(wsResponseElement.getTrxnStatus() != null)	{
-				billPayments.setINResponseCode(wsResponseElement.getTrxnStatus());
+				billPayments.setInresponsecode(wsResponseElement.getTrxnStatus());
 				billPayResponse.setInResponseCode(wsResponseElement.getTrxnStatus());
 				
 				billPayResponse.setResponse(CmFinoFIX.ResponseCode_Success);
@@ -65,7 +65,7 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 				billPayResponse.setRechargePin(wsResponseElement.getVoucherToken());
 			}
 			if(wsResponseElement.getVoucherNo() != null)
-				billPayments.setBillData(wsResponseElement.getVoucherNo());
+				billPayments.setBilldata(wsResponseElement.getVoucherNo());
 
 			log.info("BayarCheckTransactionCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 		}
@@ -78,7 +78,7 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 			billPayResponse.setInResponseCode(SERVICE_TIME_OUT);
 		}
 		if(wsResponseElement.getMessage() != null)
-			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+			billPayments.setOperatormessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
 		billPaymentsService.saveBillPayment(billPayments);
 		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());

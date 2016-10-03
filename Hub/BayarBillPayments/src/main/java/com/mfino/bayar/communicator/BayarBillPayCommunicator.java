@@ -37,8 +37,8 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		CMBillPay request = (CMBillPay) requestFix;
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-		if( billPayments != null && billPayments.getBillData() != null)
-			billdataMsg = billPayments.getBillData();
+		if( billPayments != null && billPayments.getBilldata() != null)
+			billdataMsg = billPayments.getBilldata();
 		
 		requestParams.add(new BasicNameValuePair("payment_code", billdataMsg));
 		requestParams.add(new BasicNameValuePair("reference_id", request.getServiceChargeTransactionLogID().toString()));
@@ -85,7 +85,7 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		if(wsResponseElement.getStatus() != null)
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 		if(wsResponseElement.getMessage() != null)
-			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+			billPayments.setOperatormessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
 		billPaymentsService.saveBillPayment(billPayments);
 		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());

@@ -36,7 +36,7 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 		
 		requestParams.add(new BasicNameValuePair("product_code", billPayments.getInfo1()));
 		requestParams.add(new BasicNameValuePair("bill_number", request.getInvoiceNumber()));
-		requestParams.add(new BasicNameValuePair("voucher_denomination", billPayments.getNominalAmount().toBigInteger().toString()));
+		requestParams.add(new BasicNameValuePair("voucher_denomination", billPayments.getNominalamount().toBigInteger().toString()));
 		requestParams.add(new BasicNameValuePair("reference_id", request.getServiceChargeTransactionLogID().toString()));
 		
 		return requestParams;
@@ -62,7 +62,7 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 			billPayResponse.setResult(CmFinoFIX.ResponseCode_Success);			
 
 			if(wsResponseElement.getVoucherNo() != null)
-				billPayments.setBillData(wsResponseElement.getVoucherNo());
+				billPayments.setBilldata(wsResponseElement.getVoucherNo());
 			log.info("HubBillPayReversalCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 			
 		}else{	
@@ -79,7 +79,7 @@ public class BayarTopupCommunicator extends BayarHttpCommunicator {
 		if(wsResponseElement.getStatus() != null)
 			billPayResponse.setInResponseCode(wsResponseElement.getStatus().toString());
 		if(wsResponseElement.getMessage() != null){
-			billPayments.setOperatorMessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
+			billPayments.setOperatormessage(wsResponseElement.getMessage()); // Storing return message in OperatorMessage column of bill_payments
 			billPayResponse.setOperatorMessage(wsResponseElement.getMessage());
 		}
 		billPaymentsService.saveBillPayment(billPayments);
