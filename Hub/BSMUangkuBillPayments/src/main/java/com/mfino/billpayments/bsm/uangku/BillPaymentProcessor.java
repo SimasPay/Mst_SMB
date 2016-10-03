@@ -1,5 +1,6 @@
 package com.mfino.billpayments.bsm.uangku;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,16 +14,16 @@ import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.Subscriber;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CMBase;
-import com.mfino.fix.CmFinoFIX.CMBillPay;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentFromBank;
 import com.mfino.fix.CmFinoFIX.CMBSIMBillPaymentToBank;
+import com.mfino.fix.CmFinoFIX.CMBase;
+import com.mfino.fix.CmFinoFIX.CMBillPay;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.CoreDataWrapper;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
-import com.mfino.hibernate.Timestamp;
 import com.mfino.util.DateTimeUtil;
 
 /**
@@ -121,8 +122,8 @@ public class BillPaymentProcessor implements BSMProcessor {
  	private void saveIntegrationSummary(String transactionID, Long sctlID) {
  		IntegrationSummaryDao isdao = getCoreDataWrapper().getIntegrationSummaryDao();
  		IntegrationSummary isummary = new IntegrationSummary();
- 		isummary.setSctlId(sctlID);
- 		isummary.setReconcilationID1(transactionID);
+ 		isummary.setSctlid(new BigDecimal(sctlID));
+ 		isummary.setReconcilationid1(transactionID);
  		isdao.save(isummary);
  	}
 
@@ -139,12 +140,12 @@ public class BillPaymentProcessor implements BSMProcessor {
  		IntegrationSummary iSummary = null;
  		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
  			iSummary = iSummaryList.get(0);
- 			iSummary.setReconcilationID2(de39);
+ 			iSummary.setReconcilationid2(de39);
  		}
  		else{
  			iSummary = new IntegrationSummary();
- 			iSummary.setSctlId(sctlId);
- 			iSummary.setReconcilationID2(de39);
+ 			iSummary.setSctlid(new BigDecimal(sctlId));
+ 			iSummary.setReconcilationid2(de39);
  		}
 
  		integrationSummaryDao.save(iSummary);
@@ -154,7 +155,7 @@ public class BillPaymentProcessor implements BSMProcessor {
  		Subscriber subscriber = subscriberMdnService.getSubscriberFromMDN(mdn);
  		String result = null;
  		if (subscriber != null) {
- 			result = JSONUtil.getOperatorDescription(responseCode.toString(), subscriber.getLanguage());
+ 			result = JSONUtil.getOperatorDescription(responseCode.toString(), (int)subscriber.getLanguage());
  		} else {
  			result = JSONUtil.getOperatorDescription(responseCode.toString(), 0);
  		}
