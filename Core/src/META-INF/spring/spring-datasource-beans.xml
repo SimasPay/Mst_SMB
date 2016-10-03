@@ -33,12 +33,13 @@
        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
  
+  	<context:component-scan base-package="com.mfino.service" />
+  	<context:component-scan base-package="com.mfino.service.impl" />
  	<context:component-scan base-package="com.mfino.webapi.services" />
  	<context:component-scan base-package="com.mfino.webapi.servlet" />
-    <context:component-scan base-package="com.mfino.service.impl" />
     <context:component-scan base-package="com.mfino.transactionapi.service"/>
     <context:component-scan base-package="com.mfino.transactionapi.handlers"/>
-    <context:component-scan base-package="com.mfino.service" />
+   
 	<context:annotation-config />
 		
 	<bean id="configSaltgenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
@@ -46,15 +47,11 @@
         	<value>YJW9qh52RP8gfRDI</value>
         </property>
     </bean>
-		
-	<bean id="config"
-		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+    	
+	<bean id="config" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
 		<property name="passwordEnvName">
 			<value>ENCRYPTION_KEY</value>
 		</property>
-	<!--<property name="password">
-			<value>mfinozenith</value>
-		</property>  -->
 		<property name="algorithm">
 			<value>PBEWITHMD5ANDTRIPLEDES</value>
 		</property>
@@ -62,15 +59,15 @@
     		<ref bean = "configSaltgenerator" />
     	</property>			
 	</bean>
-		
+	
 	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
 		<property name="config">
 			<ref bean="config" />
 		</property>			
 	</bean>
-	
+
 	<bean id="propertyConfigurer"
-		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+		class="org.jasypt.spring31.properties.EncryptablePropertyPlaceholderConfigurer">
 		<constructor-arg ref="stringEncryptor" />
 		<property name="locations">
 			<list>
@@ -84,9 +81,9 @@
         	<value>${mfino.saltGenerator.salt}</value>
         </property>
     </bean>
-	
+    
 	<bean id="hibernateStringEncryptor"
-		class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
 		<property name="registeredName">
 			<value>hibernateStringEncryptor</value>
 		</property>
@@ -102,7 +99,7 @@
 	</bean>
 	
 	<bean id="hibernateUniqueStringEncryptor"
-		class="org.jasypt.hibernate.encryptor.HibernatePBEStringEncryptor">
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
 		<property name="registeredName">
 			<value>hibernateUniqueStringEncryptor</value>
 		</property>
@@ -176,160 +173,9 @@
 
 	<!-- Hibernate SessionFactory Definition -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
 		lazy-init="false">
-		<!-- <property name="mappingLocations"> -->
-		<property name="mappingResources">
-			<list>
-				<!-- <value>classpath*:META-INF/com/mfino/domain/*.hbm.xml</value> -->
-				<value>com/mfino/domain/RSubscriberMDN.hbm.xml</value>
-				<value>com/mfino/domain/RPocket.hbm.xml</value>
-				<value>com/mfino/domain/RDbParam.hbm.xml</value>
-				<value>com/mfino/domain/RSubscriber.hbm.xml</value>
-				<value>com/mfino/domain/RMobileNetworkOperator.hbm.xml</value>
-				<value>com/mfino/domain/RPocketTemplate.hbm.xml</value>
-				<value>com/mfino/domain/REnumText.hbm.xml</value>
-				<value>com/mfino/domain/RUser.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionsLog.hbm.xml</value>
-				<value>com/mfino/domain/RBank.hbm.xml</value>
-				<value>com/mfino/domain/RNotification.hbm.xml</value>
-				<value>com/mfino/domain/RCommodityTransfer.hbm.xml</value>
-				<value>com/mfino/domain/RPendingCommodityTransfer.hbm.xml</value>
-				<value>com/mfino/domain/RmFinoServiceProvider.hbm.xml</value>
-				<value>com/mfino/domain/RPerson2Person.hbm.xml</value>
-				<value>com/mfino/domain/RAddress.hbm.xml</value>
-				<value>com/mfino/domain/RLOP.hbm.xml</value>
-				<value>com/mfino/domain/RMerchant.hbm.xml</value>
-				<value>com/mfino/domain/RBulkUpload.hbm.xml</value>
-				<value>com/mfino/domain/RBulkUploadEntry.hbm.xml</value>
-				<value>com/mfino/domain/RDistributionChainTemplate.hbm.xml</value>
-				<value>com/mfino/domain/RDistributionChainLevel.hbm.xml</value>
-				<value>com/mfino/domain/RRolePermission.hbm.xml</value>
-				<value>com/mfino/domain/RBulkBankAccount.hbm.xml</value>
-				<value>com/mfino/domain/RSAPGroupID.hbm.xml</value>
-				<value>com/mfino/domain/RPermissionItems.hbm.xml</value>
-				<value>com/mfino/domain/ROfflineReport.hbm.xml</value>
-				<value>com/mfino/domain/ROfflineReportReceiver.hbm.xml</value>
-				<value>com/mfino/domain/ROfflineReportForCompany.hbm.xml</value>
-				<value>com/mfino/domain/RActivitiesLog.hbm.xml</value>
-				<value>com/mfino/domain/RBulkUploadFile.hbm.xml</value>
-				<value>com/mfino/domain/RRegion.hbm.xml</value>
-				<value>com/mfino/domain/RCompany.hbm.xml</value>
-				<value>com/mfino/domain/RProductIndicator.hbm.xml</value>
-				<value>com/mfino/domain/RMDNRange.hbm.xml</value>
-				<value>com/mfino/domain/RBrand.hbm.xml</value>
-				<value>com/mfino/domain/RSMSCode.hbm.xml</value>
-				<value>com/mfino/domain/RMerchantCode.hbm.xml</value>
-				<value>com/mfino/domain/RPendingTransactionsFile.hbm.xml</value>
-				<value>com/mfino/domain/RPendingTransactionsEntry.hbm.xml</value>
-				<value>com/mfino/domain/RBulkLOP.hbm.xml</value>
-				<value>com/mfino/domain/RLOPHistory.hbm.xml</value>
-				<value>com/mfino/domain/RCreditCardTransaction.hbm.xml</value>
-				<value>com/mfino/domain/RCardInfo.hbm.xml</value>
-				<value>com/mfino/domain/RChannelCode.hbm.xml</value>
-				<value>com/mfino/domain/RMerchantPrefixCode.hbm.xml</value>
-				<value>com/mfino/domain/RSMSC.hbm.xml</value>
-				<value>com/mfino/domain/RSMSPartner.hbm.xml</value>
-				<value>com/mfino/domain/RSMSTransactionsLog.hbm.xml</value>
-				<value>com/mfino/domain/RBiller.hbm.xml</value>
-				<value>com/mfino/domain/RBankAdmin.hbm.xml</value>
-				<value>com/mfino/domain/RCreditCardDestinations.hbm.xml</value>
-				<value>com/mfino/domain/RDenomination.hbm.xml</value>
-				<value>com/mfino/domain/RBillPaymentTransaction.hbm.xml</value>
-				<value>com/mfino/domain/RPartner.hbm.xml</value>
-				<value>com/mfino/domain/RPartnerServices.hbm.xml</value>
-				<value>com/mfino/domain/RService.hbm.xml</value>
-				<value>com/mfino/domain/RServiceTransaction.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionType.hbm.xml</value>
-				<value>com/mfino/domain/RSettlementTemplate.hbm.xml</value>
-				<value>com/mfino/domain/RServiceSettlementConfig.hbm.xml</value>
-				<value>com/mfino/domain/RMFSBiller.hbm.xml</value>
-				<value>com/mfino/domain/RMFSBillerPartner.hbm.xml</value>
-				<value>com/mfino/domain/RSettlementTransactionLogs.hbm.xml</value>
-				<value>com/mfino/domain/RServiceChargeTransactionLog.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionAmountDistributionLog.hbm.xml</value>
-				<value>com/mfino/domain/RSettlementSchedulerLogs.hbm.xml</value>
-				<value>com/mfino/domain/RChargeType.hbm.xml</value>
-				<value>com/mfino/domain/RChargeDefinition.hbm.xml</value>
-				<value>com/mfino/domain/RChargePricing.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionRule.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionCharge.hbm.xml</value>
-				<value>com/mfino/domain/RSharePartner.hbm.xml</value>
-				<value>com/mfino/domain/RAuthorizingPerson.hbm.xml</value>
-				<value>com/mfino/domain/RSubscribersAdditionalFields.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionChargeLog.hbm.xml</value>
-				<value>com/mfino/domain/RKYCLevel.hbm.xml</value>
-				<value>com/mfino/domain/RKYCFields.hbm.xml</value>
-				<value>com/mfino/domain/RSystemParameters.hbm.xml</value>
-				<value>com/mfino/domain/RServiceAudit.hbm.xml</value>
-				<value>com/mfino/domain/RChannelSessionManagement.hbm.xml</value>
-				<value>com/mfino/domain/RLedger.hbm.xml</value>
-				<value>com/mfino/domain/RBillPayments.hbm.xml</value>
-				<value>com/mfino/domain/RReportParameters.hbm.xml</value>
-				<value>com/mfino/domain/RChargeTxnCommodityTransferMap.hbm.xml</value>
-				<value>com/mfino/domain/RAirtimePurchase.hbm.xml</value>
-				<value>com/mfino/domain/RVisafoneTxnGenerator.hbm.xml</value>		
-				<value>com/mfino/domain/RCommodityTransferNextID.hbm.xml</value>		
-				<value>com/mfino/domain/RUnRegisteredTxnInfo.hbm.xml</value>	
-				<value>com/mfino/domain/RInterbankTransfer.hbm.xml</value>
-				<value>com/mfino/domain/RInterBankCode.hbm.xml</value>						
-				<value>com/mfino/domain/RSubscriberGroup.hbm.xml</value>
-				<value>com/mfino/domain/RGroup.hbm.xml</value>
-				<value>com/mfino/domain/RPocketTemplateConfig.hbm.xml</value>	
-				<value>com/mfino/domain/RDCTRestrictions.hbm.xml</value>
-				<value>com/mfino/domain/RPartnerRestrictions.hbm.xml</value>				
-				<value>com/mfino/domain/RIntegrationPartnerMapping.hbm.xml</value>
-				<value>com/mfino/domain/RMFSDenominations.hbm.xml</value>
-				<value>com/mfino/domain/RAutoReversals.hbm.xml</value>
-				<value>com/mfino/domain/RIPMapping.hbm.xml</value>
-				<value>com/mfino/domain/RExcludeSubscriberLifeCycle.hbm.xml</value>							
-				<value>com/mfino/domain/RRole.hbm.xml</value>
-				<value>com/mfino/domain/RIntegrationSummary.hbm.xml</value>
-				<value>com/mfino/domain/RMoneyClearanceGraved.hbm.xml</value>
-				<value>com/mfino/domain/RClosedAccountSettlementMDN.hbm.xml</value>         
-				<value>com/mfino/domain/RAgentCashInTransactions.hbm.xml</value>
-				<value>com/mfino/domain/RPTC_Group_Map.hbm.xml</value>				
-				<value>com/mfino/domain/RPurpose.hbm.xml</value>
-				<value>com/mfino/domain/RExpirationType.hbm.xml</value>
-				<value>com/mfino/domain/RFundDefinition.hbm.xml</value>
-				<value>com/mfino/domain/RFundDistributionInfo.hbm.xml</value>
-				<value>com/mfino/domain/RFundEvents.hbm.xml</value>					
-				<value>com/mfino/domain/RNotificationLog.hbm.xml</value>
-				<value>com/mfino/domain/RNotificationLogDetails.hbm.xml</value>
-				<value>com/mfino/domain/RScheduleTemplate.hbm.xml</value>
-				<value>com/mfino/domain/RSCTLSettlementMap.hbm.xml</value>
-				<value>com/mfino/domain/RSettlementTransactionSCTLMap.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionPendingSummary.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionIdentifier.hbm.xml</value>
-				<value>com/mfino/domain/RActorChannelMapping.hbm.xml</value>
-				<value>com/mfino/domain/RAdjustments.hbm.xml</value>
-				<value>com/mfino/domain/RPermissionGroup.hbm.xml</value>
-				<value>com/mfino/domain/RMFATransactionInfo.hbm.xml</value>
-				<value>com/mfino/domain/RMFAAuthentication.hbm.xml</value>
-				<value>com/mfino/domain/RRuleKey.hbm.xml</value>
-				<value>com/mfino/domain/RTransactionRuleAddnInfo.hbm.xml</value>
-				<value>com/mfino/domain/RMFSLedger.hbm.xml</value>
-				<value>com/mfino/domain/RSubscriberStatusEvent.hbm.xml</value>
-				<value>com/mfino/domain/RBulkUploadFileEntry.hbm.xml</value>
-				<value>com/mfino/domain/RRetiredCardPANInfo.hbm.xml</value>
-				<value>com/mfino/domain/RMdnOtp.hbm.xml</value>
-				<value>com/mfino/domain/RFavoriteCategory.hbm.xml</value>
-				<value>com/mfino/domain/RSubscriberFavorite.hbm.xml</value>
-				<value>com/mfino/domain/RPartnerDefaultServices.hbm.xml</value>
-				<value>com/mfino/domain/RServiceDefaultConfiguration.hbm.xml</value>
-				<value>com/mfino/domain/RCashinFirstTime.hbm.xml</value>
-				<value>com/mfino/domain/RBranchCodes.hbm.xml</value>
-				<value>com/mfino/domain/RKtpDetails.hbm.xml</value>
-				<value>com/mfino/domain/RProvince.hbm.xml</value>
-				<value>com/mfino/domain/RProvinceRegion.hbm.xml</value>
-				<value>com/mfino/domain/RDistrict.hbm.xml</value>
-				<value>com/mfino/domain/RVillage.hbm.xml</value>
-				<value>com/mfino/domain/RProductReferral.hbm.xml</value>
-				<value>com/mfino/domain/RMonthlyBalance.hbm.xml</value>
-				<value>com/mfino/domain/RAgentCommissionFee.hbm.xml</value>
-			</list>
-		</property>
-
+		<property name="packagesToScan" value="com.mfino.domain" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">${mfino.hibernate.dialect}</prop>
@@ -345,13 +191,25 @@
 		</property>
 	</bean>
 
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+	     <property name="brokerURL" value="tcp://${jms.brokerURL.host}:${jms.brokerURL.port}" />
+	     <property name="userName" value="${jms.userName}"/>
+		 <property name="password" value="${jms.password}"/>
+	 </bean>
+	  
+	 <bean id="pooledConnectionFactory" 
+	    class="org.apache.activemq.pool.PooledConnectionFactory" init-method="start" destroy-method="stop">
+	    <property name="maxConnections" value="${jms.maxConnections}" />
+	    <property name="connectionFactory" ref="jmsConnectionFactory" />
+	 </bean>
+	 
 	<tx:annotation-driven transaction-manager="txManager" />
 
 	<!-- Hibernate Transaction Manager Definition -->
 	<bean id="txManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory">
-			<ref local="sessionFactory" />
+			<ref bean="sessionFactory" />
 		</property>
 	</bean>
 	
@@ -558,5 +416,5 @@
     <osgi:service ref ="CashinFirstTimeServiceImpl" interface="com.mfino.service.CashinFirstTimeService"/>
     <osgi:service ref ="GroupServiceImpl" interface="com.mfino.service.GroupService"/>
     <osgi:service ref ="MfinoServiceProviderServiceImpl" interface="com.mfino.service.MfinoServiceProviderService"/>
-    <osgi:service ref="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+    <osgi:service ref="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 </beans>
