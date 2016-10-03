@@ -47,7 +47,7 @@ public class BillpaymentsPendingClearanceServiceImpl extends BillPaymentsBaseSer
 		
 		for(BillPayments billPayment : pendingBillPayments){
 			/* changes done to accomdate clickatell transaction to avoid clashes between running transactions and pending transaction -shashank*/
-			if(now.getTime() - billPayment.getCreateTime().getTime() > TIME_TO_RESEND){
+			if(now.getTime() - billPayment.getCreatetime().getTime() > TIME_TO_RESEND){
 				MCEMessage mceMessage = new MCEMessage();
 				CMBillPayment cmBillPay = new CMBillPayment();
 				cmBillPay.setServiceChargeTransactionLogID(billPayment.getSctlId());

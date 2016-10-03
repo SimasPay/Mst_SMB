@@ -17,8 +17,8 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.BillPayments;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.mce.core.MCEMessage;
@@ -43,18 +43,18 @@ public class QTBillPayInquiryCommunicator extends QuickTellerCommunicator{
 		BillPayments billPayment = billPaymentsService.getBillPaymentsRecord(sctlId);
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourceMDN());
+		SubscriberMdn subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourcemdn());
 		
 		String emailAddress = subscriberMdn.getSubscriber().getEmail();
 		
 		QTBillPaymentInquiry qtBillPayInquiry = new QTBillPaymentInquiry();
-		qtBillPayInquiry.setPaymentCode(billPayment.getPartnerBillerCode());
-		qtBillPayInquiry.setCustomerMobile(billPayment.getInvoiceNumber());
+		qtBillPayInquiry.setPaymentCode(billPayment.getPartnerbillercode());
+		qtBillPayInquiry.setCustomerMobile(billPayment.getInvoicenumber());
 		qtBillPayInquiry.setCustomerEmail(emailAddress);
-		qtBillPayInquiry.setCustomerId(sctl.getSourceMDN());
+		qtBillPayInquiry.setCustomerId(sctl.getSourcemdn());
 		qtBillPayInquiry.setTerminalId(params.get(TERMINAL_ID_KEY));
 		
 		log.info("QTBillPayInquiryCommunicator : getParameterList "+qtBillPayInquiry.toXML());

@@ -28,7 +28,7 @@ public class BillPaymentsServiceActivator {
 	public void updateBillPayStatus(MCEMessage mceMessage, @Header("sctlId") Long sctlId, @Header("billPayStatus") Integer billPayStatus){
 		log.info("BillPaymentsServiceActivator :: updateBillPayStatus sctlId="+sctlId+", billPayStatus="+billPayStatus);
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-		billPayments.setBillPayStatus(billPayStatus);
+		billPayments.setBillpaystatus(billPayStatus.longValue());
 		billPaymentsService.saveBillPayment(billPayments);
 	}
 }

@@ -18,7 +18,7 @@ import com.mfino.domain.AutoReversals;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBillPayPendingRequest;
@@ -69,7 +69,7 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 		
 		Long sctlId = pendingRequest.getServiceChargeTransactionLogID();
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 
 		PendingCommodityTransfer pct = getPendingCommodityTransfer(sctl);
 		
@@ -90,13 +90,13 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 			
 			if(billPayments != null){
 				if(autoReversals != null){
-					log.info("BillPayPendingResolveServiceImpl :: This is a reversal pending case autoReversals status = "+autoReversals.getAutoRevStatus());
+					log.info("BillPayPendingResolveServiceImpl :: This is a reversal pending case autoReversals status = "+autoReversals.getAutorevstatus());
 					mceMessage = autoReversalPendingResolveService.resolvePendingTransaction(mceMessage);
 					
 					try{
 						transactionPendingSummaryService.saveTransactionPendingSummary(pendingRequest);
 					}catch(Exception e){
-						log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+						log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 					}
 					//reversal means sctl should be failed.
 					sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
@@ -104,9 +104,9 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 				}
 				else
 				{
-					log.info("BillPayPendingResolveServiceImpl :: BillPayStatus: "+ billPayments.getBillPayStatus());
-					if((null != billPayments.getBillPayStatus()) && 
-							(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_PENDING.equals(billPayments.getBillPayStatus()))){
+					log.info("BillPayPendingResolveServiceImpl :: BillPayStatus: "+ billPayments.getBillpaystatus());
+					if((null != billPayments.getBillpaystatus()) && 
+							(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_PENDING.equals(billPayments.getBillpaystatus()))){
 						
 						if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
 							response = bankService.onRevertOfTransferConfirmation(pct, true);
@@ -128,13 +128,13 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 						try{
 							transactionPendingSummaryService.saveTransactionPendingSummary(pendingRequest);
 						}catch(Exception e){
-							log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+							log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 						}
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
 						sctlDao.save(sctl);
 					}
-					else if((null != billPayments.getBillPayStatus()) && 
-							(CmFinoFIX.BillPayStatus_MT_SUSPENSE_TO_DEST_PENDING.equals(billPayments.getBillPayStatus()))){
+					else if((null != billPayments.getBillpaystatus()) && 
+							(CmFinoFIX.BillPayStatus_MT_SUSPENSE_TO_DEST_PENDING.equals(billPayments.getBillpaystatus()))){
 
 						//if notification not required, set internalError code to null here.
 						if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
@@ -149,13 +149,13 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 						try{
 							transactionPendingSummaryService.saveTransactionPendingSummary(pendingRequest);
 						}catch(Exception e){
-							log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+							log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 						}
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
 						sctlDao.save(sctl);
 					}
-					else if((null != billPayments.getBillPayStatus()) && 
-							(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING.equals(billPayments.getBillPayStatus()))){
+					else if((null != billPayments.getBillpaystatus()) && 
+							(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING.equals(billPayments.getBillpaystatus()))){
 
 						//if notification not required, set internalError code to null here.
 						if(pendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel)){
@@ -173,7 +173,7 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 							try{
 								transactionPendingSummaryService.saveTransactionPendingSummary(pendingRequest);
 							}catch(Exception e){
-								log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+								log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 							}
 							sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
 						}
@@ -192,7 +192,7 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 							try{
 								transactionPendingSummaryService.saveTransactionPendingSummary(pendingRequest);
 							}catch(Exception e){
-								log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getID()+" while Resolving",e);
+								log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 							}
 							sctl.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
 						}
@@ -218,7 +218,7 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 		return mceMessage;
 	}
 	
-	private PendingCommodityTransfer getPendingCommodityTransfer(ServiceChargeTransactionLog sctl){
+	private PendingCommodityTransfer getPendingCommodityTransfer(ServiceChargeTxnLog sctl){
 		PendingCommodityTransfer pct = null;
 		
 		ChargeTxnCommodityTransferMapDAO chargeTxnCommodityTransferMapDao = DAOFactory.getInstance().getTxnTransferMap();
@@ -227,12 +227,12 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 		if(sctl != null)
 		{
 	        ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(sctl.getID());
+			query.setSctlID(sctl.getId().longValue());
 			List<ChargeTxnCommodityTransferMap> ctxnList = chargeTxnCommodityTransferMapDao.get(query);
 			
 			//Assuming there will be only one pending transaction for this sctlid
 			for(ChargeTxnCommodityTransferMap ctxnMap : ctxnList){
-				pct = pctDao.getById(ctxnMap.getCommodityTransferID());
+				pct = pctDao.getById(ctxnMap.getCommoditytransferid().longValue());
 				if(pct != null){
 					break;
 				}

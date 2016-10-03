@@ -2,9 +2,6 @@ package com.mfino.billpayments.service.impl;
 
 import static com.mfino.mce.core.util.MCEUtil.SERVICE_TIME_OUT;
 
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,11 +11,7 @@ import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPayBillerIntegrationService;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
 import com.mfino.billpayments.service.BillPaymentsService;
-import com.mfino.dao.DAOFactory;
-import com.mfino.dao.ServiceChargeTransactionLogDAO;
-import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.BillPayments;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.mce.core.MCEMessage;
@@ -54,7 +47,7 @@ public class BillPayBillerIntegrationServiceImpl extends BillPaymentsBaseService
 		
 		Long sctlId = response.getServiceChargeTransactionLogID();
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-		billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_PENDING);
+		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_PENDING.longValue());
 		billPaymentsService.saveBillPayment(billPayments);
 		
 		return mceMessage;
@@ -69,7 +62,7 @@ public class BillPayBillerIntegrationServiceImpl extends BillPaymentsBaseService
 		
 		Long sctlId = response.getServiceChargeTransactionLogID();
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-		billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING);
+		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING.longValue());
 		billPaymentsService.saveBillPayment(billPayments);
 		
 		return mceMessage;
@@ -86,21 +79,21 @@ public class BillPayBillerIntegrationServiceImpl extends BillPaymentsBaseService
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 
 		if(SERVICE_TIME_OUT.equals(response.getInResponseCode())){
-			billPayments.setINResponseCode(SERVICE_TIME_OUT);
-			billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_PENDING);
+			billPayments.setInresponsecode(SERVICE_TIME_OUT);
+			billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_PENDING.longValue());
 		}
 		else
 		{
 			if(CmFinoFIX.ResponseCode_Success.equals(response.getResponse())){
-				billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_COMPLETED);
+				billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_COMPLETED.longValue());
 			}
 			else{
-				billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_FAILED);
+				billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_INQUIRY_FAILED.longValue());
 			}
-			billPayments.setINTxnId(response.getInTxnId());
-			billPayments.setINResponseCode(response.getInResponseCode());
+			billPayments.setIntxnid(response.getInTxnId());
+			billPayments.setInresponsecode(response.getInResponseCode());
 			
-			billPayments.setResponseCode(response.getResponse());
+			billPayments.setResponsecode(response.getResponse().longValue());
 			if((null != response.getInfo3()) && !("".equalsIgnoreCase(response.getInfo3()))){
 				billPayments.setInfo3(response.getInfo3());
 			}
@@ -124,19 +117,19 @@ public class BillPayBillerIntegrationServiceImpl extends BillPaymentsBaseService
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 		
 		if(SERVICE_TIME_OUT.equals(response.getInResponseCode())){
-			billPayments.setINResponseCode(SERVICE_TIME_OUT);
-			billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING);
+			billPayments.setInresponsecode(SERVICE_TIME_OUT);
+			billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_PENDING.longValue());
 		}
 		else{
 			if(CmFinoFIX.ResponseCode_Success.equals(response.getResponse())){
-				billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_COMPLETED);
+				billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_COMPLETED.longValue());
 			}
 			else{
-				billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_FAILED);
+				billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLER_CONFIRMATION_FAILED.longValue());
 			}
-			billPayments.setINTxnId(response.getInTxnId());
-			billPayments.setINResponseCode(response.getInResponseCode());
-			billPayments.setResponseCode(response.getResponse());
+			billPayments.setIntxnid(response.getInTxnId());
+			billPayments.setInresponsecode(response.getInResponseCode());
+			billPayments.setResponsecode(response.getResponse().longValue());
 		}
 		
 		billPaymentsService.saveBillPayment(billPayments);

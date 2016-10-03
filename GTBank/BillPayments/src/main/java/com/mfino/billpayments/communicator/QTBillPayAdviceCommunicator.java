@@ -23,8 +23,8 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.IntegrationSummary;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
@@ -51,10 +51,10 @@ public class QTBillPayAdviceCommunicator extends QuickTellerCommunicator{
 		Long sctlId = requestFix.getServiceChargeTransactionLogID();
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourceMDN());
+		SubscriberMdn subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourcemdn());
 		
 		String emailAddress = subscriberMdn.getSubscriber().getEmail();
 		
@@ -63,26 +63,26 @@ public class QTBillPayAdviceCommunicator extends QuickTellerCommunicator{
 		String requestReference = QTBillPayUtil.getRequestReference(params.get(BillPayConstants.PREFIX), sctlId);
  	 	IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummary integrationSummary = new IntegrationSummary();
-		integrationSummary.setSctlId(sctlId);
-		integrationSummary.setReconcilationID1(requestReference);
+		integrationSummary.setSctlid(new BigDecimal(sctlId));
+		integrationSummary.setReconcilationid1(requestReference);
 		integrationSummaryDao.save(integrationSummary);
 		
 		QTBillPaymentAdvice billPayAdvice = new QTBillPaymentAdvice();
-		billPayAdvice.setAmount( billPayments.getOperatorAmount().multiply(new BigDecimal(100.00)).setScale(0,BigDecimal.ROUND_DOWN));
-		log.info("Amount:BillPayMoneyTransferServiceImpl"+billPayments.getOperatorAmount());
-		billPayAdvice.setPaymentCode(billPayments.getPartnerBillerCode());
+		billPayAdvice.setAmount( billPayments.getAmount().multiply(new BigDecimal(100.00)).setScale(0,BigDecimal.ROUND_DOWN));
+		log.info("Amount:BillPayMoneyTransferServiceImpl"+billPayments.getAmount());
+		billPayAdvice.setPaymentCode(billPayments.getPartnerbillercode());
 //this change was made as per fortis requirement 22-02-2013 tarun.
 		
-		billPayAdvice.setCustomerMobile(sctl.getSourceMDN());
+		billPayAdvice.setCustomerMobile(sctl.getSourcemdn());
 		billPayAdvice.setCustomerEmail(emailAddress);
-		billPayAdvice.setCustomerId(billPayments.getInvoiceNumber());
+		billPayAdvice.setCustomerId(billPayments.getInvoicenumber());
 		
 		TransactionType airtimePurchase = DAOFactory.getInstance().getTransactionTypeDAO().getTransactionTypeByName(ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE);
-		Long airtimePurchaseTxnId = airtimePurchase != null ? airtimePurchase.getID() : 0l;
+		Long airtimePurchaseTxnId = airtimePurchase != null ? airtimePurchase.getId().longValue() : 0l;
 		SubscriberServiceImpl subscriberServiceImpl = new SubscriberServiceImpl();
-		if(sctl.getTransactionTypeID() != 0 && sctl.getTransactionTypeID().equals(airtimePurchaseTxnId)){
-			billPayAdvice.setCustomerMobile("0"+subscriberServiceImpl.deNormalizeMDN(sctl.getSourceMDN()));
-			billPayAdvice.setCustomerId("0"+subscriberServiceImpl.deNormalizeMDN(billPayments.getInvoiceNumber()));
+		if(sctl.getTransactiontypeid().intValue() != 0 && sctl.getTransactiontypeid().equals(airtimePurchaseTxnId)){
+			billPayAdvice.setCustomerMobile("0"+subscriberServiceImpl.deNormalizeMDN(sctl.getSourcemdn()));
+			billPayAdvice.setCustomerId("0"+subscriberServiceImpl.deNormalizeMDN(billPayments.getInvoicenumber()));
 		}
 		
 		

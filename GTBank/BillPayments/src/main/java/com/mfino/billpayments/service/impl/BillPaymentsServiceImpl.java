@@ -43,18 +43,18 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		
 		BillPayments billPayments = new BillPayments();
 		billPayments.setAmount(billPayInquiry.getAmount());
-		billPayments.setBillerCode(billPayInquiry.getBillerCode());
-		billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_INITIALIZED);
+		billPayments.setBillercode(billPayInquiry.getBillerCode());
+		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_INITIALIZED.longValue());
 		billPayments.setCharges(billPayInquiry.getCharges());
-		billPayments.setIntegrationCode(billPayInquiry.getIntegrationCode());
-		billPayments.setChargesIncluded(billPayInquiry.getChargesIncluded());
-		billPayments.setInvoiceNumber(billPayInquiry.getInvoiceNumber());
+		billPayments.setIntegrationcode(billPayInquiry.getIntegrationCode());
+		billPayments.setChargesincluded(billPayInquiry.getChargesIncluded());
+		billPayments.setInvoicenumber(billPayInquiry.getInvoiceNumber());
 		//billPayments.setOriginalINTxnId(billPayInquiry.getTransactionID().toString()); // OriginalTxnId to used with InTxnId in case of reversal
 		//billPayments.setINTxnId(billPayInquiry.getTransactionID().toString());//INTxnId is from the third party 
-		billPayments.setPartnerBillerCode(billPayInquiry.getPartnerBillerCode());
-		billPayments.setPartnerBillerCode(billPayInquiry.getPartnerBillerCode());
+		billPayments.setPartnerbillercode(billPayInquiry.getPartnerBillerCode());
+		billPayments.setPartnerbillercode(billPayInquiry.getPartnerBillerCode());
 		billPayments.setSctlId(billPayInquiry.getServiceChargeTransactionLogID());
-		billPayments.setSourceMDN(billPayInquiry.getSourceMDN());
+		billPayments.setSourcemdn(billPayInquiry.getSourceMDN());
 		billPayments.setInfo2(billPayInquiry.getNarration());
 
 		if(StringUtils.isNotBlank(billPayInquiry.getPaymentInquiryDetails())) {
@@ -100,7 +100,7 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 			billPayments.setInfo1(billPayInquiry.getDenominationCode());
 		}
 		if(billPayInquiry.getNominalAmount()!=null) {
-			billPayments.setNominalAmount(billPayInquiry.getNominalAmount());
+			billPayments.setNominalamount(billPayInquiry.getNominalAmount());
 		}
 		
 		BillPaymentsDAO billPayDAO = DAOFactory.getInstance().getBillPaymentDAO();
@@ -163,7 +163,7 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		log.info("BillPaymentsServiceImpl :: updateBillPayStatus sctlId="+sctlId+", billPayStatus="+billPayStatus);
 		
 		BillPayments billPayments = getBillPaymentsRecord(sctlId);
-		billPayments.setBillPayStatus(billPayStatus);
+		billPayments.setBillpaystatus(billPayStatus.longValue());
 		saveBillPayment(billPayments);
 	}
 	
@@ -173,8 +173,8 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		log.info("BillPaymentsServiceImpl :: updateBillPayStatus sctlId="+sctlId+", billPayStatus="+billPayStatus);
 		
 		BillPayments billPayments = getBillPaymentsRecord(sctlId);
-		billPayments.setBillPayStatus(billPayStatus);
-		billPayments.setTransferTime(ts);
+		billPayments.setBillpaystatus(billPayStatus.longValue());
+		billPayments.setTransfertime(ts);
 		saveBillPayment(billPayments);
 	}
 
@@ -192,10 +192,10 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		if(request instanceof CMBillPayInquiry){
 			if(response instanceof CMTransferInquiryToBank){
 				if(SOURCE_TO_DESTINATION.equals(transferType)){
-					billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_DEST_INQ_PENDING);
+					billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_DEST_INQ_PENDING.longValue());
 				}
 				else if(SOURCE_TO_SUSPENSE.equals(transferType)){
-					billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_INQ_PENDING);
+					billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_INQ_PENDING.longValue());
 				}
 			}
 		}

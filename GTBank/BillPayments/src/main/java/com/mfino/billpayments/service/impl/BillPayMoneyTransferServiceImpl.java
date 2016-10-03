@@ -24,7 +24,6 @@ import com.mfino.billpayments.service.BillPayMoneyTransferService;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
 import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.ChannelCodeDAO;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.CommodityTransferDAO;
@@ -46,17 +45,17 @@ import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAutoReversal;
@@ -225,13 +224,13 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		Long sctlId = requestFix.getServiceChargeTransactionLogID();
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		ChannelCodeDAO channelCodeDAO = DAOFactory.getInstance().getChannelCodeDao();
 		ChannelCode cc = channelCodeDAO.getByChannelSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		
 		SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourceMDN());
+		SubscriberMdn subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourcemdn());
 		
 		String emailAddress = subscriberMdn.getSubscriber().getEmail();
 		
@@ -242,39 +241,39 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		CMBillPayInquiry billPayInquiry = null;
 		
 		if(SUSPENSE_TO_DESTINATION.equals(transferType)){
-			billerCode = billPayments.getBillerCode();
+			billerCode = billPayments.getBillercode();
 			billPayInquiry = new CMBillPayInquiry();
 			
 			ServiceDAO serviceDAO = DAOFactory.getInstance().getServiceDAO();
-			Service service = serviceDAO.getById(sctl.getServiceID());
+			Service service = serviceDAO.getById(sctl.getServiceid().longValue());
 			
 			TransactionTypeDAO transactionTypeDAO= DAOFactory.getInstance().getTransactionTypeDAO();
-			TransactionType transactionType = transactionTypeDAO.getById(sctl.getTransactionTypeID()); 
+			TransactionType transactionType = transactionTypeDAO.getById(sctl.getTransactiontypeid().longValue()); 
 			
-			billPayInquiry.setSourceMDN(sctl.getSourceMDN());
-			billPayInquiry.setDestMDN(sctl.getDestMDN());
-			billPayInquiry.setBillerCode(billPayments.getBillerCode());
-			billPayInquiry.setIntegrationCode(billPayments.getIntegrationCode());
-			billPayInquiry.setPartnerBillerCode(billPayments.getPartnerBillerCode());
+			billPayInquiry.setSourceMDN(sctl.getSourcemdn());
+			billPayInquiry.setDestMDN(sctl.getDestmdn());
+			billPayInquiry.setBillerCode(billPayments.getBillercode());
+			billPayInquiry.setIntegrationCode(billPayments.getIntegrationcode());
+			billPayInquiry.setPartnerBillerCode(billPayments.getPartnerbillercode());
 			billPayInquiry.setAmount(billPayments.getAmount()); // Bala: Changed as it is confusing the Charges part
-			log.info("Amount:BillPayMoneyTransferServiceImpl"+billPayments.getOperatorAmount());
+			log.info("Amount:BillPayMoneyTransferServiceImpl"+billPayments.getAmount());
 			
 			billPayInquiry.setCharges(BigDecimal.ZERO);
 			billPayInquiry.setEmail(emailAddress);
 			billPayInquiry.setIsSystemIntiatedTransaction(Boolean.TRUE);
 			billPayInquiry.setMessageType(billPayInquiry.header().getMsgType());
 			billPayInquiry.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
-			billPayInquiry.setChannelCode(cc.getChannelCode());
+			billPayInquiry.setChannelCode(cc.getChannelcode());
 			billPayInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 			billPayInquiry.setServiceChargeTransactionLogID(sctlId);
-			billPayInquiry.setServiceName(service.getServiceName());
+			billPayInquiry.setServiceName(service.getServicename());
 			billPayInquiry.setParentTransactionID(0L);
 			if(transactionType != null){
-				billPayInquiry.setSourceMessage(transactionType.getDisplayName());
+				billPayInquiry.setSourceMessage(transactionType.getDisplayname());
 			}
-			TransactionsLog tLog = saveTransactionsLog(CmFinoFIX.MessageType_BillPayInquiry, billPayInquiry.DumpFields());
+			TransactionLog tLog = saveTransactionsLog(CmFinoFIX.MessageType_BillPayInquiry, billPayInquiry.DumpFields());
 			
-			billPayInquiry.setTransactionID(tLog.getID());
+			billPayInquiry.setTransactionID(tLog.getId().longValue());
 		}
 		else{
 			billPayInquiry = (CMBillPayInquiry)mceMessage.getRequest();
@@ -289,12 +288,12 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		Pocket suspencePocket = pocketService.getSuspencePocket(partner);
 		
 		if(SOURCE_TO_SUSPENSE.equals(transferType)){
-			billPayInquiry.setDestPocketID(suspencePocket.getID());
+			billPayInquiry.setDestPocketID(suspencePocket.getId().longValue());
 		}
 		else if(SUSPENSE_TO_DESTINATION.equals(transferType)){
-			billPayInquiry.setSourcePocketID(suspencePocket.getID());
-			billPayInquiry.setSourceMDN(suspencePocket.getSubscriberMDNByMDNID().getMDN());
-			billPayInquiry.setDestPocketID(getDestPocketByService(partner,sctl).getID());
+			billPayInquiry.setSourcePocketID(suspencePocket.getId().longValue());
+			billPayInquiry.setSourceMDN(suspencePocket.getSubscriberMdn().getMdn());
+			billPayInquiry.setDestPocketID(getDestPocketByService(partner,sctl).getId().longValue());
 		}
 		CFIXMsg inquiryResponse =createResponseObject();
 		try {
@@ -501,19 +500,19 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		Long sctlId = requestFix.getServiceChargeTransactionLogID();
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		ChannelCodeDAO channelCodeDAO = DAOFactory.getInstance().getChannelCodeDao();
 		ChannelCode cc = channelCodeDAO.getByChannelSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		
 		SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourceMDN());
+		SubscriberMdn subscriberMdn = subscriberMdnDao.getByMDN(sctl.getSourcemdn());
 		
 		String emailAddress = subscriberMdn.getSubscriber().getEmail();
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 		
-		String billerCode = billPayments.getBillerCode();
+		String billerCode = billPayments.getBillercode();
 		
 		CMBillPay billPay = null;
 		if(SUSPENSE_TO_DESTINATION.equals(transferType)){
@@ -521,25 +520,25 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 			
 			BackendResponse inquiryResponse = (BackendResponse)mceMessage.getResponse();
 			
-			billPay.setSourceMDN(sctl.getSourceMDN());
-			billPay.setDestMDN(sctl.getDestMDN());
-	        billPay.setBillerCode(billPayments.getBillerCode());
-			billPay.setIntegrationCode(billPayments.getIntegrationCode());
-			billPay.setPartnerBillerCode(billPayments.getPartnerBillerCode());
+			billPay.setSourceMDN(sctl.getSourcemdn());
+			billPay.setDestMDN(sctl.getDestmdn());
+	        billPay.setBillerCode(billPayments.getBillercode());
+			billPay.setIntegrationCode(billPayments.getIntegrationcode());
+			billPay.setPartnerBillerCode(billPayments.getPartnerbillercode());
 			billPay.setEmail(emailAddress);
 			billPay.setIsSystemIntiatedTransaction(Boolean.TRUE);
 			billPay.setMessageType(billPay.header().getMsgType());
 			billPay.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
-			billPay.setChannelCode(cc.getChannelCode());
+			billPay.setChannelCode(cc.getChannelcode());
 			billPay.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 			billPay.setServiceChargeTransactionLogID(sctlId);
 			billPay.setServiceName(ServiceAndTransactionConstants.SERVICE_BUY);
 			billPay.setParentTransactionID(inquiryResponse.getParentTransactionID());
 			billPay.setTransferID(inquiryResponse.getTransferID());
 
-			TransactionsLog tLog = saveTransactionsLog(CmFinoFIX.MessageType_BillPayInquiry, billPay.DumpFields(), inquiryResponse.getParentTransactionID());
+			TransactionLog tLog = saveTransactionsLog(CmFinoFIX.MessageType_BillPayInquiry, billPay.DumpFields(), inquiryResponse.getParentTransactionID());
 
-			billPay.setTransactionID(tLog.getID());
+			billPay.setTransactionID(tLog.getId().longValue());
 			billPay.setConfirmed(Boolean.TRUE);
 		}
 		else{
@@ -547,18 +546,18 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		}
 		
 		Partner partner = billerService.getPartner(billerCode);
-		billPay.setInvoiceNumber(billPayments.getInvoiceNumber());
+		billPay.setInvoiceNumber(billPayments.getInvoicenumber());
 
 
 		Pocket suspencePocket = pocketService.getSuspencePocket(partner);
 		
 		if(SOURCE_TO_SUSPENSE.equals(transferType)){
-			billPay.setDestPocketID(suspencePocket.getID());
+			billPay.setDestPocketID(suspencePocket.getId().longValue());
 		}		
 		else if(SUSPENSE_TO_DESTINATION.equals(transferType)){
-			billPay.setSourcePocketID(suspencePocket.getID());
-			billPay.setSourceMDN(suspencePocket.getSubscriberMDNByMDNID().getMDN());
-			billPay.setDestPocketID(getDestPocketByService(partner,sctl).getID());
+			billPay.setSourcePocketID(suspencePocket.getId().longValue());
+			billPay.setSourceMDN(suspencePocket.getSubscriberMdn().getMdn());
+			billPay.setDestPocketID(getDestPocketByService(partner,sctl).getId().longValue());
 		}
 		CFIXMsg confirmationResponse=createResponseObject();
 		try {
@@ -575,13 +574,13 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		    ((CMBase)confirmationResponse).setPaymentInquiryDetails(billPayments.getInfo1());
 		}
 		
-		log.info("Amount:>>>>>>>>>>>>>>>"+billPayments.getOperatorAmount());
+		log.info("Amount:>>>>>>>>>>>>>>>"+billPayments.getAmount());
 				if(confirmationResponse instanceof BackendResponse){
-				((BackendResponse)confirmationResponse).setAmount(billPayments.getOperatorAmount());
+				((BackendResponse)confirmationResponse).setAmount(billPayments.getAmount());
 				}
 		
 		if(confirmationResponse instanceof CMMoneyTransferToBank){
-			((CMMoneyTransferToBank)confirmationResponse).setINTxnId(billPayments.getINTxnId());
+			((CMMoneyTransferToBank)confirmationResponse).setINTxnId(billPayments.getIntxnid());
 			((CMMoneyTransferToBank)confirmationResponse).setComments(billPayments.getInfo2());
 		}
 		
@@ -621,9 +620,9 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 				Long sctlId = requestFix.getServiceChargeTransactionLogID();
 		 		
 				ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-				ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+				ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 				BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
-				response.setAmount(billPayments.getOperatorAmount());
+				response.setAmount(billPayments.getAmount());
 		
 		if(((BackendResponse)response).getResult() == CmFinoFIX.ResponseCode_Success){
 			billPaymentsService.updateBillPayStatus(response.getServiceChargeTransactionLogID(), CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_COMPLETED);
@@ -687,11 +686,11 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		BackendResponse response=createResponseObject();
 
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 
-		response.setSenderMDN(sctl.getSourceMDN());
-		response.setSourceMDN(sctl.getSourceMDN());
- 		response.setReceiverMDN(sctl.getDestMDN());
+		response.setSenderMDN(sctl.getSourcemdn());
+		response.setSourceMDN(sctl.getSourcemdn());
+ 		response.setReceiverMDN(sctl.getDestmdn());
  		response.setTransferID(response.getTransferID());
 		response.setParentTransactionID(response.getParentTransactionID());
 		response.setServiceChargeTransactionLogID(sctlId);
@@ -716,15 +715,15 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		Long sctlId = ((CMBase)mceMessage.getRequest()).getServiceChargeTransactionLogID();
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 
-		Partner partner = getPartner(billPayments.getBillerCode());
+		Partner partner = getPartner(billPayments.getBillercode());
 
 		Pocket suspencePocket = pocketService.getSuspencePocket(partner);
 		
-		Long ctId = sctl.getCommodityTransferID();
+		Long ctId = sctl.getCommoditytransferid().longValue();
 		
 		//for some old airtime transactions ctid is not recorded in sctl.
 		//get the ctid from the map chargetxn_transfer_map table.Least ct id value
@@ -739,19 +738,19 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 			List<ChargeTxnCommodityTransferMap> list= ctctmdao.get(query);
 			
 			for(ChargeTxnCommodityTransferMap map : list){
-				if(ctId>map.getCommodityTransferID())
-					ctId = map.getCommodityTransferID();
+				if(ctId>map.getCommoditytransferid().longValue())
+					ctId = map.getCommoditytransferid().longValue();
 			}
 			
-			sctl.setCommodityTransferID(ctId);
+			sctl.setCommoditytransferid(new BigDecimal(ctId));
 			sctlDao.save(sctl);
 		}
 		
 		CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
 		CommodityTransfer ct = ctDao.getById(ctId);
 		
-		autoReversal.setSourcePocketID(ct.getPocketBySourcePocketID().getID());
-		autoReversal.setDestPocketID(suspencePocket.getID());
+		autoReversal.setSourcePocketID(ct.getPocket().getId().longValue());
+		autoReversal.setDestPocketID(suspencePocket.getId().longValue());
 		autoReversal.setServiceChargeTransactionLogID(sctlId);
 		autoReversal.setAmount(ct.getAmount());
 		autoReversal.setCharges(ct.getCharges());
@@ -760,7 +759,7 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		
 		reversalMce.setDestinationQueue(getReversalResponseQueue());
 		
-		billPayments.setBillPayStatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED);
+		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED.longValue());
 	    billPaymentsService.saveBillPayment(billPayments);
 		
 
@@ -768,7 +767,7 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	private Pocket getDestPocketByService(Partner partner, ServiceChargeTransactionLog sctl){
+	private Pocket getDestPocketByService(Partner partner, ServiceChargeTxnLog sctl){
 		Pocket destPocket = null;
 		
 //		ServiceDAO serviceDao = DAOFactory.getInstance().getServiceDAO();
@@ -776,14 +775,14 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		
 		PartnerServicesDAO partnerServicesDao = DAOFactory.getInstance().getPartnerServicesDAO();
 		PartnerServicesQuery query = new PartnerServicesQuery();
-		query.setPartnerId(partner.getID());
-		query.setServiceId(sctl.getServiceID());
+		query.setPartnerId(partner.getId().longValue());
+		query.setServiceId(sctl.getServiceid().longValue());
 		
 		List<PartnerServices> partnerServiceList = partnerServicesDao.get(query);
 		
 		if(partnerServiceList.size() > 0){
 			PartnerServices partnerService = partnerServiceList.get(0);
-			destPocket = partnerService.getPocketByDestPocketID();
+			destPocket = partnerService.getPocketByDestpocketid();
 		}
 		
 		return destPocket;
@@ -795,15 +794,15 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		MFSBillerDAO billerDAO = DAOFactory.getInstance().getMFSBillerDAO();
 		MFSBillerQuery billerQuery = new MFSBillerQuery();
 		billerQuery.setBillerCode(billerCode);
-		List<MFSBiller> billersList = billerDAO.get(billerQuery);
-		MFSBiller biller = null;
+		List<MfsBiller> billersList = billerDAO.get(billerQuery);
+		MfsBiller biller = null;
 		if(billersList.size()==1){
 			biller = billersList.get(0);
 		}
 		if(biller!=null){
 			MFSBillerPartnerDAO billerPartnerDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 			MFSBillerPartnerQuery billerPartnerQuery = new MFSBillerPartnerQuery();
-			billerPartnerQuery.setMfsBillerId(biller.getID());
+			billerPartnerQuery.setMfsBillerId(biller.getId().longValue());
 			List<MFSBillerPartner> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
 			if(billerPartners.size()==1){
 				MFSBillerPartner billerPartner = billerPartners.get(0);
@@ -814,31 +813,31 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		return partner;
 	}
 	
-	protected TransactionsLog saveTransactionsLog(Integer messageCode, String data) {
+	protected TransactionLog saveTransactionsLog(Integer messageCode, String data) {
 		TransactionsLogDAO transactionsLogDAO = DAOFactory.getInstance().getTransactionsLogDAO();
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
         MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-        mFinoServiceProvider msp = mspDao.getById(1);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+        MfinoServiceProvider msp = mspDao.getById(1);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 	}
 	
-	protected TransactionsLog saveTransactionsLog(Integer messageCode, String data,Long parentTxnID)
+	protected TransactionLog saveTransactionsLog(Integer messageCode, String data,Long parentTxnID)
 	{
 		TransactionsLogDAO transactionsLogDAO = DAOFactory.getInstance().getTransactionsLogDAO();
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
 		MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-		mFinoServiceProvider msp = mspDao.getById(1);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		MfinoServiceProvider msp = mspDao.getById(1);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		if(parentTxnID!=null)
-			transactionsLog.setParentTransactionID(parentTxnID);
+			transactionsLog.setParenttransactionid(new BigDecimal(parentTxnID));
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 	}

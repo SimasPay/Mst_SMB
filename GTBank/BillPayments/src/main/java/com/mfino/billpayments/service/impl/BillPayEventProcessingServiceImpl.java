@@ -15,8 +15,8 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.domain.BillPayments;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.mce.core.MCEMessage;
@@ -144,7 +144,7 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 		BillPayments billPaymentsRecord = billPaymentsService.getBillPaymentsRecord(sctlId);
 
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDao.getById(sctlId);
+		ServiceChargeTxnLog sctl = sctlDao.getById(sctlId);
 		
 		if((null != billPaymentsRecord) && (null != sctl)){
 			BackendResponse response = (BackendResponse)mceMessage.getResponse();
@@ -152,35 +152,35 @@ public class BillPayEventProcessingServiceImpl extends BillPaymentsBaseServiceIm
 			response.setCurrency(systemParametersServiceImpl.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 			response.setAmount(billPaymentsRecord.getAmount());
 			response.setCharges(billPaymentsRecord.getCharges());
-			response.setBillerCode(billPaymentsRecord.getBillerCode());
-			response.setSenderMDN(sctl.getSourceMDN());
-			SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sctl.getSourceMDN());
+			response.setBillerCode(billPaymentsRecord.getBillercode());
+			response.setSenderMDN(sctl.getSourcemdn());
+			SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sctl.getSourcemdn());
 			if(smdn != null)
 			{
-				response.setFirstName(smdn.getSubscriber().getFirstName());
-				response.setLastName(smdn.getSubscriber().getLastName());
+				response.setFirstName(smdn.getSubscriber().getFirstname());
+				response.setLastName(smdn.getSubscriber().getLastname());
 			}
 			
-			response.setSourceMDN(sctl.getSourceMDN());
-			response.setReceiverMDN(sctl.getDestMDN());
+			response.setSourceMDN(sctl.getSourcemdn());
+			response.setReceiverMDN(sctl.getDestmdn());
 
-			if(!(subscriberService.normalizeMDN(sctl.getSourceMDN()).equals(subscriberService.normalizeMDN(billPaymentsRecord.getInvoiceNumber())))){
-				response.setOnBehalfOfMDN(billPaymentsRecord.getInvoiceNumber());	
+			if(!(subscriberService.normalizeMDN(sctl.getSourcemdn()).equals(subscriberService.normalizeMDN(billPaymentsRecord.getInvoicenumber())))){
+				response.setOnBehalfOfMDN(billPaymentsRecord.getInvoicenumber());	
 			}
 			
 			response.setTransferID(response.getTransferID());
 			response.setParentTransactionID(response.getParentTransactionID());
-			response.setServiceChargeTransactionLogID(sctl.getID());
-			if(billPaymentsRecord.getNominalAmount()!=null)
-				response.setNominalAmount(billPaymentsRecord.getNominalAmount());
+			response.setServiceChargeTransactionLogID(sctl.getId().longValue());
+			if(billPaymentsRecord.getNominalamount()!=null)
+				response.setNominalAmount(billPaymentsRecord.getNominalamount());
 			if(billPaymentsRecord.getInfo3()!=null)
 				response.setAdditionalInfo(billPaymentsRecord.getInfo3());
-			if(billPaymentsRecord.getOperatorCharges() !=null)
-				response.setCharges(sctl.getCalculatedCharge().add(billPaymentsRecord.getOperatorCharges()));
-			if(billPaymentsRecord.getInvoiceNumber() !=null)
-				response.setInvoiceNumber(billPaymentsRecord.getInvoiceNumber());
-			if(billPaymentsRecord.getOperatorMessage() !=null)
-				response.setOperatorMessage(billPaymentsRecord.getOperatorMessage());
+			if(billPaymentsRecord.getOperatorcharges() !=null)
+				response.setCharges(sctl.getCalculatedcharge().add(billPaymentsRecord.getOperatorcharges()));
+			if(billPaymentsRecord.getInvoicenumber() !=null)
+				response.setInvoiceNumber(billPaymentsRecord.getInvoicenumber());
+			if(billPaymentsRecord.getOperatormessage() !=null)
+				response.setOperatorMessage(billPaymentsRecord.getOperatormessage());
 		}
 
 		return mceMessage;

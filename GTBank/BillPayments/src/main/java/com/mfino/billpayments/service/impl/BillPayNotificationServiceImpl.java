@@ -57,17 +57,17 @@ public class BillPayNotificationServiceImpl extends BillPaymentsBaseServiceImpl 
 			BackendResponse backendResponse = (BackendResponse)mceMessage.getResponse();
 			Partner partner = billerService.getPartner(backendResponse.getBillerCode());
 			if(partner!=null){
-				Set<MFSBillerPartner> billerPartners = partner.getMFSBillerPartnerFromPartnerID();
+				Set<MFSBillerPartner> billerPartners = partner.getMfsbillerPartnerMaps();
 				MFSBillerPartner billPartner = null;
 				for(MFSBillerPartner billerPartner: billerPartners){
-					if(backendResponse.getBillerCode().equals(billerPartner.getMFSBiller().getMFSBillerCode())){
+					if(backendResponse.getBillerCode().equals(billerPartner.getMfsBiller().getMfsbillercode())){
 						billPartner = billerPartner;
 						break;
 					}
 					
 				}
 				if(billPartner!=null){
-					Integer billerPartnerType = billPartner.getBillerPartnerType();
+					Integer billerPartnerType = billPartner.getBillerpartnertype().intValue();
 					
 					CMSMSNotification smsNotification = new CMSMSNotification();
 					NotificationWrapper notificationWrapper = new NotificationWrapper();

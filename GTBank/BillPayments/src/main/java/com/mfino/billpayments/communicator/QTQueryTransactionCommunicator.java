@@ -50,8 +50,8 @@ public class QTQueryTransactionCommunicator extends QuickTellerCommunicator {
 
 		if((null != integrationSummaryList) && (integrationSummaryList.size() > 0)){
 			IntegrationSummary iSummary = integrationSummaryList.iterator().next();
-			if(null != iSummary && null != iSummary.getReconcilationID1()){
-				requestReference = iSummary.getReconcilationID1();
+			if(null != iSummary && null != iSummary.getReconcilationid1()){
+				requestReference = iSummary.getReconcilationid1();
 			}
 			else{
 				requestReference = QTBillPayUtil.getRequestReference(getQuickTellerPrefix(), sctlId);
