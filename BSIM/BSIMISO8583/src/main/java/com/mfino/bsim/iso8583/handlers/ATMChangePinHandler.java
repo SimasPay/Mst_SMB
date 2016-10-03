@@ -16,11 +16,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -88,7 +88,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			Integer regResponse = CmFinoFIX.ResponseCode_Failure;
 			SubscriberValidator subscribervalidator = new SubscriberValidator(changePin.getSourceMDN());
 			Integer validationResult = subscribervalidator.validate();
-			SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
+			SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 				msg.set(39, GetConstantCodes.FAILURE);
@@ -110,25 +110,25 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			
 
 			// if status is either active,suspended or inactive (not absolute locked) in both subscriber and subscribermdn then only allow txn else fail it
-			if(!((subscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)) || 
-					(subscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_Suspend)) ||
-					(subscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized)) ||
-					(subscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_InActive)))){
+			if(!((subscriberMDN.getStatus()==(CmFinoFIX.SubscriberStatus_Active)) || 
+					(subscriberMDN.getStatus()==(CmFinoFIX.SubscriberStatus_Suspend)) ||
+					(subscriberMDN.getStatus()==(CmFinoFIX.SubscriberStatus_Initialized)) ||
+					(subscriberMDN.getStatus()==(CmFinoFIX.SubscriberStatus_InActive)))){
 				msg.set(39,GetConstantCodes.REJECT);
 				return CmFinoFIX.NotificationCode_MDNIsRestricted;
 			}
-			if(!((subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)) || 
-					(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Suspend)) ||
-					(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized)) ||
-					(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_InActive)))){
+			if(!((subscriber.getStatus()==(CmFinoFIX.SubscriberStatus_Active)) || 
+					(subscriber.getStatus()==(CmFinoFIX.SubscriberStatus_Suspend)) ||
+					(subscriber.getStatus()==(CmFinoFIX.SubscriberStatus_Initialized)) ||
+					(subscriber.getStatus()==(CmFinoFIX.SubscriberStatus_InActive)))){
 				msg.set(39,GetConstantCodes.REJECT);
 				return CmFinoFIX.NotificationCode_MDNIsRestricted;
 			}
-			TransactionsLog transactionsLog = null;
+			TransactionLog transactionsLog = null;
 			msg.set(39, GetConstantCodes.FAILURE);
 			log.info("Handling ChangePin atm request");
 			transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangePin,changePin.DumpFields());
-			changePin.setTransactionID(transactionsLog.getID());
+			changePin.setTransactionID(transactionsLog.getId().longValue());
 			Transaction transactionDetails = null;
 			ServiceCharge sc = new ServiceCharge();
 			sc.setSourceMDN(changePin.getSourceMDN());
@@ -138,7 +138,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CHANGEPIN);
 			sc.setTransactionAmount(BigDecimal.ZERO);
-			sc.setTransactionLogId(transactionsLog.getID());
+			sc.setTransactionLogId(transactionsLog.getId().longValue());
 			sc.setTransactionIdentifier(changePin.getTransactionIdentifier());
 			try{
 				transactionDetails =transactionChargingService.getCharge(sc);
@@ -181,37 +181,37 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 		    msg.set(39, GetConstantCodes.FAILURE); 
 		    return CmFinoFIX.NotificationCode_Failure; 
 	        } 
-			subscriberMDN.setDigestedPIN(calcPIN); 
+			subscriberMDN.setDigestedpin(calcPIN); 
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 			subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setActivationTime(new Timestamp());
-			subscriber.setActivationTime(new Timestamp());
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setActivationtime(new Timestamp());
+			subscriber.setActivationtime(new Timestamp());
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriber.setStatusTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
 			subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-			subscriberMDN.setOTP(null);
-			subscriberMDN.setOTPExpirationTime(null);
+			subscriberMDN.setOtp(null);
+			subscriberMDN.setOtpexpirationtime(null);
 			//since pin is changed set authtoken to null so that after next login it is updated
-			subscriberMDN.setAuthorizationToken(null);
+			subscriberMDN.setAuthorizationtoken(null);
 			subscriberService.saveSubscriber(subscriber);
 			subscriberMdnService.saveSubscriberMDN(subscriberMDN);
-			Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
-			if(!(bankPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))){
+			Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			if(!(bankPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))){
 				log.info("ATMChangePinHandler :: handle () Activating Bank Pocket");
-				bankPocket.setStatusTime(new Timestamp());
+				bankPocket.setStatustime(new Timestamp());
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				pocketService.save(bankPocket);
 			}
 			}
-			ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
+			ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
 			Notification  notification;
 			String notificationName = "";
 			if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
 				msg.set(39,GetConstantCodes.FAILURE);
 				notification = notificationService.getByNoticationCode(regResponse);
 				if(notification != null){
-					notificationName = notification.getCodeName();
+					notificationName = notification.getCodename();
 				}else{
 					log.error("Could not find the failure notification code: "+regResponse);
 				}
@@ -220,7 +220,7 @@ public class ATMChangePinHandler extends FIXMessageHandler implements IATMChange
 				msg.set(39,GetConstantCodes.SUCCESS);
 				if (sctl != null) {
 					regResponse=CmFinoFIX.NotificationCode_ChangePINCompleted;
-					sc.setSctlId(sctl.getID());
+					sc.setSctlId(sctl.getId().longValue());
 					//sctl.setCalculatedCharge(BigDecimal.ZERO);
 					transactionChargingService.confirmTheTransaction(sctl);
 				}

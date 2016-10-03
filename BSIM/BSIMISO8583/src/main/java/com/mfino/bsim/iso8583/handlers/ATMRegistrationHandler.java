@@ -22,12 +22,12 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -157,10 +157,10 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		subscriberRegistration.setChannelCode(cc);
 		subscriberRegistration.setSourceApplication(CmFinoFIX.SourceApplication_ATM);
 		subscriberRegistration.setPin(clearPIN);
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling subscriberRegistration atm request");
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
-		subscriberRegistration.setTransactionID(transactionsLog.getID());
+		subscriberRegistration.setTransactionID(transactionsLog.getId().longValue());
 		Transaction transactionDetails = null;
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberRegistration.getSourceMDN());
@@ -170,7 +170,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
 		try{
 			transactionDetails =transactionChargingService.getCharge(sc);
@@ -186,8 +186,8 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		Integer regResponse = null;
 		//new account number and new mdn
 		regResponse=createsubscriberWithActiveBankPocket(subscriberRegistration,sourceAccountNumber);
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getID());  
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getId().longValue());  
 		Notification  notification;
 		String notificationName = "";
 
@@ -195,7 +195,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			msg.set(39,GetConstantCodes.FAILURE);
 			notification = notificationService.getByNoticationCode(regResponse);
 			if(notification != null){
-				notificationName = notification.getCodeName();
+				notificationName = notification.getCodename();
 			}else{
 				log.error("Could not find the failure notification code: "+regResponse);
 			}
@@ -204,7 +204,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			msg.set(39,GetConstantCodes.SUCCESS);
 			if (sctl != null) {
 				regResponse=CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToAgent;
-				sc.setSctlId(sctl.getID());
+				sc.setSctlId(sctl.getId().longValue());
 				//sctl.setCalculatedCharge(BigDecimal.ZERO);
 				transactionChargingService.confirmTheTransaction(sctl);
 			}
@@ -217,7 +217,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 	private Integer createsubscriberWithActiveBankPocket(CMSubscriberRegistration subscriberRegistration,String accountNumber) throws ISOException {
 		log.info("ATMRegistrationHandler :: createsubscriberWithActiveBankPocket BEGINS");
 		Subscriber subscriber = new Subscriber();
-		SubscriberMDN subscriberMDN = new SubscriberMDN();
+		SubscriberMdn subscriberMDN = new SubscriberMdn();
 		Integer regResponse = registerSubscriber(subscriber, subscriberMDN, subscriberRegistration, null,null, null,accountNumber);
 		log.info("ATMRegistrationHandler :: createsubscriberWithActiveBankPocket ENDS :: regResponse = "+regResponse);
 		return regResponse;
@@ -225,90 +225,90 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	private Integer registerSubscriber(Subscriber subscriber,
-			SubscriberMDN subscriberMDN,
+			SubscriberMdn subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
 			String oneTimePin, Partner registeringPartner,String accountNumber) throws ISOException {
 		log.info("ATMRegistrationHandler :: registerSubscriber BEGINS");
-		SubscriberMDN existingSubscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
+		SubscriberMdn existingSubscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 		if (existingSubscriberMDN == null ) {
 			log.info("ATMRegistrationHandler :: registerSubscriber filling mandatory details");
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
 			String createdByName = null;
 			createdByName = subscriberRegistration.getFirstName();
-			subscriber.setFirstName(subscriberRegistration.getFirstName());
-			subscriber.setLastName(subscriberRegistration.getLastName());
-			subscriber.setDateOfBirth(subscriberRegistration.getDateOfBirth());
+			subscriber.setFirstname(subscriberRegistration.getFirstName());
+			subscriber.setLastname(subscriberRegistration.getLastName());
+			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
 			String mothersMaidenName = "MothersMaidenName";
-			subscriber.setSecurityQuestion(mothersMaidenName);
+			subscriber.setSecurityquestion(mothersMaidenName);
 			if (subscriberRegistration.getMothersMaidenName() != null) {
-				subscriber.setSecurityAnswer(subscriberRegistration
+				subscriber.setSecurityanswer(subscriberRegistration
 						.getMothersMaidenName());
 			}
-			subscriber.setDetailsRequired(CmFinoFIX.Boolean_True);
-			subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_ATM);
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM.longValue());
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriber.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
-			subscriber.setStatusTime(new Timestamp());
-			subscriber.setCreatedBy(createdByName);
-			subscriber.setUpdatedBy(createdByName);
-			subscriber.setCreateTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
+			subscriber.setCreatedby(createdByName);
+			subscriber.setUpdatedby(createdByName);
+			subscriber.setCreatetime(new Timestamp());
 			KYCLevel kycLevel = kycLevelService.getByKycLevel(ConfigurationUtil
 					.getIntialKyclevel());
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
+			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroup().getID();
+				groupID = subscriberGroup.getGroupid();
 			}
 			Long kycLevelNo = null;
-			if(null != subscriber.getUpgradableKYCLevel())
+			if(null != subscriber.getUpgradablekyclevel())
 			{
-				kycLevelNo = subscriber.getUpgradableKYCLevel();
+				kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
 			}
 			else
 			{
-				kycLevelNo = subscriber.getKYCLevelByKYCLevel().getKYCLevel();
+				kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 			}
-			if (!kycLevel.getKYCLevel().equals(
+			if (!kycLevel.getKyclevel().equals(
 					subscriberRegistration.getKYCLevel())) {
 				kycLevel = kycLevelService.getByKycLevel(subscriberRegistration.getKYCLevel());
 				if (kycLevel == null) {
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
-				subscriber.setUpgradableKYCLevel(subscriberRegistration
-						.getKYCLevel());
-				subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
+				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration
+						.getKYCLevel()));
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
 			} else {
-				subscriber.setUpgradeState(CmFinoFIX.UpgradeState_none);
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
 			}
-			subscriber.setAppliedBy(createdByName);
-			subscriber.setAppliedTime(new Timestamp());
-			subscriber.setDetailsRequired(true);
+			subscriber.setAppliedby(createdByName);
+			subscriber.setAppliedtime(new Timestamp());
+			subscriber.setDetailsrequired(true);
 			subscriberMDN.setSubscriber(subscriber);
-			subscriberMDN.setMDN(subscriberRegistration.getMDN());
-			subscriberMDN.setApplicationID(subscriberRegistration
+			subscriberMDN.setMdn(subscriberRegistration.getMDN());
+			subscriberMDN.setApplicationid(subscriberRegistration
 					.getApplicationID());
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriberMDN.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriberMDN.setStatusTime(new Timestamp());
-			subscriberMDN.setCreatedBy(createdByName);
-			subscriberMDN.setCreateTime(new Timestamp());
-			subscriberMDN.setUpdatedBy(createdByName);
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setCreatedby(createdByName);
+			subscriberMDN.setCreatetime(new Timestamp());
+			subscriberMDN.setUpdatedby(createdByName);
 			//moved code begins
 			PocketTemplate bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Subscriber, null, 1L);
 			if(bankPocketTemplate == null)
@@ -320,7 +320,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			log.info("ATMRegistrationHandler :: registerSubscriber creating  bank pocket");
 			String calcPIN = null; 
 			try{ 
-				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMDN(), subscriberRegistration.getPin()); 
+				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), subscriberRegistration.getPin()); 
 				log.info("ATMRegistrationHanlder :: handle calcPIN = " + calcPIN);
 			} catch(Exception e) 
 			{ 
@@ -328,30 +328,30 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				msg.set(39, GetConstantCodes.FAILURE); 
 				return CmFinoFIX.ResponseCode_Failure; 
 			} 
-			subscriberMDN.setDigestedPIN(calcPIN);
+			subscriberMDN.setDigestedpin(calcPIN);
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
 			KYCLevel kyclevel = null;
-			kyclevel = kycLevelService.getByKycLevel(subscriber.getUpgradableKYCLevel());
+			kyclevel = kycLevelService.getByKycLevel(subscriber.getUpgradablekyclevel().longValue());
 			Timestamp timeStamp = new Timestamp();
-			subscriber.setKYCLevelByKYCLevel(kyclevel);
-			subscriber.setUpgradableKYCLevel(null);
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-			subscriber.setApproveOrRejectComment(MessageText._("Upgrade N Approved by System"));
-			subscriber.setApprovedOrRejectedBy("System");
-			subscriber.setApproveOrRejectTime(timeStamp);
-			subscriber.setActivationTime(timeStamp);
-			subscriber.setFirstName("Simobicustomer");
-			subscriber.setLastName("Simobicustomer");
-			subscriberMDN.setActivationTime(timeStamp);
-			log.info("ATMRegistrationHandler :: registerSubscriber saving subscriber record with MDN "+subscriberMDN.getMDN());
+			subscriber.setKycLevel(kyclevel);
+			subscriber.setUpgradablekyclevel(null);
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+			subscriber.setApproveorrejectcomment(MessageText._("Upgrade N Approved by System"));
+			subscriber.setApprovedorrejectedby("System");
+			subscriber.setApproveorrejecttime(timeStamp);
+			subscriber.setActivationtime(timeStamp);
+			subscriber.setFirstname("Simobicustomer");
+			subscriber.setLastname("Simobicustomer");
+			subscriberMDN.setActivationtime(timeStamp);
+			log.info("ATMRegistrationHandler :: registerSubscriber saving subscriber record with MDN "+subscriberMDN.getMdn());
 			subscriber.setTimezone(CmFinoFIX.Timezone_West_Indonesia_Time);
 			subscriberService.saveSubscriber(subscriber);
 			subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 			if(subscriberGroups == null || subscriberGroups.isEmpty()){
 				SubscriberGroup subGroup = new SubscriberGroup(); 
 				if(null!=groupService.getById(1L)){
-					subGroup.setSubscriber(subscriber);
+					subGroup.setSubscriberid(subscriber.getId().longValue());
 					subGroup.setGroup(groupService.getById(1L)); 
 					subGroupService.save(subGroup); 
 				}
@@ -365,19 +365,19 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	private void fillSubscriberMandatoryFields(Subscriber subscriber) {
-		if (subscriber.getmFinoServiceProviderByMSPID() == null) {;
-			subscriber.setmFinoServiceProviderByMSPID(mFinoServiceProviderService.getMFSPbyID(1));
+		if (subscriber.getMfinoServiceProvider() == null) {;
+			subscriber.setMfinoServiceProvider(mFinoServiceProviderService.getMFSPbyID(1));
 		}
-		if (subscriber.getLanguage() == null) {
+		if (Long.valueOf(subscriber.getLanguage()) == null) {
 			subscriber.setLanguage(CmFinoFIX.Language_English);
 		}
 		if (subscriber.getCurrency() == null) {
 			subscriber.setCurrency(systemParametersService.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 		}
-		if (subscriber.getRestrictions() == null) {
+		if (Long.valueOf(subscriber.getRestrictions()) == null) {
 			subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if (subscriber.getType() == null) {
+		if (Long.valueOf(subscriber.getType()) == null) {
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 		}
 		if (subscriber.getCompany() == null) {
@@ -388,16 +388,16 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	private void fillSubscriberMDNMandatoryFields(
-			SubscriberMDN subscriberMDN) {
-		if (subscriberMDN.getAuthenticationPhrase() == null) {
-			subscriberMDN.setAuthenticationPhrase("mFino");
+			SubscriberMdn subscriberMDN) {
+		if (subscriberMDN.getAuthenticationphrase() == null) {
+			subscriberMDN.setAuthenticationphrase("mFino");
 		}
-		if (subscriberMDN.getRestrictions() == null) {
+		if (Long.valueOf(subscriberMDN.getRestrictions())== null) {
 			subscriberMDN
 			.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if (subscriberMDN.getWrongPINCount() == null) {
-			subscriberMDN.setWrongPINCount(0);
+		if (Long.valueOf(subscriberMDN.getWrongpincount()) == null) {
+			subscriberMDN.setWrongpincount(0);
 		}
 	}
 

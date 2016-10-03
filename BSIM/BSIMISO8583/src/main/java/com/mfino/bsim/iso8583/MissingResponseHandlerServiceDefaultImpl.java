@@ -80,7 +80,7 @@ public class MissingResponseHandlerServiceDefaultImpl {
 			if(ibtList!=null && !ibtList.isEmpty())
 			{
 				//Only there should be one record for a given sctld
-				reversalFixMsg.setDestBankCode(ibtList.get(0).getDestBankCode());
+				reversalFixMsg.setDestBankCode(ibtList.get(0).getDestbankcode());
 			}
 						
 			mesg.setResponse(reversalFixMsg);

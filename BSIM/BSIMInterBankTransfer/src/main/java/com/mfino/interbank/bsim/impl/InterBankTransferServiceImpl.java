@@ -120,10 +120,10 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 					ChargeType chargeType = txnCharge.getChargeType();
 					String chargeTypeName = chargeType.getName();
 					if(chargeTypeName.equalsIgnoreCase("charge")){
-						serviceCharge = tcl.getCalculatedCharge();
+						serviceCharge = tcl.getCalculatedcharge();
 					}
 					if(chargeTypeName.equalsIgnoreCase("tax")){
-						tax = tcl.getCalculatedCharge();
+						tax = tcl.getCalculatedcharge();
 					}				
 				}
 			}
@@ -181,18 +181,18 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			inquiryResponse = (BackendResponse) bankService.onTransferInquiryFromBank(interBankTransferInquiryToBank,interbankTransferInquiryFromBank);
 			if (CmFinoFIX.ISO8583_ResponseCode_Success.equals(interbankTransferInquiryFromBank.getResponseCode())) {
 				// updating the destination account name in interbank transfer table
-				ibt.setDestAccountName(inquiryResponse.getDestinationUserName());
+				ibt.setDestaccountname(inquiryResponse.getDestinationUserName());
 				interbankService.updateIBT(ibt);
 			} 
 			else {
-				ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
+				ibt.setIbtstatus(CmFinoFIX.IBTStatus_FAILED.longValue());
 			}
 		} catch(Exception e){
 			log.error(e.getMessage());
 			inquiryResponse = new BackendResponse();
 			((BackendResponse) inquiryResponse).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) inquiryResponse).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
-			ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
+			ibt.setIbtstatus(CmFinoFIX.IBTStatus_FAILED.longValue());
 		}
 		interbankService.updateIBT(ibt);
 		 //processingCode = interbankTransferInquiryFromBank.getProcessingCode();
@@ -204,7 +204,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		//interbankService.updateIBT(ibt);
 		
 		if(null != ibt){
-			InterBankCode interBankCode = interbankService.getBankCode(ibt.getDestBankCode());
+			InterBankCode interBankCode = interbankService.getBankCode(ibt.getDestbankcode());
 			if(null != interBankCode){
 				inquiryResponse.setBankName(interBankCode.getBankName());
 			}
@@ -223,16 +223,16 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		
 		CMInterBankFundsTransfer interBankFundsTransfer = (CMInterBankFundsTransfer)mceMessage.getRequest();
 		PendingCommodityTransfer pct = getPCT(interBankFundsTransfer.getTransferID());
-		IntegrationSummary iSummary = getIntegrationSummary(interBankFundsTransfer.getServiceChargeTransactionLogID(),pct.getID());
+		IntegrationSummary iSummary = getIntegrationSummary(interBankFundsTransfer.getServiceChargeTransactionLogID(),pct.getId().longValue());
 		
 		InterbankTransfer ibt = interbankService.getIBT(interBankFundsTransfer.getServiceChargeTransactionLogID());
 		// update the IBT status to processing
-		ibt.setIBTStatus(CmFinoFIX.IBTStatus_PROCESSING);
-		ibt.setSourceAccountName(pct.getSourceSubscriberName());
+		ibt.setIbtstatus(CmFinoFIX.IBTStatus_PROCESSING.longValue());
+		ibt.setSourceaccountname(pct.getSourcesubscribername());
 		interbankService.updateIBT(ibt);
 		
-		interBankFundsTransfer.setDestMDN(pct.getDestMDN());
-		interBankFundsTransfer.setDestPocketID(pct.getDestPocketID());
+		interBankFundsTransfer.setDestMDN(pct.getDestmdn());
+		interBankFundsTransfer.setDestPocketID(pct.getDestpocketid().longValue());
 		
 		CFIXMsg cnfResponse;
 		try {
@@ -264,10 +264,10 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
 					TransactionChargeLog tcl = it.next();
 					if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
-						serviceCharge = tcl.getCalculatedCharge();
+						serviceCharge = tcl.getCalculatedcharge();
 					}
 					if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
-						tax = tcl.getCalculatedCharge();
+						tax = tcl.getCalculatedcharge();
 					}				
 				}
 			}
@@ -285,9 +285,9 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			response.setSourcePocketID(confirmResponse.getSourcePocketID());
 			response.setDestPocketID(confirmResponse.getDestPocketID());
 			response.setPin(confirmResponse.getPin());
-		    response.setDestAccountName(iSummary.getReconcilationID2());
+		    response.setDestAccountName(iSummary.getReconcilationid2());
 			response.setSourceCardPAN(confirmResponse.getSourceCardPAN());
-			response.setDestCardPAN(ibt.getDestAccountNumber());
+			response.setDestCardPAN(ibt.getDestaccountnumber());
 			response.setLanguage(confirmResponse.getLanguage());
 			response.setTransferID(confirmResponse.getTransferID());
 			response.setTransactionID(confirmResponse.getTransactionID());
@@ -299,11 +299,11 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			response.setSourceBankAccountType(confirmResponse.getSourceBankAccountType());
 			response.setDestinationBankAccountType(confirmResponse.getDestinationBankAccountType());
 			response.setServiceChargeTransactionLogID(confirmResponse.getServiceChargeTransactionLogID());
-			response.setProcessingCode(iSummary.getReconcilationID1());
-			StringBuffer sb = new StringBuffer(iSummary.getReconcilationID2());
-			sb = sb.replace(46, 76, StringUtilities.rightPadWithCharacter(pct.getSourceSubscriberName(), 30, " "));
+			response.setProcessingCode(iSummary.getReconcilationid1());
+			StringBuffer sb = new StringBuffer(iSummary.getReconcilationid2());
+			sb = sb.replace(46, 76, StringUtilities.rightPadWithCharacter(pct.getSourcesubscribername(), 30, " "));
 	        response.setAdditionalInfo(sb.toString());
-	        response.setDestBankCode(ibt.getDestBankCode());
+	        response.setDestBankCode(ibt.getDestbankcode());
 			mceMessage.setRequest(interBankFundsTransfer);
 			mceMessage.setDestinationQueue(sourceToDestQueue);
 			mceMessage.setResponse(response);		
@@ -327,10 +327,10 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		try {
 		response = bankService.onTransferConfirmationFromBank(interBankFundsTransferToBank,interBankFundsTransferFromBank);
 		if (CmFinoFIX.ISO8583_ResponseCode_Success.equals(interBankFundsTransferFromBank.getResponseCode())) {
-			ibt.setIBTStatus(CmFinoFIX.IBTStatus_COMPLETED);
+			ibt.setIbtstatus(CmFinoFIX.IBTStatus_COMPLETED.longValue());
 		}
 		else {
-			ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
+			ibt.setIbtstatus(CmFinoFIX.IBTStatus_FAILED.longValue());
 		}
 		} catch(Exception e){
 			log.error(e.getMessage());
@@ -338,14 +338,14 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			((BackendResponse) response).copy(interBankFundsTransferToBank);
 			((BackendResponse) response).setResult(CmFinoFIX.ResponseCode_Failure);
 			((BackendResponse) response).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
-			ibt.setIBTStatus(CmFinoFIX.IBTStatus_FAILED);
+			ibt.setIbtstatus(CmFinoFIX.IBTStatus_FAILED.longValue());
 		}
 		//Updating the IBT status after processing the bank response code.
 		interbankService.updateIBT(ibt);
 		CFIXMsg request = (CMMoneyTransferFromBank)interBankFundsTransferFromBank;
 		
 		((BackendResponse)response).setDestinationType("Account");
-		((BackendResponse)response).setReceiverMDN(ibt.getDestAccountNumber());
+		((BackendResponse)response).setReceiverMDN(ibt.getDestaccountnumber());
 		
 		mceMessage.setRequest(request);
 		mceMessage.setResponse(response);
@@ -372,12 +372,12 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		IntegrationSummary iSummary = null;
 		if((null != iSummaryList)&&(iSummaryList.size() > 0)){
 			iSummary = iSummaryList.get(0);
-			iSummary.setReconcilationID2(de39);
+			iSummary.setReconcilationid2(de39);
 		}
 		else{
 			iSummary = new IntegrationSummary();
-			iSummary.setSctlId(sctlId);
-			iSummary.setReconcilationID2(de39);
+			iSummary.setSctlid(new BigDecimal(sctlId));
+			iSummary.setReconcilationid2(de39);
 		}
 
 		integrationSummaryDao.save(iSummary);

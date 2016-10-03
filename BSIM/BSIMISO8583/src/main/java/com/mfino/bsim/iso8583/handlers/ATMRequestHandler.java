@@ -24,7 +24,7 @@ import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetSubscriberDetailsFromBank;
@@ -95,13 +95,13 @@ public class ATMRequestHandler extends FIXMessageHandler {
 		}
 		String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));
 		String accountNumber=msg.getString("102");
-		SubscriberMDN subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
-		SubscriberMDN subMDNByAccountNumber = null;
+		SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
+		SubscriberMdn subMDNByAccountNumber = null;
 		PocketQuery query = new PocketQuery();
 		query.setCardPan(accountNumber);
 		List<Pocket> pocketList = pocketService.get(query);
 		if (!pocketList.isEmpty()) {
-			subMDNByAccountNumber = pocketList.get(0).getSubscriberMDNByMDNID();
+			subMDNByAccountNumber = pocketList.get(0).getSubscriberMdn();
 		}
 		if(null==subMDNByMDN && null==subMDNByAccountNumber){
 			//new mdn and new account number
@@ -183,17 +183,17 @@ public class ATMRequestHandler extends FIXMessageHandler {
 			toBank.setSourceCardPAN(msg.getString("2"));
 			toBank.setApplicationID(msg.getString("48").substring(3,23));
 			toBank.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
-			SubscriberMDN subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
+			SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
 			Subscriber subscriber = subMDNByMDN.getSubscriber();
-			if("Simobicustomer".equalsIgnoreCase(subscriber.getFirstName()))
+			if("Simobicustomer".equalsIgnoreCase(subscriber.getFirstname()))
 			{
 				CFIXMsg responseMessage = super.process(toBank);
 				if(null!=responseMessage && responseMessage instanceof CMGetSubscriberDetailsFromBank){
 					CMGetSubscriberDetailsFromBank fromBank = (CMGetSubscriberDetailsFromBank) responseMessage;
 					log.info("ATMRequestHandler :: Response Success "+ fromBank.getResponseCode());
 					if(fromBank.getResponseCode().equals(CmFinoFIX.ISO8583_ResponseCode_Success)) {
-						subscriber.setFirstName(fromBank.getFirstName());
-						subscriber.setLastName(fromBank.getLastName());
+						subscriber.setFirstname(fromBank.getFirstName());
+						subscriber.setLastname(fromBank.getLastName());
 						subscriber.setEmail(fromBank.getEmail());	
 						subscriberService.saveSubscriber(subscriber);
 					}
