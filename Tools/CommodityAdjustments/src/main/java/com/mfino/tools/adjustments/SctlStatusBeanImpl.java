@@ -5,8 +5,6 @@ import java.util.List;
 import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +16,11 @@ import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.AutoReversals;
 import com.mfino.domain.BillPayments;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
-import com.mfino.service.TransactionChargingService;
 import com.mfino.service.impl.TransactionChargingServiceImpl;
 
 public class SctlStatusBeanImpl implements SctlStatusBean {
@@ -55,7 +52,7 @@ public class SctlStatusBeanImpl implements SctlStatusBean {
 			return msg;
 		}
 
-		ServiceChargeTransactionLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO()
+		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO()
 		        .getById(be.getServiceChargeTransactionLogID());
 		/*if(!CmFinoFIX.SCTLStatus_Failed.equals(sctl.getStatus()))
 		{
@@ -69,36 +66,36 @@ public class SctlStatusBeanImpl implements SctlStatusBean {
 		{
 			//Update AutoReversal Status, BillPay Status, TransferToUnregistered Status
 			AutoReversalsDao autoReversalDAO = DAOFactory.getInstance().getAutoReversalsDao();
-			AutoReversals autoReversal = autoReversalDAO.getBySctlId(sctl.getID());
+			AutoReversals autoReversal = autoReversalDAO.getBySctlId(sctl.getId().longValue());
 			if(autoReversal!=null)
 			{
-				log.info("ManualAdjustment: autoreversal status is set to complete for sctl: "+sctl.getID()+ " original status is: "+autoReversal.getAutoRevStatus());
-				autoReversal.setAutoRevStatus(CmFinoFIX.AutoRevStatus_COMPLETED);
+				log.info("ManualAdjustment: autoreversal status is set to complete for sctl: "+sctl.getId()+ " original status is: "+autoReversal.getAutorevstatus());
+				autoReversal.setAutorevstatus(CmFinoFIX.AutoRevStatus_COMPLETED);
 				autoReversalDAO.save(autoReversal);
 			}
 			
 			BillPaymentsDAO billPayDAO = DAOFactory.getInstance().getBillPaymentDAO();
 			BillPaymentsQuery billpayQuery = new BillPaymentsQuery();
-			billpayQuery.setSctlID(sctl.getID());
+			billpayQuery.setSctlID(sctl.getId().longValue());
 			
 			List<BillPayments> billPayments = billPayDAO.get(billpayQuery);
 			if(!billPayments.isEmpty())
 			{
 				BillPayments billpayment = billPayments.get(0);
-				log.info("ManualAdjustment: BillPayment status is set to complete for sctl: "+sctl.getID()+ " original status is: "+billpayment.getBillPayStatus());
-				billpayment.setBillPayStatus(CmFinoFIX.BillPayStatus_COMPLETED);
+				log.info("ManualAdjustment: BillPayment status is set to complete for sctl: "+sctl.getId()+ " original status is: "+billpayment.getBillpaystatus());
+				billpayment.setBillpaystatus(Long.valueOf(CmFinoFIX.BillPayStatus_COMPLETED));
 				billPayDAO.save(billpayment);
 			}
 			
 			UnRegisteredTxnInfoDAO unRegTxnInfoDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
 			UnRegisteredTxnInfoQuery infoQuery = new UnRegisteredTxnInfoQuery();
-			infoQuery.setTransferSctlId(sctl.getID());
+			infoQuery.setTransferSctlId(sctl.getId().longValue());
 			List<UnregisteredTxnInfo> txns = unRegTxnInfoDAO.get(infoQuery);
 			if(!txns.isEmpty())
 			{
 				UnregisteredTxnInfo unRegTxnInfo = txns.get(0);
-				log.info("ManualAdjustment: UnRegisteredTxnInfo status is set to complete for sctl: "+sctl.getID()+ " original status is: "+unRegTxnInfo.getUnRegisteredTxnStatus());
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED);
+				log.info("ManualAdjustment: UnRegisteredTxnInfo status is set to complete for sctl: "+sctl.getId()+ " original status is: "+unRegTxnInfo.getUnregisteredtxnstatus());
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED));
 				unRegTxnInfoDAO.save(unRegTxnInfo);
 			}
 		}

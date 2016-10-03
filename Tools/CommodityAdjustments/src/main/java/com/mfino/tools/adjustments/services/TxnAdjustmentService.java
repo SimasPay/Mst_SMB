@@ -1,5 +1,6 @@
 package com.mfino.tools.adjustments.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +20,19 @@ import com.mfino.domain.Ledger;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 
 public class TxnAdjustmentService {
 
 	private static Logger	       log	= LoggerFactory.getLogger(TxnAdjustmentService.class);
 	
-	public List<Ledger> getStaleLedgerEntries(ServiceChargeTransactionLog sctl)
+	public List<Ledger> getStaleLedgerEntries(ServiceChargeTxnLog sctl)
 	{
 		List<Ledger> ledgers = new ArrayList<Ledger>();
 		if(sctl!=null)
 		{
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(sctl.getID());
+			query.setSctlID(sctl.getId().longValue());
 			
 			ChargeTxnCommodityTransferMapDAO ctmapDAO = DAOFactory.getInstance().getTxnTransferMap();
 			List<ChargeTxnCommodityTransferMap> txnTransferMapList = ctmapDAO.get(query);
@@ -39,11 +40,11 @@ public class TxnAdjustmentService {
 			LedgerDAO ledgerDAO = DAOFactory.getInstance().getLedgerDAO();
 			List<Ledger> ctLedgers = new ArrayList<Ledger>();
 			Long ctID = null;
-			log.info("Getting ledger for SCTL:"+sctl.getID());
+			log.info("Getting ledger for SCTL:"+sctl.getId());
 			
 			for(ChargeTxnCommodityTransferMap txnMap : txnTransferMapList)
 			{
-				ctID = txnMap.getCommodityTransferID();
+				ctID = txnMap.getCommoditytransferid().longValue();
 				log.info("Getting ledger for CT:"+ctID);
 				
 				CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
@@ -53,9 +54,9 @@ public class TxnAdjustmentService {
 				Long srcPocketID = null;
 				if(ct!=null)
 				{
-					Pocket srcPocket = ct.getPocketBySourcePocketID();
-					srcPocketID = srcPocket.getID();
-					destPocketID = ct.getDestPocketID();
+					Pocket srcPocket = ct.getPocket();
+					srcPocketID = srcPocket.getId().longValue();
+					destPocketID = ct.getDestpocketid().longValue();
 				}
 				else
 				{
@@ -64,9 +65,9 @@ public class TxnAdjustmentService {
 					if(pct!=null)
 					{
 						log.warn("CT is in pending");
-						Pocket srcPocket = pct.getPocketBySourcePocketID();
-						srcPocketID = srcPocket.getID();
-						destPocketID = pct.getDestPocketID();
+						Pocket srcPocket = pct.getPocket();
+						srcPocketID = srcPocket.getId().longValue();
+						destPocketID = pct.getDestpocketid().longValue();
 					}
 					
 				}
@@ -88,8 +89,8 @@ public class TxnAdjustmentService {
 					}
 					for(Ledger ledger: ctLedgers)
 					{
-						log.info("CT: "+ctID+" ledger: "+ledger.getID()+" sourcePocket: "+ledger.getSourcePocketID()+
-								" destPocketId: "+ledger.getDestPocketID()+ " amount: "+ledger.getAmount());
+						log.info("CT: "+ctID+" ledger: "+ledger.getId()+" sourcePocket: "+ledger.getSourcepocketid()+
+								" destPocketId: "+ledger.getDestpocketid()+ " amount: "+ledger.getAmount());
 								
 					}
 				}
@@ -99,13 +100,13 @@ public class TxnAdjustmentService {
 		return ledgers;
 	}
 	
-	public List<Ledger> getAllLedgerEntries(ServiceChargeTransactionLog sctl)
+	public List<Ledger> getAllLedgerEntries(ServiceChargeTxnLog sctl)
 	{
 		List<Ledger> ledgers = new ArrayList<Ledger>();
 		if(sctl!=null)
 		{
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(sctl.getID());
+			query.setSctlID(sctl.getId().longValue());
 			
 			ChargeTxnCommodityTransferMapDAO ctmapDAO = DAOFactory.getInstance().getTxnTransferMap();
 			List<ChargeTxnCommodityTransferMap> txnTransferMapList = ctmapDAO.get(query);
@@ -113,11 +114,11 @@ public class TxnAdjustmentService {
 			LedgerDAO ledgerDAO = DAOFactory.getInstance().getLedgerDAO();
 			List<Ledger> ctLedgers = new ArrayList<Ledger>();
 			Long ctID = null;
-			log.info("Getting ledger for SCTL:"+sctl.getID());
+			log.info("Getting ledger for SCTL:"+sctl.getId());
 			
 			for(ChargeTxnCommodityTransferMap txnMap : txnTransferMapList)
 			{
-				ctID = txnMap.getCommodityTransferID();
+				ctID = txnMap.getCommoditytransferid().longValue();
 				log.info("Getting ledger for CT:"+ctID);
 				
 				CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
@@ -127,9 +128,9 @@ public class TxnAdjustmentService {
 				Long srcPocketID = null;
 				if(ct!=null)
 				{
-					Pocket srcPocket = ct.getPocketBySourcePocketID();
-					srcPocketID = srcPocket.getID();
-					destPocketID = ct.getDestPocketID();
+					Pocket srcPocket = ct.getPocket();
+					srcPocketID = srcPocket.getId().longValue();
+					destPocketID = ct.getDestpocketid().longValue();
 				}
 				else
 				{
@@ -138,9 +139,9 @@ public class TxnAdjustmentService {
 					if(pct!=null)
 					{
 						log.warn("CT is in pending");
-						Pocket srcPocket = pct.getPocketBySourcePocketID();
-						srcPocketID = srcPocket.getID();
-						destPocketID = pct.getDestPocketID();
+						Pocket srcPocket = pct.getPocket();
+						srcPocketID = srcPocket.getId().longValue();
+						destPocketID = pct.getDestpocketid().longValue();
 					}
 					
 				}
@@ -162,8 +163,8 @@ public class TxnAdjustmentService {
 					}
 					for(Ledger ledger: ctLedgers)
 					{
-						log.info("CT: "+ctID+" ledger: "+ledger.getID()+" sourcePocket: "+ledger.getSourcePocketID()+
-								" destPocketId: "+ledger.getDestPocketID()+ " amount: "+ledger.getAmount());
+						log.info("CT: "+ctID+" ledger: "+ledger.getId()+" sourcePocket: "+ledger.getSourcepocketid()+
+								" destPocketId: "+ledger.getDestpocketid()+ " amount: "+ledger.getAmount());
 						ledgers.add(ledger);
 								
 					}
@@ -184,7 +185,7 @@ public class TxnAdjustmentService {
 			{
 				PocketTemplate pocketTemplate = pocket.getPocketTemplate();
 
-				return pocketTemplate.getIsSuspencePocket();
+				return pocketTemplate.getIssuspencepocket();
 			}
 		}
 		return false;

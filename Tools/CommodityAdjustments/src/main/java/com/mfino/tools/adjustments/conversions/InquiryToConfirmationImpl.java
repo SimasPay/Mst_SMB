@@ -11,8 +11,8 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.TransactionsLogDAO;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
 import com.mfino.fix.CmFinoFIX.CMBase;
@@ -46,8 +46,8 @@ public class InquiryToConfirmationImpl implements InquiryToConfirmation {
 		confirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		confirm.setTransferID(response.getTransferID());
 		confirm.setConfirmed(true);
-		confirm.setSourceApplication(cc.getChannelSourceApplication());
-		confirm.setChannelCode(cc.getChannelCode());
+		confirm.setSourceApplication((int)cc.getChannelsourceapplication());
+		confirm.setChannelCode(cc.getChannelcode());
 		confirm.setParentTransactionID(response.getParentTransactionID());
 		confirm.setIsSystemIntiatedTransaction(true);
 		confirm.setServiceChargeTransactionLogID(response.getServiceChargeTransactionLogID());
@@ -55,10 +55,10 @@ public class InquiryToConfirmationImpl implements InquiryToConfirmation {
 		confirm.setDestPocketID(response.getDestPocketId());
 		confirm.setServiceChargeTransactionLogID(response.getServiceChargeTransactionLogID());
 		
-		TransactionsLog tlog = saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation, confirm.DumpFields(),
+		TransactionLog tlog = saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation, confirm.DumpFields(),
 		        confirm.getParentTransactionID());
-		confirm.setTransactionID(tlog.getID());
-		confirm.setMSPID(tlog.getmFinoServiceProviderByMSPID().getID());
+		confirm.setTransactionID(tlog.getId().longValue());
+		confirm.setMSPID(tlog.getMfinoServiceProvider().getId().longValue());
 
 		MCEMessage mce = new MCEMessage();
 		mce.setRequest(confirm);
@@ -74,16 +74,16 @@ public class InquiryToConfirmationImpl implements InquiryToConfirmation {
 		this.channel = channel;
 	}
 
-	protected TransactionsLog saveTransactionsLog(Integer messageCode, String data, Long parentTxnID) {
+	protected TransactionLog saveTransactionsLog(Integer messageCode, String data, Long parentTxnID) {
 		TransactionsLogDAO transactionsLogDAO = DAOFactory.getInstance().getTransactionsLogDAO();
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
 		MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-		mFinoServiceProvider msp = mspDao.getById(1);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
-		transactionsLog.setParentTransactionID(parentTxnID);
+		MfinoServiceProvider msp = mspDao.getById(1);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
+		transactionsLog.setParenttransactionid(parentTxnID);
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 	}

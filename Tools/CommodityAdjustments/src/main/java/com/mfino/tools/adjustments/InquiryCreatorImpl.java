@@ -24,10 +24,10 @@ import com.mfino.dao.query.LedgerQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Ledger;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.fix.CmFinoFIX.CMTransactionAdjustments;
@@ -124,7 +124,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 		}
 
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		ServiceChargeTransactionLog sctl = sctlDAO.getById(refId);
+		ServiceChargeTxnLog sctl = sctlDAO.getById(refId);
 		if(sctl==null)
 		{
 			String error = "Cannot find Transaction with ref id:"+refId;
@@ -169,7 +169,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 				Ledger staleLedger = null;
 				for(Ledger ledger: ledgers)
 				{
-					if(ledger.getDestPocketID().equals(srcPocketID))
+					if(ledger.getDestpocketid().equals(srcPocketID))
 					{
 						staleLedger = ledger;
 						break;
@@ -178,7 +178,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 
 				if(staleLedger!=null)
 				{
-					log.info("StaleLedger found is Src: "+staleLedger.getSourcePocketID()+" Dest:"+staleLedger.getDestPocketID()+
+					log.info("StaleLedger found is Src: "+staleLedger.getSourcepocketid()+" Dest:"+staleLedger.getDestpocketid()+
 							" Amount:"+staleLedger.getAmount());
 					boolean isUpdateSuccess = updateLedgerOpeningBalance(staleLedger, srcPocketID);
 					if(isUpdateSuccess)
@@ -270,7 +270,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 			Ledger staleLedger = null;
 			for(Ledger ledger: ledgers)
 			{
-				if(ledger.getDestPocketID().equals(destPocketID) && ledger.getSourcePocketID().equals(srcPocketID))
+				if(ledger.getDestpocketid().equals(destPocketID) && ledger.getSourcepocketid().equals(srcPocketID))
 				{
 					staleLedger = ledger;
 					break;
@@ -292,8 +292,8 @@ public class InquiryCreatorImpl implements InquiryCreator {
 				if(type==11)
 				{
 					updatePocketBalance(pocketID, amount);
-					BigDecimal updatedBalance = staleLedger.getSourcePocketBalance().add(amount);
-					staleLedger.setSourcePocketBalance(updatedBalance);
+					BigDecimal updatedBalance = new BigDecimal(staleLedger.getSourcepocketbalance()).add(amount);
+					staleLedger.setSourcepocketbalance(String.valueOf(updatedBalance));
 				}
 				else if(type==12)
 				{
@@ -348,8 +348,8 @@ public class InquiryCreatorImpl implements InquiryCreator {
 		}
 		
 		CommodityTransfer ct=null;
-		if(sctl.getCommodityTransferID()!=null){
-			ct = DAOFactory.getInstance().getCommodityTransferDAO().getById(sctl.getCommodityTransferID());
+		if(sctl.getCommoditytransferid()!=null){
+			ct = DAOFactory.getInstance().getCommodityTransferDAO().getById(sctl.getCommoditytransferid().longValue());
 		}
 		
 		if(ct!=null){
@@ -375,8 +375,8 @@ public class InquiryCreatorImpl implements InquiryCreator {
 		CMBankAccountToBankAccount msg = new CMBankAccountToBankAccount();
 		msg.m_pHeader.setSendingTime(DateTimeUtil.getLocalTime());
 		msg.m_pHeader.setMsgSeqNum(UniqueNumberGen.getNextNum());
-		msg.setSourceApplication(cc.getChannelSourceApplication());
-		msg.setChannelCode(cc.getChannelCode());
+		msg.setSourceApplication((int)cc.getChannelsourceapplication());
+		msg.setChannelCode(cc.getChannelcode());
 		msg.setIsSystemIntiatedTransaction(true);
 		msg.setPin("1234");
 		msg.setServletPath(CmFinoFIX.ServletPath_Subscribers);
@@ -387,15 +387,15 @@ public class InquiryCreatorImpl implements InquiryCreator {
 
 		//ServiceChargeTransactionLog sctl = createSctl(srcPocketID, destPocketID, cc, amount);
 
-		TransactionsLog tlog = saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, msg.DumpFields());
-		msg.setTransactionID(tlog.getID());
+		TransactionLog tlog = saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, msg.DumpFields());
+		msg.setTransactionID(tlog.getId().longValue());
 		/*sctl.setTransactionID(tlog.getID());*/
 
 		//Long sctlID = tcs.saveServiceTransactionLog(sctl);
 
 		msg.setServiceChargeTransactionLogID(refId);
-		String sourceMdn = DAOFactory.getInstance().getPocketDAO().getById(srcPocketID).getSubscriberMDNByMDNID().getMDN();
-		String destMdn = DAOFactory.getInstance().getPocketDAO().getById(destPocketID).getSubscriberMDNByMDNID().getMDN();
+		String sourceMdn = DAOFactory.getInstance().getPocketDAO().getById(srcPocketID).getSubscriberMdn().getMdn();
+		String destMdn = DAOFactory.getInstance().getPocketDAO().getById(destPocketID).getSubscriberMdn().getMdn();
 		msg.setDestMDN(destMdn);
 		msg.setSourceMDN(sourceMdn);
 
@@ -410,22 +410,22 @@ public class InquiryCreatorImpl implements InquiryCreator {
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		Pocket srcPocket = pocketDAO.getById(srcPocketID);
 
-		BigDecimal currBalance = srcPocket.getCurrentBalance();
+		BigDecimal currBalance = new BigDecimal(srcPocket.getCurrentbalance());
 		BigDecimal updatedBalance = currBalance.add(amount);
 
-		srcPocket.setCurrentBalance(updatedBalance);
+		srcPocket.setCurrentbalance(updatedBalance.toPlainString());
 		pocketDAO.save(srcPocket);
 	}
 	
-	private TransactionsLog saveTransactionsLog(Integer messageCode, String data) {
+	private TransactionLog saveTransactionsLog(Integer messageCode, String data) {
 		TransactionsLogDAO transactionsLogDAO = DAOFactory.getInstance().getTransactionsLogDAO();
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
 		MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-		mFinoServiceProvider msp = mspDao.getById(1);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		MfinoServiceProvider msp = mspDao.getById(1);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 	}
@@ -434,7 +434,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 	private boolean updateLedgers(Ledger staleLedger, Long pocketId, BigDecimal amount)
 	{
 		LedgerQuery query = new LedgerQuery();
-		query.setCreateTimeGE(staleLedger.getCreateTime());
+		query.setCreateTimeGE(staleLedger.getCreatetime());
 		query.setSourceDestnPocketID(pocketId);
 		query.setSortString(CmFinoFIX.CRLedger.FieldName_RecordID+QueryConstants.COLUMN_ORDER_DELIMITER+QueryConstants.ASC_STRING);
 		
@@ -443,18 +443,18 @@ public class InquiryCreatorImpl implements InquiryCreator {
 
 		for(Ledger ledger: pocketLedgers)
 		{
-			if((ledger.getID().compareTo(staleLedger.getID())==0) ||
-					ledger.getCreateTime().after(staleLedger.getLastUpdateTime()))
+			if((ledger.getId().compareTo(staleLedger.getId())==0) ||
+					ledger.getCreatetime().after(staleLedger.getLastupdatetime()))
 			{
 				continue;
 			}
-			if(ledger.getSourcePocketID().equals(pocketId))
+			if(ledger.getSourcepocketid().equals(pocketId))
 			{
-				ledger.setSourcePocketBalance(ledger.getSourcePocketBalance().add(amount));
+				ledger.setSourcepocketbalance(String.valueOf(new BigDecimal(ledger.getSourcepocketbalance()).add(amount)));
 			}
-			else if (ledger.getDestPocketID().equals(pocketId))
+			else if (ledger.getDestpocketid().equals(pocketId))
 			{
-				ledger.setDestPocketBalance(ledger.getDestPocketBalance().add(amount));
+				ledger.setDestpocketbalance(String.valueOf(new BigDecimal(ledger.getDestpocketbalance()).add(amount)));
 			}
 		}
 		try
@@ -477,7 +477,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 	private boolean updateLedgerOpeningBalance(Ledger staleLedger, Long pocketId)
 	{
 		LedgerQuery query = new LedgerQuery();
-		query.setCreateTimeGE(staleLedger.getCreateTime());
+		query.setCreateTimeGE(staleLedger.getCreatetime());
 		query.setLimit(5);
 		query.setStart(1);
 		query.setSortString(CmFinoFIX.CRLedger.FieldName_RecordID+QueryConstants.COLUMN_ORDER_DELIMITER+QueryConstants.ASC_STRING);
@@ -486,7 +486,7 @@ public class InquiryCreatorImpl implements InquiryCreator {
 		List<Ledger> afterLedgers = ledgerDAO.get(query);
 
 		LedgerQuery beforeQuery = new LedgerQuery();
-		beforeQuery.setCreateTimeLT(staleLedger.getCreateTime());
+		beforeQuery.setCreateTimeLT(staleLedger.getCreatetime());
 		beforeQuery.setLimit(5);
 		beforeQuery.setStart(0);
 		beforeQuery.setSortString(CmFinoFIX.CRLedger.FieldName_RecordID+QueryConstants.COLUMN_ORDER_DELIMITER+QueryConstants.DESC_STRING);
@@ -501,37 +501,37 @@ public class InquiryCreatorImpl implements InquiryCreator {
 			return false;
 		}
 
-		log.info("Ascending Ledger: "+ascending.getSourcePocketID()+" "+ascending.getSourcePocketBalance()+
-				" "+ascending.getDestPocketID()+ " "+ascending.getDestPocketBalance()+" "+ascending.getAmount());
-		log.info("Descending Ledger: "+descending.getSourcePocketID()+" "+descending.getSourcePocketBalance()+
-				" "+descending.getDestPocketID()+ " "+descending.getDestPocketBalance()+" "+descending.getAmount());
+		log.info("Ascending Ledger: "+ascending.getSourcepocketid()+" "+ascending.getSourcepocketbalance()+
+				" "+ascending.getDestpocketid()+ " "+ascending.getDestpocketbalance()+" "+ascending.getAmount());
+		log.info("Descending Ledger: "+descending.getSourcepocketid()+" "+descending.getSourcepocketbalance()+
+				" "+descending.getDestpocketid()+ " "+descending.getDestpocketbalance()+" "+descending.getAmount());
 		
 		BigDecimal ascendingBalance = BigDecimal.ZERO;
 		BigDecimal descendingBalance = BigDecimal.ZERO;
 
-		if(ascending.getSourcePocketID().equals(pocketId))
+		if(ascending.getSourcepocketid().equals(pocketId))
 		{
-			ascendingBalance = ascending.getSourcePocketBalance();
+			ascendingBalance = new BigDecimal(ascending.getSourcepocketbalance());
 		}
 		else
 		{
-			ascendingBalance = ascending.getDestPocketBalance();
+			ascendingBalance = new BigDecimal(ascending.getDestpocketbalance());
 		}
 
-		if(descending.getSourcePocketID().equals(pocketId))
+		if(descending.getSourcepocketid().equals(pocketId))
 		{
-			descendingBalance = descending.getSourcePocketBalance();
+			descendingBalance =new BigDecimal( descending.getSourcepocketbalance());
 			descendingBalance = descendingBalance.subtract(descending.getAmount());
 		}
 		else
 		{
-			descendingBalance = descending.getDestPocketBalance();
+			descendingBalance = new BigDecimal(descending.getDestpocketbalance());
 			descendingBalance = descendingBalance.add(descending.getAmount());
 		}
 
 		if(ascendingBalance.compareTo(descendingBalance)==0)
 		{
-			staleLedger.setDestPocketBalance(ascendingBalance);
+			staleLedger.setDestpocketbalance(String.valueOf(ascendingBalance));
 			return true;
 		}
 		return false;
@@ -558,46 +558,46 @@ public class InquiryCreatorImpl implements InquiryCreator {
 			if(isAscending)
 			{
 				//closing balance of ledger should be compared to opening balance of ledgerToCompare
-				if(ledger.getSourcePocketID().equals(pocketID))
+				if(ledger.getSourcepocketid().equals(pocketID))
 				{
-					ledgerBalance = ledger.getSourcePocketBalance();
+					ledgerBalance = new BigDecimal(ledger.getSourcepocketbalance());
 					ledgerBalance = ledgerBalance.subtract(ledger.getAmount());
 				}
 				else
 				{
-					ledgerBalance = ledger.getDestPocketBalance();
+					ledgerBalance =new BigDecimal( ledger.getDestpocketbalance());
 					ledgerBalance = ledgerBalance.add(ledger.getAmount());
 				}
 
-				if(ledgerToCompare.getSourcePocketID().equals(pocketID))
+				if(ledgerToCompare.getSourcepocketid().equals(pocketID))
 				{
-					compareBalance = ledgerToCompare.getSourcePocketBalance();
+					compareBalance =new BigDecimal( ledgerToCompare.getSourcepocketbalance());
 				}
 				else
 				{
-					compareBalance = ledgerToCompare.getDestPocketBalance();
+					compareBalance = new BigDecimal(ledgerToCompare.getDestpocketbalance());
 				}
 			}
 			else
 			{
 				//opening balance of ledger should be compared to closing balance of ledgerToCompare
-				if(ledger.getSourcePocketID().equals(pocketID))
+				if(ledger.getSourcepocketid().equals(pocketID))
 				{
-					ledgerBalance = ledger.getSourcePocketBalance();
+					ledgerBalance = new BigDecimal(ledger.getSourcepocketbalance());
 				}
 				else
 				{
-					ledgerBalance = ledger.getDestPocketBalance();
+					ledgerBalance = new BigDecimal(ledger.getDestpocketbalance());
 				}
 
-				if(ledgerToCompare.getSourcePocketID().equals(pocketID))
+				if(ledgerToCompare.getSourcepocketid().equals(pocketID))
 				{
-					compareBalance = ledgerToCompare.getSourcePocketBalance();
+					compareBalance = new BigDecimal(ledgerToCompare.getSourcepocketbalance());
 					compareBalance  = compareBalance.subtract(ledgerToCompare.getAmount());
 				}
 				else
 				{
-					compareBalance = ledgerToCompare.getDestPocketBalance();
+					compareBalance = new BigDecimal(ledgerToCompare.getDestpocketbalance());
 					compareBalance = compareBalance.add(ledgerToCompare.getAmount());
 				}
 			}

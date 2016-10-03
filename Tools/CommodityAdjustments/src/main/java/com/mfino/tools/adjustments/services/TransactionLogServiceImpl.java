@@ -5,8 +5,8 @@ import java.util.Date;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.TransactionsLogDAO;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.hibernate.Timestamp;
@@ -16,16 +16,16 @@ import com.mfino.mce.core.util.MessageTypes;
 public class TransactionLogServiceImpl implements TransactionLogService {
 
 	@Override
-	public TransactionsLog createTransactionLog(CFIXMsg fix) {
+	public TransactionLog createTransactionLog(CFIXMsg fix) {
 
 		TransactionsLogDAO transactionsLogDAO = DAOFactory.getInstance().getTransactionsLogDAO();
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(MessageTypes.getMessageCode((CMBase) fix));
-		transactionsLog.setMessageData(fix.DumpFields());
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(MessageTypes.getMessageCode((CMBase) fix));
+		transactionsLog.setMessagedata(fix.DumpFields());
 		MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-		mFinoServiceProvider msp = mspDao.getById(1);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		MfinoServiceProvider msp = mspDao.getById(1);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 

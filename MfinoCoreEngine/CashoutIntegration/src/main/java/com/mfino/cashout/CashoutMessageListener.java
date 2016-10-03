@@ -70,10 +70,10 @@ public class CashoutMessageListener implements Processor {
 		// Save the Request Data sent from Interswitch
 		BillPaymentsDAO bpDAO = DAOFactory.getInstance().getBillPaymentDAO();
 		BillPayments bp = new BillPayments();
-		bp.setSourceMDN(thirdPartyCashOut.getSourceMDN());
+		bp.setSourcemdn(thirdPartyCashOut.getSourceMDN());
 		bp.setAmount(thirdPartyCashOut.getAmount());
-		bp.setINTxnId(thirdPartyCashOut.getTxnReferenceId());
-		bp.setOriginalINTxnId(thirdPartyCashOut.getOriginalTxnReferenceId());
+		bp.setIntxnid(thirdPartyCashOut.getTxnReferenceId());
+		bp.setOriginalintxnid(thirdPartyCashOut.getOriginalTxnReferenceId());
 		bp.setInfo1(thirdPartyCashOut.getOneTimePassCode());
 		bp.setInfo2(thirdPartyCashOut.getCATerminalId());
 		bpDAO.save(bp);
@@ -92,7 +92,7 @@ public class CashoutMessageListener implements Processor {
 			List<BillPayments> billPayments = bpDAO.get(bpQuery);
 			if (CollectionUtils.isNotEmpty(billPayments)) {
 				bp = billPayments.get(0);
-				thirdPartyCashOut.setSourceMDN(bp.getSourceMDN());
+				thirdPartyCashOut.setSourceMDN(bp.getSourcemdn());
 				thirdPartyCashOut.setOneTimePassCode(bp.getInfo1());
 			}
 			thirdPartyCashOut.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_REVERSE_FROM_ATM);
