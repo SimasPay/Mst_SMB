@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankTellerCashIn;
@@ -23,7 +23,7 @@ public class TellerEmoneyTransferServiceImpl implements TellerEmoneyTransferServ
 
 	@Override
 	public CFIXMsg generateCashInInquiry(TellerBackendResponse response) {
-		ServiceChargeTransactionLog sctl = coreDataWrapper.getSCTLById(response.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = coreDataWrapper.getSCTLById(response.getServiceChargeTransactionLogID());
 		CMBankTellerCashIn cashIn = new CMBankTellerCashIn();
 		
 		cashIn.m_pHeader.setMsgSeqNum(UniqueNumberGen.getNextNum());
@@ -31,17 +31,17 @@ public class TellerEmoneyTransferServiceImpl implements TellerEmoneyTransferServ
 		cashIn.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
 		cashIn.setSourceApplication(response.getSourceApplication());
         cashIn.setSourceMDN(response.getSourceMDN());
-        cashIn.setDestMDN(sctl.getDestMDN());
-        cashIn.setAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
+        cashIn.setDestMDN(sctl.getDestmdn());
+        cashIn.setAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
         cashIn.setServiceChargeTransactionLogID(response.getServiceChargeTransactionLogID());
-        cashIn.setCharges(sctl.getCalculatedCharge());
+        cashIn.setCharges(sctl.getCalculatedcharge());
         cashIn.setPin(response.getPin());
         cashIn.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CASHIN_EMONEYTOEMONEY);
         cashIn.setServletPath(CmFinoFIX.ServletPath_BankAccount);
-        cashIn.setTransactionID(sctl.getTransactionID());
+        cashIn.setTransactionID(sctl.getTransactionid().longValue());
         cashIn.setSourcePocketID(response.getDestPocketID());
         cashIn.setDestPocketID(response.getEndDestPocketID()); 
-        cashIn.setServiceChargeTransactionLogID(sctl.getID());
+        cashIn.setServiceChargeTransactionLogID(sctl.getId().longValue());
         cashIn.setIsInDirectCashIn(false);
         cashIn.setUICategory(CmFinoFIX.TransactionUICategory_Teller_Cashin_Subscriber);
 		return cashIn;
@@ -52,18 +52,18 @@ public class TellerEmoneyTransferServiceImpl implements TellerEmoneyTransferServ
 		CMBankTellerCashInConfirm cashInConfirm = new CMBankTellerCashInConfirm();
 		cashInConfirm.m_pHeader.setMsgSeqNum(UniqueNumberGen.getNextNum());
 		cashInConfirm.header().setSendingTime(DateTimeUtil.getLocalTime());
-		ServiceChargeTransactionLog sctl = coreDataWrapper.getSCTLById(response.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = coreDataWrapper.getSCTLById(response.getServiceChargeTransactionLogID());
 		cashInConfirm.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
 		cashInConfirm.setSourceApplication(response.getSourceApplication());
 		cashInConfirm.setSourceMDN(response.getSourceMDN());
-		cashInConfirm.setDestMDN(sctl.getDestMDN());
+		cashInConfirm.setDestMDN(sctl.getDestmdn());
 		cashInConfirm.setPin(response.getPin());
 		cashInConfirm.setServletPath(CmFinoFIX.ServletPath_BankAccount);
 		cashInConfirm.setTransactionID(response.getTransactionID());
 		cashInConfirm.setTransferID(response.getTransferID());
 		cashInConfirm.setSourcePocketID(response.getSourcePocketID());
 		cashInConfirm.setDestPocketID(response.getDestPocketID()); 
-		cashInConfirm.setServiceChargeTransactionLogID(sctl.getID());
+		cashInConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashInConfirm.setIsInDirectCashIn(false);
 		cashInConfirm.setConfirmed(CmFinoFIX.Boolean_True);
         return cashInConfirm;

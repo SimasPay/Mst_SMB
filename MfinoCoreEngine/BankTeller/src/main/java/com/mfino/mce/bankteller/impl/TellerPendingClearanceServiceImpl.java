@@ -1,5 +1,6 @@
 package com.mfino.mce.bankteller.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -26,7 +27,6 @@ import com.mfino.mce.bankteller.TellerPendingClearanceService;
 import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.result.Result;
 import com.mfino.service.TransactionChargingService;
-import com.mfino.service.impl.TransactionChargingServiceImpl;
 import com.mfino.transactionapi.handlers.money.impl.AutoReverseHandlerImpl;
 import com.mfino.transactionapi.vo.TransactionDetails;
 
@@ -67,7 +67,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 		returnFix.copy(fixPendingRequest);
 		
 		Long sctlID = fixPendingRequest.getTransferID();
-		ServiceChargeTransactionLog sctl = coreDataWrapper.getSCTLById(sctlID);
+		ServiceChargeTxnLog sctl = coreDataWrapper.getSCTLById(sctlID);
 		
 		if(sctl==null||!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus())){
 			//Should not reach here as this request is only sent if the record is in PendingCommodityTransfer table.
@@ -87,21 +87,21 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
 				PendingCommodityTransfer pct = null;
 				CommodityTransfer ct = null;
-				pct = coreDataWrapper.getPCTById(ctxn.getCommodityTransferID());
-				ct = coreDataWrapper.getCommodityTransferDao().getById(ctxn.getCommodityTransferID());
+				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
+				ct = coreDataWrapper.getCommodityTransferDao().getById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCSRAction(fixPendingRequest.getCSRAction());
-					pct.setCSRActionTime(new Timestamp());
-					pct.setCSRComment(fixPendingRequest.getCSRComment());
-					pct.setCSRUserID(fixPendingRequest.getCSRUserID());
-					pct.setCSRUserName(fixPendingRequest.getCSRUserName());
+					pct.setCsraction(fixPendingRequest.getCSRAction().longValue());
+					pct.setCsractiontime(new Timestamp());
+					pct.setCsrcomment(fixPendingRequest.getCSRComment());
+					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)tellerBankService.onRevertOfTransferConfirmation(pct, true);
-					if(sctl.getCommodityTransferID()==null){
-						transactionChargingService.addTransferID(sctl, pct.getID());
+					if(sctl.getCommoditytransferid()==null){
+						transactionChargingService.addTransferID(sctl, pct.getId().longValue());
 					}	
-					uicatageory= pct.getUICategory();
+					uicatageory= pct.getUicategory().intValue();
 				}
-				if(ct!=null&&ct.getTransferStatus().equals(CmFinoFIX.TransferStatus_Completed)){
+				if(ct!=null&&ct.getTransferstatus()==(CmFinoFIX.TransferStatus_Completed)){
 					//FIXME revert transaction
 				}
 			}
@@ -109,7 +109,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 			if(CmFinoFIX.TransactionUICategory_Teller_Cashout_TransferToBank.equals(uicatageory)){
 
 				TransactionDetails transactionDetails = new TransactionDetails();
-				transactionDetails.setSctlId(sctl.getID());
+				transactionDetails.setSctlId(sctl.getId().longValue());
 				transactionDetails.setChargeReverseAlso(true);
 				
 				AutoReverseHandlerImpl autoReverseHandler= new AutoReverseHandlerImpl();
@@ -135,22 +135,22 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 			PendingCommodityTransfer pct = null;
 			Integer uicatageory =0;
 			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
-				pct = coreDataWrapper.getPCTById(ctxn.getCommodityTransferID());
+				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCSRAction(fixPendingRequest.getCSRAction());
-					pct.setCSRActionTime(new Timestamp());
-					pct.setCSRComment(fixPendingRequest.getCSRComment());
-					pct.setCSRUserID(fixPendingRequest.getCSRUserID());
-					pct.setCSRUserName(fixPendingRequest.getCSRUserName());
+					pct.setCsraction(fixPendingRequest.getCSRAction().longValue());
+					pct.setCsractiontime(new Timestamp());
+					pct.setCsrcomment(fixPendingRequest.getCSRComment());
+					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)tellerBankService.onResolveCompleteOfTransfer(pct);
-					uicatageory = pct.getUICategory();
+					uicatageory = pct.getUicategory().intValue();
 //					only one pending transaction exists for resolve as complete transactions 
 					break;
 				}
 			}
 			
-			if(sctl.getCommodityTransferID()==null&&pct!=null){
-				transactionChargingService.addTransferID(sctl, pct.getID());
+			if(sctl.getCommoditytransferid()==null&&pct!=null){
+				transactionChargingService.addTransferID(sctl, pct.getId().longValue());
 			}
 			
 			if(CmFinoFIX.TransactionUICategory_Teller_Cashout_TransferToBank.equals(uicatageory)){
@@ -175,8 +175,8 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 		this.tellerBankService = tellerBankService;
 	}
 	
-	private void handleTellerEMoneyClearancePendingResolve(ServiceChargeTransactionLog tellerClearanceSctl, Integer csrAction){
-		log.debug("TellerPendingClearanceServiceImpl :: handleTellerEMoneyClearancePendingResolve BEGIN sctlId="+tellerClearanceSctl.getID()+", csrAction="+csrAction);
+	private void handleTellerEMoneyClearancePendingResolve(ServiceChargeTxnLog tellerClearanceSctl, Integer csrAction){
+		log.debug("TellerPendingClearanceServiceImpl :: handleTellerEMoneyClearancePendingResolve BEGIN sctlId="+tellerClearanceSctl.getId()+", csrAction="+csrAction);
 		
 		ServiceChargeTransactionLogDAO sctlDao = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		TransactionTypeDAO transactionTypeDao = DAOFactory.getInstance().getTransactionTypeDAO();
@@ -184,15 +184,15 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 //		TransactionType cashOutTxnType = transactionTypeDao.getTransactionTypeByName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT);
 //		TransactionType cashOutUnRegTxnType = transactionTypeDao.getTransactionTypeByName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_UNREGISTERED);
 		
-		List<ServiceChargeTransactionLog> childSctlList = sctlDao.getByParentSctlId(tellerClearanceSctl.getID());
+		List<ServiceChargeTxnLog> childSctlList = sctlDao.getByParentSctlId(tellerClearanceSctl.getId().longValue());
 		
 		log.debug("TellerPendingClearanceServiceImpl :: handleTellerEmoneyClearancePendingResolve");
 		
 		if((childSctlList != null) && (childSctlList.size() > 0)){
 			if(CmFinoFIX.CSRAction_Complete.equals(csrAction)){
 				transactionChargingService.confirmTheTransaction(tellerClearanceSctl);
-				for(ServiceChargeTransactionLog sctl: childSctlList){
-					if(cashInTxnType.getID().equals(sctl.getTransactionTypeID())){
+				for(ServiceChargeTxnLog sctl: childSctlList){
+					if(cashInTxnType.getId().equals(sctl.getTransactiontypeid())){
 						transactionChargingService.failTheTransaction(sctl, "TellerPendingClearance-FAIL");
 					}
 					else{
@@ -202,7 +202,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 			}
 			else{
 				transactionChargingService.failTheTransaction(tellerClearanceSctl, "TellerPendingClearance-Failed");
-				for(ServiceChargeTransactionLog sctl: childSctlList){
+				for(ServiceChargeTxnLog sctl: childSctlList){
 					transactionChargingService.changeStatusToPendingResolved(sctl);
 				}
 			}

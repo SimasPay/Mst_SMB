@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankTellerCashIn;
@@ -86,11 +86,11 @@ public class TellerBankServiceImpl extends BankServiceDefaultImpl implements Tel
 		}
 		if (returnFix instanceof BackendResponse) {
 			if(toBank.getIsInDirectCashIn()){
-				ServiceChargeTransactionLog sctl = coreDataWrapper.getSCTLById(toBank.getServiceChargeTransactionLogID());
-				((BackendResponse) returnFix).setAmount(sctl.getTransactionAmount());
-				((BackendResponse) returnFix).setCharges(toBank.getAmount().subtract(sctl.getTransactionAmount()));
-				((BackendResponse) returnFix).setReceiverMDN(sctl.getDestMDN());				
-				((BackendResponse) returnFix).setServiceChargeTransactionLogID(sctl.getID());
+				ServiceChargeTxnLog sctl = coreDataWrapper.getSCTLById(toBank.getServiceChargeTransactionLogID());
+				((BackendResponse) returnFix).setAmount(sctl.getTransactionamount());
+				((BackendResponse) returnFix).setCharges(toBank.getAmount().subtract(sctl.getTransactionamount()));
+				((BackendResponse) returnFix).setReceiverMDN(sctl.getDestmdn());				
+				((BackendResponse) returnFix).setServiceChargeTransactionLogID(sctl.getId().longValue());
 			}
 			if (((BackendResponse) returnFix).getInternalErrorCode().equals(NotificationCodes.BankAccountToBankAccountConfirmationPrompt.getInternalErrorCode())) {
 			
