@@ -60,7 +60,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 
 			for (CMJSUsers.CGEntries entry : entries) {
 				User userObj = userDAO.getById(entry.getID());
-				log.info("User:"+userObj.getID()+" details edit requested by:"+getLoggedUserNameWithIP());
+				log.info("User:"+userObj.getId()+" details edit requested by:"+getLoggedUserNameWithIP());
 				// Check for Stale Data
 				if (!entry.getRecordVersion().equals(userObj.getVersion())) {
 					handleStaleDataException();
@@ -70,19 +70,19 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 					error.setErrorDescription(MessageText._("You are not allowed to edit your details"));
-					log.warn("User:"+userObj.getID()+" not allowed to edit self details");
+					log.warn("User:"+userObj.getId()+" not allowed to edit self details");
 					return error;
 				}
 				if(entry.getRole()!= null){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-					if(userService.isSystemUser(entry.getRole()) && !userService.isSystemUser(userObj.getRole())){
+					if(userService.isSystemUser(entry.getRole()) && !userService.isSystemUser(userObj.getRole().intValue())){
 						error.setErrorDescription(MessageText._("Role cannot be updated to system type from non-system type"));
-						log.warn("User:"+userObj.getID()+" role cannot be updated to system type from non-system type");
+						log.warn("User:"+userObj.getId()+" role cannot be updated to system type from non-system type");
 					return error;
-					} else if(!userService.isSystemUser(entry.getRole()) && userService.isSystemUser(userObj.getRole())){
+					} else if(!userService.isSystemUser(entry.getRole()) && userService.isSystemUser(userObj.getRole().intValue())){
 						error.setErrorDescription(MessageText._("Role cannot be updated to non-system type from system type"));
-						log.warn("User:"+userObj.getID()+" role cannot be updated to non-system type from system type");
+						log.warn("User:"+userObj.getId()+" role cannot be updated to non-system type from system type");
 						return error;
 					}					
 				}
@@ -94,14 +94,14 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				// CHeck if the restrictions are edited or not.
 				if (entry.isRemoteModifiedUserRestrictions()) {
 					userObj.setRestrictions(newRestrictions);
-					log.info("User:"+userObj.getID()+" restrictions:"+newRestrictions+" updated by:"+getLoggedUserNameWithIP());
+					log.info("User:"+userObj.getId()+" restrictions:"+newRestrictions+" updated by:"+getLoggedUserNameWithIP());
 				}
 
 				if (entry.isRemoteModifiedRole()) {					
 					Integer newRole = entry.getRole();
 					if (newRole != null) {
-						userObj.setRole(newRole);
-						log.info("User:"+userObj.getID()+" role:"+newRole+" updated by:"+getLoggedUserNameWithIP());
+						userObj.setRole(newRole.longValue());
+						log.info("User:"+userObj.getId()+" role:"+newRole+" updated by:"+getLoggedUserNameWithIP());
 					}
 				}
 
@@ -110,7 +110,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 					if ((null != entry.getIsCreditCardUserModified() && entry.getIsCreditCardUserModified())) {
 						//Confirmation Code
 						String confirmationCode = UUID.nameUUIDFromBytes((userObj.getUsername()+new Date()).getBytes()).toString();
-						userObj.setConfirmationCode(confirmationCode);
+						userObj.setConfirmationcode(confirmationCode);
 						updateEntity(userObj, entry);
 					} else {
 						updateEntity(userObj, entry);
@@ -118,7 +118,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				}
 				userDAO.save(userObj);
 				updateMessage(userObj, entry);
-				log.info("User:"+userObj.getID()+" details edit completed by:"+getLoggedUserNameWithIP());
+				log.info("User:"+userObj.getId()+" details edit completed by:"+getLoggedUserNameWithIP());
 			}
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);
 			realMsg.settotal(entries.length);
@@ -130,7 +130,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			RoleDAO roleDao = DAOFactory.getInstance().getRoleDAO();
 			Role role = roleDao.getById(currentUser.getRole());
 			
-			query.setPriorityLevel(role.getPriorityLevel());
+			query.setPriorityLevel(role.getPrioritylevel().intValue());
 			query.setStart(realMsg.getstart());
 			query.setLimit(realMsg.getlimit());
 			query.setFirstNameLike(realMsg.getFirstNameSearch());
@@ -194,7 +194,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			for (int i = 0; i < results.size(); i++) {
 				User u = results.get(i);
 				CMJSUsers.CGEntries entry = new CMJSUsers.CGEntries();
-				log.info("Returing user:"+u.getID()+" details requested by:"+getLoggedUserNameWithIP());
+				log.info("Returing user:"+u.getId()+" details requested by:"+getLoggedUserNameWithIP());
 				updateMessage(u, entry);
 				realMsg.getEntries()[i] = entry;
 			}
@@ -232,7 +232,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				User u = new User();
 				if (userService.getUserCompany() != null) {
 					Company company = userService.getUserCompany();
-					e.setCompanyID(company.getID());
+					e.setCompanyID(company.getId().longValue());
 				} else {
 					CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 					errorMsg.setErrorDescription(String
@@ -253,14 +253,14 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				// send mail
 				String emailMsg =
 					String.format(
-							"Dear %s %s,\n\tYour username is %s \n\tYour pwd is %s" + ".\n You can login : " + ConfigurationUtil.getAppURL() + " \n" + ConfigurationUtil.getAdditionalMsg() + "\n" + ConfigurationUtil.getEmailSignature(), u.getFirstName(),
-							u.getLastName(), u.getUsername(), password);
+							"Dear %s %s,\n\tYour username is %s \n\tYour pwd is %s" + ".\n You can login : " + ConfigurationUtil.getAppURL() + " \n" + ConfigurationUtil.getAdditionalMsg() + "\n" + ConfigurationUtil.getEmailSignature(), u.getFirstname(),
+							u.getLastname(), u.getUsername(), password);
 				String emailSubject = ConfigurationUtil.getUserInsertSubject();
 
 				updateMessage(u, e);
 
 				String email=u.getEmail();
-				String name=u.getFirstName();
+				String name=u.getFirstname();
 				log.info("sending mail to user "+ u.getUsername());
 				mailService.asyncSendEmail(email, name, emailSubject, emailMsg);
 				log.info("Completed Insert User data for"+e.getUsername()+" requested by:"+getLoggedUserNameWithIP());
@@ -294,13 +294,13 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			User u = new User();
 			u.setPassword(e.getPassword());
 			if(e.getFirstTimeLogin() != null)
-				u.setFirstTimeLogin(e.getFirstTimeLogin());
+				u.setFirsttimelogin((short) Boolean.compare(e.getFirstTimeLogin(), false));
 
 			updateEntity(u, e);
 
 			//Confirmation Code
 			String confirmationCode = UUID.nameUUIDFromBytes((u.getUsername()+new Date()).getBytes()).toString();
-			u.setConfirmationCode(confirmationCode);
+			u.setConfirmationcode(confirmationCode);
 			userDAO.save(u);
 
 			updateMessage(u, e);
@@ -314,7 +314,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 	}
 
 	private void updateEntity(User user, CGEntries e) {
-		String ID = String.valueOf(user.getID());
+		String ID = String.valueOf(user.getId());
 		if(ID==null){
 			ID = e.getUsername();
 		}
@@ -327,7 +327,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		if(e.getCompanyID()!=null){
 			Company company = DAOFactory.getInstance().getCompanyDAO().getById(e.getCompanyID());
 			if(company!=user.getCompany()){
-				log.info("User:"+ID+" company updated to:"+company.getID()+" by:"+getLoggedUserNameWithIP());
+				log.info("User:"+ID+" company updated to:"+company.getId()+" by:"+getLoggedUserNameWithIP());
 			}
 			user.setCompany(company);
 		}
@@ -354,51 +354,55 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			if(!role.equals(user.getRole())){
 				log.info("User:"+ID+" role updated to:"+role+" by:"+getLoggedUserNameWithIP());
 			}
-			user.setRole(role);
+			user.setRole(role.longValue());
 		}
 		
 		Long branchcodeID = e.getBranchCodeID();
 
 		if (branchcodeID != null) {
 			
-			user.setBranchCodeID(branchcodeID);
+			user.setBranchcodeid(branchcodeID);
 		}
 
+		Long tempUsrRoleL = user.getRole();
+		Integer tempUsrRoleLI = tempUsrRoleL.intValue();
+		
 		if (e.getFirstName() != null) {
-			if(user.getRole()==CmFinoFIX.Role_Subscriber){
-				if(user.getFirstName()!= null){
-					user.setOldFirstName(user.getFirstName());
+			
+			if(tempUsrRoleLI==CmFinoFIX.Role_Subscriber){
+				if(user.getFirstname()!= null){
+					user.setOldfirstname(user.getFirstname());
 				}
 				else{
-					user.setOldFirstName(e.getFirstName());
+					user.setOldfirstname(e.getFirstName());
 				}
 			}
-			if(!e.getFirstName().equals(user.getFirstName())){
+			if(!e.getFirstName().equals(user.getFirstname())){
         		log.info("User:"+ID+" firstname updated to:"+e.getFirstName()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setFirstName(e.getFirstName());
+			user.setFirstname(e.getFirstName());
 		}
 
 		if (e.getLastName() != null) {
-			if(user.getRole()==CmFinoFIX.Role_Subscriber){
-				if(user.getLastName()!= null){
-					user.setOldLastName(user.getLastName());
+			if(tempUsrRoleLI==CmFinoFIX.Role_Subscriber){
+				if(user.getLastname()!= null){
+					user.setLastname(user.getLastname());
 				}
 				else{
-					user.setOldLastName(e.getLastName());
+					user.setLastname(e.getLastName());
 				}
 			}
-			if(!e.getLastName().equals(user.getLastName())){
+			if(!e.getLastName().equals(user.getLastname())){
         		log.info("User:"+ID+" Lastname updated to:"+e.getLastName()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setLastName(e.getLastName());
+			user.setLastname(e.getLastName());
 		}
 
 		if (e.getCreatedBy() != null) {
-			if(!e.getCreatedBy().equals(user.getCreatedBy())){
+			if(!e.getCreatedBy().equals(user.getCreatedby())){
         		log.info("User:"+ID+" createdBy updated to:"+e.getCreatedBy()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setCreatedBy(e.getCreatedBy());
+			user.setCreatedby(e.getCreatedBy());
 		}
 
 		if (e.getLanguage() != null) {
@@ -420,66 +424,66 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
         		log.info("User:"+ID+" status updated to:"+e.getUserStatus()+" by:"+getLoggedUserNameWithIP());
         	}
 			user.setStatus(e.getUserStatus());
-			user.setStatusTime(new Timestamp());
+			user.setStatustime(new Timestamp());
 			if(CmFinoFIX.UserStatus_Active.equals(e.getUserStatus()))
 			{
 				// this holds gud only for subscriber activation
-				user.setUserActivationTime(user.getStatusTime());
+				user.setUseractivationtime(user.getStatustime());
 			}
 			else if(CmFinoFIX.UserStatus_Confirmed.equals(e.getUserStatus())){
-				user.setConfirmationTime(user.getStatusTime());
+				user.setConfirmationtime(user.getStatustime());
 			}
 			else if(CmFinoFIX.UserStatus_Expired.equals(e.getUserStatus()))
 			{
-				user.setExpirationTime(user.getStatusTime());
+				user.setExpirationtime(user.getStatustime());
 			}
 			else if(CmFinoFIX.UserStatus_Rejected.equals(e.getUserStatus()))
 			{
-				user.setRejectionTime(user.getStatusTime());
+				user.setRejectiontime(user.getStatustime());
 			}
 		}
 		if(e.getDateOfBirth() != null)
 		{
-			if(!e.getDateOfBirth().equals(user.getDateOfBirth())){
+			if(!e.getDateOfBirth().equals(user.getDateofbirth())){
         		log.info("User:"+ID+" Date of Birth updated to:"+e.getDateOfBirth()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setDateOfBirth(e.getDateOfBirth());
+			user.setDateofbirth(e.getDateOfBirth());
 		}
 
 		if(e.getSecurityQuestion()!=null){
-			if(user.getRole()==CmFinoFIX.Role_Subscriber){
-				if(user.getSecurityQuestion()!= null){
-					user.setOldSecurityQuestion(user.getSecurityQuestion());
+			if(tempUsrRoleLI==CmFinoFIX.Role_Subscriber){
+				if(user.getSecurityquestion()!= null){
+					user.setOldsecurityquestion(user.getSecurityquestion());
 				}
 				else{
-					user.setOldSecurityQuestion(e.getSecurityQuestion());
+					user.setOldsecurityquestion(e.getSecurityQuestion());
 				}
 			}
-			if(!e.getSecurityQuestion().equals(user.getSecurityQuestion())){
+			if(!e.getSecurityQuestion().equals(user.getSecurityquestion())){
         		log.info("User:"+ID+" security question updated to:"+e.getSecurityQuestion()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setSecurityQuestion(e.getSecurityQuestion());
+			user.setSecurityquestion(e.getSecurityQuestion());
 		}
 		if(e.getSecurityAnswer()!=null){
-			if(user.getRole()==CmFinoFIX.Role_Subscriber){
-				if(user.getSecurityAnswer()!= null){
-					user.setOldSecurityAnswer(user.getSecurityAnswer());
+			if(tempUsrRoleLI==CmFinoFIX.Role_Subscriber){
+				if(user.getSecurityanswer()!= null){
+					user.setOldsecurityanswer(user.getSecurityanswer());
 				}
 				else{
-					user.setOldSecurityAnswer(e.getSecurityAnswer());
+					user.setOldsecurityanswer(e.getSecurityAnswer());
 				}
 			}
-			if(!e.getSecurityAnswer().equals(user.getSecurityAnswer())){
+			if(!e.getSecurityAnswer().equals(user.getSecurityanswer())){
         		log.info("User:"+ID+" securityAnswer updated by:"+getLoggedUserNameWithIP());
         	}
-			user.setSecurityAnswer(e.getSecurityAnswer());
+			user.setSecurityanswer(e.getSecurityAnswer());
 		}
 
 		if (e.getUpdatedBy() != null) {
-			if(!e.getUpdatedBy().equals(user.getUpdatedBy())){
+			if(!e.getUpdatedBy().equals(user.getUpdatedby())){
         		log.info("User:"+ID+" UpdatedBy updated to:"+e.getUpdatedBy()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setUpdatedBy(e.getUpdatedBy());
+			user.setUpdatedby(e.getUpdatedBy());
 		}
 
 		if (e.getUserRestrictions() != null) {
@@ -490,39 +494,39 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		}
 
 		if (e.getAdminComment() != null) {
-			if(!e.getAdminComment().equals(user.getAdminComment())){
+			if(!e.getAdminComment().equals(user.getAdmincomment())){
         		log.info("User:"+ID+" admin comment updated to:"+e.getAdminComment()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setAdminComment(e.getAdminComment());
+			user.setAdmincomment(e.getAdminComment());
 		}
 
 		if(e.getHomePhone()!=null){
-			if(user.getRole()==CmFinoFIX.Role_Subscriber){
-				if(user.getHomePhone() != null){
-					user.setOldHomePhone(user.getHomePhone());
+			if(tempUsrRoleLI==CmFinoFIX.Role_Subscriber){
+				if(user.getHomephone() != null){
+					user.setHomephone(user.getHomephone());
 				}
 				else{
-					user.setOldHomePhone(e.getHomePhone());
+					user.setHomephone(e.getHomePhone());
 				}
 			}
-			if(!e.getHomePhone().equals(user.getHomePhone())){
+			if(!e.getHomePhone().equals(user.getHomephone())){
         		log.info("User:"+ID+" HomePhone updated to:"+e.getHomePhone()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setHomePhone(e.getHomePhone());
+			user.setHomephone(e.getHomePhone());
 		}
 		if(e.getWorkPhone()!=null){
-			if(user.getRole()==CmFinoFIX.Role_Subscriber){
-				if(user.getWorkPhone() != null){
-					user.setOldWorkPhone(user.getWorkPhone());
+			if(tempUsrRoleLI==CmFinoFIX.Role_Subscriber){
+				if(user.getWorkphone() != null){
+					user.setOldworkphone(user.getWorkphone());
 				}
 				else{
-					user.setOldWorkPhone(e.getWorkPhone());
+					user.setOldworkphone(e.getWorkPhone());
 				}
 			}
-			if(!e.getWorkPhone().equals(user.getWorkPhone())){
+			if(!e.getWorkPhone().equals(user.getWorkphone())){
         		log.info("User:"+ID+" WorkPhone updated to:"+e.getWorkPhone()+" by:"+getLoggedUserNameWithIP());
         	}
-			user.setWorkPhone(e.getWorkPhone());
+			user.setWorkphone(e.getWorkPhone());
 		}
 	}
 
@@ -531,82 +535,87 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		if (user.getUsername() != null) {
 			e.setUsername(user.getUsername());
 		}
-		if (user.getID() != null) {
-			e.setID(user.getID());
+		if (user.getId() != null) {
+			e.setID(user.getId().longValue());
 		}
-		if(user.getSecurityAnswer() !=null)
+		if(user.getSecurityanswer() !=null)
 		{
-			e.setSecurityAnswer(user.getSecurityAnswer());
+			e.setSecurityAnswer(user.getSecurityanswer());
 		}
 
-		if(user.getSecurityQuestion() !=null)
+		if(user.getSecurityquestion() !=null)
 		{
-			e.setSecurityQuestion(user.getSecurityQuestion());
+			e.setSecurityQuestion(user.getSecurityquestion());
 		}
-		if(user.getConfirmationTime() !=null)
+		if(user.getConfirmationtime() !=null)
 		{
-			e.setConfirmationTime(user.getConfirmationTime());
+			e.setConfirmationTime(user.getConfirmationtime());
 		}
-		if(user.getUserActivationTime() !=null)
+		if(user.getUseractivationtime() !=null)
 		{
-			e.setUserActivationTime(user.getUserActivationTime());
+			e.setUserActivationTime(user.getUseractivationtime());
 		}
-		if(user.getRejectionTime() !=null)
+		if(user.getRejectiontime() !=null)
 		{
-			e.setRejectionTime(user.getRejectionTime());
+			e.setRejectionTime(user.getRejectiontime());
 		}
-		if(user.getDateOfBirth() != null)
+		if(user.getDateofbirth() != null)
 		{
-			e.setDateOfBirth(user.getDateOfBirth());
+			e.setDateOfBirth(user.getDateofbirth());
 		}
-		if(user.getExpirationTime() !=null)
+		if(user.getExpirationtime() !=null)
 		{
-			e.setExpirationTime(user.getExpirationTime());
+			e.setExpirationTime(user.getExpirationtime());
 		}
-		if(user.getConfirmationCode() !=null)
+		if(user.getConfirmationcode() !=null)
 		{
-			e.setConfirmationCode(user.getConfirmationCode());
+			e.setConfirmationCode(user.getConfirmationcode());
 		}
 		// Don't send the password back
 		e.setPassword(null);
 
-		if (user.getFirstTimeLogin() != null) {
-			e.setFirstTimeLogin(user.getFirstTimeLogin());
+		if (user.getFirsttimelogin() != null) {
+			e.setFirstTimeLogin(Boolean.valueOf(user.getFirsttimelogin().toString()));
 		}
 
-		if (user.getCreateTime() != null) {
-			e.setCreateTime(user.getCreateTime());
+		if (user.getCreatetime() != null) {
+			e.setCreateTime(user.getCreatetime());
 		}
 
-		if (user.getCreatedBy() != null) {
-			e.setCreatedBy(user.getCreatedBy());
+		if (user.getCreatedby() != null) {
+			e.setCreatedBy(user.getCreatedby());
 		}
 
 		if (user.getEmail() != null) {
 			e.setEmail(user.getEmail());
 		}
 
-		if (user.getFirstName() != null) {
-			e.setFirstName(user.getFirstName());
+		if (user.getFirstname() != null) {
+			e.setFirstName(user.getFirstname());
 		}
 
-		if (user.getLastName() != null) {
-			e.setLastName(user.getLastName());
+		if (user.getLastname() != null) {
+			e.setLastName(user.getLastname());
 		}
 
-		if (user.getLanguage() != null) {
-			e.setLanguage(user.getLanguage());
+		Long tempLanguageL = user.getLanguage();
+		Integer tempLanguageLI = tempLanguageL.intValue();
+		
+		if (user.getLanguage() != 0) {
+			e.setLanguage(tempLanguageLI);
 		}
 
-		if (user.getLastLoginTime() != null) {
-			e.setLastLoginTime(user.getLastLoginTime());
+		if (user.getLastlogintime() != null) {
+			e.setLastLoginTime(user.getLastlogintime());
 		}
 
-		if (user.getLastUpdateTime() != null) {
-			e.setLastUpdateTime(user.getLastUpdateTime());
+		if (user.getLastupdatetime() != null) {
+			e.setLastUpdateTime(user.getLastupdatetime());
 		}
 
-		Integer restr = user.getRestrictions();
+		Long tempRestrictionL = user.getRestrictions();
+		
+		Integer restr = tempRestrictionL.intValue();
 		if (restr != null) {
 			e.setUserRestrictions(restr);
 			if ((restr & CmFinoFIX.SubscriberRestrictions_Suspended) > 0) {
@@ -621,62 +630,68 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			}
 		}
 
-		Integer status = user.getStatus();
+		Long tempStatusL = user.getStatus();
+		
+		Integer status = tempStatusL.intValue();
 		if (status != null) {
 			e.setUserStatus(status);
 			e.setUserStatusText(enumTextService.getEnumTextValue(
-					CmFinoFIX.TagID_UserStatus, user.getLanguage(), user.getStatus().toString()));
+					Integer.valueOf(CmFinoFIX.TagID_UserStatus), tempLanguageLI, tempStatusL.toString()));
 		}
 
-		if (user.getStatusTime() != null) {
-			e.setStatusTime(user.getStatusTime());
+		if (user.getStatustime() != null) {
+			e.setStatusTime(user.getStatustime());
 		}
 
 		if (user.getTimezone() != null) {
 			e.setTimezone(user.getTimezone());
 		}
 
-		if (user.getUpdatedBy() != null) {
-			e.setUpdatedBy(user.getUpdatedBy());
+		if (user.getUpdatedby() != null) {
+			e.setUpdatedBy(user.getUpdatedby());
 		}
 
-		e.setRole(user.getRole());
-		e.setRoleText(userService.getUserRole(user.getRole()));
+		e.setRole(user.getRole().intValue());
+		e.setRoleText(userService.getUserRole(user.getRole().intValue()));
 
-		e.setBranchCodeID(user.getBranchCodeID());
-		if(user.getBranchCodeID()!=null){
-			e.setBranchCodeText(userService.getUserBranchCode(user.getBranchCodeID().intValue()));	
+		e.setBranchCodeID(user.getBranchcodeid());
+		if(user.getBranchcodeid()!=null){
+			e.setBranchCodeText(userService.getUserBranchCode(user.getBranchcodeid().intValue()));	
 		}
 		
 		
 		e.setLanguageText(enumTextService.getEnumTextValue(
-				CmFinoFIX.TagID_Language, user.getLanguage(), user.getLanguage()));
+				Integer.valueOf(CmFinoFIX.TagID_Language), tempLanguageLI, user.getLanguage()));
 
-		if (user.getAdminComment() != null) {
-			e.setAdminComment(user.getAdminComment());
+		if (user.getAdmincomment() != null) {
+			e.setAdminComment(user.getAdmincomment());
 		}
-		if(user.getDateOfBirth()!=null){
-			e.setDateOfBirth(user.getDateOfBirth());
+		if(user.getDateofbirth()!=null){
+			e.setDateOfBirth(user.getDateofbirth());
 		}
-		if (user.getUserActivationTime() != null) {
-			e.setUserActivationTime(user.getUserActivationTime());
+		if (user.getUseractivationtime() != null) {
+			e.setUserActivationTime(user.getUseractivationtime());
 		}
-		if (user.getRejectionTime() != null) {
-			e.setRejectionTime(user.getRejectionTime());
+		if (user.getRejectiontime() != null) {
+			e.setRejectionTime(user.getRejectiontime());
 		}
-		if (user.getExpirationTime() != null) {
-			e.setExpirationTime(user.getExpirationTime());
+		if (user.getExpirationtime() != null) {
+			e.setExpirationTime(user.getExpirationtime());
 		}
-		if(user.getConfirmationTime()!=null){
-			e.setConfirmationTime(user.getConfirmationTime());
+		if(user.getConfirmationtime()!=null){
+			e.setConfirmationTime(user.getConfirmationtime());
 		}
-		if(user.getHomePhone()!=null){
-			e.setHomePhone(user.getWorkPhone());
+		if(user.getHomephone()!=null){
+			e.setHomePhone(user.getWorkphone());
 		}
-		if(user.getWorkPhone()!=null){
-			e.setWorkPhone(user.getWorkPhone());
+		if(user.getWorkphone()!=null){
+			e.setWorkPhone(user.getWorkphone());
 		}
-		e.setRecordVersion(user.getVersion());
+		
+		Long tempRecordVersionL=user.getVersion();
+		Integer tempRecordVersionLI = tempRecordVersionL.intValue();
+		
+		e.setRecordVersion(tempRecordVersionLI);
 	}
 
 	private boolean modifiedOtherFields(CMJSUsers.CGEntries entry) {

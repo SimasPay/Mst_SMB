@@ -57,7 +57,7 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.SystemParameters;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -706,7 +706,7 @@ public class CoreDataWrapper
 		this.commodityTransferNextIDDAO = commodityTransferNextIDDAO;
 	}
 	
-	public void save(UnRegisteredTxnInfo unRegTxnInfo)
+	public void save(UnregisteredTxnInfo unRegTxnInfo)
 	{
 		unRegisteredTxnInfoDAO.save(unRegTxnInfo);
 	}

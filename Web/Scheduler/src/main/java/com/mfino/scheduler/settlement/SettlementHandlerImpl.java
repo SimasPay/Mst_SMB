@@ -27,7 +27,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.ScheduleTemplate;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.ServiceSettlementConfig;
@@ -506,11 +506,11 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			sctlSMQuery.setPartnerID(partnerId);
 			sctlSMQuery.setLastUpdateTimeLT(cutoff);
 			
-			List<SCTLSettlementMap> sctlSMList = sCTLSettlementMapService.get(sctlSMQuery);
+			List<SctlSettlementMap> sctlSMList = sCTLSettlementMapService.get(sctlSMQuery);
 	
 			log.info("CutoffTime : "+cutoff+"PartnerID : "+partnerId);
 			
-			for(SCTLSettlementMap sctl : sctlSMList){
+			for(SctlSettlementMap sctl : sctlSMList){
 //				pendingAmount = pendingAmount.add(sctl.getAmount());
 				sctl.setStatus(CmFinoFIX.SettlementStatus_Settled);
 				sctl.setStlID(stlID);

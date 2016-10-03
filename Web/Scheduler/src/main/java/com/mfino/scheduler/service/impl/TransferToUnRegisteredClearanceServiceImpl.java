@@ -19,7 +19,7 @@ import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -89,10 +89,10 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 		status[1] = CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED;
 		urtiQuery.setMultiStatus(status);
 		
-		List<UnRegisteredTxnInfo> unRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+		List<UnregisteredTxnInfo> unRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 		
 		if (CollectionUtils.isNotEmpty(unRegisteredTxnInfos)) {
-			for (UnRegisteredTxnInfo urti: unRegisteredTxnInfos) {
+			for (UnregisteredTxnInfo urti: unRegisteredTxnInfos) {
 				if ( !(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(urti.getTransactionName())) ) {
 					long diffTime = cuurentTime.getTime() - urti.getCreateTime().getTime();
 					if (diffTime > expiryTime) {
@@ -105,7 +105,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 	}
 	
 	
-	private void revertTransfer(UnRegisteredTxnInfo urti) {
+	private void revertTransfer(UnregisteredTxnInfo urti) {
 		log.info("Reverting the Transfer to UnRegistered with ReferenceId: " + urti.getTransferSCTLId());
 		
 		String reverseCharge = systemParametersService.getString(SystemParameterKeys.REVERSE_CHARGE_FOR_EXPIRED_TRANSFER_TO_UNREGISTERED);

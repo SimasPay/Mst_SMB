@@ -17,7 +17,7 @@ import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -85,7 +85,7 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
 	
-	public Result handle(UnRegisteredTxnInfo unRegisteredTxnInfo) {
+	public Result handle(UnregisteredTxnInfo unRegisteredTxnInfo) {
 		log.info("Creating CMFundWithdrawalInquiry message...");
 		CMFundWithdrawalInquiry fundWithdrawalInquiry = new CMFundWithdrawalInquiry();
 		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());

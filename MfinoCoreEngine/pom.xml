@@ -18,18 +18,16 @@
 		<module>Frontend</module>
 		<module>MCEConfiguration</module>
 		<module>NotificationService</module>
-		<module>ISOTest</module>
+		<!-- <module>ISOTest</module> -->
 		<module>JPOSComponent</module>
 		<module>BankTeller</module>
-		<module>CashinIntegration</module>
-		<module>IntegrationInterfaces</module>		
+		<!-- <module>CashinIntegration</module> -->
+		<module>IntegrationInterfaces</module>
 		<module>CashoutIntegration</module>
-    	<module>OfflineFrontend</module>
-        <module>HSM</module>
-    	<module>InterBankService</module>
-  
+		<module>OfflineFrontend</module>
+		<module>HSM</module>
+		<module>InterBankService</module>
 	</modules>
-
 	<properties>
 		<camel-version>2.9.0</camel-version>
 		<log4j-version>1.2.16</log4j-version>
@@ -153,9 +151,9 @@
 			<version>${camel-version}</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.camel</groupId>
-		  <artifactId>camel-juel</artifactId>
-		  <version>1.6.1</version>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-juel</artifactId>
+			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
 </project>

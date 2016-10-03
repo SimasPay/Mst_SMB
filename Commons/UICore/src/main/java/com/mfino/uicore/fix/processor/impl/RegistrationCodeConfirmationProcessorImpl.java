@@ -27,7 +27,7 @@ import com.mfino.domain.CreditCardDestinations;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -82,29 +82,31 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			errorMsg.setErrorCode(3);
 			errorMsg.setErrorDescription(MessageText._("Your registration request status was confirmed, please wait to get it activated."));
 		} else if (CmFinoFIX.UserStatus_Registered.equals(user.getStatus())) {
-			Set<Subscriber> subs = user.getSubscriberFromSubscriberUserID();
+			Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 			Subscriber sub =  subs.iterator().next();
-			SubscriberMDN subscriberMDN = (SubscriberMDN) sub.getSubscriberMDNFromSubscriberID().toArray()[0];
+			SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdns().toArray()[0];
 			Set<CardInfo> cards = sub.getCardInfoFromSubscriberID();
 			List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 			// check for expiry
-			if ((user.getCreateTime() != null)&& (System.currentTimeMillis()- user.getCreateTime().getTime() 
+			if ((user.getCreatetime() != null)&& (System.currentTimeMillis()- user.getCreatetime().getTime() 
 					< ConfigurationUtil.getCreditcardRegistrationExpirationTimeInHrs() * 60 * 60 * 1000)) {
 
 				log.info("Activating user");
 				user.setStatus(CmFinoFIX.UserStatus_Active);
-				user.setStatusTime(new Timestamp());
-				user.setConfirmationTime(user.getStatusTime());
-				user.setUserActivationTime(new Timestamp());
+				user.setStatustime(new Timestamp());
+				user.setConfirmationtime(user.getStatustime());
+				user.setUseractivationtime(new Timestamp());
 				userDao.save(user);
 
 				log.info("Activating cards");
 				for (Iterator<CardInfo> cardIterator = cards.iterator(); cardIterator.hasNext();) {
 					CardInfo card = cardIterator.next();
-					if (card.getCardStatus().equals(CmFinoFIX.UserStatus_Registered)) {
+					Long tempCardStatusL = card.getCardstatus();
+					Integer tempCardStatusLI = tempCardStatusL.intValue();
+					if (tempCardStatusLI.equals(CmFinoFIX.UserStatus_Registered)) {
 						PocketTemplateDAO poctetTemplateDao = DAOFactory.getInstance().getPocketTemplateDao();
 						PocketTemplate ccTemplate = poctetTemplateDao.getById(ConfigurationUtil.getDefaultPocketTemplateCreditCard());
-						Pocket creditCardPocket = pocketService.createActivePocket(ccTemplate, subscriberMDN, false);
+						Pocket creditCardPocket = pocketService.createActivePocket(ccTemplate, SubscriberMdn, false);
 						if(creditCardPocket!=null){
 						card.setPocket(creditCardPocket);
 						}else{
@@ -112,8 +114,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 							log.info("CreditCardPocket creation failed for user"+user.getUsername());
 							throw new Exception();
 						}
-						card.setCardStatus(CmFinoFIX.UserStatus_Active);
-						card.setisConformationRequired(false);
+						card.setCardstatus(CmFinoFIX.UserStatus_Active);
+						card.setIsconformationrequired((short) Boolean.compare(false, true));
 					}
 				}
 				cardDao.save(cards);
@@ -121,8 +123,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 				log.info("Activating Destinations");
 				for (Iterator<CreditCardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
 					CreditCardDestinations ccdeDestination = creIterator.next();
-					if (ccdeDestination.getCCMDNStatus().equals(CmFinoFIX.CCMDNStatus_Registered)) {
-						ccdeDestination.setCCMDNStatus(CmFinoFIX.CCMDNStatus_Active);
+					if (ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_Registered)) {
+						ccdeDestination.setCcmdnstatus(CmFinoFIX.CCMDNStatus_Active.longValue());
 					}
 				}
 				creditCardDestinationDAO.save(ccDestinations);
@@ -143,10 +145,13 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			log.info("Sending SMS to the user:" + user.getUsername());
 			String smsMsg = null;
 			try {
+				Long tempUserL = user.getLanguage();
+				Integer tempUserLI = tempUserL.intValue();
+				
 				NotificationWrapper notificationWrapper = new NotificationWrapper();
-				notificationWrapper.setLanguage(user.getLanguage());
-				notificationWrapper.setFirstName(user.getFirstName());
-				notificationWrapper.setLastName(user.getLastName());
+				notificationWrapper.setLanguage(tempUserLI);
+				notificationWrapper.setFirstName(user.getFirstname());
+				notificationWrapper.setLastName(user.getLastname());
 				notificationWrapper.setCompany(user.getCompany());
 				notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 				if (CmFinoFIX.AdminAction_Approve.equals(userAccountStatus)) {
@@ -168,23 +173,28 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			log.info("code confirmation for user"+user.getUsername());
 			errorMsg.setErrorCode(5);
 			errorMsg.setErrorDescription(MessageText._("Changes already confirmed or expired"));
-			Set<Subscriber> subs = user.getSubscriberFromSubscriberUserID();
+			Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 			Subscriber sub = subs.iterator().next();
 			Set<CardInfo> cards = sub.getCardInfoFromSubscriberID();
 			List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 			int updatedcards = 0;
 			for (Iterator<CardInfo> cardIterator = cards.iterator(); cardIterator.hasNext();) {
 				CardInfo card = cardIterator.next();
-				if (card.getCardStatus().equals(CmFinoFIX.UserStatus_Active)&& card.getisConformationRequired()) {
-					if ((System.currentTimeMillis()- card.getLastUpdateTime().getTime() 
+				Long tempCardStatusL = card.getCardstatus();
+				Integer tempCardStatusLI = tempCardStatusL.intValue();
+				
+//				Long tempCardConfirm = card.getIsconformationrequired();
+				
+				if (tempCardStatusLI.equals(CmFinoFIX.UserStatus_Active)&& card.getIsconformationrequired()) {
+					if ((System.currentTimeMillis()- card.getLastupdatetime().getTime() 
 							< ConfigurationUtil.getCreditcardRegistrationExpirationTimeInHrs() * 60 * 60 * 1000)) {
-						card.setisConformationRequired(false);
+						card.setIsconformationrequired((short) Boolean.compare(true, false));
 						errorMsg.setErrorCode(4);
 						errorMsg.setErrorDescription(MessageText._("Your profile changes has been confirmed"));
 						updatedcards++;
 						cardDao.save(card);
 						log.info(user.getUsername()+" profile updates confirmed");
-					}else if ((System.currentTimeMillis()- card.getLastUpdateTime().getTime() 
+					}else if ((System.currentTimeMillis()- card.getLastupdatetime().getTime() 
 							> ConfigurationUtil.getCreditcardRegistrationExpirationTimeInHrs() * 60 * 60 * 1000)){
 							errorMsg.setErrorCode(5);
     						errorMsg.setErrorDescription(MessageText._("Your profile changes has been Expired"));
@@ -197,9 +207,9 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			if (updatedcards > 0) {
 				for (Iterator<CreditCardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
 					CreditCardDestinations ccdeDestination = creIterator.next();
-					if (ccdeDestination.getCCMDNStatus().equals(CmFinoFIX.CCMDNStatus_New)
-							|| ccdeDestination.getCCMDNStatus().equals(CmFinoFIX.CCMDNStatus_Updated)) {
-						ccdeDestination.setCCMDNStatus(CmFinoFIX.CCMDNStatus_Active);
+					if (ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_New)
+							|| ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_Updated)) {
+						ccdeDestination.setCcmdnstatus(CmFinoFIX.CCMDNStatus_Active.longValue());
 						creditCardDestinationDAO.save(ccdeDestination);
 					}
 				}
@@ -213,26 +223,30 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 	}
 
 	public void expireUser(User user) {
-		Set<Subscriber> subs = user.getSubscriberFromSubscriberUserID();
+		Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 		Subscriber sub = subs.iterator().next();
-		//SubscriberMDN subscriberMDN = (SubscriberMDN) sub.getSubscriberMDNFromSubscriberID().toArray()[0];
+		//SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdnFromSubscriberID().toArray()[0];
 		Set<CardInfo> cards = sub.getCardInfoFromSubscriberID();
 		List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 		
 		log.info("Expiring user "+user.getUsername());
 		user.setStatus(CmFinoFIX.UserStatus_Expired);
-		user.setStatusTime(new Timestamp());
+		user.setStatustime(new Timestamp());
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// setting user name as user name, expired tag and time stamp
-		user.setUsername(user.getUsername() + UserDAO.EXPIRY_TAG+ df.format(user.getStatusTime()));
-		user.setExpirationTime(user.getStatusTime());
+		user.setUsername(user.getUsername() + UserDAO.EXPIRY_TAG+ df.format(user.getStatustime()));
+		user.setExpirationtime(user.getStatustime());
 		userDao.save(user);
 
 		log.info("Expiring cards for user"+user.getUsername());
 		for (Iterator<CardInfo> cardIterator = cards.iterator(); cardIterator.hasNext();) {
 			CardInfo card = cardIterator.next();
-			if (card.getCardStatus().equals(CmFinoFIX.UserStatus_Registered)) {
-				card.setCardStatus(CmFinoFIX.UserStatus_Expired);
+			
+			Long tempCardStatusL = card.getCardstatus();
+			Integer tempCardStatusLI = tempCardStatusL.intValue();
+			
+			if (tempCardStatusLI.equals(CmFinoFIX.UserStatus_Registered)) {
+				card.setCardstatus(CmFinoFIX.UserStatus_Expired);
 			}
 		}
 		cardDao.save(cards);
@@ -240,8 +254,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 		log.info("Expiring Destinations for user"+user.getUsername());
 		for (Iterator<CreditCardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
 			CreditCardDestinations ccdeDestination = creIterator.next();
-			if (ccdeDestination.getCCMDNStatus().equals(CmFinoFIX.CCMDNStatus_Registered)) {
-				ccdeDestination.setCCMDNStatus(CmFinoFIX.CCMDNStatus_Expired);
+			if (ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_Registered)) {
+				ccdeDestination.setCcmdnstatus(CmFinoFIX.CCMDNStatus_Expired.longValue());
 			}
 		}
 		creditCardDestinationDAO.save(ccDestinations);

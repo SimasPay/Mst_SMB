@@ -17,7 +17,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.ExpirationType;
 import com.mfino.domain.FundDefinition;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
@@ -99,8 +99,8 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 		urtiQuery.setMultiStatus(status);
 		urtiQuery.setExpiryTime(new Timestamp());
-		List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
-		UnRegisteredTxnInfo unRegisteredTxnInfo;
+		List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+		UnregisteredTxnInfo unRegisteredTxnInfo;
 		
 		if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 			log.info("Checking for expiry time of all funds");
@@ -129,8 +129,8 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		}
 	}
 
-	private void expireFunds(List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos) {
-		UnRegisteredTxnInfo unRegisteredTxnInfo;
+	private void expireFunds(List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos) {
+		UnregisteredTxnInfo unRegisteredTxnInfo;
 		for(int iter=0;iter<lstUnRegisteredTxnInfos.size();iter++){
 			unRegisteredTxnInfo = lstUnRegisteredTxnInfos.get(iter);
 				log.info("Fund with ID: "+unRegisteredTxnInfo.getID()+"has expired");
@@ -138,7 +138,7 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		}
 	}
 	
-	private void updateStatus(UnRegisteredTxnInfo unRegisteredTxnInfo) {
+	private void updateStatus(UnregisteredTxnInfo unRegisteredTxnInfo) {
 
 		XMLResult result = new TransferInquiryXMLResult();
 		result.setNotificationMessageParserService(notificationMessageParserService);
@@ -181,7 +181,7 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		return new Timestamp(System.currentTimeMillis() +  defaultExpirySeconds* 1000);		
 	}
 	
-	public String regenerateFAC(UnRegisteredTxnInfo unRegisteredTxnInfo) {
+	public String regenerateFAC(UnregisteredTxnInfo unRegisteredTxnInfo) {
 		String code = generateFAC(unRegisteredTxnInfo.getFundDefinition());
 		String digestedCode = generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalMDN(), code);
 		unRegisteredTxnInfo.setDigestedPIN(digestedCode);

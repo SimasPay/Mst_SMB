@@ -20,7 +20,7 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -86,54 +86,62 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         	log.warn("Invalid MDN selected by " + getLoggedUserNameWithIP());
         	return error;
         }
-        SubscriberMDN mdn=subMdndao.getByMDN(realMsg.getSourceMDN());
+        SubscriberMdn mdn=subMdndao.getByMDN(realMsg.getSourceMDN());
         Subscriber subscriber=mdn.getSubscriber();
-        if(mdn==null||!mdn.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)){
+        
+        Long tempStatusL = mdn.getStatus();
+        Integer tempStatusLI = tempStatusL.intValue();
+        
+        if(mdn==null||!tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Active)){
         	error.setErrorDescription("Invalid MDN or MDN Status");
         	log.warn("Invalid MDN entered or MDN Status is not active for user:" + getLoggedUserNameWithIP());
         	return error;
         }
        
         String resetPinMode = systemParametersService.getString(SystemParameterKeys.RESET_PIN_MODE);
-        mdn.setWrongPINCount(0);
+        mdn.setWrongpincount(0);
         mdn.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-        String name=subscriber.getFirstName();
+        String name=subscriber.getFirstname();
         if(name==null){
         	Set<Partner> partner=subscriber.getPartnerFromSubscriberID();
-        	name = partner!=null&&(!partner.isEmpty())?partner.iterator().next().getTradeName():" ";
+        	name = partner!=null&&(!partner.isEmpty())?partner.iterator().next().getTradename():" ";
         }
         if(StringUtils.isNotBlank(resetPinMode) && GeneralConstants.RESET_PIN_MODE_OTP.equals(resetPinMode)){
     		Integer OTPLength = systemParametersService.getOTPLength();
         	String otp = MfinoUtil.generateOTP(OTPLength);
-     		String digestPin1 = MfinoUtil.calculateDigestPin(mdn.getMDN(), otp);
-     		mdn.setOTP(digestPin1);
-        	mdn.setDigestedPIN(null);
-        	mdn.setAuthorizationToken(null);
+     		String digestPin1 = MfinoUtil.calculateDigestPin(mdn.getMdn(), otp);
+     		mdn.setOtp(digestPin1);
+        	mdn.setDigestedpin(null);
+        	mdn.setAuthorizationtoken(null);
         	subMdndao.save(mdn);
         	subdao.save(subscriber);
         	
         	NotificationWrapper notificationWrapper = new NotificationWrapper();
-			notificationWrapper.setLanguage(subscriber.getLanguage());
+        	
+        	Long tempLanguageL = subscriber.getLanguage();
+        	Integer tempLanguageLI = tempLanguageL.intValue();
+        	
+			notificationWrapper.setLanguage(tempLanguageLI);
 			notificationWrapper.setCompany(subscriber.getCompany());
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_ForgotPinOTPSent);
-			notificationWrapper.setDestMDN(mdn.getMDN());
-			notificationWrapper.setFirstName(subscriber.getFirstName());
-			notificationWrapper.setLastName(subscriber.getLastName());		
+			notificationWrapper.setDestMDN(mdn.getMdn());
+			notificationWrapper.setFirstName(subscriber.getFirstname());
+			notificationWrapper.setLastName(subscriber.getLastname());		
 			notificationWrapper.setOneTimePin(otp);
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			String smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true);
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 			String emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
         	
-        	log.info("Subscriber MDN: " + mdn.getID() + " : new OTP generated for subscriber:" + subscriber.getID() + "selected by user: " + getLoggedUserNameWithIP());
-            if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationMethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
+        	log.info("Subscriber MDN: " + mdn.getId() + " : new OTP generated for subscriber:" + subscriber.getId() + "selected by user: " + getLoggedUserNameWithIP());
+            if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationmethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
             	String to=subscriber.getEmail();
             	String subject="OTP";
             	
             	mailService.asyncSendEmail(to, name, subject, emailMsg);
             }
-            smsService.setDestinationMDN(mdn.getMDN());
+            smsService.setDestinationMDN(mdn.getMdn());
             smsService.setMessage(smsMsg);
             smsService.asyncSendSMS();
             error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
@@ -143,40 +151,43 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
 	        String newpin;
 			try {
 				newpin = systemParametersService.generatePIN();
-				String calcPIN = mfinoUtilService.modifyPINForStoring(mdn.getMDN(), newpin);
-				mdn.setDigestedPIN(calcPIN);
-				String authToken = MfinoUtil.calculateAuthorizationToken(mdn.getMDN(), newpin);
-				mdn.setAuthorizationToken(authToken);
+				String calcPIN = mfinoUtilService.modifyPINForStoring(mdn.getMdn(), newpin);
+				mdn.setDigestedpin(calcPIN);
+				String authToken = MfinoUtil.calculateAuthorizationToken(mdn.getMdn(), newpin);
+				mdn.setAuthorizationtoken(authToken);
 			} catch (Exception e) {
 				log.error("Exception occured while updating the new pin", e);
 	        	error.setErrorDescription("Exception occured while updating the new pin");
 	        	return error;
 			}
 	        
-	        log.info("Subscriber MDN: " +mdn.getID() + " :new pin updated for subscriber: " + subscriber.getID() + "selected by user: " + getLoggedUserNameWithIP());
+	        log.info("Subscriber MDN: " +mdn.getId() + " :new pin updated for subscriber: " + subscriber.getId() + "selected by user: " + getLoggedUserNameWithIP());
 	        subdao.save(subscriber);
 	        subMdndao.save(mdn);
 	        
+	        Long tempLanguageL = subscriber.getLanguage();
+        	Integer tempLanguageLI = tempLanguageL.intValue();
+	        
 	    	NotificationWrapper notificationWrapper = new NotificationWrapper();
-			notificationWrapper.setLanguage(subscriber.getLanguage());
+			notificationWrapper.setLanguage(tempLanguageLI);
 			notificationWrapper.setCompany(subscriber.getCompany());
 			notificationWrapper.setCode(CmFinoFIX.NotificationCode_ResetPin_New_MPIN_ToSubscriber);
-			notificationWrapper.setDestMDN(mdn.getMDN());
-			notificationWrapper.setFirstName(subscriber.getFirstName());
-			notificationWrapper.setLastName(subscriber.getLastName());		
+			notificationWrapper.setDestMDN(mdn.getMdn());
+			notificationWrapper.setFirstName(subscriber.getFirstname());
+			notificationWrapper.setLastName(subscriber.getLastname());		
 			notificationWrapper.setSubscriberPin(newpin);
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			String smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true);
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 			String emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
 	
-	        if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationMethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
+	        if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationmethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
 	        	String to=subscriber.getEmail();
 	        	String subject="Reset Pin";
 	        	
 	        	mailService.asyncSendEmail(to, name, subject, emailMsg);
 	        }
-	        smsService.setDestinationMDN(mdn.getMDN());
+	        smsService.setDestinationMDN(mdn.getMdn());
 	        smsService.setMessage(smsMsg);
 	        smsService.asyncSendSMS();
 	        error.setErrorCode(CmFinoFIX.ErrorCode_NoError);

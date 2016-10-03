@@ -488,7 +488,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				Long sctlid = cashOut.getServiceChargeTransactionLogID();
 				Long transferID = response.getTransferID();
 				
-				UnRegisteredTxnInfo unRegTxnInfo = new UnRegisteredTxnInfo();
+				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
 				unRegTxnInfo.setTransferCTId(transferID);
 				unRegTxnInfo.setTransferSCTLId(sctlid);
 				unRegTxnInfo.setSubscriberMDNByMDNID(objSubMdn);

@@ -26,7 +26,7 @@ import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -147,7 +147,7 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 		Partner destPartner = partnerSet.iterator().next();
 		fundWithdrawalInquiry.setPartnerCode(destPartner.getPartnercode());
 		
-		UnRegisteredTxnInfo unRegisteredTxnInfo = fundValidationService.queryUnRegisteredTxnInfo(fundWithdrawalInquiry.getWithdrawalMDN(), fundWithdrawalInquiry.getOneTimePassCode(), null,fundWithdrawalInquiry.getPartnerCode());
+		UnregisteredTxnInfo unRegisteredTxnInfo = fundValidationService.queryUnRegisteredTxnInfo(fundWithdrawalInquiry.getWithdrawalMDN(), fundWithdrawalInquiry.getOneTimePassCode(), null,fundWithdrawalInquiry.getPartnerCode());
 		if(unRegisteredTxnInfo==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidFundRequest);
 			result.setDestinationMDN(fundWithdrawalInquiry.getWithdrawalMDN());

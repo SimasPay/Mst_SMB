@@ -32,7 +32,7 @@ import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMReverseTransaction;
@@ -302,9 +302,9 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		long sctlId = parentSCTL.getID();
 		UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 		urtiQuery.setTransferSctlId(sctlId);
-		List<UnRegisteredTxnInfo> urtiList = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+		List<UnregisteredTxnInfo> urtiList = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 		if (CollectionUtils.isNotEmpty(urtiList)) {
-			UnRegisteredTxnInfo urti = urtiList.get(0);
+			UnregisteredTxnInfo urti = urtiList.get(0);
 			if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnregisteredtxnstatus()) || 
 					CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnregisteredtxnstatus())) {
 				urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED.longValue());

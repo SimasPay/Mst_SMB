@@ -26,7 +26,7 @@ import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMThirdPartyCashOut;
@@ -187,9 +187,9 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		urtiQuery.setMultiStatus(status);
 		
 
-		List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+		List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 		
-		UnRegisteredTxnInfo unRegisteredTxnInfo = null;
+		UnregisteredTxnInfo unRegisteredTxnInfo = null;
 		if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 			unRegisteredTxnInfo = lstUnRegisteredTxnInfos.get(0);
 		}
@@ -241,7 +241,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		return result;
 	}
 	
-	private Result processCashOut(UnRegisteredTxnInfo unRegisteredTxnInfo, XMLResult result, boolean isUnRegistered,CMThirdPartyCashOut thirdPartyCashOut) {
+	private Result processCashOut(UnregisteredTxnInfo unRegisteredTxnInfo, XMLResult result, boolean isUnRegistered,CMThirdPartyCashOut thirdPartyCashOut) {
 		SubscriberMdn srcPartnerMDN = null;
 		Pocket srcPocket = null;
 
@@ -420,7 +420,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		return result;
 	}
 	
-	private void failCashOutRequest(String failureReason,UnRegisteredTxnInfo unRegisteredTxnInfo,ServiceChargeTransactionLog sctl) {
+	private void failCashOutRequest(String failureReason,UnregisteredTxnInfo unRegisteredTxnInfo,ServiceChargeTransactionLog sctl) {
 		failureReason = (failureReason.length() > 255) ? failureReason.substring(0,255) : failureReason;
 		unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 		unRegisteredTxnInfo.setFailurereason(failureReason);

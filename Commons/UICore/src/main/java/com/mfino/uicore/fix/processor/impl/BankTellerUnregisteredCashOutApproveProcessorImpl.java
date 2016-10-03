@@ -21,7 +21,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -143,7 +143,7 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 		
 		UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
 		query.setCashoutSCTLId(realMsg.getServiceChargeTransactionLogID());	
-		List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
+		List<UnregisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
 		if(unRegisteredTxnInfo==null||unRegisteredTxnInfo.isEmpty()){
 			log.info("unregistered transaction info not exist with Cash out sctlid"+realMsg.getServiceChargeTransactionLogID());
 			errorMsg.setErrorDescription(MessageText._("Transfer Record not found with given TransferId"));

@@ -30,7 +30,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionType;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -77,46 +77,47 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 			 log.info("ReverseTransaction request for SCTL --> " + realMsg.getServiceChargeTransactionLogID() + " recieved");
 			 if(realMsg.getServiceChargeTransactionLogID()!=null) {
 				 query.setId(realMsg.getServiceChargeTransactionLogID());
-				 List<ServiceChargeTransactionLog> results = sctlDao.get(query);
+				 List<ServiceChargeTxnLog> results = sctlDao.get(query);
 				 
 				 if (CollectionUtils.isNotEmpty(results)) {
 		                realMsg.allocateEntries(results.size());
 		                for (int i = 0; i <results.size(); i++) {
-	                        ServiceChargeTransactionLog sctl = results.get(i);
+		                	ServiceChargeTxnLog sctl = results.get(i);
 	                        CMJSReverseTransaction.CGEntries entry = new CMJSReverseTransaction.CGEntries();
 	                        
-	                        ServiceChargeTransactionLog reverseAmountSctl = getReverseTransaction(sctl);
-	                        ServiceChargeTransactionLog reverseChargeSctl = getChargeReverseTransaction(sctl);
+	                        ServiceChargeTxnLog reverseAmountSctl = getReverseTransaction(sctl);
+	                        ServiceChargeTxnLog reverseChargeSctl = getChargeReverseTransaction(sctl);
 	                        
 	                        if((reverseAmountSctl != null) && (reverseChargeSctl != null)) {
-		                        log.info("ReverseTransactionProcessor : reverseAmountSctl.id="+reverseAmountSctl.getID() + ", reverseChargeSctl.id="+reverseChargeSctl.getID());
+		                        log.info("ReverseTransactionProcessor : reverseAmountSctl.id="+reverseAmountSctl.getId() + ", reverseChargeSctl.id="+reverseChargeSctl.getId());
 	                            updateMessage(reverseAmountSctl, sctl,entry);
 	                            realMsg.getEntries()[i] = entry;
-	                            entry.setID(reverseAmountSctl.getID());
-	                            entry.setReverseTxnAmount(reverseAmountSctl.getTransactionAmount());
-	                            entry.setChargeOnReverseTxnAmount(reverseAmountSctl.getCalculatedCharge());
-	                            entry.setReverseChargeAmount(reverseChargeSctl.getTransactionAmount());
-	                            entry.setChargeOnReverseChargeAmount(reverseChargeSctl.getCalculatedCharge());
-	                            entry.setAmountReversalSCTLID(reverseAmountSctl.getID());
-	                            entry.setChargeReversalSCTLID(reverseChargeSctl.getID());
+	                            
+	                            entry.setID(reverseAmountSctl.getId().longValue());
+	                            entry.setReverseTxnAmount(reverseAmountSctl.getTransactionamount());
+	                            entry.setChargeOnReverseTxnAmount(reverseAmountSctl.getCalculatedcharge());
+	                            entry.setReverseChargeAmount(reverseChargeSctl.getTransactionamount());
+	                            entry.setChargeOnReverseChargeAmount(reverseChargeSctl.getCalculatedcharge());
+	                            entry.setAmountReversalSCTLID(reverseAmountSctl.getId().longValue());
+	                            entry.setChargeReversalSCTLID(reverseChargeSctl.getId().longValue());
 	                        } 
 	                        else if(reverseAmountSctl != null){
-		                        log.info("ReverseTransactionProcessor : reverseAmountSctl.id="+reverseAmountSctl.getID());
+		                        log.info("ReverseTransactionProcessor : reverseAmountSctl.id="+reverseAmountSctl.getId());
 	                            updateMessage(reverseAmountSctl, sctl,entry);
 	                            realMsg.getEntries()[i] = entry;
-	                            entry.setID(reverseAmountSctl.getID());
-	                            entry.setReverseTxnAmount(reverseAmountSctl.getTransactionAmount());
-	                            entry.setChargeOnReverseTxnAmount(reverseAmountSctl.getCalculatedCharge());
-	                            entry.setAmountReversalSCTLID(reverseAmountSctl.getID());
+	                            entry.setID(reverseAmountSctl.getId().longValue());
+	                            entry.setReverseTxnAmount(reverseAmountSctl.getTransactionamount());
+	                            entry.setChargeOnReverseTxnAmount(reverseAmountSctl.getCalculatedcharge());
+	                            entry.setAmountReversalSCTLID(reverseAmountSctl.getId().longValue());
 	                        }
 	                        else if(reverseChargeSctl != null){
-	                        	log.info("ReverseTransactionProcessor : reverseChargeSctl.id="+reverseChargeSctl.getID());
+	                        	log.info("ReverseTransactionProcessor : reverseChargeSctl.id="+reverseChargeSctl.getId());
 	                            updateMessage(reverseChargeSctl, sctl,entry);
 	                            realMsg.getEntries()[i] = entry;
-	                            entry.setID(reverseChargeSctl.getID());
-	                            entry.setChargeReversalSCTLID(reverseChargeSctl.getID());
-	                            entry.setReverseChargeAmount(reverseChargeSctl.getTransactionAmount());
-	                            entry.setChargeOnReverseChargeAmount(reverseChargeSctl.getCalculatedCharge());
+	                            entry.setID(reverseChargeSctl.getId().longValue());
+	                            entry.setChargeReversalSCTLID(reverseChargeSctl.getId().longValue());
+	                            entry.setReverseChargeAmount(reverseChargeSctl.getTransactionamount());
+	                            entry.setChargeOnReverseChargeAmount(reverseChargeSctl.getCalculatedcharge());
 	                        }
 	                        else {
 	                        	log.info("ReverseTransaction request for SCTL --> " + realMsg.getServiceChargeTransactionLogID() + " has some problem in Charge calculation");
@@ -138,13 +139,13 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 		return realMsg;
 	}
 	
-	private ServiceChargeTransactionLog getReverseTransaction(ServiceChargeTransactionLog sctl) {
+	private ServiceChargeTxnLog getReverseTransaction(ServiceChargeTxnLog sctl) {
 		log.info("Generating the Reverse Transaction ...");
 		//Check the SCTL status 
-		if (((sctl.getParentSCTLID() == null) && (sctl.getTransactionAmount().compareTo(ZERO) > 0)) && 
+		if (((sctl.getParentsctlid() == null) && (sctl.getTransactionamount().compareTo(ZERO) > 0)) && 
 				((CmFinoFIX.SCTLStatus_Confirmed.equals(sctl.getStatus()) || CmFinoFIX.SCTLStatus_Distribution_Started.equals(sctl.getStatus()) ||
 				 CmFinoFIX.SCTLStatus_Distribution_Completed.equals(sctl.getStatus()) || CmFinoFIX.SCTLStatus_Distribution_Failed.equals(sctl.getStatus())))
-				 && ((null == sctl.getAmtRevStatus()) || (CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getAmtRevStatus())))
+				 && ((null == sctl.getAmtrevstatus()) || (CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getAmtrevstatus())))
 				 ) {
 			
 			// Get the Max CT Record for the Transaction.
@@ -153,16 +154,16 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 			CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
 			ChargeTxnCommodityTransferMapDAO txnCommodityTransferMapDAO = daoFactory.getTxnTransferMap();
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(sctl.getID());
+			query.setSctlID(sctl.getId().longValue());
 			List<ChargeTxnCommodityTransferMap> lstTxnCommodityTransferMaps = txnCommodityTransferMapDAO.get(query);
 			if (CollectionUtils.isNotEmpty(lstTxnCommodityTransferMaps)) {
 				for (ChargeTxnCommodityTransferMap ctmap: lstTxnCommodityTransferMaps) {
-					CommodityTransfer ct = ctDao.getById(ctmap.getCommodityTransferID());
-					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUICategory())) {
+					CommodityTransfer ct = ctDao.getById(ctmap.getCommoditytransferid().longValue());
+					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUicategory())) {
 						if (maxCT == null) {
 							maxCT = ct;
 						}
-						else if (ct.getID().longValue() > maxCT.getID().longValue()) {
+						else if (ct.getId().longValue() > maxCT.getId().longValue()) {
 							maxCT = ct;
 						}
 					}
@@ -172,19 +173,19 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 			
 			// Get the Source pocket for the Reverse transaction based on the transaction type.		 
 			TransactionTypeDAO transactionTypeDao = daoFactory.getTransactionTypeDAO();
-			TransactionType transactionType = transactionTypeDao.getById(sctl.getTransactionTypeID());
+			TransactionType transactionType = transactionTypeDao.getById(sctl.getTransactiontypeid().longValue());
 			if (transactionType != null && 
-					((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(transactionType.getTransactionName())) || 
-					(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(transactionType.getTransactionName()))) ) {
+					((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(transactionType.getTransactionname())) || 
+					(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(transactionType.getTransactionname()))) ) {
 				PartnerServicesDAO psDAO = DAOFactory.getInstance().getPartnerServicesDAO();
-				List<PartnerServices> lst = psDAO.getPartnerServices(sctl.getDestPartnerID(), sctl.getServiceProviderID(), sctl.getServiceID());
+				List<PartnerServices> lst = psDAO.getPartnerServices(sctl.getDestpartnerid().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 				if (CollectionUtils.isNotEmpty(lst)) {
 					PartnerServices ps = lst.get(0);
-					sourcePocketId = ps.getPocketBySourcePocket().getID();
+					sourcePocketId = ps.getPocketBySourcepocket().getId().longValue();
 				}
 			} 
 			else {
-				sourcePocketId = maxCT.getDestPocketID();
+				sourcePocketId = maxCT.getDestpocketid().longValue();
 			}
 			
 			// Get the Service Name for the Reverse Transaction.
@@ -197,15 +198,15 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 			
 
 			ServiceCharge sc = new ServiceCharge();
-			sc.setSourceMDN(sctl.getDestMDN());
-			sc.setDestMDN(sctl.getSourceMDN());
+			sc.setSourceMDN(sctl.getDestmdn());
+			sc.setDestMDN(sctl.getSourcemdn());
 			ChannelCode cc = channelcodeDao.getByChannelSourceApplication(CmFinoFIX.SourceApplication_Web);
-			sc.setChannelCodeId(cc.getID());
+			sc.setChannelCodeId(cc.getId().longValue());
 			sc.setServiceName(serviceName);
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION);
-			sc.setTransactionAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
+			sc.setTransactionAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
 			sc.setReverseTransaction(true);
-			sc.setParentSctlId(sctl.getID());
+			sc.setParentSctlId(sctl.getId().longValue());
 			Transaction transaction = null;
 			try {
 				transaction = transactionChargingService.getCharge(sc);
@@ -229,14 +230,14 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 		return sctl;
 	}
 
-	private ServiceChargeTransactionLog getChargeReverseTransaction(ServiceChargeTransactionLog sctl) {
+	private ServiceChargeTxnLog getChargeReverseTransaction(ServiceChargeTxnLog sctl) {
 		log.info("Generate SCTL for charge reverse transaction");
 		//Check the SCTL status 
-		ServiceChargeTransactionLog chargeReversalSctl = null;
-		if (((sctl.getParentSCTLID() == null) && (sctl.getCalculatedCharge().compareTo(ZERO) > 0)) && 
+		ServiceChargeTxnLog chargeReversalSctl = null;
+		if (((sctl.getParentsctlid() == null) && (sctl.getCalculatedcharge().compareTo(ZERO) > 0)) && 
 				((CmFinoFIX.SCTLStatus_Confirmed.equals(sctl.getStatus()) || CmFinoFIX.SCTLStatus_Distribution_Started.equals(sctl.getStatus()) ||
 				 CmFinoFIX.SCTLStatus_Distribution_Completed.equals(sctl.getStatus()) || CmFinoFIX.SCTLStatus_Distribution_Failed.equals(sctl.getStatus())))
-				 && ((null == sctl.getChrgRevStatus()) || (CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getChrgRevStatus())))
+				 && ((null == sctl.getChrgrevstatus()) || (CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getChrgrevstatus())))
 				 ) {
 			
 			PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
@@ -257,16 +258,16 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 
 			ServiceCharge sc = new ServiceCharge();
 			
-			sc.setSourceMDN(reversalFundingPocket.getSubscriberMDNByMDNID().getMDN()); //Service partner or Funding Partner MDN.
-			sc.setDestMDN(sctl.getSourceMDN());
+			sc.setSourceMDN(reversalFundingPocket.getSubscriberMdn().getMdn()); //Service partner or Funding Partner MDN.
+			sc.setDestMDN(sctl.getSourcemdn());
 			ChannelCode cc = channelcodeDao.getByChannelSourceApplication(CmFinoFIX.SourceApplication_Web);
-			sc.setChannelCodeId(cc.getID());
+			sc.setChannelCodeId(cc.getId().longValue());
 			// As Charge is reversed from Reverse funding pocket, the Service here is always 'Wallet' service.
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET); 
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REVERSE_CHARGE);
-			sc.setTransactionAmount(sctl.getCalculatedCharge()); // This is charge reversal, so transaction amount is service charge.
+			sc.setTransactionAmount(sctl.getCalculatedcharge()); // This is charge reversal, so transaction amount is service charge.
 			sc.setReverseTransaction(true);
-			sc.setParentSctlId(sctl.getID());
+			sc.setParentSctlId(sctl.getId().longValue());
 			Transaction transaction = null;
 			try {
 				transaction = transactionChargingService.getCharge(sc);
@@ -287,69 +288,74 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 		return chargeReversalSctl;
 	}
 	
-	private void updateMessage(ServiceChargeTransactionLog newSctl, ServiceChargeTransactionLog sctl, CGEntries entry) {
+	private void updateMessage(ServiceChargeTxnLog newSctl, ServiceChargeTxnLog sctl, CGEntries entry) {
 
-		if(newSctl.getChannelCodeID()!=null){
-			ChannelCode cc= channelcodeDao.getById(newSctl.getChannelCodeID());
-		entry.setAccessMethodText(cc!=null?cc.getChannelName():"");
+		if(newSctl.getChannelcodeid()!=null){
+			ChannelCode cc= channelcodeDao.getById(newSctl.getChannelcodeid().longValue());
+		entry.setAccessMethodText(cc!=null?cc.getChannelname():"");
 		}
-		if(newSctl.getCommodityTransferID()!=null){
-		entry.setCommodityTransferID(newSctl.getCommodityTransferID());
+		if(newSctl.getCommoditytransferid()!=null){
+		entry.setCommodityTransferID(newSctl.getCommoditytransferid().longValue());
 		}
-		if(sctl.getSourceMDN() != null){
-			entry.setDestMDN(sctl.getSourceMDN());
+		if(sctl.getSourcemdn() != null){
+			entry.setDestMDN(sctl.getSourcemdn());
 		}
-		if(newSctl.getDestPartnerID()!=null){
-		entry.setDestPartnerID(newSctl.getDestPartnerID());
-		entry.setDestPartnerTradeName(partnerDao.getById(newSctl.getDestPartnerID()).getTradeName());
+		if(newSctl.getDestpartnerid()!=null){
+		entry.setDestPartnerID(newSctl.getDestpartnerid().longValue());
+		entry.setDestPartnerTradeName(partnerDao.getById(newSctl.getDestpartnerid().longValue()).getTradename());
 		}
-		if(newSctl.getFailureReason()!=null){
-		entry.setFailureReason(newSctl.getFailureReason());
+		if(newSctl.getFailurereason()!=null){
+		entry.setFailureReason(newSctl.getFailurereason());
 		}
-		if(newSctl.getInvoiceNo()!=null){
-		entry.setInvoiceNo(newSctl.getInvoiceNo());
+		if(newSctl.getInvoiceno()!=null){
+		entry.setInvoiceNo(newSctl.getInvoiceno());
 		}
-		if(newSctl.getMFSBillerCode()!=null){
-		entry.setMFSBillerCode(newSctl.getMFSBillerCode());
+		if(newSctl.getMfsbillercode()!=null){
+		entry.setMFSBillerCode(newSctl.getMfsbillercode());
 		}
-		if(newSctl.getOnBeHalfOfMDN()!=null){
-		entry.setOnBeHalfOfMDN(newSctl.getOnBeHalfOfMDN());
+		if(newSctl.getOnbehalfofmdn()!=null){
+		entry.setOnBeHalfOfMDN(newSctl.getOnbehalfofmdn());
 		}
-		if(newSctl.getTransactionTypeID()!=null){
-		entry.setTransactionTypeID(newSctl.getTransactionTypeID());
-		entry.setTransactionName(ttDao.getById(newSctl.getTransactionTypeID()).getDisplayName());
+		if(newSctl.getTransactiontypeid()!=null){
+		entry.setTransactionTypeID(newSctl.getTransactiontypeid().longValue());
+		
+		entry.setTransactionName(ttDao.getById(newSctl.getTransactiontypeid().longValue()).getDisplayname());
 		}
-		if(newSctl.getServiceID()!=null){
-			entry.setServiceID(newSctl.getServiceID());
-			entry.setServiceName(serviceDao.getById(newSctl.getServiceID()).getDisplayName());
+		if(newSctl.getServiceid()!=null){
+			entry.setServiceID(newSctl.getServiceid().longValue());
+			entry.setServiceName(serviceDao.getById(newSctl.getServiceid().longValue()).getDisplayname());
 		}
-		if(newSctl.getServiceProviderID()!=null){
-		entry.setServiceProviderID(newSctl.getServiceProviderID());
+		if(newSctl.getServiceproviderid()!=null){
+		entry.setServiceProviderID(newSctl.getServiceproviderid().longValue());
 		}
-		if(sctl.getDestMDN() != null){
-		entry.setSourceMDN(sctl.getDestMDN());
+		if(sctl.getDestmdn() != null){
+		entry.setSourceMDN(sctl.getDestmdn());
 		}
-		if(newSctl.getSourcePartnerID()!=null){
-		entry.setSourcePartnerID(newSctl.getSourcePartnerID());
-		entry.setSourcePartnerTradeName(partnerDao.getById(newSctl.getSourcePartnerID()).getTradeName());
+		if(newSctl.getDestpartnerid()!=null){
+		entry.setSourcePartnerID(newSctl.getDestpartnerid().longValue());
+		entry.setSourcePartnerTradeName(partnerDao.getById(newSctl.getDestpartnerid().longValue()).getTradename());
 		}
-		if(newSctl.getStatus()!=null){
-		entry.setStatus(newSctl.getStatus());
+		if(newSctl.getStatus()!=0){
+			
+			Long tempStatusL = newSctl.getStatus();
+			Integer tempStatusLI = tempStatusL.intValue();
+			
+		entry.setStatus(tempStatusLI);
 		entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, newSctl.getStatus()));
 		}
-		if(newSctl.getTransactionID()!=null){
-		entry.setTransactionID(newSctl.getTransactionID());
+		if(newSctl.getTransactionid()!=null){
+		entry.setTransactionID(newSctl.getTransactionid().longValue());
 		}
-		if(newSctl.getTransactionRuleID()!=null){
-		entry.setTransactionRuleID(newSctl.getTransactionRuleID());
+		if(newSctl.getTransactionruleid()!=null){
+		entry.setTransactionRuleID(newSctl.getTransactionruleid().longValue());
 		}
-		entry.setTransactionTime(newSctl.getCreateTime());
-		entry.setID(newSctl.getID());
+		entry.setTransactionTime(newSctl.getCreatetime());
+		entry.setID(newSctl.getId().longValue());
 		
-		entry.setOriginalTransactionAmount(sctl.getTransactionAmount());
-		entry.setOriginalCharge(sctl.getCalculatedCharge());
-		entry.setOriginalReferenceID(sctl.getCommodityTransferID());
-		entry.setParentSCTLID(newSctl.getParentSCTLID());
+		entry.setOriginalTransactionAmount(sctl.getTransactionamount());
+		entry.setOriginalCharge(sctl.getCalculatedcharge());
+		entry.setOriginalReferenceID(sctl.getCommoditytransferid().longValue());
+		entry.setParentSCTLID(newSctl.getParentsctlid().longValue());
 
 	}
 

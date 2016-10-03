@@ -209,7 +209,7 @@ public class SubscriberMDNExcelView extends AbstractExcelView {
         if (CollectionUtils.isNotEmpty(pocketLst)) {
         	accountMap = new HashMap<Long, String>();
         	for (Pocket p: pocketLst) {
-        		accountMap.put(p.getSubscriberMDNByMDNID().getID(), p.getCardPAN());
+        		accountMap.put(p.getSubscriberMdn().getId().longValue(), p.getCardpan());
         	}
         }
     }

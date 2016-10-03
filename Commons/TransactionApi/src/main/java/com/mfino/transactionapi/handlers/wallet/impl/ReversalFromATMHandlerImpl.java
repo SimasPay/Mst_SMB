@@ -25,7 +25,7 @@ import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
@@ -148,8 +148,8 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		urtiQuery.setMultiStatus(status);
 		
 
-		List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
-		UnRegisteredTxnInfo unRegisteredTxnInfo = null;
+		List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+		UnregisteredTxnInfo unRegisteredTxnInfo = null;
 		if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 			unRegisteredTxnInfo = lstUnRegisteredTxnInfos.get(0);
 		}
@@ -174,7 +174,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		return result;
 	}
 	
-	private Result processReversal(UnRegisteredTxnInfo unRegisteredTxnInfo, XMLResult result, boolean isUnRegistered, CMThirdPartyCashOut thirdPartyCashOut) {
+	private Result processReversal(UnregisteredTxnInfo unRegisteredTxnInfo, XMLResult result, boolean isUnRegistered, CMThirdPartyCashOut thirdPartyCashOut) {
 		SubscriberMdn destPartnerMDN = null;
 		Pocket destPocket = null;
 

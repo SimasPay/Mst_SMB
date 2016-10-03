@@ -3,7 +3,7 @@
  */
 package com.mfino.transactionapi.handlers.wallet;
 
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.result.Result;
 
 /**
@@ -12,6 +12,6 @@ import com.mfino.result.Result;
  */
 public interface ReverseFundsHandler {
 
-	public Result handle(UnRegisteredTxnInfo unRegisteredTxnInfo);
+	public Result handle(UnregisteredTxnInfo unRegisteredTxnInfo);
 
 }

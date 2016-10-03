@@ -34,7 +34,7 @@ import com.mfino.domain.Service;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -251,9 +251,9 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 		urtiQuery.setTransactionName(cashOutAtATM.getTransactionName());
 		urtiQuery.setCreateTimeGE(today);
 		
-		List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+		List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 		if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
-			for (UnRegisteredTxnInfo urti: lstUnRegisteredTxnInfos) {
+			for (UnregisteredTxnInfo urti: lstUnRegisteredTxnInfos) {
 				toDayTxnsAmount = toDayTxnsAmount.add(urti.getAmount());
 			}
 		}
@@ -284,8 +284,8 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 		
 			UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 			urtiQuery.setTransferSctlId(sctl.getID());
-			List<UnRegisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
-			UnRegisteredTxnInfo urti = null;
+			List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+			UnregisteredTxnInfo urti = null;
 			if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 				urti = lstUnRegisteredTxnInfos.get(0);
 			}
@@ -390,7 +390,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 	
 	
 	private void handleProcessingStatusTellerTransactions(ServiceChargeTransactionLog sctl) {
-		UnRegisteredTxnInfo txnInfo =null;
+		UnregisteredTxnInfo txnInfo =null;
 		ChargeTxnCommodityTransferMapQuery query =new ChargeTxnCommodityTransferMapQuery();
 		query.setSctlID(sctl.getID());
 		
@@ -399,7 +399,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 		if(sctl.getTransactionTypeID().equals(unregCashoutTTId)){
 			UnRegisteredTxnInfoQuery unregquery = new UnRegisteredTxnInfoQuery();
 			unregquery.setCashoutSCTLId(sctl.getID());	
-			List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(unregquery);
+			List<UnregisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(unregquery);
 			if(unRegisteredTxnInfo!=null&&!unRegisteredTxnInfo.isEmpty()){
 				txnInfo= unRegisteredTxnInfo.get(0);
 			}
@@ -480,10 +480,10 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 	
 	private void handleUnregisteredTxn(ServiceChargeTransactionLog sctl) {
 		if(sctl.getTransactionTypeID().equals(unregCashoutTTId)){
-			UnRegisteredTxnInfo txnInfo =null;
+			UnregisteredTxnInfo txnInfo =null;
 			UnRegisteredTxnInfoQuery unregquery = new UnRegisteredTxnInfoQuery();
 			unregquery.setCashoutSCTLId(sctl.getID());	
-			List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(unregquery);
+			List<UnregisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(unregquery);
 			if(unRegisteredTxnInfo!=null&&!unRegisteredTxnInfo.isEmpty()){
 				txnInfo= unRegisteredTxnInfo.get(0);
 				if(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(txnInfo.getUnRegisteredTxnStatus())){

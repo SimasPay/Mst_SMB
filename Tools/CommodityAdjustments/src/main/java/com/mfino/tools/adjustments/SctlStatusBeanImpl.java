@@ -19,7 +19,7 @@ import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.AutoReversals;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mce.core.MCEMessage;
 import com.mfino.mce.core.util.BackendResponse;
@@ -93,10 +93,10 @@ public class SctlStatusBeanImpl implements SctlStatusBean {
 			UnRegisteredTxnInfoDAO unRegTxnInfoDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
 			UnRegisteredTxnInfoQuery infoQuery = new UnRegisteredTxnInfoQuery();
 			infoQuery.setTransferSctlId(sctl.getID());
-			List<UnRegisteredTxnInfo> txns = unRegTxnInfoDAO.get(infoQuery);
+			List<UnregisteredTxnInfo> txns = unRegTxnInfoDAO.get(infoQuery);
 			if(!txns.isEmpty())
 			{
-				UnRegisteredTxnInfo unRegTxnInfo = txns.get(0);
+				UnregisteredTxnInfo unRegTxnInfo = txns.get(0);
 				log.info("ManualAdjustment: UnRegisteredTxnInfo status is set to complete for sctl: "+sctl.getID()+ " original status is: "+unRegTxnInfo.getUnRegisteredTxnStatus());
 				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED);
 				unRegTxnInfoDAO.save(unRegTxnInfo);

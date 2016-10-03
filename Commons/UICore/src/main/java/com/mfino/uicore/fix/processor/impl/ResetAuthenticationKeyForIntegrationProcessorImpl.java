@@ -18,7 +18,7 @@ import com.mfino.dao.IntegrationPartnerMappingDAO;
 import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -69,29 +69,29 @@ public class ResetAuthenticationKeyForIntegrationProcessorImpl extends BaseFixPr
 		IntegrationPartnerMapping integrationPartnerMapping= integrationPartnerMappingDao.getById(realMsg.getIntegrationID());
 			if(integrationPartnerMapping != null)
 			{				
-				if(!integrationPartnerMapping.getIsAuthenticationKeyEnabled())
+				if(!Boolean.valueOf(integrationPartnerMapping.getIsauthenticationkeyenabled().toString()))
 				{
 					error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 					error.setErrorDescription(MessageText._("Authentication Key is not enabled for this Integration"));
 					return error;
 				}				
 				String authenticationkey = integrationPartnerMappingService.generateAuthenticationKey();
-				String institutionID = integrationPartnerMapping.getInstitutionID();
+				String institutionID = integrationPartnerMapping.getInstitutionid();
 				String digestedCode = MfinoUtil.calculateDigestPin(institutionID, authenticationkey);
-				integrationPartnerMapping.setAuthenticationKey(digestedCode);
+				integrationPartnerMapping.setAuthenticationkey(digestedCode);
 				integrationPartnerMappingDao.save(integrationPartnerMapping);
 				NotificationWrapper wrapper = new NotificationWrapper();
 				wrapper.setAuthenticationKey(authenticationkey);
-				wrapper.setIntegrationName(integrationPartnerMapping.getIntegrationName());
+				wrapper.setIntegrationName(integrationPartnerMapping.getIntegrationname());
 				wrapper.setCode(CmFinoFIX.NotificationCode_ResetAuthenticationKeyForIntegration);
 				
 				Partner partner = null;
 				if(integrationPartnerMapping.getPartner() != null){
 					partner = integrationPartnerMapping.getPartner();			
 				}
-				else if(integrationPartnerMapping.getMFSBiller() != null)
+				else if(integrationPartnerMapping.getMfsBiller() != null)
 				{
-					Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMFSBiller().getMFSBillerPartnerFromMFSBillerId();
+					Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
 					Iterator<MFSBillerPartner> it  = mfsBillerpartners.iterator();
 					if(it.hasNext())
 					{
@@ -101,11 +101,11 @@ public class ResetAuthenticationKeyForIntegrationProcessorImpl extends BaseFixPr
 				}
 				if(partner != null)
 				{
-					SubscriberMDN smdn = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
-					wrapper.setFirstName(smdn.getSubscriber().getFirstName());
-					wrapper.setLastName(smdn.getSubscriber().getLastName());
-					String destMDN = smdn.getMDN();
-					Integer language = smdn.getSubscriber().getLanguage();
+					SubscriberMdn smdn = partner.getSubscriber().getSubscriberMdns().iterator().next();
+					wrapper.setFirstName(smdn.getSubscriber().getFirstname());
+					wrapper.setLastName(smdn.getSubscriber().getLastname());
+					String destMDN = smdn.getMdn();
+					Integer language = (int) smdn.getSubscriber().getLanguage();
 					wrapper.setLanguage(language);
 					wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 					String smsMessage = notificationMessageParserService.buildMessage(wrapper,true);					
@@ -117,8 +117,8 @@ public class ResetAuthenticationKeyForIntegrationProcessorImpl extends BaseFixPr
 					
 					wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 					String emailMsg = notificationMessageParserService.buildMessage(wrapper,true);					
-					String to = partner.getAuthorizedEmail();
-					String name=partner.getTradeName();
+					String to = partner.getAuthorizedemail();
+					String name=partner.getTradename();
 					String subject = ConfigurationUtil.getAuthenticationKeyMailSubject();
 					mailService.asyncSendEmail(to, name, subject, emailMsg);
 				}

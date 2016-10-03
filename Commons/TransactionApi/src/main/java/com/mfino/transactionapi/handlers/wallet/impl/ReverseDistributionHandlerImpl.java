@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.query.FundDistributionInfoQuery;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.FundStorageService;
 import com.mfino.service.SCTLService;
@@ -58,7 +58,7 @@ public class ReverseDistributionHandlerImpl implements ReverseDistributionHandle
 
 	private void processReversal(FundDistributionInfo fundDistributionInfo) {
 			log.info("The Fund Distribution inquiry request has timed out.Reversing Fund Distribution with id:"+fundDistributionInfo.getId()+"Starting....");
-			UnRegisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
+			UnregisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
 			fundDistributionInfo.setFailurereason("Confirmation not received.failed by scheduler");
 			fundDistributionInfo.setDistributionstatus((long)CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
 			BigDecimal availableAmount = unRegisteredTxnInfo.getAvailableamount().add(fundDistributionInfo.getDistributedamount());

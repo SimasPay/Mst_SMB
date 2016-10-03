@@ -65,7 +65,7 @@ public class AuthProcessingFilter extends UsernamePasswordAuthenticationFilter i
 		List<User> results = (List<User>) userDAO.get(query);
 		if (results.size() > 0) {
 			userObj = results.get(0);
-			isChangePassword = userObj.getFirstTimeLogin();
+			isChangePassword = Boolean.valueOf(userObj.getFirsttimelogin().toString());
 			if (!isChangePassword) {
 				isChangePassword = subscriberService.isPasswordExpired(userObj);
 			}

@@ -74,7 +74,7 @@ public class RelationshipTypeProcessorImpl extends BaseFixProcessor implements R
 			
 			PartnerRestrictionsQuery prQuery = new PartnerRestrictionsQuery();
 			prQuery.setDctId(dctId);
-			prQuery.setPartnerId(partner.getID());
+			prQuery.setPartnerId(partner.getId().longValue());
 			
 			List<PartnerRestrictions> partnerRestrictions = partnerRestrictionsDao.get(prQuery);
 			
@@ -82,15 +82,15 @@ public class RelationshipTypeProcessorImpl extends BaseFixProcessor implements R
 			
 			for(DCTRestrictions dctRestriction : dctRestrictions){
 				RelationshipType relationshipType = new RelationshipType();
-				relationshipType.setID(dctRestriction.getRelationShipType());
-				relationshipType.setDescription(enumTextService.getEnumTextValue(CmFinoFIX.TagID_RelationShipType, CmFinoFIX.Language_English, dctRestriction.getRelationShipType()));
+				relationshipType.setID(dctRestriction.getRelationshiptype().intValue());
+				relationshipType.setDescription(enumTextService.getEnumTextValue(CmFinoFIX.TagID_RelationShipType, CmFinoFIX.Language_English, dctRestriction.getRelationshiptype()));
 				relationshipTypes.add(relationshipType);
 			}
 			
 			for(PartnerRestrictions partnerRestriction : partnerRestrictions){
 				RelationshipType relationshipType = new RelationshipType();
-				relationshipType.setID(partnerRestriction.getRelationShipType());
-				relationshipType.setDescription(enumTextService.getEnumTextValue(CmFinoFIX.TagID_RelationShipType, CmFinoFIX.Language_English, partnerRestriction.getRelationShipType()));
+				relationshipType.setID(partnerRestriction.getRelationshiptype().intValue());
+				relationshipType.setDescription(enumTextService.getEnumTextValue(CmFinoFIX.TagID_RelationShipType, CmFinoFIX.Language_English, partnerRestriction.getRelationshiptype()));
 				relationshipTypes.add(relationshipType);
 			}
 			

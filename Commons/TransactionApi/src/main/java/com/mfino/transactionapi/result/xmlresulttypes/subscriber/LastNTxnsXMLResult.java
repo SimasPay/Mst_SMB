@@ -7,7 +7,7 @@ import java.util.List;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.Service;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsFromBank;
@@ -195,11 +195,11 @@ public class LastNTxnsXMLResult extends XMLResult {
 			}
 		}
 		
-		List<SCTLSettlementMap> pendingSettlementsList = getPendingSettlements();
+		List<SctlSettlementMap> pendingSettlementsList = getPendingSettlements();
 		if (pendingSettlementsList != null) {
 			if (pendingSettlementsList.size() > 0) {
 				getXmlWriter().writeStartElement("transactionDetails");
-				for (SCTLSettlementMap pendingSettlement : pendingSettlementsList) {
+				for (SctlSettlementMap pendingSettlement : pendingSettlementsList) {
 					getXmlWriter().writeStartElement("transactionDetail");
 
 					getXmlWriter().writeStartElement("refID");

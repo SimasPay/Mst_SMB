@@ -46,7 +46,7 @@ import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSServiceChargeTransactions;
@@ -520,9 +520,9 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			UnRegisteredTxnInfoDAO urtiDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
 			UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 			urtiQuery.setTransferSctlId(sctl.getID());
-			List<UnRegisteredTxnInfo> urtiList = urtiDAO.get(urtiQuery);
+			List<UnregisteredTxnInfo> urtiList = urtiDAO.get(urtiQuery);
 			if (CollectionUtils.isNotEmpty(urtiList)) {
-				UnRegisteredTxnInfo urti = urtiList.get(0);
+				UnregisteredTxnInfo urti = urtiList.get(0);
 				if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnRegisteredTxnStatus()) || 
 						CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnRegisteredTxnStatus())) {
 					isReverseAllowed = true;

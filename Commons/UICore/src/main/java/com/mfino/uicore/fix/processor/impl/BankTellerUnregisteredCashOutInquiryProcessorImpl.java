@@ -30,7 +30,7 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.User;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -174,14 +174,14 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
 		query.setTransferSctlId(realMsg.getOriginalReferenceID());	
 		query.setSubscriberMDNID(subscriberMDN.getID());		
-		List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
+		List<UnregisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
 		if(unRegisteredTxnInfo==null||unRegisteredTxnInfo.isEmpty()){
 			log.info("unregistered transaction info not exist with sctlid"+realMsg.getOriginalReferenceID());
 			errorMsg.setErrorDescription(MessageText._("Transfer Record not found with given TransferId"));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			return errorMsg;	
 		}
-		UnRegisteredTxnInfo txnInfo = unRegisteredTxnInfo.get(0);
+		UnregisteredTxnInfo txnInfo = unRegisteredTxnInfo.get(0);
 		if(!(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(txnInfo.getUnRegisteredTxnStatus())
 				||CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(txnInfo.getUnRegisteredTxnStatus()))){
 			log.info("unregistered transaction info status "+txnInfo.getUnRegisteredTxnStatus());
@@ -210,7 +210,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 	}
 	
  	private CMJSError handleCashOutInquiry(CMJSCashOutUnregisteredInquiry realMsg,
-			UnRegisteredTxnInfo txnInfo, SubscriberMDN partnerMDN, SubscriberMDN destMDn, Partner partner) {
+			UnregisteredTxnInfo txnInfo, SubscriberMDN partnerMDN, SubscriberMDN destMDn, Partner partner) {
 		CMJSError errorMsg = new CMJSError();
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 		TransactionsLog transactionsLog = new TransactionsLog();

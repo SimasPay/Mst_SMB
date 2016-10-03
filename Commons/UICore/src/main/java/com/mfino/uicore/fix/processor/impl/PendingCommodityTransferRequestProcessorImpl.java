@@ -24,7 +24,7 @@ import com.mfino.domain.Service;
 import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionType;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.domain.User;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -193,10 +193,10 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(tt.getTransactionName())) {
 
 			UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-			UnRegisteredTxnInfo urti = null;
+			UnregisteredTxnInfo urti = null;
 			urtiQuery.setTransferSctlId(sctl.getID());
 			urtiQuery.setStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
-			List<UnRegisteredTxnInfo> lstUrti = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
+			List<UnregisteredTxnInfo> lstUrti = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 			if (CollectionUtils.isNotEmpty(lstUrti)) {
 				urti = lstUrti.get(0);
 				if (transactionResponse.isResult()) {

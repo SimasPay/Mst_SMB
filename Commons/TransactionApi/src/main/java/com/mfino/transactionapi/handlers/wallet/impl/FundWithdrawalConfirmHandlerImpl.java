@@ -23,7 +23,7 @@ import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMFundWithdrawalConfirm;
@@ -146,7 +146,7 @@ public class FundWithdrawalConfirmHandlerImpl extends FIXMessageHandler implemen
 		
 		fundWithdrawalConfirm.setWithdrawalMDN(sctl.getOnBeHalfOfMDN());
 		FundDistributionInfo fundDistributionInfo = fundValidationService.queryFundDistributionInfo(sctl.getID());
-		UnRegisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
+		UnregisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
 		FundDefinition fundDefinition= unRegisteredTxnInfo.getFundDefinition();
 		int notificationCode;		
 		fundWithdrawalConfirm.setPartnerCode(unRegisteredTxnInfo.getPartnercode());

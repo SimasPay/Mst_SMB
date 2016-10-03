@@ -31,7 +31,7 @@ import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.UnRegisteredTxnInfo;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -179,13 +179,13 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		query.setTransferSctlId(transferId);
 		query.setSubscriberMDNID(srcSubscriberMDN.getId().longValue());
 
-		List<UnRegisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
+		List<UnregisteredTxnInfo> unRegisteredTxnInfo = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(query);
 		if(unRegisteredTxnInfo==null||unRegisteredTxnInfo.isEmpty()){
 			log.error("Could not find the Unregistered trxn info record with sctlID: "+transferId+"and subscriberMDNID: "+srcSubscriberMDN.getId());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
 			return result;
 		}
-		UnRegisteredTxnInfo unTxnInfo = unRegisteredTxnInfo.get(0);
+		UnregisteredTxnInfo unTxnInfo = unRegisteredTxnInfo.get(0);
 		if(!(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(unTxnInfo.getUnregisteredtxnstatus())
 				||CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(unTxnInfo.getUnregisteredtxnstatus()))){
 			if(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(unTxnInfo.getUnregisteredtxnstatus())){

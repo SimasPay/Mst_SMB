@@ -53,10 +53,14 @@ public class AuthenticationAttemptListener implements ApplicationListener {
 
                     if (list.size() > 0) {
                         User u = list.get(0);
-                        int failedCount = (u.getFailedLoginCount() == null)
-                                ? 1
-                                : u.getFailedLoginCount() + 1;
-                        u.setFailedLoginCount(failedCount);
+                        int failedCount;
+                        Long temp = u.getFailedlogincount();
+                        
+						if (temp.intValue() == 0)
+							failedCount = 1;
+						else
+							failedCount = (int) (u.getFailedlogincount() + 1);
+                        u.setFailedlogincount(failedCount);
                         userDAO.save(u);
                     }
                 }
@@ -71,8 +75,8 @@ public class AuthenticationAttemptListener implements ApplicationListener {
                 if (list.size() > 0) {
                     User u = list.get(0);
                     //reset the failed attempts count
-                    if (u.getFailedLoginCount() > 0) {
-                        u.setFailedLoginCount(0);
+                    if (u.getFailedlogincount() > 0) {
+                        u.setFailedlogincount(0);
                         userDAO.save(u);
                     }
                 }

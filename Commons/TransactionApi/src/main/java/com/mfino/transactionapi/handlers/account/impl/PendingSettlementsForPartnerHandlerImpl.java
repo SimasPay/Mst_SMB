@@ -14,7 +14,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.SCTLSettlementMapQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
-import com.mfino.domain.SCTLSettlementMap;
+import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
@@ -120,15 +120,15 @@ public class PendingSettlementsForPartnerHandlerImpl extends FIXMessageHandler i
 		SCTLSettlementMapQuery query = new SCTLSettlementMapQuery();
 		query.setPartnerID(partner.getId().longValue());
 		query.setSettlementStatus(CmFinoFIX.SettlementStatus_Initiated);
-		List<SCTLSettlementMap> pendingSettlementsList = sctlSettlementMapService.get(query);
+		List<SctlSettlementMap> pendingSettlementsList = sctlSettlementMapService.get(query);
 		
 		if(pendingSettlementsList.size() == 0){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NoPendingsettlementsWereFound);
 			return result;
 		}
 		
-		Collections.sort(pendingSettlementsList, new Comparator<SCTLSettlementMap>() {
-			public int compare(SCTLSettlementMap ps1, SCTLSettlementMap ps2) {
+		Collections.sort(pendingSettlementsList, new Comparator<SctlSettlementMap>() {
+			public int compare(SctlSettlementMap ps1, SctlSettlementMap ps2) {
 				return ((int) (ps2.getId().intValue() - ps1.getId().intValue()));
 			}
 		});

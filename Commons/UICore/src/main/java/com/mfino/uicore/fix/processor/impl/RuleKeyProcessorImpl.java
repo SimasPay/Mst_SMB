@@ -25,14 +25,14 @@ public class RuleKeyProcessorImpl extends BaseFixProcessor implements RuleKeyPro
 	private static Logger log = LoggerFactory.getLogger(RuleKeyProcessor.class);
 	
 	private void updateMessage(RuleKey ruleKey, CMJSRuleKey.CGEntries e) {
-		if(ruleKey.getID() != null) {
-			e.setID(ruleKey.getID());
+		if(ruleKey.getId() != null) {
+			e.setID(ruleKey.getId().longValue());
 		}
-		if(ruleKey.getTxnRuleKey() != null) {
-			e.setTxnRuleKey(ruleKey.getTxnRuleKey());
+		if(ruleKey.getTxnrulekey() != null) {
+			e.setTxnRuleKey(ruleKey.getTxnrulekey());
 		}		
-		if(ruleKey.getTxnRuleKeyComparision() != null) {
-			e.setTxnRuleKeyComparision(ruleKey.getTxnRuleKeyComparision());
+		if(ruleKey.getTxnrulekeycomparision() != null) {
+			e.setTxnRuleKeyComparision(ruleKey.getTxnrulekeycomparision());
 		}			
 	}
 
