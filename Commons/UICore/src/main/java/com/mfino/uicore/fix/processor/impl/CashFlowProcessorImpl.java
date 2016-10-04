@@ -63,125 +63,125 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
 	@Qualifier("UserServiceImpl")
 	private UserService userService;
 
-    protected void updateMessage(CRCommodityTransfer c,
-            CRPendingCommodityTransfer pct,
+    protected void updateMessage(CommodityTransfer c,
+            PendingCommodityTransfer c2,
             CMJSCashFlow.CGEntries entry, Long pocketId) {
-        entry.setID(c.getID());
-        entry.setTransactionID(c.getTransactionsLogByTransactionID().getID());
-        entry.setJSMsgType(c.getMsgType());
-        entry.setTransferStatus(c.getTransferStatus());
+        entry.setID(c.getId().longValue());
+        entry.setTransactionID(c.getTransactionLog().getId().longValue());
+        entry.setJSMsgType(((Long)c.getMsgtype()).intValue());
+        entry.setTransferStatus(((Long)c.getTransferstatus()).intValue());
         entry.setTransferStateText(state);
-        if (c.getSourceReferenceID() != null) {
-            entry.setSourceReferenceID(c.getSourceReferenceID());
+        if (c.getSourcereferenceid() != null) {
+            entry.setSourceReferenceID(c.getSourcereferenceid());
         }
-        if (c.getSourceMDN() != null) {
-            entry.setSourceMDN(c.getSourceMDN());
+        if (c.getSourcemdn() != null) {
+            entry.setSourceMDN(c.getSourcemdn());
         }
-        entry.setSourceMDNID(c.getSubscriberMDNBySourceMDNID().getID());
-        entry.setSourceSubscriberID(c.getSubscriberBySourceSubscriberID().getId().longValue());
-        if (c.getSourceSubscriberName() != null) {
-            entry.setSourceSubscriberName(c.getSourceSubscriberName());
+        entry.setSourceMDNID(c.getSubscriberMdn().getId().longValue());
+        entry.setSourceSubscriberID(c.getSubscriber().getId().longValue());
+        if (c.getSourcesubscribername() != null) {
+            entry.setSourceSubscriberName(c.getSourcesubscribername());
         }
-        if (c.getSubscriberBySourceSubscriberID().getMfinoUserBySubscriberuserid() != null) {
-            entry.setSourceUserName(c.getSubscriberBySourceSubscriberID().getMfinoUserBySubscriberuserid().getUsername());
+        if (c.getSubscriber().getMfinoUserBySubscriberuserid() != null) {
+            entry.setSourceUserName(c.getSubscriber().getMfinoUserBySubscriberuserid().getUsername());
         }
-        entry.setSourcePocketType(c.getSourcePocketType());
-        entry.setSourcePocketID(c.getPocketBySourcePocketID().getId().longValue());
-        if (c.getSourcePocketBalance() != null) {
-            entry.setSourcePocketBalance(c.getSourcePocketBalance());
+        entry.setSourcePocketType(((Long)c.getSourcepockettype()).intValue());
+        entry.setSourcePocketID(c.getPocket().getId().longValue());
+        if (c.getSourcepocketbalance() != null) {
+            entry.setSourcePocketBalance(new BigDecimal(c.getSourcepocketbalance()));
         }
-        if (c.getDestMDN() != null) {
-            entry.setDestMDN(c.getDestMDN());
+        if (c.getDestmdn() != null) {
+            entry.setDestMDN(c.getDestmdn());
         }
-        if (c.getUICategory() != null) {
-            entry.setTransactionUICategory(c.getUICategory());
-            entry.setTransactionUICategoryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, c.getUICategory()));
+        if (c.getUicategory() != null) {
+            entry.setTransactionUICategory(c.getUicategory().intValue());
+            entry.setTransactionUICategoryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, c.getUicategory()));
         }
-        if (c.getDestMDNID() != null) {
-            entry.setDestMDNID(c.getDestMDNID());
+        if (c.getDestmdnid() != null) {
+            entry.setDestMDNID(c.getDestmdnid().longValue());
         }
-        if (c.getDestSubscriberID() != null) {
-            entry.setDestSubscriberID(c.getDestSubscriberID());
+        if (c.getDestsubscriberid() != null) {
+            entry.setDestSubscriberID(c.getDestsubscriberid().longValue());
             SubscriberDAO destSubDao = DAOFactory.getInstance().getSubscriberDAO();
-            Subscriber sub = destSubDao.getById(c.getDestSubscriberID());
+            Subscriber sub = destSubDao.getById(c.getDestsubscriberid().longValue());
             if (sub.getMfinoUserBySubscriberuserid() != null) {
                 entry.setDestnUserName(sub.getMfinoUserBySubscriberuserid().getUsername());
             }
         }
-        if (c.getDestSubscriberName() != null) {
-            entry.setDestSubscriberName(c.getDestSubscriberName());
+        if (c.getDestsubscribername() != null) {
+            entry.setDestSubscriberName(c.getDestsubscribername());
         }
-        if (c.getDestPocketType() != null) {
-            entry.setDestPocketType(c.getDestPocketType());
+        if (c.getDestpockettype() != null) {
+            entry.setDestPocketType(c.getDestpockettype().intValue());
         }
-        if (c.getDestPocketID() != null) {
-            entry.setDestPocketID(c.getDestPocketID());
+        if (c.getDestpocketid() != null) {
+            entry.setDestPocketID(c.getDestpocketid().longValue());
         }
-        if (c.getDestPocketBalance() != null) {
-            entry.setDestPocketBalance(c.getDestPocketBalance());
+        if (c.getDestpocketbalance() != null) {
+            entry.setDestPocketBalance(new BigDecimal(c.getDestpocketbalance()));
         }
-        if (c.getBillingType() != null) {
-            entry.setBillingType(c.getBillingType());
+        if (c.getBillingtype() != null) {
+            entry.setBillingType(c.getBillingtype().intValue());
         }
         entry.setAmount(c.getAmount());
-        entry.setCommodity(c.getCommodity());
-        if (c.getBucketType() != null) {
-            entry.setBucketType(c.getBucketType());
+        entry.setCommodity(((Long)c.getCommodity()).intValue());
+        if (c.getBuckettype() != null) {
+            entry.setBucketType(c.getBuckettype());
         }
-        entry.setSourceApplication(c.getSourceApplication());
+        entry.setSourceApplication(((Long)c.getSourceapplication()).intValue());
         if (c.getCurrency() != null) {
             entry.setCurrency(c.getCurrency());
         }
-        if (c.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(c.getLastUpdateTime());
+        if (c.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(c.getLastupdatetime());
         }
-        if (c.getUpdatedBy() != null) {
-            entry.setUpdatedBy(c.getUpdatedBy());
+        if (c.getUpdatedby() != null) {
+            entry.setUpdatedBy(c.getUpdatedby());
         }
-        if (c.getLOP() != null) {
-            if (c.getLOP().getActualamountpaid() != null) {
-                entry.setPaidAmount(c.getLOP().getActualamountpaid());
+        if (c.getLetterOfPurchase() != null) {
+            if (c.getLetterOfPurchase().getActualamountpaid() != null) {
+                entry.setPaidAmount(c.getLetterOfPurchase().getActualamountpaid());
             }
         }
-        if (c.getSourceTerminalID() != null) {
-            entry.setSourceTerminalID(c.getSourceTerminalID());
+        if (c.getSourceterminalid() != null) {
+            entry.setSourceTerminalID(c.getSourceterminalid());
         }
 
         if (pocketId != null) {
             entry.setSourceDestnPocketID(pocketId);
         }
-        if (pct != null) {
-            if (pct.getOperatorActionRequired() != null) {
-                entry.setOperatorActionRequired(pct.getOperatorActionRequired());
+        if (c2 != null) {
+            if ((Short)c2.getOperatoractionrequired() != null) {
+                entry.setOperatorActionRequired(c2.getOperatoractionrequired() != 0);
             }
-            if (pct.getLocalRevertRequired() != null) {
-                entry.setLocalRevertRequired(pct.getLocalRevertRequired());
+            if ((Short)c2.getLocalrevertrequired() != null) {
+                entry.setLocalRevertRequired(c2.getLocalrevertrequired() != 0);
             }
-            if (pct.getBankReversalRequired() != null) {
-                entry.setBankReversalRequired(pct.getBankReversalRequired());
+            if ((Short)c2.getBankreversalrequired() != null) {
+                entry.setBankReversalRequired(c2.getBankreversalrequired() != 0);
             }
         }
-        if(c.getCSRAction() != null) {
-            entry.setCSRAction(c.getCSRAction());
+        if(c.getCsraction() != null) {
+            entry.setCSRAction(c.getCsraction().intValue());
         }
-        if (c.getBankCode() != null) {
-            entry.setBankCode(c.getBankCode());
+        if (c.getBankcode() != null) {
+            entry.setBankCode(c.getBankcode().intValue());
         }
-        entry.setStartTime(c.getStartTime());
+        entry.setStartTime(c.getStarttime());
         entry.setAmountText(c.getAmount() + GeneralConstants.SINGLE_SPACE + c.getCurrency());
-        entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, c.getTransferStatus()));
+        entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, c.getTransferstatus()));
         entry.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, c.getCommodity()));
-        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(c.getSourceApplication()));
-        entry.setTransferFailureReasonText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, c.getTransferFailureReason()));
-        entry.setSourcePocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SourcePocketType, null, c.getSourcePocketType()));
-        entry.setDestPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_DestPocketType, null, c.getDestPocketType()));
-        entry.setBillingTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BillingType, null, c.getBillingType()));
-        entry.setBucketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BucketType, null, c.getBucketType()));
-        entry.setBankResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankResponseCode, null, c.getBankResponseCode()));
-        entry.setOperatorResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorResponseCode, null, c.getOperatorResponseCode()));
-        entry.setOperatorCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorCodeForRouting, null, c.getOperatorCode()));
+        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(((Long)c.getSourceapplication()).intValue()));
+        entry.setTransferFailureReasonText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, c.getTransferfailurereason()));
+        entry.setSourcePocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SourcePocketType, null, c.getSourcepockettype()));
+        entry.setDestPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_DestPocketType, null, c.getDestpockettype()));
+        entry.setBillingTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BillingType, null, c.getBillingtype()));
+        entry.setBucketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BucketType, null, c.getBuckettype()));
+        entry.setBankResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankResponseCode, null, c.getBankresponsecode()));
+        entry.setOperatorResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorResponseCode, null, c.getOperatorresponsecode()));
+        entry.setOperatorCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorCodeForRouting, null, c.getOperatorcode()));
 //        entry.setBankCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankCodeForRouting, null, c.getBankCode()));
-        entry.setRecordVersion(c.getVersion());
+        entry.setRecordVersion(((Long)c.getVersion()).intValue());
     }
     /*
      *  This Method is to be used when we are doing a Group By Opearation
@@ -433,7 +433,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
                 if (results != null) {
                     size = results.size();
                     for (int i = 0; i < size; i++) {
-                        CRCommodityTransfer c = results.get(i);
+                        CommodityTransfer c = results.get(i);
                         CMJSCashFlow.CGEntries entry =
                                 new CMJSCashFlow.CGEntries();
                         //i-1 to handel when i=0 and all generated refereces should be negative
@@ -443,7 +443,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
                 } else if (pendingResults != null) {
                     size = pendingResults.size();
                     for (int i = 0; i < size; i++) {
-                        CRPendingCommodityTransfer c = pendingResults.get(i);
+                        PendingCommodityTransfer c = pendingResults.get(i);
                         CMJSCashFlow.CGEntries entry =
                                 new CMJSCashFlow.CGEntries();
                         //i-1 to handel when i=0 and all generated refereces should be negative

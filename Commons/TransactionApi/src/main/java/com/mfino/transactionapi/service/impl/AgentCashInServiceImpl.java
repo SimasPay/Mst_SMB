@@ -1,5 +1,7 @@
 package com.mfino.transactionapi.service.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PocketDAO;
-import com.mfino.domain.AgentCashInTransactions;
+import com.mfino.domain.AgentCashinTxnLog;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -49,7 +51,7 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
 
-	public CMJSError processAgentCashIn(AgentCashInTransactions actl){
+	public CMJSError processAgentCashIn(AgentCashinTxnLog actl){
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 		
 		log.info("Validating the agentCashIn transaction details" );
@@ -60,14 +62,14 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 			errorMsg.setErrorDescription("Agent cash-in failed : " +errorMsg.getErrorDescription());
 			return errorMsg;
 		}
-		actl.setAgentCashInTrxnStatus(CmFinoFIX.AgentCashInTrxnStatus_Processing);
+		actl.setAgentcashintrxnstatus(CmFinoFIX.AgentCashInTrxnStatus_Processing.longValue());
 		
 		log.info("Setting the transaction details");
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSourceMDN(actl.getSourceMDN());
-		transactionDetails.setSourcePocketId(actl.getSourcePocketID().toString());
-		transactionDetails.setDestMDN(actl.getDestMDN());
-		transactionDetails.setDestPocketId(actl.getDestPocketID().toString());
+		transactionDetails.setSourceMDN(actl.getSourcemdn());
+		transactionDetails.setSourcePocketId(actl.getSourcepocketid().toString());
+		transactionDetails.setDestMDN(actl.getDestmdn());
+		transactionDetails.setDestPocketId(actl.getDestpocketid().toString());
 		transactionDetails.setAmount(actl.getAmount());
 		transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASH_IN_TO_AGENT);
 		transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
@@ -79,13 +81,13 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY);
 		transactionDetails.setDestPocketCode(ServiceAndTransactionConstants.EMONEY_POCKET_CODE);
 		
-		Partner agent = DAOFactory.getInstance().getPartnerDAO().getById(actl.getDestPartnerID()); 
+		Partner agent = DAOFactory.getInstance().getPartnerDAO().getById(actl.getDestpartnerid().longValue()); 
 		
 		log.info("transfered the cash-in to agent inquiry request to Transaction Request Handler");
 		XMLResult result = transactionRequestHandler.process(transactionDetails);
 		
 		log.info("Setting sctlID in agentCashIn table");
-		actl.setSctlId(result.getSctlID());
+		actl.setSctlid(new BigDecimal(result.getSctlID()));
 		
 		log.info("Checking backend response of inquiry");
 		TransactionResponse transactionResponse = checkBackEndResponse(result.getMultixResponse());
@@ -135,7 +137,7 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 			return errorMsg;
 		}
 		
-		actl.setAgentCashInTrxnStatus(CmFinoFIX.AgentCashInTrxnStatus_Completed);
+		actl.setAgentcashintrxnstatus(CmFinoFIX.AgentCashInTrxnStatus_Completed.longValue());
 		errorMsg.setErrorDescription(MessageText._("Transaction ID:"+result.getSctlID()+". Successfully Cashed-in " + agent.getTradename()+ " wallet with amount "+result.getCreditAmount()
 																				+"and service charge: "+result.getServiceCharge()));
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_NoError);
@@ -143,11 +145,11 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 
 	}
 	
-	private CMJSError validateAgentCashInTransaction(AgentCashInTransactions actl, CMJSError errorMsg) {
+	private CMJSError validateAgentCashInTransaction(AgentCashinTxnLog actl, CMJSError errorMsg) {
 		//Getting Destination
 		PartnerDAO partnerDAO =DAOFactory.getInstance().getPartnerDAO();
 		PocketDAO pocketDAO =DAOFactory.getInstance().getPocketDAO();
-		Partner agent = partnerDAO.getById(actl.getDestPartnerID()); 
+		Partner agent = partnerDAO.getById(actl.getDestpartnerid().longValue()); 
 		PartnerValidator partnerValidator = new PartnerValidator();
 		partnerValidator.setPartner(agent);
 		//validating destination agent
@@ -249,19 +251,19 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 		}
 		
 		
-		actl.setSourceMDN(sourceMDN.getMdn());
-		actl.setSourcePocketID(sourcePocketID);
-		actl.setDestPartnerID(agent.getId().longValue());
-		actl.setDestMDN(agentmdn.getMdn());
-		actl.setDestPocketID(agentPocket.getId().longValue());
+		actl.setSourcemdn(sourceMDN.getMdn());
+		actl.setSourcepocketid(new BigDecimal(sourcePocketID));
+		actl.setDestpartnerid(agent.getId());
+		actl.setDestmdn(agentmdn.getMdn());
+		actl.setDestpocketid(agentPocket.getId());
 		return errorMsg;
 
 		
 	}
 
-	public void failTheAgentCashInTrxn(AgentCashInTransactions actl,String statusReason){
-		actl.setAgentCashInTrxnStatus(CmFinoFIX.AgentCashInTrxnStatus_Failed);
-		actl.setAgentCashInTrxnStatusReason(statusReason);
+	public void failTheAgentCashInTrxn(AgentCashinTxnLog actl,String statusReason){
+		actl.setAgentcashintrxnstatus(CmFinoFIX.AgentCashInTrxnStatus_Failed.longValue());
+		actl.setAgentcashintrxnstatusreason(statusReason);
 	}
 
 }
