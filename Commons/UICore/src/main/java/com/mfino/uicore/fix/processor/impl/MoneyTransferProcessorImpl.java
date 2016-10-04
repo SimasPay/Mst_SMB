@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.hibernate.exception.DataException;
@@ -16,10 +17,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -78,22 +79,22 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		CMJSMoneyTransfer realMsg = (CMJSMoneyTransfer) msg;
 		CMJSError error = new CMJSError();
 
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(CmFinoFIX.MsgType_JSMoneyTransfer);
-		transactionsLog.setMessageData(realMsg.DumpFields());
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(CmFinoFIX.MsgType_JSMoneyTransfer);
+		transactionsLog.setMessagedata(realMsg.DumpFields());
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionLogService.save(transactionsLog);
 
 		cc = channelCodeService.getChannelCodebySourceApplication(CmFinoFIX.SourceApplication_Web);
 		Transaction transDetails = null;
 		ServiceCharge sc = new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
+		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setDestMDN(realMsg.getDestMDN());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
 		sc.setSourceMDN(realMsg.getSourceMDN());
 		sc.setTransactionAmount(realMsg.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		try {
 			transDetails = transactionChargingService.getCharge(sc);
 		} catch (InvalidServiceException e) {
@@ -112,12 +113,12 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 			error.setErrorDescription("Internal System error please try again");
 			return error;
 		}
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
-		realMsg.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
+		realMsg.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		error = (CMJSError) handleInquiry(realMsg);
 		if (CmFinoFIX.ErrorCode_NoError.equals(error.getErrorCode())) {
-			sctl = serviceChargeTransactionLogService.getById(sctl.getID());
+			sctl = serviceChargeTransactionLogService.getById(sctl.getId().longValue());
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 					transactionChargingService.chnageStatusToProcessing(sctl);
 				} 
@@ -146,8 +147,8 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		transferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferInquiry.setSourceMDN(realMsg.getSourceMDN());
 		transferInquiry.setSourceMessage(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
-		transferInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		transferInquiry.setChannelCode(cc.getChannelCode());
+		transferInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		transferInquiry.setChannelCode(cc.getChannelcode());
 		transferInquiry.setSourcePocketID(realMsg.getSourcePocketID());
 		transferInquiry.setDestPocketID(realMsg.getDestPocketID());
 		transferInquiry.setServiceChargeTransactionLogID(realMsg.getServiceChargeTransactionLogID());
@@ -156,10 +157,10 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		CMJSError response = (CMJSError) super.handleRequestResponse(transferInquiry);
 		// Saves the Transaction Id returned from Back End
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
-		ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
 
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(new BigDecimal(transactionResponse.getTransactionId()));
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}
 		transactionChargingService.updateTransactionStatus(transactionResponse,sctl);
@@ -179,23 +180,23 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(realMsg.getTransferID());
 		transferConfirmation.setConfirmed(true);
-		transferConfirmation.setSourceApplication(cc.getChannelSourceApplication());
-		transferConfirmation.setChannelCode(cc.getChannelCode());
+		transferConfirmation.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(realMsg.getParentTransactionID());
 		transferConfirmation.setSourcePocketID(realMsg.getSourcePocketID());
 		transferConfirmation.setDestPocketID(realMsg.getDestPocketID());
 		transferConfirmation.setServiceChargeTransactionLogID(realMsg.getServiceChargeTransactionLogID());
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(
 						CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,
 						transferConfirmation.DumpFields(),
 						transferConfirmation.getParentTransactionID());
-		transferConfirmation.setTransactionID(transactionsLog.getID());
+		transferConfirmation.setTransactionID(transactionsLog.getId().longValue());
 		log.info("Sending trnaferConfirmation request From source:"+realMsg.getSourceMDN()+" PocketID:"+realMsg.getSourcePocketID()+" To:"+realMsg.getDestMDN()
 				+" PocketID:"+realMsg.getDestPocketID()+ " Amount"+realMsg.getAmount()+" TransferID:"+realMsg.getTransferID());
 		
 		CMJSError errorMsg = (CMJSError) handleRequestResponse(transferConfirmation);
-		ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
 
 		if (CmFinoFIX.ErrorCode_NoError.equals(errorMsg.getErrorCode())) {
 			transactionChargingService.confirmTheTransaction(sctl);

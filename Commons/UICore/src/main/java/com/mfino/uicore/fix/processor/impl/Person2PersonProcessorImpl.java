@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -125,78 +126,78 @@ public class Person2PersonProcessorImpl extends BaseFixProcessor implements Pers
     public void updateEntity(Person2Person s, CMJSPerson2Person.CGEntries e) {
 
         if (e.getID() != null) {
-            s.setID(e.getID());
+            s.setId(new BigDecimal(e.getID()));
         }
         if (e.getActivationTime() != null) {
-            s.setActivationTime(e.getActivationTime());
+            s.setActivationtime(e.getActivationTime());
         }
         if (e.getCreatedBy() != null) {
-            s.setCreatedBy(e.getCreatedBy());
+            s.setCreatedby(e.getCreatedBy());
         }
 
         if (e.getCreateTime() != null) {
-            s.setCreateTime(e.getCreateTime());
+            s.setCreatetime(e.getCreateTime());
         }
         if (e.getLastUpdateTime() != null) {
-            s.setLastUpdateTime(e.getLastUpdateTime());
+            s.setLastupdatetime(e.getLastUpdateTime());
         }
         if (e.getMDN() != null) {
-            s.setMDN((e.getMDN()));
+            s.setMdn(e.getMDN());
         }
         if (e.getMSPID() != null) {
             MfinoServiceProviderDAO mspdao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            s.setmFinoServiceProviderByMSPID(mspdao.getById(e.getMSPID()));
+            s.setMfinoServiceProvider(mspdao.getById(e.getMSPID()));
         }
         if (e.getPeerName() != null) {
-            s.setPeerName((e.getPeerName()));
+            s.setPeername((e.getPeerName()));
         }
         if (e.getSubscriberID() != null) {
             SubscriberDAO sdao = DAOFactory.getInstance().getSubscriberDAO();
             s.setSubscriber(sdao.getById(e.getSubscriberID()));
         }
         if (e.getUpdatedBy() != null) {
-            s.setUpdatedBy((e.getUpdatedBy()));
+            s.setUpdatedby((e.getUpdatedBy()));
         }
     }
 
     public void updateMessage(Person2Person s, CMJSPerson2Person.CGEntries e) {
 
-        if (s.getID() != null) {
-            e.setID(s.getID());
+        if (s.getId() != null) {
+            e.setID(s.getId().longValue());
         }
-        if (s.getActivationTime() != null) {
-            e.setActivationTime(s.getActivationTime());
+        if (s.getActivationtime() != null) {
+            e.setActivationTime(s.getActivationtime());
         }
-        if (s.getCreatedBy() != null) {
-            e.setCreatedBy(s.getCreatedBy());
-        }
-
-        if (s.getCreateTime() != null) {
-            e.setCreateTime(s.getCreateTime());
-        }
-        if (s.getLastUpdateTime() != null) {
-            e.setLastUpdateTime(s.getLastUpdateTime());
+        if (s.getCreatedby() != null) {
+            e.setCreatedBy(s.getCreatedby());
         }
 
-        if (s.getMDN() != null) {
-            e.setMDN((s.getMDN()));
+        if (s.getCreatetime() != null) {
+            e.setCreateTime(s.getCreatetime());
         }
-        if (s.getmFinoServiceProviderByMSPID() != null) {
-            e.setMSPID(s.getmFinoServiceProviderByMSPID().getID());
+        if (s.getLastupdatetime() != null) {
+            e.setLastUpdateTime(s.getLastupdatetime());
         }
-        if (s.getPeerName() != null) {
-            e.setPeerName((s.getPeerName()));
+
+        if (s.getMdn() != null) {
+            e.setMDN((s.getMdn()));
+        }
+        if (s.getMfinoServiceProvider() != null) {
+            e.setMSPID(s.getMfinoServiceProvider().getId().longValue());
+        }
+        if (s.getPeername() != null) {
+            e.setPeerName((s.getPeername()));
         }
         if (s.getSubscriber() != null) {
-            e.setSubscriberID(s.getSubscriber().getID());
+            e.setSubscriberID(s.getSubscriber().getId().longValue());
         }
-        if (s.getUpdatedBy() != null) {
-            e.setUpdatedBy((s.getUpdatedBy()));
+        if (s.getUpdatedby() != null) {
+            e.setUpdatedBy((s.getUpdatedby()));
         }
 
-        if(s.getVersion() != null)
+        if((Long)s.getVersion() != null)
         {
-            e.setRecordVersion(s.getVersion());
+            e.setRecordVersion(((Long)s.getVersion()).intValue());
         }
 
     }

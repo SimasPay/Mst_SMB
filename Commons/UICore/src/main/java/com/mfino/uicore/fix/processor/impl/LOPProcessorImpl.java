@@ -26,7 +26,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.LOP;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSLOP;
@@ -34,7 +34,6 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.LOPService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.LOPProcessor;
 
@@ -64,46 +63,46 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
             }
         }
         if (e.getGiroRefID() != null) {
-            lop.setGiroRefID(e.getGiroRefID());
+            lop.setGirorefid(e.getGiroRefID());
         }
         if (e.getActualAmountPaid() != null) {
-            lop.setActualAmountPaid(e.getActualAmountPaid());
+            lop.setActualamountpaid(e.getActualAmountPaid());
         }
         if (e.getAmountDistributed() != null) {
-            lop.setAmountDistributed(e.getAmountDistributed());
+            lop.setAmountdistributed(e.getAmountDistributed());
         }
         if (e.getApprovalTime() != null) {
-            lop.setApprovalTime(e.getApprovalTime());
+            lop.setApprovaltime(e.getApprovalTime());
         }
         if (e.getApprovedBy() != null) {
-            lop.setApprovedBy(e.getApprovedBy());
+            lop.setApprovedby(e.getApprovedBy());
         }
         if (e.getTransferDate() != null) {
-            lop.setTransferDate(e.getTransferDate());
+            lop.setTransferdate(e.getTransferDate());
         }
         if (e.getDistributeTime() != null) {
-            lop.setDistributeTime(e.getDistributeTime());
+            lop.setDistributetime(e.getDistributeTime());
         }
         if (e.getDistributedBy() != null) {
-            lop.setDistributedBy(e.getDistributedBy());
+            lop.setDistributedby(e.getDistributedBy());
         }
         if (e.getCreateTime() != null) {
-            lop.setCreateTime(e.getCreateTime());
+            lop.setCreatetime(e.getCreateTime());
         }
         if (e.getLastUpdateTime() != null) {
-            lop.setLastUpdateTime(e.getLastUpdateTime());
+            lop.setLastupdatetime(e.getLastUpdateTime());
         }
         if (e.getUpdatedBy() != null) {
-            lop.setUpdatedBy(e.getUpdatedBy());
+            lop.setUpdatedby(e.getUpdatedBy());
         }
         if (e.getCreatedBy() != null) {
-            lop.setCreatedBy(e.getCreatedBy());
+            lop.setCreatedby(e.getCreatedBy());
         }
         if (e.getComment() != null) {
-            lop.setLOPComment(e.getComment());
+            lop.setLopcomment(e.getComment());
         }
         if (e.getDistributorName() != null) {
-            lop.getMerchantBySubscriberID().setTradeName(e.getDistributorName());
+            lop.getMerchant().setTradename(e.getDistributorName());
         }
         if(e.getCommission() != null) {
         	lop.setCommission(e.getCommission());
@@ -112,31 +111,31 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
 
     private void updateMessage(LOP lop, CMJSLOP.CGEntries entry) {
 
-        entry.setID(lop.getID());
-        Set<CommodityTransfer> results = lop.getCommodityTransferFromLOPID();
+        entry.setID(lop.getId().longValue());
+        Set<CommodityTransfer> results = lop.getCommodityTransfers();
         if (results.size() > 0) {
             CommodityTransfer ct = (CommodityTransfer) results.toArray()[0];
-            entry.setTransactionID(ct.getID());
+            entry.setTransactionID(ct.getId().longValue());
         }
         if (lop.getStatus() != null) {
             entry.setStatus(lop.getStatus());
         }
-        if (lop.getGiroRefID() != null) {
-            entry.setGiroRefID(lop.getGiroRefID());
+        if (lop.getGirorefid() != null) {
+            entry.setGiroRefID(lop.getGirorefid());
         }
-        if (lop.getActualAmountPaid() != null) {
-            entry.setActualAmountPaid(lop.getActualAmountPaid());
+        if (lop.getActualamountpaid() != null) {
+            entry.setActualAmountPaid(lop.getActualamountpaid());
         }
-        if (lop.getAmountDistributed() != null) {
-            entry.setAmountDistributed(lop.getAmountDistributed());
+        if (lop.getAmountdistributed() != null) {
+            entry.setAmountDistributed(lop.getAmountdistributed());
         }
-        if (lop.getApprovalTime() != null) {
-            entry.setApprovalTime(lop.getApprovalTime());
+        if (lop.getApprovaltime() != null) {
+            entry.setApprovalTime(lop.getApprovaltime());
         }
-        if (lop.getApprovedBy() != null) {
-            entry.setApprovedBy(lop.getApprovedBy());
+        if (lop.getApprovedby() != null) {
+            entry.setApprovedBy(lop.getApprovedby());
         }
-        if (lop.getTransferDate() != null) {
+        if (lop.getTransferdate() != null) {
 
 //            DateFormat df = new SimpleDateFormat("yyyyMM-dd");
 //
@@ -146,41 +145,41 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
 //            } catch (ParseException e) {
 //                e.printStackTrace();
 //            }
-            entry.setTransferDate(lop.getTransferDate());
+            entry.setTransferDate(lop.getTransferdate());
         }
-        if (lop.getDistributeTime() != null) {
-            entry.setDistributeTime(lop.getDistributeTime());
+        if (lop.getDistributetime() != null) {
+            entry.setDistributeTime(lop.getDistributetime());
         }
-        if (lop.getDistributedBy() != null) {
-            entry.setDistributedBy(lop.getDistributedBy());
+        if (lop.getDistributedby() != null) {
+            entry.setDistributedBy(lop.getDistributedby());
         }
-        if (lop.getCreateTime() != null) {
-            entry.setCreateTime(lop.getCreateTime());
+        if (lop.getCreatetime() != null) {
+            entry.setCreateTime(lop.getCreatetime());
         }
-        if (lop.getCreatedBy() != null) {
-            entry.setCreatedBy(lop.getCreatedBy());
+        if (lop.getCreatedby() != null) {
+            entry.setCreatedBy(lop.getCreatedby());
         }
-        if (lop.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(lop.getLastUpdateTime());
+        if (lop.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(lop.getLastupdatetime());
         }
-        if (lop.getUpdatedBy() != null) {
-            entry.setUpdatedBy(lop.getUpdatedBy());
+        if (lop.getUpdatedby() != null) {
+            entry.setUpdatedBy(lop.getUpdatedby());
         }
-        if (lop.getVersion() != null) {
-            entry.setRecordVersion(lop.getVersion());
+        if ((Long)lop.getVersion() != null) {
+            entry.setRecordVersion(((Long)lop.getVersion()).intValue());
         }
-        if (lop.getLOPComment() != null) {
-            entry.setComment(lop.getLOPComment());
+        if (lop.getLopcomment() != null) {
+            entry.setComment(lop.getLopcomment());
         }
 		if (lop.getCommission() != null) {
 			entry.setCommission(lop.getCommission());
-		} else if (lop.getDistributionChainLevelByDCTLevelID() != null && 
-				lop.getDistributionChainLevelByDCTLevelID().getCommission() != null) {
-				entry.setCommission(lop.getDistributionChainLevelByDCTLevelID().getCommission());
-		} else if (lop.getActualAmountPaid() != null && lop.getAmountDistributed() != null) {
-			log.info("commision is null for this lop:"+lop.getID());
-			BigDecimal amountPaid = lop.getActualAmountPaid();
-			BigDecimal amountDistributed = lop.getAmountDistributed();
+		} else if (lop.getDistributionChainLvl() != null && 
+				lop.getDistributionChainLvl().getCommission() != null) {
+				entry.setCommission(lop.getDistributionChainLvl().getCommission());
+		} else if (lop.getActualamountpaid() != null && lop.getAmountdistributed() != null) {
+			log.info("commision is null for this lop:"+lop.getId());
+			BigDecimal amountPaid = lop.getActualamountpaid();
+			BigDecimal amountDistributed = lop.getAmountdistributed();
 			BigDecimal commission = ZERO;
 //			commission = ((amountDistributed - amountPaid) * 100.0) / (amountDistributed * 1.0);
 			commission = (amountDistributed.subtract(amountPaid).multiply(HUNDREAD)).divide(amountDistributed);			
@@ -189,21 +188,21 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
 			
 		}
 
-        if (lop.getSubscriberMDNByMDNID() != null) {
-            if (lop.getSubscriberMDNByMDNID().getID() != null) {
-                entry.setMDNID(lop.getSubscriberMDNByMDNID().getID());
+        if (lop.getSubscriberMdn() != null) {
+            if (lop.getSubscriberMdn().getId() != null) {
+                entry.setMDNID(lop.getSubscriberMdn().getId().longValue());
             }
-            if (lop.getSubscriberMDNByMDNID().getMDN() != null) {
-                entry.setMDN(lop.getSubscriberMDNByMDNID().getMDN());
-            }
-        }
-        if (lop.getMerchantBySubscriberID().getSubscriber() != null) {
-            if (lop.getMerchantBySubscriberID().getSubscriber().getUser() != null) {
-                entry.setUsername(lop.getMerchantBySubscriberID().getSubscriber().getUser().getUsername());
+            if (lop.getSubscriberMdn().getMdn() != null) {
+                entry.setMDN(lop.getSubscriberMdn().getMdn());
             }
         }
-        if (lop.getMerchantBySubscriberID().getSubscriber() != null) {
-            entry.setSubscriberID(lop.getMerchantBySubscriberID().getID());
+        if (lop.getMerchant().getSubscriber() != null) {
+            if (lop.getMerchant().getSubscriber().getMfinoUserBySubscriberuserid() != null) {
+                entry.setUsername(lop.getMerchant().getSubscriber().getMfinoUserBySubscriberuserid().getUsername());
+            }
+        }
+        if (lop.getMerchant().getSubscriber() != null) {
+            entry.setSubscriberID(lop.getMerchant().getId().longValue());
         }
     }
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -235,7 +234,7 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
                     // Since this is an update only remote modified fields will be available in the 
                     // entries. So the entries.getmdn will be null as it is not modified neither sent
                     // explicitly.
-                    Merchant m = lop.getMerchantBySubscriberID();
+                    Merchant m = lop.getMerchant();
                     if (!CmFinoFIX.SubscriberStatus_Active.equals(m.getStatus())) {
                         CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                         errorMsg.setErrorDescription(MessageText._("Merchant is not active. You can not approve the LOP"));
@@ -278,8 +277,8 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
             {
                 SubscriberDAO subsDao = DAOFactory.getInstance().getSubscriberDAO();
                 Subscriber sub = subsDao.getById(realMsg.getMerchantIDSearch());
-                SubscriberMDN subMdn = (SubscriberMDN)sub.getSubscriberMDNFromSubscriberID().toArray()[0];
-                query.setMdnid(subMdn.getID());
+                SubscriberMdn subMdn = (SubscriberMdn)sub.getSubscriberMdns().toArray()[0];
+                query.setMdnid(subMdn.getId().longValue());
             }
             String status = realMsg.getLOPStatusSearch();
             if (status != null && status.trim().length() > 0) {

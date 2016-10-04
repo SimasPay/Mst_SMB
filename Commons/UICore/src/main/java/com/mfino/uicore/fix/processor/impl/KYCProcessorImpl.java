@@ -87,12 +87,12 @@ public class KYCProcessorImpl extends BaseFixProcessor implements KYCProcessor{
     }
 
 	private void updateMessage(KYCLevel kyclevel, CGEntries entry) {
-		entry.setID(kyclevel.getID());
-		if(kyclevel.getKYCLevel()!=null){
-			entry.setKYCLevel(kyclevel.getKYCLevel());
+		entry.setID(kyclevel.getId().longValue());
+		if(kyclevel.getKyclevel()!=null){
+			entry.setKYCLevel(kyclevel.getKyclevel().longValue());
 		}
-		if(kyclevel.getKYCLevelName()!=null){
-			entry.setKYCLevelName(kyclevel.getKYCLevelName());
+		if(kyclevel.getKyclevelname()!=null){
+			entry.setKYCLevelName(kyclevel.getKyclevelname());
 		}
 		
 	}

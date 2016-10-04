@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MfinoServiceProviderDAO;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSMfinoServiceProvider;
@@ -31,7 +31,7 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
 	MfinoServiceProviderDAO dao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    private void updateEntity(mFinoServiceProvider m, CMJSMfinoServiceProvider.CGEntries e) {
+    private void updateEntity(MfinoServiceProvider m, CMJSMfinoServiceProvider.CGEntries e) {
         if (e.getName() != null) {
             m.setName(e.getName());
         }
@@ -39,24 +39,24 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
             m.setDescription(e.getDescription());
         }
         if (e.getStatus() != null) {
-            m.setStatus(e.getStatus());
+            m.setStatus(e.getStatus().longValue());
         }
         if (e.getStatusTime() != null) {
-            m.setStatusTime(e.getStatusTime());
+            m.setStatustime(e.getStatusTime());
         }
         if (e.getCreateTime() != null) {
-            m.setCreateTime(e.getCreateTime());
+            m.setCreatetime(e.getCreateTime());
         }
         if (e.getLastUpdateTime() != null) {
-            m.setLastUpdateTime(e.getLastUpdateTime());
+            m.setLastupdatetime(e.getLastUpdateTime());
         }
         if (e.getUpdatedBy() != null) {
-            m.setUpdatedBy(e.getUpdatedBy());
+            m.setUpdatedby(e.getUpdatedBy());
         }
     }
 
-    private void updateMessage(mFinoServiceProvider m, CMJSMfinoServiceProvider.CGEntries entry) {
-        entry.setID(m.getID());
+    private void updateMessage(MfinoServiceProvider m, CMJSMfinoServiceProvider.CGEntries entry) {
+        entry.setID(m.getId().longValue());
 
         if (m.getName() != null) {
             entry.setName(m.getName());
@@ -65,19 +65,19 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
             entry.setDescription(m.getDescription());
         }
         if (m.getStatus() != null) {
-            entry.setStatus(m.getStatus());
+            entry.setStatus(m.getStatus().intValue());
         }
-        if (m.getStatusTime() != null) {
-            entry.setStatusTime(m.getStatusTime());
+        if (m.getStatustime() != null) {
+            entry.setStatusTime(m.getStatustime());
         }
-        if (m.getCreateTime() != null) {
-            entry.setCreateTime(m.getCreateTime());
+        if (m.getCreatetime() != null) {
+            entry.setCreateTime(m.getCreatetime());
         }
-        if (m.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(m.getLastUpdateTime());
+        if (m.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(m.getLastupdatetime());
         }
-        if (m.getUpdatedBy() != null) {
-            entry.setUpdatedBy(m.getUpdatedBy());
+        if (m.getUpdatedby() != null) {
+            entry.setUpdatedBy(m.getUpdatedby());
         }
     }
 
@@ -89,7 +89,7 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
             CMJSMfinoServiceProvider.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSMfinoServiceProvider.CGEntries e : entries) {
-                mFinoServiceProvider m = dao.getById(e.getID());
+                MfinoServiceProvider m = dao.getById(e.getID());
                 updateEntity(m, e);
                 dao.save(m);
             }
@@ -97,11 +97,11 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
             realMsg.setsuccess(CmFinoFIX.Boolean_True);
             realMsg.settotal(entries.length);
         } else if (CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
-            List<mFinoServiceProvider> results = dao.getAll();
+            List<MfinoServiceProvider> results = dao.getAll();
             realMsg.allocateEntries(results.size());
 
             for (int i = 0; i < results.size(); i++) {
-                mFinoServiceProvider s = results.get(i);
+                MfinoServiceProvider s = results.get(i);
                 CMJSMfinoServiceProvider.CGEntries entry =
                         new CMJSMfinoServiceProvider.CGEntries();
 
@@ -112,7 +112,7 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
             CMJSMfinoServiceProvider.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSMfinoServiceProvider.CGEntries e : entries) {
-                mFinoServiceProvider m = new mFinoServiceProvider();
+                MfinoServiceProvider m = new MfinoServiceProvider();
                 updateEntity(m, e);
                 dao.save(m);
                 updateMessage(m, e);
@@ -127,7 +127,7 @@ public class MfinoServiceproviderProcessorImpl extends BaseFixProcessor implemen
     }
     
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public mFinoServiceProvider getById(long id) {
+    public MfinoServiceProvider getById(long id) {
     	return dao.getById(id);
     }
 }

@@ -29,9 +29,9 @@ public class LedgerProcessorImpl extends BaseFixProcessor implements LedgerProce
 	private PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 	
 	private void updateMessage(MFSLedger ledger, CMJSLedger.CGEntries e) {
-		e.setID(ledger.getID());
-		if(ledger.getCommodityTransferID() !=  null) {
-			e.setCommodityTransferID(ledger.getCommodityTransferID());
+		e.setID(ledger.getId().longValue());
+		if(ledger.getCommoditytransferid() !=  null) {
+			e.setCommodityTransferID(ledger.getCommoditytransferid().longValue());
 		}
 //		if(ledger.getSourcePocketID() != null) {
 //			Pocket pocket = pocketDao.getById(ledger.getSourcePocketID());
@@ -54,15 +54,15 @@ public class LedgerProcessorImpl extends BaseFixProcessor implements LedgerProce
 //		}
 		
 		e.setAmount(ledger.getAmount());
-		Pocket pocket = pocketDao.getById(ledger.getPocketID());
+		Pocket pocket = pocketDao.getById(ledger.getPocketid().longValue());
 		if (pocket != null) {
-			if (DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
-				e.setSourcePocketID(pocket.getID());
-				e.setSourceMDN(pocket.getSubscriberMDNByMDNID().getMDN());
+			if (DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
+				e.setSourcePocketID(pocket.getId().longValue());
+				e.setSourceMDN(pocket.getSubscriberMdn().getMdn());
 			}
-			else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
-				e.setDestPocketID(pocket.getID());
-				e.setDestMDN(pocket.getSubscriberMDNByMDNID().getMDN());
+			else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
+				e.setDestPocketID(pocket.getId().longValue());
+				e.setDestMDN(pocket.getSubscriberMdn().getMdn());
 			}
 		}		
 	}

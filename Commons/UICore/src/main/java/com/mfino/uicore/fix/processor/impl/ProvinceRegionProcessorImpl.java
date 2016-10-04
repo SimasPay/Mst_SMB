@@ -59,8 +59,8 @@ public class ProvinceRegionProcessorImpl extends BaseFixProcessor implements Pro
 	}
 	
 	private void updateMessage(ProvinceRegion r, CMJSProvinceRegion.CGEntries e) {
-		e.setID(r.getID());
-		e.setDisplayText(r.getDisplayText());
-		e.setIdProvince(r.getIdProvince());
+		e.setID(r.getId().longValue());
+		e.setDisplayText(r.getDisplaytext());
+		e.setIdProvince(r.getProvince().getId().longValue());
 	}
 }

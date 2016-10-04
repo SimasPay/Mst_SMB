@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,15 +23,15 @@ import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.query.PartnerServicesQuery;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceSettlementConfig;
+import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSPartnerServices;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.EnumTextService;
-import com.mfino.util.ConfigurationUtil;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.PartnerServicesProcessor;
+import com.mfino.util.ConfigurationUtil;
 @Service("PartnerServicesProcessorImpl")
 public class PartnerServicesProcessorImpl extends BaseFixProcessor implements PartnerServicesProcessor{
 	
@@ -45,168 +46,170 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 		ServiceDAO sDAO = DAOFactory.getInstance().getServiceDAO();
 
 		if(e.isRemoteModifiedDistributionChainTemplateID() || e.getDistributionChainTemplateID()!=null){
-			log.info("Partner Services ID: " + ps.getID() + " Distributed Chain Template ID updated to "+ e.getDistributionChainTemplateID() +" by user:"+getLoggedUserNameWithIP());
+			log.info("Partner Services ID: " + ps.getId() + " Distributed Chain Template ID updated to "+ e.getDistributionChainTemplateID() +" by user:"+getLoggedUserNameWithIP());
 			Long oldParentId = null;
-			if(ps.getPartnerByParentID()!=null){
-				oldParentId = ps.getPartnerByParentID().getID();
+			if(ps.getPartnerByParentid()!=null){
+				oldParentId = ps.getPartnerByParentid().getId().longValue();
 			}
 			Long oldDct = null;
-			if(ps.getDistributionChainTemplate()!=null){	
-				oldDct = ps.getDistributionChainTemplate().getID();
+			if(ps.getDistributionChainTemp()!=null){	
+				oldDct = ps.getDistributionChainTemp().getId().longValue();
 			}
 			Long parentId = null;
-			if(ps.getPartner()!=null){
-				parentId = ps.getPartner().getID();
+			if(ps.getPartnerByPartnerid()!=null){
+				parentId = ps.getPartnerByPartnerid().getId().longValue();
 			}
 			modifyChildsParentIdOnParentDctChange(oldDct,parentId,oldParentId,pDAO);
 			if(e.getDistributionChainTemplateID()!=null){
-				ps.setDistributionChainTemplate(dctDAO.getById(e.getDistributionChainTemplateID()));
+				ps.setDistributionChainTemp(dctDAO.getById(e.getDistributionChainTemplateID()));
 			} else {
-				ps.setDistributionChainTemplate(null);
+				ps.setDistributionChainTemp(null);
 			}			
  		}
 		
 		if (e.getPartnerID() != null) {
-			if(ps.getPartner()==null || !e.getPartnerID().equals(ps.getPartner().getID())){
-				log.info("Partner Services ID: " + ps.getID() + " Partner ID updated to "+ e.getPartnerID() +" by user:"+getLoggedUserNameWithIP());
+			if(ps.getPartnerByParentid()==null || !e.getPartnerID().equals(ps.getPartnerByParentid().getId())){
+				log.info("Partner Services ID: " + ps.getId() + " Partner ID updated to "+ e.getPartnerID() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setPartner(pDAO.getById(e.getPartnerID()));
+			ps.setPartnerByParentid(pDAO.getById(e.getPartnerID()));
 		}
 		
 		if(e.isRemoteModifiedParentID() || e.getParentID()!=null){
-			log.info("Partner Services ID: " + ps.getID() + " Partner by Parent ID updated to "+ e.getParentID() +" by user:"+getLoggedUserNameWithIP());
+			log.info("Partner Services ID: " + ps.getId() + " Partner by Parent ID updated to "+ e.getParentID() +" by user:"+getLoggedUserNameWithIP());
 			if(e.getParentID()!=null){
-				ps.setPartnerByParentID(pDAO.getById(e.getParentID()));
+				ps.setPartnerByParentid(pDAO.getById(e.getParentID()));
 			} else {
-				ps.setPartnerByParentID(null);
+				ps.setPartnerByParentid(null);
 			}
 		}
 		
 		if (e.getCollectorPocket() != null) {
-			if(ps.getPocketByCollectorPocket()==null || !e.getCollectorPocket().equals(ps.getPocketByCollectorPocket().getID())){
-				log.info("Partner Services ID: " + ps.getID() + " Pocket By collector pocket updated to "+ e.getCollectorPocket() +" by user:"+getLoggedUserNameWithIP());
+			if(ps.getCollectorpocket()==null || !e.getCollectorPocket().equals(ps.getCollectorpocket())){
+				log.info("Partner Services ID: " + ps.getId() + " Pocket By collector pocket updated to "+ e.getCollectorPocket() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setPocketByCollectorPocket(pocketDAO.getById(e.getCollectorPocket()));
+			ps.setCollectorpocket(new BigDecimal(e.getCollectorPocket()));
 		}
 		 
 		if (e.getSourcePocket() != null) {
-			if(ps.getPocketBySourcePocket()==null || !e.getSourcePocket().equals(ps.getPocketBySourcePocket().getID())){
-				log.info("Partner Services ID: " + ps.getID() + " Pocket by source pocket updated to "+ e.getSourcePocket() +" by user:"+getLoggedUserNameWithIP());
+			if(ps.getPocketBySourcepocket()==null || !e.getSourcePocket().equals(ps.getPocketBySourcepocket().getId())){
+				log.info("Partner Services ID: " + ps.getId() + " Pocket by source pocket updated to "+ e.getSourcePocket() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setPocketBySourcePocket(pocketDAO.getById(e.getSourcePocket()));
+			ps.setPocketBySourcepocket(pocketDAO.getById(e.getSourcePocket()));
 		}	
 		if (e.getDestPocketID() != null) {
-			if(ps.getPocketByDestPocketID()==null || !e.getDestPocketID().equals(ps.getPocketByDestPocketID().getID())){
-				log.info("Partner Services ID: " + ps.getID() + " Pocket by destination pocket ID updated to "+ e.getDestPocketID() +" by user:"+getLoggedUserNameWithIP());
+			if(ps.getPocketByDestpocketid()==null || !e.getDestPocketID().equals(ps.getPocketByDestpocketid().getId())){
+				log.info("Partner Services ID: " + ps.getId() + " Pocket by destination pocket ID updated to "+ e.getDestPocketID() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setPocketByDestPocketID(pocketDAO.getById(e.getDestPocketID()));
+			ps.setPocketByDestpocketid(pocketDAO.getById(e.getDestPocketID()));
 		}	
 		
 		if (e.getLevel() != null) {
-			if(!e.getLevel().equals(ps.getPSLevel())){
-				log.info("Partner Services ID: " + ps.getID() + " Level updated to " + e.getLevel() + " by user:" + getLoggedUserNameWithIP());
+			if(!e.getLevel().equals(ps.getPslevel())){
+				log.info("Partner Services ID: " + ps.getId() + " Level updated to " + e.getLevel() + " by user:" + getLoggedUserNameWithIP());
         	}
-			ps.setPSLevel(e.getLevel());
+			ps.setPslevel(e.getLevel().longValue());
 		}
 		
 		
 		
 		if (e.getPartnerServiceStatus() != null) {
 			if(!e.getPartnerServiceStatus().equals(ps.getStatus())){
-				log.info("Partner Services ID: " + ps.getID() + " Partner Service Status updated to "+ e.getPartnerServiceStatus() +" by user:"+getLoggedUserNameWithIP());
+				log.info("Partner Services ID: " + ps.getId() + " Partner Service Status updated to "+ e.getPartnerServiceStatus() +" by user:"+getLoggedUserNameWithIP());
         	}
 			ps.setStatus(e.getPartnerServiceStatus());
 		} else {
-			if (ps.getStatus() == null) {
-				log.info("Partner Services ID: " + ps.getID() + " Partner Service Status updated to "+ CmFinoFIX.PartnerServiceStatus_Initialized +" by user:"+getLoggedUserNameWithIP());
+			if ((Long)ps.getStatus() == null) {
+				log.info("Partner Services ID: " + ps.getId() + " Partner Service Status updated to "+ CmFinoFIX.PartnerServiceStatus_Initialized +" by user:"+getLoggedUserNameWithIP());
 	        	ps.setStatus(CmFinoFIX.PartnerServiceStatus_Initialized);
 			}
 		}
 		
 		if (e.getIsServiceChargeShare() != null) {
-			if(!e.getIsServiceChargeShare().equals(ps.getIsServiceChargeShare())){
-				log.info("Partner Services ID: " + ps.getID() + " Is Service Charge Share updated to "+ e.getIsServiceChargeShare() +" by user:"+getLoggedUserNameWithIP());
+			if(!e.getIsServiceChargeShare().equals(ps.getIsservicechargeshare())){
+				log.info("Partner Services ID: " + ps.getId() + " Is Service Charge Share updated to "+ e.getIsServiceChargeShare() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setIsServiceChargeShare(e.getIsServiceChargeShare());
+			ps.setIsservicechargeshare(e.getIsServiceChargeShare().longValue());
 		}
 		
 		if (e.getServiceID() != null) {
-			if(ps.getService()==null || !e.getServiceID().equals(ps.getService().getID())){
-				log.info("Partner Services ID: " + ps.getID() + " Service ID updated to "+ e.getServiceID() +" by user:"+getLoggedUserNameWithIP());
+			if(ps.getService()==null || !e.getServiceID().equals(ps.getService().getId())){
+				log.info("Partner Services ID: " + ps.getId() + " Service ID updated to "+ e.getServiceID() +" by user:"+getLoggedUserNameWithIP());
         	}
 			ps.setService(sDAO.getById(e.getServiceID()));
 		}
 		
 		if (e.getServiceProviderID() != null) {
-			if(ps.getPartnerByServiceProviderID()==null || !e.getServiceProviderID().equals(ps.getPartnerByServiceProviderID().getID())){
-				log.info("Partner Services ID: " + ps.getID() + " Partner by service provider ID updated to "+ e.getServiceProviderID() +" by user:"+getLoggedUserNameWithIP());
+			if(ps.getPartnerByServiceproviderid()==null || !e.getServiceProviderID().equals(ps.getPartnerByServiceproviderid().getId())){
+				log.info("Partner Services ID: " + ps.getId() + " Partner by service provider ID updated to "+ e.getServiceProviderID() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setPartnerByServiceProviderID(pDAO.getById(e.getServiceProviderID()));
+			ps.setPartnerByServiceproviderid(pDAO.getById(e.getServiceProviderID()));
 		}
 	}
 	
 	private void updateMessage(PartnerServices ps, CMJSPartnerServices.CGEntries e) {
-		e.setID(ps.getID());
-		e.setMSPID(ps.getmFinoServiceProviderByMSPID().getID());
-		if (ps.getDistributionChainTemplate() != null) {
-			e.setDistributionChainTemplateID(ps.getDistributionChainTemplate().getID());
-			e.setDistributionChainName(ps.getDistributionChainTemplate().getName());
+		e.setID(ps.getId().longValue());
+		e.setMSPID(ps.getMfinoServiceProvider().getId().longValue());
+		if (ps.getDistributionChainTemp() != null) {
+			e.setDistributionChainTemplateID(ps.getDistributionChainTemp().getId().longValue());
+			e.setDistributionChainName(ps.getDistributionChainTemp().getName());
 		}
 		
-		if (ps.getPocketByCollectorPocket() != null) {
-			e.setCollectorPocket(ps.getPocketByCollectorPocket().getID());
-			e.setCollectorCardPAN(ps.getPocketByCollectorPocket().getCardPAN());
-			if (StringUtils.isNotBlank(ps.getPocketByCollectorPocket().getCardPAN()) && 
-					ps.getPocketByCollectorPocket().getPocketTemplate() != null) {
-	        	String cPan = ps.getPocketByCollectorPocket().getCardPAN();
+		if (ps.getCollectorpocket() != null) {
+			PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
+			Pocket pocket = pocketDAO.getById(ps.getCollectorpocket().longValue());
+			e.setCollectorPocket(ps.getCollectorpocket().longValue());
+			e.setCollectorCardPAN(pocket.getCardpan());
+			if (StringUtils.isNotBlank(pocket.getCardpan()) && 
+					pocket.getPocketTemplate() != null) {
+	        	String cPan = pocket.getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	e.setCollectorPocketDispText(ps.getPocketByCollectorPocket().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (ps.getPocketByCollectorPocket().getPocketTemplate() != null) {
-				e.setCollectorPocketDispText(ps.getPocketByCollectorPocket().getPocketTemplate().getDescription());
+	        	e.setCollectorPocketDispText(pocket.getPocketTemplate().getDescription() + " - " + cPan);
+			} else if (pocket.getPocketTemplate() != null) {
+				e.setCollectorPocketDispText(pocket.getPocketTemplate().getDescription());
 			}
 		}
 		
-		if (ps.getPocketBySourcePocket() != null) {
-			e.setSourcePocket(ps.getPocketBySourcePocket().getID());
-			e.setSourceCardPAN(ps.getPocketBySourcePocket().getCardPAN());
-			if (StringUtils.isNotBlank(ps.getPocketBySourcePocket().getCardPAN()) && 
-					ps.getPocketBySourcePocket().getPocketTemplate() != null) {
-	        	String cPan = ps.getPocketBySourcePocket().getCardPAN();
+		if (ps.getPocketBySourcepocket() != null) {
+			e.setSourcePocket(ps.getPocketBySourcepocket().getId().longValue());
+			e.setSourceCardPAN(ps.getPocketBySourcepocket().getCardpan());
+			if (StringUtils.isNotBlank(ps.getPocketBySourcepocket().getCardpan()) && 
+					ps.getPocketBySourcepocket().getPocketTemplate() != null) {
+	        	String cPan = ps.getPocketBySourcepocket().getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	e.setSourcePocketDispText(ps.getPocketBySourcePocket().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (ps.getPocketBySourcePocket().getPocketTemplate() != null) {
-				e.setSourcePocketDispText(ps.getPocketBySourcePocket().getPocketTemplate().getDescription());
+	        	e.setSourcePocketDispText(ps.getPocketBySourcepocket().getPocketTemplate().getDescription() + " - " + cPan);
+			} else if (ps.getPocketBySourcepocket().getPocketTemplate() != null) {
+				e.setSourcePocketDispText(ps.getPocketBySourcepocket().getPocketTemplate().getDescription());
 			}
 		}
 		
-		if (ps.getPocketByDestPocketID()!= null) {
-			e.setDestPocketID(ps.getPocketByDestPocketID().getID());
-			e.setDestCardPAN(ps.getPocketByDestPocketID().getCardPAN());
-			if (StringUtils.isNotBlank(ps.getPocketByDestPocketID().getCardPAN()) && 
-					ps.getPocketByDestPocketID().getPocketTemplate() != null) {
-	        	String cPan = ps.getPocketByDestPocketID().getCardPAN();
+		if (ps.getPocketByDestpocketid()!= null) {
+			e.setDestPocketID(ps.getPocketByDestpocketid().getId().longValue());
+			e.setDestCardPAN(ps.getPocketByDestpocketid().getCardpan());
+			if (StringUtils.isNotBlank(ps.getPocketByDestpocketid().getCardpan()) && 
+					ps.getPocketByDestpocketid().getPocketTemplate() != null) {
+	        	String cPan = ps.getPocketByDestpocketid().getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	e.setDestPocketDispText(ps.getPocketByDestPocketID().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (ps.getPocketByDestPocketID().getPocketTemplate() != null) {
-				e.setDestPocketDispText(ps.getPocketByDestPocketID().getPocketTemplate().getDescription());
+	        	e.setDestPocketDispText(ps.getPocketByDestpocketid().getPocketTemplate().getDescription() + " - " + cPan);
+			} else if (ps.getPocketByDestpocketid().getPocketTemplate() != null) {
+				e.setDestPocketDispText(ps.getPocketByDestpocketid().getPocketTemplate().getDescription());
 			}
 		}
 		
-		if (ps.getPartner() != null) {
-			e.setPartnerID(ps.getPartner().getID());
+		if (ps.getPartnerByParentid() != null) {
+			e.setPartnerID(ps.getPartnerByParentid().getId().longValue());
 		}
 		
-		if (ps.getPartnerByParentID() != null) {
-			e.setParentID(ps.getPartnerByParentID().getID());
-			e.setTradeName(ps.getPartnerByParentID().getTradeName());
+		if (ps.getPartnerByParentid() != null) {
+			e.setParentID(ps.getPartnerByParentid().getId().longValue());
+			e.setTradeName(ps.getPartnerByParentid().getTradename());
 		}
-		e.setLevel(ps.getPSLevel());
+		e.setLevel(ps.getPslevel().intValue());
 		
 //		if (ps.getServiceProviderServices() != null) {
 //			e.setServiceProviderID(ps.getServiceProviderServices().getPartnerByServiceProviderID().getID());
@@ -215,30 +218,30 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 //			e.setServiceName(ps.getServiceProviderServices().getService().getServiceName());
 //		}
 		if (ps.getService() != null) {
-			e.setServiceID(ps.getService().getID());
-			e.setServiceName(ps.getService().getDisplayName());
+			e.setServiceID(ps.getService().getId().longValue());
+			e.setServiceName(ps.getService().getDisplayname());
 		}
 		
-		if (ps.getPartnerByServiceProviderID() != null) {
-			e.setServiceProviderID(ps.getPartnerByServiceProviderID().getID());
-			e.setServiceProviderName(ps.getPartnerByServiceProviderID().getTradeName());
+		if (ps.getPartnerByServiceproviderid() != null) {
+			e.setServiceProviderID(ps.getPartnerByServiceproviderid().getId().longValue());
+			e.setServiceProviderName(ps.getPartnerByServiceproviderid().getTradename());
 		}
 		
-		if (ps.getStatus() != null) {
-			e.setPartnerServiceStatus(ps.getStatus());
+		if ((Long)ps.getStatus() != null) {
+			e.setPartnerServiceStatus(((Long)ps.getStatus()).intValue());
 			e.setPartnerServiceStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerServiceStatus, null, ps.getStatus()));
 		}
 		
-		if (ps.getIsServiceChargeShare() != null) {
-			e.setIsServiceChargeShare(ps.getIsServiceChargeShare());
+		if (ps.getIsservicechargeshare() != null) {
+			e.setIsServiceChargeShare(ps.getIsservicechargeshare().intValue());
 			e.setIsServiceChargeShareText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_IsServiceChargeShare, null, e.getIsServiceChargeShare()));
 		}
 		
-		e.setRecordVersion(ps.getVersion());
-		e.setCreatedBy(ps.getCreatedBy());
-		e.setCreateTime(ps.getCreateTime());
-		e.setUpdatedBy(ps.getUpdatedBy());
-		e.setLastUpdateTime(ps.getLastUpdateTime());
+		e.setRecordVersion(((Long)ps.getVersion()).intValue());
+		e.setCreatedBy(ps.getCreatedby());
+		e.setCreateTime(ps.getCreatetime());
+		e.setUpdatedBy(ps.getUpdatedby());
+		e.setLastUpdateTime(ps.getLastupdatetime());
 	}
 
 	@Override
@@ -283,7 +286,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 					updateMessage(ps, e);
 					realMsg.getEntries()[i] = e;
 					i++;
-					log.info("Partner Services ID:" + ps.getID() + " details viewing completed by user:"+getLoggedUserNameWithIP());
+					log.info("Partner Services ID:" + ps.getId() + " details viewing completed by user:"+getLoggedUserNameWithIP());
 				}
 			}
 			
@@ -298,27 +301,27 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			
 			for (CMJSPartnerServices.CGEntries e: entries) {
 				PartnerServices ps = dao.getById(e.getID());
-				log.info("Partner Services: "+ps.getID()+" details edit requested by user:"+getLoggedUserNameWithIP());
+				log.info("Partner Services: "+ps.getId()+" details edit requested by user:"+getLoggedUserNameWithIP());
 				
-				if (!(ps.getVersion().equals(e.getRecordVersion()))) {
-					log.warn("Partner Services: "+ps.getID()+" stale data exception for user:"+getLoggedUserNameWithIP());
+				if (!(((Long)ps.getVersion()).equals(e.getRecordVersion()))) {
+					log.warn("Partner Services: "+ps.getId()+" stale data exception for user:"+getLoggedUserNameWithIP());
 					handleStaleDataException();					
 				}
 				
 				if (e.getServiceProviderID() == null) {
-					e.setServiceProviderID(ps.getPartnerByServiceProviderID().getID());
+					e.setServiceProviderID(ps.getPartnerByServiceproviderid().getId().longValue());
 				}
 
 				if (e.getServiceID() == null) {
-					e.setServiceID(ps.getService().getID());
+					e.setServiceID(ps.getService().getId().longValue());
 				}
 				
 				if (e.getPartnerID() == null) {
-					e.setPartnerID(ps.getPartner().getID());
+					e.setPartnerID(ps.getPartnerByParentid().getId().longValue());
 				}
 				
 				if (e.getPartnerServiceStatus() == CmFinoFIX.PartnerServiceStatus_Active) {
-					if(!CmFinoFIX.SubscriberStatus_Active.equals(ps.getPartner().getPartnerStatus())){
+					if(!CmFinoFIX.SubscriberStatus_Active.equals(ps.getPartnerByParentid().getPartnerstatus())){
 						return generateError(3, null);
 					}
 					if (!validatePockets(ps)) {
@@ -334,7 +337,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 				updateEntity(ps, e);
                 try {
                 	dao.save(ps);
-                	log.info("Partner Services: " + ps.getID() + " details edit completed by user:" + getLoggedUserNameWithIP());
+                	log.info("Partner Services: " + ps.getId() + " details edit completed by user:" + getLoggedUserNameWithIP());
                 } catch (ConstraintViolationException ex) {
                 	return generateError(1, ex);	
                 }
@@ -366,7 +369,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 				updateEntity(ps, e);
                 try {
                 	dao.save(ps);
-                	log.info("Partner Service: " + ps.getID() + " created by user:"+getLoggedUserNameWithIP());
+                	log.info("Partner Service: " + ps.getId() + " created by user:"+getLoggedUserNameWithIP());
                 } catch (ConstraintViolationException ex) {
                 	return generateError(1, ex);	
                 }
@@ -386,13 +389,15 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 	 */
 	private boolean validatePockets(PartnerServices ps) {
 		boolean result = true;
-		if (checkPocketStatus(ps.getPocketByCollectorPocket()) && (ps.getPocketBySourcePocket()==null || 
-				(ps.getPocketBySourcePocket()!=null && checkPocketStatus(ps.getPocketBySourcePocket())))) {
-			Set<ServiceSettlementConfig> setSSC = ps.getServiceSettlementConfigFromPartnerServiceID();
+		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
+		Pocket pocket = pocketDAO.getById(ps.getCollectorpocket().longValue());
+		if (checkPocketStatus(pocket) && (ps.getPocketBySourcepocket()==null || 
+				(ps.getPocketBySourcepocket()!=null && checkPocketStatus(ps.getPocketBySourcepocket())))) {
+			Set<ServiceSettlementCfg> setSSC = ps.getServiceSettlementCfgs();
 
 			if((CollectionUtils.isNotEmpty(setSSC)) && (ConfigurationUtil.getIsEMoneyPocketRequired())){
-				for (ServiceSettlementConfig ssc: setSSC) {
-					if (ssc.getSettlementTemplate() != null && checkPocketStatus(ssc.getSettlementTemplate().getPocketBySettlementPocket())) {
+				for (ServiceSettlementCfg ssc: setSSC) {
+					if (ssc.getSettlementTemplate() != null && checkPocketStatus(ssc.getSettlementTemplate().getPocket())) {
 						result = true;
 					} else {
 						result = false;
@@ -413,7 +418,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 	 */
 	private boolean checkPocketStatus(Pocket pocket) {
 		boolean result = true;
-		if((pocket != null) && (!pocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))) {
+		if((pocket != null) && (!((Long)pocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))) {
 			result = false;
 		}
 		return result;
@@ -462,10 +467,10 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
     	if (CollectionUtils.isNotEmpty(lstPartnerServices)) {
     		for (PartnerServices partnerService:lstPartnerServices) {
     			if(oldParentId!=null){
-    				partnerService.setPartnerByParentID(pDAO.getById(oldParentId));
+    				partnerService.setPartnerByParentid(pDAO.getById(oldParentId));
     			}
     			else{
-    				partnerService.setPartnerByParentID(null);
+    				partnerService.setPartnerByParentid(null);
     			}
     			psDAO.save(partnerService);
     		}

@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -91,30 +92,30 @@ public class ExpirationTypeProcessorImpl extends BaseFixProcessor implements Exp
 
 	private void updateEntity(ExpirationType expirationType, CGEntries e) {
 		if(e.getExpiryMode()!=null){
-			expirationType.setExpiryMode(e.getExpiryMode());
+			expirationType.setExpirymode(e.getExpiryMode().longValue());
 		}
 		if(e.getExpiryType()!=null){
-			expirationType.setExpiryType(e.getExpiryType());
+			expirationType.setExpirytype(e.getExpiryType().longValue());
 		}
 		if(e.getExpiryValue()!=null){
-			expirationType.setExpiryValue(e.getExpiryValue());
+			expirationType.setExpiryvalue(new BigDecimal(e.getExpiryValue()));
 		}
 		if(StringUtils.isNotBlank(e.getExpiryDescription())){
-			expirationType.setExpiryDescription(e.getExpiryDescription());
+			expirationType.setExpirydescription(e.getExpiryDescription());
 		}
 		
-		expirationType.setmFinoServiceProviderByMSPID(DAOFactory.getInstance().getMfinoServiceProviderDAO().getById(1L));
+		//expirationType.setmFinoServiceProviderByMSPID(DAOFactory.getInstance().getMfinoServiceProviderDAO().getById(1L));
 		
 	}
 
 	private void updateMessage(ExpirationType expirationType, CGEntries e) {
-		e.setID(expirationType.getID());
-		e.setExpiryValue(expirationType.getExpiryValue());
-		e.setExpiryMode(expirationType.getExpiryMode());
-		e.setExpiryModeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ExpiryMode, null, expirationType.getExpiryMode()));
-		e.setExpiryType(expirationType.getExpiryType());
-		e.setExpiryTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ExpiryType, null, expirationType.getExpiryType()));
-		e.setExpiryDescription(expirationType.getExpiryDescription());
+		e.setID(expirationType.getId().longValue());
+		e.setExpiryValue(expirationType.getExpiryvalue().longValue());
+		e.setExpiryMode(expirationType.getExpirymode().intValue());
+		e.setExpiryModeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ExpiryMode, null, expirationType.getExpirymode()));
+		e.setExpiryType(expirationType.getExpirytype().intValue());
+		e.setExpiryTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ExpiryType, null, expirationType.getExpirytype()));
+		e.setExpiryDescription(expirationType.getExpirydescription());
 	}
 	
 	private void validate(ExpirationType expirationType) throws Exception{
@@ -124,7 +125,7 @@ public class ExpirationTypeProcessorImpl extends BaseFixProcessor implements Exp
 		{
 			ExpirationType existingExpirationType = it.next();
 			
-			if(expirationType.getExpiryValue().equals(existingExpirationType.getExpiryValue()))
+			if(expirationType.getExpiryvalue().equals(existingExpirationType.getExpiryvalue()))
 			{				
 				throw new Exception("ExpirationType with same expiry value already exists");
 			}

@@ -24,6 +24,7 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DistributionChainLevelQuery;
 import com.mfino.domain.DistributionChainLevel;
 import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSDistributionChainLevel;
@@ -44,11 +45,11 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
 
     private void updateMessage(DistributionChainLevel e,
             CMJSDistributionChainLevel.CGEntries m) {
-        m.setID(e.getID());
-        m.setDistributionChainTemplateID(e.getDistributionChainTemplateByTemplateID().getID());
-        m.setDistributionLevel(e.getDistributionLevel());
+        m.setID(e.getId().longValue());
+        m.setDistributionChainTemplateID(e.getDistributionChainTemp().getId().longValue());
+        m.setDistributionLevel(((Long)e.getDistributionlevel()).intValue());
 
-        int perm = e.getPermissions();
+        int perm = ((Long)e.getPermissions()).intValue();
         m.setDirectDistributeAllowed((perm & CmFinoFIX.DistributionPermissions_DirectDistribute) > 0);
         m.setIndirectDistributeAllowed((perm & CmFinoFIX.DistributionPermissions_IndirectDistribute) > 0);
         m.setDirectTransferAllowed((perm & CmFinoFIX.DistributionPermissions_DirectTransfer) > 0);
@@ -58,16 +59,18 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
         m.setLOPDistributeAllowed((perm & CmFinoFIX.DistributionPermissions_LOPDistribute) > 0);
 
         m.setLOPCommission(e.getCommission());
-        m.setLOPMaxCommission(e.getMaxCommission());
-        m.setLOPMinCommission(e.getMinCommission());
-        m.setMaxWeeklyPurchaseAmount(e.getMaxWeeklyLOPAmount());
-        m.setMaxAmountPerTransaction(e.getMaxLOPAmount());
-        if (null != e.getVersion()) {
-            m.setRecordVersion(e.getVersion());
+        m.setLOPMaxCommission(e.getMaxcommission());
+        m.setLOPMinCommission(e.getMincommission());
+        m.setMaxWeeklyPurchaseAmount(e.getMaxweeklylopamount());
+        m.setMaxAmountPerTransaction(e.getMaxlopamount());
+        if (null != ((Long)e.getVersion())) {
+            m.setRecordVersion(((Long)e.getVersion()).intValue());
         }
-        if(null != e.getTransactionType()){
-        	m.setTransactionName(e.getTransactionType().getTransactionName());
-        	m.setTransactionID(e.getTransactionType().getID());
+        if(null != e.getTransactiontypeid()){
+        	TransactionTypeDAO transactionTypeDAO = DAOFactory.getInstance().getTransactionTypeDAO();
+        	TransactionType transactionType = transactionTypeDAO.getById(e.getTransactiontypeid());
+        	m.setTransactionName(transactionType.getTransactionname());
+        	m.setTransactionID(e.getTransactiontypeid());
         }
     }
 
@@ -78,10 +81,10 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
     	
         if (m.getDistributionChainTemplateID() != null) {
             DistributionChainTemplate template = templateDAO.getById(m.getDistributionChainTemplateID());
-            e.setDistributionChainTemplateByTemplateID(template);
+            e.setDistributionChainTemp(template);
         }
         if (m.getDistributionLevel() != null) {
-            e.setDistributionLevel(m.getDistributionLevel());
+            e.setDistributionlevel(m.getDistributionLevel());
         }
 
         if (m.getPermissions() != null) {
@@ -92,19 +95,20 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             e.setCommission(m.getLOPCommission());
         }
         if(m.getLOPMaxCommission() != null){
-            e.setMaxCommission(m.getLOPMaxCommission());
+            e.setMaxcommission(m.getLOPMaxCommission());
         }
         if(m.getLOPMinCommission() != null){
-            e.setMinCommission(m.getLOPMinCommission());
+            e.setMincommission(m.getLOPMinCommission());
         }
         if (m.getMaxWeeklyPurchaseAmount() != null) {
-            e.setMaxWeeklyLOPAmount(m.getMaxWeeklyPurchaseAmount());
+            e.setMaxweeklylopamount(m.getMaxWeeklyPurchaseAmount());
         }
         if (m.getMaxAmountPerTransaction() != null) {
-            e.setMaxLOPAmount(m.getMaxAmountPerTransaction());
+            e.setMaxlopamount(m.getMaxAmountPerTransaction());
         }
         if(null != m.getTransactionID()){
-        	e.setTransactionType(transactionTypeDao.getById(m.getTransactionID()));
+        	TransactionType transactionType = transactionTypeDao.getById(m.getTransactionID());
+        	e.setTransactiontypeid(transactionType.getId().longValue());
         }
     }
 
@@ -176,7 +180,7 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
                 DistributionChainLevel aLevel = levelDAO.getById(e.getID());
                 
                 if (null == template) {
-                    template = aLevel.getDistributionChainTemplateByTemplateID();
+                    template = aLevel.getDistributionChainTemp();
                 }
                 try {
                     levelDAO.deleteById(e.getID());
@@ -206,7 +210,7 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             throw new IllegalArgumentException(MessageText._("Invalid DistributionChainTemplate"));
         }
 
-        Set<DistributionChainLevel> levels = template.getDistributionChainLevelFromTemplateID();
+        Set<DistributionChainLevel> levels = template.getDistributionChainLvls();
         @SuppressWarnings("unchecked")
         SortedSet levelSet = new TreeSet(new LevelComparator());
         @SuppressWarnings("unchecked")
@@ -218,9 +222,9 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
         while (iter.hasNext()) {
             int toDecrement = 0;
             DistributionChainLevel aLevel = iter.next();
-            int currentLevel = aLevel.getDistributionLevel();
+            int currentLevel = ((Long)aLevel.getDistributionlevel()).intValue();
 
-            if (deletedLevels.contains(aLevel.getDistributionLevel())) {
+            if (deletedLevels.contains(aLevel.getDistributionlevel())) {
                 continue;
             }
 
@@ -229,7 +233,7 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
                     toDecrement++;
                 }
             }
-            aLevel.setDistributionLevel(currentLevel - toDecrement);
+            aLevel.setDistributionlevel(currentLevel - toDecrement);
             log.info(currentLevel + " --> " + (currentLevel - toDecrement));
 
             if (toDecrement > 0) {
@@ -244,7 +248,9 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             if (o1 instanceof DistributionChainLevel && o2 instanceof DistributionChainLevel) {
                 DistributionChainLevel level1 = (DistributionChainLevel) o1;
                 DistributionChainLevel level2 = (DistributionChainLevel) o2;
-                return level1.getDistributionLevel().compareTo(level2.getDistributionLevel());
+                Long distributionlevel1 = level1.getDistributionlevel();
+                Long distributionlevel2 = level2.getDistributionlevel();
+                return distributionlevel1.compareTo(distributionlevel2);
             }
 
             return 0;

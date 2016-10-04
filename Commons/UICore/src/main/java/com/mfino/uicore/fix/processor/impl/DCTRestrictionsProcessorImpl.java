@@ -15,7 +15,6 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
 import com.mfino.domain.DistributionChainTemplate;
-import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSDCTRestrictions;
@@ -110,27 +109,29 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 	private void updateMessage(DCTRestrictions dctRestrictions, CMJSDCTRestrictions.CGEntries dctRestrictionsEntry) {
 		log.info("DCTRestrictionsProcessor :: updateMessage BEGIN");
 		
-		dctRestrictionsEntry.setID(dctRestrictions.getID());
+		dctRestrictionsEntry.setID(dctRestrictions.getId().longValue());
 		
-		if(null != dctRestrictions.getDistributionChainTemplateByDCTID()){
-			dctRestrictionsEntry.setDCTID(dctRestrictions.getDistributionChainTemplateByDCTID().getID());
+		if(null != (Long)dctRestrictions.getDctid()){
+			dctRestrictionsEntry.setDCTID(dctRestrictions.getDctid());
 		}
 		
-		if(null != dctRestrictions.getTransactionType()){
-			dctRestrictionsEntry.setTransactionTypeID(dctRestrictions.getTransactionType().getID());
-			dctRestrictionsEntry.setServiceID(dctRestrictions.getDistributionChainTemplateByDCTID().getService().getID());
+		if(null != dctRestrictions.getTransactiontypeid()){
+			dctRestrictionsEntry.setTransactionTypeID(dctRestrictions.getTransactiontypeid());
+			DistributionChainTemplateDAO distributionChainTemplateDAO = DAOFactory.getInstance().getDistributionChainTemplateDAO();
+			DistributionChainTemplate distributionChainTemplate = distributionChainTemplateDAO.getById(dctRestrictions.getDctid());
+			dctRestrictionsEntry.setServiceID(distributionChainTemplate.getServiceid());
 		}
 		
-		if(null != dctRestrictions.getIsAllowed()){
-			dctRestrictionsEntry.setIsAllowed(dctRestrictions.getIsAllowed());
+		if(null != dctRestrictions.getIsallowed()){
+			dctRestrictionsEntry.setIsAllowed(dctRestrictions.getIsallowed() != 0);
 		}
 
-		if(null != dctRestrictions.getRelationShipType()){
-			dctRestrictionsEntry.setRelationShipType(dctRestrictions.getRelationShipType());
+		if(null != dctRestrictions.getRelationshiptype()){
+			dctRestrictionsEntry.setRelationShipType(((Long)dctRestrictions.getRelationshiptype()).intValue());
 		}
 		
-		if(null != dctRestrictions.getDistributionLevel()){
-			dctRestrictionsEntry.setLevel(dctRestrictions.getDistributionLevel());
+		if(null != dctRestrictions.getDistributionlevel()){
+			dctRestrictionsEntry.setLevel(dctRestrictions.getDistributionlevel().intValue());
 		}
 		
 		log.info("DCTRestrictionsProcessor :: updateMessage END");
@@ -143,25 +144,23 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
     	TransactionTypeDAO transactionTypeDao = DAOFactory.getInstance().getTransactionTypeDAO();
     	
         if (null != dctRestrictionsEntry.getDCTID()) {
-        	DistributionChainTemplate dct = dctDao.getById(dctRestrictionsEntry.getDCTID());
-        	dctRestrictions.setDistributionChainTemplateByDCTID(dct);
+        	dctRestrictions.setDctid(dctRestrictionsEntry.getDCTID());
         }
         
         if(null != dctRestrictionsEntry.getTransactionTypeID()){
-        	TransactionType transactionType = transactionTypeDao.getById(dctRestrictionsEntry.getTransactionTypeID());
-        	dctRestrictions.setTransactionType(transactionType);
+        	dctRestrictions.setTransactiontypeid(dctRestrictionsEntry.getTransactionTypeID());
         }
         
         if(null != dctRestrictionsEntry.getIsAllowed()){
-        	dctRestrictions.setIsAllowed(dctRestrictionsEntry.getIsAllowed());
+        	dctRestrictions.setIsallowed((short) (dctRestrictionsEntry.getIsAllowed() ? 1 : 0));
         }
         
         if(null != dctRestrictionsEntry.getRelationShipType()){
-        	dctRestrictions.setRelationShipType(dctRestrictionsEntry.getRelationShipType());
+        	dctRestrictions.setRelationshiptype(dctRestrictionsEntry.getRelationShipType().longValue());
         }
         
 		if(null != dctRestrictionsEntry.getLevel()){
-			dctRestrictions.setDistributionLevel(dctRestrictionsEntry.getLevel());
+			dctRestrictions.setDistributionlevel(dctRestrictionsEntry.getLevel().longValue());
 		}
 		
     	log.info("DCTRestrictionsProcessor :: updateEntity END");

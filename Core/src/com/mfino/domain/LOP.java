@@ -43,11 +43,11 @@ public class LOP extends Base implements java.io.Serializable {
 	private String status;
 	private BigDecimal commission;
 	private String distributedby;
-	private Serializable distributetime;
+	private Timestamp distributetime;
 	private String approvedby;
-	private Serializable approvaltime;
+	private Timestamp approvaltime;
 	private String rejectedby;
-	private Serializable rejecttime;
+	private Timestamp rejecttime;
 	private String lopcomment;
 	private long sourceapplication;
 	private String sourceip;
@@ -88,9 +88,9 @@ public class LOP extends Base implements java.io.Serializable {
 			Timestamp createtime, String createdby, Long levelpermissions,
 			String girorefid, String transferdate, BigDecimal actualamountpaid,
 			BigDecimal amountdistributed, String status, BigDecimal commission,
-			String distributedby, Serializable distributetime,
-			String approvedby, Serializable approvaltime, String rejectedby,
-			Serializable rejecttime, String lopcomment, long sourceapplication,
+			String distributedby, Timestamp distributetime,
+			String approvedby, Timestamp approvaltime, String rejectedby,
+			Timestamp rejecttime, String lopcomment, long sourceapplication,
 			String sourceip, String webclientip, BigDecimal units,
 			Short iscommissionchanged,
 			Set<CommodityTransfer> commodityTransfers,
@@ -281,11 +281,11 @@ public class LOP extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DISTRIBUTETIME")
-	public Serializable getDistributetime() {
+	public Timestamp getDistributetime() {
 		return this.distributetime;
 	}
 
-	public void setDistributetime(Serializable distributetime) {
+	public void setDistributetime(Timestamp distributetime) {
 		this.distributetime = distributetime;
 	}
 
@@ -299,11 +299,11 @@ public class LOP extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "APPROVALTIME")
-	public Serializable getApprovaltime() {
+	public Timestamp getApprovaltime() {
 		return this.approvaltime;
 	}
 
-	public void setApprovaltime(Serializable approvaltime) {
+	public void setApprovaltime(Timestamp approvaltime) {
 		this.approvaltime = approvaltime;
 	}
 
@@ -317,11 +317,11 @@ public class LOP extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REJECTTIME")
-	public Serializable getRejecttime() {
+	public Timestamp getRejecttime() {
 		return this.rejecttime;
 	}
 
-	public void setRejecttime(Serializable rejecttime) {
+	public void setRejecttime(Timestamp rejecttime) {
 		this.rejecttime = rejecttime;
 	}
 

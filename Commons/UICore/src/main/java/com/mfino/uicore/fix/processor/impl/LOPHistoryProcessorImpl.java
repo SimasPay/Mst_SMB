@@ -37,24 +37,24 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
 
     private void updateEntity(LOPHistory lopHistory, CMJSLOPHistory.CGEntries e) {
 
-        if (lopHistory.getOldDiscount() == null &&  e.getOldDiscount() != null) {
-            lopHistory.setOldDiscount(e.getOldDiscount());
+        if (lopHistory.getOlddiscount() == null &&  e.getOldDiscount() != null) {
+            lopHistory.setOlddiscount(e.getOldDiscount());
         }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = (auth != null) ? auth.getName() : " ";
-        lopHistory.setDiscountChangedBy(userName);
-        lopHistory.setDiscountChangeTime(new Timestamp(new Date()));
+        lopHistory.setDiscountchangedby(userName);
+        lopHistory.setDiscountchangetime(new Timestamp(new Date()));
         if (e.getCreateTime() != null) {
-            lopHistory.setCreateTime(e.getCreateTime());
+            lopHistory.setCreatetime(e.getCreateTime());
         }
         if (e.getLastUpdateTime() != null) {
-            lopHistory.setLastUpdateTime(e.getLastUpdateTime());
+            lopHistory.setLastupdatetime(e.getLastUpdateTime());
         }
         if (e.getUpdatedBy() != null) {
-            lopHistory.setUpdatedBy(e.getUpdatedBy());
+            lopHistory.setUpdatedby(e.getUpdatedBy());
         }
         if (e.getCreatedBy() != null) {
-            lopHistory.setCreatedBy(e.getCreatedBy());
+            lopHistory.setCreatedby(e.getCreatedBy());
         }
         if (e.getComments() != null) {
             lopHistory.setComments(e.getComments());
@@ -63,40 +63,40 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
 
     private void updateMessage(LOPHistory lopHistory, CmFinoFIX.CMJSLOPHistory.CGEntries entry) {
 
-        entry.setID(lopHistory.getID());
+        entry.setID(lopHistory.getId().longValue());
 
-        if (lopHistory.getCreateTime() != null) {
-            entry.setCreateTime(lopHistory.getCreateTime());
+        if (lopHistory.getCreatetime() != null) {
+            entry.setCreateTime(lopHistory.getCreatetime());
         }
-        if (lopHistory.getCreatedBy() != null) {
-            entry.setCreatedBy(lopHistory.getCreatedBy());
+        if (lopHistory.getCreatedby() != null) {
+            entry.setCreatedBy(lopHistory.getCreatedby());
         }
-        if (lopHistory.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(lopHistory.getLastUpdateTime());
+        if (lopHistory.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(lopHistory.getLastupdatetime());
         }
-        if (lopHistory.getUpdatedBy() != null) {
-            entry.setUpdatedBy(lopHistory.getUpdatedBy());
+        if (lopHistory.getUpdatedby() != null) {
+            entry.setUpdatedBy(lopHistory.getUpdatedby());
         }
-        if (lopHistory.getVersion() != null) {
-            entry.setRecordVersion(lopHistory.getVersion());
+        if (((Long)lopHistory.getVersion()) != null) {
+            entry.setRecordVersion(((Long)lopHistory.getVersion()).intValue());
         }
         if (lopHistory.getComments() != null) {
             entry.setComments(lopHistory.getComments());
         }
-        if (lopHistory.getLOP() != null) {
-            entry.setLOPID(lopHistory.getLOP().getID());
+        if (lopHistory.getLetterOfPurchase() != null) {
+            entry.setLOPID(lopHistory.getLetterOfPurchase().getId().longValue());
         }
-        if (lopHistory.getOldDiscount() != null) {
-            entry.setOldDiscount(lopHistory.getOldDiscount());
+        if (lopHistory.getOlddiscount() != null) {
+            entry.setOldDiscount(lopHistory.getOlddiscount());
         }
-        if (lopHistory.getNewDiscount() != null) {
-            entry.setNewDiscount(lopHistory.getNewDiscount());
+        if (lopHistory.getNewdiscount() != null) {
+            entry.setNewDiscount(lopHistory.getNewdiscount());
         }
-        if (lopHistory.getDiscountChangedBy() != null) {
-            entry.setDiscountChangedBy(lopHistory.getDiscountChangedBy());
+        if (lopHistory.getDiscountchangedby() != null) {
+            entry.setDiscountChangedBy(lopHistory.getDiscountchangedby());
         }
-        if (lopHistory.getDiscountChangeTime() != null) {
-            entry.setDiscountChangeTime(lopHistory.getDiscountChangeTime());
+        if (lopHistory.getDiscountchangetime() != null) {
+            entry.setDiscountChangeTime(lopHistory.getDiscountchangetime());
         }
     }
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -170,8 +170,8 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
                         newEntries[0].setErrorDescription(MessageText._("New discount is same as old discount."));
                         return errorMsg;
                     }
-                    BigDecimal maxCommission = lop.getDistributionChainLevelByDCTLevelID().getMaxCommission();
-                    BigDecimal minCommission = lop.getDistributionChainLevelByDCTLevelID().getMinCommission();
+                    BigDecimal maxCommission = lop.getDistributionChainLvl().getMaxcommission();
+                    BigDecimal minCommission = lop.getDistributionChainLvl().getMaxcommission();
 
                     log.info("Maximum Commission = " + maxCommission);
                     log.info("Minimum Commission = " + minCommission);
@@ -190,17 +190,17 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
                             return errorMsg;
                         }
                     }
-                    lopHistory.setLOP(lop);
-                    lopHistory.setOldDiscount(lop.getCommission());
-                    lopHistory.setNewDiscount(e.getNewDiscount());
-                    BigDecimal amountPaid = lop.getActualAmountPaid();
-                    BigDecimal amountDistributed = lop.getAmountDistributed();
+                    lopHistory.setLetterOfPurchase(lop);
+                    lopHistory.setOlddiscount(lop.getCommission());
+                    lopHistory.setNewdiscount(e.getNewDiscount());
+                    BigDecimal amountPaid = lop.getActualamountpaid();
+                    BigDecimal amountDistributed = lop.getAmountdistributed();
                     BigDecimal commission = e.getNewDiscount();
 //                    amountPaid = (long) (amountDistributed - ((amountDistributed * commission) / 100));
                     amountPaid = amountDistributed.subtract(amountDistributed.multiply(commission).divide(HUNDREAD));                    
-                    lop.setActualAmountPaid(amountPaid);
+                    lop.setActualamountpaid(amountPaid);
                     lop.setCommission(e.getNewDiscount());
-                    lop.setIsCommissionChanged(Boolean.TRUE);
+                    lop.setIscommissionchanged((short) 1);
                     log.info("Amount Distributed is " + amountDistributed);
                     log.info("Amount paid after new discount is " + amountPaid);
                     lopDao.save(lop);

@@ -81,7 +81,7 @@ public class PocketTemplateConfigCheckProcessorImpl extends BaseFixProcessor imp
         if(results.size() > 0) {
         	boolean isEditingSamePTC = false;
         	for(PocketTemplateConfig ptc : results) {
-        		if(ptc.getID().equals(realMsg.getID())) {
+        		if(ptc.getId().equals(realMsg.getID())) {
         			isEditingSamePTC = true;
         			break;
         		}
@@ -143,13 +143,14 @@ public class PocketTemplateConfigCheckProcessorImpl extends BaseFixProcessor imp
         	while(iterator.hasNext())
         	{
         		defaultPTCwithSimilarConfig = iterator.next();
-        		if(defaultPTCwithSimilarConfig.getIsDefault())
+        		if(defaultPTCwithSimilarConfig.getIsdefault() != null 
+        				&& defaultPTCwithSimilarConfig.getIsdefault() != 0)
         		{        			
         			break;
         		}       		
         	}
-        	if(defaultPTCwithSimilarConfig.getID().equals(realMsg.getID())) {        		
-        		if(realMsg.getIsDefault() != null && defaultPTCwithSimilarConfig.getIsDefault() == true && realMsg.getIsDefault() == false) {
+        	if(defaultPTCwithSimilarConfig.getId().equals(realMsg.getID())) {        		
+        		if(realMsg.getIsDefault() != null && defaultPTCwithSimilarConfig.getIsdefault() == (short) 1 && realMsg.getIsDefault() == false) {
         			err.setErrorCode(CmFinoFIX.ErrorCode_LastDefaultPocketTemplateConfig);
         			err.setErrorDescription(MessageText._("Atleast one configuration need to be default"));
         		} else {

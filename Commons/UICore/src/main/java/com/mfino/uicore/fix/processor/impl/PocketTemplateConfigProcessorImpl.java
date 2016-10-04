@@ -22,9 +22,9 @@ import com.mfino.dao.PTC_Group_MapDAO;
 import com.mfino.dao.PocketTemplateConfigDAO;
 import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
-import com.mfino.domain.PTC_Group_Map;
+import com.mfino.domain.PtcGroupMapping;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.fix.CFIXMsg;
@@ -49,49 +49,48 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 	private void updateEntity(PocketTemplateConfig p,
 			CMJSPocketTemplateConfig.CGEntries e) {
-		String ID = String.valueOf(p.getID());
+		String ID = String.valueOf(p.getId());
 		if (ID == null) {
 			ID = e.getID().toString();
 		}
 		if (e.getSubscriberType() != null) {
-			if (!e.getSubscriberType().equals(p.getSubscriberType())) {
+			if (!e.getSubscriberType().equals(p.getSubscribertype())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " Subscriber Type updated to "
 						+ e.getSubscriberType() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setSubscriberType(e.getSubscriberType());
+			p.setSubscribertype(e.getSubscriberType());
 		}
 		if (e.getBusinessPartnerType() != null) {
-			if (!e.getBusinessPartnerType().equals(p.getBusinessPartnerType())) {
+			if (!e.getBusinessPartnerType().equals(p.getBusinesspartnertype())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " Business Partner Type updated to "
 						+ e.getBusinessPartnerType() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setBusinessPartnerType(e.getBusinessPartnerType());
+			p.setBusinesspartnertype(e.getBusinessPartnerType().longValue());
 		}
 		// else {
 		// p.setBusinessPartnerType(-1);
 		// }
 		if (e.getKYCLevel() != null) {
-			if (p.getKYCLevelByKYCLevel() != null
-					&& !e.getKYCLevel().equals(
-							p.getKYCLevelByKYCLevel().getID())) {
+			if (p.getKycLevel() != null
+					&& !e.getKYCLevel().equals(p.getKycLevel().getId())) {
 				log.info("PocketTemplateConfig:" + ID + " KYCLevel updated to "
 						+ e.getKYCLevel() + " by user:" + getLoggedUserNameWithIP());
 			}
 			KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
 			KYCLevel kyclevel = kycLevelDAO.getByKycLevel(e.getKYCLevel());
-			p.setKYCLevelByKYCLevel(kyclevel);
+			p.setKycLevel(kyclevel);
 		}
 		if (e.getPocketType() != null) {
-			if (!e.getPocketType().equals(p.getPocketType())) {
+			if (!e.getPocketType().equals(p.getPockettype())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " Pocket Type updated to " + e.getPocketType()
 						+ " by user:" + getLoggedUserNameWithIP());
 			}
-			p.setPocketType(e.getPocketType());
+			p.setPockettype(e.getPocketType());
 		}
 		if (e.getCommodity() != null) {
 			if (!e.getCommodity().equals(p.getCommodity())) {
@@ -102,35 +101,35 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			p.setCommodity(e.getCommodity());
 		}
 		if (e.getIsSuspencePocket() != null) {
-			if (!e.getIsSuspencePocket().equals(p.getIsSuspencePocket())) {
+			if (!e.getIsSuspencePocket().equals(p.getIssuspencepocket())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " IsSuspencePocket updated to "
 						+ e.getIsSuspencePocket() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setIsSuspencePocket(e.getIsSuspencePocket());
+			p.setIssuspencepocket((short) (e.getIsSuspencePocket() ? 1:0) );
 		}
 		if (e.getIsCollectorPocket() != null) {
-			if (!e.getIsCollectorPocket().equals(p.getIsCollectorPocket())) {
+			if (!e.getIsCollectorPocket().equals(p.getIscollectorpocket())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " IsCollectorPocket updated to "
 						+ e.getIsCollectorPocket() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setIsCollectorPocket(e.getIsCollectorPocket());
+			p.setIscollectorpocket((short) (e.getIsCollectorPocket()?1:0));
 		}
 		if (e.getIsDefault() != null) {
-			if (!e.getIsDefault().equals(p.getIsDefault())) {
+			if (!e.getIsDefault().equals(p.getIsdefault())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " IsCollectorPocket updated to " + e.getIsDefault()
 						+ " by user:" + getLoggedUserNameWithIP());
 			}
-			p.setIsDefault(e.getIsDefault());
+			p.setIsdefault((short) (e.getIsDefault()?1:0));
 		}
 		if (e.getPocketTemplateID() != null) {
 			if (p.getPocketTemplate() != null
 					&& !e.getPocketTemplateID().equals(
-							p.getPocketTemplate().getID())) {
+							p.getPocketTemplate().getId())) {
 				log.info("PocketTemplateConfig:" + ID
 						+ " PocketTemplateID updated to "
 						+ e.getPocketTemplateID() + " by user:"
@@ -147,46 +146,48 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 	private void updateMessage(PocketTemplateConfig p,
 			CMJSPocketTemplateConfig.CGEntries entry) {
-		entry.setID(p.getID());
+		entry.setID(p.getId().longValue());
 
-		if (p.getSubscriberType() != null) {
-			entry.setSubscriberType(p.getSubscriberType());
+		if (((Long)p.getSubscribertype()) != null) {
+			entry.setSubscriberType(((Long)p.getSubscribertype()).intValue());
 		}
-		if (p.getBusinessPartnerType() != null) {
-			entry.setBusinessPartnerType(p.getBusinessPartnerType());
-		}
-
-		if (p.getPocketType() != null) {
-			entry.setPocketType(p.getPocketType());
+		if (p.getBusinesspartnertype() != null) {
+			entry.setBusinessPartnerType(p.getBusinesspartnertype().intValue());
 		}
 
-		if (p.getCommodity() != null) {
-			entry.setCommodity(p.getCommodity());
+		if ((Long)p.getPockettype() != null) {
+			entry.setPocketType(((Long)p.getPockettype()).intValue());
 		}
 
-		if (p.getIsSuspencePocket() != null) {
-			entry.setIsSuspencePocket(p.getIsSuspencePocket());
+		if ((Long) p.getCommodity() != null) {
+			entry.setCommodity(((Long) p.getCommodity()).intValue());
 		}
 
-		if (p.getIsCollectorPocket() != null) {
-			entry.setIsCollectorPocket(p.getIsCollectorPocket());
+		if (p.getIssuspencepocket() != null) {
+			entry.setIsSuspencePocket(p.getIssuspencepocket() != null 
+					&& p.getIssuspencepocket() != 0);
 		}
 
-		if (p.getIsDefault() != null) {
-			entry.setIsDefault(p.getIsDefault());
+		if (p.getIscollectorpocket() != null) {
+			entry.setIsCollectorPocket(p.getIscollectorpocket() != null 
+					&& p.getIscollectorpocket() != 0);
+		}
+
+		if (p.getIsdefault() != null) {
+			entry.setIsDefault(p.getIsdefault() != null && p.getIsdefault() != 0);
 		}
 		//setting value for group while editing from database
-		if(p.getID()!=null){
+		if(p.getId()!=null){
 			PTC_Group_MapDAO pgmDao = DAOFactory.getInstance().getPTC_Group_MapDAO();
-			PTC_Group_Map pgm=pgmDao.getByPtcId(p.getID());
+			PtcGroupMapping pgm = pgmDao.getByPtcId(p.getId().longValue());
 			if(pgm!=null){
-				if(pgm.getGroup()!=null){
-					if(pgm.getGroup().getID()!=null){
-						entry.setGroupID(Long.toString(pgm.getGroup().getID()));
+				if(pgm.getGroups()!=null){
+					if(pgm.getGroups().getId() != null){
+						entry.setGroupID(String.valueOf(pgm.getGroups().getId()));
 
 					}
-					if(pgm.getGroup().getGroupName()!=null){
-						entry.setGroupName(pgm.getGroup().getGroupName());
+					if(pgm.getGroups().getGroupname()!=null){
+						entry.setGroupName(pgm.getGroups().getGroupname());
 					}
 				}
 			}
@@ -194,17 +195,17 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 		}
 
 		entry.setSubscriberTypeText(enumTextService.getEnumTextValue(
-				CmFinoFIX.TagID_SubscriberType, null, p.getSubscriberType()));
+				CmFinoFIX.TagID_SubscriberType, null, p.getSubscribertype()));
 		entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_BusinessPartnerType, null,
-				p.getBusinessPartnerType()));
-		entry.setKYCLevelText(p.getKYCLevelByKYCLevel().getKYCLevelName());
-		entry.setKYCLevel(p.getKYCLevelByKYCLevel().getKYCLevel());
+				p.getBusinesspartnertype()));
+		entry.setKYCLevelText(p.getKycLevel().getKyclevelname());
+		entry.setKYCLevel(p.getKycLevel().getKyclevel().longValue());
 		entry.setPocketTypeText(enumTextService.getEnumTextValue(
-				CmFinoFIX.TagID_PocketType, null, p.getPocketType()));
+				CmFinoFIX.TagID_PocketType, null, p.getPockettype()));
 		entry.setCommodityTypeText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_Commodity, null, p.getCommodity()));
-		entry.setPocketTemplateID(p.getPocketTemplate().getID());
+		entry.setPocketTemplateID(p.getPocketTemplate().getId().longValue());
 		entry.setPocketTemplateDescription(p.getPocketTemplate()
 				.getDescription());
 
@@ -212,12 +213,12 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 	//method for updating column in ptc_group_map table while editing or creating ptc
 	private void update_PTC_Group_Map(PocketTemplateConfig p,CMJSPocketTemplateConfig.CGEntries e) {
 		PTC_Group_MapDAO mapdao = DAOFactory.getInstance().getPTC_Group_MapDAO();
-		PTC_Group_Map m= new PTC_Group_Map();
+		PtcGroupMapping m= new PtcGroupMapping();
 		if(e.getGroupID()!=null){
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-			Group group = groupDao.getById(Long.parseLong(e.getGroupID()));
-			m.setGroup(group);
-			m.setPocketTemplateConfigByPtcID(p);
+			Groups group = groupDao.getById(Long.parseLong(e.getGroupID()));
+			m.setGroups(group);
+			m.setPocketTemplateConfig(p);
 			mapdao.save(m);
 		}
 
@@ -260,7 +261,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 				update_PTC_Group_Map(p,e);
 
-				log.info("PocketTemplateConfig:" + p.getID()
+				log.info("PocketTemplateConfig:" + p.getId()
 						+ " created by user:" + getLoggedUserNameWithIP());
 				updateMessage(p, e);
 			}
@@ -279,7 +280,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 				PocketTemplateConfig p = null;
 				if (results.size() > 0) {
 					p = results.get(0);
-					if(e.getIsDefault() != null && p.getIsDefault() == true && e.getIsDefault() == false  ){
+					if(e.getIsDefault() != null && p.getIsdefault() == (short) 1 && e.getIsDefault() == false  ){
 						CMJSError err = new CMJSError();
 						err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 						err.setErrorDescription(MessageText._("Atleast one configuration need to be default"));
@@ -307,12 +308,12 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 				// Create PTC_Group_MAP entry
 				if(e.getGroupID()!=null){
-					mapdao.deleteById(p.getID());//delete any previous existing row with same ptcid in ptc_group_mapping table
+					mapdao.deleteById(p.getId().longValue());//delete any previous existing row with same ptcid in ptc_group_mapping table
 				}
 				update_PTC_Group_Map(p,e);
 
 
-				log.info("PocketTemplateConfig:" + p.getID()
+				log.info("PocketTemplateConfig:" + p.getId()
 						+ " created by user:" + getLoggedUserNameWithIP());
 				updateMessage(p, e);
 			}
@@ -343,7 +344,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			query.set_businessPartnerType(realMsg.getBusinessPartnerType());
 		}
 		if (realMsg.getKYCLevel() != null) {
-			query.set_KYCLevel(getKycLevelObject(realMsg.getKYCLevel()).getKYCLevel());
+			query.set_KYCLevel(getKycLevelObject(realMsg.getKYCLevel()).getKyclevel().longValue());
 		}
 		if (realMsg.getCommodityTypeSearch() != null
 				&& !realMsg.getCommodityTypeSearch().equalsIgnoreCase("")) {
@@ -370,7 +371,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 			updateMessage(p, entry);
 			realMsg.getEntries()[i] = entry;
-			log.info("PocketTemplateConfig:" + p.getID()
+			log.info("PocketTemplateConfig:" + p.getId()
 					+ " details viewed completed by user:"
 					+ getLoggedUserNameWithIP());
 		}
@@ -391,7 +392,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			query.set_businessPartnerType(realMsg.getBusinessPartnerType());
 		}
 		if (realMsg.getKYCLevel() != null) {
-			query.set_KYCLevel(getKycLevelObject(realMsg.getKYCLevel()).getKYCLevel());
+			query.set_KYCLevel(getKycLevelObject(realMsg.getKYCLevel()).getKyclevel().longValue());
 		}
 		if (realMsg.getCommodityTypeSearch() != null
 				&& !realMsg.getCommodityTypeSearch().equalsIgnoreCase("")) {
@@ -406,7 +407,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateDAO pocketTemplateDAO = DAOFactory.getInstance()
 					.getPocketTemplateDao();
 			PocketTemplate pocketTemplate = pocketTemplateDAO.getById(realMsg.getPocketTemplateID());
-			query.set_pocketTemplateID(pocketTemplate.getID());
+			query.set_pocketTemplateID(pocketTemplate.getId().longValue());
 		}
 		if(StringUtils.isNotBlank(realMsg.getGroupID())){
 			query.set_GroupID(Long.parseLong(realMsg.getGroupID()));
@@ -422,7 +423,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 			updateMessage(p, entry);
 			realMsg.getEntries()[i] = entry;
-			log.info("PocketTemplateConfig:" + p.getID()
+			log.info("PocketTemplateConfig:" + p.getId()
 					+ " details viewed completed by user:"
 					+ getLoggedUserNameWithIP());
 		}
@@ -443,36 +444,38 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateConfig p = null;
 			if (results.size() > 0) {
 				p = results.get(0);				
-				if (p.getSubscriberType() != null) {
-					query.set_subscriberType(p.getSubscriberType());
+				if ((Long)p.getSubscribertype() != null) {
+					query.set_subscriberType(((Long)p.getSubscribertype()).intValue());
 				}
-				if(p.getBusinessPartnerType() != null){
-					query.set_businessPartnerType(p.getBusinessPartnerType());
+				if(p.getBusinesspartnertype() != null){
+					query.set_businessPartnerType(((Long)p.getBusinesspartnertype()).intValue());
 				}
 
-				if(p.getCommodity() != null){
-					query.set_commodity(p.getCommodity());
+				if((Long) p.getCommodity() != null){
+					query.set_commodity(((Long) p.getCommodity()).intValue());
 				}        
 
-				if(p.getKYCLevelByKYCLevel() != null){
-					query.set_KYCLevel(p.getKYCLevelByKYCLevel().getKYCLevel());
+				if(p.getKycLevel() != null){
+					query.set_KYCLevel(p.getKycLevel().getKyclevel().longValue());
 				}
-				if(p.getPocketType() != null){
-					query.set_pocketType(p.getPocketType());
+				if((Long) p.getPockettype() != null){
+					query.set_pocketType(((Long) p.getPockettype()).intValue());
 				}
-				if(p.getIsCollectorPocket() != null){
-					query.set_isCollectorPocket(p.getIsCollectorPocket());
+				if(p.getIscollectorpocket() != null){
+					query.set_isCollectorPocket(p.getIscollectorpocket() != null 
+							&& p.getIscollectorpocket() != 0);
 				}
-				if(p.getIsSuspencePocket() != null){
-					query.set_isSuspensePocket(p.getIsSuspencePocket());
+				if(p.getIssuspencepocket() != null){
+					query.set_isSuspensePocket(p.getIssuspencepocket() != null 
+							&& p.getIssuspencepocket() != 0);
 				}
-				if(p.getPTC_Group_MapFromPtcID() != null){
-					Group pocketTemplateGroup = null;
-					Set<PTC_Group_Map> ptcGroupMapSet = p.getPTC_Group_MapFromPtcID();
-					Iterator<PTC_Group_Map> iterator = ptcGroupMapSet.iterator();
+				if(p.getPtcGroupMappings() != null){
+					Groups pocketTemplateGroup = null;
+					Set<PtcGroupMapping> ptcGroupMapSet = p.getPtcGroupMappings();
+					Iterator<PtcGroupMapping> iterator = ptcGroupMapSet.iterator();
 					if(iterator.hasNext()){
-						pocketTemplateGroup = iterator.next().getGroup();
-						query.set_GroupID(pocketTemplateGroup.getID());
+						pocketTemplateGroup = iterator.next().getGroups();
+						query.set_GroupID(pocketTemplateGroup.getId().longValue());
 					}				
 				}			
 
@@ -487,7 +490,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateConfig ptc = null;
 			for(int index=0 ; index < results.size() ; index++){
 				ptc=results.get(index);
-				ptc.setIsDefault(false);
+				ptc.setIsdefault((short)0);
 				dao.save(ptc);				
 			}			
 		}
@@ -535,14 +538,14 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 		{
 			query.set_isSuspensePocket(false);
 		}
-		Group defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
+		Groups defaultGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
 		if(entries.getGroupID() != null)
 		{
 			query.set_GroupID(Long.parseLong(entries.getGroupID()));
 		}
 		else
 		{
-			query.set_GroupID(defaultGroup.getID());
+			query.set_GroupID(defaultGroup.getId().longValue());
 		}
 
 		results = dao.get(query);
@@ -551,7 +554,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateConfig ptc = null;
 			for(int index=0 ; index < results.size() ; index++){
 				ptc=results.get(index);
-				ptc.setIsDefault(false);
+				ptc.setIsdefault((short)0);
 				dao.save(ptc);				
 			}			
 		}

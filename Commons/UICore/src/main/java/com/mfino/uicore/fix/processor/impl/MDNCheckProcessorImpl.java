@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -40,7 +40,7 @@ public class MDNCheckProcessorImpl extends BaseFixProcessor implements MDNCheckP
 
         CMJSMDNCheck realMsg = (CMJSMDNCheck) msg;
         SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-        SubscriberMDN subMdn = mdnDAO.getByMDN(subscriberService.normalizeMDN(realMsg.getMDN()));
+        SubscriberMdn subMdn = mdnDAO.getByMDN(subscriberService.normalizeMDN(realMsg.getMDN()));
 
         //TODO : Send possible username that would be available in the DB
 
@@ -48,13 +48,13 @@ public class MDNCheckProcessorImpl extends BaseFixProcessor implements MDNCheckP
 
         if(subMdn != null){
         	if(realMsg.getAgentCheck()!=null&&realMsg.getAgentCheck()){
-        		if(subMdn.getSubscriber().getType().equals(CmFinoFIX.SubscriberType_Partner)){
+        		if( ((Long)subMdn.getSubscriber().getType()).equals(CmFinoFIX.SubscriberType_Partner)){
         			 err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
         	            err.setErrorDescription(MessageText._("Partner already Exists with this MDN"));	
-        		}else if(subMdn.getStatus().equals(CmFinoFIX.MDNStatus_PendingRetirement)
-        				||subMdn.getStatus().equals(CmFinoFIX.MDNStatus_Retired)
-        				||subMdn.getSubscriber().getStatus().equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
-        				||subMdn.getSubscriber().getStatus().equals(CmFinoFIX.SubscriberStatus_Retired)
+        		}else if( ((Long)subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_PendingRetirement)
+        				|| ((Long)subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_Retired)
+        				|| ((Long)subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
+        				|| ((Long)subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_Retired)
         				){
         			err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
     	            err.setErrorDescription(MessageText._("Invalid MDN Status "));	

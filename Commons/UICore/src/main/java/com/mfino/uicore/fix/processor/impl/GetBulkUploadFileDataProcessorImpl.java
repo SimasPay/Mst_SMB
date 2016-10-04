@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.sql.Clob;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -35,7 +36,8 @@ public class GetBulkUploadFileDataProcessorImpl extends BaseFixProcessor impleme
         List<BulkUpload> results = dao.get(query);
         if(results.size() > 0)
         {
-            realMsg.setReportFileData(results.get(0).getReportFileData());
+        	Clob reportfiledata = results.get(0).getReportfiledata();
+            realMsg.setReportFileData(reportfiledata.getSubString(0, ((Long)reportfiledata.length()).intValue()) );
             realMsg.setsuccess(Boolean.TRUE);
         }
         else

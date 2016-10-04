@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +15,6 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDAO;
 import com.mfino.dao.query.NotificationLogDetailsQuery;
 import com.mfino.dao.query.NotificationLogQuery;
-import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.Notification;
 import com.mfino.domain.NotificationLog;
 import com.mfino.domain.NotificationLogDetails;
@@ -143,23 +143,23 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 
 	private void validate(NotificationLog notificationLog) throws Exception 
 	{
-		if(notificationLog.getSctlId() == null)
+		if(notificationLog.getSctlid() == null)
 		{
 			throw new Exception("Sctl ID can't be null.");
 		}
-		if(notificationLog.getNotificationMethod() == null)
+		if(((Long)notificationLog.getNotificationmethod()) == null)
 		{
 			throw new Exception("NotificationMethod can't be null. It should be either SMS or Email");
 		}
-		if(notificationLog.getCode() == null)
+		if( (Long)notificationLog.getCode() == null)
 		{
 			throw new Exception("NotificationCode can't be null.");
 		}
-		if(notificationLog.getNotificationReceiverType() == null)
+		if((Long)notificationLog.getNotificationreceivertype() == null)
 		{
 			throw new Exception("Notification Receiver Type can't be null.");
 		}
-		if(notificationLog.getSourceAddress() == null)
+		if(notificationLog.getSourceaddress() == null)
 		{
 			throw new Exception("Source Address can't be null.");
 		}
@@ -167,7 +167,7 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 
 	private void updateEntity(NotificationLog notificationLog, CMJSNotificationLog.CGEntries e) {
 		if (e.getSctlId() != null) {
-			notificationLog.setSctlId(e.getSctlId());
+			notificationLog.setSctlid(new BigDecimal(e.getSctlId()));
 		}
 		if (StringUtils.isNotBlank(e.getText())) {
 			notificationLog.setText(EncryptionUtil.getEncryptedString(e.getText()));
@@ -176,23 +176,23 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 			notificationLog.setCode(e.getNotificationCode());
 		}
 		if (e.getNotificationMethod() != null) {
-			notificationLog.setNotificationMethod(e.getNotificationMethod());
+			notificationLog.setNotificationmethod(e.getNotificationMethod());
 		}
 		if (e.getNotificationReceiverType() != null) {
-			notificationLog.setNotificationReceiverType(e.getNotificationReceiverType());
+			notificationLog.setNotificationreceivertype(e.getNotificationReceiverType());
 		}
 		if (StringUtils.isNotBlank(e.getSourceAddress())) {
-			notificationLog.setSourceAddress(e.getSourceAddress());
+			notificationLog.setSourceaddress(e.getSourceAddress());
 		}
 		if (StringUtils.isNotBlank(e.getEmailSubject())) {
-			notificationLog.setEmailSubject(e.getEmailSubject());
+			notificationLog.setEmailsubject(e.getEmailSubject());
 		}
 	}
 
 	private void updateMessage(NotificationLog notificationLog, CMJSNotificationLog.CGEntries e) {
-		e.setNotificationLogID(notificationLog.getID());
-		e.setSctlId(notificationLog.getSctlId());
-		if(notificationLog.getIsSensitiveData())
+		e.setNotificationLogID(notificationLog.getId().longValue());
+		e.setSctlId(notificationLog.getSctlid().longValue());
+		if(notificationLog.getIssensitivedata() != 0)
 		{
 			e.setText(" ***** This message contains sensitive information and hence its not displayed here ***** ");
 		}
@@ -200,45 +200,45 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 		{
 			e.setText(EncryptionUtil.getDecryptedString(notificationLog.getText()));
 		}
-		e.setNotificationCode(notificationLog.getCode());
+		e.setNotificationCode(((Long)notificationLog.getCode()).intValue());
 		
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 
 		
-		Notification notification = DAOFactory.getInstance().getNotificationDAO().getByNotificationCodeAndLang(notificationLog.getCode(), language);
+		Notification notification = DAOFactory.getInstance().getNotificationDAO().getByNotificationCodeAndLang(((Long)notificationLog.getCode()).intValue(), language);
 		if(notification != null)
 		{
-			e.setNotificationCodeName(notification.getCodeName());
+			e.setNotificationCodeName(notification.getCodename());
 		}
-		e.setNotificationMethod(notificationLog.getNotificationMethod());
-		if(CmFinoFIX.NotificationMethod_SMS.equals(notificationLog.getNotificationMethod()))
+		e.setNotificationMethod(((Long)notificationLog.getNotificationmethod()).intValue());
+		if(CmFinoFIX.NotificationMethod_SMS.equals(notificationLog.getNotificationmethod()))
 		{
 			e.setNotificationMethodText("SMS");
 		}
-		else if(CmFinoFIX.NotificationMethod_Email.equals(notificationLog.getNotificationMethod()))
+		else if(CmFinoFIX.NotificationMethod_Email.equals(notificationLog.getNotificationmethod()))
 		{
 			e.setNotificationMethodText("Email");
 		}
-		e.setNotificationReceiverType(notificationLog.getNotificationReceiverType());
-		if(CmFinoFIX.NotificationReceiverType_Source.equals(notificationLog.getNotificationReceiverType()))
+		e.setNotificationReceiverType(((Long)notificationLog.getNotificationreceivertype()).intValue());
+		if(CmFinoFIX.NotificationReceiverType_Source.equals(notificationLog.getNotificationreceivertype()))
 		{
 			e.setNotificationReceiverTypeText("Sender");
 		}
-		else if(CmFinoFIX.NotificationReceiverType_Destination.equals(notificationLog.getNotificationReceiverType()))
+		else if(CmFinoFIX.NotificationReceiverType_Destination.equals(notificationLog.getNotificationreceivertype()))
 		{
 			e.setNotificationReceiverTypeText("Receiver");
 		}
-		else if(CmFinoFIX.NotificationReceiverType_OnBehalfOfSubscriber.equals(notificationLog.getNotificationReceiverType()))
+		else if(CmFinoFIX.NotificationReceiverType_OnBehalfOfSubscriber.equals(notificationLog.getNotificationreceivertype()))
 		{
 			e.setNotificationReceiverTypeText("OnBehalfOfSubscriber");
 		}
-		e.setSourceAddress(notificationLog.getSourceAddress());
-		e.setEmailSubject(notificationLog.getEmailSubject());		
-		e.setRecordVersion(notificationLog.getVersion());
-		e.setCreatedBy(notificationLog.getCreatedBy());
-		e.setCreateTime(notificationLog.getCreateTime());
-		e.setUpdatedBy(notificationLog.getUpdatedBy());
-		e.setLastUpdateTime(notificationLog.getLastUpdateTime());
+		e.setSourceAddress(notificationLog.getSourceaddress());
+		e.setEmailSubject(notificationLog.getEmailsubject());		
+		e.setRecordVersion(((Long)notificationLog.getVersion()).intValue());
+		e.setCreatedBy(notificationLog.getCreatedby());
+		e.setCreateTime(notificationLog.getCreatetime());
+		e.setUpdatedBy(notificationLog.getUpdatedby());
+		e.setLastUpdateTime(notificationLog.getLastupdatetime());
 		
 		NotificationLogDetailsQuery query = new NotificationLogDetailsQuery(); 
 		query.setNotificationLog(notificationLog);

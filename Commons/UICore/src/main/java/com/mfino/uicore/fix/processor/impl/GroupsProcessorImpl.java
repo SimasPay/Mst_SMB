@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.GroupDao;
 import com.mfino.dao.query.GroupQuery;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSGroup;
@@ -60,10 +60,10 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 				query.setIncludeSystemGroups(true);
 			}
 			
-			List<Group> lst = dao.get(query);
+			List<Groups> lst = dao.get(query);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				realMsg.allocateEntries(lst.size());
-				for (Group group : lst){
+				for (Groups group : lst){
 					CMJSGroup.CGEntries e = new CMJSGroup.CGEntries();
 					updateMessage(group, e);
 					realMsg.getEntries()[i] = e;
@@ -78,8 +78,8 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 			CMJSGroup.CGEntries[] entries = realMsg.getEntries();
 			
 			for(CMJSGroup.CGEntries e: entries) {
-				Group group = new Group();
-				group.setSystemGroup(Boolean.FALSE);
+				Groups group = new Groups();
+				group.setSystemgroup((short) 0);
 				updateEntity(group, e);
         		try {
 					dao.save(group);
@@ -95,7 +95,7 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 			CMJSGroup.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSGroup.CGEntries e: entries) {
-				Group ct = dao.getById(Long.valueOf(e.getID()));
+				Groups ct = dao.getById(Long.valueOf(e.getID()));
         		if (!(e.getRecordVersion().equals(ct.getVersion()))) {
         			handleStaleDataException();
         		}
@@ -116,9 +116,9 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 		return realMsg;
 	}
 
-	private void updateEntity(Group group, CMJSGroup.CGEntries e) {
+	private void updateEntity(Groups group, CMJSGroup.CGEntries e) {
 		if (StringUtils.isNotBlank(e.getGroupName())) {
-			group.setGroupName(e.getGroupName());
+			group.setGroupname(e.getGroupName());
 		}
 		
 		if (StringUtils.isNotBlank(e.getDescription())) {
@@ -126,27 +126,27 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 		}
 		
 		if(e.getSystemGroup() != null){
-			group.setSystemGroup(e.getSystemGroup());
+			group.setSystemgroup((short) (e.getSystemGroup() ? 1 : 0));
 		}
 	}
 	
-	private void updateMessage(Group group, CMJSGroup.CGEntries e) {
-		e.setID(""+group.getID());
-		e.setGroupName(group.getGroupName());
+	private void updateMessage(Groups group, CMJSGroup.CGEntries e) {
+		e.setID(""+group.getId());
+		e.setGroupName(group.getGroupname());
 		e.setDescription(group.getDescription());
-		e.setSystemGroup(group.getSystemGroup());
-		e.setRecordVersion(group.getVersion());
-		e.setCreatedBy(group.getCreatedBy());
-		e.setCreateTime(group.getCreateTime());
-		e.setUpdatedBy(group.getUpdatedBy());
-		e.setLastUpdateTime(group.getLastUpdateTime());
+		e.setSystemGroup(group.getSystemgroup() != 0);
+		e.setRecordVersion(((Long)group.getVersion()).intValue());
+		e.setCreatedBy(group.getCreatedby());
+		e.setCreateTime(group.getCreatetime());
+		e.setUpdatedBy(group.getUpdatedby());
+		e.setLastUpdateTime(group.getLastupdatetime());
 	}
 	
 	private CFIXMsg generateError(ConstraintViolationException cve) {
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 		CmFinoFIX.CMJSError.CGEntries[] newEntries = errorMsg.allocateEntries(1);
 		newEntries[0] = new CmFinoFIX.CMJSError.CGEntries();
-		String message = MessageText._("Group with given name already exists, Please enter different name.");
+		String message = MessageText._("Groups with given name already exists, Please enter different name.");
 		errorMsg.setErrorDescription(message);
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 		newEntries[0].setErrorName(CmFinoFIX.CMJSGroup.FieldName_NameSearch);

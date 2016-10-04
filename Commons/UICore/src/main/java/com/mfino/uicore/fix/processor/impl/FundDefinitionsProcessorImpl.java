@@ -1,8 +1,11 @@
 package com.mfino.uicore.fix.processor.impl;
 
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
+
+import oracle.net.aso.p;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.FundDefinitionDAO;
+import com.mfino.dao.PurposeDAO;
 import com.mfino.dao.query.FundDefinitionQuery;
 import com.mfino.domain.ExpirationType;
 import com.mfino.domain.FundDefinition;
@@ -110,85 +114,85 @@ public class FundDefinitionsProcessorImpl extends BaseFixProcessor implements Fu
 	}
 	
 	private void updateMessage(FundDefinition fundDefinition, CGEntries e) {
-		e.setID(fundDefinition.getID());
-		if(fundDefinition.getPurpose()!=null){
-			e.setPurposeID(fundDefinition.getPurpose().getID());
-			e.setPurposeCode(fundDefinition.getPurpose().getCode());	
+		e.setID(fundDefinition.getId().longValue());
+		if(fundDefinition.getPurposeid()!=null){
+			e.setPurposeID(fundDefinition.getPurposeid().longValue());
+			PurposeDAO purposeDAO = DAOFactory.getInstance().getPurposeDAO();
+			Purpose purpose = purposeDAO.getById(fundDefinition.getPurposeid().longValue());
+			e.setPurposeCode(purpose.getCode());
 		}
-		e.setFACLength(fundDefinition.getFACLength());
-		e.setFACPrefix(fundDefinition.getFACPrefix());
-		if(fundDefinition.getExpirationTypeByExpiryID()!=null){
-			e.setExpiryID(fundDefinition.getExpirationTypeByExpiryID().getID());
-			e.setExpiryValue(fundDefinition.getExpirationTypeByExpiryID().getExpiryValue());
+		e.setFACLength(fundDefinition.getFaclength().intValue());
+		e.setFACPrefix(fundDefinition.getFacprefix());
+		if(fundDefinition.getExpirationType()!=null){
+			e.setExpiryID(fundDefinition.getExpirationType().getId().longValue());
+			e.setExpiryValue(fundDefinition.getExpirationType().getExpiryvalue().longValue());
 
 		}
-		e.setMaxFailAttemptsAllowed(fundDefinition.getMaxFailAttemptsAllowed());
-		if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry()!=null){
-			e.setOnFundAllocationTimeExpiry(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getID());
+		e.setMaxFailAttemptsAllowed(fundDefinition.getMaxfailattemptsallowed().intValue());
+		if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry()!=null){
+			e.setOnFundAllocationTimeExpiry(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getId().longValue());
 			e.setOnFundAllocationTimeExpiryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, 
-					fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType()));
+					fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype()));
 		}
-		if(fundDefinition.getFundEventsByOnFailedAttemptsExceeded()!=null){
-			e.setOnFailedAttemptsExceeded(fundDefinition.getFundEventsByOnFailedAttemptsExceeded().getID());
+		if(fundDefinition.getFundEventsByOnfailedattemptsexceeded()!=null){
+			e.setOnFailedAttemptsExceeded(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getId().longValue());
 			e.setOnFailedAttemptsExceededText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, 
-					fundDefinition.getFundEventsByOnFailedAttemptsExceeded().getFundEventType()));
+					fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype()));
 		}
-		if(fundDefinition.getFundEventsByGenerationOfOTPOnFailure()!=null){
-			e.setGenerationOfOTPOnFailure(fundDefinition.getFundEventsByGenerationOfOTPOnFailure().getID());
+		if(fundDefinition.getFundEventsByGenerationofotponfailure()!=null){
+			e.setGenerationOfOTPOnFailure(fundDefinition.getFundEventsByGenerationofotponfailure().getId().longValue());
 			e.setGenerationOfOTPOnFailureText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, 
-					fundDefinition.getFundEventsByGenerationOfOTPOnFailure().getFundEventType()));
+					fundDefinition.getFundEventsByGenerationofotponfailure().getFundeventtype()));
 		}
-		e.setIsMultipleWithdrawalAllowed(fundDefinition.getIsMultipleWithdrawalAllowed());
-		e.setRecordVersion(fundDefinition.getVersion());
-		e.setCreatedBy(fundDefinition.getCreatedBy());
-		e.setCreateTime(fundDefinition.getCreateTime());
-		e.setUpdatedBy(fundDefinition.getUpdatedBy());
-		e.setLastUpdateTime(fundDefinition.getLastUpdateTime());
+		e.setIsMultipleWithdrawalAllowed(fundDefinition.getIsmultiplewithdrawalallowed() != 0);
+		e.setRecordVersion(((Long)fundDefinition.getVersion()).intValue());
+		e.setCreatedBy(fundDefinition.getCreatedby());
+		e.setCreateTime(fundDefinition.getCreatetime());
+		e.setUpdatedBy(fundDefinition.getUpdatedby());
+		e.setLastUpdateTime(fundDefinition.getLastupdatetime());
 	}
 
 	private void updateEntity(FundDefinition fundDefinition, CGEntries e) {
 		if(e.getPurposeID()!=null){
-			Purpose purpose = DAOFactory.getInstance().getPurposeDAO().getById(e.getPurposeID());
-			fundDefinition.setPurpose(purpose);
+			fundDefinition.setPurposeid(new BigDecimal(e.getPurposeID()));
 		}
 		if(e.getFACLength()!=null){
-			fundDefinition.setFACLength(e.getFACLength());
+			fundDefinition.setFaclength(e.getFACLength().longValue());
 		}
 		if(StringUtils.isNotBlank(e.getFACPrefix())){
-			fundDefinition.setFACPrefix(e.getFACPrefix());
+			fundDefinition.setFacprefix(e.getFACPrefix());
 		}
 		if(e.getExpiryID()!=null){
 			ExpirationType expType = DAOFactory.getInstance().getExpirationTypeDAO().getById(e.getExpiryID());
-			fundDefinition.setExpirationTypeByExpiryID(expType);
+			fundDefinition.setExpirationType(expType);
 			
 		}
 		if(e.getMaxFailAttemptsAllowed()!=null){
-			fundDefinition.setMaxFailAttemptsAllowed(e.getMaxFailAttemptsAllowed());
+			fundDefinition.setMaxfailattemptsallowed(e.getMaxFailAttemptsAllowed().longValue());
 		}
 		if(e.getOnFundAllocationTimeExpiry()!=null){
 			FundEvents fundEvent = DAOFactory.getInstance().getFundEventsDAO().getById(e.getOnFundAllocationTimeExpiry());
-			fundDefinition.setFundEventsByOnFundAllocationTimeExpiry(fundEvent);
+			fundDefinition.setFundEventsByOnfundallocationtimeexpiry(fundEvent);
 		}
 		if(e.getOnFailedAttemptsExceeded()!=null){
 			FundEvents fundEvent = DAOFactory.getInstance().getFundEventsDAO().getById(e.getOnFailedAttemptsExceeded());
-			fundDefinition.setFundEventsByOnFailedAttemptsExceeded(fundEvent);
+			fundDefinition.setFundEventsByOnfailedattemptsexceeded(fundEvent);
 		}
 		if(e.getGenerationOfOTPOnFailure()!=null){
 			FundEvents fundEvent = DAOFactory.getInstance().getFundEventsDAO().getById(e.getGenerationOfOTPOnFailure());
-			fundDefinition.setFundEventsByGenerationOfOTPOnFailure(fundEvent);
+			fundDefinition.setFundEventsByGenerationofotponfailure(fundEvent);
 		}
 		if(e.getIsMultipleWithdrawalAllowed()!=null){
-			fundDefinition.setIsMultipleWithdrawalAllowed(e.getIsMultipleWithdrawalAllowed());
+			fundDefinition.setIsmultiplewithdrawalallowed((short) (e.getIsMultipleWithdrawalAllowed() ? 1 : 0));
 		}
 		else{
-			fundDefinition.setIsMultipleWithdrawalAllowed(false);
+			fundDefinition.setIsmultiplewithdrawalallowed((short) 0);
 		}
-		
-		fundDefinition.setmFinoServiceProviderByMSPID(DAOFactory.getInstance().getMfinoServiceProviderDAO().getById(1L));
+		fundDefinition.setMspid(new BigDecimal(1));
 	}
 
 	private void validate(FundDefinition fundDefinition) throws Exception{
-		if(fundDefinition.getPurpose() == null){
+		if(fundDefinition.getPurposeid() == null){
 			throw new Exception("Partner code can't be null.");
 		}
 		List<FundDefinition> entries = DAOFactory.getInstance().getFundDefinitionDAO().getAll();
@@ -197,7 +201,7 @@ public class FundDefinitionsProcessorImpl extends BaseFixProcessor implements Fu
 		{
 			FundDefinition existingFundDefinitions = it.next();
 			
-			if(fundDefinition.getPurpose().equals(existingFundDefinitions.getPurpose()))
+			if(fundDefinition.getPurposeid().equals(existingFundDefinitions.getPurposeid()))
 			{				
 				throw new Exception("FundDefinition using the same partner code already exists");
 			}

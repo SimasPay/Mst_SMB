@@ -60,7 +60,7 @@ public class PartnerByDCTProcessorImpl extends BaseFixProcessor implements Partn
     		forPartner = partnerList.get(0);
     	}
     	
-    	log.info("ForPartner forPartner.tradeName="+forPartner.getTradeName() + ", ID="+forPartner.getID());
+    	log.info("ForPartner forPartner.tradeName="+forPartner.getTradename() + ", ID="+forPartner.getId());
     	
     	DistributionChainTemplate dct = null;
     	
@@ -71,7 +71,7 @@ public class PartnerByDCTProcessorImpl extends BaseFixProcessor implements Partn
     	List<Partner> eligiblePartners = new ArrayList<Partner>();
     	
     	if(dct != null){
-    		Integer levelCount = (null != dct.getDistributionChainLevelFromTemplateID() ? dct.getDistributionChainLevelFromTemplateID().size() : 0);
+    		Integer levelCount = (null != dct.getDistributionChainLvls() ? dct.getDistributionChainLvls().size() : 0);
     		List<Partner> descendentsList = relationshipService.getDescendents(forPartner, dct);
 
     		Integer forPartnerLevel = relationshipService.getLevel(forPartner, dct);
@@ -106,8 +106,8 @@ public class PartnerByDCTProcessorImpl extends BaseFixProcessor implements Partn
     		realMsg.allocateEntries(size);
     		for(Partner p: eligiblePartners) {
     			CMJSPartnerByDCT.CGEntries e = new CMJSPartnerByDCT.CGEntries();
-    			e.setID(p.getID());
-    			e.setTradeName(p.getTradeName());
+    			e.setID(p.getId().longValue());
+    			e.setTradeName(p.getTradename());
     			realMsg.getEntries()[i] = e;
     			i++;
     		}

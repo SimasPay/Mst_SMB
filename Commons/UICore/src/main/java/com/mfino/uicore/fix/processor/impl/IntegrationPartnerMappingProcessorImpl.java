@@ -16,10 +16,10 @@ import com.mfino.dao.IntegrationPartnerMappingDAO;
 import com.mfino.dao.query.IntegrationPartnerMappingQuery;
 import com.mfino.domain.IPMapping;
 import com.mfino.domain.IntegrationPartnerMapping;
-import com.mfino.domain.MFSBiller;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSIntegrationPartnerMapping;
@@ -169,21 +169,21 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 
 	private void validate(IntegrationPartnerMapping integrationPartnerMapping) throws Exception 
 	{
-		if(integrationPartnerMapping.getInstitutionID() == null)
+		if(integrationPartnerMapping.getInstitutionid() == null)
 		{
 			throw new Exception("Institution ID can't be null.");
 		}
-		if(integrationPartnerMapping.getIntegrationName() == null)
+		if(integrationPartnerMapping.getIntegrationname() == null)
 		{
 			throw new Exception("Integration Name can't be null.");
 		}
-		if(integrationPartnerMapping.getPartner() == null && integrationPartnerMapping.getMFSBiller() == null )
+		if(integrationPartnerMapping.getPartner() == null && integrationPartnerMapping.getMfsBiller() == null )
 		{
-			throw new Exception("Both Partner and MFSBiller can't be null. One of them should exist");
+			throw new Exception("Both Partner and MfsBiller can't be null. One of them should exist");
 		}
-		if(integrationPartnerMapping.getPartner() != null && integrationPartnerMapping.getMFSBiller() != null )
+		if(integrationPartnerMapping.getPartner() != null && integrationPartnerMapping.getMfsBiller() != null )
 		{
-			throw new Exception("Either Partner or MFSBiller can be associated to an Integration. Both of them can't be given simultaneously");
+			throw new Exception("Either Partner or MfsBiller can be associated to an Integration. Both of them can't be given simultaneously");
 		}
 		List<IntegrationPartnerMapping> entries = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getAll();
 		Iterator<IntegrationPartnerMapping> it = entries.iterator();
@@ -191,13 +191,13 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		{
 			IntegrationPartnerMapping existingIntegration = it.next();
 			
-			if(integrationPartnerMapping.getIntegrationName().equals(existingIntegration.getIntegrationName())
-					&& !(existingIntegration.getID().equals(integrationPartnerMapping.getID())))
+			if(integrationPartnerMapping.getIntegrationname().equals(existingIntegration.getIntegrationname())
+					&& !(existingIntegration.getId().equals(integrationPartnerMapping.getId())))
 			{				
 				throw new Exception("Integration Name already exists");
 			}
-			if(integrationPartnerMapping.getInstitutionID().equals(existingIntegration.getInstitutionID())
-					&& !(existingIntegration.getID().equals(integrationPartnerMapping.getID())))
+			if(integrationPartnerMapping.getInstitutionid().equals(existingIntegration.getInstitutionid())
+					&& !(existingIntegration.getId().equals(integrationPartnerMapping.getId())))
 			{				
 				throw new Exception("Institution ID already exists");
 			}
@@ -206,10 +206,10 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 
 	private void updateEntity(IntegrationPartnerMapping integrationPartnerMapping, CMJSIntegrationPartnerMapping.CGEntries e) {
 		if (StringUtils.isNotBlank(e.getInstitutionID())) {
-			integrationPartnerMapping.setInstitutionID(e.getInstitutionID());
+			integrationPartnerMapping.setInstitutionid(e.getInstitutionID());
 		}
 		if (StringUtils.isNotBlank(e.getIntegrationName())) {
-			integrationPartnerMapping.setIntegrationName(e.getIntegrationName());
+			integrationPartnerMapping.setIntegrationname(e.getIntegrationName());
 		}
 		
 		if(e.getPartnerID() != null)
@@ -219,8 +219,8 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		}
 		/*
 		 * Sometimes, partner associated to an integration can be reset and can be associated a Biller and vice-versa.
-		 * In this case, if there exists an older partner( or MFSBiller) associated to the integration it should be reset.
-		 * Hence setting the partner(or MFSBiller) value to null.
+		 * In this case, if there exists an older partner( or MfsBiller) associated to the integration it should be reset.
+		 * Hence setting the partner(or MfsBiller) value to null.
 		 */
 		else if(e.isRemoteModifiedPartnerID())
 		{
@@ -228,34 +228,34 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		}
 		
 		if (e.getMFSBillerId() != null) {
-			MFSBiller mfsBiller = DAOFactory.getInstance().getMFSBillerDAO().getById(e.getMFSBillerId());
-			integrationPartnerMapping.setMFSBiller(mfsBiller);
+			MfsBiller mfsBiller = DAOFactory.getInstance().getMFSBillerDAO().getById(e.getMFSBillerId());
+			integrationPartnerMapping.setMfsBiller(mfsBiller);
 		}
 		else if(e.isRemoteModifiedMFSBillerId())
 		{
-			integrationPartnerMapping.setMFSBiller(null);
+			integrationPartnerMapping.setMfsBiller(null);
 		}
 		
 		if (StringUtils.isNotBlank(e.getAuthenticationKey())) {
-			integrationPartnerMapping.setAuthenticationKey(e.getAuthenticationKey());
+			integrationPartnerMapping.setAuthenticationkey(e.getAuthenticationKey());
 		}
 		if (e.getIsAuthenticationKeyEnabled() != null) {
-			integrationPartnerMapping.setIsAuthenticationKeyEnabled(e.getIsAuthenticationKeyEnabled());
+			integrationPartnerMapping.setIsauthenticationkeyenabled((short) (e.getIsAuthenticationKeyEnabled() ? 1:0) );
 		}
 		if (e.getIsLoginEnabled() != null) {
-			integrationPartnerMapping.setIsLoginEnabled(e.getIsLoginEnabled());
+			integrationPartnerMapping.setIsloginenabled((short) (e.getIsLoginEnabled() ? 1:0));
 		}
 		if (e.getIsAppTypeCheckEnabled() != null) {
-			integrationPartnerMapping.setIsAppTypeCheckEnabled(e.getIsAppTypeCheckEnabled());
+			integrationPartnerMapping.setIsapptypecheckenabled((short) (e.getIsAppTypeCheckEnabled() ? 1:0));
 		}
 		if(e.getIsAuthenticationKeyEnabled() != null && e.getIsAuthenticationKeyEnabled())
 		{
-			if(StringUtils.isBlank(integrationPartnerMapping.getAuthenticationKey()))
+			if(StringUtils.isBlank(integrationPartnerMapping.getAuthenticationkey()))
 			{
 				String authenticationkey = integrationPartnerMappingService.generateAuthenticationKey();
-				String institutionID = integrationPartnerMapping.getInstitutionID();
+				String institutionID = integrationPartnerMapping.getInstitutionid();
 				String digestedCode = MfinoUtil.calculateDigestPin(institutionID, authenticationkey);
-				integrationPartnerMapping.setAuthenticationKey(digestedCode);
+				integrationPartnerMapping.setAuthenticationkey(digestedCode);
 				isAuthenticationKeyChanged = true;
 			}
 		}		
@@ -263,38 +263,38 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 	}
 
 	private void updateMessage(IntegrationPartnerMapping integrationPartnerMapping, CMJSIntegrationPartnerMapping.CGEntries e) {
-		e.setID(integrationPartnerMapping.getID());
-		e.setInstitutionID(integrationPartnerMapping.getInstitutionID());
-		e.setIntegrationName(integrationPartnerMapping.getIntegrationName());
+		e.setID(integrationPartnerMapping.getId().longValue());
+		e.setInstitutionID(integrationPartnerMapping.getInstitutionid());
+		e.setIntegrationName(integrationPartnerMapping.getIntegrationname());
 		if(integrationPartnerMapping.getPartner() != null)
 		{
-			e.setPartnerID(integrationPartnerMapping.getPartner().getID());
-			e.setPartnerCode(integrationPartnerMapping.getPartner().getPartnerCode());
+			e.setPartnerID(integrationPartnerMapping.getPartner().getId().longValue());
+			e.setPartnerCode(integrationPartnerMapping.getPartner().getPartnercode());
 		}
-		if(integrationPartnerMapping.getMFSBiller() != null)
+		if(integrationPartnerMapping.getMfsBiller() != null)
 		{
-			e.setMFSBillerId(integrationPartnerMapping.getMFSBiller().getID());
-			e.setMFSBillerCode(integrationPartnerMapping.getMFSBiller().getMFSBillerCode());
+			e.setMFSBillerId(integrationPartnerMapping.getMfsBiller().getId().longValue());
+			e.setMFSBillerCode(integrationPartnerMapping.getMfsBiller().getMfsbillercode());
 		}
-		e.setAuthenticationKey(integrationPartnerMapping.getAuthenticationKey());
-		e.setIsAuthenticationKeyEnabled(integrationPartnerMapping.getIsAuthenticationKeyEnabled());
-		e.setIsLoginEnabled(integrationPartnerMapping.getIsLoginEnabled());
-		e.setIsAppTypeCheckEnabled(integrationPartnerMapping.getIsAppTypeCheckEnabled());
-		e.setRecordVersion(integrationPartnerMapping.getVersion());
-		e.setCreatedBy(integrationPartnerMapping.getCreatedBy());
-		e.setCreateTime(integrationPartnerMapping.getCreateTime());
-		e.setUpdatedBy(integrationPartnerMapping.getUpdatedBy());
-		e.setLastUpdateTime(integrationPartnerMapping.getLastUpdateTime());
+		e.setAuthenticationKey(integrationPartnerMapping.getAuthenticationkey());
+		e.setIsAuthenticationKeyEnabled(integrationPartnerMapping.getIsauthenticationkeyenabled() != 0);
+		e.setIsLoginEnabled(integrationPartnerMapping.getIsloginenabled() != 0);
+		e.setIsAppTypeCheckEnabled(integrationPartnerMapping.getIsapptypecheckenabled() != 0);
+		e.setRecordVersion(((Long)integrationPartnerMapping.getVersion()).intValue());
+		e.setCreatedBy(integrationPartnerMapping.getCreatedby());
+		e.setCreateTime(integrationPartnerMapping.getCreatetime());
+		e.setUpdatedBy(integrationPartnerMapping.getUpdatedby());
+		e.setLastUpdateTime(integrationPartnerMapping.getLastupdatetime());
 		
 		String ListOfIPAddressesForIntegration = "";
-		Set<IPMapping> ipMappingList =  integrationPartnerMapping.getIPMappingFromIntegrationID();	
+		Set<IPMapping> ipMappingList =  integrationPartnerMapping.getIpMappings();	
 		if(ipMappingList != null)
 		{
 			Iterator<IPMapping> it = ipMappingList.iterator();
 			while(it.hasNext())
 			{
 				IPMapping ipMapping = it.next();
-				ListOfIPAddressesForIntegration = ListOfIPAddressesForIntegration + "<" + ipMapping.getIPAddress() + ">, ";
+				ListOfIPAddressesForIntegration = ListOfIPAddressesForIntegration + "<" + ipMapping.getIpaddress() + ">, ";
 			}
 		}
 		
@@ -308,22 +308,22 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 	private void generateAndSendAuthenticationKey(IntegrationPartnerMapping integrationPartnerMapping) {
 		
 		String authenticationKey = integrationPartnerMappingService.generateAuthenticationKey();
-		String institutionID = integrationPartnerMapping.getInstitutionID();
+		String institutionID = integrationPartnerMapping.getInstitutionid();
 		String digestedCode = MfinoUtil.calculateDigestPin(institutionID, authenticationKey);
-		integrationPartnerMapping.setAuthenticationKey(digestedCode);
+		integrationPartnerMapping.setAuthenticationkey(digestedCode);
 		
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		notificationWrapper.setCode(CmFinoFIX.NotificationCode_AuthenticationKeyForIntegration);
 		notificationWrapper.setAuthenticationKey(authenticationKey);
-		notificationWrapper.setIntegrationName(integrationPartnerMapping.getIntegrationName());
+		notificationWrapper.setIntegrationName(integrationPartnerMapping.getIntegrationname());
 		
 		Partner partner = null;
 		if(integrationPartnerMapping.getPartner() != null){
 			partner = integrationPartnerMapping.getPartner();			
 		}
-		else if(integrationPartnerMapping.getMFSBiller() != null)
+		else if(integrationPartnerMapping.getMfsBiller() != null)
 		{
-			Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMFSBiller().getMFSBillerPartnerFromMFSBillerId();
+			Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
 			Iterator<MFSBillerPartner> it  = mfsBillerpartners.iterator();
 			if(it.hasNext())
 			{
@@ -333,11 +333,11 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		}
 		if(partner != null)
 		{
-			SubscriberMDN smdn = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
-			String destMDN = smdn.getMDN();
-			Integer language = smdn.getSubscriber().getLanguage();
-			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstName());
-			notificationWrapper.setLastName(smdn.getSubscriber().getLastName());
+			SubscriberMdn smdn = partner.getSubscriber().getSubscriberMdns().iterator().next();
+			String destMDN = smdn.getMdn();
+			Integer language = ((Long)smdn.getSubscriber().getLanguage()).intValue();
+			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
+			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 			notificationWrapper.setLanguage(language);
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			String smsMessage = notificationMessageParserService.buildMessage(notificationWrapper,true);
@@ -349,8 +349,8 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 			
 			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 			String emailMessage = notificationMessageParserService.buildMessage(notificationWrapper,true);			
-			String to = partner.getAuthorizedEmail();
-			String name=partner.getTradeName();
+			String to = partner.getAuthorizedemail();
+			String name=partner.getTradename();
 			String subject = ConfigurationUtil.getAuthenticationKeyMailSubject();
 			mailService.asyncSendEmail(to, name, subject, emailMessage);
 		}

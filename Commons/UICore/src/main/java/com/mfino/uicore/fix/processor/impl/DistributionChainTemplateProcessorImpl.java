@@ -31,26 +31,27 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
 
     private void updateMessage(DistributionChainTemplate e,
             CMJSDistributionChainTemplate.CGEntries m) {
-        m.setID(e.getID());
+        m.setID(e.getId().longValue());
         m.setDescription(e.getDescription());
         m.setDistributionChainName(e.getName());
-        m.setLevelNumber(e.getDistributionChainLevelFromTemplateID().size());
-        m.setCreatedBy(e.getCreatedBy());
-        m.setCreateTime(e.getCreateTime());
-        m.setUpdatedBy(e.getUpdatedBy());
-        m.setLastUpdateTime(e.getLastUpdateTime());
-        if (null != e.getVersion()) {
-            m.setRecordVersion(e.getVersion());
+        m.setLevelNumber(e.getDistributionChainLvls().size());
+        m.setCreatedBy(e.getCreatedby());
+        m.setCreateTime(e.getCreatetime());
+        m.setUpdatedBy(e.getUpdatedby());
+        m.setLastUpdateTime(e.getLastupdatetime());
+        if (null != ((Long)e.getVersion())) {
+            m.setRecordVersion(((Long)e.getVersion()).intValue());
         }
-        if(e.getService() != null){
-        	m.setServiceName(e.getService().getServiceName());
-        	m.setServiceID(e.getService().getID());
+        if(((Long)e.getServiceid()) != null){
+        	ServiceDAO serviceDAO = DAOFactory.getInstance().getServiceDAO();
+        	com.mfino.domain.Service service = serviceDAO.getById(e.getServiceid());
+        	m.setServiceName(service.getServicename());
+        	m.setServiceID(e.getServiceid());
         }
     }
 
     private void updateEntity(DistributionChainTemplate e,
             CMJSDistributionChainTemplate.CGEntries m) {
-    	ServiceDAO serviceDao = DAOFactory.getInstance().getServiceDAO();
         if (m.getDescription() != null) {
             e.setDescription(m.getDescription());
         }
@@ -58,7 +59,7 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
             e.setName(m.getDistributionChainName());
         }
         if(null != m.getServiceID()){
-        	e.setService(serviceDao.getById(m.getServiceID()));
+        	e.setServiceid(m.getServiceID());
         }
     }
 

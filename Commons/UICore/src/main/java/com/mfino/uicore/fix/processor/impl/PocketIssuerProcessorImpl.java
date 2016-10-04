@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,16 +23,17 @@ import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PocketTemplateConfigDAO;
 import com.mfino.dao.PocketTemplateDAO;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.dao.query.PocketTemplateQuery;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSPocketTemplate;
@@ -62,13 +64,13 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			CmFinoFIX.CMJSPocketTemplate.CGEntries e) {
 
 		// currently there is always 1 MSP
-		p.setmFinoServiceProviderByMSPID(mspDAO.getById(1l));
+		p.setMfinoServiceProvider(mspDAO.getById(1l));
 
 		if (e.getType() != null) {
 			p.setType(e.getType());
 		}
 		if (e.getBankAccountCardType() != null) {
-			p.setBankAccountCardType(e.getBankAccountCardType());
+			p.setBankaccountcardtype(e.getBankAccountCardType().longValue());
 		}
 		if (e.getDescription() != null) {
 			p.setDescription(e.getDescription());
@@ -77,13 +79,13 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setCommodity(e.getCommodity());
 		}
 		if (e.getTypeOfCheck() != null) {
-			p.setTypeOfCheck(e.getTypeOfCheck());
+			p.setTypeofcheck(e.getTypeOfCheck());
 		}
 		if (e.getCardPANSuffixLength() != null) {
-			p.setCardPANSuffixLength(e.getCardPANSuffixLength());
+			p.setCardpansuffixlength(e.getCardPANSuffixLength().longValue());
 		}
 		if (e.getRegularExpression() != null) {
-			p.setRegularExpression(e.getRegularExpression());
+			p.setRegularexpression(e.getRegularExpression());
 		}
 		if (e.getUnits() != null) {
 			p.setUnits(e.getUnits());
@@ -92,225 +94,222 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setAllowance(e.getAllowance());
 		}
 		if (e.getMaximumStoredValue() != null) {
-			p.setMaximumStoredValue(e.getMaximumStoredValue());
+			p.setMaximumstoredvalue(e.getMaximumStoredValue());
 		}
 		if (e.getMinimumStoredValue() != null) {
-			p.setMinimumStoredValue(e.getMinimumStoredValue());
+			p.setMinimumstoredvalue(e.getMinimumStoredValue());
 		}
 		if (e.getMaxAmountPerTransaction() != null) {
-			p.setMaxAmountPerTransaction(e.getMaxAmountPerTransaction());
+			p.setMaxamountpertransaction(e.getMaxAmountPerTransaction());
 		}
 		if (e.getMinAmountPerTransaction() != null) {
-			p.setMinAmountPerTransaction(e.getMinAmountPerTransaction());
+			p.setMinamountpertransaction(e.getMinAmountPerTransaction());
 		}
 		if (e.getMaxAmountPerDay() != null) {
-			p.setMaxAmountPerDay(e.getMaxAmountPerDay());
+			p.setMaxamountperday(e.getMaxAmountPerDay());
 		}
 		if (e.getMaxAmountPerWeek() != null) {
-			p.setMaxAmountPerWeek(e.getMaxAmountPerWeek());
+			p.setMaxamountperweek(e.getMaxAmountPerWeek());
 		}
 		if (e.getMaxAmountPerMonth() != null) {
-			p.setMaxAmountPerMonth(e.getMaxAmountPerMonth());
+			p.setMaxamountpermonth(e.getMaxAmountPerMonth());
 		}
 		if (e.getMaxTransactionsPerDay() != null) {
-			p.setMaxTransactionsPerDay(e.getMaxTransactionsPerDay());
+			p.setMaxtransactionsperday(e.getMaxTransactionsPerDay());
 		}
 		if (e.getMaxTransactionsPerWeek() != null) {
-			p.setMaxTransactionsPerWeek(e.getMaxTransactionsPerWeek());
+			p.setMaxtransactionsperweek(e.getMaxTransactionsPerWeek());
 		}
 		if (e.getMaxTransactionsPerMonth() != null) {
-			p.setMaxTransactionsPerMonth(e.getMaxTransactionsPerMonth());
+			p.setMaxtransactionspermonth(e.getMaxTransactionsPerMonth());
 		}
 		if (e.getMinTimeBetweenTransactions() != null) {
-			p.setMinTimeBetweenTransactions(e.getMinTimeBetweenTransactions());
+			p.setMintimebetweentransactions(e.getMinTimeBetweenTransactions());
 		}
 		if (e.getBankCode() != null) {
-			p.setBankCode(e.getBankCode());
+			p.setBankcode(e.getBankCode().longValue());
 		}
 		if (e.getOperatorCode() != null) {
-			p.setOperatorCode(e.getOperatorCode());
+			p.setOperatorcode(e.getOperatorCode().longValue());
 		}
 		if (e.getBillingType() != null) {
-			p.setBillingType(e.getBillingType());
+			p.setBillingtype(e.getBillingType().longValue());
 		}
 		if (e.getLastUpdateTime() != null) {
-			p.setLastUpdateTime(e.getLastUpdateTime());
+			p.setLastupdatetime(e.getLastUpdateTime());
 		}
 		if (e.getUpdatedBy() != null) {
-			p.setUpdatedBy(e.getUpdatedBy());
+			p.setUpdatedby(e.getUpdatedBy());
 		}
 		if (e.getCreateTime() != null) {
-			p.setCreateTime(e.getCreateTime());
+			p.setCreatetime(e.getCreateTime());
 		}
 		if (e.getCreatedBy() != null) {
-			p.setCreatedBy(e.getCreatedBy());
+			p.setCreatedby(e.getCreatedBy());
 		}
 		if (e.getLowBalanceNotificationEnabled() != null) {
-			p.setLowBalanceNotificationEnabled(e
-					.getLowBalanceNotificationEnabled());
-			p.setLowBalanceNtfcThresholdAmt(e.getLowBalanceNtfcThresholdAmt());
+			p.setLowbalancenotificationenabled((short) (e.getLowBalanceNotificationEnabled() ? 1:0));
+			p.setLowbalancentfcthresholdamt(e.getLowBalanceNtfcThresholdAmt());
 		}
 		if (e.getLowBalanceNtfcThresholdAmt() != null) {
-			p.setLowBalanceNtfcThresholdAmt(e.getLowBalanceNtfcThresholdAmt());
+			p.setLowbalancentfcthresholdamt(e.getLowBalanceNtfcThresholdAmt());
 		}
 		if (e.getWebTimeInterval() != null) {
-			p.setWebTimeInterval(e.getWebTimeInterval());
+			p.setWebtimeinterval(e.getWebTimeInterval().longValue());
 		}
 		if (e.getWebServiceTimeInterval() != null) {
-			p.setWebServiceTimeInterval(e.getWebServiceTimeInterval());
+			p.setWebservicetimeinterval(e.getWebServiceTimeInterval().longValue());
 		}
 		if (e.getUTKTimeInterval() != null) {
-			p.setUTKTimeInterval(e.getUTKTimeInterval());
+			p.setUtktimeinterval(e.getUTKTimeInterval().longValue());
 		}
 		if (e.getBankChannelTimeInterval() != null) {
-			p.setBankChannelTimeInterval(e.getBankChannelTimeInterval());
+			p.setBankchanneltimeinterval(e.getBankChannelTimeInterval().longValue());
 		}
 		if (e.getDenomination() != null) {
-			p.setDenomination(e.getDenomination());
+			p.setDenomination(new BigDecimal(e.getDenomination()));
 		}
 		if (e.getPocketCode() != null) {
-			p.setPocketCode(e.getPocketCode());
+			p.setPocketcode(e.getPocketCode());
 		}
 		if (e.getIsCollectorPocket() != null) {
-			p.setIsCollectorPocket(e.getIsCollectorPocket());
+			p.setIscollectorpocket((short) (e.getIsCollectorPocket() ? 1:0));
 		}
 		if (e.getNumberOfPocketsAllowedForMDN() != null) {
-			p.setNumberOfPocketsAllowedForMDN(e
-					.getNumberOfPocketsAllowedForMDN());
+			p.setNumberofpocketsallowedformdn(e.getNumberOfPocketsAllowedForMDN().longValue());
 		}
 		if (e.getIsSuspencePocket() != null) {
-			p.setIsSuspencePocket(e.getIsSuspencePocket());
+			p.setIssuspencepocket((short) (e.getIsSuspencePocket() ? 1:0));
 		}
 		if (e.getIsSystemPocket() != null) {
-			p.setIsSystemPocket(e.getIsSystemPocket());
+			p.setIssystempocket((short) (e.getIsSystemPocket() ?1:0));
 		}
 		if (e.getInterestRate() != null) {
-			p.setInterestRate(e.getInterestRate());
+			p.setInterestrate(e.getInterestRate());
 		}
 	}
 
 	private void updateMessage(PocketTemplate p,
 			CmFinoFIX.CMJSPocketTemplate.CGEntries entry) {
-		entry.setID(p.getID());
-		entry.setMSPID(p.getmFinoServiceProviderByMSPID().getID());
-		entry.setType(p.getType());
-		if (p.getBankAccountCardType() != null) {
-			entry.setBankAccountCardType(p.getBankAccountCardType());
+		entry.setID(p.getId().longValue());
+		entry.setMSPID(p.getMfinoServiceProvider().getId().longValue());
+		entry.setType(((Long)p.getType()).intValue());
+		if (p.getBankaccountcardtype() != null) {
+			entry.setBankAccountCardType(p.getBankaccountcardtype().intValue());
 		}
 		if (p.getDescription() != null) {
 			entry.setDescription(p.getDescription());
 		}
-		if (p.getTypeOfCheck() != null) {
-			entry.setTypeOfCheck(p.getTypeOfCheck());
+		if ((Long)p.getTypeofcheck() != null) {
+			entry.setTypeOfCheck(((Long)p.getTypeofcheck()).intValue());
 		}
-		if (p.getRegularExpression() != null) {
-			entry.setRegularExpression(p.getRegularExpression());
+		if (p.getRegularexpression() != null) {
+			entry.setRegularExpression(p.getRegularexpression());
 		}
-		entry.setCommodity(p.getCommodity());
-		if (p.getCardPANSuffixLength() != null) {
-			entry.setCardPANSuffixLength(p.getCardPANSuffixLength());
+		entry.setCommodity(((Long)p.getCommodity()).intValue());
+		if (p.getCardpansuffixlength() != null) {
+			entry.setCardPANSuffixLength(p.getCardpansuffixlength().intValue());
 		}
 		if (p.getUnits() != null) {
 			entry.setUnits(p.getUnits());
 		}
-		if (p.getAllowance() != null) {
-			entry.setAllowance(p.getAllowance());
+		if ((Long)p.getAllowance() != null) {
+			entry.setAllowance(((Long)p.getAllowance()).intValue());
 		}
-		if (p.getMaximumStoredValue() != null) {
-			entry.setMaximumStoredValue(p.getMaximumStoredValue());
+		if (p.getMaximumstoredvalue() != null) {
+			entry.setMaximumStoredValue(p.getMaximumstoredvalue());
 		}
-		if (p.getMinimumStoredValue() != null) {
-			entry.setMinimumStoredValue(p.getMinimumStoredValue());
+		if (p.getMinimumstoredvalue() != null) {
+			entry.setMinimumStoredValue(p.getMinimumstoredvalue());
 		}
 		if (p.getDenomination() != null) {
-			entry.setDenomination(p.getDenomination());
+			entry.setDenomination(p.getDenomination().longValue());
 		}
-		if (p.getWebTimeInterval() != null) {
-			entry.setWebTimeInterval(p.getWebTimeInterval());
+		if (p.getWebtimeinterval() != null) {
+			entry.setWebTimeInterval(p.getWebtimeinterval().intValue());
 		}
-		if (p.getWebServiceTimeInterval() != null) {
-			entry.setWebServiceTimeInterval(p.getWebServiceTimeInterval());
+		if (p.getWebservicetimeinterval() != null) {
+			entry.setWebServiceTimeInterval(p.getWebservicetimeinterval().intValue());
 		}
-		if (p.getUTKTimeInterval() != null) {
-			entry.setUTKTimeInterval(p.getUTKTimeInterval());
+		if (p.getUtktimeinterval() != null) {
+			entry.setUTKTimeInterval(p.getUtktimeinterval().intValue());
 		}
-		if (p.getBankChannelTimeInterval() != null) {
-			entry.setBankChannelTimeInterval(p.getBankChannelTimeInterval());
+		if (p.getBankchanneltimeinterval() != null) {
+			entry.setBankChannelTimeInterval(p.getBankchanneltimeinterval().intValue());
 		}
-		entry.setMaxAmountPerTransaction(p.getMaxAmountPerTransaction());
-		entry.setMinAmountPerTransaction(p.getMinAmountPerTransaction());
-		entry.setMaxAmountPerDay(p.getMaxAmountPerDay());
-		entry.setMaxAmountPerWeek(p.getMaxAmountPerWeek());
-		entry.setMaxAmountPerMonth(p.getMaxAmountPerMonth());
-		entry.setMaxTransactionsPerDay(p.getMaxTransactionsPerDay());
-		entry.setMaxTransactionsPerWeek(p.getMaxTransactionsPerWeek());
-		entry.setMaxTransactionsPerMonth(p.getMaxTransactionsPerMonth());
-		entry.setMinTimeBetweenTransactions(p.getMinTimeBetweenTransactions());
-		if (p.getBankCode() != null) {
-			entry.setBankCode(p.getBankCode());
+		entry.setMaxAmountPerTransaction(p.getMaxamountpertransaction());
+		entry.setMinAmountPerTransaction(p.getMinamountpertransaction());
+		entry.setMaxAmountPerDay(p.getMaxamountperday());
+		entry.setMaxAmountPerWeek(p.getMaxamountperweek());
+		entry.setMaxAmountPerMonth(p.getMaxamountpermonth());
+		entry.setMaxTransactionsPerDay(((Long)p.getMaxtransactionsperday()).intValue());
+		entry.setMaxTransactionsPerWeek(((Long)p.getMaxtransactionsperweek()).intValue());
+		entry.setMaxTransactionsPerMonth(((Long)p.getMaxtransactionspermonth()).intValue());
+		entry.setMinTimeBetweenTransactions(((Long)p.getMintimebetweentransactions()).intValue());
+		if (p.getBankcode() != null) {
+			entry.setBankCode(p.getBankcode().intValue());
 		}
-		if (p.getOperatorCode() != null) {
-			entry.setOperatorCode(p.getOperatorCode());
+		if (p.getOperatorcode() != null) {
+			entry.setOperatorCode(p.getOperatorcode().intValue());
 		}
-		if (p.getBillingType() != null) {
-			entry.setBillingType(p.getBillingType());
+		if (p.getBillingtype() != null) {
+			entry.setBillingType(p.getBillingtype().intValue());
 		}
-		if (p.getLastUpdateTime() != null) {
-			entry.setLastUpdateTime(p.getLastUpdateTime());
+		if (p.getLastupdatetime() != null) {
+			entry.setLastUpdateTime(p.getLastupdatetime());
 		}
-		if (p.getUpdatedBy() != null) {
-			entry.setUpdatedBy(p.getUpdatedBy());
+		if (p.getUpdatedby() != null) {
+			entry.setUpdatedBy(p.getUpdatedby());
 		}
-		if (p.getCreateTime() != null) {
-			entry.setCreateTime(p.getCreateTime());
+		if (p.getCreatetime() != null) {
+			entry.setCreateTime(p.getCreatetime());
 		}
-		if (p.getCreatedBy() != null) {
-			entry.setCreatedBy(p.getCreatedBy());
+		if (p.getCreatedby() != null) {
+			entry.setCreatedBy(p.getCreatedby());
 		}
 		entry.setTypeOfCheckText(enumTextService.getEnumTextValue(
-				CmFinoFIX.TagID_TypeOfCheck, null, p.getTypeOfCheck()));
+				CmFinoFIX.TagID_TypeOfCheck, null, p.getTypeofcheck()));
 		entry.setPocketTypeText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_PocketType, null, p.getType()));
 		entry.setOperatorCodeForRoutingText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_OperatorCodeForRouting, null,
-				p.getOperatorCode()));
+				p.getOperatorcode()));
 		// entry.setBankCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankCodeForRouting,
 		// null, p.getBankCode()));
 		entry.setBillingTypeText(enumTextService.getEnumTextValue(
-				CmFinoFIX.TagID_BillingType, null, p.getBillingType()));
+				CmFinoFIX.TagID_BillingType, null, p.getBillingtype()));
 		entry.setCommodityTypeText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_Commodity, null, p.getCommodity()));
 		entry.setPocketSubTypeText(enumTextService.getEnumTextValue(
 				CmFinoFIX.TagID_BankAccountCardType, null,
-				p.getBankAccountCardType()));
+				p.getBankaccountcardtype()));
 
-		if (p.getVersion() != null) {
-			entry.setRecordVersion(p.getVersion());
+		if ((Long)p.getVersion() != null) {
+			entry.setRecordVersion(((Long)p.getVersion()).intValue());
 		}
-		if (p.getLowBalanceNotificationEnabled() != null) {
-			entry.setLowBalanceNotificationEnabled(p
-					.getLowBalanceNotificationEnabled());
-			entry.setLowBalanceNtfcThresholdAmt(p
-					.getLowBalanceNtfcThresholdAmt());
+		if (p.getLowbalancenotificationenabled() != null) {
+			entry.setLowBalanceNotificationEnabled(p.getLowbalancenotificationenabled() != null 
+					&& p.getLowbalancenotificationenabled() != 0);
+			entry.setLowBalanceNtfcThresholdAmt(p.getLowbalancentfcthresholdamt());
 		}
-		if (p.getPocketCode() != null) {
-			entry.setPocketCode(p.getPocketCode());
+		if (p.getPocketcode() != null) {
+			entry.setPocketCode(p.getPocketcode());
 		}
-		if (p.getIsCollectorPocket() != null) {
-			entry.setIsCollectorPocket(p.getIsCollectorPocket());
+		if (p.getIscollectorpocket() != null) {
+			entry.setIsCollectorPocket(p.getIscollectorpocket() != null 
+					&& p.getIscollectorpocket() != 0 );
 		}
-		if (p.getNumberOfPocketsAllowedForMDN() != null) {
-			entry.setNumberOfPocketsAllowedForMDN(p
-					.getNumberOfPocketsAllowedForMDN());
+		if (p.getNumberofpocketsallowedformdn() != null) {
+			entry.setNumberOfPocketsAllowedForMDN(p.getNumberofpocketsallowedformdn().intValue());
 		}
-		if (p.getIsSuspencePocket() != null) {
-			entry.setIsSuspencePocket(p.getIsSuspencePocket());
+		if (p.getIssuspencepocket() != null) {
+			entry.setIsSuspencePocket(p.getIssuspencepocket() != null && p.getIssuspencepocket() != 0);
 		}
-		if (p.getIsSystemPocket() != null) {
-			entry.setIsSystemPocket(p.getIsSystemPocket());
+		if (p.getIscollectorpocket() != null) {
+			entry.setIsSystemPocket(p.getIscollectorpocket() != null && p.getIscollectorpocket() != 0);
 		}
-		if (p.getInterestRate() != null) {
-			entry.setInterestRate(p.getInterestRate());
+		if (p.getInterestrate() != null) {
+			entry.setInterestRate(p.getInterestrate());
 		}
 	}
 
@@ -478,15 +477,17 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 				.getSubscriberMdnDAO();
 		PartnerDAO partnerDao = DAOFactory.getInstance().getPartnerDAO();
 
-		SubscriberMDN smdn = mdnDao.getByMDN(subMdn);
-		Integer subscriberType = smdn.getSubscriber().getType();
+		SubscriberMdn smdn = mdnDao.getByMDN(subMdn);
+		Integer subscriberType = ((Long)smdn.getSubscriber().getType()).intValue();
 	
 		//Getting group for subscriber
-		Set<SubscriberGroup> group=smdn.getSubscriber().getSubscriberGroupFromSubscriberID();
-		Group subscriberGroup =null;
+		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		List<SubscriberGroup> group = subscriberGroupDao.getAllBySubscriberID(smdn.getSubscriber().getId());
+		
+		Long subscriberGroupId =null;
 		Iterator<SubscriberGroup> iterator = group.iterator();
 		while(iterator.hasNext()){			
-		 subscriberGroup = iterator.next().getGroup();
+			subscriberGroupId = iterator.next().getGroupid();
 		}
 		
 		Integer businessPartnerType = null;
@@ -494,39 +495,39 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 
 		if (subscriberType.intValue() != 0) {
 			Partner p = partnerDao.getPartnerBySubscriber(smdn.getSubscriber());
-			businessPartnerType = p.getBusinessPartnerType();
+			businessPartnerType = p.getBusinesspartnertype().intValue();
 
 		}
 		Long kycLevelNo = null;
-		if(null != smdn.getSubscriber().getUpgradableKYCLevel())
+		if(null != smdn.getSubscriber().getUpgradablekyclevel())
 		{
-			kycLevelNo = smdn.getSubscriber().getUpgradableKYCLevel();
+			kycLevelNo = smdn.getSubscriber().getUpgradablekyclevel().longValue();
 		}
 		else
 		{
-			KYCLevel kyclevel = smdn.getSubscriber().getKYCLevelByKYCLevel();
-			kycLevelNo = kyclevel.getKYCLevel();
+			KYCLevel kyclevel = smdn.getSubscriber().getKycLevel();
+			kycLevelNo = kyclevel.getKyclevel().longValue();
 		}
 
 		PocketTemplateConfigQuery ptcq = new PocketTemplateConfigQuery();
 		ptcq.set_subscriberType(subscriberType);
 		ptcq.set_businessPartnerType(businessPartnerType);
 		ptcq.set_KYCLevel(kycLevelNo);
-		ptcq.set_GroupID(subscriberGroup != null ? subscriberGroup.getID() : 1);//TODO for default group
+		ptcq.set_GroupID(subscriberGroupId != null ? subscriberGroupId : 1);//TODO for default group
 		
 				
 		PocketTemplateConfigDAO ptcDao = new PocketTemplateConfigDAO();
 		List<PocketTemplateConfig> ptcresults = ptcDao.get(ptcq);
 		/*
-		 * if the result set returned for the given Group is null,
-		 * then fetch the results using default System Group
+		 * if the result set returned for the given Groups is null,
+		 * then fetch the results using default System Groups
 		 */
 		if(ptcresults == null || ptcresults.size() ==0)
 		{
-			Group systemGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
+			Groups systemGroup = DAOFactory.getInstance().getGroupDao().getSystemGroup();
 			if(systemGroup != null)
 			{
-				ptcq.set_GroupID(systemGroup.getID());
+				ptcq.set_GroupID(systemGroup.getId().longValue());
 				ptcresults = ptcDao.get(ptcq);
 			}
 		}		

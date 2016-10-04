@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
-import com.mfino.dao.MFSBillerPartnerDAO;
 import com.mfino.dao.MFSDenominationsDAO;
 import com.mfino.dao.query.MFSDenominationsQuery;
 import com.mfino.domain.MFSDenominations;
@@ -26,30 +26,28 @@ import com.mfino.uicore.fix.processor.MFSDenominationsProcessor;
 @Service("MFSDenominationsProcessorImpl")
 public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements MFSDenominationsProcessor{
 	
-	private void updateEntity(MFSDenominations md, CMJSMFSDenominations.CGEntries e) {
-		MFSBillerPartnerDAO mbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
-				
+	private void updateEntity(MFSDenominations md, CMJSMFSDenominations.CGEntries e) {		
 		if(e.getMFSID() != null){
-			md.setMFSBillerPartnerByMFSID(mbpDAO.getById(e.getMFSID()));
+			md.setMfsid(new BigDecimal(e.getMFSID()));
 		}
 		if(e.getDenominationAmount() != null){
-			md.setDenominationAmount(e.getDenominationAmount());
+			md.setDenominationamount(e.getDenominationAmount());
 		}
 		if(e.getDescription() != null){
 			md.setDescription(e.getDescription());
 		}
 		if(e.getProductCode() != null){
-			md.setProductCode(e.getProductCode());
+			md.setProductcode(e.getProductCode());
 		}		
 	}
 	
 	private void updateMessage(MFSDenominations md, CMJSMFSDenominations.CGEntries e) {
-		e.setID(md.getID());
-		e.setMFSID(md.getMFSBillerPartnerByMFSID().getID());
-		e.setDenominationAmount(md.getDenominationAmount());
+		e.setID(md.getId().longValue());
+		e.setMFSID(md.getMfsid().longValue());
+		e.setDenominationAmount(md.getDenominationamount());
 		e.setDescription(md.getDescription());
-		e.setProductCode(md.getProductCode());	
-		e.setRecordVersion(md.getVersion());
+		e.setProductCode(md.getProductcode());	
+		e.setRecordVersion(((Long)md.getVersion()).intValue());
 	}
 
 	@Override

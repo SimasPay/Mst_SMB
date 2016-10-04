@@ -58,17 +58,17 @@ public class OfflineReportProcessorImpl extends BaseFixProcessor implements Offl
     }
     
 	private void updateMessage(OfflineReport report, CGEntries entry) {
-		if(report.getID()!=null){
-			entry.setID(report.getID());
+		if(report.getId()!=null){
+			entry.setID(report.getId().longValue());
 		}
 		if(StringUtils.isNotBlank(report.getName())){
 			entry.setName(report.getName());
 		}
-		if(StringUtils.isNotBlank(report.getReportClass())){
-			entry.setReportClass(report.getReportClass());
+		if(StringUtils.isNotBlank(report.getReportclass())){
+			entry.setReportClass(report.getReportclass());
 		}
-		if(report.getTriggerEnable()!=null){
-			entry.setTriggerEnable(report.getTriggerEnable());
+		if(report.getTriggerenable()!=null){
+			entry.setTriggerEnable(report.getTriggerenable() != 0);
 		}
 		
 	}

@@ -27,53 +27,53 @@ import com.mfino.uicore.fix.processor.MFSBillerPartnerProcessor;
 public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements MFSBillerPartnerProcessor{
 	
 	private void updateMessage(MFSBillerPartner s, CMJSMFSBillerPartner.CGEntries e) {
-		e.setID(s.getID());
-		e.setMSPID(s.getmFinoServiceProviderByMSPID().getID());
-		e.setRecordVersion(s.getVersion());
-		if (s.getMFSBiller() != null) {
-			e.setMFSBillerId(s.getMFSBiller().getID());
+		e.setID(s.getId().longValue());
+		e.setMSPID(s.getMfinoServiceProvider().getId().longValue());
+		e.setRecordVersion(((Long)s.getVersion()).intValue());
+		if (s.getMfsBiller() != null) {
+			e.setMFSBillerId(s.getMfsBiller().getId().longValue());
 		}
 		if (s.getPartner() != null) {
-			e.setPartnerID(s.getPartner().getID());
-			e.setPartnerName(s.getPartner().getTradeName());
+			e.setPartnerID(s.getPartner().getId().longValue());
+			e.setPartnerName(s.getPartner().getTradename());
 		}
-		if(s.getBillerPartnerType() != null){
-			e.setBillerPartnerType(s.getBillerPartnerType());
+		if(s.getBillerpartnertype() != null){
+			e.setBillerPartnerType(s.getBillerpartnertype().intValue());
 		}
-		if(s.getIntegrationCode() != null){
-			e.setIntegrationCode(s.getIntegrationCode());
+		if(s.getIntegrationcode() != null){
+			e.setIntegrationCode(s.getIntegrationcode());
 		}
-		if(s.getChargesIncluded() != null){
-			e.setChargesIncluded(s.getChargesIncluded());
+		if(s.getChargesincluded() != null){
+			e.setChargesIncluded(s.getChargesincluded() != 0);
 		}
 		
-		e.setPartnerBillerCode(s.getPartnerBillerCode());
-		e.setCreatedBy(s.getCreatedBy());
-		e.setCreateTime(s.getCreateTime());
-		e.setUpdatedBy(s.getUpdatedBy());
-		e.setLastUpdateTime(s.getLastUpdateTime());
+		e.setPartnerBillerCode(s.getPartnerbillercode());
+		e.setCreatedBy(s.getCreatedby());
+		e.setCreateTime(s.getCreatetime());
+		e.setUpdatedBy(s.getUpdatedby());
+		e.setLastUpdateTime(s.getLastupdatetime());
 	}
 	
 	private void updateEntity(MFSBillerPartner s, CMJSMFSBillerPartner.CGEntries e) {
 		MFSBillerDAO mbDAO = DAOFactory.getInstance().getMFSBillerDAO();
 		PartnerDAO pDAO = DAOFactory.getInstance().getPartnerDAO();
 		if (e.getMFSBillerId() != null) {
-			s.setMFSBiller(mbDAO.getById(e.getMFSBillerId()));
+			s.setMfsBiller(mbDAO.getById(e.getMFSBillerId()));
 		}
 		if (e.getPartnerID() != null) {
 			s.setPartner(pDAO.getById(e.getPartnerID()));
 		}
 		if(e.getBillerPartnerType() != null){
-			s.setBillerPartnerType(e.getBillerPartnerType());
+			s.setBillerpartnertype(e.getBillerPartnerType().longValue());
 		}
 		if(e.getIntegrationCode() != null){
-			s.setIntegrationCode(e.getIntegrationCode());
+			s.setIntegrationcode(e.getIntegrationCode());
 		}
 		if (StringUtils.isNotBlank(e.getPartnerBillerCode())) {
-			s.setPartnerBillerCode(e.getPartnerBillerCode());
+			s.setPartnerbillercode(e.getPartnerBillerCode());
 		}
 		if(e.getChargesIncluded()!=null){
-			s.setChargesIncluded(e.getChargesIncluded());
+			s.setChargesincluded((short) (e.getChargesIncluded() ? 1:0));
 		}
 
 	}

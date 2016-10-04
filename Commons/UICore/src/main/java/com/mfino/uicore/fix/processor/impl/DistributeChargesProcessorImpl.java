@@ -132,7 +132,7 @@ public class DistributeChargesProcessorImpl extends BaseFixProcessor implements 
 			{
 				errorCode = CmFinoFIX.ErrorCode_Generic;
 				Entry<Subscriber, CMJSError> entry = iterator.next();
-				description = description+"\n"+"Subscriber: "+entry.getKey().getFirstName()+" Message: "+entry.getValue().getErrorDescription(); 
+				description = description+"\n"+"Subscriber: "+entry.getKey().getFirstname()+" Message: "+entry.getValue().getErrorDescription(); 
 			}
 		}
 		return getError(errorCode, description);

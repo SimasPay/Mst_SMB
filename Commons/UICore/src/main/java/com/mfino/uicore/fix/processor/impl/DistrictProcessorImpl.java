@@ -59,7 +59,9 @@ public class DistrictProcessorImpl extends BaseFixProcessor implements DistrictP
 	}
 
 private void updateMessage(District r, CMJSDistrict.CGEntries e) {
-	e.setID(r.getID());
-	e.setDisplayText(r.getDisplayText());
-	e.setIdRegion(r.getIdRegion());
+	e.setID(r.getId().longValue());
+	e.setDisplayText(r.getDisplaytext());
+	if (r.getProvinceRegion() != null && r.getProvinceRegion().getId() != null) {
+		e.setIdRegion(r.getProvinceRegion().getId().longValue());
+	}
 }}

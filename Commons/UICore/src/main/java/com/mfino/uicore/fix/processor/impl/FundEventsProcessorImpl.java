@@ -67,13 +67,13 @@ public class FundEventsProcessorImpl extends BaseFixProcessor implements FundEve
 	}
 
 	private void updateMessage(FundEvents fundEvents, CGEntries e) {
-		e.setOnFailedAttemptsExceeded(fundEvents.getID());
-		e.setOnFailedAttemptsExceededText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, fundEvents.getFundEventType()));
-		e.setOnFundAllocationTimeExpiry(fundEvents.getID());
-		e.setOnFundAllocationTimeExpiryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, fundEvents.getFundEventType()));
-		if(!CmFinoFIX.FundEventType_Reversal.equals(fundEvents.getFundEventType())){
-			e.setGenerationOfOTPOnFailure(fundEvents.getID());
-			e.setGenerationOfOTPOnFailureText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, fundEvents.getFundEventType()));
+		e.setOnFailedAttemptsExceeded(fundEvents.getId().longValue());
+		e.setOnFailedAttemptsExceededText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, fundEvents.getFundeventtype()));
+		e.setOnFundAllocationTimeExpiry(fundEvents.getId().longValue());
+		e.setOnFundAllocationTimeExpiryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, fundEvents.getFundeventtype()));
+		if(!CmFinoFIX.FundEventType_Reversal.equals(fundEvents.getFundeventtype())){
+			e.setGenerationOfOTPOnFailure(fundEvents.getId().longValue());
+			e.setGenerationOfOTPOnFailureText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_FundEventType, null, fundEvents.getFundeventtype()));
 		}
 		
 				

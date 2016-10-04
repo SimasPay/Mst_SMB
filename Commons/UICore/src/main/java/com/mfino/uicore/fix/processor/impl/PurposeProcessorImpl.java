@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -94,17 +95,16 @@ public class PurposeProcessorImpl extends BaseFixProcessor implements PurposePro
 			purpose.setCode(e.getPurposeCode());
 		}
 		if(e.getCategory()!=null){
-			purpose.setCategory(e.getCategory());
+			purpose.setCategory(e.getCategory().longValue());
 		}
-		
-		purpose.setmFinoServiceProviderByMSPID(DAOFactory.getInstance().getMfinoServiceProviderDAO().getById(1L));
+		purpose.setMspid(new BigDecimal(1));
 		
 	}
 
 	private void updateMessage(Purpose purpose, CGEntries e) {
-		e.setID(purpose.getID());
+		e.setID(purpose.getId().longValue());
 		e.setPurposeCode(purpose.getCode());
-		e.setCategory(purpose.getCategory());
+		e.setCategory(purpose.getCategory().intValue());
 		e.setCategoryText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Category, null, purpose.getCategory()));
 
 	}

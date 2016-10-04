@@ -20,7 +20,7 @@ import com.mfino.dao.query.RoleQuery;
 import com.mfino.dao.query.TransactionRuleQuery;
 import com.mfino.domain.ChargeDefinition;
 import com.mfino.domain.ChargeType;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.Role;
 import com.mfino.domain.TransactionRule;
 import com.mfino.fix.CFIXMsg;
@@ -73,7 +73,7 @@ public class DuplicateNameCheckProcessorImpl extends BaseFixProcessor implements
         		}
         	} else if ("Group".equals(tableName)) {
         		GroupDao dao = DAOFactory.getInstance().getGroupDao();
-        		Group group = dao.getByName(name);
+        		Groups group = dao.getByName(name);
         		if(group != null){
         			duplicate = true;
         		}

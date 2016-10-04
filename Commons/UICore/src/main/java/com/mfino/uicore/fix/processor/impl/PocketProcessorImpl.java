@@ -32,7 +32,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.errorcodes.Codes;
 import com.mfino.fix.CFIXMsg;
@@ -111,13 +111,13 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
             for (CMJSPocket.CGEntries entry : entries) {
                 Pocket pocketObj = dao.getById(entry.getID());
-                log.info("Requested Pocket:"+pocketObj.getID()+" details update by user:"+getLoggedUserNameWithIP());
+                log.info("Requested Pocket:"+pocketObj.getId()+" details update by user:"+getLoggedUserNameWithIP());
                 // Check for Stale Data
                 if (!entry.getRecordVersion().equals(pocketObj.getVersion())) {
                     handleStaleDataException();
                 }
 
-                Integer oldRestrictions = pocketObj.getRestrictions();
+                Integer oldRestrictions = ((Long)pocketObj.getRestrictions()).intValue();
                 Integer newRestrictions = entry.getRestrictions();
                 
                 // Check if the restrictions are edited or not.
@@ -143,35 +143,36 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                         CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                         errorMsg.setErrorDescription(MessageText._("The new pocket template is not compatible with the old one."));
                         errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-                        log.warn("Compatible check failed between New Pocket Template:"+newId+" Old Pocket Template:"+oldTemplate.getID()+" by user:"+getLoggedUserNameWithIP());
+                        log.warn("Compatible check failed between New Pocket Template:"+newId+" Old Pocket Template:"+oldTemplate.getId()+" by user:"+getLoggedUserNameWithIP());
                         return errorMsg;
                     }else {
-                        pocketObj.setPocketTemplateByOldPocketTemplateID(oldTemplate);
-                        pocketObj.setPocketTemplateChangedBy(userService.getCurrentUser().getUsername());
-                        pocketObj.setPocketTemplateChangeTime(new Timestamp());
+                        pocketObj.setPocketTemplateByOldpockettemplateid(oldTemplate);
+                        pocketObj.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
+                        pocketObj.setPockettemplatechangetime(new Timestamp());
                     }
                 }
 
                 boolean isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Status_Edit);
                 if (isAuthorized) {
-                    if (entry.getPocketStatus() != null && (pocketObj.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement) || pocketObj.getStatus().equals(CmFinoFIX.PocketStatus_Retired))) {
+                    if (entry.getPocketStatus() != null && (((Long)pocketObj.getStatus()).equals(CmFinoFIX.PocketStatus_PendingRetirement) 
+                    		|| ((Long)pocketObj.getStatus()).equals(CmFinoFIX.PocketStatus_Retired))) {
                         if (entry.getPocketStatus() != CmFinoFIX.PocketStatus_Retired && entry.getPocketStatus() != CmFinoFIX.PocketStatus_PendingRetirement) {
                             CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                             errorMsg.setErrorDescription(MessageText._("Can't Change Pocket Status"));
-                            log.warn("Failed change pocket status to"+entry.getPocketStatus()+" for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                            log.warn("Failed change pocket status to"+entry.getPocketStatus()+" for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                             return errorMsg;
                         }
                     }
                 } else if(entry.getPocketStatus() != null){
-                	log.warn("Not Authorized to change pocket status to"+entry.getPocketStatus()+" for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                	log.warn("Not Authorized to change pocket status to"+entry.getPocketStatus()+" for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                     return getErrorMessage(MessageText._("Not Authorized to change the Pocket Status"), CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSPocket.CGEntries.FieldName_PocketStatus, MessageText._("Not allowed"));
                 }
 
                 // Currently checking only for isDefault and CardPAN
                 boolean canEditOtherFields = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Other_Fields_Edit);
                 if (!canEditOtherFields && (entry.getIsDefault() != null || StringUtils.isNotEmpty(entry.getCardPAN()))) {
-                	log.warn("Failed edit other fields for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                	log.warn("Failed edit other fields for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                     return getErrorMessage(MessageText._("Not Authorized to edit other fields"), CmFinoFIX.ErrorCode_Generic, null, MessageText._("Not allowed"));
                 }
                 //check for cardpan if update request comes
@@ -180,13 +181,13 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                     try {
-                        if (CmFinoFIX.TypeOfCheck_LuhnCheck.equals(pocketObj.getPocketTemplate().getTypeOfCheck()) && ValidationUtil.ValidateBankAccount(entry.getCardPAN()) == false) {
+                        if (CmFinoFIX.TypeOfCheck_LuhnCheck.equals(pocketObj.getPocketTemplate().getTypeofcheck()) && ValidationUtil.ValidateBankAccount(entry.getCardPAN()) == false) {
                             errorMsg.setErrorDescription(MessageText._("Cardpan Luhn check failed."));
-                            log.warn("Failed CardPan Luhn check for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                            log.warn("Failed CardPan Luhn check for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                             return errorMsg;
-                        } else if (CmFinoFIX.TypeOfCheck_RegularExpressionCheck.equals(pocketObj.getPocketTemplate().getTypeOfCheck()) && ValidationUtil.validateRegularExpression(entry.getCardPAN(), pocketObj.getPocketTemplate().getRegularExpression()) == false) {
+                        } else if (CmFinoFIX.TypeOfCheck_RegularExpressionCheck.equals(pocketObj.getPocketTemplate().getTypeofcheck()) && ValidationUtil.validateRegularExpression(entry.getCardPAN(), pocketObj.getPocketTemplate().getRegularexpression()) == false) {
                             errorMsg.setErrorDescription(MessageText._("Cardpan Regular Expression check failed."));
-                            log.warn("Failed Cardpan Regular Expression check for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                            log.warn("Failed Cardpan Regular Expression check for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                             return errorMsg;
                         }
                     } catch (PatternSyntaxException pse) {
@@ -200,7 +201,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                 // Card Pan Changed.
                 if (entry.isRemoteModifiedCardPAN() && entry.getCardPAN() != null && StringUtils.isNotEmpty(entry.getCardPAN())) {
                 	if (pocketService.getByCardPan(entry.getCardPAN()) == null) {
-                    	log.info("CardPan modified for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                    	log.info("CardPan modified for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                         pocketService.handleCardPanChange(pocketObj);
                 	}
                 	else {
@@ -219,14 +220,15 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                 if (entry.isRemoteModifiedPocketStatus() && entry.getPocketStatus() != null) {
                     isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Status_Edit);
                     if (isAuthorized) {
-                        if (pocketObj.getPocketTemplate().getCommodity().equals(CmFinoFIX.Commodity_Money) && entry.getPocketStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
+                        if (((Long)pocketObj.getPocketTemplate().getCommodity()).equals(CmFinoFIX.Commodity_Money) 
+                        		&& entry.getPocketStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
                             entry.setPocketStatus(CmFinoFIX.PocketStatus_PendingRetirement);
                             updateEntity(pocketObj, entry);
                         } else {
                             updateEntity(pocketObj, entry);
                         }
                     } else {
-                    	log.warn("Not Authorized to change pocket status to"+entry.getPocketStatus()+" for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                    	log.warn("Not Authorized to change pocket status to"+entry.getPocketStatus()+" for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                         return getErrorMessage(MessageText._("Not Authorized to change the Pocket Status"), CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSPocket.CGEntries.FieldName_PocketStatus, MessageText._("Not allowed"));
                     }
                 } else {
@@ -244,7 +246,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     newEntries[0] = new CmFinoFIX.CMJSError.CGEntries();
                     newEntries[0].setErrorName(CmFinoFIX.CMJSPocket.CGEntries.FieldName_IsDefault);
                     newEntries[0].setErrorDescription(MessageText._("Not allowed"));
-                    log.warn("Failed setting as default pocket for Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP());
+                    log.warn("Failed setting as default pocket for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                     return errorMsg;
                 }
 
@@ -259,7 +261,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     newEntries[0] = new CmFinoFIX.CMJSError.CGEntries();
                     newEntries[0].setErrorName(CmFinoFIX.CMJSPocket.CGEntries.FieldName_CardPAN);
                     newEntries[0].setErrorDescription(MessageText._("Account Number already exists."));
-                    message = "Unable to save Pocket:"+pocketObj.getID()+" by user:"+getLoggedUserNameWithIP();
+                    message = "Unable to save Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP();
                     log.warn(message, ex);
                     return errorMsg;
                 }
@@ -269,14 +271,15 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     updateAndForwardMessage(forwardMsg, entry, oldRestrictions);
                 }
                 if (isCompatible && oldTemplate != null && newTemplate != null) {
-                    if (newTemplate.getType().equals(CmFinoFIX.PocketType_SVA) && newTemplate.getCommodity().equals(CmFinoFIX.Commodity_Money)) {
-                        Integer oldAllowance = oldTemplate.getAllowance();
-                        Integer newAllowance = newTemplate.getAllowance();
+                    if (((Long)newTemplate.getType()).equals(CmFinoFIX.PocketType_SVA) 
+                    		&& ((Long)newTemplate.getCommodity()).equals(CmFinoFIX.Commodity_Money)) {
+                        Integer oldAllowance = ((Long)oldTemplate.getAllowance()).intValue();
+                        Integer newAllowance = ((Long)newTemplate.getAllowance()).intValue();
                         CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
                         updateTemplateAndForwardMessage(forwardMsg, entry, oldAllowance, newAllowance);
                     }
                 }
-                log.info("Completed Pocket:"+pocketObj.getID()+" details update by user:"+getLoggedUserNameWithIP());
+                log.info("Completed Pocket:"+pocketObj.getId()+" details update by user:"+getLoggedUserNameWithIP());
             }
 
             realMsg.setsuccess(CmFinoFIX.Boolean_True);
@@ -305,12 +308,12 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 				 Subscriber sub = subdao.getById(realMsg.getSubscriberIDSearch());
 				 log.info("PocketProcessor :: select action sub="+sub);
 				 if(sub != null){
-					 Set<SubscriberMDN> subscriberMdnCol = sub.getSubscriberMDNFromSubscriberID();
+					 Set<SubscriberMdn> subscriberMdnCol = sub.getSubscriberMdns();
 					 log.info("PocketProcessor :: select action servicePartnerCol="+subscriberMdnCol);
 					 if((subscriberMdnCol != null) && (subscriberMdnCol.size() > 0)){
-						 SubscriberMDN mdn = subscriberMdnCol.iterator().next(); 
-						 Long id = mdn.getID();
-						 log.info("PocketProcessor :: select action id(MdnIDSearch):"+id+" Mdn:"+mdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+						 SubscriberMdn mdn = subscriberMdnCol.iterator().next(); 
+						 Long id = mdn.getId().longValue();
+						 log.info("PocketProcessor :: select action id(MdnIDSearch):"+id+" Mdn:"+mdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
 						 query.setMdnIDSearch(id);
 					 }
 				 }
@@ -319,10 +322,10 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 			if (StringUtils.isNotBlank(realMsg.getMDNSearch())) {
 				log.info("PocketProcessor :: select action MDNSearch:"+realMsg.getMDNSearch()+" by user:"+getLoggedUserNameWithIP());
 				SubscriberMDNDAO mdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-				SubscriberMDN subscriberMDN = mdnDao.getByMDN(realMsg.getMDNSearch());
+				SubscriberMdn subscriberMDN = mdnDao.getByMDN(realMsg.getMDNSearch());
 				if (subscriberMDN != null) {
-					log.info("PocketProcessor :: MDN ID for the MDNSearch: " + realMsg.getMDNSearch() + " is: " + subscriberMDN.getID());
-					query.setMdnIDSearch(subscriberMDN.getID());
+					log.info("PocketProcessor :: MDN ID for the MDNSearch: " + realMsg.getMDNSearch() + " is: " + subscriberMDN.getId());
+					query.setMdnIDSearch(subscriberMDN.getId().longValue());
 				}
 			}
 			
@@ -333,11 +336,11 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 				if (partner != null) {
 					Subscriber subscriber = partner.getSubscriber();
 					if (subscriber != null) {
-						 Set<SubscriberMDN> subscriberMdnCol = subscriber.getSubscriberMDNFromSubscriberID();
+						 Set<SubscriberMdn> subscriberMdnCol = subscriber.getSubscriberMdns();
 						 if((subscriberMdnCol != null) && (subscriberMdnCol.size() > 0)){
-							 SubscriberMDN mdn = subscriberMdnCol.iterator().next(); 
-							 Long id = mdn.getID();
-							 log.info("PocketProcessor :: select action id(MdnIDSearch):"+id+" Mdn:"+mdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+							 SubscriberMdn mdn = subscriberMdnCol.iterator().next(); 
+							 Long id = mdn.getId().longValue();
+							 log.info("PocketProcessor :: select action id(MdnIDSearch):"+id+" Mdn:"+mdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
 							 query.setMdnIDSearch(id);
 						 }
 					}
@@ -348,10 +351,10 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 				log.info("PocketProcessor :: select action MerchantID:" + realMsg.getMerchantIDSearch()+" by user:"+getLoggedUserNameWithIP());
                 MerchantDAO mDao = DAOFactory.getInstance().getMerchantDAO();
                 Merchant m = mDao.getById(realMsg.getMerchantIDSearch());
-                SubscriberMDN mdn = (SubscriberMDN) m.getSubscriber().getSubscriberMDNFromSubscriberID().toArray()[0];
-                Long id = mdn.getID();
-				 log.info("PocketProcessor :: select action id(MdnIDSearch):"+id+" Mdn:"+mdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
-                query.setMdnIDSearch(mdn.getID());
+                SubscriberMdn mdn = (SubscriberMdn) m.getSubscriber().getSubscriberMdns().toArray()[0];
+                Long id = mdn.getId().longValue();
+				 log.info("PocketProcessor :: select action id(MdnIDSearch):"+id+" Mdn:"+mdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
+                query.setMdnIDSearch(mdn.getId().longValue());
             }
             if (realMsg.getCommodity() != null) {
                 query.setCommodity(realMsg.getCommodity());
@@ -362,7 +365,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                 query.setPocketType(realMsg.getPocketType());
             }
             if (userService.getUserCompany() != null) {
-            	log.info("PocketProcessor :: Query on company:"+userService.getUserCompany().getCompanyName()+" by user:"+getLoggedUserNameWithIP());
+            	log.info("PocketProcessor :: Query on company:"+userService.getUserCompany().getCompanyname()+" by user:"+getLoggedUserNameWithIP());
                 query.setCompany(userService.getUserCompany());
             }
             if(realMsg.getNoCompanyFilter()!=null && realMsg.getNoCompanyFilter()){
@@ -383,13 +386,13 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             }
             if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {
                 User user = userService.getCurrentUser();
-                Set<BankAdmin> admins = user.getBankAdminFromUserID();
+                Set<BankAdmin> admins = user.getBankAdmins();
 
                 if (admins != null && admins.size() > 0) {
                     BankAdmin admin = (BankAdmin) admins.toArray()[0];
                     if (admin != null && admin.getBank() != null) {
-                    	log.info("PocketProcessor :: Query on bank code:"+admin.getBank().getBankCode()+" by user:"+getLoggedUserNameWithIP());
-                        query.setBankCode(admin.getBank().getBankCode());
+                    	log.info("PocketProcessor :: Query on bank code:"+admin.getBank().getBankcode()+" by user:"+getLoggedUserNameWithIP());
+                        query.setBankCode(admin.getBank().getBankcode().intValue());
                         // setting company as null for bank roles..
                         query.setCompany(null);
                     }
@@ -402,7 +405,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             for (int i = 0; i < results.size(); i++) {
                 Pocket p = results.get(i);
                 pocketService.changeStatusBasedOnMerchantAndSubscriber(p);
-                log.info("PocketProcessor :: pocket:"+p.getID()+" status changed to:"+p.getStatus()+" by user:"+getLoggedUserNameWithIP());
+                log.info("PocketProcessor :: pocket:"+p.getId()+" status changed to:"+p.getStatus()+" by user:"+getLoggedUserNameWithIP());
                 CMJSPocket.CGEntries entry = new CMJSPocket.CGEntries();
 
                 updateMessage(p, entry);
@@ -423,12 +426,12 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     return getErrorMessage(MessageText._("Not authorized to add this type of pocket"), CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSPocket.CGEntries.FieldName_PocketTypeText, MessageText._("Not allowed"));
                 }
                 
-                SubscriberMDN subMdn = subscriberMDNDAO.getById(e.getMDNID());
+                SubscriberMdn subMdn = subscriberMDNDAO.getById(e.getMDNID());
                 PocketTemplateDAO pocketTemplateDAO = DAOFactory.getInstance().getPocketTemplateDao();
                 PocketTemplate pocketTemplate = pocketTemplateDAO.getById(e.getPocketTemplateID());
                 boolean isallowed=pocketService.isAllowed(pocketTemplate,subMdn);
                 if(!isallowed){
-                	log.error("PocketProcessor :: Pocket addition for template:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                	log.error("PocketProcessor :: Pocket addition for template:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                 	 return getErrorMessage(MessageText._(" Pocket addition with this template  not allowed for this subscriber"), CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSPocket.CGEntries.FieldName_PocketTypeText, MessageText._("Not allowed"));
                    		
                 }
@@ -439,17 +442,17 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                     try {
-                        if (CmFinoFIX.TypeOfCheck_LuhnCheck.equals(pocketTemplate.getTypeOfCheck()) && ValidationUtil.ValidateBankAccount(e.getCardPAN()) == false) {
-                        	log.error("PocketProcessor :: CardPan Luhn check failed for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                        if (CmFinoFIX.TypeOfCheck_LuhnCheck.equals(pocketTemplate.getTypeofcheck()) && ValidationUtil.ValidateBankAccount(e.getCardPAN()) == false) {
+                        	log.error("PocketProcessor :: CardPan Luhn check failed for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                             errorMsg.setErrorDescription(MessageText._("Cardpan Luhn check failed."));
                             return errorMsg;
-                        } else if (CmFinoFIX.TypeOfCheck_RegularExpressionCheck.equals(pocketTemplate.getTypeOfCheck()) && ValidationUtil.validateRegularExpression(e.getCardPAN(), pocketTemplate.getRegularExpression()) == false) {
-                        	log.error("PocketProcessor :: CardPan regular expression check failed for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                        } else if (CmFinoFIX.TypeOfCheck_RegularExpressionCheck.equals(pocketTemplate.getTypeofcheck()) && ValidationUtil.validateRegularExpression(e.getCardPAN(), pocketTemplate.getRegularexpression()) == false) {
+                        	log.error("PocketProcessor :: CardPan regular expression check failed for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                             errorMsg.setErrorDescription(MessageText._("Cardpan Regular Expression check failed."));
                             return errorMsg;
                         }
                     } catch (PatternSyntaxException pse) {
-                    	log.error("PocketProcessor :: Invalid Regular Expression in pocket template for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                    	log.error("PocketProcessor :: Invalid Regular Expression in pocket template for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                     	String message = MessageText._("Invalid Regular Expression, in the PocketTemplate");
                         errorMsg.setErrorDescription(message);
                         log.warn(message, pse);
@@ -457,7 +460,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     }
                     
                     if (pocketService.getByCardPan(e.getCardPAN()) != null) {
-                    	log.error("PocketProcessor :: Account Number already exists in the system for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                    	log.error("PocketProcessor :: Account Number already exists in the system for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                         errorMsg = new CmFinoFIX.CMJSError();
                         String message = MessageText._("Account Number already exists in the system. It has to be unique.");
                         errorMsg.setErrorDescription(message);
@@ -469,21 +472,21 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                         return errorMsg;
                     }
                 } else if (CmFinoFIX.PocketType_SVA.equals(pocketTemplate.getType()) && CmFinoFIX.Commodity_Money.equals(pocketTemplate.getCommodity()) &&
-                        ConfigurationUtil.getSMARTEMoneyPartnerCode().equals(pocketTemplate.getBankCode())) {
+                        ConfigurationUtil.getSMARTEMoneyPartnerCode().equals(pocketTemplate.getBankcode())) {
                 	if(e.getSubsMDN()!=null){
                     e.setCardPAN(pocketService.generateSVAEMoney16DigitCardPAN(e.getSubsMDN()));
                 	}else if(e.getMDNID()!=null){
                 		SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-                		SubscriberMDN subscriberMdn = subscriberMdnDao.getById(e.getMDNID());
-                		 e.setCardPAN(pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMDN()));
+                		SubscriberMdn subscriberMdn = subscriberMdnDao.getById(e.getMDNID());
+                		 e.setCardPAN(pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMdn()));
                 	  	}
                     log.debug("System generated Card PAN is " + e.getCardPAN());
-                    log.info("PocketProcessor :: Generated card pan for pocket with template:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                    log.info("PocketProcessor :: Generated card pan for pocket with template:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                     flag = true;
                 }
                 isallowed=pocketService.checkCount(pocketTemplate,subMdn);
                 if(!isallowed){
-                	log.error("PocketProcessor :: Pocket count limit reached for template:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());	
+                	log.error("PocketProcessor :: Pocket count limit reached for template:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());	
                	 return getErrorMessage(MessageText._(" Pocket count Limit reached for this template  "), CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSPocket.CGEntries.FieldName_PocketTypeText, MessageText._("Pocket count Limit reached for this template"));
                  		
                } 
@@ -506,17 +509,17 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     newEntries[0].setErrorName(CmFinoFIX.CMJSPocket.CGEntries.FieldName_CardPAN);
                     newEntries[0].setErrorDescription(MessageText._("Account Number already exists."));
                     log.info("Trying to create a new account with an existing accout no.Returning error");
-                    log.error("PocketProcessor :: Pocket addition failed as account number already exists:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMDN()+" by user:"+getLoggedUserNameWithIP());
+                    log.error("PocketProcessor :: Pocket addition failed as account number already exists:"+e.getPocketTemplateID()+" for MDN:"+subMdn.getMdn()+" by user:"+getLoggedUserNameWithIP());
                     return errorMsg;
                 }
 
                 updateMessage(pocket, e);
                 //This falg is for Sending Account Number. if flag is true then we will send sms and email to Subscriber's MDN
                 if (flag) {
-                    if (pocket != null && pocket.getSubscriberMDNByMDNID() != null && pocket.getSubscriberMDNByMDNID().getSubscriber() != null) {
-                        Subscriber sub = pocket.getSubscriberMDNByMDNID().getSubscriber();
+                    if (pocket != null && pocket.getSubscriberMdn() != null && pocket.getSubscriberMdn().getSubscriber() != null) {
+                        Subscriber sub = pocket.getSubscriberMdn().getSubscriber();
 
-                        String fulleName = sub.getFirstName() + " " + sub.getLastName();
+                        String fulleName = sub.getFirstname() + " " + sub.getLastname();
                         // send mail
                         String emailMsg =
                                 String.format(
@@ -568,8 +571,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
         Long mdnId = e.getMDNID();
         if (null != mdnId) {
-            SubscriberMDN mdn = subscriberMDNDAO.getById(mdnId);
-            newMsg.setMSPID(mdn.getSubscriber().getmFinoServiceProviderByMSPID().getID());
+            SubscriberMdn mdn = subscriberMDNDAO.getById(mdnId);
+            newMsg.setMSPID(mdn.getSubscriber().getMfinoServiceProvider().getId().longValue());
         }
 
         ForwardNotificationRequestProcessorImpl notifySubscriber = new ForwardNotificationRequestProcessorImpl();
@@ -593,8 +596,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
         Long mdnId = e.getMDNID();
         if (null != mdnId) {
-            SubscriberMDN mdn = subscriberMDNDAO.getById(mdnId);
-            newMsg.setMSPID(mdn.getSubscriber().getmFinoServiceProviderByMSPID().getID());
+            SubscriberMdn mdn = subscriberMDNDAO.getById(mdnId);
+            newMsg.setMSPID(mdn.getSubscriber().getMfinoServiceProvider().getId().longValue());
         }
 
         newMsg.setSourceMDN(e.getSubsMDN());
@@ -624,8 +627,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         PocketTemplateDAO pocketTemplateDAO = DAOFactory.getInstance().getPocketTemplateDao();
         Long templateID = e.getPocketTemplateID();
         PocketTemplate pt = pocketTemplateDAO.getById(templateID);
-        Integer templateType = pt.getType();
-        Integer commodity = pt.getCommodity();
+        Integer templateType = ((Long)pt.getType()).intValue();
+        Integer commodity = ((Long)pt.getCommodity()).intValue();
 
         if ((isAbsolutLockedChanged && isNewAbsolutLocked) || (isSecurityLockedChanged && isNewSecurityLocked) || (isSelfSuspendedChanged && isNewSelfSuspended) || (isSuspendedChanged && isNewSuspended)) {
             newMsg.setCode(getNotificationMessageCode(templateType, commodity, true));
@@ -675,8 +678,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         PocketTemplateDAO pocketTemplateDAO = DAOFactory.getInstance().getPocketTemplateDao();
        
         String pocketDetail = "";
-        if(thePocket.getID()!=null){
-        	pocketDetail = String.valueOf(thePocket.getID());
+        if(thePocket.getId()!=null){
+        	pocketDetail = String.valueOf(thePocket.getId());
         }
         else
         {
@@ -689,15 +692,15 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             	log.info("Pocket:"+pocketDetail+" PocketTemplate is set to null, by user:"+getLoggedUserNameWithIP());
             }
             else if(pt!=thePocket.getPocketTemplate()){
-            	log.info("Pocket:"+pocketDetail+" PocketTemplate updated to Desc:"+pt.getDescription()+" ID:"+pt.getID()+" by user:"+getLoggedUserNameWithIP());
+            	log.info("Pocket:"+pocketDetail+" PocketTemplate updated to Desc:"+pt.getDescription()+" ID:"+pt.getId()+" by user:"+getLoggedUserNameWithIP());
             }
             thePocket.setPocketTemplate(pt);
         }
 
         Long mdnId = theEntries.getMDNID();
         if (null != mdnId) {
-            SubscriberMDN mdn = subscriberMDNDAO.getById(mdnId);
-            thePocket.setSubscriberMDNByMDNID(mdn);
+            SubscriberMdn mdn = subscriberMDNDAO.getById(mdnId);
+            thePocket.setSubscriberMdn(mdn);
             if(mdn != null && mdn.getSubscriber() != null){
             	Company subCompany = mdn.getSubscriber().getCompany();
             	
@@ -706,7 +709,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             		log.info("Pocket:"+pocketDetail+" Company is set to null, by user:"+getLoggedUserNameWithIP());
             	}
             	else if(thePocket.getCompany()!=subCompany){
-            		log.info("Pocket:"+pocketDetail+" Company updated to "+subCompany.getID()+" by user:"+getLoggedUserNameWithIP());
+            		log.info("Pocket:"+pocketDetail+" Company updated to "+subCompany.getId()+" by user:"+getLoggedUserNameWithIP());
             	}
             thePocket.setCompany(subCompany);
             }
@@ -714,35 +717,35 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         String cardPan = theEntries.getCardPAN();
         if (null != cardPan) {
-        	boolean isSame = cardPan.equals(thePocket.getCardPAN()); 
+        	boolean isSame = cardPan.equals(thePocket.getCardpan()); 
         	
             if (!(cardPan.isEmpty())) {
             	if(!isSame){
             		log.info("Pocket:"+pocketDetail+" CardPan is updated, by user:"+getLoggedUserNameWithIP());
             	}
-                thePocket.setCardPAN(cardPan);
+                thePocket.setCardpan(cardPan);
             } else {
             	if(!isSame){
             		log.info("Pocket:"+pocketDetail+" CardPan is set to null, by user:"+getLoggedUserNameWithIP());
             	}
-                thePocket.setCardPAN(null);
+                thePocket.setCardpan(null);
             }
         }
         
         String cardAlias = theEntries.getCardAlias();
         if (null != cardAlias) {
-        	boolean isSame = cardAlias.equals(thePocket.getCardPAN()); 
+        	boolean isSame = cardAlias.equals(thePocket.getCardpan()); 
         	
             if (!(cardAlias.isEmpty())) {
             	if(!isSame){
             		log.info("Pocket:"+pocketDetail+" CardAlias is updated, by user:"+getLoggedUserNameWithIP());
             	}
-                thePocket.setCardAlias(cardAlias);
+                thePocket.setCardalias(cardAlias);
             } else {
             	if(!isSame){
             		log.info("Pocket:"+pocketDetail+" CardAlias is set to null, by user:"+getLoggedUserNameWithIP());
             	}
-                thePocket.setCardAlias(null);
+                thePocket.setCardalias(null);
             }
         }
 
@@ -750,7 +753,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         if (null != pocketRestrictions) {
         	// *FindbugsChange*
         	// Previous -- if(thePocket.getRestrictions()!=pocketRestrictions){
-        	if (thePocket.getRestrictions()!= null && !(thePocket.getRestrictions().equals(pocketRestrictions))){
+        	if ((Long)thePocket.getRestrictions()!= null && !(((Long)thePocket.getRestrictions()).equals(pocketRestrictions))){
         		log.info("Pocket:"+pocketDetail+" restrictions updated to:"+pocketRestrictions+" by user:"+getLoggedUserNameWithIP());
         	}
             thePocket.setRestrictions(pocketRestrictions);
@@ -758,15 +761,15 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         Boolean isDefault = theEntries.getIsDefault();
         if (null != isDefault) {
-        	if(thePocket.getIsDefault()!=isDefault){
+        	if((thePocket.getIsdefault() != null && thePocket.getIsdefault() != 0)!= isDefault){
         		log.info("Pocket:"+pocketDetail+" isDefault is updated to:"+isDefault+" by user:"+getLoggedUserNameWithIP());
         	}
-            thePocket.setIsDefault(isDefault);
+            thePocket.setIsdefault((short) (isDefault ?1:0));
         }
 
         Integer pocketStatus = theEntries.getPocketStatus();
         if (pocketStatus == null) {
-            if (thePocket.getStatus() == null) {
+            if ((Long)thePocket.getStatus() == null) {
             	log.info("Pocket:"+pocketDetail+" pocket status updated to:"+CmFinoFIX.PocketStatus_Initialized+" by user:"+getLoggedUserNameWithIP());
                 thePocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
             }
@@ -779,144 +782,144 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             thePocket.setStatus(pocketStatus);
         }
 
-        if (thePocket.getStatusTime() == null) {
-            thePocket.setStatusTime(new Timestamp());
-            log.info("Pocket:"+pocketDetail+" StatusTime is updated to:"+thePocket.getStatusTime().toString()+" by user:"+getLoggedUserNameWithIP());
+        if (thePocket.getStatustime() == null) {
+            thePocket.setStatustime(new Timestamp());
+            log.info("Pocket:"+pocketDetail+" StatusTime is updated to:"+thePocket.getStatustime().toString()+" by user:"+getLoggedUserNameWithIP());
         }
 
         if (null != theEntries.getCurrentBalance()) {
-        	if(theEntries.getCurrentBalance()!=thePocket.getCurrentBalance()){
+        	if(theEntries.getCurrentBalance().compareTo(new BigDecimal(thePocket.getCurrentbalance())) != 0){
         		log.info("Pocket:"+pocketDetail+" current balance is updated by user:"+getLoggedUserNameWithIP());
         	}
-            thePocket.setCurrentBalance(theEntries.getCurrentBalance());
+            thePocket.setCurrentbalance(theEntries.getCurrentBalance()+"");
         }
 
         if (null != theEntries.getOldPocketTemplateID()) {
             PocketTemplate pt = pocketTemplateDAO.getById(theEntries.getOldPocketTemplateID());
-            if(pt!=thePocket.getPocketTemplateByOldPocketTemplateID()){
-            	log.info("Pocket:"+pocketDetail+" old pocket template is updated to:"+pt.getID()+" by user:"+getLoggedUserNameWithIP());
+            if(pt!=thePocket.getPocketTemplateByOldpockettemplateid()){
+            	log.info("Pocket:"+pocketDetail+" old pocket template is updated to:"+pt.getId()+" by user:"+getLoggedUserNameWithIP());
             }
-            thePocket.setPocketTemplateByOldPocketTemplateID(pt);
+            thePocket.setPocketTemplateByOldpockettemplateid(pt);
         }
 
         if (null != theEntries.getPocketTemplateChangedBy()) {
-        	if(!theEntries.getPocketTemplateChangedBy().equals(thePocket.getPocketTemplateChangedBy())){
+        	if(!theEntries.getPocketTemplateChangedBy().equals(thePocket.getPockettemplatechangedby())){
             	log.info("Pocket:"+pocketDetail+" pocket template changedby is updated to:"+theEntries.getPocketTemplateChangedBy()+" by user:"+getLoggedUserNameWithIP());
             }
-        	thePocket.setPocketTemplateChangedBy(theEntries.getPocketTemplateChangedBy());
+        	thePocket.setPockettemplatechangedby(theEntries.getPocketTemplateChangedBy());
         }
 
         if (null != theEntries.getPocketTemplateChangeTime()) {
-        	if(theEntries.getPocketTemplateChangeTime()!=thePocket.getPocketTemplateChangeTime()){
+        	if(theEntries.getPocketTemplateChangeTime()!=thePocket.getPockettemplatechangetime()){
             	log.info("Pocket:"+pocketDetail+" pocket template change time is updated to:"+theEntries.getPocketTemplateChangeTime().toString()+" by user:"+getLoggedUserNameWithIP());
             }
-            thePocket.setPocketTemplateChangeTime(theEntries.getPocketTemplateChangeTime());
+            thePocket.setPockettemplatechangetime(theEntries.getPocketTemplateChangeTime());
         }
 
     }
 
     private void updateMessage(Pocket thePocket, CmFinoFIX.CMJSPocket.CGEntries theEntries) {
 
-        theEntries.setID(thePocket.getID());
+        theEntries.setID(thePocket.getId().longValue());
         // Here get the values from Pocket and set them in the entry.
         if (null != thePocket.getPocketTemplate()) {
-            theEntries.setPocketTemplateID(thePocket.getPocketTemplate().getID());
+            theEntries.setPocketTemplateID(thePocket.getPocketTemplate().getId().longValue());
             theEntries.setPocketTemplDescription(thePocket.getPocketTemplate().getDescription());
             if (thePocket.getPocketTemplate().getDenomination() != null) {
-                theEntries.setDenomination(thePocket.getPocketTemplate().getDenomination());
+                theEntries.setDenomination(thePocket.getPocketTemplate().getDenomination().longValue());
             } else {
                 theEntries.setDenomination(1L);
             }
             theEntries.setPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null, thePocket.getPocketTemplate().getType()));
             theEntries.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, thePocket.getPocketTemplate().getCommodity()));
-            theEntries.setPartnerCode(thePocket.getPocketTemplate().getBankCode());
+            theEntries.setPartnerCode(thePocket.getPocketTemplate().getBankcode().intValue());
         }
 
-        if (null != thePocket.getPocketTemplateByOldPocketTemplateID()) {
-            theEntries.setOldPocketTemplDescription(thePocket.getPocketTemplateByOldPocketTemplateID().getDescription());
+        if (null != thePocket.getPocketTemplateByOldpockettemplateid()) {
+            theEntries.setOldPocketTemplDescription(thePocket.getPocketTemplateByOldpockettemplateid().getDescription());
         }
 
-        if (null != thePocket.getPocketTemplateChangedBy()) {
-            theEntries.setPocketTemplateChangedBy(thePocket.getPocketTemplateChangedBy());
+        if (null != thePocket.getPockettemplatechangedby()) {
+            theEntries.setPocketTemplateChangedBy(thePocket.getPockettemplatechangedby());
         }
 
-        if (null != thePocket.getPocketTemplateChangeTime()) {
-            theEntries.setPocketTemplateChangeTime(thePocket.getPocketTemplateChangeTime());
+        if (null != thePocket.getPockettemplatechangetime()) {
+            theEntries.setPocketTemplateChangeTime(thePocket.getPockettemplatechangetime());
         }
 
-        if (null != thePocket.getSubscriberMDNByMDNID()) {
-            theEntries.setMDNID(thePocket.getSubscriberMDNByMDNID().getID());
-            theEntries.setSubsMDN(thePocket.getSubscriberMDNByMDNID().getMDN());
+        if (null != thePocket.getSubscriberMdn()) {
+            theEntries.setMDNID(thePocket.getSubscriberMdn().getId().longValue());
+            theEntries.setSubsMDN(thePocket.getSubscriberMdn().getMdn());
         }
 
-        if (null != thePocket.getCurrentBalance()) {
-            theEntries.setCurrentBalance(thePocket.getCurrentBalance());
+        if (null != thePocket.getCurrentbalance()) {
+            theEntries.setCurrentBalance(new BigDecimal(thePocket.getCurrentbalance()));
         }
 
-        Timestamp lastTransactionTime = thePocket.getLastTransactionTime();
+        Timestamp lastTransactionTime = thePocket.getLasttransactiontime();
         if (null != lastTransactionTime) {
             theEntries.setLastTransactionTime(lastTransactionTime);
         }
 
-        BigDecimal currentBalance = thePocket.getCurrentBalance();
+        BigDecimal currentBalance = new BigDecimal(thePocket.getCurrentbalance());
         if (null != currentBalance) {
             theEntries.setCurrentBalance(currentBalance);
         }
 
-        BigDecimal currentDailyExpenditure = thePocket.getCurrentDailyExpenditure();
+        BigDecimal currentDailyExpenditure = thePocket.getCurrentdailyexpenditure();
         if (null != currentDailyExpenditure) {
             theEntries.setCurrentDailyExpenditure(currentDailyExpenditure);
         }
 
-        BigDecimal currentWeeklyExpenditure = thePocket.getCurrentWeeklyExpenditure();
+        BigDecimal currentWeeklyExpenditure = thePocket.getCurrentweeklyexpenditure();
         if (null != currentWeeklyExpenditure) {
             theEntries.setCurrentWeeklyExpenditure(currentWeeklyExpenditure);
         }
 
-        BigDecimal currentMontlyExpenditure = thePocket.getCurrentMonthlyExpenditure();
+        BigDecimal currentMontlyExpenditure = thePocket.getCurrentmonthlyexpenditure();
         if (null != currentMontlyExpenditure) {
             theEntries.setCurrentMonthlyExpenditure(currentMontlyExpenditure);
         }
 
-        Integer currentDailyTransactionCount = thePocket.getCurrentDailyTxnsCount();
+        Integer currentDailyTransactionCount = ((Long)thePocket.getCurrentdailytxnscount()).intValue();
         theEntries.setCurrentDailyTxnsCount(currentDailyTransactionCount);
 
-        Integer currentWeeklyTransactionCount = thePocket.getCurrentWeeklyTxnsCount();
+        Integer currentWeeklyTransactionCount = ((Long)thePocket.getCurrentweeklytxnscount()).intValue();
         theEntries.setCurrentWeeklyTxnsCount(currentWeeklyTransactionCount);
 
-        Integer currentMonthlyTransactionCount = thePocket.getCurrentMonthlyTxnsCount();
+        Integer currentMonthlyTransactionCount = ((Long)thePocket.getCurrentmonthlytxnscount()).intValue();
         theEntries.setCurrentMonthlyTxnsCount(currentMonthlyTransactionCount);
 
-        Integer lastBankResponseCode = thePocket.getLastBankResponseCode();
+        Integer lastBankResponseCode = thePocket.getLastbankresponsecode().intValue();
         theEntries.setLastBankResponseCode(lastBankResponseCode);
 
-        String lastBankAuthCode = thePocket.getLastBankAuthorizationCode();
+        String lastBankAuthCode = thePocket.getLastbankauthorizationcode();
         if (null != lastBankAuthCode) {
             theEntries.setLastBankAuthorizationCode(lastBankAuthCode);
         }
 
-        Integer lastBankRequestCode = thePocket.getLastBankRequestCode();
+        Integer lastBankRequestCode = thePocket.getLastbankrequestcode().intValue();
         theEntries.setLastBankRequestCode(lastBankRequestCode);
 
-        String cardPan = thePocket.getCardPAN();
+        String cardPan = thePocket.getCardpan();
         if (null != cardPan) {
             theEntries.setCardPAN(cardPan);
         }
-        if (null != thePocket.getCardAlias()) {
-            theEntries.setCardAlias(thePocket.getCardAlias());
+        if (null != thePocket.getCardalias()) {
+            theEntries.setCardAlias(thePocket.getCardalias());
         }
 
-        Integer pocketRestrictions = thePocket.getRestrictions();
+        Integer pocketRestrictions = ((Long)thePocket.getRestrictions()).intValue();
         theEntries.setRestrictions(pocketRestrictions);
 
         theEntries.setPocketRestrictionsText(enumTextService.getRestrictionsText(CmFinoFIX.TagID_PocketRestrictions, null, pocketRestrictions.toString()));
 
-        Boolean isDefault = thePocket.getIsDefault();
+        Boolean isDefault = (thePocket.getIsdefault() != null && thePocket.getIsdefault() != 0);
         if (isDefault != null) {
             theEntries.setIsDefault(isDefault);
         }
 
-        Integer pocketStatus = thePocket.getStatus();
+        Integer pocketStatus = ((Long)thePocket.getStatus()).intValue();
         if (pocketStatus == null) {
             pocketStatus = CmFinoFIX.PocketStatus_Initialized;
         }
@@ -924,22 +927,22 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         theEntries.setPocketStatus(pocketStatus);
         theEntries.setPocketStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketStatus, null, pocketStatus));
 
-        theEntries.setStatusTime(thePocket.getStatusTime());
-        theEntries.setCreateTime(thePocket.getCreateTime());
-        theEntries.setActivationTime(thePocket.getActivationTime());
-        theEntries.setLastUpdateTime(thePocket.getLastUpdateTime());
+        theEntries.setStatusTime(thePocket.getStatustime());
+        theEntries.setCreateTime(thePocket.getCreatetime());
+        theEntries.setActivationTime(thePocket.getActivationtime());
+        theEntries.setLastUpdateTime(thePocket.getLastupdatetime());
 
-        String updatedBy = thePocket.getUpdatedBy();
+        String updatedBy = thePocket.getUpdatedby();
         if (null != updatedBy) {
             theEntries.setUpdatedBy(updatedBy);
         }
 
-        if (null != thePocket.getVersion()) {
-            theEntries.setRecordVersion(thePocket.getVersion());
+        if (null != (Long)thePocket.getVersion()) {
+            theEntries.setRecordVersion(((Long)thePocket.getVersion()).intValue());
         }
         
-        if (StringUtils.isNotBlank(thePocket.getCardPAN()) && thePocket.getPocketTemplate() != null) {
-        	String cPan = thePocket.getCardPAN();
+        if (StringUtils.isNotBlank(thePocket.getCardpan()) && thePocket.getPocketTemplate() != null) {
+        	String cPan = thePocket.getCardpan();
         	if (cPan.length() > 6) {
         		cPan = cPan.substring(cPan.length()-6);
         	} 

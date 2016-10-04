@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -49,7 +50,7 @@ public class EnumTextProcessorImpl extends BaseFixProcessor implements EnumTextP
                 EnumText s = dao.getById(e.getID());
                 updateEntity(s, e);
                 dao.save(s);
-                enumTextService.invalidateEnumTextSet(s.getTagID(), s.getLanguage());
+                enumTextService.invalidateEnumTextSet(((Long)s.getTagid()).intValue(), ((Long)s.getLanguage()).intValue());
                 updateMessage(s, e);
             }
 
@@ -96,7 +97,7 @@ public class EnumTextProcessorImpl extends BaseFixProcessor implements EnumTextP
                     handleUniqueConstraintViolation(t);
                 }
 
-                enumTextService.invalidateEnumTextSet(s.getTagID(), s.getLanguage());
+                enumTextService.invalidateEnumTextSet(((Long)s.getTagid()).intValue(), ((Long)s.getLanguage()).intValue());
                 updateMessage(s, e);
             }
 
@@ -107,7 +108,7 @@ public class EnumTextProcessorImpl extends BaseFixProcessor implements EnumTextP
 
             for (CMJSEnumText.CGEntries e : entries) {
                 EnumText s = dao.getById(e.getID());
-                enumTextService.invalidateEnumTextSet(s.getTagID(), s.getLanguage());
+                enumTextService.invalidateEnumTextSet(((Long)s.getTagid()).intValue(), ((Long)s.getLanguage()).intValue());
                 dao.deleteById(e.getID());
             }
 
@@ -119,74 +120,74 @@ public class EnumTextProcessorImpl extends BaseFixProcessor implements EnumTextP
 
     public void updateEntity(EnumText s, CMJSEnumText.CGEntries e) {
         if (e.getID() != null) {
-            s.setID(e.getID());
+            s.setId(new BigDecimal(e.getID()));
         }
         if (e.getEnumCode() != null) {
-            s.setEnumCode(e.getEnumCode());
+            s.setEnumcode(e.getEnumCode());
         }
         if (e.getEnumValue() != null) {
-            s.setEnumValue(e.getEnumValue());
+            s.setEnumvalue(e.getEnumValue());
         }
 
         if (e.getLanguage() != null) {
             s.setLanguage(e.getLanguage());
         }
         if (e.getLastUpdateTime() != null) {
-            s.setLastUpdateTime(e.getLastUpdateTime());
+            s.setLastupdatetime(e.getLastUpdateTime());
         }
 
         if (e.getTagID() != null) {
-            s.setTagID((e.getTagID()));
+            s.setTagid((e.getTagID()));
         }
 
         if (e.getTagName() != null) {
-            s.setTagName(e.getTagName());
+            s.setTagname(e.getTagName());
         }
 
         if (e.getUpdatedBy() != null) {
-            s.setUpdatedBy(e.getUpdatedBy());
+            s.setUpdatedby(e.getUpdatedBy());
         }
 
         if (e.getDisplayText() != null) {
-            s.setDisplayText(e.getDisplayText());
+            s.setDisplaytext(e.getDisplayText());
         }
     }
 
     public void updateMessage(EnumText s, CMJSEnumText.CGEntries e) {
 
-        if (s.getID() != null) {
-            e.setID(s.getID());
+        if (s.getId() != null) {
+            e.setID(s.getId().longValue());
         }
-        if (s.getEnumCode() != null) {
-            e.setEnumCode(s.getEnumCode());
+        if (s.getEnumcode() != null) {
+            e.setEnumCode(s.getEnumcode());
         }
-        if (s.getEnumValue() != null) {
-            e.setEnumValue(s.getEnumValue());
-        }
-
-        if (s.getLanguage() != null) {
-            e.setLanguage(s.getLanguage());
-            e.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, s.getLanguage(), s.getLanguage()));
+        if (s.getEnumvalue() != null) {
+            e.setEnumValue(s.getEnumvalue());
         }
 
-        if (s.getLastUpdateTime() != null) {
-            e.setLastUpdateTime(s.getLastUpdateTime());
+        if (((Long)s.getLanguage()) != null) {
+            e.setLanguage(((Long)s.getLanguage()).intValue());
+            e.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, ((Long)s.getLanguage()).intValue(), s.getLanguage()));
         }
 
-        if (s.getTagID() != null) {
-            e.setTagID((s.getTagID()));
+        if (s.getLastupdatetime() != null) {
+            e.setLastUpdateTime(s.getLastupdatetime());
         }
 
-        if (s.getTagName() != null) {
-            e.setTagName(s.getTagName());
+        if (((Long)s.getTagid()) != null) {
+            e.setTagID(((Long)s.getTagid()).intValue());
         }
 
-        if (s.getUpdatedBy() != null) {
-            e.setUpdatedBy(s.getUpdatedBy());
+        if (s.getTagname() != null) {
+            e.setTagName(s.getTagname());
         }
 
-        if (s.getDisplayText() != null) {
-            e.setDisplayText(s.getDisplayText());
+        if (s.getUpdatedby() != null) {
+            e.setUpdatedBy(s.getUpdatedby());
+        }
+
+        if (s.getDisplaytext() != null) {
+            e.setDisplayText(s.getDisplaytext());
         }
     }
 

@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,6 @@ import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSProductReferral;
 import com.mfino.i18n.MessageText;
-import com.mfino.service.EnumTextService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.ProductReferralProcessor;
 import com.mfino.uicore.web.WebContextError;
@@ -41,15 +38,15 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 	
 	private void updateEntity(ProductReferral productReferral, CMJSProductReferral.CGEntries e) {
 		if (StringUtils.isNotBlank(e.getAgentMDN())) {
-			productReferral.setAgentMDN(e.getAgentMDN());
+			productReferral.setAgentmdn(e.getAgentMDN());
 		}
 
 		if (StringUtils.isNotBlank(e.getSubscriberMDN())) {		
-			productReferral.setSubscriberMDN(e.getSubscriberMDN());
+			productReferral.setSubscribermdn(e.getSubscriberMDN());
 		}
 
 		if (StringUtils.isNotBlank(e.getFullName())) {
-			productReferral.setFullName(e.getFullName());
+			productReferral.setFullname(e.getFullName());
 		}
 		
 		if (StringUtils.isNotBlank(e.getEmail())) {
@@ -57,7 +54,7 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 		}
 		
 		if (StringUtils.isNotBlank(e.getProductDesired())) {
-			productReferral.setProductDesired(e.getProductDesired());
+			productReferral.setProductdesired(e.getProductDesired());
 		}
 		
 		if (StringUtils.isNotBlank(e.getOthers())) {
@@ -68,18 +65,18 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 
 	
 	private void updateMessage(ProductReferral productReferral, CMJSProductReferral.CGEntries e) {
-		e.setID(productReferral.getID());
-		e.setAgentMDN(productReferral.getAgentMDN());
-		e.setSubscriberMDN(productReferral.getSubscriberMDN());
-		e.setFullName(productReferral.getFullName());
+		e.setID(productReferral.getId().longValue());
+		e.setAgentMDN(productReferral.getAgentmdn());
+		e.setSubscriberMDN(productReferral.getSubscribermdn());
+		e.setFullName(productReferral.getFullname());
 		e.setEmail(productReferral.getEmail());		
-		e.setProductDesired(productReferral.getProductDesired());
+		e.setProductDesired(productReferral.getProductdesired());
 		e.setOthers(productReferral.getOthers());
-		e.setRecordVersion(productReferral.getVersion());
-		e.setCreatedBy(productReferral.getCreatedBy());
-		e.setCreateTime(productReferral.getCreateTime());
-		e.setUpdatedBy(productReferral.getUpdatedBy());
-		e.setLastUpdateTime(productReferral.getLastUpdateTime());
+		e.setRecordVersion(((Long)productReferral.getVersion()).intValue());
+		e.setCreatedBy(productReferral.getCreatedby());
+		e.setCreateTime(productReferral.getCreatetime());
+		e.setUpdatedBy(productReferral.getUpdatedby());
+		e.setLastUpdateTime(productReferral.getLastupdatetime());
 		
 		
 	}
@@ -165,7 +162,7 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 		{
 			ProductReferral existingProductReferral = it.next();
 			
-			if(s.getAgentMDN().equals(existingProductReferral.getAgentMDN())  && (s.getID()!=null && !(s.getID().equals(existingProductReferral.getID()))))
+			if(s.getAgentmdn().equals(existingProductReferral.getAgentmdn())  && (s.getId()!=null && !(s.getId().equals(existingProductReferral.getId()))))
 			{				
 				throw new Exception("ProductReferral already exists");
 			}

@@ -59,13 +59,13 @@ public class KYCFieldsPrcocessorImpl extends BaseFixProcessor implements KYCFiel
 
 	private void updateMessage(KYCFields kycfields, CGEntries entry) {
 		
-		if(kycfields.getKYCLevelByKYCFieldsLevelID()!=null){
+		if(kycfields.getKycLevel()!=null){
 			//entry.setKYCFieldsLevelID(kycfields.getKYCLevelByKYCFieldsLevelID().getID());
-	        entry.setKYCFieldsLevelID(kycfields.getKYCLevelByKYCFieldsLevelID().getID());		
+	        entry.setKYCFieldsLevelID(kycfields.getKycLevel().getId().longValue());		
 		}
 
-		if(kycfields.getKYCFieldsName()!=null){
-			entry.setKYCFieldsName(kycfields.getKYCFieldsName());
+		if(kycfields.getKycfieldsname()!=null){
+			entry.setKYCFieldsName(kycfields.getKycfieldsname());
 		}
 		
 		

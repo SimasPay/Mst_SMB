@@ -12,7 +12,7 @@ import com.mfino.dao.MFSBillerDAO;
 import com.mfino.dao.MFSBillerPartnerDAO;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.MFSBillerQuery;
-import com.mfino.domain.MFSBiller;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -23,32 +23,32 @@ import com.mfino.uicore.fix.processor.MFSBillerProcessor;
 @Service("MFSBillerProcessorImpl")
 public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBillerProcessor{
 	
-	public void updateEntity(MFSBiller mb, CMJSMFSBiller.CGEntries e) {
+	public void updateEntity(MfsBiller mb, CMJSMFSBiller.CGEntries e) {
 		
 		if (e.getMFSBillerName() != null) {
-			mb.setMFSBillerName(e.getMFSBillerName());
+			mb.setMfsbillername(e.getMFSBillerName());
 		}
 		
 		if (e.getMFSBillerCode() != null) {
-			mb.setMFSBillerCode(e.getMFSBillerCode());
+			mb.setMfsbillercode(e.getMFSBillerCode());
 		}
 		
 		if (e.getMFSBillerType() != null) {
-			mb.setMFSBillerType(e.getMFSBillerType());
+			mb.setMfsbillertype(e.getMFSBillerType());
 		}
 	}
 	
-	public void updateMessage(MFSBiller mb, CMJSMFSBiller.CGEntries e) {
-		e.setID(mb.getID());
-		e.setMSPID(mb.getmFinoServiceProviderByMSPID().getID());
-		e.setRecordVersion(mb.getVersion());
-		e.setMFSBillerName(mb.getMFSBillerName());
-		e.setMFSBillerCode(mb.getMFSBillerCode());
-		e.setMFSBillerType(mb.getMFSBillerType());
-		e.setCreatedBy(mb.getCreatedBy());
-		e.setCreateTime(mb.getCreateTime());
-		e.setUpdatedBy(mb.getUpdatedBy());
-		e.setLastUpdateTime(mb.getLastUpdateTime());
+	public void updateMessage(MfsBiller mb, CMJSMFSBiller.CGEntries e) {
+		e.setID(mb.getId().longValue());
+		e.setMSPID(mb.getMfinoServiceProvider().getId().longValue());
+		e.setRecordVersion(((Long)mb.getVersion()).intValue());
+		e.setMFSBillerName(mb.getMfsbillername());
+		e.setMFSBillerCode(mb.getMfsbillercode());
+		e.setMFSBillerType(mb.getMfsbillertype());
+		e.setCreatedBy(mb.getCreatedby());
+		e.setCreateTime(mb.getCreatetime());
+		e.setUpdatedBy(mb.getUpdatedby());
+		e.setLastUpdateTime(mb.getLastupdatetime());
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 			CMJSMFSBiller.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSMFSBiller.CGEntries e: entries) {
-				MFSBiller sc = dao.getById(e.getID());
+				MfsBiller sc = dao.getById(e.getID());
 				
-				if (!(sc.getVersion().equals(e.getRecordVersion()))) {
+				if (!(((Long)sc.getVersion()).equals(e.getRecordVersion()))) {
 					handleStaleDataException();
 				}
 				
@@ -87,11 +87,11 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 			query.setStart(realMsg.getstart());
 			query.setLimit(realMsg.getlimit());
         	
-			List<MFSBiller> results = dao.get(query);
+			List<MfsBiller> results = dao.get(query);
         	if (CollectionUtils.isNotEmpty(results)) {
         		realMsg.allocateEntries(results.size());
         		
-        		for (MFSBiller sc: results) {
+        		for (MfsBiller sc: results) {
         			CMJSMFSBiller.CGEntries e = new CMJSMFSBiller.CGEntries();
         			updateMessage(sc, e);
         			realMsg.getEntries()[i] = e;
@@ -106,7 +106,7 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 			CMJSMFSBiller.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSMFSBiller.CGEntries e: entries) {
-				MFSBiller sc = new MFSBiller();
+				MfsBiller sc = new MfsBiller();
 				updateEntity(sc, e);
 				dao.save(sc);
 				updateMessage(sc, e);
@@ -124,7 +124,7 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 				q.setMfsBillerId(e.getID());
 				List<MFSBillerPartner> lst = mfsbpDAO.get(q);
 				for (MFSBillerPartner mfsbp: lst) {
-					mfsbpDAO.deleteById(mfsbp.getID());
+					mfsbpDAO.deleteById(mfsbp.getId().longValue());
 				}
 				
 				dao.deleteById(e.getID());

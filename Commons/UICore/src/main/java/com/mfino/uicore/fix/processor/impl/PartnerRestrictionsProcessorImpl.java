@@ -13,6 +13,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PartnerRestrictionsDao;
+import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
@@ -121,35 +122,39 @@ public class PartnerRestrictionsProcessorImpl extends BaseFixProcessor implement
 
 	private void updateMessage(PartnerRestrictions partnerRestrictions, CMJSPartnerRestrictions.CGEntries partnerRestrictionEntry) {
 		log.info("PartnerRestrictionsProcessor :: updateMessage BEGIN");
+		DistributionChainTemplateDAO distributionChainTemplateDAO = DAOFactory.getInstance().getDistributionChainTemplateDAO();
+		DistributionChainTemplate distributionChainTemplate = distributionChainTemplateDAO.getById(partnerRestrictions.getDctid());
 		
-		partnerRestrictionEntry.setID(partnerRestrictions.getID());
+		partnerRestrictionEntry.setID(partnerRestrictions.getId().longValue());
 		
-		if(null != partnerRestrictions.getDistributionChainTemplateByDCTID()){
-			partnerRestrictionEntry.setDCTID(partnerRestrictions.getDistributionChainTemplateByDCTID().getID());
+		if(null != (Long)partnerRestrictions.getDctid()){
+			partnerRestrictionEntry.setDCTID(partnerRestrictions.getDctid());
 		}
 		
-		if(null != partnerRestrictions.getTransactionType()){
-			partnerRestrictionEntry.setTransactionTypeID(partnerRestrictions.getTransactionType().getID());
-			partnerRestrictionEntry.setServiceID(partnerRestrictions.getDistributionChainTemplateByDCTID().getService().getID());
+		if(null != partnerRestrictions.getTransactiontypeid()){
+			partnerRestrictionEntry.setTransactionTypeID(partnerRestrictions.getTransactiontypeid());
+			partnerRestrictionEntry.setServiceID(distributionChainTemplate.getServiceid());
 		}
 		
-		if(null != partnerRestrictions.getPartner()){
-			partnerRestrictionEntry.setPartnerID(partnerRestrictions.getPartner().getID());
+		if(null != (Long)partnerRestrictions.getPartnerid()){
+			partnerRestrictionEntry.setPartnerID(partnerRestrictions.getPartnerid());
 		}
 		
-		if(null != partnerRestrictions.getIsAllowed()){
-			partnerRestrictionEntry.setIsAllowed(partnerRestrictions.getIsAllowed());
+		if(null != partnerRestrictions.getIsallowed()){
+			partnerRestrictionEntry.setIsAllowed(partnerRestrictions.getIsallowed() != 0);
 		}
 		
-		if((null != partnerRestrictions.getDistributionChainTemplateByDCTID()) && (null != partnerRestrictions.getPartner())){
+		if((null != (Long)partnerRestrictions.getDctid()) && (null != (Long)partnerRestrictions.getPartnerid())){
 			DCTRestrictionsServiceImpl dctRestrictionsService = new DCTRestrictionsServiceImpl();
-			Integer level = relationshipService.getLevel(partnerRestrictions.getPartner(),partnerRestrictions.getDistributionChainTemplateByDCTID());
+			PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
+			Partner partner = partnerDAO.getById(partnerRestrictions.getPartnerid());
+			Integer level = relationshipService.getLevel(partner, distributionChainTemplate);
 			
 			DCTRestrictionsQuery query = new DCTRestrictionsQuery();
-			query.setDctId(partnerRestrictions.getDistributionChainTemplateByDCTID().getID());
+			query.setDctId(partnerRestrictions.getDctid());
 			query.setLevel(level);
-			query.setTransactionTypeId(partnerRestrictions.getTransactionType().getID());
-			query.setRelationshipType(partnerRestrictions.getRelationShipType());
+			query.setTransactionTypeId(partnerRestrictions.getTransactiontypeid());
+			query.setRelationshipType(partnerRestrictions.getRelationshiptype().intValue());
 			
 			List<DCTRestrictions> dctRestrictions = dctRestrictionsService.getDctRestrictions(query);
 			
@@ -158,21 +163,21 @@ public class PartnerRestrictionsProcessorImpl extends BaseFixProcessor implement
 			}
 		}
 		
-		if(null != partnerRestrictions.getRelationShipType()){
-			partnerRestrictionEntry.setRelationShipType(partnerRestrictions.getRelationShipType());
+		if(null != partnerRestrictions.getRelationshiptype()){
+			partnerRestrictionEntry.setRelationShipType(partnerRestrictions.getRelationshiptype().intValue());
 		}
 
-        if(null != partnerRestrictions.getLastUpdateTime()){
-        	partnerRestrictionEntry.setLastUpdateTime(partnerRestrictions.getLastUpdateTime());
+        if(null != partnerRestrictions.getLastupdatetime()){
+        	partnerRestrictionEntry.setLastUpdateTime(partnerRestrictions.getLastupdatetime());
         }
-        if(null != partnerRestrictions.getUpdatedBy()){
-        	partnerRestrictionEntry.setUpdatedBy(partnerRestrictions.getUpdatedBy());
+        if(null != partnerRestrictions.getUpdatedby()){
+        	partnerRestrictionEntry.setUpdatedBy(partnerRestrictions.getUpdatedby());
         }
-        if(null != partnerRestrictions.getCreateTime()){
-        	partnerRestrictionEntry.setCreateTime(partnerRestrictions.getCreateTime());
+        if(null != partnerRestrictions.getCreatetime()){
+        	partnerRestrictionEntry.setCreateTime(partnerRestrictions.getCreatetime());
         }
-        if(null != partnerRestrictions.getCreatedBy()){
-        	partnerRestrictionEntry.setCreatedBy(partnerRestrictions.getCreatedBy());
+        if(null != partnerRestrictions.getCreatedby()){
+        	partnerRestrictionEntry.setCreatedBy(partnerRestrictions.getCreatedby());
         }
         
 		log.info("PartnerRestrictionsProcessor :: updateMessage END");
@@ -186,26 +191,23 @@ public class PartnerRestrictionsProcessorImpl extends BaseFixProcessor implement
     	PartnerDAO partnerDao = DAOFactory.getInstance().getPartnerDAO();
     	
         if (null != partnerRestrictionsEntry.getDCTID()) {
-        	DistributionChainTemplate dct = dctDao.getById(partnerRestrictionsEntry.getDCTID());
-        	partnerRestrictions.setDistributionChainTemplateByDCTID(dct);
+        	partnerRestrictions.setDctid(partnerRestrictionsEntry.getDCTID());
         }
         
         if(null != partnerRestrictionsEntry.getTransactionTypeID()){
-        	TransactionType transactionType = transactionTypeDao.getById(partnerRestrictionsEntry.getTransactionTypeID());
-        	partnerRestrictions.setTransactionType(transactionType);
+        	partnerRestrictions.setTransactiontypeid(partnerRestrictionsEntry.getTransactionTypeID());
         }
         
         if(null != partnerRestrictionsEntry.getPartnerID()){
-        	Partner partner = partnerDao.getById(partnerRestrictionsEntry.getPartnerID());
-        	partnerRestrictions.setPartner(partner);
+        	partnerRestrictions.setPartnerid(partnerRestrictionsEntry.getPartnerID());
         }
         
         if(null != partnerRestrictionsEntry.getIsAllowed()){
-        	partnerRestrictions.setIsAllowed(partnerRestrictionsEntry.getIsAllowed());
+        	partnerRestrictions.setIsallowed((short) (partnerRestrictionsEntry.getIsAllowed() ? 1:0));
         }
         
         if(null != partnerRestrictionsEntry.getRelationShipType()){
-        	partnerRestrictions.setRelationShipType(partnerRestrictionsEntry.getRelationShipType());
+        	partnerRestrictions.setRelationshiptype(partnerRestrictionsEntry.getRelationShipType().longValue());
         }
         
     	log.info("partnerRestrictionsProcessor :: updateEntity END");

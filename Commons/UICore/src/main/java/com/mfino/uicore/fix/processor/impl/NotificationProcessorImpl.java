@@ -5,6 +5,8 @@
 
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -50,23 +52,23 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
     private void updateEntity(Notification s, CMJSNotification.CGEntries e) {
 
         if (e.getID() != null) {
-            s.setID(e.getID());
+            s.setId(new BigDecimal(e.getID()));
         }
         if (e.getLanguage() != null) {
             s.setLanguage(e.getLanguage());
         }
         if (e.getMSPID() != null) {
             MfinoServiceProviderDAO mspdao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            s.setmFinoServiceProviderByMSPID(mspdao.getById(e.getMSPID()));
+            s.setMfinoServiceProvider(mspdao.getById(e.getMSPID()));
         }
         if (e.getNotificationCode() != null) {
             s.setCode(e.getNotificationCode());
         }
         if (e.getNotificationCodeName() != null) {
-            s.setCodeName(e.getNotificationCodeName());
+            s.setCodename(e.getNotificationCodeName());
         }
         if (e.getNotificationMethod() != null) {
-            s.setNotificationMethod(e.getNotificationMethod());
+            s.setNotificationmethod(e.getNotificationMethod());
         }
         if (e.getNotificationStatus() != null) {
             s.setStatus(e.getNotificationStatus());
@@ -75,29 +77,29 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
             s.setText(e.getNotificationText());
         }
         if (e.getSTKMLText() != null) {
-            s.setSTKML(e.getSTKMLText());
+            s.setStkml(e.getSTKMLText());
         }
         if (e.getStatusTime()!= null) {
-            s.setStatusTime(e.getStatusTime());
+            s.setStatustime(e.getStatusTime());
         }
         if (e.getUpdatedBy()!= null) {
-            s.setUpdatedBy(e.getUpdatedBy());
+            s.setUpdatedby(e.getUpdatedBy());
         }
          if (e.getLastUpdateTime()!= null) {
-            s.setLastUpdateTime(e.getLastUpdateTime());
+            s.setLastupdatetime(e.getLastUpdateTime());
         }
 
         if (e.getCreateTime() != null) {
-            s.setCreateTime(e.getCreateTime());
+            s.setCreatetime(e.getCreateTime());
         }
         if (e.getCreatedBy() != null) {
-            s.setCreatedBy(e.getCreatedBy());
+            s.setCreatedby(e.getCreatedBy());
         }
         if (e.getAccessCode() != null) {
-            s.setAccessCode(e.getAccessCode());
+            s.setAccesscode(e.getAccessCode());
         }
         if (e.getSMSNotificationCode() != null) {
-            s.setSMSNotificationCode(e.getSMSNotificationCode());
+            s.setSmsnotificationcode(e.getSMSNotificationCode());
         }
         if (e.getCompanyID() != null) {
             CompanyDAO dao = DAOFactory.getInstance().getCompanyDAO();
@@ -105,66 +107,74 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
             s.setCompany(company);
         }
         if (e.getIsActive() != null) {
-            s.setIsActive(e.getIsActive());
+            s.setIsactive((short) (e.getIsActive() ? 1:0));
         }
     }
 
     private void updateMessage(Notification e, CMJSNotification.CGEntries s) {
-        if (e.getID() != null) {
-            s.setID(e.getID());
+        if (e.getId() != null) {
+            s.setID(e.getId().longValue());
         }
-        if (e.getLanguage() != null) {
-            s.setLanguage(e.getLanguage());
+        if ((Long)e.getLanguage() != null) {
+            s.setLanguage(((Long)e.getLanguage()).intValue());
         }
-        s.setMSPID(e.getmFinoServiceProviderByMSPID().getID());
-        if (e.getCode() != null) {
-            s.setNotificationCode(e.getCode());
+        s.setMSPID(e.getMfinoServiceProvider().getId().longValue());
+        if ((Long)e.getCode() != null) {
+            s.setNotificationCode(((Long)e.getCode()).intValue());
         }
-        if (e.getCodeName() != null) {
-            s.setNotificationCodeName(e.getCodeName());
+        if (e.getCodename() != null) {
+            s.setNotificationCodeName(e.getCodename());
         }
-        if (e.getNotificationMethod() != null) {
-            s.setNotificationMethod(e.getNotificationMethod());
+        if ((Long)e.getNotificationmethod() != null) {
+            s.setNotificationMethod(((Long)e.getNotificationmethod()).intValue());
         }
-        if (e.getStatus() != null) {
-            s.setNotificationStatus(e.getStatus());
+        if ((Long)e.getStatus() != null) {
+            s.setNotificationStatus(((Long)e.getStatus()).intValue());
         }
         if (e.getText() != null) {
-            s.setNotificationText(e.getText());
+            try {
+				s.setNotificationText(e.getText().getSubString(0, ((Long)e.getText().length()).intValue()));
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
         }
-        if (e.getSTKML() != null) {
-            s.setSTKMLText(e.getSTKML());
+        if (e.getStkml() != null) {
+            try {
+				s.setSTKMLText(e.getStkml().getSubString(0, ((Long)e.getStkml().length()).intValue()));
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
         }
-        if (e.getStatusTime()!= null) {
-            s.setStatusTime(e.getStatusTime());
+        if (e.getStatustime()!= null) {
+            s.setStatusTime(e.getStatustime());
         }
-        if (e.getUpdatedBy()!= null) {
-            s.setUpdatedBy(e.getUpdatedBy());
+        if (e.getUpdatedby()!= null) {
+            s.setUpdatedBy(e.getUpdatedby());
         }
-         if (e.getLastUpdateTime()!= null) {
-            s.setLastUpdateTime(e.getLastUpdateTime());
+         if (e.getLastupdatetime()!= null) {
+            s.setLastUpdateTime(e.getLastupdatetime());
         }
-        if (e.getCreateTime() != null) {
-            s.setCreateTime(e.getCreateTime());
+        if (e.getCreatetime() != null) {
+            s.setCreateTime(e.getCreatetime());
         }
-        if (e.getCreatedBy() != null) {
-            s.setCreatedBy(e.getCreatedBy());
+        if (e.getCreatedby() != null) {
+            s.setCreatedBy(e.getCreatedby());
         }
-        if (e.getAccessCode() != null) {
-            s.setAccessCode(e.getAccessCode());
+        if (e.getAccesscode() != null) {
+            s.setAccessCode(e.getAccesscode());
         }
-        if (e.getSMSNotificationCode() != null) {
-            s.setSMSNotificationCode(e.getSMSNotificationCode());
+        if (e.getSmsnotificationcode() != null) {
+            s.setSMSNotificationCode(e.getSmsnotificationcode());
         }
         if(e.getCompany() != null) {
             Company company = e.getCompany();
-            s.setCompanyID(company.getID());
+            s.setCompanyID(company.getId().longValue());
         }
-        if (e.getIsActive() != null) {
-            s.setIsActive(e.getIsActive());
+        if (e.getIsactive() != null) {
+            s.setIsActive(e.getIsactive() != 0);
         }
-        s.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, e.getLanguage(), e.getLanguage()));
-        s.setNotificationMethodText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_NotificationMethod, e.getNotificationMethod(), e.getNotificationMethod()));
+        s.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, ((Long)e.getLanguage()).intValue(), e.getLanguage()));
+        s.setNotificationMethodText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_NotificationMethod, ((Long)e.getNotificationmethod()).intValue(), e.getNotificationmethod()));
     }
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public CFIXMsg process(CFIXMsg msg) throws Exception {

@@ -31,23 +31,23 @@ public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappin
 	private void updateEntity(IPMapping ipm, CMJSIPMapping.CGEntries e) {
 		IntegrationPartnerMappingDAO integrationPartnerMappingDao = DAOFactory.getInstance().getIntegrationPartnerMappingDAO();
 		if (e.getIntegrationID() != null) {
-			ipm.setIntegrationPartnerMappingByIntegrationID(integrationPartnerMappingDao.getById(e.getIntegrationID()));
+			ipm.setIntegrationPartnerMap(integrationPartnerMappingDao.getById(e.getIntegrationID()));
 		}
 		if (e.getIPAddress() != null) {
-			ipm.setIPAddress(e.getIPAddress());
+			ipm.setIpaddress(e.getIPAddress());
 		}
 	}
 	
 	private void updateMessage(IPMapping ipm, CMJSIPMapping.CGEntries e) {
-		e.setID(ipm.getID());
-		if(ipm.getIntegrationPartnerMappingByIntegrationID() != null)
+		e.setID(ipm.getId().longValue());
+		if(ipm.getIntegrationPartnerMap() != null)
 		{
-			e.setIntegrationID(ipm.getIntegrationPartnerMappingByIntegrationID().getID());
+			e.setIntegrationID(ipm.getIntegrationPartnerMap().getId().longValue());
 		}
-		if (ipm.getIPAddress() != null) {
-			e.setIPAddress(ipm.getIPAddress());
+		if (ipm.getIpaddress() != null) {
+			e.setIPAddress(ipm.getIpaddress());
 		}
-		e.setRecordVersion(ipm.getVersion());
+		e.setRecordVersion(((Long)ipm.getVersion()).intValue());
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)

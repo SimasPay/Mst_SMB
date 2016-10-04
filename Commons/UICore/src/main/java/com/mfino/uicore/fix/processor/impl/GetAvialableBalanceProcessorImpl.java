@@ -48,8 +48,8 @@ public class GetAvialableBalanceProcessorImpl extends FIXMessageHandler implemen
 	    	balanceInquiry.setSourceMDN(subscriberService.normalizeMDN(realMsg.getSourceMDN()));
 	    	balanceInquiry.setPin(realMsg.getPin());
 	    	balanceInquiry.setServletPath(CmFinoFIX.ServletPath_BankAccount);
-	    	balanceInquiry.setSourceApplication(cc.getChannelSourceApplication());
-	    	balanceInquiry.setChannelCode(cc.getChannelCode());
+	    	balanceInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+	    	balanceInquiry.setChannelCode(cc.getChannelcode());
 	    	balanceInquiry.setPocketID(realMsg.getSourcePocketID());
 	    	
 	    	CFIXMsg response = super.process(balanceInquiry);

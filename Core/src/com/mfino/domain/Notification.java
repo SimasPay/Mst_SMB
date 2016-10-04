@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Clob;
 
@@ -46,7 +45,7 @@ public class Notification extends Base implements java.io.Serializable {
 	private Clob stkml;
 	private long language;
 	private long status;
-	private Serializable statustime;
+	private Timestamp statustime;
 	private String accesscode;
 	private String smsnotificationcode;
 	private Short isactive;
@@ -59,7 +58,7 @@ public class Notification extends Base implements java.io.Serializable {
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long code,
 			String codename, long notificationmethod, Clob text, long language,
-			long status, Serializable statustime) {
+			long status, Timestamp statustime) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
 		this.company = company;
@@ -81,7 +80,7 @@ public class Notification extends Base implements java.io.Serializable {
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long code,
 			String codename, long notificationmethod, Clob text, Clob stkml,
-			long language, long status, Serializable statustime,
+			long language, long status, Timestamp statustime,
 			String accesscode, String smsnotificationcode, Short isactive) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
@@ -208,11 +207,11 @@ public class Notification extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "STATUSTIME", nullable = false)
-	public Serializable getStatustime() {
+	public Timestamp getStatustime() {
 		return this.statustime;
 	}
 
-	public void setStatustime(Serializable statustime) {
+	public void setStatustime(Timestamp statustime) {
 		this.statustime = statustime;
 	}
 

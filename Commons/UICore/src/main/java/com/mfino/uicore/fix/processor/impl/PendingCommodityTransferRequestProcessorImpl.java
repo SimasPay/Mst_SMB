@@ -21,7 +21,7 @@ import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Service;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionType;
 import com.mfino.domain.UnregisteredTxnInfo;
@@ -103,7 +103,7 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 	        
 	        //Check for smart #407
 	        Long sctlID = oldMsg.getTransferID();
-	        ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(sctlID);
+	        ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(sctlID);
 	        
 	        if(null == sctl) {
 	          CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
@@ -134,22 +134,22 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 	 * @param sctl
 	 * @param response
 	 */
-	private void updateBulkTransfer(ServiceChargeTransactionLog sctl, CFIXMsg response) {
+	private void updateBulkTransfer(ServiceChargeTxnLog sctl, CFIXMsg response) {
 		
- 		TransactionType tt = transactionTypeService.getTransactionTypeById(sctl.getTransactionTypeID());
+ 		TransactionType tt = transactionTypeService.getTransactionTypeById(sctl.getTransactiontypeid().longValue());
 		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
 		// If the transaction is Bulk Transfer then change the status of bulk upload 
-		if (ServiceAndTransactionConstants.TRANSACTION_BULK_TRANSFER.equals(tt.getTransactionName())) {
+		if (ServiceAndTransactionConstants.TRANSACTION_BULK_TRANSFER.equals(tt.getTransactionname())) {
 
- 			BulkUpload bulkUpload = bulkUploadService.getBySCTLId(sctl.getID());
+ 			BulkUpload bulkUpload = bulkUploadService.getBySCTLId(sctl.getId().longValue());
 			if (bulkUpload != null) {
 				// If the Pending Transaction resolved as Success
 				if (transactionResponse.isResult() && CmFinoFIX.NotificationCode_Resovle_Transaction_To_Success.toString().equals(transactionResponse.getCode())) {
 					log.info("Changing the Status of the Bulk Transfer from Pending to Approved.");
-					bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Approved);
-					bulkUpload.setDeliveryDate(new Timestamp());
+					bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Approved);
+					bulkUpload.setDeliverydate(new Timestamp());
 					bulkUploadService.save(bulkUpload);
 				} 
 				// If the Pending transaction resolved as Failure
@@ -159,54 +159,54 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 			}
 		}
 		// If the transaction is Sub Bulk Transfer then change the status of bulk upload entry
-		else if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(tt.getTransactionName())) {
+		else if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(tt.getTransactionname())) {
 
-			BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(sctl.getID());
+			BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(sctl.getId().longValue());
 			if (bue != null) {
 				if (transactionResponse.isResult()) {
-					log.info("Changing the staus of the Bulk Upload Entry for SCTL id " + sctl.getID() + " to complete");
+					log.info("Changing the staus of the Bulk Upload Entry for SCTL id " + sctl.getId() + " to complete");
 					bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Completed);
 				} else {
-					log.info("Changing the staus of the Bulk Upload Entry for SCTL id " + sctl.getID() + " to Failed");
+					log.info("Changing the staus of the Bulk Upload Entry for SCTL id " + sctl.getId() + " to Failed");
 					bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Failed);
 				}
 				bulkUploadEntryService.saveBulkUploadEntry(bue);
 			}
 		}
 		// If the transaction is Reverse Bulk Transfer for non transfered amount then change the status of bulk upload
-		else if (ServiceAndTransactionConstants.TRANSACTION_SETTLE_BULK_TRANSFER.equals(tt.getTransactionName())) {
+		else if (ServiceAndTransactionConstants.TRANSACTION_SETTLE_BULK_TRANSFER.equals(tt.getTransactionname())) {
 
-			BulkUpload bulkUpload = bulkUploadService.getByReverseSCTLId(sctl.getID());
+			BulkUpload bulkUpload = bulkUploadService.getByReverseSCTLId(sctl.getId().longValue());
 			if (bulkUpload != null) {
 				if (transactionResponse.isResult()) {
-					log.info("Setting the Revert Amount for Bulk Transfer: " + bulkUpload.getID() + " Zero.");
-					bulkUpload.setRevertAmount(BigDecimal.ZERO);
+					log.info("Setting the Revert Amount for Bulk Transfer: " + bulkUpload.getId() + " Zero.");
+					bulkUpload.setRevertamount(BigDecimal.ZERO);
 				} else {
-					log.info("As the Transaction is failed for Bulk Transfer: " + bulkUpload.getID() + " the Revert Amount is unchanged.");
+					log.info("As the Transaction is failed for Bulk Transfer: " + bulkUpload.getId() + " the Revert Amount is unchanged.");
 				}
-				bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Complete);
-				bulkUpload.setDeliveryDate(new Timestamp());
+				bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Complete);
+				bulkUpload.setDeliverydate(new Timestamp());
 				bulkUploadService.save(bulkUpload);
 			}
 		}
 		// If the transaction is Cash out at ATM then change the status in UnRegistered_txn_info table
-		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(tt.getTransactionName())) {
+		else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(tt.getTransactionname())) {
 
 			UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 			UnregisteredTxnInfo urti = null;
-			urtiQuery.setTransferSctlId(sctl.getID());
+			urtiQuery.setTransferSctlId(sctl.getId().longValue());
 			urtiQuery.setStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
 			List<UnregisteredTxnInfo> lstUrti = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
 			if (CollectionUtils.isNotEmpty(lstUrti)) {
 				urti = lstUrti.get(0);
 				if (transactionResponse.isResult()) {
-					urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED.longValue());
 				}
 				else {
-					urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
-					log.info("Changing the SCTL status to processing as the withdraw from ATM is failed..." + sctl.getID());
+					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.longValue());
+					log.info("Changing the SCTL status to processing as the withdraw from ATM is failed..." + sctl.getId());
 
-					sctl.setFailureReason("");
+					sctl.setFailurereason("");
 					transactionChargingService.chnageStatusToProcessing(sctl);
 				}
 				unRegisteredTxnInfoService.save(urti);
@@ -215,41 +215,41 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 	}
 
   
-    public CMBase buildMsg(CMPendingCommodityTransferRequest newMsg,ServiceChargeTransactionLog sctl) {
+    public CMBase buildMsg(CMPendingCommodityTransferRequest newMsg,ServiceChargeTxnLog sctl) {
     	
-    	Service service=mfinoService.getByServiceID(sctl.getServiceID());
-        TransactionType transactionType = transactionTypeService.getTransactionTypeById(sctl.getTransactionTypeID());
+    	Service service=mfinoService.getByServiceID(sctl.getServiceid().longValue());
+        TransactionType transactionType = transactionTypeService.getTransactionTypeById(sctl.getTransactiontypeid().longValue());
 
-        if (ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equals(transactionType.getTransactionName())) {
+        if (ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServicename())
+        		&&ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equals(transactionType.getTransactionname())) {
     		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
     		billPayPendingRequest.copy(newMsg);
-			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationcode());
         	newMsg = billPayPendingRequest;
         }
-        else if (ServiceAndTransactionConstants.SERVICE_BUY.equals(service.getServiceName())
-                &&ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equals(transactionType.getTransactionName())) {
+        else if (ServiceAndTransactionConstants.SERVICE_BUY.equals(service.getServicename())
+                &&ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equals(transactionType.getTransactionname())) {
     		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
     		billPayPendingRequest.copy(newMsg);
-			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
-			CommodityTransfer ct = commodityTransferService.getCommodityTransferById(sctl.getCommodityTransferID());
+			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationcode());
+			CommodityTransfer ct = commodityTransferService.getCommodityTransferById(sctl.getCommoditytransferid().longValue());
 			if (ct != null) {
-				billPayPendingRequest.setUICategory(ct.getUICategory());
+				billPayPendingRequest.setUICategory(ct.getUicategory().intValue());
 			}
         	newMsg = billPayPendingRequest;
         }                
-        else if (ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT.equals(transactionType.getTransactionName())) {
+        else if (ServiceAndTransactionConstants.SERVICE_PAYMENT.equals(service.getServicename())
+        		&&ServiceAndTransactionConstants.TRANSACTION_QR_PAYMENT.equals(transactionType.getTransactionname())) {
         	CMQRPaymentPendingRequest billPayPendingRequest = new CMQRPaymentPendingRequest();
         	billPayPendingRequest.copy(newMsg);
-        	billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+        	billPayPendingRequest.setIntegrationCode(sctl.getIntegrationcode());
         	newMsg = billPayPendingRequest;
         }
-        else if (ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServiceName())
-        		&&ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equals(transactionType.getTransactionName())) {
+        else if (ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServicename())
+        		&&ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER.equals(transactionType.getTransactionname())) {
     		CMBillPayPendingRequest billPayPendingRequest = new CMBillPayPendingRequest();
     		billPayPendingRequest.copy(newMsg);
-			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationCode());
+			billPayPendingRequest.setIntegrationCode(sctl.getIntegrationcode());
         	newMsg = billPayPendingRequest;
         }
 //        else if(ServiceAndTransactionConstants.SERVICE_WALLET.equals(service.getServiceName())
@@ -286,7 +286,7 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
         List<User> results = (List<User>) userService.get(query);
         if (results.size() > 0) {
              User userObj = results.get(0);
-             newMsg.setCSRUserID(userObj.getID());
+             newMsg.setCSRUserID(userObj.getId().longValue());
         }
         newMsg.setLoginName(userName);
         if(oldMsg.getMSPID()!=null){

@@ -19,8 +19,8 @@ import com.mfino.dao.PendingTransactionsFileDAO;
 import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.dao.query.PendingTransactionsEntryQuery;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.PendingTransactionsEntry;
-import com.mfino.domain.PendingTransactionsFile;
+import com.mfino.domain.PendingTxnsEntry;
+import com.mfino.domain.PendingTxnsFile;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSPendingTransactionsEntry;
@@ -39,47 +39,47 @@ public class PendingTransactionsEntryProcessorImpl extends BaseFixProcessor impl
 	@Qualifier("EnumTextServiceImpl")
 	private EnumTextService enumTextService;
 	
-	private void updateMessage(PendingTransactionsEntry pte,CMJSPendingTransactionsEntry.CGEntries entry) {
+	private void updateMessage(PendingTxnsEntry pte,CMJSPendingTransactionsEntry.CGEntries entry) {
 		
-		entry.setID(pte.getID());
+		entry.setID(pte.getId().longValue());
 		if (pte.getAmount() != null) {
 			entry.setAmount(pte.getAmount());
 		}
-		if (pte.getSourceMDN() != null) {
-			entry.setSourceMDN(pte.getSourceMDN());
+		if (pte.getSourcemdn() != null) {
+			entry.setSourceMDN(pte.getSourcemdn());
 		}
-		if (pte.getDestMDN() != null) {
-			entry.setDestMDN(pte.getDestMDN());
+		if (pte.getDestmdn() != null) {
+			entry.setDestMDN(pte.getDestmdn());
 		}
-		if (pte.getCreateTime() != null) {
-			entry.setCreateTime(pte.getCreateTime());
+		if (pte.getCreatetime() != null) {
+			entry.setCreateTime(pte.getCreatetime());
 		}
-		if (pte.getCreatedBy() != null) {
-			entry.setCreatedBy(pte.getCreatedBy());
+		if (pte.getCreatedby() != null) {
+			entry.setCreatedBy(pte.getCreatedby());
 		}
-		if (pte.getLastUpdateTime() != null) {
-			entry.setLastUpdateTime(pte.getLastUpdateTime());
+		if (pte.getLastupdatetime() != null) {
+			entry.setLastUpdateTime(pte.getLastupdatetime());
 		}
-		if (pte.getUpdatedBy() != null) {
-			entry.setUpdatedBy(pte.getUpdatedBy());
+		if (pte.getUpdatedby() != null) {
+			entry.setUpdatedBy(pte.getUpdatedby());
 		}
-		if (pte.getTransactionsFileID() != null) {
-			entry.setTransactionsFileID(pte.getTransactionsFileID());
+		if (pte.getTransactionsfileid() != null) {
+			entry.setTransactionsFileID(pte.getTransactionsfileid().longValue());
 		}
-		if (pte.getLineNumber() != null) {
-			entry.setLineNumber(pte.getLineNumber());
+		if ((Long)pte.getLinenumber() != null) {
+			entry.setLineNumber(((Long)pte.getLinenumber()).intValue());
 		}
-		if (pte.getTransferID() != null) {
-			entry.setTransferID(pte.getTransferID());
+		if (pte.getTransferid() != null) {
+			entry.setTransferID(pte.getTransferid().longValue());
 		}
-		if (pte.getResolveFailureReason() != null) {
-			entry.setResolveFailureReason(pte.getResolveFailureReason());
+		if (pte.getResolvefailurereason() != null) {
+			entry.setResolveFailureReason(pte.getResolvefailurereason());
 		}
-		if (pte.getNotificationCode() != null) {
-			entry.setNotificationCode(pte.getNotificationCode());
+		if (pte.getNotificationcode() != null) {
+			entry.setNotificationCode(pte.getNotificationcode().intValue());
 		}
-		if (pte.getStatus() != null) {
-			entry.setStatus(pte.getStatus());
+		if ((Long)pte.getStatus() != null) {
+			entry.setStatus(((Long)pte.getStatus()).intValue());
 			entry.setResolveStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PendingTransationsEntryStatus, null, pte.getStatus()));
 		}
 	}
@@ -93,25 +93,25 @@ public class PendingTransactionsEntryProcessorImpl extends BaseFixProcessor impl
 			query.setStart(realMsg.getstart());
 			query.setLimit(realMsg.getlimit());
 			
-			List<PendingTransactionsEntry> results = dao.get(query);			
+			List<PendingTxnsEntry> results = dao.get(query);			
             int flag =0;
 			//chk each transactions
 			for (int i = 0; i < results.size(); i++) {
-				PendingTransactionsEntry pendingTransactionsEntry = results.get(i);
-				if(pendingTransactionsEntry.getStatus().equals(CmFinoFIX.PendingTransationsEntryStatus_pending))
+				PendingTxnsEntry pendingTransactionsEntry = results.get(i);
+				if(((Long)pendingTransactionsEntry.getStatus()).equals(CmFinoFIX.PendingTransationsEntryStatus_pending))
 				{
 					flag=1;
 					PendingCommodityTransferDAO pendingCommodityTransferDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
 					PendingTransactionsFileDAO pendingTransactionsFileDAO = DAOFactory.getInstance().getPendingTransactionsFileDAO();
-					PendingTransactionsFile file = pendingTransactionsFileDAO.getById(pendingTransactionsEntry.getTransactionsFileID());
+					PendingTxnsFile file = pendingTransactionsFileDAO.getById(pendingTransactionsEntry.getTransactionsfileid().longValue());
 					CommodityTransferQuery ctquery = new CommodityTransferQuery();
-					ctquery.setId(pendingTransactionsEntry.getTransferID());
+					ctquery.setId(pendingTransactionsEntry.getTransferid().longValue());
 					ctquery.setCompany(file.getCompany());
 					try {
 					List<PendingCommodityTransfer> record = pendingCommodityTransferDAO.get(ctquery);
 					if (record.size() == 0) {
 						pendingTransactionsEntry.setStatus(CmFinoFIX.PendingTransationsEntryStatus_success);
-						pendingTransactionsEntry.setResolveFailureReason(null);
+						pendingTransactionsEntry.setResolvefailurereason(null);
 						dao.save(pendingTransactionsEntry);
 							}
 					} catch (Exception error) {
@@ -124,7 +124,7 @@ public class PendingTransactionsEntryProcessorImpl extends BaseFixProcessor impl
 			}
 			realMsg.allocateEntries(results.size());
 			for (int i = 0; i < results.size(); i++) {
-				PendingTransactionsEntry s = results.get(i);
+				PendingTxnsEntry s = results.get(i);
 				CMJSPendingTransactionsEntry.CGEntries entry = new CMJSPendingTransactionsEntry.CGEntries();
 				updateMessage(s, entry);
 				realMsg.getEntries()[i] = entry;
