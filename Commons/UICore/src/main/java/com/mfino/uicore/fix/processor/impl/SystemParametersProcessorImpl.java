@@ -122,7 +122,7 @@ public class SystemParametersProcessorImpl extends BaseFixProcessor implements S
 			SystemParameters existingSystemParameter = it.next();
 			// *FindbugsChange*
         	// Previous -- if(s.getParameterName().equals(existingSystemParameter.getParameterName())  && s.getID() != existingSystemParameter.getID())
-			if(s.getParameterName().equals(existingSystemParameter.getParameterName())  && (s.getID()!=null && !(s.getID().equals(existingSystemParameter.getID()))))
+			if(s.getParametername().equals(existingSystemParameter.getParametername())  && (s.getId()!=null && !(s.getId().equals(existingSystemParameter.getId()))))
 			{				
 				throw new Exception("System Parameter already exists");
 			}
@@ -131,13 +131,13 @@ public class SystemParametersProcessorImpl extends BaseFixProcessor implements S
 
 	private void updateEntity(SystemParameters systemParameters, CMJSSystemParameters.CGEntries e) {
 		if (StringUtils.isNotBlank(e.getParameterName())) {
-			systemParameters.setParameterName(e.getParameterName());
+			systemParameters.setParametername(e.getParameterName());
 		}
 
 		if (StringUtils.isNotBlank(e.getParameterValue())) {
-			log.info("Updated the value for " + systemParameters.getParameterName() + " from " + systemParameters.getParameterValue() + " to " + 
+			log.info("Updated the value for " + systemParameters.getParametername() + " from " + systemParameters.getParametervalue() + " to " + 
 					e.getParameterValue() + " by user:"+getLoggedUserNameWithIP());
-			systemParameters.setParameterValue(e.getParameterValue());
+			systemParameters.setParametervalue(e.getParameterValue());
 		}
 
 		if (StringUtils.isNotBlank(e.getDescription())) {
@@ -147,15 +147,15 @@ public class SystemParametersProcessorImpl extends BaseFixProcessor implements S
 	}
 
 	private void updateMessage(SystemParameters systemParameters, CMJSSystemParameters.CGEntries e) {
-		e.setID(systemParameters.getID());
-		e.setParameterName(systemParameters.getParameterName());
+		e.setID(systemParameters.getId().longValue());
+		e.setParameterName(systemParameters.getParametername());
 		e.setDescription(systemParameters.getDescription());
-		e.setParameterValue(systemParameters.getParameterValue());
-		e.setRecordVersion(systemParameters.getVersion());
-		e.setCreatedBy(systemParameters.getCreatedBy());
-		e.setCreateTime(systemParameters.getCreateTime());
-		e.setUpdatedBy(systemParameters.getUpdatedBy());
-		e.setLastUpdateTime(systemParameters.getLastUpdateTime());
+		e.setParameterValue(systemParameters.getParametervalue());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(systemParameters.getVersion()).intValue()));
+		e.setCreatedBy(systemParameters.getCreatedby());
+		e.setCreateTime(systemParameters.getCreatetime());
+		e.setUpdatedBy(systemParameters.getUpdatedby());
+		e.setLastUpdateTime(systemParameters.getLastupdatetime());
 	}
 
 	private CFIXMsg handleException(Exception e) throws Exception {

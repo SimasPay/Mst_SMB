@@ -13,7 +13,7 @@ import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.query.SubscriberQuery;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
@@ -36,21 +36,21 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
     private MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
 
     private void updateEntity(Subscriber s, CMJSSubscribers.CGEntries e) {
-    	String ID = String.valueOf(s.getID());
+    	String ID = String.valueOf(s.getId());
     	if(ID==null){
     		ID = e.getFirstName();
     	}
         if (e.getFirstName() != null) {
-        	if(!e.getFirstName().equals(s.getFirstName())){
+        	if(!e.getFirstName().equals(s.getFirstname())){
         		log.info("Subscriber:"+ID+" First name updated to "+e.getFirstName()+" by user:"+getLoggedUserNameWithIP());
         	}
-            s.setFirstName(e.getFirstName());
+            s.setFirstname(e.getFirstName());
         }
         if (e.getLastName() != null) {
-        	if(!e.getLastName().equals(s.getLastName())){
+        	if(!e.getLastName().equals(s.getLastname())){
         		log.info("Subscriber:"+ID+" Last name updated to "+e.getLastName()+" by user:"+getLoggedUserNameWithIP());
         	}
-            s.setLastName(e.getLastName());
+            s.setLastname(e.getLastName());
         }
         if (e.getNickname() != null) {
         	if(!e.getNickname().equals(s.getNickname())){
@@ -63,7 +63,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         		log.info("Subscriber:"+ID+" Email updated to "+e.getEmail()+" by user:"+getLoggedUserNameWithIP());
         	}
             s.setEmail(e.getEmail());
-            s.setIsEmailVerified(false);
+            s.setIsemailverified((short) Boolean.compare(false, true));
         }
         if (e.getLanguage() != null) {
         	if(!e.getLanguage().equals(s.getLanguage())){
@@ -76,17 +76,17 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         	s.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
         }
         if (e.getMSPID() != null) {
-        	mFinoServiceProvider msp = mspDAO.getById(e.getMSPID());
-        	if(s.getmFinoServiceProviderByMSPID()!=msp){
-        		log.info("Subscriber:"+ID+" mFinoServiceProvider updated to "+msp.getID()+" by user:"+getLoggedUserNameWithIP());
+        	MfinoServiceProvider msp = mspDAO.getById(e.getMSPID());
+        	if(s.getMfinoServiceProvider()!=msp){
+        		log.info("Subscriber:"+ID+" mFinoServiceProvider updated to "+msp.getId()+" by user:"+getLoggedUserNameWithIP());
         	}
-            s.setmFinoServiceProviderByMSPID(msp);
+            s.setMfinoServiceProvider(msp);
         }
         if (e.getNotificationMethod() != null) {
-        	if(!e.getNotificationMethod().equals(s.getNotificationMethod())){
+        	if(!e.getNotificationMethod().equals(s.getNotificationmethod())){
         		log.info("Subscriber:"+ID+" Notification method updated to "+e.getNotificationMethod()+" by user:"+getLoggedUserNameWithIP());
         	}
-            s.setNotificationMethod(e.getNotificationMethod());
+            s.setNotificationmethod(e.getNotificationMethod().longValue());
         }
 //        if (e.getParentID() != null) {
 //            s.setParentID(e.getParentID());
@@ -118,10 +118,10 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         if (e.getStatusTime() != null) {
         	// *FindbugsChange*
         	// Previous -- if(!e.getStatusTime().equals(s.getTimezone())){
-        	if(!e.getStatusTime().equals(s.getStatusTime())){
+        	if(!e.getStatusTime().equals(s.getStatustime())){
         		log.info("Subscriber:"+ID+" StatusTime updated to "+e.getStatusTime()+" by user:"+getLoggedUserNameWithIP());
         	}
-            s.setStatusTime(e.getStatusTime());
+            s.setStatustime(e.getStatusTime());
         }
 //       if(e.getDompetMerchant()!=null){
 //           s.setDompetMerchant(e.getDompetMerchant());
@@ -129,13 +129,13 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
     }
 
     private void updateMessage(Subscriber s, CMJSSubscribers.CGEntries entry) {
-        entry.setID(s.getID());
+        entry.setID(s.getId().longValue());
 
-        if (s.getFirstName() != null) {
-            entry.setFirstName(s.getFirstName());
+        if (s.getFirstname() != null) {
+            entry.setFirstName(s.getFirstname());
         }
-        if (s.getLastName() != null) {
-            entry.setLastName(s.getLastName());
+        if (s.getLastname() != null) {
+            entry.setLastName(s.getLastname());
         }
         if (s.getNickname() != null) {
             entry.setNickname(s.getNickname());
@@ -145,24 +145,24 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
             entry.setEmail(s.getEmail());
         }
 
-        entry.setLanguage(s.getLanguage());
+        entry.setLanguage(Integer.valueOf(Long.valueOf(s.getLanguage()).intValue()));
 
-        if (s.getActivationTime() != null) {
-            entry.setActivationTime(s.getActivationTime());
+        if (s.getActivationtime() != null) {
+            entry.setActivationTime(s.getActivationtime());
         }
 
-        if (s.getLastUpdateTime() != null) {
-            entry.setLastUpdateTime(s.getLastUpdateTime());
+        if (s.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(s.getLastupdatetime());
         }
 
-        entry.setMSPID(s.getmFinoServiceProviderByMSPID().getID());
+        entry.setMSPID(s.getMfinoServiceProvider().getId().longValue());
 
-        if (s.getNotificationMethod() != null) {
-            entry.setNotificationMethod(s.getNotificationMethod());
+        if (s.getNotificationmethod() != null) {
+            entry.setNotificationMethod(s.getNotificationmethod().intValue());
         }
 
-        if (s.getCreateTime() != null) {
-            entry.setCreateTime(s.getCreateTime());
+        if (s.getCreatetime() != null) {
+            entry.setCreateTime(s.getCreatetime());
         }
 
 //        if (s.getParentID() != null) {
@@ -176,29 +176,29 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
             entry.setEmail(s.getEmail());
         }
 
-        entry.setSubscriberRestrictions(s.getRestrictions());
+        entry.setSubscriberRestrictions(Integer.valueOf(Long.valueOf(s.getRestrictions()).intValue()));
 
-        entry.setSubscriberStatus(s.getStatus());
+        entry.setSubscriberStatus(Integer.valueOf(Long.valueOf(s.getStatus()).intValue()));
 
-        if (s.getUpdatedBy() != null) {
-            entry.setUpdatedBy(s.getUpdatedBy());
+        if (s.getUpdatedby() != null) {
+            entry.setUpdatedBy(s.getUpdatedby());
         }
 
-        if (s.getCreatedBy() != null) {
-            entry.setCreatedBy(s.getCreatedBy());
+        if (s.getCreatedby() != null) {
+            entry.setCreatedBy(s.getCreatedby());
         }
 
-        entry.setSubscriberType(s.getType());
+        entry.setSubscriberType(Integer.valueOf(Long.valueOf(s.getType()).intValue()));
 
         if (s.getTimezone() != null) {
             entry.setTimezone(s.getTimezone());
         }
-        if (s.getStatusTime() != null) {
-            entry.setStatusTime(s.getStatusTime());
+        if (s.getStatustime() != null) {
+            entry.setStatusTime(s.getStatustime());
         }
 
-        if (s.getVersion() != null) {
-            entry.setRecordVersion(s.getVersion());
+        if (s.getVersion() != 0) {
+            entry.setRecordVersion(Integer.valueOf(Long.valueOf(s.getVersion()).intValue()));
         }
     }
     
@@ -213,7 +213,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
 
             for (CMJSSubscribers.CGEntries entry : entries) {
                 Subscriber subscriberObj = dao.getById(entry.getID());
-                log.info("Subscriber:"+subscriberObj.getID()+" details edit requested by user:"+getLoggedUserNameWithIP());
+                log.info("Subscriber:"+subscriberObj.getId()+" details edit requested by user:"+getLoggedUserNameWithIP());
 
                 // Check for Stale Data
                 if (!entry.getRecordVersion().equals(subscriberObj.getVersion())) {
@@ -226,7 +226,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
                 	mailService.generateEmailVerificationMail(subscriberObj, entry.getEmail());
                 }
                 updateMessage(subscriberObj, entry);
-                log.info("Subscriber:"+subscriberObj.getID()+" details edit completed by user:"+getLoggedUserNameWithIP());
+                log.info("Subscriber:"+subscriberObj.getId()+" details edit completed by user:"+getLoggedUserNameWithIP());
             }
 
             realMsg.setsuccess(CmFinoFIX.Boolean_True);
@@ -245,7 +245,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
 
                 updateMessage(s, entry);
                 realMsg.getEntries()[i] = entry;
-                log.info("Subscriber:"+s.getID()+" details viewed completed by user:"+getLoggedUserNameWithIP());
+                log.info("Subscriber:"+s.getId()+" details viewed completed by user:"+getLoggedUserNameWithIP());
             }
             realMsg.setsuccess(CmFinoFIX.Boolean_True);
             realMsg.settotal(query.getTotal());
@@ -256,9 +256,9 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
             for (CMJSSubscribers.CGEntries e : entries) {
                 Subscriber s = new Subscriber();
                 updateEntity(s, e);
-                s.setRegistrationMedium(CmFinoFIX.RegistrationMedium_AdminApp);
+                s.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp.longValue());
                 dao.save(s);
-                log.info("Subscriber:"+s.getID()+" created by user:"+getLoggedUserNameWithIP());
+                log.info("Subscriber:"+s.getId()+" created by user:"+getLoggedUserNameWithIP());
                 if(e.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(s, e.getEmail());
 				}

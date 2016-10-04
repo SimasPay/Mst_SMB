@@ -24,11 +24,11 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -96,11 +96,11 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
         CMJSSubscriberUpgrade realMsg = (CMJSSubscriberUpgrade) msg;
         CMJSError error = new CMJSError();
         error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-        SubscriberMDN subscriberMDN = subMdndao.getById(realMsg.getMDNID());
+        SubscriberMdn subscriberMDN = subMdndao.getById(realMsg.getMDNID());
         
         
-        TransactionsLog transactionsLog = null;
-		ServiceChargeTransactionLog sctl = null;
+        TransactionLog transactionsLog = null;
+		ServiceChargeTxnLog sctl = null;
 		
 
         
@@ -113,8 +113,10 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
         }
         
         Subscriber subscriber = subscriberMDN.getSubscriber();
-        if(!(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)
-        		|| subscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_Active))){
+        Integer subMDNStatL = Integer.valueOf(Long.valueOf(subscriber.getStatus()).intValue());
+        
+        if(!(subMDNStatL.equals(CmFinoFIX.SubscriberStatus_Active)
+        		|| subMDNStatL.equals(CmFinoFIX.SubscriberStatus_Active))){
         	error.setErrorDescription(MessageText._("Subscriber Should be Active! "));
         	return error;
         }
@@ -127,7 +129,7 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
         
         if(actionString!=null && actionString.equals("default")){
             
-        	if(subscriberMDN.getUpgradeAcctStatus()!=null){
+        	if(subscriberMDN.getUpgradeacctstatus()!=null){
         		error.setErrorDescription(MessageText._("Subscriber Upgrade Not Allowed "));
             	return error;
         	}
@@ -135,8 +137,8 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
             if(lakuPandaiBasicTemplateList!=null && lakuPandaiBasicTemplateList.size()>0){
             	
             	PocketQuery pocketQuery= new PocketQuery();
-            	pocketQuery.setPocketTemplateID(lakuPandaiBasicTemplateList.get(0).getID());
-            	pocketQuery.setMdnIDSearch(subscriberMDN.getID());
+            	pocketQuery.setPocketTemplateID(lakuPandaiBasicTemplateList.get(0).getId().longValue());
+            	pocketQuery.setMdnIDSearch(subscriberMDN.getId().longValue());
             	
             	List<Pocket> pocketList=pocketDAO.get(pocketQuery);
             	
@@ -145,7 +147,7 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
                 	return error;
             	}
             	
-            	subscriberMDN.setUpgradeAcctStatus(CmFinoFIX.SubscriberUpgradeStatus_Initialized);;
+            	subscriberMDN.setUpgradeacctstatus(new BigDecimal(CmFinoFIX.SubscriberUpgradeStatus_Initialized));
         		subMdndao.save(subscriberMDN);
         		
         		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
@@ -162,7 +164,7 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
         	
         }else if(actionString!=null && actionString.equals("update")){
         	
-        	if(subscriberMDN.getUpgradeAcctStatus()!=null && (subscriberMDN.getUpgradeAcctStatus().intValue() == CmFinoFIX.SubscriberUpgradeStatus_Initialized.intValue())){
+        	if(subscriberMDN.getUpgradeacctstatus()!=null && (subscriberMDN.getUpgradeacctstatus().intValue() == CmFinoFIX.SubscriberUpgradeStatus_Initialized.intValue())){
         		
         		pocketTemplateQuery.setDescriptionSearch("LakuPandaiAdvancedTemplate");
             	List<PocketTemplate> lakuPandaiAdvancedTemplateList= pocketTemplateDAO.get(pocketTemplateQuery);
@@ -173,8 +175,8 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
                 if(lakuPandaiBasicTemplateList!=null && lakuPandaiBasicTemplateList.size()>0 ){
                 	
                 	PocketQuery pocketQuery= new PocketQuery();
-                	pocketQuery.setPocketTemplateID(lakuPandaiBasicTemplateList.get(0).getID());
-                	pocketQuery.setMdnIDSearch(subscriberMDN.getID());
+                	pocketQuery.setPocketTemplateID(lakuPandaiBasicTemplateList.get(0).getId().longValue());
+                	pocketQuery.setMdnIDSearch(subscriberMDN.getId().longValue());
                 	
                 	List<Pocket> pocketList=pocketDAO.get(pocketQuery);
                 	if(pocketList!=null && pocketList.size()>0 ){
@@ -186,10 +188,10 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
                 			
                 			
                 			Integer upgradeStatus=realMsg.getUpgradeAcctStatus();
-                			subscriberMDN.setUpgradeAcctStatus(upgradeStatus);
-                			subscriberMDN.setUpgradeAcctComments(realMsg.getUpgradeAcctComments());
-                    		subscriberMDN.setUpgradeAcctApprovedBy(userService.getCurrentUser().getUsername());
-                    		subscriberMDN.setUpgradeAcctTime(new Timestamp());
+                			subscriberMDN.setUpgradeacctstatus(new BigDecimal(upgradeStatus));
+                			subscriberMDN.setUpgradeacctcomments(realMsg.getUpgradeAcctComments());
+                    		subscriberMDN.setUpgradeacctapprovedby(userService.getCurrentUser().getUsername());
+                    		subscriberMDN.setUpgradeaccttime(new Timestamp());
                     		subMdndao.save(subscriberMDN);
                     		
                     		Integer notificationCode=null;
@@ -247,11 +249,11 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
 		
 		serviceCharge.setSourceMDN(null);
 		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(channelCode.getID());
+		serviceCharge.setChannelCodeId(channelCode.getId().longValue());
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.SUBSCRIBER_UPGRADE);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionsLog.getID());
+		serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 //		serviceCharge.setTransactionIdentifier(transactionIdentifier);
 
 		try{
@@ -277,20 +279,20 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
         
 		return error;
     }
-	private void sendSMS (SubscriberMDN subscriberMDN , Integer notificationCode) {
+	private void sendSMS (SubscriberMdn subscriberMDN , Integer notificationCode) {
 
 		try{
 			
 			Subscriber subscriber = subscriberMDN.getSubscriber();
-			String mdn2 = subscriberMDN.getMDN();
+			String mdn2 = subscriberMDN.getMdn();
 			
 			NotificationWrapper smsNotificationWrapper = new NotificationWrapper();
 			smsNotificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			smsNotificationWrapper.setCode(notificationCode);
 			smsNotificationWrapper.setDestMDN(mdn2);
-			smsNotificationWrapper.setLanguage(subscriber.getLanguage());
-			smsNotificationWrapper.setFirstName(subscriber.getFirstName());
-	    	smsNotificationWrapper.setLastName(subscriber.getLastName());
+			smsNotificationWrapper.setLanguage(Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()));
+			smsNotificationWrapper.setFirstName(subscriber.getFirstname());
+	    	smsNotificationWrapper.setLastName(subscriber.getLastname());
 			
 	    	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);
 			
