@@ -116,8 +116,8 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 			for(int iter=0;iter<lstUnRegisteredTxnInfos.size();iter++){
 				unRegisteredTxnInfo = lstUnRegisteredTxnInfos.get(iter);
-				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(unRegisteredTxnInfo.getTransactionName())){
-					if(BigDecimal.ZERO.compareTo(unRegisteredTxnInfo.getAvailableAmount())==-1){
+				if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(unRegisteredTxnInfo.getTransactionname())){
+					if(BigDecimal.ZERO.compareTo(unRegisteredTxnInfo.getAvailableamount())==-1){
 						XMLResult result = (XMLResult)reverseFundsHandler.handle(unRegisteredTxnInfo);
 					}
 					else{
@@ -133,7 +133,7 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		UnregisteredTxnInfo unRegisteredTxnInfo;
 		for(int iter=0;iter<lstUnRegisteredTxnInfos.size();iter++){
 			unRegisteredTxnInfo = lstUnRegisteredTxnInfos.get(iter);
-				log.info("Fund with ID: "+unRegisteredTxnInfo.getID()+"has expired");
+				log.info("Fund with ID: "+unRegisteredTxnInfo.getId()+"has expired");
 				updateStatus(unRegisteredTxnInfo);
 		}
 	}
@@ -146,24 +146,24 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		result.setPartnerService(partnerService);
 		result.setNotificationService(notificationService);
 		FundDefinition fundDefinition = unRegisteredTxnInfo.getFundDefinition();
-		if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
+		if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
 			log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferSCTLId());
-			unRegisteredTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
-			unRegisteredTxnInfo.setReversalReason("Fund Expired");
+			unRegisteredTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+			unRegisteredTxnInfo.setReversalreason("Fund Expired");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundAllocatedExpiredReversal);
-			sendSms(unRegisteredTxnInfo.getWithdrawalMDN(), result);
-		}else if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
+			sendSms(unRegisteredTxnInfo.getWithdrawalmdn(), result);
+		}else if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACAuto)){//auto fac regen
 			log.info("regerating fac.....");
-			unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationTypeByExpiryID()));
+			unRegisteredTxnInfo.setExpirytime(getNewExpiryTime(fundDefinition.getExpirationType()));
 			result.setOneTimePin(regenerateFAC(unRegisteredTxnInfo));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundAllocatedExpiredNewFac);
-			sendSms(unRegisteredTxnInfo.getWithdrawalMDN(), result);
+			sendSms(unRegisteredTxnInfo.getWithdrawalmdn(), result);
 
-		}else if(fundDefinition.getFundEventsByOnFundAllocationTimeExpiry().getFundEventType().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
+		}else if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_RegenerateFACManual)){//manual fac regen
 			log.info("regenerate fac manually");
-			unRegisteredTxnInfo.setExpiryTime(getNewExpiryTime(fundDefinition.getExpirationTypeByExpiryID()));
+			unRegisteredTxnInfo.setExpirytime(getNewExpiryTime(fundDefinition.getExpirationType()));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundAllocatedExpired);
-			sendSms(unRegisteredTxnInfo.getWithdrawalMDN(), result);
+			sendSms(unRegisteredTxnInfo.getWithdrawalmdn(), result);
 		}
 		unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 	}
@@ -171,10 +171,10 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 	
 	private Timestamp getNewExpiryTime(ExpirationType expirationType) {
 		Long defaultExpirySeconds = 86400L;
-		if(expirationType.getExpiryType().equals(CmFinoFIX.ExpiryType_Fund)){
-			if(expirationType.getExpiryMode().equals(CmFinoFIX.ExpiryMode_DurationInSecs)){
-				return new Timestamp(System.currentTimeMillis() + expirationType.getExpiryValue() * 1000);
-			}else if(expirationType.getExpiryMode().equals(CmFinoFIX.ExpiryMode_CutOffTime)){
+		if(expirationType.getExpirytype().equals(CmFinoFIX.ExpiryType_Fund)){
+			if(expirationType.getExpirymode().equals(CmFinoFIX.ExpiryMode_DurationInSecs)){
+				return new Timestamp(System.currentTimeMillis() + expirationType.getExpiryvalue().intValue() * 1000);
+			}else if(expirationType.getExpirymode().equals(CmFinoFIX.ExpiryMode_CutOffTime)){
 			}
 		}
 		log.debug("Could not find Fund related expiry time.setting a deafult of 1 days");
@@ -183,8 +183,8 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 	
 	public String regenerateFAC(UnregisteredTxnInfo unRegisteredTxnInfo) {
 		String code = generateFAC(unRegisteredTxnInfo.getFundDefinition());
-		String digestedCode = generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalMDN(), code);
-		unRegisteredTxnInfo.setDigestedPIN(digestedCode);
+		String digestedCode = generateDigestedFAC(unRegisteredTxnInfo.getWithdrawalmdn(), code);
+		unRegisteredTxnInfo.setDigestedpin(digestedCode);
 		unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 		return code;
 	}

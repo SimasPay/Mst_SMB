@@ -7,38 +7,33 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerServicesDAO;
 import com.mfino.dao.query.SCTLSettlementMapQuery;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.ScheduleTemplate;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.ServiceSettlementConfig;
-import com.mfino.domain.SettlementTransactionLogs;
-import com.mfino.domain.SettlementTransactionSCTLMap;
+import com.mfino.domain.SctlSettlementMap;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.ServiceSettlementCfg;
+import com.mfino.domain.SettlementTxnLog;
+import com.mfino.domain.SettlementTxnSctlMap;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.TransferStatus;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.fix.CFIXMsg;
@@ -145,43 +140,43 @@ public class SettlementHandlerImpl implements SettlementHandler{
 	
 	private void doSettlement(PartnerServices partnerService) throws MfinoRuntimeException{
 		
-		log.info("PartnerSettlementService :: doSettlement() BEGIN partnerService.getID()="+partnerService.getID());
+		log.info("PartnerSettlementService :: doSettlement() BEGIN partnerService.getID()="+partnerService.getId());
 		/*
 		 * Initilizations and Validations.
 		 */
-		Partner partner = partnerService.getPartner();
-		SettlementTransactionLogs settlementTransactionLog = new SettlementTransactionLogs();
-		settlementTransactionLog.setMSPID(1L);
-		settlementTransactionLog.setTransferStatus(TransferStatus.INITIALIZED.getTransferStatus());
-		settlementTransactionLog.setPartnerServicesID(partnerService.getID());
+		Partner partner = partnerService.getPartnerByParentid();
+		SettlementTxnLog settlementTransactionLog = new SettlementTxnLog();
+		settlementTransactionLog.setMspid(BigDecimal.valueOf(1L));
+		settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.INITIALIZED.getTransferStatus()));
+		settlementTransactionLog.setPartnerservicesid(partnerService.getId());
 		settlementTransactionLog.setAmount(ZERO);
 		settlementTransactionLog.setDescription("");
 		
 		settlementTransactionLogsService.save(settlementTransactionLog);
 		Long stlID = null;
 		if(settlementTransactionLog != null)
-			stlID = settlementTransactionLog.getID();
+			stlID = settlementTransactionLog.getId().longValue();
 		
 		if(!(CmFinoFIX.PartnerServiceStatus_Active.equals(partnerService.getStatus()))){
 			log.info("PartnerSettlementService :: doSettlement() PartnerService is not active");
 			settlementTransactionLog.setResponse("Partner Service Not Active");
-			settlementTransactionLog.setTransferStatus(TransferStatus.PARTNER_SERVICE_NOT_ACTIVE.getTransferStatus());
+			settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.PARTNER_SERVICE_NOT_ACTIVE.getTransferStatus()));
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			return;
 		}
 		
 		Pocket collectorPocket = partnerService.getPocketByCollectorPocket();
 		Pocket settlementPocket = null;
-		Set<ServiceSettlementConfig> settlementConfigs = partnerService.getServiceSettlementConfigFromPartnerServiceID();
-		ServiceSettlementConfig settlementConfig = null;
+		Set<ServiceSettlementCfg> settlementConfigs = partnerService.getServiceSettlementCfgs();
+		ServiceSettlementCfg settlementConfig = null;
 		
 		if((settlementConfigs != null) && (settlementConfigs.size() > 0)){
 			/*
 			 * Expectation is currently we are not considering date effectivity and there will be only one settlement configuration.
 			 * This part needs to be modified when date effectivity comes into picture.
 			 */
-			for(ServiceSettlementConfig sc : settlementConfigs){
-				if((sc.getIsDefault() != null) && (sc.getIsDefault())){
+			for(ServiceSettlementCfg sc : settlementConfigs){
+				if((sc.getIsdefault() != null) && (sc.getIsdefault())){
 					settlementConfig = sc;
 					break;
 				}
@@ -191,39 +186,39 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		if(settlementConfig == null){
 			log.info("PartnerSettlementService :: doSettlement() Settlement Config Not Defined");
 			settlementTransactionLog.setResponse("Settlement Config Not Defined");
-			settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+			settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			return;
 		} 
 		
-		log.info("PartnerSettlementService :: doSettlement() Settlement Config ID="+settlementConfig.getID());
+		log.info("PartnerSettlementService :: doSettlement() Settlement Config ID="+settlementConfig.getId());
 		
-		settlementTransactionLog.setServiceSettlementConfigID(settlementConfig.getID());
+		settlementTransactionLog.setServicesettlementconfigid(settlementConfig.getId());
 		settlementPocket = settlementConfig.getSettlementTemplate().getPocketBySettlementPocket();
 		
 		//For CutoffTime
 		Long stID = null;
-		if(settlementConfig.getSettlementTemplate().getCutoffTime() != null)
-			stID = settlementConfig.getSettlementTemplate().getScheduleTemplate().getID();
+		if(settlementConfig.getSettlementTemplate().getScheduleTemplateByCutofftime() != null)
+			stID = settlementConfig.getSettlementTemplate().getScheduleTemplateByCutofftime().getId().longValue();
 		
 		if(collectorPocket == null){
 			log.info("PartnerSettlementService :: doSettlement() Collector Pocket is null");
 			settlementTransactionLog.setResponse("Collector Pocket is null");
-			settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+			settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			return;
 		} else{
-			if(!collectorPocket.getPocketTemplate().getCommodity().equals(CmFinoFIX.Commodity_Money)){
+			if(!(collectorPocket.getPocketTemplate().getCommodity()==(CmFinoFIX.Commodity_Money))){
 				log.info("PartnerSettlementService :: doSettlement() Collector pocket commodity type should be money");
 				settlementTransactionLog.setResponse("Collector pocket commodity type should be money");
-				settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;
 			}
-			if(!collectorPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA)){
+			if(!(collectorPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA))){
 				log.info("PartnerSettlementService :: doSettlement() Collector pocket type should be SVA");				
 				settlementTransactionLog.setResponse("Collector pocket type should be SVA");
-				settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;
 			}
@@ -232,23 +227,23 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		if(settlementPocket == null){
 			log.info("PartnerSettlementService :: doSettlement() Source Pocket is null");
 			settlementTransactionLog.setResponse("Source Pocket is null");
-			settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+			settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			return;
 		} else{
-			if(!settlementPocket.getPocketTemplate().getCommodity().equals(CmFinoFIX.Commodity_Money)){
+			if(!(settlementPocket.getPocketTemplate().getCommodity()==(CmFinoFIX.Commodity_Money))){
 				log.info("PartnerSettlementService :: doSettlement() Settlement pocket commodity type should be money");
 				settlementTransactionLog.setResponse("Settlement pocket commodity type should be money");
-				settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;
 			}
 			//Settlement Pocket could be either an Emoney or a Bank Account			
-			if(!settlementPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)&&
-					!(settlementPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_SVA))){
+			if(!(settlementPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))&&
+					!((settlementPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)))){
 				log.info("PartnerSettlementService :: doSettlement() Settlement pocket type should be Bank or SVA Account");
 				settlementTransactionLog.setResponse("Settlement pocket type should be Bank or SVA Account");
-				settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;
 			}
@@ -256,32 +251,32 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		
 //		Long minimumBalance = collectorPocket.getPocketTemplate().getMinimumStoredValue() == null ? 0 : collectorPocket.getPocketTemplate().getMinimumStoredValue();
 //		Long settlementAmount = 0L; 
-		BigDecimal minimumBalance = collectorPocket.getPocketTemplate().getMinimumStoredValue() == null ? ZERO : collectorPocket.getPocketTemplate().getMinimumStoredValue();
+		BigDecimal minimumBalance = collectorPocket.getPocketTemplate().getMinimumstoredvalue() == null ? ZERO : collectorPocket.getPocketTemplate().getMinimumstoredvalue();
 
 		//BigDecimal pendingAmount = getPendingAmount(partner.getID(), collectorPocket);
-		BigDecimal pendingAmount = getPendingAmount(partner.getID(), collectorPocket, stlID, stID);
+		BigDecimal pendingAmount = getPendingAmount(partner.getId().longValue(), collectorPocket, stlID, stID);
 		minimumBalance = minimumBalance.add(pendingAmount); 
 		
 		BigDecimal settlementAmount = ZERO; 
 		
 //		if((collectorPocket.getCurrentBalance() != null) && (collectorPocket.getCurrentBalance() > minimumBalance)){
 //			settlementAmount = collectorPocket.getCurrentBalance() - minimumBalance;
-		BigDecimal currentBalance = collectorPocket.getCurrentBalance();
+		BigDecimal currentBalance = new BigDecimal(collectorPocket.getCurrentbalance());
 		if((currentBalance != null) && (currentBalance.compareTo(minimumBalance) > 0)){
-			settlementAmount = collectorPocket.getCurrentBalance().subtract(minimumBalance);
+			settlementAmount = new BigDecimal(collectorPocket.getCurrentbalance()).subtract(minimumBalance);
 			log.info("PartnerSettlementService :: doSettlement() settlement amount calculated="+settlementAmount);
 		}
 		else{
 			if(currentBalance.compareTo(BigDecimal.ZERO) == 0) {
 				log.info("PartnerSettlementService :: doSettlement() collector pocket balance is 0");
 				settlementTransactionLog.setResponse("collector pocket balance is 0");
-				settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;				
 			}else{
 				log.info("PartnerSettlementService :: doSettlement() collector pocket amount less than min amount to do settlement, Amount in Pending "+pendingAmount);
 				settlementTransactionLog.setResponse("collector pocket amount less than min amount to do settlement");
-				settlementTransactionLog.setTransferStatus(TransferStatus.VALIDATION_FAILED.getTransferStatus());
+				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;
 			}
@@ -292,39 +287,39 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		/*
 		 * Actual transfer code begins
 		 */
-		Subscriber subscriber = subscriberService.getSubscriberbySubscriberId(partner.getSubscriber().getID());
-		SubscriberMDN subscriberMDN = subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
+		Subscriber subscriber = subscriberService.getSubscriberbySubscriberId(partner.getSubscriber().getId().longValue());
+		SubscriberMdn subscriberMDN = subscriber.getSubscriberMdns().iterator().next();
 		
 		CMSettlementOfCharge settlementFixMessage = new CMSettlementOfCharge();
 		
-		settlementFixMessage.setSourceMDN(subscriberMDN.getMDN());
+		settlementFixMessage.setSourceMDN(subscriberMDN.getMdn());
 		settlementFixMessage.setAmount(settlementAmount);
-		settlementFixMessage.setSourcePocketID(collectorPocket.getID());
-		settlementFixMessage.setDestPocketID(settlementPocket.getID());
+		settlementFixMessage.setSourcePocketID(collectorPocket.getId().longValue());
+		settlementFixMessage.setDestPocketID(settlementPocket.getId().longValue());
 		settlementFixMessage.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		settlementFixMessage.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		settlementFixMessage.setServiceName(ServiceAndTransactionConstants.SERVICE_SYSTEM);
 		
-		TransactionsLog transactionsLog = saveTransactionsLog(CmFinoFIX.MessageType_SettlementOfCharge, " ");
-		settlementFixMessage.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = saveTransactionsLog(CmFinoFIX.MessageType_SettlementOfCharge, " ");
+		settlementFixMessage.setTransactionID(transactionsLog.getId().longValue());
 		
 		// Generating the SCTL Entry 
 
 		ChannelCode cc = getChannelCode(CmFinoFIX.SourceApplication_BackEnd);
-		ServiceChargeTransactionLog sctl = new ServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = new ServiceChargeTxnLog();
 		
 		try{
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
-			sctl.setChannelCodeID(cc.getID());
-			sctl.setSourceMDN(settlementFixMessage.getSourceMDN());
-			sctl.setDestMDN(settlementFixMessage.getSourceMDN());
-			sctl.setServiceID(transactionChargingService.getServiceId(settlementFixMessage.getServiceName()));
-			sctl.setServiceProviderID(transactionChargingService.getServiceProviderId(null));
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
+			sctl.setChannelcodeid(cc.getId());
+			sctl.setSourcemdn(settlementFixMessage.getSourceMDN());
+			sctl.setDestmdn(settlementFixMessage.getSourceMDN());
+			sctl.setServiceid(BigDecimal.valueOf(transactionChargingService.getServiceId(settlementFixMessage.getServiceName())));
+			sctl.setServiceproviderid(BigDecimal.valueOf(transactionChargingService.getServiceProviderId(null)));
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Processing);
-			sctl.setTransactionAmount(settlementFixMessage.getAmount());
-			sctl.setTransactionTypeID(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_CHARGE_SETTLEMENT));
-			sctl.setTransactionID(transactionsLog.getID());
-			sctl.setDestPartnerID(partner.getID());
+			sctl.setTransactionamount(settlementFixMessage.getAmount());
+			sctl.setTransactiontypeid(BigDecimal.valueOf(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_CHARGE_SETTLEMENT)));
+			sctl.setTransactionid(transactionsLog.getId());
+			sctl.setDestpartnerid(partner.getId());
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			return;
@@ -336,17 +331,17 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		TransactionResponse transferResponse = settlementFixCommunicationHandler.checkBackEndResponse(response);
 		log.info("Transfer Response = "+transferResponse.getMessage());
 		if(transferResponse.getTransactionId()!=null){
-		sctl.setTransactionID(transferResponse.getTransactionId());
+		sctl.setTransactionid(BigDecimal.valueOf(transferResponse.getTransactionId()));
 		}
 		if(transferResponse.getTransferId()!=null){
-		sctl.setCommodityTransferID(transferResponse.getTransferId());
+		sctl.setCommoditytransferid(BigDecimal.valueOf(transferResponse.getTransferId()));
 		}
 		//Settlement Enhancement
-		SettlementTransactionSCTLMap stsm = new SettlementTransactionSCTLMap();
-		stsm.setSctlId(sctl.getID());
-		stsm.setStlID(settlementTransactionLog.getID());
-        mFinoServiceProvider msp = mfinoServiceProviderService.getMFSPbyID(1);
-        stsm.setmFinoServiceProviderByMSPID(msp);
+		SettlementTxnSctlMap stsm = new SettlementTxnSctlMap();
+		stsm.setSctlId(sctl.getId());
+		stsm.setStlID(settlementTransactionLog.getId());
+        MfinoServiceProvider msp = mfinoServiceProviderService.getMFSPbyID(1);
+        stsm.setMfinoServiceProvider(msp);
 		
 		if(settlementAmount != null){
 			settlementTransactionLog.setAmount(settlementAmount);
@@ -356,20 +351,20 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		{
 			log.info("PartnerSettlementService :: doSettlement() Transfer Success Response="+transferResponse);
 			settlementTransactionLog.setResponse("Transfer Success Notification ("+transferResponse+")");
-			settlementTransactionLog.setTransferStatus(TransferStatus.COMPLETED.getTransferStatus());
+			settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.COMPLETED.getTransferStatus()));
 			if(transferResponse.getTransferId()!=null){
-			settlementTransactionLog.setCommodityTransferID(transferResponse.getTransferId());
+			settlementTransactionLog.setCommoditytransferid(BigDecimal.valueOf(transferResponse.getTransferId()));
 			}
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			transactionChargingService.completeTheTransaction(sctl);
 			
-			stsm.setStatus(settlementTransactionLog.getTransferStatus());
+			stsm.setStatus(settlementTransactionLog.getTransferstatus());
 			settlementTransactionSCTLMapService.save(stsm);
 			return;
 		}else{
 			log.info("PartnerSettlementService :: doSettlement() Transfer Failed Response="+transferResponse.getMessage());
 			settlementTransactionLog.setResponse("Transfer Failed Notification ("+transferResponse.getCode()+")");
-			settlementTransactionLog.setTransferStatus(TransferStatus.TRANSFER_FAILED.getTransferStatus());
+			settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.TRANSFER_FAILED.getTransferStatus()));
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			String errorMsg = transferResponse.getMessage();
 			// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -378,22 +373,22 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			}
 			transactionChargingService.failTheTransaction(sctl, errorMsg);
 			
-			stsm.setStatus(settlementTransactionLog.getTransferStatus());
+			stsm.setStatus(settlementTransactionLog.getTransferstatus());
 			settlementTransactionSCTLMapService.save(stsm);
 			return;
 		}
 	
 	}
 
-	private TransactionsLog saveTransactionsLog(Integer messageCode, String data) {
+	private TransactionLog saveTransactionsLog(Integer messageCode, String data) {
 		
-		mFinoServiceProvider msp = mfinoServiceProviderService.getMFSPbyID(1);
+		MfinoServiceProvider msp = mfinoServiceProviderService.getMFSPbyID(1);
 		
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionsLogCoreService.save(transactionsLog);
 		return transactionsLog;
 	}
@@ -495,10 +490,10 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		try{
 			if(stID != null){
 				st = scheduleTemplateService.getScheduleTemplateById(stID);
-				if(StringUtils.isNotBlank(st.getTimerValueHH()))
-					cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(st.getTimerValueHH()));
-				if(StringUtils.isNotBlank(st.getTimerValueMM()))
-					cal.set(Calendar.MINUTE, Integer.valueOf(st.getTimerValueMM()));
+				if(StringUtils.isNotBlank(String.valueOf(st.getTimervaluehh())))
+					cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(st.getTimervaluehh().intValue()));
+				if(StringUtils.isNotBlank(String.valueOf(st.getTimervaluemm())))
+					cal.set(Calendar.MINUTE, Integer.valueOf(st.getTimervaluemm().intValue()));
 				cutoff = cal.getTime();
 			}
 			

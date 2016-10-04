@@ -33,9 +33,9 @@ import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberStatusEvent;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -221,7 +221,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			}
 			List<SubscriberStatusEvent> statusEventList=subscriberStatusEventService.getSubscriberStatusEvent(includeParnterInSLC, status);
 			log.info("No of SubscriberStatusEvent entries for updateSubscriberStatus: " + statusEventList!=null?statusEventList.size()+"":null);
-//			List<SubscriberMDN> lst = subscriberMdnService.getByQuery(query);
+//			List<SubscriberMdn> lst = subscriberMdnService.getByQuery(query);
 			if (CollectionUtils.isNotEmpty(statusEventList)) {
 				for (SubscriberStatusEvent subscriberStatusEvent : statusEventList) {
 					checkSubscriber(subscriberStatusEvent);
@@ -294,7 +294,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			List<SubscriberStatusEvent> statusEventList=subscriberStatusEventService.getSubscriberStatusEvent(true, status);
 			log.info("No of SubscriberStatusEvent entries for forceGraveSubscribers: " + statusEventList!=null?statusEventList.size()+"":null);
 
-//			List<SubscriberMDN> lst = subscriberMdnService.getByQuery(query);
+//			List<SubscriberMdn> lst = subscriberMdnService.getByQuery(query);
 			if (CollectionUtils.isNotEmpty(statusEventList)) {
 				for (SubscriberStatusEvent subscriberStatusEvent : statusEventList) {
 					checkSubscriber(subscriberStatusEvent);
@@ -309,82 +309,82 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		Subscriber subscriber = null;
 		Timestamp now = new Timestamp();
 		if(subscriberStatusEvent!=null){
-			SubscriberMDN subscriberMDN=getSubscriberMDNForSubscriber(subscriberStatusEvent.getSubscriber());
+			SubscriberMdn subscriberMDN=getSubscriberMDNForSubscriber(subscriberStatusEvent.getSubscriberid());
 		if (subscriberMDN != null) {
 			subscriber = subscriberMDN.getSubscriber();
-			log.info("Checking the Subscriber MDN with id --> " + subscriberMDN.getID() + " And status is --> " + subscriber.getStatus());
-			log.info("Checking the Subscriber with id --> " + subscriber.getID() + " And status is --> " + subscriber.getStatus());
-			if (subscriber != null && subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType()) 
-						&& subscriber.getActivationTime() == null && CmFinoFIX.UpgradeState_Approved.intValue() == subscriber.getUpgradeState()) {
-					if ( ((now.getTime() - subscriber.getApproveOrRejectTime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION) && 
-							((now.getTime() - subscriber.getStatusTime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION) ) {
+			log.info("Checking the Subscriber MDN with id --> " + subscriberMDN.getId() + " And status is --> " + subscriber.getStatus());
+			log.info("Checking the Subscriber with id --> " + subscriber.getId() + " And status is --> " + subscriber.getStatus());
+			if (subscriber != null && Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType()) 
+						&& subscriber.getActivationtime() == null && CmFinoFIX.UpgradeState_Approved.intValue() == subscriber.getUpgradestate()) {
+					if ( ((now.getTime() - subscriber.getApproveorrejecttime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION) && 
+							((now.getTime() - subscriber.getStatustime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION) ) {
 						subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
 						subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Suspend);
-						subscriberMDN.setStatusTime(now);
+						subscriberMDN.setStatustime(now);
 						subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
 						subscriber.setStatus(CmFinoFIX.SubscriberStatus_Suspend);
-						subscriber.setStatusTime(now);
+						subscriber.setStatustime(now);
 						subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 						subscriberService.saveSubscriber(subscriber);
 						
 						Partner partner = getPartnerForSubscriber(subscriber);
 						if (partner != null) {
-							partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Suspend);
+							partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Suspend);
 							partnerService.savePartner(partner);
 						}
-						log.info("Suspended the Partner with subscriber id --> " + subscriber.getID());
-						subscriberStatusEvent.setProcessingStatus(true);
+						log.info("Suspended the Partner with subscriber id --> " + subscriber.getId());
+						subscriberStatusEvent.setProcessingstatus(true);
 						subscriberStatusEventService.save(subscriberStatusEvent);
 						subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 					}
 			}else if (CmFinoFIX.SubscriberStatus_InActive.intValue() == subscriberMDN.getStatus()) {
-				if ((now.getTime() - subscriber.getStatusTime().getTime()) > TIME_TO_SUSPEND_OF_INACTIVE) {
+				if ((now.getTime() - subscriber.getStatustime().getTime()) > TIME_TO_SUSPEND_OF_INACTIVE) {
 					subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
 					subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Suspend);
-					subscriberMDN.setStatusTime(now);
+					subscriberMDN.setStatustime(now);
 					subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
 					subscriber.setStatus(CmFinoFIX.SubscriberStatus_Suspend);
-					subscriber.setStatusTime(now);
+					subscriber.setStatustime(now);
 					subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 					subscriberService.saveSubscriber(subscriber);
 					
-					if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+					if (Long.valueOf(subscriber.getType() )!= null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 						Partner partner = getPartnerForSubscriber(subscriber);
 						if (partner != null) {
-							partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Suspend);
+							partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Suspend);
 							partnerService.savePartner(partner);
 						}
 					}
-					subscriberStatusEvent.setProcessingStatus(true);
+					subscriberStatusEvent.setProcessingstatus(true);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
-					log.info("Suspended the Subscriber with id --> " + subscriber.getID());
+					log.info("Suspended the Subscriber with id --> " + subscriber.getId());
 				}
 			}
 			else if (CmFinoFIX.SubscriberStatus_Suspend.intValue() == subscriberMDN.getStatus()) {
 				//Retire the subscriber if he remains suspended for a period of TIME_TO_RETIRE_OF_SUSPENDED
 				//if (isSuspendedSubscriberEligibleTobeRetired(now,subscriber,subscriberMDN)) {
-				if ((now.getTime() - subscriber.getStatusTime().getTime()) > TIME_TO_RETIRE_OF_SUSPENDED){
+				if ((now.getTime() - subscriber.getStatustime().getTime()) > TIME_TO_RETIRE_OF_SUSPENDED){
 					subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 					subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
-					subscriberMDN.setStatusTime(now);
+					subscriberMDN.setStatustime(now);
 					subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 					subscriber.setStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
-					subscriber.setStatusTime(now);
+					subscriber.setStatustime(now);
 					// change the pocket status to pending retirement
 					subscriberService.retireSubscriber(subscriberMDN);
 					subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 					subscriberService.saveSubscriber(subscriber);
-					if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+					if (Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 						Partner partner = getPartnerForSubscriber(subscriber);
 						if (partner != null) {
-							partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
+							partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
 							partnerService.retireServices(partner);
 							partnerService.savePartner(partner);
 						}
 					}
-					log.info("Moved to Pending retired the subscriber with id -->" + subscriber.getID());
-					subscriberStatusEvent.setProcessingStatus(true);
+					log.info("Moved to Pending retired the subscriber with id -->" + subscriber.getId());
+					subscriberStatusEvent.setProcessingstatus(true);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 
@@ -393,66 +393,66 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			}
 			else if (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subscriberMDN.getStatus()) {
 				//Grave the subscriber if he is in retired state for a period of TIME_TO_GRAVE_OF_RETIRED
-				if (((now.getTime() - subscriberMDN.getStatusTime().getTime()) > TIME_TO_GRAVE_OF_RETIRED) || 
-						(subscriberMDN.getIsForceCloseRequested() != null && subscriberMDN.getIsForceCloseRequested().booleanValue())) {
+				if (((now.getTime() - subscriberMDN.getStatustime().getTime()) > TIME_TO_GRAVE_OF_RETIRED) || 
+						(subscriberMDN.getIsforcecloserequested() != null && subscriberMDN.getIsforcecloserequested().booleanValue())) {
 					
 					List<Pocket> srcPocketList = getSubscriberPocketsListWithBalance(subscriberMDN);
 					if(srcPocketList != null && srcPocketList.size() > 0){
 						boolean moneyMovedSuccessfully = false;
 						Pocket destSystemProviderPocket = getDestPocket(systemParametersService.getLong(SystemParameterKeys.RETIRED_SUBSCRIBER_SYSTEM_COLLECTOR_POCKET));
-						SubscriberMDN destSystemProviderMDN=null;
+						SubscriberMdn destSystemProviderMDN=null;
 						if(destSystemProviderPocket != null){
-							destSystemProviderMDN = destSystemProviderPocket.getSubscriberMDNByMDNID();
+							destSystemProviderMDN = destSystemProviderPocket.getSubscriberMdn();
 						}
 						else{
 							log.info("Failed to move balance in all/some of the EMoney Pockets of Retired Subscriber with subscriber ID --> " 
-									+ subscriber.getID() + " due to non availability of system provider pocket and hence the subscriber will not be graved");
+									+ subscriber.getId() + " due to non availability of system provider pocket and hence the subscriber will not be graved");
 							return;
 						}
 						//The system collector pocket need to be suspense pocket
-						if(destSystemProviderPocket.getPocketTemplate().getIsSuspencePocket() != true){
+						if(destSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != true){
 							log.info("Failed to move balance in all/some of the EMoney Pockets of Retired Subscriber with subscriber ID --> " 
-									+ subscriber.getID() + " as the system provider pocket is not of suspense type and hence the subscriber will not be graved");
+									+ subscriber.getId() + " as the system provider pocket is not of suspense type and hence the subscriber will not be graved");
 							return;
 						}
 						
 						
 						TransactionDetails txnDetails= new TransactionDetails();
-						txnDetails.setSourceMDN(subscriberMDN.getMDN());
-						txnDetails.setDestMDN(destSystemProviderMDN.getMDN());
+						txnDetails.setSourceMDN(subscriberMDN.getMdn());
+						txnDetails.setDestMDN(destSystemProviderMDN.getMdn());
 						//txnDetails.setDestPocketCode("1");
 						//txnDetails.setSourcePocketCode("1");
 						txnDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 						txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_SYSTEM_INQUIRY);
-						txnDetails.setDestinationPocketId(destSystemProviderPocket.getID());
+						txnDetails.setDestPocketId(destSystemProviderPocket.getId().toPlainString());
 						for(Pocket sourcePocket:srcPocketList){
 							moneyMovedSuccessfully = false;
 							txnDetails.setSourcePocketCode(String.valueOf(sourcePocket.getPocketTemplate().getType()));
 							txnDetails.setDestPocketCode(String.valueOf(destSystemProviderPocket.getPocketTemplate().getType()));
-							txnDetails.setSrcPocketId(sourcePocket.getID());
+							txnDetails.setSrcPocketId(sourcePocket.getId().longValue());
 							txnDetails.setSourcePIN("1503");
 							txnDetails.setCc(channelCode);
 							moneyMovedSuccessfully = moveRetiredSubscriberBalanceMoney(subscriberMDN,sourcePocket,destSystemProviderMDN,destSystemProviderPocket,txnDetails);
 							if(moneyMovedSuccessfully){
 								log.info("Successfully Moved Balance in EMoney Pockets of Retired Subscriber with subscriber ID --> " 
-										+ subscriber.getID() + " to the configured pocket with pocket Id -->" + destSystemProviderPocket.getID());							
+										+ subscriber.getId() + " to the configured pocket with pocket Id -->" + destSystemProviderPocket.getId());							
 							}
 							else{
 								log.info("Failed to move balance in all/some of the EMoney Pockets of Retired Subscriber with subscriber ID --> " 
-										+ subscriber.getID() + " and hence the subscriber will not be graved");
+										+ subscriber.getId() + " and hence the subscriber will not be graved");
 								return;
 							}
 						}
 					}
 					
-					Integer status = mdnRetireService.retireMDN(subscriberMDN.getID());
+					Integer status = mdnRetireService.retireMDN(subscriberMDN.getId().longValue());
 					
-					if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+					if (Long.valueOf(subscriber.getType() )!= null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 						if (CmFinoFIX.ResolveAs_success.equals(status)) {
-							log.info("Moved to Retired state the Subscriber with id -->" + subscriber.getID());
+							log.info("Moved to Retired state the Subscriber with id -->" + subscriber.getId());
 							Partner partner = getPartnerForSubscriber(subscriber);
 							if (partner != null) {
-								partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Retired);
+								partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Retired);
 								partnerService.savePartner(partner);
 								retireServices(partner);
 							}
@@ -461,76 +461,76 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 				}
 			}
 			else if(CmFinoFIX.SubscriberStatus_Retired.intValue() == subscriberMDN.getStatus()){
-				if ((now.getTime() - subscriberMDN.getStatusTime().getTime()) > TIME_TO_MOVE_TO_NATIONALTREASURY){
+				if ((now.getTime() - subscriberMDN.getStatustime().getTime()) > TIME_TO_MOVE_TO_NATIONALTREASURY){
 					log.info("Trying to move money from system collector pocket to National Treasury for subscriber ID -->" 
-							+ subscriber.getID()) ;
+							+ subscriber.getId()) ;
 					Pocket srcSystemProviderPocket = getSrcSystemProvidePocket(systemParametersService.getLong(SystemParameterKeys.RETIRED_SUBSCRIBER_SYSTEM_COLLECTOR_POCKET));
-					SubscriberMDN srcSystemProviderMDN=null;
+					SubscriberMdn srcSystemProviderMDN=null;
 					if(srcSystemProviderPocket != null){
-						srcSystemProviderMDN = srcSystemProviderPocket.getSubscriberMDNByMDNID();
+						srcSystemProviderMDN = srcSystemProviderPocket.getSubscriberMdn();
 					}
 					else{
 						log.info("Unable to get System Provider MDN, Failed to move money from system collector pocket to National Treasury for subscriber ID -->" 
-								+ subscriber.getID()) ;
+								+ subscriber.getId()) ;
 						return;
 					}
-					if(srcSystemProviderPocket.getPocketTemplate().getIsSuspencePocket() != true){
+					if(srcSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != true){
 						log.info("Failed to move money from system collector pocket to National Treasury for subscriber ID -->" 
-								+ subscriber.getID() + " as the system provider pocket is not of suspense type");
+								+ subscriber.getId() + " as the system provider pocket is not of suspense type");
 						return;
 					}
 				
 					//String partnerCode = systemParametersService.getString(SystemParameterKeys.NATIONAL_TREASURY_PARTNER_CODE);
-					//SubscriberMDN destMDN = getDestSubscriberMDN(partnerCode);
+					//SubscriberMdn destMDN = getDestSubscriberMDN(partnerCode);
 					Pocket destNationalTreasuryPocket = getDestPocket(systemParametersService.getLong(SystemParameterKeys.NATIONAL_TREASURY_POCKET));
-					SubscriberMDN destMDN = null;
+					SubscriberMdn destMDN = null;
 					if(destNationalTreasuryPocket != null){
-						destMDN = destNationalTreasuryPocket.getSubscriberMDNByMDNID();
+						destMDN = destNationalTreasuryPocket.getSubscriberMdn();
 					}
 					else{
 						log.info("Failed to move money from system collector pocket to National Treasury as pocket code is not set for National Treasury in System Parameters for subscriber ID -->" 
-								+ subscriber.getID()) ;
+								+ subscriber.getId()) ;
 						return;
 					}
 					
 					if(destMDN == null){
 						log.info("Failed to move money from system collector pocket to National Treasury as pocket code is not set for National Treasury in System Parameters for subscriber ID -->" 
-								+ subscriber.getID()) ;
+								+ subscriber.getId()) ;
 						return;
 					}
 					
 					MoneyClearanceGravedQuery mcgQuery = new MoneyClearanceGravedQuery();
-					mcgQuery.setMdnId(subscriberMDN.getID());
+					mcgQuery.setMdnId(subscriberMDN.getId().longValue());
 					List<MoneyClearanceGraved> lst = moneyClearanceGravedService.getMoneyClearanceGravedByQuery(mcgQuery);
 					log.info("Getting Money Clearance information to move to National Treasury for subscriber ID -->" 
-							+ subscriber.getID()) ;
+							+ subscriber.getId()) ;
 					for(MoneyClearanceGraved mcg:lst){
-						if(mcg.getMCStatus().intValue() ==  CmFinoFIX.MCStatus_INITIALIZED.intValue()){
+						if(mcg.getMcstatus() ==  CmFinoFIX.MCStatus_INITIALIZED.intValue()){
 							TransactionDetails txnDetails = new TransactionDetails();
-							txnDetails.setSourceMDN(srcSystemProviderMDN.getMDN());
-							txnDetails.setSrcPocketId(srcSystemProviderPocket.getID());
-							txnDetails.setDestMDN(subscriberService.normalizeMDN(destMDN.getMDN()));
+							txnDetails.setSourceMDN(srcSystemProviderMDN.getMdn());
+							txnDetails.setSrcPocketId(srcSystemProviderPocket.getId().longValue());
+							txnDetails.setDestMDN(subscriberService.normalizeMDN(destMDN.getMdn()));
 							txnDetails.setSourcePIN("1234");
 							txnDetails.setAmount(mcg.getAmount());
 							txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY_INQUIRY);
 							txnDetails.setSourcePocketCode(ApiConstants.POCKET_CODE_SVA);
 							txnDetails.setSourceMessage(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY_INQUIRY);
 							txnDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
-							txnDetails.setDestinationPocketId(destNationalTreasuryPocket.getID());
+							txnDetails.setDestinationPocketId(destNationalTreasuryPocket.getId().longValue());
 							txnDetails.setCc(channelCode);
 							log.info("Intializing money moment from system collector pocket to National Treasury for subscriber ID -->" 
-									+ subscriber.getID()) ;
+									+ subscriber.getId()) ;
 							log.info("Got subscriberMDN from money clearance graved  -->" 
-									+ mcg.getSubscriberMDNByMDNID()) ;
-							boolean moneyMovedSuccessfully = moveMoneyToNationalTreasury( txnDetails, mcg.getSubscriberMDNByMDNID());
+									+ mcg.getSubscriberMdnByMdnid()) ;
+							boolean moneyMovedSuccessfully = moveMoneyToNationalTreasury( txnDetails, mcg.getSubscriberMdnByMdnid());
 
 							if(moneyMovedSuccessfully){
 								log.info("Successfully moved money from system collector pocket to National Treasury for subscriber ID -->" 
-										+ subscriber.getID()) ;						
+										+ subscriber.getId()) ;						
 							}
 							else{
 								log.info("Failed to move money from system collector pocket to National Treasury for subscriber ID -->" 
-										+ subscriber.getID()) ;
+										+ subscriber.getId()) ;
 								return;
 							}				
 						}
@@ -554,7 +554,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	private Partner getPartnerForSubscriber(Subscriber subscriber) {
 		Partner partner = null;
 		if (subscriber != null) {
-			Set<Partner> partners = subscriber.getPartnerFromSubscriberID();
+			Set<Partner> partners = subscriber.getPartners();
 			if ((partners != null) && (partners.size()!=0)) { 
 				partner = partners.iterator().next();
 			}
@@ -569,7 +569,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	 */
 	
 	private void retireServices(Partner objPartner) {
-		Set<PartnerServices> partnerServices = objPartner.getPartnerServicesFromPartnerID();
+		Set<PartnerServices> partnerServices = objPartner.getPartnerServicesesForPartnerid();
 		if (CollectionUtils.isNotEmpty(partnerServices)) {
 			for(PartnerServices ps:partnerServices){
 				if (CmFinoFIX.PartnerServiceStatus_PendingRetirement.intValue() == ps.getStatus()) {
@@ -584,142 +584,142 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	 * Change the Status of the Active Subscriber to InActive .
 	 * @param subscriber, subscriberMDN
 	 */
-	private void inActivateActiveSubscriber(Subscriber subscriber,SubscriberMDN subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
+	private void inActivateActiveSubscriber(Subscriber subscriber,SubscriberMdn subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
 		ExcludeSubscriberLifeCycle eslcSub = excludeSubscriberLifeCycleService.getBySubscriberMDN(subscriberMDN);
 		if(eslcSub != null){
-			log.info("We can't inactivate this subscriber because he is a part of excludeSubscriberLifeCycle and the subscriber id is -->" + subscriber.getID());
+			log.info("We can't inactivate this subscriber because he is a part of excludeSubscriberLifeCycle and the subscriber id is -->" + subscriber.getId());
 			return ;
 		}
 		if(CmFinoFIX.SubscriberType_Subscriber.equals(subscriber.getType())){
 			inActivateActiveSubscriberOfNoFundMovement(subscriber,subscriberMDN,subscriberStatusEvent);
 		}
 		else{
-			log.info("Partner is not inactivated due to no Fund movement for Subscriber ID --> " + subscriber.getID());
+			log.info("Partner is not inactivated due to no Fund movement for Subscriber ID --> " + subscriber.getId());
 		}
 		if(CmFinoFIX.SubscriberStatus_Active.equals(subscriberMDN.getStatus())){
 			inActivateActiveSubscriberOfNoActivity(subscriber,subscriberMDN,subscriberStatusEvent);
 		}
 	}
 	
-	private void inActivateActiveSubscriberOfNoActivity(Subscriber subscriber,SubscriberMDN subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
+	private void inActivateActiveSubscriberOfNoActivity(Subscriber subscriber,SubscriberMdn subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
 		Timestamp now = new Timestamp();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 		
-		sctlQuery.setSourceMdn(subscriberMDN.getMDN());
-		List<ServiceChargeTransactionLog> srcLst = serviceChargeTransactionsLogService.get(sctlQuery);
+		sctlQuery.setSourceMdn(subscriberMDN.getMdn());
+		List<ServiceChargeTxnLog> srcLst = serviceChargeTransactionsLogService.get(sctlQuery);
 		
 		sctlQuery.setSourceMdn(null);
-		sctlQuery.setDestMdn(subscriberMDN.getMDN());
-		List<ServiceChargeTransactionLog> dstLst = serviceChargeTransactionsLogService.get(sctlQuery);
+		sctlQuery.setDestMdn(subscriberMDN.getMdn());
+		List<ServiceChargeTxnLog> dstLst = serviceChargeTransactionsLogService.get(sctlQuery);
 		
-		ServiceChargeTransactionLog srcLastTransaction = null;
+		ServiceChargeTxnLog srcLastTransaction = null;
 		if(srcLst.size() != 0 ){
 			srcLastTransaction = srcLst.get(srcLst.size()-1);
 		}
-		ServiceChargeTransactionLog dstLastTransaction = null;
+		ServiceChargeTxnLog dstLastTransaction = null;
 		if(dstLst.size() != 0 ){
 			dstLastTransaction = dstLst.get(dstLst.size()-1);
 		}
 		
 		if((srcLst.size() == 0) && (dstLst.size() == 0)){
-			if((now.getTime()-subscriber.getCreateTime().getTime()) > TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY){
+			if((now.getTime()-subscriber.getCreatetime().getTime()) > TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY){
 				subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriberMDN.setStatusTime(now);
+				subscriberMDN.setStatustime(now);
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriber.setStatusTime(now);
+				subscriber.setStatustime(now);
 				subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 				subscriberService.saveSubscriber(subscriber);
-				if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+				if (Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 					Partner partner = getPartnerForSubscriber(subscriber);
 					if (partner != null) {
-						partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+						partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 						partnerService.savePartner(partner);
 					}
 				}
-				log.info("Subscriber Status is changed to Inactive because of no activity with id --> " + subscriber.getID());
-				subscriberStatusEvent.setProcessingStatus(true);
+				log.info("Subscriber Status is changed to Inactive because of no activity with id --> " + subscriber.getId());
+				subscriberStatusEvent.setProcessingstatus(true);
 				subscriberStatusEventService.save(subscriberStatusEvent);
 				subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
-			}else if(subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))){
-				subscriberStatusEvent.setPickUpDateTime(new Timestamp(subscriber.getCreateTime().getTime() + TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY));
+			}else if(Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))){
+				subscriberStatusEvent.setPickupdatetime(new Timestamp(subscriber.getCreatetime().getTime() + TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY));
 				subscriberStatusEventService.save(subscriberStatusEvent);
 			}
 		}else{
 			Long lastTransactionTime = now.getTime();
 			if(srcLastTransaction != null && dstLastTransaction != null){
-				lastTransactionTime = (srcLastTransaction.getCreateTime()
-						.getTime() > dstLastTransaction.getCreateTime()
-						.getTime()) ? srcLastTransaction.getCreateTime()
-						.getTime() : dstLastTransaction.getCreateTime()
+				lastTransactionTime = (srcLastTransaction.getCreatetime()
+						.getTime() > dstLastTransaction.getCreatetime()
+						.getTime()) ? srcLastTransaction.getCreatetime()
+						.getTime() : dstLastTransaction.getCreatetime()
 						.getTime();
 			}else if(srcLastTransaction != null){
-				lastTransactionTime = srcLastTransaction.getCreateTime().getTime();
+				lastTransactionTime = srcLastTransaction.getCreatetime().getTime();
 			}else if(dstLastTransaction != null){
-				lastTransactionTime = dstLastTransaction.getCreateTime().getTime();
+				lastTransactionTime = dstLastTransaction.getCreatetime().getTime();
 			}
 			
 			if((now.getTime()-lastTransactionTime) > TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY){
 				subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriberMDN.setStatusTime(now);
+				subscriberMDN.setStatustime(now);
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriber.setStatusTime(now);
+				subscriber.setStatustime(now);
 				subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 				subscriberService.saveSubscriber(subscriber);
-				if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+				if (Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 					Partner partner = getPartnerForSubscriber(subscriber);
 					if (partner != null) {
-						partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+						partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 						partnerService.savePartner(partner);
 					}
 				}
-				subscriberStatusEvent.setProcessingStatus(true);
+				subscriberStatusEvent.setProcessingstatus(true);
 				subscriberStatusEventService.save(subscriberStatusEvent);
 				subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
-				log.info("Subscriber Status is changed to Inactive  because of no activity with id --> " + subscriber.getID());
-			}else if(subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))){
-				subscriberStatusEvent.setPickUpDateTime(new Timestamp(lastTransactionTime + TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY));
+				log.info("Subscriber Status is changed to Inactive  because of no activity with id --> " + subscriber.getId());
+			}else if(Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))){
+				subscriberStatusEvent.setPickupdatetime(new Timestamp(lastTransactionTime + TIME_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_ACTIVITY));
 				subscriberStatusEventService.save(subscriberStatusEvent);
 			}
 		}
 	}
 	
-	private void inActivateActiveSubscriberOfNoFundMovement(Subscriber subscriber,SubscriberMDN subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
+	private void inActivateActiveSubscriberOfNoFundMovement(Subscriber subscriber,SubscriberMdn subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
 		Timestamp now = new Timestamp();
 		CommodityTransferQuery ctQuery = new CommodityTransferQuery();
 		
 		try{
-			ctQuery.setSourceDestnMDN(subscriberMDN.getMDN());
+			ctQuery.setSourceDestnMDN(subscriberMDN.getMdn());
 			ctQuery.setTransferStatus(CmFinoFIX.TransactionsTransferStatus_Completed.intValue());
 			ctQuery.setLastUpdateTimeGE(new Date(now.getTime() - DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT));
 			List<CommodityTransfer> ctLst = commodityTransferService.get(ctQuery);
 			
 			if((ctLst.size() == 0)){
-				if((now.getTime()-subscriber.getLastUpdateTime().getTime()) > DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT){
+				if((now.getTime()-subscriber.getLastupdatetime().getTime()) > DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT){
 					subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_InActive);
 					subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_NoFundMovement);
-					subscriberMDN.setStatusTime(now);
+					subscriberMDN.setStatustime(now);
 					subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
 					subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_NoFundMovement);
-					subscriber.setStatusTime(now);
+					subscriber.setStatustime(now);
 					subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 					subscriberService.saveSubscriber(subscriber);
-					subscriberStatusEvent.setProcessingStatus(true);
+					subscriberStatusEvent.setProcessingstatus(true);
 					subscriberStatusEventService.save(subscriberStatusEvent);
-					if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+					if (Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 						Partner partner = getPartnerForSubscriber(subscriber);
 						if (partner != null) {
-							partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+							partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 							partnerService.savePartner(partner);
 						}
 					}
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
-					log.info("Subscriber Status is changed to Inactive because of no Fund Movement with id --> " + subscriber.getID());
+					log.info("Subscriber Status is changed to Inactive because of no Fund Movement with id --> " + subscriber.getId());
 				}else{
-					subscriberStatusEvent.setPickUpDateTime(new Timestamp(subscriber.getLastUpdateTime().getTime() + DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT));
+					subscriberStatusEvent.setPickupdatetime(new Timestamp(subscriber.getLastupdatetime().getTime() + DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT));
 					subscriberStatusEventService.save(subscriberStatusEvent);
 				}
 			}else{
-				subscriberStatusEvent.setPickUpDateTime(new Timestamp(now.getTime() + DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT));
+				subscriberStatusEvent.setPickupdatetime(new Timestamp(now.getTime() + DAYS_TO_INACTIVATE_OF_ACTIVE_SUBSCRIBER_WHEN_NO_FUNDMOVEMENT));
 				subscriberStatusEventService.save(subscriberStatusEvent);
 			}
 		
@@ -729,17 +729,17 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	}
 		
 	private List<Pocket> getSubscriberPocketsListWithBalance(
-			SubscriberMDN subscriberMDN) {
+			SubscriberMdn subscriberMDN) {
 		List<Pocket> pkList = null;
 		List<Pocket> pkListWithBalance = new ArrayList<Pocket>();
 		PocketQuery pocketQuery = new PocketQuery();
-		pocketQuery.setMdnIDSearch(subscriberMDN.getID());
+		pocketQuery.setMdnIDSearch(subscriberMDN.getId().longValue());
 		//pocketQuery.setPocketType(CmFinoFIX.PocketType_SVA);
 		//pocketQuery.setPocketType(CmFinoFIX.PocketType_LakuPandai);
 		pkList = pocketService.get(pocketQuery);
 		if (pkList != null) {
 			for (Pocket pk : pkList) {
-				if (pk.getCurrentBalance().compareTo(BigDecimal.ZERO) > 0) {
+				if (new BigDecimal(pk.getCurrentbalance()).compareTo(BigDecimal.ZERO) > 0) {
 					pkListWithBalance.add(pk);
 				}
 			}
@@ -747,8 +747,8 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		return pkListWithBalance;
 	}
 
-	private boolean moveRetiredSubscriberBalanceMoney(SubscriberMDN sourceMDN,
-			Pocket sourcePocket, SubscriberMDN destMDN, Pocket destPocket,
+	private boolean moveRetiredSubscriberBalanceMoney(SubscriberMdn sourceMDN,
+			Pocket sourcePocket, SubscriberMdn destMDN, Pocket destPocket,
 			TransactionDetails txnDetails) {
 		XMLResult inquiryResult;
 		XMLResult confirmResult;
@@ -759,9 +759,9 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			log.info("Enquiry for money transfer failed with notification code :"
 					+ (inquiryResult.getCode()!=null?inquiryResult.getCode():inquiryResult.getNotificationCode())
 					+ " for retired subscriber with ID -->"
-					+ sourceMDN.getSubscriber().getID()
+					+ sourceMDN.getSubscriber().getId()
 					+ " and Pocket ID -->"
-					+ sourcePocket.getID());
+					+ sourcePocket.getId());
 			return false;
 		}
 
@@ -769,9 +769,9 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 				sourcePocket, destMDN, destPocket, inquiryResult);
 		if (mcg == null) {
 			log.info("Error in creating Money Clearance Object after enquiry for retired subscriber with ID -->"
-					+ sourceMDN.getSubscriber().getID()
+					+ sourceMDN.getSubscriber().getId()
 					+ " and Pocket ID -->"
-					+ sourcePocket.getID());
+					+ sourcePocket.getId());
 			return false;
 		}
 		
@@ -783,33 +783,33 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			log.info("Confirm for money transfer failed with notification code :"
 					+ confirmResult.getCode()
 					+ " for retired subscriber with ID -->"
-					+ sourceMDN.getSubscriber().getID());
+					+ sourceMDN.getSubscriber().getId());
 			return false;
 		}
 
 		updateMoneyClearanceObjectStatus(mcg);
 		
 		log.info("Confirm is successfull for money transfer of Retired subscriber with ID -->"
-				+ sourceMDN.getSubscriber().getID()
+				+ sourceMDN.getSubscriber().getId()
 				+ " and Pocket ID -->"
-				+ sourcePocket.getID());
+				+ sourcePocket.getId());
 
 		log.info("Retired Subscriber with ID -->"
-				+ sourceMDN.getSubscriber().getID()
+				+ sourceMDN.getSubscriber().getId()
 				+ " and balance in Pocket ID --> "
-				+ sourcePocket.getID()
+				+ sourcePocket.getId()
 				+ " is successfully transferd to system configured Pocket ID --> "
-				+ destPocket.getID() + " and the money Clearance ID is -->"
-				+ mcg.getID());
+				+ destPocket.getId() + " and the money Clearance ID is -->"
+				+ mcg.getId());
 		return true;
 
 	}
 
-	private XMLResult sendMoneyTransferInquiry(SubscriberMDN srcMDN,
-			Pocket sourcePocket, SubscriberMDN destMDN, Pocket destPocket,
+	private XMLResult sendMoneyTransferInquiry(SubscriberMdn srcMDN,
+			Pocket sourcePocket, SubscriberMdn destMDN, Pocket destPocket,
 			TransactionDetails txnDetails) {
 
-		BigDecimal sourceMDNBalanceAmount = sourcePocket.getCurrentBalance();
+		BigDecimal sourceMDNBalanceAmount = new BigDecimal(sourcePocket.getCurrentbalance());
 		String sourceMessage = ServiceAndTransactionConstants.MESSAGE_MOVE_RETIRED_SUBSCRIBER_BALANCE_MONEY;
 		XMLResult xmlResult = null;
 
@@ -817,13 +817,13 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			sourceMessage = ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER;
 		}
 
-		txnDetails.setDestMDN(subscriberService.normalizeMDN(destMDN.getMDN()));
+		txnDetails.setDestMDN(subscriberService.normalizeMDN(destMDN.getMdn()));
 		txnDetails.setAmount(sourceMDNBalanceAmount);
 
 		xmlResult = (XMLResult) moveBalanceInquiryHandler.handle(txnDetails);
 
 		log.info("Inquiry Response for Retired Subscriber with ID -->:"
-				+ srcMDN.getSubscriber().getID() + "is: " + xmlResult);
+				+ srcMDN.getSubscriber().getId() + "is: " + xmlResult);
 		return xmlResult;
 	}
 
@@ -839,11 +839,11 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		return xmlResult;
 	}
 
-	private XMLResult sendMoneyTransferConfirm(SubscriberMDN srcMDN,
-			Pocket sourcePocket, SubscriberMDN destMDN, Pocket destPocket,
+	private XMLResult sendMoneyTransferConfirm(SubscriberMdn srcMDN,
+			Pocket sourcePocket, SubscriberMdn destMDN, Pocket destPocket,
 			XMLResult inquiryResult, TransactionDetails txnDetails) {
 		log.info("Sending Confirm for money transfer of Retired subscriber with ID -->"
-				+ srcMDN.getSubscriber().getID());
+				+ srcMDN.getSubscriber().getId());
 		XMLResult xmlResult = null;
 		txnDetails.setTransferId(inquiryResult.getTransferID());
 		txnDetails.setParentTxnId(inquiryResult.getParentTransactionID());
@@ -851,7 +851,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		xmlResult = (XMLResult) moveBalanceConfirmHandler.handle(txnDetails);
 
 		log.info("Confirm Response for Retired Subscriber with ID -->:"
-				+ srcMDN.getSubscriber().getID() + "is: " + xmlResult);
+				+ srcMDN.getSubscriber().getId() + "is: " + xmlResult);
 		return xmlResult;
 	}
 
@@ -860,7 +860,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		return destPocket;
 	}
 
-	private SubscriberMDN getDestSubscriberMDN(String partnerCode) {
+	private SubscriberMdn getDestSubscriberMDN(String partnerCode) {
 		PartnerQuery query = new PartnerQuery();
 		query.setPartnerCode(partnerCode);
 		List<Partner> lst = partnerService.get(query);
@@ -870,8 +870,8 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			log.info("Destination Partner not found for the given partner code --> " + partnerCode);
 			return null;
 		}
-		Set<SubscriberMDN> set = destPartner.getSubscriber()
-				.getSubscriberMDNFromSubscriberID();
+		Set<SubscriberMdn> set = destPartner.getSubscriber()
+				.getSubscriberMdns();
 		PartnerValidator pValidator = new PartnerValidator(set.iterator()
 				.next());
 
@@ -883,7 +883,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			log.info("partner validation failed.result=" + validationResult);
 			return null;
 		}
-		SubscriberMDN destMDN = pValidator.getSubscriberMDN();
+		SubscriberMdn destMDN = pValidator.getSubscriberMDN();
 		return destMDN;
 	}
 
@@ -898,26 +898,26 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	}
 
 	private void updateMoneyClearanceObjectStatus(MoneyClearanceGraved mcg){
-		mcg.setMCStatus(CmFinoFIX.MCStatus_INITIALIZED);
+		mcg.setMcstatus(CmFinoFIX.MCStatus_INITIALIZED);
 		moneyClearanceGravedService.saveMoneyClearanceGraved(mcg);
 		log.info("Successfully updated money clerance object status to initialized for Retired Subscriber with Money Clearance ID -->"
-				+ mcg.getID());
+				+ mcg.getId());
 	}
 	
 	
 	
 	
-	private MoneyClearanceGraved createAndSaveMoneyClearanceObject(SubscriberMDN sourceMDN,
-			Pocket sourcePocket, SubscriberMDN destMDN, Pocket destPocket,
+	private MoneyClearanceGraved createAndSaveMoneyClearanceObject(SubscriberMdn sourceMDN,
+			Pocket sourcePocket, SubscriberMdn destMDN, Pocket destPocket,
 			XMLResult confirmResult) {
 		log.info("SubscriberLifeCycleServiceImpl::createAndSaveMoneyClearanceObject :Begin");
 		log.info("Trying to save money clerance object for Retired Subscriber with ID -->"
-				+ sourceMDN.getSubscriber().getID());
+				+ sourceMDN.getSubscriber().getId());
 		
 		MoneyClearanceGravedQuery query = new MoneyClearanceGravedQuery();
 		MoneyClearanceGraved mcg;
-		query.setMdnId(sourceMDN.getID());
-		query.setPocketId(sourcePocket.getID());
+		query.setMdnId(sourceMDN.getId().longValue());
+		query.setPocketId(sourcePocket.getId().longValue());
 		List <MoneyClearanceGraved> lst = moneyClearanceGravedService.getMoneyClearanceGravedByQuery(query);
 		if(lst.size() > 0){
 			mcg = lst.get(0);
@@ -925,23 +925,23 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			mcg = new MoneyClearanceGraved();
 		}
 		
-		ServiceChargeTransactionLog sctl = new ServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = new ServiceChargeTxnLog();
 		if (confirmResult != null) {
 			log.info("sctl ID from Confirm --> " + confirmResult.getSctlID()
 					+ " for Retired Subscriber with ID --> "
-					+ sourceMDN.getSubscriber().getID()
-					+ " and Pocket ID is -->" + sourcePocket.getID());
+					+ sourceMDN.getSubscriber().getId()
+					+ " and Pocket ID is -->" + sourcePocket.getId());
 			sctl = serviceChargeTransactionsLogService.getById(confirmResult.getSctlID());
-			mcg.setSubscriberMDNByMDNID(sourceMDN);
-			mcg.setPocket(sourcePocket);
-			mcg.setServiceChargeTransactionLogBySctlId(sctl);
+			mcg.setSubscriberMdnByMdnid(sourceMDN);
+			mcg.setPocketByPocketid(sourcePocket);
+			mcg.setServiceChargeTxnLogBySctlid(sctl);
 			mcg.setAmount(confirmResult.getCreditAmount());
-			mcg.setMCStatus(-1);
+			mcg.setMcstatus(-1);
 
 			moneyClearanceGravedService.saveMoneyClearanceGraved(mcg);
 			log.info("Successfully saved save money clerance object for Retired Subscriber with ID -->"
-					+ sourceMDN.getSubscriber().getID()
-					+ " and Pocket ID is -->" + sourcePocket.getID());
+					+ sourceMDN.getSubscriber().getId()
+					+ " and Pocket ID is -->" + sourcePocket.getId());
 			log.info("SubscriberLifeCycleServiceImpl::createAndSaveMoneyClearanceObject :End");
 			return mcg;			
 		}
@@ -949,11 +949,11 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	}
 
 	private boolean moveMoneyToNationalTreasury(TransactionDetails txnDetails,
-			SubscriberMDN mdn) {
+			SubscriberMdn mdn) {
 		XMLResult inquiryResult;
 		XMLResult confirmResult;
 		log.info("SubscriberLifeCycleServiceImpl::moveMoneyToNationalTreasury :Begin");
-		log.info("Sending Money transfer Inquiry for subscriber MDN ID -->" + mdn.getID());
+		log.info("Sending Money transfer Inquiry for subscriber MDN ID -->" + mdn.getId());
 		inquiryResult = sendMoneyTransferInquiry(txnDetails);
 		if (!isMoneyTransferInquirySuccessfull(inquiryResult)) {
 			log.info("Inquiry for money transfer failed with notification code :"
@@ -965,12 +965,12 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		txnDetails.setTransferId(inquiryResult.getTransferID());
 		txnDetails.setParentTxnId(inquiryResult.getParentTransactionID());
 		txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY);
-		log.info("Sending Money transfer Confirm for subscriber MDN ID -->" + mdn.getID());
+		log.info("Sending Money transfer Confirm for subscriber MDN ID -->" + mdn.getId());
 		confirmResult = sendMoneyTransferConfirm(txnDetails);
 
 		if (!isMoneyTransferConfirmSuccessfull(confirmResult)) {
 			log.info("Confirm for money transfer failed with notification code :"
-					+ confirmResult.getCode() + " while moving to National Treasury for subscriber--> " + mdn.getID());
+					+ confirmResult.getCode() + " while moving to National Treasury for subscriber--> " + mdn.getId());
 			return false;
 		}
 
@@ -980,7 +980,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		Long moneyClearanceID = updateMCGRecord(confirmResult, mdn);
 
 		if (moneyClearanceID.equals(new Long(-1L))) {
-			log.info("Error in updating Money Clearance Object after transferring the amount to National Treasury of retired subscriber --> " + mdn.getID());
+			log.info("Error in updating Money Clearance Object after transferring the amount to National Treasury of retired subscriber --> " + mdn.getId());
 			return false;
 		}
 
@@ -1022,13 +1022,13 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		return false;
 	}
 
-	private Long updateMCGRecord(XMLResult confirmResult, SubscriberMDN mdn) {
+	private Long updateMCGRecord(XMLResult confirmResult, SubscriberMdn mdn) {
 		log.info("SubscriberLifeCycleServiceImpl::updateMCGRecord :Begin");
 		log.info("Trying to save money clerance object for Retired Subscriber with ID -->"
-				+ mdn.getID());
+				+ mdn.getId());
 		MoneyClearanceGravedQuery query = new MoneyClearanceGravedQuery();
 		MoneyClearanceGraved mcg;
-		query.setMdnId(mdn.getID());
+		query.setMdnId(mdn.getId().longValue());
 		List<MoneyClearanceGraved> lst = moneyClearanceGravedService.getMoneyClearanceGravedByQuery(query);
 		if (lst.size() > 0) {
 			mcg = lst.get(0);
@@ -1036,39 +1036,39 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			mcg = new MoneyClearanceGraved();
 		}
 
-		ServiceChargeTransactionLog sctl = new ServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = new ServiceChargeTxnLog();
 		if (confirmResult != null) {
 			log.info("sctl ID from Confirm --> " + confirmResult.getSctlID()
-					+ " for Retired Subscriber with ID --> " + mdn.getID());
+					+ " for Retired Subscriber with ID --> " + mdn.getId());
 			sctl = serviceChargeTransactionsLogService.getById(confirmResult.getSctlID());
-			SubscriberMDN subscriberMDN = subscriberMdnService.getById(mdn.getID());
-			SubscriberMDN destMDN = subscriberMdnService.getByMDN(confirmResult
+			SubscriberMdn subscriberMDN = subscriberMdnService.getById(mdn.getId().longValue());
+			SubscriberMdn destMDN = subscriberMdnService.getByMDN(confirmResult
 					.getDestinationMDN());
-			mcg.setSubscriberMDNByMDNID(subscriberMDN);
-			mcg.setServiceChargeTransactionLogByRefundSctlID(sctl);
-			mcg.setMCStatus(CmFinoFIX.MCStatus_MOVED_TO_NATIONAL_TREASURY);
+			mcg.setSubscriberMdnByMdnid(subscriberMDN);
+			mcg.setServiceChargeTxnLogByRefundsctlid(sctl);
+			mcg.setMcstatus(CmFinoFIX.MCStatus_MOVED_TO_NATIONAL_TREASURY);
 			mcg.setAmount(confirmResult.getCreditAmount());
-			mcg.setSubscriberMDNByRefundMDNID(destMDN);
-			mcg.setPocketByRefundPocketID(confirmResult.getSourcePocket());
+			mcg.setSubscriberMdnByRefundmdnid(destMDN);
+			mcg.setPocketByRefundpocketid(confirmResult.getSourcePocket());
 			moneyClearanceGravedService.saveMoneyClearanceGraved(mcg);
 			log.info("Successfully saved save money clerance object for Retired Subscriber with ID -->"
-					+ mdn.getID());
+					+ mdn.getId());
 			log.info("SubscriberLifeCycleServiceImpl::updateMCGRecord :End");
-			return mcg.getID();
+			return mcg.getId().longValue();
 		}		
 		return new Long(-1L);
 	}
 	/**
-	 * Returns the SubscriberMDN for the given Subscriber
+	 * Returns the SubscriberMdn for the given Subscriber
 	 * 
 	 * @param subscriber
 	 * @return
 	 */
 	
-	private SubscriberMDN getSubscriberMDNForSubscriber(Subscriber subscriber) {
-		SubscriberMDN subscriberMDN = null;
+	private SubscriberMdn getSubscriberMDNForSubscriber(Subscriber subscriber) {
+		SubscriberMdn subscriberMDN = null;
 		if (subscriber != null) {
-			Set<SubscriberMDN> subscriberMDNs = subscriber.getSubscriberMDNFromSubscriberID();
+			Set<SubscriberMdn> subscriberMDNs = subscriber.getSubscriberMdns();
 			if ((subscriberMDNs != null) && (subscriberMDNs.size()!=0)) { 
 				subscriberMDN = subscriberMDNs.iterator().next();
 			}

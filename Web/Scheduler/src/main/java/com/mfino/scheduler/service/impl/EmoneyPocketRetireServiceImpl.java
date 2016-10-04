@@ -57,9 +57,9 @@ public class EmoneyPocketRetireServiceImpl implements EmoneyPocketRetireService{
 			do {
 				pendingRetiredPockets = pocketService.get(pocketQuery);
 				for (Pocket eachRtrdPkt : pendingRetiredPockets) {
-					log.info("Get pocket: " + eachRtrdPkt.getID());
-					if (eachRtrdPkt.getCurrentBalance() == null ||
-							eachRtrdPkt.getCurrentBalance().compareTo(BigDecimal.ZERO) == 0) 
+					log.info("Get pocket: " + eachRtrdPkt.getId());
+					if (eachRtrdPkt.getCurrentbalance() == null ||
+							new BigDecimal(eachRtrdPkt.getCurrentbalance()).compareTo(BigDecimal.ZERO) == 0) 
 					{
 						CommodityTransferQuery ctQuery = new CommodityTransferQuery();
 						ctQuery.setSourceDestnPocket(eachRtrdPkt);
@@ -68,18 +68,18 @@ public class EmoneyPocketRetireServiceImpl implements EmoneyPocketRetireService{
 							List<PendingCommodityTransfer> pcList = pendingCommodityTransferService.getByQuery(ctQuery);
 
 							if (pcList.size() > 0) {
-								log.info("Pocket (" + eachRtrdPkt.getID() + ") still has pending transactions");
+								log.info("Pocket (" + eachRtrdPkt.getId() + ") still has pending transactions");
 								continue;
 							} else {
 								eachRtrdPkt.setStatus(CmFinoFIX.PocketStatus_Retired);
 								pocketService.save(eachRtrdPkt);
-								log.info("Pocket (" + eachRtrdPkt.getID() + ") is retired");
+								log.info("Pocket (" + eachRtrdPkt.getId() + ") is retired");
 							}
 						} catch (Exception e) {
 							log.error("Exception while checking if the pocket has Pending Transactions", e);
 						}
 					}else{
-						log.info("Pocket (" + eachRtrdPkt.getID() + ") still has balance");
+						log.info("Pocket (" + eachRtrdPkt.getId() + ") still has balance");
 					}
 				}
 

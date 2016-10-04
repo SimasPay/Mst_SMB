@@ -4,21 +4,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.SubscriberQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
@@ -100,37 +97,37 @@ public class ActivationMsgServiceImpl  implements ActivationMsgService{
  
 		Timestamp now = new Timestamp();
 		
-	 	Set<SubscriberMDN> MDNList=subscriberObject.getSubscriberMDNFromSubscriberID();
+	 	Set<SubscriberMdn> MDNList=subscriberObject.getSubscriberMdns();
 	 	
-	 	SubscriberMDN smdn = MDNList.toArray(new SubscriberMDN[0])[0];
+	 	SubscriberMdn smdn = MDNList.toArray(new SubscriberMdn[0])[0];
 	  	boolean smsRequired =false;
         
 		if (subscriberObject != null) {
- 			log.info("SMS service check: subscriber ID --> " + subscriberObject.getID() + " , status is --> " + subscriberObject.getStatus()+ " and registratoin medium --> " +subscriberObject.getRegistrationMedium());
+ 			log.info("SMS service check: subscriber ID --> " + subscriberObject.getId() + " , status is --> " + subscriberObject.getStatus()+ " and registratoin medium --> " +subscriberObject.getRegistrationmedium());
 		 	  
-			if(subscriberObject.getLastNotificationTime()==null){
+			if(subscriberObject.getLastnotificationtime()==null){
 				smsRequired=true; 
 			}
-		   	else if ((now.getTime() - subscriberObject.getLastNotificationTime().getTime()) > TIME_TO_SEND_MESSAGE){
+		   	else if ((now.getTime() - subscriberObject.getLastnotificationtime().getTime()) > TIME_TO_SEND_MESSAGE){
 		   		smsRequired=true;
 		   	}	 
    		}
 		if(smsRequired==true){
-			subscriberObject.setLastNotificationTime(now);
+			subscriberObject.setLastnotificationtime(now);
 			sendSms(smdn);
 			subscriberService.saveSubscriber(subscriberObject);
 		}
  	}
 	
-	private void sendSms(SubscriberMDN destMDN){
+	private void sendSms(SubscriberMdn destMDN){
 		
 		NotificationWrapper notification = new NotificationWrapper();
 		Integer language = 0;
  		if(destMDN != null){
-  			notification.setFirstName(destMDN.getSubscriber().getFirstName());
-		 	notification.setLastName(destMDN.getSubscriber().getLastName());
-		 	if (destMDN.getSubscriber().getLanguage() != null) {
-		 		language = destMDN.getSubscriber().getLanguage();
+  			notification.setFirstName(destMDN.getSubscriber().getFirstname());
+		 	notification.setLastName(destMDN.getSubscriber().getLastname());
+		 	if (Long.valueOf(destMDN.getSubscriber().getLanguage() )!= null) {
+		 		language = (int)destMDN.getSubscriber().getLanguage();
 		 	} else {
 		 		language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		 	}
@@ -140,7 +137,7 @@ public class ActivationMsgServiceImpl  implements ActivationMsgService{
 		notification.setCode(CmFinoFIX.NotificationCode_ActivationSMSTypeBulkUpload);
 
 		String message1 = notificationMessageParserService.buildMessage(notification,true);
-		smsService.setDestinationMDN(destMDN.getMDN());
+		smsService.setDestinationMDN(destMDN.getMdn());
 		smsService.setMessage(message1);
 		smsService.setNotificationCode(notification.getCode());
 		smsService.asyncSendSMS();

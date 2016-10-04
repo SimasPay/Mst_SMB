@@ -26,7 +26,7 @@ import com.mfino.domain.AgentCommissionFee;
 import com.mfino.domain.BookingDatedBalance;
 import com.mfino.domain.MonthlyBalance;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.scheduler.service.AverageMonthlyBalanceService;
 import com.mfino.service.AgentCommissionFeeService;
@@ -171,16 +171,16 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 			
 			if (CollectionUtils.isNotEmpty(lstBookingDatedBalances)) {
 				for (BookingDatedBalance bdb:lstBookingDatedBalances) {
-					Date bookingDate = bdb.getBookingDate();
-					BigDecimal bookingBalance = bdb.getClosingBalance();
+					Date bookingDate = bdb.getBookingdate();
+					BigDecimal bookingBalance = new BigDecimal(bdb.getClosingbalance());
 					monthlyBalances.put(bookingDate.getDate(), bookingBalance);
 				}
 			}
-			SubscriberMDN subMdn = p.getSubscriberMDNByMDNID();
+			SubscriberMdn subMdn = p.getSubscriberMdn();
 			int closingDay = 0;
-			if ( (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subMdn.getStatus().intValue()) || 
-					(CmFinoFIX.SubscriberStatus_Retired.intValue() == subMdn.getStatus().intValue()) ) {
-				closingDay = subMdn.getStatusTime().getDate();	
+			if ( (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subMdn.getStatus()) || 
+					(CmFinoFIX.SubscriberStatus_Retired.intValue() == subMdn.getStatus()) ) {
+				closingDay = subMdn.getStatustime().getDate();	
 			}
 			log.info("Mdn Close day = "+ closingDay);
 			
@@ -193,7 +193,7 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 						if (i == startDay) { 
 							BookingDatedBalance preDayBalance = bookingDatedBalanceService.getPreDatedEntry(p, startDate);
 							if (preDayBalance != null) 
-								monthlyBalances.put(i, preDayBalance.getClosingBalance());
+								monthlyBalances.put(i, new BigDecimal(preDayBalance.getClosingbalance()));
 							else 
 								monthlyBalances.put(i, BigDecimal.ZERO);
 						}
@@ -212,18 +212,18 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 			mBalance.setYear(currentYear);
 			
 			BigDecimal avgMonthlyBalance = totalMonthlyBalance.divide(new BigDecimal(endDay), 2, RoundingMode.HALF_EVEN);
-			mBalance.setAverageMonthlyBalance(avgMonthlyBalance);
+			mBalance.setAveragemonthlybalance(avgMonthlyBalance);
 			
-			BigDecimal roi = p.getPocketTemplate().getInterestRate();
+			BigDecimal roi = p.getPocketTemplate().getInterestrate();
 			if (roi == null) {
 				roi = BigDecimal.ZERO;
 			}
-			mBalance.setInterestCalculated(calculateFee(avgMonthlyBalance, roi));
+			mBalance.setInterestcalculated(calculateFee(avgMonthlyBalance, roi));
 
-			mBalance.setAgentCommissionCalculated(calculateFee(avgMonthlyBalance, cFee));
+			mBalance.setAgentcommissioncalculated(calculateFee(avgMonthlyBalance, cFee));
 			monthlyBalanceService.save(mBalance);
 			
-			result = subMdn.getMDN()+","+mBalance.getInterestCalculated();
+			result = subMdn.getMdn()+","+mBalance.getInterestcalculated();
 		}
 		else {
 			log.info(String.format("Avergare monthly balance for pocket id:%S for month/year:%S/%S is already calculated", 
@@ -246,14 +246,14 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 					agentCommissionFee = agentCommissionFeeService.getAgentCommissionFee(agentId, currentMonth+"", currentYear);
 					if (agentCommissionFee == null) {
 						agentCommissionFee = new AgentCommissionFee();
-						agentCommissionFee.setPartnerID(agentId);
+						agentCommissionFee.setPartnerid(BigDecimal.valueOf(agentId));
 						agentCommissionFee.setMonth(currentMonth+"");
 						agentCommissionFee.setYear(currentYear);
-						agentCommissionFee.setCustomerBalanceFee(cFee);
-						agentCommissionFee.setOpenAccountFee(BigDecimal.ZERO);
+						agentCommissionFee.setCustomerbalancefee(cFee);
+						agentCommissionFee.setOpenaccountfee(BigDecimal.ZERO);
 					}
 					else {
-						agentCommissionFee.setCustomerBalanceFee(cFee);
+						agentCommissionFee.setCustomerbalancefee(cFee);
 					}
 					log.info("Saving the Agent commission balance for agent Id: "+ agentId);
 					agentCommissionFeeService.save(agentCommissionFee);
@@ -296,14 +296,14 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 					agentCommissionFee = agentCommissionFeeService.getAgentCommissionFee(agentId, currentMonth+"", currentYear);
 					if (agentCommissionFee == null) {
 						agentCommissionFee = new AgentCommissionFee();
-						agentCommissionFee.setPartnerID(agentId);
+						agentCommissionFee.setPartnerid(BigDecimal.valueOf(agentId));
 						agentCommissionFee.setMonth(currentMonth+"");
 						agentCommissionFee.setYear(currentYear);
-						agentCommissionFee.setCustomerBalanceFee(BigDecimal.ZERO);
-						agentCommissionFee.setOpenAccountFee(openAccFee);
+						agentCommissionFee.setCustomerbalancefee(BigDecimal.ZERO);
+						agentCommissionFee.setOpenaccountfee(openAccFee);
 					}
 					else {
-						agentCommissionFee.setOpenAccountFee(openAccFee);
+						agentCommissionFee.setOpenaccountfee(openAccFee);
 					}
 					log.info("Saving the opening account fee value to agent Id: "+ agentId);
 					agentCommissionFeeService.save(agentCommissionFee);

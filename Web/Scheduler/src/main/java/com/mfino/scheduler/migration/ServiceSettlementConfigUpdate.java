@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.dao.query.ServiceSettlementConfigQuery;
 import com.mfino.domain.PartnerServices;
-import com.mfino.domain.ServiceSettlementConfig;
+import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.scheduler.service.impl.BaseServiceImpl;
 import com.mfino.service.ServiceSettlementConfigCoreService;
@@ -38,17 +38,17 @@ public class ServiceSettlementConfigUpdate extends BaseServiceImpl{
 		
 			ServiceSettlementConfigQuery configQuery = new ServiceSettlementConfigQuery();
 			configQuery.setCollectorPocket(null);
-			List<ServiceSettlementConfig> settlementConfigs = serviceSettlementConfigCoreService.get(configQuery);
+			List<ServiceSettlementCfg> settlementConfigs = serviceSettlementConfigCoreService.get(configQuery);
 
-			for(ServiceSettlementConfig config:settlementConfigs){
-				PartnerServices partnerServices = config.getPartnerServicesByPartnerServiceID();
+			for(ServiceSettlementCfg config:settlementConfigs){
+				PartnerServices partnerServices = config.getPartnerServices();
 				config.setPocketByCollectorPocket(partnerServices.getPocketByCollectorPocket());
-				if(config.getSchedulerStatus()==CmFinoFIX.SchedulerStatus_Scheduled){
-					config.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Rescheduled);
-					log.info("Set status to ReScheduled for ServiceSettlementConfig:"+config.getID());
+				if(config.getSchedulerstatus().intValue()==CmFinoFIX.SchedulerStatus_Scheduled){
+					config.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_Rescheduled));
+					log.info("Set status to ReScheduled for ServiceSettlementConfig:"+config.getId());
 				}else{
-					config.setSchedulerStatus(CmFinoFIX.SchedulerStatus_TobeScheduled);
-					log.info("Set status to TobeScheduled for ServiceSettlementConfig:"+config.getID());
+					config.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_TobeScheduled));
+					log.info("Set status to TobeScheduled for ServiceSettlementConfig:"+config.getId());
 				}
 				serviceSettlementConfigCoreService.save(config);
 			}

@@ -17,7 +17,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.BulkUploadEntry;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
@@ -93,8 +93,8 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 		
 		if (CollectionUtils.isNotEmpty(unRegisteredTxnInfos)) {
 			for (UnregisteredTxnInfo urti: unRegisteredTxnInfos) {
-				if ( !(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(urti.getTransactionName())) ) {
-					long diffTime = cuurentTime.getTime() - urti.getCreateTime().getTime();
+				if ( !(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(urti.getTransactionname())) ) {
+					long diffTime = cuurentTime.getTime() - urti.getCreatetime().getTime();
 					if (diffTime > expiryTime) {
 						revertTransfer(urti);
 					}
@@ -106,7 +106,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 	
 	
 	private void revertTransfer(UnregisteredTxnInfo urti) {
-		log.info("Reverting the Transfer to UnRegistered with ReferenceId: " + urti.getTransferSCTLId());
+		log.info("Reverting the Transfer to UnRegistered with ReferenceId: " + urti.getTransferctid());
 		
 		String reverseCharge = systemParametersService.getString(SystemParameterKeys.REVERSE_CHARGE_FOR_EXPIRED_TRANSFER_TO_UNREGISTERED);
 		boolean isChargeRevese = false;
@@ -114,46 +114,46 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 			isChargeRevese = true;
 		}
 		
-		long sctlId = urti.getTransferSCTLId();
-		ServiceChargeTransactionLog sctl = serviceChargeTransactionLogService.getById(sctlId);
+		long sctlId = urti.getTransferctid().longValue();
+		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(sctlId);
 		Long chargeRevFundPocket = systemParametersService.getLong(SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET);
 		
-		log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctl.getID() + " is initialized");
-		urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+		log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctl.getId() + " is initialized");
+		urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
 		unRegisteredTxnInfoService.save(urti);
 		
 
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSctlId(sctl.getID());
+		transactionDetails.setSctlId(sctl.getId().longValue());
 		transactionDetails.setChargeReverseAlso(isChargeRevese);
 		transactionDetails.setChargeRevFundPocket(chargeRevFundPocket);
 		
 		Result result = autoReverseHandler.handle(transactionDetails);
 		if (CmFinoFIX.NotificationCode_AutoReverseSuccess.equals(result.getNotificationCode())) {
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Expired);
-			sctl.setFailureReason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
+			sctl.setFailurereason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
 			serviceChargeTransactionLogService.save(sctl);
 			
-			urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED);
-			urti.setFailureReason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
+			urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED));
+			urti.setFailurereason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
 			unRegisteredTxnInfoService.save(urti);
 			
 			// Check if the Transaction is of type Sub Bulk Transfer then Change the Status in Bulkuploadentry so that
 			// the amount will be reverted to Source pocket. (from suspence pocket to source pocket)
-			long transactionTypeId = sctl.getTransactionTypeID();
+			long transactionTypeId = sctl.getTransactiontypeid().longValue();
 			TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
-			if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(transactionType.getTransactionName())) {
+			if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(transactionType.getTransactionname())) {
 				BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(sctlId);
 				bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Expired);
-				bue.setFailureReason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
+				bue.setFailurereason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
 				bulkUploadEntryService.saveBulkUploadEntry(bue);
 			}
 			log.info("Successfully reverted the Transaction with Reference ID : " + sctlId);
 		}
 		else if (CmFinoFIX.NotificationCode_AutoReverseFailed.equals(result.getNotificationCode())) {
 			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctlId + " is failed");
-			urti.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
-			urti.setFailureReason(MessageText._("Reversal of 'Transfer to UnRegistered' is failed and will try in next trigger fire event"));
+			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+			urti.setFailurereason(MessageText._("Reversal of 'Transfer to UnRegistered' is failed and will try in next trigger fire event"));
 			unRegisteredTxnInfoService.save(urti);
 		}
 		else {

@@ -22,11 +22,11 @@ import com.mfino.dao.ChannelCodeDAO;
 import com.mfino.dao.query.ChargeDefinitionQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ChargeDefinition;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
@@ -106,15 +106,15 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 			log.info("FundReimburseServiceImpl:doReimburse():"+chargeDefinations.size());
 			Map <Long,String> pocketIds =new HashMap<Long,String> ();
 			for(ChargeDefinition chargedef:chargeDefinations){
-				if(pocketIds.containsKey(chargedef.getPocket().getID())){
+				if(pocketIds.containsKey(chargedef.getPocket().getId())){
 					continue;
 				}else{
-					pocketIds.put(chargedef.getPocket().getID(), "processed");
+					pocketIds.put(chargedef.getPocket().getId().longValue(), "processed");
 				}
 				try{
 					transferFunds(chargedef);
 				}catch (Exception e) {
-					log.info("Exception in fundreimbursement"+chargedef.getPocket().getID(),e);
+					log.info("Exception in fundreimbursement"+chargedef.getPocket().getId(),e);
 				}
 				log.info("FundReimburseServiceImpl:doReimburse():Complete");
 			}
@@ -123,10 +123,10 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 
 	private void transferFunds(ChargeDefinition chargedef) {
 		Pocket fundsPocket = chargedef.getPocket();
-		fundsPocket = pocketService.getById(fundsPocket.getID());
-		if(fundsPocket.getCurrentBalance().compareTo(BigDecimal.ZERO)==-1){
-			SubscriberMDN partnerMdn = fundsPocket.getSubscriberMDNByMDNID();
-			Pocket fundsSourcePocket = subscriberService.getDefaultPocket(partnerMdn.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+		fundsPocket = pocketService.getById(fundsPocket.getId().longValue());
+		if(new BigDecimal(fundsPocket.getCurrentbalance()).compareTo(BigDecimal.ZERO)==-1){
+			SubscriberMdn partnerMdn = fundsPocket.getSubscriberMdn();
+			Pocket fundsSourcePocket = subscriberService.getDefaultPocket(partnerMdn.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 			if(fundsSourcePocket!=null){
 				String[] response=sendTransferInquiry(fundsSourcePocket,fundsPocket,partnerMdn);
 				if(CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(response[0])
@@ -144,25 +144,25 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 
 
 	private void sendTransferConfirmation(Pocket sourcePocket,
-			Pocket destPocket, SubscriberMDN subMDN, String[] inquiryresponse) {
+			Pocket destPocket, SubscriberMdn subMDN, String[] inquiryresponse) {
 
 		CMBankAccountToBankAccountConfirmation transferConfirmation = new CMBankAccountToBankAccountConfirmation();
-		transferConfirmation.setSourceMDN(subMDN.getMDN());
-		transferConfirmation.setChannelCode(chanelCode.getChannelCode());
-		transferConfirmation.setDestMDN(subMDN.getMDN());
-		transferConfirmation.setDestPocketID(destPocket.getID());
+		transferConfirmation.setSourceMDN(subMDN.getMdn());
+		transferConfirmation.setChannelCode(chanelCode.getChannelcode());
+		transferConfirmation.setDestMDN(subMDN.getMdn());
+		transferConfirmation.setDestPocketID(destPocket.getId().longValue());
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		transferConfirmation.setSourcePocketID(sourcePocket.getID());
+		transferConfirmation.setSourcePocketID(sourcePocket.getId().longValue());
 		transferConfirmation.setConfirmed(true);
 		transferConfirmation.setTransferID(Long.valueOf(inquiryresponse[1]));
 		transferConfirmation.setParentTransactionID(Long.valueOf(inquiryresponse[2]));
-		transferConfirmation.setSourceApplication(chanelCode.getChannelSourceApplication());
+		transferConfirmation.setSourceApplication((int)chanelCode.getChannelsourceapplication());
 		transferConfirmation.setServiceName(ServiceAndTransactionConstants.SERVICE_SYSTEM);
 		transferConfirmation.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
-		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
+		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		log.info("sending TransferConfirmation:");
 		
 		
@@ -174,40 +174,40 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 
 
 	private String[] sendTransferInquiry(Pocket sourcePocket,
-			Pocket destPocket, SubscriberMDN subMDN) {
+			Pocket destPocket, SubscriberMdn subMDN) {
 		CMBankAccountToBankAccount transferInquiry = new CMBankAccountToBankAccount();
 		String [] result ={"0",null,null};
 		transferInquiry.setPin("1234");		
-		transferInquiry.setSourceApplication(chanelCode.getChannelSourceApplication());
+		transferInquiry.setSourceApplication((int)chanelCode.getChannelsourceapplication());
 		transferInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_SYSTEM);
-		transferInquiry.setSourceMDN(subMDN.getMDN());
-		transferInquiry.setAmount(destPocket.getCurrentBalance().negate());
-		transferInquiry.setDestMDN(subMDN.getMDN());
-		transferInquiry.setDestPocketID(destPocket.getID());
+		transferInquiry.setSourceMDN(subMDN.getMdn());
+		transferInquiry.setAmount(new BigDecimal(destPocket.getCurrentbalance()).negate());
+		transferInquiry.setDestMDN(subMDN.getMdn());
+		transferInquiry.setDestPocketID(destPocket.getId().longValue());
 		transferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		transferInquiry.setSourcePocketID(sourcePocket.getID());
+		transferInquiry.setSourcePocketID(sourcePocket.getId().longValue());
 		transferInquiry.setSourceMessage(ServiceAndTransactionConstants.TRANSACTION_FUNDREIMBURSE);
-		transferInquiry.setChannelCode(chanelCode.getChannelCode());
+		transferInquiry.setChannelCode(chanelCode.getChannelcode());
 		transferInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		
-		TransactionsLog transactionsLog = saveTransactionsLog(CmFinoFIX.MessageType_FundReimburseInquiry, " ");
-		transferInquiry.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = saveTransactionsLog(CmFinoFIX.MessageType_FundReimburseInquiry, " ");
+		transferInquiry.setTransactionID(transactionsLog.getId().longValue());
 		
 		// Generating the SCTL Entry 
 
-		ServiceChargeTransactionLog sctl = new ServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = new ServiceChargeTxnLog();
 		
 		try{
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
-			sctl.setChannelCodeID(chanelCode.getID());
-			sctl.setSourceMDN(transferInquiry.getSourceMDN());
-			sctl.setDestMDN(transferInquiry.getSourceMDN());
-			sctl.setServiceID(transactionChargingService.getServiceId(transferInquiry.getServiceName()));
-			sctl.setServiceProviderID(transactionChargingService.getServiceProviderId(null));
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
+			sctl.setChannelcodeid(chanelCode.getId());
+			sctl.setSourcemdn(transferInquiry.getSourceMDN());
+			sctl.setDestmdn(transferInquiry.getSourceMDN());
+			sctl.setServiceid(BigDecimal.valueOf(transactionChargingService.getServiceId(transferInquiry.getServiceName())));
+			sctl.setServiceproviderid(BigDecimal.valueOf(transactionChargingService.getServiceProviderId(null)));
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Processing);
-			sctl.setTransactionAmount(transferInquiry.getAmount());
-			sctl.setTransactionTypeID(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_FUNDREIMBURSE));
-			sctl.setTransactionID(transactionsLog.getID());
+			sctl.setTransactionamount(transferInquiry.getAmount());
+			sctl.setTransactiontypeid(BigDecimal.valueOf(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_FUNDREIMBURSE)));
+			sctl.setTransactiontypeid(transactionsLog.getId());
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			result[0]=CmFinoFIX.NotificationCode_ServiceNotAvailable.toString();
@@ -232,8 +232,8 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 		if ((CmFinoFIX.ResponseCode_Success.toString()).equals(status) && !("0".equals(code))) {
 			result[1]=response.getTransferID().toString();
 			result[2]=response.getParentTransactionID().toString();
-			sctl.setCommodityTransferID(Long.valueOf(result[1]));
-			sctl.setTransactionID(Long.valueOf(result[2]));
+			sctl.setCommoditytransferid(BigDecimal.valueOf(Long.valueOf(result[1])));
+			sctl.setTransactiontypeid(BigDecimal.valueOf(Long.valueOf(result[2])));
 			transactionChargingService.completeTheTransaction(sctl);
 		}
 		else
@@ -244,15 +244,15 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 
 	}
 
-	private TransactionsLog saveTransactionsLog(Integer messageCode, String data) {
+	private TransactionLog saveTransactionsLog(Integer messageCode, String data) {
 		
-		mFinoServiceProvider msp = mfinoServiceProviderCoreService.getById(1);
+		MfinoServiceProvider msp = mfinoServiceProviderCoreService.getById(1);
 		
-		TransactionsLog transactionsLog = new TransactionsLog();
-		transactionsLog.setMessageCode(messageCode);
-		transactionsLog.setMessageData(data);
-		transactionsLog.setmFinoServiceProviderByMSPID(msp);
-		transactionsLog.setTransactionTime(new Timestamp(new Date()));
+		TransactionLog transactionsLog = new TransactionLog();
+		transactionsLog.setMessagecode(messageCode);
+		transactionsLog.setMessagedata(data);
+		transactionsLog.setMfinoServiceProvider(msp);
+		transactionsLog.setTransactiontime(new Timestamp(new Date()));
 		transactionsLogCoreService.save(transactionsLog);
 		return transactionsLog;
 	}

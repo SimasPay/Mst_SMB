@@ -6,6 +6,8 @@
 package com.mfino.scheduler.upload.service.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.security.acl.Group;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,19 +36,18 @@ import com.mfino.dao.query.BulkUploadFileEntryQuery;
 import com.mfino.dao.query.GroupQuery;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.domain.Address;
-import com.mfino.domain.AuthorizingPerson;
+import com.mfino.domain.AuthPersonDetails;
 import com.mfino.domain.BulkUploadFile;
 import com.mfino.domain.BulkUploadFileEntry;
-import com.mfino.domain.Group;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.hibernate.Timestamp;
@@ -181,7 +182,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		sendEmailNotification = ConfigurationUtil.getBulkUploadSubscriberSendEmail();
 		
 		BulkUploadFileEntryQuery query = new BulkUploadFileEntryQuery();
-		query.setUploadFileID(bulkUploadFile.getID());
+		query.setUploadFileID(bulkUploadFile.getId());
 		List<BulkUploadFileEntry> fileEntries = bulkUploadFileEntryService.get(query);
 		Iterator<BulkUploadFileEntry> iterator = fileEntries.iterator();
 		int processedCount = 0;
@@ -189,38 +190,38 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		while(iterator.hasNext()) {			
 			BulkUploadFileEntry bulkUploadFileEntry = iterator.next();
 			//process only the file records whose status is left initialized
-			if(CmFinoFIX.BulkUploadFileEntryStatus_Initialized.equals(bulkUploadFileEntry.getBulkUploadFileEntryStatus())) {
+			if(CmFinoFIX.BulkUploadFileEntryStatus_Initialized.equals(bulkUploadFileEntry.getBulkuploadfileentrystatus())) {
 				processedCount++;
-				Integer linenumber = bulkUploadFileEntry.getLineNumber();
-				String lineData = bulkUploadFileEntry.getLineData();
+				Integer linenumber =(int) bulkUploadFileEntry.getLinenumber();
+				String lineData = bulkUploadFileEntry.getLinedata();
 				log.info("Processing record at line number: " + linenumber);
 				//set the bulk upload file entry record status as Processing
-				bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Processing);
+				bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Processing);
 				bulkUploadFileEntryService.save(bulkUploadFileEntry);
 				
-				if (bulkUploadFile.getRecordType().equals(CmFinoFIX.RecordType_SubscriberFullyBanked)
-						||bulkUploadFile.getRecordType().equals(CmFinoFIX.RecordType_SubscriberSemiBanked)
-						||bulkUploadFile.getRecordType().equals(CmFinoFIX.RecordType_SubscriberUnBanked)) {
+				if (bulkUploadFile.getRecordtype().equals(CmFinoFIX.RecordType_SubscriberFullyBanked)
+						||bulkUploadFile.getRecordtype().equals(CmFinoFIX.RecordType_SubscriberSemiBanked)
+						||bulkUploadFile.getRecordtype().equals(CmFinoFIX.RecordType_SubscriberUnBanked)) {
 					
-					CMJSError response = createSubscriber(lineData, bulkUploadFile.getRecordType(),bulkUploadFile.getCreatedBy());
+					CMJSError response = createSubscriber(lineData, bulkUploadFile.getRecordtype().intValue(),bulkUploadFile.getCreatedby());
 					if (response.getErrorCode().equals(SubscriberSyncErrors.Success)) {
 						log.info("Successfully created the Subscriber for record at line number: " + linenumber);
-						bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Completed);							
+						bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Completed);							
 					} else {
 						log.info("Error while creating the Subscriber for record at line number: " + linenumber + " :"+ response.getErrorDescription());
-						bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Failed);
-						bulkUploadFileEntry.setFailureReason(response.getErrorDescription());					
+						bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Failed);
+						bulkUploadFileEntry.setFailurereason(response.getErrorDescription());					
 						errorLineCount++;
 					}
 					bulkUploadFileEntryService.save(bulkUploadFileEntry);
 				}
-				else if(bulkUploadFile.getRecordType().equals(CmFinoFIX.RecordType_Upgrade_N_Approve)) {				
-					CMJSError response = upgradeNApproveSubscriber(lineData, bulkUploadFile.getCreatedBy());
+				else if(bulkUploadFile.getRecordtype().equals(CmFinoFIX.RecordType_Upgrade_N_Approve)) {				
+					CMJSError response = upgradeNApproveSubscriber(lineData, bulkUploadFile.getCreatedby());
 					if (response.getErrorCode().equals(SubscriberSyncErrors.Success)) {
-						bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Completed);					
+						bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Completed);					
 					} else {
-						bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Failed);
-						bulkUploadFileEntry.setFailureReason(response.getErrorDescription());
+						bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Failed);
+						bulkUploadFileEntry.setFailurereason(response.getErrorDescription());
 						errorLineCount++;
 					}
 					bulkUploadFileEntryService.save(bulkUploadFileEntry);
@@ -233,9 +234,9 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		}
 		
 		//update the processing info and set the status to Processed
-		bulkUploadFile.setFileProcessedDate(new Timestamp());		
-		bulkUploadFile.setErrorLineCount(errorLineCount);
-		bulkUploadFile.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Processed);		
+		bulkUploadFile.setFileprocesseddate(new Timestamp());		
+		bulkUploadFile.setErrorlinecount(Long.valueOf(errorLineCount));
+		bulkUploadFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processed);		
 		return bulkUploadFile;
 }
 	
@@ -335,7 +336,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			}
 			
 			
-			SubscriberMDN subscriberMDN = subscriberMdnService.getByMDN(mdn);
+			SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(mdn);
 			if (subscriberMDN == null) {
 				response.setErrorCode(SubscriberSyncErrors.Notregistered_MDN);
 				response.setErrorDescription("MDN not Registered: " + mdn);
@@ -349,26 +350,26 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				log.error("Subscriber Entry not found for MDN: " + mdn);
 				return response;
 			}
-			if (! CmFinoFIX.UpgradeState_none.equals(subscriber.getUpgradeState()) ) {
+			if (! CmFinoFIX.UpgradeState_none.equals(subscriber.getUpgradestate()) ) {
 				response.setErrorCode(SubscriberSyncErrors.Failure);
 				response.setErrorDescription("Subscriber has already upgraded to different KYClevel");
 				log.error("Subscriber has already upgraded to different KYClevel");
 				return response;
 			}
-			if (subscriber.getUpgradableKYCLevel() != null && 
-				!(subscriber.getUpgradableKYCLevel().equals(ConfigurationUtil.getBulkUploadSubscriberKYClevel()))) {
+			if (subscriber.getUpgradablekyclevel() != null && 
+				!(subscriber.getUpgradablekyclevel().equals(ConfigurationUtil.getBulkUploadSubscriberKYClevel()))) {
 				response.setErrorCode(SubscriberSyncErrors.Failure);
 				response.setErrorDescription("Subscriber has applied to upgraded for different KYClevel");
 				log.error("Subscriber has applied to upgraded for different KYClevel");
 				return response;
 			}
-			Address address = subscriber.getAddressBySubscriberAddressID();
-			SubscribersAdditionalFields additionalFields = null;
+			Address address = subscriber.getAddressBySubscriberaddressid();
+			SubscriberAddiInfo additionalFields = null;
 			if (CollectionUtils.isNotEmpty(subscriber.getSubscribersAdditionalFieldsFromSubscriberID())) {
 				additionalFields = subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
 			} 
 			else {
-				additionalFields = new SubscribersAdditionalFields();
+				additionalFields = new SubscriberAddiInfo();
 				additionalFields.setSubscriber(subscriber);
 			}
 			
@@ -377,16 +378,16 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			//Upgrade Emoney pocket Template to Fully Banked
 			// Set Group Id to Default Group Id '1' so that if any subscriber exists with out group then 
 			//the default group will be used in calculating of pocket templates.
-			Long groupID = defaultGroup.getID(); 
+			Long groupID = defaultGroup.getId(); 
 			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroup().getID();
+				groupID = subscriberGroup.getGroupid();
 			}
 			
-			eMoneyPocketTemplate = mapGroupPocketTemp.get(subscriber.getKYCLevelByKYCLevel().getKYCLevel().toString()+groupID.toString());
-			PocketTemplate upgradeTemplate = mapGroupPocketTemp.get(kycLevel.getKYCLevel().toString()+groupID.toString());
+			eMoneyPocketTemplate = mapGroupPocketTemp.get(subscriber.getKycLevel().getKyclevel().toString()+groupID.toString());
+			PocketTemplate upgradeTemplate = mapGroupPocketTemp.get(kycLevel.getKyclevel().toString()+groupID.toString());
             
 			if (upgradeTemplate == null) {
 				response.setErrorCode(SubscriberSyncErrors.Invalid_PocketTemplate);
@@ -394,9 +395,9 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				log.error("Invalid Pocket Template for Kyclevel to Upgrade");
 				return response;
 			}
-			Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(),eMoneyPocketTemplate.getID());
+			Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(),eMoneyPocketTemplate.getId().longValue());
 			if (emoneyPocket == null || 
-				!(emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Initialized)|| emoneyPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active))) {
+				!(emoneyPocket.getStatus()==(CmFinoFIX.PocketStatus_Initialized)|| emoneyPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 				response.setErrorCode(SubscriberSyncErrors.EmoneyPocketNotFound);
 				response.setErrorDescription("Emoney Pocket not Found");
 				log.error("Emoney Pocket not Found");
@@ -409,18 +410,18 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				log.error("Pocket already upgraded");
 				return response;
 			}
-			emoneyPocket.setPocketTemplateByOldPocketTemplateID(emoneyPocket.getPocketTemplate());
+			emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplate());
 			emoneyPocket.setPocketTemplate(upgradeTemplate);
-			emoneyPocket.setPocketTemplateChangedBy(userName);
-			emoneyPocket.setPocketTemplateChangeTime(new Timestamp());
+			emoneyPocket.setPockettemplatechangedby(userName);
+			emoneyPocket.setPockettemplatechangetime(new Timestamp());
 			
 			// Check is already bank pocket avialable for subscriber. If so throw Exception else Create Bank pocket
-			Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 			if (bankPocket == null) {
 				bankPocket = pocketService.createPocket(pocketTempletId, subscriberMDN, CmFinoFIX.PocketStatus_Initialized,true, cardPan);
-				if (subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Active)) {
+				if (subscriber.getStatus()==(CmFinoFIX.SubscriberStatus_Active)) {
 					bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-					bankPocket.setActivationTime(new Timestamp());
+					bankPocket.setActivationtime(new Timestamp());
 					bankPocket.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 				}
 			}
@@ -433,22 +434,22 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			
 			if (address == null) {
 				address = new Address();
-				subscriber.setAddressBySubscriberAddressID(address);
+				subscriber.setAddressBySubscriberaddressid(address);
 			}
 			address.setLine2(streetAddress);
-			subscriberMDN.setIDType(idType);
-			subscriberMDN.setIDNumber(idNumber);
-			subscriber.setIDExiparetionTime(new Timestamp(idExpirationDate));
-			subscriber.setKYCLevelByKYCLevel(kycLevel);
-			subscriber.setUpgradableKYCLevel(null);
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Approved);
-			subscriber.setApproveOrRejectComment(MessageText._("Upgrade N Approved by System"));
-			subscriber.setApprovedOrRejectedBy(userName);
-			subscriber.setApproveOrRejectTime(new Timestamp());
+			subscriberMDN.setIdtype(idType);
+			subscriberMDN.setIdnumber(idNumber);
+			subscriber.setIdexiparetiontime(new Timestamp(idExpirationDate));
+			subscriber.setKycLevel(kycLevel);
+			subscriber.setUpgradablekyclevel(null);
+			subscriber.setUpgradestate(Long.valueOf(CmFinoFIX.UpgradeState_Approved));
+			subscriber.setApproveorrejectcomment(MessageText._("Upgrade N Approved by System"));
+			subscriber.setApprovedorrejectedby(userName);
+			subscriber.setApproveorrejecttime(new Timestamp());
 			
- 			additionalFields.setProofofAddress(proof);
-			additionalFields.setKinName(nextKinName);
-			additionalFields.setKinMDN(nextKinNumber);
+ 			additionalFields.setProofofaddress(proof);
+			additionalFields.setKinname(nextKinName);
+			additionalFields.setKinmdn(nextKinNumber);
 			
 			addressService.save(address);
 			pocketService.save(emoneyPocket);
@@ -515,7 +516,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 	 */
 	private String generateStringKey(PocketTemplateConfig ptc) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(ptc.getKYCLevelByKYCLevel().getKYCLevel());
+		sb.append(ptc.getKycLevel().getKyclevel());
 		if (CollectionUtils.isNotEmpty(ptc.getPTC_Group_MapFromPtcID())) {
 			sb.append(ptc.getPTC_Group_MapFromPtcID().iterator().next().getGroup().getID());
 		}
@@ -578,18 +579,18 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		CMJSError result = new CMJSError();
 		result.setErrorCode(SubscriberSyncErrors.Success);
 		Subscriber subscriber = new Subscriber();
-		SubscriberMDN subscriberMDN = new SubscriberMDN();
-		AuthorizingPerson authorizingPerson = null;
+		SubscriberMdn subscriberMDN = new SubscriberMdn();
+		AuthPersonDetails authorizingPerson = null;
 		SubscriberGroup sg = null;
 		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 		if(syncRecord.getId()!=null){
 			subscriberMDN = subscriberMdnService.getById(syncRecord.getId(), LockMode.UPGRADE);
 			subscriber = subscriberMDN.getSubscriber();
-			authorizingPerson = subscriber.getAuthorizingPerson();
+			authorizingPerson = subscriber.getAuthPersonDetails();
 		}else{
-			subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_BulkUpload);
-			subscriber.setCreatedBy(uploadedBy);
-			subscriberMDN.setCreatedBy(uploadedBy);
+			subscriber.setRegistrationmedium(Long.valueOf(CmFinoFIX.RegistrationMedium_BulkUpload));
+			subscriber.setCreatedby(uploadedBy);
+			subscriberMDN.setCreatedby(uploadedBy);
 		}
 		
 		if (StringUtils.isNotBlank(syncRecord.getAuthorizID())
@@ -597,30 +598,30 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				|| StringUtils.isNotBlank(syncRecord.getAuthorizLastName())
 				|| StringUtils.isNotBlank(syncRecord.getAuthorizIDDesc())) {
 			if(authorizingPerson==null){
-			authorizingPerson = new AuthorizingPerson();
-			authorizingPerson.setCreatedBy(uploadedBy);
+			authorizingPerson = new AuthPersonDetails();
+			authorizingPerson.setCreatedby(uploadedBy);
 			}			
 			updateAuthorizingPerson(authorizingPerson, subscriber, syncRecord);
 		}
 		
 		if (!CmFinoFIX.RecordType_SubscriberUnBanked.equals(syncRecord.getAccountType())) {
-			subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
-			subscriber.setUpgradableKYCLevel(syncRecord.getAccountType().longValue());
-			subscriber.setAppliedBy(uploadedBy);
+			subscriber.setUpgradestate(Long.valueOf(CmFinoFIX.UpgradeState_Upgradable));
+			subscriber.setUpgradablekyclevel(BigDecimal.valueOf(syncRecord.getAccountType().longValue()));
+			subscriber.setAppliedby(uploadedBy);
 		}
 		Long groupID = null;
 		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid().getId();
 		}
 		else {
 			if (mapGroup.get(syncRecord.getGroupName().toLowerCase()) != null) {
-				groupID = mapGroup.get(syncRecord.getGroupName().toLowerCase()).getID();
+				groupID = mapGroup.get(syncRecord.getGroupName().toLowerCase()).getId();
 			}
 			else {
-				groupID = defaultGroup.getID(); // Setting the default groupId in order to get the Pocket template.
+				groupID = defaultGroup.getId(); // Setting the default groupId in order to get the Pocket template.
 			}
 		}
 		
@@ -628,7 +629,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		eMoneyPocketTemplate = mapGroupPocketTemp.get(syncRecord.getAccountType().toString()+groupID.toString());
 		if(eMoneyPocketTemplate == null){
 			//get default group template
-			eMoneyPocketTemplate = mapGroupPocketTemp.get(syncRecord.getAccountType().toString()+defaultGroup.getID().toString());
+			eMoneyPocketTemplate = mapGroupPocketTemp.get(syncRecord.getAccountType().toString()+defaultGroup.getId().toString());
 		}
 		if(isEMoneyPocketRequired == true){
 			if (eMoneyPocketTemplate == null) {
@@ -641,9 +642,9 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		int responseCode = subscriberServiceExtended.createNewSubscriber(syncRecord,subscriber, subscriberMDN,uploadedBy);
 	
 		if (SubscriberSyncErrors.Success.equals(responseCode)) {
-			SubscribersAdditionalFields subscribersAdditionalFields = new SubscribersAdditionalFields();
+			SubscriberAddiInfo subscribersAdditionalFields = new SubscriberAddiInfo();
 			subscribersAdditionalFields.setSubscriber(subscriber);
-			subscribersAdditionalFields.setCreatedBy(uploadedBy);
+			subscribersAdditionalFields.setCreatedby(uploadedBy);
 			updateAdditionalInfo(subscribersAdditionalFields, syncRecord);	
 			
 			String cardPan = pocketService.generateSVAEMoney16DigitCardPAN(syncRecord.getMdn());			
@@ -680,12 +681,12 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 					Long unregPocketTempId = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
 					if(unregPocketTempId>0){
 						Pocket emoney = subscriberService.getDefaultPocket(subscriberMDN.getID(), unregPocketTempId);
-						if(emoney!=null&&emoney.getStatus().equals(CmFinoFIX.PocketStatus_OneTimeActive)){
-							emoney.setPocketTemplateByOldPocketTemplateID(emoney.getPocketTemplate());
+						if(emoney!=null&&emoney.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive)){
+							emoney.setPocketTemplateByOldpockettemplateid(emoney.getPocketTemplate());
 							emoney.setPocketTemplate(eMoneyPocketTemplate);
-							emoney.setPocketTemplateChangedBy(uploadedBy);
+							emoney.setPockettemplatechangedby(uploadedBy);
 							emoney.setStatus(CmFinoFIX.PocketStatus_Initialized);
-							emoney.setStatusTime(new Timestamp());
+							emoney.setStatustime(new Timestamp());
 							pocketService.save(emoney);
 						}else{
 							pocketService.createPocket(eMoneyPocketTemplate, subscriberMDN,CmFinoFIX.PocketStatus_Initialized, true, cardPan);
@@ -698,13 +699,13 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				}
 			// send otp
 			NotificationWrapper wrapper = subscriberServiceExtended.generateOTPMessage(syncRecord.getOneTimePin(), notificationMethod);
-			wrapper.setLanguage(subscriber.getLanguage());
-			wrapper.setFirstName(subscriber.getFirstName());
-			wrapper.setLastName(subscriber.getLastName());
+			wrapper.setLanguage((int)subscriber.getLanguage());
+			wrapper.setFirstName(subscriber.getFirstname());
+			wrapper.setLastName(subscriber.getLastname());
 			BulkUploadUtil.sendSMS(syncRecord.getMdn(), wrapper);
 			if (sendEmailNotification && StringUtils.isNotBlank(subscriber.getEmail())) {
 				String email = subscriber.getEmail();
-				String name = subscriber.getFirstName();
+				String name = subscriber.getFirstname();
 				BulkUploadUtil.sendMail(email, name, emailSubject, wrapper);
 			}
 			if(syncRecord.getId()!=null){
@@ -721,67 +722,67 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 
 	}
 
-	private void updateAuthorizingPerson(AuthorizingPerson authorizingPerson,
+	private void updateAuthorizingPerson(AuthPersonDetails authorizingPerson,
 										Subscriber subscriber, SubscriberSyncRecord syncRecord) {
 
 //		authorizingPerson = subscriber.getAuthorizingPerson();
 		if (StringUtils.isNotBlank(syncRecord.getAuthorizFirstName())) {
-			authorizingPerson.setFirstName(syncRecord.getAuthorizFirstName());
+			authorizingPerson.setFirstname(syncRecord.getAuthorizFirstName());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getAuthorizLastName())) {
-			authorizingPerson.setLastName(syncRecord.getAuthorizLastName());
+			authorizingPerson.setLastname(syncRecord.getAuthorizLastName());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getAuthorizID())) {
-			authorizingPerson.setIDNumber(syncRecord.getAuthorizID());
+			authorizingPerson.setIdnumber(syncRecord.getAuthorizID());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getAuthorizIDDesc())) {
-			authorizingPerson.setIDDesc(syncRecord.getAuthorizIDDesc());
+			authorizingPerson.setIddesc(syncRecord.getAuthorizIDDesc());
 		}
 		if (syncRecord.getAuthorizDOB() != null) {
-			authorizingPerson.setDateOfBirth(new Timestamp(syncRecord.getDateOfBirth()));
+			authorizingPerson.setDateofbirth(new Timestamp(syncRecord.getDateOfBirth()));
 		}
 	}
 
-	private void updateAdditionalInfo(SubscribersAdditionalFields subscribersAdditionalFields,
+	private void updateAdditionalInfo(SubscriberAddiInfo subscribersAdditionalFields,
 					SubscriberSyncRecord syncRecord) {
 
 		if (StringUtils.isNotBlank(syncRecord.getCertificateofIncorporation())) {
-			subscribersAdditionalFields.setCertofIncorporation(syncRecord
+			subscribersAdditionalFields.setCertofincorporation(syncRecord
 					.getCertificateofIncorporation());
 		}
 		if (syncRecord.getControlReference() != null) {
-			subscribersAdditionalFields.setControllReference(syncRecord
-					.getControlReference());
+			subscribersAdditionalFields.setControllreference(Long.valueOf(syncRecord
+					.getControlReference()));
 		}
 		if (StringUtils.isNotBlank(syncRecord.getCreditCheck())) {
-			subscribersAdditionalFields.setCreditCheck(syncRecord
+			subscribersAdditionalFields.setCreditcheck(syncRecord
 					.getCreditCheck());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getNextKinNumber())) {
 			subscribersAdditionalFields
-					.setKinMDN(syncRecord.getNextKinNumber());
+					.setKinmdn(syncRecord.getNextKinNumber());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getNextKinName())) {
-			subscribersAdditionalFields.setKinName(syncRecord.getNextKinName());
+			subscribersAdditionalFields.setKinname(syncRecord.getNextKinName());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getNationality())) {
 			subscribersAdditionalFields.setNationality(syncRecord
 					.getNationality());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getProofofaddress())) {
-			subscribersAdditionalFields.setProofofAddress(syncRecord
+			subscribersAdditionalFields.setProofofaddress(syncRecord
 					.getProofofaddress());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getCompanyName())) {
-			subscribersAdditionalFields.setSubsCompanyName(syncRecord
+			subscribersAdditionalFields.setSubscompanyname(syncRecord
 					.getCompanyName());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getMobileCompanyName())) {
-			subscribersAdditionalFields.setSubscriberMobileCompany(syncRecord
+			subscribersAdditionalFields.setSubscribermobilecompany(syncRecord
 					.getMobileCompanyName());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getMobileCompanyName())) {
-			subscribersAdditionalFields.setSubscriberMobileCompany(syncRecord
+			subscribersAdditionalFields.setSubscribermobilecompany(syncRecord
 					.getMobileCompanyName());
 		}
 		if (StringUtils.isNotBlank(syncRecord.getMisc1())) {
@@ -805,14 +806,14 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		ptcQuery.set_commodity(CmFinoFIX.Commodity_Money);
 		ptcQuery.set_pocketType(CmFinoFIX.PocketType_BankAccount);
 		Group group = mapGroup.get(subscriberSyncRecord.getGroupName().toLowerCase());
-		ptcQuery.set_GroupID(group.getID());
+		ptcQuery.set_GroupID(group.getId());
 		ptcQuery.set_KYCLevel(subscriberType.longValue());
 		List <PocketTemplateConfig> results = pocketTemplateConfigService.get(ptcQuery);
 		if(results.size() == 0) {
 			return false;
 		} else {
 			for(PocketTemplateConfig ptc: results) {
-				if(ptc.getPocketTemplate().getID().equals(subscriberSyncRecord.getPocketTemplateID())) {
+				if(ptc.getPocketTemplate().getId().equals(subscriberSyncRecord.getPocketTemplateID())) {
 					return true;
 				}
 			}
@@ -934,7 +935,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			if (!(pocketTemplate != null
 					&& CmFinoFIX.PocketType_BankAccount.equals(pocketTemplate
 							.getType()) && syncRecord.getBankAcType().equals(
-					pocketTemplate.getBankAccountCardType()))) {
+					pocketTemplate.getBankaccountcardtype()))) {
 				response.setErrorDescription("Invalid Pocket Template");
 				return response;
 			}

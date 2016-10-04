@@ -113,13 +113,13 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 		if (CollectionUtils.isNotEmpty(lstBulkUpload)) {
 			for (BulkUpload bulkUpload: lstBulkUpload) {
 				try {
-					if ((currentTime.getTime() - bulkUpload.getLastUpdateTime().getTime()) > EXPIRATION_TIME) {
-						bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Failed);
-						bulkUpload.setFailureReason("Falied as the request is timed out");
+					if ((currentTime.getTime() - bulkUpload.getLastupdatetime().getTime()) > EXPIRATION_TIME) {
+						bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Failed);
+						bulkUpload.setFailurereason("Falied as the request is timed out");
 						bulkUploadService.save(bulkUpload);
 					}
 				} catch (Exception e) {
-					log.error("Error: While Processing the Initialized bulk transfer Id: " + bulkUpload.getID(), e);
+					log.error("Error: While Processing the Initialized bulk transfer Id: " + bulkUpload.getId(), e);
 				} 
 			}
 		}
@@ -140,7 +140,7 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 					try {
 						schedulePayment(bulkUpload);
 					} catch (Exception e) {
-						log.error("Error: While Processing the Approved bulk transfer Id: " + bulkUpload.getID(), e);
+						log.error("Error: While Processing the Approved bulk transfer Id: " + bulkUpload.getId(), e);
 					} 
 				}
 			}
@@ -164,7 +164,7 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 					try {
 						calculateRevertAmount(bulkUpload);
 					} catch (Exception e) {
-						log.error("Error: While calculating the Revert Amount for Bulk transfer : " + bulkUpload.getID(), e);
+						log.error("Error: While calculating the Revert Amount for Bulk transfer : " + bulkUpload.getId(), e);
 					}
 				}
 			}
@@ -181,13 +181,13 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 	 */
 	private void calculateRevertAmount(BulkUpload bulkUpload){
 		int pendingCount = 0;
-		int failedCount = (bulkUpload.getFailedTransactionsCount() != null) ? bulkUpload.getFailedTransactionsCount() : 0;
-		BigDecimal revertAmount = (bulkUpload.getRevertAmount()!=null) ? bulkUpload.getRevertAmount() : BigDecimal.ZERO;
-		BigDecimal successAmount = (bulkUpload.getSuccessAmount()!=null) ? bulkUpload.getSuccessAmount() : BigDecimal.ZERO;
+		int failedCount = (bulkUpload.getFailedtransactionscount() != null) ? bulkUpload.getFailedtransactionscount().intValue() : 0;
+		BigDecimal revertAmount = (bulkUpload.getRevertamount()!=null) ? bulkUpload.getRevertamount() : BigDecimal.ZERO;
+		BigDecimal successAmount = (bulkUpload.getSuccessamount()!=null) ? bulkUpload.getSuccessamount() : BigDecimal.ZERO;
 		boolean isAnyEntryModified = false;
-		log.info("Checking the Bulk Transfer " + bulkUpload.getID() + " for expired  / Failed / Pending transfers.");
+		log.info("Checking the Bulk Transfer " + bulkUpload.getId() + " for expired  / Failed / Pending transfers.");
 		
-		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getNotCompleteBulkUploadEntriesForBulkUpload(bulkUpload.getID());
+		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getNotCompleteBulkUploadEntriesForBulkUpload(bulkUpload.getId().longValue());
 		if (CollectionUtils.isNotEmpty(bulkUploadEntries)) {
 			for (BulkUploadEntry bue: bulkUploadEntries) {
 				boolean isModified = false;
@@ -195,13 +195,13 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 					pendingCount ++;
 				}
 				else if (CmFinoFIX.TransactionsTransferStatus_Failed.equals(bue.getStatus())) {
-					log.info("Reversing the failed amount: " + bue.getAmount() + " for MDN: " + bue.getDestMDN());
+					log.info("Reversing the failed amount: " + bue.getAmount() + " for MDN: " + bue.getDestmdn());
 					bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Reversed);
 					isModified = true;
 					revertAmount = revertAmount.add(bue.getAmount());
 				}
 				else if (CmFinoFIX.TransactionsTransferStatus_Expired.equals(bue.getStatus())) {
-					log.info("Reversing the expired amount: " + bue.getAmount() + " for MDN: " + bue.getDestMDN());
+					log.info("Reversing the expired amount: " + bue.getAmount() + " for MDN: " + bue.getDestmdn());
 					bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Reversed);
 					isModified = true;
 					revertAmount = revertAmount.add(bue.getAmount());
@@ -215,13 +215,13 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 			}
 		}
 		
-		bulkUpload.setFailedTransactionsCount(failedCount);
-		bulkUpload.setSuccessAmount(successAmount);
-		bulkUpload.setRevertAmount(revertAmount);
+		bulkUpload.setFailedtransactionscount(Long.valueOf(failedCount));
+		bulkUpload.setSuccessamount(successAmount);
+		bulkUpload.setRevertamount(revertAmount);
 		log.info("No. of Pending txns = "+ pendingCount);
 		if ((pendingCount == 0) && (revertAmount.compareTo(BigDecimal.ZERO) > 0) ) {
 			log.info("Reverting the Amount " + revertAmount.toPlainString()
-					+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getID());
+					+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getId());
 			isAnyEntryModified = true;
 			bulkUpload = doReverseBulkTransfer(bulkUpload, revertAmount);
 		}
@@ -238,7 +238,7 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 	 */
 	private BulkUpload doReverseBulkTransfer(BulkUpload bulkUpload, BigDecimal amount) {
 		
-		Pocket destPocket = bulkUpload.getPocketBySourcePocket();
+		Pocket destPocket = bulkUpload.getPocket();
         long srcPocketId = systemParametersService.getLong(SystemParameterKeys.INTEREST_COMMISSION_FUNDING_POCKET_ID);
         Pocket sourcePocket = pocketService.getById(srcPocketId);		
 		ChannelCode channelCode = channelCodeService.getChannelCodebySourceApplication(CmFinoFIX.SourceApplication_BackEnd);
@@ -246,26 +246,26 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 		log.info("Creating the Reverse Bulk Transfer Inquiry object");
 
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSourceMDN(sourcePocket.getSubscriberMDNByMDNID().getMDN());
-		transactionDetails.setDestMDN(bulkUpload.getMDN());
+		transactionDetails.setSourceMDN(sourcePocket.getSubscriberMdn().getMdn());
+		transactionDetails.setDestMDN(bulkUpload.getMdn());
 		transactionDetails.setAmount(amount);
 		transactionDetails.setSourcePIN("mFino260");
 		transactionDetails.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER);
-		transactionDetails.setChannelCode(channelCode.getChannelCode());
-		transactionDetails.setSrcPocketId(sourcePocket.getID());
-		transactionDetails.setDestinationPocketId(destPocket.getID());
+		transactionDetails.setChannelCode(channelCode.getChannelcode());
+		transactionDetails.setSrcPocketId(sourcePocket.getId().longValue());
+		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
 		transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_SETTLE_BULK_TRANSFER);
 		transactionDetails.setCc(channelCode);
-		transactionDetails.setSctlId(bulkUpload.getServiceChargeTransactionLogID());
+		transactionDetails.setSctlId(bulkUpload.getServicechargetransactionlogid().longValue());
 		
 
 		XMLResult result = (XMLResult)bulkTransferInquiryHandler.handle(transactionDetails);
 		
 		if (result != null ) {
 			Long sctlId = result.getSctlID();
-			bulkUpload.setReverseSCTLID(sctlId);
+			bulkUpload.setReversesctlid(BigDecimal.valueOf(sctlId));
 			bulkUploadService.save(bulkUpload);
 			
 			if (CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(result.getCode())) {
@@ -279,32 +279,32 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 				
 				if (result != null && result.getDetailsOfPresentTransaction()!= null) {
 					CommodityTransfer ct = result.getDetailsOfPresentTransaction();
-					if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferStatus())) {
-						bulkUpload.setRevertAmount(BigDecimal.ZERO);
+					if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferstatus())) {
+						bulkUpload.setRevertamount(BigDecimal.ZERO);
 						log.info("Reverting the Amount " + amount.toPlainString()
-								+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getID() + " is Success");
+								+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getId() + " is Success");
 					}
 					else {
 						log.info("Reverting the Amount " + amount.toPlainString()
-								+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getID() + " is Failed");
+								+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getId() + " is Failed");
 					}
 				}
 				// No Response from Back end after confirming the transaction
 				else {
-					bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Settlement_Pending);
-					bulkUpload.setDeliveryDate(new Timestamp());
+					bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Settlement_Pending);
+					bulkUpload.setDeliverydate(new Timestamp());
 					log.info("Reverting the Amount " + amount.toPlainString()
-							+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getID() + " is Pending");
+							+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getId() + " is Pending");
 				}
 			}
 			else {
 				log.info("Reverting the Amount " + amount.toPlainString()
-						+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getID() + " is failed because of inquiry is failed");
+						+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getId() + " is failed because of inquiry is failed");
 			}
 		}
 		else {
 			log.info("Reverting the Amount " + amount.toPlainString()
-					+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getID() + " is failed because of inquiry result is null");
+					+ " as part of Failed / Expired Transfers for Bulk transfer request " + bulkUpload.getId() + " is failed because of inquiry result is null");
 		}
 		
 		return bulkUpload;
@@ -313,7 +313,7 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 	
 	private void schedulePayment(BulkUpload bulkUpload){
 		
-		Timestamp scheduledTime = bulkUpload.getPaymentDate();
+		Timestamp scheduledTime = bulkUpload.getPaymentdate();
 		Date todaysDate = new Timestamp();
 		if(DateUtils.isSameDay(todaysDate, scheduledTime) || (scheduledTime.before(todaysDate)))
 		{

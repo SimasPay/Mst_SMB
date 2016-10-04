@@ -20,9 +20,9 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.result.XMLResult;
@@ -106,23 +106,23 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 		
 		Integer[] status = new Integer[]{CmFinoFIX.SCTLStatus_Pending_Resolved};
 		
-		List<ServiceChargeTransactionLog> sctlList = serviceChargeTransactionLogService.getByStatus(status);
+		List<ServiceChargeTxnLog> sctlList = serviceChargeTransactionLogService.getByStatus(status);
 		
 		log.info("TellerEMoneyClearanceServiceImpl :: clearTellerEMoney() sctlList="+sctlList);
 		
-		Map<Long, Set<ServiceChargeTransactionLog>> partnerPendingResolveSctlMap = new HashMap<Long, Set<ServiceChargeTransactionLog>>();
+		Map<Long, Set<ServiceChargeTxnLog>> partnerPendingResolveSctlMap = new HashMap<Long, Set<ServiceChargeTxnLog>>();
 		
-		for(ServiceChargeTransactionLog sctl : sctlList){
-			if(tellerService.getID().equals(sctl.getServiceID())){
+		for(ServiceChargeTxnLog sctl : sctlList){
+			if(tellerService.getId().equals(sctl.getServiceid())){
 				transactionChargingService.changeStatusToPendingResolvedProcessing(sctl);	
 				
-				Long partnerId = sctl.getSourcePartnerID() != null ? sctl.getSourcePartnerID() : sctl.getDestPartnerID();
+				Long partnerId = Long.valueOf(sctl.getSourcepartnerid().longValue()) != null ? sctl.getSourcepartnerid().longValue() : sctl.getDestpartnerid().longValue();
 				if(partnerId != null){
 					if(partnerPendingResolveSctlMap.containsKey(partnerId)){
 						partnerPendingResolveSctlMap.get(partnerId).add(sctl);
 						
 					}else{
-						Set<ServiceChargeTransactionLog> partnerSctls = new HashSet<ServiceChargeTransactionLog>();
+						Set<ServiceChargeTxnLog> partnerSctls = new HashSet<ServiceChargeTxnLog>();
 						partnerSctls.add(sctl);
 						partnerPendingResolveSctlMap.put(partnerId, partnerSctls);
 					}
@@ -134,12 +134,12 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 		
 		for(Long partnerId : partnerPendingResolveSctlMap.keySet()){
 			BigDecimal amount = new BigDecimal(0);
-			for(ServiceChargeTransactionLog sctl : partnerPendingResolveSctlMap.get(partnerId)){
-				if (cashInTxnType.getID().equals(sctl.getTransactionTypeID())) {
-					amount = amount.add(sctl.getTransactionAmount());
+			for(ServiceChargeTxnLog sctl : partnerPendingResolveSctlMap.get(partnerId)){
+				if (cashInTxnType.getId().equals(sctl.getTransactiontypeid())) {
+					amount = amount.add(sctl.getTransactionamount());
 				} 
-				else if (cashOutTxnType.getID().equals(sctl.getTransactionTypeID())) {
-					amount = amount.add(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
+				else if (cashOutTxnType.getId().equals(sctl.getTransactiontypeid())) {
+					amount = amount.add(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
 				}
 			}
 			
@@ -147,18 +147,18 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 			
 			Partner partner = partnerService.getPartnerById(partnerId);
 			Subscriber subscriber = partner.getSubscriber();
-			SubscriberMDN subscriberMdn = subscriber.getSubscriberMDNFromSubscriberID().iterator().next();
+			SubscriberMdn subscriberMdn = subscriber.getSubscriberMdns().iterator().next();
 			
-			Set<Pocket> pockets = subscriberMdn.getPocketFromMDNID();
+			Set<Pocket> pockets = subscriberMdn.getPockets();
 			
 			Pocket sourcePocket = null;
 			Pocket destPocket = null;
 			
 			for(Pocket pocket: pockets){
-				if((pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_SVA.intValue()) && (!(pocket.getPocketTemplate().getIsCollectorPocket()))){
+				if((pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue()) && (!(pocket.getPocketTemplate().getIscollectorpocket()))){
 					sourcePocket = pocket;
 				}
-				else if((pocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_BankAccount.intValue())){
+				else if((pocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_BankAccount.intValue())){
 					destPocket = pocket;
 				}
 			}
@@ -169,65 +169,65 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 
 				TransactionDetails transactionDetails = new TransactionDetails();
 
-				transactionDetails.setSourcePocketId(sourcePocket.getID().toString());
+				transactionDetails.setSourcePocketId(sourcePocket.getId().toString());
 				transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TELLER_EMONEY_CLEARANCE_INQUIRY);
 				transactionDetails.setSourcePocketCode(ApiConstants.POCKET_CODE_SVA);
 				transactionDetails.setDestPocketCode(ApiConstants.POCKET_CODE_BANK);
-				transactionDetails.setSrcPocketId(sourcePocket.getID());
-				transactionDetails.setDestinationPocketId(destPocket.getID());
-				transactionDetails.setSourceMDN(subscriberMdn.getMDN());
-				transactionDetails.setDestMDN(subscriberMdn.getMDN());
+				transactionDetails.setSrcPocketId(sourcePocket.getId().longValue());
+				transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
+				transactionDetails.setSourceMDN(subscriberMdn.getMdn());
+				transactionDetails.setDestMDN(subscriberMdn.getMdn());
 				transactionDetails.setSystemIntiatedTransaction(true);
 				transactionDetails.setAmount(amount);
 				transactionDetails.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 				transactionDetails.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-				transactionDetails.setChannelCode(channelCode.getChannelCode());
+				transactionDetails.setChannelCode(channelCode.getChannelcode());
 				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CLEARANCE);
 				transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 				transactionDetails.setSourcePIN("1234");
 
 				XMLResult result = (XMLResult)bankTransferInquiryHandler.handle(transactionDetails);
 				
-				Set<ServiceChargeTransactionLog> tellerSctls = partnerPendingResolveSctlMap.get(partnerId);
+				Set<ServiceChargeTxnLog> tellerSctls = partnerPendingResolveSctlMap.get(partnerId);
 				
 				if (result != null) {
 					log.info("TellerEMoneyClearanceServiceImpl :: clearTellerEMoney() INQUIRY result.getCode()="+result.getCode());
 					if(CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(result.getCode())){
-						ServiceChargeTransactionLog tellerClearanceSctl = serviceChargeTransactionLogService.getById(result.getSctlID());
+						ServiceChargeTxnLog tellerClearanceSctl = serviceChargeTransactionLogService.getById(result.getSctlID());
 						
 						
-						for(ServiceChargeTransactionLog sctl: tellerSctls){
-							sctl.setParentSCTLID(tellerClearanceSctl.getID());
+						for(ServiceChargeTxnLog sctl: tellerSctls){
+							sctl.setParentsctlid(tellerClearanceSctl.getId());
 						}
 						transactionDetails = new TransactionDetails();
 						transactionDetails.setCc(channelCode);
-						transactionDetails.setSourceMDN(subscriberMdn.getMDN());
-						transactionDetails.setDestMDN(subscriberMdn.getMDN());
+						transactionDetails.setSourceMDN(subscriberMdn.getMdn());
+						transactionDetails.setDestMDN(subscriberMdn.getMdn());
 						transactionDetails.setTransferId(result.getTransferID());
 						transactionDetails.setConfirmString("true");
 						transactionDetails.setParentTxnId(result.getParentTransactionID());
 						transactionDetails.setSourcePocketCode(ApiConstants.POCKET_CODE_SVA);
 						transactionDetails.setDestPocketCode(ApiConstants.POCKET_CODE_BANK);
-						transactionDetails.setSourcePocketId(""+sourcePocket.getID());
+						transactionDetails.setSourcePocketId(""+sourcePocket.getId());
 						
 						result = (XMLResult)moneyTransferHandler.handle(transactionDetails);
 						
 						if (result != null && result.getDetailsOfPresentTransaction()!= null) {
 							log.info("TellerEMoneyClearanceServiceImpl :: clearTellerEMoney() CONFIRMATION result.getCode()="+result.getCode());
 							CommodityTransfer ct = result.getDetailsOfPresentTransaction();
-							if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferStatus())) {
+							if (CmFinoFIX.TransferStatus_Completed.equals(ct.getTransferstatus())) {
 								log.info("TellerEMoneyClearanceServiceImpl :: clearTellerEMoney() transfer successful");
 								
 								//confirm this transaction
 								transactionChargingService.confirmTheTransaction(tellerClearanceSctl);
 								
 								//confirm all the sctls that were in pending_resolved state for this partner.
-								for(ServiceChargeTransactionLog sctl: tellerSctls){
+								for(ServiceChargeTxnLog sctl: tellerSctls){
 									/*
 									 * If transaction type is cash out, or unregistered cash out confirm, 
 									 * other wise cash in fail.
 									 */
-									if(cashInTxnType.getID().equals(sctl.getTransactionTypeID())){
+									if(cashInTxnType.getId().equals(sctl.getTransactiontypeid())){
 										transactionChargingService.failTheTransaction(sctl, "TellerEMoneyClearance-FAIL");
 									}
 									else{
@@ -265,9 +265,9 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 		}
 	}
 	
-	private void handleTellerEMoneyTransactionFailure(ServiceChargeTransactionLog tellerClearanceSctl, Collection<ServiceChargeTransactionLog> partnerSctlCol)
+	private void handleTellerEMoneyTransactionFailure(ServiceChargeTxnLog tellerClearanceSctl, Collection<ServiceChargeTxnLog> partnerSctlCol)
 	{
-		for(ServiceChargeTransactionLog sctl: partnerSctlCol){
+		for(ServiceChargeTxnLog sctl: partnerSctlCol){
 			transactionChargingService.changeStatusToPendingResolved(sctl);
 		}
 		

@@ -3,6 +3,7 @@
  */
 package com.mfino.scheduler.service.impl;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,8 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.dao.query.ServiceSettlementConfigQuery;
 import com.mfino.domain.PartnerServices;
-import com.mfino.domain.ServiceSettlementConfig;
-import com.mfino.domain.SettlementSchedulerLogs;
+import com.mfino.domain.ServiceSettlementCfg;
+import com.mfino.domain.SettlementScheduleLog;
 import com.mfino.domain.SettlementTemplate;
 import com.mfino.exceptions.CoreException;
 import com.mfino.fix.CmFinoFIX;
@@ -85,11 +86,11 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			ServiceSettlementConfigQuery query = new ServiceSettlementConfigQuery();
 
 			query.setSchedulerStatus(CmFinoFIX.SchedulerStatus_TobeScheduled);
-			List<ServiceSettlementConfig> settlementConfigs = serviceSettlementConfigCoreService.get(query);
+			List<ServiceSettlementCfg> settlementConfigs = serviceSettlementConfigCoreService.get(query);
 
 
-			for(ServiceSettlementConfig sc : settlementConfigs){
-				PartnerServices partnerServices = sc.getPartnerServicesByPartnerServiceID();
+			for(ServiceSettlementCfg sc : settlementConfigs){
+				PartnerServices partnerServices = sc.getPartnerServices();
 				if(partnerServices != null){
 
 					try{
@@ -97,24 +98,24 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 					}catch(CoreException coreEx){
 						//Error occurs only when there is a problem deleting an existing job
 						//so no need to rollback transaction as there would not be any transaction initated by then
-						log.error("Error occurred while scheduling Settlement for Partner Services:"+partnerServices.getID(), coreEx);
+						log.error("Error occurred while scheduling Settlement for Partner Services:"+partnerServices.getId(), coreEx);
 					}
 
 				}
 			}
 
 			query.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Rescheduled);
-			List<ServiceSettlementConfig> resettlementConfigs = serviceSettlementConfigCoreService.get(query);
+			List<ServiceSettlementCfg> resettlementConfigs = serviceSettlementConfigCoreService.get(query);
 
-			for(ServiceSettlementConfig sc : resettlementConfigs){
-				PartnerServices partnerServices = sc.getPartnerServicesByPartnerServiceID();
+			for(ServiceSettlementCfg sc : resettlementConfigs){
+				PartnerServices partnerServices = sc.getPartnerServices();
 				if(partnerServices != null){
 					try{
 						reScheduleSettlement(partnerServices);
 					}catch(CoreException coreEx){
 						//Error occurs only when there is a problem deleting an existing job
 						//so no need to rollback transaction as there would not be any transaction initated by then
-						log.error("Error occurred while rescheduling Settlement for Partner Services:"+partnerServices.getID(), coreEx);
+						log.error("Error occurred while rescheduling Settlement for Partner Services:"+partnerServices.getId(), coreEx);
 					}
 				}
 			}
@@ -122,22 +123,22 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 
 
 	
-	public SettlementSchedulerLogs scheduleSettlement(PartnerServices partnerService) throws CoreException{
+	public SettlementScheduleLog scheduleSettlement(PartnerServices partnerService) throws CoreException{
 
-		log.info("PartnerSettlementScheduler :: scheduleSettlement partnerService#id="+partnerService.getID());
-		SettlementSchedulerLogs ssLog =  settlementSchedulerLogsService.getByPartnerServiceId(partnerService.getID());
+		log.info("PartnerSettlementScheduler :: scheduleSettlement partnerService#id="+partnerService.getId());
+		SettlementScheduleLog ssLog =  settlementSchedulerLogsService.getByPartnerServiceId(partnerService.getId().longValue());
 
 		if(ssLog == null){
-			ssLog = new SettlementSchedulerLogs();
+			ssLog = new SettlementScheduleLog();
 		}
 		else{
 			/*
 			 * Check if a settlement is already scheduled for this partner service.
 			 * If so delete the job and do a new schedule.
 			 */
-			log.info("A job is already scheduled for PartnerService with id "+partnerService.getID());
+			log.info("A job is already scheduled for PartnerService with id "+partnerService.getId());
 
-			String jobId = ssLog.getQrtzJobId();
+			String jobId = ssLog.getQrtzjobid();
 
 			if((null != jobId) && !("").equalsIgnoreCase(jobId)){
 				try {
@@ -148,64 +149,64 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			}
 		}
 
-		ssLog.setMSPID(1L);
-		ssLog.setPartnerServicesID(partnerService.getID());
-		ssLog.setIsScheduled(Boolean.FALSE);
+		ssLog.setMspid(BigDecimal.valueOf(1L));
+		ssLog.setPartnerservicesid(partnerService.getId());
+		ssLog.setIsscheduled(Boolean.FALSE);
 
-		Set<ServiceSettlementConfig> settlementConfigs = partnerService.getServiceSettlementConfigFromPartnerServiceID();
+		Set<ServiceSettlementCfg> settlementConfigs = partnerService.getServiceSettlementCfgs();
 
-		ServiceSettlementConfig settlementConfig = null;
+		ServiceSettlementCfg settlementConfig = null;
 
 		if((settlementConfigs != null) && (settlementConfigs.size() > 0)){
 			/*
 			 * Expectation is currently we are not considering date effectivity and there will be only one settlement configuration.
 			 * This part needs to be modified when date effectivity comes into picture.
 			 */
-			for(ServiceSettlementConfig sc : settlementConfigs){
-				if((sc.getIsDefault() != null) && (sc.getIsDefault())){
+			for(ServiceSettlementCfg sc : settlementConfigs){
+				if((sc.getIsdefault() != null) && (sc.getIsdefault())){
 					settlementConfig = sc;
 					break;
 				}
 			}
 		}
 		else{
-			ssLog.setReasonText("No Settlement Config");
+			ssLog.setReasontext("No Settlement Config");
 			settlementSchedulerLogsService.save(ssLog);
-			log.error("A ServiceSettlementConfig does not exist for PartnerServiceID "+partnerService.getID());
+			log.error("A ServiceSettlementConfig does not exist for PartnerServiceID "+partnerService.getId());
 			return ssLog;
 		}
 
-		ssLog.setServiceSettlementConfigID(settlementConfig.getID());
+		ssLog.setServicesettlementconfigid(settlementConfig.getId());
 
 		SettlementTemplate settlementTemplate = settlementConfig.getSettlementTemplate();
 
 		if(settlementTemplate == null){
-			ssLog.setReasonText("No Settlement Template");
+			ssLog.setReasontext("No Settlement Template");
 			settlementSchedulerLogsService.save(ssLog);
-			log.error("A SettlementTemplate does not exist for PartnerServiceID "+partnerService.getID());
+			log.error("A SettlementTemplate does not exist for PartnerServiceID "+partnerService.getId());
 			return ssLog;
 		}
 
-		List<ServiceSettlementConfig> similarScheduledConfigs = getSimilarSettlementConfigs(partnerService);
+		List<ServiceSettlementCfg> similarScheduledConfigs = getSimilarSettlementConfigs(partnerService);
 		if(!similarScheduledConfigs.isEmpty())
 		{
 			//There should be only one config set. Check if it is same as the one being processed.
-			ServiceSettlementConfig similarConfig = similarScheduledConfigs.get(0);
+			ServiceSettlementCfg similarConfig = similarScheduledConfigs.get(0);
 			//FIXME :: what to do in a scenario where multiple similar configs are scheduled.
 			// *FindbugsChange*
         	// Previous -- if(similarConfig.getID() == (settlementConfig.getID())){
-			if((similarConfig.getID().equals(settlementConfig.getID()))){
-				log.info("Settlement Config is already scheduled:"+similarConfig.getID()+" for PartnerService:"+partnerService.getID());
-				ssLog.setReasonText("Settlement already scheduled");
+			if((similarConfig.getId().equals(settlementConfig.getId()))){
+				log.info("Settlement Config is already scheduled:"+similarConfig.getId()+" for PartnerService:"+partnerService.getId());
+				ssLog.setReasontext("Settlement already scheduled");
 				settlementSchedulerLogsService.save(ssLog);
 				return ssLog;
 			}else{
-				log.info("Similar Settlement Config is already scheduled:"+similarConfig.getID()+" for PartnerService:"+partnerService.getID());
-				settlementConfig.setSchedulerStatus(CmFinoFIX.SchedulerStatus_SimilarConfigScheduled);
-				settlementConfig.setSimilarConfigID(similarConfig.getID());
+				log.info("Similar Settlement Config is already scheduled:"+similarConfig.getId()+" for PartnerService:"+partnerService.getId());
+				settlementConfig.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_SimilarConfigScheduled));
+				settlementConfig.setSimilarconfigid(similarConfig.getId());
 				serviceSettlementConfigCoreService.save(settlementConfig);
 				
-				ssLog.setReasonText("Similar Settlement already scheduled");
+				ssLog.setReasontext("Similar Settlement already scheduled");
 				settlementSchedulerLogsService.save(ssLog);
 				return ssLog;
 			}
@@ -213,15 +214,15 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 		}
 		
 		
-		String jobId = partnerService.getID().toString() + ":" + getUniqueJobId();
+		String jobId = partnerService.getId().toString() + ":" + getUniqueJobId();
 		CronTrigger trigger = new CronTrigger(jobId);
 		trigger.setMisfireInstruction(CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING);
 		String cronExpression = null;
 		try
 		{
 			//if(settlementTemplate.getSettlementType().equals(CmFinoFIX.SettlementType_Daily)){
-			if(settlementTemplate.getScheduleTemplate().getCron()!=null){
-				cronExpression = settlementTemplate.getScheduleTemplate().getCron();
+			if(settlementTemplate.getScheduleTemplateByCutofftime().getCron()!=null){
+				cronExpression = settlementTemplate.getScheduleTemplateByCutofftime().getCron();
 				trigger.setCronExpression(cronExpression);
 				trigger.setTimeZone(timeZone);
 			}
@@ -236,14 +237,14 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 				trigger.setTimeZone(timeZone);
 			}*/
 			else{
-				ssLog.setReasonText("Incompatible settlement type");
+				ssLog.setReasontext("Incompatible settlement type");
 				settlementSchedulerLogsService.save(ssLog);
-				log.error("Incompatible settlement type for PartnerServiceID "+partnerService.getID());
+				log.error("Incompatible settlement type for PartnerServiceID "+partnerService.getId());
 				return ssLog;
 			}
 		}
 		catch(ParseException pe){
-			ssLog.setReasonText("Invalid cron expression");
+			ssLog.setReasontext("Invalid cron expression");
 			settlementSchedulerLogsService.save(ssLog);
 			log.error("PartnerSettlementScheduler :: Invalid Cron Expression", pe);
 			return ssLog;
@@ -252,7 +253,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 		//create the job
 
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put("partnerServiceId", partnerService.getID());
+		jobDataMap.put("partnerServiceId", partnerService.getId());
 		jobDataMap.put("jobId", jobId);
 
 		JobDetail job = new JobDetail(jobId, PartnerSettlementJob.class);
@@ -260,35 +261,35 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 		try {
 			mfinoScheduler.scheduleJob(job, trigger);
 
-			ssLog.setNextSettle(new Timestamp(trigger.getNextFireTime()));
-			ssLog.setQrtzJobId(jobId);
-			ssLog.setReasonText("Job Scheduled");
-			ssLog.setIsScheduled(Boolean.TRUE);
+			ssLog.setNextsettle(new Timestamp(trigger.getNextFireTime()));
+			ssLog.setQrtzjobid(jobId);
+			ssLog.setReasontext("Job Scheduled");
+			ssLog.setIsscheduled(Boolean.TRUE);
 			settlementSchedulerLogsService.save(ssLog);
 
-			settlementConfig.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Scheduled);
+			settlementConfig.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_Scheduled));
 			serviceSettlementConfigCoreService.save(settlementConfig);
 
 		} catch (SchedulerException e) {
 			String errorMsg = e.getMessage();
-			ssLog.setReasonText("Job Could not be Scheduled");
+			ssLog.setReasontext("Job Could not be Scheduled");
 			if(errorMsg!=null){
-				ssLog.setReasonText(errorMsg.substring(0,240));
+				ssLog.setReasontext(errorMsg.substring(0,240));
 			}
-			ssLog.setIsScheduled(Boolean.FALSE);
+			ssLog.setIsscheduled(Boolean.FALSE);
 			settlementSchedulerLogsService.save(ssLog);
-			log.error("Error while scheduling job for partner service id "+partnerService.getID(), e);	
+			log.error("Error while scheduling job for partner service id "+partnerService.getId(), e);	
 			return ssLog;
 		}
 		return ssLog;
 	}
 
 	
-	public  SettlementSchedulerLogs reScheduleSettlement(PartnerServices partnerService) throws CoreException{
+	public  SettlementScheduleLog reScheduleSettlement(PartnerServices partnerService) throws CoreException{
 		log.info("partnerSettlementScheduler :: Reschedule Settlement Called");
-		SettlementSchedulerLogs ssl =  settlementSchedulerLogsService.getByPartnerServiceId(partnerService.getID());
+		SettlementScheduleLog ssl =  settlementSchedulerLogsService.getByPartnerServiceId(partnerService.getId().longValue());
 		if(ssl!=null){
-			String jobId = ssl.getQrtzJobId();
+			String jobId = ssl.getQrtzjobid();
 			if((null != jobId) && !("").equalsIgnoreCase(jobId)){
 				try {
 					mfinoScheduler.deleteJob(jobId,null);
@@ -305,13 +306,13 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 		return idOne.toString();
 	}
 
-	protected List<ServiceSettlementConfig> getSimilarSettlementConfigs(PartnerServices partnerServices){
+	protected List<ServiceSettlementCfg> getSimilarSettlementConfigs(PartnerServices partnerServices){
 
 		ServiceSettlementConfigQuery query = new ServiceSettlementConfigQuery();
 
 		query.setCollectorPocket(partnerServices.getPocketByCollectorPocket());
 		query.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Scheduled);
-		List<ServiceSettlementConfig> settlementConfigs = serviceSettlementConfigCoreService.get(query);		
+		List<ServiceSettlementCfg> settlementConfigs = serviceSettlementConfigCoreService.get(query);		
 		return settlementConfigs;
 	}
 

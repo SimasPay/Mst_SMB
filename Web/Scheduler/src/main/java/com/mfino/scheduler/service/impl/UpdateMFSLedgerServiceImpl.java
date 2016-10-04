@@ -3,6 +3,7 @@
  */
 package com.mfino.scheduler.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -61,7 +62,7 @@ public class UpdateMFSLedgerServiceImpl  implements UpdateMFSLedgerService {
 						updatePocketBalance(mfsLedger);
 						
 					} catch (Exception e) {
-						log.error("Error while processing the ledger entry with SCTL id = " + mfsLedger.getSctlId() + " and pocket id = " + mfsLedger.getPocketID(), e);
+						log.error("Error while processing the ledger entry with SCTL id = " + mfsLedger.getSctlid() + " and pocket id = " + mfsLedger.getPocketid(), e);
 					}
 				}
 			}
@@ -75,23 +76,23 @@ public class UpdateMFSLedgerServiceImpl  implements UpdateMFSLedgerService {
 	MoneyService ms = CoreServiceFactory.getInstance().getMoneyService();
 
 	Pocket pocket = null;
-	log.info("Updating the pocket balance for the SCTL id = " + mfsLedger.getSctlId() + " and pocket id = " 
-			+ mfsLedger.getPocketID() + " with amount = " + mfsLedger.getAmount());
-	pocket = pocketService.getById(mfsLedger.getPocketID(), LockMode.UPGRADE);
-	log.debug("Pocket balance before update = " + pocket.getCurrentBalance());
+	log.info("Updating the pocket balance for the SCTL id = " + mfsLedger.getSctlid() + " and pocket id = " 
+			+ mfsLedger.getPocketid() + " with amount = " + mfsLedger.getAmount());
+	pocket = pocketService.getById(mfsLedger.getPocketid().longValue(), LockMode.UPGRADE);
+	log.debug("Pocket balance before update = " + pocket.getCurrentbalance());
 	
-	if (DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgerType())) {
-		pocket.setCurrentBalance(ms.subtract(pocket.getCurrentBalance(), mfsLedger.getAmount()));
+	if (DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype())) {
+		pocket.setCurrentbalance(ms.subtract(new BigDecimal(pocket.getCurrentbalance()), mfsLedger.getAmount()).toPlainString());
 	}
 	else {
-		pocket.setCurrentBalance(ms.add(pocket.getCurrentBalance(), mfsLedger.getAmount()));
+		pocket.setCurrentbalance(ms.add(new BigDecimal(pocket.getCurrentbalance()), mfsLedger.getAmount()).toPlainString());
 	}
 	
-	mfsLedger.setLedgerStatus(DAOConstants.LEDGER_STATUS_UPDATED);
+	mfsLedger.setLedgerstatus(DAOConstants.LEDGER_STATUS_UPDATED);
 	pocketService.save(pocket);
 	mFSLedgerService.save(mfsLedger);
-	log.debug("Pocket balance after update = " + pocket.getCurrentBalance());						
-	log.info("Updated the pocket balance for the SCTL id = " + mfsLedger.getSctlId() + " and pocket id = " + mfsLedger.getPocketID());
+	log.debug("Pocket balance after update = " + pocket.getCurrentbalance());						
+	log.info("Updated the pocket balance for the SCTL id = " + mfsLedger.getSctlid() + " and pocket id = " + mfsLedger.getPocketid());
 	
 }
 }

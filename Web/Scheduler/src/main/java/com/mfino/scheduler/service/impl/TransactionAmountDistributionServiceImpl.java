@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.TransactionAmountDistributionQuery;
 import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.TransactionAmountDistributionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionCharge;
 import com.mfino.domain.TransactionResponse;
+import com.mfino.domain.TxnAmountDstrbLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMChargeDistribution;
@@ -89,16 +89,16 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 						CmFinoFIX.SCTLStatus_Reverse_Success
 					};
 			
-			List<ServiceChargeTransactionLog> lst = serviceChargeTransactionLogService.getByStatus(status);
+			List<ServiceChargeTxnLog> lst = serviceChargeTransactionLogService.getByStatus(status);
 			if (CollectionUtils.isNotEmpty(lst)) {
-				for (ServiceChargeTransactionLog sctl : lst) {
-					if ((sctl.getIsChargeDistributed()!= null ) && (!sctl.getIsChargeDistributed().booleanValue()) && 
-							((currentTime.getTime() - sctl.getLastUpdateTime().getTime()) > 300000) ) {
-						log.info("Charge Distribution of SCTL ID --> " + sctl.getID());
-						distribute(sctl.getID());
+				for (ServiceChargeTxnLog sctl : lst) {
+					if ((sctl.getIschargedistributed()!= null ) && (!sctl.getIschargedistributed().booleanValue()) && 
+							((currentTime.getTime() - sctl.getLastupdatetime().getTime()) > 300000) ) {
+						log.info("Charge Distribution of SCTL ID --> " + sctl.getId());
+						distribute(sctl.getId().longValue());
 					}
 					// Changing the Confirmed SCTL status based on the IsChargeDistributed value to Distribution_Completed.
-					else if((sctl.getIsChargeDistributed()!= null ) && (sctl.getIsChargeDistributed().booleanValue()) && 
+					else if((sctl.getIschargedistributed()!= null ) && (sctl.getIschargedistributed().booleanValue()) && 
 							CmFinoFIX.SCTLStatus_Confirmed.equals(sctl.getStatus())) {
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Distribution_Completed);
 						serviceChargeTransactionLogService.save(sctl);
@@ -123,9 +123,9 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 			TransactionAmountDistributionQuery query = new TransactionAmountDistributionQuery();
 			query.setStatus(CmFinoFIX.TADLStatus_Initialized); 
 
-			List<TransactionAmountDistributionLog> lstTADL =  transactionAmountDistributionLogService.get(query);
+			List<TxnAmountDstrbLog> lstTADL =  transactionAmountDistributionLogService.get(query);
 			if (CollectionUtils.isNotEmpty(lstTADL)) {
-				for (TransactionAmountDistributionLog tadl: lstTADL) {
+				for (TxnAmountDstrbLog tadl: lstTADL) {
 					updatePocketForDistribution(tadl);
 				}
 			}
@@ -133,12 +133,12 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 	}
 	
 	
-	private void updatePocketForDistribution(TransactionAmountDistributionLog tadl) {
+	private void updatePocketForDistribution(TxnAmountDstrbLog tadl) {
 		if(tadl==null){
 			return;
 		}
-		log.info("Update the pocket for SCTL --> " + tadl.getServiceChargeTransactionLogID() + " , Transaction Id --> " + 
-				tadl.getTransactionID() + ", Transaction Charge Id --> " + tadl.getTransactionCharge().getID());
+		log.info("Update the pocket for SCTL --> " + tadl.getServicechargetransactionlogid() + " , Transaction Id --> " + 
+				tadl.getTransactionid() + ", Transaction Charge Id --> " + tadl.getTransactionCharge().getId());
 		CMChargeDistribution chargeDistribution;
 		tadl.setStatus(CmFinoFIX.TADLStatus_Processing);
 		transactionAmountDistributionLogService.save(tadl);
@@ -148,9 +148,9 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 		
 		TransactionCharge tc = tadl.getTransactionCharge();
 		
-		if (tc != null && !(tc.getChargeDefinition().getIsChargeFromCustomer().booleanValue())) {
-			sourceMDN = getMDNForPartner(tc.getChargeDefinition().getPartnerByFundingPartnerID());
-			sourcePocketId = tc.getChargeDefinition().getPocket().getID();
+		if (tc != null && !(tc.getChargeDefinition().getIschargefromcustomer().booleanValue())) {
+			sourceMDN = getMDNForPartner(tc.getChargeDefinition().getPartner());
+			sourcePocketId = tc.getChargeDefinition().getPocket().getId().longValue();
 		}
 		
 		String destMDN = null;
@@ -160,25 +160,25 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 		}
 		else if(tadl.getSubscriber() != null)
 		{
-			destMDN = tadl.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next().getMDN();
+			destMDN = tadl.getSubscriber().getSubscriberMdns().iterator().next().getMdn();
 		}
 		
 		
 		chargeDistribution = new CMChargeDistribution();
-		chargeDistribution.setParentTransactionID(tadl.getTransactionID());
+		chargeDistribution.setParentTransactionID(tadl.getTransactionid().longValue());
 		chargeDistribution.setSourceMDN(sourceMDN);
 		chargeDistribution.setSourcePocketID(sourcePocketId);
 		chargeDistribution.setDestMDN(destMDN);
-		chargeDistribution.setDestPocketID((tadl.getPocket() != null) ? tadl.getPocket().getID() : null);
-		chargeDistribution.setAmount(tadl.getShareAmount());
-		chargeDistribution.setTaxAmount(tadl.getTaxAmount());
-		chargeDistribution.setTransactionChargeID(tadl.getTransactionCharge().getID());
-		chargeDistribution.setIsPartOfSharedUpChain(tadl.getIsPartOfSharedUpChain());
+		chargeDistribution.setDestPocketID((tadl.getPocket() != null) ? tadl.getPocket().getId().longValue() : null);
+		chargeDistribution.setAmount(tadl.getShareamount());
+		chargeDistribution.setTaxAmount(tadl.getTaxamount());
+		chargeDistribution.setTransactionChargeID(tadl.getTransactionCharge().getId().longValue());
+		chargeDistribution.setIsPartOfSharedUpChain(tadl.getIspartofsharedupchain());
 		chargeDistribution.setChargeTypeName(tadl.getTransactionCharge().getChargeType().getName());
-		chargeDistribution.setServiceChargeTransactionLogID(tadl.getServiceChargeTransactionLogID());
+		chargeDistribution.setServiceChargeTransactionLogID(tadl.getServicechargetransactionlogid().longValue());
 		if(tadl.getPartner() != null)
 		{
-			chargeDistribution.setPartnerID(tadl.getPartner().getID());
+			chargeDistribution.setPartnerID(tadl.getPartner().getId().longValue());
 		}
 		
 		//REFACTOR:: This is a workaround need to set the data based on original Txn information
@@ -201,17 +201,17 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 				if (CmFinoFIX.NotificationCode_ChargeDistributionCompleted.equals(Integer.parseInt(transactionResponse.getCode()))) {
 					log.info("Pocket Updation completed.");
 					tadl.setStatus(CmFinoFIX.TADLStatus_Completed);
-					tadl.setFailureReason("");
+					tadl.setFailurereason("");
 					transactionAmountDistributionLogService.save(tadl);
 				} else {
 					log.info("pocket updation is failed and put for Retry");
-					tadl.setFailureReason(failureReason);
+					tadl.setFailurereason(failureReason);
 					tadl.setStatus(CmFinoFIX.TADLStatus_ReTry);
 					transactionAmountDistributionLogService.save(tadl);
 				}
 			} else {
 				log.info("Pocket updation failed.");
-				tadl.setFailureReason(failureReason);
+				tadl.setFailurereason(failureReason);
 				tadl.setStatus(CmFinoFIX.TADLStatus_Failed);
 				transactionAmountDistributionLogService.save(tadl);
 			}			
@@ -226,9 +226,9 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 			TransactionAmountDistributionQuery query = new TransactionAmountDistributionQuery();
 			query.setStatus(CmFinoFIX.TADLStatus_ReTry);
 
-			List<TransactionAmountDistributionLog> lstTADL =  transactionAmountDistributionLogService.get(query);
+			List<TxnAmountDstrbLog> lstTADL =  transactionAmountDistributionLogService.get(query);
 			if (CollectionUtils.isNotEmpty(lstTADL)) {
-				for (TransactionAmountDistributionLog tadl: lstTADL) {
+				for (TxnAmountDstrbLog tadl: lstTADL) {
 					updatePocketForDistribution(tadl);
 				}
 			}
@@ -243,10 +243,10 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 			TransactionAmountDistributionQuery query = new TransactionAmountDistributionQuery();
 			query.setStatus(CmFinoFIX.TADLStatus_Failed); 
 
-			List<TransactionAmountDistributionLog> lstTADL =  transactionAmountDistributionLogService.get(query);
+			List<TxnAmountDstrbLog> lstTADL =  transactionAmountDistributionLogService.get(query);
 			if (CollectionUtils.isNotEmpty(lstTADL)) {
-				for (TransactionAmountDistributionLog tadl: lstTADL) {
-					if (tadl.getShareAmount().compareTo(BigDecimal.ZERO) > 0) {
+				for (TxnAmountDstrbLog tadl: lstTADL) {
+					if (tadl.getShareamount().compareTo(BigDecimal.ZERO) > 0) {
 						updatePocketForDistribution(tadl);
 					}
 				}
@@ -263,10 +263,10 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 	private String getMDNForPartner(Partner partner) {
 		String MDN = "";
 		if (partner != null && partner.getSubscriber() != null) {
-			Set<SubscriberMDN> setMDN = partner.getSubscriber().getSubscriberMDNFromSubscriberID();
+			Set<SubscriberMdn> setMDN = partner.getSubscriber().getSubscriberMdns();
 			if (CollectionUtils.isNotEmpty(setMDN)) {
-				for (SubscriberMDN smdn: setMDN) {
-					MDN = smdn.getMDN(); 
+				for (SubscriberMdn smdn: setMDN) {
+					MDN = smdn.getMdn(); 
 				}
 			}
 		}

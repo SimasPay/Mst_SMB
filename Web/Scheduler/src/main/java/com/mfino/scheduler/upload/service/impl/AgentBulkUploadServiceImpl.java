@@ -6,6 +6,7 @@
 package com.mfino.scheduler.upload.service.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class AgentBulkUploadServiceImpl
 	public BulkUploadFile ProcessBulkUploadFile(BulkUploadFile bulkUploadFile) throws IOException {
 		
 		BulkUploadFileEntryQuery query = new BulkUploadFileEntryQuery();
-		query.setUploadFileID(bulkUploadFile.getID());
+		query.setUploadFileID(bulkUploadFile.getId().longValue());
 		List<BulkUploadFileEntry> fileEntries = bulkUploadFileEntryService.get(query);
 		Iterator<BulkUploadFileEntry> iterator = fileEntries.iterator();
 		int processedCount = 0;
@@ -63,24 +64,24 @@ public class AgentBulkUploadServiceImpl
 		while(iterator.hasNext()) {
 			BulkUploadFileEntry bulkUploadFileEntry = iterator.next();
 			//process only the file records whose status is left initialized
-			if(CmFinoFIX.BulkUploadFileEntryStatus_Initialized.equals(bulkUploadFileEntry.getBulkUploadFileEntryStatus())) {
+			if(CmFinoFIX.BulkUploadFileEntryStatus_Initialized.equals(bulkUploadFileEntry.getBulkuploadfileentrystatus())) {
 				processedCount++;
-				Integer linenumber = bulkUploadFileEntry.getLineNumber();
-				String lineData = bulkUploadFileEntry.getLineData();
+				Integer linenumber =(int) bulkUploadFileEntry.getLinenumber();
+				String lineData = bulkUploadFileEntry.getLinedata();
 				log.info("Processing record at line number: " + linenumber);
 				//set the bulk upload file entry record status as Processing
-				bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Processing);
+				bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Processing);
 				bulkUploadFileEntryService.save(bulkUploadFileEntry);
 				
-				if(bulkUploadFile.getRecordType().equals(CmFinoFIX.RecordType_Agent)){
-					CMJSError response = createAgent(lineData,bulkUploadFile.getCreatedBy());
+				if(bulkUploadFile.getRecordtype().equals(CmFinoFIX.RecordType_Agent)){
+					CMJSError response = createAgent(lineData,bulkUploadFile.getCreatedby());
 					if (response.getErrorCode().equals(SubscriberSyncErrors.Success)) {
 						log.info("Successfully created the Agent for record at line number: " + linenumber);
-						bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Completed);
+						bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Completed);
 					} else {
 						log.info("Error while creating the Agent for record at line number: " + linenumber + " :"+ response.getErrorDescription());
-						bulkUploadFileEntry.setBulkUploadFileEntryStatus(CmFinoFIX.BulkUploadFileEntryStatus_Failed);
-						bulkUploadFileEntry.setFailureReason(response.getErrorDescription());
+						bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Failed);
+						bulkUploadFileEntry.setFailurereason(response.getErrorDescription());
 						errorLineCount++;
 					}
 					bulkUploadFileEntryService.save(bulkUploadFileEntry);
@@ -92,9 +93,9 @@ public class AgentBulkUploadServiceImpl
 //			}
 		}
 		//update the processing info and set the status to Processed
-		bulkUploadFile.setFileProcessedDate(new Timestamp());		
-		bulkUploadFile.setErrorLineCount(errorLineCount);
-		bulkUploadFile.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Processed);		
+		bulkUploadFile.setFileprocesseddate(new Timestamp());		
+		bulkUploadFile.setErrorlinecount(Long.valueOf(errorLineCount));
+		bulkUploadFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processed);		
 		return bulkUploadFile;
 	}
 

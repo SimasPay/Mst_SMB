@@ -15,6 +15,7 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.mfino.domain.SettlementScheduleLog;
 import com.mfino.domain.SettlementSchedulerLogs;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.hibernate.session.HibernateSessionHolder;
@@ -79,13 +80,13 @@ public class PartnerSettlementJob implements Job{
 				settlementHandler.doSettlement(partnerServiceId);	
 			}
 			
-			SettlementSchedulerLogs ssLog = settlementSchedulerLogsServiceImpl.getByJobId(jobId);
+			SettlementScheduleLog ssLog = settlementSchedulerLogsServiceImpl.getByJobId(jobId);
 			if(ssLog != null){
 				//ssLog.setLastSettled(new Timestamp(new Date()));
 				if(context.getPreviousFireTime() != null){
-					ssLog.setLastSettled(new Timestamp(context.getPreviousFireTime()));
+					ssLog.setLastsettled(new Timestamp(context.getPreviousFireTime()));
 				}
-				ssLog.setNextSettle(new Timestamp(context.getNextFireTime()));
+				ssLog.setNextsettle(new Timestamp(context.getNextFireTime()));
 				settlementSchedulerLogsServiceImpl.save(ssLog);
 			}
 			else{

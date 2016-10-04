@@ -1,9 +1,9 @@
 package com.mfino.mce.notification.impl;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,30 +53,30 @@ public class NotificationPersistenceServiceDefaultImpl  implements NotificationP
 				
 		if(ServiceChargeTransactionLogID != null)
 		{
-			notificationLog.setSctlId(ServiceChargeTransactionLogID);
-			notificationLog.setNotificationMethod(notificationMethod);
-			notificationLog.setNotificationReceiverType(notificationReceiverType);
+			notificationLog.setSctlid(BigDecimal.valueOf(ServiceChargeTransactionLogID));
+			notificationLog.setNotificationmethod(notificationMethod);
+			notificationLog.setNotificationreceivertype(notificationReceiverType);
 			notificationLog.setCode(notification.getNotificationCode());
 			if(sensitiveNotificationCodes.contains(notification.getNotificationCode()))
 			{
-				notificationLog.setIsSensitiveData(true);
+				notificationLog.setIssensitivedata(true);
 			}
 			else
 			{
-				notificationLog.setIsSensitiveData(false);
+				notificationLog.setIssensitivedata(false);
 			}
 			if(notification instanceof SMSNotification)
 			{
 				SMSNotification smsNotifcation =  (SMSNotification)notification;
 				notificationLog.setText(EncryptionUtil.getEncryptedString(smsNotifcation.getContent()));
-				notificationLog.setSourceAddress(smsNotifcation.getMdn());
+				notificationLog.setSourceaddress(smsNotifcation.getMdn());
 			}
 			else if(notification instanceof EmailNotification)
 			{
 				EmailNotification emailNotifcation =  (EmailNotification)notification;
 				notificationLog.setText(EncryptionUtil.getEncryptedString(emailNotifcation.getContent()));
-				notificationLog.setSourceAddress(emailNotifcation.getToRecipents()[0]);
-				notificationLog.setEmailSubject(emailNotifcation.getSubject());
+				notificationLog.setSourceaddress(emailNotifcation.getToRecipents()[0]);
+				notificationLog.setEmailsubject(emailNotifcation.getSubject());
 			}
 			notificationLogDAO.save(notificationLog);
 			
@@ -85,7 +85,7 @@ public class NotificationPersistenceServiceDefaultImpl  implements NotificationP
 			notificationLogDetails.setNotificationLog(notificationLog);
 			notificationLogDetails.setStatus(CmFinoFIX.SendNotificationStatus_Sending);
 			notificationLogDetailsDAO.save(notificationLogDetails);
-			notification.setNotificationLogDetailsID(notificationLogDetails.getID());			
+			notification.setNotificationLogDetailsID(notificationLogDetails.getId().longValue());			
 			
 		}
 	}

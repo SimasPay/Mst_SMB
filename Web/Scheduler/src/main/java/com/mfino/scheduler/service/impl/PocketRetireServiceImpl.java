@@ -71,10 +71,10 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 			if (CollectionUtils.isNotEmpty(lstPockets)) {
 				for (Pocket p: lstPockets) {
 					try {
-						log.info("Checking the status of the pocket with cardPan " + p.getCardPAN());
+						log.info("Checking the status of the pocket with cardPan " + p.getCardpan());
 						checkNChangePocketStatus(p);
 					} catch (Exception e) {
-						log.error("Error: while checking the pocket with cardPan " + p.getCardPAN() + e.getMessage(), e);
+						log.error("Error: while checking the pocket with cardPan " + p.getCardpan() + e.getMessage(), e);
 					}
 				}
 			}
@@ -83,7 +83,7 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 	
 	
 	private void checkNChangePocketStatus(Pocket p) {
-		if (p.getCurrentBalance() != null && BigDecimal.ZERO.compareTo(p.getCurrentBalance()) == 0) {
+		if (p.getCurrentbalance() != null && BigDecimal.ZERO.compareTo(new BigDecimal(p.getCurrentbalance())) == 0) {
 			
             CommodityTransferQuery ctQuery = new CommodityTransferQuery();
             ctQuery.setSourceDestnPocket(p);
@@ -93,18 +93,18 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
                 List<PendingCommodityTransfer> pcList = pendingCommodityTransferService.getByQuery(ctQuery);
 
                 if (CollectionUtils.isNotEmpty(pcList)) {
-                	log.info("Pocket with cardPan " + p.getCardPAN() + " can not be retired because, it still has pending transactions");
+                	log.info("Pocket with cardPan " + p.getCardpan() + " can not be retired because, it still has pending transactions");
                 } 
                 else {
                 	int timesRetired = 0;
-					String cardPan = p.getCardPAN();
+					String cardPan = p.getCardpan();
 					String cardPanStringToReplace;
 					if (StringUtils.isNotBlank(cardPan)) {
 					timesRetired = getTimesRetiredForThisCardPan(cardPan);
 					cardPanStringToReplace = cardPan + "R" + timesRetired;
-                	p.setCardPAN(cardPanStringToReplace);
+                	p.setCardpan(cardPanStringToReplace);
                     p.setStatus(CmFinoFIX.PocketStatus_Retired);
-                    p.setIsDefault(CmFinoFIX.Boolean_False);
+                    p.setIsdefault(CmFinoFIX.Boolean_False);
                     try{
                     pocketService.save(p);
                     }catch(ConstraintViolationException e){
@@ -117,15 +117,15 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 							}
 						}
 						updateCardPANInfo(cardPan, timesRetired+1);
-                    log.info("Pocket with cardPan " + p.getCardPAN() + " is retired");
+                    log.info("Pocket with cardPan " + p.getCardpan() + " is retired");
                 }
                 }
             } catch (Exception e) {
-                log.error("Exception while checking if the pocket with cardPan " + p.getCardPAN() + " has Pending Transactions", e);
+                log.error("Exception while checking if the pocket with cardPan " + p.getCardpan() + " has Pending Transactions", e);
             }
 		}
 		else {
-			log.info("Pocket with cardPan " + p.getCardPAN() + " can not be retired because the balance is not zero");
+			log.info("Pocket with cardPan " + p.getCardpan() + " can not be retired because the balance is not zero");
 		}
 	}
 	
@@ -143,7 +143,7 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 			if(results.size() > 0){
 				RetiredCardPANInfo retiredCardPANInfo = results.get(0);
 				if(retiredCardPANInfo != null){
-					timesRetired = retiredCardPANInfo.getRetireCount();    		
+					timesRetired = (int)retiredCardPANInfo.getRetirecount();    		
 				}
 			}
 
@@ -165,14 +165,14 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 			if(results.size() > 0){
 				RetiredCardPANInfo retiredCardPANInfo = results.get(0);
 				if(retiredCardPANInfo != null){
-					retiredCardPANInfo.setRetireCount(timesRetired);
+					retiredCardPANInfo.setRetirecount(timesRetired);
 					retiredCardPANInfoService.save(retiredCardPANInfo);
 				}
 			}
 			else{
 				RetiredCardPANInfo retiredCardPANInfo = new RetiredCardPANInfo();
-				retiredCardPANInfo.setCardPAN(cardPan);
-				retiredCardPANInfo.setRetireCount(timesRetired);
+				retiredCardPANInfo.setCardpan(cardPan);
+				retiredCardPANInfo.setRetirecount(timesRetired);
 				retiredCardPANInfoService.save(retiredCardPANInfo);
 			}
 		}

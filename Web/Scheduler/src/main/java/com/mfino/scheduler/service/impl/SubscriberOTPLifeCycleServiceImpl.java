@@ -23,7 +23,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
@@ -142,9 +142,9 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 	        while (firstResult < countofInitialized) {
 	            query.setStart(firstResult);
 	            query.setLimit(batchSize);
-	            List<SubscriberMDN> results = subscriberMdnService.getStatusForMdns(query);
+	            List<SubscriberMdn> results = subscriberMdnService.getStatusForMdns(query);
 	            if (CollectionUtils.isNotEmpty(results)) {
-					for (SubscriberMDN sm : results) {
+					for (SubscriberMdn sm : results) {
 						checkSubscriberOTP(sm);
 					}
 	            }
@@ -158,24 +158,24 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 	}
 
 	
-	private void checkSubscriberOTP(SubscriberMDN subscriberMDN){
+	private void checkSubscriberOTP(SubscriberMdn subscriberMDN){
 		Subscriber subscriber = null;
 		Timestamp now = new Timestamp();
 
 		if (subscriberMDN != null) {
 			subscriber = subscriberMDN.getSubscriber();
-			log.info("Checking the Subscriber with id --> " + subscriber.getID() + " And status is --> " + subscriber.getStatus());
+			log.info("Checking the Subscriber with id --> " + subscriber.getId() + " And status is --> " + subscriber.getStatus());
 			if (CmFinoFIX.SubscriberStatus_Initialized.intValue() == subscriberMDN.getStatus()) {
-				if (subscriber != null && subscriber.getType() != null && 
+				if (subscriber != null && Long.valueOf(subscriber.getType() )!= null && 
 						(CmFinoFIX.SubscriberType_Subscriber.intValue() == subscriber.getType() || CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())
-						&& subscriber.getActivationTime() == null) {
-					if ( ((now.getTime() - subscriber.getCreateTime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION) &&
-							((now.getTime() - subscriber.getStatusTime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION)) {
+						&& subscriber.getActivationtime() == null) {
+					if ( ((now.getTime() - subscriber.getCreatetime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION) &&
+							((now.getTime() - subscriber.getStatustime().getTime()) > TIME_TO_SUSPEND_OF_NO_ACTIVATION)) {
 						suspendSubscriber(subscriber, subscriberMDN,now);
-						if (subscriber.getType() != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
+						if (Long.valueOf(subscriber.getType() )!= null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 							Partner partner = getPartnerForSubscriber(subscriber);
 							if (partner != null) {
-								partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Suspend);
+								partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Suspend);
 								partnerService.savePartner(partner);
 							}
 						}
@@ -188,26 +188,26 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 		}
 	}
 
-	private void suspendSubscriber(Subscriber subscriber, SubscriberMDN subscriberMDN,Timestamp now){
+	private void suspendSubscriber(Subscriber subscriber, SubscriberMdn subscriberMDN,Timestamp now){
 
 		subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
 		subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Suspend);
-		subscriberMDN.setStatusTime(now);
+		subscriberMDN.setStatustime(now);
 		subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_Suspended);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Suspend);
-		subscriber.setStatusTime(now);
+		subscriber.setStatustime(now);
 		subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber, true);
 		subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 		subscriberService.saveSubscriber(subscriber);
-		log.info("Suspended the Subscriber because of no activation within the required time--> " + subscriber.getID());
+		log.info("Suspended the Subscriber because of no activation within the required time--> " + subscriber.getId());
 	}
 
 
 
-	private boolean isItTimeToSendOTP(SubscriberMDN subscriberMDN,Timestamp now){
+	private boolean isItTimeToSendOTP(SubscriberMdn subscriberMDN,Timestamp now){
 		 Subscriber subscriber = subscriberMDN.getSubscriber();
-		if(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized) && (subscriberMDN.getOTP()!=null)){
-			if(now.getTime() > subscriberMDN.getOTPExpirationTime().getTime()){
+		if(Long.valueOf(subscriber.getStatus()).equals(CmFinoFIX.SubscriberStatus_Initialized) && (subscriberMDN.getOtp()!=null)){
+			if(now.getTime() > subscriberMDN.getOtpexpirationtime().getTime()){
 				return true;
 			}
         }
@@ -215,26 +215,26 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 	}
 
 
-	private void sendOTP(SubscriberMDN subscriberMDN){
+	private void sendOTP(SubscriberMdn subscriberMDN){
 		Subscriber subscriber = subscriberMDN.getSubscriber();
-		log.info("Sending Automatic OTP to subscriber with Id--> "+subscriber.getID());
+		log.info("Sending Automatic OTP to subscriber with Id--> "+subscriber.getId());
 
 		Integer OTPLength = systemParametersService.getOTPLength();
 	    String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-		subscriberMDN.setOTP(digestPin1);
-		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
+		subscriberMDN.setOtp(digestPin1);
+		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subscriberMdnService.saveSubscriberMDN(subscriberMDN);
-		String mdn = subscriberMDN.getMDN();
+		String mdn = subscriberMDN.getMdn();
 
 		NotificationWrapper wrapper = new NotificationWrapper();
 		wrapper.setOneTimePin(oneTimePin);
 		wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		wrapper.setCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 		wrapper.setDestMDN(mdn);
-		wrapper.setLanguage(subscriberMDN.getSubscriber().getLanguage());
-		wrapper.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-		wrapper.setLastName(subscriberMDN.getSubscriber().getLastName());
+		wrapper.setLanguage((int)subscriberMDN.getSubscriber().getLanguage());
+		wrapper.setFirstName(subscriberMDN.getSubscriber().getFirstname());
+		wrapper.setLastName(subscriberMDN.getSubscriber().getLastname());
 
 		String smsMessage = notificationMessageParserService.buildMessage(wrapper,true);
 		smsService.setDestinationMDN(mdn);
@@ -242,29 +242,29 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 		smsService.setNotificationCode(wrapper.getCode());
 		smsService.asyncSendSMS();
 		if(subscriberServiceExtended.isSubscriberEmailVerified(subscriber)) {
-		if(subscriber.getType().equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartnerFromSubscriberID().iterator().next().getAuthorizedEmail()!=null){
+		if(Long.valueOf(subscriber.getType()).equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartnerFromSubscriberID().iterator().next().getAuthorizedEmail()!=null){
 			String email=subscriber.getEmail();
-			String to = subscriber.getFirstName();
+			String to = subscriber.getFirstname();
 			Partner partner =subscriber.getPartnerFromSubscriberID().iterator().next();
 			NotificationWrapper notification = partnerService.genratePartnerOTPMessage(partner, oneTimePin, mdn, CmFinoFIX.NotificationMethod_Email);
 			notification.setDestMDN(mdn);
 			if(subscriberMDN != null){
-	           	notification.setFirstName(subscriberMDN.getSubscriber().getFirstName());
-	           	notification.setLastName(subscriberMDN.getSubscriber().getLastName());
+	           	notification.setFirstName(subscriberMDN.getSubscriber().getFirstname());
+	           	notification.setLastName(subscriberMDN.getSubscriber().getLastname());
 	        }
 			String mailMessage = notificationMessageParserService.buildMessage(notification,true);
 			mailService.asyncSendEmail(email, to, "Activation", mailMessage);
-			}else if(((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
+			}else if(((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriber.getEmail() != null){
 				wrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
 				String emailMessage = notificationMessageParserService.buildMessage(wrapper,true);
 				String email=subscriber.getEmail();
-				String to = subscriber.getFirstName();
+				String to = subscriber.getFirstname();
 				mailService.asyncSendEmail(email, to, "New OTP", emailMessage);
 		} 
 		}else {
-			log.info("Email not sent since it is not verified for subscriber with Id ->" + subscriber.getID());
+			log.info("Email not sent since it is not verified for subscriber with Id ->" + subscriber.getId());
 		}
-		log.info("Sent Automatic OTP to subscriber with Id--> "+subscriber.getID());
+		log.info("Sent Automatic OTP to subscriber with Id--> "+subscriber.getId());
 	}
 	
 	/**
