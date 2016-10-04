@@ -16,7 +16,7 @@ import com.mfino.dao.ScheduleTemplateDAO;
 import com.mfino.dao.ServiceSettlementConfigDAO;
 import com.mfino.dao.SettlementTemplateDAO;
 import com.mfino.dao.query.SettlementTemplateQuery;
-import com.mfino.domain.ServiceSettlementConfig;
+import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.domain.SettlementTemplate;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -33,29 +33,29 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 		
 		
 		if (e.getSettlementName() != null) {
-			if(!e.getSettlementName().equals(st.getSettlementName())){
-        		log.info("Settlement ID:"+ st.getID()+" Settlement Name updated to "+e.getSettlementName()+" by user:"+getLoggedUserNameWithIP());
+			if(!e.getSettlementName().equals(st.getSettlementname())){
+        		log.info("Settlement ID:"+ st.getId()+" Settlement Name updated to "+e.getSettlementName()+" by user:"+getLoggedUserNameWithIP());
         	}
-			st.setSettlementName(e.getSettlementName());
+			st.setSettlementname(e.getSettlementName());
 			
 		}
 		
 		if(e.getScheduleTemplateID() != null){
-			st.setScheduleTemplate(scheduleTemplateDAO.getById(e.getScheduleTemplateID()));
+			st.setScheduleTemplateByCutofftime(scheduleTemplateDAO.getById(e.getScheduleTemplateID()));
 		}
 		if(e.getCutoffTime()!=null){
 			st.setCutoffTime(e.getCutoffTime());
 		}
 		if (e.getSettlementPocket() != null) {
 			if(st.getPocketBySettlementPocket()==null || !e.getSettlementPocket().equals(st.getPocketBySettlementPocket().getID())){
-        		log.info("Settlement ID:"+ st.getID()+" Settlement Pocket updated to "+e.getSettlementPocket()+" by user:"+getLoggedUserNameWithIP());
+        		log.info("Settlement ID:"+ st.getId()+" Settlement Pocket updated to "+e.getSettlementPocket()+" by user:"+getLoggedUserNameWithIP());
         	}
 			st.setPocketBySettlementPocket(pocketDAO.getById(e.getSettlementPocket()));
 		}
 		
 		if (e.getPartnerID() != null) {
-			if(st.getPartner()==null || !e.getPartnerID().equals(st.getPartner().getID())){
-        		log.info("Settlement ID:"+ st.getID()+" Partner updated to "+e.getPartnerID()+" by user:"+getLoggedUserNameWithIP());
+			if(st.getPartner()==null || !e.getPartnerID().equals(st.getPartner().getId())){
+        		log.info("Settlement ID:"+ st.getId()+" Partner updated to "+e.getPartnerID()+" by user:"+getLoggedUserNameWithIP());
         	}
 			st.setPartner(pDAO.getById(e.getPartnerID()));
 		}
@@ -63,12 +63,12 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 	}
 	
 	private void updateMessage(SettlementTemplate st, CMJSSettlementTemplate.CGEntries e) {
-		e.setID(st.getID());
-		e.setMSPID(st.getmFinoServiceProviderByMSPID().getID());
-		e.setSettlementName(st.getSettlementName());
-		if(st.getScheduleTemplate() != null){
-			e.setScheduleTemplateID(st.getScheduleTemplate().getID());
-			e.setSettlementTypeText(st.getScheduleTemplate().getName());
+		e.setID(st.getId().longValue());
+		e.setMSPID(st.getMfinoServiceProvider().getId().longValue());
+		e.setSettlementName(st.getSettlementname());
+		if(st.getScheduleTemplateByCutofftime() != null){
+			e.setScheduleTemplateID(st.getScheduleTemplateByCutofftime().getId().longValue());
+			e.setSettlementTypeText(st.getScheduleTemplateByCutofftime().getName());
 		}
 		e.setSettlementPocket(st.getPocketBySettlementPocket().getID());
 		e.setCardPAN(st.getPocketBySettlementPocket().getCardPAN());
@@ -82,12 +82,12 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 		} else if (st.getPocketBySettlementPocket().getPocketTemplate() != null) {
 			e.setPocketDispText(st.getPocketBySettlementPocket().getPocketTemplate().getDescription());
 		}
-		e.setPartnerID(st.getPartner().getID());
-		e.setRecordVersion(st.getVersion());
-		e.setCreatedBy(st.getCreatedBy());
-		e.setCreateTime(st.getCreateTime());
-		e.setUpdatedBy(st.getUpdatedBy());
-		e.setLastUpdateTime(st.getLastUpdateTime());
+		e.setPartnerID(st.getPartner().getId().longValue());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(st.getVersion()).intValue()));
+		e.setCreatedBy(st.getCreatedby());
+		e.setCreateTime(st.getCreatetime());
+		e.setUpdatedBy(st.getUpdatedby());
+		e.setLastUpdateTime(st.getLastupdatetime());
 		e.setCutoffTime(st.getCutoffTime());
 	}
 
@@ -113,24 +113,24 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 				 * This block would get called only when settlement type is updated.
 				 */
 				if(e.getScheduleTemplateID() != null){
-					log.info("SettlementTemplateProcessor :: schedule template type is changed for id "+st.getID());
-					Set<ServiceSettlementConfig> serviceConfigs = st.getServiceSettlementConfigFromSettlementTemplateID();
+					log.info("SettlementTemplateProcessor :: schedule template type is changed for id "+st.getId());
+					Set<ServiceSettlementCfg> serviceConfigs = st.getServiceSettlementConfigFromSettlementTemplateID();
 					
 					log.info("SettlementTemplateProcessor :: serviceConfigs "+serviceConfigs);
 					
 					if((serviceConfigs != null) && (serviceConfigs.size() > 0)){
-						for(ServiceSettlementConfig serviceConfig : serviceConfigs){
-							if(!serviceConfig.getSchedulerStatus().equals(CmFinoFIX.SchedulerStatus_TobeScheduled)){
-								serviceConfig.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Rescheduled);
-								log.info("User:" + getLoggedUserNameWithIP() + ": Scheduler rescheduled for serviceConfig: " + serviceConfig.getID());
+						for(ServiceSettlementCfg serviceConfig : serviceConfigs){
+							if(!serviceConfig.getSchedulerstatus().equals(CmFinoFIX.SchedulerStatus_TobeScheduled)){
+								serviceConfig.setSchedulerstatus(CmFinoFIX.SchedulerStatus_Rescheduled.longValue());
+								log.info("User:" + getLoggedUserNameWithIP() + ": Scheduler rescheduled for serviceConfig: " + serviceConfig.getId());
 								ServiceSettlementConfigDAO scDao = DAOFactory.getInstance().getServiceSettlementConfigDAO();
 								scDao.save(serviceConfig);
-								log.info("serviceConfig: " + serviceConfig.getID() + " updated by user:" +getLoggedUserNameWithIP());
+								log.info("serviceConfig: " + serviceConfig.getId() + " updated by user:" +getLoggedUserNameWithIP());
 							}
 						}
 					}
 				}
-				log.info("Settlement Template: " + st.getID() + " edit completed by user:" +getLoggedUserNameWithIP());
+				log.info("Settlement Template: " + st.getId() + " edit completed by user:" +getLoggedUserNameWithIP());
 				
 				updateEntity(st, e);
 				dao.save(st);
@@ -159,7 +159,7 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 					updateMessage(st, e);
 					realMsg.getEntries()[i] = e;
 					i++;
-					log.info("Settlement Template:" + st.getSettlementName() + "ID:" + st.getID() +" details viewing completed by user:" + getLoggedUserNameWithIP());
+					log.info("Settlement Template:" + st.getSettlementname() + "ID:" + st.getId() +" details viewing completed by user:" + getLoggedUserNameWithIP());
 				}
 			}
 			
@@ -172,7 +172,7 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 				SettlementTemplate st = new SettlementTemplate();
 				updateEntity(st, e);
 				dao.save(st);
-				log.info("Settlement Template:" + st.getSettlementName() + "ID:" + st.getID() +" created by " + getLoggedUserNameWithIP());
+				log.info("Settlement Template:" + st.getSettlementname() + "ID:" + st.getId() +" created by " + getLoggedUserNameWithIP());
 				updateMessage(st, e);
 			}
 			

@@ -31,7 +31,7 @@ public class ShowBalanceDetailsProcessorImpl extends BaseFixProcessor implements
         PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
         Pocket pocket = pocketDao.getById(pocketID);
     	if(pocket != null) {
-    		Subscriber subscriber = pocket.getSubscriberMDNByMDNID().getSubscriber();
+    		Subscriber subscriber = pocket.getSubscriberMdn().getSubscriber();
     		realMsg.setCurrency(subscriber.getCurrency());
     		BookingDateBalanceService balanceService = new BookingDateBalanceService();
     		BigDecimal actualCurrentBalance = pocketDao.getActualCurrentBalanceForPocket(pocket);
@@ -42,15 +42,15 @@ public class ShowBalanceDetailsProcessorImpl extends BaseFixProcessor implements
     		}
     		else{
 	    		bookingDatedBalance = balanceService.getBookingDatedBalances(pocket, realMsg.getEndTime());
-	    		realMsg.setClosingBalance(bookingDatedBalance.getClosingBalance());
+	    		realMsg.setClosingBalance(new BigDecimal(bookingDatedBalance.getClosingbalance()));
     		}
     		bookingDatedBalance = balanceService.getBookingDatedBalances(pocket, realMsg.getStartTime());
-    		if(realMsg.getStartTime().equals(bookingDatedBalance.getBookingDate())) {
+    		if(realMsg.getStartTime().equals(bookingDatedBalance.getBookingdate())) {
     			//In this case we ll get exact date entry, hence opening balance of the retrieved entry is the resultant opening balance
-    			realMsg.setOpeningBalance(bookingDatedBalance.getOpeningBalance());
+    			realMsg.setOpeningBalance(new BigDecimal(bookingDatedBalance.getOpeningbalance()));
     		} else {
     			//In this case we ll get pre date entry, hence closing balance of the retrieved entry is the resultant opening balance
-    			realMsg.setOpeningBalance(bookingDatedBalance.getClosingBalance());
+    			realMsg.setOpeningBalance(new BigDecimal(bookingDatedBalance.getClosingbalance()));
     		}
     	}    	        
         realMsg.setsuccess(true);

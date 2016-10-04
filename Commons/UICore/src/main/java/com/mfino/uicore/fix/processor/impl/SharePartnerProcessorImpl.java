@@ -31,37 +31,37 @@ public class SharePartnerProcessorImpl extends BaseFixProcessor implements Share
 			sp.setPartner(pDAO.getById(e.getPartnerID()));
 		}
 		if (e.getActualSharePercentage() != null) {
-			sp.setActualSharePercentage(e.getActualSharePercentage());
-			sp.setMinSharePercentage(e.getActualSharePercentage());
-			sp.setMaxSharePercentage(e.getActualSharePercentage());
+			sp.setActualsharepercentage(e.getActualSharePercentage());
+			sp.setMinsharepercentage(e.getActualSharePercentage());
+			sp.setMaxsharepercentage(e.getActualSharePercentage());
 		}
 		if (e.getShareHolderType() != null) {
-			sp.setShareHolderType(e.getShareHolderType());
+			sp.setShareholdertype(e.getShareHolderType().toString());
 		}
 		if (e.getShareType() != null) {
-			sp.setShareType(e.getShareType());
+			sp.setSharetype(e.getShareType().toString());
 		}
 	}
 	
 	private void updateMessage(SharePartner sp, CMJSSharePartner.CGEntries e) {
-		e.setID(sp.getID());
-		e.setMSPID(sp.getmFinoServiceProviderByMSPID().getID());
+		e.setID(sp.getId().longValue());
+		e.setMSPID(sp.getMfinoServiceProvider().getId().longValue());
 		if (sp.getTransactionCharge() != null) {
-			e.setTransactionChargeID(sp.getTransactionCharge().getID());
+			e.setTransactionChargeID(sp.getTransactionCharge().getId().longValue());
 		}
 		if (sp.getPartner() != null){
-			e.setPartnerID(sp.getPartner().getID());
+			e.setPartnerID(sp.getPartner().getId().longValue());
 		}
-		if (sp.getShareHolderType() != null){
-			e.setShareHolderType(sp.getShareHolderType());
+		if (sp.getShareholdertype() != null){
+			e.setShareHolderType(Integer.parseInt(sp.getShareholdertype()));
 		}
-		if (sp.getShareType() != null){
-			e.setShareType(sp.getShareType());
+		if (sp.getSharetype() != null){
+			e.setShareType(Integer.parseInt(sp.getSharetype()));
 		}
-		e.setActualSharePercentage(sp.getActualSharePercentage());
-		e.setMinSharePercentage(sp.getMinSharePercentage());
-		e.setMaxSharePercentage(sp.getMaxSharePercentage());
-		e.setRecordVersion(sp.getVersion());
+		e.setActualSharePercentage(sp.getActualsharepercentage());
+		e.setMinSharePercentage(sp.getMinsharepercentage());
+		e.setMaxSharePercentage(sp.getMaxsharepercentage());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(sp.getVersion()).intValue()));
 	}
 
 	@Override
