@@ -9,8 +9,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.fix.CmFinoFIX;
 import com.mfino.monitor.model.PerRcTransactionResults;
 import com.mfino.monitor.processor.Interface.PerRcTransactionsProcessorI;
 import com.mfino.monitor.util.ExternalResponseCodeHolder;

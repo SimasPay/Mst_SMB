@@ -34,8 +34,8 @@ public class ChannelTransactionsProcessor extends BaseProcessor implements Chann
 		sctlQuery.setCreateTimeGE(lastUpdateTimeGE);
 		while (iterator.hasNext()) {
 			ChannelCode channelCode = iterator.next();
-			sctlQuery.setSourceChannelApplication(channelCode
-					.getChannelSourceApplication());
+			sctlQuery.setSourceChannelApplication((int)channelCode
+					.getChannelsourceapplication());
 
 			// Get Total Successful Transactions			
 			successCount = TransactionService.getSuccessfulCount(sctlQuery);

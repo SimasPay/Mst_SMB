@@ -245,7 +245,7 @@ public class TransactionController {
 			if (sourcePartner == null) {
 				searchBean.setSourcePartnerID(new Long("-1"));
 			} else {
-				searchBean.setSourcePartnerID(sourcePartner.getID());
+				searchBean.setSourcePartnerID(sourcePartner.getId().longValue());
 			}
 		}
 		if (StringUtils.isNotBlank(request.getParameter("destPartnerCode"))) {
@@ -254,7 +254,7 @@ public class TransactionController {
 			if (destPartner == null) {
 				searchBean.setDestPartnerID(new Long("-1"));
 			} else {
-				searchBean.setDestPartnerID(destPartner.getID());
+				searchBean.setDestPartnerID(destPartner.getId().longValue());
 			}
 		}
 		if (StringUtils.isNotBlank(request.getParameter("sourceMDN"))) {

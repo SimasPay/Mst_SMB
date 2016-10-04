@@ -29,7 +29,7 @@ public class FloatBalanceProcessor extends BaseProcessor implements FloatBalance
 		Pocket globalPocket = pocketDAO.getById(systemParametersService.getLong(SystemParameterKeys.GLOBAL_SVA_POCKET_ID_KEY));		
 		FloatBalanceResult result = new FloatBalanceResult();
 		if(globalPocket != null){
-			result.setCurrentBalance(numberFormat.format(globalPocket.getCurrentBalance()));
+			result.setCurrentBalance(numberFormat.format(globalPocket.getCurrentbalance()));
 		}		
 		return result;
 	}

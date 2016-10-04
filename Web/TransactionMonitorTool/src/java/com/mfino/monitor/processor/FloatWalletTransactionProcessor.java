@@ -15,7 +15,7 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.domain.MFSLedger;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
@@ -68,11 +68,11 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 			List<MFSLedger> results) {
 		Map<Long, CRCommodityTransfer> ctMap = new HashMap<Long, CRCommodityTransfer>();
 		for (MFSLedger ledger : results) {
-			if (!ctMap.containsKey(ledger.getCommodityTransferID())) {
+			if (!ctMap.containsKey(ledger.getCommoditytransferid())) {
 				CRCommodityTransfer ct = commodityTransferDAO.getById(ledger
-						.getCommodityTransferID());
+						.getCommoditytransferid());
 				if (ct == null) {
-					ct = pendingDAO.getById(ledger.getCommodityTransferID());
+					ct = pendingDAO.getById(ledger.getCommoditytransferid());
 				}
 				if (ct != null) {
 					ctMap.put(ct.getID(), ct);
@@ -85,34 +85,34 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 	private void updateMessage(MFSLedger ledger,
 			FloatWalletTransaction floatWalletTransaction,
 			FloatWalletTransaction searchBean) {
-		CRCommodityTransfer ct = ctMap.get(ledger.getCommodityTransferID());
+		CRCommodityTransfer ct = ctMap.get(ledger.getCommoditytransferid());
 		boolean isSystemPocket = true;
 		boolean isRevertAmount = false;
 		
-		floatWalletTransaction.setTransType(ledger.getLedgerType());
-		if (DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
+		floatWalletTransaction.setTransType(ledger.getLedgertype());
+		if (DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
 			floatWalletTransaction.setDebitAmount(ledger.getAmount());
 		}
-		else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {		
+		else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {		
 			floatWalletTransaction.setCreditAmount(ledger.getAmount());
 		}
 
 		floatWalletTransaction.setTransactionID(ct.getID());
-		floatWalletTransaction.setID(ledger.getID());
-		floatWalletTransaction.setTransactionTime(ledger.getCreateTime());
+		floatWalletTransaction.setID(ledger.getId().longValue());
+		floatWalletTransaction.setTransactionTime(ledger.getCreatetime());
 			floatWalletTransaction.setAccessMethodText(channelCodeService
 					.getChannelNameBySourceApplication(ct.getSourceApplication()));
 			
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		Long sctlId = ledger.getSctlId();
-		ServiceChargeTransactionLog sctl = null;
+		Long sctlId = ledger.getSctlid().longValue();
+		ServiceChargeTxnLog sctl = null;
 		if (sctlId != null) {
 			sctl = sctlDAO.getById(sctlId);
 		}
 		if(sctl != null){
 			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
-			TransactionType tt = ttDAO.getById(sctl.getTransactionTypeID());
-			floatWalletTransaction.setTransactionName(tt.getDisplayName());
+			TransactionType tt = ttDAO.getById(sctl.getTransactiontypeid().longValue());
+			floatWalletTransaction.setTransactionName(tt.getDisplayname());
 		}
 		else {
 			floatWalletTransaction.setTransactionName(enumTextService

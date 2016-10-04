@@ -7,7 +7,7 @@ import java.util.List;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.dao.query.ServiceQuery;
 import com.mfino.domain.Service;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.monitor.model.ServiceTransactionsResult;
 import com.mfino.monitor.processor.Interface.ServiceTransactionsProcessorI;
 import com.mfino.monitor.service.TransactionService;
@@ -33,12 +33,12 @@ public class ServiceTransactionsProcessor extends BaseProcessor implements Servi
 		while (iterator.hasNext()) {
 			Service service = iterator.next();			
 
-			sctlQuery.setServiceID(service.getID());
+			sctlQuery.setServiceID(service.getId().longValue());
 
 			// Get Total Transactions
 			sctlQuery.setStatus(null);
 			sctlQuery.setStatusList(null);
-			List<ServiceChargeTransactionLog> sctlResults = sctlDAO.get(sctlQuery);
+			List<ServiceChargeTxnLog> sctlResults = sctlDAO.get(sctlQuery);
 			count = sctlResults.size();
 
 			// Get Total Successful Transactions			
