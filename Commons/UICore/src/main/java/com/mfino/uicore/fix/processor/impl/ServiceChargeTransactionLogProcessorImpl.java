@@ -44,7 +44,7 @@ import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Service;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
@@ -102,7 +102,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			ServiceChargeTransactionsLogQuery query = new ServiceChargeTransactionsLogQuery();
 			Partner partner = userService.getPartner();
 			if(partner!=null){
-				query.setSourceDestPartnerID(partner.getID());
+				query.setSourceDestPartnerID(partner.getId().longValue());
 			}
 			if(StringUtils.isNotBlank(realMsg.getBankRetrievalReferenceNumber())){
 				Long Id = getSCTLID(realMsg.getBankRetrievalReferenceNumber()) ;
@@ -146,7 +146,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 						realMsg.settotal(0);
 						return realMsg;
 					}
-					query.setSourcePartnerID(sourcePartner.getID());
+					query.setSourcePartnerID(sourcePartner.getId().longValue());
 				}
 				if(StringUtils.isNotBlank(realMsg.getDestPartnerCode())){
 					Partner destPartner = partnerDao.getPartnerByPartnerCode(realMsg.getDestPartnerCode());
@@ -155,7 +155,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 						realMsg.settotal(0);
 						return realMsg;
 					}
-					query.setDestPartnerID(destPartner.getID());
+					query.setDestPartnerID(destPartner.getId().longValue());
 				}
 				if(StringUtils.isNotBlank(realMsg.getMFSBillerCode())){
 					query.setBillerCode(realMsg.getMFSBillerCode());
@@ -186,7 +186,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			query.setLimit(realMsg.getlimit());
 			query.setIDOrdered(true); 
 			
-			List<ServiceChargeTransactionLog> results = sctlDao.get(query);
+			List<ServiceChargeTxnLog> results = sctlDao.get(query);
 			List<Long> sctlList = getSctlList(results);
 
 			List<IntegrationSummary> integrationSummaryLst ;//= integrationSummaryDao.getBySctlList(sctlList);
@@ -210,7 +210,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 						sctlBpMap = getSctlBpMap(billPaymentsLst);
 						startIndex = startIndex + BACTH_SIZE;
 					}
-					ServiceChargeTransactionLog sctl = results.get(i);
+					ServiceChargeTxnLog sctl = results.get(i);
 					CMJSServiceChargeTransactions.CGEntries entry = new CMJSServiceChargeTransactions.CGEntries();
 					updateMessage(sctl,entry,realMsg, maxNoOfDaysToReverseTxn,sctlIsMap,sctlBpMap);
 					realMsg.getEntries()[i] = entry;
@@ -227,7 +227,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	private Map<Long, BillPayments> getSctlBpMap(List<BillPayments> billPaymentsLst) {
 		Map<Long, BillPayments> sctlBpMap = new HashMap<Long, BillPayments>();
 		for(BillPayments bp : billPaymentsLst) {
-			sctlBpMap.put(bp.getSctlId(), bp);
+			sctlBpMap.put(bp.getId().longValue(), bp);
 		}
 		return sctlBpMap;
 	}
@@ -235,15 +235,15 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	private Map<Long, IntegrationSummary> getSctlIsMap(List<IntegrationSummary> integrationSummaryLst) {
 		Map<Long, IntegrationSummary> sctlIsMap = new HashMap<Long, IntegrationSummary>();
 		for(IntegrationSummary is : integrationSummaryLst) {
-			sctlIsMap.put(is.getSctlId(), is);
+			sctlIsMap.put(is.getId().longValue(), is);
 		}
 		return sctlIsMap;
 	}
 
-	private List<Long> getSctlList(List<ServiceChargeTransactionLog> results) {
+	private List<Long> getSctlList(List<ServiceChargeTxnLog> results) {
 		List<Long> sctlList = new ArrayList<Long>();
-		for(ServiceChargeTransactionLog sctl : results) {
-			sctlList.add(sctl.getID());
+		for(ServiceChargeTxnLog sctl : results) {
+			sctlList.add(sctl.getId().longValue());
 		}
 		return sctlList;
 	}
@@ -269,10 +269,10 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 				log.error("Exception",e);
 			}
 			if(pct!=null&&!pct.isEmpty()){
-				ctId = pct.get(0).getID();
+				ctId = pct.get(0).getId().longValue();
 			}
 		}else{
-			ctId = ct.get(0).getID();
+			ctId = ct.get(0).getId().longValue();
 		}
 		if(ctId!=null){
 			ChargeTxnCommodityTransferMapDAO cTxnCommodityTransferMapDAO = daoFactory.getTxnTransferMap();
@@ -280,84 +280,84 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			query2.setCommodityTransferID(ctId);
 			List<ChargeTxnCommodityTransferMap> ctxnMap = cTxnCommodityTransferMapDAO.get(query2);
 			if(ctxnMap!=null&&!ctxnMap.isEmpty()){
-				return ctxnMap.get(0).getSctlId();
+				return ctxnMap.get(0).getId().longValue();
 			}
 		}
 		return null;
 	}
 
-	private void updateMessage(ServiceChargeTransactionLog sctl, CGEntries entry, CMJSServiceChargeTransactions realMsg, int maxNoOfDaysToReverseTxn, Map<Long, IntegrationSummary> sctlIsMap, Map<Long, BillPayments> sctlBpMap) {
+	private void updateMessage(ServiceChargeTxnLog sctl, CGEntries entry, CMJSServiceChargeTransactions realMsg, int maxNoOfDaysToReverseTxn, Map<Long, IntegrationSummary> sctlIsMap, Map<Long, BillPayments> sctlBpMap) {
 		TransactionType transactionType=null;
 		Service service=null;
-		if(sctl.getCalculatedCharge()!=null){
-			entry.setCalculatedCharge(sctl.getCalculatedCharge());
+		if(sctl.getCalculatedcharge()!=null){
+			entry.setCalculatedCharge(sctl.getCalculatedcharge());
 		}
-		if(sctl.getChannelCodeID()!=null){
-			ChannelCode cc= channelcodeDao.getById(sctl.getChannelCodeID());
-			entry.setAccessMethodText(cc!=null?cc.getChannelName():"");
+		if(sctl.getChannelcodeid()!=null){
+			ChannelCode cc= channelcodeDao.getById(sctl.getChannelcodeid().longValue());
+			entry.setAccessMethodText(cc!=null?cc.getChannelname():"");
 		}
 		long ctid = 0;
 		CommodityTransfer ct = null;
-		if(sctl.getCommodityTransferID() == null){
-			List<Long> lstCTIds = ctmapDao.geTransferIdsBySCTLId(sctl.getID());
+		if(sctl.getCommoditytransferid() == null){
+			List<Long> lstCTIds = ctmapDao.geTransferIdsBySCTLId(sctl.getId().longValue());
 			if (CollectionUtils.isNotEmpty(lstCTIds)) {
 				ctid = lstCTIds.get(0);
 			}
 		}
 		else {
-			ctid = sctl.getCommodityTransferID();
+			ctid = sctl.getCommoditytransferid().longValue();
 		}
 		entry.setCommodityTransferID(ctid);
 		PendingCommodityTransfer pct = pctDao.getById(ctid);
 	    if(pct != null)
 	    {
-	    	if(pct.getOperatorResponseCode() != null){
-	    		entry.setOperatorResponseCode(pct.getOperatorResponseCode());
+	    	if(pct.getOperatorresponsecode() != null){
+	    		entry.setOperatorResponseCode(pct.getOperatorresponsecode().intValue());
 	    	}else{
-	    		if(pct.getBankRejectReason() != null){
-	    			entry.setOperatorResponseCode(Integer.valueOf(pct.getBankRejectReason()));	
+	    		if(pct.getBankrejectreason() != null){
+	    			entry.setOperatorResponseCode(Integer.valueOf(pct.getBankrejectreason()));	
 	    		}
 	    	}
-	    	entry.setSourceAccountNumber(pct.getSourceCardPAN());
+	    	entry.setSourceAccountNumber(pct.getSourcecardpan());
 	    }
 	    else
 	    {		    	
 	    	ct = ctDao.getById(ctid);
 	    	if(ct != null)
 		    {
-		    	if(ct.getOperatorResponseCode() != null){
-		    		entry.setOperatorResponseCode(ct.getOperatorResponseCode());
+		    	if(ct.getOperatorresponsecode() != null){
+		    		entry.setOperatorResponseCode(ct.getOperatorresponsecode().intValue());
 		    	}else{
-		    		if(ct.getBankRejectReason() != null){
-		    			entry.setOperatorResponseCode(Integer.valueOf(ct.getBankRejectReason()));	
+		    		if(ct.getBankrejectreason() != null){
+		    			entry.setOperatorResponseCode(Integer.valueOf(ct.getBankrejectreason()));	
 		    		}
 		    	}
-		    	entry.setSourceAccountNumber(ct.getSourceCardPAN());
+		    	entry.setSourceAccountNumber(ct.getSourcecardpan());
 		    }
 	    }
-		if(sctl.getDestMDN()!=null){
-			entry.setDestMDN(sctl.getDestMDN());
+		if(sctl.getDestmdn()!=null){
+			entry.setDestMDN(sctl.getDestmdn());
 		}
-		if(sctl.getDestPartnerID()!=null){
-			entry.setDestPartnerID(sctl.getDestPartnerID());
-			entry.setDestPartnerCode(partnerDao.getById(sctl.getDestPartnerID()).getPartnerCode());
+		if(sctl.getDestpartnerid()!=null){
+			entry.setDestPartnerID(sctl.getDestpartnerid().longValue());
+			entry.setDestPartnerCode(partnerDao.getById(sctl.getDestpartnerid().longValue()).getPartnercode());
 		}
-		if(sctl.getFailureReason()!=null){
-			entry.setFailureReason(sctl.getFailureReason());
+		if(sctl.getFailurereason()!=null){
+			entry.setFailureReason(sctl.getFailurereason());
 		}
-		if(sctl.getInvoiceNo()!=null){
-			entry.setInvoiceNo(sctl.getInvoiceNo());
+		if(sctl.getInvoiceno()!=null){
+			entry.setInvoiceNo(sctl.getInvoiceno());
 		}
-		if(sctl.getMFSBillerCode()!=null){
-			entry.setMFSBillerCode(sctl.getMFSBillerCode());
+		if(sctl.getMfsbillercode()!=null){
+			entry.setMFSBillerCode(sctl.getMfsbillercode());
 		}
-		if(sctl.getOnBeHalfOfMDN()!=null){
-			entry.setOnBeHalfOfMDN(sctl.getOnBeHalfOfMDN());
+		if(sctl.getOnbehalfofmdn()!=null){
+			entry.setOnBeHalfOfMDN(sctl.getOnbehalfofmdn());
 		}
-		if(sctl.getTransactionTypeID()!=null){
-			entry.setTransactionTypeID(sctl.getTransactionTypeID());
-			transactionType = ttDao.getById(sctl.getTransactionTypeID());
-			entry.setTransactionName(transactionType.getDisplayName());
+		if(sctl.getTransactiontypeid()!=null){
+			entry.setTransactionTypeID(sctl.getTransactiontypeid().longValue());
+			transactionType = ttDao.getById(sctl.getTransactiontypeid().longValue());
+			entry.setTransactionName(transactionType.getDisplayname());
 			
 			/*if(sctl.getServiceTypeID()!=null){
 				entry.setServiceTypeID(sctl.getServiceTypeID());
@@ -365,100 +365,100 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 				entry.setServiceName(service.getDisplayName());	}
 			*/
 
-			if("InterBankTransfer".equals(transactionType.getTransactionName()))
+			if("InterBankTransfer".equals(transactionType.getTransactionname()))
 			{
-				InterbankTransfer ibt = ibtService.getBySctlId(sctl.getID());
+				InterbankTransfer ibt = ibtService.getBySctlId(sctl.getId().longValue());
 				if (ibt != null) {
-					entry.setDestBankCode(ibt.getDestBankCode());
+					entry.setDestBankCode(ibt.getDestbankcode());
 				}
 			}			
 		}
-		if(sctl.getServiceID()!=null){
-			entry.setServiceID(sctl.getServiceID());
-			service = serviceDao.getById(sctl.getServiceID());
-			entry.setServiceName(service.getDisplayName());
+		if(sctl.getServiceid()!=null){
+			entry.setServiceID(sctl.getServiceid().longValue());
+			service = serviceDao.getById(sctl.getServiceid().longValue());
+			entry.setServiceName(service.getDisplayname());
 		}
-		if(sctl.getServiceProviderID()!=null){
-			entry.setServiceProviderID(sctl.getServiceProviderID());
+		if(sctl.getServiceproviderid()!=null){
+			entry.setServiceProviderID(sctl.getServiceproviderid().longValue());
 		}
-		if(sctl.getSourceMDN()!=null){
-			entry.setSourceMDN(sctl.getSourceMDN());
+		if(sctl.getSourcemdn()!=null){
+			entry.setSourceMDN(sctl.getSourcemdn());
 		}
-		if(sctl.getSourcePartnerID()!=null){
-			entry.setSourcePartnerID(sctl.getSourcePartnerID());
-			entry.setSourcePartnerCode(partnerDao.getById(sctl.getSourcePartnerID()).getPartnerCode());
+		if(sctl.getSourcepartnerid()!=null){
+			entry.setSourcePartnerID(sctl.getSourcepartnerid().longValue());
+			entry.setSourcePartnerCode(partnerDao.getById(sctl.getSourcepartnerid().longValue()).getPartnercode());
 		}
-		if(sctl.getStatus()!=null){
-			entry.setStatus(sctl.getStatus());
+		if(sctl.getStatus()!=0){
+			entry.setStatus(Integer.valueOf(Long.valueOf(sctl.getStatus()).intValue()));
 			entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, sctl.getStatus()));
 		}
-		if(sctl.getAdjustmentsFromSctlId()!= null){
-			Set<Adjustments> adjustments = sctl.getAdjustmentsFromSctlId();
+		if(sctl.getAdjustmentses()!= null){
+			Set<Adjustments> adjustments = sctl.getAdjustmentses();
 			Iterator<Adjustments> iterator = adjustments.iterator();
 			Adjustments lastAdjustment = null;
 			while(iterator.hasNext()) {
 				Adjustments adjustment = iterator.next();
 				if(lastAdjustment == null) {
 					lastAdjustment = adjustment;
-				} else if(adjustment.getAdjustmentStatus().compareTo(lastAdjustment.getAdjustmentStatus()) < 1) {
+				} else if(Long.valueOf(adjustment.getAdjustmentstatus()).compareTo(lastAdjustment.getAdjustmentstatus()) < 1) {
 					lastAdjustment = adjustment;
 				}
 			}
 			if(lastAdjustment != null) {
-				entry.setAdjustmentsLogID(lastAdjustment.getID());
-				entry.setAdjustmentStatus(lastAdjustment.getAdjustmentStatus());
-				entry.setAdjustmentStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AdjustmentStatus, CmFinoFIX.Language_English, lastAdjustment.getAdjustmentStatus()));
+				entry.setAdjustmentsLogID(lastAdjustment.getId().longValue());
+				entry.setAdjustmentStatus(Integer.valueOf(Long.valueOf(lastAdjustment.getAdjustmentstatus()).intValue()));
+				entry.setAdjustmentStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AdjustmentStatus, CmFinoFIX.Language_English, lastAdjustment.getAdjustmentstatus()));
 			}			
 		}
-		if(sctl.getChargeMode()!=null){
-			entry.setChargeMode(sctl.getChargeMode());
-			entry.setChargeModeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ChargeMode, CmFinoFIX.Language_English, sctl.getChargeMode()));
+		if(sctl.getChargemode()!=null){
+			entry.setChargeMode(sctl.getChargemode().intValue());
+			entry.setChargeModeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ChargeMode, CmFinoFIX.Language_English, sctl.getChargemode()));
 		}
-		if(sctl.getTransactionAmount()!=null){
-			entry.setTransactionAmount(sctl.getTransactionAmount());
+		if(sctl.getTransactionamount()!=null){
+			entry.setTransactionAmount(sctl.getTransactionamount());
 		}
-		if(sctl.getTransactionID()!=null){
-			entry.setTransactionID(sctl.getTransactionID());
+		if(sctl.getTransactionid()!=null){
+			entry.setTransactionID(sctl.getTransactionid().longValue());
 		}
-		if(sctl.getServiceID()!=null){
-			entry.setServiceID(sctl.getServiceID());
+		if(sctl.getServiceid()!=null){
+			entry.setServiceID(sctl.getServiceid().longValue());
 		}
 		
-		if(sctl.getTransactionRuleID()!=null){
-			entry.setTransactionRuleID(sctl.getTransactionRuleID());
+		if(sctl.getTransactionruleid()!=null){
+			entry.setTransactionRuleID(sctl.getTransactionruleid().longValue());
 		}
-		entry.setTransactionTime(sctl.getCreateTime());
-		entry.setID(sctl.getID());
-		if (sctl.getParentSCTLID() != null) {
-			entry.setParentSCTLID(sctl.getParentSCTLID());
+		entry.setTransactionTime(sctl.getCreatetime());
+		entry.setID(sctl.getId().longValue());
+		if (sctl.getParentsctlid() != null) {
+			entry.setParentSCTLID(sctl.getParentsctlid().longValue());
 		}
-		if (StringUtils.isNotBlank(sctl.getReversalReason())) {
-			entry.setReversalReason(sctl.getReversalReason());
+		if (StringUtils.isNotBlank(sctl.getReversalreason())) {
+			entry.setReversalReason(sctl.getReversalreason());
 		}
-		entry.setIsChargeDistributed(sctl.getIsChargeDistributed());
-		if (sctl.getIsTransactionReversed() != null) {
-			entry.setIsTransactionReversed(sctl.getIsTransactionReversed());
+		entry.setIsChargeDistributed(Boolean.valueOf(Short.toString(sctl.getIschargedistributed())));
+		if (sctl.getIstransactionreversed() != null) {
+			entry.setIsTransactionReversed(Boolean.valueOf(Short.toString(sctl.getIstransactionreversed())));
 		} else {
 			entry.setIsTransactionReversed(CmFinoFIX.Boolean_False);
 		}
 		/*if(StringUtils.isNotBlank(realMsg.getBankRetrievalReferenceNumber()))
 	    	entry.setBankRetrievalReferenceNumber(realMsg.getBankRetrievalReferenceNumber());
 	    else*/
-		if(sctl.getIntegrationTransactionID()!=null)
-			entry.setBankRetrievalReferenceNumber(String.valueOf(sctl.getIntegrationTransactionID()));
+		if(sctl.getIntegrationtransactionid()!=null)
+			entry.setBankRetrievalReferenceNumber(String.valueOf(sctl.getIntegrationtransactionid()));
 
-		entry.setAmtRevStatus(sctl.getAmtRevStatus());
-		entry.setChrgRevStatus(sctl.getChrgRevStatus());
+		entry.setAmtRevStatus(sctl.getAmtrevstatus().intValue());
+		entry.setChrgRevStatus(sctl.getChrgrevstatus().intValue());
 
-		if(sctl.getAmtRevStatus() != null){
-			entry.setAmtRevStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, sctl.getAmtRevStatus()));	
+		if(sctl.getAmtrevstatus() != null){
+			entry.setAmtRevStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, sctl.getAmtrevstatus()));	
 		}
 		if(sctl.getInfo1()!=null){
 			entry.setInfo1(sctl.getInfo1());
 		}
 
-		if(sctl.getChrgRevStatus() != null){
-			entry.setChrgRevStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, sctl.getChrgRevStatus()));
+		if(sctl.getChrgrevstatus() != null){
+			entry.setChrgRevStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, sctl.getChrgrevstatus()));
 		}
 		if(sctl.getDescription() != null){
 			entry.setDescription(sctl.getDescription());
@@ -483,30 +483,30 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	 * @param sctl
 	 * @return
 	 */
-	private boolean checkServiceTxnIsReverseAllowed(ServiceChargeTransactionLog sctl) {
+	private boolean checkServiceTxnIsReverseAllowed(ServiceChargeTxnLog sctl) {
 		ServiceTransactionDAO stDAO = daoFactory.getServiceTransactionDAO();
-		return stDAO.isReverseAllowed(sctl.getServiceID(), sctl.getTransactionTypeID());
+		return stDAO.isReverseAllowed(sctl.getServiceid().longValue(), sctl.getTransactiontypeid().longValue());
 	}
 
 	// Check whether the Reverse of transaction is allowed or not.
-	private boolean checkIsTxnReverseAllowed(ServiceChargeTransactionLog sctl, TransactionType transactionType, int maxNoOfDaysToReverseTxn) {
+	private boolean checkIsTxnReverseAllowed(ServiceChargeTxnLog sctl, TransactionType transactionType, int maxNoOfDaysToReverseTxn) {
 		boolean isReverseAllowed = false;
 
-		Timestamp txnTime = sctl.getCreateTime();
+		Timestamp txnTime = sctl.getCreatetime();
 		Timestamp currentTime = new Timestamp();
 
 		long days_old = (currentTime.getTime() - txnTime.getTime()) / (24 * 60  *60 * 1000);
 		if ( (days_old <= maxNoOfDaysToReverseTxn) && 
-				((sctl.getParentSCTLID() == null) &&
-						(sctl.getTransactionAmount().compareTo(BigDecimal.ZERO) > 0) && 
-						(CmFinoFIX.SCTLStatus_Confirmed.intValue() == sctl.getStatus().intValue() ||
-						CmFinoFIX.SCTLStatus_Distribution_Started.intValue() == sctl.getStatus().intValue() ||
-						CmFinoFIX.SCTLStatus_Distribution_Completed.intValue() == sctl.getStatus().intValue() ||
-						CmFinoFIX.SCTLStatus_Distribution_Failed.intValue() == sctl.getStatus().intValue())
+				((sctl.getParentsctlid() == null) &&
+						(sctl.getTransactionamount().compareTo(BigDecimal.ZERO) > 0) && 
+						(CmFinoFIX.SCTLStatus_Confirmed.intValue() == Long.valueOf(sctl.getStatus()).intValue() ||
+						CmFinoFIX.SCTLStatus_Distribution_Started.intValue() == Long.valueOf(sctl.getStatus()).intValue() ||
+						CmFinoFIX.SCTLStatus_Distribution_Completed.intValue() == Long.valueOf(sctl.getStatus()).intValue() ||
+						CmFinoFIX.SCTLStatus_Distribution_Failed.intValue() == Long.valueOf(sctl.getStatus()).intValue())
 						) && (checkServiceTxnIsReverseAllowed(sctl)) &&
-						((sctl.getAmtRevStatus() == null || CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getAmtRevStatus())) ||
-								((sctl.getCalculatedCharge().compareTo(BigDecimal.ZERO) > 0) && 
-										(sctl.getChrgRevStatus() == null || CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getChrgRevStatus()))
+						((sctl.getAmtrevstatus() == null || CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getAmtrevstatus())) ||
+								((sctl.getCalculatedcharge().compareTo(BigDecimal.ZERO) > 0) && 
+										(sctl.getChrgrevstatus() == null || CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getChrgrevstatus()))
 										)		 
 								)
 				) {
@@ -515,16 +515,16 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 
 		// Check if the UnRegisteredTranfser, The cashout is completed or not.
 		if (isReverseAllowed &&
-				(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equalsIgnoreCase(transactionType.getTransactionName()) ||
-						ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED.equalsIgnoreCase(transactionType.getTransactionName()))) {
+				(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equalsIgnoreCase(transactionType.getTransactionname()) ||
+						ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED.equalsIgnoreCase(transactionType.getTransactionname()))) {
 			UnRegisteredTxnInfoDAO urtiDAO = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
 			UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-			urtiQuery.setTransferSctlId(sctl.getID());
+			urtiQuery.setTransferSctlId(sctl.getId().longValue());
 			List<UnregisteredTxnInfo> urtiList = urtiDAO.get(urtiQuery);
 			if (CollectionUtils.isNotEmpty(urtiList)) {
 				UnregisteredTxnInfo urti = urtiList.get(0);
-				if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnRegisteredTxnStatus()) || 
-						CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnRegisteredTxnStatus())) {
+				if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnregisteredtxnstatus()) || 
+						CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnregisteredtxnstatus())) {
 					isReverseAllowed = true;
 				}
 				else {
@@ -536,29 +536,29 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		return isReverseAllowed;
 	}
 
-	private void setAdditionanInfo(CGEntries entry, ServiceChargeTransactionLog sctl, TransactionType transactionType, Service service, 
+	private void setAdditionanInfo(CGEntries entry, ServiceChargeTxnLog sctl, TransactionType transactionType, Service service, 
 			Map<Long, BillPayments> sctlBpMap, CommodityTransfer ct) {
-		BillPayments billPayment = sctlBpMap.get(sctl.getID());
+		BillPayments billPayment = sctlBpMap.get(sctl.getId());
 		entry.setAdditionalInfo("");
 		if(billPayment!=null) {
-			String invoiceNumber = billPayment.getInvoiceNumber();
-			String inRespCode = billPayment.getINResponseCode();
+			String invoiceNumber = billPayment.getInvoicenumber();
+			String inRespCode = billPayment.getInresponsecode();
 			entry.setAdditionalInfo(invoiceNumber);
 
 			if (CmFinoFIX.SCTLStatus_Failed.equals(sctl.getStatus()) && 
-					ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equals(transactionType.getTransactionName())) {
+					ServiceAndTransactionConstants.TRANSACTION_INTER_EMONEY_TRANSFER.equals(transactionType.getTransactionname())) {
 				entry.setFailureReason(inRespCode);//
 			}
 		}
-		else if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(transactionType.getTransactionName())){
-			entry.setAdditionalInfo(sctl.getOnBeHalfOfMDN());
+		else if(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION.equals(transactionType.getTransactionname())){
+			entry.setAdditionalInfo(sctl.getOnbehalfofmdn());
 		}
 		else {
-			if(ct!=null&&CmFinoFIX.PocketType_BankAccount.equals(ct.getDestPocketType())&&ct.getDestCardPAN()!=null){
-				entry.setAdditionalInfo(ct.getDestCardPAN());
+			if(ct!=null&&CmFinoFIX.PocketType_BankAccount.equals(ct.getDestpockettype())&&ct.getDestcardpan()!=null){
+				entry.setAdditionalInfo(ct.getDestcardpan());
 			}
 			if (ct != null && StringUtils.isBlank(entry.getBankRetrievalReferenceNumber()) ){
-				entry.setBankRetrievalReferenceNumber(ct.getBankRetrievalReferenceNumber());
+				entry.setBankRetrievalReferenceNumber(ct.getBankretrievalreferencenumber());
 			}
 
 		}
@@ -583,19 +583,19 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 //		return false;
 //	}
 
-	private void setIntegrationSummaryInfo(CGEntries entry, ServiceChargeTransactionLog sctl, TransactionType transactionType, Map<Long, IntegrationSummary> sctlIsMap){
-		IntegrationSummary integrationSummary = sctlIsMap.get(sctl.getID());
+	private void setIntegrationSummaryInfo(CGEntries entry, ServiceChargeTxnLog sctl, TransactionType transactionType, Map<Long, IntegrationSummary> sctlIsMap){
+		IntegrationSummary integrationSummary = sctlIsMap.get(sctl.getId());
 		if(integrationSummary!=null){
-			entry.setIntegrationType(integrationSummary.getIntegrationType());
-			entry.setReconcilationID1(integrationSummary.getReconcilationID1());
-			entry.setReconcilationID2(integrationSummary.getReconcilationID2());
-			entry.setReconcilationID3(integrationSummary.getReconcilationID3());			
+			entry.setIntegrationType(integrationSummary.getIntegrationtype());
+			entry.setReconcilationID1(integrationSummary.getReconcilationid1());
+			entry.setReconcilationID2(integrationSummary.getReconcilationid2());
+			entry.setReconcilationID3(integrationSummary.getReconcilationid3());			
 		}		
 	}
 
 	private boolean isTransfer(TransactionType transactionType) {
 		// TODO Auto-generated method stub
-		return transactionType.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER)
-				||transactionType.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
+		return transactionType.getTransactionname().equals(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER)
+				||transactionType.getTransactionname().equals(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
 	}
 }

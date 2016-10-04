@@ -43,23 +43,23 @@ public class ScheduleTemplateProcessorImpl extends BaseFixProcessor implements S
         }
 
         if (e.getModeType() != null && !(("").equals(e.getModeType()))) {
-            scheduleTemplate.setModeType(e.getModeType());
+            scheduleTemplate.setModetype(e.getModeType());
         }
         
         if (e.getDayOfWeek() != null && !(("").equals(e.getDayOfWeek()))) {
-            scheduleTemplate.setDayOfWeek(e.getDayOfWeek());
+            scheduleTemplate.setDayofweek(e.getDayOfWeek());
         }
         if (e.getDayOfMonth() != null && !(("").equals(e.getDayOfMonth())) ) {
-            scheduleTemplate.setDayOfMonth(e.getDayOfMonth());
+            scheduleTemplate.setDayofmonth(e.getDayOfMonth());
         }
         if(e.getTimerValueHH()!=null && !(("").equals(e.getTimerValueHH()))){
-        	scheduleTemplate.setTimerValueHH(e.getTimerValueHH());
+        	scheduleTemplate.setTimervaluehh(Long.valueOf(e.getTimerValueHH()));
         }
         if(e.getTimerValueMM()!=null && !(("").equals(e.getTimerValueMM()))){
-        	scheduleTemplate.setTimerValueMM(e.getTimerValueMM());
+        	scheduleTemplate.setTimervaluemm(Long.valueOf(e.getTimerValueMM()));
         }
       if(e.getMonth()!=null && !(("").equals(e.getMonth()))){
-    	  scheduleTemplate.setMonth(e.getMonth());
+    	  scheduleTemplate.setMonth(Long.valueOf(e.getMonth()));
       }
         
         
@@ -128,13 +128,13 @@ public class ScheduleTemplateProcessorImpl extends BaseFixProcessor implements S
 
     private void updateMessage(ScheduleTemplate scheduleTemplate, CMJSScheduleTemplate.CGEntries entry) {
 
-        entry.setID(scheduleTemplate.getID());
+        entry.setID(scheduleTemplate.getId().longValue());
 
         if (scheduleTemplate.getName() != null) {
             entry.setName(scheduleTemplate.getName());
         }
-        if (scheduleTemplate.getModeType() != null) {
-            entry.setModeType(scheduleTemplate.getModeType());
+        if (scheduleTemplate.getModetype() != null) {
+            entry.setModeType(scheduleTemplate.getModetype());
         }
         /*
         if(scheduleTemplate.getTimeType()!= null){
@@ -143,19 +143,19 @@ public class ScheduleTemplateProcessorImpl extends BaseFixProcessor implements S
         }
         */
         
-        if(scheduleTemplate.getDayOfWeek()!=null){
-        	entry.setDayOfWeek(scheduleTemplate.getDayOfWeek());
+        if(scheduleTemplate.getDayofweek()!=null){
+        	entry.setDayOfWeek(scheduleTemplate.getDayofweek());
         }
-        if(scheduleTemplate.getDayOfMonth()!=null){
-        	entry.setDayOfMonth(scheduleTemplate.getDayOfMonth());
+        if(scheduleTemplate.getDayofmonth()!=null){
+        	entry.setDayOfMonth(scheduleTemplate.getDayofmonth());
         }
        
-        if(scheduleTemplate.getTimerValueHH()!=null)
+        if(scheduleTemplate.getTimervaluehh()!=null)
         {
-        	entry.setTimerValueHH(scheduleTemplate.getTimerValueHH());
+        	entry.setTimerValueHH(scheduleTemplate.getTimervaluehh().toString());
         }
-        if(scheduleTemplate.getTimerValueMM()!=null){
-        	entry.setTimerValueMM(scheduleTemplate.getTimerValueMM());
+        if(scheduleTemplate.getTimervaluemm()!=null){
+        	entry.setTimerValueMM(scheduleTemplate.getTimervaluemm().toString());
         }
         
         
@@ -163,7 +163,7 @@ public class ScheduleTemplateProcessorImpl extends BaseFixProcessor implements S
         	entry.setCron(scheduleTemplate.getCron());
         }
         if(scheduleTemplate.getMonth()!=null){
-        	entry.setCron(scheduleTemplate.getMonth());
+        	entry.setCron(scheduleTemplate.getMonth().toString());
         }
         if(scheduleTemplate.getDescription()!=null){
         	entry.setDescription(scheduleTemplate.getDescription());
@@ -228,26 +228,26 @@ public class ScheduleTemplateProcessorImpl extends BaseFixProcessor implements S
 			for (CMJSScheduleTemplate.CGEntries e: entries) {
 				ScheduleTemplate st = dao.getById(e.getID());
 				if(!e.isRemoteModifiedModeType()){
-				e.setModeType(dao.getById(e.getID()).getModeType());
+				e.setModeType(dao.getById(e.getID()).getModetype());
 				}
 				if(!e.isRemoteModifiedTimerValueHH()){
-					e.setTimerValueHH(dao.getById(e.getID()).getTimerValueHH());
+					e.setTimerValueHH(dao.getById(e.getID()).getTimervaluehh().toString());
 				}
 				if(!e.isRemoteModifiedTimerValueMM()){
-					e.setTimerValueMM(dao.getById(e.getID()).getTimerValueMM());
+					e.setTimerValueMM(dao.getById(e.getID()).getTimervaluemm().toString());
 				}
 				if(!e.isRemoteModifiedDayOfMonth()){
-					e.setDayOfMonth(dao.getById(e.getID()).getDayOfMonth());
+					e.setDayOfMonth(dao.getById(e.getID()).getDayofmonth());
 				}
 				if(!e.isRemoteModifiedMonth()){
-					e.setMonth(dao.getById(e.getID()).getMonth());
+					e.setMonth(dao.getById(e.getID()).getMonth().toString());
 				}
 				updateEntity(st, e);
 				dao.save(st);
 				updateMessage(st, e);
 				
 				
-				log.info("Schedule Template: " + st.getID() + " edit completed by user:" +getLoggedUserNameWithIP());
+				log.info("Schedule Template: " + st.getId() + " edit completed by user:" +getLoggedUserNameWithIP());
 			}
 			
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);
