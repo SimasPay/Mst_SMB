@@ -3,10 +3,9 @@ package com.mfino.mce.interbank.impl;
 
 import static com.mfino.constants.SystemParameterKeys.INTERBANK_PARTNER_MDN_KEY;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +19,11 @@ import com.mfino.dao.query.InterBankTransfersQuery;
 import com.mfino.domain.InterBankCode;
 import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMInterBankFundsTransferInquiry;
 import com.mfino.mce.interbank.InterBankService;
 import com.mfino.service.SubscriberService;
-import com.mfino.service.impl.SubscriberServiceImpl;
 
 /**
  * @author Sasi
@@ -49,19 +47,19 @@ public class InterBankServiceImpl implements InterBankService{
 	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterBankCode interBankCode){
 		InterbankTransfer ibt = new InterbankTransfer();
 
-		ibt.setTerminalID(ibtInquiry.getChannelCode());
-		ibt.setDestBankCode(ibtInquiry.getDestBankCode());
-		ibt.setDestBankName(interBankCode.getBankName());
-		ibt.setSourceAccountName(ibtInquiry.getSourceBankAccountNo());
-		ibt.setDestAccountName(ibtInquiry.getDestAccountNumber());
-		ibt.setSourceAccountNumber(ibtInquiry.getSourceBankAccountNo());
-		ibt.setDestAccountNumber(ibtInquiry.getDestAccountNumber());
+		ibt.setTerminalid(ibtInquiry.getChannelCode());
+		ibt.setDestbankcode(ibtInquiry.getDestBankCode());
+		ibt.setDestbankname(interBankCode.getBankName());
+		ibt.setSourceaccountname(ibtInquiry.getSourceBankAccountNo());
+		ibt.setDestaccountname(ibtInquiry.getDestAccountNumber());
+		ibt.setSourceaccountnumber(ibtInquiry.getSourceBankAccountNo());
+		ibt.setDestaccountnumber(ibtInquiry.getDestAccountNumber());
 		//ibt.setNarration(ibtInquiry);
 		ibt.setAmount(ibtInquiry.getAmount());
 		ibt.setCharges(ibtInquiry.getCharges());
 		
-		ibt.setIBTStatus(CmFinoFIX.IBTStatus_INQUIRY);
-		ibt.setSctlId(ibtInquiry.getServiceChargeTransactionLogID());
+		ibt.setIbtstatus(Long.valueOf(CmFinoFIX.IBTStatus_INQUIRY));
+		ibt.setSctlid(new BigDecimal(ibtInquiry.getServiceChargeTransactionLogID()));
 
 		InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 		interBankTransferDao.save(ibt);
@@ -128,12 +126,12 @@ public class InterBankServiceImpl implements InterBankService{
 		Pocket pocket = null;
 		
 		SystemParametersDao systemParameterDao = DAOFactory.getInstance().getSystemParameterDao();
-		String interbankPartnerMdn = systemParameterDao.getSystemParameterByName(INTERBANK_PARTNER_MDN_KEY).getParameterValue();
+		String interbankPartnerMdn = systemParameterDao.getSystemParameterByName(INTERBANK_PARTNER_MDN_KEY).getParametervalue();
 		
 		SubscriberMDNDAO subscriberMdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMdn = subscriberMdnDao.getByMDN(interbankPartnerMdn);
+		SubscriberMdn subscriberMdn = subscriberMdnDao.getByMDN(interbankPartnerMdn);
 		
-		pocket = subscriberService.getDefaultPocket(subscriberMdn.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+		pocket = subscriberService.getDefaultPocket(subscriberMdn.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		
 		return pocket;
 	}

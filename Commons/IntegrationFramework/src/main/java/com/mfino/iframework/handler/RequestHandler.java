@@ -69,11 +69,11 @@ public class RequestHandler {
 
 		HashMap<String, Object> dataHolder = new HashMap<String, Object>();
 		dataHolder.put("txn.amount", billPayments.getAmount().toPlainString());
-		dataHolder.put("txn.mdn", billPayments.getSourceMDN());
+		dataHolder.put("txn.mdn", billPayments.getSourcemdn());
 		dataHolder.put("txn.sctlid", billPayments.getSctlId().toString());
-		dataHolder.put("txn.transactiontime", billPayments.getLastUpdateTime());
-		dataHolder.put("dynamic.transactiontime", billPayments.getLastUpdateTime());
-		dataHolder.put("txn.itid", billPayments.getINTxnId());
+		dataHolder.put("txn.transactiontime", billPayments.getLastupdatetime());
+		dataHolder.put("dynamic.transactiontime", billPayments.getLastupdatetime());
+		dataHolder.put("txn.itid", billPayments.getIntxnid());
 		String uniqueID = billPayments.getSctlId().toString()+"00"+uniqueSuffix.incrementAndGet();
 		dataHolder.put("txn.sctlasmessagegid", uniqueID);
 		dataHolder.putAll(integrationDetails);

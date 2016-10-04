@@ -47,18 +47,18 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.Ledger;
 import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Notification;
 import com.mfino.domain.PendingCommodityTransfer;
-import com.mfino.domain.PendingTransactionsEntry;
-import com.mfino.domain.PendingTransactionsFile;
+import com.mfino.domain.PendingTxnsEntry;
+import com.mfino.domain.PendingTxnsFile;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SystemParameters;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.UnregisteredTxnInfo;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mce.core.util.MCEUtil;
@@ -153,15 +153,15 @@ public class CoreDataWrapper
 		this.mfinoServiceProviderDAO = mfinoServiceProviderDAO;
 	}
 
-	public TransactionsLog saveTransactionsLog(Integer messageCode, String data) throws RuntimeException{
+	public TransactionLog saveTransactionsLog(Integer messageCode, String data) throws RuntimeException{
 		try
 		{
-			mFinoServiceProvider msp = mfinoServiceProviderDAO.getById(1);
-			TransactionsLog transactionsLog = new TransactionsLog();
-			transactionsLog.setMessageCode(messageCode);
-			transactionsLog.setMessageData(data);
-			transactionsLog.setmFinoServiceProviderByMSPID(msp);
-			transactionsLog.setTransactionTime(new Timestamp(new Date()));
+			MfinoServiceProvider msp = mfinoServiceProviderDAO.getById(1);
+			TransactionLog transactionsLog = new TransactionLog();
+			transactionsLog.setMessagecode(messageCode);
+			transactionsLog.setMessagedata(data);
+			transactionsLog.setMfinoServiceProvider(msp);
+			transactionsLog.setTransactiontime(new Timestamp(new Date()));
 			transactionLogDao.save(transactionsLog);
 			return transactionsLog;
 		}catch (Exception e) {
@@ -170,19 +170,19 @@ public class CoreDataWrapper
 		}
 	}
 
-	public TransactionsLog saveTransactionsLog(Integer messageCode, String data, Long parentTxnId) throws RuntimeException{
+	public TransactionLog saveTransactionsLog(Integer messageCode, String data, Long parentTxnId) throws RuntimeException{
 		try
 		{
-			mFinoServiceProvider msp = mfinoServiceProviderDAO.getById(1);
-			TransactionsLog transactionsLog = new TransactionsLog();
-			transactionsLog.setMessageCode(messageCode);
-			transactionsLog.setMessageData(data);
-			transactionsLog.setmFinoServiceProviderByMSPID(msp);
-			transactionsLog.setTransactionTime(new Timestamp(new Date()));
+			MfinoServiceProvider msp = mfinoServiceProviderDAO.getById(1);
+			TransactionLog transactionsLog = new TransactionLog();
+			transactionsLog.setMessagecode(messageCode);
+			transactionsLog.setMessagedata(data);
+			transactionsLog.setMfinoServiceProvider(msp);
+			transactionsLog.setTransactiontime(new Timestamp(new Date()));
 			if (parentTxnId != null) {
 				if (transactionLogDao.getById(parentTxnId) != null) {
 					log.info("Setting the Parent Transaction Id --> " + parentTxnId);
-					transactionsLog.setParentTransactionID(parentTxnId);
+					transactionsLog.setParenttransactionid(new BigDecimal(parentTxnId));
 				} else {
 					log.info("Parent Transaction Id not found --> " + parentTxnId);
 				}
@@ -214,7 +214,7 @@ public class CoreDataWrapper
 			return objSubscriberMdn.getSubscriber();
 		}
 */
-		SubscriberMDN subscriberMdn = subscriberMDNDAO.getByMDN(mdn, lockmode);
+		SubscriberMdn subscriberMdn = subscriberMDNDAO.getByMDN(mdn, lockmode);
 		
 		if(null != subscriberMdn){
 			objSubscriber = subscriberMdn.getSubscriber();
@@ -223,15 +223,15 @@ public class CoreDataWrapper
 		return objSubscriber;
 	}
 	
-	public SubscriberMDN getSubscriberMdn(String mdn)
+	public SubscriberMdn getSubscriberMdn(String mdn)
 	{
 		return getSubscriberMdn(mdn,null);
 	}
 	
-	public SubscriberMDN getSubscriberMdn(String mdn, LockMode lockMode){
+	public SubscriberMdn getSubscriberMdn(String mdn, LockMode lockMode){
 		if(isNullOrEmpty(mdn)) return null;
 
-		SubscriberMDN objSubscriberMdn = null;
+		SubscriberMdn objSubscriberMdn = null;
 
 		/*SubscriberMdnQuery mdnQuery = new SubscriberMdnQuery(); 
 		mdnQuery.setExactMDN(mdn);
@@ -244,7 +244,7 @@ public class CoreDataWrapper
 		if(!isNullOrEmpty(subscriberMdnList)){
 			return subscriberMdnList.iterator().next();
 		}*/
-        SubscriberMDN subscriberMdn = subscriberMDNDAO.getByMDN(mdn, lockMode);
+        SubscriberMdn subscriberMdn = subscriberMDNDAO.getByMDN(mdn, lockMode);
 		
 		if(null != subscriberMdn){
 			objSubscriberMdn = subscriberMdn;
@@ -280,7 +280,7 @@ public class CoreDataWrapper
 
 		if(!isNullOrEmpty(pocketList)){
 			for(Pocket bobPocket : pocketList){
-				if(bobPocket.getIsDefault()){
+				if(bobPocket.getIsdefault()){
 					defaultBobPocket = bobPocket;
 					break;
 				}
@@ -315,7 +315,7 @@ public class CoreDataWrapper
 		query.setNotificationCode(notificationCode);
 		if(language == null) {
 			SystemParameters langSysparam = getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER); 
-			language = Integer.parseInt(langSysparam.getParameterValue());
+			language = Integer.parseInt(langSysparam.getParametervalue());
 		}
 		query.setLanguage(language);
 		query.setNotificationMethod(notificationMethod);
@@ -329,11 +329,11 @@ public class CoreDataWrapper
 		return null;
 	}
 
-	public mFinoServiceProvider getMSPID(Long id){
+	public MfinoServiceProvider getMSPID(Long id){
 		return mfinoServiceProviderDAO.getById(id);		
 	}
 
-	public TransactionsLog getTransactionsLogById(Long id){
+	public TransactionLog getTransactionsLogById(Long id){
 		log.info("CoreDataWrapper : transactionLogsDao = "+transactionLogDao);
 		return transactionLogDao.getById(id);
 	}
@@ -354,11 +354,11 @@ public class CoreDataWrapper
 			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.SUSPENSE_POCKET_ID_KEY); 
 
 			if(systemParameter != null){
-				Long suspensePocketId = Long.valueOf(systemParameter.getParameterValue());
+				Long suspensePocketId = Long.valueOf(systemParameter.getParametervalue());
 				Pocket suspensePocket = pocketDAO.getById(suspensePocketId);
 
-				if(null == suspensePocket.getCurrentBalance()){
-					suspensePocket.setCurrentBalance(BigDecimal.valueOf(0));
+				if(null == suspensePocket.getCurrentbalance()){
+					suspensePocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 				}
 				result = suspensePocket;
 				systemPocketsMap.put(MCEUtil.SUSPENSE_POCKET_ID_KEY, suspensePocket);
@@ -372,11 +372,11 @@ public class CoreDataWrapper
 		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.SUSPENSE_POCKET_ID_KEY);
 
 		if(systemParameter != null){
-			Long suspensePocketId = Long.valueOf(systemParameter.getParameterValue());
+			Long suspensePocketId = Long.valueOf(systemParameter.getParametervalue());
 			Pocket suspensePocket = pocketDAO.getById(suspensePocketId, LockMode.UPGRADE);
 
-			if(null == suspensePocket.getCurrentBalance()){
-				suspensePocket.setCurrentBalance(BigDecimal.valueOf(0));
+			if(null == suspensePocket.getCurrentbalance()){
+				suspensePocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 			}
 
 			return suspensePocket;
@@ -393,11 +393,11 @@ public class CoreDataWrapper
 			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY); 
 
 			if(systemParameter != null){
-				Long globalSVAPocketId = Long.valueOf(systemParameter.getParameterValue());
+				Long globalSVAPocketId = Long.valueOf(systemParameter.getParametervalue());
 				Pocket globalSVAPocket = pocketDAO.getById(globalSVAPocketId);
 
-				if(null == globalSVAPocket.getCurrentBalance()){
-					globalSVAPocket.setCurrentBalance(BigDecimal.valueOf(0));
+				if(null == globalSVAPocket.getCurrentbalance()){
+					globalSVAPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 				}
 				result = globalSVAPocket;
 				systemPocketsMap.put(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY, globalSVAPocket);
@@ -411,11 +411,11 @@ public class CoreDataWrapper
 		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY);
 
 		if(systemParameter != null){
-			Long globalSVAPocketId = Long.valueOf(systemParameter.getParameterValue());
+			Long globalSVAPocketId = Long.valueOf(systemParameter.getParametervalue());
 			Pocket globalSVAPocket = pocketDAO.getById(globalSVAPocketId, LockMode.UPGRADE);
 
-			if(null == globalSVAPocket.getCurrentBalance()){
-				globalSVAPocket.setCurrentBalance(BigDecimal.valueOf(0));
+			if(null == globalSVAPocket.getCurrentbalance()){
+				globalSVAPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 			}
 
 			return globalSVAPocket;
@@ -431,11 +431,11 @@ public class CoreDataWrapper
 			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.CHARGES_POCKET_ID_KEY); 
 
 			if(systemParameter != null){
-				Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
+				Long chargesPocketId = Long.valueOf(systemParameter.getParametervalue());
 				Pocket chargesPocket =  pocketDAO.getById(chargesPocketId);
 
-				if(null == chargesPocket.getCurrentBalance()){
-					chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+				if(null == chargesPocket.getCurrentbalance()){
+					chargesPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 				}
 				result = chargesPocket;
 				systemPocketsMap.put(MCEUtil.CHARGES_POCKET_ID_KEY, chargesPocket);
@@ -449,11 +449,11 @@ public class CoreDataWrapper
 		SystemParameters systemParameter = systemParameterDao.getSystemParameterByName(MCEUtil.CHARGES_POCKET_ID_KEY);
 
 		if(systemParameter != null){
-			Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
+			Long chargesPocketId = Long.valueOf(systemParameter.getParametervalue());
 			Pocket chargesPocket =  pocketDAO.getById(chargesPocketId, LockMode.UPGRADE);
 
-			if(null == chargesPocket.getCurrentBalance()){
-				chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+			if(null == chargesPocket.getCurrentbalance()){
+				chargesPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 			}
 
 			return chargesPocket;
@@ -469,7 +469,7 @@ public class CoreDataWrapper
 			if (result == null) {
 				SystemParameters systemParameter = getSystemParameterByName(key); 
 				if(systemParameter != null){
-					Long chargesPocketId = Long.valueOf(systemParameter.getParameterValue());
+					Long chargesPocketId = Long.valueOf(systemParameter.getParametervalue());
 					Pocket chargesPocket;
 					
 					if( lockmode==null )
@@ -477,8 +477,8 @@ public class CoreDataWrapper
 					else
 					   chargesPocket =  pocketDAO.getById(chargesPocketId,lockmode);
 
-					if(null == chargesPocket.getCurrentBalance()){
-						chargesPocket.setCurrentBalance(BigDecimal.valueOf(0));
+					if(null == chargesPocket.getCurrentbalance()){
+						chargesPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
 					}
 					result = chargesPocket;
 					systemPocketsMap.put(key, chargesPocket);
@@ -510,7 +510,7 @@ public class CoreDataWrapper
 		commodityTransferDao.save(ct);
 	}
 
-	public void save(SubscriberMDN objSrcSubMdn) {
+	public void save(SubscriberMdn objSrcSubMdn) {
 		subscriberMDNDAO.save(objSrcSubMdn);
 	}
 	
@@ -596,7 +596,7 @@ public class CoreDataWrapper
 		SystemParameters systemParameter = getSystemParameterByName(MCEUtil.PLATFORM_DUMMY_MDN_KEY);
 
 		if(systemParameter != null){
-			String mdn = systemParameter.getParameterValue();
+			String mdn = systemParameter.getParametervalue();
 			return mdn;
 		}
 
@@ -610,9 +610,9 @@ public class CoreDataWrapper
 		if(globalAccountNumber==null){
 			SystemParameters systemParameter = getSystemParameterByName(MCEUtil.GLOBAL_ACCOUNT_KEY); 
 			if(systemParameter != null){
-				Long globalPocketId = Long.valueOf(systemParameter.getParameterValue());
+				Long globalPocketId = Long.valueOf(systemParameter.getParametervalue());
 				Pocket globalPocket =  pocketDAO.getById(globalPocketId);
-				globalAccountNumber = globalPocket.getCardPAN();
+				globalAccountNumber = globalPocket.getCardpan();
 			}
 		}
 
@@ -651,15 +651,15 @@ public class CoreDataWrapper
 		this.pendingTransactionsFileDao = pendingTransactionsFileDao;
 	}
 	
-	public void save(PendingTransactionsFile resolvePendingFile) {
+	public void save(PendingTxnsFile resolvePendingFile) {
 		pendingTransactionsFileDao.save(resolvePendingFile);
 	}
 
-	public List<PendingTransactionsFile> getPendingUploadedFiles() {
+	public List<PendingTxnsFile> getPendingUploadedFiles() {
 		return pendingTransactionsFileDao.getPendingUploadedFiles();
 	}
 
-	public List<PendingTransactionsFile> getProcessingFiles() {
+	public List<PendingTxnsFile> getProcessingFiles() {
 		return pendingTransactionsFileDao.getProcessingFiles();
 	}
 	
@@ -672,21 +672,21 @@ public class CoreDataWrapper
 		this.pendingTransactionsEntryDAO = pendingTransactionsEntryDAO;
 	}
 
-	public int getProcessedLineCount(PendingTransactionsFile resolvePendingFile) {
+	public int getProcessedLineCount(PendingTxnsFile resolvePendingFile) {
 		return pendingTransactionsEntryDAO.getProcessedLineCount(resolvePendingFile);
 	}
 
-	public void save(PendingTransactionsEntry pendingTransactionsEntry) {
+	public void save(PendingTxnsEntry pendingTransactionsEntry) {
 		pendingTransactionsEntryDAO.save(pendingTransactionsEntry);
 		
 	}
 
-	public List<PendingTransactionsEntry> get(
+	public List<PendingTxnsEntry> get(
 			PendingTransactionsEntryQuery query) {
 		return pendingTransactionsEntryDAO.get(query);
 	}
 
-	public ServiceChargeTransactionLog getSCTLById(Long sctlId) {
+	public ServiceChargeTxnLog getSCTLById(Long sctlId) {
 		return sctlDao.getById(sctlId);
 	}
 
@@ -756,7 +756,7 @@ public class CoreDataWrapper
 		this.chargeTxnCommodityTransferMapDAO = chargeTxnCommodityTransferMapDAO;
 	}
 
-	public ServiceChargeTransactionLog getSCTLById(long transferID,LockMode upgrade) {
+	public ServiceChargeTxnLog getSCTLById(long transferID,LockMode upgrade) {
 		return this.sctlDao.getById(transferID, upgrade);
 	}	
 	
