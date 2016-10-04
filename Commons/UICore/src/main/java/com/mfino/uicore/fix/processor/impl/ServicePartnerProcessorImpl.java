@@ -28,14 +28,14 @@ import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.PartnerQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.Company;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.User;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.InvalidMDNException;
@@ -137,13 +137,13 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
             	Partner objPartner = partnerDao.getById(Long.valueOf(entry.getID()));
                 //Partner objPartner = objServicePartner.getPartner();
                 Subscriber objSubscriber = objPartner.getSubscriber();
-                SubscriberMDN objSubscriberMdn = ((objSubscriber != null) && (objSubscriber.getSubscriberMDNFromSubscriberID().size() > 0))? objSubscriber.getSubscriberMDNFromSubscriberID().iterator().next() : null;
+                SubscriberMdn objSubscriberMdn = ((objSubscriber != null) && (objSubscriber.getSubscriberMdns().size() > 0))? objSubscriber.getSubscriberMdns().iterator().next() : null;
                 
                 // Check for Stale Data
                 if (!entry.getRecordVersion().equals(objPartner.getVersion())) {
                     handleStaleDataException();
                 }
-                if(entry.isRemoteModifiedPartnerCode()&&(!objPartner.getPartnerCode().equalsIgnoreCase(entry.getPartnerCode()))){
+                if(entry.isRemoteModifiedPartnerCode()&&(!objPartner.getPartnercode().equalsIgnoreCase(entry.getPartnerCode()))){
                 	PartnerDAO dao = DAOFactory.getInstance().getPartnerDAO();
             		PartnerQuery query = new PartnerQuery();
             		query.setPartnerCode(entry.getPartnerCode());
@@ -155,7 +155,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                          return errorMsg;
             		}
                 }
-                if(entry.isRemoteModifiedTradeName()&&(!objPartner.getTradeName().equalsIgnoreCase(entry.getTradeName()))){
+                if(entry.isRemoteModifiedTradeName()&&(!objPartner.getTradename().equalsIgnoreCase(entry.getTradeName()))){
                 	PartnerDAO dao = DAOFactory.getInstance().getPartnerDAO();
             		PartnerQuery query = new PartnerQuery();
             		query.setTradeName(entry.getTradeName());
@@ -178,7 +178,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                     return errorMsg;
                 }*/
                 //for mfs2.5
-                if(CmFinoFIX.BusinessPartnerType_ServicePartner.equals(objPartner.getBusinessPartnerType())&&entry.getBusinessPartnerType()!=null){
+                if(CmFinoFIX.BusinessPartnerType_ServicePartner.equals(objPartner.getBusinesspartnertype())&&entry.getBusinessPartnerType()!=null){
                 	CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                     errorMsg.setErrorDescription(MessageText._("Service Partner cannot be changed"));
                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -209,8 +209,8 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 
                 }
                 if(CmFinoFIX.SubscriberStatus_Active.equals(entry.getPartnerStatus())
-                		&&!objPartner.getBusinessPartnerType().equals(CmFinoFIX.BusinessPartnerType_ServicePartner)
-                		&&!CmFinoFIX.SubscriberStatus_Active.equals(objPartner.getPartnerStatus())){
+                		&&!objPartner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_ServicePartner)
+                		&&!CmFinoFIX.SubscriberStatus_Active.equals(objPartner.getPartnerstatus())){
                 	CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
                     error.setErrorDescription(MessageText._("Partner Activation not allowed."));
                     return error;
@@ -223,53 +223,53 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                     return error;
 					}
                 }
-				if(CmFinoFIX.SubscriberStatus_Initialized.equals(entry.getPartnerStatus()) && !(CmFinoFIX.SubscriberStatus_Initialized.equals(objPartner.getPartnerStatus()) ||
-						CmFinoFIX.SubscriberStatus_Suspend.equals(objPartner.getPartnerStatus()) || CmFinoFIX.SubscriberStatus_InActive.equals(objPartner.getPartnerStatus())) ){
+				if(CmFinoFIX.SubscriberStatus_Initialized.equals(entry.getPartnerStatus()) && !(CmFinoFIX.SubscriberStatus_Initialized.equals(objPartner.getPartnerstatus()) ||
+						CmFinoFIX.SubscriberStatus_Suspend.equals(objPartner.getPartnerstatus()) || CmFinoFIX.SubscriberStatus_InActive.equals(objPartner.getPartnerstatus())) ){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Intializing partner not allowed."));
 					return error;
 				}                
-				if(CmFinoFIX.SubscriberStatus_Suspend.equals(entry.getPartnerStatus())&&!CmFinoFIX.SubscriberStatus_Suspend.equals(objPartner.getPartnerStatus())){
+				if(CmFinoFIX.SubscriberStatus_Suspend.equals(entry.getPartnerStatus())&&!CmFinoFIX.SubscriberStatus_Suspend.equals(objPartner.getPartnerstatus())){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Suspending of Partner / Agent not allowed."));
 					return error;
 				}
 				if(entry.getPartnerStatus() != null && !CmFinoFIX.SubscriberStatus_Initialized.equals(entry.getPartnerStatus()) &&
-						CmFinoFIX.SubscriberStatus_Suspend.equals(objPartner.getPartnerStatus())){
+						CmFinoFIX.SubscriberStatus_Suspend.equals(objPartner.getPartnerstatus())){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Suspended Partner / Agent can be moved to Intialized status only"));
 					return error;
 				}				
 				if(entry.getPartnerStatus() != null && !CmFinoFIX.SubscriberStatus_Initialized.equals(entry.getPartnerStatus()) && 
-						CmFinoFIX.SubscriberStatus_InActive.equals(objPartner.getPartnerStatus())){
+						CmFinoFIX.SubscriberStatus_InActive.equals(objPartner.getPartnerstatus())){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Inactive Partner / Agent can be moved to Intialized status only"));
 					return error;
 				}
-				Integer partnerRestrictions = objSubscriberMdn.getRestrictions();
+				Integer partnerRestrictions = Integer.valueOf(Long.valueOf(objSubscriberMdn.getRestrictions()).intValue());
                 updateEntity(objPartner, objSubscriber,objSubscriberMdn, entry);
                 
 				//Generate OTP for the Partner / agent if the status is changed from Suspend to Initialise or Inactive to Initialise. 
 				if(entry.getPartnerStatus() != null && CmFinoFIX.SubscriberStatus_Initialized.equals(entry.getPartnerStatus())
-						&&CmFinoFIX.UpgradeState_Approved.equals(objSubscriber.getUpgradeState())){
+						&&CmFinoFIX.UpgradeState_Approved.equals(objSubscriber.getUpgradestate())){
 					if(isOTPEnabled){
 						generateAndSendOTP(objPartner, objSubscriberMdn, objSubscriber);
-						objSubscriberMdn.setWrongPINCount(0);
+						objSubscriberMdn.setWrongpincount(0);
 					}else{
 						hanldleNoOTP(partnerRestrictions,objPartner,objSubscriber,objSubscriberMdn);
 					}						
 				}
 				
                  if(entry.getAuthorizedEmail()!=null||entry.getTradeName()!=null||entry.getBusinessPartnerType()!=null){
-                	User user = objPartner.getUser();
+                	User user = objPartner.getMfinoUser();
                 	if(entry.getAuthorizedEmail()!=null){
                  	user.setEmail(entry.getAuthorizedEmail());
                 	}
                 	if(entry.getTradeName()!=null){
-                     	user.setFirstName(entry.getTradeName());
+                     	user.setFirstname(entry.getTradeName());
                     }
                 	if(entry.getBusinessPartnerType()!=null){
-                		user.setRole(partnerService.getRole(entry.getBusinessPartnerType()));
+                		user.setRole(partnerService.getRole(entry.getBusinessPartnerType()).longValue());
                 	}
                  	userDAO.save(user);
                  }
@@ -294,8 +294,8 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
             	
             	Partner partner = new Partner();
                 Subscriber subscriber;
-                SubscriberMDN subscriberMdn;
-                SubscriberMDN existingSubscriberMDN = null;
+                SubscriberMdn subscriberMdn;
+                SubscriberMdn existingSubscriberMDN = null;
                 
                 CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                 if(StringUtils.isBlank(e.getTradeName())){
@@ -386,12 +386,12 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 }
                 existingSubscriberMDN=subscriberMdnDao.getByMDN(subscriberService.normalizeMDN(e.getMDN()));
                 if(existingSubscriberMDN==null){
-                	subscriberMdn=new SubscriberMDN();
+                	subscriberMdn=new SubscriberMdn();
                 	subscriber=new Subscriber();
-                    subscriber.setmFinoServiceProviderByMSPID(mspDAO.getById(1));
+                    subscriber.setMfinoServiceProvider(mspDAO.getById(1));
                 }else{
-                	 if(existingSubscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
-                			 ||existingSubscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_Retired)){
+                	 if(Integer.valueOf(Long.valueOf(existingSubscriberMDN.getStatus()).intValue()).equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
+                			 ||Integer.valueOf(Long.valueOf(existingSubscriberMDN.getStatus()).intValue()).equals(CmFinoFIX.SubscriberStatus_Retired)){
                 		 errorMsg.setErrorDescription(MessageText._("Invalid MDN status not allowed to register as partner"));
                          errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                          return errorMsg; 
@@ -415,33 +415,33 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 
                 u.setUsername(username);
                 u.setEmail(e.getAuthorizedEmail());
-                u.setFirstName(findFirstName(e));
-                u.setLastName(findLastName(e));
+                u.setFirstname(findFirstName(e));
+                u.setLastname(findLastName(e));
                 u.setLanguage(e.getLanguage());
                 u.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
                 u.setStatus(CmFinoFIX.UserStatus_Registered);
                 u.setTimezone(e.getTimezone());
-                u.setRole(partnerService.getRole(e.getBusinessPartnerType()));
+                u.setRole(partnerService.getRole(e.getBusinessPartnerType()).longValue());
                 subscriber.setType(CmFinoFIX.SubscriberType_Partner);
                 KYCLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
-                subscriber.setKYCLevelByKYCLevel(kycLevel);
-                subscriber.setUpgradableKYCLevel(null);
-                subscriber.setUpgradeState(CmFinoFIX.UpgradeState_Upgradable);
-                subscriber.setRegistrationMedium(CmFinoFIX.RegistrationMedium_AdminApp);
-                subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
-                subscriberMdn.setOTP(null);
-                subscriberMdn.setDigestedPIN(null);
-                subscriberMdn.setAuthorizationToken(null);
+                subscriber.setKycLevel(kycLevel);
+                subscriber.setUpgradablekyclevel(null);
+                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
+                subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp.longValue());
+                subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()|CmFinoFIX.NotificationMethod_Email.longValue());
+                subscriberMdn.setOtp(null);
+                subscriberMdn.setDigestedpin(null);
+                subscriberMdn.setAuthorizationtoken(null);
                 updateEntity(partner, subscriber, subscriberMdn, e);
                 subscriberMdn.setSubscriber(subscriber);
                 partner.setSubscriber(subscriber);
-                partner.setUser(u);
-                subscriber.setLastName(findLastName(e));
-                subscriber.setAppliedBy(userService.getCurrentUser().getUsername());
-                subscriber.setAppliedTime(new Timestamp());
-                subscriber.setApprovedOrRejectedBy("");
-                subscriber.setApproveOrRejectComment("");
-                subscriber.setApproveOrRejectTime(null);
+                partner.setMfinoUser(u);
+                subscriber.setLastname(findLastName(e));
+                subscriber.setAppliedby(userService.getCurrentUser().getUsername());
+                subscriber.setAppliedtime(new Timestamp());
+                subscriber.setApprovedorrejectedby("");
+                subscriber.setApproveorrejectcomment("");
+                subscriber.setApproveorrejecttime(null);
                                 
                 userDAO.save(u);                                               
                 subscriberDao.save(subscriber);
@@ -462,10 +462,10 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 String cardPan=null;
                 Pocket epocket=null;
                 if(existingSubscriberMDN!=null){
-                	epocket=subscriberService.getDefaultPocket(existingSubscriberMDN.getID(),CmFinoFIX.PocketType_SVA,CmFinoFIX.Commodity_Money);
+                	epocket=subscriberService.getDefaultPocket(existingSubscriberMDN.getId().longValue(),CmFinoFIX.PocketType_SVA,CmFinoFIX.Commodity_Money);
                 }
                 try{
-                	cardPan=pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMDN());
+                	cardPan=pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMdn());
                 }catch (Exception ex) {
 					log.error("Exception to create cardPan",ex);
 				}
@@ -477,24 +477,24 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 				boolean isError = false;
                 PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(CmFinoFIX.RecordType_SubscriberFullyBanked.longValue(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Partner, e.getBusinessPartnerType(), groupID);
                 if (svaPocketTemplate == null) {
-					log.info("No Default SVA Pocket template set for " + subscriber.getID());
+					log.info("No Default SVA Pocket template set for " + subscriber.getId());
 					isError = true;
 					errDescription.append("No Default SVA pocket template set for this group and partner type<br/>");
 				}
                 else
                 {
-                	if(epocket!=null&&!(epocket.getStatus().equals(CmFinoFIX.PocketStatus_PendingRetirement)||epocket.getStatus().equals(CmFinoFIX.PocketStatus_Retired))){
+                	if(epocket!=null&&!(Integer.valueOf(Long.valueOf(epocket.getStatus()).intValue()).equals(CmFinoFIX.PocketStatus_PendingRetirement)||Integer.valueOf(Long.valueOf(epocket.getStatus()).intValue()).equals(CmFinoFIX.PocketStatus_Retired))){
                 		epocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-                		epocket.setStatusTime(new Timestamp());
-                		epocket.setPocketTemplateByOldPocketTemplateID(epocket.getPocketTemplate());
+                		epocket.setStatustime(new Timestamp());
+                		epocket.setPocketTemplateByOldpockettemplateid(epocket.getPocketTemplate());
                 		epocket.setPocketTemplate(svaPocketTemplate);
-                		epocket.setPocketTemplateChangedBy(userService.getCurrentUser().getUsername());
-                		epocket.setPocketTemplateChangeTime(new Timestamp());
+                		epocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
+                		epocket.setPockettemplatechangetime(new Timestamp());
                 		pocketDao.save(epocket);
 
                 	}else{
                 		epocket = pocketService.createPocket(svaPocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, cardPan);
-                		log.info("Default emoney pocket successfully created for the partner -->"+partner.getID());
+                		log.info("Default emoney pocket successfully created for the partner -->"+partner.getId());
                 	}
                 }
                 Pocket collectorPocket = null;
@@ -509,12 +509,12 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 					}
                 	else
                 	{
-                		String collectorPocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMDN());
+                		String collectorPocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMdn());
                 		collectorPocket = pocketService.createPocket(collectorPocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, collectorPocketCardPan);
-                		log.info("Default collector pocket Id --> " + collectorPocket.getID());
+                		log.info("Default collector pocket Id --> " + collectorPocket.getId());
                 	}
 				} catch (Exception e1) {
-					log.info("Default Collector Pocket creation is failed for the Partner --> " + partner.getID());
+					log.info("Default Collector Pocket creation is failed for the Partner --> " + partner.getId());
 					isError = true;
 					errDescription.append("Default Collector Pocket creation failed for the Partner<br/>");
 				}
@@ -530,12 +530,12 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 					}
 					else
 					{
-						String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMDN());
+						String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getMdn());
 						suspensePocket = pocketService.createPocket(suspensePocketTemplate, subscriberMdn, CmFinoFIX.PocketStatus_Initialized, true, suspensePocketCardPan);
-						log.info("Default suspense pocket Id --> " + suspensePocket.getID());
+						log.info("Default suspense pocket Id --> " + suspensePocket.getId());
 					}
 				} catch (Exception e1) {
-					log.info("Default Suspense Pocket creation failed for the Partner --> " + partner.getID());
+					log.info("Default Suspense Pocket creation failed for the Partner --> " + partner.getId());
 					isError = true;
 					errDescription.append("Default Suspense Pocket creation failed for the Partner<br/>");
 				}
@@ -554,8 +554,8 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 			PartnerQuery partnerQuery = new PartnerQuery();
 			Partner partner = userService.getPartner();
 			if(partner!=null){
-					partnerQuery.setId(partner.getID());
-					if(StringUtils.isNotBlank(realMsg.getPartnerIDSearch())&&!partner.getID().equals(Long.valueOf(realMsg.getPartnerIDSearch()))){
+					partnerQuery.setId(partner.getId().longValue());
+					if(StringUtils.isNotBlank(realMsg.getPartnerIDSearch())&&!partner.getId().equals(Long.valueOf(realMsg.getPartnerIDSearch()))){
 						partnerQuery.setId(0L);
 					}				
 			}else if((null != realMsg.getPartnerIDSearch()) && !("".equals(realMsg.getPartnerIDSearch()))){
@@ -613,7 +613,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
             for (int i = 0; i < results.size(); i++) {
                 Partner objPartner = results.get(i);
                 Subscriber objSubscriber = objPartner.getSubscriber();
-                SubscriberMDN objSubscriberMdn = ((objSubscriber != null) && (objSubscriber.getSubscriberMDNFromSubscriberID().size() > 0))? objSubscriber.getSubscriberMDNFromSubscriberID().iterator().next() : null;
+                SubscriberMdn objSubscriberMdn = ((objSubscriber != null) && (objSubscriber.getSubscriberMdns().size() > 0))? objSubscriber.getSubscriberMdns().iterator().next() : null;
 
                 CMJSPartner.CGEntries entry = new CMJSPartner.CGEntries();
 
@@ -630,7 +630,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	}
 	
 	private void hanldleNoOTP(Integer oldRestrictions, Partner partner,
-			Subscriber subscriber, SubscriberMDN mdn) {
+			Subscriber subscriber, SubscriberMdn mdn) {
 		Boolean isNewSecurityLocked = ((subscriber.getRestrictions() & CmFinoFIX.SubscriberRestrictions_SecurityLocked ) != 0);
 		Boolean isNewAbsoluteLocked = ((subscriber.getRestrictions() & CmFinoFIX.SubscriberRestrictions_AbsoluteLocked) != 0 );
 		Boolean isOldSecurityLocked = ((oldRestrictions & CmFinoFIX.SubscriberRestrictions_SecurityLocked ) != 0 );
@@ -640,18 +640,18 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 		//if security lock and absolute lock removed activate partner
 		if((isOldSecurityLocked && !isNewSecurityLocked) || (isOldAbsoluteLocked && !isNewAbsoluteLocked)){
 			if(!isNewLocked){
-			partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_Active);
+			partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Active);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriber.setStatusTime(new Timestamp());
+			subscriber.setStatustime(new Timestamp());
 			mdn.setStatus(CmFinoFIX.MDNStatus_Active);
-			mdn.setStatusTime(new Timestamp());
+			mdn.setStatustime(new Timestamp());
 			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 			}else{
-				partner.setPartnerStatus(CmFinoFIX.SubscriberStatus_InActive);
+				partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_InActive);
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
-				subscriber.setStatusTime(new Timestamp());
+				subscriber.setStatustime(new Timestamp());
 				mdn.setStatus(CmFinoFIX.MDNStatus_InActive);
-				mdn.setStatusTime(new Timestamp());
+				mdn.setStatustime(new Timestamp());
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 			}
 		}
@@ -679,34 +679,34 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
     	return StringUtils.isNotBlank(e.getFirstName())?e.getFirstName():e.getTradeName();
 	}
 
-	private void updateEntity(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,CMJSPartner.CGEntries entry) {
+	private void updateEntity(Partner partner,Subscriber subscriber, SubscriberMdn subscriberMdn,CMJSPartner.CGEntries entry) {
     	
     	/*TODO 
     	 * Not sure if this is reqd for creating partner, setting default values
     	 * */
     	if(entry.getMDN()!=null){
-    		subscriberMdn.setMDN(subscriberService.normalizeMDN(entry.getMDN()));
+    		subscriberMdn.setMdn(subscriberService.normalizeMDN(entry.getMDN()));
     	}
     	if(entry.getBusinessPartnerType()!=null){
-    		partner.setBusinessPartnerType(entry.getBusinessPartnerType());
+    		partner.setBusinesspartnertype(entry.getBusinessPartnerType().longValue());
     	}
         
         
         if (entry.getPartnerStatus() != null) {
         	// *FindbugsChange*
         	// Previous -- if (entry.getPartnerStatus() != partner.getPartnerStatus()) {
-            if (!(entry.getPartnerStatus().equals(partner.getPartnerStatus()))) {
+            if (!(entry.getPartnerStatus().equals(partner.getPartnerstatus()))) {
                 subscriberMdn.setStatus(entry.getPartnerStatus());
                 subscriber.setStatus(entry.getPartnerStatus());
-                subscriberMdn.setStatusTime(new Timestamp());
-                subscriber.setStatusTime(new Timestamp());
+                subscriberMdn.setStatustime(new Timestamp());
+                subscriber.setStatustime(new Timestamp());
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
-                partner.setPartnerStatus(entry.getPartnerStatus());
+                partner.setPartnerstatus(entry.getPartnerStatus());
             }
         }
         
         if (entry.getIsForceCloseRequested() != null && entry.getIsForceCloseRequested().booleanValue()) {
-        	subscriberMdn.setIsForceCloseRequested(entry.getIsForceCloseRequested());
+        	subscriberMdn.setIsforcecloserequested((short) Boolean.compare(entry.getIsForceCloseRequested(), false));
         }
         
         // subscriber related fields
@@ -727,63 +727,63 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         }
         
         if(entry.getBusinessPartnerType()!=null){
-        	partner.setBusinessPartnerType(entry.getBusinessPartnerType());
+        	partner.setBusinesspartnertype(entry.getBusinessPartnerType().longValue());
         }
         if(entry.getPartnerCode() != null){
-        	partner.setPartnerCode(entry.getPartnerCode());
+        	partner.setPartnercode(entry.getPartnerCode());
         }
         
         //populate address information
         if(entry.getAuthorizedEmail() != null){
-        	partner.setAuthorizedEmail(entry.getAuthorizedEmail());
+        	partner.setAuthorizedemail(entry.getAuthorizedEmail());
         	subscriber.setEmail(entry.getAuthorizedEmail());
-        	subscriber.setIsEmailVerified(false);
+        	subscriber.setIsemailverified((short) Boolean.compare(false, true));
         }
         
         //TODO why should i do a null check?
         if(entry.getAuthorizedFaxNumber() != null){
-        	partner.setAuthorizedFaxNumber(entry.getAuthorizedFaxNumber());
+        	partner.setAuthorizedfaxnumber(entry.getAuthorizedFaxNumber());
         }
         if(entry.getAuthorizedRepresentative() != null){
-        	partner.setAuthorizedRepresentative(entry.getAuthorizedRepresentative());
+        	partner.setAuthorizedrepresentative(entry.getAuthorizedRepresentative());
         }
         if(entry.getClassification() != null){
         	partner.setClassification(entry.getClassification());
         }
         if(entry.getFaxNumber() != null){
-        	partner.setFaxNumber(entry.getFaxNumber());
+        	partner.setFaxnumber(entry.getFaxNumber());
         }
         if(entry.getDesignation() != null){
         	partner.setDesignation(entry.getDesignation());
         }
         if(entry.getFranchisePhoneNumber() != null){
-        	partner.setFranchisePhoneNumber(entry.getFranchisePhoneNumber());
+        	partner.setFranchisephonenumber(entry.getFranchisePhoneNumber());
         }
         if(entry.getIndustryClassification() != null){
-        	partner.setIndustryClassification(entry.getIndustryClassification());
+        	partner.setIndustryclassification(entry.getIndustryClassification());
         }
         
-        partner.setmFinoServiceProviderByMSPID(mspDAO.getById(1));
+        partner.setMfinoServiceProvider(mspDAO.getById(1));
         
         if(entry.getNumberOfOutlets() != null){
-        	partner.setNumberOfOutlets(entry.getNumberOfOutlets());
+        	partner.setNumberofoutlets(entry.getNumberOfOutlets().longValue());
         }
         
         if(entry.getRepresentativeName() != null){
-        	partner.setRepresentativeName(entry.getRepresentativeName());
+        	partner.setRepresentativename(entry.getRepresentativeName());
         }
         if(entry.getTradeName() != null){
-        	partner.setTradeName(entry.getTradeName());
-        	  subscriber.setFirstName(entry.getTradeName());
+        	partner.setTradename(entry.getTradeName());
+        	  subscriber.setFirstname(entry.getTradeName());
          }
         if(entry.getTypeOfOrganization() != null){
-        	partner.setTypeOfOrganization(entry.getTypeOfOrganization());
+        	partner.setTypeoforganization(entry.getTypeOfOrganization());
         }
         if(entry.getWebSite() != null){
-        	partner.setWebSite(entry.getWebSite());
+        	partner.setWebsite(entry.getWebSite());
         }
         if(entry.getYearEstablished() != null){
-        	partner.setYearEstablished(entry.getYearEstablished());
+        	partner.setYearestablished(entry.getYearEstablished().longValue());
         }
         
         if (entry.getRestrictions() != null) {
@@ -792,11 +792,11 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         }
         
         //for merchant and outlet addresses
-        Address merchantAddress = partner.getAddressByMerchantAddressID();
+        Address merchantAddress = partner.getAddressByMerchantaddressid();
         	
         	if(merchantAddress == null){
         		merchantAddress = new Address();
-        		partner.setAddressByMerchantAddressID(merchantAddress);
+        		partner.setAddressByMerchantaddressid(merchantAddress);
            	}
         	if(entry.getMerchantAddressLine1()!= null){
         	merchantAddress.setLine1(entry.getMerchantAddressLine1());
@@ -811,7 +811,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         	merchantAddress.setState(entry.getMerchantAddressState());
         	}
         	if(entry.getMerchantAddressZipcode()!= null){
-        	merchantAddress.setZipCode(entry.getMerchantAddressZipcode());
+        	merchantAddress.setZipcode(entry.getMerchantAddressZipcode());
         	}
         	if(entry.getMerchantAddressCountry()!= null){
         	merchantAddress.setCountry(entry.getMerchantAddressCountry());
@@ -819,10 +819,10 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         	addressDao.save(merchantAddress);
         
         //outlet address
-           	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
+           	Address outletAddress = partner.getAddressByFranchiseoutletaddressid();
             	if(outletAddress == null){
             		outletAddress = new Address();
-            		partner.setAddressByFranchiseOutletAddressID(outletAddress);
+            		partner.setAddressByFranchiseoutletaddressid(outletAddress);
             	}
             	if(entry.getOutletAddressLine1()!= null){
                 	outletAddress.setLine1(entry.getOutletAddressLine1());
@@ -837,7 +837,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 	outletAddress.setState(entry.getOutletAddressState());
                 	}
                 	if(entry.getOutletAddressZipcode()!= null){
-                	outletAddress.setZipCode(entry.getOutletAddressZipcode());
+                	outletAddress.setZipcode(entry.getOutletAddressZipcode());
                 	}
                 	if(entry.getOutletAddressCountry()!= null){
                 	outletAddress.setCountry(entry.getOutletAddressCountry());
@@ -853,19 +853,19 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         				Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
         				SubscriberGroup sg = subscriberGroups.iterator().next();
         				if(sg.getGroup().getID().longValue() != Long.valueOf(entry.getGroupID()).longValue()){
-        					Group group = (Group)groupDao.getById(Long.valueOf(entry.getGroupID()));
-        					sg.setGroup(group);
+        					Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
+        					sg.setGroupid(group.getId().longValue());
         					subscriberGroupDao.save(sg);
         				}
         			}
         			else{
-        				Group group = (Group)groupDao.getById(Long.valueOf(entry.getGroupID()));
+        				Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         				SubscriberGroup sg = new SubscriberGroup();
-        				sg.setSubscriber(subscriber);
-        				sg.setGroup(group);
+        				sg.setSubscriberid(subscriber.getId().longValue());
+        				sg.setGroupid(group.getId().longValue());
         				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
         				
-        				if(subscriber.getID() != null){
+        				if(subscriber.getId() != null){
         					subscriberGroupDao.save(sg);
         				}
         				
@@ -879,65 +879,65 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         }
     
 
-    private void updateMessage(Partner partner,Subscriber subscriber, SubscriberMDN subscriberMdn,  CMJSPartner.CGEntries entry) {
+    private void updateMessage(Partner partner,Subscriber subscriber, SubscriberMdn subscriberMdn,  CMJSPartner.CGEntries entry) {
 
         if(partner != null){
-        	if(subscriberMdn.getMDN()!=null){
-        		entry.setMDN(subscriberMdn.getMDN());
+        	if(subscriberMdn.getMdn()!=null){
+        		entry.setMDN(subscriberMdn.getMdn());
         	}
         
-	        if(partner.getID() != null){
-	        	entry.setID(partner.getID());
+	        if(partner.getId() != null){
+	        	entry.setID(partner.getId().longValue());
 	        }	        
-	        if(partner.getLastUpdateTime() != null){
-	        	entry.setLastUpdateTime(partner.getLastUpdateTime());
+	        if(partner.getLastupdatetime() != null){
+	        	entry.setLastUpdateTime(partner.getLastupdatetime());
 	        }
-	        if(partner.getUpdatedBy() != null){
-	        	entry.setUpdatedBy(partner.getUpdatedBy());
+	        if(partner.getUpdatedby() != null){
+	        	entry.setUpdatedBy(partner.getUpdatedby());
 	        }
-	        if(partner.getCreateTime() != null){
-	        	entry.setCreateTime(partner.getCreateTime());
+	        if(partner.getCreatetime() != null){
+	        	entry.setCreateTime(partner.getCreatetime());
 	        }
-	        if(partner.getCreatedBy() != null){
-	        	entry.setCreatedBy(partner.getCreatedBy());
+	        if(partner.getCreatedby() != null){
+	        	entry.setCreatedBy(partner.getCreatedby());
 	        }
 	        if(partner.getSubscriber() != null){
-	        	entry.setSubscriberID(subscriber.getID());
-	        	entry.setMDNID(subscriberMdn.getID());
+	        	entry.setSubscriberID(subscriber.getId().longValue());
+	        	entry.setMDNID(subscriberMdn.getId().longValue());
 	        }
-	        if(partner.getPartnerCode() != null){
-	        	entry.setPartnerCode(partner.getPartnerCode());
+	        if(partner.getPartnercode() != null){
+	        	entry.setPartnerCode(partner.getPartnercode());
 	        }
-	        if(partner.getPartnerStatus() != null){
-	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, subscriber.getLanguage(), partner.getPartnerStatus()));
-	        	entry.setPartnerStatus(partner.getPartnerStatus());
+	        if(partner.getPartnerstatus() != 0){
+	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), partner.getPartnerstatus()));
+	        	entry.setPartnerStatus((int) partner.getPartnerstatus());
 	        }
-	        if(partner.getTradeName() != null){
-	        	entry.setTradeName(partner.getTradeName());
+	        if(partner.getTradename() != null){
+	        	entry.setTradeName(partner.getTradename());
 	        }
-	        if(partner.getTypeOfOrganization() != null){
-	        	entry.setTypeOfOrganization(partner.getTypeOfOrganization());
+	        if(partner.getTypeoforganization() != null){
+	        	entry.setTypeOfOrganization(partner.getTypeoforganization());
 	        }
-	        if(partner.getFaxNumber() != null){
-	        	entry.setFaxNumber(partner.getFaxNumber());
+	        if(partner.getFaxnumber() != null){
+	        	entry.setFaxNumber(partner.getFaxnumber());
 	        }
-	        if(partner.getWebSite() != null){
-	        	entry.setWebSite(partner.getWebSite());
+	        if(partner.getWebsite() != null){
+	        	entry.setWebSite(partner.getWebsite());
 	        }
-	        if(partner.getAuthorizedRepresentative() != null){
-	        	entry.setAuthorizedRepresentative(partner.getAuthorizedRepresentative());
+	        if(partner.getAuthorizedrepresentative() != null){
+	        	entry.setAuthorizedRepresentative(partner.getAuthorizedrepresentative());
 	        }
-	        if(partner.getRepresentativeName() != null){
-	        	entry.setRepresentativeName(partner.getRepresentativeName());
+	        if(partner.getRepresentativename() != null){
+	        	entry.setRepresentativeName(partner.getRepresentativename());
 	        }
 	        if(partner.getDesignation() != null){
 	        	entry.setDesignation(partner.getDesignation());
 	        }
-	        if(partner.getFranchisePhoneNumber() != null){
-	        	entry.setFranchisePhoneNumber(partner.getFranchisePhoneNumber());
+	        if(partner.getFranchisephonenumber() != null){
+	        	entry.setFranchisePhoneNumber(partner.getFranchisephonenumber());
 	        }
-	        if(partner.getAddressByFranchiseOutletAddressID() != null){
-	        	Address outletAddress = partner.getAddressByFranchiseOutletAddressID();
+	        if(partner.getAddressByFranchiseoutletaddressid() != null){
+	        	Address outletAddress = partner.getAddressByFranchiseoutletaddressid();
 	        	
 	        	if(outletAddress.getLine1() != null){
 	        		entry.setOutletAddressLine1(outletAddress.getLine1());
@@ -957,12 +957,12 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        	if(outletAddress.getCountry() != null){
 	        		entry.setOutletAddressCountry(outletAddress.getCountry());
 	        	}	        	
-	        	if(outletAddress.getZipCode() != null){
-	        		entry.setOutletAddressZipcode(outletAddress.getZipCode());
+	        	if(outletAddress.getZipcode() != null){
+	        		entry.setOutletAddressZipcode(outletAddress.getZipcode());
 	        	}
 	        }
-	        if(partner.getAddressByMerchantAddressID() != null){
-	        	Address merchantAddress = partner.getAddressByMerchantAddressID();
+	        if(partner.getAddressByMerchantaddressid() != null){
+	        	Address merchantAddress = partner.getAddressByMerchantaddressid();
 	        	
 	        	if(merchantAddress.getLine1() != null){
 	        		entry.setMerchantAddressLine1(merchantAddress.getLine1());
@@ -982,47 +982,47 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        	if(merchantAddress.getCountry() != null){
 	        		entry.setMerchantAddressCountry(merchantAddress.getCountry());
 	        	}
-	        	if(merchantAddress.getZipCode() != null){
-	        		entry.setMerchantAddressZipcode(merchantAddress.getZipCode());
+	        	if(merchantAddress.getZipcode() != null){
+	        		entry.setMerchantAddressZipcode(merchantAddress.getZipcode());
 	        	}	        	
 	        }
 	        if(partner.getClassification() != null){
 	        	entry.setClassification(partner.getClassification());
 	        }
-	        if(partner.getNumberOfOutlets() != null){
-	        	entry.setNumberOfOutlets(partner.getNumberOfOutlets());
+	        if(partner.getNumberofoutlets() != null){
+	        	entry.setNumberOfOutlets(partner.getNumberofoutlets().intValue());
 	        }
-	        if(partner.getIndustryClassification() != null){
-	        	entry.setIndustryClassification(partner.getIndustryClassification());
+	        if(partner.getIndustryclassification() != null){
+	        	entry.setIndustryClassification(partner.getIndustryclassification());
 	        }
-	        if(partner.getYearEstablished() != null){
-	        	entry.setYearEstablished(partner.getYearEstablished());
+	        if(partner.getYearestablished() != null){
+	        	entry.setYearEstablished(partner.getYearestablished().intValue());
 	        }
-	        if(partner.getAuthorizedFaxNumber() != null){
-	        	entry.setAuthorizedFaxNumber(partner.getAuthorizedFaxNumber());
+	        if(partner.getAuthorizedfaxnumber() != null){
+	        	entry.setAuthorizedFaxNumber(partner.getAuthorizedfaxnumber());
 	        }
-	        if(partner.getAuthorizedEmail() != null){
-	        	entry.setAuthorizedEmail(partner.getAuthorizedEmail());
+	        if(partner.getAuthorizedemail() != null){
+	        	entry.setAuthorizedEmail(partner.getAuthorizedemail());
 	        }
-	        if (partner.getVersion() != null) {
-	            entry.setRecordVersion(partner.getVersion());
+	        if (partner.getVersion() != 0) {
+	            entry.setRecordVersion(Integer.valueOf(Long.valueOf(partner.getVersion()).intValue()));
 	        }
-	        if(partner.getBusinessPartnerType() != null){
-	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerType, subscriber.getLanguage(), partner.getBusinessPartnerType()));
-	        	entry.setBusinessPartnerType(partner.getBusinessPartnerType());
+	        if(partner.getBusinesspartnertype() != null){
+	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerType, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), partner.getBusinesspartnertype()));
+	        	entry.setBusinessPartnerType(partner.getBusinesspartnertype().intValue());
 	        }
-	        entry.setRestrictions(subscriberMdn.getRestrictions());
+	        entry.setRestrictions(Integer.valueOf(Long.valueOf(subscriberMdn.getRestrictions()).intValue()));
         }
         if(subscriber != null){
-        	if(subscriber.getFirstName() != null){
-        		entry.setFirstName(subscriber.getFirstName());
+        	if(subscriber.getFirstname() != null){
+        		entry.setFirstName(subscriber.getFirstname());
         	}
-        	if(subscriber.getLastName() != null){
-        		entry.setLastName(subscriber.getLastName());
+        	if(subscriber.getLastname() != null){
+        		entry.setLastName(subscriber.getLastname());
         	}
-	        if(subscriber.getLanguage() != null){
-	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, subscriber.getLanguage(), subscriber.getLanguage()));
-	        	entry.setLanguage(subscriber.getLanguage());
+	        if(subscriber.getLanguage() != 0){
+	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), subscriber.getLanguage()));
+	        	entry.setLanguage(Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()));
 	        }
 	        else
 	        {
@@ -1034,24 +1034,24 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        if(subscriber.getCurrency() != null){
 	        	entry.setCurrency(subscriber.getCurrency());	        	
 	        }
-	        if(subscriber.getUpgradeState()!=null){
-	        	entry.setUpgradeState(subscriber.getUpgradeState());
-	        	entry.setUpgradeStateText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_UpgradeState, CmFinoFIX.Language_English, subscriber.getUpgradeState()));
+	        if(subscriber.getUpgradestate()!=null){
+	        	entry.setUpgradeState(subscriber.getUpgradestate().intValue());
+	        	entry.setUpgradeStateText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_UpgradeState, CmFinoFIX.Language_English, subscriber.getUpgradestate()));
 	        }
-	        if(subscriber.getAppliedBy()!=null){
-	        	entry.setAppliedBy(subscriber.getAppliedBy());
+	        if(subscriber.getAppliedby()!=null){
+	        	entry.setAppliedBy(subscriber.getAppliedby());
 	        }
-	        if(subscriber.getAppliedTime()!=null){
-	        	entry.setAppliedTime(subscriber.getAppliedTime());
+	        if(subscriber.getAppliedtime()!=null){
+	        	entry.setAppliedTime(subscriber.getAppliedtime());
 	        }
-	        if(subscriber.getApprovedOrRejectedBy()!=null){
-	        	entry.setApprovedOrRejectedBy(subscriber.getApprovedOrRejectedBy());
+	        if(subscriber.getApprovedorrejectedby()!=null){
+	        	entry.setApprovedOrRejectedBy(subscriber.getApprovedorrejectedby());
 	        }
-	        if(subscriber.getApproveOrRejectTime()!=null){
-	        	entry.setApproveOrRejectTime(subscriber.getApproveOrRejectTime());
+	        if(subscriber.getApproveorrejecttime()!=null){
+	        	entry.setApproveOrRejectTime(subscriber.getApproveorrejecttime());
 	        }
-	        if(subscriber.getApproveOrRejectComment()!=null){
-	        	entry.setApproveOrRejectComment(subscriber.getApproveOrRejectComment());
+	        if(subscriber.getApproveorrejectcomment()!=null){
+	        	entry.setApproveOrRejectComment(subscriber.getApproveorrejectcomment());
 	        }
 	        
 			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
@@ -1061,35 +1061,35 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 			}
 	        
         }
-        if(partner.getUser()!=null){
-        	entry.setUsername(partner.getUser().getUsername());
+        if(partner.getMfinoUser()!=null){
+        	entry.setUsername(partner.getMfinoUser().getUsername());
         }
         
     }
     
-    private void generateAndSendOTP(Partner partner, SubscriberMDN subscriberMDN, Subscriber subscriber) {
-        User u =partner.getUser();
+    private void generateAndSendOTP(Partner partner, SubscriberMdn subscriberMDN, Subscriber subscriber) {
+        User u =partner.getMfinoUser();
 		Integer OTPLength = systemParametersService.getOTPLength();
         String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
-		subscriberMDN.setOTP(digestPin1);
-		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
+		subscriberMDN.setOtp(digestPin1);
+		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
         String toEmail=u.getEmail();
-        String toName=u.getFirstName() + " " + u.getLastName();
+        String toName=u.getFirstname() + " " + u.getLastname();
 
-        String mdn=subscriberMDN.getMDN();
-        NotificationWrapper smsNotificationWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMDN(), CmFinoFIX.NotificationMethod_SMS);
+        String mdn=subscriberMDN.getMdn();
+        NotificationWrapper smsNotificationWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMdn(), CmFinoFIX.NotificationMethod_SMS);
         String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper,true);;
         smsService.setDestinationMDN(mdn);
         smsService.setMessage(smsMessage);
         smsService.setNotificationCode(smsNotificationWrapper.getCode());
         smsService.asyncSendSMS();
         if(subscriberServiceExtended.isSubscriberEmailVerified(subscriber)) {
-        NotificationWrapper emailNotificationWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMDN(), CmFinoFIX.NotificationMethod_Email);
+        NotificationWrapper emailNotificationWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin,subscriberMDN.getMdn(), CmFinoFIX.NotificationMethod_Email);
         String emailMessage = notificationMessageParserService.buildMessage(emailNotificationWrapper,true);; 
         String sub= ConfigurationUtil.getOTPMailSubsject();
         mailService.asyncSendEmail(toEmail, toName, sub, emailMessage);
-		log.info("OTP mail sent to subscriber with MDN:" + subscriberMDN.getMDN());
+		log.info("OTP mail sent to subscriber with MDN:" + subscriberMDN.getMdn());
         } else {
         	log.info("OTP mail not sent as the email is not verified yet");
         }
@@ -1106,7 +1106,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 			if(CmFinoFIX.BusinessPartnerType_ServicePartner.equals(entry.getBusinessPartnerType())
 					// *FindbugsChange*
 		        	// Previous -- && (entry.getID() != (existingPartner.getID())))
-					&& (entry!= null && !(entry.getID().equals(existingPartner.getID()))))
+					&& (entry!= null && !(entry.getID().equals(existingPartner.getId()))))
 			{				
 				throw new Exception("Service Partner already defined.");
 			}

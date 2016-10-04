@@ -13,7 +13,7 @@ import com.mfino.dao.ServiceSettlementConfigDAO;
 import com.mfino.dao.SettlementTemplateDAO;
 import com.mfino.dao.query.ServiceSettlementConfigQuery;
 import com.mfino.domain.PartnerServices;
-import com.mfino.domain.ServiceSettlementConfig;
+import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSServiceSettlementConfig;
@@ -22,71 +22,71 @@ import com.mfino.uicore.fix.processor.ServiceSettlementConfigProcessor;
 
 @Service("ServiceSettlementConfigProcessorImpl")
 public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor implements ServiceSettlementConfigProcessor{
-	public void updateEntity(ServiceSettlementConfig sc, CMJSServiceSettlementConfig.CGEntries e) {
+	public void updateEntity(ServiceSettlementCfg sc, CMJSServiceSettlementConfig.CGEntries e) {
 		SettlementTemplateDAO stDAO = DAOFactory.getInstance().getSettlementTemplateDAO();
 		PartnerServicesDAO psDAO = DAOFactory.getInstance().getPartnerServicesDAO();
 		
 		if (e.getSettlementTemplateID() != null) {
-			if(sc.getSettlementTemplate()==null || !e.getSettlementTemplateID().equals(sc.getSettlementTemplate().getID())){
-        		log.info("Service Settlement Config:" + sc.getID() + " Settlement template updated to " + e.getSettlementTemplateID() + " by user:"+getLoggedUserNameWithIP());
+			if(sc.getSettlementTemplate()==null || !e.getSettlementTemplateID().equals(sc.getSettlementTemplate().getId())){
+        		log.info("Service Settlement Config:" + sc.getId() + " Settlement template updated to " + e.getSettlementTemplateID() + " by user:"+getLoggedUserNameWithIP());
         	}
 			sc.setSettlementTemplate(stDAO.getById(e.getSettlementTemplateID()));
 		}
 		
 		if (e.getPartnerServicesID() != null) {
-			if(sc.getPartnerServicesByPartnerServiceID()==null || !e.getPartnerServicesID().equals(sc.getPartnerServicesByPartnerServiceID().getID())){
-        		log.info("Service Settlement Config:" + sc.getID() + " Partner Services by Partnerr Service ID updated to " + e.getPartnerServicesID() + " by user:"+getLoggedUserNameWithIP());
+			if(sc.getPartnerServices()==null || !e.getPartnerServicesID().equals(sc.getPartnerServices().getId())){
+        		log.info("Service Settlement Config:" + sc.getId() + " Partner Services by Partnerr Service ID updated to " + e.getPartnerServicesID() + " by user:"+getLoggedUserNameWithIP());
         	}
 			PartnerServices partnerServices = psDAO.getById(e.getPartnerServicesID());
-			sc.setPartnerServicesByPartnerServiceID(partnerServices);
+			sc.setPartnerServices(partnerServices);
 			sc.setPocketByCollectorPocket(partnerServices.getPocketByCollectorPocket());
 		}
 		
 		if (e.getIsDefault() != null) {
-			if(!e.getIsDefault().equals(sc.getIsDefault())){
-        		log.info("Service Settlement Config:" + sc.getID() + " Is Default value updated to " + e.getIsDefault() + " by user:"+getLoggedUserNameWithIP());
+			if(!e.getIsDefault().equals(sc.getIsdefault())){
+        		log.info("Service Settlement Config:" + sc.getId() + " Is Default value updated to " + e.getIsDefault() + " by user:"+getLoggedUserNameWithIP());
         	}
-			sc.setIsDefault(e.getIsDefault());
+			sc.setIsdefault((short) Boolean.compare(e.getIsDefault(), false));
 		}
 		
 		if (e.getIsDefault() != null && e.getIsDefault().booleanValue()) {
-			log.info("Service Settlement Config:" + sc.getID() + " start date and end date intialized to null");
-			sc.setStartDate(null);
-			sc.setEndDate(null);
+			log.info("Service Settlement Config:" + sc.getId() + " start date and end date intialized to null");
+			sc.setStartdate(null);
+			sc.setEnddate(null);
 		} else {
 			if (e.getStartDate() != null) {
-				if(!e.getStartDate().equals(sc.getStartDate())){
-	        		log.info("Service Settlement Config:" + sc.getID() + " start date updated to " + e.getStartDate() + " by user:"+getLoggedUserNameWithIP());
+				if(!e.getStartDate().equals(sc.getStartdate())){
+	        		log.info("Service Settlement Config:" + sc.getId() + " start date updated to " + e.getStartDate() + " by user:"+getLoggedUserNameWithIP());
 	        	}
-				sc.setStartDate(e.getStartDate());
+				sc.setStartdate(e.getStartDate());
 			}
 			
 			if (e.getEndDate() != null) {
-				if(!e.getEndDate().equals(sc.getEndDate())){
-	        		log.info("Service Settlement Config:" + sc.getID() + " end date updated to " + e.getEndDate() + " by user:"+getLoggedUserNameWithIP());
+				if(!e.getEndDate().equals(sc.getEnddate())){
+	        		log.info("Service Settlement Config:" + sc.getId() + " end date updated to " + e.getEndDate() + " by user:"+getLoggedUserNameWithIP());
 	        	}
-				sc.setEndDate(e.getEndDate());
+				sc.setEnddate(e.getEndDate());
 			}			
 		}
 		if(e.getSchedulerStatus() != null){
-			if(!e.getSchedulerStatus().equals(sc.getSchedulerStatus())){
-        		log.info("Service Settlement Config:" + sc.getID() + " Scheduler status updated to " + e.getSchedulerStatus() + " by user:"+getLoggedUserNameWithIP());
+			if(!e.getSchedulerStatus().equals(sc.getSchedulerstatus())){
+        		log.info("Service Settlement Config:" + sc.getId() + " Scheduler status updated to " + e.getSchedulerStatus() + " by user:"+getLoggedUserNameWithIP());
         	}
-			sc.setSchedulerStatus(e.getSchedulerStatus());
+			sc.setSchedulerstatus(e.getSchedulerStatus().longValue());
 		}
 	}
 	
-	public void updateMessage(ServiceSettlementConfig sc, CMJSServiceSettlementConfig.CGEntries e) {
-		e.setID(sc.getID());
-		e.setMSPID(sc.getmFinoServiceProviderByMSPID().getID());
-		e.setSettlementTemplateID(sc.getSettlementTemplate().getID());
-		e.setSettlementName(sc.getSettlementTemplate().getSettlementName());
-		e.setPartnerServicesID(sc.getPartnerServicesByPartnerServiceID().getID());
-		e.setIsDefault(sc.getIsDefault());
-		e.setStartDate(sc.getStartDate());
-		e.setEndDate(sc.getEndDate());
-		e.setRecordVersion(sc.getVersion());
-		e.setSchedulerStatus(sc.getSchedulerStatus());
+	public void updateMessage(ServiceSettlementCfg sc, CMJSServiceSettlementConfig.CGEntries e) {
+		e.setID(sc.getId().longValue());
+		e.setMSPID(sc.getMfinoServiceProvider().getId().longValue());
+		e.setSettlementTemplateID(sc.getSettlementTemplate().getId().longValue());
+		e.setSettlementName(sc.getSettlementTemplate().getSettlementname());
+		e.setPartnerServicesID(sc.getPartnerServices().getId().longValue());
+		e.setIsDefault(Boolean.valueOf(sc.getIsdefault().toString()));
+		e.setStartDate(sc.getStartdate());
+		e.setEndDate(sc.getEnddate());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(sc.getVersion()).intValue()));
+		e.setSchedulerStatus(sc.getSchedulerstatus().intValue());
 	}
 
 	@Override
@@ -100,17 +100,17 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 			log.info("Service Settlement Config details edit requested by user:" + getLoggedUserNameWithIP());
 			
 			for (CMJSServiceSettlementConfig.CGEntries e: entries) {
-				ServiceSettlementConfig sc = dao.getById(e.getID());
+				ServiceSettlementCfg sc = dao.getById(e.getID());
 				
-				if (!(sc.getVersion().equals(e.getRecordVersion()))) {
-					log.warn("Service settlement Configuration: " + sc.getID() + " stale data exception for user:" + getLoggedUserNameWithIP());
+				if (!(Integer.valueOf(Long.valueOf(sc.getVersion()).intValue()).equals(e.getRecordVersion()))) {
+					log.warn("Service settlement Configuration: " + sc.getId() + " stale data exception for user:" + getLoggedUserNameWithIP());
 					handleStaleDataException();
 				}
 				e.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Rescheduled);
 				updateEntity(sc, e);
 				dao.save(sc);				
 				updateMessage(sc, e);
-				log.info("Service settlement Configuration: " + sc.getID() +" details edit completed by user:"+getLoggedUserNameWithIP());
+				log.info("Service settlement Configuration: " + sc.getId() +" details edit completed by user:"+getLoggedUserNameWithIP());
 			}
 			
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);
@@ -122,16 +122,16 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 
 			query.setPartnerServiceId(realMsg.getPartnerServicesID());
         	
-        	List<ServiceSettlementConfig> results = dao.get(query);
+        	List<ServiceSettlementCfg> results = dao.get(query);
         	if (CollectionUtils.isNotEmpty(results)) {
         		realMsg.allocateEntries(results.size());
         		
-        		for (ServiceSettlementConfig sc: results) {
+        		for (ServiceSettlementCfg sc: results) {
         			CMJSServiceSettlementConfig.CGEntries e = new CMJSServiceSettlementConfig.CGEntries();
         			updateMessage(sc, e);
         			realMsg.getEntries()[i] = e;
         			i++;
-        			log.info("Service Settlement Config:" + sc.getID() + " details viewing completed by user:"+getLoggedUserNameWithIP());
+        			log.info("Service Settlement Config:" + sc.getId() + " details viewing completed by user:"+getLoggedUserNameWithIP());
         		}
         	}
         	
@@ -142,20 +142,20 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 			CMJSServiceSettlementConfig.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSServiceSettlementConfig.CGEntries e: entries) {
-				ServiceSettlementConfig sc = new ServiceSettlementConfig();
+				ServiceSettlementCfg sc = new ServiceSettlementCfg();
 				updateEntity(sc, e);
 				
 				 /*
 	             * we schedule only when default configurations are added
 	             * Set the scheduler status to TobeScheduled, this is picked up by scheduler
 	             */
-	            if((sc.getIsDefault() != null) && (sc.getIsDefault())){
-	            	sc.setSchedulerStatus(CmFinoFIX.SchedulerStatus_TobeScheduled);
+	            if((Boolean.valueOf(sc.getIsdefault().toString()) != null) && (Boolean.valueOf(sc.getIsdefault().toString()))){
+	            	sc.setSchedulerstatus(CmFinoFIX.SchedulerStatus_TobeScheduled.longValue());
 	            }
 				dao.save(sc);
 				updateMessage(sc, e);
 				
-	            log.info("ServiceSettlementConfiguration created with id "+sc.getID());
+	            log.info("ServiceSettlementConfiguration created with id "+sc.getId());
 			}
 			
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);

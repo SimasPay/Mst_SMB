@@ -66,7 +66,7 @@ public class ServiceProviderProcessorImpl extends BaseFixProcessor implements Se
 
                 updateMessage(objServiceProvider, entry);
                 realMsg.getEntries()[i] = entry;
-                log.info("Service Provider: " + objServiceProvider.getTradeName() + " ID: " + objServiceProvider.getID() + " details viewing completed by user: " + getLoggedUserNameWithIP());
+                log.info("Service Provider: " + objServiceProvider.getTradename() + " ID: " + objServiceProvider.getId() + " details viewing completed by user: " + getLoggedUserNameWithIP());
             }
             
             realMsg.setsuccess(CmFinoFIX.Boolean_True);
@@ -81,15 +81,15 @@ public class ServiceProviderProcessorImpl extends BaseFixProcessor implements Se
 
         
         if(serviceProvider!= null){
-        	entry.setID(serviceProvider.getID());
+        	entry.setID(serviceProvider.getId().longValue());
 //	        if(null != serviceProvider.getPartner()){
 //	        	entry.setPartnerID(serviceProvider.getPartner().getID());
 //	        }
-	        if(serviceProvider.getmFinoServiceProviderByMSPID() != null){
-	        	entry.setMSPID(serviceProvider.getmFinoServiceProviderByMSPID().getID());
+	        if(serviceProvider.getMfinoServiceProvider() != null){
+	        	entry.setMSPID(serviceProvider.getMfinoServiceProvider().getId().longValue());
 	        }
-	        if((null != serviceProvider.getTradeName()) && !("".equals(serviceProvider.getTradeName()))){
-	        	entry.setServiceProviderName(serviceProvider.getTradeName());
+	        if((null != serviceProvider.getTradename()) && !("".equals(serviceProvider.getTradename()))){
+	        	entry.setServiceProviderName(serviceProvider.getTradename());
 	        }
         }
     }

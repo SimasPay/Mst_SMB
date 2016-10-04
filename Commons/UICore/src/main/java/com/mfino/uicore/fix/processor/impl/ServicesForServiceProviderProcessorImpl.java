@@ -41,11 +41,11 @@ public class ServicesForServiceProviderProcessorImpl extends BaseFixProcessor im
     		realMsg.allocateEntries(size);
     		for (Service s: lstServices) {
     			CMJSServicesForServiceProvider.CGEntries e = new CMJSServicesForServiceProvider.CGEntries();
-    			e.setServiceID(s.getID());
-    			e.setServiceName(s.getDisplayName());
+    			e.setServiceID(s.getId().longValue());
+    			e.setServiceName(s.getDisplayname());
     			realMsg.getEntries()[i] = e;
     			i++;
-    			log.info("Services For Service Provider message contains service: " + s.getDisplayName() + " for user: " + getLoggedUserNameWithIP());
+    			log.info("Services For Service Provider message contains service: " + s.getDisplayname() + " for user: " + getLoggedUserNameWithIP());
     		}
     	}
 
