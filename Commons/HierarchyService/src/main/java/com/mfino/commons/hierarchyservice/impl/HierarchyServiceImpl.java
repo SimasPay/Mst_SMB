@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.dao.query.DCTRestrictionsQuery;
@@ -73,7 +71,7 @@ public class HierarchyServiceImpl implements HierarchyService {
 		Integer result = CmFinoFIX.ResponseCode_Success;
 		Boolean flag = Boolean.TRUE;
 		
-		if(dct != null && !sourceSubscriber.getID().equals(destSubscriber.getID()))
+		if(dct != null && !sourceSubscriber.getId().equals(destSubscriber.getId()))
 		{
 			flag = validateDctRestrictions(sourceSubscriber, destSubscriber, transactionType,dct);
 			
@@ -98,12 +96,12 @@ public class HierarchyServiceImpl implements HierarchyService {
 		Partner sourcePartner = null;
 		Partner destPartner = null;
 		
-		Set<Partner> partners = sourceSubscriber.getPartnerFromSubscriberID();
+		Set<Partner> partners = sourceSubscriber.getPartners();
 		if((null != partners) && (partners.size() > 0)){
 			sourcePartner = partners.iterator().next();
 		}
 		
-		partners = (destSubscriber != null) ? destSubscriber.getPartnerFromSubscriberID() : null;
+		partners = (destSubscriber != null) ? destSubscriber.getPartners() : null;
 		if((null != partners) && (partners.size() > 0)){
 			destPartner = partners.iterator().next();
 		}
@@ -113,8 +111,8 @@ public class HierarchyServiceImpl implements HierarchyService {
 		if(sourcePartner != null){
 			DCTRestrictionsQuery dctRestrictionsQuery = new DCTRestrictionsQuery();
 			dctRestrictionsQuery.setLevel(relationshipService.getLevel(sourcePartner,dct));
-			dctRestrictionsQuery.setTransactionTypeId(transactionType.getID());
-			dctRestrictionsQuery.setDctId(dct.getID());
+			dctRestrictionsQuery.setTransactionTypeId(transactionType.getId().longValue());
+			dctRestrictionsQuery.setDctId(dct.getId().longValue());
 			dctRestrictionsQuery.setIsAllowed(Boolean.TRUE);
 			
 			List<DCTRestrictions> dctRestrictions = dctRestrictionsService.getDctRestrictions(dctRestrictionsQuery);
@@ -122,8 +120,8 @@ public class HierarchyServiceImpl implements HierarchyService {
 			
 			if((null != dctRestrictions) && (dctRestrictions.size() > 0)){
 				for(DCTRestrictions dctRestriction : dctRestrictions){
-					if(((dctRestriction.getRelationShipType().equals(CmFinoFIX.RelationShipType_SUBSCRIBER)) && (destPartner == null)) || 
-							(relationshipTypes.contains(dctRestriction.getRelationShipType()))){
+					if(((dctRestriction.getRelationshiptype().equals(CmFinoFIX.RelationShipType_SUBSCRIBER)) && (destPartner == null)) || 
+							(relationshipTypes.contains(dctRestriction.getRelationshiptype()))){
 						flag = Boolean.TRUE;
 						break;
 					}
@@ -142,12 +140,12 @@ public class HierarchyServiceImpl implements HierarchyService {
 		Partner sourcePartner = null;
 		Partner destPartner = null;
 		
-		Set<Partner> partners = sourceSubscriber.getPartnerFromSubscriberID();
+		Set<Partner> partners = sourceSubscriber.getPartners();
 		if((null != partners) && (partners.size() > 0)){
 			sourcePartner = partners.iterator().next();
 		}
 		
-		partners = (destSubscriber != null) ? destSubscriber.getPartnerFromSubscriberID() : null;
+		partners = (destSubscriber != null) ? destSubscriber.getPartners() : null;
 		if((null != partners) && (partners.size() > 0)){
 			destPartner = partners.iterator().next();
 		}
@@ -156,18 +154,18 @@ public class HierarchyServiceImpl implements HierarchyService {
 		
 		if(sourcePartner != null){
 			PartnerRestrictionsQuery query = new PartnerRestrictionsQuery();
-			query.setTransactionTypeId(transactionType.getID());
-			query.setDctId(dct.getID());
+			query.setTransactionTypeId(transactionType.getId().longValue());
+			query.setDctId(dct.getId().longValue());
 			query.setIsAllowed(Boolean.TRUE);
-			query.setPartnerId(sourcePartner.getID());
+			query.setPartnerId(sourcePartner.getId().longValue());
 			
 			List<PartnerRestrictions> partnerRestrictions = partnerRestrictionsService.getPartnerRestrictions(query);
 			Collection<Integer> relationshipTypes = relationshipService.getRelationshipTypes(sourcePartner, destPartner, dct);
 			
 			if((null != partnerRestrictions) && (partnerRestrictions.size() > 0)){
 				for(PartnerRestrictions partnerRestriction : partnerRestrictions){
-					if(((partnerRestriction.getRelationShipType().equals(CmFinoFIX.RelationShipType_SUBSCRIBER)) && (destPartner == null)) || 
-							(relationshipTypes.contains(partnerRestriction.getRelationShipType()))){
+					if(((partnerRestriction.getRelationshiptype().equals(CmFinoFIX.RelationShipType_SUBSCRIBER)) && (destPartner == null)) || 
+							(relationshipTypes.contains(partnerRestriction.getRelationshiptype()))){
 						flag = Boolean.FALSE;
 						break;
 					}
@@ -185,7 +183,7 @@ public class HierarchyServiceImpl implements HierarchyService {
 		TransactionType transactionType = transactionTypeService.getTransactionTypeByName(transactionTypeName);
 
 		DistributionChainTemplate dct = null;
-		Set<Partner> partners = sourceSubscriber.getPartnerFromSubscriberID();
+		Set<Partner> partners = sourceSubscriber.getPartners();
 		
 		if((null != partners) && (partners.size() > 0)){
 			Partner partner = partners.iterator().next();
@@ -197,9 +195,9 @@ public class HierarchyServiceImpl implements HierarchyService {
 			catch(Exception e){
 				log.error("HierarchyServiceImpl :: Exception in constructor ", e);
 			}
-			List<PartnerServices> partnerServices = partnerService.getPartnerServices(partner.getID(), serviceProviderId, service.getID());
+			List<PartnerServices> partnerServices = partnerService.getPartnerServices(partner.getId().longValue(), serviceProviderId, service.getId().longValue());
 			if((null != partnerServices) && (partnerServices.size() > 0)){
-				dct = partnerServices.iterator().next().getDistributionChainTemplate();
+				dct = partnerServices.iterator().next().getDistributionChainTemp();
 			}
 		}
 		if((sourceSubscriber == null) || (transactionType == null)){
