@@ -18,6 +18,7 @@ import com.mfino.uicore.fix.processor.ServicesForServiceProviderProcessor;
 
 @org.springframework.stereotype.Service("ServicesForServiceProviderProcessorImpl")
 public class ServicesForServiceProviderProcessorImpl extends BaseFixProcessor implements ServicesForServiceProviderProcessor{
+	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {

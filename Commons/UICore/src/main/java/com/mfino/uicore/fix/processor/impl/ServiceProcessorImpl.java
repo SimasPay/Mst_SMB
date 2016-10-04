@@ -17,7 +17,8 @@ import com.mfino.uicore.fix.processor.ServiceProcessor;
 
 @org.springframework.stereotype.Service("ServiceProcessorImpl")
 public class ServiceProcessorImpl extends BaseFixProcessor implements ServiceProcessor{
-	 private void updateMessage(Service s, CMJSService.CGEntries e) {
+	
+	private void updateMessage(Service s, CMJSService.CGEntries e) {
 		 e.setID(s.getId().longValue());
 		 e.setMSPID(s.getMfinoServiceProvider().getId().longValue());
 		 if (s.getDisplayname() != null) {

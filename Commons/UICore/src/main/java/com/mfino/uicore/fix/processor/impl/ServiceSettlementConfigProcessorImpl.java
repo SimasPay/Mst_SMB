@@ -23,6 +23,7 @@ import com.mfino.uicore.fix.processor.ServiceSettlementConfigProcessor;
 @Service("ServiceSettlementConfigProcessorImpl")
 public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor implements ServiceSettlementConfigProcessor{
 	public void updateEntity(ServiceSettlementCfg sc, CMJSServiceSettlementConfig.CGEntries e) {
+		
 		SettlementTemplateDAO stDAO = DAOFactory.getInstance().getSettlementTemplateDAO();
 		PartnerServicesDAO psDAO = DAOFactory.getInstance().getPartnerServicesDAO();
 		

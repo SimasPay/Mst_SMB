@@ -20,7 +20,8 @@ import com.mfino.uicore.fix.processor.SettlementTemplateCheckProcessor;
 
 @Service("SettlementTemplateCheckProcessorImpl")
 public class SettlementTemplateCheckProcessorImpl extends BaseFixProcessor implements SettlementTemplateCheckProcessor{
-    
+
+	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) {
 

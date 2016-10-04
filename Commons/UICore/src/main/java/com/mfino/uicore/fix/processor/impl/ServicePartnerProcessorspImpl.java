@@ -75,6 +75,7 @@ import com.mfino.util.wsclient.RSClientPostHttps;
 
 @Service("ServicePartnerProcessorspImpl")
 public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements ServicePartnerProcessorsp{
+	
 	private PartnerDAO partnerDao = DAOFactory.getInstance().getPartnerDAO();
 	private MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
 	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();

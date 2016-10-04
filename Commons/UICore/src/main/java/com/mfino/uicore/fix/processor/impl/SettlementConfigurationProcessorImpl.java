@@ -15,4 +15,5 @@ public class SettlementConfigurationProcessorImpl extends BaseFixProcessor imple
 		return null;
 	}
 
+	
 }

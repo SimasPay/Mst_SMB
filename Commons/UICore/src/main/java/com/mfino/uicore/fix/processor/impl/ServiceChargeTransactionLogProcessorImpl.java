@@ -61,6 +61,7 @@ import com.mfino.uicore.fix.processor.ServiceChargeTransactionLogProcessor;
 
 @org.springframework.stereotype.Service("ServiceChargeTransactionLogProcessorImpl")
 public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor implements ServiceChargeTransactionLogProcessor{
+	
 	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private ServiceChargeTransactionLogDAO sctlDao =daoFactory.getServiceChargeTransactionLogDAO(); 
 	private ChannelCodeDAO channelcodeDao = daoFactory.getChannelCodeDao();

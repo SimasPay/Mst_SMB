@@ -26,7 +26,6 @@ import com.mfino.uicore.util.CronExpressionTranslator;
 
 @Service("ScheduleTemplateProcessorImpl")
 public class ScheduleTemplateProcessorImpl extends BaseFixProcessor implements ScheduleTemplateProcessor{
-
     public CMJSError handleChannelCodes(ConstraintViolationException error) {
         CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
         String message = MessageText._(error.getCause().getMessage());

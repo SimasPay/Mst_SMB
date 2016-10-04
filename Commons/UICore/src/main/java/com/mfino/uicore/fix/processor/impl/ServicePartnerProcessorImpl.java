@@ -66,6 +66,7 @@ import com.mfino.util.MfinoUtil;
 
 @Service("ServicePartnerProcessorImpl")
 public class ServicePartnerProcessorImpl extends BaseFixProcessor implements ServicePartnerProcessor{
+	
 	private PartnerDAO partnerDao = DAOFactory.getInstance().getPartnerDAO();
 	private MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
 	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();

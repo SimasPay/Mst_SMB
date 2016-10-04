@@ -12,4 +12,5 @@ public class ServiceTransactionProcessorImpl extends BaseFixProcessor implements
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
 		return null;
 	}
+	
 }

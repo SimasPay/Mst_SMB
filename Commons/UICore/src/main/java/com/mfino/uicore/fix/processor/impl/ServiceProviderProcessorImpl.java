@@ -19,6 +19,7 @@ import com.mfino.uicore.fix.processor.ServiceProviderProcessor;
 
 @Service("ServiceProviderProcessorImpl")
 public class ServiceProviderProcessorImpl extends BaseFixProcessor implements ServiceProviderProcessor{
+
 	private PartnerDAO serviceProviderDao = DAOFactory.getInstance().getPartnerDAO();
 
 	@Override
