@@ -74,10 +74,10 @@ public class TransactionTypeProcessorImpl extends BaseFixProcessor implements Tr
 	}
 	
 	 private void updateMessage(TransactionType t, CMJSTransactionType.CGEntries e) {
-		 e.setID(t.getID());
-		 e.setMSPID(t.getmFinoServiceProviderByMSPID().getID());
-		 if (t.getDisplayName() != null) {
-			 e.setTransactionName(t.getDisplayName());
+		 e.setID(t.getId().longValue());
+		 e.setMSPID(t.getMfinoServiceProvider().getId().longValue());
+		 if (t.getDisplayname() != null) {
+			 e.setTransactionName(t.getDisplayname());
 		 }
 	 }
 }

@@ -46,39 +46,39 @@ public class TransactionChargeProcessorImpl extends BaseFixProcessor implements 
 			tc.setChargeDefinition(cdDAO.getById(e.getChargeDefinitionID()));
 		}
 		if (e.isRemoteModifiedIsActive() || e.getIsActive() != null) {
-			tc.setIsActive(e.getIsActive());
+			tc.setIsactive((short) Boolean.compare(e.getIsActive(), false));
 		}
 		if (e.isRemoteModifiedIsChrgDstrbApplicableToSrcSub() || e.getIsChrgDstrbApplicableToSrcSub() != null) {
-			tc.setIsChrgDstrbApplicableToSrcSub(e.getIsChrgDstrbApplicableToSrcSub());
+			tc.setIschrgdstrbapplicabletosrcsub((short) Boolean.compare(e.getIsChrgDstrbApplicableToSrcSub(), false));
 		}
 		if (e.isRemoteModifiedIsChrgDstrbApplicableToDestSub() || e.getIsChrgDstrbApplicableToDestSub() != null) {
-			tc.setIsChrgDstrbApplicableToDestSub(e.getIsChrgDstrbApplicableToDestSub());
+			tc.setIschrgdstrbapplicabletodestsub((short) Boolean.compare(e.getIsChrgDstrbApplicableToDestSub(), false));
 		}
 	}
 	
 	private void updateMessage(TransactionCharge tc, CMJSTransactionCharge.CGEntries e) {
-		e.setID(tc.getID());
-		e.setMSPID(tc.getmFinoServiceProviderByMSPID().getID());
+		e.setID(tc.getId().longValue());
+		e.setMSPID(tc.getMfinoServiceProvider().getId().longValue());
 		if (tc.getTransactionRule() != null) {
-			e.setTransactionRuleID(tc.getTransactionRule().getID());
+			e.setTransactionRuleID(tc.getTransactionRule().getId().longValue());
 			e.setTransactionRuleName(tc.getTransactionRule().getName());
 		}
 		if (tc.getChargeType() != null) {
-			e.setChargeTypeID(tc.getChargeType().getID());
+			e.setChargeTypeID(tc.getChargeType().getId().longValue());
 			e.setChargeTypeName(tc.getChargeType().getName());
 		}
 		if (tc.getChargeDefinition() != null) {
-			e.setChargeDefinitionID(tc.getChargeDefinition().getID());
+			e.setChargeDefinitionID(tc.getChargeDefinition().getId().longValue());
 			e.setChargeDefinitionName(tc.getChargeDefinition().getName());
 		}
-		e.setRecordVersion(tc.getVersion());
-		e.setCreatedBy(tc.getCreatedBy());
-		e.setCreateTime(tc.getCreateTime());
-		e.setUpdatedBy(tc.getUpdatedBy());
-		e.setLastUpdateTime(tc.getLastUpdateTime());
-		e.setIsActive(tc.getIsActive());
-		e.setIsChrgDstrbApplicableToSrcSub(tc.getIsChrgDstrbApplicableToSrcSub());
-		e.setIsChrgDstrbApplicableToDestSub(tc.getIsChrgDstrbApplicableToDestSub());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(tc.getVersion()).intValue()));
+		e.setCreatedBy(tc.getCreatedby());
+		e.setCreateTime(tc.getCreatetime());
+		e.setUpdatedBy(tc.getUpdatedby());
+		e.setLastUpdateTime(tc.getLastupdatetime());
+		e.setIsActive(Boolean.valueOf(tc.getIsactive().toString()));
+		e.setIsChrgDstrbApplicableToSrcSub(Boolean.valueOf(tc.getIschrgdstrbapplicabletosrcsub().toString()));
+		e.setIsChrgDstrbApplicableToDestSub(Boolean.valueOf(tc.getIschrgdstrbapplicabletodestsub().toString()));
 	}
 
 	@Override
@@ -153,9 +153,9 @@ public class TransactionChargeProcessorImpl extends BaseFixProcessor implements 
         		if (!(e.getRecordVersion().equals(tc.getVersion()))) {
         			handleStaleDataException();
         		}
-        		transactionRuleId = (e.getTransactionRuleID() != null) ? e.getTransactionRuleID() : tc.getTransactionRule().getID();
-        		chargeDefinitionId = (e.getChargeDefinitionID() != null) ? e.getChargeDefinitionID() : tc.getChargeDefinition().getID();
-        		if (!checkDependantChargeType(tc.getID(), transactionRuleId, chargeDefinitionId)) {
+        		transactionRuleId = (Long) ((e.getTransactionRuleID() != null) ? e.getTransactionRuleID() : tc.getTransactionRule().getId());
+        		chargeDefinitionId = (Long) ((e.getChargeDefinitionID() != null) ? e.getChargeDefinitionID() : tc.getChargeDefinition().getId());
+        		if (!checkDependantChargeType(tc.getId().longValue(), transactionRuleId, chargeDefinitionId)) {
 					return generateError(2, null);
 				}
         		updateEntity(tc, e);
@@ -216,9 +216,9 @@ public class TransactionChargeProcessorImpl extends BaseFixProcessor implements 
 		ChargeDefinition cd = cdDAO.getById(chargeDefinitionId);
 		TransactionCharge tc = null;
 		if (cd != null) {
-			if (cd.getChargeTypeByDependantChargeTypeID() != null) {
-				tc = dao.getTransactionCharge(transactionRuleId, cd.getChargeTypeByDependantChargeTypeID().getID());
-				exists = (tc != null && !(tc.getID().equals(transactionChargeId))) ? true : false;
+			if (cd.getChargeTypeByChargetypeid() != null) {
+				tc = dao.getTransactionCharge(transactionRuleId, cd.getChargeTypeByChargetypeid().getId().longValue());
+				exists = (tc != null && !(tc.getId().equals(transactionChargeId))) ? true : false;
 			} else {
 				exists = true;
 			}

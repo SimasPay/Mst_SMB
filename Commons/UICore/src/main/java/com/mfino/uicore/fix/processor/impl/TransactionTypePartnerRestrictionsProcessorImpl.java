@@ -67,7 +67,7 @@ public class TransactionTypePartnerRestrictionsProcessorImpl extends BaseFixProc
 
 			PartnerRestrictionsQuery prQuery = new PartnerRestrictionsQuery();
 			prQuery.setDctId(dctId);
-			prQuery.setPartnerId(partner.getID());
+			prQuery.setPartnerId(partner.getId().longValue());
 			
 			List<PartnerRestrictions> partnerRestrictions = partnerRestrictionsDao.get(prQuery);
 			
@@ -87,8 +87,8 @@ public class TransactionTypePartnerRestrictionsProcessorImpl extends BaseFixProc
 
     		for(TransactionType transactionType : transactionTypes){
     			CMJSTransactionTypeForPartnerRestrictions.CGEntries entry = new CMJSTransactionTypeForPartnerRestrictions.CGEntries();
-    			entry.setID(transactionType.getID());
-    			entry.setTransactionName(transactionType.getTransactionName());
+    			entry.setID(transactionType.getId().longValue());
+    			entry.setTransactionName(transactionType.getTransactionname());
     			realMsg.getEntries()[index] = entry;
     			index++;
 			}

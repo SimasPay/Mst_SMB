@@ -87,42 +87,42 @@ public class TransactionAmountDistributorProcessImpl extends BaseFixProcessor im
 		
 //		CommodityTransferDAO ctdao = new CommodityTransferDAO();
 //		CommodityTransfer ct = ctdao.getById(sr.getCommodityTransferID());
-		if(transaction.getIsactualamount()){
-			e.setIsActualAmount(transaction.getIsactualamount());
+		if(Boolean.valueOf(transaction.getIsactualamount().toString())){
+			e.setIsActualAmount(Boolean.valueOf(transaction.getIsactualamount().toString()));
 		}
-		if(transaction.getIspartofsharedupchain()){
-			e.setIsPartOfSharedUpChain(transaction.getIspartofsharedupchain());
+		if(Boolean.valueOf(transaction.getIspartofsharedupchain().toString())){
+			e.setIsPartOfSharedUpChain(Boolean.valueOf(transaction.getIspartofsharedupchain().toString()));
 		}
 		if(transaction.getCreatedby()!=null){
 			
 		}
-		e.setMSPID(transaction.getMfinoServiceProvider().getId());
+		e.setMSPID(transaction.getMfinoServiceProvider().getId().longValue());
 		if(transaction.getPartner() != null)
 		{
-			e.setPartnerID(transaction.getPartner().getId());
-			e.setDestPartnerTradeName(partnerDao.getById(transaction.getPartner().getId()).getTradeName());
+			e.setPartnerID(transaction.getPartner().getId().longValue());
+			e.setDestPartnerTradeName(partnerDao.getById(transaction.getPartner().getId().longValue()).getTradename());
 		}
 		if(transaction.getSubscriber() != null)
 		{
-			e.setSubscriberID(transaction.getSubscriber().getId());
+			e.setSubscriberID(transaction.getSubscriber().getId().longValue());
 		}
 		e.setChargeTypeName(tc.getChargeType().getName());
-		e.setIsChargeFromCustomer(tc.getChargeDefinition().getIsChargeFromCustomer());
-		e.setPocketID(transaction.getPocket().getId());
-		e.setServiceChargeTransactionLogID(transaction.getServicechargetransactionlogid());
-		e.setShareAmount(transaction.getShareAmount());
-		e.setTaxAmount(transaction.getTaxAmount());
-		e.setTransactionID(sr.getCommodityTransferID());
-		e.setStatus(transaction.getStatus());
-		e.setSourceMDN(sr.getSourceMDN());
+		e.setIsChargeFromCustomer(Boolean.valueOf(Short.toString(tc.getChargeDefinition().getIschargefromcustomer())));
+		e.setPocketID(transaction.getPocket().getId().longValue());
+		e.setServiceChargeTransactionLogID(transaction.getServicechargetransactionlogid().longValue());
+		e.setShareAmount(transaction.getShareamount());
+		e.setTaxAmount(transaction.getTaxamount());
+		e.setTransactionID(sr.getCommoditytransferid().longValue());
+		e.setStatus(Integer.valueOf(Long.valueOf(transaction.getStatus()).intValue()));
+		e.setSourceMDN(sr.getSourcemdn());
 		//e.setSourceSubscriberName(sr.getSourceSubscriberName());
-		e.setUpdatedBy(transaction.getUpdatedBy());
+		e.setUpdatedBy(transaction.getUpdatedby());
 		e.setCreatedBy(transaction.getCreatedby());
-		e.setCreateTime(transaction.getCreateTime());
+		e.setCreateTime(transaction.getCreatetime());
 		//e.setCurrency(sr.getCurrency());
-		e.setLastUpdateTime(transaction.getLastUpdateTime());
+		e.setLastUpdateTime(transaction.getLastupdatetime());
 		e.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TADLStatus, CmFinoFIX.Language_English, transaction.getStatus()));
-		e.setChannelSourceApplicationText(sr.getChannelCodeID()+"");
-		e.setTransferFailureReasonText(transaction.getFailureReason());
+		e.setChannelSourceApplicationText(sr.getChannelcodeid()+"");
+		e.setTransferFailureReasonText(transaction.getFailurereason());
 	}
 }

@@ -26,8 +26,8 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.domain.MFSLedger;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -53,7 +53,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 	Pocket chargesPocket = null;
 	Pocket globalPocket = null;
 	Pocket taxPocket = null;
-	SubscriberMDN queryPocketMDN = null;
+	SubscriberMdn queryPocketMDN = null;
 	
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
@@ -76,7 +76,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		taxPocket = pocketDao.getById(systemParametersService.getLong(SystemParameterKeys.TAX_POCKET_ID_KEY));
 		if (realMsg.getSourceDestnPocketID() != null) {
 			Pocket pocket = pocketDao.getById(realMsg.getSourceDestnPocketID());
-			queryPocketMDN = pocket.getSubscriberMDNByMDNID();
+			queryPocketMDN = pocket.getSubscriberMdn();
 			if(CmFinoFIX.PocketType_SVA.equals(pocket.getPocketTemplate().getType())&&
 					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplate().getCommodity())){
 				return processTransactions(realMsg, null, null, CmFinoFIX.PocketType_SVA);
@@ -91,10 +91,10 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 			if (mdnAndID.length == 2 && StringUtils.isNumeric(mdnAndID[1])) {
 				String mdn = mdnAndID[0];
 				long mdnId = new Long(mdnAndID[1]);
-				if (mdn.equals(suspensePocket.getSubscriberMDNByMDNID().getMDN())
-						|| mdn.equals(chargesPocket.getSubscriberMDNByMDNID().getMDN())
-						|| mdn.equals(globalPocket.getSubscriberMDNByMDNID().getMDN())
-						|| mdn.equals(taxPocket.getSubscriberMDNByMDNID().getMDN())) {
+				if (mdn.equals(suspensePocket.getSubscriberMdn().getMdn())
+						|| mdn.equals(chargesPocket.getSubscriberMdn().getMdn())
+						|| mdn.equals(globalPocket.getSubscriberMdn().getMdn())
+						|| mdn.equals(taxPocket.getSubscriberMdn().getMdn())) {
 					return processTransactions(realMsg, mdn, mdnId, null);
 				}
 			}
@@ -133,7 +133,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 			List<Long> transferIDs = ctDao.getCommodityTransferIdsBySourceAndDestPocketId(realMsg.getSourceDestnPocketID());
 			if (CollectionUtils.isNotEmpty(transferIDs)) {
 				query.setTransferIDs(transferIDs);
-				query.setPocketId(globalPocket.getID());
+				query.setPocketId(globalPocket.getId().longValue());
 			}
 		}		
 		query.setStart(realMsg.getstart());
@@ -175,29 +175,29 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 	private void updateMessage(MFSLedger ledger, CGEntries entry,
 			CMJSCommodityTransfer realMsg) {
 		
-		CRCommodityTransfer ct = ctDao.getById(ledger.getCommodityTransferID());
+		CRCommodityTransfer ct = ctDao.getById(ledger.getCommoditytransferid().longValue());
 		boolean isSystemPocket = false;
 		boolean isRevertAmount = false;
 		
 		if(realMsg.getSourceDestnPocketID() != null) {
-			if(DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
-				entry.setSourcePocketID(ledger.getPocketID());
-				entry.setSourceMDN(queryPocketMDN.getMDN());
-				entry.setDestPocketID(suspensePocket.getID());
-				entry.setDestMDN(suspensePocket.getSubscriberMDNByMDNID().getMDN());
-			} else if(DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
-				entry.setSourcePocketID(suspensePocket.getID());
-				entry.setSourceMDN(suspensePocket.getSubscriberMDNByMDNID().getMDN());
-				entry.setDestPocketID(ledger.getPocketID());
-				entry.setDestMDN(queryPocketMDN.getMDN());
+			if(DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
+				entry.setSourcePocketID(ledger.getPocketid().longValue());
+				entry.setSourceMDN(queryPocketMDN.getMdn());
+				entry.setDestPocketID(suspensePocket.getId().longValue());
+				entry.setDestMDN(suspensePocket.getSubscriberMdn().getMdn());
+			} else if(DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
+				entry.setSourcePocketID(suspensePocket.getId().longValue());
+				entry.setSourceMDN(suspensePocket.getSubscriberMdn().getMdn());
+				entry.setDestPocketID(ledger.getPocketid().longValue());
+				entry.setDestMDN(queryPocketMDN.getMdn());
 			}
 		}
 		entry.setAmount(ledger.getAmount());
-		entry.setTransType(ledger.getLedgerType());
-		if (DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
+		entry.setTransType(ledger.getLedgertype());
+		if (DAOConstants.DEBIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
 			entry.setDebitAmount(ledger.getAmount());
 		}
-		else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgerType())) {
+		else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(ledger.getLedgertype())) {
 			entry.setCreditAmount(ledger.getAmount());
 		}
 		if(ct != null){
@@ -213,19 +213,19 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		}
         
 		
-		entry.setID(ledger.getID());
-		entry.setStartTime(ledger.getCreateTime());
+		entry.setID(ledger.getId().longValue());
+		entry.setStartTime(ledger.getCreatetime());
 		
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
-		Long sctlId = ledger.getSctlId();
-		ServiceChargeTransactionLog sctl = null;
+		Long sctlId = ledger.getSctlid().longValue();
+		ServiceChargeTxnLog sctl = null;
 		if (sctlId != null) {
 			sctl = sctlDAO.getById(sctlId);
 		}
 		if(sctl != null){
 			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
-			TransactionType tt = ttDAO.getById(sctl.getTransactionTypeID());
-			entry.setTransactionTypeText(tt.getDisplayName());
+			TransactionType tt = ttDAO.getById(sctl.getTransactiontypeid().longValue());
+			entry.setTransactionTypeText(tt.getDisplayname());
 		}else if(ct!=null){
 			entry.setTransactionTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUICategory()));
 		}

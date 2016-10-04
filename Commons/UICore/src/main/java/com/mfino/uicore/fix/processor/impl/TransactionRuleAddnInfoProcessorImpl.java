@@ -14,7 +14,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.TransactionRuleAddnInfoDAO;
 import com.mfino.dao.TransactionRuleDAO;
 import com.mfino.dao.query.TransactionRuleAddnInfoQuery;
-import com.mfino.domain.TransactionRuleAddnInfo;
+import com.mfino.domain.TxnRuleAddnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
@@ -26,38 +26,38 @@ public class TransactionRuleAddnInfoProcessorImpl extends BaseFixProcessor imple
 
 	private static Logger log = LoggerFactory.getLogger(TransactionRuleAddnInfoProcessor.class);
 	
-	private void updateMessage(TransactionRuleAddnInfo txnRule, CMJSTxnRuleAddnInfo.CGEntries e) {
-		e.setID(txnRule.getID());
+	private void updateMessage(TxnRuleAddnInfo txnRule, CMJSTxnRuleAddnInfo.CGEntries e) {
+		e.setID(txnRule.getId().longValue());
 		if(txnRule.getTransactionRule() != null) {
-			e.setTransactionRuleID(txnRule.getTransactionRule().getID());
+			e.setTransactionRuleID(txnRule.getTransactionRule().getId().longValue());
 		}		
-		if(txnRule.getTxnRuleKey() != null) {
-			e.setTxnRuleKey(txnRule.getTxnRuleKey());
+		if(txnRule.getTxnrulekey() != null) {
+			e.setTxnRuleKey(txnRule.getTxnrulekey());
 		}
-		if(txnRule.getTxnRuleValue() != null) {
-			e.setTxnRuleValue(txnRule.getTxnRuleValue());
+		if(txnRule.getTxnrulevalue() != null) {
+			e.setTxnRuleValue(txnRule.getTxnrulevalue());
 		}
-		if(txnRule.getTxnRuleComparator() != null) {
-			e.setTxnRuleComparator(txnRule.getTxnRuleComparator());
+		if(txnRule.getTxnrulecomparator() != null) {
+			e.setTxnRuleComparator(txnRule.getTxnrulecomparator());
 		}
-		e.setRecordVersion(txnRule.getVersion());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(txnRule.getVersion()).intValue()));
 	}
 	
-	private void updateEntity(TransactionRuleAddnInfo txnRule, CMJSTxnRuleAddnInfo.CGEntries e) {
+	private void updateEntity(TxnRuleAddnInfo txnRule, CMJSTxnRuleAddnInfo.CGEntries e) {
 		TransactionRuleDAO trDAO = DAOFactory.getInstance().getTransactionRuleDAO();		
 		if(e.getTransactionRuleID() != null) {
 			txnRule.setTransactionRule(trDAO.getById(e.getTransactionRuleID()));
 		}
 		if(StringUtils.isNotBlank(e.getTxnRuleKey())) {
-			txnRule.setTxnRuleKey(e.getTxnRuleKey());
+			txnRule.setTxnrulekey(e.getTxnRuleKey());
 		}
 		if(StringUtils.isNotBlank(e.getTxnRuleValue())) {
-			txnRule.setTxnRuleValue(e.getTxnRuleValue());
+			txnRule.setTxnrulevalue(e.getTxnRuleValue());
 		}
 		if(StringUtils.isNotBlank(e.getTxnRuleComparator())) {
-			txnRule.setTxnRuleComparator(e.getTxnRuleComparator());
+			txnRule.setTxnrulecomparator(e.getTxnRuleComparator());
 		} else { //by default set to 'Equal'
-			txnRule.setTxnRuleComparator("Equal");
+			txnRule.setTxnrulecomparator("Equal");
 		}
 	}
 
@@ -74,10 +74,10 @@ public class TransactionRuleAddnInfoProcessorImpl extends BaseFixProcessor imple
 			if (realMsg.getTransactionRuleID() != null) {
 				query.setTransactionRuleID(realMsg.getTransactionRuleID());
 			}				
-			List<TransactionRuleAddnInfo> lst = dao.get(query);
+			List<TxnRuleAddnInfo> lst = dao.get(query);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				realMsg.allocateEntries(lst.size());
-				for (TransactionRuleAddnInfo txnRule: lst){
+				for (TxnRuleAddnInfo txnRule: lst){
 					CMJSTxnRuleAddnInfo.CGEntries e = new CMJSTxnRuleAddnInfo.CGEntries();
 					updateMessage(txnRule, e);
 					realMsg.getEntries()[i] = e;
@@ -89,7 +89,7 @@ public class TransactionRuleAddnInfoProcessorImpl extends BaseFixProcessor imple
 		} else if (CmFinoFIX.JSaction_Insert.equals(realMsg.getaction())) {
 			CMJSTxnRuleAddnInfo.CGEntries[] entries = realMsg.getEntries();			
 			for (CMJSTxnRuleAddnInfo.CGEntries e: entries) {
-				TransactionRuleAddnInfo txnRule = new TransactionRuleAddnInfo();
+				TxnRuleAddnInfo txnRule = new TxnRuleAddnInfo();
 				updateEntity(txnRule, e);
 				dao.save(txnRule);
 				updateMessage(txnRule, e);
@@ -99,7 +99,7 @@ public class TransactionRuleAddnInfoProcessorImpl extends BaseFixProcessor imple
 		} else if (CmFinoFIX.JSaction_Update.equals(realMsg.getaction())) {
 			CMJSTxnRuleAddnInfo.CGEntries[] entries = realMsg.getEntries();			
 			for (CMJSTxnRuleAddnInfo.CGEntries e: entries) {
-				TransactionRuleAddnInfo txnRule = dao.getById(e.getID());
+				TxnRuleAddnInfo txnRule = dao.getById(e.getID());
         		if (!(e.getRecordVersion().equals(txnRule.getVersion()))) {
         			handleStaleDataException();
         		}        		

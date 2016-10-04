@@ -20,7 +20,7 @@ import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.TransactionRuleDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.TransactionRuleQuery;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.TransactionRule;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -61,69 +61,69 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 			tr.setChannelCode(ccDAO.getById(e.getChannelCodeID()));
 		}
 		if (e.getChargeMode() != null) {
-			tr.setChargeMode(e.getChargeMode());
+			tr.setChargemode(e.getChargeMode());
 		}
 		if (e.getSourceType() != null) {
-			tr.setSourceType(e.getSourceType());
+			tr.setSourcetype(e.getSourceType().longValue());
 		}
 		if (e.getSourceKYC() != null) {
-			tr.setKYCLevelBySourceKYC(kycDAO.getById(e.getSourceKYC()));
+			tr.setKycLevelBySourcekyc(kycDAO.getById(e.getSourceKYC()));
 		}
 		if (e.getDestType() != null) {
-			tr.setDestType(e.getDestType());
+			tr.setDesttype(e.getDestType().longValue());
 		}
 		if (e.getDestKYC() != null) {
-			tr.setKYCLevelByDestKYC(kycDAO.getById(e.getDestKYC()));
+			tr.setKycLevelByDestkyc(kycDAO.getById(e.getDestKYC()));
 		}
 		if (e.getSourceGroup() != null) {
-			Group sourceGroup = groupDao.getById(e.getSourceGroup());
+			Groups sourceGroup = groupDao.getById(e.getSourceGroup());
 			tr.setGroupBySourceGroup(sourceGroup);
 		}
 		if (e.getDestinationGroup() != null) {
-			Group destinationGroup = groupDao.getById(e.getDestinationGroup());
+			Groups destinationGroup = groupDao.getById(e.getDestinationGroup());
 			tr.setGroupByDestinationGroup(destinationGroup);
 		}
 	}
 	
 	private void updateMessage(TransactionRule tr, CMJSTransactionRule.CGEntries e) {
-		e.setID(tr.getID());
-		e.setMSPID(tr.getmFinoServiceProviderByMSPID().getID());
+		e.setID(tr.getId().longValue());
+		e.setMSPID(tr.getMfinoServiceProvider().getId().longValue());
 		e.setName(tr.getName());
 		if (tr.getPartnerByServiceProviderID() != null) {
 			e.setServiceProviderID(tr.getPartnerByServiceProviderID().getID());
 			e.setServiceProviderName(tr.getPartnerByServiceProviderID().getTradeName());
 		}
 		if (tr.getService() != null) {
-			e.setServiceID(tr.getService().getID());
-			e.setServiceName(tr.getService().getDisplayName());
+			e.setServiceID(tr.getService().getId().longValue());
+			e.setServiceName(tr.getService().getDisplayname());
 		}
 		if (tr.getTransactionType() != null) {
-			e.setTransactionTypeID(tr.getTransactionType().getID());
-			e.setTransactionName(tr.getTransactionType().getDisplayName());
+			e.setTransactionTypeID(tr.getTransactionType().getId().longValue());
+			e.setTransactionName(tr.getTransactionType().getDisplayname());
 		}
 		if (tr.getChannelCode() != null) {
-			e.setChannelCodeID(tr.getChannelCode().getID());
-			e.setChannelName(tr.getChannelCode().getChannelName());
+			e.setChannelCodeID(tr.getChannelCode().getId().longValue());
+			e.setChannelName(tr.getChannelCode().getChannelname());
 		}
-		if (tr.getChargeMode() != null) {
-			e.setChargeMode(tr.getChargeMode());
+		if (tr.getChargemode() != 0) {
+			e.setChargeMode(Integer.valueOf(Long.valueOf(tr.getChargemode()).intValue()));
 			e.setChargeModeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ChargeMode, null, e.getChargeMode()));
 		}
-		if (tr.getSourceType() != null) {
-			e.setSourceType(tr.getSourceType());
-			e.setSourceTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, null, tr.getSourceType()));
+		if (tr.getSourcetype() != null) {
+			e.setSourceType(tr.getSourcetype().intValue());
+			e.setSourceTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, null, tr.getSourcetype()));
 		}
-		if (tr.getKYCLevelBySourceKYC() != null) {
-			e.setSourceKYC(tr.getKYCLevelBySourceKYC().getID());
-			e.setSourceKYCText(tr.getKYCLevelBySourceKYC().getKYCLevelName());
+		if (tr.getKycLevelBySourcekyc() != null) {
+			e.setSourceKYC(tr.getKycLevelBySourcekyc().getId().longValue());
+			e.setSourceKYCText(tr.getKycLevelBySourcekyc().getKyclevelname());
 		}
-		if (tr.getDestType() != null) {
-			e.setDestType(tr.getDestType());
-			e.setDestTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, null, tr.getDestType()));
+		if (tr.getDesttype() != null) {
+			e.setDestType(tr.getDesttype().intValue());
+			e.setDestTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, null, tr.getDesttype()));
 		}
-		if (tr.getKYCLevelByDestKYC() != null) {
-			e.setDestKYC(tr.getKYCLevelByDestKYC().getID());
-			e.setDestKYCText(tr.getKYCLevelByDestKYC().getKYCLevelName());
+		if (tr.getKycLevelByDestkyc() != null) {
+			e.setDestKYC(tr.getKycLevelByDestkyc().getId().longValue());
+			e.setDestKYCText(tr.getKycLevelByDestkyc().getKyclevelname());
 		}
 		if (tr.getGroupBySourceGroup() != null) {
 			e.setSourceGroup(tr.getGroupBySourceGroup().getID());
@@ -140,11 +140,11 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 				e.setAdditionalInfo("No");
 			}
 		}
-		e.setRecordVersion(tr.getVersion());
-		e.setCreatedBy(tr.getCreatedBy());
-		e.setCreateTime(tr.getCreateTime());
-		e.setUpdatedBy(tr.getUpdatedBy());
-		e.setLastUpdateTime(tr.getLastUpdateTime());
+		e.setRecordVersion(Integer.valueOf(Long.valueOf(tr.getVersion()).intValue()));
+		e.setCreatedBy(tr.getCreatedby());
+		e.setCreateTime(tr.getCreatetime());
+		e.setUpdatedBy(tr.getUpdatedby());
+		e.setLastUpdateTime(tr.getLastupdatetime());
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
         		if (!(e.getRecordVersion().equals(tr.getVersion()))) {
         			handleStaleDataException();
         		}
-        		log.info("Charge Mode for the transaction rule - " + tr.getName()  +" is updated to "+ e.getChargeMode() + " from "+ tr.getChargeMode() + " by user:" + getLoggedUserNameWithIP());
+        		log.info("Charge Mode for the transaction rule - " + tr.getName()  +" is updated to "+ e.getChargeMode() + " from "+ tr.getChargemode() + " by user:" + getLoggedUserNameWithIP());
         		updateEntity(tr, e);        		
         		try {
 					dao.save(tr);
