@@ -40,7 +40,7 @@ public class IntegrationService{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_Integration_InvalidInstituionID);
 			return result;
 		}
-		result.setIntegrationName(integrationPartnerMapping.getIntegrationName());
+		result.setIntegrationName(integrationPartnerMapping.getIntegrationname());
 		
 		//String integrationName = integrationPartnerMapping.getIntegrationName();
 		//if(!integrationName.equals(integrationDetails.getIntegrationName()))
@@ -48,14 +48,14 @@ public class IntegrationService{
 		//	result.setNotificationCode(CmFinoFIX.NotificationCode_Integration_InvalidIntegrationName);
 		//	return result;
 		//}
-		Set<IPMapping> ipMappings = integrationPartnerMapping.getIPMappingFromIntegrationID();
+		Set<IPMapping> ipMappings = integrationPartnerMapping.getIpMappings();
 		Iterator<IPMapping> it = ipMappings.iterator();
 		boolean ipFound = false;
 		IPMapping ipMapping = null;
 		while(it.hasNext())
 		{
 			ipMapping = it.next();
-			String ipAddress = ipMapping.getIPAddress();
+			String ipAddress = ipMapping.getIpaddress();
 			try {
 				if(ipAddressMatches(integrationDetails, ipAddress))
 				{
@@ -74,11 +74,11 @@ public class IntegrationService{
 			return result;			
 		}
 
-		if(integrationPartnerMapping.getIsAuthenticationKeyEnabled())
+		if(integrationPartnerMapping.getIsauthenticationkeyenabled())
 		{
-			String storedAuthenticationKey = integrationPartnerMapping.getAuthenticationKey();
+			String storedAuthenticationKey = integrationPartnerMapping.getAuthenticationkey();
 			String authenticationKey = integrationDetails.getAuthenticationKey();
-			String digestedCode = MfinoUtil.calculateDigestPin(integrationPartnerMapping.getInstitutionID(), authenticationKey);
+			String digestedCode = MfinoUtil.calculateDigestPin(integrationPartnerMapping.getInstitutionid(), authenticationKey);
 			if(!digestedCode.equals(storedAuthenticationKey))
 			{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_Integration_Authentication_Failed);
@@ -93,7 +93,7 @@ public class IntegrationService{
 	public static boolean isLoginEnabledForIntegration(IntegrationDetails integrationDetails)
 	{
 		IntegrationPartnerMapping integrationPartnerMapping =  DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(integrationDetails.getInstitutionID());
-		return integrationPartnerMapping.getIsLoginEnabled();		
+		return integrationPartnerMapping.getIsloginenabled();		
 	}
 	
 	public static boolean ipAddressMatches(IntegrationDetails integrationDetails, String ipAddress) throws UnknownHostException

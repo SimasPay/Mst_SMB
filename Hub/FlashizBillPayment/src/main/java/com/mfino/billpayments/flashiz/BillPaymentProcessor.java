@@ -7,11 +7,9 @@ import org.slf4j.LoggerFactory;
 import com.mfino.billpayments.beans.BillPayResponse;
 import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.domain.BillPayments;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
-import com.mfino.fix.CmFinoFIX.CMCommodityTransferFromOperator;
-import com.mfino.fix.CmFinoFIX.CMCommodityTransferToOperator;
 import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementFromBank;
 import com.mfino.fix.CmFinoFIX.CMPaymentAcknowledgementToBank;
 import com.mfino.fix.CmFinoFIX.CMQRPayment;
@@ -20,7 +18,6 @@ import com.mfino.mce.core.util.BackendResponse;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.TransactionChargingService;
-import com.mfino.service.impl.SubscriberServiceImpl;
 
 public class BillPaymentProcessor implements FlashizProcessor {
 	
@@ -63,7 +60,7 @@ public class BillPaymentProcessor implements FlashizProcessor {
 		BackendResponse backendResponse = (BackendResponse) mceMessage.getResponse();
 		CMPaymentAcknowledgementToBank toOperator = new CMPaymentAcknowledgementToBank();
 		toOperator.setSourceMDN(backendResponse.getSourceMDN());
-		toOperator.setDestMDN(subscriberService.normalizeMDN(billPayments.getInvoiceNumber()));
+		toOperator.setDestMDN(subscriberService.normalizeMDN(billPayments.getInvoicenumber()));
 		toOperator.setPaymentInquiryDetails(backendResponse.getPaymentInquiryDetails());
 		Integer billerPartnerType = CmFinoFIX.BillerPartnerType_Payment_Full;
 		//FIXME set this for postpaid and topup properly
@@ -74,8 +71,8 @@ public class BillPaymentProcessor implements FlashizProcessor {
 		toOperator.setParentTransactionID(sctlId);
 		toOperator.setSourceApplication(requestFix.getSourceApplication());
 		toOperator.setOperatorCode(CmFinoFIX.OperatorCodeForRouting_FLASHIZ);//routing code for flashiz
-		toOperator.setBillPaymentReferenceID(billPayments.getInvoiceNumber());//FIXME use getBillPaymentReferenceID()
-		toOperator.setProductIndicatorCode(billPayments.getPartnerBillerCode()); // Identify the product for which bill payment is being done. 
+		toOperator.setBillPaymentReferenceID(billPayments.getInvoicenumber());//FIXME use getBillPaymentReferenceID()
+		toOperator.setProductIndicatorCode(billPayments.getPartnerbillercode()); // Identify the product for which bill payment is being done. 
 		toOperator.setUserAPIKey(((CMQRPayment) requestFix).getUserAPIKey());
 		toOperator.setMerchantData(((CMQRPayment) requestFix).getMerchantData());
 		toOperator.setInvoiceNo(((CMQRPayment) requestFix).getInvoiceNumber());
@@ -119,7 +116,7 @@ public class BillPaymentProcessor implements FlashizProcessor {
 	public void setSCTLStatusToPending(MCEMessage mceMceMessage) {
 				log.info("BillPaymentProcessor :: setSCTLStatusToPending() BEGIN mceMessage="+mceMceMessage);
 				CMBase requestFix = (CMBase)mceMceMessage.getRequest();
-				ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
+				ServiceChargeTxnLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
 				transactionChargingService.changeStatusToPending(sctl);
 			}
 

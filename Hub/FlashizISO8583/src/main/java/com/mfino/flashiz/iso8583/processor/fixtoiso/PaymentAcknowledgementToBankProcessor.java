@@ -106,10 +106,10 @@ public class PaymentAcknowledgementToBankProcessor extends BankRequestProcessor{
 			for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
 				TransactionChargeLog tcl = it.next();
 				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("charge")){
-					serviceCharge = tcl.getCalculatedCharge();
+					serviceCharge = tcl.getCalculatedcharge();
 				}
 				if(tcl.getTransactionCharge().getChargeType().getName().equalsIgnoreCase("tax")){
-					tax = tcl.getCalculatedCharge();
+					tax = tcl.getCalculatedcharge();
 				}				
 			}
 		}
