@@ -164,6 +164,6 @@ public class TransactionSearchProcessor extends BaseProcessor implements Transac
 			transaction.setChrgRevStatusText(enumTextService.getEnumTextValue(
 					CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English,
 					sctl.getChrgrevstatus()));
-		}
+		} 
 	}
 }
