@@ -36,7 +36,7 @@
 	<osgi:reference id="fixService" interface="com.mfino.mce.fix.FixService"/>
 	<osgi:reference id="fixListenerService" interface="com.mfino.mce.fix.FIXMessageListenerService"/>
 	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	
 	<!-- <osgi:reference id="jms" interface="org.apache.camel.Component"/>-->
 	<!-- <osgi:reference id="messageConfService" 

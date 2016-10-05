@@ -35,23 +35,11 @@
 	<osgi:reference id="notificationSplitter"
 		interface="com.mfino.mce.notification.NotificationSplitterService" />
 	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 
-	<!-- define the jasypt properties parser with the given password to be used -->
-	<bean id="jasypt"
-		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
-		<property name="password" value="sysenv:ENCRYPTION_KEY" />
-		<property name="algorithm" value="PBEWITHMD5ANDTRIPLEDES" />
-	</bean>
-
-	<!-- define the camel properties component -->
-	<bean id="properties"
-		class="org.apache.camel.component.properties.PropertiesComponent">
-		<!-- the properties file is in the classpath -->
-		<property name="location" value="file:mfino_conf/mce.properties" />
-		<!-- and let it leverage the jasypt parser -->
-		<property name="propertiesParser" ref="jasypt" />
-	</bean>
+	<bean id="configSaltgenerator" class="org.jasypt.salt.StringFixedSaltGenerator">
+        <constructor-arg value="YJW9qh52RP8gfRDI"/>
+    </bean>
 
 	<bean id="config"
 		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
@@ -61,6 +49,9 @@
 		<property name="algorithm">
 			<value>PBEWITHMD5ANDTRIPLEDES</value>
 		</property>
+		<property name="saltGenerator">
+    		<ref bean = "configSaltgenerator" />
+    	</property>
 	</bean>
 
 	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
@@ -69,14 +60,44 @@
 		</property>
 	</bean>
 
-	<bean id="propertyConfigurer"
-		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
-		<constructor-arg ref="stringEncryptor" />
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>file:mfino_conf/mce.properties</value>
 			</list>
 		</property>
+	</bean>
+	
+	<bean id="strongEncryptor" class="org.jasypt.encryption.pbe.PooledPBEStringEncryptor">
+	    <property name="algorithm">
+	        <value>PBEWITHMD5ANDTRIPLEDES</value>
+	    </property>
+	    <property name="password">
+	        <value>${mfino.hibernateStringEncryptor.password}</value>
+	    </property>
+	    <property name="poolSize">
+	        <value>4</value>
+	    </property>
+  	</bean>
+	 
+	<bean id="hibernateStringEncryptor"
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateStringEncryptor</value>
+		</property>
+		<property name="encryptor">
+        	<ref bean="strongEncryptor" />
+    	</property>
+	</bean>
+	
+	<bean id="hibernateUniqueStringEncryptor"
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateUniqueStringEncryptor</value>
+		</property>
+		<property name="encryptor">
+        	<ref bean="strongEncryptor" />
+    	</property>	
 	</bean>
 
 	<bean id="smsConf" class="com.mfino.mce.notification.conf.SMSConf">

@@ -35,7 +35,7 @@
 	</bean>
  
  	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 
  	<osgi:reference id="sctlServiceImpl" bean-name="SCTLServiceImpl" interface="com.mfino.service.SCTLService" />
 	<osgi:reference id="subscriberMdnServiceImpl" bean-name="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />

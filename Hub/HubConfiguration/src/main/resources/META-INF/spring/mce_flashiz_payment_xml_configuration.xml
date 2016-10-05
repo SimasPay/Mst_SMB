@@ -91,7 +91,7 @@
 
 	<osgi:reference id="billPayPendingResolveService" interface="com.mfino.billpayments.service.BillPayPendingResolveService"/>
 
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	
 <!-- 	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
 	

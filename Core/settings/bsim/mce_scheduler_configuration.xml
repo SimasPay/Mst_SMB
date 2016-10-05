@@ -34,15 +34,80 @@
     <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
     <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
 	
-    <bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="configSaltgenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>YJW9qh52RP8gfRDI</value>
+        </property>
+    </bean>
+	
+	<bean id="config"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="passwordEnvName">
+			<value>ENCRYPTION_KEY</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+    		<ref bean = "configSaltgenerator" />
+    	</property>			
+	</bean>
+	
+	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<ref bean="config" />
+		</property>			
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring31.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="stringEncryptor" />
 		<property name="locations">
 			<list>
-				<value>file:mfino_conf/mce.properties</value>
+				<value>file:mfino_conf/database_config.properties</value>
 			</list>
 		</property>
 	</bean>
-     
+
+	<bean id="saletGenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>${mfino.saltGenerator.salt}</value>
+        </property>
+    </bean>
+
+
+	<bean id="hibernateStringEncryptor"
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateStringEncryptor</value>
+		</property>
+		<property name="password">
+			<value>${mfino.hibernateStringEncryptor.password}</value>
+		</property>  
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>	
+	</bean>
+	
+	<bean id="hibernateUniqueStringEncryptor"
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateUniqueStringEncryptor</value>
+		</property>
+		<property name="password">
+			<value>${mfino.hibernateUniqueStringEncryptor.password}</value>
+		</property>  
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>	
+	</bean>
+	
     <bean id="timeZone" class="com.mfino.util.ConfigurationUtil" factory-method="getTimeZone">
     	<constructor-arg><ref bean="sessionFactory"/></constructor-arg>
 		<constructor-arg><ref bean="hibernateSessionHolder"/></constructor-arg>

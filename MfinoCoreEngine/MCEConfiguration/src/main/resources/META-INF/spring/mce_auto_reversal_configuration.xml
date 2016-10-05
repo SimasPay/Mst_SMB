@@ -28,15 +28,81 @@
 <osgi:reference id="autoReversalService" interface="com.mfino.mce.backend.AutoReversalService"/>
 
 <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
-<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 
-<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-	<property name="locations">
-		<list>
-			<value>file:mfino_conf/mce.properties</value>
-		</list>
-	</property>
-</bean>
+	<bean id="configSaltgenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>YJW9qh52RP8gfRDI</value>
+        </property>
+    </bean>
+		
+	<bean id="config"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="passwordEnvName">
+			<value>ENCRYPTION_KEY</value>
+		</property>
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+    		<ref bean = "configSaltgenerator" />
+    	</property>			
+	</bean>
+
+	<bean id="stringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<ref bean="config" />
+		</property>			
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring31.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="stringEncryptor" />
+		<property name="locations">
+			<list>
+				<value>file:mfino_conf/database_config.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="saletGenerator" class="org.jasypt.salt.FixedStringSaltGenerator">
+        <property name="salt">
+        	<value>${mfino.saltGenerator.salt}</value>
+        </property>
+    </bean>
+
+	<bean id="hibernateStringEncryptor"
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateStringEncryptor</value>
+		</property>
+		<property name="password">
+			<value>${mfino.hibernateStringEncryptor.password}</value>
+		</property>  
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>	
+	</bean>
+
+	<bean id="hibernateUniqueStringEncryptor"
+		class="org.jasypt.hibernate4.encryptor.HibernatePBEStringEncryptor">
+		<property name="registeredName">
+			<value>hibernateUniqueStringEncryptor</value>
+		</property>
+		<property name="password">
+			<value>${mfino.hibernateUniqueStringEncryptor.password}</value>
+		</property>  
+		<property name="algorithm">
+			<value>PBEWITHMD5ANDTRIPLEDES</value>
+		</property>
+		<property name="saltGenerator">
+        	<ref bean="saletGenerator" />
+    	</property>	
+	</bean>
+
 
 	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
 	<bean id="jmsConfig" 
@@ -62,7 +128,7 @@
 	</property>
 </bean>	
 
-<camelContext id="autoReversal" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+  <camelContext id="autoReversal" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 	<!-- Route for auto reversals -->
 	<onException>
         <exception>com.mfino.mce.backend.exception.DuplicateAutoReversalException</exception>
