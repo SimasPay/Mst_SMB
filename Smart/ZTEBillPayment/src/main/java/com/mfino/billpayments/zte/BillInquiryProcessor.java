@@ -98,7 +98,7 @@ public class BillInquiryProcessor extends BillPaymentsBaseServiceImpl implements
 		Subscriber subscriber = subscriberMdnService.getSubscriberFromMDN(mdn);
 		String result = null;
 		if (subscriber != null) {
-			result = JSONUtil.getOperatorDescription(responseCode.toString(), subscriber.getLanguage());
+			result = JSONUtil.getOperatorDescription(responseCode.toString(), Long.valueOf(subscriber.getLanguage()).intValue());
 		} else {
 			result = JSONUtil.getOperatorDescription(responseCode.toString(), 0);
 		}

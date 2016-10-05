@@ -120,9 +120,9 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 			if(integrationPartnerMapping.getPartner() != null){
 				partner = integrationPartnerMapping.getPartner();			
 			}
-			else if(integrationPartnerMapping.getMFSBiller() != null)
+			else if(integrationPartnerMapping.getMfsBiller() != null)
 			{
-				Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMFSBiller().getMFSBillerPartnerFromMFSBillerId();
+				Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
 				Iterator<MFSBillerPartner> it  = mfsBillerpartners.iterator();
 				if(it.hasNext())
 				{

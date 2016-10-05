@@ -70,7 +70,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 	
 	private  boolean isCSMStatusValid(ChannelSessionManagement csm) {
 
-		Timestamp lastRequestTime = csm.getLastRequestTime();
+		Timestamp lastRequestTime = csm.getLastrequesttime();
 		Timestamp presentTime = new Timestamp();
 		long timeDiff = presentTime.getTime() - lastRequestTime.getTime();
 
@@ -143,13 +143,13 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 				throw new InvalidWeabpiSessionException("Session is not valid");
 			}
 			Timestamp ts = new Timestamp();
-			csm.setLastRequestTime(ts);
-			csm.setRequestCountAfterLogin(csm.getRequestCountAfterLogin() + 1);
-			csm.setLastUpdateTime(ts);
+			csm.setLastrequesttime(ts);
+			csm.setRequestcountafterlogin(csm.getRequestcountafterlogin()+Long.valueOf(1));
+			csm.setLastupdatetime(ts);
 			channelSessionManagementService.saveCSM(csm);
 		}		
 
-		KeyParameter kp = new KeyParameter(CryptographyService.hexToBin(csm.getSessionKey().toCharArray()));
+		KeyParameter kp = new KeyParameter(CryptographyService.hexToBin(csm.getSessionkey().toCharArray()));
 		udContainer = SecurityEnabledUserDataContainer.createSecurityEnabledUserDataContainer(rudContainer, kp);
 		udContainer.setKeyParameter(kp);
 		log.info("getRequestData: End");
@@ -181,9 +181,9 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 				throw new InvalidWeabpiSessionException("Session is not valid");
 			}
 			Timestamp ts = new Timestamp();
-			csm.setLastRequestTime(ts);
-			csm.setRequestCountAfterLogin(csm.getRequestCountAfterLogin() + 1);
-			csm.setLastUpdateTime(ts);
+			csm.setLastrequesttime(ts);
+			csm.setRequestcountafterlogin(csm.getRequestcountafterlogin()+Long.valueOf(1));
+			csm.setLastupdatetime(ts);
 			channelSessionManagementService.saveCSM(csm);
 		}		
 		

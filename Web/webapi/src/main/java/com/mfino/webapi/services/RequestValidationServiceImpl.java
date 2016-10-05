@@ -157,7 +157,7 @@ public class RequestValidationServiceImpl implements RequestValidationService{
 				}
 				long subID=sub.getId().longValue();
 				if(null!=subGroupDAO.getBySubscriberID(subID)){
-					acmQuery.setGroup(subGroupDAO.getBySubscriberID(subID).getGroup().getID());
+					acmQuery.setGroup(subGroupDAO.getBySubscriberID(subID).getGroupid());
 				}else{
 					acmQuery.setGroup(1L); //default group is ANY with group ID=1
 				}
