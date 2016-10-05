@@ -173,7 +173,7 @@ public class GenericWebAPIServiceImpl implements GenericWebAPIService{
 	private Partner getPartnerForSubscriber(Subscriber subscriber) {
 		Partner partner = null;
 		if (subscriber != null) {
-			Set<Partner> partners = subscriber.getPartnerFromSubscriberID();
+			Set<Partner> partners = subscriber.getPartners();
 			if ((partners != null) && (partners.size()!=0)) { 
 				partner = partners.iterator().next();
 			}

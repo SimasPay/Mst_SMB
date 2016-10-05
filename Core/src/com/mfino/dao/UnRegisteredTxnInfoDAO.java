@@ -30,7 +30,8 @@ public class UnRegisteredTxnInfoDAO extends BaseDAO<UnregisteredTxnInfo> {
     			criteria.add(Restrictions.eq("SMDN." + SubscriberMdn.FieldName_RecordID, query.getSubscriberMDNID()));
     		}
     		if(query.getTransferSctlId()!=null){
-    			criteria.add(Restrictions.eq(UnregisteredTxnInfo.FieldName_TransferSCTLId, query.getTransferSctlId()));
+    			criteria.createAlias(UnregisteredTxnInfo.FieldName_TransferSCTLId, "SCTL");
+    			criteria.add(Restrictions.eq("SCTL."+UnregisteredTxnInfo.FieldName_RecordID, query.getTransferSctlId()));
     		}
 
     		if(query.getTransferCTId()!=null){

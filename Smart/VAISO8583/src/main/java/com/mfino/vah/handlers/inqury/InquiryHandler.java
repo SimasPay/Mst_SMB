@@ -2,7 +2,6 @@ package com.mfino.vah.handlers.inqury;
 
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jpos.iso.ISOException;
@@ -20,7 +19,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberService;
@@ -115,13 +114,13 @@ public class InquiryHandler {
 			log.info("normalized mdn="+mdn);
 			
 			SubscriberMDNDAO dao = DAOFactory.getInstance().getSubscriberMdnDAO();
-			SubscriberMDN subMdn = dao.getByMDN(mdn);
+			SubscriberMdn subMdn = dao.getByMDN(mdn);
 			
-			log.info("Checking for SubscriberMDN");
+			log.info("Checking for SubscriberMdn");
 			if(subMdn == null)
 				throw new InvalidRequestException();
 			
-			log.info("Validating SubscriberMDN");
+			log.info("Validating SubscriberMdn");
 			Integer validationResult = transactionApiValidationService.validateSubscriberAsDestination(subMdn);
 			if(!CmFinoFIX.ResponseCode_Success.equals(validationResult))
 				throw new InvalidRequestException();
@@ -136,10 +135,10 @@ public class InquiryHandler {
 			
 			log.info("All checks OK for MDN");
 			Subscriber subscriber = subMdn.getSubscriber();
-			String firstName = subscriber.getFirstName();
-			String lastName = subscriber.getLastName();
+			String firstName = subscriber.getFirstname();
+			String lastName = subscriber.getLastname();
 			String name = null;
-			if(subscriber.getKYCLevelByKYCLevel().getKYCLevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc)
+			if(subscriber.getKycLevel().getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc)
 				name = subscriber.getNickname();
 			else
 				name = firstName + " " + lastName;

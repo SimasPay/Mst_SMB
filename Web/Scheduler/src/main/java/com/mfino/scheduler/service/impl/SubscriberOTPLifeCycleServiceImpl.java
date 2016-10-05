@@ -242,10 +242,10 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 		smsService.setNotificationCode(wrapper.getCode());
 		smsService.asyncSendSMS();
 		if(subscriberServiceExtended.isSubscriberEmailVerified(subscriber)) {
-		if(Long.valueOf(subscriber.getType()).equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartnerFromSubscriberID().iterator().next().getAuthorizedEmail()!=null){
+		if(Long.valueOf(subscriber.getType()).equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartners().iterator().next().getAuthorizedemail()!=null){
 			String email=subscriber.getEmail();
 			String to = subscriber.getFirstname();
-			Partner partner =subscriber.getPartnerFromSubscriberID().iterator().next();
+			Partner partner =subscriber.getPartners().iterator().next();
 			NotificationWrapper notification = partnerService.genratePartnerOTPMessage(partner, oneTimePin, mdn, CmFinoFIX.NotificationMethod_Email);
 			notification.setDestMDN(mdn);
 			if(subscriberMDN != null){
@@ -276,7 +276,7 @@ public class SubscriberOTPLifeCycleServiceImpl  implements SubscriberOTPLifeCycl
 	private Partner getPartnerForSubscriber(Subscriber subscriber) {
 		Partner partner = null;
 		if (subscriber != null) {
-			Set<Partner> partners = subscriber.getPartnerFromSubscriberID();
+			Set<Partner> partners = subscriber.getPartners();
 			if ((partners != null) && (partners.size()!=0)) { 
 				partner = partners.iterator().next();
 			}

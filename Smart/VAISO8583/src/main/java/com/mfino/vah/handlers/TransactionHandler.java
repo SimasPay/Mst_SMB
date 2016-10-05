@@ -1,7 +1,6 @@
 package com.mfino.vah.handlers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.jms.JMSException;
 
@@ -12,8 +11,6 @@ import org.jpos.iso.packager.XMLPackager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.iso8583.definitions.exceptions.ProcessorNotAvailableException;
 import com.mfino.service.SCTLService;
 import com.mfino.service.TransactionChargingService;
@@ -143,9 +140,9 @@ public class TransactionHandler implements Runnable {
 					/*String paymentLogid = msg.getValue(11).toString();
 					ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 					sctlQuery.setIntegrationTxnID(Long.parseLong(paymentLogid));
-					List<ServiceChargeTransactionLog> sctlList = sctlService.getByQuery(sctlQuery);
+					List<ServiceChargeTxnLog> sctlList = sctlService.getByQuery(sctlQuery);
 					
-					ServiceChargeTransactionLog sctl = null;
+					ServiceChargeTxnLog sctl = null;
 					if(!sctlList.isEmpty()){
 						sctl = sctlList.get(0); // Only one match would be there as we do not allow duplicate entry
 						transactionChargingService.failTheTransaction(sctl, "Transaction Timed Out");

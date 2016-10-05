@@ -228,7 +228,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 		BigDecimal result = BigDecimal.ZERO;
 		if (StringUtils.isNotBlank(ATMPartnerMDN)) {
 			SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(ATMPartnerMDN);
-			Partner partner = subscriberMDN.getSubscriber().getPartnerFromSubscriberID().iterator().next();
+			Partner partner = subscriberMDN.getSubscriber().getPartners().iterator().next();
 			Pocket thirdPartySuspensePocket = pocketService.getSuspencePocket(partner);
 			if (thirdPartySuspensePocket != null) {
 				thirdPartySuspensePocketBalnce = new BigDecimal(thirdPartySuspensePocket.getCurrentbalance());

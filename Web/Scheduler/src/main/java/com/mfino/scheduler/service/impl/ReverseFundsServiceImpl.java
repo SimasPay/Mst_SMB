@@ -147,7 +147,7 @@ public class ReverseFundsServiceImpl implements ReverseFundsService {
 		result.setNotificationService(notificationService);
 		FundDefinition fundDefinition = unRegisteredTxnInfo.getFundDefinition();
 		if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
-			log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferSCTLId());
+			log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getServiceChargeTxnLog().getId());
 			unRegisteredTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
 			unRegisteredTxnInfo.setReversalreason("Fund Expired");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FundAllocatedExpiredReversal);

@@ -155,7 +155,7 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 			Pocket destPocket = null;
 			
 			for(Pocket pocket: pockets){
-				if((pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue()) && (!(pocket.getPocketTemplate().getIscollectorpocket()))){
+				if((pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue()) && (!(pocket.getPocketTemplate().getIscollectorpocket() != 0) )){
 					sourcePocket = pocket;
 				}
 				else if((pocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_BankAccount.intValue())){

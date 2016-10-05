@@ -92,13 +92,13 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 			List<ServiceChargeTxnLog> lst = serviceChargeTransactionLogService.getByStatus(status);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				for (ServiceChargeTxnLog sctl : lst) {
-					if ((sctl.getIschargedistributed()!= null ) && (!sctl.getIschargedistributed().booleanValue()) && 
+					if ((sctl.getIschargedistributed()!= null ) && (!(sctl.getIschargedistributed() != 0)) && 
 							((currentTime.getTime() - sctl.getLastupdatetime().getTime()) > 300000) ) {
 						log.info("Charge Distribution of SCTL ID --> " + sctl.getId());
 						distribute(sctl.getId().longValue());
 					}
 					// Changing the Confirmed SCTL status based on the IsChargeDistributed value to Distribution_Completed.
-					else if((sctl.getIschargedistributed()!= null ) && (sctl.getIschargedistributed().booleanValue()) && 
+					else if((sctl.getIschargedistributed()!= null ) && (sctl.getIschargedistributed() != 0) && 
 							CmFinoFIX.SCTLStatus_Confirmed.equals(sctl.getStatus())) {
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Distribution_Completed);
 						serviceChargeTransactionLogService.save(sctl);
@@ -148,7 +148,7 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 		
 		TransactionCharge tc = tadl.getTransactionCharge();
 		
-		if (tc != null && !(tc.getChargeDefinition().getIschargefromcustomer().booleanValue())) {
+		if (tc != null && !(tc.getChargeDefinition().getIschargefromcustomer() != 0)) {
 			sourceMDN = getMDNForPartner(tc.getChargeDefinition().getPartner());
 			sourcePocketId = tc.getChargeDefinition().getPocket().getId().longValue();
 		}
@@ -173,7 +173,7 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 		chargeDistribution.setAmount(tadl.getShareamount());
 		chargeDistribution.setTaxAmount(tadl.getTaxamount());
 		chargeDistribution.setTransactionChargeID(tadl.getTransactionCharge().getId().longValue());
-		chargeDistribution.setIsPartOfSharedUpChain(tadl.getIspartofsharedupchain());
+		chargeDistribution.setIsPartOfSharedUpChain(tadl.getIspartofsharedupchain() != null && tadl.getIspartofsharedupchain() != 0);
 		chargeDistribution.setChargeTypeName(tadl.getTransactionCharge().getChargeType().getName());
 		chargeDistribution.setServiceChargeTransactionLogID(tadl.getServicechargetransactionlogid().longValue());
 		if(tadl.getPartner() != null)

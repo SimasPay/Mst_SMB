@@ -104,7 +104,7 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 					cardPanStringToReplace = cardPan + "R" + timesRetired;
                 	p.setCardpan(cardPanStringToReplace);
                     p.setStatus(CmFinoFIX.PocketStatus_Retired);
-                    p.setIsdefault(CmFinoFIX.Boolean_False);
+                    p.setIsdefault((short) 0);
                     try{
                     pocketService.save(p);
                     }catch(ConstraintViolationException e){

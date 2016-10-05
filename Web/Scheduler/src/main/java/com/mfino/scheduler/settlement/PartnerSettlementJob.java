@@ -16,7 +16,6 @@ import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.mfino.domain.SettlementScheduleLog;
-import com.mfino.domain.SettlementSchedulerLogs;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.hibernate.session.HibernateSessionHolder;
 import com.mfino.service.impl.SettlementSchedulerLogsServiceImpl;

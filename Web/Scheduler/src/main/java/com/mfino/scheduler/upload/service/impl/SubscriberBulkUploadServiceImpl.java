@@ -7,7 +7,7 @@ package com.mfino.scheduler.upload.service.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.acl.Group;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +17,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +31,8 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.query.BulkUploadFileEntryQuery;
 import com.mfino.dao.query.GroupQuery;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
@@ -39,6 +40,7 @@ import com.mfino.domain.Address;
 import com.mfino.domain.AuthPersonDetails;
 import com.mfino.domain.BulkUploadFile;
 import com.mfino.domain.BulkUploadFileEntry;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
@@ -94,9 +96,9 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 	private String uploadedBy="";
 	private static final String dateFormat = "ddMMyyyy";
 	private PocketTemplate eMoneyPocketTemplate;
-	private Map<String, Group> mapGroup = null;
+	private Map<String, Groups> mapGroup = null;
 	private Map<String, PocketTemplate> mapGroupPocketTemp = null;
-	private Group defaultGroup = null;
+	private Groups defaultGroup = null;
 	private int notificationMethod = CmFinoFIX.NotificationMethod_Web;
 	private String emailSubject = "OneTimePassword";
 	private boolean sendEmailNotification = false;
@@ -182,7 +184,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		sendEmailNotification = ConfigurationUtil.getBulkUploadSubscriberSendEmail();
 		
 		BulkUploadFileEntryQuery query = new BulkUploadFileEntryQuery();
-		query.setUploadFileID(bulkUploadFile.getId());
+		query.setUploadFileID(bulkUploadFile.getId().longValue());
 		List<BulkUploadFileEntry> fileEntries = bulkUploadFileEntryService.get(query);
 		Iterator<BulkUploadFileEntry> iterator = fileEntries.iterator();
 		int processedCount = 0;
@@ -193,7 +195,12 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			if(CmFinoFIX.BulkUploadFileEntryStatus_Initialized.equals(bulkUploadFileEntry.getBulkuploadfileentrystatus())) {
 				processedCount++;
 				Integer linenumber =(int) bulkUploadFileEntry.getLinenumber();
-				String lineData = bulkUploadFileEntry.getLinedata();
+				String lineData = "";
+				try {
+					lineData = bulkUploadFileEntry.getLinedata().getSubString(0, ((Long)bulkUploadFileEntry.getLinedata().length()).intValue());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				log.info("Processing record at line number: " + linenumber);
 				//set the bulk upload file entry record status as Processing
 				bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Processing);
@@ -365,8 +372,8 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			}
 			Address address = subscriber.getAddressBySubscriberaddressid();
 			SubscriberAddiInfo additionalFields = null;
-			if (CollectionUtils.isNotEmpty(subscriber.getSubscribersAdditionalFieldsFromSubscriberID())) {
-				additionalFields = subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+			if (CollectionUtils.isNotEmpty(subscriber.getSubscriberAddiInfos())) {
+				additionalFields = subscriber.getSubscriberAddiInfos().iterator().next();
 			} 
 			else {
 				additionalFields = new SubscriberAddiInfo();
@@ -378,8 +385,10 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			//Upgrade Emoney pocket Template to Fully Banked
 			// Set Group Id to Default Group Id '1' so that if any subscriber exists with out group then 
 			//the default group will be used in calculating of pocket templates.
-			Long groupID = defaultGroup.getId(); 
-			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+			Long groupID = defaultGroup.getId().longValue(); 
+			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
@@ -467,15 +476,15 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 	 * Get all the groups from the system and generate Map with group name as key.
 	 * @return
 	 */
-	private Map<String, Group> getAllGroups() {
-		Map<String, Group> result = new Hashtable<String, Group>();		
+	private Map<String, Groups> getAllGroups() {
+		Map<String, Groups> result = new Hashtable<String, Groups>();		
 		GroupQuery groupQuery = new GroupQuery();
 		groupQuery.setIncludeSystemGroups(true);
-		List<Group> lstGroup = groupService.get(groupQuery);
+		List<Groups> lstGroup = groupService.get(groupQuery);
 		if (CollectionUtils.isNotEmpty(lstGroup)) {
-			for (Group group:lstGroup) {
-				result.put(group.getGroupName().toLowerCase(), group);
-				if (group.getSystemGroup() != null && group.getSystemGroup().booleanValue()) {
+			for (Groups group:lstGroup) {
+				result.put(group.getGroupname().toLowerCase(), group);
+				if (group.getSystemgroup() != null && group.getSystemgroup() != 0) {
 					defaultGroup = group;
 				}
 			}
@@ -517,8 +526,8 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 	private String generateStringKey(PocketTemplateConfig ptc) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ptc.getKycLevel().getKyclevel());
-		if (CollectionUtils.isNotEmpty(ptc.getPTC_Group_MapFromPtcID())) {
-			sb.append(ptc.getPTC_Group_MapFromPtcID().iterator().next().getGroup().getID());
+		if (CollectionUtils.isNotEmpty(ptc.getPtcGroupMappings())) {
+			sb.append(ptc.getPtcGroupMappings().iterator().next().getGroups().getId());
 		}
 		return sb.toString();
 	}
@@ -610,18 +619,19 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			subscriber.setAppliedby(uploadedBy);
 		}
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroupid().getId();
+			groupID = subscriberGroup.getGroupid().longValue();
 		}
 		else {
 			if (mapGroup.get(syncRecord.getGroupName().toLowerCase()) != null) {
-				groupID = mapGroup.get(syncRecord.getGroupName().toLowerCase()).getId();
+				groupID = mapGroup.get(syncRecord.getGroupName().toLowerCase()).getId().longValue();
 			}
 			else {
-				groupID = defaultGroup.getId(); // Setting the default groupId in order to get the Pocket template.
+				groupID = defaultGroup.getId().longValue(); // Setting the default groupId in order to get the Pocket template.
 			}
 		}
 		
@@ -650,7 +660,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			String cardPan = pocketService.generateSVAEMoney16DigitCardPAN(syncRecord.getMdn());			
 			if (authorizingPerson != null) {
 				authorizingPersonService.save(authorizingPerson);
-				subscriber.setAuthorizingPerson(authorizingPerson);
+				subscriber.setAuthPersonDetails(authorizingPerson);
 			}
 		 	subscriberService.saveSubscriber(subscriber);
 		 	if(syncRecord.getEmail() != null) { //send Email verification mail
@@ -665,8 +675,9 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			// Adding Group to new subscriber
 			if(syncRecord.getId() == null) {
 				sg = new SubscriberGroup();
-				sg.setSubscriber(subscriber);
-				sg.setGroup((mapGroup.get(syncRecord.getGroupName().toLowerCase()) != null) ? mapGroup.get(syncRecord.getGroupName().toLowerCase()) : defaultGroup);
+				sg.setSubscriberid(subscriber.getId().longValue());
+				sg.setGroupid((mapGroup.get(syncRecord.getGroupName().toLowerCase()) != null) ?
+						mapGroup.get(syncRecord.getGroupName().toLowerCase()).getId().longValue() : defaultGroup.getId().longValue());
 				subscriberGroupService.save(sg);
 			}
 			if (StringUtils.isNotBlank(syncRecord.getCardPan())&&CmFinoFIX.RecordType_SubscriberFullyBanked.equals(syncRecord.getAccountType())) {
@@ -680,7 +691,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				if(syncRecord.getId()!=null){
 					Long unregPocketTempId = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
 					if(unregPocketTempId>0){
-						Pocket emoney = subscriberService.getDefaultPocket(subscriberMDN.getID(), unregPocketTempId);
+						Pocket emoney = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), unregPocketTempId);
 						if(emoney!=null&&emoney.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive)){
 							emoney.setPocketTemplateByOldpockettemplateid(emoney.getPocketTemplate());
 							emoney.setPocketTemplate(eMoneyPocketTemplate);
@@ -805,8 +816,8 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		ptcQuery.set_subscriberType(CmFinoFIX.SubscriberType_Subscriber);
 		ptcQuery.set_commodity(CmFinoFIX.Commodity_Money);
 		ptcQuery.set_pocketType(CmFinoFIX.PocketType_BankAccount);
-		Group group = mapGroup.get(subscriberSyncRecord.getGroupName().toLowerCase());
-		ptcQuery.set_GroupID(group.getId());
+		Groups group = mapGroup.get(subscriberSyncRecord.getGroupName().toLowerCase());
+		ptcQuery.set_GroupID(group.getId().longValue());
 		ptcQuery.set_KYCLevel(subscriberType.longValue());
 		List <PocketTemplateConfig> results = pocketTemplateConfigService.get(ptcQuery);
 		if(results.size() == 0) {

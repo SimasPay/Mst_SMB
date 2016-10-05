@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerServicesDAO;
+import com.mfino.dao.PocketDAO;
+import com.mfino.dao.SettlementTransactionLogsDao;
 import com.mfino.dao.query.SCTLSettlementMapQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MfinoServiceProvider;
@@ -165,7 +167,10 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			return;
 		}
 		
-		Pocket collectorPocket = partnerService.getPocketByCollectorPocket();
+		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
+		Pocket pocket = pocketDAO.getById(partnerService.getCollectorpocket().longValue());
+		
+		Pocket collectorPocket = pocket;
 		Pocket settlementPocket = null;
 		Set<ServiceSettlementCfg> settlementConfigs = partnerService.getServiceSettlementCfgs();
 		ServiceSettlementCfg settlementConfig = null;
@@ -176,7 +181,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			 * This part needs to be modified when date effectivity comes into picture.
 			 */
 			for(ServiceSettlementCfg sc : settlementConfigs){
-				if((sc.getIsdefault() != null) && (sc.getIsdefault())){
+				if((sc.getIsdefault() != null) && (sc.getIsdefault() != 0)){
 					settlementConfig = sc;
 					break;
 				}
@@ -194,7 +199,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		log.info("PartnerSettlementService :: doSettlement() Settlement Config ID="+settlementConfig.getId());
 		
 		settlementTransactionLog.setServicesettlementconfigid(settlementConfig.getId());
-		settlementPocket = settlementConfig.getSettlementTemplate().getPocketBySettlementPocket();
+		settlementPocket = settlementConfig.getSettlementTemplate().getPocket();
 		
 		//For CutoffTime
 		Long stID = null;
@@ -338,10 +343,10 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		}
 		//Settlement Enhancement
 		SettlementTxnSctlMap stsm = new SettlementTxnSctlMap();
-		stsm.setSctlId(sctl.getId());
-		stsm.setStlID(settlementTransactionLog.getId());
+		stsm.setServiceChargeTxnLog(sctl);
+		stsm.setSettlementTxnLog(settlementTransactionLog);
         MfinoServiceProvider msp = mfinoServiceProviderService.getMFSPbyID(1);
-        stsm.setMfinoServiceProvider(msp);
+        stsm.setMspid(msp.getId());
 		
 		if(settlementAmount != null){
 			settlementTransactionLog.setAmount(settlementAmount);
@@ -504,11 +509,11 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			List<SctlSettlementMap> sctlSMList = sCTLSettlementMapService.get(sctlSMQuery);
 	
 			log.info("CutoffTime : "+cutoff+"PartnerID : "+partnerId);
-			
+			SettlementTransactionLogsDao settlementTransactionLogsDao = DAOFactory.getInstance().getSettlementTransactionLogDao();
 			for(SctlSettlementMap sctl : sctlSMList){
-//				pendingAmount = pendingAmount.add(sctl.getAmount());
 				sctl.setStatus(CmFinoFIX.SettlementStatus_Settled);
-				sctl.setStlID(stlID);
+				SettlementTxnLog settlementTxnLog = settlementTransactionLogsDao.getById(stlID);
+				sctl.setSettlementTxnLog(settlementTxnLog );
 				sCTLSettlementMapService.save(sctl);
 			}
 		

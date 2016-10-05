@@ -42,7 +42,7 @@ public class ServiceSettlementConfigUpdate extends BaseServiceImpl{
 
 			for(ServiceSettlementCfg config:settlementConfigs){
 				PartnerServices partnerServices = config.getPartnerServices();
-				config.setPocketByCollectorPocket(partnerServices.getPocketByCollectorPocket());
+				config.setPocket(partnerServices.getPocketBySourcepocket());
 				if(config.getSchedulerstatus().intValue()==CmFinoFIX.SchedulerStatus_Scheduled){
 					config.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_Rescheduled));
 					log.info("Set status to ReScheduled for ServiceSettlementConfig:"+config.getId());

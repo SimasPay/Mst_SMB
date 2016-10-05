@@ -24,8 +24,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.PocketDAO;
 import com.mfino.dao.query.ServiceSettlementConfigQuery;
 import com.mfino.domain.PartnerServices;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.domain.SettlementScheduleLog;
 import com.mfino.domain.SettlementTemplate;
@@ -151,7 +154,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 
 		ssLog.setMspid(BigDecimal.valueOf(1L));
 		ssLog.setPartnerservicesid(partnerService.getId());
-		ssLog.setIsscheduled(Boolean.FALSE);
+		ssLog.setIsscheduled((short)0);
 
 		Set<ServiceSettlementCfg> settlementConfigs = partnerService.getServiceSettlementCfgs();
 
@@ -163,7 +166,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			 * This part needs to be modified when date effectivity comes into picture.
 			 */
 			for(ServiceSettlementCfg sc : settlementConfigs){
-				if((sc.getIsdefault() != null) && (sc.getIsdefault())){
+				if((sc.getIsdefault() != null) && (sc.getIsdefault() != 0)){
 					settlementConfig = sc;
 					break;
 				}
@@ -264,7 +267,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			ssLog.setNextsettle(new Timestamp(trigger.getNextFireTime()));
 			ssLog.setQrtzjobid(jobId);
 			ssLog.setReasontext("Job Scheduled");
-			ssLog.setIsscheduled(Boolean.TRUE);
+			ssLog.setIsscheduled((short) 1);
 			settlementSchedulerLogsService.save(ssLog);
 
 			settlementConfig.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_Scheduled));
@@ -276,7 +279,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			if(errorMsg!=null){
 				ssLog.setReasontext(errorMsg.substring(0,240));
 			}
-			ssLog.setIsscheduled(Boolean.FALSE);
+			ssLog.setIsscheduled((short) 0);
 			settlementSchedulerLogsService.save(ssLog);
 			log.error("Error while scheduling job for partner service id "+partnerService.getId(), e);	
 			return ssLog;
@@ -309,8 +312,9 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 	protected List<ServiceSettlementCfg> getSimilarSettlementConfigs(PartnerServices partnerServices){
 
 		ServiceSettlementConfigQuery query = new ServiceSettlementConfigQuery();
-
-		query.setCollectorPocket(partnerServices.getPocketByCollectorPocket());
+		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
+		Pocket pocket = pocketDAO.getById(partnerServices.getCollectorpocket().longValue());
+		query.setCollectorPocket(pocket);
 		query.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Scheduled);
 		List<ServiceSettlementCfg> settlementConfigs = serviceSettlementConfigCoreService.get(query);		
 		return settlementConfigs;

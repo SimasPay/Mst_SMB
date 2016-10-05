@@ -15,7 +15,7 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -53,10 +53,10 @@ public class BulkUploadUtil {
 		CMJSError error = new CMJSError();
 		error.setErrorCode(SubscriberSyncErrors.Success);
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-		SubscriberMDN subscriberMDN = subscriberMDNDAO.getByMDN(syncRecord.getMdn());
+		SubscriberMdn subscriberMDN = subscriberMDNDAO.getByMDN(syncRecord.getMdn());
 		if (subscriberMDN!=null) {
-			syncRecord.setId(subscriberMDN.getID());
-			if(subscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered)){
+			syncRecord.setId(subscriberMDN.getId().longValue());
+			if(((Long) subscriberMDN.getStatus()).equals(CmFinoFIX.MDNStatus_NotRegistered)){
 			error.setErrorCode(SubscriberSyncErrors.Notregistered_MDN);
 			error.setErrorDescription(SubscriberSyncErrors.errorCodesMap.get(SubscriberSyncErrors.Notregistered_MDN));
 			}else{

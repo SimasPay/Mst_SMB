@@ -178,15 +178,15 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 			if(txnTransfer.getCommoditytransferid().equals(ctId)){
 				continue;
 			}
-			CRCommodityTransfer commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommoditytransferid().longValue());
+			CommodityTransfer commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommoditytransferid().longValue());
 			if(commodityTransfer==null){
 				commodityTransfer = commodityTransferService.getCommodityTransferById(txnTransfer.getCommoditytransferid().longValue());
 			}
-			if(ctId==null&&CmFinoFIX.TransactionUICategory_Teller_Cashout.equals(commodityTransfer.getUICategory())){
-				ctId = commodityTransfer.getID();
+			if(ctId==null&&CmFinoFIX.TransactionUICategory_Teller_Cashout.equals(commodityTransfer.getUicategory())){
+				ctId = commodityTransfer.getId().longValue();
 				if(commodityTransfer instanceof CommodityTransfer){
-					updateSctl(sctl.getId(), commodityTransfer);
-					if(!CmFinoFIX.TransactionsTransferStatus_Completed.equals(commodityTransfer.getTransferStatus())){
+					updateSctl(sctl.getId().longValue(), commodityTransfer);
+					if(!CmFinoFIX.TransactionsTransferStatus_Completed.equals(commodityTransfer.getTransferstatus())){
 						log.info("Cashout failed");
 						error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 						error.setErrorDescription("No Successful CashOut Transaction found");
@@ -200,8 +200,8 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 				}
 			}
 			//change uicategory to teller cash out confirm
-			if(CmFinoFIX.TransactionUICategory_Teller_Cashout_TransferToBank.equals(commodityTransfer.getUICategory())
-					&&(commodityTransfer instanceof PendingCommodityTransfer ||CmFinoFIX.TransferStatus_Completed.equals(commodityTransfer.getTransferStatus()))){
+			if(CmFinoFIX.TransactionUICategory_Teller_Cashout_TransferToBank.equals(commodityTransfer.getUicategory())
+					&&(commodityTransfer instanceof PendingCommodityTransfer ||CmFinoFIX.TransferStatus_Completed.equals(commodityTransfer.getTransferstatus()))){
 				error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				error.setErrorDescription("Transaction already Approved");
 				return error;

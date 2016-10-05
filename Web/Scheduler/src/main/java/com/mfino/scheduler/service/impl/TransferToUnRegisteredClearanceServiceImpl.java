@@ -152,7 +152,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 		}
 		else if (CmFinoFIX.NotificationCode_AutoReverseFailed.equals(result.getNotificationCode())) {
 			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctlId + " is failed");
-			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.longValue());
 			urti.setFailurereason(MessageText._("Reversal of 'Transfer to UnRegistered' is failed and will try in next trigger fire event"));
 			unRegisteredTxnInfoService.save(urti);
 		}

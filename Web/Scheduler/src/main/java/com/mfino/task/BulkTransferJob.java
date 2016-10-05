@@ -7,18 +7,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerContext;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.BulkUpload;
@@ -27,8 +17,6 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
-import com.mfino.hibernate.session.HibernateSessionHolder;
-import com.mfino.i18n.MessageText;
 import com.mfino.service.BulkUploadEntryService;
 import com.mfino.service.BulkUploadService;
 import com.mfino.service.ChannelCodeService;
@@ -100,26 +88,26 @@ public class BulkTransferJob {
 
 	public void doBulkTransfer(BulkUpload bulkUpload) {
 		// change the Bulk upload file status to processing.
-		bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Processing);
-		bulkUpload.setDeliveryDate(new Timestamp());
+		bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Processing);
+		bulkUpload.setDeliverydate(new Timestamp());
 		bulkuploadService.save(bulkUpload);
 
 		try {
 			bulkUpload = processBulkTransferData(bulkUpload);
 		} catch (IOException e) {
-			log.error("Could not able to process the uploaded Tranfer file for Bulk Transfer: " + bulkUpload.getID() + "." + e.getMessage(), e);
+			log.error("Could not able to process the uploaded Tranfer file for Bulk Transfer: " + bulkUpload.getId() + "." + e.getMessage(), e);
 			String failureReason = e.getMessage().length() > 255 ? e.getMessage().substring(0, 255) : e.getMessage(); 
 			btService.failTheBulkTransfer(bulkUpload, failureReason);
 			return;
 		}
-		bulkUpload.setDeliveryStatus(CmFinoFIX.BulkUploadDeliveryStatus_Complete);
-		bulkUpload.setDeliveryDate(new Timestamp());
+		bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Complete);
+		bulkUpload.setDeliverydate(new Timestamp());
 		bulkuploadService.save(bulkUpload);
 		btService.sendEmailBulkUploadSummary(bulkUpload);	
 	}
 
 	private BulkUpload processBulkTransferData(BulkUpload bulkUpload) throws IOException {
-		int successCount = 0;
+		long successCount = 0;
 		int i = 0;
 		BigDecimal successAmount = BigDecimal.ZERO;
 
@@ -128,7 +116,7 @@ public class BulkTransferJob {
 		
 		ChannelCode channelCode = channelCodeService.getChannelCodebySourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		
-		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getBulkUploadEntriesForBulkUpload(bulkUpload.getID());
+		List<BulkUploadEntry> bulkUploadEntries = bulkUploadEntryService.getBulkUploadEntriesForBulkUpload(bulkUpload.getId().longValue());
 
 		for (BulkUploadEntry bue:bulkUploadEntries) {
 			try {
@@ -139,13 +127,13 @@ public class BulkTransferJob {
 					successAmount = successAmount.add(bue.getAmount());
 				}
 			} catch (Exception e) {
-				log.error("Error: While processing the line number " + i + " for Bulk Transfer --> " + bulkUpload.getID(), e);
+				log.error("Error: While processing the line number " + i + " for Bulk Transfer --> " + bulkUpload.getId(), e);
 			}
 		}
 
-		bulkUpload.setSuccessAmount(successAmount);
-		int failedCount = bulkUpload.getTransactionsCount().intValue() - successCount;
-		bulkUpload.setFailedTransactionsCount(failedCount);
+		bulkUpload.setSuccessamount(successAmount);
+		Long failedCount = bulkUpload.getTransactionscount() - successCount;
+		bulkUpload.setFailedtransactionscount(failedCount);
 
 		return bulkUpload;
 	}

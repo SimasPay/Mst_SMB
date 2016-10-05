@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.dao.query.MoneyClearanceGravedQuery;
 import com.mfino.dao.query.PartnerQuery;
@@ -309,7 +311,9 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		Subscriber subscriber = null;
 		Timestamp now = new Timestamp();
 		if(subscriberStatusEvent!=null){
-			SubscriberMdn subscriberMDN=getSubscriberMDNForSubscriber(subscriberStatusEvent.getSubscriberid());
+			SubscriberDAO subscriberDAO = DAOFactory.getInstance().getSubscriberDAO();
+			Subscriber subscriberById = subscriberDAO.getById(subscriberStatusEvent.getSubscriberid().longValue());
+			SubscriberMdn subscriberMDN = getSubscriberMDNForSubscriber(subscriberById);
 		if (subscriberMDN != null) {
 			subscriber = subscriberMDN.getSubscriber();
 			log.info("Checking the Subscriber MDN with id --> " + subscriberMDN.getId() + " And status is --> " + subscriber.getStatus());
@@ -333,7 +337,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							partnerService.savePartner(partner);
 						}
 						log.info("Suspended the Partner with subscriber id --> " + subscriber.getId());
-						subscriberStatusEvent.setProcessingstatus(true);
+						subscriberStatusEvent.setProcessingstatus((short) 1);
 						subscriberStatusEventService.save(subscriberStatusEvent);
 						subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 					}
@@ -355,7 +359,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							partnerService.savePartner(partner);
 						}
 					}
-					subscriberStatusEvent.setProcessingstatus(true);
+					subscriberStatusEvent.setProcessingstatus((short)1);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 					log.info("Suspended the Subscriber with id --> " + subscriber.getId());
@@ -384,7 +388,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 						}
 					}
 					log.info("Moved to Pending retired the subscriber with id -->" + subscriber.getId());
-					subscriberStatusEvent.setProcessingstatus(true);
+					subscriberStatusEvent.setProcessingstatus((short)1);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 
@@ -394,7 +398,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			else if (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subscriberMDN.getStatus()) {
 				//Grave the subscriber if he is in retired state for a period of TIME_TO_GRAVE_OF_RETIRED
 				if (((now.getTime() - subscriberMDN.getStatustime().getTime()) > TIME_TO_GRAVE_OF_RETIRED) || 
-						(subscriberMDN.getIsforcecloserequested() != null && subscriberMDN.getIsforcecloserequested().booleanValue())) {
+						(subscriberMDN.getIsforcecloserequested() != null && subscriberMDN.getIsforcecloserequested() != 0)) {
 					
 					List<Pocket> srcPocketList = getSubscriberPocketsListWithBalance(subscriberMDN);
 					if(srcPocketList != null && srcPocketList.size() > 0){
@@ -410,7 +414,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							return;
 						}
 						//The system collector pocket need to be suspense pocket
-						if(destSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != true){
+						if(destSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != (short) 1){
 							log.info("Failed to move balance in all/some of the EMoney Pockets of Retired Subscriber with subscriber ID --> " 
 									+ subscriber.getId() + " as the system provider pocket is not of suspense type and hence the subscriber will not be graved");
 							return;
@@ -474,7 +478,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 								+ subscriber.getId()) ;
 						return;
 					}
-					if(srcSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != true){
+					if(srcSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != 1){
 						log.info("Failed to move money from system collector pocket to National Treasury for subscriber ID -->" 
 								+ subscriber.getId() + " as the system provider pocket is not of suspense type");
 						return;
@@ -637,7 +641,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 					}
 				}
 				log.info("Subscriber Status is changed to Inactive because of no activity with id --> " + subscriber.getId());
-				subscriberStatusEvent.setProcessingstatus(true);
+				subscriberStatusEvent.setProcessingstatus((short)1);
 				subscriberStatusEventService.save(subscriberStatusEvent);
 				subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 			}else if(Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))){
@@ -672,7 +676,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 						partnerService.savePartner(partner);
 					}
 				}
-				subscriberStatusEvent.setProcessingstatus(true);
+				subscriberStatusEvent.setProcessingstatus((short)1);
 				subscriberStatusEventService.save(subscriberStatusEvent);
 				subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 				log.info("Subscriber Status is changed to Inactive  because of no activity with id --> " + subscriber.getId());
@@ -703,7 +707,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 					subscriber.setStatustime(now);
 					subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 					subscriberService.saveSubscriber(subscriber);
-					subscriberStatusEvent.setProcessingstatus(true);
+					subscriberStatusEvent.setProcessingstatus((short)1);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					if (Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 						Partner partner = getPartnerForSubscriber(subscriber);

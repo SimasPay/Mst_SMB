@@ -25,7 +25,7 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
-	public static final String FieldName_TransferSCTLId = "cashoutsctlid";
+	public static final String FieldName_TransferSCTLId = "serviceChargeTxnLog";
 	public static final String FieldName_TransferCTId = "transferctid";
 	public static final String FieldName_CashoutSCTLId = "cashoutsctlid";
 	public static final String FieldName_UnRegisteredTxnStatus = "unregisteredtxnstatus";
