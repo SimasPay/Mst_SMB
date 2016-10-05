@@ -5757,9 +5757,9 @@
 				<field name="DCTID" />
 			</index>
 			<field name="SubscriberID" required="Y" References="Merchant" />
-			<field name="MDNID" required="Y" References="SubscriberMDN" />
+			<field name="MDNID" required="Y" References="SubscriberMdn" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
-			<field name="TransactionID" required="Y" References="TransactionsLog" />
+			<field name="TransactionID" required="Y" References="TransactionLog" />
 			<field name="DCTLevelID" required="N" References="DistributionChainLevel" />
 			<field name="DCTID" required="N" References="DistributionChainTemplate" />
 			<field name="DistributionPermissions" id="LevelPermissions" required="N" />
@@ -5899,10 +5899,10 @@
 				<field name="TransferAmount"/>
 			</query>
 			<field name="RecordID" id="ID" required="Y" />
-			<field name="TransactionID" required="Y" References="TransactionsLog" />
+			<field name="TransactionID" required="Y" References="TransactionLog" />
 			<field name="MsgType" required="Y" />
 			<field name="TransactionUICategory" id="UICategory" required="N" />
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
 			<field name="TransferStatus" required="Y" />
 			<field name="TransferFailureReason" required="N" />
@@ -5914,7 +5914,7 @@
 			<field name="SourceReferenceID" required="N" />
 			<field name="SourceTerminalID" required="N" />
 			<field name="SourceMDN" required="Y" />
-			<field name="SourceMDNID" required="Y" References="SubscriberMDN" />
+			<field name="SourceMDNID" required="Y" References="SubscriberMdn" />
 			<field name="LOPID" required="N" References="LOP" />
 			<field name="DCTLevelID" required="N" References="DistributionChainLevel" />
 			<field name="DistributionPermissions" id="LevelPermissions" required="N" />
@@ -6051,7 +6051,7 @@
 				<field name="CompanyID" SQLQueryOperator="=" />
 			</query>
 			<field name="PocketTemplateID" required="Y" References="PocketTemplate" />
-			<field name="MDNID" required="Y" References="SubscriberMDN" />
+			<field name="MDNID" required="Y" References="SubscriberMdn" />
 			<field name="LastTransactionTime" required="N" />
 			<field name="CurrentBalance" required="N" />
 			<field name="CurrentDailyExpenditure" required="Y" default="0" SQLDefault="0" />
@@ -6079,7 +6079,7 @@
 			<field name="LowBalNotifQueryTime" required="N" /> 	
 			<field name="CompanyID" required="N" References="Company" />
 		</record>
-		<record name="SubscriberMDN" ExtendsRecord="Base" Java="Y" SQLTable="subscriber_mdn" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SubscriberMdn" ExtendsRecord="Base" Java="Y" SQLTable="subscriber_mdn" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="MDN" Unique="Y">
 				<field name="MDN" />
 			</index>
@@ -6134,8 +6134,8 @@
 			<field name="CloseUser" required="N" />
 			<field name="KTPID" required="N" />
 		</record>
-		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+		<record name="TransactionLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ParentTransactionID" required="N" />
 			<field name="CreatorMultiXID" id="MultiXID" required="N" />
 			<field name="TransactionTime" required="Y" />
@@ -6143,7 +6143,7 @@
 			<field name="MessageData" required="Y" />
 		</record>
 		<record name="PocketTemplate" ExtendsRecord="Base" Java="Y" SQLTable="pocket_template" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="PocketType" id="Type" required="Y" />
 			<field name="BankAccountCardType" required="N" />
 			<field name="Description" required="N" />
@@ -6240,7 +6240,7 @@
 			</index>
 		</record>
 		<record name="BulkUpload" ExtendsRecord="Base" Java="Y" SQLTable="bulk_upload" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
 			<field name="Name" required="N"/>
 			<field name="Description" required="Y" />
@@ -6350,7 +6350,7 @@
 				<field name="MSPID" />
 				<field name="Username" />
 			</index>
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
 			<field name="Username" required="N" />
 			<field name="Password" required="N" />
@@ -6397,7 +6397,7 @@
 				<field name="Language" />
 				<field name="CompanyID" />
 			</index>
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="NotificationCode" id="Code" required="Y" />
 			<field name="NotificationCodeName" id="CodeName" required="Y" />
 			<field name="NotificationMethod" required="Y" />
@@ -6430,7 +6430,7 @@
 				<field name="SubscriberID" />
 				<field name="MDN" required="N" />
 			</index>
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" default="1" SQLDefault="1" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" default="1" SQLDefault="1" />
 			<field name="SubscriberID" required="Y" References="Subscriber" />
 			<field name="MDN" required="Y" />
 			<field name="PeerName" required="N" />
@@ -6481,7 +6481,7 @@
 			<index name="PrefixCode">
 				<field name="PrefixCode" />
 			</index>
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="CompanyID" required="Y" References="Company" />
 			<field name="InternationalCountryCode" required="Y" default="62" />
 			<field name="PrefixCode" required="Y" />
@@ -6513,7 +6513,7 @@
 			<index name="LastName">
 				<field name="LastName" />
 			</index>
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
 			<!-- To be removed -->
 			<field name="ParentID" required="Y" default="0" SQLDefault="0" />
@@ -6553,7 +6553,7 @@
 			<field name="IDExiparetionTime" required="N" />
 			<field name="SubscriberUserID" required="N" References="User" />
 			<field name="ReferenceAccount" required="N"  /> 
-			<field name="AuthorizingPersonID" required="N" References="AuthorizingPerson" /> 
+			<field name="AuthorizingPersonID" required="N" References="AuthPersonDetails" /> 
 			<field name="AliasName" required="N" />
 			<field name="DetailsRequired" required="N" default="0"/>
 			<field name="RegistrationMedium" required="N" default="0" SQLDefault="0"/>
@@ -6567,7 +6567,7 @@
 				  <field name="MothersMaidenName" required="N" /> -->
 		</record>
 		<record name="TransactionType" ExtendsRecord="Base" Java="Y" SQLTable="transaction_type" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="TransactionName" required="N" />
 			<field name="DisplayName" required="N" />
 		</record>
@@ -6587,7 +6587,7 @@
 			<field name="TransactionTypeID" required="N" References="TransactionType" />
 		</record>
 		<record name="DistributionChainTemplate" ExtendsRecord="Base" Java="Y" SQLTable="distribution_chain_temp" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="DistributionChainName" id="Name" required="Y" />
 			<field name="Description" required="N" />
 			<field name="ServiceID" required="N" References="Service" />
@@ -6607,7 +6607,7 @@
 			<field name="IsValid" required="N" />
 			<field name="RelationShipType" required="N" />
 		</record>
-		<record name="mFinoServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="mfino_service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="MfinoServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="mfino_service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MSPName" id="Name" required="N" />
 			<field name="Description" required="N" />
 			<field name="MSPStatus" id="Status" required="N" />
@@ -6634,7 +6634,7 @@
 			<field name="Role" required="Y" />
 			<field name="Permission" required="Y" />
 		</record>
-		<record name="PermissionItems" ExtendsRecord="Base" Java="Y" SQLTable="permission_item" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="PermissionItem" ExtendsRecord="Base" Java="Y" SQLTable="permission_item" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="PermissionItemsIndex" Unique="Y">
 				<field name="Permission" />
 				<field name="ItemType" />
@@ -6729,10 +6729,10 @@
 			<field name="CompanyID" required="N" />
 			<field name="VAServiceName" required="Y" />
 		</record>
-		<record name="PendingTransactionsFile" ExtendsRecord="BulkUploadFile" Java="Y" SQLTable="pending_txns_file" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="PendingTxnsFile" ExtendsRecord="BulkUploadFile" Java="Y" SQLTable="pending_txns_file" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="ResolveAs" required="N" />
 		</record>
-		<record name="PendingTransactionsEntry" ExtendsRecord="Base" Java="Y" SQLTable="pending_txns_entry" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="PendingTxnsEntry" ExtendsRecord="Base" Java="Y" SQLTable="pending_txns_entry" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="PendingTransactionsFileID" id="TransactionsFileID" required="Y" />
 			<field name="PendingTransactionsLineNumber" id="LineNumber" required="Y" />
 			<field name="ResolveStatus" id="Status" required="Y" />
@@ -6763,7 +6763,7 @@
 				<field name="DCTID" />
 			</index>
 			<field name="MerchantID" required="Y" References="Merchant" />
-			<field name="MDNID" required="Y" References="SubscriberMDN" />
+			<field name="MDNID" required="Y" References="SubscriberMdn" />
 			<field name="CompanyID" required="Y" References="Company" default="1" />
 			<field name="DCTLevelID" required="N" References="DistributionChainLevel" />
 			<field name="DCTID" required="N" References="DistributionChainTemplate" />
@@ -6905,7 +6905,7 @@
 			<field name="Header" required="N" />
 			<field name="Footer" required="N" />
 		</record>
-		<record name="SMSTransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="sms_transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
+		<record name="SmsTransactionLog" ExtendsRecord="Base" Java="Y" SQLTable="sms_transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="FieldID" required="N" />
 			<field name="TransactionTime" required="Y" />
 			<field name="PartnerID" required="Y" References="SMSPartner"/>
@@ -7021,12 +7021,12 @@
 			  <record name="PartnerAdmin" ExtendsRecord="Base" Java="Y" SQLTable="partner_admin" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			  </record>-->
 		<record name="Service" ExtendsRecord="Base" Java="Y" SQLTable="service" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ServiceName" required="N" />
 			<field name="DisplayName" required="N" />
 		</record>
 		<record name="ServiceTransaction" ExtendsRecord="Base" Java="Y" SQLTable="service_transaction" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ServiceID" required="Y" References="Service" />
 			<field name="TransactionTypeID" required="Y"  References="TransactionType" />
 			<field name="IsReverseAllowed" required="Y"/>
@@ -7037,7 +7037,7 @@
 			</index>
 			<field name="SubscriberID" required="Y" References="Subscriber" />
 			<field name="UserID" required="Y" References="User" />
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="PartnerCode" required="N" />
 			<field name="PartnerStatus" required="Y" />
 			<field name="TradeName" required="N" />
@@ -7068,11 +7068,11 @@
 			<field name="CloseApproverComments" required="N" />
 		</record>
 		<!-- <record name="ServiceProvider" ExtendsRecord="Base" Java="Y" SQLTable="service_provider" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-				<field name="MSPID" required="Y" References="mFinoServiceProvider" />  
+				<field name="MSPID" required="Y" References="MfinoServiceProvider" />  
 				<field name="ServiceProviderName" required="N" />
 			 </record>-->
 		<record name="PartnerServices" ExtendsRecord="Base" Java="Y" SQLTable="partner_services" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="PartnerID" required="Y" References="Partner" />
 			<field name="ServiceProviderID" required="Y" References="Partner" />
 			<field name="ServiceID" required="Y" References="Service"/>             
@@ -7086,15 +7086,15 @@
 			<field name="IsServiceChargeShare" required="N"/>
 		</record>
 		<record name="SettlementTemplate" ExtendsRecord="Base" Java="Y" SQLTable="settlement_template" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="SettlementName" required="Y" />
 			<field name="SettlementPocket" required="Y" References="Pocket" />
 			<field name="PartnerID" required="Y" References="Partner" />
 			<field name="ScheduleTemplateID" required="N" References="ScheduleTemplate" />
 			<field name="CutoffTime" required="N" />
 		</record>
-		<record name="ServiceSettlementConfig" ExtendsRecord="Base" Java="Y" SQLTable="service_settlement_cfg" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+		<record name="ServiceSettlementCfg" ExtendsRecord="Base" Java="Y" SQLTable="service_settlement_cfg" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="SettlementTemplateID" required="Y" References="SettlementTemplate"/>
 			<field name="PartnerServiceID" required="Y" References="PartnerServices"/>
 			<field name="StartDate" required="N" />
@@ -7104,22 +7104,22 @@
 			<field name="CollectorPocket" required="N" References="Pocket"/> 
 			<field name="SimilarConfigID" required="N"/>      
 		</record>      
-		<record name="MFSBiller" ExtendsRecord="Base" Java="Y" SQLTable="mfs_biller" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+		<record name="MfsBiller" ExtendsRecord="Base" Java="Y" SQLTable="mfs_biller" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="MFSBillerName" required="Y" />
 			<field name="MFSBillerCode" required="Y" />
 			<field name="MFSBillerType" required="Y" />
 		</record>
 		<record name="MFSBillerPartner" ExtendsRecord="Base" Java="Y" SQLTable="mfsbiller_partner_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
-			<field name="MFSBillerId" required="Y" References="MFSBiller"/>
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
+			<field name="MFSBillerId" required="Y" References="MfsBiller"/>
 			<field name="PartnerID" required="Y" References="Partner"/>
 			<field name="PartnerBillerCode" required="N" />
 			<field name="BillerPartnerType" required="N" />
 			<field name="IntegrationCode" required="N" />
 			<field name ="ChargesIncluded" required="N"/>
 		</record>
-		<record name="SettlementTransactionLogs" ExtendsRecord="Base" Java="Y" SQLTable="settlement_txn_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SettlementTxnLog" ExtendsRecord="Base" Java="Y" SQLTable="settlement_txn_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y"/>
 			<field name="PartnerServicesID" required="Y"/>     	
 			<field name="CommodityTransferID" required="N"/>
@@ -7129,7 +7129,7 @@
 			<field name="Amount" required="N" />
 			<field name="Description" required="N" />
 		</record>
-		<record name="SettlementSchedulerLogs" ExtendsRecord="Base" Java="Y" SQLTable="settlement_schedule_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SettlementScheduleLog" ExtendsRecord="Base" Java="Y" SQLTable="settlement_schedule_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y"/>
 			<field name="PartnerServicesID" required="Y"/>     	
 			<field name="ServiceSettlementConfigID" required="N"/>
@@ -7139,8 +7139,8 @@
 			<field name="LastSettled" required="N" />
 			<field name="NextSettle" required="N" />
 		</record>   
-		<record name="ServiceChargeTransactionLog" ExtendsRecord="Base" Java="Y" SQLTable="service_charge_txn_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="N" References="mFinoServiceProvider" />
+		<record name="ServiceChargeTxnLog" ExtendsRecord="Base" Java="Y" SQLTable="service_charge_txn_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<field name="MSPID" required="N" References="MfinoServiceProvider" />
 			<field name="TransactionID" required="N"/>     	
 			<field name="MFSBillerCode" required="N"/>
 			<field name="SourcePartnerID" required="N"/>
@@ -7174,13 +7174,13 @@
 			<field name="ParentIntegrationTransID" required="N"/>
 		</record>
 		<record name="TransactionChargeLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_charge_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="N" References="mFinoServiceProvider" />
+			<field name="MSPID" required="N" References="MfinoServiceProvider" />
 			<field name="ServiceChargeTransactionLogID" required="Y"/>
 			<field name="TransactionChargeID" required="Y" References="TransactionCharge"/>
 			<field name="CalculatedCharge" required="Y"/>
 		</record>                     
-		<record name="TransactionAmountDistributionLog" ExtendsRecord="Base" Java="Y" SQLTable="txn_amount_dstrb_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="N" References="mFinoServiceProvider" />
+		<record name="TxnAmountDstrbLog" ExtendsRecord="Base" Java="Y" SQLTable="txn_amount_dstrb_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<field name="MSPID" required="N" References="MfinoServiceProvider" />
 			<field name="ServiceChargeTransactionLogID" required="Y"/>
 			<field name="TransactionID" required="Y"/>
 			<field name="TransactionChargeID" required="N" References="TransactionCharge"/>
@@ -7197,7 +7197,7 @@
 		 	
 		</record>      
 		<record name="AuthorizingPerson" ExtendsRecord="Base" Java="Y" SQLTable="auth_person_details" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="FirstName" required="N" />
 			<field name="LastName" required="N" />
 			<field name="AddressID" required="N" References="Address"/>
@@ -7209,7 +7209,7 @@
 			<index name="unique_charge_type_name" Unique="Y">
 				<field name="Name" />
 			</index>    
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="Name" required="Y"/>
 			<field name="Description" required="N" />
 		</record>             
@@ -7217,7 +7217,7 @@
 			<index name="unique_charge_definition_name" Unique="Y">
 				<field name="Name" />
 			</index>    
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="Name" required="Y"/>
 			<field name="ChargeTypeID" required="Y" References="ChargeType"/>
 			<field name="IsChargeFromCustomer" required="Y"/>		
@@ -7228,7 +7228,7 @@
 			<field name="IsTaxable" required="Y"/>
 		</record>
 		<record name="ChargePricing" ExtendsRecord="Base" Java="Y" SQLTable="charge_pricing" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ChargeDefinitionID" required="Y" References="ChargeDefinition" />
 			<field name="MinAmount" required="N" />
 			<field name="MaxAmount" required="N" />
@@ -7239,7 +7239,7 @@
 			<field name="MaxCharge" required="N" />
 			<field name="IsDefault" required="N" />        
 		</record>
-		<record name="Group" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="groups" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="Groups" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="groups" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="GroupName" required="Y"/>
 			<field name="Description" required="N"/>
 			<field name="SystemGroup" required="N"/>
@@ -7249,7 +7249,7 @@
 				<field name="Name" />
 			</index>
 			<field name="Name" required="Y"/>
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ServiceProviderID" required="Y" References="Partner" />
 			<field name="ServiceID" required="Y" References="Service" />
 			<field name="TransactionTypeID" required="Y" References="TransactionType" />
@@ -7259,15 +7259,15 @@
 			<field name="SourceKYC" required="N" References="KYCLevel"/>
 			<field name="DestType" required="N"/>
 			<field name="DestKYC" required="N" References="KYCLevel"/>
-			<field name="SourceGroup" required="N" References="Group"/>
-			<field name="DestinationGroup" required="N" References="Group"/>
+			<field name="SourceGroup" required="N" References="Groups"/>
+			<field name="DestinationGroup" required="N" References="Groups"/>
 		</record>
 		<record name="TransactionCharge" ExtendsRecord="Base" Java="Y" SQLTable="transaction_charge" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="unique_transaction_charge" Unique="Y">
 				<field name="TransactionRuleID" />
 				<field name="ChargeTypeID" />
 			</index>      
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="TransactionRuleID" required="Y" References="TransactionRule" />
 			<field name="ChargeTypeID" required="Y" References="ChargeType"/>
 			<field name="ChargeDefinitionID" required="Y" References="ChargeDefinition" />
@@ -7276,7 +7276,7 @@
 			<field name="IsChrgDstrbApplicableToDestSub" required="N" />
 		</record>
 		<record name="SharePartner" ExtendsRecord="Base" Java="Y" SQLTable="share_partner" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="TransactionChargeID" required="Y" References="TransactionCharge" />
 			<field name="PartnerID" required="N" References="Partner" />			
 			<field name="ActualSharePercentage" required="N" />
@@ -7301,7 +7301,7 @@
 			<field name="KYCFieldsName" required="Y" />
 			<field name="KYCFieldsDescription" required="N" />
 		</record>
-		<record name="SubscribersAdditionalFields" ExtendsRecord="Base"	CPP="Y" Java="Y" SQLTable="subscriber_addi_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SubscriberAddiInfo" ExtendsRecord="Base"	CPP="Y" Java="Y" SQLTable="subscriber_addi_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="SubscriberID" References="Subscriber" required="Y" />
 			<field name="ProofofAddress" required="N" />
 			<field name="Reference1" required="N" />
@@ -7359,7 +7359,7 @@
 			<field name="PreviousMonthlyTxnsCount" required="Y" default="0" SQLDefault="0" />		    
 		</record>
 		<record name="ChannelSessionManagement" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="channel_session_mgmt" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MDNID" required="Y" References="SubscriberMDN" />
+			<field name="MDNID" required="Y" References="SubscriberMdn" />
 			<field name="SessionKey" required="N" />
 			<field name="RequestCountAfterLogin" required="N" />
 			<field name="LastRequestTime" required="N" />
@@ -7448,8 +7448,8 @@
 			<field name="TxnTimestamp" required="Y"/>
 			<field name="TxnCount" required="Y"/>
 		</record>
-		<record name="UnRegisteredTxnInfo" ExtendsRecord="Base" Java="Y" SQLTable="unregistered_txn_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MDNID" required="N" References="SubscriberMDN" />
+		<record name="UnregisteredTxnInfo" ExtendsRecord="Base" Java="Y" SQLTable="unregistered_txn_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<field name="MDNID" required="N" References="SubscriberMdn" />
 			<field name="TransferSCTLId" required="Y"/>
 			<field name="TransferCTId" required="N"/>
 			<field name="CashoutSCTLId" required="N"/>
@@ -7494,7 +7494,7 @@
 		</record>  
 		<record name="SubscriberGroup" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="subscriber_groups" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="SubscriberID" required="Y" References="Subscriber" />
-			<field name="GroupID" required="Y" References="Group" />
+			<field name="GroupID" required="Y" References="Groups" />
 		</record>
 		<record name="IntegrationPartnerMapping" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="integration_partner_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="unique_mapped_institution_id" Unique="Y">
@@ -7503,7 +7503,7 @@
 			<field name="InstitutionID" required="Y"  />
 			<field name="IntegrationName" required="Y"  />
 			<field name="PartnerID" required="N" References="Partner" />
-			<field name="MFSBillerId" required="N" References="MFSBiller"/>
+			<field name="MFSBillerId" required="N" References="MfsBiller"/>
 			<field name="AuthenticationKey" required="N" isSecure="Y"/>
 			<field name="IsAuthenticationKeyEnabled" required="Y" default="0" />
 			<field name="IsLoginEnabled" required="Y" default="0" />
@@ -7542,7 +7542,7 @@
 			<field name="ServiceID" required="Y" References="Service" />
 			<field name="TransactionTypeID" required="Y" References="TransactionType"/>
 			<field name="ChannelCodeID" required="Y" References="ChannelCode"/>
-			<field name="GroupID" required="N" References="Group"/>	
+			<field name="GroupID" required="N" References="Groups"/>	
      	</record>
      	<record name="PermissionGroup" ExtendsRecord="Base" Java="Y" SQLTable="permission_group" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">     			     	
 	     	<field name="PermissionGroupName" required="Y" />
@@ -7552,7 +7552,7 @@
 	     	<field name="DestPocketID" required="Y" References="Pocket" />
 	     	<field name="Amount" required="Y"/>
 	     	<field name="AdjustmentStatus" required="Y"/>
-	     	<field name="SctlId" required="Y" References="ServiceChargeTransactionLog"/>
+	     	<field name="SctlId" required="Y" References="ServiceChargeTxnLog"/>
 			<field name="ApproveOrRejectTime" required="N" />
 			<field name="ApprovedOrRejectedBy" required="N" />
 			<field name="ApproveOrRejectComment" required="N" /> 
@@ -7580,14 +7580,14 @@
 	     	<field name="FavoriteValue" required="Y"/>
 	     	<field name="FavoriteCode"	required="N"/>
      	</record>
-     	<record name="TransactionRuleAddnInfo" ExtendsRecord="Base" Java="Y" SQLTable="txn_rule_addn_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+     	<record name="TxnRuleAddnInfo" ExtendsRecord="Base" Java="Y" SQLTable="txn_rule_addn_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 	     	<field name="TransactionRuleID" required="Y" References="TransactionRule" />	     	
 	     	<field name="TxnRuleKey" required="Y"/>
 	     	<field name="TxnRuleValue" required="Y"/>	     	
 			<field name="TxnRuleComparator" required="Y" />
      	</record>
      	<record name="ExcludeSubscriberLifeCycle" ExtendsRecord="Base" Java="Y" SQLTable="exclude_subscriber_lc" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MDNID" required="Y" References="SubscriberMDN" />      
+			<field name="MDNID" required="Y" References="SubscriberMdn" />      
 		</record>
 		      <record 
          name="MoneyClearanceGraved" 
@@ -7599,14 +7599,14 @@
          SQLUpdate="Y" 
          SQLCreate="Y"
   >
-		<field name="MDNID" required="Y" References="SubscriberMDN" />
+		<field name="MDNID" required="Y" References="SubscriberMdn" />
 			<field name="PocketID" required="Y" References="Pocket"/>
-			<field name="SctlId" required="Y" References="ServiceChargeTransactionLog"/>
+			<field name="SctlId" required="Y" References="ServiceChargeTxnLog"/>
 			<field name="Amount" required="Y"/>
-			<field name="RefundMDNID" required="N" References="SubscriberMDN" />
+			<field name="RefundMDNID" required="N" References="SubscriberMdn" />
 			<field name="RefundAccountNumber" required="N" />
 			<field name="RefundPocketID" required="N" References="Pocket"/>
-			<field name="RefundSctlID" required="N" References="ServiceChargeTransactionLog"/>
+			<field name="RefundSctlID" required="N" References="ServiceChargeTxnLog"/>
 			<field name="MCStatus" required="Y" />
 		</record>
 		<record name="Role" ExtendsRecord="Base" Java="Y" SQLTable="role" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -7631,7 +7631,7 @@
 		</record>
 		
 		<record name="ClosedAccountSettlementMDN" ExtendsRecord="Base" Java="Y" SQLTable="close_acct_setl_mdn" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-	        <field name="MDNID" required="Y" References="SubscriberMDN" />
+	        <field name="MDNID" required="Y" References="SubscriberMdn" />
 	        <field name="ToBankAccount" required="N" />
 	        <field name="SettlementMDN" required="N" />
 	        <field name="SettlementAccountNumber" required="N" />
@@ -7640,8 +7640,8 @@
 	        <field name="ApprovedOrRejectedBy" required="N" />
 	        <field name="ApproveOrRejectComment" required="N" />	               
      	</record>	
-		<record name="PTC_Group_Map" ExtendsRecord="Base" Java="Y" SQLTable="ptc_group_mapping" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="GroupID" required="N"  References="Group"/>
+		<record name="PtcGroupMapping" ExtendsRecord="Base" Java="Y" SQLTable="ptc_group_mapping" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+			<field name="GroupID" required="N"  References="Groups"/>
 			<field name="PtcID" required="N" References="PocketTemplateConfig" />		
 		</record>
 		<record name="NotificationLog" ExtendsRecord="Base" Java="Y" SQLTable="notification_log" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
@@ -7659,19 +7659,19 @@
 			<field name="SendNotificationStatus" id="Status" required="Y" />			
 		</record>
 		<record name="Purpose" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="purpose" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="Category" required="Y"/>
 			<field name="Code" required="Y"/>
 		</record>
 		<record name="ExpirationType" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="expiration_type" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ExpiryType" required="Y"/>
 			<field name="ExpiryMode" required="Y"/>
 			<field name="ExpiryDescription" required="N"/>
 			<field name="ExpiryValue" required="Y"/>
 		</record>
 		<record name="FundDefinition" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="fund_definition" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="PurposeID" required="Y" References="Purpose"/>
 			<field name="FACPrefix" required="N"/>
 			<field name="FACLength" required="N"/>
@@ -7683,8 +7683,8 @@
 			<field name="GenerationOfOTPOnFailure" required="Y" References="FundEvents"/>
 		</record>
 		<record name="FundDistributionInfo" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="fund_distribution_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
-			<field name="FundAllocationId" required="Y" References="UnRegisteredTxnInfo"/>
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
+			<field name="FundAllocationId" required="Y" References="UnregisteredTxnInfo"/>
 			<field name="DistributedAmount" required="Y"/>
 			<field name="DistributionStatus" required="Y"/>
 			<field name="FailureReason" required="N"/>
@@ -7707,21 +7707,21 @@
 			<field name="DayOfMonth" required="N" />
 			<field name="Cron" required="N" />
 			<field name="Description" required="N" />
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 		</record>
-		<record name="SCTLSettlementMap" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="sctl_settlement_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SctlSettlementMap" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="sctl_settlement_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="Amount" required="Y" />
 			<field name="SettlementStatus" id="Status" required="N" />
 			<field name="StlID" required="N" />
 			<field name="SctlId" required="Y" />
 			<field name="PartnerID" required="N" />
 			<field name="ServiceID" required="Y" />
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 		</record>
-		<record name="SettlementTransactionSCTLMap" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="settlement_txn_sctl_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SettlementTxnSctlMap" ExtendsRecord="Base" CPP="N" Java="Y" SQLTable="settlement_txn_sctl_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="SettlementStatus" id="Status" required="N" />
 			<field name="SctlId" required="Y" />
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="StlID" required="Y" />
 		</record>
 		<record name="TransactionPendingSummary" ExtendsRecord="Base" Java="Y" SQLTable="txn_pending_summary" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLDelete="Y" SQLCreate="Y">
@@ -7768,7 +7768,7 @@
 			<field name="Product" required="N" />
 		</record>
 		<record name="MFATransactionInfo" ExtendsRecord="Base" Java="Y" SQLTable="mfa_transactions_info" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
+			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="ServiceID" required="Y" References="Service" />
 			<field name="TransactionTypeID" required="Y" References="TransactionType" />
 			<field name="ChannelCodeID" required="Y" References="ChannelCode" />
@@ -7853,7 +7853,7 @@
 			<field name="ProcessingStatus" required="Y" />
 		</record>
 		
-		<record name="ServiceDefaultConfiguration" ExtendsRecord="Base" Java="Y" SQLTable="service_defualt_config" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="ServiceDefaultConfig" ExtendsRecord="Base" Java="Y" SQLTable="service_defualt_config" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="ServiceProviderID" required="Y" References="Partner" />
 			<field name="ServiceID" required="Y" References="Service" />
 			<field name="SourcePocketType" required="Y" />
@@ -7861,10 +7861,10 @@
 		</record>
 		<record name="PartnerDefaultServices" ExtendsRecord="Base" Java="Y" SQLTable="partner_default_services" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="BusinessPartnerType" required="Y" />
-			<field name="ServiceDefaultConfigurationID" required="Y" References="ServiceDefaultConfiguration" />
+			<field name="ServiceDefaultConfigurationID" required="Y" References="ServiceDefualtConfig" />
 		</record>
 		<record name="CashinFirstTime" ExtendsRecord="Base" Java="Y" SQLTable="cashin_first_time" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
-			<field name="MDNID" required="N" References="SubscriberMDN"/>
+			<field name="MDNID" required="N" References="SubscriberMdn"/>
 			<field name="MDN" required="N" />
 			<field name="SctlId" required="N" />
 			<field name="TransactionAmount" required="N" />
@@ -7875,7 +7875,7 @@
 			</index>			
 			<field name="BranchCode" required="N" />
 			<field name="BranchName" required="N" />
-<!-- 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />	 -->
+<!-- 			<field name="MSPID" required="Y" References="MfinoServiceProvider" />	 -->
 		</record>
 		
 		<record name="KtpDetails" ExtendsRecord="Base" Java="Y" SQLTable="ktp_details" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
