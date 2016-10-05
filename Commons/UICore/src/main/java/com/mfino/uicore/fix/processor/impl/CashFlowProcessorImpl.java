@@ -447,7 +447,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
                         CMJSCashFlow.CGEntries entry =
                                 new CMJSCashFlow.CGEntries();
                         //i-1 to handel when i=0 and all generated refereces should be negative
-                        updateMessage(c, c, entry, pocketId);
+                        updateMessage(null, c, entry, pocketId);
                         realMsg.getEntries()[i] = entry;
                     }
                 }
