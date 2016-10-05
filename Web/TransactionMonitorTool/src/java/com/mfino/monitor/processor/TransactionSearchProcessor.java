@@ -142,10 +142,9 @@ public class TransactionSearchProcessor extends BaseProcessor implements Transac
 		if (StringUtils.isNotBlank(sctl.getReversalreason())) {
 			transaction.setReversalReason(sctl.getReversalreason());
 		}
-		transaction.setIsChargeDistributed(sctl.getIschargedistributed());
+		transaction.setIsChargeDistributed(sctl.getIschargedistributed() != null && sctl.getIschargedistributed() != 0);
 		if (sctl.getIstransactionreversed() != null) {
-			transaction.setIsTransactionReversed(sctl
-					.getIstransactionreversed());
+			transaction.setIsTransactionReversed(sctl.getIstransactionreversed() != null && sctl.getIstransactionreversed() != 0);
 		} else {
 			transaction.setIsTransactionReversed(CmFinoFIX.Boolean_False);
 		}
