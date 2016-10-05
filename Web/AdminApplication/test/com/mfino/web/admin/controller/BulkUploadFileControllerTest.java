@@ -16,7 +16,7 @@ import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mfino.dao.SubscriberMDNDAO;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 
 /**
  * @author Deva
@@ -64,9 +64,9 @@ public class BulkUploadFileControllerTest extends TestCase{
 		controller.handleUpload(request, null);
 		// Get subscriber and check if it is created
 		SubscriberMDNDAO subscriberMDNDAO = new SubscriberMDNDAO();
-		SubscriberMDN subscriberMDN = subscriberMDNDAO.getByMDN(String.valueOf(mdn));
+		SubscriberMdn subscriberMDN = subscriberMDNDAO.getByMDN(String.valueOf(mdn));
 		assertNotNull(subscriberMDN);
-		assertEquals(String.valueOf(mdn), subscriberMDN.getMDN());
+		assertEquals(String.valueOf(mdn), subscriberMDN.getMdn());
 		System.out.println("Time taken = " + (System.currentTimeMillis() - startTime) + " ms");
 	}
 	

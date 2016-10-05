@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -209,14 +211,16 @@ public class BulkTransferInquiryController {
                     bulkUpload.setName(multipartRequest.getParameter("Name"));
                     bulkUpload.setCompany(loggedInUser.getCompany());
                     bulkUpload.setDescription(multipartRequest.getParameter("Description"));
-                    bulkUpload.setUser(loggedInUser);
+                    bulkUpload.setMfinoUser(loggedInUser);
                     bulkUpload.setUsername(loggedInUser.getUsername());
                     
                     SubscriberMdn srcSubscriberMDN = srcPocket.getSubscriberMdn();
                     bulkUpload.setMdn(srcSubscriberMDN.getMdn());
                     bulkUpload.setMdnid(srcSubscriberMDN.getId());
                     bulkUpload.setInfilename(file.getOriginalFilename());
-                    bulkUpload.setInfiledata(new String(file.getBytes()));
+                    Clob clob = new SerialClob(new String(file.getBytes()).toCharArray());
+                    clob.setString(1, new String(file.getBytes()));
+                    bulkUpload.setInfiledata(clob);
                     bulkUpload.setInfilecreatedate(currentTime.toString());
                     bulkUpload.setFiletype(fileType);
                     bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Initialized);
@@ -253,7 +257,7 @@ public class BulkTransferInquiryController {
                     responseMap.put("file", file.getOriginalFilename());
                     responseMap.put("id", bulkUpload.getId());
                     responseMap.put("disPalyId", leftPadWithCharacter(bulkUpload.getId()+"", 8, "0"));
-                    responseMap.put("paymentDate", convertDate(bulkUpload.getPaymentDate()));
+                    responseMap.put("paymentDate", convertDate(bulkUpload.getPaymentdate()));
                     responseMap.put("count", count + " MDNs");
                     responseMap.put("totalAmount", "RP "+ MfinoUtil.getNumberFormat().format(totalAmount));
                     responseMap.put("name", bulkUpload.getName());

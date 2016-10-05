@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.sql.Clob;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -87,7 +89,9 @@ public class FileBankAccountUploadController {
 					MultipartFile file = realRequest.getFile(filename);
 					bu.setFilename(file.getOriginalFilename());
 					byte[] bytes = file.getBytes();
-					bu.setFiledata(new String(bytes));
+					 Clob clob = new SerialClob(new String(bytes).toCharArray());
+	                    clob.setString(1, new String(bytes));
+					bu.setFiledata(clob);
 					int fileSzMB = Integer.parseInt(ConfigurationUtil.getUploadFileSizeLimit());
 					long maxFileSizeAllowed = fileSzMB * 1048576;
 					if (bytes.length > maxFileSizeAllowed) {
@@ -100,7 +104,7 @@ public class FileBankAccountUploadController {
 					bulkBankAccountService.save(bu);
 
 					// Parsing the file for validations
-					BufferedReader reader = new BufferedReader(new StringReader(bu.getFiledata()));
+					BufferedReader reader = new BufferedReader(new StringReader(bu.getFiledata().getSubString(0, ((Long)bu.getFiledata().length()).intValue())));
 
 					String currentDir = System.getProperty("user.dir");
 					File reportFile = new File(currentDir + "/reportTemp." + bu.getId() + ".txt");
@@ -234,7 +238,7 @@ public class FileBankAccountUploadController {
 								newPocket.setStatustime(new Timestamp());
 								newPocket.setPocketTemplate(bankAccountTemplate);
 								newPocket.setCardpan(bankAccount);
-								newPocket.setIsdefault(Boolean.TRUE);
+								newPocket.setIsdefault((short)1);
 								newPocket.setSubscriberMdn(mdnResults.get(0));
 								newPocket.setCompany(userService.getUserCompany());
 								pocketService.save(newPocket);                
@@ -286,7 +290,9 @@ public class FileBankAccountUploadController {
 					bu.setErrorlinecount((long)errorLineCount);
 					bu.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processed);
 					String reportString = IOUtils.toString(new FileReader(reportFile));
-					bu.setUploadreport(reportString);
+					Clob clob1 = new SerialClob(reportString.toCharArray());
+                    clob1.setString(1, reportString);
+					bu.setUploadreport(clob1);
 					
 					bulkBankAccountService.save(bu);
 

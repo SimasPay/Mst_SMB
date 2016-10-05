@@ -7,12 +7,14 @@ package com.mfino.web.admin.controller;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.sql.Clob;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialClob;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
-import com.mfino.domain.PendingTransactionsFile;
+import com.mfino.domain.PendingTxnsFile;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.PendingTransactionsService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.web.JSONView;
 import com.mfino.util.ConfigurationUtil;
 
@@ -127,14 +128,16 @@ public class BulkResolveController {
                             return new JSONView(responseMap);
                         }
                         String fileData = new String(file.getBytes());
-                        PendingTransactionsFile fileToSave = new PendingTransactionsFile();
+                        PendingTxnsFile fileToSave = new PendingTxnsFile();
                         fileToSave.setDescription(filedescription);
-                        fileToSave.setFileData(fileData);
-                        fileToSave.setFileName(file.getOriginalFilename());
+                        Clob clob = new SerialClob(fileData.toCharArray());
+                        clob.setString(1, fileData);
+                        fileToSave.setFiledata(clob);
+                        fileToSave.setFilename(file.getOriginalFilename());
                        // fileToSave.setRecordType(CmFinoFIX.RecordType_Bulkresolve);
-                        fileToSave.setRecordCount(linecount-1);
-                        fileToSave.setResolveAs(fileStatusint);
-                        fileToSave.setUploadFileStatus(CmFinoFIX.UploadFileStatus_Uploaded);
+                        fileToSave.setRecordcount(Long.valueOf(linecount-1));
+                        fileToSave.setResolveas(Long.valueOf(fileStatusint));
+                        fileToSave.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Uploaded);
                         fileToSave.setCompany(userService.getUserCompany());
                         
                         pendingTransactionsService.savePendingTransactions(fileToSave);

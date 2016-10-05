@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mfino.domain.PermissionGroup;
-import com.mfino.domain.PermissionItems;
+import com.mfino.domain.PermissionItem;
 import com.mfino.service.PermissionService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 
 /**
  * 
@@ -58,7 +57,7 @@ public class PermissionsController {
     	String role = request.getParameter("role");
     	if(role != null) {
     		log.info("Role ->" + role);
-    		List<PermissionItems> list = permissionService.loadRolePermissionsByGroup(Integer.valueOf(role));    	
+    		List<PermissionItem> list = permissionService.loadRolePermissionsByGroup(Integer.valueOf(role));    	
         	mAv.addObject("rolePermissions", list);
     	}    	
     	return mAv;
@@ -99,7 +98,7 @@ public class PermissionsController {
     			}    			
     		}
     		log.info("Loading the updated role permissions");
-    		List<PermissionItems> list = permissionService.loadRolePermissionsByGroup(Integer.valueOf(role));    	
+    		List<PermissionItem> list = permissionService.loadRolePermissionsByGroup(Integer.valueOf(role));    	
         	mAv.addObject("rolePermissions", list);
     	}    	
     	return mAv;

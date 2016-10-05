@@ -18,7 +18,6 @@ import org.springframework.web.servlet.view.AbstractView;
 
 import com.mfino.domain.PermissionGroup;
 import com.mfino.domain.PermissionItem;
-import com.mfino.domain.PermissionItems;
 
 /**
  * @author Srikanth

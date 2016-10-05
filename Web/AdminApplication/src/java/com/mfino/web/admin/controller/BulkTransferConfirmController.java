@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -116,7 +117,7 @@ public class BulkTransferConfirmController {
         		}
         		if (CollectionUtils.isNotEmpty(lstApprover)) {
         			for (User approver: lstApprover) {
-        				mailService.asyncSendEmail(approver.getEmail(), approver.getFirstName() + " " + approver.getLastName(), subject, message);
+        				mailService.asyncSendEmail(approver.getEmail(), approver.getFirstname() + " " + approver.getLastname(), subject, message);
         			}
         		}
         	}
@@ -140,7 +141,13 @@ public class BulkTransferConfirmController {
     
     private void createEntries(BulkUpload bulkUpload) throws IOException {
     	log.info("Creating the entries for bulk transfer id: "+ bulkUpload.getId());
-    	BufferedReader bufferedReader = new BufferedReader(new StringReader(bulkUpload.getInfiledata()));
+    	BufferedReader bufferedReader = null;
+		try {
+			bufferedReader = new BufferedReader(new StringReader(bulkUpload.getInfiledata().getSubString(0, ((Long)bulkUpload.getInfiledata().length()).intValue())));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String line = null;
 		BulkUploadEntry bue = null;
 		int i=1;

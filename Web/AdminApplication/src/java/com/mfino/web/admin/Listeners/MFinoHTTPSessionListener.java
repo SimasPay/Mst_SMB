@@ -83,7 +83,7 @@ public class MFinoHTTPSessionListener implements HttpSessionListener,
 
 						if (results.size() > 0) {
 							userObj = results.get(0);
-							userObj.setIsLoggedIn(false);
+							userObj.setIsloggedin((short)0);
 							userDao.save(userObj);
 							log.info("sessionDestroyed for user " + loggedInUser);
 						}

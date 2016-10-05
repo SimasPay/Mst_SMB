@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -179,11 +181,13 @@ public class BulkTransferFileController {
                     
                     bulkUpload.setCompany(loggedInUser.getCompany());
                     bulkUpload.setDescription(multipartRequest.getParameter("Description"));
-                    bulkUpload.setUser(loggedInUser);
+                    bulkUpload.setMfinoUser(loggedInUser);
                     bulkUpload.setUsername(loggedInUser.getUsername());
                     bulkUpload.setMdn(subscriberService.normalizeMDN(multipartRequest.getParameter("MDN")));
                     bulkUpload.setInfilename(file.getOriginalFilename());
-                    bulkUpload.setInfiledata(new String(file.getBytes()));
+                    Clob clob = new SerialClob(new String(file.getBytes()).toCharArray());
+                    clob.setString(1, new String(file.getBytes()));
+                    bulkUpload.setInfiledata(clob);
                     bulkUpload.setInfilecreatedate(currentTime.toString());
                     bulkUpload.setFiletype(fileType);
                     bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Uploaded);
@@ -192,7 +196,7 @@ public class BulkTransferFileController {
                     bulkUpload.setTotalamount(totalAmount);
                     bulkUpload.setPin(encryptedPin);
                     bulkUpload.setPaymentdate(new Timestamp(paymentDate));
-                    bulkUpload.setPocketBySourcePocket(pocketService.getById(new Long(sourcePocket)));
+                    bulkUpload.setPocket(pocketService.getById(new Long(sourcePocket)));
                     bulkUploadService.save(bulkUpload);
                     
                     // Send mail to Approvers to approve the bulk transfer request.
@@ -213,7 +217,7 @@ public class BulkTransferFileController {
                     }
                     if (CollectionUtils.isNotEmpty(lstApprover)) {
                     	for (User approver: lstApprover) {
-                    		mailService.asyncSendEmail(approver.getEmail(), approver.getFirstName() + " " + approver.getLastName(), subject, message);
+                    		mailService.asyncSendEmail(approver.getEmail(), approver.getFirstname() + " " + approver.getLastname(), subject, message);
                     	}
                     }
 

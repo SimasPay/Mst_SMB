@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.mfino.domain.PermissionGroup;
-import com.mfino.domain.PermissionItems;
+import com.mfino.domain.PermissionItem;
 
 /**
  * @author Srikanth
@@ -32,13 +32,13 @@ public class RolePermissionsByGroupView extends AbstractView {
 			this.setContentType("text/html");
 			JSONObject json = new JSONObject();
 	        json.put("success", true);
-			List<PermissionItems> permissionItems = (List<PermissionItems>) model.get("rolePermissions");
+			List<PermissionItem> permissionItems = (List<PermissionItem>) model.get("rolePermissions");
 			JSONArray permGroupsJsonArray = new JSONArray();
 			if(permissionItems != null) {
 				long presentGroupId = -1;
 				StringBuffer sb = null;
 				JSONObject jsonPermGroup = null;
-				for(PermissionItems permissionItem : permissionItems){ 	// PermissionItems retrieved, ordering by group Id, are parsed to 
+				for(PermissionItem permissionItem : permissionItems){ 	// PermissionItems retrieved, ordering by group Id, are parsed to 
 																		// generate permGroupId, permItemsList map 
 					PermissionGroup permissionGroup = permissionItem.getPermissionGroup();
 					if(permissionGroup != null) { //skip permission items that are not associated to any permission group
@@ -50,10 +50,10 @@ public class RolePermissionsByGroupView extends AbstractView {
 								jsonPermGroup.put("permItemsList", sb.toString());
 								permGroupsJsonArray.add(jsonPermGroup);
 							}
-							sb = new StringBuffer(permissionItem.getPermission().toString());
+							sb = new StringBuffer(Long.valueOf(permissionItem.getPermission()).toString());
 							presentGroupId = permissionGroupId;
 						} else {
-							sb.append("," + permissionItem.getPermission().toString());
+							sb.append("," + Long.valueOf(permissionItem.getPermission()).toString());
 						}
 					}										
 				}

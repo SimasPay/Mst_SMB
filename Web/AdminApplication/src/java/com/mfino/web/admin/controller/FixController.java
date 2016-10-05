@@ -4,11 +4,13 @@
 package com.mfino.web.admin.controller;
 
 import java.io.IOException;
+import java.sql.Clob;
 import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialClob;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,7 @@ import com.mfino.dao.AuditLogDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.AuditLog;
 import com.mfino.domain.MfinoServiceProvider;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.enums.ItemType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CMultiXBuffer;
@@ -717,582 +719,582 @@ public class FixController {
 			String msgClassName = msg.getClass().getName();
 			IFixProcessor fixProcessor;
 			String action = ((CMJSBase) msg).getaction();
-			TransactionsLog tl = new TransactionsLog();
+			TransactionLog tl = new TransactionLog();
 
 			if (msgClassName.equals(CMJSSubscribers.class.getName())) {
 				fixProcessor = subscriberProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscribers);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscribers);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSUsers.class.getName())) {
 				fixProcessor = userProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSUsers);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSUsers);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPocket.class.getName())) {
 				fixProcessor = pocketProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPocket);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPocket);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSSubscriberMDN.class
 					.getName())) {
 				fixProcessor = subscriberMdnProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberMDN);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberMDN);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSPocketTemplate.class
 					.getName())) {
 				fixProcessor = pocketIssuerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPocketTemplate);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPocketTemplate);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSEnumText.class
 					.getName())) {
 				fixProcessor = enumTextProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSEnumText);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSEnumText);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCommodityTransfer.class.getName())) {
 				fixProcessor = commodityTransferProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCommodityTransfer);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCommodityTransfer);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSPerson2Person.class
 					.getName())) {
 				fixProcessor = person2PersonProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPerson2Person);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPerson2Person);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSEnumTextSimple.class
 					.getName())) {
 				fixProcessor = enumTextSimpleProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSEnumTextSimple);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSEnumTextSimple);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSResetPin.class
 					.getName())) {
 				fixProcessor = resetPinProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSResetPin);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSResetPin);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSLOP.class.getName())) {
 				fixProcessor = lopProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSLOP);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSLOP);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPendingCommodityTransferRequest.class
 							.getName())) {
 				fixProcessor = pendingCommodityTransferRequestProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPendingCommodityTransferRequest);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPendingCommodityTransferRequest);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSDistributionChainTemplate.class
 							.getName())) {
 				fixProcessor = distributionChainTemplateProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDistributionChainTemplate);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDistributionChainTemplate);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSDistributionChainLevel.class
 							.getName())) {
 				fixProcessor = distributionChainLevelProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDistributionChainLevel);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDistributionChainLevel);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSCashFlow.class
 					.getName())) {
 				fixProcessor = cashFlowProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCashFlow);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCashFlow);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBulkUpload.class
 					.getName())) {
 				fixProcessor = bulkUploadProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBulkUpload);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBulkUpload);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSResetPassword.class
 					.getName())) {
 				fixProcessor = resetPasswordProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSResetPassword);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSResetPassword);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSNotification.class
 					.getName())) {
 				fixProcessor = notificationProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSNotification);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSNotification);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSUsernameCheck.class
 					.getName())) {
 				fixProcessor = usernameCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSUsernameCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSUsernameCheck);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPocketTemplateCheck.class.getName())) {
 				fixProcessor = pocketTemplateCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPocketTemplateCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPocketTemplateCheck);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSDistributionTemplateCheck.class
 							.getName())) {
 				fixProcessor = dctNameCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDistributionTemplateCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDistributionTemplateCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSCheckBalance.class
 					.getName())) {
 				fixProcessor = checkBalanceProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckBalance);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckBalance);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSEmptySVAPocket.class
 					.getName())) {
 				fixProcessor = emptySVAPocketProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSEmptySVAPocket);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSEmptySVAPocket);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSMDNCheck.class
 					.getName())) {
 				fixProcessor = mdnCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSMDNCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSMDNCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBulkUploadEntry.class
 					.getName())) {
 				fixProcessor = bulkUploadEntryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBulkUploadEntry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBulkUploadEntry);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSGetBulkUploadFileData.class.getName())) {
 				fixProcessor = getBulkUploadFileDataProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSGetBulkUploadFileData);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSGetBulkUploadFileData);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCheckBalanceForSubscriber.class
 							.getName())) {
 				fixProcessor = checkBalanceForSubscriberProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckBalanceForSubscriber);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckBalanceForSubscriber);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSCompany.class
 					.getName())) {
 				fixProcessor = companyProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCompany);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCompany);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBrand.class.getName())) {
 				fixProcessor = brandProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBrand);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBrand);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBulkUploadFile.class
 					.getName())) {
 				fixProcessor = bulkUploadFileProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBulkUploadFile);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBulkUploadFile);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSBulkUploadFileEntry.class.getName())) {
 				fixProcessor = bulkUploadFileEntryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBulkUploadFileEntry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBulkUploadFileEntry);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSChannelCode.class
 					.getName())) {
 				fixProcessor = channelCodeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSChannelCode);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSChannelCode);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPendingTransactionsFile.class
 							.getName())) {
 				fixProcessor = pendingTransactionsFileProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPendingTransactionsFile);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPendingTransactionsFile);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPendingTransactionsEntry.class
 							.getName())) {
 				fixProcessor = pendingTransactionsEntryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPendingTransactionsEntry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPendingTransactionsEntry);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSLOPHistory.class
 					.getName())) {
 				fixProcessor = lopHistoryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSLOPHistory);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSLOPHistory);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSApproveRejectSubscriber.class
 							.getName())) {
 				fixProcessor = approveRejectSubscriberProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSApproveRejectSubscriber);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSApproveRejectSubscriber);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBankAdmin.class
 					.getName())) {
 				fixProcessor = bankAdminProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBankAdmin);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBankAdmin);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSBank.class.getName())) {
 				fixProcessor = bankProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBank);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBank);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSService.class
 					.getName())) {
 				fixProcessor = serviceProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSService);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSService);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSTransactionType.class
 					.getName())) {
 				fixProcessor = transactionTypeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTransactionType);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTransactionType);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSServiceTransaction.class.getName())) {
 				fixProcessor = serviceTransactionProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSServiceTransaction);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSServiceTransaction);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSTransactionsForService.class
 							.getName())) {
 				fixProcessor = transactionsForServiceProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTransactionsForService);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTransactionsForService);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSServiceProvider.class
 					.getName())) {
 				fixProcessor = serviceProviderProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSServiceProvider);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSServiceProvider);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSServicesForServiceProvider.class
 							.getName())) {
 				fixProcessor = servicesForServiceProviderProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSServicesForServiceProvider);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSServicesForServiceProvider);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSSettlementTemplate.class.getName())) {
 				fixProcessor = settlementTemplateProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSettlementTemplate);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSettlementTemplate);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSSettlementTemplateCheck.class
 							.getName())) {
 				fixProcessor = settlementTemplateCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSettlementTemplateCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSettlementTemplateCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSPartnerServices.class
 					.getName())) {
 				fixProcessor = partnerServicesProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPartnerServices);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPartnerServices);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSServiceSettlementConfig.class
 							.getName())) {
 				fixProcessor = serviceSettlementConfigProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSServiceSettlementConfig);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSServiceSettlementConfig);
 			} else if (msgClassName.equals(CMJSPartner.class.getName())) {
 				// fixProcessor = new PartnerProcessor();
 				fixProcessor = servicePartnerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPartner);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPartner);
 			} else if (msgClassName.equals(CMJSAgent.class.getName())) {
 				fixProcessor = servicePartnerProcessorsp;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAgent);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAgent);
 			} else if (msgClassName.equals(CMJSServiceProvider.class.getName())) {
 				fixProcessor = serviceProviderProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSServiceProvider);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSServiceProvider);
 			} else if (msgClassName.equals(CMJSMFSBiller.class.getName())) {
 				fixProcessor = mfsBillerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSMFSBiller);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSMFSBiller);
 			} else if (msgClassName
 					.equals(CMJSMFSBillerPartner.class.getName())) {
 				fixProcessor = mfsBillerPartnerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSMFSBillerPartner);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSMFSBillerPartner);
 			} else if (msgClassName.equals(CMJSPartnerByDCT.class.getName())) {
 				fixProcessor = partnerByDCTProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPartnerByDCT);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPartnerByDCT);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSTradeNameCheck.class
 					.getName())) {
 				fixProcessor = tradeNameCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTradeNameCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTradeNameCheck);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSTransactionAmountDistributionLog.class
 							.getName())) {
 				fixProcessor = transactionAmountDistributorProcess;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTransactionAmountDistributionLog);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTransactionAmountDistributionLog);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSChargeType.class
 					.getName())) {
 				fixProcessor = chargeTypeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSChargeType);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSChargeType);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSDuplicateNameCheck.class.getName())) {
 				fixProcessor = duplicateNameCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDuplicateNameCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDuplicateNameCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSChargeDefinition.class
 					.getName())) {
 				fixProcessor = chargeDefinitionProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSChargeDefinition);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSChargeDefinition);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSChargePricing.class
 					.getName())) {
 				fixProcessor = chargePricingProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSChargePricing);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSChargePricing);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSTransactionRule.class
 					.getName())) {
 				fixProcessor = transactionRuleProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTransactionRule);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTransactionRule);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSTransactionCharge.class.getName())) {
 				fixProcessor = transactionChargeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTransactionCharge);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTransactionCharge);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSSharePartner.class
 					.getName())) {
 				fixProcessor = sharePartnerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSharePartner);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSharePartner);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCheckDependantChargeType.class
 							.getName())) {
 				fixProcessor = checkDependantChargeTypeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckDependantChargeType);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckDependantChargeType);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCheckTransactionCharge.class
 							.getName())) {
 				fixProcessor = checkTransactionChargeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckTransactionCharge);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckTransactionCharge);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCheckTransactionRule.class.getName())) {
 				fixProcessor = checkTransactionRuleProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckTransactionRule);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckTransactionRule);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSKYCCheck.class
 					.getName())) {
 				fixProcessor = kycProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSKYCCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSKYCCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSKYCCheckFields.class
 					.getName())) {
 				fixProcessor = kycFieldsPrcocessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSKYCCheckFields);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSKYCCheckFields);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSSubscribersAdditionalFields.class
 							.getName())) {
 				fixProcessor = subscriberAdditonalFieldsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscribersAdditionalFields);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscribersAdditionalFields);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCheckServicePartner.class.getName())) {
 				fixProcessor = checkServicePartnerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckServicePartner);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckServicePartner);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSApproveRejectPartner.class.getName())) {
 				fixProcessor = approveRejectPartnerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSApproveRejectPartner);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSApproveRejectPartner);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSResetOTP.class
 					.getName())) {
 				fixProcessor = resetOTPProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSResetOTP);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSResetOTP);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSResendAccessCode.class
 					.getName())) {
 				fixProcessor = resendAccessCodeProcessor;
-				tl.setMessageCode(CmFinoFIX.MessageType_JSResendAccessCode);
+				tl.setMessagecode(CmFinoFIX.MessageType_JSResendAccessCode);
 			} else if (msgClassName.equals(CMJSBankTellerCashInInquiry.class
 					.getName())) {
 				fixProcessor = bankTellerCashInInquiryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_BankTellerCashIn);
+				tl.setMessagecode(CmFinoFIX.MsgType_BankTellerCashIn);
 			} else if (msgClassName.equals(CMJSBankTellerCashInConfirm.class
 					.getName())) {
 				fixProcessor = bankTellerCashInConfirmProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_BankTellerCashIn);
+				tl.setMessagecode(CmFinoFIX.MsgType_BankTellerCashIn);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSDuplicatePartnerCodeCheck.class
 							.getName())) {
 				fixProcessor = duplicatePartnerCodeCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDuplicatePartnerCodeCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDuplicatePartnerCodeCheck);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSServiceChargeTransactions.class
 							.getName())) {
 				fixProcessor = serviceChargeTransactionLogProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSServiceChargeTransactions);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSServiceChargeTransactions);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSBankTellerCashOutInquiry.class
 							.getName())) {
 				fixProcessor = bankTellerCashOutInquiryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBankTellerCashOutInquiry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBankTellerCashOutInquiry);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSBankTellerCashOutConfirm.class
 							.getName())) {
 				fixProcessor = bankTellerCashOutApproveProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBankTellerCashOutConfirm);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBankTellerCashOutConfirm);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSReport.class.getName())) {
 				fixProcessor = reportProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSReport);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSReport);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSReverseTransaction.class.getName())) {
 				fixProcessor = reverseTransactionProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSReverseTransaction);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSReverseTransaction);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSReverseTransactionConfirm.class
 							.getName())) {
 				fixProcessor = reverseTransactionConfirmProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSReverseTransactionConfirm);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSReverseTransactionConfirm);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSReverseTransactionApproveReject.class
 							.getName())) {
 				fixProcessor = reverseTransactionApproveRejectProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSReverseTransactionApproveReject);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSReverseTransactionApproveReject);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCheckChargeDefinition.class.getName())) {
 				fixProcessor = checkChargeDefinitionProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckChargeDefinition);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckChargeDefinition);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSOfflineReport.class
 					.getName())) {
 				fixProcessor = offlineReportProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSOfflineReport);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSOfflineReport);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSChangePin.class
 					.getName())) {
 				fixProcessor = changePinProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSChangePin);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSChangePin);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSChargeTransactions.class.getName())) {
 				fixProcessor = chargeTransactionsViewProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSChargeTransactions);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSChargeTransactions);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCashOutUnregisteredInquiry.class
 							.getName())) {
 				fixProcessor = bankTellerUnregisteredCashOutInquiryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCashOutUnregisteredInquiry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCashOutUnregisteredInquiry);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCashOutUnregisteredConfirm.class
 							.getName())) {
 				fixProcessor = bankTellerUnregisteredCashOutApproveProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCashOutUnregisteredConfirm);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCashOutUnregisteredConfirm);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSCheckMDN.class
 					.getName())) {
 				fixProcessor = checkMDNProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCheckMDN);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCheckMDN);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSApproveRejectBulkTranfer.class
 							.getName())) {
 				fixProcessor = approveRejectBulkTransferProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSApproveRejectBulkTranfer);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSApproveRejectBulkTranfer);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSCancelBulkTranfer.class.getName())) {
 				fixProcessor = cancelBulkTransferProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSCancelBulkTranfer);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSCancelBulkTranfer);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSGetAvailableBalance.class.getName())) {
 				fixProcessor = getAvialableBalanceProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSGetAvailableBalance);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSGetAvailableBalance);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSValidatePin.class
 					.getName())) {
 				fixProcessor = validatePinProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSValidatePin);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSValidatePin);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSVerifyNonRegisteredBulkTransfer.class
 							.getName())) {
 				fixProcessor = verifyNonRegisteredBulkTransferProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSVerifyNonRegisteredBulkTransfer);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSVerifyNonRegisteredBulkTransfer);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSGroup.class.getName())) {
 				fixProcessor = groupsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSGroup);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSGroup);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPocketTemplateConfig.class.getName())) {
 				fixProcessor = pocketTemplateConfigProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPocketTemplateConfig);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPocketTemplateConfig);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPocketTemplateConfigCheck.class
 							.getName())) {
 				fixProcessor = pocketTemplateConfigCheckProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPocketTemplateConfigCheck);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPocketTemplateConfigCheck);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSDCTRestrictions.class
 					.getName())) {
 				fixProcessor = dctRestrictionsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDCTRestrictions);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDCTRestrictions);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSPartnerRestrictions.class.getName())) {
 				fixProcessor = partnerRestrictionsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPartnerRestrictions);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPartnerRestrictions);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSTransactionTypeForPartnerRestrictions.class
 							.getName())) {
 				fixProcessor = transactionTypePartnerRestrictionsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTransactionTypeForPartnerRestrictions);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTransactionTypeForPartnerRestrictions);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSRelationshipType.class
 					.getName())) {
 				fixProcessor = relationshipTypeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSRelationshipType);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSRelationshipType);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSSystemParameters.class
 					.getName())) {
 				fixProcessor = systemParametersProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSystemParameters);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSystemParameters);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSMFSDenominations.class
 					.getName())) {
 				fixProcessor = mfsDenominationsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSMFSDenominations);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSMFSDenominations);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSIntegrationPartnerMapping.class
 							.getName())) {
 				fixProcessor = integrationPartnerMappingProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSIntegrationPartnerMapping);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSIntegrationPartnerMapping);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSIPMapping.class
 					.getName())) {
 				fixProcessor = ipMappingprocessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSIPMapping);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSIPMapping);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSResetAuthenticationKeyForIntegration.class
 							.getName())) {
 				fixProcessor = resetAuthenticationKeyForIntegrationProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSResetAuthenticationKeyForIntegration);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSResetAuthenticationKeyForIntegration);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSDistributeChargesForm.class.getName())) {
 				fixProcessor = distributeChargesProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDistributeChargesForm);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDistributeChargesForm);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSRole.class.getName())) {
 				fixProcessor = roleProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSRole);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSRole);
 			} else if (msgClassName.equals(CmFinoFIX.CMAgentCashIn.class
 					.getName())) {
 				fixProcessor = agentCashInProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_AgentCashIn);
+				tl.setMessagecode(CmFinoFIX.MsgType_AgentCashIn);
 			} else if (msgClassName.equals(CMJSClosedAccountSettlementMdn.class
 					.getName())) {
 				fixProcessor = closedAccountSettlementMdnProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSClosedAccountSettlementMdn);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSClosedAccountSettlementMdn);
 			} else if (msgClassName.equals(CMJSApproveRejectSettlement.class
 					.getName())) {
 				fixProcessor = approveRejectSettlementProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSApproveRejectSettlement);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSApproveRejectSettlement);
 			} else if (msgClassName
 					.equals(CMJSScheduleTemplate.class.getName())) {
 				fixProcessor = scheduleTemplateProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSScheduleTemplate);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSScheduleTemplate);
 			} else if (msgClassName.equals(CMJSFundDefinitions.class.getName())) {
 				fixProcessor = fundDefinitionsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSFundDefinitions);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSFundDefinitions);
 			} else if (msgClassName.equals(CMJSFundEvents.class.getName())) {
 				fixProcessor = fundEventsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSFundEvents);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSFundEvents);
 			} else if (msgClassName.equals(CMJSPurpose.class.getName())) {
 				fixProcessor = purposeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSPurpose);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSPurpose);
 			} else if (msgClassName.equals(CMJSExpirationType.class.getName())) {
 				fixProcessor = expirationTypeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSExpirationType);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSExpirationType);
 			} else if (msgClassName.equals(CMJSValidateChargeExpr.class
 					.getName())) {
 				fixProcessor = validateChargeExprProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSValidateChargeExpr);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSValidateChargeExpr);
 			} else if (msgClassName.equals(CmFinoFIX.CMJSNotificationLog.class
 					.getName())) {
 				fixProcessor = notificationLogProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSNotificationLog);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSNotificationLog);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSResendNotification.class.getName())) {
 				fixProcessor = resendNotificationProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSResendNotification);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSResendNotification);
 			} else if (msgClassName.equals(CMJSActorChannelMapping.class
 					.getName())) {
 				fixProcessor = actorChannelMappingProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSActorChannelMapping);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSActorChannelMapping);
 			} else if (msgClassName
 					.equals(CMJSActorChannelMappingValidator.class.getName())) {
 				fixProcessor = actorChannelMappingValidatorProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSActorChannelMappingValidator);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSActorChannelMappingValidator);
 			} else if (msgClassName.equals(CMJSAdjustmentsPocket.class
 					.getName())) {
 				fixProcessor = adjustmentsPocketProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAdjustmentsPocket);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAdjustmentsPocket);
 			} else if (msgClassName.equals(CMJSAdjustments.class.getName())) {
 				fixProcessor = adjustmentsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAdjustments);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAdjustments);
 			} else if (msgClassName.equals(CMJSLedger.class.getName())) {
 				fixProcessor = ledgerProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSLedger);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSLedger);
 			} else if (msgClassName.equals(CMJSShowBalanceDetails.class
 					.getName())) {
 				fixProcessor = showBalanceDetailsProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSShowBalanceDetails);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSShowBalanceDetails);
 			} else if (msgClassName.equals(CMJSRuleKey.class.getName())) {
 				fixProcessor = ruleKeyProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSRuleKey);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSRuleKey);
 			} else if (msgClassName.equals(CMJSTxnRuleAddnInfo.class.getName())) {
 				fixProcessor = transactionRuleAddnInfoProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSTxnRuleAddnInfo);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSTxnRuleAddnInfo);
 			} else if (msgClassName.equals(CMJSRuleKeyComparision.class
 					.getName())) {
 				fixProcessor = ruleKeyComparisionProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSRuleKeyComparision);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSRuleKeyComparision);
 			} else if (msgClassName.equals(CMJSMoneyTransfer.class.getName())) {
 				fixProcessor = moneyTransferProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSMoneyTransfer);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSMoneyTransfer);
 			} else if (msgClassName.equals(CMJSBranchCodes.class.getName())) {
 				fixProcessor = branchCodeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSBranchCodes);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSBranchCodes);
 			} else if (msgClassName.equals(CMJSSubscriberClosingInquiry.class
 					.getName())) {
 				fixProcessor = subscriberClosingInquiryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberClosingInquiry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberClosingInquiry);
 			} else if (msgClassName.equals(CMJSSubscriberClosing.class
 					.getName())) {
 				fixProcessor = subscriberClosingProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberClosing);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberClosing);
 			} else if (msgClassName.equals(CMJSProvince.class.getName())) {
 				fixProcessor = provinceProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSProvince);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSProvince);
 			} else if (msgClassName.equals(CMJSProvinceRegion.class.getName())) {
 				fixProcessor = provinceRegionProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSProvinceRegion);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSProvinceRegion);
 			} else if (msgClassName.equals(CMJSDistrict.class.getName())) {
 				fixProcessor = districtProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSDistrict);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSDistrict);
 			} else if (msgClassName.equals(CMJSVillage.class.getName())) {
 				fixProcessor = villageProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSVillage);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSVillage);
 			} else if (msgClassName
 					.equals(CmFinoFIX.CMJSSubscriberUpgrade.class.getName())) {
 				fixProcessor = subscriberUpgradeProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSSubscriberUpgrade);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberUpgrade);
 			}else if (msgClassName.equals(CMJSAgentClosingInquiry.class
 					.getName())) {
 				fixProcessor = agentClosingInquiryProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentClosingInquiry);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAgentClosingInquiry);
 			} else if (msgClassName.equals(CMJSAgentClosing.class
 					.getName())) {
 				fixProcessor = agentClosingProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentClosing);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAgentClosing);
 				
 			} else if (msgClassName.equals(CMJSAgentCloseApproveReject.class.getName())) {
 				
 				fixProcessor = approveOrRejectAgentClosingProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSAgentCloseApproveReject);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAgentCloseApproveReject);
 				
 			} else if (msgClassName.equals(CMJSProductReferral.class.getName())) {
 				fixProcessor = productReferralProcessor;
-				tl.setMessageCode(CmFinoFIX.MsgType_JSProductReferral);
+				tl.setMessagecode(CmFinoFIX.MsgType_JSProductReferral);
 			}
 
 			/*
@@ -1407,15 +1409,15 @@ public class FixController {
 			// tl.setMessageCode(CmFinoFIX.MsgType_JSEmptySVAMoneyPocket);
 			// }
 			else {
-				tl.setMessageCode(-1);
+				tl.setMessagecode(-1);
 				throw new UnsupportedOperationException(msgClassName);
 			}
 			if (action == null || !action.equalsIgnoreCase("read")) {
 				MfinoServiceProvider msp = mFinoServiceProviderProcessor
 						.getById(1);
-				tl.setMessageData(completePostString);
-				tl.setmFinoServiceProviderByMSPID(msp);
-				tl.setTransactionTime(new Timestamp(new Date()));
+				tl.setMessagedata(completePostString);
+				tl.setMfinoServiceProvider(msp);
+				tl.setTransactiontime(new Timestamp(new Date()));
 				transactionLogService.save(tl);
 			}
 			// Check for Authorization
@@ -1432,9 +1434,11 @@ public class FixController {
 					AuditLogDAO auditLogDAO = DAOFactory.getInstance()
 							.getAuditLogDAO();
 					AuditLog auditLog = new AuditLog();
-					auditLog.setJSaction(action);
-					auditLog.setMessageName(msgClassName);
-					auditLog.setFixMessage(returnMsg.DumpFields());
+					auditLog.setJsaction(action);
+					auditLog.setMessagename(msgClassName);
+					Clob clob = new SerialClob(returnMsg.DumpFields().toCharArray());
+                    clob.setString(1, returnMsg.DumpFields());
+					auditLog.setFixmessage(clob);
 					auditLogDAO.save(auditLog);
 				}
 				if (returnMsg instanceof CmFinoFIX.CMJSError
