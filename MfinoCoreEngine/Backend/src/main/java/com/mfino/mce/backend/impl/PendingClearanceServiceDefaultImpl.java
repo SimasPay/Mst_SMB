@@ -124,7 +124,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 						transactionChargingService.chnageStatusToProcessing(sctl);
 						UnRegisteredTxnInfoDAO urtiDAO = coreDataWrapper.getUnRegisteredTxnInfoDAO();
 						UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-						urtiQuery.setTransferSctlId(sctl.getId());
+						urtiQuery.setTransferSctlId(sctl.getId().longValue());
 						List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
 						UnregisteredTxnInfo urti = null;
 						if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
@@ -187,7 +187,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 						transactionChargingService.chnageStatusToProcessing(sctl);
 						UnRegisteredTxnInfoDAO urtiDAO = coreDataWrapper.getUnRegisteredTxnInfoDAO();
 						UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
-						urtiQuery.setTransferSctlId(sctl.getId());
+						urtiQuery.setTransferSctlId(sctl.getId().longValue());
 						List<UnregisteredTxnInfo> lstUnRegisteredTxnInfos = urtiDAO.get(urtiQuery);
 						UnregisteredTxnInfo urti = null;
 						if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {

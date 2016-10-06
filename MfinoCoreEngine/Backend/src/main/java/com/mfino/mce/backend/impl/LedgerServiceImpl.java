@@ -120,12 +120,12 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocket();
 		Pocket taxPocket = coreDataWrapper.getPocket(SystemParameterKeys.TAX_POCKET_ID_KEY);
 		
-		if ((pocket.getPocketTemplate().getIscollectorpocket() != null) && pocket.getPocketTemplate().getIscollectorpocket()) {
+		if (pocket.getPocketTemplate().getIscollectorpocket()==1) {
 			isImmediateUpdateRequired = false;
 		}
-		else if ((pocket.getPocketTemplate().getIssuspencepocket() != null) && pocket.getPocketTemplate().getIssuspencepocket()) {
+		else if (pocket.getPocketTemplate().getIssuspencepocket()==1) {
 			isImmediateUpdateRequired = false;
-		}else if ((pocket.getPocketTemplate().getIssystempocket() != null) && pocket.getPocketTemplate().getIssystempocket()) {
+		}else if ( pocket.getPocketTemplate().getIssystempocket()==1) {
 			isImmediateUpdateRequired = false;
 		}
 		else if (pocket.getId().equals(globalSVAPocket.getId()) ) {

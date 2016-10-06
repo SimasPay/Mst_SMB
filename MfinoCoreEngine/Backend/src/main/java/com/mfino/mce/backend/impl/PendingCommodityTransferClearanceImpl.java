@@ -83,12 +83,12 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 		boolean isExpired = checkExpiredTransfer(pct);
 		boolean bFinal = false;
 		log.info("calculating the final state of pct id: "+ pct.getId());
-		log.debug("PendingCommodityTransferClearanceImpl :: CmFinoFIX.TransferStatus_Completed="+CmFinoFIX.TransferStatus_Completed+", pct.getTransferStatus()="+pct.getTransferstatus() + ", CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferStatus())="+CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferstatus()) + ", (CmFinoFIX.TransferStatus_Completed.intValue() == pct.getTransferStatus().intValue())"+(CmFinoFIX.TransferStatus_Completed.intValue() == pct.getTransferstatus().intValue()));
+		log.debug("PendingCommodityTransferClearanceImpl :: CmFinoFIX.TransferStatus_Completed="+CmFinoFIX.TransferStatus_Completed+", pct.getTransferStatus()="+pct.getTransferstatus() + ", CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferStatus())="+CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferstatus()) + ", (CmFinoFIX.TransferStatus_Completed.intValue() == pct.getTransferStatus().intValue())"+(CmFinoFIX.TransferStatus_Completed.intValue() == pct.getTransferstatus()));
 
 		if (CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferstatus())) {
 			// which means the record could not be moved to CT due to some issue with persistence, retry persistence.
 			log.info("Moving PCT to CT: "+pct.getId());
-			pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_CompletedSuccessfuly);
+			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_CompletedSuccessfuly));
 			getCommodityTransferService().movePctToCt(pct);
 			bFinal = true;
 		}else if (CmFinoFIX.TransferStatus_Pending.equals(pct.getTransferstatus())) {
@@ -98,7 +98,7 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 			boolean	bSendReversal	=	false;
 
 			// we check for specific failure reasons to decide if the reversal required
-			if (pct.getOperatoractionrequired() != null && pct.getOperatoractionrequired().booleanValue()) {
+			if (pct.getOperatoractionrequired()==1) {
 				bSendReversal = true;
 			}
 			else if(CmFinoFIX.TransferFailureReason_MoneyTransferToBankFailed.equals(pct.getTransferfailurereason())){
@@ -154,7 +154,7 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 				bSendReversal = false;
 			}
 */
-			if(pct.getBankReversalResponseCode() != null){
+			if(pct.getBankreversalresponsecode() != null){
 				//the bank reversal request has been sent, then we don't have to send it again.
 				bSendReversal = false;
 			}
@@ -164,21 +164,21 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 				if(!bSendReversal){
 						//if no bank reversal is required, we are going to revert right here
 						//otherwise we are going to do local reversal when sending bank reversal
-					if(pct.getLocalbalancerevertrequired()!=null && pct.getLocalbalancerevertrequired())
+					if(pct.getLocalbalancerevertrequired()==1)
 					{
-						pct.setLocalrevertrequired(CmFinoFIX.Boolean_False);
-						pct.setLocalbalancerevertrequired(CmFinoFIX.Boolean_False);
-						pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
+						pct.setLocalrevertrequired((short)0);
+						pct.setLocalbalancerevertrequired((short)0);
+						pct.setTransferstatus((short)0);
 						pct.setEndtime(new Timestamp());
 						coreDataWrapper.save(pct);
 						getCommodityTransferService().movePctToCt(pct);
 						
 //						bankService.onRevertOfTransferConfirmation(pct, true);
 					}
-					else if(pct.getLocalrevertrequired()!=null	&&	pct.getLocalrevertrequired())
+					else if(pct.getLocalrevertrequired()==1)
 					{
 						pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
-						pct.setLocalrevertrequired(CmFinoFIX.Boolean_False);
+						pct.setLocalrevertrequired((short)0);
 						pct.setEndtime(new Timestamp());
 						coreDataWrapper.save(pct);
 						getCommodityTransferService().movePctToCt(pct);

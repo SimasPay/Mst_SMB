@@ -129,7 +129,7 @@ public class BackendUtil {
 	}
 	
 	public static void setPocketLimits(Pocket pocket, BigDecimal transactionAmount){
-		if(!((pocket.getPocketTemplate().getIscollectorpocket()) || (pocket.getPocketTemplate().getIssuspencepocket()) || (pocket.getPocketTemplate().getIssystempocket()) )){
+		if(!((pocket.getPocketTemplate().getIscollectorpocket()==1) || (pocket.getPocketTemplate().getIssuspencepocket()==1) || (pocket.getPocketTemplate().getIssystempocket()==1) )){
 			pocket.setCurrentdailyexpenditure(pocket.getCurrentdailyexpenditure().add(transactionAmount));
 			pocket.setCurrentdailytxnscount(pocket.getCurrentdailytxnscount() + 1);
 			pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().add(transactionAmount));
@@ -160,7 +160,7 @@ public class BackendUtil {
 		
 		long mod = diffMilliSecs / milliSecsForDay;
 
-		if(!((pocket.getPocketTemplate().getIscollectorpocket()) || (pocket.getPocketTemplate().getIssuspencepocket()) || (pocket.getPocketTemplate().getIssystempocket()) )){
+		if(!((pocket.getPocketTemplate().getIscollectorpocket()==1) || (pocket.getPocketTemplate().getIssuspencepocket()==1) || (pocket.getPocketTemplate().getIssystempocket()==1) )){
 			if(mod <= 30){
 				//Within a month
 				pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().subtract(transactionAmount));

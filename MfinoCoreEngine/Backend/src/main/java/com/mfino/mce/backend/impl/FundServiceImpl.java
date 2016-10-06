@@ -10,6 +10,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.FundDefinitionDAO;
 import com.mfino.dao.PurposeDAO;
+import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.query.FundDefinitionQuery;
 import com.mfino.dao.query.PurposeQuery;
 import com.mfino.domain.ExpirationType;
@@ -123,7 +124,8 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				
 				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
 				unRegTxnInfo.setTransferctid(new BigDecimal(transferID));
-				unRegTxnInfo.setTransferSCTLId(sctlid);
+				ServiceChargeTransactionLogDAO serviceChargeTransactionLogDAO=DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+				unRegTxnInfo.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(sctlid));
 
 				log.info("unregistered trxn info logging"+fundAllocationConfirm.getWithdrawalMDN());
 				unRegTxnInfo.setWithdrawalmdn(fundAllocationConfirm.getWithdrawalMDN());
@@ -224,7 +226,7 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 						unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN));
 						((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode());
 					}else{
-						if(fundDefinition.getIsmultiplewithdrawalallowed()){
+						if(fundDefinition.getIsmultiplewithdrawalallowed()==1){
 							String code = fundStorageService.generateFundAccessCode(fundDefinition);
 							String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalmdn(), code);
 							unRegTxnInfo.setDigestedpin(digestedCode);
@@ -244,7 +246,7 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 					((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundAllocationReversalToSender.getInternalErrorCode());
 					((BackendResponse) returnFix).setReceiverMDN(fundWithdrawalConfirm.getDestMDN());
 					((BackendResponse) returnFix).setOnBehalfOfMDN(fundWithdrawalConfirm.getWithdrawalMDN());
-					((BackendResponse) returnFix).setParentTransactionID(unRegTxnInfo.getTransferSCTLId());
+					((BackendResponse) returnFix).setParentTransactionID(unRegTxnInfo.getServiceChargeTxnLog().getId().longValue());
 				}
 				fundDistributionInfo.setDistributionstatus(Long.valueOf(CmFinoFIX.DistributionStatus_TRANSFER_COMPLETED));
 				coreDataWrapper.save(fundDistributionInfo);
@@ -308,7 +310,7 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 			unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN));
 			notificationCode = NotificationCodes.FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode();
 		}else{
-			if(fundDefinition.getIsmultiplewithdrawalallowed()){
+			if(fundDefinition.getIsmultiplewithdrawalallowed()==1){
 				String code = fundStorageService.generateFundAccessCode(fundDefinition);
 				String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalmdn(), code);
 				unRegTxnInfo.setDigestedpin(digestedCode);

@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.NoISOResponseMsg;
@@ -111,7 +113,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 		this.isOfflineBank = isOfflineBank;
 	}
 	
-	
+	ServiceChargeTransactionLogDAO serviceChargeTransactionLogDAO=DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public BackendResponse preProcess(MCEMessage mceMessage) throws BackendRuntimeException
@@ -459,7 +461,8 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				
 				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
 				unRegTxnInfo.setTransferctid(new BigDecimal(transferID));
-				unRegTxnInfo.setTransferSCTLId(sctlid.longValue());
+			
+				unRegTxnInfo.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(sctlid));
 				unRegTxnInfo.setSubscriberMdn(objDestSubMdn);
 				unRegTxnInfo.setAmount(response.getAmount());
 
@@ -484,20 +487,20 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 			if ( CmFinoFIX.ResponseCode_Success.equals(response.getResult())) { 
 				log.debug("Creating the UnRegisteredTxn with transfer Complete status for cash out at ATM for MDN --> " + cashOut.getSourceMDN());
 				//Create UnRegisteredTxnRecord
-				SubscriberMDN objSubMdn = coreDataWrapper.getSubscriberMdn(cashOut.getSourceMDN());
+				SubscriberMdn objSubMdn = coreDataWrapper.getSubscriberMdn(cashOut.getSourceMDN());
 				Long sctlid = cashOut.getServiceChargeTransactionLogID();
 				Long transferID = response.getTransferID();
 				
 				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
-				unRegTxnInfo.setTransferCTId(transferID);
-				unRegTxnInfo.setTransferSCTLId(sctlid);
-				unRegTxnInfo.setSubscriberMDNByMDNID(objSubMdn);
-				unRegTxnInfo.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM);
+				unRegTxnInfo.setTransferctid(BigDecimal.valueOf(transferID));
+				unRegTxnInfo.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(sctlid));
+				unRegTxnInfo.setSubscriberMdn(objSubMdn);
+				unRegTxnInfo.setTransactionname(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM);
 				unRegTxnInfo.setAmount(response.getAmount());
 				String code = unRegisteredTxnInfoService.generateFundAccessCode();
-				String digestedCode = MfinoUtil.calculateDigestPin(objSubMdn.getMDN(), code);
-				unRegTxnInfo.setDigestedPIN(digestedCode);
-				unRegTxnInfo.setUnRegisteredTxnStatus(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED);
+				String digestedCode = MfinoUtil.calculateDigestPin(objSubMdn.getMdn(), code);
+				unRegTxnInfo.setDigestedpin(digestedCode);
+				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED));
 				coreDataWrapper.save(unRegTxnInfo);
 				((BackendResponse) returnFix).setOneTimePin(code);
 			}

@@ -96,13 +96,13 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		pct.setPocket(objSourcePocket);
 		
-		if(objDestPocket.getPocketTemplate().getAllowance() != null){
+		if(Long.valueOf(objDestPocket.getPocketTemplate().getAllowance()) != null){
 			pct.setDestpocketallowance(objDestPocket.getPocketTemplate().getAllowance());
 		}
 		
 		pct.setSourcemessage(safeString(sourceMessage));
 		
-		if(objDestPocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_BankAccount || objDestPocket.getPocketTemplate().getType().intValue() == CmFinoFIX.PocketType_NFC){
+		if(objDestPocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_BankAccount || objDestPocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_NFC){
 			if(StringUtils.isNotBlank(destinationBankAccountNo))
 			{
 				pct.setDestcardpan(destinationBankAccountNo);
@@ -172,7 +172,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		pct.setCurrency(objSourceSubscriber.getCurrency());
 
 		pct.setDestmdn(objDestSubMdn.getMdn());
-		pct.setmFinoServiceProviderByMSPID(coreDataWrapper.getMSPID(requestFix.getMSPID()));
+		pct.setMfinoServiceProvider(coreDataWrapper.getMSPID(requestFix.getMSPID()));
 		
 		if(objSourcePocket.getPocketTemplate().getType() ==  CmFinoFIX.PocketType_BOBAccount){
 			if(objSourcePocket.getPocketTemplate().getOperatorcode() != null){
@@ -201,7 +201,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		tLog.setId(new BigDecimal(requestFix.getTransactionID()));
 		pct.setTransactionLog(tLog);
 		pct.setTransferstatus((int)initialTransferStatus);
-		pct.setLocalrevertrequired(true);
+		pct.setLocalrevertrequired((short)1);
 		
 		if(objSourcePocket.getPocketTemplate().getType()	==	CmFinoFIX.PocketType_BankAccount) {
 			if(StringUtils.isNotBlank(sourceBankAccountNo)) {
@@ -212,7 +212,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 			}
 		}
 
-		if(objSourcePocket.getPocketTemplate().getAllowance() != null)
+		if(Long.valueOf(objSourcePocket.getPocketTemplate().getAllowance()) != null)
 			pct.setSourcepocketallowance(objSourcePocket.getPocketTemplate().getAllowance());
 
 		if(objSourcePocket.getPocketTemplate().getType()	==	CmFinoFIX.PocketType_SVA)
@@ -243,8 +243,8 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 		
 		ChargeTxnCommodityTransferMap txnTransferMap = new ChargeTxnCommodityTransferMap();
-		txnTransferMap.setCommoditytransferid(pct.getId().longValue());
-		txnTransferMap.setSctlid(requestFix.getServiceChargeTransactionLogID().longValue());
+		txnTransferMap.setCommoditytransferid(pct.getId());
+		txnTransferMap.setSctlid(BigDecimal.valueOf(requestFix.getServiceChargeTransactionLogID()));
 		
 		ChargeTxnCommodityTransferMapDAO txnTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
 		txnTransferMapDAO.save(txnTransferMap);

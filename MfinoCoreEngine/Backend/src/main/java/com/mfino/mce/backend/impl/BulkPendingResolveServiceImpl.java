@@ -154,7 +154,7 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 			}
 
 			Integer resolveAction = resolvePendingFile.getResolveas().intValue();
-			BufferedReader bufferedReader = new BufferedReader(	new StringReader(resolvePendingFile.getFiledata()));
+			BufferedReader bufferedReader = new BufferedReader(	new StringReader(resolvePendingFile.getFiledata().getSubString(0, ((Long)resolvePendingFile.getFiledata().length()).intValue())));
 			ptID = resolvePendingFile.getId().longValue();
 			// move the file pointer so many lines
 			if (linecount > 0) {
@@ -208,7 +208,7 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 						continue;
 					}
 
-					SmsTransactionLog sctl = coreDataWrapper.getSCTLById(transferID, LockMode.UPGRADE);
+					ServiceChargeTxnLog sctl = coreDataWrapper.getSCTLById(transferID, LockMode.UPGRADE);
 					// Create a PendingTransactionEntry here and persist since
 					// we got a proper line from the file
 					PendingTxnsEntry pendingTransactionsEntry = new PendingTxnsEntry();
@@ -222,7 +222,7 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 					pendingTransactionsEntry.setStatus(CmFinoFIX.PendingTransationsEntryStatus_pending);
 					coreDataWrapper.save(pendingTransactionsEntry);
 
-					if (sctl == null||(!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getDeliverystatus()))) {
+					if (sctl == null||(!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus()))) {
 						log.info("Invalid Transfer ID = " + transferID);
 						errorLineCount++;
 						status = CmFinoFIX.PendingTransationsEntryStatus_failed;
@@ -256,9 +256,9 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 					// continue;
 					// }
 					
-					if (sctl.getTransactionAmount().compareTo(amount) != 0) {
+					if (sctl.getTransactionamount().compareTo(amount) != 0) {
 						log.info("Mismatch of Amount for transferid "+ ptID+ " Entered Value "+ amount
-								+ "Transaction Amount "+ sctl.getTransactionAmount().longValue());
+								+ "Transaction Amount "+ sctl.getTransactionamount().longValue());
 						status = CmFinoFIX.PendingTransationsEntryStatus_failed;
 						String resolvefailurereason = errorCodesMap.get(CmFinoFIX.PendingTransactionsErrors_Invalid_Amount);
 						saveRecord(linecount, ptID, status,resolvefailurereason, null, null);
