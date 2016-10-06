@@ -20,7 +20,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.InterbankCodesDao;
 import com.mfino.dao.query.InterBankCodesQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.InterBankCode;
+import com.mfino.domain.InterbankCodes;
 import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
@@ -312,19 +312,19 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 	}
 	
 	public boolean isIBTRestricted(String bankCode, CMBillPayInquiry ibtInquiry){
-		InterBankCode interBankCode = getBankCode(bankCode);
+		InterbankCodes interBankCode = getBankCode(bankCode);
 		boolean isIBTAllowed = ((interBankCode != null) && (interBankCode.getibAllowed())) ? true : false;
 		//for interbank bankName is stored in info2
 		ibtInquiry.setNarration(interBankCode.getBankName());
 		return isIBTAllowed;
 	}
 	
-	public InterBankCode getBankCode(String bankCode){
-		InterBankCode nbCode = null;
+	public InterbankCodes getBankCode(String bankCode){
+		InterbankCodes nbCode = null;
 		InterbankCodesDao nbDao = DAOFactory.getInstance().getInterbankCodesDao();
 		InterBankCodesQuery query = new InterBankCodesQuery();
 		query.setBankCode(bankCode);
-		List<InterBankCode> nbCodeList = nbDao.get(query);
+		List<InterbankCodes> nbCodeList = nbDao.get(query);
 		if(nbCodeList.size() >0){
 			nbCode = nbCodeList.get(0);
 		}

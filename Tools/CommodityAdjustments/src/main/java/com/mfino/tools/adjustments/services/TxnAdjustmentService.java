@@ -185,7 +185,7 @@ public class TxnAdjustmentService {
 			{
 				PocketTemplate pocketTemplate = pocket.getPocketTemplate();
 
-				return pocketTemplate.getIssuspencepocket();
+				return (pocketTemplate.getIssuspencepocket() != null && pocketTemplate.getIssuspencepocket() != 0);
 			}
 		}
 		return false;

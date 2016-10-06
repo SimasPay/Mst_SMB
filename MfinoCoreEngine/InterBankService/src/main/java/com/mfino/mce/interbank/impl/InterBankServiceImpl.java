@@ -16,7 +16,7 @@ import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SystemParametersDao;
 import com.mfino.dao.query.InterBankCodesQuery;
 import com.mfino.dao.query.InterBankTransfersQuery;
-import com.mfino.domain.InterBankCode;
+import com.mfino.domain.InterbankCodes;
 import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
@@ -44,12 +44,12 @@ public class InterBankServiceImpl implements InterBankService{
 
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterBankCode interBankCode){
+	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterbankCodes interBankCode){
 		InterbankTransfer ibt = new InterbankTransfer();
 
 		ibt.setTerminalid(ibtInquiry.getChannelCode());
 		ibt.setDestbankcode(ibtInquiry.getDestBankCode());
-		ibt.setDestbankname(interBankCode.getBankName());
+		ibt.setDestbankname(interBankCode.getBankname());
 		ibt.setSourceaccountname(ibtInquiry.getSourceBankAccountNo());
 		ibt.setDestaccountname(ibtInquiry.getDestAccountNumber());
 		ibt.setSourceaccountnumber(ibtInquiry.getSourceBankAccountNo());
@@ -69,13 +69,13 @@ public class InterBankServiceImpl implements InterBankService{
 	
 	@Override
 	@Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-	public InterBankCode getBankCode(String bankCode){
+	public InterbankCodes getBankCode(String bankCode){
 		
-		InterBankCode nbCode = null;
+		InterbankCodes nbCode = null;
 		InterbankCodesDao nbDao = DAOFactory.getInstance().getInterbankCodesDao();
 		InterBankCodesQuery query = new InterBankCodesQuery();
 		query.setBankCode(bankCode);
-		List<InterBankCode> nbCodeList = nbDao.get(query);
+		List<InterbankCodes> nbCodeList = nbDao.get(query);
 		if(nbCodeList.size() >0){
 			nbCode = nbCodeList.get(0);
 		}
@@ -86,8 +86,8 @@ public class InterBankServiceImpl implements InterBankService{
 	@Override
 	@Transactional(readOnly=true, propagation = Propagation.REQUIRED)
 	public boolean isIBTRestricted(String bankCode){
-		InterBankCode interBankCode = getBankCode(bankCode);
-		boolean isIBTAllowed = ((interBankCode != null) && (interBankCode.getibAllowed())) ? true : false;
+		InterbankCodes interBankCode = getBankCode(bankCode);
+		boolean isIBTAllowed = ((interBankCode != null) && (interBankCode.getIballowed() != 0)) ? true : false;
 		
 		return isIBTAllowed;
 	}

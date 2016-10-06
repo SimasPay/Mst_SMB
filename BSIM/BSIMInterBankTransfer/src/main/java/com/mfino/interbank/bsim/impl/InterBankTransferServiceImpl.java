@@ -18,7 +18,7 @@ import com.mfino.dao.TransactionChargeLogDAO;
 import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
-import com.mfino.domain.InterBankCode;
+import com.mfino.domain.InterbankCodes;
 import com.mfino.domain.InterbankTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
@@ -71,7 +71,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		log.info("InterBankTransferServiceImpl :: interBankMoneyTransferInquirySourceToDestination mceMessage="+mceMessage);
 		CMInterBankFundsTransferInquiry interBankFundsTransferInquiry = (CMInterBankFundsTransferInquiry)mceMessage.getRequest();
 
-		InterBankCode interBankCode = interbankService.getBankCode(interBankFundsTransferInquiry.getDestBankCode());
+		InterbankCodes interBankCode = interbankService.getBankCode(interBankFundsTransferInquiry.getDestBankCode());
 		String bankCode = interBankFundsTransferInquiry.getDestBankCode();
 //		Pocket destinationPocket = interbankService.getIBDestinationPocket();
 		
@@ -80,7 +80,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 			
 			BackendResponse response = new BackendResponse();
 			response.setInternalErrorCode(NotificationCodes.IBTRestricted.getInternalErrorCode());
-			response.setBankName(interBankCode != null ? interBankCode.getBankName() : bankCode);
+			response.setBankName(interBankCode != null ? interBankCode.getBankname() : bankCode);
 			mceMessage.setResponse(response);
 			return mceMessage;
 		}
@@ -204,9 +204,9 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		//interbankService.updateIBT(ibt);
 		
 		if(null != ibt){
-			InterBankCode interBankCode = interbankService.getBankCode(ibt.getDestbankcode());
+			InterbankCodes interBankCode = interbankService.getBankCode(ibt.getDestbankcode());
 			if(null != interBankCode){
-				inquiryResponse.setBankName(interBankCode.getBankName());
+				inquiryResponse.setBankName(interBankCode.getBankname());
 			}
 		}
 		

@@ -1,7 +1,7 @@
 package com.mfino.bsim.iso8583.handlers;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
@@ -245,7 +247,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				subscriber.setSecurityanswer(subscriberRegistration
 						.getMothersMaidenName());
 			}
-			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
+			subscriber.setDetailsrequired((short)1);
 			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM.longValue());
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
@@ -266,7 +268,8 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
@@ -295,7 +298,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			}
 			subscriber.setAppliedby(createdByName);
 			subscriber.setAppliedtime(new Timestamp());
-			subscriber.setDetailsrequired(true);
+			subscriber.setDetailsrequired((short)1);
 			subscriberMDN.setSubscriber(subscriber);
 			subscriberMDN.setMdn(subscriberRegistration.getMDN());
 			subscriberMDN.setApplicationid(subscriberRegistration
@@ -352,7 +355,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				SubscriberGroup subGroup = new SubscriberGroup(); 
 				if(null!=groupService.getById(1L)){
 					subGroup.setSubscriberid(subscriber.getId().longValue());
-					subGroup.setGroup(groupService.getById(1L)); 
+					subGroup.setGroupid(1L); 
 					subGroupService.save(subGroup); 
 				}
 			}

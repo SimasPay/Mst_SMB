@@ -1,5 +1,6 @@
 package com.mfino.tools.adjustments.conversions;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.camel.Handler;
@@ -83,7 +84,7 @@ public class InquiryToConfirmationImpl implements InquiryToConfirmation {
 		MfinoServiceProvider msp = mspDao.getById(1);
 		transactionsLog.setMfinoServiceProvider(msp);
 		transactionsLog.setTransactiontime(new Timestamp(new Date()));
-		transactionsLog.setParenttransactionid(parentTxnID);
+		transactionsLog.setParenttransactionid(new BigDecimal(parentTxnID));
 		transactionsLogDAO.save(transactionsLog);
 		return transactionsLog;
 	}

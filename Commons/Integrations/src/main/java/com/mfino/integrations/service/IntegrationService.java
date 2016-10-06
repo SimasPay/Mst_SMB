@@ -74,7 +74,8 @@ public class IntegrationService{
 			return result;			
 		}
 
-		if(integrationPartnerMapping.getIsauthenticationkeyenabled())
+		if(integrationPartnerMapping.getIsauthenticationkeyenabled() != null && 
+				integrationPartnerMapping.getIsauthenticationkeyenabled() != 0)
 		{
 			String storedAuthenticationKey = integrationPartnerMapping.getAuthenticationkey();
 			String authenticationKey = integrationDetails.getAuthenticationKey();
@@ -93,7 +94,7 @@ public class IntegrationService{
 	public static boolean isLoginEnabledForIntegration(IntegrationDetails integrationDetails)
 	{
 		IntegrationPartnerMapping integrationPartnerMapping =  DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(integrationDetails.getInstitutionID());
-		return integrationPartnerMapping.getIsloginenabled();		
+		return (integrationPartnerMapping.getIsloginenabled() != null && integrationPartnerMapping.getIsloginenabled() != 0);		
 	}
 	
 	public static boolean ipAddressMatches(IntegrationDetails integrationDetails, String ipAddress) throws UnknownHostException
