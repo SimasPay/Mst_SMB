@@ -155,7 +155,7 @@ public class InterBankNewEventProcessingServiceImpl extends BillPaymentsBaseServ
 			
 			response.setTransferID(response.getTransferID());
 			response.setParentTransactionID(response.getParentTransactionID());
-			response.setServiceChargeTransactionLogID(sctl.getId());
+			response.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		}
 
 		return mceMessage;

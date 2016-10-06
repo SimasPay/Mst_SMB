@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.billpayments.beans.BillPayResponse;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
@@ -111,7 +112,7 @@ public class InterBankProcessor implements IInterBankProcessor {
 	public void setSCTLStatusToPending(MCEMessage mceMceMessage) {
 		log.info("BillPaymentProcessor :: setSCTLStatusToPending() BEGIN mceMessage="+mceMceMessage);
 		CMBase requestFix = (CMBase)mceMceMessage.getRequest();
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(requestFix.getServiceChargeTransactionLogID());
 		transactionChargingService.changeStatusToPending(sctl);
 	}
 }
