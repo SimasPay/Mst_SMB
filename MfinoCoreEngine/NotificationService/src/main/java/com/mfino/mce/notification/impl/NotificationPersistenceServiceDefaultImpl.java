@@ -59,11 +59,11 @@ public class NotificationPersistenceServiceDefaultImpl  implements NotificationP
 			notificationLog.setCode(notification.getNotificationCode());
 			if(sensitiveNotificationCodes.contains(notification.getNotificationCode()))
 			{
-				notificationLog.setIssensitivedata(true);
+				notificationLog.setIssensitivedata((short)1);
 			}
 			else
 			{
-				notificationLog.setIssensitivedata(false);
+				notificationLog.setIssensitivedata((short)0);
 			}
 			if(notification instanceof SMSNotification)
 			{

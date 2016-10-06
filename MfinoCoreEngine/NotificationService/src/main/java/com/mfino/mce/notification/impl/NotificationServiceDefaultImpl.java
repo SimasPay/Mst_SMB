@@ -5,6 +5,7 @@ import static com.mfino.mce.core.util.MCEUtil.isNullOrEmpty;
 import static com.mfino.mce.core.util.MCEUtil.safeString;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSBillerDAO;
-import com.mfino.domain.MFSBiller;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SystemParameters;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -85,39 +86,39 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 
 				BackendResponse backendResponse = (BackendResponse)mesg.getResponse();
 				if(!isNullOrEmpty(backendResponse.getSourceMDN())){
-					SubscriberMDN subMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
+					SubscriberMdn subMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
 					if ((subMDN != null) && (subMDN.getSubscriber() != null)) {
 						Subscriber sub = subMDN.getSubscriber();
-						backendResponse.setSenderFirstName(sub.getFirstName());
-						backendResponse.setSenderLastName(sub.getLastName());
+						backendResponse.setSenderFirstName(sub.getFirstname());
+						backendResponse.setSenderLastName(sub.getLastname());
 						if(CmFinoFIX.SubscriberType_Partner.equals(sub.getType())) {
 							Partner part=DAOFactory.getInstance().getPartnerDAO().getPartnerBySubscriber(sub);
-							backendResponse.setSenderTradeName(part.getTradeName());
+							backendResponse.setSenderTradeName(part.getTradename());
 						}
 					}
 				}
 				else if(!isNullOrEmpty(backendResponse.getSenderMDN())) {
-					SubscriberMDN subMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSenderMDN());
+					SubscriberMdn subMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSenderMDN());
 					if ((subMDN != null) && (subMDN.getSubscriber() != null)) {
 						Subscriber sub = subMDN.getSubscriber();
-						backendResponse.setSenderFirstName(sub.getFirstName());
-						backendResponse.setSenderLastName(sub.getLastName());
+						backendResponse.setSenderFirstName(sub.getFirstname());
+						backendResponse.setSenderLastName(sub.getLastname());
 						if(CmFinoFIX.SubscriberType_Partner.equals(sub.getType())) {
 							Partner part=DAOFactory.getInstance().getPartnerDAO().getPartnerBySubscriber(sub);
-							backendResponse.setSenderTradeName(part.getTradeName());
+							backendResponse.setSenderTradeName(part.getTradename());
 						}						
 					}
 				}
 					
 				if(!isNullOrEmpty(backendResponse.getReceiverMDN())){
-					SubscriberMDN subMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getReceiverMDN());
+					SubscriberMdn subMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getReceiverMDN());
 					if ((subMDN != null) && (subMDN.getSubscriber() != null)) {
 						Subscriber sub = subMDN.getSubscriber();
-						backendResponse.setReceiverFirstName(sub.getFirstName());
-						backendResponse.setReceiverLastName(sub.getLastName());
+						backendResponse.setReceiverFirstName(sub.getFirstname());
+						backendResponse.setReceiverLastName(sub.getLastname());
 						if(CmFinoFIX.SubscriberType_Partner.equals(sub.getType())) {
 							Partner part=DAOFactory.getInstance().getPartnerDAO().getPartnerBySubscriber(sub);
-							backendResponse.setReceiverTradeName(part.getTradeName());
+							backendResponse.setReceiverTradeName(part.getTradename());
 						}
 					}
 				}
@@ -150,18 +151,18 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 				if(backendResponse.getLanguage() == null)
 				{
                     Integer language = 0;
-					SubscriberMDN smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
+					SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
 					if(smdn == null)
 					{
 						smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSenderMDN());
 					}
 					if(smdn != null)
 					{
-						language = smdn.getSubscriber().getLanguage();
+						language = ((Long)smdn.getSubscriber().getLanguage()).intValue();
 					}
 					else {
 	                    SystemParameters langSystemParam = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-	                    language = Integer.parseInt(langSystemParam.getParameterValue());
+	                    language = Integer.parseInt(langSystemParam.getParametervalue());
 					}
 					backendResponse.setLanguage(language);
 				}
@@ -200,7 +201,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 						notificationWrapper.setWebResponse(getWebResponse(mesg, objWebNotification));
 					}					
 
-					if((objSmsNotification != null) && (objSmsNotification.getIsActive()))
+					if((objSmsNotification != null) && (objSmsNotification.getIsactive() != null && objSmsNotification.getIsactive() != 0))
 					{
 						//Skip SMS to Sender in case of STK Request (Channel code is 6)
 						if (! (CmFinoFIX.SourceApplication_STK.equals(((CMBase)mesg.getRequest()).getSourceApplication())) ||
@@ -209,10 +210,10 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 								if((objSmsNotification != null) && (notificationCode.getIsNotificationRequired())){
 									log.info("constructing notification for mdn="+backendResponse.getSourceMDN());
 									Subscriber subscriber = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN()).getSubscriber();
-									if((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_SMS) > 0)
+									if((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_SMS) > 0)
 									{
-										backendResponse.setFirstName(subscriber.getFirstName());
-										backendResponse.setLastName(subscriber.getLastName());
+										backendResponse.setFirstName(subscriber.getFirstname());
+										backendResponse.setLastName(subscriber.getLastname());
 
 										SMSNotification notification  = new SMSNotification();
 										notification.setMdn(backendResponse.getSourceMDN());
@@ -227,17 +228,17 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 						}
 					}
 
-					if((objEmailNotification != null) && (objEmailNotification.getIsActive()))
+					if((objEmailNotification != null) && (objEmailNotification.getIsactive() != null && objEmailNotification.getIsactive() != 0))
 					{
 						if(!isNullOrEmpty(backendResponse.getSourceMDN())){
 							if((objEmailNotification != null) && (notificationCode.getIsNotificationRequired())){
 								log.info("constructing notification for mdn="+backendResponse.getSourceMDN());
 								Subscriber subscriber = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN()).getSubscriber();
 
-								if((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber))
+								if((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber))
 								{
-									backendResponse.setFirstName(subscriber.getFirstName());
-									backendResponse.setLastName(subscriber.getLastName());
+									backendResponse.setFirstName(subscriber.getFirstname());
+									backendResponse.setLastName(subscriber.getLastname());
 
 									EmailNotification emailNotification = new EmailNotification();
 									String[] recipients = {subscriber.getEmail()};
@@ -261,14 +262,14 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 				{
 					if(!(backendResponse.getReceiverMDN().equals(backendResponse.getSourceMDN()))){
 
-					SubscriberMDN subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getReceiverMDN());
+					SubscriberMdn subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getReceiverMDN());
 					Subscriber subscriber = null;
 					Integer receiverNotficationLanguage = backendResponse.getLanguage();
 					if (subscriberMDN != null) {
 						subscriber = subscriberMDN.getSubscriber();
-						backendResponse.setFirstName(subscriber.getFirstName());
-						backendResponse.setLastName(subscriber.getLastName());
-						receiverNotficationLanguage = subscriber.getLanguage();
+						backendResponse.setFirstName(subscriber.getFirstname());
+						backendResponse.setLastName(subscriber.getLastname());
+						receiverNotficationLanguage = ((Long)subscriber.getLanguage()).intValue();
 					}
 					
 
@@ -278,9 +279,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 
 					
 					if (! (CmFinoFIX.SourceApplication_ATM.equals(((CMBase)mesg.getRequest()).getSourceApplication()))) {
-						if((smsReceiverNotification != null) && ( smsReceiverNotification.getIsActive())){
+						if((smsReceiverNotification != null) && ( smsReceiverNotification.getIsactive() != null && smsReceiverNotification.getIsactive() != 0)){
 							log.info("constructing notification for mdn="+backendResponse.getReceiverMDN());
-							if((subscriber != null) && (subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_SMS) > 0)
+							if((subscriber != null) && (subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_SMS) > 0)
 							{
 								SMSNotification notification  = new SMSNotification();
 								notification.setMdn(backendResponse.getReceiverMDN());
@@ -294,9 +295,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 
 						
 
-						if((emailReceiverNotification != null) && (emailReceiverNotification.getIsActive()))
+						if((emailReceiverNotification != null) && (emailReceiverNotification.getIsactive() != null && emailReceiverNotification.getIsactive() != 0))
 						{
-							if((subscriber != null) && (subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber))
+							if((subscriber != null) && (subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber))
 							{
 								EmailNotification emailNotification = new EmailNotification();
 								String[] recipients = {subscriber.getEmail()};
@@ -323,17 +324,17 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 					
 					com.mfino.domain.Notification onBehalfOfSmsNotification = coreDataWrapper.getNotification(onBehalfOfNotificationCode.getNotificationCode(), backendResponse.getLanguage(), CmFinoFIX.NotificationMethod_SMS);
 					com.mfino.domain.Notification onBehalfOfEmailNotification = coreDataWrapper.getNotification(onBehalfOfNotificationCode.getNotificationCode(), backendResponse.getLanguage(), CmFinoFIX.NotificationMethod_Email);
-					SubscriberMDN subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getOnBehalfOfMDN());
+					SubscriberMdn subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getOnBehalfOfMDN());
 					Subscriber subscriber = null;
 					if(subscriberMDN != null ){
 						subscriber = subscriberMDN.getSubscriber();
-						backendResponse.setFirstName(subscriber.getFirstName());
-						backendResponse.setLastName(subscriber.getLastName());
+						backendResponse.setFirstName(subscriber.getFirstname());
+						backendResponse.setLastName(subscriber.getLastname());
 					}
 
-					if((onBehalfOfSmsNotification != null) && (onBehalfOfSmsNotification.getIsActive())){
+					if((onBehalfOfSmsNotification != null) && (onBehalfOfSmsNotification.getIsactive() != null && onBehalfOfSmsNotification.getIsactive() != 0)){
 						log.info("constructing notification for mdn="+backendResponse.getOnBehalfOfMDN());
-						if(subscriber==null || ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_SMS) > 0))
+						if(subscriber==null || ((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_SMS) > 0))
 						{
 							SMSNotification notification  = new SMSNotification();
 							notification.setMdn(backendResponse.getOnBehalfOfMDN());
@@ -346,9 +347,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 						
 					}
 
-					if((onBehalfOfEmailNotification != null) && (onBehalfOfEmailNotification.getIsActive()))
+					if((onBehalfOfEmailNotification != null) && (onBehalfOfEmailNotification.getIsactive() != null && onBehalfOfEmailNotification.getIsactive() != 0))
 					{
-						if(subscriber!=null && ((subscriber.getNotificationMethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber))
+						if(subscriber!=null && ((subscriber.getNotificationmethod() & CmFinoFIX.NotificationMethod_Email) > 0) && subscriberServiceExtended.isSubscriberEmailVerified(subscriber))
 						{
 							EmailNotification emailNotification = new EmailNotification();
 							String[] recipients = {subscriber.getEmail()};
@@ -415,7 +416,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 		BackendResponse backendResponse = (BackendResponse)mceMessage.getResponse();
 		log.info("NotificationServiceDefaultImpl :: getWebResponse() SourceMDN=" + backendResponse.getSourceMDN());
 		log.info("NotificationServiceDefaultImpl :: getWebResponse() SenderMDN=" + backendResponse.getSenderMDN());
-		SubscriberMDN subscriberMdn = null;
+		SubscriberMdn subscriberMdn = null;
 		if(backendResponse.getSourceMDN() != null)
 		{
 			subscriberMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
@@ -426,8 +427,8 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 		}
 		if(subscriberMdn != null)
 		{
-			backendResponse.setFirstName(subscriberMdn.getSubscriber().getFirstName());
-			backendResponse.setLastName(subscriberMdn.getSubscriber().getLastName());
+			backendResponse.setFirstName(subscriberMdn.getSubscriber().getFirstname());
+			backendResponse.setLastName(subscriberMdn.getSubscriber().getLastname());
 		}
 
 		if(mceMessage.getRequest() instanceof CMBankAccountBalanceInquiry){
@@ -436,7 +437,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			log.info("NotificationServiceDefaultImpl :: getWebResponse for request=CMBankAccountBalanceInquiry backendResponse.Dump "+backendResponse.DumpFields());
 
 			response.setReceiveTime(backendResponse.getReceiveTime());
-			response.setCode(notification.getCode());
+			response.setCode(((Long)notification.getCode()).intValue());
 			response.setLanguage(backendResponse.getLanguage());
 			response.setMSPID(backendResponse.getMSPID());
 			response.setParentTransactionID(backendResponse.getParentTransactionID());
@@ -468,7 +469,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			log.info("NotificationServiceDefaultImpl# :: getWebResponse for request=CMBankAccountToBankAccount backendResponse.Dump "+backendResponse.DumpFields());
 
 			response.setReceiveTime(backendResponse.getReceiveTime());
-			response.setCode(notification.getCode());
+			response.setCode(((Long)notification.getCode()).intValue());
 			response.setLanguage(backendResponse.getLanguage());
 			response.setMSPID(backendResponse.getMSPID());
 			response.setParentTransactionID(backendResponse.getParentTransactionID());
@@ -536,17 +537,22 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 
 		if(notification == null) return "";
 
-		String rawNotificationText = notification.getText();
+		String rawNotificationText = "";
+		try {
+			rawNotificationText = notification.getText().getSubString(0, ((Long)notification.getText().length()).intValue());
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 		SystemParametersServiceImpl systemParametersServiceImpl = new SystemParametersServiceImpl();
-		SubscriberMDN senderMdn = null;
+		SubscriberMdn senderMdn = null;
         if(rawNotificationText.contains("$(SenderFirstName)") || rawNotificationText.contains("$(SenderLastName)"))
         {
         	senderMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSourceMDN());
         	if(senderMdn == null)
         		senderMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getSenderMDN());			
         }
-        SubscriberMDN receiverMdn = null;
+        SubscriberMdn receiverMdn = null;
         if(rawNotificationText.contains("$(ReceiverFirstName)") || rawNotificationText.contains("$(ReceiverLastName)"))
         {
         	receiverMdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(backendResponse.getReceiverMDN());		
@@ -679,10 +685,10 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			}
 			if (rawNotificationText.contains("$(BillerName)")) {
 				MFSBillerDAO mfsBillerDao = DAOFactory.getInstance().getMFSBillerDAO();
-				MFSBiller mfsBiller = mfsBillerDao.getByBillerCode(backendResponse.getBillerCode());
+				MfsBiller mfsBiller = mfsBillerDao.getByBillerCode(backendResponse.getBillerCode());
 				if(mfsBiller != null)
 				{
-					rawNotificationText = rawNotificationText.replace("$(BillerName)", safeString(mfsBiller.getMFSBillerName()));
+					rawNotificationText = rawNotificationText.replace("$(BillerName)", safeString(mfsBiller.getMfsbillername() ));
 				}
 				else
 				{
@@ -718,16 +724,16 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 				rawNotificationText = rawNotificationText.replace("$(FirstName)", safeString(backendResponse.getFirstName()));
 			}
 			if (rawNotificationText.contains("$(SenderFirstName)")) {
-				rawNotificationText = rawNotificationText.replace("$(SenderFirstName)", (senderMdn != null)?safeString(senderMdn.getSubscriber().getFirstName()):"");
+				rawNotificationText = rawNotificationText.replace("$(SenderFirstName)", (senderMdn != null)?safeString(senderMdn.getSubscriber().getFirstname()):"");
 			}
 			if (rawNotificationText.contains("$(SenderLastName)")) {
-				rawNotificationText = rawNotificationText.replace("$(SenderLastName)", (senderMdn != null)?safeString(senderMdn.getSubscriber().getLastName()):"");
+				rawNotificationText = rawNotificationText.replace("$(SenderLastName)", (senderMdn != null)?safeString(senderMdn.getSubscriber().getLastname()):"");
 			}
 			if (rawNotificationText.contains("$(ReceiverFirstName)")) {
-				rawNotificationText = rawNotificationText.replace("$(ReceiverFirstName)", (receiverMdn != null)?safeString(receiverMdn.getSubscriber().getFirstName()):"");
+				rawNotificationText = rawNotificationText.replace("$(ReceiverFirstName)", (receiverMdn != null)?safeString(receiverMdn.getSubscriber().getFirstname()):"");
 			}
 			if (rawNotificationText.contains("$(ReceiverLastName)")) {
-				rawNotificationText = rawNotificationText.replace("$(ReceiverLastName)", (receiverMdn != null)?safeString(receiverMdn.getSubscriber().getLastName()):"");
+				rawNotificationText = rawNotificationText.replace("$(ReceiverLastName)", (receiverMdn != null)?safeString(receiverMdn.getSubscriber().getLastname()):"");
 			}
 			if (rawNotificationText.contains("$(SenderTradeName)")) {
 				rawNotificationText = rawNotificationText.replace("$(SenderTradeName)", safeString(backendResponse.getSenderTradeName()));
@@ -760,22 +766,22 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 				rawNotificationText = rawNotificationText.replace("$(BenificiaryName)", safeString(backendResponse.getBeneficiaryName()));
 			}
 			if (rawNotificationText.contains("$(CardPAN)")) {
-				rawNotificationText = rawNotificationText.replace("$(CardPAN)", safeString(pocket != null ?pocket.getCardPAN() : ""));
+				rawNotificationText = rawNotificationText.replace("$(CardPAN)", safeString(pocket != null ?pocket.getCardpan() : ""));
 			}
 			if (rawNotificationText.contains("$(DestinationCardPAN)")) {
-				rawNotificationText = rawNotificationText.replace("$(DestinationCardPAN)", safeString(destPocket != null ?destPocket.getCardPAN() : ""));
+				rawNotificationText = rawNotificationText.replace("$(DestinationCardPAN)", safeString(destPocket != null ?destPocket.getCardpan() : ""));
 			}
 			if (rawNotificationText.contains("$(CardPan)")) {
-				rawNotificationText = rawNotificationText.replace("$(CardPan)", safeString(pocket != null ?pocket.getCardPAN() : ""));
+				rawNotificationText = rawNotificationText.replace("$(CardPan)", safeString(pocket != null ?pocket.getCardpan() : ""));
 			}
 			if (rawNotificationText.contains("$(DestinationCardPan)")) {
-				rawNotificationText = rawNotificationText.replace("$(DestinationCardPan)", safeString(destPocket != null ?destPocket.getCardPAN() : ""));
+				rawNotificationText = rawNotificationText.replace("$(DestinationCardPan)", safeString(destPocket != null ?destPocket.getCardpan() : ""));
 			}
 			if (rawNotificationText.contains("$(CardAlias)")) {
-				rawNotificationText = rawNotificationText.replace("$(CardAlias)", safeString(pocket != null ?pocket.getCardAlias() : ""));
+				rawNotificationText = rawNotificationText.replace("$(CardAlias)", safeString(pocket != null ?pocket.getCardalias() : ""));
 			}
 			if (rawNotificationText.contains("$(DestinationCardAlias)")) {
-				rawNotificationText = rawNotificationText.replace("$(DestinationCardAlias)", safeString(destPocket != null ?destPocket.getCardAlias() : ""));
+				rawNotificationText = rawNotificationText.replace("$(DestinationCardAlias)", safeString(destPocket != null ?destPocket.getCardalias() : ""));
 			}
 			//RechargePin variable is being used to populate VoucherToken which we get as part of PLN transaction for bill payments
 			if (rawNotificationText.contains("$(VoucherToken)") && StringUtils.isNotBlank(backendResponse.getRechargePin())) {

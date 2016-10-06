@@ -280,7 +280,7 @@ public class CoreDataWrapper
 
 		if(!isNullOrEmpty(pocketList)){
 			for(Pocket bobPocket : pocketList){
-				if(bobPocket.getIsdefault()){
+				if(bobPocket.getIsdefault() != null && bobPocket.getIsdefault() != 0){
 					defaultBobPocket = bobPocket;
 					break;
 				}
