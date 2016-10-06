@@ -70,11 +70,11 @@ public class RequestHandler {
 		HashMap<String, Object> dataHolder = new HashMap<String, Object>();
 		dataHolder.put("txn.amount", billPayments.getAmount().toPlainString());
 		dataHolder.put("txn.mdn", billPayments.getSourcemdn());
-		dataHolder.put("txn.sctlid", billPayments.getSctlId().toString());
+		dataHolder.put("txn.sctlid", billPayments.getServiceChargeTxnLog().getId());
 		dataHolder.put("txn.transactiontime", billPayments.getLastupdatetime());
 		dataHolder.put("dynamic.transactiontime", billPayments.getLastupdatetime());
 		dataHolder.put("txn.itid", billPayments.getIntxnid());
-		String uniqueID = billPayments.getSctlId().toString()+"00"+uniqueSuffix.incrementAndGet();
+		String uniqueID = billPayments.getServiceChargeTxnLog().getId().toString()+"00"+uniqueSuffix.incrementAndGet();
 		dataHolder.put("txn.sctlasmessagegid", uniqueID);
 		dataHolder.putAll(integrationDetails);
 
@@ -88,7 +88,7 @@ public class RequestHandler {
 		constructor.setRequestTypeTorequestFormatMap(requestTypeTorequestFormatMap);
 		String request = constructor.constructRequest(mceMessage.getIntegrationDataHolder(), requestType);
 
-		logger.info("request constructed for sctlid=" + billPayments.getSctlId() + "-->  " + request);
+		logger.info("request constructed for sctlid=" + billPayments.getServiceChargeTxnLog().getId() + "-->  " + request);
 
 		exchange.getIn().setBody(request);
 
