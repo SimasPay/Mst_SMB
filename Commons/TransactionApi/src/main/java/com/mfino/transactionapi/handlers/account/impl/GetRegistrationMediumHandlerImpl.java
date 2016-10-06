@@ -13,7 +13,7 @@ import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetRegistrationMedium;
 import com.mfino.handlers.FIXMessageHandler;
@@ -53,12 +53,12 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
 		XMLResult result = new RegistrationMediumXMLResult();
 		
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetRegistrationMedium,getRegistrationMedium.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetRegistrationMedium,getRegistrationMedium.DumpFields());
 		
-		getRegistrationMedium.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		getRegistrationMedium.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(getRegistrationMedium);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 	
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(getRegistrationMedium.getSourceMDN());
 		if(sourceMDN==null){

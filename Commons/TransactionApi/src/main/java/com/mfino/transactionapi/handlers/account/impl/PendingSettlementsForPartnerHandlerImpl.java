@@ -16,7 +16,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.SctlSettlementMap;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetPendingSettlementsForPartner;
 import com.mfino.handlers.FIXMessageHandler;
@@ -87,13 +87,13 @@ public class PendingSettlementsForPartnerHandlerImpl extends FIXMessageHandler i
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(pendingSettlements.getSourceMDN());
 		
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetPendingSettlementsForPartner, pendingSettlements.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetPendingSettlementsForPartner, pendingSettlements.DumpFields());
 		
-		pendingSettlements.setTransactionID(transactionsLog.getID());
+		pendingSettlements.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setSourceMessage(pendingSettlements);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 
 		Integer validationResult =transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
@@ -106,7 +106,7 @@ public class PendingSettlementsForPartnerHandlerImpl extends FIXMessageHandler i
 		validationResult=transactionApiValidationService.validatePin(sourceMDN, pendingSettlements.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: "+pendingSettlements.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}

@@ -72,10 +72,10 @@ public class BillPaymentsSuspenceClearanceServiceImpl extends BillPaymentsBaseSe
 			MCEMessage mceMessage = new MCEMessage();
 
 			CMBillPay cmBillPay = new CMBillPay();
-			cmBillPay.setServiceChargeTransactionLogID(billPayment.getSctlId());
+			cmBillPay.setServiceChargeTransactionLogID(billPayment.getServiceChargeTxnLog().getId().longValue());
 			cmBillPay.setIntegrationCode(billPayment.getIntegrationcode());
 			mceMessage.setRequest(cmBillPay);
-			sctl = sctlDao.getById(billPayment.getSctlId());
+			sctl = sctlDao.getById(billPayment.getServiceChargeTxnLog().getId().longValue());
 			handleClearanceStates(mceMessageList, billPayment, mceMessage);
 		}
 		
@@ -87,7 +87,7 @@ public class BillPaymentsSuspenceClearanceServiceImpl extends BillPaymentsBaseSe
 	public void handleClearanceStates(List<MCEMessage> mceMessageList, BillPayments billPayment, MCEMessage mceMessage) {
 	    if((billPayment.getBillpaystatus().equals(CmFinoFIX.BillPayStatus_MT_SUSPENSE_TO_DEST_INQ_FAILED)) ||
 	    		(billPayment.getBillpaystatus().equals(CmFinoFIX.BillPayStatus_MT_SUSPENSE_TO_DEST_FAILED))){
-			log.info("Adding to moneyTransferInquirySuspenseToDestinationqueue Bill Payment with SCTLID: "+ billPayment.getSctlId() + 
+			log.info("Adding to moneyTransferInquirySuspenseToDestinationqueue Bill Payment with SCTLID: "+ billPayment.getServiceChargeTxnLog().getId() + 
 						" and billpay status: " + billPayment.getBillpaystatus());
 	    	setSuspenseToDestinationQueue(mceMessage);
 	    	mceMessageList.add(mceMessage);
@@ -101,14 +101,14 @@ public class BillPaymentsSuspenceClearanceServiceImpl extends BillPaymentsBaseSe
 	public void handleConfirmationFailedState(List<MCEMessage> mceMessageList, BillPayments billPayment, MCEMessage mceMessage) {
 	    
 	    AutoReversalsDao autoRevDao = DAOFactory.getInstance().getAutoReversalsDao();
-	    AutoReversals autoRev = autoRevDao.getBySctlId(billPayment.getSctlId());
+	    AutoReversals autoRev = autoRevDao.getBySctlId(billPayment.getServiceChargeTxnLog().getId().longValue());
 	    billPayment.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED.longValue());
 	    billPaymentsService.saveBillPayment(billPayment);
 	    setSuspenseAndChargesToReversalQueue(mceMessage);
 	    
 	    Timestamp now = new Timestamp();
 	    if((autoRev == null) && ((now.getTime() - sctl.getCreatetime().getTime()) > timeoutForAutoReversalInMinutes* 60 * 1000)){
-			log.info("Adding to suspenseAndChargesToSourceReversalqueue Bill Payment with SCTLID: "+ billPayment.getSctlId() + 
+			log.info("Adding to suspenseAndChargesToSourceReversalqueue Bill Payment with SCTLID: "+ billPayment.getServiceChargeTxnLog().getId() + 
 						" and billpay status: " + billPayment.getBillpaystatus());
 		
 	    	mceMessageList.add(mceMessage);// add this message to reversal queue only if its 24 hour old

@@ -3,6 +3,8 @@
  */
 package com.mfino.transactionapi.handlers.money.impl;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -148,11 +150,11 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		
 		Transaction transaction = null;
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferToUangkuInquiry, transferToUangkuInquiry.DumpFields());
-		transferToUangkuInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferToUangkuInquiry, transferToUangkuInquiry.DumpFields());
+		transferToUangkuInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(transferToUangkuInquiry);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 		addCompanyANDLanguageToResult(sourceMDN, result);
 
@@ -163,7 +165,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		sc.setServiceName(transferToUangkuInquiry.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
 		sc.setTransactionAmount(transferToUangkuInquiry.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
 		String uangkuPrefix = systemParametersService.getString(SystemParameterKeys.TRANSFER_TO_UANGKU_PREFIX_NUMBER);
@@ -195,15 +197,15 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		transferToUangkuInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		transferToUangkuInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		CFIXMsg response = super.process(transferToUangkuInquiry);
 
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			transferToUangkuInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -223,7 +225,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setBankName(transactionResponse.getBankName());
 		result.setMfaMode("None");
 		

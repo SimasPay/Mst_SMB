@@ -19,10 +19,10 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -108,13 +108,13 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		LastNTxnsXMLResult result = new LastNTxnsXMLResult();
 		result.setEnumTextService(enumTextService);
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
-		transactionsHistory.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
+		transactionsHistory.setTransactionID(transactionsLog.getId().longValue());
 		
 		result.setSourceMessage(transactionsHistory);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMDN(transactionsHistory.getSourceMDN());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 		SubscriberMdn sourceMDN= subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
 
@@ -166,7 +166,7 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		sc.setServiceName(transactionDetails.getServiceName());
 		sc.setTransactionTypeName(transactionDetails.getTransactionName());
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
 
 		try{
@@ -180,7 +180,7 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 
 		transactionsHistory.setPocketID(sourcePocket.getId().longValue());
 		CMGetBankAccountTransactions bankTransactionsReq = new CMGetBankAccountTransactions();
@@ -190,15 +190,15 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		bankTransactionsReq.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankTransactionsReq.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
 		bankTransactionsReq.setPocketID(sourcePocket.getId().longValue());
-		bankTransactionsReq.setTransactionID(transactionsLog.getID());
-		bankTransactionsReq.setServiceChargeTransactionLogID(sctl.getID());
+		bankTransactionsReq.setTransactionID(transactionsLog.getId().longValue());
+		bankTransactionsReq.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		bankTransactionsReq.setMaxCount(transactionsHistory.getMaxCount());
 		
 		CFIXMsg response = super.process(bankTransactionsReq);
 		if (response instanceof CmFinoFIX.CMGetLastTransactionsFromBank) {
 			log.info("Got the Bank Transaction Histroy from Bank.");
 			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);				
 			}
 			CmFinoFIX.CMGetLastTransactionsFromBank bankResponse = (CmFinoFIX.CMGetLastTransactionsFromBank) response;
@@ -225,7 +225,7 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 				transactionChargingService.failTheTransaction(sctl, MessageText._("Error: While gettiong the Bank Transactions history"));
 			}
 		}
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
  		return result;
 	}
 

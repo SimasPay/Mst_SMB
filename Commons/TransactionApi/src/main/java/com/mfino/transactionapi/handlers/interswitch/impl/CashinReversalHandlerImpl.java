@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAutoReversal;
@@ -61,14 +61,14 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 
 		log.info("creating transaction log ...");
 	
-		TransactionsLog tLog  = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, cashinDetails.DumpFields());
+		TransactionLog tLog  = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AutoReversal, cashinDetails.DumpFields());
 
- 		cashinDetails.setTransactionID(tLog.getID());
+ 		cashinDetails.setTransactionID(tLog.getId().longValue());
  
  		WalletConfirmXMLResult result = new WalletConfirmXMLResult();
-		result.setTransactionTime(tLog.getTransactionTime());
+		result.setTransactionTime(tLog.getTransactiontime());
 		result.setSourceMessage(cashinDetails);
-		result.setTransactionID(tLog.getID());
+		result.setTransactionID(tLog.getId().longValue());
 
 		log.info("validating dest mdn");
 
@@ -98,9 +98,9 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 
 		log.info("retrieving sctl from paymentLogID");
 
-	 	List<ServiceChargeTransactionLog> sctlList = sctlService.getBySCTLIntegrationTxnID(cashinDetails.getPaymentLogID(),cashinDetails.getCustReference());
+	 	List<ServiceChargeTxnLog> sctlList = sctlService.getBySCTLIntegrationTxnID(cashinDetails.getPaymentLogID(),cashinDetails.getCustReference());
 	
-		ServiceChargeTransactionLog sctl = null;
+		ServiceChargeTxnLog sctl = null;
 		if(!sctlList.isEmpty())	{
 			sctl = sctlList.get(0); // Only one match would be there as we do not allow duplicate entry
 		}
@@ -111,14 +111,14 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
  			return result;
 		}
 		else {
-			if (sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Reverse_Success)) {
+			if (sctl.getStatus()==(CmFinoFIX.SCTLStatus_Reverse_Success)) {
 				log.info("previous reversal for this paymentlogid=" + cashinDetails.getPaymentLogID() + " was successful.So returning successful");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AutoReverseSuccessToSource);
 				result.setCode(CmFinoFIX.NotificationCode_AutoReverseSuccessToSource.toString());
 
 				return result;
 			}
-			else if (!sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Confirmed)) {
+			else if (!(sctl.getStatus()==(CmFinoFIX.SCTLStatus_Confirmed))) {
 				log.info("previous reversal for this paymentlogid=" + cashinDetails.getPaymentLogID() + " was failure.So returning status");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AutoReverseFailed);
 				result.setCode(CmFinoFIX.NotificationCode_AutoReverseFailed.toString());
@@ -129,7 +129,7 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 		
 		//save the transactionidentifier along with sctl to db
 		TransactionIdentifierServiceImpl transactionIdentifierService= new TransactionIdentifierServiceImpl();
-		transactionIdentifierService.createTrxnIdentifierDbEntry(cashinDetails.getTransactionIdentifier(), sctl.getID());
+		transactionIdentifierService.createTrxnIdentifierDbEntry(cashinDetails.getTransactionIdentifier(), sctl.getId().longValue());
 		
 		log.info("retrieving ct from sctl");
 		 
@@ -139,7 +139,7 @@ public class CashinReversalHandlerImpl extends FIXMessageHandler implements Cash
 		CMAutoReversal reversal = new CMAutoReversal();
 		reversal.setSourcePocketID(ct.getPocket().getId().longValue());
 		reversal.setDestPocketID(subPocket.getId().longValue());
-		reversal.setServiceChargeTransactionLogID(sctl.getID());
+		reversal.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		reversal.setAmount(ct.getAmount());
 		reversal.setCharges(ct.getCharges());
 		reversal.setTransactionIdentifier(cashinDetails.getTransactionIdentifier());

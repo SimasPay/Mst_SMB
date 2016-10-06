@@ -18,11 +18,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -114,8 +114,8 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		if(dateOfBirth!=null){
 			subscriberActivation.setDateOfBirth(new Timestamp(dateOfBirth));
 		}
-		TransactionsLog transactionsLog = null;
-		ServiceChargeTransactionLog sctl = null;
+		TransactionLog transactionsLog = null;
+		ServiceChargeTxnLog sctl = null;
 
 		log.info("Handling subscriber services activation webapi request");
 		ActivationXMLResult result = new ActivationXMLResult();
@@ -124,10 +124,10 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberActivation, subscriberActivation.DumpFields());
 		
 		result.setSourceMessage(subscriberActivation);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
-		subscriberActivation.setTransactionID(transactionsLog.getID());
+		subscriberActivation.setTransactionID(transactionsLog.getId().longValue());
 
 		SubscriberMdn subscribermdn = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 		Integer code = null;
@@ -157,11 +157,11 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			
 			serviceCharge.setSourceMDN(subscriberActivation.getSourceMDN());
 			serviceCharge.setDestMDN(null);
-			serviceCharge.setChannelCodeId(channelCode.getId());
+			serviceCharge.setChannelCodeId(channelCode.getId().longValue());
 			serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 			serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_ACTIVATION);
 			serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-			serviceCharge.setTransactionLogId(transactionsLog.getID());
+			serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 			serviceCharge.setTransactionIdentifier(subscriberActivation.getTransactionIdentifier());
 
 			try{
@@ -199,13 +199,13 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			//Validating OTP for SimaspayActivity
 
 			sctl = transaction.getServiceChargeTransactionLog();
-			result.setSctlID(sctl.getID());
+			result.setSctlID(sctl.getId().longValue());
 			result.setMfaMode("None");
 			
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getId()) == true){
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getId().longValue()) == true){
 			
 				result.setMfaMode("OTP");
-				mfaService.handleMFATransaction(sctl.getID(), subscriberActivation.getSourceMDN());
+				mfaService.handleMFATransaction(sctl.getId().longValue(), subscriberActivation.getSourceMDN());
 			}
 			
 			if(sctl!=null){
@@ -220,20 +220,20 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		
 		if((mfaTransactionType.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
 			
-			ServiceChargeTransactionLog sctlForMFA=sctlService.getBySCTLID(parentTxnId);
+			ServiceChargeTxnLog sctlForMFA=sctlService.getBySCTLID(parentTxnId);
 
 			sctl=sctlForMFA;
 
-			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getId()) == true){
+			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_ACTIVATION, cc.getId().longValue()) == true){
 				
-				if(transactionOTP == null || !(mfaService.isValidOTP(transactionOTP,sctlForMFA.getID(), subscriberActivation.getSourceMDN()))){
+				if(transactionOTP == null || !(mfaService.isValidOTP(transactionOTP,sctlForMFA.getId().longValue(), subscriberActivation.getSourceMDN()))){
 						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 						return result;
 				}
 			}
 		}
 		
-		subscriberActivation.setServiceChargeTransactionLogID(sctl.getID());
+		subscriberActivation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();
 		
 		if(subscribermdn!=null){
@@ -254,7 +254,7 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			addCompanyANDLanguageToResult(subscribermdn, result);	
 		 
 			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 
 				transactionChargingService.completeTheTransaction(sctl);
 			}
@@ -329,13 +329,13 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 			}
 			
 			result.setNotificationCode(code);
-			result.setSctlID(sctl.getID());
+			result.setSctlID(sctl.getId().longValue());
  		}
 		else 
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 		}
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;
 	}
 }

@@ -1,5 +1,6 @@
 package com.mfino.bayar.communicator;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,12 @@ public class BayarBillPayCommunicator extends BayarHttpCommunicator {
 		
 		BillPayments billPayments = billPaymentsService.getBillPaymentsRecord(sctlId);
 		if( billPayments != null && billPayments.getBilldata() != null)
-			billdataMsg = billPayments.getBilldata();
+			try {
+				billdataMsg = billPayments.getBilldata().getSubString(0, ((Long)billPayments.getBilldata().length()).intValue());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		requestParams.add(new BasicNameValuePair("payment_code", billdataMsg));
 		requestParams.add(new BasicNameValuePair("reference_id", request.getServiceChargeTransactionLogID().toString()));

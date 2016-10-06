@@ -18,13 +18,13 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -90,12 +90,12 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		log.info("Handling Card Link WebAPI request");
 		
 		XMLResult result = new NFCXMLResult();
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardLink, nfcCardLink.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardLink, nfcCardLink.DumpFields());
 		nfcCardLink.setSourceApplication((int)cc.getChannelsourceapplication());
-		nfcCardLink.setTransactionID(transactionsLog.getID());
+		nfcCardLink.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(nfcCardLink);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		result.setCardAlias(transactionDetails.getCardAlias());
 		result.setCardPan(transactionDetails.getCardPAN());
@@ -123,9 +123,9 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
-		PocketTemplate nfcPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKYCLevel(), true, CmFinoFIX.PocketType_NFC, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+		PocketTemplate nfcPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, CmFinoFIX.PocketType_NFC, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		if(nfcPocketTemplate == null)
          {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound);
@@ -140,7 +140,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_LINK);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(nfcCardLink.getTransactionIdentifier());
 
 		try{
@@ -154,8 +154,8 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		nfcCardLink.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		nfcCardLink.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		if(!(CmFinoFIX.SourceApplication_CMS.toString().equalsIgnoreCase(nfcCardLink.getChannelCode()))){
 			log.info("NFCCardLinkHandler :: handle() Going to backend as request received from mobile channel");
 			CFIXMsg response = super.process(nfcCardLink);
@@ -165,7 +165,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 			if (transactionResponse.isResult() && sctl!=null) {
 				// create pocket here as response is success
 				createNFCPocket(nfcPocketTemplate,smdn,nfcCardLink);
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_NFCCardLinkSuccess);
@@ -185,17 +185,17 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 			log.info("NFCCardLinkHandler :: handle() Not Going to backend as request received from CMS channel");
 			if(StringUtils.isNotBlank(transactionDetails.getTransID()))
 			{
-			sctl.setIntegrationTransactionID(Long.parseLong(transactionDetails.getTransID()));
+			sctl.setIntegrationtransactionid(new BigDecimal(transactionDetails.getTransID()));
 			}
 			createNFCPocket(nfcPocketTemplate,smdn,nfcCardLink);
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			transactionChargingService.completeTheTransaction(sctl);
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 			result.setTransID(transactionDetails.getTransID());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NFCCardLinkSuccess);
 		}
 		result.setAmount(BigDecimal.ZERO);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setCardPan(transactionDetails.getCardPAN());
 		result.setSourceMDN(transactionDetails.getSourceMDN());
 		return result;

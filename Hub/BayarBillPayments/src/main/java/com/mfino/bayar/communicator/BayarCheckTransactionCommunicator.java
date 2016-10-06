@@ -1,7 +1,12 @@
 package com.mfino.bayar.communicator;
 
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -64,8 +69,20 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 				billPayments.setInfo3(wsResponseElement.getVoucherToken());//In case of PLN prepaid Token
 				billPayResponse.setRechargePin(wsResponseElement.getVoucherToken());
 			}
-			if(wsResponseElement.getVoucherNo() != null)
-				billPayments.setBilldata(wsResponseElement.getVoucherNo());
+			if(wsResponseElement.getVoucherNo() != null){
+				 Clob clob;
+				try {
+					clob = new SerialClob(wsResponseElement.getVoucherNo().toCharArray());
+					 clob.setString(1, wsResponseElement.getVoucherNo());
+						billPayments.setBilldata(clob);
+				} catch (SerialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 			log.info("BayarCheckTransactionCommunicator :: constructReplyMessage Status="+wsResponseElement.getStatus());
 		}
@@ -83,7 +100,9 @@ public class BayarCheckTransactionCommunicator extends BayarHttpCommunicator {
 		
 		billPayResponse.header().setSendingTime(DateTimeUtil.getLocalTime());
 		billPayResponse.header().setMsgSeqNum(UniqueNumberGen.getNextNum());
+		
 		return billPayResponse;
+		
 	}
 	
 	@Override

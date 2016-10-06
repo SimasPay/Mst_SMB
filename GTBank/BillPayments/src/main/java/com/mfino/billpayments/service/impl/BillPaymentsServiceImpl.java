@@ -17,6 +17,7 @@ import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
 import com.mfino.billpayments.service.BillPaymentsService;
 import com.mfino.dao.BillPaymentsDAO;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.fix.CFIXMsg;
@@ -47,13 +48,14 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_INITIALIZED.longValue());
 		billPayments.setCharges(billPayInquiry.getCharges());
 		billPayments.setIntegrationcode(billPayInquiry.getIntegrationCode());
-		billPayments.setChargesincluded(billPayInquiry.getChargesIncluded());
+		billPayments.setChargesincluded((short) (billPayInquiry.getChargesIncluded()?1:0));
 		billPayments.setInvoicenumber(billPayInquiry.getInvoiceNumber());
 		//billPayments.setOriginalINTxnId(billPayInquiry.getTransactionID().toString()); // OriginalTxnId to used with InTxnId in case of reversal
 		//billPayments.setINTxnId(billPayInquiry.getTransactionID().toString());//INTxnId is from the third party 
 		billPayments.setPartnerbillercode(billPayInquiry.getPartnerBillerCode());
 		billPayments.setPartnerbillercode(billPayInquiry.getPartnerBillerCode());
-		billPayments.setSctlId(billPayInquiry.getServiceChargeTransactionLogID());
+		ServiceChargeTransactionLogDAO serviceChargeTransactionLogDAO=DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+		billPayments.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(billPayInquiry.getServiceChargeTransactionLogID()));
 		billPayments.setSourcemdn(billPayInquiry.getSourceMDN());
 		billPayments.setInfo2(billPayInquiry.getNarration());
 

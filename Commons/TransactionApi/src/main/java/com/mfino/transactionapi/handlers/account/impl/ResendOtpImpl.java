@@ -13,7 +13,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMResendOtp;
 import com.mfino.handlers.FIXMessageHandler;
@@ -88,12 +88,12 @@ public class ResendOtpImpl extends FIXMessageHandler implements ResendOtp{
 		resendOtp.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResendOtp,resendOtp.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResendOtp,resendOtp.DumpFields());
 		
-		resendOtp.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		resendOtp.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(resendOtp);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(resendOtp.getSourceMDN());
         if(sourceMDN==null){

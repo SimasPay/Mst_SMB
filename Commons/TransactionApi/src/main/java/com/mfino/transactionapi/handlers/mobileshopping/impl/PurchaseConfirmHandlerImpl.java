@@ -17,10 +17,10 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMPurchase;
@@ -100,10 +100,10 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 		log.info("Handling Subscriber Purchase confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_Purchase,purchase.DumpFields(),purchase.getParentTransactionID());
-		purchase.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_Purchase,purchase.DumpFields(),purchase.getParentTransactionID());
+		purchase.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(purchase);
 		result.setTransactionID(purchase.getTransactionID());
 
@@ -152,12 +152,12 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(purchase.getParentTransactionID(),purchase.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(purchase.getParentTransactionID(),purchase.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -169,7 +169,7 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 		}		
 
 		Pocket destMerchantPocket;
-		PartnerServices partnerServices = transactionChargingService.getPartnerService(destMerchant.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerServices = transactionChargingService.getPartnerService(destMerchant.getId().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 		if (partnerServices == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 			return result;
@@ -182,13 +182,13 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 			return result;
 		}
 		purchase.setDestPocketID(destMerchantPocket.getId().longValue());
-		purchase.setServiceChargeTransactionLogID(sctl.getID());
+		purchase.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the purchase request to backend for processing");
 		CFIXMsg response = super.process(purchase);
 		result.setMultixResponse(response);
 		commodityTransferService.addCommodityTransferToResult(result);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -198,9 +198,9 @@ public class PurchaseConfirmHandlerImpl extends FIXMessageHandler implements Pur
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, purchase.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, purchase.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.

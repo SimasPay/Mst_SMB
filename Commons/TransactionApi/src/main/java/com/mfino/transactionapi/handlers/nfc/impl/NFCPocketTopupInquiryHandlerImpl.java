@@ -13,11 +13,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -180,12 +180,12 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
  		result.setCardAlias(destPocket.getCardalias()); 		
 
 		Transaction transaction = null;
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
 		
-		bankAccountToBankAccount.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		bankAccountToBankAccount.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(bankAccountToBankAccount);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		
@@ -200,7 +200,7 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		
 		
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(bankAccountToBankAccount.getTransactionIdentifier());
 		
 //		if(transactionDetails.getDestinationBankAccountNo() != null){
@@ -234,14 +234,14 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		CMNFCCardStatus nfcCardStatus = new CMNFCCardStatus();
 		nfcCardStatus.setSourceMDN(sourceMDN.getMdn());
 		nfcCardStatus.setSourceCardPAN(transactionDetails.getCardPAN());
-		nfcCardStatus.setServiceChargeTransactionLogID(sctl.getID());
-		nfcCardStatus.setTransactionID(transactionsLog.getID());
+		nfcCardStatus.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		nfcCardStatus.setTransactionID(transactionsLog.getId().longValue());
 		nfcCardStatus.setSourceApplication((int)cc.getChannelsourceapplication());
 		nfcCardStatus.setChannelCode(cc.getChannelcode());
 		
@@ -250,7 +250,7 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 			log.error("NFC Card is not active");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NFCCardStatusNotActive);
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
-			sctl.setFailureReason("NFC Card is not active");
+			sctl.setFailurereason("NFC Card is not active");
 			transactionChargingService.saveServiceTransactionLog(sctl);
 			return result;
 		}
@@ -259,7 +259,7 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId() !=null){
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -285,7 +285,7 @@ public class NFCPocketTopupInquiryHandlerImpl  extends FIXMessageHandler impleme
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());		
+		result.setSctlID(sctl.getId().longValue());		
 		result.setMfaMode("None");	
 		return result;
 	}	

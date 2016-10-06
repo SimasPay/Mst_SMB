@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMInterBankFundsTransfer;
@@ -93,10 +93,10 @@ public class InterBankTransferHandlerImpl extends FIXMessageHandler implements I
 		//2FA
  		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
- 		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(parentTrxnId);
+ 		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(parentTrxnId);
 
  		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), channelCode.getId().longValue()) == true){
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), transactionDetails.getSourceMDN()))){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getId().longValue(), transactionDetails.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
@@ -115,12 +115,12 @@ public class InterBankTransferHandlerImpl extends FIXMessageHandler implements I
 		transferConfirmation.setUICategory(CmFinoFIX.TransactionUICategory_InterBank_Transfer);
 
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
-		transferConfirmation.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
+		transferConfirmation.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(transferConfirmation);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		addCompanyANDLanguageToResult(sourceMDN, result);
 
 
@@ -161,7 +161,7 @@ public class InterBankTransferHandlerImpl extends FIXMessageHandler implements I
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
@@ -173,12 +173,12 @@ public class InterBankTransferHandlerImpl extends FIXMessageHandler implements I
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
 			return result;
 		}
-		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		CFIXMsg response = super.process(transferConfirmation);
 		
 		result.setMultixResponse(response);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -187,9 +187,9 @@ public class InterBankTransferHandlerImpl extends FIXMessageHandler implements I
 				transactionChargingService.confirmTheTransaction(sctl, transferConfirmation.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, transferConfirmation.getTransferID());
 				
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 				transactionApiValidationService.checkAndChangeStatus(destMDN);
 			} else {
 				String errorMsg = transactionResponse.getMessage();

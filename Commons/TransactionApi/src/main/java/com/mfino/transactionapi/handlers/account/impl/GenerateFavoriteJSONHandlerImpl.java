@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.SubscriberFavoriteQuery;
 import com.mfino.domain.SubscriberFavorite;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.XMLResult;
@@ -72,12 +72,12 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 		validationResult = transactionApiValidationService.validatePin(subscriberMDN, transactionDetails.getSourcePIN());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: " + transactionDetails.getSourceMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongPINCount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - subscriberMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
  		addCompanyANDLanguageToResult(subscriberMDN, result);
- 		Long subscriberID = subscriberMDN.getSubscriber().getID();
+ 		Long subscriberID = subscriberMDN.getSubscriber().getId().longValue();
 
  		JSONArray totalJsonFavoriteArray = new JSONArray();
  		Long fcId = 0l;
@@ -109,10 +109,10 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 	private JSONObject toJson(SubscriberFavorite favorite, Long favoriteCategoryID) {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CATEGORY_ID,	favoriteCategoryID);
-		jsonObject.put(ApiConstants.PARAMETER_SUBSCRIBER_FAVORITE_ID, favorite.getID());
-		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CODE, favorite.getFavoriteCode());
-		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_LABEL, favorite.getFavoriteLabel());
-		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_VALUE, favorite.getFavoriteValue());
+		jsonObject.put(ApiConstants.PARAMETER_SUBSCRIBER_FAVORITE_ID, favorite.getId());
+		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CODE, favorite.getFavoritecode());
+		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_LABEL, favorite.getFavoritecode());
+		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_VALUE, favorite.getFavoritevalue());
 		return jsonObject;
 	}
 }

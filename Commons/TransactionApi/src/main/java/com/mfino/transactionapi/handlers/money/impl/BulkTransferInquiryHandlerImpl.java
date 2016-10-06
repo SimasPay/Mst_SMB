@@ -3,6 +3,8 @@
  */
 package com.mfino.transactionapi.handlers.money.impl;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -77,13 +79,13 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		Transaction transaction = null;
 		XMLResult result = new TransferInquiryXMLResult();
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, 
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, 
 				bankAccountToBankAccount.DumpFields());
-		bankAccountToBankAccount.setTransactionID(transactionsLog.getID());
+		bankAccountToBankAccount.setTransactionID(transactionsLog.getId().longValue());
 		
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(bankAccountToBankAccount);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setDestinationMDN(bankAccountToBankAccount.getDestMDN());
 		
 		ServiceCharge serviceCharge = new ServiceCharge();
@@ -93,7 +95,7 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		serviceCharge.setServiceName(bankAccountToBankAccount.getServiceName());
 		serviceCharge.setTransactionTypeName(transactionDetails.getTransactionName());
 		serviceCharge.setTransactionAmount(bankAccountToBankAccount.getAmount());
-		serviceCharge.setTransactionLogId(transactionsLog.getID());
+		serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 
 		try{
 			transaction =transactionChargingService.getCharge(serviceCharge);
@@ -108,11 +110,11 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(transactionDetails.getSourceMessage()) && 
 				transactionDetails.getSctlId() != null) {
-			sctl.setParentSCTLID(transactionDetails.getSctlId());
+			sctl.setParentsctlid(BigDecimal.valueOf(transactionDetails.getSctlId()));
 		}		
 		log.info("Sending the Bulk transfer inquiry request to Backend");
 		
@@ -121,7 +123,7 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -135,7 +137,7 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;
 	}
 }

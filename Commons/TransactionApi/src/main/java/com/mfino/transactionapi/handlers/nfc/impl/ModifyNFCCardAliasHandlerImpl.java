@@ -16,10 +16,10 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -82,12 +82,12 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 		log.info("Handling Modify NFC Card Alias webapi request");
 		XMLResult result = new ModifyNFCCardAliasXMLResult();
 		TransactionLogServiceImpl transactionLogService = new TransactionLogServiceImpl();
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ModifyNFCCardAlias, modifyNFCCardAlias.DumpFields());
-		modifyNFCCardAlias.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ModifyNFCCardAlias, modifyNFCCardAlias.DumpFields());
+		modifyNFCCardAlias.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(modifyNFCCardAlias);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		result.setCardPan(modifyNFCCardAlias.getCardPAN());
 
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(modifyNFCCardAlias.getSourceMDN());
@@ -156,8 +156,8 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		try {	
 			result.setOldCardAlias(pocket.getCardalias());
 			pocket.setCardalias(modifyNFCCardAlias.getCardAlias());
@@ -172,7 +172,7 @@ public class ModifyNFCCardAliasHandlerImpl extends FIXMessageHandler implements 
  			return result;
 		}
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			tcs.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ModifyNFCCardAliasSuccessful);

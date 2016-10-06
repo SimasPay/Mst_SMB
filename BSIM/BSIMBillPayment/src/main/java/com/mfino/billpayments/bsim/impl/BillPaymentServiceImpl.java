@@ -1095,7 +1095,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		IntegrationSummaryQuery isQuery = new IntegrationSummaryQuery();
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
-		ServiceChargeTransactionLog sctl;
+		ServiceChargeTxnLog sctl;
 		Long transferID = billPayrevtobank.getTransferID();
 		Long sctlID;
 		String reconciliationID1 = null;
@@ -1105,7 +1105,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			List<ServiceChargeTxnLog> list= sctlDAO.get(sctlQuery);
 			if(CollectionUtils.isNotEmpty(list)){
 				sctl = list.get(0);
-				sctlID = sctl.getID();
+				sctlID = sctl.getId().longValue();
 				log.info("QRPaymentReversalToBankProcessor :: process Sctl ID :"+sctlID);
 				isQuery.setSctlID(sctlID);
 				List<IntegrationSummary> isList = isDAO.get(isQuery);

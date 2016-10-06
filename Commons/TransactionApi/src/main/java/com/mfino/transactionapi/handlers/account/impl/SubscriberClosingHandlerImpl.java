@@ -17,7 +17,7 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.errorcodes.Codes;
@@ -107,7 +107,7 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 		
 		ChannelCode channelCode = transactionDetails.getCc();
 		
-		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getId()) == true) {
+		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getId().longValue()) == true) {
 			
 			isMfATransaction = true;
 			
@@ -160,9 +160,9 @@ public class SubscriberClosingHandlerImpl  extends FIXMessageHandler implements 
 			String mfaOneTimeOTP = transactionDetails.getTransactionOTP();
 			Long parentTxnId = transactionDetails.getParentTxnId();
 			
-			ServiceChargeTransactionLog sctlForMFA = sctlService.getBySCTLID(parentTxnId);
+			ServiceChargeTxnLog sctlForMFA = sctlService.getBySCTLID(parentTxnId);
 			
-			if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getID(), agentMDN.getMdn()))){
+			if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction && !(mfaService.isValidOTP(mfaOneTimeOTP , sctlForMFA.getId().longValue(), agentMDN.getMdn()))){
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 					

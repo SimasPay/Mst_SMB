@@ -14,22 +14,22 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
-import com.mfino.dao.KYCLevelDAO;
+import com.mfino.dao.GroupDao;
 import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.Group;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -135,12 +135,12 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		}
 		log.info("Retrieving KYC level corresponding to kycType:"+kycType);
 		
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_KYCUpgrade, kycUpgrade.DumpFields());
 		
 		result.setSourceMessage(kycUpgrade);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setIdNumber(idNumber);
 		result.setSourceMDN(sourceMdn);
 		
@@ -151,7 +151,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 			return result;
 		}
 		
-		if (CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue() != kycLevel.getKYCLevel().intValue()){
+		if (CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue() != kycLevel.getKyclevel().intValue()){
 			log.info("KYCUpgrade: Failed to upgrade the KYC level to:"+kycType);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
 			return result;
@@ -185,7 +185,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_KYCUpgrade);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 		try{
@@ -200,26 +200,27 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
  			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		if (sctl == null) {
 			log.info("Failed to create SCTL while doing KycUpgrade for MDN:"+sourceMdn);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_KYCUpgradeFail);
 			return result;
 		}
 		
-		kycUpgrade.setServiceChargeTransactionLogID(sctl.getID());
-		result.setSctlID(sctl.getID());		
+		kycUpgrade.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		result.setSctlID(sctl.getId().longValue());		
 		
-		SubscriberGroup subGroup = subscriberGroupService.getBySubscriberID(srcSub.getId());
+		SubscriberGroup subGroup = subscriberGroupService.getBySubscriberID(srcSub.getId().longValue());
 		if(subGroup == null){
 			log.info("Failed to get  SubscriberGroup while doing KycUpgrade for MDN:"+sourceMdn);
 			transactionChargingService.failTheTransaction(sctl, MessageText._("KYC Upgrade Falied.Notification Code: "+CmFinoFIX.NotificationCode_KYCUpgradeFail));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_KYCUpgradeFail);
 			return result;
 		}
-		Group group = subGroup.getGroup();
+		GroupDao groupDao=DAOFactory.getInstance().getGroupDao();
+		Groups group = groupDao.getById(subGroup.getGroupid());
 		
-		PocketTemplate pkTem = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getId(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, group.getID());
+		PocketTemplate pkTem = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getId().longValue(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, group.getId().longValue());
 		
 		if(pkTem == null){
 			log.info("Failed to get  PocketTemplate while doing KycUpgrade for MDN:"+sourceMdn);
@@ -253,7 +254,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		srcMDN.setIdnumber(idNumber);
 		srcPocket.setPocketTemplate(pkTem);
 		
-		sctl.setCalculatedCharge(BigDecimal.ZERO);
+		sctl.setCalculatedcharge(BigDecimal.ZERO);
 		transactionChargingService.completeTheTransaction(sctl);
 		subscriberMdnService.saveSubscriberMDN(srcMDN);
 		subscriberService.saveSubscriber(srcSub);

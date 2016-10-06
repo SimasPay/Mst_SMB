@@ -25,11 +25,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -169,13 +169,13 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			transactionsHistory.setPageNumber(DEFAULT_PAGE_NO);
 		}
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
-		transactionsHistory.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
+		transactionsHistory.setTransactionID(transactionsLog.getId().longValue());
 		
 		result.setSourceMessage(transactionsHistory);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMDN(transactionsHistory.getSourceMDN());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
 		SubscriberMdn sourceMDN= subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
 
@@ -188,7 +188,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		validationResult=transactionApiValidationService.validatePin(sourceMDN, transactionsHistory.getPin());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: "+sourceMDN.getMdn());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongpincount());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - sourceMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -232,7 +232,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		log.info("Pocket Type = " + sourcePocket.getPocketTemplate().getType());
 		result.setPocketDescription(sourcePocket.getPocketTemplate().getDescription());
 
-		ServiceChargeTransactionLog sctl;
+		ServiceChargeTxnLog sctl;
 		Transaction transaction = null;
 		if(transactionDetails.getSctlId() != null)
 		{
@@ -255,7 +255,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			sc.setServiceName(transactionDetails.getServiceName());
 			sc.setTransactionTypeName(transactionDetails.getTransactionName());
 			sc.setTransactionAmount(BigDecimal.ZERO);
-			sc.setTransactionLogId(transactionsLog.getID());
+			sc.setTransactionLogId(transactionsLog.getId().longValue());
 			sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
 
 			try{
@@ -274,7 +274,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		
 		transactionsHistory.setPocketID(sourcePocket.getId().longValue());
 		transactionsHistory.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
-		transactionsHistory.setServiceChargeTransactionLogID(sctl.getID());
+		transactionsHistory.setServiceChargeTransactionLogID(sctl.getId().longValue());
 				
 		try {
 			boolean moreRecordsAvailable = false;
@@ -286,7 +286,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 					log.info("Got Transaction Histroy from NFC");
 					if(transaction != null)	{
 						//sctl.setCalculatedCharge(BigDecimal.ZERO);
-						sctl.setCalculatedCharge(transaction.getAmountTowardsCharges());
+						sctl.setCalculatedcharge(transaction.getAmountTowardsCharges());
 						transactionChargingService.completeTheTransaction(sctl);				
 					}
 					CmFinoFIX.CMGetLastTransactionsFromBank bankResponse = (CmFinoFIX.CMGetLastTransactionsFromBank) response;
@@ -318,13 +318,13 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 				String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "NFC_Txn_History" + File.separatorChar + fileName;
 				if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
 				{
-					createPDFAndSendEmail(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath,sctl.getID());
+					createPDFAndSendEmail(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath,sctl.getId().longValue());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryEmailWasSent);
 				}
 				else if(ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName()))
 				{
 					result.setFilePath(filePath);
-					createPDF(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath, sctl.getID());
+					createPDF(transactionDetails, sourceMDN, sourcePocket, nfcTransactionHistory, filePath, sctl.getId().longValue());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
 					String downloadURL = "NFC_Txn_History" + File.separatorChar + fileName;
 					result.setDownloadURL(downloadURL);
@@ -349,7 +349,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			return result;
 		}
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
  		return result;
 	}
 

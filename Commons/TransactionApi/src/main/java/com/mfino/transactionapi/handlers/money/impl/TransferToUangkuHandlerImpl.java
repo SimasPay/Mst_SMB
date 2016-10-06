@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
@@ -90,10 +90,10 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 		XMLResult result = new MoneyTransferXMLResult();
  		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 
- 		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(parentTrxnId);
+ 		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(parentTrxnId);
 
  		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), channelCode.getId().longValue()) == true){
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), transactionDetails.getSourceMDN()))){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getId().longValue(), transactionDetails.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
@@ -112,12 +112,12 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 		transferConfirmation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		transferConfirmation.setUICategory(CmFinoFIX.TransactionUICategory_Transfer_To_Uangku);
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferToUangku,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
-		transferConfirmation.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferToUangku,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
+		transferConfirmation.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(transferConfirmation);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		addCompanyANDLanguageToResult(sourceMDN, result);
 
 
@@ -151,7 +151,7 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 		transferConfirmation.setSourcePocketID(srcPocket.getId().longValue());
 		transferConfirmation.setDestPocketID(destPocket.getId().longValue());
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
@@ -163,12 +163,12 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordNotFound);
 			return result;
 		}
-		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		CFIXMsg response = super.process(transferConfirmation);
 		
 		result.setMultixResponse(response);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -177,9 +177,9 @@ public class TransferToUangkuHandlerImpl extends FIXMessageHandler implements Tr
 				transactionChargingService.confirmTheTransaction(sctl, transferConfirmation.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, transferConfirmation.getTransferID());
 				
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 				transactionApiValidationService.checkAndChangeStatus(destMDN);
 			} else {
 				String errorMsg = transactionResponse.getMessage();

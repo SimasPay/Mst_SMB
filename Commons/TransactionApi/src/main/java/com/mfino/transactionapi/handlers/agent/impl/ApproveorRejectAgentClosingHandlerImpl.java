@@ -124,7 +124,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		
 		if (subMDN != null) {
 			
-			if(CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseAcctStatus())) {
+			if(CmFinoFIX.CloseAcctStatus_Validated.equals(partner.getCloseacctstatus())) {
 			
 				try {
 				
@@ -137,7 +137,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Approve));
 						transactionDetails.setCloseAccountStatus(String.valueOf(CmFinoFIX.CloseAcctStatus_Approve));
 						
-						if(moveMoneyToTreasuaryAndRetirePockets(transactionDetails, subMDN.getId())) {
+						if(moveMoneyToTreasuaryAndRetirePockets(transactionDetails, subMDN.getId().longValue())) {
 							
 							Subscriber subscriber = subMDN.getSubscriber();
 							

@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.interswitch.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -21,12 +22,11 @@ import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -114,10 +114,10 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			throw new IllegalArgumentException();
 		}
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) cashinDataConatiner.getMsg();
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields());
-		cashinDetails.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields());
+		cashinDetails.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(cashinDetails);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setDestinationMDN(cashinDetails.getDestMDN());
 		
 		
@@ -134,18 +134,18 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 			sctlQuery.setIntegrationTxnID(Long.parseLong(cashinDetails.getPaymentLogID()));
 			sctlQuery.setInfo1(cashinDetails.getCustReference());
-			List<ServiceChargeTransactionLog> oldsctlList = sctlService.getByQuery(sctlQuery);
+			List<ServiceChargeTxnLog> oldsctlList = sctlService.getByQuery(sctlQuery);
 			
-			ServiceChargeTransactionLog oldsctl = null;
+			ServiceChargeTxnLog oldsctl = null;
 			if(!oldsctlList.isEmpty()){
 				oldsctl = oldsctlList.get(0); // Only one match would be there as we do not allow duplicate entry
 			}
 			
 			if (oldsctl != null) {
 				log.warn("duplicate paymentlogid received. so returning the status of the original transaction");
-				result.setTransferID(oldsctl.getID());
-				if (oldsctl.getStatus().equals(CmFinoFIX.SCTLStatus_Confirmed) || oldsctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Completed)
-						|| oldsctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Started))
+				result.setTransferID(oldsctl.getId().longValue());
+				if (oldsctl.getStatus()==(CmFinoFIX.SCTLStatus_Confirmed) || oldsctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Completed)
+						|| oldsctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Started))
 					result.setCode(CmFinoFIX.NotificationCode_CashInToEMoneyCompletedToSender.toString());
 				else
 					result.setCode(CmFinoFIX.NotificationCode_Failure.toString());
@@ -192,7 +192,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 			return result;
 		}
 
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
 		
 		log.info("retrieving integration partner for institutionID" + cashinDetails.getInstitutionID());
 		
@@ -369,10 +369,10 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) cashinDataConatiner.getMsg();
 		Transaction transDetails = cashinDataConatiner.getTransDetails();
 		log.info("received backend response");
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
 
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			sctl.setInfo1(cashinDetails.getCustReference());
 			cashinDetails.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());

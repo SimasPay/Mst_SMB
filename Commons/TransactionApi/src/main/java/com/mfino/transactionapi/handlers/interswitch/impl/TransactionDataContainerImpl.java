@@ -2,7 +2,7 @@ package com.mfino.transactionapi.handlers.interswitch.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.fix.CFIXMsg;
@@ -24,7 +24,7 @@ public class TransactionDataContainerImpl implements TransactionDataContainer{
 	private Long          sourcePocketID;
 	private Long          destPocketID;
 	private Transaction transDetails;
-	private ServiceChargeTransactionLog sctl;
+	private ServiceChargeTxnLog sctl;
 	//set the fix message that is needed for the handlers here
 	private CFIXMsg msg;
 	
@@ -99,11 +99,11 @@ public class TransactionDataContainerImpl implements TransactionDataContainer{
 		this.transDetails = transDetails;
 	}
 
-	public ServiceChargeTransactionLog getSctl() {
+	public ServiceChargeTxnLog getSctl() {
 		return sctl;
 	}
 
-	public void setSctl(ServiceChargeTransactionLog sctl) {
+	public void setSctl(ServiceChargeTxnLog sctl) {
 		this.sctl = sctl;
 	}
 

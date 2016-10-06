@@ -23,11 +23,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -120,14 +120,14 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		log.info("Handling subscriber services Registration webapi request");
 		SubscriberAccountClosingXMLResult result = new SubscriberAccountClosingXMLResult();
 		
-		TransactionsLog transactionsLog = null;
-		ServiceChargeTransactionLog sctl = null;
+		TransactionLog transactionsLog = null;
+		ServiceChargeTxnLog sctl = null;
 		
 		boolean isMfATransaction = false;
 		
 		ChannelCode channelCode = transactionDetails.getCc();
 		
-		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getId()) == true) {
+		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT, channelCode.getId().longValue()) == true) {
 			
 			isMfATransaction = true;
 			
@@ -186,7 +186,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 						query.setSourceMdn(subMDN.getMdn());
 						query.setStatus(CmFinoFIX.SCTLStatus_Pending);
 						
-						List<ServiceChargeTransactionLog> sctlData = sctlService.getSubscriberPendingTransactions(query);
+						List<ServiceChargeTxnLog> sctlData = sctlService.getSubscriberPendingTransactions(query);
 						
 						if(null == sctlData || (null != sctlData && sctlData.size() == 0)) {
 						
@@ -211,7 +211,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							}
 							
 							sc.setTransactionAmount(BigDecimal.ZERO);
-							sc.setTransactionLogId(transactionsLog.getID());
+							sc.setTransactionLogId(transactionsLog.getId().longValue());
 							sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 							try{
@@ -231,7 +231,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 							
 							sctl = transaction.getServiceChargeTransactionLog();
 							
-							result.setSctlID(sctl.getID());
+							result.setSctlID(sctl.getId().longValue());
 							result.setMfaMode("None");
 							
 							if(!transactionDetails.isSystemIntiatedTransaction() && isMfATransaction) {
@@ -240,7 +240,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 								//mfaService.handleMFATransaction(sctl.getID(), agentMDN.getMDN());
 							}
 							
-							sendOTPSMS(subMDN,sctl.getID());
+							sendOTPSMS(subMDN,sctl.getId().longValue());
 							
 							log.info("SMS for OTP has been sent....");
 							
@@ -296,7 +296,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 		
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
-		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMDN(), oneTimePin);
+		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
 		subscriberMDN.setOtp(digestPin1);
 		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subscriberMDNDAO.save(subscriberMDN);

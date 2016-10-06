@@ -20,10 +20,10 @@ import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
@@ -109,10 +109,10 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 		log.info("Handling Subscriber bill pay confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentDSTVPayment,billPay.DumpFields(),billPay.getParentTransactionID());
-		billPay.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentDSTVPayment,billPay.DumpFields(),billPay.getParentTransactionID());
+		billPay.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(billPay);
 		result.setTransactionID(billPay.getTransactionID());
 
@@ -159,12 +159,12 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(billPay.getParentTransactionID(),billPay.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(billPay.getParentTransactionID(),billPay.getTransactionIdentifier());
 		if (sctl != null) {
-			billPay.setServiceChargeTransactionLogID(sctl.getID());
+			billPay.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			
 			BillPaymentsQuery bpquery = new BillPaymentsQuery();
-			bpquery.setSctlID(sctl.getID());
+			bpquery.setSctlID(sctl.getId().longValue());
 			List<BillPayments> res = billPaymentsService.get(bpquery);
 			if(res.size() > 0){
 				billPay.setIntegrationCode(res.get(0).getIntegrationcode());
@@ -172,8 +172,8 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 				Iterator<MFSBillerPartner> mfsBillers=biller.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
 					MFSBillerPartner mfsbiller = mfsBillers.next();
-					if(mfsbiller.getMFSBiller().getMFSBillerCode().equals(billPay.getBillerCode())){
-						billPay.setBillerPartnerType(mfsbiller.getBillerPartnerType());
+					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(billPay.getBillerCode())){
+						billPay.setBillerPartnerType(mfsbiller.getBillerpartnertype().intValue());
 						break;
 					}
 				}
@@ -195,7 +195,7 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 		CFIXMsg response = super.process(billPay);
 		result.setMultixResponse(response);
 		commodityTransferService.addCommodityTransferToResult(result);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -203,9 +203,9 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, billPay.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, billPay.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.

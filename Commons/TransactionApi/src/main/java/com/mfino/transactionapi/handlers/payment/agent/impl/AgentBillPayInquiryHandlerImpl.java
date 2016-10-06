@@ -5,6 +5,7 @@
 
 package com.mfino.transactionapi.handlers.payment.agent.impl;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,12 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -140,12 +141,12 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		log.info("Handling agent bill pay Inquiry webapi request for mdn" + paymentInquiry.getSourceMDN());
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgenDSTVPaymentInquiry, paymentInquiry.DumpFields());
-		log.info("creating and saving transactionslog with id " + transactionsLog.getID());
-		paymentInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgenDSTVPaymentInquiry, paymentInquiry.DumpFields());
+		log.info("creating and saving transactionslog with id " + transactionsLog.getId());
+		paymentInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(paymentInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(paymentInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
@@ -170,16 +171,16 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		//paymentInquiry.setPartnerBillerCode(billPartner.getMFSBillerPartnerFromPartnerID().iterator().next().getPartnerBillerCode());
 		
 		MfsBiller mfsBiller = mfsBillerService.getByBillerCode(paymentInquiry.getBillerCode());
-		MFSBillerPartner results = mfsBiller.getMFSBillerPartnerFromMFSBillerId().iterator().next();
+		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
-			paymentInquiry.setIntegrationCode(results.getIntegrationCode());
-			paymentInquiry.setPartnerBillerCode(results.getPartnerBillerCode());
-			if (CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.getBillerPartnerType())) {
+			paymentInquiry.setIntegrationCode(results.getIntegrationcode());
+			paymentInquiry.setPartnerBillerCode(results.getPartnerbillercode());
+			if (CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.getBillerpartnertype())) {
 
 				//			if(results.getBillerPartnerType().intValue() == CmFinoFIX.BillerPartnerType_Topup_Denomination.intValue()){
 				
 				MFSDenominationsQuery mdquery = new MFSDenominationsQuery();
-				mdquery.setMfsID(results.getID());
+				mdquery.setMfsID(results.getId().longValue());
 				List<MFSDenominations> res  = mfsDenominationsService.get(mdquery);
 				if(res.size() > 0){
 					boolean isValid = false;
@@ -204,7 +205,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		
 		
 		
-		log.info("calculating and adding service charges to the trnasactions " + transactionsLog.getID());
+		log.info("calculating and adding service charges to the trnasactions " + transactionsLog.getId());
 		// add service charge to amount
 		ServiceCharge sc = new ServiceCharge();
 		sc.setChannelCodeId(cc.getId().longValue());
@@ -305,11 +306,11 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		sctl.setIntegrationCode(paymentInquiry.getIntegrationCode());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		sctl.setIntegrationcode(paymentInquiry.getIntegrationCode());
 		
 		BillPaymentsQuery query = new BillPaymentsQuery();
-		query.setSctlID(sctl.getID());
+		query.setSctlID(sctl.getId().longValue());
 		List<BillPayments> billPayments = billPaymentsService.get(query);
 		if(billPayments != null && billPayments.size() > 0)
 		{
@@ -318,7 +319,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 			billPaymentsService.save(billPayment);
 		}
 		
-		paymentInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		paymentInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		paymentInquiry.setDestMDN(billPartnerMdn.getMdn());
 		paymentInquiry.setCharges(transaction.getAmountTowardsCharges());
 		paymentInquiry.setChannelCode(cc.getChannelcode());
@@ -332,14 +333,14 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		// Saves the Transaction Id returned from Back End
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
-			sctl.setCommodityTransferID(transactionResponse.getTransferId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId().longValue()));
+			sctl.setCommoditytransferid(BigDecimal.valueOf(transactionResponse.getTransferId()));
 			paymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

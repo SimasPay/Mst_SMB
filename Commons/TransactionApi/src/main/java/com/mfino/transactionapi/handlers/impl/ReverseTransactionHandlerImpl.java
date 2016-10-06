@@ -6,6 +6,7 @@ package com.mfino.transactionapi.handlers.impl;
 import static com.mfino.constants.ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION;
 import static com.mfino.constants.SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -28,7 +29,7 @@ import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionType;
@@ -116,16 +117,16 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 	@Qualifier("SMSServiceImpl")
 	private SMSService smsService;
 
-	public void processReverseRequest(ServiceChargeTransactionLog sctl, ServiceChargeTransactionLog parentSCTL) {
+	public void processReverseRequest(ServiceChargeTxnLog sctl, ServiceChargeTxnLog parentSCTL) {
 
-		log.info("Processing the Reverse request for Reference Id --> " + parentSCTL.getID() + " And Reverse SCTLID is -->" + sctl.getID());
+		log.info("Processing the Reverse request for Reference Id --> " + parentSCTL.getId() + " And Reverse SCTLID is -->" + sctl.getId());
 		if (sctl != null && parentSCTL != null && CmFinoFIX.SCTLStatus_Reverse_Start.equals(sctl.getStatus())) {
-			ChannelCode cc = channelCodeService.getChannelCodeByChannelId(sctl.getChannelCodeID());
+			ChannelCode cc = channelCodeService.getChannelCodeByChannelId(sctl.getChannelcodeid().longValue());
 
 			Long chrgRevFundingPocketId = systemParametersService.getLong(CHARGE_REVERSAL_FUNDING_POCKET);
 			Pocket reversalFundingPocket = pocketService.getById(chrgRevFundingPocketId);
 
-			Long transactionTypeId = sctl.getTransactionTypeID();
+			Long transactionTypeId = sctl.getTransactiontypeid().longValue();
 			TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 			String transactionTypeName = null;
 
@@ -141,28 +142,28 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 
 			CMReverseTransactionInquiry reverseTransactionInquiry = new CMReverseTransactionInquiry();
 			reverseTransactionInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-			reverseTransactionInquiry.setSourceMDN(sctl.getSourceMDN());
-			reverseTransactionInquiry.setDestMDN(sctl.getDestMDN());
-			reverseTransactionInquiry.setAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-			reverseTransactionInquiry.setCharges(sctl.getCalculatedCharge());
+			reverseTransactionInquiry.setSourceMDN(sctl.getSourcemdn());
+			reverseTransactionInquiry.setDestMDN(sctl.getDestmdn());
+			reverseTransactionInquiry.setAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+			reverseTransactionInquiry.setCharges(sctl.getCalculatedcharge());
 			reverseTransactionInquiry.setChannelCode(cc.getChannelcode());
 			reverseTransactionInquiry.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
 			reverseTransactionInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 			reverseTransactionInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_REVERSE_TRANSACTION);
-			reverseTransactionInquiry.setServiceChargeTransactionLogID(sctl.getID());
+			reverseTransactionInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			reverseTransactionInquiry.setPin("dummy");
-			reverseTransactionInquiry.setOriginalReferenceID(parentSCTL.getID());
-			reverseTransactionInquiry.setSourceBankAccountNo(parentSCTL.getOnBeHalfOfMDN());
+			reverseTransactionInquiry.setOriginalReferenceID(parentSCTL.getId().longValue());
+			reverseTransactionInquiry.setSourceBankAccountNo(parentSCTL.getOnbehalfofmdn());
 			
 			// Get the Min CT and Max CT Records for the Transaction
 			CommodityTransfer minCT = null;
 			CommodityTransfer maxCT = null;
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(parentSCTL.getID());
+			query.setSctlID(parentSCTL.getId().longValue());
 			List<ChargeTxnCommodityTransferMap> lstTxnCommodityTransferMaps = chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 			if (CollectionUtils.isNotEmpty(lstTxnCommodityTransferMaps)) {
 				for (ChargeTxnCommodityTransferMap ctmap: lstTxnCommodityTransferMaps) {
-					CommodityTransfer ct = commodityTransferService.getCommodityTransferById(ctmap.getCommodityTransferID());
+					CommodityTransfer ct = commodityTransferService.getCommodityTransferById(ctmap.getCommoditytransferid().longValue());
 					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUicategory())) {
 						if (minCT == null) {
 							minCT = ct;
@@ -184,12 +185,12 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			
 			if(ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION.equals(transactionTypeName)) {
 				// Set Source pocket as partner outgoing pocket in case of Purchase or bill_pay transactions
-				Long parent_transactionTypeId = parentSCTL.getTransactionTypeID();
+				Long parent_transactionTypeId = parentSCTL.getTransactiontypeid().longValue();
 				TransactionType parent_transactionType = transactionTypeService.getTransactionTypeById(parent_transactionTypeId);
 				if (parent_transactionType != null && 
 						((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(parent_transactionType.getTransactionname())) || 
 						(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(parent_transactionType.getTransactionname()))) ) {
-					List<PartnerServices> lst = partnerServicesService.getPartnerServicesList(parentSCTL.getDestPartnerID(), parentSCTL.getServiceProviderID(), parentSCTL.getServiceID());
+					List<PartnerServices> lst = partnerServicesService.getPartnerServicesList(parentSCTL.getDestpartnerid().longValue(), parentSCTL.getServiceproviderid().longValue(), parentSCTL.getServiceid().longValue());
 					if (CollectionUtils.isNotEmpty(lst)) {
 						PartnerServices ps = lst.get(0);
 						reverseTransactionInquiry.setSourcePocketID(ps.getPocketBySourcepocket().getId().longValue());
@@ -213,27 +214,27 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			log.debug("Response of ServiceMix for Inquiry Reverse Request --> "+ transactionResponse.isResult());
 			if (transactionResponse != null && transactionResponse.isResult()) {  //Confirm message for the Reverse Transaction
 				log.info("Transaction Log id for Reverse Request --> " + transactionResponse.getTransactionId() + " And Notificationcode --> " +  transactionResponse.getCode());
-				sctl.setTransactionID(transactionResponse.getTransactionId());
+				sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 				if (CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(transactionResponse.getCode())) {
 					sctl.setStatus(CmFinoFIX.SCTLStatus_Reverse_Processing);
 					sctlService.saveSCTL(sctl);
 
 					CMReverseTransaction reverseTransaction = new CMReverseTransaction();
 					reverseTransaction.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-					reverseTransaction.setSourceMDN(sctl.getSourceMDN());
-					reverseTransaction.setDestMDN(sctl.getDestMDN());
+					reverseTransaction.setSourceMDN(sctl.getSourcemdn());
+					reverseTransaction.setDestMDN(sctl.getDestmdn());
 					reverseTransaction.setChannelCode(cc.getChannelcode());
 					reverseTransaction.setSourceApplication(new Integer(String.valueOf(cc.getChannelsourceapplication())));
 					reverseTransaction.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-					reverseTransaction.setServiceChargeTransactionLogID(sctl.getID());
+					reverseTransaction.setServiceChargeTransactionLogID(sctl.getId().longValue());
 					reverseTransaction.setSourcePocketID(reverseTransactionInquiry.getSourcePocketID());
 					reverseTransaction.setDestPocketID(reverseTransactionInquiry.getDestPocketID());
 					reverseTransaction.setParentTransactionID(transactionResponse.getTransactionId());
 					reverseTransaction.setTransferID(transactionResponse.getTransferId());
 					reverseTransaction.setConfirmed(CmFinoFIX.Boolean_True);
-					reverseTransaction.setServiceChargeTransactionLogID(sctl.getID());
-					reverseTransaction.setOriginalReferenceID(parentSCTL.getID());
-					reverseTransaction.setSourceBankAccountNo(parentSCTL.getOnBeHalfOfMDN());
+					reverseTransaction.setServiceChargeTransactionLogID(sctl.getId().longValue());
+					reverseTransaction.setOriginalReferenceID(parentSCTL.getId().longValue());
+					reverseTransaction.setSourceBankAccountNo(parentSCTL.getOnbehalfofmdn());
 					reverseTransaction.setUICategory(reverseTransactionInquiry.getUICategory());
 
 					log.debug("Send Confirm Reverse Request to ServiceMix for processing.......");
@@ -242,23 +243,23 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 					transactionResponse = checkBackEndResponse(response);
 					if (transactionResponse != null && transactionResponse.isResult()) {
 						log.info("Commodity Transafer Id for the Reverse Request is --> " + reverseTransaction.getTransferID());
-						sctl.setCommodityTransferID(reverseTransaction.getTransferID());
+						sctl.setCommoditytransferid(BigDecimal.valueOf(reverseTransaction.getTransferID()));
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Reverse_Success);
 
 						if(TRANSACTION_REVERSE_TRANSACTION.equals(transactionTypeName)){
-							parentSCTL.setAmtRevStatus(CmFinoFIX.SCTLStatus_Reversed);
+							parentSCTL.setAmtrevstatus(Long.valueOf(CmFinoFIX.SCTLStatus_Reversed));
 						}
 						else{
-							parentSCTL.setChrgRevStatus(CmFinoFIX.SCTLStatus_Reversed);
+							parentSCTL.setChrgrevstatus(Long.valueOf(CmFinoFIX.SCTLStatus_Reversed));
 						}
 
-						parentSCTL.setIsTransactionReversed(CmFinoFIX.Boolean_True);
+						parentSCTL.setIstransactionreversed((short)1);
 						sctlService.saveSCTL(sctl);
 						sctlService.saveSCTL(parentSCTL);
 						// Check if the Parent Transaction is Sub Bulk Transfer
 						checkIsSubBulkTransfer(parentSCTL);
 						checkIsUnRegisteredTxn(parentSCTL);
-						log.info("Reverse of the Transaction " + parentSCTL.getCommodityTransferID() + " is completed. And SCTLID -->" + sctl.getID());
+						log.info("Reverse of the Transaction " + parentSCTL.getCommoditytransferid() + " is completed. And SCTLID -->" + sctl.getId());
 					} else {
 						failTheReverseRequest(sctl, parentSCTL, transactionResponse.getMessage());
 					}
@@ -279,12 +280,12 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 	 * @param parentSCTL
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	private void checkIsSubBulkTransfer(ServiceChargeTransactionLog parentSCTL) {
-		Long transactionTypeId = parentSCTL.getTransactionTypeID();
+	private void checkIsSubBulkTransfer(ServiceChargeTxnLog parentSCTL) {
+		Long transactionTypeId = parentSCTL.getTransactiontypeid().longValue();
 		TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 
 		if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(transactionType.getTransactionname())) {
-			BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(parentSCTL.getID());
+			BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(parentSCTL.getId().longValue());
 			if (bue != null) {
 				bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Expired);
 				bue.setFailurereason(MessageText._("Transaction was Reversed manually"));
@@ -298,8 +299,8 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 	 * table to 'Expired'.
 	 * @param parentSCTL
 	 */
-	private void checkIsUnRegisteredTxn(ServiceChargeTransactionLog parentSCTL) {
-		long sctlId = parentSCTL.getID();
+	private void checkIsUnRegisteredTxn(ServiceChargeTxnLog parentSCTL) {
+		long sctlId = parentSCTL.getId().longValue();
 		UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 		urtiQuery.setTransferSctlId(sctlId);
 		List<UnregisteredTxnInfo> urtiList = unRegisteredTxnInfoService.getUnRegisteredTxnInfoListByQuery(urtiQuery);
@@ -315,16 +316,16 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		}
 	}
 	
-	private void failTheReverseRequest(ServiceChargeTransactionLog sctl, ServiceChargeTransactionLog parentSCTL, String failureReason) {
-		log.info("Reverse of the Transaction " + parentSCTL.getCommodityTransferID() + " is Failed. And SCTLID -->" + sctl.getID());
+	private void failTheReverseRequest(ServiceChargeTxnLog sctl, ServiceChargeTxnLog parentSCTL, String failureReason) {
+		log.info("Reverse of the Transaction " + parentSCTL.getCommoditytransferid() + " is Failed. And SCTLID -->" + sctl.getId());
 		if (StringUtils.isNotBlank(failureReason) && failureReason.length() > 255) {
 			failureReason = failureReason.substring(0,  255);
 		}
 		sctl.setStatus(CmFinoFIX.SCTLStatus_Failed);
-		sctl.setFailureReason(failureReason);
+		sctl.setFailurereason(failureReason);
 
 		//parentSCTL.setStatus(CmFinoFIX.SCTLStatus_Reverse_Failed);
-		Long transactionTypeId = sctl.getTransactionTypeID();
+		Long transactionTypeId = sctl.getTransactiontypeid().longValue();
 		TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 		String transactionTypeName = null;
 
@@ -339,25 +340,25 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		}
 
 		if(TRANSACTION_REVERSE_TRANSACTION.equals(transactionTypeName)){
-			parentSCTL.setAmtRevStatus(CmFinoFIX.SCTLStatus_Reverse_Failed);
+			parentSCTL.setAmtrevstatus(Long.valueOf(CmFinoFIX.SCTLStatus_Reverse_Failed));
 		}
 		else{
-			parentSCTL.setChrgRevStatus(CmFinoFIX.SCTLStatus_Reverse_Failed);
+			parentSCTL.setChrgrevstatus(Long.valueOf(CmFinoFIX.SCTLStatus_Reverse_Failed));
 		}
 
-		parentSCTL.setFailureReason(failureReason);
-		parentSCTL.setIsTransactionReversed(CmFinoFIX.Boolean_False);
+		parentSCTL.setFailurereason(failureReason);
+		parentSCTL.setIstransactionreversed((short)1);
 
 		sctlService.saveSCTL(sctl);
 		sctlService.saveSCTL(parentSCTL);
 		sendNotification(parentSCTL, CmFinoFIX.NotificationCode_ReverseTransactionRequestFailed);
 	}
 
-	private void sendNotification(ServiceChargeTransactionLog parentSCTL, Integer notificationCode) {
+	private void sendNotification(ServiceChargeTxnLog parentSCTL, Integer notificationCode) {
 
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
-		String mdn = parentSCTL.getSourceMDN();
+		String mdn = parentSCTL.getSourcemdn();
 		SubscriberMdn smdn = subscriberMdnService.getByMDN(mdn);
 		if(smdn != null)
 		{
@@ -368,14 +369,14 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		notificationWrapper.setLanguage(language);
 		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		notificationWrapper.setCode(notificationCode);
-		notificationWrapper.setOriginalTransferID(parentSCTL.getID());
+		notificationWrapper.setOriginalTransferID(parentSCTL.getId().longValue());
 
         String message = notificationMessageParserService.buildMessage(notificationWrapper,true);
 
-        smsService.setDestinationMDN(parentSCTL.getSourceMDN());
+        smsService.setDestinationMDN(parentSCTL.getSourcemdn());
         smsService.setMessage(message);
         smsService.setNotificationCode(notificationWrapper.getCode());
-        smsService.setSctlId(parentSCTL.getID());
+        smsService.setSctlId(parentSCTL.getId().longValue());
         smsService.asyncSendSMS();
 	}
 }

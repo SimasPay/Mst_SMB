@@ -17,10 +17,10 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -71,13 +71,13 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 		//need to create a resultxml object
 		XMLResult result = new XMLResult();
 		TransactionLogServiceImpl transactionLogServiceImpl = new TransactionLogServiceImpl();
-		TransactionsLog transactionsLog = transactionLogServiceImpl.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashinStatus, cashinStatus.DumpFields());
-		transactionStatus.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogServiceImpl.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashinStatus, cashinStatus.DumpFields());
+		transactionStatus.setTransactionID(transactionsLog.getId().longValue());
 		
 		
 		result.setSourceMessage(transactionStatus);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 		IntegrationPartnerMappingServiceImpl integrationPartnerMapping = new IntegrationPartnerMappingServiceImpl();
 		IntegrationPartnerMapping ipm  = integrationPartnerMapping.getByInstitutionID(cashinStatus.getInstitutionID());
@@ -114,7 +114,7 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSACTIONSTATUS);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionsLog.getID());
+		serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 		serviceCharge.setTransactionIdentifier(cashinStatus.getTransactionIdentifier());
 
 		try{
@@ -129,8 +129,8 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 			return result;
 		}
 
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		transactionStatus.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		transactionStatus.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		if(cashinStatus.getReferenceNumber() <= 0){
 			log.info("Reference Number is not valid");
@@ -143,21 +143,21 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 		sctlQuery.setInfo1(cashinStatus.getCustReference());
 
 		SCTLServiceImpl sctlService = new SCTLServiceImpl();
-		List<ServiceChargeTransactionLog> sctlList = sctlService.getByQuery(sctlQuery);
-		ServiceChargeTransactionLog oldSctl = null;
+		List<ServiceChargeTxnLog> sctlList = sctlService.getByQuery(sctlQuery);
+		ServiceChargeTxnLog oldSctl = null;
 		if(!sctlList.isEmpty())
 		{
 			oldSctl = sctlList.get(0);
 			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);
 			}
 		}
 		if (oldSctl != null) {
 			log.info("Returning the status of the requested transaction");
-			result.setTransferID(oldSctl.getID());
-			if (oldSctl.getStatus().equals(CmFinoFIX.SCTLStatus_Confirmed) || oldSctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Completed)
-					|| oldSctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Started))
+			result.setTransferID(oldSctl.getId().longValue());
+			if (oldSctl.getStatus()==(CmFinoFIX.SCTLStatus_Confirmed) || oldSctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Completed)
+					|| oldSctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Started))
 				result.setCode(CmFinoFIX.NotificationCode_CashInToEMoneyCompletedToSender.toString());
 			else
 				result.setCode(CmFinoFIX.NotificationCode_Failure.toString());

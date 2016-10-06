@@ -16,11 +16,11 @@ import com.mfino.dao.query.SubscriberFavoriteQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.FavoriteCategory;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberFavorite;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -93,11 +93,11 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		favoriteMessage.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());		
 		XMLResult result = new ChangeEmailXMLResult();
 		TransactionLogServiceImpl transactionLogService = new TransactionLogServiceImpl();
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FavoriteMessage, favoriteMessage.DumpFields());		
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FavoriteMessage, favoriteMessage.DumpFields());		
 
 		result.setSourceMessage(favoriteMessage);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		// Subscriber MDN validation
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
@@ -168,11 +168,11 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		ServiceCharge serviceCharge = new ServiceCharge();
 		serviceCharge.setSourceMDN(transactionDetails.getSourceMDN());
 		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(StringUtils.isNotBlank(cc.getChannelCode()) ? Long.valueOf(cc.getChannelCode()) : null);
+		serviceCharge.setChannelCodeId(StringUtils.isNotBlank(cc.getChannelcode()) ? Long.valueOf(cc.getChannelcode()) : null);
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(transactionDetails.getTransactionName());
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionLog.getID());
+		serviceCharge.setTransactionLogId(transactionLog.getId().longValue());
 		serviceCharge.setTransactionIdentifier(favoriteMessage.getTransactionIdentifier());
 		try{
 			transaction =tcs.getCharge(serviceCharge);
@@ -185,8 +185,8 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		
 		if(transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE)) { 
 			try {	//Add the favorite
@@ -194,9 +194,9 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 				SubscriberFavorite subscriberFavorite = new SubscriberFavorite();
 				subscriberFavorite.setSubscriber(subscriberMDN.getSubscriber());
 				subscriberFavorite.setFavoriteCategory(favoriteCategory);
-				subscriberFavorite.setFavoriteCode(transactionDetails.getFavoriteCode());
-				subscriberFavorite.setFavoriteLabel(transactionDetails.getFavoriteLabel());
-				subscriberFavorite.setFavoriteValue(transactionDetails.getFavoriteValue());
+				subscriberFavorite.setFavoritecode(transactionDetails.getFavoriteCode());
+				subscriberFavorite.setFavoritelabel(transactionDetails.getFavoriteLabel());
+				subscriberFavorite.setFavoritevalue(transactionDetails.getFavoriteValue());
 				subscriberFavoriteService.saveSubscriberFavorite(subscriberFavorite);
 				log.info("Favorite added for the subscriber");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AddFavoriteSuccess);
@@ -212,7 +212,7 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 		} else if(transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_EDIT_FAVORITE)) {
 			try {	//Edit the favorite
 				log.info("Editing the favorite");
-				existingFavorite.setFavoriteLabel(transactionDetails.getFavoriteLabel());
+				existingFavorite.setFavoritelabel(transactionDetails.getFavoriteLabel());
 				subscriberFavoriteService.saveSubscriberFavorite(existingFavorite);
 				log.info("Favorite edited for the subscriber");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_EditFavoriteSuccess);

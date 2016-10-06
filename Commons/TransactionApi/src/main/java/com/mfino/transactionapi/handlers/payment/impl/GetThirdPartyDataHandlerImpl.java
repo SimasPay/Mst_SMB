@@ -33,7 +33,7 @@ public class GetThirdPartyDataHandlerImpl extends FIXMessageHandler implements G
 		getThirdPartyData = new CMGetThirdPartData();
 		ChannelCode cc = transDetails.getCc();
 		
-		getThirdPartyData.setChannelCode(cc != null? cc.getChannelCode():null);
+		getThirdPartyData.setChannelCode(cc != null? cc.getChannelcode():null);
 		getThirdPartyData.setDataCategory(transDetails.getCategory());
 		getThirdPartyData.setVersion(transDetails.getVersion());
 		

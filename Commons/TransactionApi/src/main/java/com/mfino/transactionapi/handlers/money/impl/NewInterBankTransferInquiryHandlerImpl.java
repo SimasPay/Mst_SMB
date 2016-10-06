@@ -27,11 +27,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -143,11 +143,11 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
         log.info("Handling Subscriber IBT Inquiry webapi request");
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterBankFundsTransferInquiry, ibtInquiry.DumpFields());
-		ibtInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterBankFundsTransferInquiry, ibtInquiry.DumpFields());
+		ibtInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(ibtInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(ibtInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
@@ -172,7 +172,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		//For Integration Code
 		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(ibtInquiry.getBillerCode());
 		if (mfsBillerPartner != null){
-			ibtInquiry.setIntegrationCode(mfsBillerPartner.getIntegrationCode());
+			ibtInquiry.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
 		
 		Pocket subPocket = pocketService.getDefaultPocket(sourceMDN, srcpocketcode);
@@ -202,9 +202,9 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		
 		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
-			ibtInquiry.setIntegrationCode(results.getIntegrationCode());
-			ibtInquiry.setPartnerBillerCode(results.getPartnerBillerCode());
-			ibtInquiry.setChargesIncluded(results.getChargesIncluded());
+			ibtInquiry.setIntegrationCode(results.getIntegrationcode());
+			ibtInquiry.setPartnerBillerCode(results.getPartnerbillercode());
+			ibtInquiry.setChargesIncluded(results.getChargesincluded()==1?true:false);
 		}
 		addCompanyANDLanguageToResult(sourceMDN, result);
 		
@@ -225,7 +225,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(serviceCharge.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId().longValue(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 				return result;
@@ -259,10 +259,10 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);			
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		sctl.setIntegrationCode(ibtInquiry.getIntegrationCode());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		sctl.setIntegrationcode(ibtInquiry.getIntegrationCode());
 	
-		ibtInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ibtInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		ibtInquiry.setDestMDN(partnerMDN.getMdn());
 		ibtInquiry.setCharges(transaction.getAmountTowardsCharges());
 		ibtInquiry.setChannelCode(cc.getChannelcode());
@@ -276,8 +276,8 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 			transactionResponse = checkBackEndResponse(response);
 			if (transactionResponse.getTransactionId()!=null) {
 				
-				sctl.setTransactionID(transactionResponse.getTransactionId());
-				sctl.setCommodityTransferID(transactionResponse.getTransferId());
+				sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+				sctl.setCommoditytransferid(BigDecimal.valueOf(transactionResponse.getTransferId()));
 				ibtInquiry.setTransactionID(transactionResponse.getTransactionId());
 				result.setTransactionID(transactionResponse.getTransactionId());
 				transactionChargingService.saveServiceTransactionLog(sctl);
@@ -288,11 +288,11 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 				transactionChargingService.failTheTransaction(sctl, errorMsg);	
 			}
 		transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
-		result.setDebitAmount(sctl.getTransactionAmount());
-		result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-		result.setServiceCharge(sctl.getCalculatedCharge().add(operatorChgs));
+		result.setDebitAmount(sctl.getTransactionamount());
+		result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+		result.setServiceCharge(sctl.getCalculatedcharge().add(operatorChgs));
 		result.setParentTransactionID(transactionResponse.getTransactionId());
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
@@ -313,9 +313,9 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 	
 	public boolean isIBTRestricted(String bankCode, CMBillPayInquiry ibtInquiry){
 		InterbankCodes interBankCode = getBankCode(bankCode);
-		boolean isIBTAllowed = ((interBankCode != null) && (interBankCode.getibAllowed())) ? true : false;
+		boolean isIBTAllowed = ((interBankCode.getIballowed()==1)) ? true : false;
 		//for interbank bankName is stored in info2
-		ibtInquiry.setNarration(interBankCode.getBankName());
+		ibtInquiry.setNarration(interBankCode.getBankname());
 		return isIBTAllowed;
 	}
 	

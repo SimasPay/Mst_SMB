@@ -15,13 +15,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBillInquiry;
@@ -88,8 +88,8 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 		ChannelCode cc = transDetails.getCc();
 		
 		billInquiry.setSourceMDN(transDetails.getSourceMDN());
-		billInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		billInquiry.setChannelCode(cc.getChannelCode());
+		billInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		billInquiry.setChannelCode(cc.getChannelcode());
 		billInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		billInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Inquiry);
 		billInquiry.setInvoiceNumber(transDetails.getBillNum());
@@ -99,14 +99,14 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 		log.info("Handling Subscriber bill Inquiry webapi request");
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillInquiry, billInquiry.DumpFields());
-		billInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillInquiry, billInquiry.DumpFields());
+		billInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(billInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(billInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(billInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+billInquiry.getSourceMDN()+" has failed validations");
@@ -122,7 +122,7 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 			return result;
 		}
-		if (!subPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		if (!(subPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 			log.error("Subscriber with mdn : "+billInquiry.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 			return result;
@@ -134,7 +134,7 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 			return result;
 		}
 		
-		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(billInquiry.getBillerCode());
+		MfsBiller mfsBiller = mfsBillerService.getByBillerCode(billInquiry.getBillerCode());
 		if (mfsBiller == null) {
 			result.setBillerCode(billInquiry.getBillerCode());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidBillerCode);
@@ -148,7 +148,7 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 			return result;
 		}
 		
-		SubscriberMDN partnerMDN = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn partnerMDN = partner.getSubscriber().getSubscriberMdns().iterator().next();
 		validationResult = transactionApiValidationService.validatePartnerMDN(partnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+billInquiry.getSourceMDN()+" has failed validations");
@@ -157,16 +157,16 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 
 		}
 		
-		MFSBillerPartner results = mfsBiller.getMFSBillerPartnerFromMFSBillerId().iterator().next();
+		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
-			billInquiry.setIntegrationCode(results.getIntegrationCode());
+			billInquiry.setIntegrationCode(results.getIntegrationcode());
 		}
 		
 		billInquiry.setNarration("ccpayment");
 		
-		billInquiry.setSourceBankAccountNo(subPocket.getCardPAN());
-		billInquiry.setSourcePocketID(subPocket.getID());
-		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(subPocket.getPocketTemplate().getBankAccountCardType()))
+		billInquiry.setSourceBankAccountNo(subPocket.getCardpan());
+		billInquiry.setSourcePocketID(subPocket.getId().longValue());
+		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(subPocket.getPocketTemplate().getBankaccountcardtype()))
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 		
 		CFIXMsg response = super.process(billInquiry);

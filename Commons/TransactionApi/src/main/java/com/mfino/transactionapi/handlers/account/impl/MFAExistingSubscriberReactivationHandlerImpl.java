@@ -13,11 +13,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -77,7 +77,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 	private PocketService pocketService;
 	
 	public Result handle(TransactionDetails transactionDetails) {
-		ServiceChargeTransactionLog sctl = null;
+		ServiceChargeTxnLog sctl = null;
 		
 		CMExistingSubscriberReactivation subscriberReactivation = new CMExistingSubscriberReactivation();
 		ChannelCode	cc = transactionDetails.getCc();
@@ -97,16 +97,16 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 		subscriberReactivation.setConfirmPin(transactionDetails.getConfirmPIN());
 		subscriberReactivation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
- 		TransactionsLog transactionsLog = null;
+ 		TransactionLog transactionsLog = null;
 		log.info("Handling subscriber services reactivation webapi request");
 		XMLResult result = new ReactivationXMLResult(); 
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ExistingSubscriberReactivation, subscriberReactivation.DumpFields());
 
 		result.setSourceMessage(subscriberReactivation);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberReactivation.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberReactivation.setTransactionID(transactionsLog.getId().longValue());
  		try{
  			String clearPin = transactionDetails.getSourcePIN();
  			subscriberReactivation.setPin(clearPin);
@@ -133,7 +133,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 			serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 			serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REACTIVATION);
 			serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-			serviceCharge.setTransactionLogId(transactionsLog.getID());
+			serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 			serviceCharge.setTransactionIdentifier(subscriberReactivation.getTransactionIdentifier());
 
 			try{
@@ -150,7 +150,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 
 			 sctl = transaction.getServiceChargeTransactionLog();
 
-			result.setSctlID(sctl.getID());
+			result.setSctlID(sctl.getId().longValue());
 			result.setMfaMode("None");
 			result.setMfaMode("OTP");
 
@@ -170,7 +170,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 			
             sctl = sctlService.getBySCTLID(parentTxnId);//For 
 	 		 			
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctl.getID(), subscriberReactivation.getSourceMDN()))){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctl.getId().longValue(), subscriberReactivation.getSourceMDN()))){
 					result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidData);
 					return result;
 			}			
@@ -183,7 +183,7 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 		log.info("ExistingSubscriberReactivationHandler::Handle"+transactionDetails.getSourcePocketId());
 
 		subscriberReactivation.setSourcePocketID(srcpocket.getId().longValue());
-		subscriberReactivation.setServiceChargeTransactionLogID(sctl.getID());
+		subscriberReactivation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		CFIXMsg response = super.process(subscriberReactivation);
 		
@@ -198,11 +198,11 @@ public class MFAExistingSubscriberReactivationHandlerImpl  extends FIXMessageHan
 				result.setActivityStatus(BOOL_TRUE);
 				addCompanyANDLanguageToResult(sourceMDN,result);	
 				if (sctl != null) {
-					sctl.setCalculatedCharge(BigDecimal.ZERO);
+					sctl.setCalculatedcharge(BigDecimal.ZERO);
 
 					transactionChargingService.completeTheTransaction(sctl);
 				}
-				result.setSctlID(sctl.getID());
+				result.setSctlID(sctl.getId().longValue());
 				result.setMultixResponse(response);
 				result.setMessage(transactionResponse.getMessage());
 				return result;	

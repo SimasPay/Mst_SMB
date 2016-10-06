@@ -12,12 +12,14 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
+import com.mfino.fix.CmFinoFIX;
+import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.fix.processor.MultixCommunicationHandler;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.i18n.MessageText;
@@ -72,7 +74,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		subscriberActivation.setPin(transactionDetails.getNewPIN());
 		subscriberActivation.setSourceMDN(transactionDetails.getSourceMDN());
 		subscriberActivation.setOTP(transactionDetails.getActivationOTP());
-		subscriberActivation.setSourceApplication(cc.getChannelsourceapplication());
+		subscriberActivation.setSourceApplication((int)cc.getChannelsourceapplication());
 		subscriberActivation.setChannelCode(cc.getChannelcode());
 		subscriberActivation.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
@@ -82,12 +84,12 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		Transaction transaction = null;
 
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberActivation, subscriberActivation.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberActivation, subscriberActivation.DumpFields());
 
  		result.setSourceMessage(subscriberActivation);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getId());
-		subscriberActivation.setTransactionID(transactionsLog.getId());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberActivation.setTransactionID(transactionsLog.getId().longValue());
 	
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(subscriberActivation.getSourceMDN());
 
@@ -101,7 +103,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AGENTACTIVATION);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionsLog.getID());
+		serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 		serviceCharge.setTransactionIdentifier(subscriberActivation.getTransactionIdentifier());
 
 		try{
@@ -116,8 +118,8 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
  			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		subscriberActivation.setServiceChargeTransactionLogID(sctl.getId());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		subscriberActivation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 //		NotificationWrapper wrapper = agentService.activeAgent(subscriberActivation,isHttps);
 		NotificationWrapper wrapper = agentService.activeAgent(subscriberActivation,isHttps, ConfigurationUtil.getuseHashedPIN());		
@@ -126,7 +128,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 			log.info("AgentActivationHandlerImpl :: Agent Activation successfull for "+transactionDetails.getSourceMDN());
 			result.setActivityStatus(BOOL_TRUE);
 			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);
 			}
 		}else{
@@ -145,7 +147,7 @@ public class AgentActivationHandlerImpl extends FIXMessageHandler implements Age
 		
 		result.setPartnerCode(wrapper.getPartnerCode());
 		result.setNotificationCode(code);
-		result.setSctlID(sctl.getId());
+		result.setSctlID(sctl.getId().longValue());
 
 		return result;
 	}

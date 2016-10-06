@@ -3,6 +3,7 @@
  */
 package com.mfino.transactionapi.handlers.payment.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,10 +22,10 @@ import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMQRPayment;
@@ -122,8 +123,8 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		 qrPayment.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		 qrPayment.setTransferID(transactionDetails.getTransferId());
 		 qrPayment.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
-		 qrPayment.setSourceApplication(cc.getChannelSourceApplication());
-		 qrPayment.setChannelCode(cc.getChannelCode());
+		 qrPayment.setSourceApplication((int)cc.getChannelsourceapplication());
+		 qrPayment.setChannelCode(cc.getChannelcode());
 		 qrPayment.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		 qrPayment.setBillerCode(transactionDetails.getBillerCode());
 		 qrPayment.setNarration(transactionDetails.getNarration());
@@ -140,21 +141,21 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		log.info("Handling Subscriber qr payment confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 		//2FA
-		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(qrPayment.getParentTransactionID());
-		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getID())){
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), qrPayment.getSourceMDN()))){
+		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(qrPayment.getParentTransactionID());
+		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getId().longValue())){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getId().longValue(), qrPayment.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_QRPayment,qrPayment.DumpFields(),qrPayment.getParentTransactionID());
-		qrPayment.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_QRPayment,qrPayment.DumpFields(),qrPayment.getParentTransactionID());
+		qrPayment.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(qrPayment);
 		result.setTransactionID(qrPayment.getTransactionID());
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(qrPayment.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(qrPayment.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+qrPayment.getSourceMDN()+" has failed validations");
@@ -164,7 +165,7 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		Pocket subPocket = pocketService.getDefaultPocket(sourceMDN, srcPocketCode);
 		validationResult = transactionApiValidationService.validateSourcePocket(subPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(subPocket!=null? subPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(subPocket!=null? subPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
@@ -176,7 +177,7 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		Partner partner = billerService.getPartner(qrPayment.getBillerCode());
 
 
-		SubscriberMDN partnerMDN = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn partnerMDN = partner.getSubscriber().getSubscriberMdns().iterator().next();
 		validationResult = transactionApiValidationService.validatePartnerMDN(partnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination partner has failed validations");
@@ -186,28 +187,28 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 		}
 
 
-		qrPayment.setDestMDN(partnerMDN.getMDN());
-		qrPayment.setSourcePocketID(subPocket.getID());
-		qrPayment.setSourceApplication(cc.getChannelSourceApplication());
+		qrPayment.setDestMDN(partnerMDN.getMdn());
+		qrPayment.setSourcePocketID(subPocket.getId().longValue());
+		qrPayment.setSourceApplication((int)cc.getChannelsourceapplication());
 		qrPayment.setEmail(sourceMDN.getSubscriber().getEmail());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(qrPayment.getParentTransactionID(),qrPayment.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(qrPayment.getParentTransactionID(),qrPayment.getTransactionIdentifier());
 				
 		if (sctl != null) {
-			qrPayment.setServiceChargeTransactionLogID(sctl.getID());
+			qrPayment.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			BillPaymentsQuery bpquery = new BillPaymentsQuery();
-			bpquery.setSctlID(sctl.getID());
+			bpquery.setSctlID(sctl.getId().longValue());
 			List<BillPayments> res = billPaymentsService.get(bpquery);
 			if(res.size() > 0){
-				qrPayment.setIntegrationCode(res.get(0).getIntegrationCode());
-				qrPayment.setPartnerBillerCode(res.get(0).getPartnerBillerCode());
-				Iterator<MFSBillerPartner> mfsBillers=partner.getMFSBillerPartnerFromPartnerID().iterator();
+				qrPayment.setIntegrationCode(res.get(0).getIntegrationcode());
+				qrPayment.setPartnerBillerCode(res.get(0).getPartnerbillercode());
+				Iterator<MFSBillerPartner> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
 					MFSBillerPartner mfsbiller = mfsBillers.next();
-					if(mfsbiller.getMFSBiller().getMFSBillerCode().equals(qrPayment.getBillerCode())){
-						qrPayment.setBillerPartnerType(mfsbiller.getBillerPartnerType());
+					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(qrPayment.getBillerCode())){
+						qrPayment.setBillerPartnerType(Long.valueOf(mfsbiller.getBillerpartnertype()).intValue());
 						break;
 					}
 				}
@@ -224,25 +225,25 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 			return result;
 		}		
 		Pocket destPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 			return result;
 		}
-		destPocket = partnerService.getPocketByDestPocketID();
+		destPocket = partnerService.getPocketByDestpocketid();
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 	
-		qrPayment.setDestPocketID(destPocket.getID());
+		qrPayment.setDestPocketID(destPocket.getId().longValue());
 
 		CFIXMsg response = super.process(qrPayment);
 		result.setMultixResponse(response);
 		commodityTransferService.addCommodityTransferToResult(result);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -251,10 +252,10 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, qrPayment.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, qrPayment.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
 				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.

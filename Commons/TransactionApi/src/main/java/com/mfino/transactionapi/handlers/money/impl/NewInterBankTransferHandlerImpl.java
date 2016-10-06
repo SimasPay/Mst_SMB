@@ -22,10 +22,10 @@ import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
@@ -132,9 +132,9 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		log.info("Handling Subscriber interbank confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 		//2FA
-		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(ibtConfirm.getParentTransactionID());
+		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(ibtConfirm.getParentTransactionID());
 		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getId().longValue())){
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), ibtConfirm.getSourceMDN()))){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getId().longValue(), ibtConfirm.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
@@ -143,13 +143,13 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		//For Integration Code
 		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(ibtConfirm.getBillerCode());
 		if (mfsBillerPartner != null){
-			ibtConfirm.setIntegrationCode(mfsBillerPartner.getIntegrationCode());
+			ibtConfirm.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillPay,ibtConfirm.DumpFields(),ibtConfirm.getParentTransactionID());
-		ibtConfirm.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillPay,ibtConfirm.DumpFields(),ibtConfirm.getParentTransactionID());
+		ibtConfirm.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(ibtConfirm);
 		result.setTransactionID(ibtConfirm.getTransactionID());
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(ibtConfirm.getSourceMDN());
@@ -191,13 +191,13 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(ibtConfirm.getParentTransactionID(),ibtConfirm.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(ibtConfirm.getParentTransactionID(),ibtConfirm.getTransactionIdentifier());
 			
 		
 		if (sctl != null) {
-			ibtConfirm.setServiceChargeTransactionLogID(sctl.getID());
+			ibtConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			BillPaymentsQuery bpquery = new BillPaymentsQuery();
-			bpquery.setSctlID(sctl.getID());
+			bpquery.setSctlID(sctl.getId().longValue());
 			List<BillPayments> res = billPaymentsService.get(bpquery);
 			if(res.size() > 0){
 				ibtConfirm.setBenOpCode(res.get(0).getInfo1());
@@ -208,8 +208,8 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 				Iterator<MFSBillerPartner> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
 					MFSBillerPartner mfsbiller = mfsBillers.next();
-					if(mfsbiller.getMFSBiller().getMFSBillerCode().equals(ibtConfirm.getBillerCode())){
-						ibtConfirm.setBillerPartnerType(mfsbiller.getBillerPartnerType());
+					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(ibtConfirm.getBillerCode())){
+						ibtConfirm.setBillerPartnerType(mfsbiller.getBillerpartnertype().intValue());
 						break;
 					}
 				}
@@ -226,7 +226,7 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 			return result;
 		}		
 		Pocket destPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 			return result;
@@ -244,14 +244,14 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		CFIXMsg response = super.process(ibtConfirm);
 		result.setMultixResponse(response);
 		commodityTransferService.addCommodityTransferToResult(result);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
 		BillPayments billPayments = null;
 		BillPaymentsQuery query = new BillPaymentsQuery();
-		query.setSctlID(sctl.getID());
+		query.setSctlID(sctl.getId().longValue());
 		List<BillPayments> billLst = billPaymentsService.get(query);
 		if(billLst != null && billLst.size() > 0){
 			billPayments = billLst.get(0);
@@ -263,13 +263,13 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, ibtConfirm.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, ibtConfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
 				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());				
 				if(billPayments != null && billPayments.getOperatorcharges() != null){
-					result.setServiceCharge(sctl.getCalculatedCharge().add(billPayments.getOperatorcharges()));
+					result.setServiceCharge(sctl.getCalculatedcharge().add(billPayments.getOperatorcharges()));
 				} else {
-					result.setServiceCharge(sctl.getCalculatedCharge());
+					result.setServiceCharge(sctl.getCalculatedcharge());
 				}
 				result.setNominalAmount(billPayments.getNominalamount());
 			} else {

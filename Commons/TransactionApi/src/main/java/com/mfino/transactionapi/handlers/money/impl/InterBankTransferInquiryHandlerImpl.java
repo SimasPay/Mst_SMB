@@ -17,11 +17,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -164,11 +164,11 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		
 		Transaction transaction = null;
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterBankFundsTransfer, interBankTransferInquiry.DumpFields());
-		interBankTransferInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterBankFundsTransfer, interBankTransferInquiry.DumpFields());
+		interBankTransferInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(interBankTransferInquiry);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		//result.setDestinationMDN(interBankTransferInquiry.getDestMDN());
 
 		addCompanyANDLanguageToResult(sourceMDN, result);
@@ -181,7 +181,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		sc.setServiceName(interBankTransferInquiry.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER);
 		sc.setTransactionAmount(interBankTransferInquiry.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 		if(transactionDetails.getDestinationBankAccountNo() != null){
@@ -210,15 +210,15 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		interBankTransferInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		interBankTransferInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		CFIXMsg response = super.process(interBankTransferInquiry);
 
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			interBankTransferInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -238,7 +238,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setBankName(transactionResponse.getBankName());
 		result.setMfaMode("None");
 		

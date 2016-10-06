@@ -16,18 +16,18 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBiller;
 import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -109,13 +109,13 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		ChannelCode cc = transDetails.getCc();
 		
 		billInquiry.setSourceMDN(transDetails.getSourceMDN());
-		billInquiry.setSourceApplication(cc.getChannelSourceApplication());
-		billInquiry.setChannelCode(cc.getChannelCode());
+		billInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
+		billInquiry.setChannelCode(cc.getChannelcode());
 		billInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		billInquiry.setPin(transDetails.getSourcePIN());
 		billInquiry.setSourceMessage(transDetails.getSourceMessage());
 		billInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Inquiry);
-		billInquiry.setSourceApplication(cc.getChannelSourceApplication());
+		billInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
 		billInquiry.setInvoiceNumber(transDetails.getBillNum());
 		billInquiry.setBillerCode(transDetails.getBillerCode());
 		billInquiry.setTransactionIdentifier(transDetails.getTransactionIdentifier());
@@ -124,14 +124,14 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		log.info("Handling Subscriber bill Inquiry webapi request");
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillInquiry, billInquiry.DumpFields());
-		billInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillInquiry, billInquiry.DumpFields());
+		billInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(billInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		
 
-		SubscriberMDN srcSubscriberMDN = subscriberMdnService.getByMDN(billInquiry.getSourceMDN());
+		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(billInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+billInquiry.getSourceMDN()+" has failed validations");
@@ -145,19 +145,19 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 			return result;
 		}
 		
-		MFSBiller mfsBiller = mfsBillerService.getByBillerCode(billInquiry.getBillerCode());
+		MfsBiller mfsBiller = mfsBillerService.getByBillerCode(billInquiry.getBillerCode());
 		if (mfsBiller == null) {
 			result.setBillerCode(billInquiry.getBillerCode());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidBillerCode);
 			return result;
 		}
 		
-        Pocket subPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getID(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+        Pocket subPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		if(subPocket==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 			return result;
 		}
-		if (!subPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+		if (!(subPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 			return result;
 		}
@@ -172,22 +172,22 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		}
 		
 		Subscriber agentsub = agent.getSubscriber();
-		SubscriberMDN agentmdn = agentsub.getSubscriberMDNFromSubscriberID().iterator().next();	
+		SubscriberMdn agentmdn = agentsub.getSubscriberMdns().iterator().next();	
 		
-		MFSBillerPartner results = mfsBiller.getMFSBillerPartnerFromMFSBillerId().iterator().next();
+		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
-			billInquiry.setIntegrationCode(results.getIntegrationCode());
+			billInquiry.setIntegrationCode(results.getIntegrationcode());
 		}
 		
-		billInquiry.setSourcePocketID(subPocket.getID());
+		billInquiry.setSourcePocketID(subPocket.getId().longValue());
 		Pocket srcPocket = pocketService.getById(new Long(billInquiry.getSourcePocketID()));
 
 		ServiceCharge sc=new ServiceCharge();
-		sc.setChannelCodeId(cc.getID());
-		sc.setDestMDN(agentmdn.getMDN());
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setDestMDN(agentmdn.getMdn());
 		sc.setServiceName(serviceName);
 		sc.setTransactionTypeName(transactionName);
-		sc.setSourceMDN(srcSubscriberMDN.getMDN());
+		sc.setSourceMDN(srcSubscriberMDN.getMdn());
 		sc.setTransactionAmount(BigDecimal.ZERO);//ONLINE BILLPAY
 		if(StringUtils.isNotBlank(billInquiry.getAmount().toString()))
 			sc.setTransactionAmount(billInquiry.getAmount());//Case where inquiry with amount sent to bank
@@ -199,17 +199,17 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId("Payment");
-			PartnerServices partnerService = transactionChargingService.getPartnerService(agent.getID(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(agent.getId().longValue(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 				return result;
 			}
-			agentPocket = partnerService.getPocketByDestPocketID();
+			agentPocket = partnerService.getPocketByDestpocketid();
 			if(agentPocket==null){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound);
 				return result;
 			}
-			if (!agentPocket.getStatus().equals(CmFinoFIX.PocketStatus_Active)) {
+			if (!(agentPocket.getStatus()==(CmFinoFIX.PocketStatus_Active))) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyPocketNotActive);
 				return result;
 			}
@@ -218,7 +218,7 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		if(subPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_BankAccount))
+		if(subPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 
 			if(!systemParametersService.getBankServiceStatus())
@@ -228,12 +228,12 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 			}
 		}
 		billInquiry.setNarration("online");
-		billInquiry.setSourceBankAccountNo(srcPocket.getCardPAN());
-		billInquiry.setSourcePocketID(srcPocket.getID());
-		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplate().getBankAccountCardType()))
+		billInquiry.setSourceBankAccountNo(srcPocket.getCardpan());
+		billInquiry.setSourcePocketID(srcPocket.getId().longValue());
+		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplate().getBankaccountcardtype()))
 	    billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
-		billInquiry.setDestPocketID(agentPocket.getID());
-		billInquiry.setDestMDN(agentmdn.getMDN());
+		billInquiry.setDestPocketID(agentPocket.getId().longValue());
+		billInquiry.setDestMDN(agentmdn.getMdn());
 		Transaction transaction=null;
 		try{
 			transaction =transactionChargingService.getCharge(sc);
@@ -252,9 +252,9 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);			
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		
-		billInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		billInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		CFIXMsg response = super.process(billInquiry);
         
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
@@ -262,8 +262,8 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
         
 		  sctl = sctlService.getBySCTLID(sctlId);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
-			sctl.setCommodityTransferID(transactionResponse.getTransferId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setCommoditytransferid(BigDecimal.valueOf(transactionResponse.getTransferId()));
 			billInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -277,11 +277,11 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
 		
 		result.setAdditionalInfo(transactionResponse.getAdditionalInfo());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
-		result.setDebitAmount(sctl.getTransactionAmount());
-		result.setCreditAmount(sctl.getTransactionAmount());
-		result.setServiceCharge(sctl.getCalculatedCharge());
+		result.setDebitAmount(sctl.getTransactionamount());
+		result.setCreditAmount(sctl.getTransactionamount());
+		result.setServiceCharge(sctl.getCalculatedcharge());
 		result.setMultixResponse(response);
 	//	addCompanyANDLanguageToResult(srcSubscriberMDN,result);
 		result.setParentTransactionID(transactionResponse.getTransactionId());

@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.nfc.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -20,11 +21,11 @@ import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -122,9 +123,9 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		nfcCardTopupReversal.setParentTransID(Long.parseLong(txnDetails.getParentTransID()));
 		
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardTopupReversal, nfcCardTopupReversal.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardTopupReversal, nfcCardTopupReversal.DumpFields());
 		
-		nfcCardTopupReversal.setTransactionID(transactionsLog.getID());
+		nfcCardTopupReversal.setTransactionID(transactionsLog.getId().longValue());
 		inquiryResult = (XMLResult) handleNFCCardTopupReversalInquiry(txnDetails);
 		
 		if(!isNFCCardTopupReversalInquirySuccessfull(inquiryResult)){
@@ -156,7 +157,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
 		sctlQuery.setIntegrationTxnID(Long.parseLong(txnDetails.getTransID()));
-		List<ServiceChargeTransactionLog> resultSctlList = SCTLService.getByQuery(sctlQuery);
+		List<ServiceChargeTxnLog> resultSctlList = SCTLService.getByQuery(sctlQuery);
 		if(resultSctlList != null && resultSctlList.size() != 0){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransIDAlreadyExist);
 			return result;
@@ -164,7 +165,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		sctlQuery.setIntegrationTxnID(null);
 		resultSctlList = null;
 				
-		ServiceChargeTransactionLog parentSCTL = null;
+		ServiceChargeTxnLog parentSCTL = null;
 		sctlQuery.setIntegrationTxnID(Long.parseLong(txnDetails.getParentTransID()));
 		resultSctlList = SCTLService.getByQuery(sctlQuery);
 		if(resultSctlList != null && resultSctlList.size() != 0){
@@ -228,7 +229,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		CMBankAccountToBankAccount bankAccountToBankAccount = new CMBankAccountToBankAccount();
 		bankAccountToBankAccount.setSourceMDN(srcMdn);
 		bankAccountToBankAccount.setDestMDN(destMdn);
-		bankAccountToBankAccount.setAmount(parentSCTL.getTransactionAmount());
+		bankAccountToBankAccount.setAmount(parentSCTL.getTransactionamount());
 		bankAccountToBankAccount.setIsSystemIntiatedTransaction(true);
 		bankAccountToBankAccount.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		bankAccountToBankAccount.setSourceMessage("NFC CardTopup Reversal Transfer Inquiry");
@@ -296,10 +297,10 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		txnDetails.setSrcPocketId(destPocket.getId().longValue());
 		txnDetails.setDestinationPocketId(srcPocket.getId().longValue());
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
-		bankAccountToBankAccount.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
+		bankAccountToBankAccount.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setDestinationMDN(bankAccountToBankAccount.getDestMDN());
 		
 		ServiceCharge sc = new ServiceCharge();
@@ -309,7 +310,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_TOPUP_REVERSAL);
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		
 		Transaction transaction = null;
 		try{
@@ -326,23 +327,23 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getID());
-		sctl.setIntegrationTransactionID(Long.parseLong(txnDetails.getTransID()));
-		sctl.setParentIntegrationTransID(Long.parseLong(txnDetails.getParentTransID()));
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		sctl.setIntegrationtransactionid(BigDecimal.valueOf(Long.parseLong(txnDetails.getTransID())));
+		sctl.setParentintegrationtransid(BigDecimal.valueOf(Long.parseLong(txnDetails.getParentTransID())));
 		transactionChargingService.saveServiceTransactionLog(sctl);
-		log.info(String.format("NFCCardTopupReversalHandlerImpl::handleNFCCardTopupInquiry() -- Sending NFC CardTopup Inquiry to Backend (soureMDN:%s, srcPocketID:%s, amount:%s, transID:%s, destMDN:%s, destPocketID:%s, sctlID:%s )",txnDetails.getSourceMDN(),srcPocket.getId().toString(),sctl.getTransactionAmount().toString(),txnDetails.getTransID().toString(),destMDN.getMdn(),destPocket.getId(),sctl.getID()));
+		log.info(String.format("NFCCardTopupReversalHandlerImpl::handleNFCCardTopupInquiry() -- Sending NFC CardTopup Inquiry to Backend (soureMDN:%s, srcPocketID:%s, amount:%s, transID:%s, destMDN:%s, destPocketID:%s, sctlID:%s )",txnDetails.getSourceMDN(),srcPocket.getId().toString(),sctl.getTransactionamount().toString(),txnDetails.getTransID().toString(),destMDN.getMdn(),destPocket.getId(),sctl.getId()));
 		
 		CFIXMsg response = super.process(bankAccountToBankAccount);
 		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
-			log.info(String.format("NFCCardTopupReversalHandlerImpl::handleNFCCardTopupReversalInquiry() -- got response from backend and saving sctl(ID:%s)",sctl.getID()));
+			log.info(String.format("NFCCardTopupReversalHandlerImpl::handleNFCCardTopupReversalInquiry() -- got response from backend and saving sctl(ID:%s)",sctl.getId()));
 		}
 		
 		transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
@@ -355,7 +356,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;		
 		
 	}
@@ -382,13 +383,13 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		transferConfirmation.setParentTransactionID(new Long(inquiryResult.getParentTransactionID()));
 		transferConfirmation.setUICategory(CmFinoFIX.TransactionUICategory_NFC_Card_Topup_Reversal);
 		
-		TransactionsLog confirmTransactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
+		TransactionLog confirmTransactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
 		
-		transferConfirmation.setTransactionID(confirmTransactionsLog.getID());
+		transferConfirmation.setTransactionID(confirmTransactionsLog.getId().longValue());
 
-		confirmResult.setTransactionTime(confirmTransactionsLog.getTransactionTime());
+		confirmResult.setTransactionTime(confirmTransactionsLog.getTransactiontime());
 		confirmResult.setSourceMessage(transferConfirmation);
-		confirmResult.setTransactionID(confirmTransactionsLog.getID());
+		confirmResult.setTransactionID(confirmTransactionsLog.getId().longValue());
 		
 		
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(txnDetails.getSourceMDN());
@@ -401,7 +402,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		transferConfirmation.setDestPocketID(txnDetails.getSrcPocketId());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
@@ -415,7 +416,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 			return confirmResult;
 		}
 		
-		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		//log.info(String.format("NFCCardTopupHandlerImpl::handleNFCCardTopupConfirm() -- Sending NFC CardTopup Reversal Confirm to Backend (soureMDN:%s, srcPocketID:%s, amount:%s, transID:%s, destMDN:%s, destPocketID:%s, sctlID:%s, parentTxnId:%s, transferID:%s )",txnDetails.getSourceMDN(),srcPocket.getID().toString(),txnDetails.getAmount().toString(),txnDetails.getTransID().toString(),destMdn,destPocket.getID(),sctl.getID(),inquiryResult.getParentTransactionID(),inquiryResult.getTransferID()));
 		
@@ -431,9 +432,9 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 			if (transactionResponse.isResult() && sctl!=null) {
 				transactionChargingService.confirmTheTransaction(sctl, transferConfirmation.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(confirmResult, transferConfirmation.getTransferID());
-				confirmResult.setDebitAmount(sctl.getTransactionAmount());
-				confirmResult.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				confirmResult.setServiceCharge(sctl.getCalculatedCharge());
+				confirmResult.setDebitAmount(sctl.getTransactionamount());
+				confirmResult.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				confirmResult.setServiceCharge(sctl.getCalculatedcharge());
 				confirmResult.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 			} else {
 				String errorMsg = transactionResponse.getMessage();
@@ -449,7 +450,7 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		
 		//		sendSMS(transferConfirmation, result);
 		confirmResult.setMultixResponse(response);
-		confirmResult.setSctlID(sctl.getID());
+		confirmResult.setSctlID(sctl.getId().longValue());
 		confirmResult.setDestinationMDN(transferConfirmation.getDestMDN());
 		confirmResult.setMessage(transactionResponse.getMessage());
 		confirmResult.setCode(transactionResponse.getCode());
@@ -467,15 +468,15 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		return false;
 	}
 	
-	private boolean isExistingSctlEligibleForReversal(ServiceChargeTransactionLog sctl){
+	private boolean isExistingSctlEligibleForReversal(ServiceChargeTxnLog sctl){
 		return isSctlSuccsessFull(sctl);
 	}
 	
-	private boolean isReversalAlreadyDone(ServiceChargeTransactionLog sctl){
+	private boolean isReversalAlreadyDone(ServiceChargeTxnLog sctl){
 		ServiceChargeTransactionsLogQuery sctlQuery = new ServiceChargeTransactionsLogQuery();
-		sctlQuery.setParentIntegrationTransID(sctl.getIntegrationTransactionID());
-		List<ServiceChargeTransactionLog> sctlList = SCTLService.getByQuery(sctlQuery);
-		for(ServiceChargeTransactionLog sc: sctlList){
+		sctlQuery.setParentIntegrationTransID(sctl.getIntegrationtransactionid().longValue());
+		List<ServiceChargeTxnLog> sctlList = SCTLService.getByQuery(sctlQuery);
+		for(ServiceChargeTxnLog sc: sctlList){
 			if(isSctlSuccsessFull(sc)){
 				return true;
 			}
@@ -483,14 +484,14 @@ public class NFCCardTopupReversalHandlerImpl  extends FIXMessageHandler implemen
 		return false;	
 	}
 	
-	private boolean isSctlSuccsessFull(ServiceChargeTransactionLog sctl){
-		if(sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Confirmed)){
+	private boolean isSctlSuccsessFull(ServiceChargeTxnLog sctl){
+		if(sctl.getStatus()==(CmFinoFIX.SCTLStatus_Confirmed)){
 			return true;
-		}else if(sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Completed)){
+		}else if(sctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Completed)){
 			return true;
-		}else if(sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Started)){
+		}else if(sctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Started)){
 			return true;
-		}else if(sctl.getStatus().equals(CmFinoFIX.SCTLStatus_Distribution_Failed)){
+		}else if(sctl.getStatus()==(CmFinoFIX.SCTLStatus_Distribution_Failed)){
 			return true;
 		}
 		return false;

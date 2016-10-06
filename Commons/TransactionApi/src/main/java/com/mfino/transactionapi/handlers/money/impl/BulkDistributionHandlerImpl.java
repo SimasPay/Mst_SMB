@@ -17,11 +17,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -104,12 +104,12 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 		bulkDistribution.setUICategory(CmFinoFIX.TransactionUICategory_Sub_Bulk_Transfer);
 		bulkDistribution.setSourcePocketID(transactionDetails.getSrcPocketId());
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BulkDistribution, 
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BulkDistribution, 
 				bulkDistribution.DumpFields());
 		
-		bulkDistribution.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		bulkDistribution.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
 		result.setDestinationMDN(transactionDetails.getDestMDN());
 		result.setSourceMessage(bulkDistribution);
@@ -122,7 +122,7 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 			log.info("Dest MDN failed validation. So transfering to National Treasury pocket");
 			long ntpocketId = systemParametersService.getLong(SystemParameterKeys.NATIONAL_TREASURY_POCKET);
 			destPocket = pocketService.getById(ntpocketId);
-			bulkDistribution.setDestMDN(destPocket.getSubscriberMdn().getMDN());
+			bulkDistribution.setDestMDN(destPocket.getSubscriberMdn().getMdn());
 			result.setTrfToSuspense(true);
 		}
 		else {
@@ -154,7 +154,7 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 		sc.setServiceName(transactionDetails.getServiceName());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER);
 		sc.setTransactionAmount(transactionDetails.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		sc.setDescription(transactionDetails.getDescription());
 		
@@ -172,8 +172,8 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		bulkDistribution.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		bulkDistribution.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the request to backend for processing");
 		CFIXMsg response = super.process(bulkDistribution);
@@ -181,10 +181,10 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 		TransactionResponse transferResponse = checkBackEndResponse(response);
 		log.info("Transfer Response = "+transferResponse.getMessage());
 		if(transferResponse.getTransactionId()!=null){
-			sctl.setTransactionID(transferResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transferResponse.getTransactionId()));
 		}
 		if(transferResponse.getTransferId()!=null){
-			sctl.setCommodityTransferID(transferResponse.getTransferId());
+			sctl.setCommoditytransferid(BigDecimal.valueOf(transferResponse.getTransferId()));
 		}
 		// Success = 0, Failure = 1, Pending = 2
 		result.setTxnStatus(2);
@@ -206,7 +206,7 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 
 		result.setMessage(transferResponse.getMessage());
 		result.setCode(transferResponse.getCode());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		return result;
 	}

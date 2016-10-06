@@ -5,6 +5,7 @@
 
 package com.mfino.transactionapi.handlers.mobileshopping.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +21,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -102,11 +103,11 @@ public class PurchaseInquiryHandlerImpl extends FIXMessageHandler implements Pur
 				"for Amount: "+purchaseInquiry.getAmount());
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_PurchaseInquiry, purchaseInquiry.DumpFields());
-		purchaseInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_PurchaseInquiry, purchaseInquiry.DumpFields());
+		purchaseInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(purchaseInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(purchaseInquiry.getSourceMDN());
 
@@ -201,9 +202,9 @@ public class PurchaseInquiryHandlerImpl extends FIXMessageHandler implements Pur
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 
-		purchaseInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		purchaseInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		purchaseInquiry.setDestMDN(destMerchantMDN.getMdn());
 		purchaseInquiry.setCharges(transaction.getAmountTowardsCharges());
 		purchaseInquiry.setChannelCode(cc.getChannelcode());
@@ -219,7 +220,7 @@ public class PurchaseInquiryHandlerImpl extends FIXMessageHandler implements Pur
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			purchaseInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -227,7 +228,7 @@ public class PurchaseInquiryHandlerImpl extends FIXMessageHandler implements Pur
 
 		transactionChargingService.updateTransactionStatus(transactionResponse, sctl);
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

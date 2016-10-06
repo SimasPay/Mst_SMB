@@ -12,10 +12,10 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.exceptions.PartnerRegistrationException;
@@ -123,16 +123,16 @@ public class PartnerRegistationHandlerImpl extends FIXMessageHandler implements 
 		
 //		partnerRegistration.setLanguage(Integer.parseInt(txnDetails.getLanguage()));
 		
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling Partner Registration webapi request");
 		XMLResult result = new RegistrationXMLResult();
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_PartnerRegistrationThroughAPI,partnerRegistration.DumpFields());
 		result.setSourceMessage(partnerRegistration);
 		result.setDestinationMDN(partnerRegistration.getMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		partnerRegistration.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		partnerRegistration.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setActivityStatus(false);
 		
@@ -145,7 +145,7 @@ public class PartnerRegistationHandlerImpl extends FIXMessageHandler implements 
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_PARTNER_REGISTRATION_THROUGH_API);
 		sc.setTransactionAmount(ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(partnerRegistration.getTransactionIdentifier());
 
 		try{
@@ -159,8 +159,8 @@ public class PartnerRegistationHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		partnerRegistration.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		partnerRegistration.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		try{

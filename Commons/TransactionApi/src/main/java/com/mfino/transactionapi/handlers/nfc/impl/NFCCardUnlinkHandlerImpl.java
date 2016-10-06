@@ -17,11 +17,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -94,11 +94,11 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 		log.info("Handling NFCCardUnlink WebAPI request");
 		XMLResult result = new NFCXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardUnlink, nfcCardUnlink.DumpFields());
-		nfcCardUnlink.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_NFCCardUnlink, nfcCardUnlink.DumpFields());
+		nfcCardUnlink.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(nfcCardUnlink);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		result.setCardAlias("");
 		result.setCardPan(transactionDetails.getCardPAN());
@@ -146,7 +146,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_UNLINK);
 		sc.setTransactionAmount(new BigDecimal(nfcPocket.getCurrentbalance()));
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(nfcCardUnlink.getTransactionIdentifier());
 
 		try{
@@ -160,8 +160,8 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		nfcCardUnlink.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		nfcCardUnlink.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		boolean isSuccess = false, 
 				proceedWithCardUnlink = true,
@@ -187,7 +187,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 			}
 		}
 		if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) { //set the transID if the request is from CMS channel
-			sctl.setIntegrationTransactionID(Long.valueOf(transactionDetails.getTransID()));
+			sctl.setIntegrationtransactionid(BigDecimal.valueOf(Long.valueOf(transactionDetails.getTransID())));
 		}
 		if(proceedWithCardUnlink) {						
 			if(BigDecimal.ZERO.compareTo(new BigDecimal(nfcPocket.getCurrentbalance())) == 0) {
@@ -209,7 +209,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				
 				CMBankAccountToBankAccount transferInquiry = new CMBankAccountToBankAccount();
 				transferInquiry.setSourceMDN(nfcCardUnlink.getSourceMDN());
-				transferInquiry.setServiceChargeTransactionLogID(sctl.getID());
+				transferInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 				transferInquiry.setDestMDN(nfcCardUnlink.getSourceMDN());
 				transferInquiry.setSourcePocketID(nfcPocket.getId().longValue());
 				transferInquiry.setDestPocketID(emoneyPocket.getId().longValue());
@@ -219,7 +219,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 					transferInquiry.setIsSystemIntiatedTransaction(BOOL_TRUE);
 				}
 				transferInquiry.setPin(nfcCardUnlink.getPin());
-				transferInquiry.setTransactionID(transactionsLog.getID());
+				transferInquiry.setTransactionID(transactionsLog.getId().longValue());
 				transferInquiry.setChannelCode(cc.getChannelcode());
 				transferInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
 				transferInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_MOBILE_TRANSFER);
@@ -239,7 +239,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 					transferConfirmation.setSourceApplication((int)cc.getChannelsourceapplication());
 					transferConfirmation.setParentTransactionID(inquiryTxnResponse.getTransactionId());
 					transferConfirmation.setTransferID(inquiryTxnResponse.getTransferId());
-					transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+					transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 					transferConfirmation.setConfirmed(CmFinoFIX.Boolean_True);
 					
 					log.info("Sending the transfer confirm request to Backend");
@@ -280,7 +280,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				cardUnlinkReversal.setPin(transactionDetails.getSourcePIN());
 				cardUnlinkReversal.setSourceCardPAN(transactionDetails.getCardPAN());
 				cardUnlinkReversal.setSourceApplication((int)cc.getChannelsourceapplication());
-				cardUnlinkReversal.setTransactionID(transactionsLog.getID());
+				cardUnlinkReversal.setTransactionID(transactionsLog.getId().longValue());
 				cardUnlinkReversal.setChannelCode(cc.getChannelcode());
 				cardUnlinkReversal.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 				CFIXMsg reversalResponse = super.process(cardUnlinkReversal);
@@ -295,7 +295,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 			transactionChargingService.failTheTransaction(sctl, message);			
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		}
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setSourceMDN(transactionDetails.getSourceMDN());
 		result.setCardPan(transactionDetails.getCardPAN());
 		result.setTransID(transactionDetails.getTransID());		

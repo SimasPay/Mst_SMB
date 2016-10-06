@@ -18,11 +18,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -90,7 +90,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 			dateOfBirth = transactionDetails.getDateOfBirth();
 			subscriberActivation.setDateOfBirth(new Timestamp(dateOfBirth));
 		}
- 		TransactionsLog transactionsLog = null;
+ 		TransactionLog transactionsLog = null;
 		log.info("Handling subscriber services activation webapi request");
 
 		XMLResult result = new ActivationXMLResult();
@@ -100,9 +100,9 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberActivation, subscriberActivation.DumpFields());
 		
 		result.setSourceMessage(subscriberActivation);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberActivation.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberActivation.setTransactionID(transactionsLog.getId().longValue());
 
 
 		Transaction transaction = null;
@@ -114,7 +114,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_ACTIVATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberActivation.getTransactionIdentifier());
 
 		try{
@@ -129,8 +129,8 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
  			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		subscriberActivation.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		subscriberActivation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 
 		boolean isHashedPin = ConfigurationUtil.getuseHashedPIN(); 
@@ -141,7 +141,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 //			addCompanyANDLanguageToResult(sourceMDN, result);	
  
 			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);
 			}
 		}else{
@@ -208,13 +208,13 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 				subscriber.setApproveorrejecttime(new Timestamp());
 			}
 			result.setNotificationCode(code);
-			result.setSctlID(sctl.getID());
+			result.setSctlID(sctl.getId().longValue());
  		}
 		else 
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 		}
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;
 	}
 }

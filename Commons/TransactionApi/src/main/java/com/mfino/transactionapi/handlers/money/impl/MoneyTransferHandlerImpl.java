@@ -14,11 +14,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
@@ -102,13 +102,13 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		log.info("Handling Bank Account transfer confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
 	
-		transferConfirmation.setTransactionID(transactionsLog.getID());
+		transferConfirmation.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(transferConfirmation);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
@@ -193,9 +193,9 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID(),transferConfirmation.getTransactionIdentifier());
 		if (sctl != null) {
-			result.setSctlID(sctl.getID());
+			result.setSctlID(sctl.getId().longValue());
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
@@ -232,7 +232,7 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		
 		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getId().longValue())){
 			
-			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), sourceMDN.getMdn()))){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getId().longValue(), sourceMDN.getMdn()))){
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
@@ -240,7 +240,7 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		}
 		
 		transferConfirmation.setRemarks(sctl.getDescription());
-		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			
 		CFIXMsg response = super.process(transferConfirmation);
 		result.setMultixResponse(response);
@@ -251,9 +251,9 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			if (transactionResponse.isResult() && sctl!=null) {
 				transactionChargingService.confirmTheTransaction(sctl, transferConfirmation.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, transferConfirmation.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 				transactionApiValidationService.checkAndChangeStatus(destinationMdn);								
 			} else {
 				String errorMsg = transactionResponse.getMessage();

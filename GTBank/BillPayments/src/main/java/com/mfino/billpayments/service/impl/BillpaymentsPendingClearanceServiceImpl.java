@@ -50,7 +50,7 @@ public class BillpaymentsPendingClearanceServiceImpl extends BillPaymentsBaseSer
 			if(now.getTime() - billPayment.getCreatetime().getTime() > TIME_TO_RESEND){
 				MCEMessage mceMessage = new MCEMessage();
 				CMBillPayment cmBillPay = new CMBillPayment();
-				cmBillPay.setServiceChargeTransactionLogID(billPayment.getSctlId());
+				cmBillPay.setServiceChargeTransactionLogID(billPayment.getServiceChargeTxnLog().getId().longValue());
 				if(billPayment.getInfo4() != null)
 					cmBillPay.setUICategory(CmFinoFIX.TransactionUICategory_Bill_Payment);
 				else 

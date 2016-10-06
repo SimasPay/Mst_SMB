@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.domain.CashinFirstTime;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
@@ -83,7 +83,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		// response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
-		ServiceChargeTransactionLog sctl = transactionDetailsContainer.getSctl();
+		ServiceChargeTxnLog sctl = transactionDetailsContainer.getSctl();
 		if (!("Your request is queued. Please check after sometime.".equals(transactionResponse.getMessage()))) {
 
 			if (transactionResponse.isResult() && sctl != null) {
@@ -91,9 +91,9 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 				transactionChargingService.confirmTheTransaction(sctl, transferId);
 
 				commodityTransferService.addCommodityTransferToResult(result, transferId);
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 
 				transactionApiValidationService.checkAndChangeStatus(destMDN);
 				//Updating records for First-time CashIn
@@ -129,7 +129,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 //		result.setNotificationCode(Integer.parseInt(transactionResponse.getCode()));
 
 		return result;
@@ -151,7 +151,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		Long parentTxnId = cashinDataConatiner.getParentTxnID();
 		boolean confirmed = cashinDataConatiner.isConfirmed();
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) cashinDataConatiner.getMsg();
-		ServiceChargeTransactionLog sctl = cashinDataConatiner.getSctl();
+		ServiceChargeTxnLog sctl = cashinDataConatiner.getSctl();
 
 		CMCashIn cashinConfirm = new CMCashIn();
 		cashinConfirm.setSourceMDN(partnerMDN.getMdn());
@@ -168,7 +168,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		cashinConfirm.setPassword("");
 		cashinConfirm.setINTxnId(cashinDetails.getPaymentLogID()+(StringUtils.isNotEmpty(cashinDetails.getCustReference()) ? cashinDetails.getCustReference() : StringUtils.EMPTY));
 		cashinConfirm.setTransactionIdentifier(cashinDetails.getTransactionIdentifier());
-		cashinConfirm.setServiceChargeTransactionLogID(sctl.getID());
+		cashinConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		log.info("sending confirm request to backend");
 		CFIXMsg response = super.process(cashinConfirm);
 		return response;
@@ -193,19 +193,19 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 		Long parentTxnId = details.getParentTxnID();
 
 		CMInterswitchCashin cashinDetails = (CMInterswitchCashin) details.getMsg();
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields(), parentTxnId);
-		cashinDetails.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_InterswitchCashin, cashinDetails.DumpFields(), parentTxnId);
+		cashinDetails.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(cashinDetails);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		addCompanyANDLanguageToResult(partnerMDN,result);
 
 		// Changing the Service_charge_transaction_log status based on the
 		// response from Core engine.
 		log.info("getting sctl from id");
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(parentTxnId);
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(parentTxnId);
 		if (sctl != null) {
 			if (CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				log.info("changing sctl status to processing");

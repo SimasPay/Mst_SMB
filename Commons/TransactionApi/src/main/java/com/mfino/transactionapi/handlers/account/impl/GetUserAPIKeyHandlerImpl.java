@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetUserAPIKey;
@@ -42,11 +42,11 @@ public class GetUserAPIKeyHandlerImpl extends FIXMessageHandler implements GetUs
 		getUserAPIKey.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		getUserAPIKey.setChannelCode(transactionDetails.getChannelCode());
 		UserAPIKeyXMLResult result = new UserAPIKeyXMLResult();
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetUserAPIKey,getUserAPIKey.DumpFields());
-				getUserAPIKey.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetUserAPIKey,getUserAPIKey.DumpFields());
+				getUserAPIKey.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(getUserAPIKey);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(getUserAPIKey.getSourceMDN());
 		if(sourceMDN==null){

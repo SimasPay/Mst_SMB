@@ -12,10 +12,10 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -85,13 +85,13 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		LastNTxnsXMLResult result = new LastNTxnsXMLResult();
 		result.setEnumTextService(enumTextService);
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactionStatus, transactionStatus.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactionStatus, transactionStatus.DumpFields());
 		
-		transactionStatus.setTransactionID(transactionsLog.getID());
+		transactionStatus.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setSourceMessage(transactionStatus);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 		SubscriberMdn sourceMDN=subscriberMdnService.getByMDN(transactionStatus.getSourceMDN());
 		
@@ -121,7 +121,7 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSACTIONSTATUS);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionsLog.getID());
+		serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 		serviceCharge.setTransactionIdentifier(transactionStatus.getTransactionIdentifier());
 
 		try{
@@ -136,15 +136,15 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
  			return result;
 		}
 
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		transactionStatus.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		transactionStatus.setServiceChargeTransactionLogID(sctl.getId().longValue());
 	
-		ServiceChargeTransactionLog sctlList = null;
+		ServiceChargeTxnLog sctlList = null;
 		
 		try {
  			sctlList = sctlService.getBySCTLID(transactionStatus.getTransferID());
 			if (sctl != null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);
 			}
 		} catch (Exception e) {
@@ -160,12 +160,12 @@ public class TransactionStatusHandlerImpl extends FIXMessageHandler implements T
 			return result;
 		}		
 		
-		ServiceChargeTransactionLog sctlrecord =sctlList;
+		ServiceChargeTxnLog sctlrecord =sctlList;
 		
-		if( (sctlrecord.getSourceMDN() !=null && sctlrecord.getSourceMDN().equals(sourceMDN.getMdn()))
-				|| (sctlrecord.getDestMDN()!=null && sctlrecord.getDestMDN().equals(sourceMDN.getMdn())) ){
-			result.setAmount(sctlrecord.getTransactionAmount());
-			result.setSctlID(sctl.getID());
+		if( (sctlrecord.getSourcemdn() !=null && sctlrecord.getSourcemdn().equals(sourceMDN.getMdn()))
+				|| (sctlrecord.getDestmdn()!=null && sctlrecord.getDestmdn().equals(sourceMDN.getMdn())) ){
+			result.setAmount(sctlrecord.getTransactionamount());
+			result.setSctlID(sctl.getId().longValue());
 			result.setSCTLList(sctlrecord);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_CommodityTransaferDetails);
 			return result;

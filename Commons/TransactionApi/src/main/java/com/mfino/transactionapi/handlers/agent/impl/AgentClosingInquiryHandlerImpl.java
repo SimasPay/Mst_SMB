@@ -26,11 +26,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -118,8 +118,8 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 		log.info("Handling Agent Closing webapi request");
 		SubscriberAccountClosingXMLResult result = new SubscriberAccountClosingXMLResult();
 		
-		TransactionsLog transactionsLog = null;
-		ServiceChargeTransactionLog sctl = null;
+		TransactionLog transactionsLog = null;
+		ServiceChargeTxnLog sctl = null;
 		
 		ChannelCode channelCode = transactionDetails.getCc();
 		CMJSAgentClosingInquiry agentClosing = new CMJSAgentClosingInquiry();
@@ -156,7 +156,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 						query.setSourceMdn(subMDN.getMdn());
 						query.setStatus(CmFinoFIX.SCTLStatus_Pending);
 						
-						List<ServiceChargeTransactionLog> sctlData = sctlService.getSubscriberPendingTransactions(query);
+						List<ServiceChargeTxnLog> sctlData = sctlService.getSubscriberPendingTransactions(query);
 						
 						if(null == sctlData || (null != sctlData && sctlData.size() == 0)) {
 						
@@ -174,7 +174,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 							sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CLOSE_ACCOUNT);							
 							sc.setTransactionAmount(BigDecimal.ZERO);
-							sc.setTransactionLogId(transactionsLog.getID());
+							sc.setTransactionLogId(transactionsLog.getId().longValue());
 							sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 
 							try{
@@ -194,10 +194,10 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							
 							sctl = transaction.getServiceChargeTransactionLog();
 							
-							result.setSctlID(sctl.getID());
+							result.setSctlID(sctl.getId().longValue());
 							result.setMfaMode("None");
 							
-							sendOTPSMS(subMDN,sctl.getID());
+							sendOTPSMS(subMDN,sctl.getId().longValue());
 							
 							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Initialized));
 							

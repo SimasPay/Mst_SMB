@@ -13,11 +13,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -91,10 +91,10 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
   		
 		
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ExistingSubscriberReactivation, subscriberReactivation.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ExistingSubscriberReactivation, subscriberReactivation.DumpFields());
 		result.setSourceMessage(subscriberReactivation);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
  		try{
  			String clearPin = transactionDetails.getSourcePIN();
@@ -112,7 +112,7 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 		Pocket srcpocket = pocketService.getDefaultPocket(sourceMDN, "2");
 
 		subscriberReactivation.setSourcePocketID(srcpocket.getId().longValue());
-		subscriberReactivation.setTransactionID(transactionsLog.getID());
+		subscriberReactivation.setTransactionID(transactionsLog.getId().longValue());
 
 		log.info("ExistingSubscriberReactivationHandler::Handle "+transactionDetails.getSourcePocketId());
  	
@@ -122,7 +122,7 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REACTIVATION);
 		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionsLog.getID());
+		serviceCharge.setTransactionLogId(transactionsLog.getId().longValue());
 		serviceCharge.setTransactionIdentifier(subscriberReactivation.getTransactionIdentifier());
 
 		try{
@@ -137,8 +137,8 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		subscriberReactivation.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		subscriberReactivation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		log.info("ExistingSubscriberReactivationHandlerImpl :: Sending request to backend for processing");
 
@@ -157,10 +157,10 @@ public class ExistingSubscriberReactivationHandlerImpl extends FIXMessageHandler
 				addCompanyANDLanguageToResult(sourceMDN,result);	
 				
 				if (sctl != null) {
-					sctl.setCalculatedCharge(BigDecimal.ZERO);
+					sctl.setCalculatedcharge(BigDecimal.ZERO);
 					transactionChargingService.completeTheTransaction(sctl);
 				}
-				result.setSctlID(sctl.getID());
+				result.setSctlID(sctl.getId().longValue());
 				result.setMultixResponse(response);
 				result.setMessage(transactionResponse.getMessage());
 				return result;	

@@ -23,10 +23,10 @@ import com.mfino.domain.MFSBillerPartner;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBillPay;
@@ -122,8 +122,8 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 billPay.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		 billPay.setTransferID(transactionDetails.getTransferId());
 		 billPay.setConfirmed(Boolean.parseBoolean(transactionDetails.getConfirmString()));
-		 billPay.setSourceApplication(cc.getChannelSourceApplication());
-		 billPay.setChannelCode(cc.getChannelCode());
+		 billPay.setSourceApplication((int)cc.getChannelsourceapplication());
+		 billPay.setChannelCode(cc.getChannelcode());
 		 billPay.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		 //Change as part of migration to include old parameter names
 		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName) && 
@@ -158,9 +158,9 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		serviceName = transactionDetails.getServiceName();
 		
 		//2FA
-		ServiceChargeTransactionLog sctlForMFA = sctlService.getByTransactionLogId(billPay.getParentTransactionID());
-		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getID())){
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getID(), billPay.getSourceMDN()))){
+		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(billPay.getParentTransactionID());
+		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getId().longValue())){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getId().longValue(), billPay.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
@@ -169,16 +169,16 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		//For Integration Code
 		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPay.getBillerCode());
 		if (mfsBillerPartner != null){
-			billPay.setIntegrationCode(mfsBillerPartner.getIntegrationCode());
+			billPay.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillPay,billPay.DumpFields(),billPay.getParentTransactionID());
-		billPay.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BillPay,billPay.DumpFields(),billPay.getParentTransactionID());
+		billPay.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(billPay);
 		result.setTransactionID(billPay.getTransactionID());
-		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(billPay.getSourceMDN());
+		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(billPay.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+billPay.getSourceMDN()+" has failed validations");
@@ -188,11 +188,11 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		Pocket subPocket = pocketService.getDefaultPocket(sourceMDN, srcPocketCode);
 		validationResult = transactionApiValidationService.validateSourcePocket(subPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(subPocket!=null? subPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(subPocket!=null? subPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		billPay.setSourceBankAccountNo(subPocket.getCardPAN());
+		billPay.setSourceBankAccountNo(subPocket.getCardpan());
 		
 		List<Pocket> pocketList = new ArrayList<Pocket>();
 		pocketList.add(subPocket);
@@ -201,7 +201,7 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		Partner partner = billerService.getPartner(billPay.getBillerCode());
 
 
-		SubscriberMDN partnerMDN = partner.getSubscriber().getSubscriberMDNFromSubscriberID().iterator().next();
+		SubscriberMdn partnerMDN = partner.getSubscriber().getSubscriberMdns().iterator().next();
 		validationResult = transactionApiValidationService.validatePartnerMDN(partnerMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination partner has failed validations");
@@ -211,29 +211,29 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		}
 
 
-		billPay.setDestMDN(partnerMDN.getMDN());
-		billPay.setSourcePocketID(subPocket.getID());
-		billPay.setSourceApplication(cc.getChannelSourceApplication());
+		billPay.setDestMDN(partnerMDN.getMdn());
+		billPay.setSourcePocketID(subPocket.getId().longValue());
+		billPay.setSourceApplication((int)cc.getChannelsourceapplication());
 		billPay.setEmail(sourceMDN.getSubscriber().getEmail());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(billPay.getParentTransactionID(),billPay.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(billPay.getParentTransactionID(),billPay.getTransactionIdentifier());
 			
 		
 		if (sctl != null) {
-			billPay.setServiceChargeTransactionLogID(sctl.getID());
+			billPay.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			BillPaymentsQuery bpquery = new BillPaymentsQuery();
-			bpquery.setSctlID(sctl.getID());
+			bpquery.setSctlID(sctl.getId().longValue());
 			List<BillPayments> res = billPaymentsService.get(bpquery);
 			if(res.size() > 0){
-				billPay.setIntegrationCode(res.get(0).getIntegrationCode());
-				billPay.setPartnerBillerCode(res.get(0).getPartnerBillerCode());
-				Iterator<MFSBillerPartner> mfsBillers=partner.getMFSBillerPartnerFromPartnerID().iterator();
+				billPay.setIntegrationCode(res.get(0).getIntegrationcode());
+				billPay.setPartnerBillerCode(res.get(0).getPartnerbillercode());
+				Iterator<MFSBillerPartner> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
 					MFSBillerPartner mfsbiller = mfsBillers.next();
-					if(mfsbiller.getMFSBiller().getMFSBillerCode().equals(billPay.getBillerCode())){
-						billPay.setBillerPartnerType(mfsbiller.getBillerPartnerType());
+					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(billPay.getBillerCode())){
+						billPay.setBillerPartnerType(mfsbiller.getBillerpartnertype().intValue());
 						break;
 					}
 				}
@@ -250,32 +250,32 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 			return result;
 		}		
 		Pocket destPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getID(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(partner.getId().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null) {
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
 			return result;
 		}
-		destPocket = partnerService.getPocketByDestPocketID();
+		destPocket = partnerService.getPocketByDestpocketid();
 		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
-			log.error("Source pocket with id "+(destPocket!=null? destPocket.getID():null)+" has failed validations");
+			log.error("Source pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
 			return result;
 		}
 	
-		billPay.setDestPocketID(destPocket.getID());
+		billPay.setDestPocketID(destPocket.getId().longValue());
 
 		CFIXMsg response = super.process(billPay);
 		result.setMultixResponse(response);
 		commodityTransferService.addCommodityTransferToResult(result);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		
 		BillPayments billPayments = null;
 		BillPaymentsQuery query = new BillPaymentsQuery();
-		query.setSctlID(sctl.getID());
+		query.setSctlID(sctl.getId().longValue());
 		List<BillPayments> billLst = billPaymentsService.get(query);
 		if(billLst != null && billLst.size() > 0){
 			billPayments = billLst.get(0);
@@ -287,16 +287,16 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, billPay.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, billPay.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
 				result.setAdditionalInfo(transactionResponse.getAdditionalInfo());				
-				if(billPayments != null && billPayments.getOperatorCharges() != null){
-					result.setServiceCharge(sctl.getCalculatedCharge().add(billPayments.getOperatorCharges()));
+				if(billPayments != null && billPayments.getOperatorcharges() != null){
+					result.setServiceCharge(sctl.getCalculatedcharge().add(billPayments.getOperatorcharges()));
 				} else {
-					result.setServiceCharge(sctl.getCalculatedCharge());
+					result.setServiceCharge(sctl.getCalculatedcharge());
 				}
-				if(billPayments != null && billPayments.getNominalAmount() != null)
-					result.setNominalAmount(billPayments.getNominalAmount());
+				if(billPayments != null && billPayments.getNominalamount() != null)
+					result.setNominalAmount(billPayments.getNominalamount());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
