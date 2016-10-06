@@ -138,7 +138,7 @@ public class BillPayInquiryProcessor extends BillPaymentsBaseServiceImpl impleme
 		}
 		else{
 			iSummary = new IntegrationSummary();
-			iSummary.setSctlid(sctlId);
+			iSummary.setSctlid(new BigDecimal(sctlId));
 			iSummary.setReconcilationid2(de39);
 		}
 		

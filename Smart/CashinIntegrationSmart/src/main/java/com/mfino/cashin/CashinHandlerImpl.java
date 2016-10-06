@@ -439,7 +439,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 	private void saveIntegrationSummary(String originalDestMDN, ServiceChargeTxnLog sctl) {
 	    IntegrationSummaryDao isdao = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummary isummary = new IntegrationSummary();
-		isummary.setSctlId(sctl.getId());
+		isummary.setSctlid(sctl.getId());
 		isummary.setReconcilationid1(originalDestMDN);
 		isummary.setReconcilationid2(cashinDetails.getReceiptNo());
 		isummary.setReconcilationid3(cashinDetails.getPaymentLogID());
