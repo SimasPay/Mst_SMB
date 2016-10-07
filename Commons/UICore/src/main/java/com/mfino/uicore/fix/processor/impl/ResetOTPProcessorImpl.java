@@ -124,8 +124,8 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
 				Long tempTypeL = subscriber.getType();
 				Integer tempTypeLI = tempTypeL.intValue();
 				
-			if(tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartnerFromSubscriberID().iterator().next().getAuthorizedEmail()!=null){
-				Partner partner =subscriber.getPartnerFromSubscriberID().iterator().next();
+			if(tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartners().iterator().next().getAuthorizedemail()!=null){
+				Partner partner =subscriber.getPartners().iterator().next();
 				NotificationWrapper notificationWrapper = partnerService.genratePartnerOTPMessage(partner, oneTimePin, mdn, CmFinoFIX.NotificationMethod_Email);
 				notificationWrapper.setDestMDN(mdn);
 				if(subscriberMDN != null)

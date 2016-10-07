@@ -48,6 +48,7 @@ import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.BulkUploadFileProcessor;
 import com.mfino.util.DateUtil;
+import com.mfino.util.MfinoUtil;
 
 /**
  * @author Deva
@@ -258,7 +259,7 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
 			bulkUploadFileEntry.setBulkUploadFile(bulkUploadFile);
 			bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Initialized);
 			bulkUploadFileEntry.setLinenumber(linecount);
-			bulkUploadFileEntry.setLinedata(strLine);
+			bulkUploadFileEntry.setLinedata(MfinoUtil.stringToClob(strLine));
 			bulkUploadFileEntryDAO.save(bulkUploadFileEntry);
 		}
 		

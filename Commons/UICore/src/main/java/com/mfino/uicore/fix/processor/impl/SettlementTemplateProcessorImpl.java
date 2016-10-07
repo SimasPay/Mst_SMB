@@ -43,14 +43,12 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 		if(e.getScheduleTemplateID() != null){
 			st.setScheduleTemplateByCutofftime(scheduleTemplateDAO.getById(e.getScheduleTemplateID()));
 		}
-		if(e.getCutoffTime()!=null){
-			st.setCutoffTime(e.getCutoffTime());
-		}
+		
 		if (e.getSettlementPocket() != null) {
-			if(st.getPocketBySettlementPocket()==null || !e.getSettlementPocket().equals(st.getPocketBySettlementPocket().getID())){
+			if(st.getPocket()==null || !e.getSettlementPocket().equals(st.getPocket().getId())){
         		log.info("Settlement ID:"+ st.getId()+" Settlement Pocket updated to "+e.getSettlementPocket()+" by user:"+getLoggedUserNameWithIP());
         	}
-			st.setPocketBySettlementPocket(pocketDAO.getById(e.getSettlementPocket()));
+			st.setPocket(pocketDAO.getById(e.getSettlementPocket()));
 		}
 		
 		if (e.getPartnerID() != null) {
@@ -70,17 +68,17 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 			e.setScheduleTemplateID(st.getScheduleTemplateByCutofftime().getId().longValue());
 			e.setSettlementTypeText(st.getScheduleTemplateByCutofftime().getName());
 		}
-		e.setSettlementPocket(st.getPocketBySettlementPocket().getID());
-		e.setCardPAN(st.getPocketBySettlementPocket().getCardPAN());
-		if (StringUtils.isNotBlank(st.getPocketBySettlementPocket().getCardPAN()) && 
-				st.getPocketBySettlementPocket().getPocketTemplate() != null) {
-        	String cPan = st.getPocketBySettlementPocket().getCardPAN();
+		e.setSettlementPocket(st.getPocket().getId().longValue());
+		e.setCardPAN(st.getPocket().getCardpan());
+		if (StringUtils.isNotBlank(st.getPocket().getCardpan()) && 
+				st.getPocket().getPocketTemplate() != null) {
+        	String cPan = st.getPocket().getCardpan();
         	if (cPan.length() > 6) {
         		cPan = cPan.substring(cPan.length()-6);
         	}
-        	e.setPocketDispText(st.getPocketBySettlementPocket().getPocketTemplate().getDescription() + " - " + cPan);
-		} else if (st.getPocketBySettlementPocket().getPocketTemplate() != null) {
-			e.setPocketDispText(st.getPocketBySettlementPocket().getPocketTemplate().getDescription());
+        	e.setPocketDispText(st.getPocket().getPocketTemplate().getDescription() + " - " + cPan);
+		} else if (st.getPocket().getPocketTemplate() != null) {
+			e.setPocketDispText(st.getPocket().getPocketTemplate().getDescription());
 		}
 		e.setPartnerID(st.getPartner().getId().longValue());
 		e.setRecordVersion(Integer.valueOf(Long.valueOf(st.getVersion()).intValue()));
@@ -88,7 +86,7 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 		e.setCreateTime(st.getCreatetime());
 		e.setUpdatedBy(st.getUpdatedby());
 		e.setLastUpdateTime(st.getLastupdatetime());
-		e.setCutoffTime(st.getCutoffTime());
+		//e.setCutoffTime(st.getCutoffTime());
 	}
 
 	@Override
@@ -114,7 +112,7 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 				 */
 				if(e.getScheduleTemplateID() != null){
 					log.info("SettlementTemplateProcessor :: schedule template type is changed for id "+st.getId());
-					Set<ServiceSettlementCfg> serviceConfigs = st.getServiceSettlementConfigFromSettlementTemplateID();
+					Set<ServiceSettlementCfg> serviceConfigs = st.getServiceSettlementCfgs();
 					
 					log.info("SettlementTemplateProcessor :: serviceConfigs "+serviceConfigs);
 					

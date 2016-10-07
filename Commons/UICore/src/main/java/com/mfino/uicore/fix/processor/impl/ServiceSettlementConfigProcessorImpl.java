@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerServicesDAO;
+import com.mfino.dao.PocketDAO;
 import com.mfino.dao.ServiceSettlementConfigDAO;
 import com.mfino.dao.SettlementTemplateDAO;
 import com.mfino.dao.query.ServiceSettlementConfigQuery;
 import com.mfino.domain.PartnerServices;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -40,7 +42,9 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
         	}
 			PartnerServices partnerServices = psDAO.getById(e.getPartnerServicesID());
 			sc.setPartnerServices(partnerServices);
-			sc.setPocketByCollectorPocket(partnerServices.getPocketByCollectorPocket());
+			PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
+			Pocket pocket = pocketDAO.getById(partnerServices.getCollectorpocket().longValue());
+			sc.setPocket(pocket);
 		}
 		
 		if (e.getIsDefault() != null) {

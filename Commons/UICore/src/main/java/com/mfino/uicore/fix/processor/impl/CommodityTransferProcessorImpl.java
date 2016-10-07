@@ -29,8 +29,6 @@ import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
 import com.mfino.fix.CmFinoFIX.CMJSError;
-import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
-import com.mfino.fix.CmFinoFIX.CRPendingCommodityTransfer;
 import com.mfino.service.AuthorizationService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BankTellerCashOutInquiryProcessor;
@@ -236,7 +234,7 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                     }
                     if (size > 0) {
                         for (int i = 0; i < size; i++) {
-                            CRCommodityTransfer c = results.get(i);
+                            CommodityTransfer c = results.get(i);
                             CMJSCommodityTransfer.CGEntries entry =
                                     new CMJSCommodityTransfer.CGEntries();
                             entry.setTransferStateText(state);
@@ -248,11 +246,11 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                     if (pendingSize > 0) {
 
                         for (int i = size; i < (pendingSize + size); i++) {
-                            CRPendingCommodityTransfer c = pendingResults.get(i);
+                            PendingCommodityTransfer c = pendingResults.get(i);
                             CMJSCommodityTransfer.CGEntries entry =
                                     new CMJSCommodityTransfer.CGEntries();
                             entry.setTransferStateText(state);
-                            commodityTransferUpdateMessage.updateMessage(c, c, entry, realMsg);
+                            commodityTransferUpdateMessage.updateMessage(new CommodityTransfer(), c, entry, realMsg);
                             realMsg.getEntries()[i] = entry;
                         }
                     }

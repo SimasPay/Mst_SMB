@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -43,9 +42,9 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.User;
 import com.mfino.errorcodes.Codes;
 import com.mfino.fix.CFIXMsg;
@@ -90,7 +89,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	private ProvinceRegionDAO provinceRegionDAO = DAOFactory.getInstance().getProvinceRegionDAO();
 	private DistrictDAO districtDAO = DAOFactory.getInstance().getDistrictDAO();
 	private VillageDAO villageDAO = DAOFactory.getInstance().getVillageDAO();
-
+	private SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+	private  GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 	private boolean isOTPEnabled;
 	
 	@Autowired
@@ -536,9 +536,9 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 if(realMsg.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(subscriber, realMsg.getAuthorizedEmail());
 				}
-				if(subscriber.getSubscriberGroupFromSubscriberID().size() > 0){
-					SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-					for(SubscriberGroup sg: subscriber.getSubscriberGroupFromSubscriberID()){
+                List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+				if(subscriberGroups != null && subscriberGroups.size() > 0){
+					for(SubscriberGroup sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
 					}
 				}
@@ -1025,13 +1025,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){
         			
-        			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-        			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-        			
-        			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)){
-        				Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+        			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+        			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroup sg = subscriberGroups.iterator().next();
-        				if(sg.getGroup().getID().longValue() != Long.valueOf(entry.getGroupID()).longValue()){
+        				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
         					Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         					sg.setGroupid(group.getId().longValue());
         					subscriberGroupDao.save(sg);
@@ -1042,7 +1039,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         				SubscriberGroup sg = new SubscriberGroup();
         				sg.setSubscriberid(subscriber.getId().longValue());
         				sg.setGroupid(group.getId().longValue());
-        				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
         				
         				if(subscriber.getId() != null){
         					subscriberGroupDao.save(sg);
@@ -1209,13 +1205,10 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){
         			
-        			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-        			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-        			
-        			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)){
-        				Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+        			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+        			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroup sg = subscriberGroups.iterator().next();
-        				if(sg.getGroup().getID().longValue() != Long.valueOf(entry.getGroupID()).longValue()){
+        				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
         					Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         					sg.setGroupid(group.getId().longValue());
         					subscriberGroupDao.save(sg);
@@ -1226,7 +1219,6 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         				SubscriberGroup sg = new SubscriberGroup();
         				sg.setSubscriberid(subscriber.getId().longValue());
         				sg.setGroupid(group.getId().longValue());
-        				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
         				
         				if(subscriber.getId() != null){
         					subscriberGroupDao.save(sg);
@@ -1261,8 +1253,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	    	if(subscriberMdn.getApplicationid()!= null){
 	    		entry.setApplicationID(subscriberMdn.getApplicationid());
 	    	}
-			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
-				SubscriberAddiInfo saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+			if(! subscriber.getSubscriberAddiInfos().isEmpty()){
+				SubscriberAddiInfo saf=subscriber.getSubscriberAddiInfos().iterator().next();
 				
 				if(saf.getElectonicdeviceused()!= null){
 					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), saf.getElectonicdeviceused()));
@@ -1500,11 +1492,13 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if(subscriber.getDateofbirth()!=null){
 	        	entry.setDateofBirth(String.valueOf(subscriber.getDateofbirth()));
 	        }
-	        
-			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
-				SubscriberGroup sg = subscriber.getSubscriberGroupFromSubscriberID().iterator().next();
-				entry.setGroupName(sg.getGroup().getGroupName());
-				entry.setGroupID(""+sg.getGroup().getID());
+	        List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			
+			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
+				SubscriberGroup sg = subscriberGroups.iterator().next();
+				Groups groups = groupDao.getById(sg.getGroupid().longValue());
+				entry.setGroupName(groups.getGroupname());
+				entry.setGroupID(""+sg.getGroupid());
 			}
         }
 /*        if(partner.getUser()!=null){
@@ -1523,8 +1517,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	    	if(subscriberMdn.getApplicationid()!= null){
 	    		entry.setKTPID(subscriberMdn.getApplicationid());
 	    	}
-			if(! subscriber.getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
-				SubscriberAddiInfo saf=subscriber.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+			if(! subscriber.getSubscriberAddiInfos().isEmpty()){
+				SubscriberAddiInfo saf=subscriber.getSubscriberAddiInfos().iterator().next();
 				
 				if(saf.getElectonicdeviceused()!= null){
 					entry.setElectonicDevieusedText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ElectonicDevieused, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), saf.getElectonicdeviceused()));
@@ -1762,11 +1756,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if(subscriber.getDateofbirth()!=null){
 	        	entry.setDateofBirth(String.valueOf(subscriber.getDateofbirth()));
 	        }
-	        
-			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
-				SubscriberGroup sg = subscriber.getSubscriberGroupFromSubscriberID().iterator().next();
-				entry.setGroupName(sg.getGroup().getGroupName());
-				entry.setGroupID(""+sg.getGroup().getID());
+	        List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
+				Groups group = groupDao.getById(Long.valueOf(entry.getGroupID()));
+				SubscriberGroup sg = subscriberGroups.iterator().next();
+				entry.setGroupName(group.getGroupname());
+				entry.setGroupID(""+sg.getGroupid());
 			}
 			try{
 				
@@ -1857,8 +1852,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     
     private void updateEntityAddInfosp(Subscriber sub, CMJSAgent entry){
  		SubscriberAddiInfo addnlData; 
- 		if (CollectionUtils.isNotEmpty(sub.getSubscribersAdditionalFieldsFromSubscriberID())) {
- 			addnlData = sub.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+ 		if (CollectionUtils.isNotEmpty(sub.getSubscriberAddiInfos())) {
+ 			addnlData = sub.getSubscriberAddiInfos().iterator().next();
  		} 
  		else {
  			addnlData = new SubscriberAddiInfo();
@@ -1896,8 +1891,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     
     private void updateEntityAddInfo(Subscriber sub, CMJSAgent.CGEntries entry){
 		SubscriberAddiInfo addnlData; 
-		if (CollectionUtils.isNotEmpty(sub.getSubscribersAdditionalFieldsFromSubscriberID())) {
-			addnlData = sub.getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+		if (CollectionUtils.isNotEmpty(sub.getSubscriberAddiInfos())) {
+			addnlData = sub.getSubscriberAddiInfos().iterator().next();
 		} 
 		else {
 			addnlData = new SubscriberAddiInfo();
@@ -1992,7 +1987,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 					}else{
 						ktpDetail.setBankresponse(response.toString());
 					}
-					ktpDetail.setBankResponseStatus(response.get("responsecode").toString());
+					ktpDetail.setBankresponsestatus(response.get("responsecode").toString());
 					ktpDetailsDAO.save(ktpDetail);
 					
 					errorMsg.setUserBankBranch(userService.getUserBranchCodeString());

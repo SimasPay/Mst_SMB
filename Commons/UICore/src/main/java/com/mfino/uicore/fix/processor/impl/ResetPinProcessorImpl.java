@@ -104,7 +104,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         String name=subscriber.getFirstname();
         if(name==null){
-        	Set<Partner> partner=subscriber.getPartnerFromSubscriberID();
+        	Set<Partner> partner=subscriber.getPartners();
         	name = partner!=null&&(!partner.isEmpty())?partner.iterator().next().getTradename():" ";
         }
         if(StringUtils.isNotBlank(resetPinMode) && GeneralConstants.RESET_PIN_MODE_OTP.equals(resetPinMode)){

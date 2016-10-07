@@ -43,13 +43,12 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 		TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
 		ChannelCodeDAO ccDAO = DAOFactory.getInstance().getChannelCodeDao();
 		KYCLevelDAO kycDAO = DAOFactory.getInstance().getKycLevelDAO();
-		GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 		
 		if (StringUtils.isNotBlank(e.getName())) {
 			tr.setName(e.getName());
 		}
 		if (e.getServiceProviderID() != null) {
-			tr.setPartnerByServiceProviderID(pDAO.getById(e.getServiceProviderID()));
+			tr.setPartner(pDAO.getById(e.getServiceProviderID()));
 		}
 		if (e.getServiceID() != null) {
 			tr.setService(sDAO.getById(e.getServiceID()));
@@ -76,12 +75,10 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 			tr.setKycLevelByDestkyc(kycDAO.getById(e.getDestKYC()));
 		}
 		if (e.getSourceGroup() != null) {
-			Groups sourceGroup = groupDao.getById(e.getSourceGroup());
-			tr.setGroupBySourceGroup(sourceGroup);
+			tr.setSourcegroup(e.getSourceGroup());
 		}
 		if (e.getDestinationGroup() != null) {
-			Groups destinationGroup = groupDao.getById(e.getDestinationGroup());
-			tr.setGroupByDestinationGroup(destinationGroup);
+			tr.setDestinationgroup(e.getDestinationGroup());
 		}
 	}
 	
@@ -89,9 +86,9 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 		e.setID(tr.getId().longValue());
 		e.setMSPID(tr.getMfinoServiceProvider().getId().longValue());
 		e.setName(tr.getName());
-		if (tr.getPartnerByServiceProviderID() != null) {
-			e.setServiceProviderID(tr.getPartnerByServiceProviderID().getID());
-			e.setServiceProviderName(tr.getPartnerByServiceProviderID().getTradeName());
+		if (tr.getPartner() != null) {
+			e.setServiceProviderID(tr.getPartner().getId().longValue());
+			e.setServiceProviderName(tr.getPartner().getTradename());
 		}
 		if (tr.getService() != null) {
 			e.setServiceID(tr.getService().getId().longValue());
@@ -125,16 +122,19 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 			e.setDestKYC(tr.getKycLevelByDestkyc().getId().longValue());
 			e.setDestKYCText(tr.getKycLevelByDestkyc().getKyclevelname());
 		}
-		if (tr.getGroupBySourceGroup() != null) {
-			e.setSourceGroup(tr.getGroupBySourceGroup().getID());
-			e.setSourceGroupName(tr.getGroupBySourceGroup().getGroupName());
+		GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+		if (tr.getSourcegroup() != null) {
+			Groups group = groupDao.getById(tr.getSourcegroup());
+			e.setSourceGroup(tr.getSourcegroup());
+			e.setSourceGroupName(group.getGroupname());
 		}
-		if (tr.getGroupByDestinationGroup() != null) {
-			e.setDestinationGroup(tr.getGroupByDestinationGroup().getID());
-			e.setDestinationGroupName(tr.getGroupByDestinationGroup().getGroupName());
+		if (tr.getDestinationgroup() != null) {
+			Groups group = groupDao.getById(tr.getDestinationgroup());
+			e.setDestinationGroup(tr.getDestinationgroup());
+			e.setDestinationGroupName(group.getGroupname());
 		}
-		if(tr.getTransactionRuleAddnInfoFromTransactionRuleID() != null) {
-			if(!tr.getTransactionRuleAddnInfoFromTransactionRuleID().isEmpty()) {
+		if(tr.getTxnRuleAddnInfos() != null) {
+			if(!tr.getTxnRuleAddnInfos().isEmpty()) {
 				e.setAdditionalInfo("Yes");
 			} else {
 				e.setAdditionalInfo("No");

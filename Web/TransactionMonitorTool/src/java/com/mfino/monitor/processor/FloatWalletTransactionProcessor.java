@@ -70,8 +70,7 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 		Map<Long, CommodityTransfer> ctMap = new HashMap<Long, CommodityTransfer>();
 		for (MFSLedger ledger : results) {
 			if (!ctMap.containsKey(ledger.getCommoditytransferid())) {
-				CommodityTransfer ct = commodityTransferDAO.getById(ledger
-						.getCommoditytransferid().longValue());
+				CommodityTransfer ct = commodityTransferDAO.getById(ledger.getCommoditytransferid().longValue());
 				if (ct == null) {
 					//ct =pendingDAO.getById(ledger.getCommoditytransferid().longValue());
 				}
