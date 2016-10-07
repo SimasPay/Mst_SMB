@@ -1003,12 +1003,12 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 					log.info("BillPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
 					log.info("BillPaymentReversalToBankProcessor :: Dumping message fields :" + billPayrevtobank.DumpFields());
 					log.info("BillPaymentReversalToBankProcessor :: SourceMDN " + billPayrevtobank.getSourceMDN());
-					log.info("BillPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
+					//log.info("BillPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
 
 					if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
 					{
 						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankaccountcardtype());
-						log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
+						//log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
 
 						if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
 							processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+reconciliationID1 ;
@@ -1115,12 +1115,12 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 					log.info("QRPaymentReversalToBankProcessor :: process ReconciliationID1 :"+reconciliationID1);
 					log.info("QRPaymentReversalToBankProcessor :: Dumping message fields :" + billPayrevtobank.DumpFields());
 					log.info("QRPaymentReversalToBankProcessor :: SourceMDN " + billPayrevtobank.getSourceMDN());
-					log.info("QRPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
+					//log.info("QRPaymentReversalToBankProcessor :: source Pocket" + sourcePocket.DumpFields());
 
 					if(sourcePocket!=null && StringUtils.isNotBlank(reconciliationID1))
 					{
 						log.info("pocketTemplate.getBankAccountCardType() "  + pocketTemplate.getBankaccountcardtype());
-						log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
+						//log.info("dumping pocketemplate fields " + pocketTemplate.DumpFields());
 
 						if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
 							processingCode=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+reconciliationID1 ;
