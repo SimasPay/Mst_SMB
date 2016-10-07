@@ -13,10 +13,10 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -74,12 +74,12 @@ public class ChangeOtherMDNHandlerImpl extends FIXMessageHandler implements Chan
 		log.info("Handling Change Other MDN webapi request");
 		XMLResult result = new ChangeEmailXMLResult();
 		TransactionLogServiceImpl transactionLogService = new TransactionLogServiceImpl();
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeOtherMDN, changeOtherMDN.DumpFields());
-		changeOtherMDN.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeOtherMDN, changeOtherMDN.DumpFields());
+		changeOtherMDN.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(changeOtherMDN);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changeOtherMDN.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
@@ -121,8 +121,8 @@ public class ChangeOtherMDNHandlerImpl extends FIXMessageHandler implements Chan
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		try {	
 			subscriberMDN.setOthermdn(changeOtherMDN.getOtherMDN());
 			subscriberMdnService.saveSubscriberMDN(subscriberMDN);

@@ -1320,6 +1320,10 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	public String getGeneratedTxnDescription() {
 		return generatedTxnDescription;
 	}
+
+	public void setGeneratedTxnDescription(String generatedTxnDescription) {
+		this.generatedTxnDescription = generatedTxnDescription;
+	}
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@SuppressWarnings("unchecked")
 	public void copy(PendingCommodityTransfer pendingCommodityTransfer) {

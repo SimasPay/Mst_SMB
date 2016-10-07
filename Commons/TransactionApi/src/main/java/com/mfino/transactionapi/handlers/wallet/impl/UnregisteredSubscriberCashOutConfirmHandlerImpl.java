@@ -17,10 +17,10 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMCashOutForNonRegistered;
@@ -100,10 +100,10 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 		log.info("Handling Unregistered Subscriber Cashout confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOutForNonRegistered, unregisteredsubscribercashoutconfirm.DumpFields(),unregisteredsubscribercashoutconfirm.getParentTransactionID());
-		unregisteredsubscribercashoutconfirm.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOutForNonRegistered, unregisteredsubscribercashoutconfirm.DumpFields(),unregisteredsubscribercashoutconfirm.getParentTransactionID());
+		unregisteredsubscribercashoutconfirm.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(unregisteredsubscribercashoutconfirm);
 		result.setTransactionID(unregisteredsubscribercashoutconfirm.getTransactionID());
 	
@@ -146,12 +146,12 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 	
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(unregisteredsubscribercashoutconfirm.getParentTransactionID(),unregisteredsubscribercashoutconfirm.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(unregisteredsubscribercashoutconfirm.getParentTransactionID(),unregisteredsubscribercashoutconfirm.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -163,7 +163,7 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 		}		
 		
 		Pocket destAgentPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null) {
 			log.error("Partner service NULL");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
@@ -176,7 +176,7 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		unregisteredsubscribercashoutconfirm.setServiceChargeTransactionLogID(sctl.getID());
+		unregisteredsubscribercashoutconfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		unregisteredsubscribercashoutconfirm.setDestPocketID(destAgentPocket.getId().longValue());
 		unregisteredsubscribercashoutconfirm.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		
@@ -192,9 +192,9 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 			if (transactionResponse.isResult()) {				
 				transactionChargingService.confirmTheTransaction(sctl, unregisteredsubscribercashoutconfirm.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, unregisteredsubscribercashoutconfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -205,7 +205,7 @@ public class UnregisteredSubscriberCashOutConfirmHandlerImpl extends FIXMessageH
 			}
 		}
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMessage(transactionResponse.getMessage());
 		return result;
 	}

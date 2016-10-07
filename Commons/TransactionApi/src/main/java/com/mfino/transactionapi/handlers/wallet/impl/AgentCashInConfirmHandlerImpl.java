@@ -14,10 +14,10 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAgentCashInConfirm;
@@ -113,12 +113,12 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		log.info("Handling Agent to subscriber cashin confirm webapi request::From " + agentcashinconfirm.getSourceMDN() + " To " + agentcashinconfirm.getDestMDN());
 		XMLResult result = new WalletConfirmXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentCashInConfirm,agentcashinconfirm.DumpFields(),agentcashinconfirm.getParentTransactionID());
-		agentcashinconfirm.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentCashInConfirm,agentcashinconfirm.DumpFields(),agentcashinconfirm.getParentTransactionID());
+		agentcashinconfirm.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(agentcashinconfirm);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(agentcashinconfirm.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
@@ -166,12 +166,12 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(agentcashinconfirm.getParentTransactionID(),agentcashinconfirm.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(agentcashinconfirm.getParentTransactionID(),agentcashinconfirm.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -184,14 +184,14 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 		
 		//2FA
 		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHIN, cc.getId().longValue())){
-			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), srcSubscriberMDN.getMdn()))){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getId().longValue(), srcSubscriberMDN.getMdn()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}
 		
 		Pocket srcAgentPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(agent.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(agent.getId().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null) {
 			log.error("PartnerService obtained null ");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
@@ -204,7 +204,7 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		cashin.setServiceChargeTransactionLogID(sctl.getID());
+		cashin.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashin.setSourcePocketID(srcAgentPocket.getId().longValue());
 		log.info("sending agentcashinconfirm request to backend for processing");
 		CFIXMsg response = super.process(cashin);
@@ -218,9 +218,9 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 			if (transactionResponse.isResult() && sctl!=null) {
 				transactionChargingService.confirmTheTransaction(sctl, agentcashinconfirm.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, agentcashinconfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 				transactionApiValidationService.checkAndChangeStatus(destinationMDN);
 				//log.info("Sending sms to destination subscriber...");
 				//sendSMS(result.getDestinationMDN(), agent.getTradeName() ,String.valueOf(result.getTransferID()), result.getCreditAmount().toPlainString(), transactionDetails.getMsp().getID());
@@ -235,7 +235,7 @@ public class AgentCashInConfirmHandlerImpl extends FIXMessageHandler implements 
 				}
 			}			
 		}
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMessage(transactionResponse.getMessage());
 		return result;
 	}

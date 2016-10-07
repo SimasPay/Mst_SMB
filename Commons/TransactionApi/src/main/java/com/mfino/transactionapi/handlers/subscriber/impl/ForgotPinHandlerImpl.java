@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMResetPinByOTP;
 import com.mfino.handlers.FIXMessageHandler;
@@ -97,12 +97,12 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		log.info("Handling Subscriber Forgot PIN webapi request");
 		XMLResult result = new ResetPinByOTPXMLResult();
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResetPinByOTP, resetPin.DumpFields());
-		resetPin.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResetPinByOTP, resetPin.DumpFields());
+		resetPin.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(resetPin);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		
  		try{
  			String clearPin = transDetails.getNewPIN();
@@ -203,8 +203,8 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 
 		log.info("OTP validation Successfull");
 
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(transDetails.getSctlId());
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(transDetails.getSctlId());
+		result.setSctlID(sctl.getId().longValue());
 		try {
 			String calcPIN = mfinoUtilService.modifyPINForStoring(resetPin.getSourceMDN(), resetPin.getNewPin());
 			srcSubscriberMDN.setDigestedpin(calcPIN);

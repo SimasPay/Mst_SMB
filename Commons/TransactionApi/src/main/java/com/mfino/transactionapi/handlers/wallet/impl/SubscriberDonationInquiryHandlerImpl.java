@@ -5,6 +5,7 @@
 
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +22,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -100,11 +101,11 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 		
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, txnInquiry.DumpFields());
-		txnInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, txnInquiry.DumpFields());
+		txnInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(txnInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(txnInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
@@ -186,8 +187,8 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);			
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		txnInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		txnInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		log.info("sending the donation inquiry request to backend for processing");
 		CFIXMsg response = super.process(txnInquiry);
@@ -197,7 +198,7 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			txnInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -208,7 +209,7 @@ public class SubscriberDonationInquiryHandlerImpl extends FIXMessageHandler impl
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

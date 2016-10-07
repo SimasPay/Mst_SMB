@@ -21,10 +21,10 @@ import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -120,11 +120,11 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		
 		log.info("Handling Reversal from ATM request for mdn: " + mobileNum + " with FAC: " + fac + " and Amout: " + amount);
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ThirdPartyCashOut, thirdPartyCashOut.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ThirdPartyCashOut, thirdPartyCashOut.DumpFields());
 		XMLResult result = new TransferInquiryXMLResult();
 		result.setTransactionTime(new Timestamp());
-		result.setTransactionID(transactionsLog.getID());
-		thirdPartyCashOut.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		thirdPartyCashOut.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(thirdPartyCashOut);
 	
 		String sourceMDN = subscriberService.normalizeMDN(mobileNum);
@@ -178,7 +178,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		SubscriberMdn destPartnerMDN = null;
 		Pocket destPocket = null;
 
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
 		
 		//Getting the QuickTeller Partner details and Bank Pocket Details (Source details)
 		String institutionId = thirdPartyCashOut.getInstitutionID();
@@ -210,7 +210,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 		// Modified as the destination pocket in Withdraw from ATM is changed and getting the pocket based on the Partner service incoming pocket.
 		Pocket srcPocket = null;
 	//	PartnerServices partnerServices = transactionChargingService.getPartnerService(QTPartner.getID(), sctl.getmFinoServiceProviderByMSPID().getID(), sctl.getServiceID());
-		PartnerServices partnerServices = transactionChargingService.getPartnerService(QTPartner.getId(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerServices = transactionChargingService.getPartnerService(QTPartner.getId().longValue(), sctl.getServiceid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null ){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 			log.info("Institution Partner is not opt for the required service");

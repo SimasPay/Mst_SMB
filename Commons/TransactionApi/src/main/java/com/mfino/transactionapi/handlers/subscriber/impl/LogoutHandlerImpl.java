@@ -1,5 +1,7 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,7 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelSessionManagement;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMWebApiLogoutRequest;
 import com.mfino.handlers.FIXMessageHandler;
@@ -18,7 +20,6 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.ChannelSessionManagementService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.TransactionLogService;
-import com.mfino.service.impl.TransactionLogServiceImpl;
 import com.mfino.transactionapi.handlers.subscriber.LogoutHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LogoutXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
@@ -52,10 +53,10 @@ public class LogoutHandlerImpl extends FIXMessageHandler implements LogoutHandle
 		log.info("Handling Subscriber logout webapi request");
 		LogoutXMLResult result = new LogoutXMLResult();
 
-		TransactionsLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLogoutRequest, request.DumpFields());
+		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLogoutRequest, request.DumpFields());
 
-		result.setTransactionID(tLog.getID());
-		result.setTransactionTime(tLog.getTransactionTime());
+		result.setTransactionID(tLog.getId().longValue());
+		result.setTransactionTime(tLog.getTransactiontime());
 		result.setSourceMessage(request);
 		
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(request.getSourceMDN());
@@ -72,7 +73,7 @@ public class LogoutHandlerImpl extends FIXMessageHandler implements LogoutHandle
 		ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
 
 		byte[] encryptedBytes = CryptographyService.hexToBin(request.getAuthMAC().toCharArray());
-		byte[] key = CryptographyService.hexToBin((csm != null) ? csm.getSessionKey().toCharArray() : null);
+		byte[] key = CryptographyService.hexToBin((csm != null) ? csm.getSessionkey().toCharArray() : null);
 
 		try {
 			byte[] decryptedBytes = CryptographyService.decryptWithAES(key, encryptedBytes);
@@ -82,10 +83,10 @@ public class LogoutHandlerImpl extends FIXMessageHandler implements LogoutHandle
 				return result;
 			}
 
-			csm.setLastLoginTime(tLog.getTransactionTime());
-			csm.setLastUpdateTime(tLog.getTransactionTime());
-			csm.setRequestCountAfterLogin(0);
-			csm.setSessionKey(null);
+			csm.setLastlogintime(tLog.getTransactiontime());
+			csm.setLastupdatetime(tLog.getTransactiontime());
+			csm.setRequestcountafterlogin(Long.valueOf(0));
+			csm.setSessionkey(null);
 			channelSessionManagementService.saveCSM(csm);
 			log.info("channelsessionmanagement data saved");
 

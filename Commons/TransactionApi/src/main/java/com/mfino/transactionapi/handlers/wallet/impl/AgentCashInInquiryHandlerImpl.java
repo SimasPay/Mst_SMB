@@ -20,11 +20,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -119,10 +119,10 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		//XMLResult result = new TransferInquiryXMLResult();
 		TransferInquiryXMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentCashInInquiry, agentCashinInquiry.DumpFields());
-		agentCashinInquiry.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentCashInInquiry, agentCashinInquiry.DumpFields());
+		agentCashinInquiry.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(agentCashinInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setDestinationMDN(agentCashinInquiry.getDestMDN());
 		
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(agentCashinInquiry.getSourceMDN());
@@ -250,7 +250,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			}
 		}
 
-		ServiceChargeTransactionLog sctl = transDetails.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
 		
 		CMCashInInquiry cashIn = new CMCashInInquiry();
 		cashIn.setSourceMDN(srcSubscriberMDN.getMdn());
@@ -266,7 +266,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		cashIn.setSourceMessage(agentCashinInquiry.getSourceMessage());
 		cashIn.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		cashIn.setUICategory(CmFinoFIX.TransactionUICategory_Cashin_At_Agent);
-		cashIn.setServiceChargeTransactionLogID(sctl.getID());
+		cashIn.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashIn.setTransactionIdentifier(agentCashinInquiry.getTransactionIdentifier());
 		//cashIn.setIsSystemIntiatedTransaction(transactionDetails.isSystemIntiatedTransaction());
 		
@@ -282,7 +282,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		}
 		
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			//agentCashinInquiry.setTransactionID(transactionResponse.getTransactionId());
 			cashIn.setTransactionID(transactionResponse.getTransactionId());			
 			result.setTransactionID(transactionResponse.getTransactionId());
@@ -290,7 +290,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setParentTransactionID(transactionResponse.getTransactionId());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transDetails.getAmountToDebit());

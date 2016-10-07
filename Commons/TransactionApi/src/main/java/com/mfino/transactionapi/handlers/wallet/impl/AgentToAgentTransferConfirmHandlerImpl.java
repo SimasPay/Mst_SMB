@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAgentToAgentTransfer;
@@ -96,10 +96,10 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 		log.info("Handling Subscriber Cashout confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentToAgentTransfer,agentToAgentTransfer.DumpFields(),agentToAgentTransfer.getParentTransactionID());
-		agentToAgentTransfer.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentToAgentTransfer,agentToAgentTransfer.DumpFields(),agentToAgentTransfer.getParentTransactionID());
+		agentToAgentTransfer.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(agentToAgentTransfer);
 		result.setTransactionID(agentToAgentTransfer.getTransactionID());
 		
@@ -159,12 +159,12 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(agentToAgentTransfer.getParentTransactionID(),agentToAgentTransfer.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(agentToAgentTransfer.getParentTransactionID(),agentToAgentTransfer.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -175,7 +175,7 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 			return result;
 		}		
 		
-		agentToAgentTransfer.setServiceChargeTransactionLogID(sctl.getID());
+		agentToAgentTransfer.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		agentToAgentTransfer.setDestMDN(destAgentMDN.getMdn());
 		agentToAgentTransfer.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		agentToAgentTransfer.setDestPocketID(destAgentPocket.getId().longValue());
@@ -192,9 +192,9 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, agentToAgentTransfer.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, agentToAgentTransfer.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -205,7 +205,7 @@ public class AgentToAgentTransferConfirmHandlerImpl extends FIXMessageHandler im
 			}
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMessage(transactionResponse.getMessage());
 		result.setCode(transactionResponse.getCode());
 		return result;

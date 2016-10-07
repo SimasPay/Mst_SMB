@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -20,7 +21,7 @@ import com.mfino.domain.ChannelSessionManagement;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMWebApiLoginRequest;
 import com.mfino.handlers.FIXMessageHandler;
@@ -100,10 +101,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		log.info("Handling webapi login request");
 		LoginXMLResult result = new LoginXMLResult();
 
-		TransactionsLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLoginRequest, request.DumpFields());
-		request.setTransactionID(tLog.getID());
-		result.setTransactionID(tLog.getID());
-		result.setTransactionTime(tLog.getTransactionTime());
+		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLoginRequest, request.DumpFields());
+		request.setTransactionID(tLog.getId().longValue());
+		result.setTransactionID(tLog.getId().longValue());
+		result.setTransactionTime(tLog.getTransactiontime());
 		result.setSourceMessage(request);
 		MobileappVersionCheckerService checkerService = VersionCheckerFactory.getInstance().getService(VersionCheckerFactory.VERSION_DB);
 		result.setValidVersion(checkerService.isValidVersion(request));
@@ -243,14 +244,14 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
 			if (csm == null)
 				csm = new ChannelSessionManagement();
-			csm.setSubscriberMDNByMDNID(srcSubscriberMDN);
-			csm.setCreatedBy("System");
-			csm.setCreateTime(tLog.getTransactionTime());
-			csm.setLastLoginTime(tLog.getTransactionTime());
-			csm.setLastUpdateTime(tLog.getTransactionTime());
-			csm.setLastRequestTime(tLog.getTransactionTime());
-			csm.setRequestCountAfterLogin(0);
-			csm.setSessionKey(hexEncodedKey);
+			csm.setSubscriberMdn(srcSubscriberMDN);
+			csm.setCreatedby("System");
+			csm.setCreatetime(tLog.getTransactiontime());
+			csm.setLastlogintime(tLog.getTransactiontime());
+			csm.setLastupdatetime(tLog.getTransactiontime());
+			csm.setLastrequesttime(tLog.getTransactiontime());
+			csm.setRequestcountafterlogin(Long.valueOf(0));
+			csm.setSessionkey(hexEncodedKey);
 			channelSessionManagementService.saveCSM(csm);
 			log.info("channelsessionmanagement data saved");
 			

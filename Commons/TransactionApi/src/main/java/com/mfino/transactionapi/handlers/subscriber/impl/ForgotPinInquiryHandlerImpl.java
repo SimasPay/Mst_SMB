@@ -2,9 +2,7 @@ package com.mfino.transactionapi.handlers.subscriber.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +14,12 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MdnOtp;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -100,12 +97,12 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		XMLResult result = new ChangeEmailXMLResult();
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ForgotPinInquiry, forgotPinInquiry.DumpFields());
-		forgotPinInquiry.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ForgotPinInquiry, forgotPinInquiry.DumpFields());
+		forgotPinInquiry.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(forgotPinInquiry);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(forgotPinInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberForResetPinInquiryRequest(subscriberMDN);
@@ -161,8 +158,8 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
         
 		int otpLength = systemParametersService.getOTPLength();
  		String otp = MfinoUtil.generateOTP(otpLength);

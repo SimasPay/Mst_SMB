@@ -277,7 +277,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		query.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 		List<Notification> notifications = notificationService.getLanguageBasedNotificationsByQuery(query);
 
-		if(CollectionUtils.isNotEmpty(notifications) && (!notifications.get(0).getIsactive()) ){
+		if(CollectionUtils.isNotEmpty(notifications) && (!(notifications.get(0).getIsactive()==1?true:false)) ){
 			log.info("SMS notification is not active, so not sending the SMS for the KYC upgrade transaction.") ;
 		} 
 		else {

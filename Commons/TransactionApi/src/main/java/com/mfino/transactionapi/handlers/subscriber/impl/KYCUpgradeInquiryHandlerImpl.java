@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMKYCUpgradeInquiry;
 import com.mfino.handlers.FIXMessageHandler;
@@ -57,12 +57,12 @@ public class KYCUpgradeInquiryHandlerImpl extends FIXMessageHandler	implements K
 		kycUpgradeInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());				
 		log.info("Handling validate MDN For Upgrade webapi request");
 		XMLResult result = new KYCUpgradeInquiryXMLResult();
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_KYCUpgradeInquiry, kycUpgradeInquiry.DumpFields());
-		kycUpgradeInquiry.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_KYCUpgradeInquiry, kycUpgradeInquiry.DumpFields());
+		kycUpgradeInquiry.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(kycUpgradeInquiry);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(kycUpgradeInquiry.getSourceMDN());
 		if(subscriberMDN==null){

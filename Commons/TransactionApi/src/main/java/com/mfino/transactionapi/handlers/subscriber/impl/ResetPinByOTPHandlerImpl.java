@@ -13,10 +13,10 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -89,12 +89,12 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 		log.info("Handling Subscriber ResetPin By OTP webapi request");
 		XMLResult result = new ResetPinByOTPXMLResult();
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResetPinByOTP, resetPin.DumpFields());
-		resetPin.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResetPinByOTP, resetPin.DumpFields());
+		resetPin.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(resetPin);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		
  		try{
  			String clearPin = transDetails.getNewPIN();
@@ -190,8 +190,8 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		try {
 
 			//String calcPIN = MfinoUtil.calculateDigestPin(resetPin.getSourceMDN(), resetPin.getNewPin());
@@ -210,7 +210,7 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 			return result;
 		}
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			transactionChargingService.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ChangePINCompleted);

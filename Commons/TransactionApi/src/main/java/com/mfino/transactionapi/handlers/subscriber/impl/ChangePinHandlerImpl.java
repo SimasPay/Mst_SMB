@@ -13,10 +13,10 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -84,12 +84,12 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 		log.info("Handling Subscriber ResetPin webapi request");
 		XMLResult result = new ChangePinXMLResult();
 
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangePin, changePin.DumpFields());
-		changePin.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangePin, changePin.DumpFields());
+		changePin.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(changePin);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		
 
 		SubscriberMdn sourceMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
@@ -168,8 +168,8 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		try {
 
 			//String calcPIN = MfinoUtil.calculateDigestPin(changePin.getSourceMDN(), changePin.getNewPin());
@@ -188,7 +188,7 @@ public class ChangePinHandlerImpl extends FIXMessageHandler implements ChangePin
 			return result;
 		}
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			transactionChargingService.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ChangePINCompleted);

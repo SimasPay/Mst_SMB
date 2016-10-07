@@ -103,7 +103,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 				bue.setServicechargetransactionlogid(BigDecimal.valueOf(result.getSctlID()));
 				bue.setFirstname(result.getFirstName());
 				bue.setLastname(result.getLastName());
-				bue.setIstrftosuspense(result.isTrfToSuspense());
+				bue.setIstrftosuspense((short) (result.isTrfToSuspense()?1:0));
 				
 				if (GeneralConstants.RESPONSE_CODE_SUCCESS.equals(result.getResponseStatus())) {
 					if (result.getTxnStatus() == 0) {
@@ -166,7 +166,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void sendNotification(BulkUpload bulkupload, String subject, Integer notificationCode) {
 
-		User bulkTrfUser = bulkupload.getUser();
+		User bulkTrfUser = bulkupload.getMfinoUser();
 		NotificationWrapper notification = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		notification.setLanguage(language);
@@ -183,7 +183,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void sendEmailBulkUploadSummary(BulkUpload bulkUpload)
 	{
-		User bulkTrfUser = bulkUpload.getUser();
+		User bulkTrfUser = bulkUpload.getMfinoUser();
 		String to=bulkTrfUser.getEmail();
 		String name= bulkTrfUser.getUsername();
 

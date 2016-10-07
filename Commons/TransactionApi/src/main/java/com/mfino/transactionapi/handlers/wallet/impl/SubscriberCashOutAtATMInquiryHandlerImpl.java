@@ -17,11 +17,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -100,11 +100,11 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 				 " For Amount = " + cashOutInquiry.getAmount());
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOutInquiry,cashOutInquiry.DumpFields());
-		cashOutInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOutInquiry,cashOutInquiry.DumpFields());
+		cashOutInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(cashOutInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		
 		BigDecimal maxAmount = systemParametersService.getBigDecimal(SystemParameterKeys.MAX_VALUE_OF_CASHOUT_AT_ATM);
 		if (cashOutInquiry.getAmount().compareTo(maxAmount) > 0) {
@@ -197,12 +197,12 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 
 		cashOutInquiry.setDestMDN(destPartnerMDN.getMdn());
 		cashOutInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		cashOutInquiry.setDestPocketID(destPocket.getId().longValue());
-		cashOutInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		cashOutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		log.info("sending the cashOutInquiry request to backend for processing");
 		CFIXMsg response = super.process(cashOutInquiry);
@@ -212,7 +212,7 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}
@@ -222,7 +222,7 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

@@ -13,11 +13,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -104,7 +104,7 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		subscriberRegistration.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		email = transDetails.getEmail();
 		
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling subscriber services Registration webapi request");
 		XMLResult result = new RegistrationXMLResult();
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transDetails.getSourceMDN());
@@ -112,9 +112,9 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
 		result.setSourceMessage(subscriberRegistration);
 		result.setDestinationMDN(subscriberRegistration.getMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberRegistration.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberRegistration.setTransactionID(transactionsLog.getId().longValue());
 		addCompanyANDLanguageToResult(srcSubscriberMDN,result);
 		result.setActivityStatus(false);
 
@@ -128,7 +128,7 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
 
 		try{
@@ -142,9 +142,9 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getID());
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		result.setSctlID(sctl.getId().longValue());
 
 		Subscriber subscriber = new Subscriber();
 		SubscriberMdn subscriberMDN = new SubscriberMdn();
@@ -152,7 +152,7 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		subscriber.setEmail(email);
-		subscriber.setIsemailverified(BOOL_FALSE);
+		subscriber.setIsemailverified((short)0);
 		Integer regResponse = subscriberServiceExtended.registerSubscriber(subscriber, subscriberMDN, subscriberRegistration,
 				epocket,oneTimePin,null);
 		if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -173,7 +173,7 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 			result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToSubscriber);
 			if (sctl != null) {
 				// Calculate the Commission and generates the logs for the same
-				sc.setSctlId(sctl.getID());
+				sc.setSctlId(sctl.getId().longValue());
 				try{
 					transactionDetails =transactionChargingService.getCharge(sc);
 				} catch (InvalidChargeDefinitionException e) {

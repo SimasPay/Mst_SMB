@@ -312,7 +312,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			if (StringUtils.isNotBlank(transactionDetails.getInstitutionID())) {
 				IntegrationPartnerMapping integrationPartnerMapping = integrationPartnerMappingService.getByInstitutionID(transactionDetails.getInstitutionID());
 				if(integrationPartnerMapping!=null)
-					transactionDetails.setIsAppTypeChkEnabled(integrationPartnerMapping.getIsAppTypeCheckEnabled());
+					transactionDetails.setIsAppTypeChkEnabled(integrationPartnerMapping.getIsapptypecheckenabled()==1?true:false);
 			}
 
 			xmlResult = (XMLResult) loginHandler.handle(transactionDetails);

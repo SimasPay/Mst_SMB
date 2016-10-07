@@ -14,10 +14,10 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -104,7 +104,7 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		subscriberRegistration.setPin(txnDetails.getNewPIN());
 		subscriberRegistration.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 		subscriberRegistration.setOtherMDN(txnDetails.getOtherMdn());
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling subscriber services Registration with activation webapi request");
 		XMLResult result = new RegistrationXMLResult();
 
@@ -112,9 +112,9 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
 		result.setSourceMessage(subscriberRegistration);
 		result.setDestinationMDN(subscriberRegistration.getSourceMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberRegistration.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberRegistration.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setActivityStatus(false);
 		
@@ -132,7 +132,7 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REGISTRATION_WITH_ACTIVATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
 
 		try{
@@ -146,9 +146,9 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getID());
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		result.setSctlID(sctl.getId().longValue());
 
 		Integer regResponse = subscriberServiceExtended.registerWithActivationSubscriber(subscriberRegistration);
 
@@ -169,7 +169,7 @@ public class SubscriberRegistrationWithActivationHandlerImpl extends FIXMessageH
 			result.setNotificationCode(CmFinoFIX.NotificationCode_BOBPocketActivationCompleted);
 			if (sctl != null) {
 				// Calculate the Commission and generates the logs for the same
-				sc.setSctlId(sctl.getID());
+				sc.setSctlId(sctl.getId().longValue());
 				try{
 					transactionDetails =transactionChargingService.getCharge(sc);
 				} catch (InvalidChargeDefinitionException e) {

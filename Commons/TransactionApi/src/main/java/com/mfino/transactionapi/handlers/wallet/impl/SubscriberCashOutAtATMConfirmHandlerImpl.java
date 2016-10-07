@@ -18,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMCashOutAtATM;
@@ -100,10 +100,10 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 		log.info("Handling Subscriber Cashout At ATM confirmation WebAPI request for Parent Txn Id = " + cashoutConfirm.getParentTransactionID());
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOut,cashoutConfirm.DumpFields(),cashoutConfirm.getParentTransactionID());
-		cashoutConfirm.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOut,cashoutConfirm.DumpFields(),cashoutConfirm.getParentTransactionID());
+		cashoutConfirm.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(cashoutConfirm);
 		result.setTransactionID(cashoutConfirm.getTransactionID());
 		
@@ -157,12 +157,12 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 	
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(cashoutConfirm.getParentTransactionID(),cashoutConfirm.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(cashoutConfirm.getParentTransactionID(),cashoutConfirm.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -176,7 +176,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 		cashoutConfirm.setDestMDN(destPartnerMDN.getMdn());
 		cashoutConfirm.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		cashoutConfirm.setDestPocketID(destPocket.getId().longValue());
-		cashoutConfirm.setServiceChargeTransactionLogID(sctl.getID());
+		cashoutConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the cashoutConfirm request to backend for processing");
 		CFIXMsg response = super.process(cashoutConfirm);
@@ -190,9 +190,9 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 			if (transactionResponse.isResult()) {
 				transactionChargingService.addTransferID(sctl, cashoutConfirm.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, cashoutConfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -203,7 +203,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 			}
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMessage(transactionResponse.getMessage());
 		return result;
 	}

@@ -13,11 +13,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -80,12 +80,12 @@ public class ChangeNicknameHandlerImpl extends FIXMessageHandler implements Chan
 		log.info("Handling Change Nickname webapi request");
 		XMLResult result = new ChangeEmailXMLResult();
 		TransactionLogServiceImpl transactionLogService = new TransactionLogServiceImpl();
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeNickname, changeNickname.DumpFields());
-		changeNickname.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeNickname, changeNickname.DumpFields());
+		changeNickname.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(changeNickname);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changeNickname.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
@@ -127,8 +127,8 @@ public class ChangeNicknameHandlerImpl extends FIXMessageHandler implements Chan
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		try {	
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			subscriber.setNickname(changeNickname.getNickname());
@@ -144,7 +144,7 @@ public class ChangeNicknameHandlerImpl extends FIXMessageHandler implements Chan
  			return result;
 		}
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			tcs.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ChangeNicknameCompleted);

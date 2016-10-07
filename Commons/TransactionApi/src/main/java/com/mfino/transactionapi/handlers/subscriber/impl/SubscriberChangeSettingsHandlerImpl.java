@@ -23,11 +23,11 @@ import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -105,12 +105,12 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 		
 		log.info("Handling ChangeSettings of Subscriber webapi request");
 
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(MessageType_SubscriberChangeSettings, setting.DumpFields());
-		setting.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(MessageType_SubscriberChangeSettings, setting.DumpFields());
+		setting.setTransactionID(transactionLog.getId().longValue());
 		XMLResult result = new ChangeSettingsXMLResult();
-		result.setTransactionTime(transactionLog.getTransactionTime());
+		result.setTransactionTime(transactionLog.getTransactiontime());
 		result.setSourceMessage(setting);
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionID(transactionLog.getId().longValue());
 		
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(setting.getSourceMDN());
@@ -173,8 +173,8 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		
 		try {
 			if (StringUtils.isNotBlank(language))
@@ -182,7 +182,7 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 			if (StringUtils.isNotBlank(setting.getEmail())
 					&&StringUtils.isNotBlank(email)){
 				subscriber.setEmail(setting.getEmail());
-				subscriber.setIsemailverified(BOOL_FALSE);}
+				subscriber.setIsemailverified((short)0);}
 			if (StringUtils.isNotBlank(notificationMethod))
 				subscriber.setNotificationmethod(setting.getNotificationMethod().longValue());
 
@@ -196,7 +196,7 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 			return resultService.returnResult(setting, ResponseCode_Failure, srcSubscriberMDN, result, false);
 		}
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			transactionChargingService.completeTheTransaction(sctl);
 		}
 		return resultService.returnResult(setting, NotificationCode_SubscriberSettingsChangeComplete, srcSubscriberMDN, result, false);

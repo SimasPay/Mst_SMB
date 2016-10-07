@@ -21,11 +21,11 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -110,11 +110,11 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 			result = new NFCXMLResult();
 		}
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountBalanceInquiry, bankAccountBalanceInquiry.DumpFields());
-		bankAccountBalanceInquiry.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountBalanceInquiry, bankAccountBalanceInquiry.DumpFields());
+		bankAccountBalanceInquiry.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(bankAccountBalanceInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 		result.setTransID(transactionDetails.getTransID());
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(bankAccountBalanceInquiry.getSourceMDN());
@@ -186,7 +186,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 		sc.setServiceName(transactionDetails.getServiceName());
 		sc.setTransactionTypeName(transactionDetails.getTransactionName());
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(bankAccountBalanceInquiry.getTransactionIdentifier());
 
 		try{
@@ -200,10 +200,10 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		bankAccountBalanceInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		bankAccountBalanceInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		if (StringUtils.isNotBlank(transactionDetails.getTransID())) {
-			sctl.setIntegrationTransactionID(new Long(transactionDetails.getTransID()));
+			sctl.setIntegrationtransactionid(new BigDecimal(transactionDetails.getTransID()));
 		}
 
 		log.info("sending the request to backend for processing");
@@ -215,7 +215,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 			if (response instanceof CmFinoFIX.CMBalanceInquiryFromBank) {
 				log.info("Got the Balancy Inquiry From NFC");
 				if (sctl != null) {
-					sctl.setCalculatedCharge(BigDecimal.ZERO);
+					sctl.setCalculatedcharge(BigDecimal.ZERO);
 					transactionChargingService.completeTheTransaction(sctl);
 					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 				}
@@ -261,7 +261,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 			log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 			if (transactionResponse.isResult() && sctl!=null) {
-				sctl.setCalculatedCharge(BigDecimal.ZERO);
+				sctl.setCalculatedcharge(BigDecimal.ZERO);
 				transactionChargingService.completeTheTransaction(sctl);
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 			} else {
@@ -279,7 +279,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 			result.setMessage(transactionResponse.getMessage());
 			result.setMultixResponse(response);
 		}
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;
 	}
 

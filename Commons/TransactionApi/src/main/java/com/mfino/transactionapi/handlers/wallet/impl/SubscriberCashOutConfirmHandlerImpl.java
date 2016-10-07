@@ -17,10 +17,10 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
@@ -105,10 +105,10 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 		log.info("Handling Subscriber Cashout confirmation WebAPI request for parent trxnID:"+transactionDetails.getParentTxnId());
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberCashOutConfirm,subscribercashoutconfirm.DumpFields(),subscribercashoutconfirm.getParentTransactionID());
-		subscribercashoutconfirm.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberCashOutConfirm,subscribercashoutconfirm.DumpFields(),subscribercashoutconfirm.getParentTransactionID());
+		subscribercashoutconfirm.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(subscribercashoutconfirm);
 		result.setTransactionID(subscribercashoutconfirm.getTransactionID());
 
@@ -164,12 +164,12 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 		}
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(subscribercashoutconfirm.getParentTransactionID(),subscribercashoutconfirm.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(subscribercashoutconfirm.getParentTransactionID(),subscribercashoutconfirm.getTransactionIdentifier());
 		if(sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -182,14 +182,14 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 		
 		//2FA
 		if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_WALLET, ServiceAndTransactionConstants.TRANSACTION_CASHOUT, cc.getId().longValue())){
-			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getID(), srcSubscriberMDN.getMdn()))){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getId().longValue(), srcSubscriberMDN.getMdn()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
 			}
 		}
 		
 		Pocket destAgentPocket;
-		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), sctl.getServiceid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null) {
 			log.error("PartnerService obtained null ");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
@@ -202,7 +202,7 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		cashout.setServiceChargeTransactionLogID(sctl.getID());
+		cashout.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashout.setDestPocketID(destAgentPocket.getId().longValue());
 		
 		log.info("sending the cashout request to backend for processing");
@@ -220,9 +220,9 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 				transactionChargingService.confirmTheTransaction(sctl, subscribercashoutconfirm.getTransferID());
 				}
 				commodityTransferService.addCommodityTransferToResult(result, subscribercashoutconfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -233,7 +233,7 @@ public class SubscriberCashOutConfirmHandlerImpl extends FIXMessageHandler imple
 			}
 		}
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMessage(transactionResponse.getMessage());
 		return result;
 	}

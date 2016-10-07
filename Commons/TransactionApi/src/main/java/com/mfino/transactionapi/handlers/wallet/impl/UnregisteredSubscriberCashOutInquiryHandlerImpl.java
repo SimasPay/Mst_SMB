@@ -26,11 +26,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -123,11 +123,11 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 				+ "to unregistered Subscriber = " + unregisteredSubscriberCashOutInquiry.getSourceMDN()+" TransferID:"+ transferId);
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOutInquiryForNonRegistered, unregisteredSubscriberCashOutInquiry.DumpFields());
-		unregisteredSubscriberCashOutInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CashOutInquiryForNonRegistered, unregisteredSubscriberCashOutInquiry.DumpFields());
+		unregisteredSubscriberCashOutInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(unregisteredSubscriberCashOutInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		//Agent Validation
 		SubscriberMdn destAgentMDN = subscriberMdnService.getByMDN(unregisteredSubscriberCashOutInquiry.getDestMDN());
@@ -228,7 +228,7 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(sc.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				log.error("PartnerService obtained null ");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
@@ -269,13 +269,13 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);			
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 
 		unregisteredSubscriberCashOutInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		unregisteredSubscriberCashOutInquiry.setDestPocketID(destAgentPocket.getId().longValue());
-		unregisteredSubscriberCashOutInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		unregisteredSubscriberCashOutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
-		unTxnInfo.setCashoutsctlid(new BigDecimal(sctl.getID()));
+		unTxnInfo.setCashoutsctlid(sctl.getId());
 		unTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
 		unRegisteredTxnInfoService.save(unTxnInfo);
 		unregisteredSubscriberCashOutInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
@@ -292,13 +292,13 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			unregisteredSubscriberCashOutInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

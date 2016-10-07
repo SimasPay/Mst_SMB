@@ -25,12 +25,12 @@ import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.SubscribersAdditionalFields;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -126,16 +126,16 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		subscriberRegistration.setPin(txnDetails.getSourcePIN());
 		subscriberRegistration.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 		
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling subscriber services Registration webapi request");
 		XMLResult result = new RegistrationXMLResult();
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
 		result.setSourceMessage(subscriberRegistration);
 		result.setDestinationMDN(subscriberRegistration.getMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberRegistration.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberRegistration.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setActivityStatus(false);
 		
@@ -176,7 +176,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
 		sc.setTransactionAmount(BigDecimal.ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
 
 		try{
@@ -196,8 +196,8 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transactionDetails.getServiceChargeTransactionLog();
-		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transactionDetails.getServiceChargeTransactionLog();
+		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		try{
 			
@@ -261,7 +261,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 
 		Subscriber subscriber = new Subscriber();
 		SubscriberMdn subscriberMDN = new SubscriberMdn();
-		SubscribersAdditionalFields subscriberAddiFields = new SubscribersAdditionalFields();
+		SubscriberAddiInfo subscriberAddiFields = new SubscriberAddiInfo();
 		Pocket epocket = new Pocket();
 		Partner partner = partnerService.getPartner(agentMDN);
 		subscriber.setRegisteringpartnerid(partner.getId());
@@ -341,11 +341,11 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 		
 		subscriberAddiFields.setWork(txnDetails.getWork());
 		if(txnDetails.getWork()!=null && txnDetails.getWork().equalsIgnoreCase("lainnya")){
-			subscriberAddiFields.setOtherWork(txnDetails.getOtherWork());
+			subscriberAddiFields.setOtherwork(txnDetails.getOtherWork());
 		}
 		subscriberAddiFields.setIncome(txnDetails.getIncome());
-		subscriberAddiFields.setGoalOfAcctOpening(txnDetails.getGoalOfOpeningAccount());
-		subscriberAddiFields.setSourceOfFund(txnDetails.getSourceOfFunds());
+		subscriberAddiFields.setGoalofacctopening(txnDetails.getGoalOfOpeningAccount());
+		subscriberAddiFields.setSourceoffund(txnDetails.getSourceOfFunds());
 		
 		Integer regResponse = subscriberServiceExtended.registerSubscriberByAgent(subscriber, subscriberMDN, subscriberRegistration,
 				epocket,partner, ktpAddress, domesticAddress, subscriberAddiFields);
@@ -371,7 +371,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			
 			if (sctl != null) {
 				// Calculate the Commission and generates the logs for the same
-				sc.setSctlId(sctl.getID());
+				sc.setSctlId(sctl.getId().longValue());
 				try{
 					transactionDetails =transactionChargingService.getCharge(sc);
 				} catch (InvalidChargeDefinitionException e) {
@@ -383,7 +383,7 @@ public class SubscriberRegistrationWithOutServiceChargeHandlerImpl extends FIXMe
 			}
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;
 
 	}

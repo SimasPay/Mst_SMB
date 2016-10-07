@@ -1,6 +1,7 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
@@ -19,12 +18,12 @@ import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroup;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -154,16 +153,16 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		subscriberRegistration.setUpgradableKYCLevel(Long.parseLong(txnDetails.getKycType()));
 		subscriberRegistration.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 		
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling subscriber services Registration webapi request");
 		XMLResult result = new RegistrationXMLResult();
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
 		result.setSourceMessage(subscriberRegistration);
 		result.setDestinationMDN(subscriberRegistration.getMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		subscriberRegistration.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		subscriberRegistration.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setActivityStatus(false);
 		
@@ -176,7 +175,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBER_REGISTRATION_THROUGH_WEB);
 		sc.setTransactionAmount(ZERO);
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
 
 		try{
@@ -190,8 +189,8 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		subscriberRegistration.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		Integer regResponse = subscriberServiceExtended.registerSubscriberThroughWeb(subscriberRegistration, oneTimePin);
@@ -239,7 +238,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
 		PocketTemplate bankPocketTemplate = pocketService.getBankPocketTemplateFromPocketTemplateConfig(subscriberRegistration.getBankAccountType(), true, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		if(bankPocketTemplate == null)
@@ -283,7 +282,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
-			groupID = subscriberGroup.getGroup().getID();
+			groupID = subscriberGroup.getGroupid();
 		}
 		Long kycLevelNo = null;
 		kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
