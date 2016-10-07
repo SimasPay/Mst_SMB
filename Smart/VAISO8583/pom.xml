@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.3.2.GA</version>
+			<version>4.2.19.Final</version>
 		</dependency>      
 	</dependencies>
 	<build>
@@ -145,7 +145,7 @@
 						<Release>${release}</Release>
 						<Revision>${revision}</Revision>
 						<Import-Package>
-								org.springframework.orm.hibernate3,
+								org.springframework.orm.hibernate4,
 								org.aopalliance.aop,
 								org.springframework.aop,
 								org.springframework.aop.framework,

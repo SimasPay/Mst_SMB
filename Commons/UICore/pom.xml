@@ -65,8 +65,8 @@
 		</dependency>
 		<dependency>
 			<groupId>de.congrace</groupId>
-			<artifactId>exp4jCustom</artifactId>
-			<version>100</version>
+			<artifactId>exp4j</artifactId>
+			<version>0.2.9</version>
 		</dependency>
 	</dependencies>
 	<build>

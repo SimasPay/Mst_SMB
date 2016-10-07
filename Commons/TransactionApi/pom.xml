@@ -31,7 +31,7 @@
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-tx</artifactId>
-		  <version>3.0.5.RELEASE</version>
+		  <version>3.2.12.RELEASE</version>
 		</dependency>	
 		<dependency>
 			<groupId>junit</groupId>
@@ -42,7 +42,7 @@
 		<dependency>
    			<groupId>org.springframework</groupId>
    			<artifactId>spring-aop</artifactId>
-   			<version>3.0.5.RELEASE</version>
+   			<version>3.2.12.RELEASE</version>
       	</dependency>				
 		
 		<dependency>
@@ -74,8 +74,8 @@
 		</dependency>
 		<dependency>
 			<groupId>de.congrace</groupId>
-			<artifactId>exp4jCustom</artifactId>
-			<version>100</version>
+			<artifactId>exp4j</artifactId>
+			<version>0.2.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
@@ -115,7 +115,7 @@
 							org.springframework.aop.framework,
 							org.springframework.aop.*,
 							org.apache.commons.mail,
-							org.springframework.orm.hibernate3,
+							org.springframework.orm.hibernate4,
 							com.mfino.commons.hierarchyservice,
 							com.mfino.enums,
 							com.mfino.service,
