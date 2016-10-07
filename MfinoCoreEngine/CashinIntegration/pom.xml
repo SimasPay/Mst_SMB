@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.3.2.GA</version>
+			<version>4.2.19.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mfino.commons</groupId>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>				
 	</dependencies>
 	<packaging>bundle</packaging>

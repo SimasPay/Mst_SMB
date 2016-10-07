@@ -37,17 +37,17 @@
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-tx</artifactId>
-		  <version>3.0.5.RELEASE</version>
+		  <version>3.2.12.RELEASE</version>
 		</dependency>	
 		<dependency>
    			<groupId>org.springframework</groupId>
    			<artifactId>spring-aop</artifactId>
-   			<version>3.0.5.RELEASE</version>
+   			<version>3.2.12.RELEASE</version>
       	</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.12.RELEASE</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -71,15 +71,16 @@
 		              <Bundle-Name>${project.artifactId}</Bundle-Name>
 		              <Bundle-Version>1.0.0</Bundle-Version>
 		              <Import-Package>
+		                    org.springframework.transaction.annotation,
 		               		org.aopalliance.aop,
 							org.springframework.aop,
 							org.springframework.aop.framework,
 							org.springframework.aop.*,
 							org.apache.commons.mail,
-							org.springframework.orm.hibernate3,
+							org.springframework.orm.hibernate4,
 							org.springframework.transaction,
 							com.mfino.commons.hierarchyservice,
-							com.mfino.enums,
+							com.mfino.enums,org.springframework.transaction.annotation,
 							com.mfino.service,
 							com.mfino.service.impl,
 							de.congrace.exp4j,*;
