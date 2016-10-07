@@ -1,7 +1,6 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import com.mfino.dao.MdnOtpDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MdnOtp;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGenerateOTP;
 import com.mfino.handlers.FIXMessageHandler;
@@ -64,18 +63,18 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		generateOTP.setSourceApplication((int)cc.getChannelsourceapplication());
 		generateOTP.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling GenerateOTP webapi request");
 		XMLResult result = new GenerateOtpXMLResult();
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GenerateOTP,generateOTP.DumpFields());
 		result.setSourceMessage(generateOTP);
 		result.setDestinationMDN(generateOTP.getMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		generateOTP.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		generateOTP.setTransactionID(transactionsLog.getId().longValue());
 		result.setActivityStatus(false);
 		String sourceMdn = txnDetails.getSourceMDN();
-		SubscriberMdn subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMdn(sourceMdn);
+		SubscriberMdn subscriberMDN = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sourceMdn);
 		if(subscriberMDN != null && subscriberMDN.getStatus()!=CmFinoFIX.MDNStatus_NotRegistered)
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source);

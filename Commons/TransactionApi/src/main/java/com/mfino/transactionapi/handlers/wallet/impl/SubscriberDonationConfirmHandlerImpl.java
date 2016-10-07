@@ -17,10 +17,10 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -99,10 +99,10 @@ public class SubscriberDonationConfirmHandlerImpl extends FIXMessageHandler impl
 
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,
 				txnConfirm.DumpFields(),txnConfirm.getParentTransactionID());
-		txnConfirm.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		txnConfirm.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(txnConfirm);
 		result.setTransactionID(txnConfirm.getTransactionID());
 
@@ -160,13 +160,13 @@ public class SubscriberDonationConfirmHandlerImpl extends FIXMessageHandler impl
 		txnConfirm.setDestMDN(donationPartnerMDN);
 		txnConfirm.setDestPocketID(destPocket.getId().longValue());
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(txnConfirm.getParentTransactionID(),
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(txnConfirm.getParentTransactionID(),
 				txnConfirm.getTransactionIdentifier());
 		if(sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -177,7 +177,7 @@ public class SubscriberDonationConfirmHandlerImpl extends FIXMessageHandler impl
 		}		
 		
 		txnConfirm.setRemarks(sctl.getDescription());
-		txnConfirm.setServiceChargeTransactionLogID(sctl.getID());
+		txnConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the Donation confirmation request to backend for processing");
 		CFIXMsg response = super.process(txnConfirm);
@@ -190,9 +190,9 @@ public class SubscriberDonationConfirmHandlerImpl extends FIXMessageHandler impl
 			if (transactionResponse.isResult()) {
 				transactionChargingService.confirmTheTransaction(sctl, txnConfirm.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, txnConfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -203,7 +203,7 @@ public class SubscriberDonationConfirmHandlerImpl extends FIXMessageHandler impl
 			}
 		}
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
 		return result;

@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +17,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -123,11 +124,11 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 				 " For Amount = " + fundAllocationInquiry.getAmount()+" usable at partner: "+fundAllocationInquiry.getPartnerCode());
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundAllocationInquiry,fundAllocationInquiry.DumpFields());
-		fundAllocationInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundAllocationInquiry,fundAllocationInquiry.DumpFields());
+		fundAllocationInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(fundAllocationInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(fundAllocationInquiry.getSourceMDN());
@@ -222,12 +223,12 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 
 		fundAllocationInquiry.setDestMDN(destPartnerMDN.getMdn());
 		fundAllocationInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		fundAllocationInquiry.setDestPocketID(destPocket.getId().longValue());
-		fundAllocationInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		fundAllocationInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 
 		log.info("sending fundAllocationInquiry request to backend for processing");
 		CFIXMsg response = super.process(fundAllocationInquiry);
@@ -242,7 +243,7 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}

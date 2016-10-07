@@ -31,18 +31,23 @@
       <dependency>
       	<groupId>org.springframework</groupId>
       	<artifactId>spring-aop</artifactId>
-      	<version>3.0.5.RELEASE</version>
+      	<version>3.2.12.RELEASE</version>
       </dependency>
 	<dependency>
 		<groupId>org.hibernate</groupId>
 		<artifactId>hibernate-core</artifactId>
-		<version>3.3.2.GA</version>
+		<version>4.2.19.Final</version>
 	</dependency>
 	<dependency>
 	  <groupId>org.springframework</groupId>
 	  <artifactId>spring-tx</artifactId>
-	  <version>3.0.5.RELEASE</version>
+	  <version>3.2.12.RELEASE</version>
 	</dependency>				
+	<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>3.2.12.RELEASE</version>
+</dependency>
   </dependencies>
   <build>
   <plugins>
@@ -72,15 +77,18 @@
               				org.springframework.beans.factory.config,
               				com.mfino.util.*,
               				com.mfino.*,
-              				org.springframework.orm.hibernate3,
+              				org.springframework.orm.hibernate4,
               				org.aopalliance.aop,
 							org.springframework.aop,
 							org.springframework.aop.framework,
 							org.springframework.aop.*,
 							org.hibernate.jdbc,
+							org.jasypt.hibernate4.*,
+							org.jasypt.hibernate4.type,
+							org.jasypt.hibernate4.type.*,
               				org.hibernate.*,*	;
               </Import-Package>
-              <Export-Package>com.mfino.mce.backend.*,com.mfino.util.*</Export-Package>
+              <Export-Package>com.mfino.mce.backend.*,com.mfino.util.*,org.jasypt.hibernate4.*,org.jasypt.hibernate4.type,org.jasypt.hibernate4.type.*,com.mfino.domain.*</Export-Package>
           </instructions>
       </configuration>
   </plugin>

@@ -14,6 +14,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.MFSLedgerQuery;
+import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.MFSLedger;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
@@ -31,7 +32,7 @@ import com.mfino.service.EnumTextService;
 @Service("FloatWalletTransactionProcessor")
 public class FloatWalletTransactionProcessor extends BaseProcessor implements FloatWalletTransactionProcessorI{
 
-	private Map<Long, CRCommodityTransfer> ctMap;
+	private Map<Long, CommodityTransfer> ctMap;
 	
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
@@ -64,18 +65,18 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 		return results;
 	}
 
-	private Map<Long, CRCommodityTransfer> getCommodityTransferMap(
+	private Map<Long, CommodityTransfer> getCommodityTransferMap(
 			List<MFSLedger> results) {
-		Map<Long, CRCommodityTransfer> ctMap = new HashMap<Long, CRCommodityTransfer>();
+		Map<Long, CommodityTransfer> ctMap = new HashMap<Long, CommodityTransfer>();
 		for (MFSLedger ledger : results) {
 			if (!ctMap.containsKey(ledger.getCommoditytransferid())) {
-				CRCommodityTransfer ct = commodityTransferDAO.getById(ledger
-						.getCommoditytransferid());
+				CommodityTransfer ct = commodityTransferDAO.getById(ledger
+						.getCommoditytransferid().longValue());
 				if (ct == null) {
-					ct = pendingDAO.getById(ledger.getCommoditytransferid());
+					//ct =pendingDAO.getById(ledger.getCommoditytransferid().longValue());
 				}
 				if (ct != null) {
-					ctMap.put(ct.getID(), ct);
+					ctMap.put(ct.getId().longValue(), ct);
 				}
 			}
 		}
@@ -85,7 +86,7 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 	private void updateMessage(MFSLedger ledger,
 			FloatWalletTransaction floatWalletTransaction,
 			FloatWalletTransaction searchBean) {
-		CRCommodityTransfer ct = ctMap.get(ledger.getCommoditytransferid());
+		CommodityTransfer ct = ctMap.get(ledger.getCommoditytransferid());
 		boolean isSystemPocket = true;
 		boolean isRevertAmount = false;
 		
@@ -97,11 +98,11 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 			floatWalletTransaction.setCreditAmount(ledger.getAmount());
 		}
 
-		floatWalletTransaction.setTransactionID(ct.getID());
+		floatWalletTransaction.setTransactionID(ct.getId().longValue());
 		floatWalletTransaction.setID(ledger.getId().longValue());
 		floatWalletTransaction.setTransactionTime(ledger.getCreatetime());
 			floatWalletTransaction.setAccessMethodText(channelCodeService
-					.getChannelNameBySourceApplication(ct.getSourceApplication()));
+					.getChannelNameBySourceApplication((int)ct.getSourceapplication()));
 			
 		ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 		Long sctlId = ledger.getSctlid().longValue();
@@ -117,7 +118,7 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 		else {
 			floatWalletTransaction.setTransactionName(enumTextService
 					.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null,
-							ct.getUICategory()));
+							ct.getUicategory()));
 		}			
 
 		if (isRevertAmount) {
@@ -131,7 +132,7 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 		if (!isSystemPocket && !isRevertAmount) {
 			floatWalletTransaction.setTransferStatusText(enumTextService
 					.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null,
-							ct.getTransferStatus()));
+							ct.getTransferstatus()));
 		}
 		floatWalletTransaction.setServiceChargeTransactionLogID(sctlId);
 

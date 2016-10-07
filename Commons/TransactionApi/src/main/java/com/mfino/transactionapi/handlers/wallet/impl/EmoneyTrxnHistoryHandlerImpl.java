@@ -30,11 +30,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -192,12 +192,12 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}
 		log.info("Handling emoney transactions history webapi request");
 		
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
-		transactionsHistory.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetTransactions, transactionsHistory.DumpFields());
+		transactionsHistory.setTransactionID(transactionsLog.getId().longValue());
 
 		result.setSourceMessage(transactionsHistory);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
@@ -226,7 +226,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}
 
 		
-		ServiceChargeTransactionLog sctl;
+		ServiceChargeTxnLog sctl;
 		Transaction transaction = null;
 		if(transactionDetails.getSctlId() != null)
 		{
@@ -250,7 +250,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 			sc.setTransactionTypeName(transactionDetails.getTransactionName());
 			sc.setTransactionAmount(BigDecimal.ZERO);
-			sc.setTransactionLogId(transactionsLog.getID());
+			sc.setTransactionLogId(transactionsLog.getId().longValue());
 			sc.setTransactionIdentifier(transactionsHistory.getTransactionIdentifier());
 
 			try{
@@ -267,13 +267,13 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			sctl = transaction.getServiceChargeTransactionLog();
 		}
 		
-		transactionsHistory.setServiceChargeTransactionLogID(sctl.getID());
+		transactionsHistory.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		List<CommodityTransfer> transactionHistoryList = new ArrayList<CommodityTransfer>();
 		try {
 			transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
 			if(transaction != null)	{
 				//sctl.setCalculatedCharge(BigDecimal.ZERO);
-				sctl.setCalculatedCharge(transaction.getAmountTowardsCharges());
+				sctl.setCalculatedcharge(transaction.getAmountTowardsCharges());
 				transactionChargingService.completeTheTransaction(sctl);
 			}
 			if (transactionHistoryList.size() == 0) {
@@ -310,13 +310,13 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			
 			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
 				
-				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getID());
+				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getId().longValue());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryEmailWasSent);
 			
 			} else if(ServiceAndTransactionConstants.TRANSACTION_DOWNLOAD_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
 				
 				result.setFilePath(filePath);
-				createPDF(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath, sctl.getID());
+				createPDF(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath, sctl.getId().longValue());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryDownloadSuccessful);
 				String downloadURL = "Emoney_Txn_History" + File.separatorChar + fileName;
 				result.setDownloadURL(downloadURL);
@@ -344,7 +344,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			return result;
 		}
 				
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setSourceMessage(transactionsHistory);
 		result.setSourcePocket(srcPocket);
 		return result;

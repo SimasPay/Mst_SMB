@@ -20,8 +20,18 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.jasypt</groupId>
-			<artifactId>jasypt</artifactId>
-			<version>1.8</version>
+			<artifactId>jasypt-spring31</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jasypt</groupId>
+		    <artifactId>jasypt</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jasypt</groupId>
+		    <artifactId>jasypt-hibernate4</artifactId>
+		    <version>1.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -58,11 +68,10 @@
 			<version>11.2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>
+		  <groupId>javax.servlet</groupId>
+	      <artifactId>servlet-api</artifactId>
+	      <version>3.0-alpha-1</version>
+		</dependency>		
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -81,11 +90,6 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>4.2.19.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
 			<version>4.2.19.Final</version>
 		</dependency>
 		<dependency>
@@ -231,7 +235,6 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		<!-- http://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses -->
 		<dependency>
 		    <groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk-ses</artifactId>
@@ -255,6 +258,7 @@
 				<excludes>
 					<exclude> **/*.java </exclude>
 					<exclude> **/.svn </exclude>
+					<exclude> **/*.hbm.xml </exclude>
 				</excludes>
 			</resource>
 			<resource>
@@ -262,6 +266,7 @@
 				<excludes>
 					<exclude> **/*.java </exclude>
 					<exclude> **/.svn </exclude>
+					<exclude> **/*.hbm.xml </exclude>
 				</excludes>
 			</resource>
 			<resource>
@@ -336,7 +341,7 @@
 						<!-- <Embed-Dependency>log4j</Embed-Dependency> <Embed-Transitive>true</Embed-Transitive> -->
 						<!-- <Bundle-Activator>com.mfino.activator.CoreActivator</Bundle-Activator> -->
 						-->
-						<DynamicImport-Package>org.jasypt.*</DynamicImport-Package>
+						<DynamicImport-Package>org.jasypt.*,org.hibernate.*,org.hibernate.proxy,javax.persistence,org.hibernate.core,org.jasypt.hibernate4.*,org.jasypt.hibernate4.type,org.jasypt.hibernate4.type.*</DynamicImport-Package>
 						<Import-Package>org.apache.activemq.xbean,
 							org.apache.activemq.spring,
 							org.apache.activemq.broker,
@@ -346,27 +351,53 @@
 							org.apache.activemq.camel.component,
 							org.apache.camel.component.jms,
 							org.osgi.framework,
-							org.springframework.orm.hibernate3,
+							org.springframework.orm.hibernate4,
+							org.springframework.orm.hibernate3.annotation,
 							org.aopalliance.aop,
 							org.springframework.aop,
 							org.springframework.aop.framework,
 							org.springframework.aop.*,
+							org.hibernate.*,
+							com.mfino.domain;resolution:=runtime,
 							org.hibernate.jdbc,
+							org.hibernate.proxy,
 							javassist.util.proxy,
 							com.mysql.jdbc,
 							oracle.jdbc.driver,
 							com.mfino.commons.hierarchyservice,
 							org.apache.commons.mail.*,
+							javax.persistence,
+							org.jasypt.spring31.properties.*,
+							org.jasypt.hibernate4.*,
+							org.jasypt.hibernate4.type,
+							org.jasypt.hibernate4.type.*,
 							org.apache.commons.dbcp,*;
 						</Import-Package>
 						<!-- <Include-Resource> {maven-resources} </Include-Resource> -->
-						<Export-Package>com.mfino.*,com.mfino.fix.processor.*,
+						<Export-Package>com.mfino.service.*,com.mfino.service.impl.*,com.mfino.*,com.mfino.fix.processor.*,
 							com,mfino.util,com.mfino.util.*,org.apache.commons.mail.*,
-							org.springframework.orm.hibernate3.HibernateTransactionManager,
-							com.mfino.service.impl, com.mfino.enums</Export-Package>
+							com.mfino.domain,
+							org.springframework.orm.hibernate4.HibernateTransactionManager,
+							com.mfino.service.impl, com.mfino.enums,
+							org.jasypt.hibernate4.*,
+							org.jasypt.hibernate4.type,
+							org.jasypt.hibernate4.type.*
+						</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>maven-bundle-plugin</artifactId>
+			    <extensions>true</extensions>
+			    <version>2.3.5</version>
+			    <configuration>
+			        <instructions>
+			             <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+			         </instructions>
+			    </configuration>
+			</plugin>
+			
 			<!--<plugin> <artifactId>maven-assembly-plugin</artifactId> <configuration> 
 				<descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> </descriptorRefs> 
 				</configuration> <executions> <execution> <id>make-assembly</id> <phase>package</phase> 

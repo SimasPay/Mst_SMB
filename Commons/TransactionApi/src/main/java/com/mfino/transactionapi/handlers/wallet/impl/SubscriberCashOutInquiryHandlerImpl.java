@@ -24,12 +24,12 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -122,11 +122,11 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		log.info("Handling Subscriber CashOut Inquiry webapi request::From " + subscriberCashOutInquiry.getSourceMDN() +" To agent " + subscriberCashOutInquiry.getDestMDN() + " For Amount = " + subscriberCashOutInquiry.getAmount());
 		
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberCashOutInquiry, subscriberCashOutInquiry.DumpFields());
-		subscriberCashOutInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberCashOutInquiry, subscriberCashOutInquiry.DumpFields());
+		subscriberCashOutInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(subscriberCashOutInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(subscriberCashOutInquiry.getSourceMDN());
 
@@ -229,7 +229,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(sc.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(destAgent.getId().longValue(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				log.error("PartnerService obtained null ");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForAgent);
@@ -269,7 +269,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);			
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 
 		CMCashOutInquiry cashout = new CMCashOutInquiry();
 		cashout.setSourceMDN(subscriberCashOutInquiry.getSourceMDN());
@@ -284,7 +284,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		cashout.setSourceApplication((int)cc.getChannelsourceapplication());
 		cashout.setServletPath(subscriberCashOutInquiry.getServletPath());
 		cashout.setSourceMessage(subscriberCashOutInquiry.getSourceMessage());
-		cashout.setServiceChargeTransactionLogID(sctl.getID());
+		cashout.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashout.setTransactionIdentifier(subscriberCashOutInquiry.getTransactionIdentifier());
 		if(destAgent.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_BranchOffice)){
 			cashout.setUICategory(CmFinoFIX.TransactionUICategory_Teller_Cashout);
@@ -298,7 +298,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			subscriberCashOutInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -310,7 +310,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

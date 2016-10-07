@@ -22,11 +22,11 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -114,11 +114,11 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 				" To " + agentToAgentTrfInquiry.getDestMDN() + " For Amount = " + agentToAgentTrfInquiry.getAmount());
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentToAgentTransferInquiry, agentToAgentTrfInquiry.DumpFields());
-		agentToAgentTrfInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_AgentToAgentTransferInquiry, agentToAgentTrfInquiry.DumpFields());
+		agentToAgentTrfInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(agentToAgentTrfInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(agentToAgentTrfInquiry.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateAgentMDN(srcSubscriberMDN);
@@ -210,8 +210,8 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		agentToAgentTrfInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		agentToAgentTrfInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		agentToAgentTrfInquiry.setDestMDN(destAgentMDN.getMdn());
 		agentToAgentTrfInquiry.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		agentToAgentTrfInquiry.setDestPocketID(destAgentPocket.getId().longValue());
@@ -228,13 +228,13 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			agentToAgentTrfInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}
 
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setMultixResponse(response);
 		result.setDebitAmount(transaction.getAmountToDebit());
 		result.setCreditAmount(transaction.getAmountToCredit());

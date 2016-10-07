@@ -1,5 +1,7 @@
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +14,11 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -88,9 +90,9 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 	public Result handle(UnregisteredTxnInfo unRegisteredTxnInfo) {
 		log.info("Creating CMFundWithdrawalInquiry message...");
 		CMFundWithdrawalInquiry fundWithdrawalInquiry = new CMFundWithdrawalInquiry();
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
 		fundWithdrawalInquiry.setSourceMDN(SystemParameterKeys.THIRDPARTY_PARTNER_MDN);
-		fundWithdrawalInquiry.setDestMDN(sctl.getSourceMDN());
+		fundWithdrawalInquiry.setDestMDN(sctl.getSourcemdn());
 		fundWithdrawalInquiry.setAmount(unRegisteredTxnInfo.getAvailableamount());
 		fundWithdrawalInquiry.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 		
@@ -98,11 +100,11 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 				 " For Amount = "+fundWithdrawalInquiry.getAmount() );
 		XMLResult result = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundWithdrawalInquiry,fundWithdrawalInquiry.DumpFields());
-		fundWithdrawalInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundWithdrawalInquiry,fundWithdrawalInquiry.DumpFields());
+		fundWithdrawalInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(fundWithdrawalInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 				
 		//Source partner(Third part suspence)--------------------------------------------------------------------------------
 		String thirdPartyPartnerMDN = systemParametersService.getString(SystemParameterKeys.THIRDPARTY_PARTNER_MDN);
@@ -187,7 +189,7 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 		}
 		sctl = transaction.getServiceChargeTransactionLog();
 
-		fundWithdrawalInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		fundWithdrawalInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		fundWithdrawalInquiry.setDistributionType(CmFinoFIX.DistributionType_Reversal);
 		fundWithdrawalInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		fundValidationService.updateAvailableAmount(unRegisteredTxnInfo, fundWithdrawalInquiry, CmFinoFIX.Boolean_True, fundWithdrawalInquiry.getAmount());
@@ -204,8 +206,8 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 				.equals(transactionResponse.getCode())) {
 
 			transactionChargingService.chnageStatusToProcessing(sctl);
-			sctl.setParentSCTLID(unRegisteredTxnInfo.getTransferctid().longValue());
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setParentsctlid(BigDecimal.valueOf(unRegisteredTxnInfo.getTransferctid().longValue()));
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			transactionChargingService.saveServiceTransactionLog(sctl);
 			
 			CMFundWithdrawalConfirm	fundWithdrawalConfirm = new CMFundWithdrawalConfirm();
@@ -219,7 +221,7 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 			fundWithdrawalConfirm.setParentTransactionID(transactionResponse.getTransactionId());
 			fundWithdrawalConfirm.setTransferID(transactionResponse.getTransferId());
 			fundWithdrawalConfirm.setConfirmed(CmFinoFIX.Boolean_True);
-			fundWithdrawalConfirm.setServiceChargeTransactionLogID(sctl.getID());
+			fundWithdrawalConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 			fundWithdrawalConfirm.setWithdrawalMDN(fundWithdrawalInquiry.getWithdrawalMDN());
 			fundWithdrawalConfirm.setDistributionType(CmFinoFIX.DistributionType_Reversal);
 			fundWithdrawalConfirm.setAmount(fundWithdrawalInquiry.getAmount());
@@ -235,9 +237,9 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 				if (transactionResponse.isResult()) {
 					transactionChargingService.confirmTheTransaction(sctl, fundWithdrawalConfirm.getTransferID());
 					log.info("changing parent sctl status to expired");
-					ServiceChargeTransactionLog parentSctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctl.getParentSCTLID());
+					ServiceChargeTxnLog parentSctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctl.getParentsctlid().longValue());
 					parentSctl.setStatus(CmFinoFIX.SCTLStatus_Expired);
-					parentSctl.setFailureReason(unRegisteredTxnInfo.getReversalreason());
+					parentSctl.setFailurereason(unRegisteredTxnInfo.getReversalreason());
 					transactionChargingService.saveServiceTransactionLog(parentSctl);
 					commodityTransferService.addCommodityTransferToResult(result, transactionResponse.getTransferId());
 					log.info("Fund Reversal has been Successfully Completed from "+fundWithdrawalConfirm.getSourceMDN()+"with amount "+fundWithdrawalConfirm.getAmount()+

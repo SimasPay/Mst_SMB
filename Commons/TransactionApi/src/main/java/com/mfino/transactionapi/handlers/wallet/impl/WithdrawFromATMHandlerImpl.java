@@ -22,10 +22,10 @@ import com.mfino.domain.IntegrationPartnerMapping;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -126,11 +126,11 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		log.info("Handling Withdraw from ATM request for mdn: " + mobileNum + " with FAC: " + fac + " and Amout: " + amount);
 		
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ThirdPartyCashOut, thirdPartyCashOut.DumpFields());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ThirdPartyCashOut, thirdPartyCashOut.DumpFields());
 		XMLResult result = new TransferInquiryXMLResult();
 		result.setTransactionTime(new Timestamp());
-		result.setTransactionID(transactionsLog.getID());
-		thirdPartyCashOut.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		thirdPartyCashOut.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(thirdPartyCashOut);
 		
 		String sourceMDN = subscriberService.normalizeMDN(mobileNum);
@@ -200,12 +200,12 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 			long cashOutExpiryTime = systemParametersService.getLong(SystemParameterKeys.CASHOUT_AT_ATM_EXPIRY_TIME);
 			boolean isTxnExpired = false;
 			
-			result.setSctlID(unRegisteredTxnInfo.getTransferSCTLId());
+			result.setSctlID(unRegisteredTxnInfo.getServiceChargeTxnLog().getId().longValue());
 			result.setAmount(amount);
 			
 			//save the transactionidentifier along with sctl to db
 
-			transactionIdentifierService.createTrxnIdentifierDbEntry(thirdPartyCashOut.getTransactionIdentifier(), unRegisteredTxnInfo.getTransferSCTLId());
+			transactionIdentifierService.createTrxnIdentifierDbEntry(thirdPartyCashOut.getTransactionIdentifier(), unRegisteredTxnInfo.getServiceChargeTxnLog().getId().longValue());
 			
 			//Check whether the Cash out transaction is expired or not.
 			if (cashOutExpiryTime == -1) {
@@ -226,7 +226,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 				return result;
 			}
 			else {
-				unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
+				unRegisteredTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED));
 				unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 				log.info("Processing the Withdraw request ...");
 				result = (XMLResult)processCashOut(unRegisteredTxnInfo, result, isUnRegistered,thirdPartyCashOut);
@@ -245,7 +245,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		SubscriberMdn srcPartnerMDN = null;
 		Pocket srcPocket = null;
 
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getTransferSCTLId());
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(unRegisteredTxnInfo.getServiceChargeTxnLog().getId().longValue());
 
 
 		if (isUnRegistered) {
@@ -316,7 +316,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		
 		Pocket destPocket = pocketService.getDefaultPocket(destSubscriberMDN, ServiceAndTransactionConstants.BANK_POCKET_CODE);
 	//	PartnerServices partnerService = transactionChargingService.getPartnerService(QTPartner.getID(), sctl.getmFinoServiceProviderByMSPID().getID(), sctl.getServiceID());
-		PartnerServices partnerService = transactionChargingService.getPartnerService(QTPartner.getId(), sctl.getServiceProviderID(), sctl.getServiceID());
+		PartnerServices partnerService = transactionChargingService.getPartnerService(QTPartner.getId().longValue(), sctl.getServiceid().longValue(), sctl.getServiceid().longValue());
 		if (partnerService == null ){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNOTAvailableForPartner);
 			log.info("Institution Partner is not opt for the required service");
@@ -347,7 +347,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		withdrawInquiry.setSourcePocketID(srcPocket.getId().longValue());
 		withdrawInquiry.setDestPocketID(destPocket.getId().longValue());
 		withdrawInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
-		withdrawInquiry.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getTransferSCTLId());
+		withdrawInquiry.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getServiceChargeTxnLog().getId().longValue());
 		withdrawInquiry.setTerminalID(thirdPartyCashOut.getCATerminalId());
 		withdrawInquiry.setDestinationBankAccountNo(thirdPartyCashOut.getAccountNumber());
 		withdrawInquiry.setTransactionIdentifier(thirdPartyCashOut.getTransactionIdentifier());
@@ -371,7 +371,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 			withdraw.setParentTransactionID(transactionResponse.getTransactionId());
 			withdraw.setTransferID(transactionResponse.getTransferId());
 			withdraw.setConfirmed(CmFinoFIX.Boolean_True);
-			withdraw.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getTransferSCTLId());
+			withdraw.setServiceChargeTransactionLogID(unRegisteredTxnInfo.getServiceChargeTxnLog().getId().longValue());
 			withdraw.setTerminalID(thirdPartyCashOut.getCATerminalId());
 			withdraw.setDestinationBankAccountNo(thirdPartyCashOut.getAccountNumber());
 			withdraw.setTransactionIdentifier(thirdPartyCashOut.getTransactionIdentifier());
@@ -384,7 +384,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 			transactionResponse = checkBackEndResponse(response);
 			log.info("Got the confirmation response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
-			sctl.setOnBeHalfOfMDN(thirdPartyCashOut.getAccountNumber());
+			sctl.setOnbehalfofmdn(thirdPartyCashOut.getAccountNumber());
 			int atmWithdrawStatus = 1;
 			if (!("Your request is queued. Please check after sometime.".equals(transactionResponse.getMessage()))) {
 				if (transactionResponse.isResult()) {
@@ -396,7 +396,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SuccessfulCashOutFromATM);
 					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 					unRegisteredTxnInfo.setCashoutctid(new BigDecimal(transactionResponse.getTransferId()));
-					unRegisteredTxnInfo.setCashoutsctlid(new BigDecimal(sctl.getID()));
+					unRegisteredTxnInfo.setCashoutsctlid(sctl.getId());
 					unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 				}
 				else {
@@ -420,14 +420,14 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 		return result;
 	}
 	
-	private void failCashOutRequest(String failureReason,UnregisteredTxnInfo unRegisteredTxnInfo,ServiceChargeTransactionLog sctl) {
+	private void failCashOutRequest(String failureReason,UnregisteredTxnInfo unRegisteredTxnInfo,ServiceChargeTxnLog sctl) {
 		failureReason = (failureReason.length() > 255) ? failureReason.substring(0,255) : failureReason;
 		unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 		unRegisteredTxnInfo.setFailurereason(failureReason);
 
 		unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 		
-		sctl.setFailureReason(failureReason);
+		sctl.setFailurereason(failureReason);
 
 		transactionChargingService.saveServiceTransactionLog(sctl);
 	}

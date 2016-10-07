@@ -17,7 +17,7 @@ import com.mfino.dao.MdnOtpDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MdnOtp;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMValidateOTP;
 import com.mfino.handlers.FIXMessageHandler;
@@ -62,16 +62,16 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 		validateOTP.setSourceApplication((int)cc.getChannelsourceapplication());
 		validateOTP.setTransactionIdentifier(txnDetails.getTransactionIdentifier());
 
-		TransactionsLog transactionsLog = null;
+		TransactionLog transactionsLog = null;
 		log.info("Handling ValidateOTP webapi request");
 		XMLResult result = new ValidateOtpXMLResult();
 
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GenerateOTP,validateOTP.DumpFields());
 		result.setSourceMessage(validateOTP);
 		result.setDestinationMDN(validateOTP.getMDN());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
-		validateOTP.setTransactionID(transactionsLog.getID());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
+		validateOTP.setTransactionID(transactionsLog.getId().longValue());
 		//addCompanyANDLanguageToResult(result);
 		result.setActivityStatus(false);
 

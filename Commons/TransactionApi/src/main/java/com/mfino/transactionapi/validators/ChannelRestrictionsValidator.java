@@ -56,7 +56,7 @@ public class ChannelRestrictionsValidator{
 			Subscriber sub = null;
 			SubscriberMdn subMDN=null;
 			PartnerDAO partnerDAO = DAOFactory.getInstance().getPartnerDAO();
-			if(null!= subMDNDAO.getByMDN(transactionDetails.getSourceMDN());
+			if(null!= subMDNDAO.getByMDN(transactionDetails.getSourceMDN()));
 			{	
 				subMDN= subMDNDAO.getByMDN(transactionDetails.getSourceMDN());
 			}
@@ -92,7 +92,7 @@ public class ChannelRestrictionsValidator{
 			SubscriberGroupDao subGroupDAO=DAOFactory.getInstance().getSubscriberGroupDao();
 			long subID=sub.getId().longValue();
 			if(null!=subGroupDAO.getBySubscriberID(subID)){
-			acmQuery.setGroup(subGroupDAO.getBySubscriberID(subID).getGroup().getID());
+			acmQuery.setGroup(subGroupDAO.getBySubscriberID(subID).getGroupid());
 			}else{
 			acmQuery.setGroup(1L); //default group is ANY with group ID=1
 			}

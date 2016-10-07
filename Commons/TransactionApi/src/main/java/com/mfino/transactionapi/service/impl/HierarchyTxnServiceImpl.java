@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.ServiceDAO;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.DistributionChainTemplate;
 import com.mfino.domain.Partner;
@@ -276,7 +278,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 		transactionDetails.setCc(cc);
 		transactionDetails.setChannelCode(cc.getChannelcode());
 		transactionDetails.setSourceMessage(sourceMessage);
-		transactionDetails.setServiceName(dct.getService().getServicename());
+		transactionDetails.setServiceName(String.valueOf(dct.getServiceid()));
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
 		transactionDetails.setSrcPocketId(sourcePocket.getId().longValue());
 		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
@@ -308,8 +310,9 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 	private Pocket getPocket(Partner partner, boolean isOutgoingPocket, DistributionChainTemplate dct)
 	{
 		Pocket pocket = null;
+		ServiceDAO serviceDAO=new DAOFactory().getInstance().getServiceDAO();
 		
-		Service service = dct.getService();
+		Service service = serviceDAO.getById(dct.getServiceid());
 		
 
 		Long serviceProviderId = null;

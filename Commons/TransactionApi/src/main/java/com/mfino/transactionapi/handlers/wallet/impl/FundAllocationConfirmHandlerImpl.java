@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMFundAllocationConfirm;
@@ -101,10 +101,10 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		log.info("Handling Fund Allocation confirmation WebAPI request for Parent Txn Id = " + fundAllocationConfirm.getParentTransactionID());
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundAllocationConfirm,fundAllocationConfirm.DumpFields(),fundAllocationConfirm.getParentTransactionID());
-		fundAllocationConfirm.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundAllocationConfirm,fundAllocationConfirm.DumpFields(),fundAllocationConfirm.getParentTransactionID());
+		fundAllocationConfirm.setTransactionID(transactionsLog.getId().longValue());
 
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(fundAllocationConfirm);
 		result.setTransactionID(fundAllocationConfirm.getTransactionID());
 		
@@ -166,12 +166,12 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 		log.info("Getting the sctl id");
 		// Changing the Service_charge_transaction_log status based on the response from Core engine.
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(fundAllocationConfirm.getParentTransactionID(),fundAllocationConfirm.getTransactionIdentifier());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(fundAllocationConfirm.getParentTransactionID(),fundAllocationConfirm.getTransactionIdentifier());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);
 				return result;
 			}
@@ -183,11 +183,11 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 			return result;
 		}
 		
-		fundAllocationConfirm.setWithdrawalMDN(sctl.getOnBeHalfOfMDN());
+		fundAllocationConfirm.setWithdrawalMDN(sctl.getOnbehalfofmdn());
 		fundAllocationConfirm.setDestMDN(destPartnerMDN.getMdn());
 		fundAllocationConfirm.setSourcePocketID(srcSubscriberPocket.getId().longValue());
 		fundAllocationConfirm.setDestPocketID(destPocket.getId().longValue());
-		fundAllocationConfirm.setServiceChargeTransactionLogID(sctl.getID());
+		fundAllocationConfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("Sending fundAllocationConfirm request to backend for processing");
 		
@@ -202,9 +202,9 @@ public class FundAllocationConfirmHandlerImpl extends FIXMessageHandler implemen
 				transactionChargingService.addTransferID(sctl, fundAllocationConfirm.getTransferID());
 				transactionChargingService.confirmTheTransaction(sctl, fundAllocationConfirm.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, fundAllocationConfirm.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.

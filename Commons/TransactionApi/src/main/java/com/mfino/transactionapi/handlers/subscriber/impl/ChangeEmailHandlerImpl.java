@@ -13,11 +13,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -88,12 +88,12 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 		changeEmail.setChannelCode(cc.getChannelcode());
 		changeEmail.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeEmail, changeEmail.DumpFields());
-		changeEmail.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangeEmail, changeEmail.DumpFields());
+		changeEmail.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(changeEmail);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(changeEmail.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(subscriberMDN);
@@ -135,12 +135,12 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
  			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		result.setSctlID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		result.setSctlID(sctl.getId().longValue());
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		try {			
 			subscriber.setEmail(changeEmail.getNewEmail());
-			subscriber.setIsemailverified(BOOL_FALSE);
+			subscriber.setIsemailverified((short)0);
  			subscriberService.saveSubscriber(subscriber);
 		}
 		catch (Exception ex) {
@@ -155,7 +155,7 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 			mailService.generateEmailVerificationMail(subscriber, changeEmail.getNewEmail()); //send Email verification mail
 		}		
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 			tcs.completeTheTransaction(sctl);
 		}
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ChangeEmailCompleted);

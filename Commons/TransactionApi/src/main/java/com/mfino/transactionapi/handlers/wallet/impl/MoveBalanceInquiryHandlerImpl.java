@@ -1,5 +1,7 @@
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +13,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -141,10 +143,10 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
-		bankAccountToBankAccount.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccount, bankAccountToBankAccount.DumpFields());
+		bankAccountToBankAccount.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setDestinationMDN(bankAccountToBankAccount.getDestMDN());
 		
 
@@ -162,7 +164,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_SYSTEM);			
 		}
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		
 		if(transactionDetails.getDestinationBankAccountNo() != null)
 		{
@@ -184,8 +186,8 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 			return result;
 		}
 		
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the bankAccountToBankAccount request to backend for processing");
 		CFIXMsg response = super.process(bankAccountToBankAccount);
@@ -193,7 +195,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -209,7 +211,7 @@ public class MoveBalanceInquiryHandlerImpl extends FIXMessageHandler implements 
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		return result;		
 		
 	}

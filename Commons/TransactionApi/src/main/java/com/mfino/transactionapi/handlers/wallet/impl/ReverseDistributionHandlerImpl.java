@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.query.FundDistributionInfoQuery;
 import com.mfino.domain.FundDistributionInfo;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.FundStorageService;
@@ -58,7 +58,7 @@ public class ReverseDistributionHandlerImpl implements ReverseDistributionHandle
 
 	private void processReversal(FundDistributionInfo fundDistributionInfo) {
 			log.info("The Fund Distribution inquiry request has timed out.Reversing Fund Distribution with id:"+fundDistributionInfo.getId()+"Starting....");
-			UnregisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnRegisteredTxnInfoByFundAllocationId();
+			UnregisteredTxnInfo unRegisteredTxnInfo = fundDistributionInfo.getUnregisteredTxnInfo();
 			fundDistributionInfo.setFailurereason("Confirmation not received.failed by scheduler");
 			fundDistributionInfo.setDistributionstatus((long)CmFinoFIX.DistributionStatus_TRANSFER_FAILED);
 			BigDecimal availableAmount = unRegisteredTxnInfo.getAvailableamount().add(fundDistributionInfo.getDistributedamount());
@@ -82,8 +82,8 @@ public class ReverseDistributionHandlerImpl implements ReverseDistributionHandle
 	}
 
 	private boolean checkTimeOut(FundDistributionInfo fundDistributionInfo) {
-		ServiceChargeTransactionLog sctl = sctlService.getBySCTLID(fundDistributionInfo.getTransfersctlid().longValue());
-		if(CmFinoFIX.SCTLStatus_Failed.equals(sctl.getStatus()) && TIMEOUT.equals(sctl.getFailureReason())){
+		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(fundDistributionInfo.getTransfersctlid().longValue());
+		if(CmFinoFIX.SCTLStatus_Failed.equals(sctl.getStatus()) && TIMEOUT.equals(sctl.getFailurereason())){
 			return true;
 		}
 		return false;

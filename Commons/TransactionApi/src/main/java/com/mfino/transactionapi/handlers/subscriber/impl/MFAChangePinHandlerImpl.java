@@ -15,10 +15,10 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
-import com.mfino.domain.TransactionsLog;
+import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -61,7 +61,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 	private String serviceName;
 	private String transactionName = ServiceAndTransactionConstants.TRANSACTION_CHANGEPIN;
 	private String transactionOtp;
-	ServiceChargeTransactionLog sctl;
+	ServiceChargeTxnLog sctl;
 
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
@@ -102,12 +102,12 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		log.info("Handling Subscriber ResetPin webapi request");
 		XMLResult result = new ChangePinXMLResult();		
 
-		TransactionsLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangePin, changePin.DumpFields());
-		changePin.setTransactionID(transactionLog.getID());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ChangePin, changePin.DumpFields());
+		changePin.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(changePin);
-		result.setTransactionTime(transactionLog.getTransactionTime());
-		result.setTransactionID(transactionLog.getID());
+		result.setTransactionTime(transactionLog.getTransactiontime());
+		result.setTransactionID(transactionLog.getId().longValue());
 		
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(changePin.getSourceMDN());
@@ -190,7 +190,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 				return result;
 			}
 			sctl = transactionDetails.getServiceChargeTransactionLog();
-			result.setSctlID(sctl.getID());
+			result.setSctlID(sctl.getId().longValue());
 			result.setMfaMode("None");
 			
 			result.setMfaMode("OTP");
@@ -204,9 +204,9 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		}
 		
 		if((mfaTransactionType.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
-			ServiceChargeTransactionLog sctlForMFA = sctlService.getBySCTLID(changePin.getParentTransactionID());
+			ServiceChargeTxnLog sctlForMFA = sctlService.getBySCTLID(changePin.getParentTransactionID());
 			sctl=sctlForMFA;
-			if(this.transactionOtp == null || !(mfaService.isValidOTP(this.transactionOtp,sctlForMFA.getID(), changePin.getSourceMDN()))){
+			if(this.transactionOtp == null || !(mfaService.isValidOTP(this.transactionOtp,sctlForMFA.getId().longValue(), changePin.getSourceMDN()))){
 					result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 					return result;
 				}
@@ -232,7 +232,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 			return result;
 		}
 		if (sctl != null) {
-			sctl.setCalculatedCharge(BigDecimal.ZERO);
+			sctl.setCalculatedcharge(BigDecimal.ZERO);
 
 			transactionChargingService.completeTheTransaction(sctl);
 		}

@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
@@ -21,11 +22,11 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -116,15 +117,15 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 		XMLResult result = new TransferInquiryXMLResult();
 		XMLResult onBehalfOfMDNResult = new TransferInquiryXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundWithdrawalInquiry,fundWithdrawalInquiry.DumpFields());
-		fundWithdrawalInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionID(transactionsLog.getID());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_FundWithdrawalInquiry,fundWithdrawalInquiry.DumpFields());
+		fundWithdrawalInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setSourceMessage(fundWithdrawalInquiry);
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		
-		onBehalfOfMDNResult.setTransactionID(transactionsLog.getID());
+		onBehalfOfMDNResult.setTransactionID(transactionsLog.getId().longValue());
 		onBehalfOfMDNResult.setSourceMessage(fundWithdrawalInquiry);
-		onBehalfOfMDNResult.setTransactionTime(transactionsLog.getTransactionTime());
+		onBehalfOfMDNResult.setTransactionTime(transactionsLog.getTransactiontime());
 			
 		log.info("validating merchant details");
 		SubscriberMdn destPartnerMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
@@ -138,12 +139,12 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 		}
 		validationResult = transactionApiValidationService.validatePin(destPartnerMDN, transactionDetails.getSourcePIN());
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			log.error("Pin validation failed for mdn: "+destPartnerMDN.getMDN());
-			result.setNumberOfTriesLeft(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - destPartnerMDN.getWrongPINCount());
+			log.error("Pin validation failed for mdn: "+destPartnerMDN.getMdn());
+			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - destPartnerMDN.getWrongpincount()));
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		Set<Partner> partnerSet = destPartnerMDN.getSubscriber().getPartnerFromSubscriberID();
+		Set<Partner> partnerSet = destPartnerMDN.getSubscriber().getPartners();
 		Partner destPartner = partnerSet.iterator().next();
 		fundWithdrawalInquiry.setPartnerCode(destPartner.getPartnercode());
 		
@@ -280,7 +281,7 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 		log.info("creating the serviceCharge object....");
 		ServiceCharge sc=new ServiceCharge();
 		sc.setChannelCodeId(cc.getId().longValue());
-		sc.setDestMDN(destPartnerMDN.getMDN());
+		sc.setDestMDN(destPartnerMDN.getMdn());
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_FUND_WITHDRAWAL);
 		sc.setSourceMDN(srcPartnerMDN.getMdn());
 		sc.setTransactionAmount(fundWithdrawalInquiry.getAmount());
@@ -299,7 +300,7 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 		try {
 			long servicePartnerId = transactionChargingService.getServiceProviderId(null);
 			long serviceId = transactionChargingService.getServiceId(sc.getServiceName());
-			PartnerServices partnerService = transactionChargingService.getPartnerService(destPartner.getId(), servicePartnerId, serviceId);
+			PartnerServices partnerService = transactionChargingService.getPartnerService(destPartner.getId().longValue(), servicePartnerId, serviceId);
 			if (partnerService == null) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_FundWithdrawalFailedToMerchant);
 				log.error("Partner service NULL");
@@ -358,7 +359,7 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 				return result;
 			}
 		}
-		fundWithdrawalInquiry.setDestMDN(destPartnerMDN.getMDN());
+		fundWithdrawalInquiry.setDestMDN(destPartnerMDN.getMdn());
 		fundWithdrawalInquiry.setSourcePocketID(srcPocket.getId().longValue());
 		fundWithdrawalInquiry.setDestPocketID(destPocket.getId().longValue());
 		fundWithdrawalInquiry.setIsSystemIntiatedTransaction(true);
@@ -390,12 +391,12 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 			
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		
 		fundWithdrawalInquiry.setDistributionType(CmFinoFIX.DistributionType_Withdrawal);
-		fundWithdrawalInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		fundWithdrawalInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		fundValidationService.updateAvailableAmount(unRegisteredTxnInfo, fundWithdrawalInquiry, true,fundWithdrawalInquiry.getAmount());
-		onBehalfOfMDNResult.setSctlID(sctl.getID());
+		onBehalfOfMDNResult.setSctlID(sctl.getId().longValue());
 		
 		log.info("Sending the fundWithdrawalInquiry request to backend for processing");
 		CFIXMsg response = super.process(fundWithdrawalInquiry);
@@ -420,13 +421,13 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 			}
 			onBehalfOfMDNResult.setNotificationCode(notificationCode);
 			fundValidationService.updateAvailableAmount(unRegisteredTxnInfo, fundWithdrawalInquiry,false,fundWithdrawalInquiry.getAmount());
-			failTheTransaction(transactionResponse.getMessage(),sctl.getID());
+			failTheTransaction(transactionResponse.getMessage(),sctl.getId().longValue());
 			sendSms(fundWithdrawalInquiry.getWithdrawalMDN(), onBehalfOfMDNResult);
 			return result;
 		}
 		
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
@@ -75,11 +75,11 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 				transferConfirmation.getDestMDN());
 		XMLResult result = new MoneyTransferXMLResult();
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
-		transferConfirmation.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
+		transferConfirmation.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(transferConfirmation);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transferConfirmation.getSourceMDN());
 
@@ -134,12 +134,12 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		
 		// Changing the Service_charge_transaction_log status based on the response from Core engine. 
 
-		ServiceChargeTransactionLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
+		ServiceChargeTxnLog sctl = transactionChargingService.getServiceChargeTransactionLog(transferConfirmation.getParentTransactionID());
 		if (sctl != null) {
 			if(CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus())) {
 				transactionChargingService.chnageStatusToProcessing(sctl);
 			} else {
-				log.error("The status of Sctl with id: "+sctl.getID()+"has been changed from Inquiry to: "+sctl.getStatus());
+				log.error("The status of Sctl with id: "+sctl.getId()+"has been changed from Inquiry to: "+sctl.getStatus());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransferRecordChangedStatus);				
 				return result;
 			}
@@ -150,7 +150,7 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 			return result;
 		}
 		
-		transferConfirmation.setServiceChargeTransactionLogID(sctl.getID());
+		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the transferConfirmation request to backend for processing");
 		CFIXMsg response = super.process(transferConfirmation);
@@ -164,9 +164,9 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 			if (transactionResponse.isResult() && sctl!=null) {
 				transactionChargingService.confirmTheTransaction(sctl, transferConfirmation.getTransferID());
 				commodityTransferService.addCommodityTransferToResult(result, transferConfirmation.getTransferID());
-				result.setDebitAmount(sctl.getTransactionAmount());
-				result.setCreditAmount(sctl.getTransactionAmount().subtract(sctl.getCalculatedCharge()));
-				result.setServiceCharge(sctl.getCalculatedCharge());
+				result.setDebitAmount(sctl.getTransactionamount());
+				result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+				result.setServiceCharge(sctl.getCalculatedcharge());
 			} else {
 				String errorMsg = transactionResponse.getMessage();
 				// As the length of the Failure reason column is 255, we are trimming the error message to 255 characters.
@@ -180,7 +180,7 @@ public class MoveBalanceConfirmHandlerImpl extends FIXMessageHandler implements 
 		}
 		
 		result.setMultixResponse(response);
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setDestinationMDN(transferConfirmation.getDestMDN());
 		result.setMessage(transactionResponse.getMessage());
 		result.setCode(transactionResponse.getCode());

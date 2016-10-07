@@ -3,6 +3,8 @@
  */
 package com.mfino.transactionapi.handlers.wallet.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +17,12 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTransactionLog;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
-import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -209,11 +211,11 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		XMLResult result = new TransferInquiryXMLResult();
 		Transaction transaction = null;
 
-		TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferInquiryToNonRegistered, transferInquiry.DumpFields());
-		transferInquiry.setTransactionID(transactionsLog.getID());
-		result.setTransactionTime(transactionsLog.getTransactionTime());
+		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferInquiryToNonRegistered, transferInquiry.DumpFields());
+		transferInquiry.setTransactionID(transactionsLog.getId().longValue());
+		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setSourceMessage(transferInquiry);
-		result.setTransactionID(transactionsLog.getID());
+		result.setTransactionID(transactionsLog.getId().longValue());
 		result.setDestinationMDN(transferInquiry.getDestMDN());
 		
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transferInquiry.getSourceMDN());
@@ -233,7 +235,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED);
 		}
 		sc.setTransactionAmount(transferInquiry.getAmount());
-		sc.setTransactionLogId(transactionsLog.getID());
+		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transferInquiry.getTransactionIdentifier());
 		sc.setDescription(transactionDetails.getDescription());
 		
@@ -251,8 +253,8 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		ServiceChargeTransactionLog sctl = transaction.getServiceChargeTransactionLog();
-		transferInquiry.setServiceChargeTransactionLogID(sctl.getID());
+		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
+		transferInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		log.info("sending the transferInquiry request to backend for processing");
 		CFIXMsg response = super.process(transferInquiry);
@@ -262,7 +264,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		log.info("Got the response from backend .The notification code is : "+transactionResponse.getCode()+" and the result: "+transactionResponse.isResult());
 
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionID(transactionResponse.getTransactionId());
+			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
 			transferInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
@@ -278,7 +280,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getID());
+		result.setSctlID(sctl.getId().longValue());
 		result.setUnRegistered(true);
 		return result;
 	}
