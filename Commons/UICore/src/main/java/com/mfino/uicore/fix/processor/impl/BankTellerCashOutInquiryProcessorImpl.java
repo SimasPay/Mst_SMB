@@ -192,7 +192,7 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 						error.setErrorDescription("No Successful CashOut Transaction found");
 						return error;
 					}
-				}else if(commodityTransfer instanceof PendingCommodityTransfer){
+				}else if(commodityTransfer instanceof CommodityTransfer){
 					log.info("Cashout pending");
 					error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 					error.setErrorDescription("No Successful CashOut Transaction found");
@@ -201,7 +201,7 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 			}
 			//change uicategory to teller cash out confirm
 			if(CmFinoFIX.TransactionUICategory_Teller_Cashout_TransferToBank.equals(commodityTransfer.getUicategory())
-					&&(commodityTransfer instanceof PendingCommodityTransfer ||CmFinoFIX.TransferStatus_Completed.equals(commodityTransfer.getTransferstatus()))){
+					&&(commodityTransfer instanceof CommodityTransfer ||CmFinoFIX.TransferStatus_Completed.equals(commodityTransfer.getTransferstatus()))){
 				error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				error.setErrorDescription("Transaction already Approved");
 				return error;
@@ -210,11 +210,11 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 		return error;
 	}
 
-	private void updateSctl(Long sctlId, CRCommodityTransfer commodityTransfer) {
+	private void updateSctl(Long sctlId, CommodityTransfer commodityTransfer) {
 		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(sctlId);
 		if(sctl.getCommoditytransferid()==null){
 
-			transactionChargingService.addTransferID(sctl, commodityTransfer.getID());
+			transactionChargingService.addTransferID(sctl, commodityTransfer.getId().longValue());
 		}
 	}
 

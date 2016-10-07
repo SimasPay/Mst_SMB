@@ -46,9 +46,9 @@ public interface PocketService {
 	
 	public List<CommodityTransfer> getResolvedAsFailedTxnsBetween(Date start, Date end, List<CommodityTransfer> allRAFList);
 	
-	public CmFinoFIX.CRCommodityTransfer getMostRecentTransferBefore(Pocket pocket, Date end);
+	public CommodityTransfer getMostRecentTransferBefore(Pocket pocket, Date end);
 	
-	public CmFinoFIX.CRCommodityTransfer getFirstTransferAfter(Pocket pocket, Date end);
+	public CommodityTransfer getFirstTransferAfter(Pocket pocket, Date end);
 	
 	public String generateSVAEMoney16DigitCardPAN(String mdn) throws InvalidMDNException, EmptyStringException;
 	

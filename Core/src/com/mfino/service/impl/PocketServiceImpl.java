@@ -48,7 +48,6 @@ import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.service.DefaultPocketMaintainerService;
 import com.mfino.service.PocketService;
@@ -215,7 +214,7 @@ public class PocketServiceImpl implements PocketService{
 		}
 
 		// STEP 1
-		CmFinoFIX.CRCommodityTransfer transferRecord = getMostRecentTransferBefore(pocket, end);
+		CommodityTransfer transferRecord = getMostRecentTransferBefore(pocket, end);
 
 		if (transferRecord == null) {
 			return null;
@@ -223,11 +222,11 @@ public class PocketServiceImpl implements PocketService{
 
 		// STEP 2
 		BigDecimal pocketBalance = ZERO;
-		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
-			pocketBalance = transferRecord.getSourcePocketBalance();
+		if (transferRecord.getPocket().getId().equals(pocket.getId())) {
+			pocketBalance = new BigDecimal(transferRecord.getSourcepocketbalance());
 		}
 		else {
-			pocketBalance = transferRecord.getDestPocketBalance();
+			pocketBalance =  new BigDecimal(transferRecord.getDestpocketbalance());
 		}
 
 		/**
@@ -235,20 +234,20 @@ public class PocketServiceImpl implements PocketService{
 		 * then don't have to rededuct the transfer amount
 		 */
 		BigDecimal transferAmount = transferRecord.getAmount();
-		if (transferRecord instanceof CommodityTransfer && !CmFinoFIX.TransferStatus_Completed.equals(transferRecord.getTransferStatus())) {
+		if (transferRecord instanceof CommodityTransfer && !CmFinoFIX.TransferStatus_Completed.equals(transferRecord.getTransferstatus())) {
 			transferAmount = ZERO;
 		}
 
 		// If the Txn is pending, then we don't add the balance to the
 		// destination. We only deduct from the source.
-		Long destPocketID = transferRecord.getDestPocketID();
-		if (transferRecord instanceof PendingCommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getId())) {
+		Long destPocketID = transferRecord.getDestpocketid().longValue();
+		if (transferRecord instanceof CommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getId())) {
 			transferAmount = ZERO;
 		}
 
 		// For pending transfer (we assume they succeed) and successful
 		// transfers deduct/add the transfer amount to get the final balance.
-		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
+		if (transferRecord.getPocket().getId().equals(pocket.getId())) {
 //			pocketBalance -= transferAmount;
 			pocketBalance = pocketBalance.subtract(transferAmount);
 		}
@@ -267,12 +266,12 @@ public class PocketServiceImpl implements PocketService{
 		// ctDAO.getResolvedAsFailedTxnsBetween(pocket,
 		// transferRecord.getStartTime(), end);
 		//
-		List<CommodityTransfer> resolvedAsFailTxns = getResolvedAsFailedTxnsBetween(transferRecord.getStartTime(), end, rafTxns);
+		List<CommodityTransfer> resolvedAsFailTxns = getResolvedAsFailedTxnsBetween(transferRecord.getStarttime(), end, rafTxns);
 		if (null != resolvedAsFailTxns) {
 			for (CommodityTransfer ct : resolvedAsFailTxns) {
 				// If a resolve as failed Txn is what is used to compute the
 				// current balance, don't include it again.
-				if (ct.getId().equals(transferRecord.getID())) {
+				if (ct.getId().equals(transferRecord.getId())) {
 					continue;
 				}
 //				resolveAsFailAmount += ct.getAmount();
@@ -301,7 +300,7 @@ public class PocketServiceImpl implements PocketService{
 		}
 
 		// STEP 1
-		CmFinoFIX.CRCommodityTransfer transferRecord = getMostRecentTransferBefore(pocket, end);
+		CommodityTransfer transferRecord = getMostRecentTransferBefore(pocket, end);
 
 		if (transferRecord == null) {
 			return null;
@@ -309,11 +308,11 @@ public class PocketServiceImpl implements PocketService{
 
 		// STEP 2
 		BigDecimal pocketBalance = ZERO;
-		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
-			pocketBalance = transferRecord.getSourcePocketBalance();
+		if (transferRecord.getPocket().getId().equals(pocket.getId())) {
+			pocketBalance =  new BigDecimal(transferRecord.getSourcepocketbalance());
 		}
 		else {
-			pocketBalance = transferRecord.getDestPocketBalance();
+			pocketBalance =  new BigDecimal(transferRecord.getDestpocketbalance());
 		}
 
 		/**
@@ -321,20 +320,20 @@ public class PocketServiceImpl implements PocketService{
 		 * then don't have to rededuct the transfer amount
 		 */
 		BigDecimal transferAmount = transferRecord.getAmount();
-		if (transferRecord instanceof CommodityTransfer && !CmFinoFIX.TransferStatus_Completed.equals(transferRecord.getTransferStatus())) {
+		if (transferRecord instanceof CommodityTransfer && !CmFinoFIX.TransferStatus_Completed.equals(transferRecord.getTransferstatus())) {
 			transferAmount = ZERO;
 		}
 
 		// If the Txn is pending, then we don't add the balance to the
 		// destination. We only deduct from the source.
-		Long destPocketID = transferRecord.getDestPocketID();
-		if (transferRecord instanceof PendingCommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getId())) {
+		Long destPocketID = transferRecord.getDestpocketid().longValue();
+		if (transferRecord instanceof CommodityTransfer && destPocketID != null && destPocketID.equals(pocket.getId())) {
 			transferAmount = ZERO;
 		}
 
 		// For pending transfer (we assume they succeed) and successful
 		// transfers deduct/add the transfer amount to get the final balance.
-		if (transferRecord.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
+		if (transferRecord.getPocket().getId().equals(pocket.getId())) {
 //			pocketBalance -= transferAmount;
 			pocketBalance = pocketBalance.subtract(transferAmount);
 		}
@@ -349,13 +348,13 @@ public class PocketServiceImpl implements PocketService{
 		 */
 		BigDecimal resolveAsFailAmount = ZERO;
 		CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
-		List<CommodityTransfer> resolvedAsFailTxns = ctDAO.getResolvedAsFailedTxnsBetween(pocket, transferRecord.getStartTime(), end);
+		List<CommodityTransfer> resolvedAsFailTxns = ctDAO.getResolvedAsFailedTxnsBetween(pocket, transferRecord.getStarttime(), end);
 
 		if (null != resolvedAsFailTxns) {
 			for (CommodityTransfer ct : resolvedAsFailTxns) {
 				// If a resolve as failed Txn is what is used to compute the
 				// current balance, don't include it again.
-				if (ct.getId().equals(transferRecord.getID())) {
+				if (ct.getId().equals(transferRecord.getId())) {
 					continue;
 				}
 //				resolveAsFailAmount += ct.getAmount();
@@ -398,16 +397,16 @@ public class PocketServiceImpl implements PocketService{
 		BigDecimal pocketBalance = ZERO;
 		Date end = new Date();
 		// STEP 1: Find the first txn started after asOfDate
-		CRCommodityTransfer transfer = getFirstTransferAfter(pocket, asOfDate);
+		CommodityTransfer transfer = getFirstTransferAfter(pocket, asOfDate);
 		if (null != transfer) {
 			log.info("Pocket ID = " + pocket.getId());
-			if (transfer.getPocketBySourcePocketID().getId().equals(pocket.getId())) {
-				pocketBalance = transfer.getSourcePocketBalance();
+			if (transfer.getPocket().getId().equals(pocket.getId())) {
+				pocketBalance =  new BigDecimal(transfer.getSourcepocketbalance());
 			}
-			else if (transfer.getDestPocketID().equals(pocket.getId())) {
-				pocketBalance = transfer.getDestPocketBalance();
+			else if (transfer.getDestpocketid().equals(pocket.getId())) {
+				pocketBalance =  new BigDecimal(transfer.getDestpocketbalance());
 			}
-			end = transfer.getStartTime();
+			end = transfer.getStarttime();
 		}
 		else {
 			pocketBalance = new BigDecimal(pocket.getCurrentbalance());
@@ -449,17 +448,18 @@ public class PocketServiceImpl implements PocketService{
 	// Returns the most recently 'started' transfer for the given pocket before
 	// the given time.
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public CmFinoFIX.CRCommodityTransfer getMostRecentTransferBefore(Pocket pocket, Date end) {
+	public CommodityTransfer getMostRecentTransferBefore(Pocket pocket, Date end) {
 
 		PendingCommodityTransferDAO pctDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
 		PendingCommodityTransfer pendingCommodityTransfer = pctDAO.getLastTransferBefore(pocket, end);
 
 		CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
 		CommodityTransfer commodityTransfer = ctDAO.getLastTransferBefore(pocket, end);
-		CmFinoFIX.CRCommodityTransfer transferRecord = null;
+	//	CommodityTransfer transferRecord = null;
+		CommodityTransfer transferRecord = null;
 
 		if (null == commodityTransfer) {
-			transferRecord = pendingCommodityTransfer;
+			//transferRecord = pendingCommodityTransfer;
 		}
 		else if (null == pendingCommodityTransfer) {
 			transferRecord = commodityTransfer;
@@ -468,7 +468,7 @@ public class PocketServiceImpl implements PocketService{
 			transferRecord = commodityTransfer;
 		}
 		else {
-			transferRecord = pendingCommodityTransfer;
+			//transferRecord = pendingCommodityTransfer;
 		}
 
 		return transferRecord;
@@ -477,17 +477,17 @@ public class PocketServiceImpl implements PocketService{
 	// Returns the first 'started' transfer for the given pocket after the given
 	// time.
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public CmFinoFIX.CRCommodityTransfer getFirstTransferAfter(Pocket pocket, Date end) {
+	public CommodityTransfer getFirstTransferAfter(Pocket pocket, Date end) {
 
 		PendingCommodityTransferDAO pctDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
 		PendingCommodityTransfer pendingCommodityTransfer = pctDAO.getFirstTransferAfter(pocket, end);
 
 		CommodityTransferDAO ctDAO = DAOFactory.getInstance().getCommodityTransferDAO();
 		CommodityTransfer commodityTransfer = ctDAO.getFirstTransferAfter(pocket, end);
-		CmFinoFIX.CRCommodityTransfer transferRecord = null;
+		CommodityTransfer transferRecord = null;
 
 		if (null == commodityTransfer) {
-			transferRecord = pendingCommodityTransfer;
+			//transferRecord = pendingCommodityTransfer;
 		}
 		else if (null == pendingCommodityTransfer) {
 			transferRecord = commodityTransfer;
@@ -496,7 +496,7 @@ public class PocketServiceImpl implements PocketService{
 			transferRecord = commodityTransfer;
 		}
 		else {
-			transferRecord = pendingCommodityTransfer;
+		//	transferRecord = pendingCommodityTransfer;
 		}
 
 		return transferRecord;
