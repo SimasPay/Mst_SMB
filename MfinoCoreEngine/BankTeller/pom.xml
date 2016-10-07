@@ -100,7 +100,7 @@
               				com.mfino.util.*,
               				com.mfino.transactionapi.handlers.*,
               				com.mfino.fix.processor.*,
-              				org.springframework.orm.hibernate3,
+              				org.springframework.orm.hibernate4,
               				org.aopalliance.aop,
 							org.springframework.aop,
 							org.springframework.aop.framework,
