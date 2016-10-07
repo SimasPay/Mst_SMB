@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberDAO;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
@@ -119,7 +122,9 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		//check if the pocket can be created		
 		Subscriber subscriber = smdn.getSubscriber();
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+		SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
+		
+		Set<SubscriberGroup> subscriberGroups = (Set<SubscriberGroup>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();

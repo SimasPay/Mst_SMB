@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KYCLevel;
 import com.mfino.domain.Notification;
@@ -234,7 +236,9 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		Long groupID = null;
 		Pocket bankPocket = null;
 		Subscriber subscriber = subscriberMDN.getSubscriber();
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+        SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
+		
+		Set<SubscriberGroup> subscriberGroups = (Set<SubscriberGroup>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
@@ -278,7 +282,9 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 
 		
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+        SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
+		
+		Set<SubscriberGroup> subscriberGroups = (Set<SubscriberGroup>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
