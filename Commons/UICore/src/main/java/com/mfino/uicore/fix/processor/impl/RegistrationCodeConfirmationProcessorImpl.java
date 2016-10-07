@@ -85,7 +85,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 			Subscriber sub =  subs.iterator().next();
 			SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdns().toArray()[0];
-			Set<CardInfo> cards = sub.getCardInfoFromSubscriberID();
+			Set<CardInfo> cards = sub.getCardInfos();
 			List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 			// check for expiry
 			if ((user.getCreatetime() != null)&& (System.currentTimeMillis()- user.getCreatetime().getTime() 
@@ -175,7 +175,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			errorMsg.setErrorDescription(MessageText._("Changes already confirmed or expired"));
 			Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 			Subscriber sub = subs.iterator().next();
-			Set<CardInfo> cards = sub.getCardInfoFromSubscriberID();
+			Set<CardInfo> cards = sub.getCardInfos();
 			List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 			int updatedcards = 0;
 			for (Iterator<CardInfo> cardIterator = cards.iterator(); cardIterator.hasNext();) {
@@ -185,7 +185,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 				
 //				Long tempCardConfirm = card.getIsconformationrequired();
 				
-				if (tempCardStatusLI.equals(CmFinoFIX.UserStatus_Active)&& card.getIsconformationrequired()) {
+				if (tempCardStatusLI.equals(CmFinoFIX.UserStatus_Active) && 
+						(card.getIsconformationrequired() != null && card.getIsconformationrequired() != 0)) {
 					if ((System.currentTimeMillis()- card.getLastupdatetime().getTime() 
 							< ConfigurationUtil.getCreditcardRegistrationExpirationTimeInHrs() * 60 * 60 * 1000)) {
 						card.setIsconformationrequired((short) Boolean.compare(true, false));
@@ -226,7 +227,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 		Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 		Subscriber sub = subs.iterator().next();
 		//SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdnFromSubscriberID().toArray()[0];
-		Set<CardInfo> cards = sub.getCardInfoFromSubscriberID();
+		Set<CardInfo> cards = sub.getCardInfos();
 		List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 		
 		log.info("Expiring user "+user.getUsername());

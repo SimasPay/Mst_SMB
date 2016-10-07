@@ -31,6 +31,7 @@ import com.mfino.fix.CmFinoFIX.CMJSBulkUploadFileEntry;
 import com.mfino.service.EnumTextService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.BulkUploadFileEntryProcessor;
+import com.mfino.util.MfinoUtil;
 
 /**
  *
@@ -75,7 +76,12 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
         		BulkUploadFile s = bulkUploadFileDAO.getById(realMsg.getIDSearch());
         		int total = 0;        		
         		if (s != null) {        			 
-                     String filedata = s.getUploadreport().getSubString(0, ((Long)s.getUploadreport().length()).intValue());
+                     String filedata = "";
+					try {
+						filedata = s.getUploadreport().getSubString(0, ((Long)s.getUploadreport().length()).intValue());
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
                      //if filedata is null means it's not processed so  we simply return the realmsg.
                      if (filedata == null) {
                          return realMsg;
@@ -126,7 +132,7 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
                              BulkUploadFileEntry bulkUploadFileEntry = new BulkUploadFileEntry();
                              bulkUploadFileEntry.setBulkUploadFile(s);
                              
-                             bulkUploadFileEntry.setLinedata(sbyte[0]);
+                             bulkUploadFileEntry.setLinedata(MfinoUtil.stringToClob(sbyte[0]));
                              bulkUploadFileEntry.setLinenumber(i+1);                             
                              bulkUploadFileEntry.setFailurereason(sbyte[sbyte.length - 1]);
                              bulkUploadFileEntry.setBulkuploadfileentrystatus(fileEntryStatus);

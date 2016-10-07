@@ -6,8 +6,11 @@
 package com.mfino.uicore.fix.processor.impl;
 
 import java.math.BigDecimal;
+import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.rowset.serial.SerialClob;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ import com.mfino.service.UserService;
 import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.NotificationProcessor;
+import com.mfino.util.MfinoUtil;
 
 /**
  *
@@ -74,10 +78,10 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
             s.setStatus(e.getNotificationStatus());
         }
         if (e.getNotificationText() != null) {
-            s.setText(e.getNotificationText());
+            s.setText(MfinoUtil.stringToClob(e.getNotificationText()));
         }
         if (e.getSTKMLText() != null) {
-            s.setStkml(e.getSTKMLText());
+            s.setStkml(MfinoUtil.stringToClob(e.getSTKMLText()));
         }
         if (e.getStatusTime()!= null) {
             s.setStatustime(e.getStatusTime());

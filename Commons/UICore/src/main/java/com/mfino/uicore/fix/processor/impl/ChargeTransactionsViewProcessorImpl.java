@@ -14,11 +14,11 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
-import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
-import com.mfino.fix.CmFinoFIX.CRPendingCommodityTransfer;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.ChargeTransactionsViewProcessor;
 import com.mfino.uicore.fix.processor.CommodityTransferUpdateMessage;
@@ -47,15 +47,15 @@ public class ChargeTransactionsViewProcessorImpl extends BaseFixProcessor implem
 					 for(ChargeTxnCommodityTransferMap ctxn:cTxnMap){
 						 CMJSCommodityTransfer.CGEntries entry = new CMJSCommodityTransfer.CGEntries();
 						 Long id = ctxn.getCommoditytransferid().longValue();
-						 CRCommodityTransfer ct = ctDao.getById(id);
+						 CommodityTransfer ct = ctDao.getById(id);
 						 if(ct!=null){
 							 commodityTransferUpdateMessage.updateMessage(ct, null, entry, realMsg);
 							realMsg.getEntries()[i]=entry;
 							i++;
 						 }else{
-							 CRPendingCommodityTransfer pct = pctDao.getById(id);
+							 PendingCommodityTransfer pct = pctDao.getById(id);
 							 if(pct!=null){
-								 commodityTransferUpdateMessage.updateMessage(pct, pct, entry, realMsg);
+								 commodityTransferUpdateMessage.updateMessage(new CommodityTransfer(), pct, entry, realMsg);
 								 entry.setTransferStatusText("Pending -"+entry.getTransferStatusText());
 								realMsg.getEntries()[i]=entry;
 								i++;

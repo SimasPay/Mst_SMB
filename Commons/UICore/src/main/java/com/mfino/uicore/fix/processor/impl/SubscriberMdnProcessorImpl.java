@@ -506,24 +506,23 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-
-			if((s.getSubscriber().getSubscriberGroupFromSubscriberID() != null) && (s.getSubscriber().getSubscriberGroupFromSubscriberID().size() > 0)){
-				Set<SubscriberGroup> subscriberGroups = s.getSubscriber().getSubscriberGroupFromSubscriberID();
+			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
+			
+			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
 				SubscriberGroup sg = subscriberGroups.iterator().next();
-				if(sg.getGroupid().getId().longValue() != Long.valueOf(e.getGroupID()).longValue()){
-					Group group = (Group)groupDao.getById(Long.valueOf(e.getGroupID()));
-					sg.setGroup(group);
+				if(sg.getGroupid() != Long.valueOf(e.getGroupID()).longValue()){
+					Groups group = (Groups)groupDao.getById(Long.valueOf(e.getGroupID()));
+					sg.setGroupid(group.getId().longValue());
 					subscriberGroupDao.save(sg);
 				}
 			}
 			else{
-				Group group = (Group)groupDao.getById(Long.valueOf(e.getGroupID()));
-				SubscriberGroup sg = new SubscriberGroup();
-				sg.setSubscriber(s.getSubscriber());
-				sg.setGroup(group);
-				s.getSubscriber().getSubscriberGroupFromSubscriberID().add(sg);
+				Groups group = (Groups)groupDao.getById(Long.valueOf(e.getGroupID()));
 
 				if(s.getSubscriber().getId() != null){
+					SubscriberGroup sg = new SubscriberGroup();
+					sg.setSubscriberid(s.getSubscriber().getId().longValue());
+					sg.setGroupid(group.getId().longValue());
 					subscriberGroupDao.save(sg);
 				}
 
@@ -815,7 +814,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					entry.setPartnerType(s.getSubscriber().getPartnerType());
 				}*/
 				if (CmFinoFIX.SubscriberType_Partner.equals(s.getSubscriber().getType())) {
-					Set<Partner> partners = s.getSubscriber().getPartnerFromSubscriberID();
+					Set<Partner> partners = s.getSubscriber().getPartners();
 					if (partners != null && !partners.isEmpty()) {
 						entry.setPartnerType(partners.iterator().next().getBusinesspartnertype().intValue());
 						if (partnerService.isAgentType(entry.getPartnerType()))
@@ -876,7 +875,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(s.getSubscriber().getAppliedtime()!=null){
 					entry.setAppliedTime(s.getSubscriber().getAppliedtime());
 				}
-				if(s.getSubscriber().getDetailsrequired()!=null&&s.getSubscriber().getDetailsrequired()){
+				if(s.getSubscriber().getDetailsrequired()!=null && s.getSubscriber().getDetailsrequired() != 0){
 					entry.setDetailsRequired(true);
 				}else{
 					entry.setDetailsRequired(false);
@@ -1016,11 +1015,14 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}else{
 					entry.setIsDomesticAddrIdentity(false);
 				}
-				
-				if((s.getSubscriber().getSubscriberGroupFromSubscriberID() != null) && (s.getSubscriber().getSubscriberGroupFromSubscriberID().size() > 0)) {
-					SubscriberGroup sg = s.getSubscriber().getSubscriberGroupFromSubscriberID().iterator().next();
-					entry.setGroupName(sg.getGroupid().getGroupName());
-					entry.setGroupID(""+sg.getGroupid().getId());
+				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+				List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
+				if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
+					SubscriberGroup sg = subscriberGroups.iterator().next();
+					GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+					Groups groups = groupDao.getById(sg.getGroupid());
+					entry.setGroupName(groups.getGroupname());
+					entry.setGroupID(""+sg.getGroupid());
 				}
 				
 				if(s.getSubscriber().getRegistrationmedium()!=null){
@@ -1080,7 +1082,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(ktpDetails!=null && ktpDetails.getDateofbirth()!=null){
 					entry.setKTPDateOfBirth(ktpDetails.getDateofbirth());
 				}
-				Set<SubscriberAddiInfo> subscriberAdditionalFiedlsSet=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID();
+				Set<SubscriberAddiInfo> subscriberAdditionalFiedlsSet=s.getSubscriber().getSubscriberAddiInfos();
 				SubscriberAddiInfo subscribersAdditionalFields=null;
 				if(subscriberAdditionalFiedlsSet!=null && subscriberAdditionalFiedlsSet.size()>0){
 					Iterator it_subAddfields=subscriberAdditionalFiedlsSet.iterator();
@@ -1333,7 +1335,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					return errorMsg;
 				}
 							
-				Set<SubscriberAddiInfo> saf2 = sub.getSubscribersAdditionalFieldsFromSubscriberID();
+				Set<SubscriberAddiInfo> saf2 = sub.getSubscriberAddiInfos();
 				SubscriberAddiInfo saf;
 				if(saf2.isEmpty()){
 					if(checkAdditionalFields(e)){
@@ -1373,7 +1375,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					adsktp = new Address();
 				}*/
 				
-				AuthPersonDetails ap= sub.getAuthorizingPerson();
+				AuthPersonDetails ap= sub.getAuthPersonDetails();
 				if (ap == null && checkAuthorizingPersonDetails(e)){
 					ap = new AuthPersonDetails();
 				}
@@ -1391,7 +1393,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					updateAuthorizing(ap, e);
 					authorizingPersonDAO.save(ap);
 					log.info("authorizing person updated for " + e.getID());
-					sub.setAuthorizingPerson(ap);
+					sub.setAuthPersonDetails(ap);
 				}
 				if(ads!=null){
 					updateAddress(ads, e);
@@ -1572,9 +1574,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				SubscriberAddiInfo saf=null;
 				Address ads=s.getSubscriber().getAddressBySubscriberaddressid();
 				Address adsktp=s.getSubscriber().getAddressBySubscriberaddressktpid();
-				AuthPersonDetails ap=s.getSubscriber().getAuthorizingPerson();
-				if(! s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().isEmpty()){
-					saf=s.getSubscriber().getSubscribersAdditionalFieldsFromSubscriberID().iterator().next();
+				AuthPersonDetails ap=s.getSubscriber().getAuthPersonDetails();
+				if(! s.getSubscriber().getSubscriberAddiInfos().isEmpty()){
+					saf=s.getSubscriber().getSubscriberAddiInfos().iterator().next();
 				}
 				ktpDetailsQuery.setMdn(s.getMdn());
 				ktpDetailsQuery.setOrder("desc");
@@ -1690,7 +1692,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(authorizingFlag){
 					updateAuthorizing(ap, e);
 					authorizingPersonDAO.save(ap);
-					s.setAuthorizingPerson(ap);
+					s.setAuthPersonDetails(ap);;
 				}else{
 					ap=null;
 				}
@@ -1699,9 +1701,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(e.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
 					mailService.generateEmailVerificationMail(s, e.getEmail());
 				}
-				if(s.getSubscriberGroupFromSubscriberID().size() > 0){
-					SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-					for(SubscriberGroup sg: s.getSubscriberGroupFromSubscriberID()){
+				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+				List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
+				if(subscriberGroups.size() > 0){
+					for(SubscriberGroup sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
 					}
 				}
@@ -1882,23 +1885,24 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		KYCLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
 		
 		Long groupID = null;
-		Set<SubscriberGroup> subscriberGroups = s.getSubscriber().getSubscriberGroupFromSubscriberID();
+		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
-		PocketTemplate template = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getKyclevel().longValue(), true, CmFinoFIX.PocketType_SVA, s.getSubscriber().getType(), null, groupID);
+		PocketTemplate template = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getKyclevel().longValue(), true, CmFinoFIX.PocketType_SVA, ((Long)s.getSubscriber().getType()).intValue(), null, groupID);
 		
-		Pocket pocket = subscriberService.getDefaultPocket(s.getId(),unregTemplateID);
+		Pocket pocket = subscriberService.getDefaultPocket(s.getId().longValue(),unregTemplateID);
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		if(pocket!=null){
-			pocket.setPocketTemplateByOldPocketTemplateID(pocket.getPocketTemplate());
+			pocket.setPocketTemplateByOldpockettemplateid(pocket.getPocketTemplate());
 			pocket.setPocketTemplate(template);
-			pocket.setPocketTemplateChangedBy(userService.getCurrentUser().getUsername());
-			pocket.setPocketTemplateChangeTime(new Timestamp());
+			pocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
+			pocket.setPockettemplatechangetime(new Timestamp());
 			pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-			pocket.setStatusTime(new Timestamp());
+			pocket.setStatustime(new Timestamp());
 			pocketDAO.save(pocket);
 		}
 	}

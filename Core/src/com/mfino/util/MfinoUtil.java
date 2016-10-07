@@ -6,6 +6,7 @@ package com.mfino.util;
 
 import java.io.File;
 import java.security.MessageDigest;
+import java.sql.Clob;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -16,6 +17,7 @@ import java.util.Random;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
@@ -280,6 +282,18 @@ public class MfinoUtil {
         return numberFormat;
 	}
 	
+	public static Clob stringToClob(String text){
+		if (StringUtils.isNotBlank(text)) {
+			try {
+				Clob clob = new SerialClob(text.toCharArray());
+				clob.setString(1, text);
+				return clob;
+			} catch (Exception e) {
+				return null;
+			} 
+		}
+    	return null;
+	}
 	/*public static boolean validatePIN(String mdn, String pin, String offset) throws Exception
 	{
 		if(!ConfigurationUtil.getuseHSM())

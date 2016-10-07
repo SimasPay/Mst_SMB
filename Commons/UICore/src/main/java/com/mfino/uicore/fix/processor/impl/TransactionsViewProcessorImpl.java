@@ -1,9 +1,7 @@
 package com.mfino.uicore.fix.processor.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +22,7 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.MFSLedgerQuery;
+import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.MFSLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -34,7 +33,6 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer.CGEntries;
 import com.mfino.fix.CmFinoFIX.CMJSError;
-import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
 import com.mfino.service.ChannelCodeService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.SystemParametersService;
@@ -107,7 +105,6 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 	private CFIXMsg processTransactions(CMJSCommodityTransfer msg, String mdn, Long mdnId, Integer pocketType) throws Exception  {
 		CMJSCommodityTransfer realMsg = msg;
 		MFSLedgerQuery query = new MFSLedgerQuery();
-		Map<Long,CRCommodityTransfer> ctMap;
 
 		if (realMsg.getSourceDestnPocketID() != null) {
 			query.setPocketId(realMsg.getSourceDestnPocketID());
@@ -175,7 +172,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 	private void updateMessage(MFSLedger ledger, CGEntries entry,
 			CMJSCommodityTransfer realMsg) {
 		
-		CRCommodityTransfer ct = ctDao.getById(ledger.getCommoditytransferid().longValue());
+		CommodityTransfer ct = ctDao.getById(ledger.getCommoditytransferid().longValue());
 		boolean isSystemPocket = false;
 		boolean isRevertAmount = false;
 		
@@ -201,14 +198,14 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 			entry.setCreditAmount(ledger.getAmount());
 		}
 		if(ct != null){
-	        entry.setBankRetrievalReferenceNumber(ct.getBankRetrievalReferenceNumber());
-			entry.setTransactionID(ct.getID());
-			entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(ct.getSourceApplication()));
+	        entry.setBankRetrievalReferenceNumber(ct.getBankretrievalreferencenumber());
+			entry.setTransactionID(ct.getId().longValue());
+			entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(((Long)ct.getSourceapplication()).intValue()));
 			// Added as part of GT Request to identify the internal transaction type like E-B, E-E, B-E, B-B
-	   		entry.setInternalTxnType(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUICategory()));
+	   		entry.setInternalTxnType(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUicategory()));
 			entry.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, ct.getCommodity()));
 			if(!isSystemPocket&&!isRevertAmount){
-				 entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, ct.getTransferStatus()));
+				 entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, ct.getTransferstatus()));
 			}
 		}
         
@@ -227,7 +224,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 			TransactionType tt = ttDAO.getById(sctl.getTransactiontypeid().longValue());
 			entry.setTransactionTypeText(tt.getDisplayname());
 		}else if(ct!=null){
-			entry.setTransactionTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUICategory()));
+			entry.setTransactionTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUicategory()));
 		}
 		if(isRevertAmount){
 			entry.setTransactionTypeText("Reverted-"+entry.getTransactionTypeText());

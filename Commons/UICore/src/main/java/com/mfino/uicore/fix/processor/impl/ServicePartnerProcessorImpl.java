@@ -3,7 +3,6 @@ package com.mfino.uicore.fix.processor.impl;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -75,6 +74,9 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	private UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 	private KYCLevelDAO kyclevelDao = DAOFactory.getInstance().getKycLevelDAO();
 	private PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
+	private SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+	private  GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+	
 	private boolean isOTPEnabled;
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
@@ -451,9 +453,10 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 if(e.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(subscriber, e.getAuthorizedEmail());
 				}
-				if(subscriber.getSubscriberGroupFromSubscriberID().size() > 0){
+                List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+				if(subscriberGroups != null && subscriberGroups.size() > 0){
 					SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-					for(SubscriberGroup sg: subscriber.getSubscriberGroupFromSubscriberID()){
+					for(SubscriberGroup sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
 					}
 				}
@@ -849,11 +852,10 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         			
         			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
         			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-        			
-        			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)){
-        				Set<SubscriberGroup> subscriberGroups = subscriber.getSubscriberGroupFromSubscriberID();
+        			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+        			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroup sg = subscriberGroups.iterator().next();
-        				if(sg.getGroup().getID().longValue() != Long.valueOf(entry.getGroupID()).longValue()){
+        				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
         					Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         					sg.setGroupid(group.getId().longValue());
         					subscriberGroupDao.save(sg);
@@ -864,7 +866,6 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         				SubscriberGroup sg = new SubscriberGroup();
         				sg.setSubscriberid(subscriber.getId().longValue());
         				sg.setGroupid(group.getId().longValue());
-        				subscriber.getSubscriberGroupFromSubscriberID().add(sg);
         				
         				if(subscriber.getId() != null){
         					subscriberGroupDao.save(sg);
@@ -1054,11 +1055,12 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        if(subscriber.getApproveorrejectcomment()!=null){
 	        	entry.setApproveOrRejectComment(subscriber.getApproveorrejectcomment());
 	        }
-	        
-			if((subscriber.getSubscriberGroupFromSubscriberID() != null) && (subscriber.getSubscriberGroupFromSubscriberID().size() > 0)) {
-				SubscriberGroup sg = subscriber.getSubscriberGroupFromSubscriberID().iterator().next();
-				entry.setGroupName(sg.getGroup().getGroupName());
-				entry.setGroupID(""+sg.getGroup().getID());
+	        List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
+				SubscriberGroup sg = subscriberGroups.iterator().next();
+				Groups groups = groupDao.getById(sg.getGroupid());
+				entry.setGroupName(groups.getGroupname());
+				entry.setGroupID(""+sg.getGroupid());
 			}
 	        
         }
