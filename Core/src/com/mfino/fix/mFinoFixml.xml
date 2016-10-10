@@ -7110,7 +7110,7 @@
 			<field name="MFSBillerCode" required="Y" />
 			<field name="MFSBillerType" required="Y" />
 		</record>
-		<record name="MfsBillerPartnerMap" ExtendsRecord="Base" Java="Y" SQLTable="mfsbiller_partner_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="MfsbillerPartnerMap" ExtendsRecord="Base" Java="Y" SQLTable="mfsbiller_partner_map" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="MFSBillerId" required="Y" References="MfsBiller"/>
 			<field name="PartnerID" required="Y" References="Partner"/>
@@ -7294,7 +7294,7 @@
 			<field name="PocketTemplateID" required="N" References="PocketTemplate"/>
 			<field name="KYCLevelDescription" required="N" />
 		</record>
-		<record name="KYCFields" ExtendsRecord="Base" CPP="Y" Java="Y"
+		<record name="KycFields" ExtendsRecord="Base" CPP="Y" Java="Y"
 			SQLTable="kyc_fields" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y"
 			SQLCreate="Y">
 			<field name="KYCFieldsLevelID" required="Y" References="KycLevel" />
@@ -7514,7 +7514,7 @@
 			<field name="IPAddress" required="Y"/>
 		</record>
 		<record name="MfsDenominations" ExtendsRecord="Base" Java="Y" SQLTable="mfs_denominations" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
-			<field name="MFSID" required="Y" References="MfsBillerPartnerMap" />
+			<field name="MFSID" required="Y" References="MfsbillerPartnerMap" />
 			<field name="DenominationAmount" required="Y" />
 			<field name="Description" required="N" />
 			<field name="ProductCode" required="N" />	               
@@ -7630,7 +7630,7 @@
 			<field name="InstitutionID" required="N"  />
 		</record>
 		
-		<record name="CloseAcctSctlMdn" ExtendsRecord="Base" Java="Y" SQLTable="close_acct_setl_mdn" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="CloseAcctSetlMdn" ExtendsRecord="Base" Java="Y" SQLTable="close_acct_setl_mdn" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 	        <field name="MDNID" required="Y" References="SubscriberMdn" />
 	        <field name="ToBankAccount" required="N" />
 	        <field name="SettlementMDN" required="N" />
