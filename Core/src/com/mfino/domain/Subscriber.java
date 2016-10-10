@@ -108,7 +108,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 			0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
-	private Set<CreditCardDestinations> creditcardDestinationses = new HashSet<CreditCardDestinations>(
+	private Set<CreditcardDestinations> creditcardDestinationses = new HashSet<CreditcardDestinations>(
 			0);
 	private Set<CreditCardTransaction> creditCardTransactions = new HashSet<CreditCardTransaction>(
 			0);
@@ -170,7 +170,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 			Set<BulkUpload> bulkUploads, Set<CardInfo> cardInfos,
 			Set<TxnAmountDstrbLog> txnAmountDstrbLogs,
 			Set<CommodityTransfer> commodityTransfers,
-			Set<CreditCardDestinations> creditcardDestinationses,
+			Set<CreditcardDestinations> creditcardDestinationses,
 			Set<CreditCardTransaction> creditCardTransactions,
 			Set<Partner> partners) {
 		this.id = id;
@@ -783,12 +783,12 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriber")
-	public Set<CreditCardDestinations> getCreditcardDestinationses() {
+	public Set<CreditcardDestinations> getCreditcardDestinationses() {
 		return this.creditcardDestinationses;
 	}
 
 	public void setCreditcardDestinationses(
-			Set<CreditCardDestinations> creditcardDestinationses) {
+			Set<CreditcardDestinations> creditcardDestinationses) {
 		this.creditcardDestinationses = creditcardDestinationses;
 	}
 

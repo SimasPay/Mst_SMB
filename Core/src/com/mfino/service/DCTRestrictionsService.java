@@ -6,7 +6,7 @@ package com.mfino.service;
 import java.util.List;
 
 import com.mfino.dao.query.DCTRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainLvl;
 
 /**
@@ -19,7 +19,7 @@ public interface DCTRestrictionsService {
 	 * @param dctLevel
 	 * @return
 	 */
-	public List<DCTRestrictions> createDefautlRestrictions(DistributionChainLvl dctLevel);
+	public List<DctRestrictions> createDefautlRestrictions(DistributionChainLvl dctLevel);
 
 	/**
 	 * Deletes restrictions for the removed dctLevels
@@ -32,7 +32,7 @@ public interface DCTRestrictionsService {
 	 * @param query
 	 * @return
 	 */
-	public List<DCTRestrictions> getDctRestrictions(DCTRestrictionsQuery query);
+	public List<DctRestrictions> getDctRestrictions(DCTRestrictionsQuery query);
 
 
 }

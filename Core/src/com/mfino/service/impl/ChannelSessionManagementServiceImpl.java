@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.ChannelSessionManagementDAO;
 import com.mfino.dao.DAOFactory;
-import com.mfino.domain.ChannelSessionManagement;
+import com.mfino.domain.ChannelSessionMgmt;
 import com.mfino.service.ChannelSessionManagementService;
 @Service("ChannelSessionManagementServiceImpl")
 public class ChannelSessionManagementServiceImpl implements ChannelSessionManagementService{
@@ -20,7 +20,7 @@ public class ChannelSessionManagementServiceImpl implements ChannelSessionManage
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public ChannelSessionManagement getChannelSessionManagemebtByMDNID(Long mdnID){
+	public ChannelSessionMgmt getChannelSessionManagemebtByMDNID(Long mdnID){
 		log.info("ChannelSessionManagement : get"+mdnID);
 
 		if(mdnID == null) return null;
@@ -35,7 +35,7 @@ public class ChannelSessionManagementServiceImpl implements ChannelSessionManage
 	 * @param csm
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void saveCSM(ChannelSessionManagement csm){
+	public void saveCSM(ChannelSessionMgmt csm){
 		ChannelSessionManagementDAO csmDAO = DAOFactory.getInstance().getChannelSessionManagementDAO();
 		csmDAO.save(csm);
 	}

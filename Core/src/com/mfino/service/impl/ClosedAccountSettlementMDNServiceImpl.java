@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.ClosedAccountSettlementMDNDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.query.ClosedAccountSettlementMDNQuery;
-import com.mfino.domain.ClosedAccountSettlementMDN;
+import com.mfino.domain.CloseAcctSetlMdn;
 import com.mfino.service.ClosedAccountSettlementMDNService;
 
 /**
@@ -32,11 +32,11 @@ public class ClosedAccountSettlementMDNServiceImpl implements ClosedAccountSettl
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public List<ClosedAccountSettlementMDN> getClosedAccountSettlementMDNByQuery(
+	public List<CloseAcctSetlMdn> getClosedAccountSettlementMDNByQuery(
 			ClosedAccountSettlementMDNQuery casmQuery) {
 		log.info("Getting the ClosedAccountSettlementMDN records for the query: "+casmQuery);
 		ClosedAccountSettlementMDNDAO closedAccountSettlementMDNDAO = DAOFactory.getInstance().getClosedAccountSettlementMdnDao();
-		List<ClosedAccountSettlementMDN> lstClosedAccountSettlementMDNs = closedAccountSettlementMDNDAO.get(casmQuery);
+		List<CloseAcctSetlMdn> lstClosedAccountSettlementMDNs = closedAccountSettlementMDNDAO.get(casmQuery);
 		return lstClosedAccountSettlementMDNs;
 	}
 
@@ -45,7 +45,7 @@ public class ClosedAccountSettlementMDNServiceImpl implements ClosedAccountSettl
 	 * @param closedAccountSettlementMDN
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public void saveClosedAccountSettlementMDN(ClosedAccountSettlementMDN closedAccountSettlementMDN) {
+	public void saveClosedAccountSettlementMDN(CloseAcctSetlMdn closedAccountSettlementMDN) {
 		log.info("Saving the closedAccountSettlementMDN record "+closedAccountSettlementMDN);
 		ClosedAccountSettlementMDNDAO closedAccountSettlementMDNDAO = DAOFactory.getInstance().getClosedAccountSettlementMdnDao();
 		closedAccountSettlementMDNDAO.save(closedAccountSettlementMDN);

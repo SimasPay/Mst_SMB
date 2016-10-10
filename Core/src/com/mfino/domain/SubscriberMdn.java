@@ -83,7 +83,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
-	private Set<ClosedAccountSettlementMDN> closeAcctSetlMdns = new HashSet<ClosedAccountSettlementMDN>(
+	private Set<CloseAcctSetlMdn> closeAcctSetlMdns = new HashSet<CloseAcctSetlMdn>(
 			0);
 	private Set<Pocket> pockets = new HashSet<Pocket>(0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
@@ -94,7 +94,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			0);
 	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
 			0);
-	private Set<ChannelSessionManagement> channelSessionMgmts = new HashSet<ChannelSessionManagement>(
+	private Set<ChannelSessionMgmt> channelSessionMgmts = new HashSet<ChannelSessionMgmt>(
 			0);
 
 	public SubscriberMdn() {
@@ -141,12 +141,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid,
 			Set<BulkLop> bulkLops,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<ClosedAccountSettlementMDN> closeAcctSetlMdns, Set<Pocket> pockets,
+			Set<CloseAcctSetlMdn> closeAcctSetlMdns, Set<Pocket> pockets,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<ExcludeSubscriberLc> excludeSubscriberLcs,
 			Set<LetterOfPurchase> letterOfPurchases,
 			Set<UnregisteredTxnInfo> unregisteredTxnInfos,
-			Set<ChannelSessionManagement> channelSessionMgmts) {
+			Set<ChannelSessionMgmt> channelSessionMgmts) {
 		this.id = id;
 		this.subscriber = subscriber;
 		this.lastupdatetime = lastupdatetime;
@@ -639,11 +639,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<ClosedAccountSettlementMDN> getCloseAcctSetlMdns() {
+	public Set<CloseAcctSetlMdn> getCloseAcctSetlMdns() {
 		return this.closeAcctSetlMdns;
 	}
 
-	public void setCloseAcctSetlMdns(Set<ClosedAccountSettlementMDN> closeAcctSetlMdns) {
+	public void setCloseAcctSetlMdns(Set<CloseAcctSetlMdn> closeAcctSetlMdns) {
 		this.closeAcctSetlMdns = closeAcctSetlMdns;
 	}
 
@@ -695,12 +695,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<ChannelSessionManagement> getChannelSessionMgmts() {
+	public Set<ChannelSessionMgmt> getChannelSessionMgmts() {
 		return this.channelSessionMgmts;
 	}
 
 	public void setChannelSessionMgmts(
-			Set<ChannelSessionManagement> channelSessionMgmts) {
+			Set<ChannelSessionMgmt> channelSessionMgmts) {
 		this.channelSessionMgmts = channelSessionMgmts;
 	}
 

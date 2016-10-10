@@ -6,7 +6,7 @@ package com.mfino.service;
 import java.util.List;
 
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 
 /**
  * @author Sreenath
@@ -19,7 +19,7 @@ public interface ChargeTxnCommodityTransferMapService {
 	 * @param query
 	 * @return
 	 */
-	public List<ChargeTxnCommodityTransferMap> getChargeTxnCommodityTransferMapByQuery
+	public List<ChargetxnTransferMap> getChargeTxnCommodityTransferMapByQuery
 	(ChargeTxnCommodityTransferMapQuery query);
 
 }

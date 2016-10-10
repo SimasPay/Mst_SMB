@@ -6,7 +6,7 @@ package com.mfino.service;
 import java.util.List;
 
 import com.mfino.dao.query.ClosedAccountSettlementMDNQuery;
-import com.mfino.domain.ClosedAccountSettlementMDN;
+import com.mfino.domain.CloseAcctSetlMdn;
 
 /**
  * @author Sreenath
@@ -18,13 +18,13 @@ public interface ClosedAccountSettlementMDNService {
 	 * @param casmQuery
 	 * @return
 	 */
-	public List<ClosedAccountSettlementMDN> getClosedAccountSettlementMDNByQuery(
+	public List<CloseAcctSetlMdn> getClosedAccountSettlementMDNByQuery(
 			ClosedAccountSettlementMDNQuery casmQuery);
 
 	/**
 	 * Saves the closedAccountSettlementMDN record into the database
 	 * @param closedAccountSettlementMDN
 	 */
-	public void saveClosedAccountSettlementMDN(ClosedAccountSettlementMDN closedAccountSettlementMDN);
+	public void saveClosedAccountSettlementMDN(CloseAcctSetlMdn closedAccountSettlementMDN);
 
 }

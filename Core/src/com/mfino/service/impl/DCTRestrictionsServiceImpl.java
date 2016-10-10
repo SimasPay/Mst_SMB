@@ -12,7 +12,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DCTRestrictionsDao;
 import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainLvl;
 import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Service;
@@ -37,8 +37,8 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 	 * @return
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public List<DCTRestrictions> createDefautlRestrictions(DistributionChainLvl dctLevel) {
-		List<DCTRestrictions> dctRestrictions = new ArrayList<DCTRestrictions>();
+	public List<DctRestrictions> createDefautlRestrictions(DistributionChainLvl dctLevel) {
+		List<DctRestrictions> dctRestrictions = new ArrayList<DctRestrictions>();
 		log.info("DCTRestrictionsService :: createDefaultRestrictions() dct BEGIN");
 		
 		DistributionChainTemp dct = dctLevel.getDistributionChainTemp();
@@ -50,7 +50,7 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 		for(ServiceTransaction serviceTxn: service.getServiceTransactions()){
 			TransactionType txnType = serviceTxn.getTransactionType();
 			
-			DCTRestrictions dctRestriction = new DCTRestrictions();
+			DctRestrictions dctRestriction = new DctRestrictions();
 			dctRestriction.setDctid(dct.getId().longValue());
 			dctRestriction.setTransactiontypeid(txnType.getId().longValue());
 			dctRestriction.setRelationshiptype(CmFinoFIX.RelationShipType_BELONGS_TO_TREE.longValue());
@@ -82,7 +82,7 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 			query.setDctId(dctLevel.getDistributionChainTemp().getId().longValue());
 			query.setLevel((int) dctLevel.getDistributionlevel());
 			
-			List<DCTRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
+			List<DctRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
 			if((null != dctRestrictions) && (dctRestrictions.size() > 0)){
 				dctRestrictionsDao.delete(dctRestrictions);
 			}
@@ -97,8 +97,8 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 	 * @return
 	 */
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-	public List<DCTRestrictions> getDctRestrictions(DCTRestrictionsQuery query){
-		List<DCTRestrictions> dctRestrictions = new ArrayList<DCTRestrictions>();
+	public List<DctRestrictions> getDctRestrictions(DCTRestrictionsQuery query){
+		List<DctRestrictions> dctRestrictions = new ArrayList<DctRestrictions>();
 		DCTRestrictionsDao dctRestrictionsDao = DAOFactory.getInstance().getDctRestrictionsDao();
 		dctRestrictions = dctRestrictionsDao.get(query);
 		return dctRestrictions;

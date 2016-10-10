@@ -3,7 +3,7 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.ChannelSessionManagement;
+import com.mfino.domain.ChannelSessionMgmt;
 
 /**
  * @author Sreenath
@@ -17,11 +17,11 @@ public interface ChannelSessionManagementService {
 	 * @param mdnID
 	 * @return
 	 */
-	public ChannelSessionManagement getChannelSessionManagemebtByMDNID(Long mdnID);
+	public ChannelSessionMgmt getChannelSessionManagemebtByMDNID(Long mdnID);
 	
 	/**
 	 * Saves the ChannelSessionManagement record to dataabase
 	 * @param csm
 	 */
-	public void saveCSM(ChannelSessionManagement csm);
+	public void saveCSM(ChannelSessionMgmt csm);
 }

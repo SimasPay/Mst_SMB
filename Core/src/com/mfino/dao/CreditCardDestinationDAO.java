@@ -13,7 +13,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.CreditCardDestinationQuery;
-import com.mfino.domain.CreditCardDestinations;
+import com.mfino.domain.CreditcardDestinations;
 import com.mfino.domain.Subscriber;
 import com.mfino.fix.CmFinoFIX;
 
@@ -21,27 +21,27 @@ import com.mfino.fix.CmFinoFIX;
  *
  * @author Maruthi
  */
-public class CreditCardDestinationDAO extends BaseDAO<CreditCardDestinations> {
+public class CreditCardDestinationDAO extends BaseDAO<CreditcardDestinations> {
 
 	
 	@SuppressWarnings("unchecked")
-	public List<CreditCardDestinations> get(CreditCardDestinationQuery query) {
+	public List<CreditcardDestinations> get(CreditCardDestinationQuery query) {
 		Criteria criteria = createCriteria();
 		 if (query.getSubscriber() != null) {
-        	 criteria.add(Restrictions.eq(CreditCardDestinations.FieldName_Subscriber, query.getSubscriber()));
+        	 criteria.add(Restrictions.eq(CreditcardDestinations.FieldName_Subscriber, query.getSubscriber()));
         }
 		 if(query.getMdnstatus()!= null){
-			 criteria.add(Restrictions.eq(CreditCardDestinations.FieldName_CCMDNStatus, query.getMdnstatus()));
+			 criteria.add(Restrictions.eq(CreditcardDestinations.FieldName_CCMDNStatus, query.getMdnstatus()));
 		 }
 		 if(query.getCreateTimeGE()!=null&&query.getCreateTimeLT()!=null){
-			 criteria.add(Restrictions.between(CreditCardDestinations.FieldName_CreateTime, query.getCreateTimeGE(), query.getCreateTimeLT()));
+			 criteria.add(Restrictions.between(CreditcardDestinations.FieldName_CreateTime, query.getCreateTimeGE(), query.getCreateTimeLT()));
 		 }
 		 
 //		 processBaseQuery(query, criteria);
-		 List<CreditCardDestinations> results = criteria.list();
+		 List<CreditcardDestinations> results = criteria.list();
 		 return results;
 	}
-	public List<CreditCardDestinations> getAllDestinations(Subscriber subs){
+	public List<CreditcardDestinations> getAllDestinations(Subscriber subs){
 		CreditCardDestinationDAO creditCardDestinationDAO = DAOFactory.getInstance().getCreditCardDestinationDAO();
 		CreditCardDestinationQuery creditCardDestinationQuery = new CreditCardDestinationQuery();
 		creditCardDestinationQuery.setSubscriber(subs);

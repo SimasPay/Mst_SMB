@@ -8,20 +8,20 @@ package com.mfino.dao;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 
-import com.mfino.domain.CommodityTransferNextID;
+import com.mfino.domain.CommodityTransferNextId;
 
 
-public class CommodityTransferNextIDDAO extends BaseDAO<CommodityTransferNextID> 
+public class CommodityTransferNextIDDAO extends BaseDAO<CommodityTransferNextId> 
 {
 	/**
 	 * lock the record we read,it is same as select for update
 	 * once the transactions commits it will release the lock
 	 * @return
 	 */
-	public CommodityTransferNextID getNextIDWithLock()
+	public CommodityTransferNextId getNextIDWithLock()
 	{
 		Criteria criteria = createCriteria();
 		criteria.setLockMode(LockMode.UPGRADE);
-		return (CommodityTransferNextID)criteria.list().get(0);
+		return (CommodityTransferNextId)criteria.list().get(0);
 	}
 }

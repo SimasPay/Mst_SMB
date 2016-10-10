@@ -52,8 +52,8 @@ import com.mfino.dao.query.TransactionRuleAddnInfoQuery;
 import com.mfino.dao.query.TransactionRuleQuery;
 import com.mfino.domain.ChargeDefinition;
 import com.mfino.domain.ChargePricing;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.ChargeType;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.DistributionChainLvl;
 import com.mfino.domain.DistributionChainTemp;
@@ -950,7 +950,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		ChargeTxnCommodityTransferMapDAO cTxnCommodityTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
 		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 		query.setCommodityTransferID(commodityTransaferId);
-		List<ChargeTxnCommodityTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
+		List<ChargetxnTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
 		BigDecimal sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?ctTxnCommodityTransferMap.get(0).getSctlid():null;
 		if(sctlid!=null){
 		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctlid.longValue());
@@ -974,7 +974,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		ChargeTxnCommodityTransferMapDAO cTxnCommodityTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
 		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 		query.setCommodityTransferID(commodityTransaferId);
-		List<ChargeTxnCommodityTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
+		List<ChargetxnTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
 		BigDecimal sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?ctTxnCommodityTransferMap.get(0).getSctlid():null;
 		if(sctlid!=null){
 		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctlid.longValue());
@@ -1692,10 +1692,10 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 			query.setSctlID(sctl.getId().longValue());
-			List<ChargeTxnCommodityTransferMap> ctxnMapList = chargeTxnCTMapDao.get(query);
+			List<ChargetxnTransferMap> ctxnMapList = chargeTxnCTMapDao.get(query);
 			
 			if((null != ctxnMapList) && (ctxnMapList.size() > 0)){
-				ChargeTxnCommodityTransferMap map = ctxnMapList.get(0);
+				ChargetxnTransferMap map = ctxnMapList.get(0);
 				Long ctId = map.getCommoditytransferid().longValue();
 				CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
 				CommodityTransfer ct = ctDao.getById(ctId);

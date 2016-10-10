@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.service.ChargeTxnCommodityTransferMapService;
 
 /**
@@ -29,9 +29,9 @@ public class ChargeTxnCommodityTransferMapServiceImpl implements ChargeTxnCommod
 	 * @param query
 	 * @return
 	 */
-	public List<ChargeTxnCommodityTransferMap> getChargeTxnCommodityTransferMapByQuery
+	public List<ChargetxnTransferMap> getChargeTxnCommodityTransferMapByQuery
 	(ChargeTxnCommodityTransferMapQuery query){
-		List<ChargeTxnCommodityTransferMap> lstTxnCommodityTransferMaps = null;
+		List<ChargetxnTransferMap> lstTxnCommodityTransferMaps = null;
 		if(query!=null){
 			log.info("Getting ChargeTxnCommodityTransferMap records matching query: "+query);
 			ChargeTxnCommodityTransferMapDAO txnCommodityTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();

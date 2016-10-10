@@ -7,18 +7,18 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mfino.domain.ChannelSessionManagement;
+import com.mfino.domain.ChannelSessionMgmt;
 import com.mfino.domain.SubscriberMdn;
 
 /**
  * @author sasidhar
  *
  */
-public class ChannelSessionManagementDAO extends BaseDAO<ChannelSessionManagement>{
+public class ChannelSessionManagementDAO extends BaseDAO<ChannelSessionMgmt>{
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	public ChannelSessionManagement getChannelSessionManagemebtByMDNID(Long mdnID){
+	public ChannelSessionMgmt getChannelSessionManagemebtByMDNID(Long mdnID){
 		log.info("ChannelSessionManagement : get"+mdnID);
 		  //Before Correcting errors reported by Findbugs:
 			//		if((null == mdnID) || ("".equals(mdnID))) return null;
@@ -27,10 +27,10 @@ public class ChannelSessionManagementDAO extends BaseDAO<ChannelSessionManagemen
 		if(null == mdnID) return null;
 		
 		Criteria channelSessionManagementCriteria = createCriteria();
-		Criteria subscriberMdnCriteria = channelSessionManagementCriteria.createCriteria(ChannelSessionManagement.FieldName_SubscriberMDNByMDNID);
+		Criteria subscriberMdnCriteria = channelSessionManagementCriteria.createCriteria(ChannelSessionMgmt.FieldName_SubscriberMDNByMDNID);
 		subscriberMdnCriteria.add(Restrictions.eq(SubscriberMdn.FieldName_RecordID, mdnID));
 		
-        List<ChannelSessionManagement> results = channelSessionManagementCriteria.list();
+        List<ChannelSessionMgmt> results = channelSessionManagementCriteria.list();
         
         if((results != null) && (results.size() > 0)) return results.get(0);
         
