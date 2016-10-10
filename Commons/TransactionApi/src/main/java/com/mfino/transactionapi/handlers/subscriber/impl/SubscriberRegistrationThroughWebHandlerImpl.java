@@ -15,14 +15,14 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
@@ -238,10 +238,10 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		Subscriber subscriber = subscriberMDN.getSubscriber();
         SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
 		
-		Set<SubscriberGroup> subscriberGroups = (Set<SubscriberGroup>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		Set<SubscriberGroups> subscriberGroups = (Set<SubscriberGroups>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		PocketTemplate bankPocketTemplate = pocketService.getBankPocketTemplateFromPocketTemplateConfig(subscriberRegistration.getBankAccountType(), true, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
@@ -284,10 +284,10 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		Long groupID = null;
         SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
 		
-		Set<SubscriberGroup> subscriberGroups = (Set<SubscriberGroup>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		Set<SubscriberGroups> subscriberGroups = (Set<SubscriberGroups>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		Long kycLevelNo = null;
@@ -306,7 +306,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
          Pocket bankPocket = pocketService.createPocket(bankPocketTemplate, subscriberMDN, CmFinoFIX.PocketStatus_Active, true, subscriberRegistration.getCardPAN());
         
         try{
-		KYCLevel kyclevel = null;
+		KycLevel kyclevel = null;
 		if (subscriber.getUpgradablekyclevel() != null) {
 			log.info("kyc if loop");
 			kyclevel = kycLevelService.getByKycLevel(subscriber.getUpgradablekyclevel().longValue());

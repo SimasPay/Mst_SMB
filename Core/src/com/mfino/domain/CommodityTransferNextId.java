@@ -16,15 +16,15 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "COMMODITY_TRANSFER_NEXT_ID")
-public class CommodityTransferNextID extends Base  implements java.io.Serializable {
+public class CommodityTransferNextId extends Base  implements java.io.Serializable {
 
 
 	private BigDecimal nextrecordid;
 
-	public CommodityTransferNextID() {
+	public CommodityTransferNextId() {
 	}
 
-	public CommodityTransferNextID(BigDecimal id, Timestamp lastupdatetime,
+	public CommodityTransferNextId(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal nextrecordid) {
 		this.id = id;

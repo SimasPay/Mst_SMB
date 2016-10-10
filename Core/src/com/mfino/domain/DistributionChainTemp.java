@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "DISTRIBUTION_CHAIN_TEMP")
-public class DistributionChainTemplate extends Base implements java.io.Serializable {
+public class DistributionChainTemp extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static final String FieldName_DistributionChainName = "name";
@@ -34,18 +34,18 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
 	private String name;
 	private String description;
 	private long serviceid;
-	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
-	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
-	private Set<DistributionChainLevel> distributionChainLvls = new HashSet<DistributionChainLevel>(
+	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
+	private Set<DistributionChainLvl> distributionChainLvls = new HashSet<DistributionChainLvl>(
 			0);
 	private Set<PartnerServices> partnerServiceses = new HashSet<PartnerServices>(
 			0);
 
-	public DistributionChainTemplate() {
+	public DistributionChainTemp() {
 	}
 
-	public DistributionChainTemplate(BigDecimal id,
+	public DistributionChainTemp(BigDecimal id,
 			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String name,
@@ -60,13 +60,13 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
 		this.serviceid = serviceid;
 	}
 
-	public DistributionChainTemplate(BigDecimal id,
+	public DistributionChainTemp(BigDecimal id,
 			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String name,
 			String description, long serviceid,
-			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
-			Set<DistributionChainLevel> distributionChainLvls,
+			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
+			Set<DistributionChainLvl> distributionChainLvls,
 			Set<PartnerServices> partnerServiceses) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
@@ -125,30 +125,30 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainTemp")
-	public Set<LOP> getLetterOfPurchases() {
+	public Set<LetterOfPurchase> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainTemp")
-	public Set<BulkLOP> getBulkLops() {
+	public Set<BulkLop> getBulkLops() {
 		return this.bulkLops;
 	}
 
-	public void setBulkLops(Set<BulkLOP> bulkLops) {
+	public void setBulkLops(Set<BulkLop> bulkLops) {
 		this.bulkLops = bulkLops;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainTemp")
-	public Set<DistributionChainLevel> getDistributionChainLvls() {
+	public Set<DistributionChainLvl> getDistributionChainLvls() {
 		return this.distributionChainLvls;
 	}
 
 	public void setDistributionChainLvls(
-			Set<DistributionChainLevel> distributionChainLvls) {
+			Set<DistributionChainLvl> distributionChainLvls) {
 		this.distributionChainLvls = distributionChainLvls;
 	}
 
@@ -168,7 +168,7 @@ public class DistributionChainTemplate extends Base implements java.io.Serializa
             return false;
         } else {
             if(getId() != null){
-            	return (getId().equals(((DistributionChainTemplate)obj).getId()));
+            	return (getId().equals(((DistributionChainTemp)obj).getId()));
             }
             
             return false;

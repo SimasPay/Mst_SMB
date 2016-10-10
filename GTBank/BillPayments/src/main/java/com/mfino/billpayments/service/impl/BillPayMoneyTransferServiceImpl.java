@@ -45,7 +45,7 @@ import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
@@ -803,9 +803,9 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 			MFSBillerPartnerDAO billerPartnerDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 			MFSBillerPartnerQuery billerPartnerQuery = new MFSBillerPartnerQuery();
 			billerPartnerQuery.setMfsBillerId(biller.getId().longValue());
-			List<MFSBillerPartner> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
+			List<MfsbillerPartnerMap> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
 			if(billerPartners.size()==1){
-				MFSBillerPartner billerPartner = billerPartners.get(0);
+				MfsbillerPartnerMap billerPartner = billerPartners.get(0);
 				partner = billerPartner.getPartner();
 			}
 		}

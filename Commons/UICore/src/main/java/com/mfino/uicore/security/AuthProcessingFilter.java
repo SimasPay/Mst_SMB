@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.service.AuthorizationService;
 import com.mfino.service.SubscriberService;
 import com.mfino.uicore.web.UrlFactory;
@@ -57,12 +57,12 @@ public class AuthProcessingFilter extends UsernamePasswordAuthenticationFilter i
 
 		boolean isChangePassword = false;
 		boolean promptPin = false;
-		User userObj = null;
+		MfinoUser userObj = null;
 		String userName = authResult.getName();
 		UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 		UserQuery query = new UserQuery();
 		query.setUserName(userName);
-		List<User> results = (List<User>) userDAO.get(query);
+		List<MfinoUser> results = (List<MfinoUser>) userDAO.get(query);
 		if (results.size() > 0) {
 			userObj = results.get(0);
 			isChangePassword = Boolean.valueOf(userObj.getFirsttimelogin().toString());

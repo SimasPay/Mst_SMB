@@ -47,10 +47,10 @@ public class Subscriber extends Base implements java.io.Serializable {
 	
 	private Address addressBySubscriberaddressid;
 	private Address addressBySubscriberaddressktpid;
-	private User mfinoUserBySubscriberuserid;
-	private User mfinoUserByUserid;
+	private MfinoUser mfinoUserBySubscriberuserid;
+	private MfinoUser mfinoUserByUserid;
 	private MfinoServiceProvider MfinoServiceProvider;
-	private KYCLevel kycLevel;
+	private KycLevel kycLevel;
 	private Company company;
 	private AuthPersonDetails authPersonDetails;
 	private BigDecimal parentid;
@@ -141,8 +141,8 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	public Subscriber(BigDecimal id, Address addressBySubscriberaddressid,
 			Address addressBySubscriberaddressktpid,
-			User mfinoUserBySubscriberuserid, User mfinoUserByUserid,
-			MfinoServiceProvider MfinoServiceProvider, KYCLevel kycLevel,
+			MfinoUser mfinoUserBySubscriberuserid, MfinoUser mfinoUserByUserid,
+			MfinoServiceProvider MfinoServiceProvider, KycLevel kycLevel,
 			Company company, AuthPersonDetails authPersonDetails,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal parentid,
@@ -267,22 +267,22 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIBERUSERID")
-	public User getMfinoUserBySubscriberuserid() {
+	public MfinoUser getMfinoUserBySubscriberuserid() {
 		return this.mfinoUserBySubscriberuserid;
 	}
 
 	public void setMfinoUserBySubscriberuserid(
-			User mfinoUserBySubscriberuserid) {
+			MfinoUser mfinoUserBySubscriberuserid) {
 		this.mfinoUserBySubscriberuserid = mfinoUserBySubscriberuserid;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID")
-	public User getMfinoUserByUserid() {
+	public MfinoUser getMfinoUserByUserid() {
 		return this.mfinoUserByUserid;
 	}
 
-	public void setMfinoUserByUserid(User mfinoUserByUserid) {
+	public void setMfinoUserByUserid(MfinoUser mfinoUserByUserid) {
 		this.mfinoUserByUserid = mfinoUserByUserid;
 	}
 
@@ -299,11 +299,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCLEVEL")
-	public KYCLevel getKycLevel() {
+	public KycLevel getKycLevel() {
 		return this.kycLevel;
 	}
 
-	public void setKycLevel(KYCLevel kycLevel) {
+	public void setKycLevel(KycLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 

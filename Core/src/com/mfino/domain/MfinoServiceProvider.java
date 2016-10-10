@@ -31,10 +31,10 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	private Set<MfsBiller> mfsBillers = new HashSet<MfsBiller>(0);
 	private Set<ServiceChargeTxnLog> serviceChargeTxnLogs = new HashSet<ServiceChargeTxnLog>(
 			0);
-	private Set<User> mfinoUsers = new HashSet<User>(0);
+	private Set<MfinoUser> mfinoUsers = new HashSet<MfinoUser>(0);
 	private Set<TransactionCharge> transactionCharges = new HashSet<TransactionCharge>(
 			0);
-	private Set<MFSBillerPartner> mfsbillerPartnerMaps = new HashSet<MFSBillerPartner>(
+	private Set<MfsbillerPartnerMap> mfsbillerPartnerMaps = new HashSet<MfsbillerPartnerMap>(
 			0);
 	private Set<TxnAmountDstrbLog> txnAmountDstrbLogs = new HashSet<TxnAmountDstrbLog>(
 			0);
@@ -42,7 +42,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	private Set<ServiceSettlementCfg> serviceSettlementCfgs = new HashSet<ServiceSettlementCfg>(
 			0);
 	private Set<Brand> brands = new HashSet<Brand>(0);
-	private Set<DistributionChainTemplate> distributionChainTemps = new HashSet<DistributionChainTemplate>(
+	private Set<DistributionChainTemp> distributionChainTemps = new HashSet<DistributionChainTemp>(
 			0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
@@ -91,12 +91,12 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 			Timestamp statustime, Set<Person2Person> person2Persons,
 			Set<BulkUpload> bulkUploads, Set<MfsBiller> mfsBillers,
 			Set<ServiceChargeTxnLog> serviceChargeTxnLogs,
-			Set<User> mfinoUsers,
+			Set<MfinoUser> mfinoUsers,
 			Set<TransactionCharge> transactionCharges,
-			Set<MFSBillerPartner> mfsbillerPartnerMaps,
+			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps,
 			Set<TxnAmountDstrbLog> txnAmountDstrbLogs, Set<Partner> partners,
 			Set<ServiceSettlementCfg> serviceSettlementCfgs, Set<Brand> brands,
-			Set<DistributionChainTemplate> distributionChainTemps,
+			Set<DistributionChainTemp> distributionChainTemps,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<PartnerServices> partnerServiceses,
 			Set<TransactionLog> transactionLogs,
@@ -228,11 +228,11 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoServiceProvider")
-	public Set<User> getMfinoUsers() {
+	public Set<MfinoUser> getMfinoUsers() {
 		return this.mfinoUsers;
 	}
 
-	public void setMfinoUsers(Set<User> mfinoUsers) {
+	public void setMfinoUsers(Set<MfinoUser> mfinoUsers) {
 		this.mfinoUsers = mfinoUsers;
 	}
 
@@ -246,12 +246,12 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoServiceProvider")
-	public Set<MFSBillerPartner> getMfsbillerPartnerMaps() {
+	public Set<MfsbillerPartnerMap> getMfsbillerPartnerMaps() {
 		return this.mfsbillerPartnerMaps;
 	}
 
 	public void setMfsbillerPartnerMaps(
-			Set<MFSBillerPartner> mfsbillerPartnerMaps) {
+			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps) {
 		this.mfsbillerPartnerMaps = mfsbillerPartnerMaps;
 	}
 
@@ -293,12 +293,12 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoServiceProvider")
-	public Set<DistributionChainTemplate> getDistributionChainTemps() {
+	public Set<DistributionChainTemp> getDistributionChainTemps() {
 		return this.distributionChainTemps;
 	}
 
 	public void setDistributionChainTemps(
-			Set<DistributionChainTemplate> distributionChainTemps) {
+			Set<DistributionChainTemp> distributionChainTemps) {
 		this.distributionChainTemps = distributionChainTemps;
 	}
 

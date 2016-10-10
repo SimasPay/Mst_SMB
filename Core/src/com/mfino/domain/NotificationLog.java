@@ -39,7 +39,7 @@ public class NotificationLog extends Base implements java.io.Serializable {
 	private long notificationreceivertype;
 	private String emailsubject;
 	private Short issensitivedata;
-	private Set<NotificationLogDetails> nlogDetailses = new HashSet<NotificationLogDetails>(0);
+	private Set<NlogDetails> nlogDetailses = new HashSet<NlogDetails>(0);
 
 	public NotificationLog() {
 	}
@@ -65,7 +65,7 @@ public class NotificationLog extends Base implements java.io.Serializable {
 			BigDecimal sctlid, long code, String text, long notificationmethod,
 			String sourceaddress, long notificationreceivertype,
 			String emailsubject, Short issensitivedata,
-			Set<NotificationLogDetails> nlogDetailses) {
+			Set<NlogDetails> nlogDetailses) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
 		this.updatedby = updatedby;
@@ -156,11 +156,11 @@ public class NotificationLog extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "notificationLog")
-	public Set<NotificationLogDetails> getNlogDetailses() {
+	public Set<NlogDetails> getNlogDetailses() {
 		return this.nlogDetailses;
 	}
 
-	public void setNlogDetailses(Set<NotificationLogDetails> nlogDetailses) {
+	public void setNlogDetailses(Set<NlogDetails> nlogDetailses) {
 		this.nlogDetailses = nlogDetailses;
 	}
 

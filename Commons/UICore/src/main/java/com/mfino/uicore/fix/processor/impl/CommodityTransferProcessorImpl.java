@@ -24,7 +24,7 @@ import com.mfino.domain.BankAdmin;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.ServiceChargeTxnLog;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
@@ -171,7 +171,7 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                 // If we reach here then this role can only see the Bank transactions.
                 query.setOnlyBankTxns(true);
 
-                User user = userService.getCurrentUser();
+                MfinoUser user = userService.getCurrentUser();
                 Set<BankAdmin> admins = user.getBankAdmins();
 
                 if (admins != null && admins.size() > 0) {

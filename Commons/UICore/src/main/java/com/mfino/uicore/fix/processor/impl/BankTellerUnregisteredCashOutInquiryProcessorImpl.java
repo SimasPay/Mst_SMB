@@ -31,7 +31,7 @@ import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
 import com.mfino.domain.UnregisteredTxnInfo;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CFIXMsg;
@@ -106,7 +106,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		CMJSCashOutUnregisteredInquiry realMsg = (CMJSCashOutUnregisteredInquiry) msg;
 		CMJSError errorMsg = new CMJSError();
 
-		User user = userService.getCurrentUser();
+		MfinoUser user = userService.getCurrentUser();
 		Set<Partner> partners = user.getPartners();
 		if (partners == null || partners.isEmpty()) {
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));

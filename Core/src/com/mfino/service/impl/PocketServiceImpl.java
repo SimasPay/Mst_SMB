@@ -34,7 +34,7 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
@@ -43,7 +43,7 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.exceptions.MfinoRuntimeException;
@@ -801,7 +801,7 @@ public class PocketServiceImpl implements PocketService{
 	public boolean isAllowed(PocketTemplate pocketTemplate,
 			SubscriberMdn mdn) {
 		KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
-		List<KYCLevel> levels=kycLevelDAO.getAll();
+		List<KycLevel> levels=kycLevelDAO.getAll();
 		Subscriber sub=mdn.getSubscriber();
 		
 		//check for not to add collector pocket to subscriber
@@ -950,7 +950,7 @@ public class PocketServiceImpl implements PocketService{
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public Pocket getSuspencePocket(User user) {
+	public Pocket getSuspencePocket(MfinoUser user) {
 		Pocket result = null;
 		if (user != null) {
 			Set<Partner> setPartner = user.getPartners();

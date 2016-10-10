@@ -18,7 +18,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -141,7 +141,7 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 		}
 		
 		//For Integration Code
-		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(ibtConfirm.getBillerCode());
+		MfsbillerPartnerMap mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(ibtConfirm.getBillerCode());
 		if (mfsBillerPartner != null){
 			ibtConfirm.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
@@ -205,9 +205,9 @@ public class NewInterBankTransferHandlerImpl extends FIXMessageHandler implement
 				ibtConfirm.setDestinationBankAccountNo(res.get(0).getInvoicenumber());
 				ibtConfirm.setIntegrationCode(res.get(0).getIntegrationcode());
 				ibtConfirm.setPartnerBillerCode(res.get(0).getPartnerbillercode());
-				Iterator<MFSBillerPartner> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
+				Iterator<MfsbillerPartnerMap> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
-					MFSBillerPartner mfsbiller = mfsBillers.next();
+					MfsbillerPartnerMap mfsbiller = mfsBillers.next();
 					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(ibtConfirm.getBillerCode())){
 						ibtConfirm.setBillerPartnerType(mfsbiller.getBillerpartnertype().intValue());
 						break;

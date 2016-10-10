@@ -12,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.PtcGroupMapping;
@@ -51,7 +51,7 @@ public class PocketTemplateConfigDAO extends BaseDAO<PocketTemplateConfig> {
 			/*criteria.createAlias(KYCLEVELTABLE, KYCLEVEL_ALIAS);
 			criteria.add(Restrictions.eq(KYCLEVEL_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + KYCLevel.FieldName_RecordID, query.get_KYCLevel()));*/
 			criteria.createAlias(PocketTemplateConfig.FieldName_KYCLevelByKYCLevel, "kbk");
-			criteria.add(Restrictions.eq("kbk."+KYCLevel.FieldName_KYCLevel, query.get_KYCLevel()));
+			criteria.add(Restrictions.eq("kbk."+KycLevel.FieldName_KYCLevel, query.get_KYCLevel()));
 		}
 		if (query.get_pocketType() != null) {
 			criteria.add(Restrictions.eq(

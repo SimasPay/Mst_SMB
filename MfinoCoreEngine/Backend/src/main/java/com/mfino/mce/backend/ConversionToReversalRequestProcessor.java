@@ -20,7 +20,7 @@ import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.dao.query.InterBankTransfersQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.IntegrationSummary;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
@@ -105,7 +105,7 @@ public class ConversionToReversalRequestProcessor {
 			InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 			InterBankTransfersQuery query = new InterBankTransfersQuery();
 			query.setSctlId(moneyTransferToBank.getServiceChargeTransactionLogID());
-			List<InterbankTransfer> ibtList = interBankTransferDao.get(query);
+			List<InterbankTransfers> ibtList = interBankTransferDao.get(query);
 
 			if(ibtList!=null && !ibtList.isEmpty()) {
 				//Only there should be one record for a given sctld

@@ -14,7 +14,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IPMappingDAO;
 import com.mfino.dao.IntegrationPartnerMappingDAO;
 import com.mfino.dao.query.IPMappingQuery;
-import com.mfino.domain.IPMapping;
+import com.mfino.domain.IpMapping;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSIPMapping;
@@ -28,7 +28,7 @@ import com.mfino.uicore.fix.processor.IPMappingprocessor;
 @Service("IPMappingprocessorImpl")
 public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappingprocessor {
 	
-	private void updateEntity(IPMapping ipm, CMJSIPMapping.CGEntries e) {
+	private void updateEntity(IpMapping ipm, CMJSIPMapping.CGEntries e) {
 		IntegrationPartnerMappingDAO integrationPartnerMappingDao = DAOFactory.getInstance().getIntegrationPartnerMappingDAO();
 		if (e.getIntegrationID() != null) {
 			ipm.setIntegrationPartnerMap(integrationPartnerMappingDao.getById(e.getIntegrationID()));
@@ -38,7 +38,7 @@ public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappin
 		}
 	}
 	
-	private void updateMessage(IPMapping ipm, CMJSIPMapping.CGEntries e) {
+	private void updateMessage(IpMapping ipm, CMJSIPMapping.CGEntries e) {
 		e.setID(ipm.getId().longValue());
 		if(ipm.getIntegrationPartnerMap() != null)
 		{
@@ -63,10 +63,10 @@ public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappin
 				query.setIntegrationID(realMsg.getIntegrationID());
 			}
 			
-			List<IPMapping> lst = dao.get(query);
+			List<IpMapping> lst = dao.get(query);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				realMsg.allocateEntries(lst.size());
-				for (IPMapping ipm: lst){
+				for (IpMapping ipm: lst){
 					CMJSIPMapping.CGEntries e = new CMJSIPMapping.CGEntries();
 					updateMessage(ipm, e);
 					realMsg.getEntries()[i] = e;
@@ -80,7 +80,7 @@ public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappin
 			CMJSIPMapping.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSIPMapping.CGEntries e: entries) {
-				IPMapping ipm = new IPMapping();
+				IpMapping ipm = new IpMapping();
 				updateEntity(ipm, e);
 				dao.save(ipm);
 				updateMessage(ipm, e);
@@ -91,7 +91,7 @@ public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappin
 			CMJSIPMapping.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSIPMapping.CGEntries e: entries) {
-				IPMapping ipm = dao.getById(e.getID());
+				IpMapping ipm = dao.getById(e.getID());
         		if (!(e.getRecordVersion().equals(ipm.getVersion()))) {
         			handleStaleDataException();
         		}

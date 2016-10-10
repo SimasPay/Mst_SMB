@@ -31,9 +31,9 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 	private String mfsbillername;
 	private String mfsbillercode;
 	private String mfsbillertype;
-	private Set<MFSBillerPartner> mfsbillerPartnerMaps = new HashSet<MFSBillerPartner>(
+	private Set<MfsbillerPartnerMap> mfsbillerPartnerMaps = new HashSet<MfsbillerPartnerMap>(
 			0);
-	private Set<IntegrationPartnerMapping> integrationPartnerMaps = new HashSet<IntegrationPartnerMapping>(
+	private Set<IntegrationPartnerMap> integrationPartnerMaps = new HashSet<IntegrationPartnerMap>(
 			0);
 
 	public MfsBiller() {
@@ -58,8 +58,8 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String mfsbillername,
 			String mfsbillercode, String mfsbillertype,
-			Set<MFSBillerPartner> mfsbillerPartnerMaps,
-			Set<IntegrationPartnerMapping> integrationPartnerMaps) {
+			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps,
+			Set<IntegrationPartnerMap> integrationPartnerMaps) {
 		this.id = id;
 		this.mfinoServiceProvider = mfinoServiceProvider;
 		this.lastupdatetime = lastupdatetime;
@@ -114,22 +114,22 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfsBiller")
-	public Set<MFSBillerPartner> getMfsbillerPartnerMaps() {
+	public Set<MfsbillerPartnerMap> getMfsbillerPartnerMaps() {
 		return this.mfsbillerPartnerMaps;
 	}
 
 	public void setMfsbillerPartnerMaps(
-			Set<MFSBillerPartner> mfsbillerPartnerMaps) {
+			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps) {
 		this.mfsbillerPartnerMaps = mfsbillerPartnerMaps;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfsBiller")
-	public Set<IntegrationPartnerMapping> getIntegrationPartnerMaps() {
+	public Set<IntegrationPartnerMap> getIntegrationPartnerMaps() {
 		return this.integrationPartnerMaps;
 	}
 
 	public void setIntegrationPartnerMaps(
-			Set<IntegrationPartnerMapping> integrationPartnerMaps) {
+			Set<IntegrationPartnerMap> integrationPartnerMaps) {
 		this.integrationPartnerMaps = integrationPartnerMaps;
 	}
 

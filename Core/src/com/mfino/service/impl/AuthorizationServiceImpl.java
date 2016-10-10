@@ -23,7 +23,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PermissionItem;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.enums.ItemType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.AuthorizationService;
@@ -225,7 +225,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 	 * (non-Javadoc)
 	 * @see com.mfino.service.AuthorizationService#enablePinPrompt(com.mfino.domain.User)
 	 */
-	public boolean enablePinPrompt(User user) {
+	public boolean enablePinPrompt(MfinoUser user) {
 		if(user==null){
 			return false;
 		}

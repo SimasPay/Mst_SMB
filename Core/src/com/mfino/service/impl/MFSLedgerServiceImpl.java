@@ -10,19 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSLedgerDAO;
 import com.mfino.domain.LedgerBalance;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.service.MFSLedgerService;
 
 @Service("MFSLedgerServiceImpl")
 public class MFSLedgerServiceImpl implements MFSLedgerService {
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public List<MFSLedger> getLedgerEntriesByLedgerStatus(String ledgerStatus){
+	public List<MfsLedger> getLedgerEntriesByLedgerStatus(String ledgerStatus){
 		MFSLedgerDAO mfsLedgerDAO = DAOFactory.getInstance().getMFSLedgerDAO();
 		return mfsLedgerDAO.getLedgerEntriesByLedgerStatus(ledgerStatus);
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)	
-	public void save(MFSLedger mFSLedger) {
+	public void save(MfsLedger mFSLedger) {
 		MFSLedgerDAO mfsLedgerDAO = DAOFactory.getInstance().getMFSLedgerDAO();
 		mfsLedgerDAO.save(mFSLedger);
 	}

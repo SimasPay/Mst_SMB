@@ -29,7 +29,7 @@ import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
@@ -199,7 +199,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
-		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
 			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
@@ -340,7 +340,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
-		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
 			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
@@ -510,7 +510,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
 		mbpquery.setBillerCode(billPay.getBillerCode());
-		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
 			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
@@ -750,7 +750,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
 		mbpquery.setBillerCode(qrPayment.getBillerCode());
-		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
 			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
@@ -1179,7 +1179,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
 		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
 		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
-		List<MFSBillerPartner> results = mfsbpDAO.get(mbpquery);
+		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
 			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);

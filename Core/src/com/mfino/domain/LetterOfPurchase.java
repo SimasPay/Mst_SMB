@@ -22,7 +22,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "LETTER_OF_PURCHASE")
-public class LOP extends Base implements java.io.Serializable {
+public class LetterOfPurchase extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_Company = "company";
@@ -30,11 +30,11 @@ public class LOP extends Base implements java.io.Serializable {
 	public static final String FieldName_LOPStatus = "status";
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
-	private DistributionChainTemplate distributionChainTemp;
+	private DistributionChainTemp distributionChainTemp;
 	private Merchant merchant;
-	private BulkLOP bulkLop;
+	private BulkLop bulkLop;
 	private Company company;
-	private DistributionChainLevel distributionChainLvl;
+	private DistributionChainLvl distributionChainLvl;
 	private Long levelpermissions;
 	private String girorefid;
 	private String transferdate;
@@ -58,12 +58,14 @@ public class LOP extends Base implements java.io.Serializable {
 			0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
-	private Set<LOPHistory> lopHistories = new HashSet<LOPHistory>(0);
+	private Set<LopHistory> lopHistories = new HashSet<LopHistory>(0);
 
-	public LOP() {
+	 public LetterOfPurchase() {
+		// TODO Auto-generated constructor stub
+	 
 	}
 
-	public LOP(BigDecimal id, SubscriberMdn subscriberMdn,
+	public LetterOfPurchase(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog, Merchant merchant, Company company,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long sourceapplication) {
@@ -79,11 +81,11 @@ public class LOP extends Base implements java.io.Serializable {
 		this.sourceapplication = sourceapplication;
 	}
 
-	public LOP(BigDecimal id, SubscriberMdn subscriberMdn,
+	public LetterOfPurchase(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog,
-			DistributionChainTemplate distributionChainTemp, Merchant merchant,
-			BulkLOP bulkLop, Company company,
-			DistributionChainLevel distributionChainLvl,
+			DistributionChainTemp distributionChainTemp, Merchant merchant,
+			BulkLop bulkLop, Company company,
+			DistributionChainLvl distributionChainLvl,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, Long levelpermissions,
 			String girorefid, String transferdate, BigDecimal actualamountpaid,
@@ -95,7 +97,7 @@ public class LOP extends Base implements java.io.Serializable {
 			Short iscommissionchanged,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<LOPHistory> lopHistories) {
+			Set<LopHistory> lopHistories) {
 		this.id = id;
 		this.subscriberMdn = subscriberMdn;
 		this.transactionLog = transactionLog;
@@ -156,12 +158,12 @@ public class LOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTID")
-	public DistributionChainTemplate getDistributionChainTemp() {
+	public DistributionChainTemp getDistributionChainTemp() {
 		return this.distributionChainTemp;
 	}
 
 	public void setDistributionChainTemp(
-			DistributionChainTemplate distributionChainTemp) {
+			DistributionChainTemp distributionChainTemp) {
 		this.distributionChainTemp = distributionChainTemp;
 	}
 
@@ -177,11 +179,11 @@ public class LOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BULKLOPID")
-	public BulkLOP getBulkLop() {
+	public BulkLop getBulkLop() {
 		return this.bulkLop;
 	}
 
-	public void setBulkLop(BulkLOP bulkLop) {
+	public void setBulkLop(BulkLop bulkLop) {
 		this.bulkLop = bulkLop;
 	}
 
@@ -197,12 +199,12 @@ public class LOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLevel getDistributionChainLvl() {
+	public DistributionChainLvl getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLevel distributionChainLvl) {
+			DistributionChainLvl distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 
@@ -399,11 +401,11 @@ public class LOP extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "letterOfPurchase")
-	public Set<LOPHistory> getLopHistories() {
+	public Set<LopHistory> getLopHistories() {
 		return this.lopHistories;
 	}
 
-	public void setLopHistories(Set<LOPHistory> lopHistories) {
+	public void setLopHistories(Set<LopHistory> lopHistories) {
 		this.lopHistories = lopHistories;
 	}
 

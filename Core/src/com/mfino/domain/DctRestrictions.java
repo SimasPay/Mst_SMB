@@ -17,7 +17,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "DCT_RESTRICTIONS", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"DCTID", "TRANSACTIONTYPEID", "RELATIONSHIPTYPE", "DISTRIBUTIONLEVEL" }))
-public class DCTRestrictions extends Base implements java.io.Serializable {
+public class DctRestrictions extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,10 +33,10 @@ public class DCTRestrictions extends Base implements java.io.Serializable {
 	private Long distributionlevel;
 	private Short isallowed;
 
-	public DCTRestrictions() {
+	public DctRestrictions() {
 	}
 
-	public DCTRestrictions(BigDecimal id, Timestamp lastupdatetime,
+	public DctRestrictions(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long dctid) {
 		this.id = id;
@@ -47,7 +47,7 @@ public class DCTRestrictions extends Base implements java.io.Serializable {
 		this.dctid = dctid;
 	}
 
-	public DCTRestrictions(BigDecimal id, Timestamp lastupdatetime,
+	public DctRestrictions(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long dctid, Long transactiontypeid, Long relationshiptype,
 			Long distributionlevel, Short isallowed) {

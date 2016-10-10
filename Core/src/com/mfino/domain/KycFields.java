@@ -21,18 +21,18 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "KYC_FIELDS")
-public class KYCFields extends Base implements java.io.Serializable {
+public class KycFields extends Base implements java.io.Serializable {
 
 	
 	public static final String FieldName_KYCLevelByKYCFieldsLevelID = "kycLevel";
-	private KYCLevel kycLevel;
+	private KycLevel kycLevel;
 	private String kycfieldsname;
 	private String kycfieldsdescription;
 
-	public KYCFields() {
+	public KycFields() {
 	}
 
-	public KYCFields(BigDecimal id, KYCLevel kycLevel,
+	public KycFields(BigDecimal id, KycLevel kycLevel,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String kycfieldsname) {
 		this.id = id;
@@ -44,7 +44,7 @@ public class KYCFields extends Base implements java.io.Serializable {
 		this.kycfieldsname = kycfieldsname;
 	}
 
-	public KYCFields(BigDecimal id, KYCLevel kycLevel,
+	public KycFields(BigDecimal id, KycLevel kycLevel,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String kycfieldsname,
 			String kycfieldsdescription) {
@@ -62,11 +62,11 @@ public class KYCFields extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCFIELDSLEVELID", nullable = false)
-	public KYCLevel getKycLevel() {
+	public KycLevel getKycLevel() {
 		return this.kycLevel;
 	}
 
-	public void setKycLevel(KYCLevel kycLevel) {
+	public void setKycLevel(KycLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 

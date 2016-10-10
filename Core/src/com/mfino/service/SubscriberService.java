@@ -14,7 +14,7 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 
 /**
  * @author Shashank
@@ -195,7 +195,7 @@ public interface SubscriberService {
 	 * @param user
 	 * @return
 	 */
-	public boolean isPasswordExpired(User user);
+	public boolean isPasswordExpired(MfinoUser user);
 	
 	/**
 	 * Normalize mdn with the country code

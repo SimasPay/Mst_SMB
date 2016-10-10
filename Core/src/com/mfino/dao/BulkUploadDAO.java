@@ -17,7 +17,7 @@ import com.mfino.dao.query.BulkUploadQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -84,7 +84,7 @@ public class BulkUploadDAO extends BaseDAO<BulkUpload> {
 		}
 		if (query.getUserId() != null) {
 			criteria.createAlias(BulkUpload.FieldName_User, "user");
-			criteria.add(Restrictions.eq("user."+User.FieldName_RecordID, query.getUserId()));
+			criteria.add(Restrictions.eq("user."+MfinoUser.FieldName_RecordID, query.getUserId()));
 		}
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")

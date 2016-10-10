@@ -23,13 +23,13 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "DISTRIBUTION_CHAIN_LVL", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"TEMPLATEID", "DISTRIBUTIONLEVEL" }))
-public class DistributionChainLevel extends Base implements java.io.Serializable {
+public class DistributionChainLvl extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_DistributionChainTemplateByTemplateID = null;
 	public static final String FieldName_DistributionLevel = "distributionlevel";
 	
-	private DistributionChainTemplate distributionChainTemp;
+	private DistributionChainTemp distributionChainTemp;
 	private long distributionlevel;
 	private long permissions;
 	private BigDecimal commission;
@@ -40,17 +40,17 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 	private Long transactiontypeid;
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
-	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
-	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
+	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
 
-	public DistributionChainLevel() {
+	public DistributionChainLvl() {
 	}
 
-	public DistributionChainLevel(BigDecimal id,
-			DistributionChainTemplate distributionChainTemp,
+	public DistributionChainLvl(BigDecimal id,
+			DistributionChainTemp distributionChainTemp,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long distributionlevel,
 			long permissions) {
@@ -64,15 +64,15 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 		this.permissions = permissions;
 	}
 
-	public DistributionChainLevel(BigDecimal id,
-			DistributionChainTemplate distributionChainTemp,
+	public DistributionChainLvl(BigDecimal id,
+			DistributionChainTemp distributionChainTemp,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long distributionlevel,
 			long permissions, BigDecimal commission, BigDecimal maxcommission,
 			BigDecimal mincommission, BigDecimal maxweeklylopamount,
 			BigDecimal maxlopamount, Long transactiontypeid,
 			Set<CommodityTransfer> commodityTransfers,
-			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers) {
 		this.id = id;
 		this.distributionChainTemp = distributionChainTemp;
@@ -97,12 +97,12 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TEMPLATEID", nullable = false)
-	public DistributionChainTemplate getDistributionChainTemp() {
+	public DistributionChainTemp getDistributionChainTemp() {
 		return this.distributionChainTemp;
 	}
 
 	public void setDistributionChainTemp(
-			DistributionChainTemplate distributionChainTemp) {
+			DistributionChainTemp distributionChainTemp) {
 		this.distributionChainTemp = distributionChainTemp;
 	}
 
@@ -190,20 +190,20 @@ public class DistributionChainLevel extends Base implements java.io.Serializable
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainLvl")
-	public Set<LOP> getLetterOfPurchases() {
+	public Set<LetterOfPurchase> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "distributionChainLvl")
-	public Set<BulkLOP> getBulkLops() {
+	public Set<BulkLop> getBulkLops() {
 		return this.bulkLops;
 	}
 
-	public void setBulkLops(Set<BulkLOP> bulkLops) {
+	public void setBulkLops(Set<BulkLop> bulkLops) {
 		this.bulkLops = bulkLops;
 	}
 

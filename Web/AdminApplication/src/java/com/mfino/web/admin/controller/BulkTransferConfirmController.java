@@ -27,7 +27,7 @@ import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.RolePermission;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.BulkUploadEntryService;
@@ -103,7 +103,7 @@ public class BulkTransferConfirmController {
         		String message = ConfigurationUtil.getBulkTranferApproverMessage();
         		String subject = ConfigurationUtil.getBulkTransferApproverSubject();
         		UserQuery userQuery = new UserQuery();
-        		List<User> lstApprover = null;
+        		List<MfinoUser> lstApprover = null;
         		List<RolePermission> rolePermissions = permissionService.getByPermission(CmFinoFIX.Permission_BulkTransfer_Approve);
         		List<Integer> roles = new ArrayList<Integer>();
         		Iterator<RolePermission> iterator = rolePermissions.iterator();
@@ -116,7 +116,7 @@ public class BulkTransferConfirmController {
         			lstApprover = userService.get(userQuery);
         		}
         		if (CollectionUtils.isNotEmpty(lstApprover)) {
-        			for (User approver: lstApprover) {
+        			for (MfinoUser approver: lstApprover) {
         				mailService.asyncSendEmail(approver.getEmail(), approver.getFirstname() + " " + approver.getLastname(), subject, message);
         			}
         		}

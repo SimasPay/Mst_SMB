@@ -30,7 +30,7 @@ import com.mfino.hibernate.Timestamp;
 @Entity
 @Table(name = "MFINO_USER", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"MSPID", "USERNAME" }))
-public class User  extends Base implements java.io.Serializable {
+public class MfinoUser  extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_mFinoServiceProviderByMSPID = "mfinoServiceProvider";
 	public static final String FieldName_Username = "username";
@@ -82,7 +82,7 @@ public class User  extends Base implements java.io.Serializable {
 	private Long branchcodeid;
 	private Set<Subscriber> subscribersForSubscriberuserid = new HashSet<Subscriber>(
 			0);
-	private Set<SMSPartner> smsPartners = new HashSet<SMSPartner>(0);
+	private Set<SmsPartner> smsPartners = new HashSet<SmsPartner>(0);
 	private Set<Subscriber> subscribersForUserid = new HashSet<Subscriber>(0);
 	private Set<BulkUpload> bulkUploads = new HashSet<BulkUpload>(0);
 	private Set<Partner> partners = new HashSet<Partner>(0);
@@ -125,10 +125,10 @@ public class User  extends Base implements java.io.Serializable {
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
     }
-	public User() {
+	public MfinoUser() {
 	}
 
-	public User(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
+	public MfinoUser(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
 			Company company, Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long language,
 			long restrictions, long status, Timestamp statustime,
@@ -147,7 +147,7 @@ public class User  extends Base implements java.io.Serializable {
 		this.failedlogincount = failedlogincount;
 	}
 
-	public User(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
+	public MfinoUser(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
 			Company company, Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String username,
 			String password, String firstname, String lastname, String email,
@@ -165,7 +165,7 @@ public class User  extends Base implements java.io.Serializable {
 			Timestamp lastpasswordchangetime, String passwordhistory,
 			Short isloggedin, Long branchcodeid,
 			Set<Subscriber> subscribersForSubscriberuserid,
-			Set<SMSPartner> smsPartners, Set<Subscriber> subscribersForUserid,
+			Set<SmsPartner> smsPartners, Set<Subscriber> subscribersForUserid,
 			Set<BulkUpload> bulkUploads, Set<Partner> partners,
 			Set<BankAdmin> bankAdmins) {
 		this.id = id;
@@ -578,11 +578,11 @@ public class User  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mfinoUser")
-	public Set<SMSPartner> getSmsPartners() {
+	public Set<SmsPartner> getSmsPartners() {
 		return this.smsPartners;
 	}
 
-	public void setSmsPartners(Set<SMSPartner> smsPartners) {
+	public void setSmsPartners(Set<SmsPartner> smsPartners) {
 		this.smsPartners = smsPartners;
 	}
 

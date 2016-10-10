@@ -12,7 +12,7 @@ import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.PocketQuery;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SubscriberMdn;
@@ -70,7 +70,7 @@ public class BulkUploadUtil {
 	}
 	public static PocketTemplate getPocketTemplateForEmoney(Long kyclevel) {
 		KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
-		KYCLevel KycLevel = kycLevelDAO.getByKycLevel(kyclevel);
+		KycLevel KycLevel = kycLevelDAO.getByKycLevel(kyclevel);
 		return KycLevel.getPocketTemplate();
 	}
 

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
 import com.mfino.domain.NotificationLog;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -52,7 +52,7 @@ public class ResendNotificationProcessorImpl extends BaseFixProcessor implements
 			{
 
 				NotificationLog notificationLog = DAOFactory.getInstance().getNotificationLogDao().getById(Long.parseLong(notificationLogID));
-				NotificationLogDetails notificationLogDetails = new NotificationLogDetails();
+				NlogDetails notificationLogDetails = new NlogDetails();
 				NotificationLogDetailsDAO notificationLogDetailsDAO = DAOFactory.getInstance().getNotificationLogDetailsDao();	
 				notificationLogDetails.setNotificationLog(notificationLog);
 				notificationLogDetails.setStatus(CmFinoFIX.SendNotificationStatus_Sending);

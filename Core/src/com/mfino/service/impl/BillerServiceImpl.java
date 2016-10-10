@@ -17,7 +17,7 @@ import com.mfino.dao.MFSBillerPartnerDAO;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.MFSBillerQuery;
 import com.mfino.domain.MfsBiller;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.service.BillerService;
 
@@ -62,9 +62,9 @@ public class BillerServiceImpl implements BillerService {
 			MFSBillerPartnerQuery billerPartnerQuery = new MFSBillerPartnerQuery();
 			billerPartnerQuery.setMfsBillerId(biller.getId().longValue());
 //			List<MFSBillerPartner> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
-			List<MFSBillerPartner> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
+			List<MfsbillerPartnerMap> billerPartners = billerPartnerDAO.get(billerPartnerQuery);
 			if(billerPartners.size()==1){
-				MFSBillerPartner billerPartner = billerPartners.get(0);
+				MfsbillerPartnerMap billerPartner = billerPartners.get(0);
 				partner = billerPartner.getPartner();
 				log.info("got the partner with id: "+partner.getId()+"as the biller partner");
 			}

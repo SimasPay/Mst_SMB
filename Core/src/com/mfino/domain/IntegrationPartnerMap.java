@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "INTEGRATION_PARTNER_MAP")
-public class IntegrationPartnerMapping extends Base implements java.io.Serializable {
+public class IntegrationPartnerMap extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_InstitutionID = "institutionid";
 	public static final String FieldName_IntegrationName = "integrationname";
@@ -35,12 +35,12 @@ public class IntegrationPartnerMapping extends Base implements java.io.Serializa
 	private Short isauthenticationkeyenabled;
 	private Short isloginenabled;
 	private Short isapptypecheckenabled;
-	private Set<IPMapping> ipMappings = new HashSet<IPMapping>(0);
+	private Set<IpMapping> ipMappings = new HashSet<IpMapping>(0);
 
-	public IntegrationPartnerMapping() {
+	public IntegrationPartnerMap() {
 	}
 
-	public IntegrationPartnerMapping(BigDecimal id, Timestamp lastupdatetime,
+	public IntegrationPartnerMap(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String institutionid) {
 		this.id = id;
@@ -51,12 +51,12 @@ public class IntegrationPartnerMapping extends Base implements java.io.Serializa
 		this.institutionid = institutionid;
 	}
 
-	public IntegrationPartnerMapping(BigDecimal id, Partner partner,
+	public IntegrationPartnerMap(BigDecimal id, Partner partner,
 			MfsBiller mfsBiller, Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String institutionid,
 			String integrationname, String authenticationkey,
 			Short isauthenticationkeyenabled, Short isloginenabled,
-			Short isapptypecheckenabled, Set<IPMapping> ipMappings) {
+			Short isapptypecheckenabled, Set<IpMapping> ipMappings) {
 		this.id = id;
 		this.partner = partner;
 		this.mfsBiller = mfsBiller;
@@ -150,11 +150,11 @@ public class IntegrationPartnerMapping extends Base implements java.io.Serializa
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "integrationPartnerMap")
-	public Set<IPMapping> getIpMappings() {
+	public Set<IpMapping> getIpMappings() {
 		return this.ipMappings;
 	}
 
-	public void setIpMappings(Set<IPMapping> ipMappings) {
+	public void setIpMappings(Set<IpMapping> ipMappings) {
 		this.ipMappings = ipMappings;
 	}
 

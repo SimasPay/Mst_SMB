@@ -30,7 +30,7 @@ import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.ExcludeSubscriberLifeCycle;
+import com.mfino.domain.ExcludeSubscriberLc;
 import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -589,7 +589,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 	 * @param subscriber, subscriberMDN
 	 */
 	private void inActivateActiveSubscriber(Subscriber subscriber,SubscriberMdn subscriberMDN,SubscriberStatusEvent subscriberStatusEvent){
-		ExcludeSubscriberLifeCycle eslcSub = excludeSubscriberLifeCycleService.getBySubscriberMDN(subscriberMDN);
+		ExcludeSubscriberLc eslcSub = excludeSubscriberLifeCycleService.getBySubscriberMDN(subscriberMDN);
 		if(eslcSub != null){
 			log.info("We can't inactivate this subscriber because he is a part of excludeSubscriberLifeCycle and the subscriber id is -->" + subscriber.getId());
 			return ;

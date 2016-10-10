@@ -25,9 +25,9 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMSubscriberActivation;
 import com.mfino.hibernate.Timestamp;
@@ -206,7 +206,7 @@ public class AgentServiceImpl implements AgentService {
 		Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		Long groupID = null;
 		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		SubscriberGroup subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
+		SubscriberGroups subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
 		if(subscriberGroup != null)
 		{
 			groupID = subscriberGroup.getGroupid();
@@ -338,7 +338,7 @@ public class AgentServiceImpl implements AgentService {
 		}
 
 		agent.setPartnerstatus(CmFinoFIX.SubscriberStatus_Active);
-		User user = agent.getMfinoUser();
+		MfinoUser user = agent.getMfinoUser();
 		user.setStatus(CmFinoFIX.UserStatus_Active);
 		user.setStatustime(new Timestamp());
 		user.setFailedlogincount(0);

@@ -21,7 +21,7 @@ import com.mfino.dao.InterbankCodesDao;
 import com.mfino.dao.query.InterBankCodesQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.InterbankCodes;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -170,7 +170,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 			return result;
 		}
 		//For Integration Code
-		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(ibtInquiry.getBillerCode());
+		MfsbillerPartnerMap mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(ibtInquiry.getBillerCode());
 		if (mfsBillerPartner != null){
 			ibtInquiry.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
@@ -200,7 +200,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		
 		ibtInquiry.setEmail(sourceMDN.getSubscriber().getEmail());
 		
-		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
+		MfsbillerPartnerMap results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
 			ibtInquiry.setIntegrationCode(results.getIntegrationcode());
 			ibtInquiry.setPartnerBillerCode(results.getPartnerbillercode());

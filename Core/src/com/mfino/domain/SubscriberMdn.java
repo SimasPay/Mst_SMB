@@ -80,7 +80,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			0);
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(
 			0);
-	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
+	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
 			0);
 	private Set<ClosedAccountSettlementMDN> closeAcctSetlMdns = new HashSet<ClosedAccountSettlementMDN>(
@@ -88,9 +88,9 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Set<Pocket> pockets = new HashSet<Pocket>(0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
-	private Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLifeCycle>(
+	private Set<ExcludeSubscriberLc> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLc>(
 			0);
-	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
 	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
 			0);
@@ -139,12 +139,12 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			String closeuser, String ktpid,
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid,
 			Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid,
-			Set<BulkLOP> bulkLops,
+			Set<BulkLop> bulkLops,
 			Set<PendingCommodityTransfer> pendingCommodityTransfers,
 			Set<ClosedAccountSettlementMDN> closeAcctSetlMdns, Set<Pocket> pockets,
 			Set<CommodityTransfer> commodityTransfers,
-			Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs,
-			Set<LOP> letterOfPurchases,
+			Set<ExcludeSubscriberLc> excludeSubscriberLcs,
+			Set<LetterOfPurchase> letterOfPurchases,
 			Set<UnregisteredTxnInfo> unregisteredTxnInfos,
 			Set<ChannelSessionManagement> channelSessionMgmts) {
 		this.id = id;
@@ -620,11 +620,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<BulkLOP> getBulkLops() {
+	public Set<BulkLop> getBulkLops() {
 		return this.bulkLops;
 	}
 
-	public void setBulkLops(Set<BulkLOP> bulkLops) {
+	public void setBulkLops(Set<BulkLop> bulkLops) {
 		this.bulkLops = bulkLops;
 	}
 
@@ -666,21 +666,21 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<ExcludeSubscriberLifeCycle> getExcludeSubscriberLcs() {
+	public Set<ExcludeSubscriberLc> getExcludeSubscriberLcs() {
 		return this.excludeSubscriberLcs;
 	}
 
 	public void setExcludeSubscriberLcs(
-			Set<ExcludeSubscriberLifeCycle> excludeSubscriberLcs) {
+			Set<ExcludeSubscriberLc> excludeSubscriberLcs) {
 		this.excludeSubscriberLcs = excludeSubscriberLcs;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdn")
-	public Set<LOP> getLetterOfPurchases() {
+	public Set<LetterOfPurchase> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

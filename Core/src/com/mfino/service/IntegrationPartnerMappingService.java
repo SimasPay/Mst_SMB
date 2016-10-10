@@ -3,7 +3,7 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 
 /**
  * @author Sreenath
@@ -15,7 +15,7 @@ public interface IntegrationPartnerMappingService {
 	 * @param institutionId
 	 * @return
 	 */
-	public IntegrationPartnerMapping getByInstitutionID(String institutionId);
+	public IntegrationPartnerMap getByInstitutionID(String institutionId);
 	
 	/**
 	 * Generates AuthenticationKey related to integration

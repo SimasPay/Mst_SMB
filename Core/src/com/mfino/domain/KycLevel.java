@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "KYC_LEVEL", uniqueConstraints = @UniqueConstraint(columnNames = "KYCLEVEL"))
-public class KYCLevel extends Base implements java.io.Serializable {
+public class KycLevel extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_KYCLevel = "kyclevel";
 	public static final String FieldName_KYCLevelName = "kyclevelname";
@@ -33,17 +33,17 @@ public class KYCLevel extends Base implements java.io.Serializable {
 			0);
 	private Set<TransactionRule> transactionRulesForSourcekyc = new HashSet<TransactionRule>(
 			0);
-	private Set<KYCFields> kycFieldses = new HashSet<KYCFields>(0);
+	private Set<KycFields> kycFieldses = new HashSet<KycFields>(0);
 	private Set<Subscriber> subscribers = new HashSet<Subscriber>(0);
 	private Set<PocketTemplateConfig> pocketTemplateConfigs = new HashSet<PocketTemplateConfig>(
 			0);
 	private Set<ActorChannelMapping> actorChannelMappings = new HashSet<ActorChannelMapping>(
 			0);
 
-	public KYCLevel() {
+	public KycLevel() {
 	}
 
-	public KYCLevel(BigDecimal id, Timestamp lastupdatetime,
+	public KycLevel(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal kyclevel, String kyclevelname) {
 		this.id = id;
@@ -55,13 +55,13 @@ public class KYCLevel extends Base implements java.io.Serializable {
 		this.kyclevelname = kyclevelname;
 	}
 
-	public KYCLevel(BigDecimal id, PocketTemplate pocketTemplate,
+	public KycLevel(BigDecimal id, PocketTemplate pocketTemplate,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal kyclevel,
 			String kyclevelname, String kycleveldescription,
 			Set<TransactionRule> transactionRulesForDestkyc,
 			Set<TransactionRule> transactionRulesForSourcekyc,
-			Set<KYCFields> kycFieldses, Set<Subscriber> subscribers,
+			Set<KycFields> kycFieldses, Set<Subscriber> subscribers,
 			Set<PocketTemplateConfig> pocketTemplateConfigs,
 			Set<ActorChannelMapping> actorChannelMappings) {
 		this.id = id;
@@ -142,11 +142,11 @@ public class KYCLevel extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "kycLevel")
-	public Set<KYCFields> getKycFieldses() {
+	public Set<KycFields> getKycFieldses() {
 		return this.kycFieldses;
 	}
 
-	public void setKycFieldses(Set<KYCFields> kycFieldses) {
+	public void setKycFieldses(Set<KycFields> kycFieldses) {
 		this.kycFieldses = kycFieldses;
 	}
 

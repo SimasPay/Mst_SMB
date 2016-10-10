@@ -12,26 +12,26 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.MDNRangeQuery;
-import com.mfino.domain.MDNRange;
+import com.mfino.domain.MdnRange;
 import com.mfino.domain.Merchant;
 
 /**
  *
  * @author ADMIN
  */
-public class MDNRangeDAO extends BaseDAO<MDNRange>{
+public class MDNRangeDAO extends BaseDAO<MdnRange>{
 
 
-    public List<MDNRange> get(MDNRangeQuery query) {
+    public List<MdnRange> get(MDNRangeQuery query) {
 
         final String MERCHANT_ASSOC_NAME = "Merchant";
         Criteria criteria = createCriteria();
         
         if (query.getStartPrefix() != null) {
-            criteria.add(Restrictions.like(MDNRange.FieldName_StartPrefix, query.getStartPrefix()).ignoreCase());
+            criteria.add(Restrictions.like(MdnRange.FieldName_StartPrefix, query.getStartPrefix()).ignoreCase());
         }
         if (query.getEndPrefix() != null) {
-            criteria.add(Restrictions.like(MDNRange.FieldName_EndPrefix, query.getEndPrefix()).ignoreCase());
+            criteria.add(Restrictions.like(MdnRange.FieldName_EndPrefix, query.getEndPrefix()).ignoreCase());
         }
         if (query.getMerchantId() != null) {
             final String merchantAlias = MERCHANT_ASSOC_NAME + DAOConstants.ALIAS_SUFFIX;
@@ -42,13 +42,13 @@ public class MDNRangeDAO extends BaseDAO<MDNRange>{
         }
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
-        List<MDNRange> results = criteria.list();
+        List<MdnRange> results = criteria.list();
 
         return results;
     }
 
     @Override
-    public void save(MDNRange mr) {
+    public void save(MdnRange mr) {
         super.save(mr);
     }
 }

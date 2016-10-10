@@ -10,7 +10,7 @@ import com.mfino.constants.DAOConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Ledger;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.mce.backend.LedgerService;
@@ -56,9 +56,9 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 	 * @param isNettingOn
 	 * @return
 	 */
-	public List<MFSLedger> createLedgerEntries(boolean isSettlement ,Long sctlId, Long ctID, Pocket srcPocket, Pocket destPocket, Pocket chargesPocket, BigDecimal amount, BigDecimal charges, 
+	public List<MfsLedger> createLedgerEntries(boolean isSettlement ,Long sctlId, Long ctID, Pocket srcPocket, Pocket destPocket, Pocket chargesPocket, BigDecimal amount, BigDecimal charges, 
 			boolean isNettingOn) {
-		List<MFSLedger> lstMfsLedgers = null;
+		List<MfsLedger> lstMfsLedgers = null;
 		BigDecimal srcAmount = null;
 		Pocket suspensePocket = coreDataWrapper.getSuspensePocket();
 		if (srcPocket.getId().equals(destPocket.getId())) {
@@ -69,7 +69,7 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 			return null;
 		}
 		
-		lstMfsLedgers = new ArrayList<MFSLedger>();
+		lstMfsLedgers = new ArrayList<MfsLedger>();
 		
 		if (charges.compareTo(BigDecimal.ZERO) == 1) {
 			srcAmount = amount.add(charges);
@@ -151,8 +151,8 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 	 * @param isImmediateUpdateRequired
 	 * @return
 	 */
-	private MFSLedger generateLedgerEntry(boolean isSettlement,Long sctlId, Long ctID, Pocket pocket, BigDecimal amount, boolean isSource, boolean isImmediateUpdateRequired) {
-		MFSLedger mfsLedger = new MFSLedger();
+	private MfsLedger generateLedgerEntry(boolean isSettlement,Long sctlId, Long ctID, Pocket pocket, BigDecimal amount, boolean isSource, boolean isImmediateUpdateRequired) {
+		MfsLedger mfsLedger = new MfsLedger();
 		mfsLedger.setSctlid(new BigDecimal(sctlId));
 		mfsLedger.setCommoditytransferid(new BigDecimal(ctID));
 		mfsLedger.setPocketid(pocket.getId());
@@ -177,7 +177,7 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 	 * @param mfsLedger
 	 * @return
 	 */
-	public MFSLedger generateReverseLedgerEntry(MFSLedger mfsLedger) {
+	public MfsLedger generateReverseLedgerEntry(MfsLedger mfsLedger) {
 		Pocket suspensePocket = coreDataWrapper.getSuspensePocket();
 		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocket();
 		Pocket globalChargePocket = coreDataWrapper.getChargesPocket();
@@ -200,7 +200,7 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 
 		boolean isSource = DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype()) ? false : true;
 		
-		MFSLedger reverseLedger = generateLedgerEntry(false,mfsLedger.getSctlid().longValue(), mfsLedger.getCommoditytransferid().longValue(), reversePocket,
+		MfsLedger reverseLedger = generateLedgerEntry(false,mfsLedger.getSctlid().longValue(), mfsLedger.getCommoditytransferid().longValue(), reversePocket,
 				mfsLedger.getAmount(), isSource, isImmediateUpdateRequired);
 		
 		if (isImmediateUpdateRequired) {

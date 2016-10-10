@@ -41,7 +41,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Role;
 import com.mfino.domain.RolePermission;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.InvalidPasswordException;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.fix.CFIXMsg;
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
   
 
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-    public User getCurrentUser() throws MfinoRuntimeException {
+    public MfinoUser getCurrentUser() throws MfinoRuntimeException {
     	
     	try{
 	        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 	        }
 	        UserQuery query = new UserQuery();
 	        query.setUserName(auth.getName());
-	        List<User> results = (List<User>) userDao.get(query);
+	        List<MfinoUser> results = (List<MfinoUser>) userDao.get(query);
 	        if (results.size() > 0) {
 	            return results.get(0);
 	        } else {
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public  String getUserString() {
-        User u = getCurrentUser();
+        MfinoUser u = getCurrentUser();
         if (u == null) {
             return StringUtils.EMPTY;
         } else {
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public  String getUserString(User userObj) {
+    public  String getUserString(MfinoUser userObj) {
         return String.format("%s %s (%s) Role: %s", userObj.getFirstname(), userObj.getLastname(), userObj.getUsername(), getUserRole(userObj.getRole().intValue()));
     }
 
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public  Company getUserCompany() {
-        User user = getCurrentUser();
+        MfinoUser user = getCurrentUser();
         if (user != null) {
             return user.getCompany();
         } else {
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public  void reloadPermissions(User user) {
+    public  void reloadPermissions(MfinoUser user) {
         Integer role = user.getRole().intValue();
 
         if (null == role) {
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public  void loadPermissions(User user) {
+    public  void loadPermissions(MfinoUser user) {
         Set<Integer> permissions = user.getPermissions();
         if (permissions == null || permissions.size() == 0) {
             reloadPermissions(user);
@@ -188,9 +188,9 @@ public class UserServiceImpl implements UserService {
         }
         String userName = auth.getName();
         query.setUserName(userName);
-        List<User> results = (List<User>) userDao.get(query);
+        List<MfinoUser> results = (List<MfinoUser>) userDao.get(query);
         if (results.size() > 0) {
-            User userObj = results.get(0);
+            MfinoUser userObj = results.get(0);
             String email = userObj.getEmail();
 
             try {
@@ -260,7 +260,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public  String getUserBranchCodeString() {
-    	User user=getCurrentUser();
+    	MfinoUser user=getCurrentUser();
     	Long enumCode=user.getBranchcodeid();
         BranchCodes branchcodes = branchCodeDao.getById(enumCode);
         if (branchcodes == null) {
@@ -276,7 +276,7 @@ public class UserServiceImpl implements UserService {
         if (auth == null) {
             return null;
         }
-        User user=getCurrentUser();
+        MfinoUser user=getCurrentUser();
         if(user!=null){
 		Set<Partner> partner=user.getPartners();
 		if(partner!=null&&!partner.isEmpty()){
@@ -292,10 +292,10 @@ public class UserServiceImpl implements UserService {
     
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public  void changePassword(String username, String oldPassword, String newPassword, Boolean isMerchantRegistration, boolean checkExisting) throws InvalidPasswordException, MfinoRuntimeException{
-    	User user;
+    	MfinoUser user;
         UserQuery query = new UserQuery();
         query.setUserName(username);
-        List<User> results = userDao.get(query);
+        List<MfinoUser> results = userDao.get(query);
         if (results != null && results.size() > 0) {
             user = results.get(0);
             
@@ -328,7 +328,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-	public  boolean isOldPassword(User user, String encPassword){
+	public  boolean isOldPassword(MfinoUser user, String encPassword){
     	//verify newpassword and oldpassword are same
 		log.info("Checking password history");
 		if(encPassword.equals(user.getPassword())){
@@ -369,9 +369,9 @@ public class UserServiceImpl implements UserService {
         String userName =(auth != null) ? auth.getName() : " ";
         UserQuery query = new UserQuery();
         query.setUserName(userName);
-        List<User> results = (List<User>) userDao.get(query);
+        List<MfinoUser> results = (List<MfinoUser>) userDao.get(query);
         if (results.size() > 0) {
-             User userObj = results.get(0);
+             MfinoUser userObj = results.get(0);
              language = ((Long)userObj.getLanguage()).intValue();
 
         }
@@ -381,10 +381,10 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public  void sendForgotPasswordLink(String username) throws EmailException {
 		log.info("Forgot password request for user : "+username);
-		 User user;
+		 MfinoUser user;
 	        UserQuery query = new UserQuery();
 	        query.setUserName(username);
-	        List<User> results = userDao.get(query);
+	        List<MfinoUser> results = userDao.get(query);
 	        if (results != null && results.size() > 0) {
 	            user = results.get(0);
 				Integer OTPLength = systemParametersService.getOTPLength();
@@ -408,10 +408,10 @@ public class UserServiceImpl implements UserService {
 		log.info("Reset Password request for user:"+username+" with code:"+code);
 		CMErrorNotification error =new CMErrorNotification();
 		 error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-		 User user;
+		 MfinoUser user;
 	        UserQuery query = new UserQuery();
 	        query.setUserName(username);
-	        List<User> results = userDao.get(query);
+	        List<MfinoUser> results = userDao.get(query);
 	        if (results != null && results.size() > 0) {
 	            user = results.get(0);
 	            if(code.equals(user.getForgotpasswordcode())){
@@ -435,7 +435,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public  CMErrorNotification resetPassword(User user){
+	public  CMErrorNotification resetPassword(MfinoUser user){
 		 String genPwd = PasswordGenUtil.generate();
 		    PasswordEncoder encoder = new ShaPasswordEncoder(1);
 		    String encPassword = encoder.encodePassword(genPwd, user.getUsername());
@@ -463,12 +463,12 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public List<User> get(UserQuery userQuery) throws MfinoRuntimeException
+	public List<MfinoUser> get(UserQuery userQuery) throws MfinoRuntimeException
 	{
 		return userDao.get(userQuery);
 	}
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
-	public User getByUserName(String userName) 
+	public MfinoUser getByUserName(String userName) 
 	{
 		UserDAO userDao = DAOFactory.getInstance().getUserDAO();
 		return userDao.getByUserName(userName);

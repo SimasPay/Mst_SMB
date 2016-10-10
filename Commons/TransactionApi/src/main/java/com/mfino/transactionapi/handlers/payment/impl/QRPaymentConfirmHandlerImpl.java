@@ -18,7 +18,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -204,9 +204,9 @@ public class QRPaymentConfirmHandlerImpl extends FIXMessageHandler implements QR
 			if(res.size() > 0){
 				qrPayment.setIntegrationCode(res.get(0).getIntegrationcode());
 				qrPayment.setPartnerBillerCode(res.get(0).getPartnerbillercode());
-				Iterator<MFSBillerPartner> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
+				Iterator<MfsbillerPartnerMap> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
-					MFSBillerPartner mfsbiller = mfsBillers.next();
+					MfsbillerPartnerMap mfsbiller = mfsBillers.next();
 					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(qrPayment.getBillerCode())){
 						qrPayment.setBillerPartnerType(Long.valueOf(mfsbiller.getBillerpartnertype()).intValue());
 						break;

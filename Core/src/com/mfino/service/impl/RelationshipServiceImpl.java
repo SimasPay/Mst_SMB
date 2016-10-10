@@ -16,7 +16,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PartnerServicesDAO;
 import com.mfino.dao.query.PartnerQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.fix.CmFinoFIX;
@@ -43,7 +43,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	private TransactionChargingService transactionChargingService ;
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-	public Collection<Integer> getRelationshipTypes(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	public Collection<Integer> getRelationshipTypes(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		log.info("HierarchyServiceImpl :: getRelationshipTypes() BEGIN");
 
 		PartnerServices sourcePartnerService = getPartnerService(sourcePartner,dct);
@@ -104,7 +104,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	 * @param destPartnerService
 	 * @return
 	 */
-	private Boolean isSibling(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isSibling(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		PartnerServices sourcePartnerService = getPartnerService(sourcePartner,dct);
@@ -131,7 +131,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	 * @param destPartnerService
 	 * @return
 	 */
-	private Boolean isChild(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isChild(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;		
 		
 		PartnerServices destPartnerService = getPartnerService(destinationPartner,dct);
@@ -152,7 +152,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	 * @param destPartnerService
 	 * @return
 	 */
-	private Boolean isParent(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isParent(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		PartnerServices sourcePartnerService = getPartnerService(sourcePartner,dct);	
@@ -173,7 +173,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	 * @param destPartnerService
 	 * @return
 	 */
-	private Boolean isDescendent(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isDescendent(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		log.info("RelationshipServiceImpl :: sourcePartner="+sourcePartner+", destinationPartner="+destinationPartner);
 		Boolean flag = Boolean.FALSE;
 		
@@ -211,7 +211,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	 * @param destPartnerService
 	 * @return
 	 */
-	private Boolean isAncestor(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isAncestor(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		flag = isDescendent(destinationPartner, sourcePartner,dct);
@@ -219,7 +219,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return flag;
 	}
 	
-	private Boolean isSameLevel(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isSameLevel(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		flag = isSibling(sourcePartner, destinationPartner,dct);
@@ -232,7 +232,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return flag;
 	}
 	
-	private Boolean isLowerLevel(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isLowerLevel(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		if((getLevel(sourcePartner,dct).compareTo(getLevel(destinationPartner,dct))) < 0){
@@ -242,7 +242,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return flag;
 	}
 	
-	private Boolean isUpperLevel(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isUpperLevel(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		if((getLevel(sourcePartner,dct).compareTo(getLevel(destinationPartner,dct))) > 0){
@@ -252,7 +252,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return flag;
 	}
 	
-	private Boolean isBelongsToTree(Partner sourcePartner, Partner destinationPartner, DistributionChainTemplate dct){
+	private Boolean isBelongsToTree(Partner sourcePartner, Partner destinationPartner, DistributionChainTemp dct){
 		Boolean flag = Boolean.FALSE;
 		
 		PartnerServices sourcePartnerService = getPartnerService(sourcePartner,dct);
@@ -266,7 +266,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return flag;
 	}
 	
-	private PartnerServices getPartnerService(Partner partner, DistributionChainTemplate dct){
+	private PartnerServices getPartnerService(Partner partner, DistributionChainTemp dct){
 		PartnerServices partnerService = null;
 		
 		if(partner != null){
@@ -292,7 +292,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return partnerService;
 	}
 	
-	public Integer getLevel(Partner partner, DistributionChainTemplate dct){
+	public Integer getLevel(Partner partner, DistributionChainTemp dct){
 		Integer level = 1;
 		
 		PartnerServices partnerService = getPartnerService(partner,dct);
@@ -312,7 +312,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	 * @param partner
 	 * @return
 	 */
-	public List<Partner> getDescendents(Partner partner, DistributionChainTemplate dct){
+	public List<Partner> getDescendents(Partner partner, DistributionChainTemp dct){
 		List<Partner> partnersList = new ArrayList<Partner>();
 		PartnerQuery partnerQuery = new PartnerQuery();
 		partnerQuery.setDistributionChainTemplateId(dct.getId().longValue());

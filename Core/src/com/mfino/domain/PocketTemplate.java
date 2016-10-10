@@ -70,7 +70,7 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	private Short issystempocket;
 	private BigDecimal interestrate;
 	private Set<Pocket> pocketsForPockettemplateid = new HashSet<Pocket>(0);
-	private Set<KYCLevel> kycLevels = new HashSet<KYCLevel>(0);
+	private Set<KycLevel> kycLevels = new HashSet<KycLevel>(0);
 	private Set<Pocket> pocketsForOldpockettemplateid = new HashSet<Pocket>(0);
 	private Set<PocketTemplateConfig> pocketTemplateConfigs = new HashSet<PocketTemplateConfig>(
 			0);
@@ -130,7 +130,7 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 			String regularexpression, Short iscollectorpocket,
 			Long numberofpocketsallowedformdn, Short issuspencepocket,
 			Short issystempocket, BigDecimal interestrate,
-			Set<Pocket> pocketsForPockettemplateid, Set<KYCLevel> kycLevels,
+			Set<Pocket> pocketsForPockettemplateid, Set<KycLevel> kycLevels,
 			Set<Pocket> pocketsForOldpockettemplateid,
 			Set<PocketTemplateConfig> pocketTemplateConfigs) {
 		this.id = id;
@@ -543,11 +543,11 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pocketTemplate")
-	public Set<KYCLevel> getKycLevels() {
+	public Set<KycLevel> getKycLevels() {
 		return this.kycLevels;
 	}
 
-	public void setKycLevels(Set<KYCLevel> kycLevels) {
+	public void setKycLevels(Set<KycLevel> kycLevels) {
 		this.kycLevels = kycLevels;
 	}
 

@@ -25,7 +25,7 @@ import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Bank;
 import com.mfino.domain.BankAdmin;
 import com.mfino.domain.Company;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSBankAdmin;
@@ -77,7 +77,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
         }
         return false;
     }
-    private void initializeUserObject(User user, CMJSBankAdmin.CGEntries e) {
+    private void initializeUserObject(MfinoUser user, CMJSBankAdmin.CGEntries e) {
         if (e.getUsername() != null) {
             user.setUsername(e.getUsername());
         }
@@ -133,7 +133,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
           bankAdmin.setBank(bank);
       }
      UserDAO dao = DAOFactory.getInstance().getUserDAO();
-     User  user=null;
+     MfinoUser  user=null;
      if(bankAdmin.getMfinoUser() != null && bankAdmin.getMfinoUser().getId() != null 
     		 && CmFinoFIX.JSaction_Update.equalsIgnoreCase(action) ){
         user = dao.getById(bankAdmin.getMfinoUser().getId().longValue());
@@ -163,7 +163,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
     }
 
     private void updateMessage(BankAdmin bankAdmin, CmFinoFIX.CMJSBankAdmin.CGEntries e) {
-        User user = bankAdmin.getMfinoUser();
+        MfinoUser user = bankAdmin.getMfinoUser();
         e.setUserID(user.getId().longValue());
         if (user.getUsername() != null) {
             e.setUsername(bankAdmin.getMfinoUser().getUsername());
@@ -383,7 +383,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
                     return err;
                 }
                 
-                User userEntry = new User();
+                MfinoUser userEntry = new MfinoUser();
                 UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
                 initializeUserObject(userEntry, e);
                 String genPwd = PasswordGenUtil.generate();

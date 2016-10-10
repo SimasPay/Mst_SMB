@@ -10,21 +10,21 @@ import java.util.List;
 import org.hibernate.Criteria;
 
 import com.mfino.dao.query.SAPGroupIDQuery;
-import com.mfino.domain.SAPGroupID;
+import com.mfino.domain.SapGroupid;
 
 /**
  *
  * @author xchen
  */
-public class SAPGroupIDDAO extends BaseDAO<SAPGroupID> {
+public class SAPGroupIDDAO extends BaseDAO<SapGroupid> {
 
-    public List<SAPGroupID> get(SAPGroupIDQuery query){
+    public List<SapGroupid> get(SAPGroupIDQuery query){
                 Criteria criteria = createCriteria();
         if (query.getGroupID() != null) {
-            addLikeStartRestriction(criteria, SAPGroupID.FieldName_GroupID, query.getGroupID());
+            addLikeStartRestriction(criteria, SapGroupid.FieldName_GroupID, query.getGroupID());
         }
         if (query.getGroupIDName() != null) {
-            addLikeStartRestriction(criteria, SAPGroupID.FieldName_GroupIDName, query.getGroupIDName());
+            addLikeStartRestriction(criteria, SapGroupid.FieldName_GroupIDName, query.getGroupIDName());
         }
 
         processBaseQuery(query, criteria);
@@ -34,7 +34,7 @@ public class SAPGroupIDDAO extends BaseDAO<SAPGroupID> {
         applyOrder(query, criteria);
 
         @SuppressWarnings("unchecked")
-        List<SAPGroupID>results = criteria.list();
+        List<SapGroupid>results = criteria.list();
 
         return results;
     }

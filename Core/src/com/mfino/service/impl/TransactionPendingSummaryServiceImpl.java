@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.TransactionPendingSummaryDAO;
-import com.mfino.domain.TransactionPendingSummary;
+import com.mfino.domain.TxnPendingSummary;
 import com.mfino.fix.CmFinoFIX.CMBillPayPendingRequest;
 import com.mfino.fix.CmFinoFIX.CMInterBankPendingCommodityTransferRequest;
 import com.mfino.fix.CmFinoFIX.CMPendingCommodityTransferRequest;
@@ -24,11 +24,11 @@ public class TransactionPendingSummaryServiceImpl implements TransactionPendingS
 	TransactionPendingSummaryDAO transactionPendingSummaryDAO = DAOFactory.getInstance().getTransactionPendingSummaryDAO();
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public TransactionPendingSummary saveTransactionPendingSummary( CMPendingCommodityTransferRequest newMsg){
+	public TxnPendingSummary saveTransactionPendingSummary( CMPendingCommodityTransferRequest newMsg){
 		
 		log.info("Trying to Save TransactionPendingSummary Domain Object corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 	
-		TransactionPendingSummary transactionPendingSummary = new TransactionPendingSummary();
+		TxnPendingSummary transactionPendingSummary = new TxnPendingSummary();
 		transactionPendingSummary.setSctlid(new BigDecimal(newMsg.getServiceChargeTransactionLogID()));
 		transactionPendingSummary.setCsraction(newMsg.getCSRAction().longValue());
 		transactionPendingSummary.setCsractiontime(new Timestamp());
@@ -43,10 +43,10 @@ public class TransactionPendingSummaryServiceImpl implements TransactionPendingS
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public TransactionPendingSummary saveTransactionPendingSummary(CMBillPayPendingRequest newMsg){
+	public TxnPendingSummary saveTransactionPendingSummary(CMBillPayPendingRequest newMsg){
 		log.info("Trying to Save TransactionPendingSummary Domain Object corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
-		TransactionPendingSummary transactionPendingSummary = new TransactionPendingSummary();
+		TxnPendingSummary transactionPendingSummary = new TxnPendingSummary();
 		transactionPendingSummary.setSctlid(new BigDecimal(newMsg.getServiceChargeTransactionLogID()));
 		transactionPendingSummary.setCsraction(newMsg.getCSRAction().longValue());
 		transactionPendingSummary.setCsractiontime(new Timestamp());
@@ -61,10 +61,10 @@ public class TransactionPendingSummaryServiceImpl implements TransactionPendingS
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public TransactionPendingSummary saveTransactionPendingSummary(CMInterBankPendingCommodityTransferRequest newMsg){
+	public TxnPendingSummary saveTransactionPendingSummary(CMInterBankPendingCommodityTransferRequest newMsg){
 		log.info("Trying to Save TransactionPendingSummary Domain Object corresponding to SCTL with id:"+newMsg.getServiceChargeTransactionLogID()+" while Resolving");
 		
-		TransactionPendingSummary transactionPendingSummary = new TransactionPendingSummary();
+		TxnPendingSummary transactionPendingSummary = new TxnPendingSummary();
 		transactionPendingSummary.setSctlid(new BigDecimal(newMsg.getServiceChargeTransactionLogID()));
 		transactionPendingSummary.setCsraction(newMsg.getCSRAction().longValue());
 		transactionPendingSummary.setCsractiontime(new Timestamp());

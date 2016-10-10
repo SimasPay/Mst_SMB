@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.query.DistributionChainTemplateQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSDistributionTemplateCheck;
@@ -38,7 +38,7 @@ public class DCTNameCheckProcessorImpl extends BaseFixProcessor implements DCTNa
         DistributionChainTemplateQuery query = new DistributionChainTemplateQuery();
         query.setExactdistributionChainTemplateName(realMsg.getDCTName());
 
-        List<DistributionChainTemplate> results = templateDAO.get(query);
+        List<DistributionChainTemp> results = templateDAO.get(query);
 
         CMJSError err=new CMJSError();
 

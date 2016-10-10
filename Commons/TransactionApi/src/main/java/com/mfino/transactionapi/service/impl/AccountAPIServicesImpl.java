@@ -17,7 +17,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
@@ -310,7 +310,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 
 			validationService.validateLoginDetails(transactionDetails);
 			if (StringUtils.isNotBlank(transactionDetails.getInstitutionID())) {
-				IntegrationPartnerMapping integrationPartnerMapping = integrationPartnerMappingService.getByInstitutionID(transactionDetails.getInstitutionID());
+				IntegrationPartnerMap integrationPartnerMapping = integrationPartnerMappingService.getByInstitutionID(transactionDetails.getInstitutionID());
 				if(integrationPartnerMapping!=null)
 					transactionDetails.setIsAppTypeChkEnabled(integrationPartnerMapping.getIsapptypecheckenabled()==1?true:false);
 			}

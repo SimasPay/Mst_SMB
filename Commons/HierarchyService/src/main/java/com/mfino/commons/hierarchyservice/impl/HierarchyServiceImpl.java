@@ -13,7 +13,7 @@ import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
 import com.mfino.domain.PartnerServices;
@@ -66,7 +66,7 @@ public class HierarchyServiceImpl implements HierarchyService {
 	@Qualifier("PartnerServiceImpl")
 	private PartnerService partnerService;
 
-	private Integer validateRestrictions(Subscriber sourceSubscriber, Subscriber destSubscriber, TransactionType transactionType,DistributionChainTemplate dct){
+	private Integer validateRestrictions(Subscriber sourceSubscriber, Subscriber destSubscriber, TransactionType transactionType,DistributionChainTemp dct){
 		log.info("HierarchyServiceImpl :: validateRestrictions() BEGIN ");
 		Integer result = CmFinoFIX.ResponseCode_Success;
 		Boolean flag = Boolean.TRUE;
@@ -89,7 +89,7 @@ public class HierarchyServiceImpl implements HierarchyService {
 		return result;
 	}
 	
-	private boolean validateDctRestrictions(Subscriber sourceSubscriber, Subscriber destSubscriber, TransactionType transactionType,DistributionChainTemplate dct){
+	private boolean validateDctRestrictions(Subscriber sourceSubscriber, Subscriber destSubscriber, TransactionType transactionType,DistributionChainTemp dct){
 		log.info("HierarchyServiceImpl :: validateDctRestrictions BEGIN");
 		Boolean flag = Boolean.FALSE;
 		
@@ -133,7 +133,7 @@ public class HierarchyServiceImpl implements HierarchyService {
 		return flag;
 	}
 	
-	private boolean validatePartnerRestrictions(Subscriber sourceSubscriber, Subscriber destSubscriber, TransactionType transactionType,DistributionChainTemplate dct){
+	private boolean validatePartnerRestrictions(Subscriber sourceSubscriber, Subscriber destSubscriber, TransactionType transactionType,DistributionChainTemp dct){
 		log.info("HierarchyServiceImpl :: validatePartnerRestrictions BEGIN");
 		Boolean flag = Boolean.TRUE;
 		
@@ -182,7 +182,7 @@ public class HierarchyServiceImpl implements HierarchyService {
 		Service service = mfinoService.getServiceByName(serviceName);
 		TransactionType transactionType = transactionTypeService.getTransactionTypeByName(transactionTypeName);
 
-		DistributionChainTemplate dct = null;
+		DistributionChainTemp dct = null;
 		Set<Partner> partners = sourceSubscriber.getPartners();
 		
 		if((null != partners) && (partners.size() > 0)){

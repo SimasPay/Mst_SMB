@@ -16,7 +16,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.EmptyStringException;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.exceptions.MfinoRuntimeException;
@@ -97,7 +97,7 @@ public interface PocketService {
 	
 	public Pocket getByCardAlias(String cardAlias) throws MfinoRuntimeException;
 	
-	public Pocket getSuspencePocket(User user); 
+	public Pocket getSuspencePocket(MfinoUser user); 
 	
 	public Pocket getSuspencePocket(Partner partner);
 	

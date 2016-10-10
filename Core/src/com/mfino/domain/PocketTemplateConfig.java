@@ -42,7 +42,7 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 
 	public static final String FieldName_PTC_Group_MapFromPtcID = "ptcGroupMappings";
 	
-	private KYCLevel kycLevel;
+	private KycLevel kycLevel;
 	private PocketTemplate pocketTemplate;
 	private long subscribertype;
 	private Long businesspartnertype;
@@ -57,7 +57,7 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	public PocketTemplateConfig() {
 	}
 
-	public PocketTemplateConfig(BigDecimal id, KYCLevel kycLevel,
+	public PocketTemplateConfig(BigDecimal id, KycLevel kycLevel,
 			PocketTemplate pocketTemplate, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long subscribertype, long commodity, long pockettype) {
@@ -73,7 +73,7 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 		this.pockettype = pockettype;
 	}
 
-	public PocketTemplateConfig(BigDecimal id, KYCLevel kycLevel,
+	public PocketTemplateConfig(BigDecimal id, KycLevel kycLevel,
 			PocketTemplate pocketTemplate, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long subscribertype, Long businesspartnertype, long commodity,
@@ -99,11 +99,11 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCLEVEL", nullable = false)
-	public KYCLevel getKycLevel() {
+	public KycLevel getKycLevel() {
 		return this.kycLevel;
 	}
 
-	public void setKycLevel(KYCLevel kycLevel) {
+	public void setKycLevel(KycLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 

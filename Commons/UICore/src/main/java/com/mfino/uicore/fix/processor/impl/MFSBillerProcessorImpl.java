@@ -13,7 +13,7 @@ import com.mfino.dao.MFSBillerPartnerDAO;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.MFSBillerQuery;
 import com.mfino.domain.MfsBiller;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSMFSBiller;
@@ -122,8 +122,8 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 				
 				MFSBillerPartnerQuery q = new MFSBillerPartnerQuery();
 				q.setMfsBillerId(e.getID());
-				List<MFSBillerPartner> lst = mfsbpDAO.get(q);
-				for (MFSBillerPartner mfsbp: lst) {
+				List<MfsbillerPartnerMap> lst = mfsbpDAO.get(q);
+				for (MfsbillerPartnerMap mfsbp: lst) {
 					mfsbpDAO.deleteById(mfsbp.getId().longValue());
 				}
 				

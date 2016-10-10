@@ -23,7 +23,7 @@ import com.mfino.dao.PocketTemplateConfigDAO;
 import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.PtcGroupMapping;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
@@ -81,7 +81,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 						+ e.getKYCLevel() + " by user:" + getLoggedUserNameWithIP());
 			}
 			KYCLevelDAO kycLevelDAO = DAOFactory.getInstance().getKycLevelDAO();
-			KYCLevel kyclevel = kycLevelDAO.getByKycLevel(e.getKYCLevel());
+			KycLevel kyclevel = kycLevelDAO.getByKycLevel(e.getKYCLevel());
 			p.setKycLevel(kyclevel);
 		}
 		if (e.getPocketType() != null) {
@@ -327,7 +327,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 		return realMsg;
 	}
 
-	private KYCLevel getKycLevelObject(Long kycLevel) {
+	private KycLevel getKycLevelObject(Long kycLevel) {
 		KYCLevelDAO kycDAO = new KYCLevelDAO();
 		return kycDAO.getByKycLevel(kycLevel);
 	}

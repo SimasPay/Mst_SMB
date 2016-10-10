@@ -23,7 +23,7 @@ import com.mfino.dao.LOPDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.query.LOPQuery;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.LOP;
+import com.mfino.domain.LetterOfPurchase;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
@@ -48,7 +48,7 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
 	@Qualifier("UserServiceImpl")
 	private UserService userService;
 	
-    private void updateEntity(LOP lop, CmFinoFIX.CMJSLOP.CGEntries e) {
+    private void updateEntity(LetterOfPurchase lop, CmFinoFIX.CMJSLOP.CGEntries e) {
 
         if (e.getStatus() != null) {
             lop.setStatus(e.getStatus());
@@ -109,7 +109,7 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
         }
     }
 
-    private void updateMessage(LOP lop, CMJSLOP.CGEntries entry) {
+    private void updateMessage(LetterOfPurchase lop, CMJSLOP.CGEntries entry) {
 
         entry.setID(lop.getId().longValue());
         Set<CommodityTransfer> results = lop.getCommodityTransfers();
@@ -215,7 +215,7 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
             CMJSLOP.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSLOP.CGEntries e : entries) {
-                LOP lop = dao.getById(e.getID());
+                LetterOfPurchase lop = dao.getById(e.getID());
 
                 // Here check for the LOP Expiration and if
                 // applicable set it.
@@ -302,11 +302,11 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
             }
             query.setId(realMsg.getIDSearch());
 
-            List<LOP> results = dao.get(query);
+            List<LetterOfPurchase> results = dao.get(query);
             realMsg.allocateEntries(results.size());
 
             for (int i = 0; i < results.size(); i++) {
-                LOP s = results.get(i);
+                LetterOfPurchase s = results.get(i);
 
                 // Here check for the LOP Expiration and if
                 // applicable set it.
@@ -325,7 +325,7 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
             CMJSLOP.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSLOP.CGEntries e : entries) {
-                LOP l = new LOP();
+                LetterOfPurchase l = new LetterOfPurchase();
                 updateEntity(l, e);
                 dao.save(l);
                 updateMessage(l, e);

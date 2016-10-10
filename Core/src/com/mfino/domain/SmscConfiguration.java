@@ -25,7 +25,7 @@ public class SmscConfiguration extends Base implements java.io.Serializable {
 	public static final String FieldName_Charging = "charging";
 	public static final String FieldName_SmartfrenSMSCID = "smartfrensmscid";
 	public static final String FieldName_OtherLocalOperatorSMSCID = "otherlocaloperatorsmscid";
-	private SMSPartner smsPartner;
+	private SmsPartner smsPartner;
 	private String shortcode;
 	private String longnumber;
 	private String smartfrensmscid;
@@ -37,7 +37,7 @@ public class SmscConfiguration extends Base implements java.io.Serializable {
 	public SmscConfiguration() {
 	}
 
-	public SmscConfiguration(BigDecimal id, SMSPartner smsPartner,
+	public SmscConfiguration(BigDecimal id, SmsPartner smsPartner,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -48,7 +48,7 @@ public class SmscConfiguration extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public SmscConfiguration(BigDecimal id, SMSPartner smsPartner,
+	public SmscConfiguration(BigDecimal id, SmsPartner smsPartner,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String shortcode,
 			String longnumber, String smartfrensmscid,
@@ -73,11 +73,11 @@ public class SmscConfiguration extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARTNERID", nullable = false)
-	public SMSPartner getSmsPartner() {
+	public SmsPartner getSmsPartner() {
 		return this.smsPartner;
 	}
 
-	public void setSmsPartner(SMSPartner smsPartner) {
+	public void setSmsPartner(SmsPartner smsPartner) {
 		this.smsPartner = smsPartner;
 	}
 

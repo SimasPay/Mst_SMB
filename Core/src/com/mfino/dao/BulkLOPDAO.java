@@ -13,21 +13,21 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.BulkLOPQuery;
-import com.mfino.domain.BulkLOP;
+import com.mfino.domain.BulkLop;
 import com.mfino.domain.SubscriberMdn;
 
 /**
  *
  * @author admin
  */
-public class BulkLOPDAO extends BaseDAO<BulkLOP> {
-  public List<BulkLOP> get(BulkLOPQuery query) {
+public class BulkLOPDAO extends BaseDAO<BulkLop> {
+  public List<BulkLop> get(BulkLOPQuery query) {
 
         final String SUBSCRIBERMDNBYSOURCEMDNID = "SubscriberMDNByMDNID";
         Criteria criteria = createCriteria();
 
         if (query.getBulkLopid() != null) {
-            criteria.add(Restrictions.eq(BulkLOP.FieldName_RecordID, query.getBulkLopid()));
+            criteria.add(Restrictions.eq(BulkLop.FieldName_RecordID, query.getBulkLopid()));
         }
         if (query.getMdnid() != null) {
             final String mdnAlias = SUBSCRIBERMDNBYSOURCEMDNID + DAOConstants.ALIAS_SUFFIX;
@@ -38,10 +38,10 @@ public class BulkLOPDAO extends BaseDAO<BulkLOP> {
         }
         processBaseQuery(query, criteria);
         // Paging
-        processPaging(query, criteria);criteria.addOrder(Order.desc(BulkLOP.FieldName_RecordID));
+        processPaging(query, criteria);criteria.addOrder(Order.desc(BulkLop.FieldName_RecordID));
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<BulkLOP> results = criteria.list();
+        List<BulkLop> results = criteria.list();
 
         return results;
   }

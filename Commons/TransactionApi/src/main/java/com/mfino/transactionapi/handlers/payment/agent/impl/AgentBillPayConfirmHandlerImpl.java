@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
@@ -169,9 +169,9 @@ public class AgentBillPayConfirmHandlerImpl extends FIXMessageHandler implements
 			if(res.size() > 0){
 				billPay.setIntegrationCode(res.get(0).getIntegrationcode());
 				billPay.setPartnerBillerCode(res.get(0).getPartnerbillercode());
-				Iterator<MFSBillerPartner> mfsBillers=biller.getMfsbillerPartnerMaps().iterator();
+				Iterator<MfsbillerPartnerMap> mfsBillers=biller.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
-					MFSBillerPartner mfsbiller = mfsBillers.next();
+					MfsbillerPartnerMap mfsbiller = mfsBillers.next();
 					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(billPay.getBillerCode())){
 						billPay.setBillerPartnerType(mfsbiller.getBillerpartnertype().intValue());
 						break;

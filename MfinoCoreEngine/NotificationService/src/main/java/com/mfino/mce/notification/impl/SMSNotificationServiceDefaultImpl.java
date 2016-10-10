@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mce.notification.SMSNotification;
 import com.mfino.mce.notification.SMSNotificationService;
@@ -49,7 +49,7 @@ public class SMSNotificationServiceDefaultImpl implements SMSNotificationService
 		SMSNotification smsNotification = exchange.getIn().getBody(SMSNotification.class);
 		Long notificationDetailsLogID = smsNotification.getNotificationLogDetailsID();
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
-		NotificationLogDetails notificationLogDetails = null;
+		NlogDetails notificationLogDetails = null;
 		if(notificationDetailsLogID != null)
 		{
 			notificationLogDetails = notificationLogDetailsDao.getById(notificationDetailsLogID);

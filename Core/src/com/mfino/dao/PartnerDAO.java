@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mfino.dao.query.PartnerQuery;
 import com.mfino.dao.query.PocketQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -154,7 +154,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
         if((null != query.getDistributionChainTemplateId()) && (null != query.getParentId())){
         	criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID, "partnerService");
         	criteria.createAlias("partnerService."+PartnerServices.FieldName_DistributionChainTemplate, "psDct");
-        	criteria.add(Restrictions.eq("psDct."+DistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
+        	criteria.add(Restrictions.eq("psDct."+DistributionChainTemp.FieldName_RecordID, query.getDistributionChainTemplateId()));
         	criteria.createAlias("partnerService."+PartnerServices.FieldName_PartnerByParentID, "psParent");
         	criteria.add(Restrictions.eq("psParent."+Partner.FieldName_RecordID, query.getParentId()));
         }
@@ -162,7 +162,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
         	criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID, "partnerService");
 //        	criteria.createAlias("partnerService."+PartnerServices.FieldName_PartnerByParentID, "parent");
         	criteria.createAlias("partnerService."+PartnerServices.FieldName_DistributionChainTemplate, "psDct");
-        	criteria.add(Restrictions.eq("psDct."+DistributionChainTemplate.FieldName_RecordID, query.getDistributionChainTemplateId()));
+        	criteria.add(Restrictions.eq("psDct."+DistributionChainTemp.FieldName_RecordID, query.getDistributionChainTemplateId()));
         	
         	if(query.isFirstLevelPartnerSearch()){
         		criteria.add(Restrictions.isNull("partnerService."+PartnerServices.FieldName_PartnerByParentID));

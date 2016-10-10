@@ -16,7 +16,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "EXCLUDE_SUBSCRIBER_LC")
-public class ExcludeSubscriberLifeCycle extends Base implements java.io.Serializable {
+public class ExcludeSubscriberLc extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MDN = "subscriberMdn";
@@ -24,10 +24,10 @@ public class ExcludeSubscriberLifeCycle extends Base implements java.io.Serializ
 	private SubscriberMdn subscriberMdn;
 	
 
-	public ExcludeSubscriberLifeCycle() {
+	public ExcludeSubscriberLc() {
 	}
 
-	public ExcludeSubscriberLifeCycle(BigDecimal id, SubscriberMdn subscriberMdn,
+	public ExcludeSubscriberLc(BigDecimal id, SubscriberMdn subscriberMdn,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;

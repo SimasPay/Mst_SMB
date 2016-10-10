@@ -55,8 +55,8 @@ import com.mfino.domain.ChargePricing;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.ChargeType;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainLvl;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -67,7 +67,7 @@ import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SharePartner;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionCharge;
@@ -301,7 +301,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			result.put(TYPE, ((Long)subscriber.getType()).longValue());
 			result.put(KYC_LEVEL, subscriber.getKycLevel().getKyclevel().longValue());
 			SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			SubscriberGroup subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
+			SubscriberGroups subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
 			if((null != subscriberGroup)){
 				result.put(GROUP, subscriberGroup.getGroupid());
 			}
@@ -1377,7 +1377,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			List<TxnAmountDstrbLog> lstTADL, Long partnerId, boolean isPartner) throws DistributionException {
 		PartnerServices ps;
 		List<PartnerServices> lstParentPS;
-		Map<Integer, DistributionChainLevel> mapDCL;
+		Map<Integer, DistributionChainLvl> mapDCL;
 		if(isPartner)
 		{
 			ps = getPartnerService(partnerId, sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
@@ -1457,7 +1457,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	 */
 	public List<TxnAmountDstrbLog> distributeChargeAmongSharedUpChainPartners(long sctlId, long transactionId, 
 			TransactionCharge tc, PartnerServices ps, List<PartnerServices> lstParentPS, BigDecimal amount, Map<Integer, 
-			DistributionChainLevel> mapDCL, List<TxnAmountDstrbLog> lstTADL) {
+			DistributionChainLvl> mapDCL, List<TxnAmountDstrbLog> lstTADL) {
 		log.info("Distribute charge for the Partnerservice --> " + ps.getId());
 		
 		BigDecimal amt = BigDecimal.ZERO;
@@ -1468,7 +1468,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			for (int i=0; i<size; i++) {
 				PartnerServices p = lstParentPS.get(i);
 				if (p != null) {
-					DistributionChainLevel dcl = mapDCL.get(size - i);
+					DistributionChainLvl dcl = mapDCL.get(size - i);
 					BigDecimal share = moneyService.calculateShareAmount(amount, dcl.getCommission());
 					amt = moneyService.add(amt, share);
 					// Logs the Distribution of partners Service charge among the shared up chain partners
@@ -1503,14 +1503,14 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	 * Gets the Share percentages for each level in the Distribution chain for the given PartnerServices. 
 	 * @param ps
 	 */
-	public Map<Integer, DistributionChainLevel> getDistributionChainLevelShares(PartnerServices ps) {
-		Map<Integer, DistributionChainLevel> mapDCL = new HashMap<Integer, DistributionChainLevel>();;
+	public Map<Integer, DistributionChainLvl> getDistributionChainLevelShares(PartnerServices ps) {
+		Map<Integer, DistributionChainLvl> mapDCL = new HashMap<Integer, DistributionChainLvl>();;
 		if (ps != null) {
-			DistributionChainTemplate dct = ps.getDistributionChainTemp();
+			DistributionChainTemp dct = ps.getDistributionChainTemp();
 			if (dct != null) {
-				Set<DistributionChainLevel> setDCL = dct.getDistributionChainLvls();
+				Set<DistributionChainLvl> setDCL = dct.getDistributionChainLvls();
 				if (CollectionUtils.isNotEmpty(setDCL)) {
-					for (DistributionChainLevel dcl: setDCL) {
+					for (DistributionChainLvl dcl: setDCL) {
 						mapDCL.put(((Long)dcl.getDistributionlevel()).intValue(), dcl);
 					}
 				}				

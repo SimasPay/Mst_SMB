@@ -27,7 +27,7 @@ public class SmsTransactionLog extends Base implements java.io.Serializable {
 	public static final String FieldName_Source = "source";
 	public static final String FieldName_DestMDN = "destmdn";
 	
-	private SMSPartner smsPartner;
+	private SmsPartner smsPartner;
 	private String fieldid;
 	private Timestamp transactiontime;
 	private String source;
@@ -41,7 +41,7 @@ public class SmsTransactionLog extends Base implements java.io.Serializable {
 	public SmsTransactionLog() {
 	}
 
-	public SmsTransactionLog(BigDecimal id, SMSPartner smsPartner,
+	public SmsTransactionLog(BigDecimal id, SmsPartner smsPartner,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,
 			Timestamp transactiontime, String source, String destmdn,
@@ -59,7 +59,7 @@ public class SmsTransactionLog extends Base implements java.io.Serializable {
 		this.messagedata = messagedata;
 	}
 
-	public SmsTransactionLog(BigDecimal id, SMSPartner smsPartner,
+	public SmsTransactionLog(BigDecimal id, SmsPartner smsPartner,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String fieldid,
 			Timestamp transactiontime, String source, String destmdn,
@@ -85,11 +85,11 @@ public class SmsTransactionLog extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARTNERID", nullable = false)
-	public SMSPartner getSmsPartner() {
+	public SmsPartner getSmsPartner() {
 		return this.smsPartner;
 	}
 
-	public void setSmsPartner(SMSPartner smsPartner) {
+	public void setSmsPartner(SmsPartner smsPartner) {
 		this.smsPartner = smsPartner;
 	}
 

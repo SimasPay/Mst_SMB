@@ -5,9 +5,9 @@ package com.mfino.service;
 
 import java.util.List;
 
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 
 /**
  * @author Sreenath
@@ -33,7 +33,7 @@ public interface DistributionTreeService {
 	 * @param dct
 	 * @return
 	 */
-	public List<TreeNode> getAllChildren(DistributionChainTemplate dct);
+	public List<TreeNode> getAllChildren(DistributionChainTemp dct);
 	
 	
 	/**
@@ -41,14 +41,14 @@ public interface DistributionTreeService {
 	 * @param partner
 	 * @return
 	 */
-	public List<TreeNode> getAllChildren(DistributionChainTemplate distributionChainTemplate, Partner parent);
+	public List<TreeNode> getAllChildren(DistributionChainTemp distributionChainTemplate, Partner parent);
 	
 	/**
 	 * Get all dcts for this user.
 	 * @param user
 	 * @return
 	 */
-	public List<TreeNode> getAllDistributionChainTemplates(User user, String srchDctName, Long srchServiceId);
+	public List<TreeNode> getAllDistributionChainTemplates(MfinoUser user, String srchDctName, Long srchServiceId);
 	
 	/**
 	 * 	

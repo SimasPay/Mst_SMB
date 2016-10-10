@@ -44,7 +44,7 @@ import com.mfino.domain.AuthPersonDetails;
 import com.mfino.domain.BankAdmin;
 import com.mfino.domain.Company;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.KtpDetails;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.Partner;
@@ -52,10 +52,10 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberAddiInfo;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.InvalidMDNException;
@@ -506,10 +506,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
 			
 			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
-				SubscriberGroup sg = subscriberGroups.iterator().next();
+				SubscriberGroups sg = subscriberGroups.iterator().next();
 				if(sg.getGroupid() != Long.valueOf(e.getGroupID()).longValue()){
 					Groups group = (Groups)groupDao.getById(Long.valueOf(e.getGroupID()));
 					sg.setGroupid(group.getId().longValue());
@@ -520,7 +520,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				Groups group = (Groups)groupDao.getById(Long.valueOf(e.getGroupID()));
 
 				if(s.getSubscriber().getId() != null){
-					SubscriberGroup sg = new SubscriberGroup();
+					SubscriberGroups sg = new SubscriberGroups();
 					sg.setSubscriberid(s.getSubscriber().getId().longValue());
 					sg.setGroupid(group.getId().longValue());
 					subscriberGroupDao.save(sg);
@@ -691,7 +691,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if(s.getSubscriber().getUpgradablekyclevel()!=null&&
 					(CmFinoFIX.UpgradeState_Upgradable.equals(s.getSubscriber().getUpgradestate())
 							||CmFinoFIX.UpgradeState_Rejected.equals(s.getSubscriber().getUpgradestate()))){
-				KYCLevel kycLevel=kyclevelDao.getByKycLevel(s.getSubscriber().getUpgradablekyclevel().longValue());
+				KycLevel kycLevel=kyclevelDao.getByKycLevel(s.getSubscriber().getUpgradablekyclevel().longValue());
 				entry.setUpgradableKYCLevelText(kycLevel.getKyclevelname());
 				entry.setKYCLevel(kycLevel.getKyclevel().longValue());
 				entry.setKYCLevelText(s.getSubscriber().getKycLevel().getKyclevelname());
@@ -1016,9 +1016,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					entry.setIsDomesticAddrIdentity(false);
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
 				if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
-					SubscriberGroup sg = subscriberGroups.iterator().next();
+					SubscriberGroups sg = subscriberGroups.iterator().next();
 					GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 					Groups groups = groupDao.getById(sg.getGroupid());
 					entry.setGroupName(groups.getGroupname());
@@ -1546,7 +1546,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			}
 			
 			if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {
-				User user = userService.getCurrentUser();
+				MfinoUser user = userService.getCurrentUser();
 				Set<BankAdmin> admins = user.getBankAdmins();
 
 				if (admins != null && admins.size() > 0) {
@@ -1615,7 +1615,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				SubscriberAddiInfo saf = new SubscriberAddiInfo();
 				AuthPersonDetails ap = new AuthPersonDetails();
 				Address ads = new Address();
-				KYCLevel kyclevel = null;
+				KycLevel kyclevel = null;
 				String bankAccountNumber = null;
 				
 				String cardPan=e.getAccountNumber();
@@ -1702,9 +1702,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					mailService.generateEmailVerificationMail(s, e.getEmail());
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
 				if(subscriberGroups.size() > 0){
-					for(SubscriberGroup sg: subscriberGroups){
+					for(SubscriberGroups sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
 					}
 				}
@@ -1882,14 +1882,14 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 	private void updatePocket(SubscriberMdn s) {
 		Long unregTemplateID = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
-		KYCLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
+		KycLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
 		
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		PocketTemplate template = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getKyclevel().longValue(), true, CmFinoFIX.PocketType_SVA, ((Long)s.getSubscriber().getType()).intValue(), null, groupID);

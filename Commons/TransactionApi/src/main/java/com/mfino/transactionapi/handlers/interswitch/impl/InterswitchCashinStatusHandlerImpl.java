@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -80,7 +80,7 @@ public class InterswitchCashinStatusHandlerImpl extends FIXMessageHandler implem
 		result.setTransactionID(transactionsLog.getId().longValue());
 
 		IntegrationPartnerMappingServiceImpl integrationPartnerMapping = new IntegrationPartnerMappingServiceImpl();
-		IntegrationPartnerMapping ipm  = integrationPartnerMapping.getByInstitutionID(cashinStatus.getInstitutionID());
+		IntegrationPartnerMap ipm  = integrationPartnerMapping.getByInstitutionID(cashinStatus.getInstitutionID());
 		if (ipm == null) {
 			log.info("Integration Partner Mapping is missing for InstitutionId : " + cashinStatus.getInstitutionID());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_PartnerNotFound);

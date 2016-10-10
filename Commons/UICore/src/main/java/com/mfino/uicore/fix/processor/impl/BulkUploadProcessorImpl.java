@@ -27,7 +27,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSBulkUpload;
@@ -62,7 +62,7 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
             if (userService.getUserCompany() != null) {
                 query.setCompany(userService.getUserCompany());
             }
-            User loggedInUser = userService.getCurrentUser();
+            MfinoUser loggedInUser = userService.getCurrentUser();
 //            if (CmFinoFIX.Role_Corporate_User.equals(loggedInUser.getRole())) {
 //            	query.setUserId(loggedInUser.getID());
 //            }

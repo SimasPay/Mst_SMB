@@ -18,7 +18,7 @@ import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Company;
 import com.mfino.domain.Role;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSUsers;
@@ -59,13 +59,13 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			CMJSUsers.CGEntries[] entries = realMsg.getEntries();
 
 			for (CMJSUsers.CGEntries entry : entries) {
-				User userObj = userDAO.getById(entry.getID());
+				MfinoUser userObj = userDAO.getById(entry.getID());
 				log.info("User:"+userObj.getId()+" details edit requested by:"+getLoggedUserNameWithIP());
 				// Check for Stale Data
 				if (!entry.getRecordVersion().equals(userObj.getVersion())) {
 					handleStaleDataException();
 				}
-				User currentUser =userService.getCurrentUser();
+				MfinoUser currentUser =userService.getCurrentUser();
 				if(currentUser.equals(userObj)){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -126,7 +126,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 
 			UserQuery query = new UserQuery();
 			
-			User currentUser = userService.getCurrentUser();
+			MfinoUser currentUser = userService.getCurrentUser();
 			RoleDAO roleDao = DAOFactory.getInstance().getRoleDAO();
 			Role role = roleDao.getById(currentUser.getRole());
 			
@@ -187,12 +187,12 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			
 			
 			log.info("User details queried by:"+getLoggedUserNameWithIP());
-			List<User> results = userDAO.get(query);
+			List<MfinoUser> results = userDAO.get(query);
 
 			realMsg.allocateEntries(results.size());
 
 			for (int i = 0; i < results.size(); i++) {
-				User u = results.get(i);
+				MfinoUser u = results.get(i);
 				CMJSUsers.CGEntries entry = new CMJSUsers.CGEntries();
 				log.info("Returing user:"+u.getId()+" details requested by:"+getLoggedUserNameWithIP());
 				updateMessage(u, entry);
@@ -210,7 +210,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				query.setUserName(e.getUsername());
 				log.info("Insert User data for"+e.getUsername()+" requested by:"+getLoggedUserNameWithIP());
 				
-				List<User> users = userDAO.get(query);
+				List<MfinoUser> users = userDAO.get(query);
 				if (users != null && users.size() != 0) {
 					// username already in use. So skip adding and report failure
 					CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
@@ -229,7 +229,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 					return errorMsg;
 				}
 
-				User u = new User();
+				MfinoUser u = new MfinoUser();
 				if (userService.getUserCompany() != null) {
 					Company company = userService.getUserCompany();
 					e.setCompanyID(company.getId().longValue());
@@ -281,7 +281,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		for (CMJSUsers.CGEntries e : entries) {
 			UserQuery query = new UserQuery();
 			query.setUserName(e.getUsername());
-			List<User> users = userDAO.get(query);
+			List<MfinoUser> users = userDAO.get(query);
 			if (users != null && users.size() != 0) {
 				// username already in use. So skip adding and report failure
 				CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
@@ -291,7 +291,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				return errorMsg;
 			}
 			log.info("Insert User data for"+e.getUsername()+" requested by:"+getLoggedUserNameWithIP());
-			User u = new User();
+			MfinoUser u = new MfinoUser();
 			u.setPassword(e.getPassword());
 			if(e.getFirstTimeLogin() != null)
 				u.setFirsttimelogin((short) Boolean.compare(e.getFirstTimeLogin(), false));
@@ -313,7 +313,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		return realMsg;
 	}
 
-	private void updateEntity(User user, CGEntries e) {
+	private void updateEntity(MfinoUser user, CGEntries e) {
 		String ID = String.valueOf(user.getId());
 		if(ID==null){
 			ID = e.getUsername();
@@ -530,7 +530,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		}
 	}
 
-	private void updateMessage(User user, CGEntries e) {
+	private void updateMessage(MfinoUser user, CGEntries e) {
 
 		if (user.getUsername() != null) {
 			e.setUsername(user.getUsername());

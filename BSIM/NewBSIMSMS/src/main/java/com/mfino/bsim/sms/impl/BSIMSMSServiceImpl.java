@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.mce.notification.SMSNotification;
@@ -61,7 +61,7 @@ public class BSIMSMSServiceImpl implements SMSNotificationService
 		log.info("BSIMSMSServiceImpl :: process() message "+message+" mdn"+mdn);
 		Long notificationLogDetailsID = smsNotification.getNotificationLogDetailsID();
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
-		NotificationLogDetails notificationLogDetails = null;
+		NlogDetails notificationLogDetails = null;
 		if(notificationLogDetailsID != null)
 		{
 			notificationLogDetails = notificationLogDetailsDao.getById(notificationLogDetailsID);

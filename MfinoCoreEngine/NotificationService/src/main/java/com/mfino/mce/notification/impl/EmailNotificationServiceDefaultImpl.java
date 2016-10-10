@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mce.notification.EmailNotification;
 import com.mfino.mce.notification.EmailNotificationService;
@@ -37,7 +37,7 @@ public class EmailNotificationServiceDefaultImpl implements
 		EmailNotification emailNotification = exchange.getIn().getBody(EmailNotification.class);
 		Long notificationDetailsLogID = emailNotification.getNotificationLogDetailsID();
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
-		NotificationLogDetails notificationLogDetails = notificationLogDetailsDao.getById(notificationDetailsLogID);
+		NlogDetails notificationLogDetails = notificationLogDetailsDao.getById(notificationDetailsLogID);
 		try{
 
 			SimpleEmail email = new SimpleEmail();

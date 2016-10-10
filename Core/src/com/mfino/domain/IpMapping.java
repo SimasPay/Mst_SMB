@@ -18,20 +18,20 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "IP_MAPPING")
-public class IPMapping extends Base implements java.io.Serializable {
+public class IpMapping extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_IntegrationPartnerMappingByIntegrationID = "integrationPartnerMap";
 	public static final String FieldName_IPAddress = "ipaddress";
 	
-	private IntegrationPartnerMapping integrationPartnerMap;
+	private IntegrationPartnerMap integrationPartnerMap;
 	private String ipaddress;
 
-	public IPMapping() {
+	public IpMapping() {
 	}
 
-	public IPMapping(BigDecimal id,
-			IntegrationPartnerMapping integrationPartnerMap,
+	public IpMapping(BigDecimal id,
+			IntegrationPartnerMap integrationPartnerMap,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String ipaddress) {
 		this.id = id;
@@ -46,12 +46,12 @@ public class IPMapping extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INTEGRATIONID", nullable = false)
-	public IntegrationPartnerMapping getIntegrationPartnerMap() {
+	public IntegrationPartnerMap getIntegrationPartnerMap() {
 		return this.integrationPartnerMap;
 	}
 
 	public void setIntegrationPartnerMap(
-			IntegrationPartnerMapping integrationPartnerMap) {
+			IntegrationPartnerMap integrationPartnerMap) {
 		this.integrationPartnerMap = integrationPartnerMap;
 	}
 

@@ -14,7 +14,7 @@ import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSDCTRestrictions;
@@ -118,7 +118,7 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 		if(null != dctRestrictions.getTransactiontypeid()){
 			dctRestrictionsEntry.setTransactionTypeID(dctRestrictions.getTransactiontypeid());
 			DistributionChainTemplateDAO distributionChainTemplateDAO = DAOFactory.getInstance().getDistributionChainTemplateDAO();
-			DistributionChainTemplate distributionChainTemplate = distributionChainTemplateDAO.getById(dctRestrictions.getDctid());
+			DistributionChainTemp distributionChainTemplate = distributionChainTemplateDAO.getById(dctRestrictions.getDctid());
 			dctRestrictionsEntry.setServiceID(distributionChainTemplate.getServiceid());
 		}
 		

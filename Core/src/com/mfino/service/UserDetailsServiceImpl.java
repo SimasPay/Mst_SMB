@@ -13,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.mfino.domain.Merchant;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Subscriber;
 import com.mfino.fix.CmFinoFIX;
 
@@ -25,13 +25,13 @@ import com.mfino.fix.CmFinoFIX;
 public class UserDetailsServiceImpl implements UserDetails {
 
 	private static final long serialVersionUID = 19283719L;
-	private User theUser;
+	private MfinoUser theUser;
 	private Collection<GrantedAuthority> authorities;
 	private boolean isNonLocked = true;
 	private boolean isEnabled = true;
 	private boolean isNonExpired = true;
 
-	public UserDetailsServiceImpl(User user) {
+	public UserDetailsServiceImpl(MfinoUser user) {
 		this.theUser = user;
 		loadAuthorities();
 		loadAuthenticationAttributes();

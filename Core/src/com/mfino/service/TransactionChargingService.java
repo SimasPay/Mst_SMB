@@ -8,7 +8,7 @@ import java.util.Map;
 import org.hibernate.exception.DataException;
 
 import com.mfino.domain.ChargeDefinition;
-import com.mfino.domain.DistributionChainLevel;
+import com.mfino.domain.DistributionChainLvl;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -293,7 +293,7 @@ public interface TransactionChargingService {
 	 */
 	List<TxnAmountDstrbLog> distributeChargeAmongSharedUpChainPartners(long sctlId, long transactionId, 
 			TransactionCharge tc, PartnerServices ps, List<PartnerServices> lstParentPS, BigDecimal amount, Map<Integer, 
-			DistributionChainLevel> mapDCL, List<TxnAmountDstrbLog> lstTADL);
+			DistributionChainLvl> mapDCL, List<TxnAmountDstrbLog> lstTADL);
 	
 	void failTheDistribution(ServiceChargeTxnLog sctl, String failureReason);
 	
@@ -301,7 +301,7 @@ public interface TransactionChargingService {
 	 * Gets the Share percentages for each level in the Distribution chain for the given PartnerServices. 
 	 * @param ps
 	 */
-	Map<Integer, DistributionChainLevel> getDistributionChainLevelShares(PartnerServices ps);
+	Map<Integer, DistributionChainLvl> getDistributionChainLevelShares(PartnerServices ps);
 
 	/**
 	 * Returns the List of Parents for the given Partner Service.

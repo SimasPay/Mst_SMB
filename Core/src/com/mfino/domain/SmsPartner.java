@@ -21,11 +21,11 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SMS_PARTNER")
-public class SMSPartner extends Base implements java.io.Serializable {
+public class SmsPartner extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_PartnerName = "partnername";
-	private User mfinoUser;
+	private MfinoUser mfinoUser;
 	private String partnername;
 	private String contactname;
 	private String contactphone;
@@ -38,10 +38,10 @@ public class SMSPartner extends Base implements java.io.Serializable {
 	private Set<SmsTransactionLog> smsTransactionLogs = new HashSet<SmsTransactionLog>(
 			0);
 
-	public SMSPartner() {
+	public SmsPartner() {
 	}
 
-	public SMSPartner(BigDecimal id, User mfinoUser,
+	public SmsPartner(BigDecimal id, MfinoUser mfinoUser,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String partnername,
 			String contactname, String contactphone, String contactemail,
@@ -60,7 +60,7 @@ public class SMSPartner extends Base implements java.io.Serializable {
 		this.apikey = apikey;
 	}
 
-	public SMSPartner(BigDecimal id, User mfinoUser,
+	public SmsPartner(BigDecimal id, MfinoUser mfinoUser,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String partnername,
 			String contactname, String contactphone, String contactemail,
@@ -87,11 +87,11 @@ public class SMSPartner extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
-	public User getMfinoUser() {
+	public MfinoUser getMfinoUser() {
 		return this.mfinoUser;
 	}
 
-	public void setMfinoUser(User mfinoUser) {
+	public void setMfinoUser(MfinoUser mfinoUser) {
 		this.mfinoUser = mfinoUser;
 	}
 

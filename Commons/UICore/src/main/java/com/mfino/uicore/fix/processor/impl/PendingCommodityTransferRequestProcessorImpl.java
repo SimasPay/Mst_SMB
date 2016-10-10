@@ -25,7 +25,7 @@ import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionResponse;
 import com.mfino.domain.TransactionType;
 import com.mfino.domain.UnregisteredTxnInfo;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBase;
@@ -283,9 +283,9 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 
         UserQuery query = new UserQuery();
         query.setUserName(userName);
-        List<User> results = (List<User>) userService.get(query);
+        List<MfinoUser> results = (List<MfinoUser>) userService.get(query);
         if (results.size() > 0) {
-             User userObj = results.get(0);
+             MfinoUser userObj = results.get(0);
              newMsg.setCSRUserID(userObj.getId().longValue());
         }
         newMsg.setLoginName(userName);

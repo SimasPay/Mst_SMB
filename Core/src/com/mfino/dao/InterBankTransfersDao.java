@@ -6,31 +6,31 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.InterBankTransfersQuery;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 
 /**
  * @author Sasi
  *
  */
-public class InterBankTransfersDao extends BaseDAO<InterbankTransfer> {
+public class InterBankTransfersDao extends BaseDAO<InterbankTransfers> {
 
-	public List<InterbankTransfer> get(InterBankTransfersQuery query) {
+	public List<InterbankTransfers> get(InterBankTransfersQuery query) {
 		log.debug("InterBankTransfersDao :: get() BEGIN");
 		
 		Criteria criteria = createCriteria();
 		
 		if(null != query.getSctlId()){
-			criteria.add(Restrictions.eq(InterbankTransfer.FieldName_SctlId, query.getSctlId()));
+			criteria.add(Restrictions.eq(InterbankTransfers.FieldName_SctlId, query.getSctlId()));
 		}
 
 		if(null != query.getTransferId()){
-			criteria.add(Restrictions.eq(InterbankTransfer.FieldName_TransferID, query.getTransferId()));
+			criteria.add(Restrictions.eq(InterbankTransfers.FieldName_TransferID, query.getTransferId()));
 		}
 		
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
 
-		List<InterbankTransfer> results = criteria.list();
+		List<InterbankTransfers> results = criteria.list();
 		
 		log.debug("InterBankTransfersDao :: get() END");
 		return results;

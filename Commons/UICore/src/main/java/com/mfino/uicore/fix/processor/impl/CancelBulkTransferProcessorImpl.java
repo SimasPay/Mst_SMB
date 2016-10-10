@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.BulkUploadDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.domain.BulkUpload;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCancelBulkTranfer;
@@ -38,7 +38,7 @@ public class CancelBulkTransferProcessorImpl extends BaseFixProcessor implements
 	CMJSCancelBulkTranfer realMsg = (CMJSCancelBulkTranfer) msg;
     CMJSError err = new CMJSError();
     BulkUploadDAO buDAO = DAOFactory.getInstance().getBulkUploadDAO();
-    User loggedInUser = userService.getCurrentUser();
+    MfinoUser loggedInUser = userService.getCurrentUser();
     
     if (realMsg.getBulkUploadID() != null) {
     	log.info("Cancelling the Bulk transfer request " + realMsg.getBulkUploadID() + " by user " + loggedInUser.getUsername());

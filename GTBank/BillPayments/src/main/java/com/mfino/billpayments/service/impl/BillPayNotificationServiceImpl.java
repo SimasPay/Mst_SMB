@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mfino.billpayments.service.BillPayNotificationService;
 import com.mfino.billpayments.service.BillPaymentsBaseServiceImpl;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMSMSNotification;
@@ -57,9 +57,9 @@ public class BillPayNotificationServiceImpl extends BillPaymentsBaseServiceImpl 
 			BackendResponse backendResponse = (BackendResponse)mceMessage.getResponse();
 			Partner partner = billerService.getPartner(backendResponse.getBillerCode());
 			if(partner!=null){
-				Set<MFSBillerPartner> billerPartners = partner.getMfsbillerPartnerMaps();
-				MFSBillerPartner billPartner = null;
-				for(MFSBillerPartner billerPartner: billerPartners){
+				Set<MfsbillerPartnerMap> billerPartners = partner.getMfsbillerPartnerMaps();
+				MfsbillerPartnerMap billPartner = null;
+				for(MfsbillerPartnerMap billerPartner: billerPartners){
 					if(backendResponse.getBillerCode().equals(billerPartner.getMfsBiller().getMfsbillercode())){
 						billPartner = billerPartner;
 						break;

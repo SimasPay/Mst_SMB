@@ -3,7 +3,7 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 
 /**
  * @author Sreenath
@@ -15,6 +15,6 @@ public interface KYCLevelService {
 	 * @param kyclevel
 	 * @return
 	 */
-	public KYCLevel getByKycLevel(Long kyclevel);
+	public KycLevel getByKycLevel(Long kyclevel);
 
 }

@@ -19,7 +19,7 @@ import com.mfino.dao.query.IntegrationSummaryQuery;
 import com.mfino.domain.ChargeType;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.InterbankCodes;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.TransactionCharge;
@@ -86,7 +86,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		}
 		
 //		Pocket sourcePocket = getPocketFromId(interBankFundsTransferInquiry.getSourcePocketID());
-		InterbankTransfer ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, interBankCode);
+		InterbankTransfers ibt = interbankService.createInterBankTransfer(interBankFundsTransferInquiry, interBankCode);
 		
 //		interBankFundsTransferInquiry.setDestPocketID(destinationPocket.getID());
 		interBankFundsTransferInquiry.setMessageType(CmFinoFIX.MsgType_InterBankFundsTransferInquiry);
@@ -175,7 +175,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		CMInterBankTransferInquiryToBank interBankTransferInquiryToBank = (CMInterBankTransferInquiryToBank)mceMessage.getRequest();
 		CMInterBankTransferInquiryFromBank interbankTransferInquiryFromBank = (CMInterBankTransferInquiryFromBank)mceMessage.getResponse();
 		
-		InterbankTransfer ibt = interbankService.getIBT(interBankTransferInquiryToBank.getServiceChargeTransactionLogID());
+		InterbankTransfers ibt = interbankService.getIBT(interBankTransferInquiryToBank.getServiceChargeTransactionLogID());
 		BackendResponse inquiryResponse;
 		try {
 			inquiryResponse = (BackendResponse) bankService.onTransferInquiryFromBank(interBankTransferInquiryToBank,interbankTransferInquiryFromBank);
@@ -225,7 +225,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		PendingCommodityTransfer pct = getPCT(interBankFundsTransfer.getTransferID());
 		IntegrationSummary iSummary = getIntegrationSummary(interBankFundsTransfer.getServiceChargeTransactionLogID(),pct.getId().longValue());
 		
-		InterbankTransfer ibt = interbankService.getIBT(interBankFundsTransfer.getServiceChargeTransactionLogID());
+		InterbankTransfers ibt = interbankService.getIBT(interBankFundsTransfer.getServiceChargeTransactionLogID());
 		// update the IBT status to processing
 		ibt.setIbtstatus(CmFinoFIX.IBTStatus_PROCESSING.longValue());
 		ibt.setSourceaccountname(pct.getSourcesubscribername());
@@ -321,7 +321,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		CMInterBankMoneyTransferToBank interBankFundsTransferToBank = (CMInterBankMoneyTransferToBank)mceMessage.getRequest();
 		CMInterBankMoneyTransferFromBank interBankFundsTransferFromBank = (CMInterBankMoneyTransferFromBank) mceMessage.getResponse();
 
-		InterbankTransfer ibt = interbankService.getIBT(interBankFundsTransferToBank.getServiceChargeTransactionLogID());
+		InterbankTransfers ibt = interbankService.getIBT(interBankFundsTransferToBank.getServiceChargeTransactionLogID());
 		
 		CFIXMsg response;
 		try {

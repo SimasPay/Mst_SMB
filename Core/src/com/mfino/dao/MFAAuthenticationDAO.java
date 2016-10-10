@@ -7,20 +7,20 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.MFAAuthenticationQuery;
-import com.mfino.domain.MFAAuthentication;
+import com.mfino.domain.MfaAuthentication;
 import com.mfino.domain.UnregisteredTxnInfo;
 
-public class MFAAuthenticationDAO extends BaseDAO<MFAAuthentication>{
-	public List<MFAAuthentication> get(MFAAuthenticationQuery query){
+public class MFAAuthenticationDAO extends BaseDAO<MfaAuthentication>{
+	public List<MfaAuthentication> get(MFAAuthenticationQuery query){
 		Criteria criteria = createCriteria();
 		if (query.getSctlId() != null ) {
-			criteria.add(Restrictions.eq(MFAAuthentication.FieldName_SctlId, query.getSctlId()));
+			criteria.add(Restrictions.eq(MfaAuthentication.FieldName_SctlId, query.getSctlId()));
 		}
 		if(query.getMfaMode() != null) {
-			criteria.add(Restrictions.eq(MFAAuthentication.FieldName_MFAMode, query.getMfaMode()));
+			criteria.add(Restrictions.eq(MfaAuthentication.FieldName_MFAMode, query.getMfaMode()));
 		}
 		if(query.getMfaValue() != null) {
-			criteria.add(Restrictions.eq(MFAAuthentication.FieldName_MFAValue, query.getMfaValue()));
+			criteria.add(Restrictions.eq(MfaAuthentication.FieldName_MFAValue, query.getMfaValue()));
 		}
 		
 		processBaseQuery(query, criteria);
@@ -37,7 +37,7 @@ public class MFAAuthenticationDAO extends BaseDAO<MFAAuthentication>{
           applyOrder(query, criteria);
           
 		@SuppressWarnings("unchecked")
-		List<MFAAuthentication> results = criteria.list();
+		List<MfaAuthentication> results = criteria.list();
 		return results;
 	}
 }

@@ -22,7 +22,7 @@ import com.mfino.constants.SecurityConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 
@@ -41,8 +41,8 @@ public class CustomUserDetailsService implements UserDetailsService {
      
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
     public UserDetails loadUserByUsername(String username) {
-        List<User> users;
-        User user;
+        List<MfinoUser> users;
+        MfinoUser user;
         UserDetailsServiceImpl userAdapter = null;
         try {
             UserQuery query = new UserQuery();

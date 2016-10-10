@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -107,7 +107,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		
 		SubscriberMdn srcMdn = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		Subscriber srcSub = srcMdn.getSubscriber();
-		KYCLevel srcKyc = srcSub.getKycLevel();
+		KycLevel srcKyc = srcSub.getKycLevel();
 		if(srcKyc.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
 			log.info(String.format("TransferToUnregistered is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",srcMdn.getMdn()));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);

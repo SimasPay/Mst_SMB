@@ -18,7 +18,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberGroupDao;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -26,7 +26,7 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
@@ -261,7 +261,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			subscriber.setCreatedby(createdByName);
 			subscriber.setUpdatedby(createdByName);
 			subscriber.setCreatetime(new Timestamp());
-			KYCLevel kycLevel = kycLevelService.getByKycLevel(ConfigurationUtil
+			KycLevel kycLevel = kycLevelService.getByKycLevel(ConfigurationUtil
 					.getIntialKyclevel());
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
@@ -269,10 +269,10 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
-				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 				groupID = subscriberGroup.getGroupid();
 			}
 			Long kycLevelNo = null;
@@ -334,7 +334,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			subscriberMDN.setDigestedpin(calcPIN);
 			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			KYCLevel kyclevel = null;
+			KycLevel kyclevel = null;
 			kyclevel = kycLevelService.getByKycLevel(subscriber.getUpgradablekyclevel().longValue());
 			Timestamp timeStamp = new Timestamp();
 			subscriber.setKycLevel(kyclevel);
@@ -352,7 +352,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			subscriberService.saveSubscriber(subscriber);
 			subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 			if(subscriberGroups == null || subscriberGroups.isEmpty()){
-				SubscriberGroup subGroup = new SubscriberGroup(); 
+				SubscriberGroups subGroup = new SubscriberGroups(); 
 				if(null!=groupService.getById(1L)){
 					subGroup.setSubscriberid(subscriber.getId().longValue());
 					subGroup.setGroupid(1L); 

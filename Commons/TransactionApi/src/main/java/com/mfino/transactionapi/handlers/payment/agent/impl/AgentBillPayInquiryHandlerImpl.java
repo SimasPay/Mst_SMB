@@ -22,8 +22,8 @@ import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.MFSDenominationsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
-import com.mfino.domain.MFSDenominations;
+import com.mfino.domain.MfsbillerPartnerMap;
+import com.mfino.domain.MfsDenominations;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -171,7 +171,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		//paymentInquiry.setPartnerBillerCode(billPartner.getMFSBillerPartnerFromPartnerID().iterator().next().getPartnerBillerCode());
 		
 		MfsBiller mfsBiller = mfsBillerService.getByBillerCode(paymentInquiry.getBillerCode());
-		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
+		MfsbillerPartnerMap results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
 			paymentInquiry.setIntegrationCode(results.getIntegrationcode());
 			paymentInquiry.setPartnerBillerCode(results.getPartnerbillercode());
@@ -181,7 +181,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 				
 				MFSDenominationsQuery mdquery = new MFSDenominationsQuery();
 				mdquery.setMfsID(results.getId().longValue());
-				List<MFSDenominations> res  = mfsDenominationsService.get(mdquery);
+				List<MfsDenominations> res  = mfsDenominationsService.get(mdquery);
 				if(res.size() > 0){
 					boolean isValid = false;
 					StringBuffer validDenominations = new StringBuffer();

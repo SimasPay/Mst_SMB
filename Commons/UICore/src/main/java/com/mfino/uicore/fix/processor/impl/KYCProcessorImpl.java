@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSKYCCheck;
@@ -58,10 +58,10 @@ public class KYCProcessorImpl extends BaseFixProcessor implements KYCProcessor{
 //            realMsg.settotal(entries.length);
         } else if (CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())) {
             
-        	List<KYCLevel> results = kycleveldao.getAll();
+        	List<KycLevel> results = kycleveldao.getAll();
         	realMsg.allocateEntries(results.size());
             for (int i = 0; i < results.size(); i++) {
-                KYCLevel kyclevel =results.get(i);
+                KycLevel kyclevel =results.get(i);
                 CMJSKYCCheck.CGEntries entry =  new CMJSKYCCheck.CGEntries();
                 updateMessage(kyclevel, entry);
                 realMsg.getEntries()[i] = entry;
@@ -86,7 +86,7 @@ public class KYCProcessorImpl extends BaseFixProcessor implements KYCProcessor{
         return realMsg;
     }
 
-	private void updateMessage(KYCLevel kyclevel, CGEntries entry) {
+	private void updateMessage(KycLevel kyclevel, CGEntries entry) {
 		entry.setID(kyclevel.getId().longValue());
 		if(kyclevel.getKyclevel()!=null){
 			entry.setKYCLevel(kyclevel.getKyclevel().longValue());

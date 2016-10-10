@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -174,7 +174,7 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		Subscriber agentsub = agent.getSubscriber();
 		SubscriberMdn agentmdn = agentsub.getSubscriberMdns().iterator().next();	
 		
-		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
+		MfsbillerPartnerMap results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
 			billInquiry.setIntegrationCode(results.getIntegrationcode());
 		}

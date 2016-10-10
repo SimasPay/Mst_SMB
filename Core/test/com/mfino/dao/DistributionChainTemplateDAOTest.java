@@ -5,7 +5,7 @@
 package com.mfino.dao;
 
 import com.mfino.dao.query.DistributionChainTemplateQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.mFinoServiceProvider;
 import java.util.List;
 import org.junit.After;
@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 public class DistributionChainTemplateDAOTest {
 
     private DistributionChainTemplateDAO dctDao = new DistributionChainTemplateDAO();
-    private DistributionChainTemplate dctTemplate = new DistributionChainTemplate();
+    private DistributionChainTemp dctTemplate = new DistributionChainTemp();
     private MfinoServiceProviderDAO mspDao = new MfinoServiceProviderDAO();
     private DistributionChainTemplateQuery query = new DistributionChainTemplateQuery();
 

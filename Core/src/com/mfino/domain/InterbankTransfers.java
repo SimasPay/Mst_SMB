@@ -15,7 +15,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "INTERBANK_TRANSFERS")
-public class InterbankTransfer extends Base implements java.io.Serializable {
+public class InterbankTransfers extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SctlId = "sctlid";
@@ -38,10 +38,10 @@ public class InterbankTransfer extends Base implements java.io.Serializable {
 	private Long ibtstatus;
 	private String destbankname;
 
-	public InterbankTransfer() {
+	public InterbankTransfers() {
 	}
 
-	public InterbankTransfer(BigDecimal id, Timestamp lastupdatetime,
+	public InterbankTransfers(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String destbankcode, BigDecimal amount, BigDecimal charges) {
 		this.id = id;
@@ -54,7 +54,7 @@ public class InterbankTransfer extends Base implements java.io.Serializable {
 		this.charges = charges;
 	}
 
-	public InterbankTransfer(BigDecimal id, Timestamp lastupdatetime,
+	public InterbankTransfers(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String terminalid, String destbankcode, String sourceaccountname,
 			String destaccountname, String sourceaccountnumber,

@@ -19,7 +19,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -167,7 +167,7 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		}
 		
 		//For Integration Code
-		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPay.getBillerCode());
+		MfsbillerPartnerMap mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPay.getBillerCode());
 		if (mfsBillerPartner != null){
 			billPay.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
@@ -229,9 +229,9 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 			if(res.size() > 0){
 				billPay.setIntegrationCode(res.get(0).getIntegrationcode());
 				billPay.setPartnerBillerCode(res.get(0).getPartnerbillercode());
-				Iterator<MFSBillerPartner> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
+				Iterator<MfsbillerPartnerMap> mfsBillers=partner.getMfsbillerPartnerMaps().iterator();
 				while(mfsBillers.hasNext()){
-					MFSBillerPartner mfsbiller = mfsBillers.next();
+					MfsbillerPartnerMap mfsbiller = mfsBillers.next();
 					if(mfsbiller.getMfsBiller().getMfsbillercode().equals(billPay.getBillerCode())){
 						billPay.setBillerPartnerType(mfsbiller.getBillerpartnertype().intValue());
 						break;

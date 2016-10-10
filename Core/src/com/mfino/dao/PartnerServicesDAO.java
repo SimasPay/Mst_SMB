@@ -10,7 +10,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.PartnerServicesQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -124,7 +124,7 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
     	
     	if (dctId != null) {
     		criteria.createCriteria(PartnerServices.FieldName_DistributionChainTemplate).
-    			add(Restrictions.eq(DistributionChainTemplate.FieldName_RecordID, dctId));
+    			add(Restrictions.eq(DistributionChainTemp.FieldName_RecordID, dctId));
     	}
     	if (partnerId != null) {
     		criteria.createAlias(PartnerServices.FieldName_Partner, "partner");
@@ -185,7 +185,7 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
     	
     	if (dctId != null) {
     		criteria.createCriteria(PartnerServices.FieldName_DistributionChainTemplate).
-    			add(Restrictions.eq(DistributionChainTemplate.FieldName_RecordID, dctId));
+    			add(Restrictions.eq(DistributionChainTemp.FieldName_RecordID, dctId));
     	}
     	if (partnerId != null) {
     		criteria.createAlias(PartnerServices.FieldName_PartnerByParentID, "partner");

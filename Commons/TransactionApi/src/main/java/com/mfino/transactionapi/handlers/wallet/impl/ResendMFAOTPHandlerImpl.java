@@ -17,7 +17,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFAAuthenticationDAO;
 import com.mfino.dao.query.MFAAuthenticationQuery;
-import com.mfino.domain.MFAAuthentication;
+import com.mfino.domain.MfaAuthentication;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSResendMFAOTP;
@@ -105,7 +105,7 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		query.setSctlId(sctlid);
 		
 		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
-		List<MFAAuthentication> mfaResults = authDAO.get(query);
+		List<MfaAuthentication> mfaResults = authDAO.get(query);
 		
 		if(CollectionUtils.isEmpty(mfaResults)) {
 			
@@ -113,7 +113,7 @@ public class ResendMFAOTPHandlerImpl  extends FIXMessageHandler implements Resen
 		
 		} else {
 		
-			MFAAuthentication mfaAuthentication = mfaResults.get(0);
+			MfaAuthentication mfaAuthentication = mfaResults.get(0);
 			
 			if(mfaAuthentication.getRetryattempt().intValue() >= (noOfRetryAttemptsForMFAOTP - 1)) {
 				

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCFieldsDAO;
 import com.mfino.dao.query.KYCFieldsquery;
-import com.mfino.domain.KYCFields;
+import com.mfino.domain.KycFields;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSKYCCheckFields;
@@ -43,10 +43,10 @@ public class KYCFieldsPrcocessorImpl extends BaseFixProcessor implements KYCFiel
             KYCFieldsquery query = new KYCFieldsquery();
             query.set_kycFieldsLevelID(realMsg.getKYCFieldsLevelID());
             
-        	List<KYCFields> results = kycfieldsdao.get(query);
+        	List<KycFields> results = kycfieldsdao.get(query);
         	realMsg.allocateEntries(results.size());
             for (int i = 0; i < results.size(); i++) {
-            	KYCFields kycfields =results.get(i);
+            	KycFields kycfields =results.get(i);
             	CMJSKYCCheckFields.CGEntries entry =  new CMJSKYCCheckFields.CGEntries();
                 updateMessage(kycfields, entry);
                 realMsg.getEntries()[i] = entry;
@@ -57,7 +57,7 @@ public class KYCFieldsPrcocessorImpl extends BaseFixProcessor implements KYCFiel
         return realMsg;
     }
 
-	private void updateMessage(KYCFields kycfields, CGEntries entry) {
+	private void updateMessage(KycFields kycfields, CGEntries entry) {
 		
 		if(kycfields.getKycLevel()!=null){
 			//entry.setKYCFieldsLevelID(kycfields.getKYCLevelByKYCFieldsLevelID().getID());

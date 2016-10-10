@@ -5,7 +5,7 @@
 package com.mfino.dao;
 
 import com.mfino.domain.Company;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
@@ -33,7 +33,7 @@ public class UserDAOTest extends TestCase {
     @Test
     public void testInsert() {
         UserDAO service = new UserDAO();
-        User u = new User();
+        MfinoUser u = new MfinoUser();
         u.setUsername("xchen1234567890");
         u.setPassword("xchen");
         u.setStatusTime(new Timestamp());

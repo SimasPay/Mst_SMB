@@ -6,8 +6,8 @@
 package com.mfino.dao;
 
 import com.mfino.dao.query.DistributionChainLevelQuery;
-import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainLvl;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.mFinoServiceProvider;
 
 import java.math.BigDecimal;
@@ -29,11 +29,11 @@ public class DistributionChainLevelDAOTest {
     }
 
     private DistributionChainTemplateDAO dctDao = new DistributionChainTemplateDAO();
-    private DistributionChainTemplate dctTemplate = new DistributionChainTemplate();
+    private DistributionChainTemp dctTemplate = new DistributionChainTemp();
     private MfinoServiceProviderDAO mspDao = new MfinoServiceProviderDAO();
     private DistributionChainLevelQuery query = new DistributionChainLevelQuery();
     private DistributionChainLevelDAO dclDao = new DistributionChainLevelDAO();
-    private DistributionChainLevel dcl = new DistributionChainLevel();
+    private DistributionChainLvl dcl = new DistributionChainLvl();
 
 
 

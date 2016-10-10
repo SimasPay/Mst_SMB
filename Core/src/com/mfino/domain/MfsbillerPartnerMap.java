@@ -17,7 +17,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFSBILLER_PARTNER_MAP")
-public class MFSBillerPartner extends Base implements java.io.Serializable {
+public class MfsbillerPartnerMap extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MFSBiller = "mfsBiller";
@@ -31,10 +31,10 @@ public class MFSBillerPartner extends Base implements java.io.Serializable {
 	private String integrationcode;
 	private Short chargesincluded;
 
-	public MFSBillerPartner() {
+	public MfsbillerPartnerMap() {
 	}
 
-	public MFSBillerPartner(BigDecimal id, Partner partner,
+	public MfsbillerPartnerMap(BigDecimal id, Partner partner,
 			MfinoServiceProvider mfinoServiceProvider, MfsBiller mfsBiller,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
@@ -48,7 +48,7 @@ public class MFSBillerPartner extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public MFSBillerPartner(BigDecimal id, Partner partner,
+	public MfsbillerPartnerMap(BigDecimal id, Partner partner,
 			MfinoServiceProvider mfinoServiceProvider, MfsBiller mfsBiller,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby,

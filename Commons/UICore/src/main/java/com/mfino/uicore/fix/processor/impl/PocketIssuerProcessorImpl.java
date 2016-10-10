@@ -28,11 +28,11 @@ import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.PocketTemplateConfigQuery;
 import com.mfino.dao.query.PocketTemplateQuery;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -482,10 +482,10 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 	
 		//Getting group for subscriber
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroup> group = subscriberGroupDao.getAllBySubscriberID(smdn.getSubscriber().getId());
+		List<SubscriberGroups> group = subscriberGroupDao.getAllBySubscriberID(smdn.getSubscriber().getId());
 		
 		Long subscriberGroupId =null;
-		Iterator<SubscriberGroup> iterator = group.iterator();
+		Iterator<SubscriberGroups> iterator = group.iterator();
 		while(iterator.hasNext()){			
 			subscriberGroupId = iterator.next().getGroupid();
 		}
@@ -505,7 +505,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		}
 		else
 		{
-			KYCLevel kyclevel = smdn.getSubscriber().getKycLevel();
+			KycLevel kyclevel = smdn.getSubscriber().getKycLevel();
 			kycLevelNo = kyclevel.getKyclevel().longValue();
 		}
 

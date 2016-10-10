@@ -23,7 +23,7 @@ import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.ServiceChargeTxnLog;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAutoReversal;
@@ -81,7 +81,7 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		CMJSBankTellerCashOutConfirm realMsg = (CMJSBankTellerCashOutConfirm) msg;
 		CMJSError errorMsg = new CMJSError();
 
-		User user = userService.getCurrentUser();
+		MfinoUser user = userService.getCurrentUser();
 		Set<Partner> partners = user.getPartners();
 		if (partners == null || partners.isEmpty()) {
 			errorMsg.setErrorDescription(MessageText._("You are not authorized to perform this operation"));

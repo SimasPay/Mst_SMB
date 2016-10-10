@@ -18,19 +18,19 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "LOP_HISTORY")
-public class LOPHistory  extends Base implements java.io.Serializable {
+public class LopHistory  extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	private LOP letterOfPurchase;
+	private LetterOfPurchase letterOfPurchase;
 	private BigDecimal olddiscount;
 	private BigDecimal newdiscount;
 	private String discountchangedby;
 	private Timestamp discountchangetime;
 	private String comments;
 
-	public LOPHistory() {
+	public LopHistory() {
 	}
 
-	public LOPHistory(BigDecimal id, LOP letterOfPurchase,
+	public LopHistory(BigDecimal id, LetterOfPurchase letterOfPurchase,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -41,7 +41,7 @@ public class LOPHistory  extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public LOPHistory(BigDecimal id, LOP letterOfPurchase,
+	public LopHistory(BigDecimal id, LetterOfPurchase letterOfPurchase,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, BigDecimal olddiscount,
 			BigDecimal newdiscount, String discountchangedby,
@@ -62,11 +62,11 @@ public class LOPHistory  extends Base implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LOPID", nullable = false)
-	public LOP getLetterOfPurchase() {
+	public LetterOfPurchase getLetterOfPurchase() {
 		return this.letterOfPurchase;
 	}
 
-	public void setLetterOfPurchase(LOP letterOfPurchase) {
+	public void setLetterOfPurchase(LetterOfPurchase letterOfPurchase) {
 		this.letterOfPurchase = letterOfPurchase;
 	}
 

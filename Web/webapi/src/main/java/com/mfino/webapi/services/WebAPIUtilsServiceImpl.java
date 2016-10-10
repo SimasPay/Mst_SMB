@@ -22,8 +22,8 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.Company;
-import com.mfino.domain.IntegrationPartnerMapping;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.IntegrationPartnerMap;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
@@ -113,7 +113,7 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 		setServicesForXMLResult(xmlResult);
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		String institutionID = xmlResult.getInstitutionID();
-		IntegrationPartnerMapping  integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(institutionID);
+		IntegrationPartnerMap  integrationPartnerMapping = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(institutionID);
 		if(integrationPartnerMapping != null)
 		{
 			Partner partner = null;
@@ -122,11 +122,11 @@ public class WebAPIUtilsServiceImpl implements WebAPIUtilsService {
 			}
 			else if(integrationPartnerMapping.getMfsBiller() != null)
 			{
-				Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
-				Iterator<MFSBillerPartner> it  = mfsBillerpartners.iterator();
+				Set<MfsbillerPartnerMap>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
+				Iterator<MfsbillerPartnerMap> it  = mfsBillerpartners.iterator();
 				if(it.hasNext())
 				{
-					MFSBillerPartner mfsBillerPartner =  it.next();
+					MfsbillerPartnerMap mfsBillerPartner =  it.next();
 					partner = mfsBillerPartner.getPartner();
 				}
 			}

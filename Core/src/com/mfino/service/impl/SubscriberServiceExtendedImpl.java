@@ -35,13 +35,13 @@ import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberAddiInfo;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.domain.UnregisteredTxnInfo;
@@ -172,17 +172,17 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setUpdatedby(createdByName);
 			subscriber.setCreatetime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
-			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil
 					.getIntialKyclevel());
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
-				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 				groupID = subscriberGroup.getGroupid();
 			}
 			Long kycLevelNo = null;
@@ -256,7 +256,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			SubscriberGroup sg = new SubscriberGroup();
+			SubscriberGroups sg = new SubscriberGroups();
 			sg.setSubscriberid(subscriber.getId().longValue());
 			sg.setGroupid(defaultGroup.getId().longValue());
 			if(subscriber.getId() != null){
@@ -378,7 +378,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCreatetime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			
-			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil.getIntialKyclevel());
 			
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
@@ -386,11 +386,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty()){
 				
-				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 				groupID = subscriberGroup.getGroupid();
 			}
 			
@@ -497,7 +497,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 				Groups defaultGroup =groupDao.getSystemGroup();
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				SubscriberGroup sg = new SubscriberGroup();
+				SubscriberGroups sg = new SubscriberGroups();
 				sg.setSubscriberid(subscriber.getId().longValue());
 				sg.setGroupid(defaultGroup.getId().longValue());
 				if(subscriber.getId() != null){
@@ -585,7 +585,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
             	subscriberMDN.setUpdatedby(createdByName);    			
             }
 			subscriber.setAddressBySubscriberaddressid(address);
-			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(subscriberRegistration.getKYCLevel());
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(subscriberRegistration.getKYCLevel());
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
@@ -647,7 +647,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			Long groupID = null;
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			Groups defaultGroup =groupDao.getSystemGroup();
-			SubscriberGroup sg = new SubscriberGroup();
+			SubscriberGroups sg = new SubscriberGroups();
 			sg.setSubscriberid(subscriber.getId().longValue());
 			sg.setGroupid(defaultGroup.getId().longValue());
 			if(subscriber.getId() != null){
@@ -748,17 +748,17 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCreatedby("Web Registration");
 			subscriber.setUpdatedby("Web Registration");
 			subscriber.setCreatetime(new Timestamp());
-			KYCLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(ConfigurationUtil
 					.getIntialKyclevel());
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
-				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 				groupID = subscriberGroup.getGroupid();
 			}
 			Long kycLevelNo = null;
@@ -857,7 +857,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			SubscriberGroup sg = new SubscriberGroup();
+			SubscriberGroups sg = new SubscriberGroups();
 			sg.setSubscriberid(subscriber.getId().longValue());
 			sg.setGroupid(defaultGroup.getId().longValue());
 			if(subscriber.getId() != null){
@@ -1112,10 +1112,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		boolean emoneyPocketFound = false;
 		boolean lakupandaiPocketFound = false;
 		Long groupID = null;
-		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		Long kycLevelNo = null;
@@ -1549,10 +1549,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		Pocket bankPocket = null;
 		boolean bankPocketFound = false;
 		Long groupID = null;
-		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getId().longValue();
 		}
 		Long kycLevelNo = null;

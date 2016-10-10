@@ -22,7 +22,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceDAO;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -124,7 +124,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 		String description = "";
 		if(partner!=null)
 		{
-			DistributionChainTemplate dct = distributionChainTemplateService.getDistributionChainTemplateById(dctId);
+			DistributionChainTemp dct = distributionChainTemplateService.getDistributionChainTemplateById(dctId);
 			
 			if(dct==null)
 			{
@@ -265,7 +265,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 	
 	
 	private XMLResult processTransfer(ChannelCode cc, Partner sourcePartner, Partner destPartner, String sourcePin, BigDecimal amount, 
-			Pocket sourcePocket, Pocket destPocket, DistributionChainTemplate dct)
+			Pocket sourcePocket, Pocket destPocket, DistributionChainTemp dct)
 	{
 		String sourceMessage = ServiceAndTransactionConstants.MESSAGE_AGENT_AGENT_TRANSFER;
 		Set<SubscriberMdn> mdn = sourcePartner.getSubscriber().getSubscriberMdns();
@@ -307,7 +307,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
 		return null;
 	}
 	
-	private Pocket getPocket(Partner partner, boolean isOutgoingPocket, DistributionChainTemplate dct)
+	private Pocket getPocket(Partner partner, boolean isOutgoingPocket, DistributionChainTemp dct)
 	{
 		Pocket pocket = null;
 		ServiceDAO serviceDAO=new DAOFactory().getInstance().getServiceDAO();

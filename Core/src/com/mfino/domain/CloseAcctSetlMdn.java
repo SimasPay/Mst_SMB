@@ -18,7 +18,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "CLOSE_ACCT_SETL_MDN")
-public class ClosedAccountSettlementMDN extends Base implements java.io.Serializable {
+public class CloseAcctSetlMdn extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,10 +35,10 @@ public class ClosedAccountSettlementMDN extends Base implements java.io.Serializ
 	private String approvedorrejectedby;
 	private String approveorrejectcomment;
 
-	public ClosedAccountSettlementMDN() {
+	public CloseAcctSetlMdn() {
 	}
 
-	public ClosedAccountSettlementMDN(BigDecimal id, SubscriberMdn subscriberMdn,
+	public CloseAcctSetlMdn(BigDecimal id, SubscriberMdn subscriberMdn,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -49,7 +49,7 @@ public class ClosedAccountSettlementMDN extends Base implements java.io.Serializ
 		this.createdby = createdby;
 	}
 
-	public ClosedAccountSettlementMDN(BigDecimal id, SubscriberMdn subscriberMdn,
+	public CloseAcctSetlMdn(BigDecimal id, SubscriberMdn subscriberMdn,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, Short tobankaccount,
 			String settlementmdn, String settlementaccountnumber,

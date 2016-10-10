@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.InterBankTransfersDao;
 import com.mfino.dao.query.InterBankTransfersQuery;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.service.IBTService;
 
 @Service("IBTServiceImpl")
@@ -19,15 +19,15 @@ public class IBTServiceImpl implements IBTService {
 	 * @param sctlID
 	 * @return
 	 */
-	public InterbankTransfer getBySctlId(Long sctlID) {
-		InterbankTransfer result = null;
+	public InterbankTransfers getBySctlId(Long sctlID) {
+		InterbankTransfers result = null;
 		
 		if(sctlID == null) return null;
 		
 		InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 		InterBankTransfersQuery query = new InterBankTransfersQuery();
 		query.setSctlId(sctlID);
-		List<InterbankTransfer> ibtList = interBankTransferDao.get(query);
+		List<InterbankTransfers> ibtList = interBankTransferDao.get(query);
 		
 		if(CollectionUtils.isNotEmpty(ibtList))
 		{

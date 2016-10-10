@@ -18,7 +18,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "CHANNEL_SESSION_MGMT")
-public class ChannelSessionManagement extends Base implements java.io.Serializable {
+public class ChannelSessionMgmt extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
@@ -28,10 +28,10 @@ public class ChannelSessionManagement extends Base implements java.io.Serializab
 	private Timestamp lastrequesttime;
 	private Timestamp lastlogintime;
 
-	public ChannelSessionManagement() {
+	public ChannelSessionMgmt() {
 	}
 
-	public ChannelSessionManagement(BigDecimal id, SubscriberMdn subscriberMdn,
+	public ChannelSessionMgmt(BigDecimal id, SubscriberMdn subscriberMdn,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -42,7 +42,7 @@ public class ChannelSessionManagement extends Base implements java.io.Serializab
 		this.createdby = createdby;
 	}
 
-	public ChannelSessionManagement(BigDecimal id, SubscriberMdn subscriberMdn,
+	public ChannelSessionMgmt(BigDecimal id, SubscriberMdn subscriberMdn,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String sessionkey,
 			Long requestcountafterlogin, Timestamp lastrequesttime,

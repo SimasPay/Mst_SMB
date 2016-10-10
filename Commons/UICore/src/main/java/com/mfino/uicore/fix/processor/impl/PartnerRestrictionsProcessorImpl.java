@@ -18,7 +18,7 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
 import com.mfino.domain.TransactionType;
@@ -123,7 +123,7 @@ public class PartnerRestrictionsProcessorImpl extends BaseFixProcessor implement
 	private void updateMessage(PartnerRestrictions partnerRestrictions, CMJSPartnerRestrictions.CGEntries partnerRestrictionEntry) {
 		log.info("PartnerRestrictionsProcessor :: updateMessage BEGIN");
 		DistributionChainTemplateDAO distributionChainTemplateDAO = DAOFactory.getInstance().getDistributionChainTemplateDAO();
-		DistributionChainTemplate distributionChainTemplate = distributionChainTemplateDAO.getById(partnerRestrictions.getDctid());
+		DistributionChainTemp distributionChainTemplate = distributionChainTemplateDAO.getById(partnerRestrictions.getDctid());
 		
 		partnerRestrictionEntry.setID(partnerRestrictions.getId().longValue());
 		

@@ -35,7 +35,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	private Service service;
 	private Partner partnerByParentid;
 	private Pocket pocketByDestpocketid;
-	private DistributionChainTemplate distributionChainTemp;
+	private DistributionChainTemp distributionChainTemp;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Partner partnerByServiceproviderid;
 	private Pocket pocketBySourcepocket;
@@ -69,7 +69,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	public PartnerServices(BigDecimal id, Partner partnerByPartnerid,
 			Service service, Partner partnerByParentid,
 			Pocket pocketByDestpocketid,
-			DistributionChainTemplate distributionChainTemp,
+			DistributionChainTemp distributionChainTemp,
 			MfinoServiceProvider mfinoServiceProvider,
 			Partner partnerByServiceproviderid, Pocket pocketBySourcepocket,
 			Timestamp lastupdatetime, String updatedby,
@@ -140,12 +140,12 @@ public class PartnerServices extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DISTRIBUTIONCHAINTEMPLATEID")
-	public DistributionChainTemplate getDistributionChainTemp() {
+	public DistributionChainTemp getDistributionChainTemp() {
 		return this.distributionChainTemp;
 	}
 
 	public void setDistributionChainTemp(
-			DistributionChainTemplate distributionChainTemp) {
+			DistributionChainTemp distributionChainTemp) {
 		this.distributionChainTemp = distributionChainTemp;
 	}
 

@@ -21,7 +21,7 @@ import com.mfino.domain.Merchant;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 
 /**
@@ -194,7 +194,7 @@ public class MerchantDAO extends BaseDAO<Merchant> {
             joinClauses.add(joinUserClause);
             joinClauses.add(joinMSPClause);
             //    String usClause = "user." + User.FieldName_Username + " like '%" + userName + "%'";
-            String usClause = "user." + User.FieldName_Username + " like :userName and MSP." + MfinoServiceProvider.FieldName_RecordID + " = :mspid";
+            String usClause = "user." + MfinoUser.FieldName_Username + " like :userName and MSP." + MfinoServiceProvider.FieldName_RecordID + " = :mspid";
             whereClauses.add(usClause);
         }
 
@@ -202,7 +202,7 @@ public class MerchantDAO extends BaseDAO<Merchant> {
             joinClauses.add(joinUserClause);
             joinClauses.add(joinMSPClause);
             // String usClause = "user." + User.FieldName_Username + "='" + query.getExactUser() + "'";
-            String usClause = "user." + User.FieldName_Username + "= :exactUserName and MSP." + MfinoServiceProvider.FieldName_RecordID + " = :mspid";
+            String usClause = "user." + MfinoUser.FieldName_Username + "= :exactUserName and MSP." + MfinoServiceProvider.FieldName_RecordID + " = :mspid";
             whereClauses.add(usClause);
         }
 
@@ -232,7 +232,7 @@ public class MerchantDAO extends BaseDAO<Merchant> {
         } else if (!StringUtils.isEmpty(query.getLastName())) {
             orderClause = "order by subscriber.LastName asc ";
         } else if (!StringUtils.isEmpty(query.getUserName())) {
-            orderClause = "order by user." + User.FieldName_Username + " asc ";
+            orderClause = "order by user." + MfinoUser.FieldName_Username + " asc ";
         } else if (query.isIDOrdered()) {
             orderClause = "order by merchant." + Merchant.FieldName_RecordID + " asc ";
         }

@@ -16,7 +16,7 @@ import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PartnerServicesDAO;
 import com.mfino.dao.query.PartnerQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -62,7 +62,7 @@ public class PartnerByDCTProcessorImpl extends BaseFixProcessor implements Partn
     	
     	log.info("ForPartner forPartner.tradeName="+forPartner.getTradename() + ", ID="+forPartner.getId());
     	
-    	DistributionChainTemplate dct = null;
+    	DistributionChainTemp dct = null;
     	
     	if(realMsg.getDCTIDSearch() != null){
     		dct = dctDao.getById(realMsg.getDCTIDSearch());

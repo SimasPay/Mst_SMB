@@ -16,11 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.query.DistributionChainTemplateQuery;
 import com.mfino.dao.query.PartnerQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.DistributionChainTemplateService;
 import com.mfino.service.DistributionTreeService;
@@ -59,17 +59,17 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		log.debug("DistributionTreeService");
 		List<TreeNode> childNodesList = new ArrayList<TreeNode>();
 		
-		User user = userService.getCurrentUser();
+		MfinoUser user = userService.getCurrentUser();
 		
 		if(CmFinoFIX.NodeType_root.equals(nodeType)){
 			childNodesList =  getAllDistributionChainTemplates(user, srchDctName, srchServiceId);
 		}
 		else if(CmFinoFIX.NodeType_dct.equals(nodeType)){
-			DistributionChainTemplate distributionChainTemplate = distributionChainTemplateService.getDistributionChainTemplateById(objectId);
+			DistributionChainTemp distributionChainTemplate = distributionChainTemplateService.getDistributionChainTemplateById(objectId);
 			childNodesList =  getAllChildren(distributionChainTemplate);
 		}
 		else if(CmFinoFIX.NodeType_partner.equals(nodeType)){
-			DistributionChainTemplate distributionChainTemplate = distributionChainTemplateService.getDistributionChainTemplateById(dctId);
+			DistributionChainTemp distributionChainTemplate = distributionChainTemplateService.getDistributionChainTemplateById(dctId);
 			Partner partner = partnerService.getPartnerById(objectId);
 			DAOFactory.getInstance().getPocketDAO();
 			childNodesList = getAllChildren(distributionChainTemplate, partner);
@@ -84,7 +84,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 	 * @return
 	 */
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-	public List<TreeNode> getAllChildren(DistributionChainTemplate dct){
+	public List<TreeNode> getAllChildren(DistributionChainTemp dct){
 		log.info("DistributionTreeService :: getAllChildren(DistributionChainTemplate dct) BEGIN");
 		List<TreeNode> childNodesList = new ArrayList<TreeNode>();
 		
@@ -110,7 +110,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 	 * @return
 	 */
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-	public List<TreeNode> getAllChildren(DistributionChainTemplate distributionChainTemplate, Partner parent){
+	public List<TreeNode> getAllChildren(DistributionChainTemp distributionChainTemplate, Partner parent){
 		log.info("DistributionTreeService :: getAllChildren(DistributionChainTemplate distributionChainTemplate, Partner partner) BEGIN");
 		List<TreeNode> childNodesList = new ArrayList<TreeNode>();
 		
@@ -135,7 +135,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 	 * @return
 	 */
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-	public List<TreeNode> getAllDistributionChainTemplates(User user, String srchDctName, Long srchServiceId){
+	public List<TreeNode> getAllDistributionChainTemplates(MfinoUser user, String srchDctName, Long srchServiceId){
 		log.debug("DistributionTreeService :: getAllDistributionChainTemplates() BEGIN");
 		
 		List<TreeNode> dctTreeNodes = new ArrayList<TreeNode>();
@@ -145,8 +145,8 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 			DistributionChainTemplateQuery query = new DistributionChainTemplateQuery();
 			query.setDistributionChainTemplateName(srchDctName);
 			query.setServiceIdSearch(srchServiceId);
-			List<DistributionChainTemplate> distributionChainTemplates = distributionChainTemplateService.getDistributionChainTemplates(query);
-			for(DistributionChainTemplate dct : distributionChainTemplates){
+			List<DistributionChainTemp> distributionChainTemplates = distributionChainTemplateService.getDistributionChainTemplates(query);
+			for(DistributionChainTemp dct : distributionChainTemplates){
 				dctTreeNodes.add(getTreeNode(dct));
 			}
 		}
@@ -159,7 +159,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		return dctTreeNodes;
 	}
 	
-	private TreeNode getTreeNode(DistributionChainTemplate distributionChainTemplate, Partner partner){
+	private TreeNode getTreeNode(DistributionChainTemp distributionChainTemplate, Partner partner){
 		TreeNode treeNode = new TreeNode();
 		
 		treeNode.setDctId(distributionChainTemplate.getId().longValue());
@@ -181,7 +181,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		return treeNode;
 	}
 	
-	private TreeNode getTreeNode(DistributionChainTemplate distributionChainTemplate){
+	private TreeNode getTreeNode(DistributionChainTemp distributionChainTemplate){
 		TreeNode treeNode = new TreeNode();
 		
 		treeNode.setObjectId(distributionChainTemplate.getId().longValue());
@@ -211,7 +211,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 			boolean matchedPartnerService = true;
 			
 			/*This logic is for matching with search criteria.*/
-			DistributionChainTemplate dct = partnerService.getDistributionChainTemp();
+			DistributionChainTemp dct = partnerService.getDistributionChainTemp();
 			if(dct != null){
 				if(StringUtils.isNotBlank(srchDctName)){
 					if(!(dct.getName().toLowerCase().startsWith(srchDctName.toLowerCase()))){

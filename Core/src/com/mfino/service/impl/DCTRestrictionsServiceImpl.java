@@ -13,8 +13,8 @@ import com.mfino.dao.DCTRestrictionsDao;
 import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
-import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainLvl;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceTransaction;
 import com.mfino.domain.TransactionType;
@@ -37,11 +37,11 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 	 * @return
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public List<DCTRestrictions> createDefautlRestrictions(DistributionChainLevel dctLevel) {
+	public List<DCTRestrictions> createDefautlRestrictions(DistributionChainLvl dctLevel) {
 		List<DCTRestrictions> dctRestrictions = new ArrayList<DCTRestrictions>();
 		log.info("DCTRestrictionsService :: createDefaultRestrictions() dct BEGIN");
 		
-		DistributionChainTemplate dct = dctLevel.getDistributionChainTemp();
+		DistributionChainTemp dct = dctLevel.getDistributionChainTemp();
 		
 		DCTRestrictionsDao dctRestrictionsDao = DAOFactory.getInstance().getDctRestrictionsDao();
 		
@@ -72,12 +72,12 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 	 * @param dctLevels
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public void deleteRestrictions(List<DistributionChainLevel> dctLevels) {
+	public void deleteRestrictions(List<DistributionChainLvl> dctLevels) {
 		log.info("DCTRestrictionsService :: deleteRestrictions() dct BEGIN");
 		
 		DCTRestrictionsDao dctRestrictionsDao = DAOFactory.getInstance().getDctRestrictionsDao();
 		
-		for(DistributionChainLevel dctLevel : dctLevels){
+		for(DistributionChainLvl dctLevel : dctLevels){
 			DCTRestrictionsQuery query = new DCTRestrictionsQuery();
 			query.setDctId(dctLevel.getDistributionChainTemp().getId().longValue());
 			query.setLevel((int) dctLevel.getDistributionlevel());

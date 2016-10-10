@@ -15,7 +15,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFS_LEDGER")
-public class MFSLedger extends Base implements java.io.Serializable {
+public class MfsLedger extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -31,10 +31,10 @@ public class MFSLedger extends Base implements java.io.Serializable {
 	private String ledgertype;
 	private String ledgerstatus;
 
-	public MFSLedger() {
+	public MfsLedger() {
 	}
 
-	public MFSLedger(BigDecimal id, Timestamp lastupdatetime,
+	public MfsLedger(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid, BigDecimal commoditytransferid,
 			BigDecimal pocketid, BigDecimal amount, String ledgertype,

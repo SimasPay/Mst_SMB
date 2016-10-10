@@ -23,7 +23,7 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
@@ -135,13 +135,13 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		}		
 		query.setStart(realMsg.getstart());
 		query.setLimit(realMsg.getlimit());
-		List<MFSLedger> results = ledgerDao.get(query);
+		List<MfsLedger> results = ledgerDao.get(query);
 		if (results != null&&!results.isEmpty()) {
 			realMsg.allocateEntries(results.size());
 
 			for (int i = 0; i < results.size(); i++) {
 				CMJSCommodityTransfer.CGEntries entry = new CMJSCommodityTransfer.CGEntries();
-				MFSLedger ledger = results.get(i);
+				MfsLedger ledger = results.get(i);
 				updateMessage(ledger, entry, realMsg);
 				realMsg.getEntries()[i] = entry;
 			}
@@ -169,7 +169,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		return ctMap;
 	}*/
 
-	private void updateMessage(MFSLedger ledger, CGEntries entry,
+	private void updateMessage(MfsLedger ledger, CGEntries entry,
 			CMJSCommodityTransfer realMsg) {
 		
 		CommodityTransfer ct = ctDao.getById(ledger.getCommoditytransferid().longValue());

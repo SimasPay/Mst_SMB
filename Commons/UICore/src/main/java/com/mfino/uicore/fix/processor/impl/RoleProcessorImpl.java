@@ -12,7 +12,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.RoleDAO;
 import com.mfino.dao.query.RoleQuery;
 import com.mfino.domain.Role;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -61,7 +61,7 @@ public class RoleProcessorImpl extends BaseFixProcessor implements RoleProcessor
 				.getaction())) {
 			log.info("RoleProcessor :: select action");
 
-			User currentUser = userService.getCurrentUser();
+			MfinoUser currentUser = userService.getCurrentUser();
 			Role currentUserRole = roleDao.getById(currentUser.getRole());
 			if(realMsg.getRoleID() != null) {
 				query.setId(realMsg.getRoleID());

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMErrorNotification;
@@ -42,7 +42,7 @@ public class ResetPasswordProcessorImpl extends MultixCommunicationHandler imple
     CMJSResetPassword realMsg = (CMJSResetPassword) msg;
     Long userID = realMsg.getUserID();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    User user = userDAO.getById(userID);
+    MfinoUser user = userDAO.getById(userID);
 
     
     CMJSError errorMsg = new CMJSError();

@@ -22,13 +22,13 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "BULK_LOP")
-public class BulkLOP extends Base implements java.io.Serializable {
+public class BulkLop extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private SubscriberMdn subscriberMdn;
-	private DistributionChainTemplate distributionChainTemp;
+	private DistributionChainTemp distributionChainTemp;
 	private Merchant merchant;
 	private Company company;
-	private DistributionChainLevel distributionChainLvl;
+	private DistributionChainLvl distributionChainLvl;
 	private Long levelpermissions;
 	private String girorefid;
 	private String transferdate;
@@ -44,13 +44,13 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	private String lopcomment;
 	private Clob filedata;
 	private long sourceapplication;
-	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
 
-	public BulkLOP() {
+	public BulkLop() {
 	}
 
-	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
+	public BulkLop(BigDecimal id, SubscriberMdn subscriberMdn,
 			Merchant merchant, Company company, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			long sourceapplication) {
@@ -65,9 +65,9 @@ public class BulkLOP extends Base implements java.io.Serializable {
 		this.sourceapplication = sourceapplication;
 	}
 
-	public BulkLOP(BigDecimal id, SubscriberMdn subscriberMdn,
-			DistributionChainTemplate distributionChainTemp, Merchant merchant,
-			Company company, DistributionChainLevel distributionChainLvl,
+	public BulkLop(BigDecimal id, SubscriberMdn subscriberMdn,
+			DistributionChainTemp distributionChainTemp, Merchant merchant,
+			Company company, DistributionChainLvl distributionChainLvl,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, Long levelpermissions,
 			String girorefid, String transferdate, BigDecimal actualamountpaid,
@@ -75,7 +75,7 @@ public class BulkLOP extends Base implements java.io.Serializable {
 			Timestamp distributetime, String approvedby,
 			Timestamp approvaltime, String rejectedby,
 			Timestamp rejecttime, String lopcomment, Clob filedata,
-			long sourceapplication, Set<LOP> letterOfPurchases) {
+			long sourceapplication, Set<LetterOfPurchase> letterOfPurchases) {
 		this.id = id;
 		this.subscriberMdn = subscriberMdn;
 		this.distributionChainTemp = distributionChainTemp;
@@ -117,12 +117,12 @@ public class BulkLOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTID")
-	public DistributionChainTemplate getDistributionChainTemp() {
+	public DistributionChainTemp getDistributionChainTemp() {
 		return this.distributionChainTemp;
 	}
 
 	public void setDistributionChainTemp(
-			DistributionChainTemplate distributionChainTemp) {
+			DistributionChainTemp distributionChainTemp) {
 		this.distributionChainTemp = distributionChainTemp;
 	}
 
@@ -148,12 +148,12 @@ public class BulkLOP extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLevel getDistributionChainLvl() {
+	public DistributionChainLvl getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLevel distributionChainLvl) {
+			DistributionChainLvl distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 
@@ -294,11 +294,11 @@ public class BulkLOP extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bulkLop")
-	public Set<LOP> getLetterOfPurchases() {
+	public Set<LetterOfPurchase> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 

@@ -41,7 +41,7 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	
 	private ChannelCode channelCode;
 	private Service service;
-	private KYCLevel kycLevel;
+	private KycLevel kycLevel;
 	private Groups groups;
 	private TransactionType transactionType;
 	private short isallowed;
@@ -69,7 +69,7 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	}
 
 	public ActorChannelMapping(BigDecimal id, ChannelCode channelCode,
-			Service service, KYCLevel kycLevel, Groups groups,
+			Service service, KycLevel kycLevel, Groups groups,
 			TransactionType transactionType, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			short isallowed, long subscribertype, Long businesspartnertype) {
@@ -112,11 +112,11 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCLEVEL")
-	public KYCLevel getKycLevel() {
+	public KycLevel getKycLevel() {
 		return this.kycLevel;
 	}
 
-	public void setKycLevel(KYCLevel kycLevel) {
+	public void setKycLevel(KycLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 

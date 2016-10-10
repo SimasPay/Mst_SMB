@@ -40,7 +40,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.IntegrationSummary;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Service;
@@ -368,7 +368,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 
 			if("InterBankTransfer".equals(transactionType.getTransactionname()))
 			{
-				InterbankTransfer ibt = ibtService.getBySctlId(sctl.getId().longValue());
+				InterbankTransfers ibt = ibtService.getBySctlId(sctl.getId().longValue());
 				if (ibt != null) {
 					entry.setDestBankCode(ibt.getDestbankcode());
 				}

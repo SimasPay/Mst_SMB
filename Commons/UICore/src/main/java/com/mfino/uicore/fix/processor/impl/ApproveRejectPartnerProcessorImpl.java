@@ -24,14 +24,14 @@ import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectPartner;
@@ -164,14 +164,14 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		Pocket bankPocket = null;
 		Pocket emoneyPocket = null;
 		Pocket lakuPocket = null;
-		KYCLevel kyclevel=kycLevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
+		KycLevel kyclevel=kycLevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
 		
 		Long groupID = null;
 		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroup> subscriberGroups = sgDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = sgDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty()) {
 			
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		
@@ -250,7 +250,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         	subscriber.setApproveorrejecttime(new Timestamp());
         	subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         	subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
-            User u =partner.getMfinoUser();
+            MfinoUser u =partner.getMfinoUser();
     		Integer OTPLength = systemParametersService.getOTPLength();
             String oneTimePin = MfinoUtil.generateOTP(OTPLength);
     		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);

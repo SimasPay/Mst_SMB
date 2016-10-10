@@ -24,7 +24,7 @@ import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.mailer.NotificationWrapper;
@@ -166,7 +166,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void sendNotification(BulkUpload bulkupload, String subject, Integer notificationCode) {
 
-		User bulkTrfUser = bulkupload.getMfinoUser();
+		MfinoUser bulkTrfUser = bulkupload.getMfinoUser();
 		NotificationWrapper notification = new NotificationWrapper();
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 		notification.setLanguage(language);
@@ -183,7 +183,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void sendEmailBulkUploadSummary(BulkUpload bulkUpload)
 	{
-		User bulkTrfUser = bulkUpload.getMfinoUser();
+		MfinoUser bulkTrfUser = bulkUpload.getMfinoUser();
 		String to=bulkTrfUser.getEmail();
 		String name= bulkTrfUser.getUsername();
 

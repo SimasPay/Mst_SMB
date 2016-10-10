@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -189,7 +189,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 			institutionId = terminalPrefix;
 		}
 		
-		IntegrationPartnerMapping ipm = integrationPartnerMappingService.getByInstitutionID(institutionId);
+		IntegrationPartnerMap ipm = integrationPartnerMappingService.getByInstitutionID(institutionId);
 		if (ipm == null) {
 			log.info("Integration Partner Mapping is missing for InstitutionId : " + institutionId);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_PartnerNotFound);

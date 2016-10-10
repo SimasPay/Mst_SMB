@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -29,7 +29,7 @@ public class UsernameCheckProcessorImpl extends BaseFixProcessor implements User
 		    UserQuery query = new UserQuery();
 		    query.setUserName(realMsg.getUsername());
 
-		    List<User> results = userDAO.get(query);
+		    List<MfinoUser> results = userDAO.get(query);
 
 		    // TODO : Send possible username that would be available in the DB
 

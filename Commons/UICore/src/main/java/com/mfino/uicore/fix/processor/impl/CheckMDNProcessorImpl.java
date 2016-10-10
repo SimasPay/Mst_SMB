@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.domain.Partner;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCheckMDN;
@@ -46,7 +46,7 @@ public class CheckMDNProcessorImpl extends BaseFixProcessor implements CheckMDNP
     CMJSCheckMDN realMsg = (CMJSCheckMDN) msg;
     CMJSError err = new CMJSError();
     
-    User loggedInUser = userService.getCurrentUser();
+    MfinoUser loggedInUser = userService.getCurrentUser();
     
     if (loggedInUser != null && StringUtils.isNotBlank(realMsg.getMDN())) {
     	Set<Partner> partners = loggedInUser.getPartners();

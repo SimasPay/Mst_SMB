@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.mfino.domain.MDNRange;
+import com.mfino.domain.MdnRange;
 import com.mfino.domain.Merchant;
 import com.mfino.service.MDNRangeService;
 
@@ -40,12 +40,12 @@ public class MDNRangeServiceImpl implements MDNRangeService{
             log.info("isMDNInParentsRange: Success, parent's parent is null");
             return Success;
         }
-        Set<MDNRange> mdnRangeList = parent.getMdnRanges();
+        Set<MdnRange> mdnRangeList = parent.getMdnRanges();
         if(mdnRangeList == null || mdnRangeList.size()<1){
             log.info("isMDNInParentsRange: Failure, range list is null");
             return Failure;
         }
-        for (MDNRange range : mdnRangeList) {
+        for (MdnRange range : mdnRangeList) {
             try {
                 if ((mdn >= Long.parseLong(range.getBrand().getPrefixcode() + range.getStartprefix()))
                         && (mdn <= Long.parseLong(range.getBrand().getPrefixcode() + range.getEndprefix()))) {

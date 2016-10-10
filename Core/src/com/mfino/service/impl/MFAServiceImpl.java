@@ -17,8 +17,8 @@ import com.mfino.dao.MFATransactionInfoDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.MFAAuthenticationQuery;
 import com.mfino.dao.query.MFATransactionInfoQuery;
-import com.mfino.domain.MFAAuthentication;
-import com.mfino.domain.MFATransactionInfo;
+import com.mfino.domain.MfaAuthentication;
+import com.mfino.domain.MfaTransactionsInfo;
 import com.mfino.domain.Service;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionType;
@@ -54,7 +54,7 @@ public class MFAServiceImpl implements MFAService{
 		mfaQuery.setServiceId(serviceId);
 		mfaQuery.setChannelCodeId(channelCodeId);
 		mfaQuery.setMfaMode(CmFinoFIX.MFAMode_OTP);
-		List <MFATransactionInfo> transactionList = dao.get(mfaQuery);
+		List <MfaTransactionsInfo> transactionList = dao.get(mfaQuery);
 		if(transactionList.size() > 0){
 			log.info("MFAService::isMFATransaction = true");
 			log.info("MFAService::isMFATransaction End");
@@ -70,7 +70,7 @@ public class MFAServiceImpl implements MFAService{
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		String digestPin1 = MfinoUtil.calculateDigestPin(sourceMDN, oneTimePin);
-		MFAAuthentication mfaAuth = new MFAAuthentication();
+		MfaAuthentication mfaAuth = new MfaAuthentication();
 		mfaAuth.setSctlid(new BigDecimal(sctlID));
 		mfaAuth.setMfamode(CmFinoFIX.MFAMode_OTP);
 		mfaAuth.setMfavalue(digestPin1);
@@ -118,11 +118,11 @@ public class MFAServiceImpl implements MFAService{
 		MFAAuthenticationQuery query = new MFAAuthenticationQuery();
 		query.setSctlId(sctlID);
 		
-		List<MFAAuthentication> mfaResults = authDAO.get(query);
+		List<MfaAuthentication> mfaResults = authDAO.get(query);
 		
 		if(!CollectionUtils.isEmpty(mfaResults)) {
 			
-			MFAAuthentication mfaAuthentication = mfaResults.get(0);
+			MfaAuthentication mfaAuthentication = mfaResults.get(0);
 			
 			mfaAuthentication.setMfavalue(digestPin1);
 			mfaAuthentication.setRetryattempt(new BigDecimal(++retryAttempt));
@@ -165,7 +165,7 @@ public class MFAServiceImpl implements MFAService{
 		query.setSctlId(sctlID);
 		query.setMfaMode(CmFinoFIX.MFAMode_OTP);
 		query.setMfaValue(digestPin1);
-		List <MFAAuthentication> mfaLst = authDAO.get(query);
+		List <MfaAuthentication> mfaLst = authDAO.get(query);
 		if(mfaLst.size() > 0){
 			log.info("MFAService::isValidOTP = true");
 			log.info("MFAService::isValidOTP End");

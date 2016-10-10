@@ -14,18 +14,18 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.LedgerBalance;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.fix.CmFinoFIX;
 
-public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
+public class MFSLedgerDAO extends BaseDAO<MfsLedger> {
 
 	@SuppressWarnings("unchecked")
-	public List<MFSLedger> get(MFSLedgerQuery query) {
+	public List<MfsLedger> get(MFSLedgerQuery query) {
 		 Criteria criteria = createCriteria();
 		 
 		 if (query.getPocketId() != null) {
-			 criteria.add(Restrictions.eq(MFSLedger.FieldName_PocketID, query.getPocketId()));
+			 criteria.add(Restrictions.eq(MfsLedger.FieldName_PocketID, query.getPocketId()));
 		 }
 		 
 		 if (query.getMdnId() != null) {
@@ -40,28 +40,28 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 					 pocketArray[i] = p.getId().longValue();
 					 i++;
 				 }
-				 criteria.add(Restrictions.in(MFSLedger.FieldName_PocketID, pocketArray));
+				 criteria.add(Restrictions.in(MfsLedger.FieldName_PocketID, pocketArray));
 			 }
 		 }
 		 
 		 if(query.getCreateTimeLT()!=null){
-			 criteria.add(Restrictions.le(MFSLedger.FieldName_CreateTime, query.getCreateTimeLT()));	 
+			 criteria.add(Restrictions.le(MfsLedger.FieldName_CreateTime, query.getCreateTimeLT()));	 
 		 }
 		 if(query.getCreateTimeGE()!=null){
-			 criteria.add(Restrictions.ge(MFSLedger.FieldName_CreateTime, query.getCreateTimeGE()));	 
+			 criteria.add(Restrictions.ge(MfsLedger.FieldName_CreateTime, query.getCreateTimeGE()));	 
 		 }
 		 if(query.getTransferIDs()!=null){
-			 criteria.add(Restrictions.in(MFSLedger.FieldName_CommodityTransferID, query.getTransferIDs()));	 
+			 criteria.add(Restrictions.in(MfsLedger.FieldName_CommodityTransferID, query.getTransferIDs()));	 
 		 }		 
 		 
 		 
-		 criteria.addOrder(Order.desc(MFSLedger.FieldName_CreateTime));
-		 criteria.addOrder(Order.asc(MFSLedger.FieldName_RecordID));
+		 criteria.addOrder(Order.desc(MfsLedger.FieldName_CreateTime));
+		 criteria.addOrder(Order.asc(MfsLedger.FieldName_RecordID));
 		 processBaseQuery(query, criteria);
 		 processPaging(query, criteria);
 		 applyOrder(query, criteria) ;
 		 
-		 List<MFSLedger> results =criteria.list();
+		 List<MfsLedger> results =criteria.list();
 		 return results;
 	}
 	
@@ -71,13 +71,13 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<MFSLedger> getLedgerEntriesByCommodityTransferId(Long ctId) {
+	public List<MfsLedger> getLedgerEntriesByCommodityTransferId(Long ctId) {
 		if(ctId == null){
 			return null;
 		}
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(MFSLedger.FieldName_CommodityTransferID, ctId));
-		criteria.addOrder(Order.desc(MFSLedger.FieldName_CreateTime));
+		criteria.add(Restrictions.eq(MfsLedger.FieldName_CommodityTransferID, ctId));
+		criteria.addOrder(Order.desc(MfsLedger.FieldName_CreateTime));
 		return criteria.list();
 	}
 	
@@ -87,26 +87,26 @@ public class MFSLedgerDAO extends BaseDAO<MFSLedger> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<MFSLedger> getLedgerEntriesByLedgerStatus(String ledgerStatus) {
+	public List<MfsLedger> getLedgerEntriesByLedgerStatus(String ledgerStatus) {
 		if(StringUtils.isBlank(ledgerStatus)) {
 			return null;
 		}
 		
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(MFSLedger.FieldName_LedgerStatus, ledgerStatus));
-		criteria.addOrder(Order.asc(MFSLedger.FieldName_CreateTime));
+		criteria.add(Restrictions.eq(MfsLedger.FieldName_LedgerStatus, ledgerStatus));
+		criteria.addOrder(Order.asc(MfsLedger.FieldName_CreateTime));
 		return criteria.list();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<MFSLedger> getLedgerEntriesBySctlId(Long sctlId) {
+	public List<MfsLedger> getLedgerEntriesBySctlId(Long sctlId) {
 		if (sctlId == null) {
 			return null;
 		}
 		
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(MFSLedger.FieldName_SctlId, sctlId));
-		criteria.addOrder(Order.asc(MFSLedger.FieldName_CreateTime));
+		criteria.add(Restrictions.eq(MfsLedger.FieldName_SctlId, sctlId));
+		criteria.addOrder(Order.asc(MfsLedger.FieldName_CreateTime));
 		return criteria.list();
 	}
 	public List<LedgerBalance> getConsolidateBalance(Date startDate, Date endDate) {

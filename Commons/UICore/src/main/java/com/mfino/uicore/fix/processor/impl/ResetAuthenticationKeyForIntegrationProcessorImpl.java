@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationPartnerMappingDAO;
-import com.mfino.domain.IntegrationPartnerMapping;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.IntegrationPartnerMap;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
@@ -66,7 +66,7 @@ public class ResetAuthenticationKeyForIntegrationProcessorImpl extends BaseFixPr
 		IntegrationPartnerMappingDAO integrationPartnerMappingDao = DAOFactory.getInstance().getIntegrationPartnerMappingDAO();
 		if(realMsg.getIntegrationID() != null)
 		{
-		IntegrationPartnerMapping integrationPartnerMapping= integrationPartnerMappingDao.getById(realMsg.getIntegrationID());
+		IntegrationPartnerMap integrationPartnerMapping= integrationPartnerMappingDao.getById(realMsg.getIntegrationID());
 			if(integrationPartnerMapping != null)
 			{				
 				if(!Boolean.valueOf(integrationPartnerMapping.getIsauthenticationkeyenabled().toString()))
@@ -91,11 +91,11 @@ public class ResetAuthenticationKeyForIntegrationProcessorImpl extends BaseFixPr
 				}
 				else if(integrationPartnerMapping.getMfsBiller() != null)
 				{
-					Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
-					Iterator<MFSBillerPartner> it  = mfsBillerpartners.iterator();
+					Set<MfsbillerPartnerMap>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
+					Iterator<MfsbillerPartnerMap> it  = mfsBillerpartners.iterator();
 					if(it.hasNext())
 					{
-						MFSBillerPartner mfsBillerPartner =  it.next();
+						MfsbillerPartnerMap mfsBillerPartner =  it.next();
 						partner = mfsBillerPartner.getPartner();
 					}
 				}

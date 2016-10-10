@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSDenominationsDAO;
 import com.mfino.dao.query.MFSDenominationsQuery;
-import com.mfino.domain.MFSDenominations;
+import com.mfino.domain.MfsDenominations;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSMFSDenominations;
@@ -26,7 +26,7 @@ import com.mfino.uicore.fix.processor.MFSDenominationsProcessor;
 @Service("MFSDenominationsProcessorImpl")
 public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements MFSDenominationsProcessor{
 	
-	private void updateEntity(MFSDenominations md, CMJSMFSDenominations.CGEntries e) {		
+	private void updateEntity(MfsDenominations md, CMJSMFSDenominations.CGEntries e) {		
 		if(e.getMFSID() != null){
 			md.setMfsid(new BigDecimal(e.getMFSID()));
 		}
@@ -41,7 +41,7 @@ public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements M
 		}		
 	}
 	
-	private void updateMessage(MFSDenominations md, CMJSMFSDenominations.CGEntries e) {
+	private void updateMessage(MfsDenominations md, CMJSMFSDenominations.CGEntries e) {
 		e.setID(md.getId().longValue());
 		e.setMFSID(md.getMfsid().longValue());
 		e.setDenominationAmount(md.getDenominationamount());
@@ -64,10 +64,10 @@ public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements M
 				query.setMfsID(realMsg.getMFSID());
 			}
 			
-			List<MFSDenominations> lst = dao.get(query);
+			List<MfsDenominations> lst = dao.get(query);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				realMsg.allocateEntries(lst.size());
-				for (MFSDenominations md: lst){
+				for (MfsDenominations md: lst){
 					CMJSMFSDenominations.CGEntries e = new CMJSMFSDenominations.CGEntries();
 					updateMessage(md, e);
 					realMsg.getEntries()[i] = e;
@@ -81,7 +81,7 @@ public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements M
 			CMJSMFSDenominations.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSMFSDenominations.CGEntries e: entries) {
-				MFSDenominations md = new MFSDenominations();
+				MfsDenominations md = new MfsDenominations();
 				updateEntity(md, e);
 				dao.save(md);
 				updateMessage(md, e);
@@ -92,7 +92,7 @@ public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements M
 			CMJSMFSDenominations.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSMFSDenominations.CGEntries e: entries) {
-				MFSDenominations md = dao.getById(e.getID());
+				MfsDenominations md = dao.getById(e.getID());
         		if (!(e.getRecordVersion().equals(md.getVersion()))) {
         			handleStaleDataException();
         		}

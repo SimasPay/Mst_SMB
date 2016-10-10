@@ -11,7 +11,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDAO;
 import com.mfino.dao.NotificationLogDetailsDAO;
 import com.mfino.domain.NotificationLog;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.mce.notification.EmailNotification;
 import com.mfino.mce.notification.Notification;
@@ -80,7 +80,7 @@ public class NotificationPersistenceServiceDefaultImpl  implements NotificationP
 			}
 			notificationLogDAO.save(notificationLog);
 			
-			NotificationLogDetails notificationLogDetails = new NotificationLogDetails();
+			NlogDetails notificationLogDetails = new NlogDetails();
 			NotificationLogDetailsDAO notificationLogDetailsDAO = DAOFactory.getInstance().getNotificationLogDetailsDao();	
 			notificationLogDetails.setNotificationLog(notificationLog);
 			notificationLogDetails.setStatus(CmFinoFIX.SendNotificationStatus_Sending);

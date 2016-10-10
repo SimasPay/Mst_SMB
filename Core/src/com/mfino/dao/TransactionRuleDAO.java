@@ -13,7 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.dao.query.TransactionRuleQuery;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Service;
 import com.mfino.domain.TransactionRule;
@@ -61,14 +61,14 @@ public class TransactionRuleDAO extends BaseDAO<TransactionRule> {
 		}
 		if (query.getSourceKYC() != null) {
 			criteria.createAlias(TransactionRule.FieldName_KYCLevelBySourceKYC, "sourcekyc");
-			criteria.add(Restrictions.eq("sourcekyc."+KYCLevel.FieldName_RecordID, query.getSourceKYC()));
+			criteria.add(Restrictions.eq("sourcekyc."+KycLevel.FieldName_RecordID, query.getSourceKYC()));
 		}
 		if (query.getDestType() != null) {
 			criteria.add(Restrictions.eq(TransactionRule.FieldName_DestType, query.getDestType()));
 		}
 		if (query.getDestKYC() != null) {
 			criteria.createAlias(TransactionRule.FieldName_KYCLevelByDestKYC, "destkyc");
-			criteria.add(Restrictions.eq("destkyc."+KYCLevel.FieldName_RecordID, query.getDestKYC()));
+			criteria.add(Restrictions.eq("destkyc."+KycLevel.FieldName_RecordID, query.getDestKYC()));
 		}
 		
 		if(query.getSourceGroup() != null){

@@ -71,11 +71,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
 	private CreditCardTransaction creditCardTransaction;
-	private LOP letterOfPurchase;
+	private LetterOfPurchase letterOfPurchase;
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
-	private DistributionChainLevel distributionChainLvl;
+	private DistributionChainLvl distributionChainLvl;
 	private Pocket pocket;
 	private long msgtype;
 	private Long uicategory;
@@ -214,9 +214,9 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	public CommodityTransfer(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog,
 			CreditCardTransaction creditCardTransaction,
-			LOP letterOfPurchase, Subscriber subscriber,
+			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
-			DistributionChainLevel distributionChainLvl, Pocket pocket,
+			DistributionChainLvl distributionChainLvl, Pocket pocket,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long msgtype,
 			Long uicategory, long transferstatus, Long transferfailurereason,
@@ -407,11 +407,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LOPID")
-	public LOP getLetterOfPurchase() {
+	public LetterOfPurchase getLetterOfPurchase() {
 		return this.letterOfPurchase;
 	}
 
-	public void setLetterOfPurchase(LOP letterOfPurchase) {
+	public void setLetterOfPurchase(LetterOfPurchase letterOfPurchase) {
 		this.letterOfPurchase = letterOfPurchase;
 	}
 
@@ -448,12 +448,12 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLevel getDistributionChainLvl() {
+	public DistributionChainLvl getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLevel distributionChainLvl) {
+			DistributionChainLvl distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 

@@ -18,7 +18,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFA_AUTHENTICATION")
-public class MFAAuthentication extends Base implements java.io.Serializable {
+public class MfaAuthentication extends Base implements java.io.Serializable {
 
 	
 	public static final String FieldName_SctlId = "sctlid";
@@ -29,10 +29,10 @@ public class MFAAuthentication extends Base implements java.io.Serializable {
 	private String mfavalue;
 	private BigDecimal retryattempt;
 
-	public MFAAuthentication() {
+	public MfaAuthentication() {
 	}
 
-	public MFAAuthentication(BigDecimal id, Timestamp lastupdatetime,
+	public MfaAuthentication(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid, long mfamode, String mfavalue) {
 		this.id = id;
@@ -45,7 +45,7 @@ public class MFAAuthentication extends Base implements java.io.Serializable {
 		this.mfavalue = mfavalue;
 	}
 
-	public MFAAuthentication(BigDecimal id, Timestamp lastupdatetime,
+	public MfaAuthentication(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid, long mfamode, String mfavalue,
 			BigDecimal retryattempt) {

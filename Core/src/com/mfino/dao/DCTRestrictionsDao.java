@@ -9,7 +9,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;

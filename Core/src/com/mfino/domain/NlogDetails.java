@@ -18,7 +18,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "NLOG_DETAILS")
-public class NotificationLogDetails extends Base implements java.io.Serializable {
+public class NlogDetails extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_NotificationLog = "notificationLog";
@@ -26,10 +26,10 @@ public class NotificationLogDetails extends Base implements java.io.Serializable
 	private NotificationLog notificationLog;
 	private long status;
 
-	public NotificationLogDetails() {
+	public NlogDetails() {
 	}
 
-	public NotificationLogDetails(BigDecimal id, NotificationLog notificationLog,
+	public NlogDetails(BigDecimal id, NotificationLog notificationLog,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long status) {
 		this.id = id;

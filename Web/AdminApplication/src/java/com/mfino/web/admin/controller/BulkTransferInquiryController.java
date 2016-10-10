@@ -30,7 +30,7 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -206,7 +206,7 @@ public class BulkTransferInquiryController {
                     String paymentDateStr = multipartRequest.getParameter("PaymentDate");
                     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                     Date paymentDate = sdf.parse(paymentDateStr);
-                    User loggedInUser = userService.getCurrentUser();
+                    MfinoUser loggedInUser = userService.getCurrentUser();
                     Timestamp currentTime = new Timestamp();
                     bulkUpload.setName(multipartRequest.getParameter("Name"));
                     bulkUpload.setCompany(loggedInUser.getCompany());

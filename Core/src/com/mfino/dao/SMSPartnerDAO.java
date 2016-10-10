@@ -11,30 +11,30 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SMSPartnerQuery;
-import com.mfino.domain.SMSPartner;
+import com.mfino.domain.SmsPartner;
 
 /**
  *
  * @author Srinu
  */
-public class SMSPartnerDAO extends BaseDAO<SMSPartner>{
+public class SMSPartnerDAO extends BaseDAO<SmsPartner>{
 
-    public List<SMSPartner> get(SMSPartnerQuery query) {
+    public List<SmsPartner> get(SMSPartnerQuery query) {
         Criteria criteria = createCriteria();
 
         if (query.getPartnerName() != null) {
-            criteria.add(Restrictions.eq(SMSPartner.FieldName_PartnerName, query.getPartnerName()).ignoreCase());
+            criteria.add(Restrictions.eq(SmsPartner.FieldName_PartnerName, query.getPartnerName()).ignoreCase());
         }
        if (query.getStartDate() != null) {
-            criteria.add(Restrictions.gt(SMSPartner.FieldName_CreateTime, query.getStartDate()));
+            criteria.add(Restrictions.gt(SmsPartner.FieldName_CreateTime, query.getStartDate()));
         }
         if (query.getEndDate() != null) {
-            criteria.add(Restrictions.lt(SMSPartner.FieldName_CreateTime, query.getEndDate()));
+            criteria.add(Restrictions.lt(SmsPartner.FieldName_CreateTime, query.getEndDate()));
         }
 
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
-        List<SMSPartner> results = criteria.list();
+        List<SmsPartner> results = criteria.list();
 
         return results;
     }

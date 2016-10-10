@@ -15,8 +15,8 @@ import com.mfino.dao.MFSDenominationsDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.query.MFSBillerPartnerQuery;
 import com.mfino.dao.query.MFSDenominationsQuery;
-import com.mfino.domain.MFSBillerPartner;
-import com.mfino.domain.MFSDenominations;
+import com.mfino.domain.MfsbillerPartnerMap;
+import com.mfino.domain.MfsDenominations;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSMFSBillerPartner;
@@ -26,7 +26,7 @@ import com.mfino.uicore.fix.processor.MFSBillerPartnerProcessor;
 @Service("MFSBillerPartnerProcessorImpl")
 public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements MFSBillerPartnerProcessor{
 	
-	private void updateMessage(MFSBillerPartner s, CMJSMFSBillerPartner.CGEntries e) {
+	private void updateMessage(MfsbillerPartnerMap s, CMJSMFSBillerPartner.CGEntries e) {
 		e.setID(s.getId().longValue());
 		e.setMSPID(s.getMfinoServiceProvider().getId().longValue());
 		e.setRecordVersion(((Long)s.getVersion()).intValue());
@@ -54,7 +54,7 @@ public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements M
 		e.setLastUpdateTime(s.getLastupdatetime());
 	}
 	
-	private void updateEntity(MFSBillerPartner s, CMJSMFSBillerPartner.CGEntries e) {
+	private void updateEntity(MfsbillerPartnerMap s, CMJSMFSBillerPartner.CGEntries e) {
 		MFSBillerDAO mbDAO = DAOFactory.getInstance().getMFSBillerDAO();
 		PartnerDAO pDAO = DAOFactory.getInstance().getPartnerDAO();
 		if (e.getMFSBillerId() != null) {
@@ -87,7 +87,7 @@ public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements M
 			CMJSMFSBillerPartner.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSMFSBillerPartner.CGEntries e: entries) {
-				MFSBillerPartner mbp = dao.getById(e.getID());
+				MfsbillerPartnerMap mbp = dao.getById(e.getID());
 				
 				if (!(e.getRecordVersion().equals(mbp.getVersion()))) {
 					handleStaleDataException();
@@ -109,11 +109,11 @@ public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements M
         	query.setStart(realMsg.getstart());
         	query.setLimit(realMsg.getlimit());
         	
-        	List<MFSBillerPartner> results = dao.get(query);
+        	List<MfsbillerPartnerMap> results = dao.get(query);
         	if (CollectionUtils.isNotEmpty(results)) {
         		realMsg.allocateEntries(results.size());
         		
-        		for (MFSBillerPartner mbp: results) {
+        		for (MfsbillerPartnerMap mbp: results) {
         			CMJSMFSBillerPartner.CGEntries e = new CMJSMFSBillerPartner.CGEntries();
         			updateMessage(mbp, e);
         			realMsg.getEntries()[i] = e;
@@ -128,7 +128,7 @@ public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements M
 			CMJSMFSBillerPartner.CGEntries[] entries = realMsg.getEntries();
 			
 			for (CMJSMFSBillerPartner.CGEntries e: entries) {
-				MFSBillerPartner s = new MFSBillerPartner();
+				MfsbillerPartnerMap s = new MfsbillerPartnerMap();
 				updateEntity(s, e);
 				dao.save(s);
 				updateMessage(s, e);
@@ -156,7 +156,7 @@ public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements M
 		MFSDenominationsDAO dao = DAOFactory.getInstance().getMfsDenominationsDAO();
 	    MFSDenominationsQuery query = new MFSDenominationsQuery();
 	    query.setMfsID(id);
-	    List<MFSDenominations> results = dao.get(query);
+	    List<MfsDenominations> results = dao.get(query);
 	    if (results.size() > 0) {
 	    	dao.delete(results);
 	    }

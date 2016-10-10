@@ -36,7 +36,7 @@ public class Partner extends Base implements java.io.Serializable {
 	
 	private Address addressByMerchantaddressid;
 	private Address addressByFranchiseoutletaddressid;
-	private User mfinoUser;
+	private MfinoUser mfinoUser;
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private String partnercode;
@@ -82,17 +82,17 @@ public class Partner extends Base implements java.io.Serializable {
 			0);
 	private Set<TxnAmountDstrbLog> txnAmountDstrbLogs = new HashSet<TxnAmountDstrbLog>(
 			0);
-	private Set<IntegrationPartnerMapping> integrationPartnerMaps = new HashSet<IntegrationPartnerMapping>(
+	private Set<IntegrationPartnerMap> integrationPartnerMaps = new HashSet<IntegrationPartnerMap>(
 			0);
 	private Set<ServiceDefualtConfig> serviceDefualtConfigs = new HashSet<ServiceDefualtConfig>(
 			0);
-	private Set<MFSBillerPartner> mfsbillerPartnerMaps = new HashSet<MFSBillerPartner>(
+	private Set<MfsbillerPartnerMap> mfsbillerPartnerMaps = new HashSet<MfsbillerPartnerMap>(
 			0);
 
 	public Partner() {
 	}
 
-	public Partner(BigDecimal id, User mfinoUser, Subscriber subscriber,
+	public Partner(BigDecimal id, MfinoUser mfinoUser, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, long partnerstatus) {
@@ -108,7 +108,7 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	public Partner(BigDecimal id, Address addressByMerchantaddressid,
-			Address addressByFranchiseoutletaddressid, User mfinoUser,
+			Address addressByFranchiseoutletaddressid, MfinoUser mfinoUser,
 			Subscriber subscriber, MfinoServiceProvider mfinoServiceProvider,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String partnercode,
@@ -133,9 +133,9 @@ public class Partner extends Base implements java.io.Serializable {
 			Set<PartnerServices> partnerServicesesForPartnerid,
 			Set<SettlementTemplate> settlementTemplates,
 			Set<TxnAmountDstrbLog> txnAmountDstrbLogs,
-			Set<IntegrationPartnerMapping> integrationPartnerMaps,
+			Set<IntegrationPartnerMap> integrationPartnerMaps,
 			Set<ServiceDefualtConfig> serviceDefualtConfigs,
-			Set<MFSBillerPartner> mfsbillerPartnerMaps) {
+			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps) {
 		this.id = id;
 		this.addressByMerchantaddressid = addressByMerchantaddressid;
 		this.addressByFranchiseoutletaddressid = addressByFranchiseoutletaddressid;
@@ -210,11 +210,11 @@ public class Partner extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
-	public User getMfinoUser() {
+	public MfinoUser getMfinoUser() {
 		return this.mfinoUser;
 	}
 
-	public void setMfinoUser(User mfinoUser) {
+	public void setMfinoUser(MfinoUser mfinoUser) {
 		this.mfinoUser = mfinoUser;
 	}
 
@@ -561,12 +561,12 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partner")
-	public Set<IntegrationPartnerMapping> getIntegrationPartnerMaps() {
+	public Set<IntegrationPartnerMap> getIntegrationPartnerMaps() {
 		return this.integrationPartnerMaps;
 	}
 
 	public void setIntegrationPartnerMaps(
-			Set<IntegrationPartnerMapping> integrationPartnerMaps) {
+			Set<IntegrationPartnerMap> integrationPartnerMaps) {
 		this.integrationPartnerMaps = integrationPartnerMaps;
 	}
 
@@ -581,12 +581,12 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partner")
-	public Set<MFSBillerPartner> getMfsbillerPartnerMaps() {
+	public Set<MfsbillerPartnerMap> getMfsbillerPartnerMaps() {
 		return this.mfsbillerPartnerMaps;
 	}
 
 	public void setMfsbillerPartnerMaps(
-			Set<MFSBillerPartner> mfsbillerPartnerMaps) {
+			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps) {
 		this.mfsbillerPartnerMaps = mfsbillerPartnerMaps;
 	}
 

@@ -46,7 +46,7 @@ import com.mfino.domain.ChargeTxnCommodityTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.Ledger;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Notification;
 import com.mfino.domain.PendingCommodityTransfer;
@@ -768,17 +768,17 @@ public class CoreDataWrapper
 		this.mfsLedgerDAO = mfsLedgerDAO;
 	}
 	
-	public void save(MFSLedger mfsLedger) {
+	public void save(MfsLedger mfsLedger) {
 		mfsLedgerDAO.save(mfsLedger);
 	}
 	
-	public void save(List<MFSLedger> lstMfsLedgers) {
+	public void save(List<MfsLedger> lstMfsLedgers) {
 		if (lstMfsLedgers != null) { 
 			mfsLedgerDAO.save(lstMfsLedgers);
 		}
 	}
 	
-	public List<MFSLedger> getLedgerEntriesByCommodityTransferId(Long ctId) {
+	public List<MfsLedger> getLedgerEntriesByCommodityTransferId(Long ctId) {
 		return mfsLedgerDAO.getLedgerEntriesByCommodityTransferId(ctId);
 	}
 	

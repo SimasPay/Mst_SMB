@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationPartnerMappingDAO;
 import com.mfino.dao.query.IntegrationPartnerMappingQuery;
-import com.mfino.domain.IPMapping;
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IpMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.domain.MfsBiller;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
@@ -71,7 +71,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 			for (CMJSIntegrationPartnerMapping.CGEntries e : entries) {
 				if(e != null)
 				{
-					IntegrationPartnerMapping integrationPartnerMapping = integrationPartnerMappingDao.getById(e.getID());
+					IntegrationPartnerMap integrationPartnerMapping = integrationPartnerMappingDao.getById(e.getID());
 
 					// Check for Stale Data
 					if (!e.getRecordVersion().equals(integrationPartnerMapping.getVersion())) {
@@ -120,10 +120,10 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 			{
 				query.setLimit(realMsg.getlimit());
 			}
-			List<IntegrationPartnerMapping> results = integrationPartnerMappingDao.get(query);
+			List<IntegrationPartnerMap> results = integrationPartnerMappingDao.get(query);
 			realMsg.allocateEntries(results.size());
 			for (int i = 0; i < results.size(); i++) {
-				IntegrationPartnerMapping integrationPartnerMapping = results.get(i);
+				IntegrationPartnerMap integrationPartnerMapping = results.get(i);
 				CMJSIntegrationPartnerMapping.CGEntries entry = new CMJSIntegrationPartnerMapping.CGEntries();
 				updateMessage(integrationPartnerMapping, entry);
 				realMsg.getEntries()[i] = entry;
@@ -137,7 +137,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 			for (CMJSIntegrationPartnerMapping.CGEntries e : entries) {
 				if(e != null)
 				{
-					IntegrationPartnerMapping integrationPartnerMapping = new IntegrationPartnerMapping();
+					IntegrationPartnerMap integrationPartnerMapping = new IntegrationPartnerMap();
 					updateEntity(integrationPartnerMapping, e);
 					try {
 						validate(integrationPartnerMapping);
@@ -167,7 +167,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 	}
 
 
-	private void validate(IntegrationPartnerMapping integrationPartnerMapping) throws Exception 
+	private void validate(IntegrationPartnerMap integrationPartnerMapping) throws Exception 
 	{
 		if(integrationPartnerMapping.getInstitutionid() == null)
 		{
@@ -185,11 +185,11 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		{
 			throw new Exception("Either Partner or MfsBiller can be associated to an Integration. Both of them can't be given simultaneously");
 		}
-		List<IntegrationPartnerMapping> entries = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getAll();
-		Iterator<IntegrationPartnerMapping> it = entries.iterator();
+		List<IntegrationPartnerMap> entries = DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getAll();
+		Iterator<IntegrationPartnerMap> it = entries.iterator();
 		while(it.hasNext())
 		{
-			IntegrationPartnerMapping existingIntegration = it.next();
+			IntegrationPartnerMap existingIntegration = it.next();
 			
 			if(integrationPartnerMapping.getIntegrationname().equals(existingIntegration.getIntegrationname())
 					&& !(existingIntegration.getId().equals(integrationPartnerMapping.getId())))
@@ -204,7 +204,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		}
 	}
 
-	private void updateEntity(IntegrationPartnerMapping integrationPartnerMapping, CMJSIntegrationPartnerMapping.CGEntries e) {
+	private void updateEntity(IntegrationPartnerMap integrationPartnerMapping, CMJSIntegrationPartnerMapping.CGEntries e) {
 		if (StringUtils.isNotBlank(e.getInstitutionID())) {
 			integrationPartnerMapping.setInstitutionid(e.getInstitutionID());
 		}
@@ -262,7 +262,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		
 	}
 
-	private void updateMessage(IntegrationPartnerMapping integrationPartnerMapping, CMJSIntegrationPartnerMapping.CGEntries e) {
+	private void updateMessage(IntegrationPartnerMap integrationPartnerMapping, CMJSIntegrationPartnerMapping.CGEntries e) {
 		e.setID(integrationPartnerMapping.getId().longValue());
 		e.setInstitutionID(integrationPartnerMapping.getInstitutionid());
 		e.setIntegrationName(integrationPartnerMapping.getIntegrationname());
@@ -287,13 +287,13 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		e.setLastUpdateTime(integrationPartnerMapping.getLastupdatetime());
 		
 		String ListOfIPAddressesForIntegration = "";
-		Set<IPMapping> ipMappingList =  integrationPartnerMapping.getIpMappings();	
+		Set<IpMapping> ipMappingList =  integrationPartnerMapping.getIpMappings();	
 		if(ipMappingList != null)
 		{
-			Iterator<IPMapping> it = ipMappingList.iterator();
+			Iterator<IpMapping> it = ipMappingList.iterator();
 			while(it.hasNext())
 			{
-				IPMapping ipMapping = it.next();
+				IpMapping ipMapping = it.next();
 				ListOfIPAddressesForIntegration = ListOfIPAddressesForIntegration + "<" + ipMapping.getIpaddress() + ">, ";
 			}
 		}
@@ -305,7 +305,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		e.setListOfIPsForIntegration(ListOfIPAddressesForIntegration);
 	}
 	
-	private void generateAndSendAuthenticationKey(IntegrationPartnerMapping integrationPartnerMapping) {
+	private void generateAndSendAuthenticationKey(IntegrationPartnerMap integrationPartnerMapping) {
 		
 		String authenticationKey = integrationPartnerMappingService.generateAuthenticationKey();
 		String institutionID = integrationPartnerMapping.getInstitutionid();
@@ -323,11 +323,11 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		}
 		else if(integrationPartnerMapping.getMfsBiller() != null)
 		{
-			Set<MFSBillerPartner>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
-			Iterator<MFSBillerPartner> it  = mfsBillerpartners.iterator();
+			Set<MfsbillerPartnerMap>  mfsBillerpartners = integrationPartnerMapping.getMfsBiller().getMfsbillerPartnerMaps();
+			Iterator<MfsbillerPartnerMap> it  = mfsBillerpartners.iterator();
 			if(it.hasNext())
 			{
-				MFSBillerPartner mfsBillerPartner =  it.next();
+				MfsbillerPartnerMap mfsBillerPartner =  it.next();
 				partner = mfsBillerPartner.getPartner();
 			}
 		}

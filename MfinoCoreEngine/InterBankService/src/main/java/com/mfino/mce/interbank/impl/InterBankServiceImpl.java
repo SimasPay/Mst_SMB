@@ -17,7 +17,7 @@ import com.mfino.dao.SystemParametersDao;
 import com.mfino.dao.query.InterBankCodesQuery;
 import com.mfino.dao.query.InterBankTransfersQuery;
 import com.mfino.domain.InterbankCodes;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
@@ -44,8 +44,8 @@ public class InterBankServiceImpl implements InterBankService{
 
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterbankCodes interBankCode){
-		InterbankTransfer ibt = new InterbankTransfer();
+	public InterbankTransfers createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterbankCodes interBankCode){
+		InterbankTransfers ibt = new InterbankTransfers();
 
 		ibt.setTerminalid(ibtInquiry.getChannelCode());
 		ibt.setDestbankcode(ibtInquiry.getDestBankCode());
@@ -94,14 +94,14 @@ public class InterBankServiceImpl implements InterBankService{
 	
 	@Override
 	@Transactional(readOnly=true, propagation = Propagation.REQUIRED)
-	public InterbankTransfer getIBT(Long sctlId){
+	public InterbankTransfers getIBT(Long sctlId){
 		
 		if(sctlId == null) return null;
 		
 		InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 		InterBankTransfersQuery query = new InterBankTransfersQuery();
 		query.setSctlId(sctlId);
-		List<InterbankTransfer> ibtList = interBankTransferDao.get(query);
+		List<InterbankTransfers> ibtList = interBankTransferDao.get(query);
 		
 		if(ibtList!=null && !ibtList.isEmpty())
 		{
@@ -113,7 +113,7 @@ public class InterBankServiceImpl implements InterBankService{
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public InterbankTransfer updateIBT(InterbankTransfer ibt){
+	public InterbankTransfers updateIBT(InterbankTransfers ibt){
 		InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 		interBankTransferDao.save(ibt);
 		

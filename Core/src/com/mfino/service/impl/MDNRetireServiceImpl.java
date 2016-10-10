@@ -36,7 +36,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.RetiredCardPANInfo;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.service.MDNRetireService;
@@ -136,9 +136,9 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 		UserQuery userQuery = new UserQuery();
 		userQuery.setUserName(partner.getMfinoUser().getUsername());
 		UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-		List <User> userLst = userDAO.get(userQuery);
+		List <MfinoUser> userLst = userDAO.get(userQuery);
 
-		User user = null;
+		MfinoUser user = null;
 		if(userLst != null)
 			user = userLst.get(0);
 		if(user != null){
@@ -311,10 +311,10 @@ public class MDNRetireServiceImpl implements MDNRetireService{
         userQuery.setUserNameLike(userName);
         
         UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-        List<User> results = userDAO.get(userQuery);
+        List<MfinoUser> results = userDAO.get(userQuery);
         
         int noOfTimesRetired = 0;
-        for (User user : results) {
+        for (MfinoUser user : results) {
             String name = user.getUsername();
             if (StringUtils.isBlank(name)) {
                 continue;

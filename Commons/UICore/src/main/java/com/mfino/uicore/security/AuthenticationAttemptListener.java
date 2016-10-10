@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 
 /**
  * @author Siddhartha Chinthapally
@@ -49,10 +49,10 @@ public class AuthenticationAttemptListener implements ApplicationListener {
                     query.setUserName(username);
 
                     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-                    List<User> list = userDAO.get(query);
+                    List<MfinoUser> list = userDAO.get(query);
 
                     if (list.size() > 0) {
-                        User u = list.get(0);
+                        MfinoUser u = list.get(0);
                         int failedCount;
                         Long temp = u.getFailedlogincount();
                         
@@ -71,9 +71,9 @@ public class AuthenticationAttemptListener implements ApplicationListener {
                 query.setUserName(username);
 
                 UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-                List<User> list = userDAO.get(query);
+                List<MfinoUser> list = userDAO.get(query);
                 if (list.size() > 0) {
-                    User u = list.get(0);
+                    MfinoUser u = list.get(0);
                     //reset the failed attempts count
                     if (u.getFailedlogincount() > 0) {
                         u.setFailedlogincount(0);

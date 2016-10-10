@@ -1,7 +1,7 @@
 package com.mfino.mce.interbank;
 
 import com.mfino.domain.InterbankCodes;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.domain.Pocket;
 import com.mfino.fix.CmFinoFIX.CMInterBankFundsTransferInquiry;
 
@@ -12,15 +12,15 @@ import com.mfino.fix.CmFinoFIX.CMInterBankFundsTransferInquiry;
  */
 public interface InterBankService {
 
-	public InterbankTransfer createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterbankCodes interBankCode);
+	public InterbankTransfers createInterBankTransfer(CMInterBankFundsTransferInquiry ibtInquiry, InterbankCodes interBankCode);
 	
 	public InterbankCodes getBankCode(String bankCode);
 	
 	public boolean isIBTRestricted(String bankCode);
 	
-	public InterbankTransfer getIBT(Long sctlId);
+	public InterbankTransfers getIBT(Long sctlId);
 	
-	public InterbankTransfer updateIBT(InterbankTransfer ibt);
+	public InterbankTransfers updateIBT(InterbankTransfers ibt);
 	
 	public Pocket getIBDestinationPocket();
 }

@@ -24,7 +24,7 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.ServiceDAO;
 import com.mfino.domain.ActivitiesLog;
 import com.mfino.domain.IntegrationSummary;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PendingCommodityTransfer;
@@ -305,7 +305,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //						coreDataWrapper.save(chargesPocket);
 //					}
 //					coreDataWrapper.save(globalSVAPocket);
-					List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
+					List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
 							coreDataWrapper.getSuspensePocket(), coreDataWrapper.getGlobalSVAPocket(), coreDataWrapper.getChargesPocket(), 
 							amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
 					coreDataWrapper.save(lstMfsLedgers);
@@ -327,7 +327,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //					if (pct.getCharges().compareTo(BigDecimal.valueOf(0)) == 1) {
 //						coreDataWrapper.save(chargesPocket);
 //					}
-					List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
+					List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
 							coreDataWrapper.getSuspensePocket(), objDestPocket, coreDataWrapper.getChargesPocket(), amount, charges, 
 							ConfigurationUtil.getMfinoNettingLedgerEntries());
 					coreDataWrapper.save(lstMfsLedgers);
@@ -1631,7 +1631,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //												suspensePocket, chargesPocket,
 //												null, pct, pct.getCharges());
 										
-										List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(), 
+										List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(), 
 												pct.getId().longValue(), objSrcPocket, objDestPocket, coreDataWrapper.getChargesPocket(), pct.getAmount(), pct.getCharges(), 
 												ConfigurationUtil.getMfinoNettingLedgerEntries());
 
@@ -1767,7 +1767,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //												objSrcPocket, suspensePocket,
 //												null, pct,
 //												transferAmountWithCharges);
-										List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(), 
+										List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(), 
 												pct.getId().longValue(), objSrcPocket, coreDataWrapper.getSuspensePocket(), coreDataWrapper.getChargesPocket(), 
 												transferAmountWithCharges, BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
 										pct.setTransferstatus(CmFinoFIX.TransferStatus_MoneyTransaferSentToBank);
@@ -1900,7 +1900,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //												globalSVAPocket,
 //												suspensePocket, null, pct,
 //												transferAmountWithCharges);
-										List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(),
+										List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(),
 												pct.getId().longValue(), coreDataWrapper.getGlobalSVAPocket(), coreDataWrapper.getSuspensePocket(), coreDataWrapper.getChargesPocket(), 
 												transferAmountWithCharges, BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
 										pct.setTransferstatus(CmFinoFIX.TransferStatus_MoneyTransaferSentToBank);
@@ -2281,7 +2281,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								
 							pct.setSourcepocketbalance(sourcePocket.getCurrentbalance());
 							pct.setDestpocketbalance(destinationPocket.getCurrentbalance());
-							List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,bulkDistribution.getServiceChargeTransactionLogID(), 
+							List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,bulkDistribution.getServiceChargeTransactionLogID(), 
 									pct.getId().longValue(),sourcePocket, destinationPocket, coreDataWrapper.getChargesPocket(),
 									amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
 							coreDataWrapper.save(lstMfsLedgers);
@@ -2507,7 +2507,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //										destinationPocket, null, pct, amount);
 //								ledgerService.createLedgerEntry(suspensePocket,
 //										taxPocket, null, pct, taxAmount);
-								List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,chargeDistribution.getServiceChargeTransactionLogID(), pct.getId().longValue(),
+								List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,chargeDistribution.getServiceChargeTransactionLogID(), pct.getId().longValue(),
 										sourcePocket, destinationPocket, taxPocket, amount, taxAmount, ConfigurationUtil.getMfinoNettingLedgerEntries());
 								coreDataWrapper.save(lstMfsLedgers);
 
@@ -2746,7 +2746,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //									ledgerService.createLedgerEntry(
 //											suspensePocket, destinationPocket,
 //											null, pct, amount);
-									List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(true,settlementOfCharge.getServiceChargeTransactionLogID(), 
+									List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(true,settlementOfCharge.getServiceChargeTransactionLogID(), 
 											pct.getId().longValue(), sourcePocket, destinationPocket, null, amount, BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
 									coreDataWrapper.save(lstMfsLedgers);
 										// pct.setTransferStatus(CmFinoFIX.TransferStatus_Completed);
@@ -2788,7 +2788,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //									ledgerService.createLedgerEntry(
 //											sourcePocket, suspensePocket, null,
 //											pct, amount);
-									List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(true,settlementOfCharge.getServiceChargeTransactionLogID(),
+									List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(true,settlementOfCharge.getServiceChargeTransactionLogID(),
 											pct.getId().longValue(), sourcePocket, coreDataWrapper.getSuspensePocket(), null, amount, BigDecimal.ZERO, 
 											ConfigurationUtil.getMfinoNettingLedgerEntries());
 									coreDataWrapper.save(lstMfsLedgers);
@@ -3933,10 +3933,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //			coreDataWrapper.save(srcPocket);
 //			coreDataWrapper.save(destPocket);
 //		}
-		List<MFSLedger> lstMfsLedgers = coreDataWrapper.getLedgerEntriesByCommodityTransferId(pendingTransferID);
+		List<MfsLedger> lstMfsLedgers = coreDataWrapper.getLedgerEntriesByCommodityTransferId(pendingTransferID);
 		if (CollectionUtils.isNotEmpty(lstMfsLedgers)) {
-			for (MFSLedger mfsLedger: lstMfsLedgers) {
-				MFSLedger reverseLedger = ledgerService.generateReverseLedgerEntry(mfsLedger);
+			for (MfsLedger mfsLedger: lstMfsLedgers) {
+				MfsLedger reverseLedger = ledgerService.generateReverseLedgerEntry(mfsLedger);
 				coreDataWrapper.save(reverseLedger);
 		}
 	}
@@ -4035,7 +4035,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //					null, pendingTransfer, charges);
 //			ledgerService.createLedgerEntry(suspensePocket, globalSVAPocket,
 //					null, pendingTransfer, amount);
-			List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,sctlId, pendingTransferID, coreDataWrapper.getSuspensePocket(), 
+			List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,sctlId, pendingTransferID, coreDataWrapper.getSuspensePocket(), 
 					coreDataWrapper.getGlobalSVAPocket(), coreDataWrapper.getChargesPocket(), amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
 			coreDataWrapper.save(lstMfsLedgers);
 //			coreDataWrapper.save(suspensePocket);
@@ -4056,7 +4056,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //					null, pendingTransfer, charges);
 //			ledgerService.createLedgerEntry(suspensePocket, objDestPocket,
 //					null, pendingTransfer, amount);
-			List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,sctlId, pendingTransferID, coreDataWrapper.getSuspensePocket(), objDestPocket, 
+			List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,sctlId, pendingTransferID, coreDataWrapper.getSuspensePocket(), objDestPocket, 
 					coreDataWrapper.getChargesPocket(), amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
 //			coreDataWrapper.save(suspensePocket);
 //			if (charges.compareTo(BigDecimal.ZERO) == 1) {
@@ -4190,7 +4190,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //					ledgerService
 //							.createLedgerEntry(suspensePocket, objDestPocket,
 //									null, pct, transferAmountWithCharges);
-					List<MFSLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,transactionReversal.getServiceChargeTransactionLogID(), 
+					List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,transactionReversal.getServiceChargeTransactionLogID(), 
 							pct.getId().longValue(), objSrcPocket, objDestPocket, coreDataWrapper.getChargesPocket(), amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
 
 					try {

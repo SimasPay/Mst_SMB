@@ -45,7 +45,7 @@ public class Company extends Base implements java.io.Serializable {
 	private Set<Biller> billers = new HashSet<Biller>(0);
 	private Set<OfflineReportCompany> offlineReportCompanies = new HashSet<OfflineReportCompany>(
 			0);
-	private Set<User> mfinoUsers = new HashSet<User>(0);
+	private Set<MfinoUser> mfinoUsers = new HashSet<MfinoUser>(0);
 	private Set<MerchantCode> merchantCodes = new HashSet<MerchantCode>(0);
 	private Set<ProductIndicator> productIndicators = new HashSet<ProductIndicator>(
 			0);
@@ -53,9 +53,9 @@ public class Company extends Base implements java.io.Serializable {
 	private Set<Region> regions = new HashSet<Region>(0);
 	private Set<ActivitiesLog> activitiesLogs = new HashSet<ActivitiesLog>(0);
 	private Set<BulkUploadFile> bulkUploadFiles = new HashSet<BulkUploadFile>(0);
-	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
-	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
+	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
 	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
 			0);
 	private Set<Notification> notifications = new HashSet<Notification>(0);
@@ -86,11 +86,11 @@ public class Company extends Base implements java.io.Serializable {
 			Set<BulkUpload> bulkUploads, Set<PendingTxnsFile> pendingTxnsFiles,
 			Set<Biller> billers,
 			Set<OfflineReportCompany> offlineReportCompanies,
-			Set<User> mfinoUsers, Set<MerchantCode> merchantCodes,
+			Set<MfinoUser> mfinoUsers, Set<MerchantCode> merchantCodes,
 			Set<ProductIndicator> productIndicators, Set<Pocket> pockets,
 			Set<Region> regions, Set<ActivitiesLog> activitiesLogs,
 			Set<BulkUploadFile> bulkUploadFiles,
-			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
 			Set<CommodityTransfer> commodityTransfers,
 			Set<Notification> notifications) {
 		this.id = id;
@@ -246,11 +246,11 @@ public class Company extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-	public Set<User> getMfinoUsers() {
+	public Set<MfinoUser> getMfinoUsers() {
 		return this.mfinoUsers;
 	}
 
-	public void setMfinoUsers(Set<User> mfinoUsers) {
+	public void setMfinoUsers(Set<MfinoUser> mfinoUsers) {
 		this.mfinoUsers = mfinoUsers;
 	}
 
@@ -309,20 +309,20 @@ public class Company extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-	public Set<LOP> getLetterOfPurchases() {
+	public Set<LetterOfPurchase> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-	public Set<BulkLOP> getBulkLops() {
+	public Set<BulkLop> getBulkLops() {
 		return this.bulkLops;
 	}
 
-	public void setBulkLops(Set<BulkLOP> bulkLops) {
+	public void setBulkLops(Set<BulkLop> bulkLops) {
 		this.bulkLops = bulkLops;
 	}
 

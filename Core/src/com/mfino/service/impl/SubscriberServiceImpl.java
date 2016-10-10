@@ -40,7 +40,7 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.NoSubscriberFoundException;
 import com.mfino.fix.CmFinoFIX;
@@ -750,7 +750,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 	}
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public boolean isPasswordExpired(User user) {
+	public boolean isPasswordExpired(MfinoUser user) {
 		int expiredays = systemParametersService.getInteger(SystemParameterKeys.DAYS_TO_EXPIRE_PASSWORD);
 		if(expiredays>0){
 			if(user.getLastpasswordchangetime()==null){

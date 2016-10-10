@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationPartnerMappingDAO;
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.service.IntegrationPartnerMappingService;
 import com.mfino.service.SystemParametersService;
 
@@ -36,8 +36,8 @@ public class IntegrationPartnerMappingServiceImpl implements IntegrationPartnerM
 	 * @return
 	 */
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
-	public IntegrationPartnerMapping getByInstitutionID(String institutionId) {
-		IntegrationPartnerMapping ipm = null;
+	public IntegrationPartnerMap getByInstitutionID(String institutionId) {
+		IntegrationPartnerMap ipm = null;
 		if(StringUtils.isNotBlank(institutionId)){
 			IntegrationPartnerMappingDAO ipmDAO = DAOFactory.getInstance().getIntegrationPartnerMappingDAO();
 			ipm = ipmDAO.getByInstitutionID(institutionId);

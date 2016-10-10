@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.service.KYCLevelService;
 
 @Service("KYCLevelServiceImpl")
@@ -17,7 +17,7 @@ public class KYCLevelServiceImpl implements KYCLevelService{
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public KYCLevel getByKycLevel(Long kyclevel) {
+	public KycLevel getByKycLevel(Long kyclevel) {
 		KYCLevelDAO kycDAO = DAOFactory.getInstance().getKycLevelDAO();
 		return kycDAO.getByKycLevel(kyclevel);
 	}

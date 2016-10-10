@@ -61,10 +61,10 @@ public class Merchant extends Base implements java.io.Serializable {
 	private long status;
 	private Timestamp statustime;
 	private Long rangecheck;
-	private Set<MDNRange> mdnRanges = new HashSet<MDNRange>(0);
-	private Set<LOP> letterOfPurchases = new HashSet<LOP>(
+	private Set<MdnRange> mdnRanges = new HashSet<MdnRange>(0);
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
-	private Set<BulkLOP> bulkLops = new HashSet<BulkLOP>(0);
+	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
 	private Set<Merchant> merchants = new HashSet<Merchant>(0);
 
 	public Merchant() {
@@ -97,8 +97,8 @@ public class Merchant extends Base implements java.io.Serializable {
 			Long numberofoutlets, String industryclassification,
 			Long yearestablished, String authorizedfaxnumber,
 			String authorizedemail, String admincomment, long status,
-			Timestamp statustime, Long rangecheck, Set<MDNRange> mdnRanges,
-			Set<LOP> letterOfPurchases, Set<BulkLOP> bulkLops,
+			Timestamp statustime, Long rangecheck, Set<MdnRange> mdnRanges,
+			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
 			Set<Merchant> merchants) {
 		this.addressByMerchantaddressid = addressByMerchantaddressid;
 		this.addressByFranchiseoutletaddressid = addressByFranchiseoutletaddressid;
@@ -404,29 +404,29 @@ public class Merchant extends Base implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "merchant")
-	public Set<MDNRange> getMdnRanges() {
+	public Set<MdnRange> getMdnRanges() {
 		return this.mdnRanges;
 	}
 
-	public void setMdnRanges(Set<MDNRange> mdnRanges) {
+	public void setMdnRanges(Set<MdnRange> mdnRanges) {
 		this.mdnRanges = mdnRanges;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "merchant")
-	public Set<LOP> getLetterOfPurchases() {
+	public Set<LetterOfPurchase> getLetterOfPurchases() {
 		return this.letterOfPurchases;
 	}
 
-	public void setLetterOfPurchases(Set<LOP> letterOfPurchases) {
+	public void setLetterOfPurchases(Set<LetterOfPurchase> letterOfPurchases) {
 		this.letterOfPurchases = letterOfPurchases;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "merchant")
-	public Set<BulkLOP> getBulkLops() {
+	public Set<BulkLop> getBulkLops() {
 		return this.bulkLops;
 	}
 
-	public void setBulkLops(Set<BulkLOP> bulkLops) {
+	public void setBulkLops(Set<BulkLop> bulkLops) {
 		this.bulkLops = bulkLops;
 	}
 

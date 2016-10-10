@@ -15,7 +15,7 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.BulkUploadFile;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.scheduler.service.BulkUploadSchedulerService;
 import com.mfino.scheduler.upload.service.AgentBulkUploadService;
@@ -98,7 +98,7 @@ public class BulkUploadSchedulerServiceImpl implements BulkUploadSchedulerServic
 		
 		bulkuploadService.save(bulkUploadFile);
 		//sendind mail to user
-		User user=userService.getByUserName(bulkUploadFile.getCreatedby());
+		MfinoUser user=userService.getByUserName(bulkUploadFile.getCreatedby());
 		String email = user.getEmail();
 		String to= user.getFirstname();
 		String subject = "BulkUpload Result";

@@ -9,8 +9,8 @@ import java.util.Set;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.IntegrationPartnerMappingDAO;
-import com.mfino.domain.IPMapping;
-import com.mfino.domain.IntegrationPartnerMapping;
+import com.mfino.domain.IpMapping;
+import com.mfino.domain.IntegrationPartnerMap;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.integrations.vo.IntegrationDetails;
 import com.mfino.result.XMLResult;
@@ -34,7 +34,7 @@ public class IntegrationService{
 		};
 		
 		IntegrationPartnerMappingDAO integrationPartnerMappingDao = DAOFactory.getInstance().getIntegrationPartnerMappingDAO();
-		IntegrationPartnerMapping integrationPartnerMapping = integrationPartnerMappingDao.getByInstitutionID(integrationDetails.getInstitutionID());
+		IntegrationPartnerMap integrationPartnerMapping = integrationPartnerMappingDao.getByInstitutionID(integrationDetails.getInstitutionID());
 		if(integrationPartnerMapping == null)
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_Integration_InvalidInstituionID);
@@ -48,10 +48,10 @@ public class IntegrationService{
 		//	result.setNotificationCode(CmFinoFIX.NotificationCode_Integration_InvalidIntegrationName);
 		//	return result;
 		//}
-		Set<IPMapping> ipMappings = integrationPartnerMapping.getIpMappings();
-		Iterator<IPMapping> it = ipMappings.iterator();
+		Set<IpMapping> ipMappings = integrationPartnerMapping.getIpMappings();
+		Iterator<IpMapping> it = ipMappings.iterator();
 		boolean ipFound = false;
-		IPMapping ipMapping = null;
+		IpMapping ipMapping = null;
 		while(it.hasNext())
 		{
 			ipMapping = it.next();
@@ -93,7 +93,7 @@ public class IntegrationService{
 	
 	public static boolean isLoginEnabledForIntegration(IntegrationDetails integrationDetails)
 	{
-		IntegrationPartnerMapping integrationPartnerMapping =  DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(integrationDetails.getInstitutionID());
+		IntegrationPartnerMap integrationPartnerMapping =  DAOFactory.getInstance().getIntegrationPartnerMappingDAO().getByInstitutionID(integrationDetails.getInstitutionID());
 		return (integrationPartnerMapping.getIsloginenabled() != null && integrationPartnerMapping.getIsloginenabled() != 0);		
 	}
 	

@@ -22,8 +22,8 @@ import com.mfino.dao.DistributionChainLevelDAO;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DistributionChainLevelQuery;
-import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainLvl;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -43,7 +43,7 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
     private DistributionChainLevelDAO levelDAO = DAOFactory.getInstance().getDistributionChainLevelDAO();
     private DistributionChainTemplateDAO templateDAO = DAOFactory.getInstance().getDistributionChainTemplateDAO();
 
-    private void updateMessage(DistributionChainLevel e,
+    private void updateMessage(DistributionChainLvl e,
             CMJSDistributionChainLevel.CGEntries m) {
         m.setID(e.getId().longValue());
         m.setDistributionChainTemplateID(e.getDistributionChainTemp().getId().longValue());
@@ -74,13 +74,13 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
         }
     }
 
-    private void updateEntity(DistributionChainLevel e,
+    private void updateEntity(DistributionChainLvl e,
             CMJSDistributionChainLevel.CGEntries m) {
     	
     	TransactionTypeDAO transactionTypeDao = DAOFactory.getInstance().getTransactionTypeDAO();
     	
         if (m.getDistributionChainTemplateID() != null) {
-            DistributionChainTemplate template = templateDAO.getById(m.getDistributionChainTemplateID());
+            DistributionChainTemp template = templateDAO.getById(m.getDistributionChainTemplateID());
             e.setDistributionChainTemp(template);
         }
         if (m.getDistributionLevel() != null) {
@@ -120,7 +120,7 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             CMJSDistributionChainLevel.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSDistributionChainLevel.CGEntries e : entries) {
-                DistributionChainLevel s = levelDAO.getById(e.getID());
+                DistributionChainLvl s = levelDAO.getById(e.getID());
 
                 // Check for Stale Data
                 if (!e.getRecordVersion().equals(s.getVersion())) {
@@ -144,10 +144,10 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             // Ordering the results by level in ascending order.
             //Level:asc
             query.setSortString("DistributionLevel:asc");
-            List<DistributionChainLevel> results = levelDAO.get(query);
+            List<DistributionChainLvl> results = levelDAO.get(query);
             realMsg.allocateEntries(results.size());
             for (int i = 0; i < results.size(); i++) {
-                DistributionChainLevel s = results.get(i);
+                DistributionChainLvl s = results.get(i);
                 CMJSDistributionChainLevel.CGEntries entry =
                         new CMJSDistributionChainLevel.CGEntries();
                 updateMessage(s, entry);
@@ -160,7 +160,7 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             CMJSDistributionChainLevel.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSDistributionChainLevel.CGEntries e : entries) {
-                DistributionChainLevel s = new DistributionChainLevel();
+                DistributionChainLvl s = new DistributionChainLvl();
                 updateEntity(s, e);
                 levelDAO.save(s);
                 updateMessage(s, e);
@@ -171,13 +171,13 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
             realMsg.settotal(entries.length);
         } else if (CmFinoFIX.JSaction_Delete.equalsIgnoreCase(realMsg.getaction())) {
             CMJSDistributionChainLevel.CGEntries[] entries = realMsg.getEntries();
-            DistributionChainTemplate template = null;
+            DistributionChainTemp template = null;
 
             DCTRestrictionsServiceImpl dctRestrictionsService = new DCTRestrictionsServiceImpl();
-            List<DistributionChainLevel> deletedLevels = new ArrayList<DistributionChainLevel>();
+            List<DistributionChainLvl> deletedLevels = new ArrayList<DistributionChainLvl>();
 
             for (CMJSDistributionChainLevel.CGEntries e : entries) {
-                DistributionChainLevel aLevel = levelDAO.getById(e.getID());
+                DistributionChainLvl aLevel = levelDAO.getById(e.getID());
                 
                 if (null == template) {
                     template = aLevel.getDistributionChainTemp();
@@ -205,23 +205,23 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
         return realMsg;
     }
 
-    private void adjustLevels(DistributionChainTemplate template, List<Integer> deletedLevels) {
+    private void adjustLevels(DistributionChainTemp template, List<Integer> deletedLevels) {
         if (template == null) {
             throw new IllegalArgumentException(MessageText._("Invalid DistributionChainTemplate"));
         }
 
-        Set<DistributionChainLevel> levels = template.getDistributionChainLvls();
+        Set<DistributionChainLvl> levels = template.getDistributionChainLvls();
         @SuppressWarnings("unchecked")
         SortedSet levelSet = new TreeSet(new LevelComparator());
         @SuppressWarnings("unchecked")
         boolean justBoolean = levelSet.addAll(levels);
         //Collections.sort(levels, new LevelComparator());
         @SuppressWarnings("unchecked")
-        Iterator<DistributionChainLevel> iter = levelSet.iterator();
+        Iterator<DistributionChainLvl> iter = levelSet.iterator();
 
         while (iter.hasNext()) {
             int toDecrement = 0;
-            DistributionChainLevel aLevel = iter.next();
+            DistributionChainLvl aLevel = iter.next();
             int currentLevel = ((Long)aLevel.getDistributionlevel()).intValue();
 
             if (deletedLevels.contains(aLevel.getDistributionlevel())) {
@@ -245,9 +245,9 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
     private class LevelComparator implements Comparator<Object> {
 
         public int compare(Object o1, Object o2) {
-            if (o1 instanceof DistributionChainLevel && o2 instanceof DistributionChainLevel) {
-                DistributionChainLevel level1 = (DistributionChainLevel) o1;
-                DistributionChainLevel level2 = (DistributionChainLevel) o2;
+            if (o1 instanceof DistributionChainLvl && o2 instanceof DistributionChainLvl) {
+                DistributionChainLvl level1 = (DistributionChainLvl) o1;
+                DistributionChainLvl level2 = (DistributionChainLvl) o2;
                 Long distributionlevel1 = level1.getDistributionlevel();
                 Long distributionlevel2 = level2.getDistributionlevel();
                 return distributionlevel1.compareTo(distributionlevel2);

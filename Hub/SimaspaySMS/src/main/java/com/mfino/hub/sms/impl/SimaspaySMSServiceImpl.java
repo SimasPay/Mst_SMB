@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hub.sms.utils.RSClientPostHttps;
 import com.mfino.mce.core.util.MCEUtil;
@@ -144,7 +144,7 @@ public class SimaspaySMSServiceImpl implements SMSNotificationService
 
 		Long notificationLogDetailsID = smsNotification.getNotificationLogDetailsID();
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
-		NotificationLogDetails notificationLogDetails = null;
+		NlogDetails notificationLogDetails = null;
 		
 		if(notificationLogDetailsID != null){
 			

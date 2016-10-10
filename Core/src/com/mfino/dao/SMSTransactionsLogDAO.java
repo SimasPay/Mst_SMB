@@ -11,7 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SMSTransactionsLogQuery;
-import com.mfino.domain.SMSPartner;
+import com.mfino.domain.SmsPartner;
 import com.mfino.domain.SmsTransactionLog;
 
 /**
@@ -23,7 +23,7 @@ public class SMSTransactionsLogDAO extends BaseDAO<SmsTransactionLog>{
      public List<SmsTransactionLog> get(SMSTransactionsLogQuery query) {
         Criteria criteria = createCriteria();
         if (query.getPartnerID() != null) {
-            criteria.createCriteria("SMSPartnerByPartnerID").add(Restrictions.eq(SMSPartner.FieldName_RecordID, query.getPartnerID()));
+            criteria.createCriteria("SMSPartnerByPartnerID").add(Restrictions.eq(SmsPartner.FieldName_RecordID, query.getPartnerID()));
         }
         if (query.getSMSCID() != null) {
             criteria.add(Restrictions.eq(SmsTransactionLog.FieldName_SmscID, query.getSMSCID()));

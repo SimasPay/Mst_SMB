@@ -19,7 +19,7 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
 import com.mfino.domain.DCTRestrictions;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
 import com.mfino.domain.TransactionType;
@@ -53,7 +53,7 @@ public class TransactionTypePartnerRestrictionsProcessorImpl extends BaseFixProc
 		Long dctId = realMsg.getDCTID();
 		Long partnerId = realMsg.getPartnerID();
 		
-		DistributionChainTemplate dct = dctDao.getById(dctId);
+		DistributionChainTemp dct = dctDao.getById(dctId);
 		Partner partner = partnerDao.getById(partnerId);
 		
 		int index = 0;

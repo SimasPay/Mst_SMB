@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.InterBankTransfersDao;
 import com.mfino.dao.query.InterBankTransfersQuery;
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalFromBank;
@@ -75,7 +75,7 @@ public class MissingResponseHandlerServiceDefaultImpl {
 			InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 			InterBankTransfersQuery query = new InterBankTransfersQuery();
 			query.setSctlId(moneyTransferToBank.getServiceChargeTransactionLogID());
-			List<InterbankTransfer> ibtList = interBankTransferDao.get(query);
+			List<InterbankTransfers> ibtList = interBankTransferDao.get(query);
 			
 			if(ibtList!=null && !ibtList.isEmpty())
 			{

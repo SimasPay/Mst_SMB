@@ -39,11 +39,11 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	
 	private ChannelCode channelCode;
 	private Service service;
-	private KYCLevel kycLevelBySourcekyc;
+	private KycLevel kycLevelBySourcekyc;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Partner partner;
 	private TransactionType transactionType;
-	private KYCLevel kycLevelByDestkyc;
+	private KycLevel kycLevelByDestkyc;
 	private String name;
 	private long chargemode;
 	private Long sourcetype;
@@ -79,9 +79,9 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	}
 
 	public TransactionRule(BigDecimal id, ChannelCode channelCode,
-			Service service, KYCLevel kycLevelBySourcekyc,
+			Service service, KycLevel kycLevelBySourcekyc,
 			MfinoServiceProvider mfinoServiceProvider, Partner partner,
-			TransactionType transactionType, KYCLevel kycLevelByDestkyc,
+			TransactionType transactionType, KycLevel kycLevelByDestkyc,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String name,
 			long chargemode, Long sourcetype, Long desttype, Long sourcegroup,
@@ -132,11 +132,11 @@ public class TransactionRule extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SOURCEKYC")
-	public KYCLevel getKycLevelBySourcekyc() {
+	public KycLevel getKycLevelBySourcekyc() {
 		return this.kycLevelBySourcekyc;
 	}
 
-	public void setKycLevelBySourcekyc(KYCLevel kycLevelBySourcekyc) {
+	public void setKycLevelBySourcekyc(KycLevel kycLevelBySourcekyc) {
 		this.kycLevelBySourcekyc = kycLevelBySourcekyc;
 	}
 
@@ -173,11 +173,11 @@ public class TransactionRule extends Base implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DESTKYC")
-	public KYCLevel getKycLevelByDestkyc() {
+	public KycLevel getKycLevelByDestkyc() {
 		return this.kycLevelByDestkyc;
 	}
 
-	public void setKycLevelByDestkyc(KYCLevel kycLevelByDestkyc) {
+	public void setKycLevelByDestkyc(KycLevel kycLevelByDestkyc) {
 		this.kycLevelByDestkyc = kycLevelByDestkyc;
 	}
 

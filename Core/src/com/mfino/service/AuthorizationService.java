@@ -6,7 +6,7 @@ package com.mfino.service;
 import java.util.List;
 
 import com.mfino.domain.PermissionItem;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.enums.ItemType;
 
 /**
@@ -79,6 +79,6 @@ public interface AuthorizationService {
 	 * @param user
 	 * @return
 	 */
-	public boolean enablePinPrompt(User user);
+	public boolean enablePinPrompt(MfinoUser user);
 
 }

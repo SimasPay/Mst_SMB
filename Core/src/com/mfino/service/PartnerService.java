@@ -7,7 +7,7 @@ import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.fix.CmFinoFIX.CMPartnerRegistrationThroughAPI;
 import com.mfino.mailer.NotificationWrapper;
@@ -59,7 +59,7 @@ public interface PartnerService {
 	 * @param password
 	 * @return
 	 */
-	public String genratePartnerRegistrationMail(Partner partner, User user, Integer type, String password);
+	public String genratePartnerRegistrationMail(Partner partner, MfinoUser user, Integer type, String password);
 	
 	/**
 	 * 

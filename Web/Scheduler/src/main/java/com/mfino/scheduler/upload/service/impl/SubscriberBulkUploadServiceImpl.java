@@ -41,13 +41,13 @@ import com.mfino.domain.AuthPersonDetails;
 import com.mfino.domain.BulkUploadFile;
 import com.mfino.domain.BulkUploadFileEntry;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberAddiInfo;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
 import com.mfino.fix.CmFinoFIX;
@@ -380,18 +380,18 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				additionalFields.setSubscriber(subscriber);
 			}
 			
-			KYCLevel kycLevel = kycLevelService.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
+			KycLevel kycLevel = kycLevelService.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
 			
 			//Upgrade Emoney pocket Template to Fully Banked
 			// Set Group Id to Default Group Id '1' so that if any subscriber exists with out group then 
 			//the default group will be used in calculating of pocket templates.
 			Long groupID = defaultGroup.getId().longValue(); 
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
-				SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 				groupID = subscriberGroup.getGroupid();
 			}
 			
@@ -590,7 +590,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		Subscriber subscriber = new Subscriber();
 		SubscriberMdn subscriberMDN = new SubscriberMdn();
 		AuthPersonDetails authorizingPerson = null;
-		SubscriberGroup sg = null;
+		SubscriberGroups sg = null;
 		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 		if(syncRecord.getId()!=null){
 			subscriberMDN = subscriberMdnService.getById(syncRecord.getId(), LockMode.UPGRADE);
@@ -620,10 +620,10 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		}
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid().longValue();
 		}
 		else {
@@ -674,7 +674,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			}
 			// Adding Group to new subscriber
 			if(syncRecord.getId() == null) {
-				sg = new SubscriberGroup();
+				sg = new SubscriberGroups();
 				sg.setSubscriberid(subscriber.getId().longValue());
 				sg.setGroupid((mapGroup.get(syncRecord.getGroupName().toLowerCase()) != null) ?
 						mapGroup.get(syncRecord.getGroupName().toLowerCase()).getId().longValue() : defaultGroup.getId().longValue());

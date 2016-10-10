@@ -25,7 +25,7 @@ import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.KYCLevelQuery;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
@@ -240,7 +240,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
             criteria.add(Restrictions.ne(SubscriberMdn.FieldName_MDNStatus, statusNE));
         }
         
-        KYCLevel kycLevel = null;
+        KycLevel kycLevel = null;
         if(null != query.getKycLevelId()) {
         	
         	KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
@@ -249,7 +249,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         	kycQuery.setId(query.getKycLevelId());
         	//kycQuery.set_KycLevel(query.getKycLevelId().intValue());
         	
-        	List<KYCLevel> kycResults = kycLevelDao.get(kycQuery);
+        	List<KycLevel> kycResults = kycLevelDao.get(kycQuery);
         	
         	if(kycResults != null && kycResults.size() > 0) {
         		

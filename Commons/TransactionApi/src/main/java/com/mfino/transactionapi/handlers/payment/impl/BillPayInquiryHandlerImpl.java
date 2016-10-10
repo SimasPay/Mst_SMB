@@ -31,8 +31,8 @@ import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.MFSDenominationsQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
-import com.mfino.domain.MFSDenominations;
+import com.mfino.domain.MfsbillerPartnerMap;
+import com.mfino.domain.MfsDenominations;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
@@ -210,7 +210,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		}
 		
 		//For Integration Code
-		MFSBillerPartner mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPaymentInquiry.getBillerCode());
+		MfsbillerPartnerMap mfsBillerPartner = mfsBillerPartnerMapService.getByBillerCode(billPaymentInquiry.getBillerCode());
 		if (mfsBillerPartner != null){
 			billPaymentInquiry.setIntegrationCode(mfsBillerPartner.getIntegrationcode());
 		}
@@ -240,7 +240,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		
 		billPaymentInquiry.setEmail(sourceMDN.getSubscriber().getEmail());
 		
-		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
+		MfsbillerPartnerMap results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
 			billPaymentInquiry.setIntegrationCode(results.getIntegrationcode());
 			billPaymentInquiry.setPartnerBillerCode(results.getPartnerbillercode());
@@ -248,7 +248,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.getBillerpartnertype())){
 				MFSDenominationsQuery mdquery = new MFSDenominationsQuery();
 				mdquery.setMfsID(results.getId().longValue());
-				List<MFSDenominations> res  = mfsDenominationsService.get(mdquery);
+				List<MfsDenominations> res  = mfsDenominationsService.get(mdquery);
 				if(res.size() > 0){
 					boolean isValid = false;
 					StringBuffer validDenominations = new StringBuffer();

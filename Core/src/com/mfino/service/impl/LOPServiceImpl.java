@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.LOPDAO;
 import com.mfino.dao.MerchantDAO;
-import com.mfino.domain.LOP;
+import com.mfino.domain.LetterOfPurchase;
 import com.mfino.domain.Merchant;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.LOPService;
@@ -32,7 +32,7 @@ public class LOPServiceImpl implements LOPService {
 	 * @see com.mfino.service.LOPService#checkAndSetExpiredStatus(com.mfino.domain.LOP)
 	 */
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public void checkAndSetExpiredStatus(LOP lop) {
+    public void checkAndSetExpiredStatus(LetterOfPurchase lop) {
         checkAndSetExpiredStatus(lop, null);
     }
 
@@ -41,7 +41,7 @@ public class LOPServiceImpl implements LOPService {
      * @see com.mfino.service.LOPService#checkAndSetExpiredStatus(com.mfino.domain.LOP, com.mfino.dao.LOPDAO)
      */
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public void checkAndSetExpiredStatus(LOP lop, LOPDAO dao) {
+    public void checkAndSetExpiredStatus(LetterOfPurchase lop, LOPDAO dao) {
         // Here check if the record is expired or not.
         // Get the Created Time and Check with the configured time.
         // If the Status is not pending then return.
@@ -83,7 +83,7 @@ public class LOPServiceImpl implements LOPService {
      * @see com.mfino.service.LOPService#resetCurrentWeeklyAmount(com.mfino.domain.LOP)
      */
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-    public void resetCurrentWeeklyAmount(LOP lop) {
+    public void resetCurrentWeeklyAmount(LetterOfPurchase lop) {
         // Revert the amount that is distributed back to the current weekly amount.
         // When the LOP is created the Distributed amount of this lop is added to
         // the currently weekly purchase.

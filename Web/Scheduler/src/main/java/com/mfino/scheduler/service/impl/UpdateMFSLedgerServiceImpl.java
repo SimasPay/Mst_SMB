@@ -16,7 +16,7 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.DAOConstants;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.scheduler.service.UpdateMFSLedgerService;
 import com.mfino.service.CoreServiceFactory;
@@ -53,10 +53,10 @@ public class UpdateMFSLedgerServiceImpl  implements UpdateMFSLedgerService {
 	public void updatePocketBalancesFromLedger() {
 		log.info("updatePocketBalancesFromLedger :: BEGIN");
 		try {
-			List<MFSLedger> lstMfsLedgers = mFSLedgerService.getLedgerEntriesByLedgerStatus(DAOConstants.LEDGER_STATUS_DEFERED);
+			List<MfsLedger> lstMfsLedgers = mFSLedgerService.getLedgerEntriesByLedgerStatus(DAOConstants.LEDGER_STATUS_DEFERED);
 			
 			if (CollectionUtils.isNotEmpty(lstMfsLedgers)) {
-				for (MFSLedger mfsLedger : lstMfsLedgers) {
+				for (MfsLedger mfsLedger : lstMfsLedgers) {
 					try {
 						
 						updatePocketBalance(mfsLedger);
@@ -72,7 +72,7 @@ public class UpdateMFSLedgerServiceImpl  implements UpdateMFSLedgerService {
 		} 
 		log.info("updatePocketBalancesFromLedger :: END");
 	}
-  private void updatePocketBalance(MFSLedger mfsLedger){
+  private void updatePocketBalance(MfsLedger mfsLedger){
 	MoneyService ms = CoreServiceFactory.getInstance().getMoneyService();
 
 	Pocket pocket = null;

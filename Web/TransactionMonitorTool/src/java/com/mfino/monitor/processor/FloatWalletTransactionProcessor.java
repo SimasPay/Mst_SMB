@@ -15,7 +15,7 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
@@ -51,11 +51,11 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 		query.setCreateTimeLT(searchBean.getCreateTimeLT());
 		query.setStart(searchBean.getStart());
 		query.setLimit(searchBean.getLimit());
-		List<MFSLedger> ledgerResults = ledgerDAO.get(query);
+		List<MfsLedger> ledgerResults = ledgerDAO.get(query);
 		if (ledgerResults != null && !ledgerResults.isEmpty()) {
 			ctMap= getCommodityTransferMap(ledgerResults);
 			for (int i = 0; i < ledgerResults.size(); i++) {
-				MFSLedger ledger = ledgerResults.get(i);
+				MfsLedger ledger = ledgerResults.get(i);
 				FloatWalletTransaction floatWalletTransaction = new FloatWalletTransaction();
 				updateMessage(ledger, floatWalletTransaction, searchBean);
 				results.add(floatWalletTransaction);
@@ -66,9 +66,9 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 	}
 
 	private Map<Long, CommodityTransfer> getCommodityTransferMap(
-			List<MFSLedger> results) {
+			List<MfsLedger> results) {
 		Map<Long, CommodityTransfer> ctMap = new HashMap<Long, CommodityTransfer>();
-		for (MFSLedger ledger : results) {
+		for (MfsLedger ledger : results) {
 			if (!ctMap.containsKey(ledger.getCommoditytransferid())) {
 				CommodityTransfer ct = commodityTransferDAO.getById(ledger.getCommoditytransferid().longValue());
 				if (ct == null) {
@@ -82,7 +82,7 @@ public class FloatWalletTransactionProcessor extends BaseProcessor implements Fl
 		return ctMap;
 	}
 
-	private void updateMessage(MFSLedger ledger,
+	private void updateMessage(MfsLedger ledger,
 			FloatWalletTransaction floatWalletTransaction,
 			FloatWalletTransaction searchBean) {
 		CommodityTransfer ct = ctMap.get(ledger.getCommoditytransferid());

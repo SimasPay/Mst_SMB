@@ -20,7 +20,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.constants.DAOConstants;
 import com.mfino.dao.query.PocketQuery;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SubscriberMdn;
@@ -214,14 +214,14 @@ public class PocketDAO extends BaseDAO<Pocket> {
 			if(currentBalance ==null){
 				currentBalance = BigDecimal.ZERO;
 			}
-			Criteria crCriteria=getSession().createCriteria(MFSLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
+			Criteria crCriteria=getSession().createCriteria(MfsLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
 			crCriteria.setProjection(Projections.sum("Amount"));
 			BigDecimal crBalance = (BigDecimal) crCriteria.uniqueResult();
 			if(crBalance == null){
 				crBalance = BigDecimal.ZERO;
 			}
 			
-			Criteria drCriteria=getSession().createCriteria(MFSLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
+			Criteria drCriteria=getSession().createCriteria(MfsLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
 			drCriteria.setProjection(Projections.sum("Amount"));
 			BigDecimal drBalance = (BigDecimal) drCriteria.uniqueResult();
 			if(drBalance == null){

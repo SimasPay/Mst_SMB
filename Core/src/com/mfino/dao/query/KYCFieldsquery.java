@@ -5,13 +5,13 @@
 package com.mfino.dao.query;
 
 import com.mfino.dao.KYCLevelDAO;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 public class KYCFieldsquery extends BaseQuery {
 
     KYCLevelDAO kycLevelDAO = new KYCLevelDAO();
     private Long _KYCFieldsLevelID;
     private String _KYCFieldsName;
-    private KYCLevel kycLevel;
+    private KycLevel kycLevel;
         
    
 	public Long getkycFieldsLevelID() {
@@ -33,12 +33,12 @@ public class KYCFieldsquery extends BaseQuery {
     }
 
 
-	public void setKycLevel(KYCLevel kycLevel) {
+	public void setKycLevel(KycLevel kycLevel) {
 		this.kycLevel = kycLevel;
 	}
 
 
-	public KYCLevel getKycLevel() {
+	public KycLevel getKycLevel() {
 		return kycLevel;
 	}
 

@@ -20,8 +20,8 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.LOPDAO;
 import com.mfino.dao.LOPHistoryDAO;
 import com.mfino.dao.query.LOPHistoryQuery;
-import com.mfino.domain.LOP;
-import com.mfino.domain.LOPHistory;
+import com.mfino.domain.LetterOfPurchase;
+import com.mfino.domain.LopHistory;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSLOPHistory;
@@ -35,7 +35,7 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private void updateEntity(LOPHistory lopHistory, CMJSLOPHistory.CGEntries e) {
+    private void updateEntity(LopHistory lopHistory, CMJSLOPHistory.CGEntries e) {
 
         if (lopHistory.getOlddiscount() == null &&  e.getOldDiscount() != null) {
             lopHistory.setOlddiscount(e.getOldDiscount());
@@ -61,7 +61,7 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
         }
     }
 
-    private void updateMessage(LOPHistory lopHistory, CmFinoFIX.CMJSLOPHistory.CGEntries entry) {
+    private void updateMessage(LopHistory lopHistory, CmFinoFIX.CMJSLOPHistory.CGEntries entry) {
 
         entry.setID(lopHistory.getId().longValue());
 
@@ -111,11 +111,11 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
             query.setLimit(realMsg.getlimit());
             query.setLopid(realMsg.getLOPIDSearch());
 
-            List<LOPHistory> results = dao.get(query);
+            List<LopHistory> results = dao.get(query);
             realMsg.allocateEntries(results.size());
 
             for (int i = 0; i < results.size(); i++) {
-                LOPHistory s = results.get(i);
+                LopHistory s = results.get(i);
 
                 // Here check for the LOPHistory Expiration and if
                 // applicable set it.
@@ -133,10 +133,10 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
 
             for (CMJSLOPHistory.CGEntries e : entries) {
 
-                LOPHistory lopHistory = new LOPHistory();
+                LopHistory lopHistory = new LopHistory();
                 if (e.getLOPID() != null) {
                     LOPDAO lopDao = DAOFactory.getInstance().getLopDAO();
-                    LOP lop = lopDao.getById(e.getLOPID());                    
+                    LetterOfPurchase lop = lopDao.getById(e.getLOPID());                    
                     if (!(CmFinoFIX.LOPStatus_Pending.equals(lop.getStatus()))) {
                         CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                         errorMsg.setErrorDescription(MessageText._("LOP status is not pending. Discount can be changed only for pending LOP"));

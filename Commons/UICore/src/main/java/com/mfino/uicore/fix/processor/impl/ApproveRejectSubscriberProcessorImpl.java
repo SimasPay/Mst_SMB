@@ -23,12 +23,12 @@ import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -154,16 +154,16 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		Pocket emoneyPocket = null;
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid().longValue();
 		}
 		emoneyPocket = subscriberService.getEmoneyPocket(subscriberMDN.getId().longValue(), Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
         bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
        
-		KYCLevel kyclevel = null;
+		KycLevel kyclevel = null;
 		if (subscriber.getKycLevel() != null && subscriber.getKycLevel().getId() != null) {
 			kyclevel = kycLevelDao.getByKycLevel(subscriber.getKycLevel().getId().longValue());
 		}

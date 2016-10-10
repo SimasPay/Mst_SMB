@@ -11,7 +11,7 @@ import com.mfino.constants.DAOConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSLedgerDAO;
 import com.mfino.dao.PocketDAO;
-import com.mfino.domain.MFSLedger;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.Pocket;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -28,7 +28,7 @@ public class LedgerProcessorImpl extends BaseFixProcessor implements LedgerProce
 	
 	private PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 	
-	private void updateMessage(MFSLedger ledger, CMJSLedger.CGEntries e) {
+	private void updateMessage(MfsLedger ledger, CMJSLedger.CGEntries e) {
 		e.setID(ledger.getId().longValue());
 		if(ledger.getCommoditytransferid() !=  null) {
 			e.setCommodityTransferID(ledger.getCommoditytransferid().longValue());
@@ -75,11 +75,11 @@ public class LedgerProcessorImpl extends BaseFixProcessor implements LedgerProce
 		
 		if (CmFinoFIX.JSaction_Select.equals(realMsg.getaction())) {
 			if(realMsg.getSctlId() != null){
-				List<MFSLedger> lst = dao.getLedgerEntriesBySctlId(realMsg.getSctlId());
+				List<MfsLedger> lst = dao.getLedgerEntriesBySctlId(realMsg.getSctlId());
 				if (CollectionUtils.isNotEmpty(lst)) {
 					realMsg.allocateEntries(lst.size());
 					int i=0;
-					for (MFSLedger ledger: lst){
+					for (MfsLedger ledger: lst){
 						CMJSLedger.CGEntries e = new CMJSLedger.CGEntries();
 						updateMessage(ledger, e);
 						realMsg.getEntries()[i] = e;

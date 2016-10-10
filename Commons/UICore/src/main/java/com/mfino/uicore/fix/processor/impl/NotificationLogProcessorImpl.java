@@ -17,7 +17,7 @@ import com.mfino.dao.query.NotificationLogDetailsQuery;
 import com.mfino.dao.query.NotificationLogQuery;
 import com.mfino.domain.Notification;
 import com.mfino.domain.NotificationLog;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSNotificationLog;
@@ -242,7 +242,7 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 		
 		NotificationLogDetailsQuery query = new NotificationLogDetailsQuery(); 
 		query.setNotificationLog(notificationLog);
-		List<NotificationLogDetails> notificationLogDetails = DAOFactory.getInstance().getNotificationLogDetailsDao().get(query);
+		List<NlogDetails> notificationLogDetails = DAOFactory.getInstance().getNotificationLogDetailsDao().get(query);
 		e.setCount(notificationLogDetails.size());
 		query.setSendNotificationtatus(CmFinoFIX.SendNotificationStatus_Success);
 		notificationLogDetails = DAOFactory.getInstance().getNotificationLogDetailsDao().get(query);

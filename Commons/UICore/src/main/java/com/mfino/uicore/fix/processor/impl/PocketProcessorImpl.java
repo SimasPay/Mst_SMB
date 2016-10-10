@@ -33,7 +33,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.errorcodes.Codes;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -385,7 +385,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             	query.setIsSuspencePocketAllowed(realMsg.getIsSuspencePocketAllowed());
             }
             if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {
-                User user = userService.getCurrentUser();
+                MfinoUser user = userService.getCurrentUser();
                 Set<BankAdmin> admins = user.getBankAdmins();
 
                 if (admins != null && admins.size() > 0) {

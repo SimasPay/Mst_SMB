@@ -14,7 +14,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.query.DistributionChainTemplateQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSDistributionChainTemplate;
@@ -29,7 +29,7 @@ import com.mfino.uicore.fix.processor.DistributionChainTemplateProcessor;
 public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor implements DistributionChainTemplateProcessor{
     private DistributionChainTemplateDAO templateDAO = DAOFactory.getInstance().getDistributionChainTemplateDAO();
 
-    private void updateMessage(DistributionChainTemplate e,
+    private void updateMessage(DistributionChainTemp e,
             CMJSDistributionChainTemplate.CGEntries m) {
         m.setID(e.getId().longValue());
         m.setDescription(e.getDescription());
@@ -50,7 +50,7 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
         }
     }
 
-    private void updateEntity(DistributionChainTemplate e,
+    private void updateEntity(DistributionChainTemp e,
             CMJSDistributionChainTemplate.CGEntries m) {
         if (m.getDescription() != null) {
             e.setDescription(m.getDescription());
@@ -71,7 +71,7 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
             CMJSDistributionChainTemplate.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSDistributionChainTemplate.CGEntries e : entries) {
-                DistributionChainTemplate s = templateDAO.getById(e.getID());
+                DistributionChainTemp s = templateDAO.getById(e.getID());
 
                 // Check for Stale Data
                 if (!e.getRecordVersion().equals(s.getVersion())) {
@@ -94,10 +94,10 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
             query.setCreatedBy(realMsg.getCreatedBySearch());
             query.setServiceIdSearch(realMsg.getServiceIDSearch());
             
-            List<DistributionChainTemplate> results = templateDAO.get(query);
+            List<DistributionChainTemp> results = templateDAO.get(query);
             realMsg.allocateEntries(results.size());
             for (int i = 0; i < results.size(); i++) {
-                DistributionChainTemplate s = results.get(i);
+                DistributionChainTemp s = results.get(i);
                 CMJSDistributionChainTemplate.CGEntries entry =
                         new CMJSDistributionChainTemplate.CGEntries();
                 updateMessage(s, entry);
@@ -109,7 +109,7 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
             CMJSDistributionChainTemplate.CGEntries[] entries = realMsg.getEntries();
             
             for (CMJSDistributionChainTemplate.CGEntries e : entries) {
-                DistributionChainTemplate s = new DistributionChainTemplate();
+                DistributionChainTemp s = new DistributionChainTemp();
                 updateEntity(s, e);
                 templateDAO.save(s);
                 updateMessage(s, e);

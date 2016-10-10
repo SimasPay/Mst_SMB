@@ -72,11 +72,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private SubscriberMdn subscriberMdn;
 	private TransactionLog transactionLog;
 	private CreditCardTransaction creditCardTransaction;
-	private LOP letterOfPurchase;
+	private LetterOfPurchase letterOfPurchase;
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
-	private DistributionChainLevel distributionChainLvl;
+	private DistributionChainLvl distributionChainLvl;
 	private Pocket pocket;
 	private long msgtype;
 	private Long uicategory;
@@ -220,9 +220,9 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	public PendingCommodityTransfer(BigDecimal id, SubscriberMdn subscriberMdn,
 			TransactionLog transactionLog,
 			CreditCardTransaction creditCardTransaction,
-			LOP letterOfPurchase, Subscriber subscriber,
+			LetterOfPurchase letterOfPurchase, Subscriber subscriber,
 			MfinoServiceProvider mfinoServiceProvider, Company company,
-			DistributionChainLevel distributionChainLvl, Pocket pocket,
+			DistributionChainLvl distributionChainLvl, Pocket pocket,
 			long msgtype, Long uicategory, long transferstatus,
 			Long transferfailurereason, Long notificationcode,
 			Timestamp starttime, Timestamp endtime,
@@ -419,11 +419,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LOPID")
-	public LOP getLetterOfPurchase() {
+	public LetterOfPurchase getLetterOfPurchase() {
 		return this.letterOfPurchase;
 	}
 
-	public void setLetterOfPurchase(LOP letterOfPurchase) {
+	public void setLetterOfPurchase(LetterOfPurchase letterOfPurchase) {
 		this.letterOfPurchase = letterOfPurchase;
 	}
 
@@ -460,12 +460,12 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DCTLEVELID")
-	public DistributionChainLevel getDistributionChainLvl() {
+	public DistributionChainLvl getDistributionChainLvl() {
 		return this.distributionChainLvl;
 	}
 
 	public void setDistributionChainLvl(
-			DistributionChainLevel distributionChainLvl) {
+			DistributionChainLvl distributionChainLvl) {
 		this.distributionChainLvl = distributionChainLvl;
 	}
 

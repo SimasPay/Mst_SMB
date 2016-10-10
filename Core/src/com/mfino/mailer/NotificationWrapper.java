@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import com.mfino.domain.Bank;
-import com.mfino.domain.BulkLOP;
+import com.mfino.domain.BulkLop;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Company;
-import com.mfino.domain.DistributionChainLevel;
-import com.mfino.domain.LOP;
+import com.mfino.domain.DistributionChainLvl;
+import com.mfino.domain.LetterOfPurchase;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SctlSettlementMap;
@@ -37,9 +37,9 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
     private String emailId;
     private String destMDN;
     private String emailSubject;
-    private DistributionChainLevel dcl;
-    private LOP lop;
-    private BulkLOP bulkLop;
+    private DistributionChainLvl dcl;
+    private LetterOfPurchase lop;
+    private BulkLop bulkLop;
     private String username;
     private String confirmationCode;    
     private CMGetLastTransactionsFromBank.CGEntries lastBankTrxnEntry;    
@@ -211,42 +211,42 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 	/**
 	 * @return the LOP
 	 */
-	public LOP getLOP() {
+	public LetterOfPurchase getLOP() {
 		return lop;
 	}
 
 	/**
 	 * @param lop the lop to set
 	 */
-	public void setLOP(LOP lop) {
+	public void setLOP(LetterOfPurchase lop) {
 		this.lop = lop;
 	}
 
 	/**
 	 * @return the BulkLOP
 	 */
-	public BulkLOP getBulkLOP() {
+	public BulkLop getBulkLOP() {
 		return bulkLop;
 	}
 
 	/**
 	 * @param bulkLop the bulkLop to set
 	 */
-	public void setBulkLOP(BulkLOP bulkLop) {
+	public void setBulkLOP(BulkLop bulkLop) {
 		this.bulkLop = bulkLop;
 	}
 
 	/**
 	 * @return the DistributionChainLevel
 	 */
-	public DistributionChainLevel getDistributionChainLevel() {
+	public DistributionChainLvl getDistributionChainLevel() {
 		return dcl;
 	}
 
 	/**
-	 * @param DistributionChainLevel the DistributionChainLevel to set
+	 * @param DistributionChainLvl the DistributionChainLevel to set
 	 */
-	public void setDistributionChainLevel(DistributionChainLevel dcl) {
+	public void setDistributionChainLevel(DistributionChainLvl dcl) {
 		this.dcl = dcl;
 	}
 

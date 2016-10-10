@@ -19,7 +19,7 @@ import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -138,7 +138,7 @@ public class SubscriberCashOutInquiryHandlerImpl extends FIXMessageHandler imple
 		}
 		
 		Subscriber srcSub = srcSubscriberMDN.getSubscriber();
-		KYCLevel srcKyc = srcSub.getKycLevel();
+		KycLevel srcKyc = srcSub.getKycLevel();
 		if(srcKyc.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
 			log.info(String.format("Cash-out transaction is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);

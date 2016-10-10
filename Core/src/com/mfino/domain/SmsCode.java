@@ -19,7 +19,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SMS_CODE", uniqueConstraints = @UniqueConstraint(columnNames = "SMSCODETEXT"))
-public class SMSCode extends Base implements java.io.Serializable {
+public class SmsCode extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SMSCodeText = "smscodetext";
@@ -31,10 +31,10 @@ public class SMSCode extends Base implements java.io.Serializable {
 	private long smscodestatus;
 	private String shortcodes;
 
-	public SMSCode() {
+	public SmsCode() {
 	}
 
-	public SMSCode(BigDecimal id, Brand brand, Timestamp lastupdatetime,
+	public SmsCode(BigDecimal id, Brand brand, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String smscodetext, String servicename, String description,
 			long smscodestatus) {
@@ -50,7 +50,7 @@ public class SMSCode extends Base implements java.io.Serializable {
 		this.smscodestatus = smscodestatus;
 	}
 
-	public SMSCode(BigDecimal id, Brand brand, Timestamp lastupdatetime,
+	public SmsCode(BigDecimal id, Brand brand, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String smscodetext, String servicename, String description,
 			long smscodestatus, String shortcodes) {

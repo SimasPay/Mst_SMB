@@ -10,7 +10,7 @@ import org.apache.commons.mail.EmailException;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Company;
 import com.mfino.domain.Partner;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.InvalidPasswordException;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.fix.CmFinoFIX.CMErrorNotification;
@@ -23,11 +23,11 @@ public interface UserService {
 
 
 	
-    public User getCurrentUser() throws MfinoRuntimeException;
+    public MfinoUser getCurrentUser() throws MfinoRuntimeException;
 
     public  String getUserString();
 
-    public  String getUserString(User userObj);
+    public  String getUserString(MfinoUser userObj);
 
     
     public  String getUserLanguageCode();
@@ -35,9 +35,9 @@ public interface UserService {
     
     public  Company getUserCompany();
     
-     void reloadPermissions(User user);
+     void reloadPermissions(MfinoUser user);
     
-    public  void loadPermissions(User user);
+    public  void loadPermissions(MfinoUser user);
 
     public  boolean sendEmail(String subject, String body);
     
@@ -55,7 +55,7 @@ public interface UserService {
     
     public  void changePassword(String username, String oldPassword, String newPassword, Boolean isMerchantRegistration, boolean checkExisting) throws InvalidPasswordException, MfinoRuntimeException;
 
-	public  boolean isOldPassword(User user, String encPassword);
+	public  boolean isOldPassword(MfinoUser user, String encPassword);
 	
     public  Integer getNativeLanguageCode();
     
@@ -65,12 +65,12 @@ public interface UserService {
 	public  CMErrorNotification resetPassword(String username,String code);
 	
 	
-	public  CMErrorNotification resetPassword(User user);
+	public  CMErrorNotification resetPassword(MfinoUser user);
 	
 	
-	public List<User> get(UserQuery userQuery) throws MfinoRuntimeException;
+	public List<MfinoUser> get(UserQuery userQuery) throws MfinoRuntimeException;
 
-	public User getByUserName(String userName);
+	public MfinoUser getByUserName(String userName);
 	
 	public Integer getCurrentUserPriorityLevel();
 

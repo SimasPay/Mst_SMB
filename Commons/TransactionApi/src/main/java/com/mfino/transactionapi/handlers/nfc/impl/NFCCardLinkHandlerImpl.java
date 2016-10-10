@@ -23,7 +23,7 @@ import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
@@ -124,10 +124,10 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
 		
-		Set<SubscriberGroup> subscriberGroups = (Set<SubscriberGroup>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		Set<SubscriberGroups> subscriberGroups = (Set<SubscriberGroups>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
-			SubscriberGroup subscriberGroup = subscriberGroups.iterator().next();
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
 		PocketTemplate nfcPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, CmFinoFIX.PocketType_NFC, CmFinoFIX.SubscriberType_Subscriber, null, groupID);

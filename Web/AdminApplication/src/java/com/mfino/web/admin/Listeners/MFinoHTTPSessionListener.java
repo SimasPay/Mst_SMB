@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.uicore.security.AuthProcessingFilter;
 import com.mfino.util.ConfigurationUtil;
@@ -76,10 +76,10 @@ public class MFinoHTTPSessionListener implements HttpSessionListener,
 						 * sessionHolder.setSession(session);
 						 */
 						UserDAO userDao = DAOFactory.getInstance().getUserDAO();
-						User userObj = null;
+						MfinoUser userObj = null;
 						UserQuery query = new UserQuery();
 						query.setUserName(loggedInUser);
-						List<User> results = (List<User>) userDao.get(query);
+						List<MfinoUser> results = (List<MfinoUser>) userDao.get(query);
 
 						if (results.size() > 0) {
 							userObj = results.get(0);

@@ -15,7 +15,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "TXN_PENDING_SUMMARY")
-public class TransactionPendingSummary extends Base implements java.io.Serializable {
+public class TxnPendingSummary extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private BigDecimal sctlid;
@@ -25,10 +25,10 @@ public class TransactionPendingSummary extends Base implements java.io.Serializa
 	private String csrusername;
 	private String csrcomment;
 
-	public TransactionPendingSummary() {
+	public TxnPendingSummary() {
 	}
 
-	public TransactionPendingSummary(BigDecimal id, Timestamp lastupdatetime,
+	public TxnPendingSummary(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid) {
 		this.id = id;
@@ -39,7 +39,7 @@ public class TransactionPendingSummary extends Base implements java.io.Serializa
 		this.sctlid = sctlid;
 	}
 
-	public TransactionPendingSummary(BigDecimal id, Timestamp lastupdatetime,
+	public TxnPendingSummary(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid, Long csraction, Timestamp csractiontime,
 			BigDecimal csruserid, String csrusername, String csrcomment) {

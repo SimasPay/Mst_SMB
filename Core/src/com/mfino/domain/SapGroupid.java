@@ -15,7 +15,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "SAP_GROUPID")
-public class SAPGroupID extends Base implements java.io.Serializable {
+public class SapGroupid extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_GroupID = "groupid";
@@ -23,10 +23,10 @@ public class SAPGroupID extends Base implements java.io.Serializable {
 	private String groupid;
 	private String groupidname;
 
-	public SAPGroupID() {
+	public SapGroupid() {
 	}
 
-	public SAPGroupID(BigDecimal id, Timestamp lastupdatetime,
+	public SapGroupid(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String groupid, String groupidname) {
 		this.id = id;

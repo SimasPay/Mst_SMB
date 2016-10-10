@@ -3,7 +3,7 @@
  */
 package com.mfino.service;
 
-import com.mfino.domain.InterbankTransfer;
+import com.mfino.domain.InterbankTransfers;
 
 /**
  * @author Bala Sunku
@@ -16,6 +16,6 @@ public interface IBTService {
 	 * @param sctlID
 	 * @return
 	 */
-	public InterbankTransfer getBySctlId(Long sctlID);
+	public InterbankTransfers getBySctlId(Long sctlID);
 
 }

@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "CREDITCARD_DESTINATIONS")
-public class CreditCardDestinations extends Base implements java.io.Serializable {
+public class CreditcardDestinations extends Base implements java.io.Serializable {
 
 	
 	public static final String FieldName_Subscriber = "subscriber";
@@ -31,10 +31,10 @@ public class CreditCardDestinations extends Base implements java.io.Serializable
 	private String olddestmdn;
 	private Long ccmdnstatus;
 
-	public CreditCardDestinations() {
+	public CreditcardDestinations() {
 	}
 
-	public CreditCardDestinations(BigDecimal id, Subscriber subscriber,
+	public CreditcardDestinations(BigDecimal id, Subscriber subscriber,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby) {
 		this.id = id;
@@ -45,7 +45,7 @@ public class CreditCardDestinations extends Base implements java.io.Serializable
 		this.createdby = createdby;
 	}
 
-	public CreditCardDestinations(BigDecimal id, Subscriber subscriber,
+	public CreditcardDestinations(BigDecimal id, Subscriber subscriber,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String destmdn,
 			String olddestmdn, Long ccmdnstatus) {

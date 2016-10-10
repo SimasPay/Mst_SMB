@@ -15,7 +15,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MFS_DENOMINATIONS")
-public class MFSDenominations extends Base implements java.io.Serializable {
+public class MfsDenominations extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MFSBillerPartnerByMFSID = "mfsid";
 	public static final String FieldName_DenominationAmount = "denominationamount";
@@ -24,10 +24,10 @@ public class MFSDenominations extends Base implements java.io.Serializable {
 	private String description;
 	private String productcode;
 
-	public MFSDenominations() {
+	public MfsDenominations() {
 	}
 
-	public MFSDenominations(BigDecimal id, Timestamp lastupdatetime,
+	public MfsDenominations(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal mfsid, BigDecimal denominationamount) {
 		this.id = id;
@@ -39,7 +39,7 @@ public class MFSDenominations extends Base implements java.io.Serializable {
 		this.denominationamount = denominationamount;
 	}
 
-	public MFSDenominations(BigDecimal id, Timestamp lastupdatetime,
+	public MfsDenominations(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal mfsid, BigDecimal denominationamount,
 			String description, String productcode) {

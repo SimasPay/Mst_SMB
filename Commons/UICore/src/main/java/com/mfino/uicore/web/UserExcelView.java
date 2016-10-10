@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSUsers;
 import com.mfino.hibernate.Timestamp;
@@ -49,25 +49,25 @@ public class UserExcelView extends AbstractExcelView {
 
         //WRITE ROW FOR HEADER
         HSSFCell header1 = getCell(sheet, currentRow, 0);
-        setText(header1, User.FieldName_Username);
+        setText(header1, MfinoUser.FieldName_Username);
 
         HSSFCell header2 = getCell(sheet, currentRow, 1);
-        setText(header2, User.FieldName_FirstName);
+        setText(header2, MfinoUser.FieldName_FirstName);
 
         HSSFCell header3 = getCell(sheet, currentRow, 2);
-        setText(header3, User.FieldName_LastName);
+        setText(header3, MfinoUser.FieldName_LastName);
         
         HSSFCell header4 = getCell(sheet, currentRow, 3);
-        setText(header4, User.FieldName_Role);
+        setText(header4, MfinoUser.FieldName_Role);
         
         HSSFCell header5 = getCell(sheet, currentRow, 4);
-        setText(header5, User.FieldName_UserStatus);
+        setText(header5, MfinoUser.FieldName_UserStatus);
         
         HSSFCell header6 = getCell(sheet, currentRow, 5);
-        setText(header6, User.FieldName_CreateTime);
+        setText(header6, MfinoUser.FieldName_CreateTime);
         
         HSSFCell header7 = getCell(sheet, currentRow, 6);
-        setText(header7, User.FieldName_CreatedBy);
+        setText(header7, MfinoUser.FieldName_CreatedBy);
         
         HSSFCell header8 = getCell(sheet, currentRow, 7);
         setText(header8, "Security Locked");

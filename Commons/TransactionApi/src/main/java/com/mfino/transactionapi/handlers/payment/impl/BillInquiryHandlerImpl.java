@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.MFSBillerPartner;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.MfsBiller;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -157,7 +157,7 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 
 		}
 		
-		MFSBillerPartner results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
+		MfsbillerPartnerMap results = mfsBiller.getMfsbillerPartnerMaps().iterator().next();
 		if(results != null){
 			billInquiry.setIntegrationCode(results.getIntegrationcode());
 		}

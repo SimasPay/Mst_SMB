@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.query.DistributionChainTemplateQuery;
-import com.mfino.domain.DistributionChainTemplate;
+import com.mfino.domain.DistributionChainTemp;
 import com.mfino.service.DistributionChainTemplateService;
 
 /**
@@ -33,9 +33,9 @@ public class DistributionChainTemplateServiceImpl implements DistributionChainTe
      * @return
      */
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public List<DistributionChainTemplate> getDistributionChainTemplates(DistributionChainTemplateQuery query){
+    public List<DistributionChainTemp> getDistributionChainTemplates(DistributionChainTemplateQuery query){
     	log.info("DistributionChainTemplateService :: getDistributionChainTemplates");
-    	List<DistributionChainTemplate> distributionChainTemplates = new ArrayList<DistributionChainTemplate>();
+    	List<DistributionChainTemp> distributionChainTemplates = new ArrayList<DistributionChainTemp>();
     	
     	DistributionChainTemplateDAO dctDao = DAOFactory.getInstance().getDistributionChainTemplateDAO();
     	distributionChainTemplates = dctDao.get(query);
@@ -50,10 +50,10 @@ public class DistributionChainTemplateServiceImpl implements DistributionChainTe
      * @return
      */
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public DistributionChainTemplate getDistributionChainTemplateById(Long dctId){
+    public DistributionChainTemp getDistributionChainTemplateById(Long dctId){
     	log.info("DistributionChainTemplateService :: getDistributionChainTemplateById() BEGIN");
     	DistributionChainTemplateDAO dao = DAOFactory.getInstance().getDistributionChainTemplateDAO();
-    	DistributionChainTemplate distributionChainTemplate = null;
+    	DistributionChainTemp distributionChainTemplate = null;
     	if(dctId!=null){
     		log.info("getting dcyTemplate with id: "+dctId);
     		distributionChainTemplate = dao.getById(dctId);

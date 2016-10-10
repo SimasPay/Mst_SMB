@@ -28,7 +28,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSConfirmationCode;
@@ -68,7 +68,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
 		CMJSConfirmationCode realMsg = (CMJSConfirmationCode) msg;
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
-		User user = userDao.getByUserName(realMsg.getUsername());
+		MfinoUser user = userDao.getByUserName(realMsg.getUsername());
 		Integer userAccountStatus=0;
 		if (user == null) {
 			errorMsg.setErrorCode(1);
@@ -223,7 +223,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 		return errorMsg;
 	}
 
-	public void expireUser(User user) {
+	public void expireUser(MfinoUser user) {
 		Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 		Subscriber sub = subs.iterator().next();
 		//SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdnFromSubscriberID().toArray()[0];

@@ -21,7 +21,7 @@ import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.UnregisteredTxnInfo;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
@@ -61,7 +61,7 @@ public class VerifyNonRegisteredBulkTransferProcessorImpl extends BaseFixProcess
 		    CMJSVerifyNonRegisteredBulkTransfer realMsg = (CMJSVerifyNonRegisteredBulkTransfer) msg;
 		    CMJSError err = new CMJSError();
 
-		    User loggedInUser = userService.getCurrentUser();
+		    MfinoUser loggedInUser = userService.getCurrentUser();
 
 		    if (loggedInUser != null && realMsg.getBulkUploadID() != null && StringUtils.isNotBlank(realMsg.getNonRegisteredIdsStr())) {
 		    	BulkUploadDAO buDao = DAOFactory.getInstance().getBulkUploadDAO();

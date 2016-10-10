@@ -21,7 +21,7 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MDN_RANGE")
-public class MDNRange extends Base implements java.io.Serializable {
+public class MdnRange extends Base implements java.io.Serializable {
 
 	
 	public static final String FieldName_StartPrefix = "startprefix";
@@ -31,10 +31,10 @@ public class MDNRange extends Base implements java.io.Serializable {
 	private String startprefix;
 	private String endprefix;
 
-	public MDNRange() {
+	public MdnRange() {
 	}
 
-	public MDNRange(BigDecimal id, Merchant merchant, Brand brand,
+	public MdnRange(BigDecimal id, Merchant merchant, Brand brand,
 			Timestamp lastupdatetime, String updatedby,
 			Timestamp createtime, String createdby, String startprefix,
 			String endprefix) {

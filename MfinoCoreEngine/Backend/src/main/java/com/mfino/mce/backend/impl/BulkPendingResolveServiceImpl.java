@@ -26,7 +26,7 @@ import com.mfino.domain.PendingTxnsEntry;
 import com.mfino.domain.PendingTxnsFile;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SmsTransactionLog;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMPendingCommodityTransferRequest;
@@ -314,9 +314,9 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 		UserDAO userDAO = coreDataWrapper.getUserDAO();
 		UserQuery query = new UserQuery();
 		query.setUserName(userName);
-		List<User> results = (List<User>) userDAO.get(query);
+		List<MfinoUser> results = (List<MfinoUser>) userDAO.get(query);
 		if (results.size() > 0) {
-			User userObj = results.get(0);
+			MfinoUser userObj = results.get(0);
 			newMsg.setCSRUserID(userObj.getId().longValue());
 		}
 		newMsg.setLoginName(userName);

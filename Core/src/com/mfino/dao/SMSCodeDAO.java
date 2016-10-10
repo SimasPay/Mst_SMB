@@ -9,27 +9,27 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SMSCodeQuery;
-import com.mfino.domain.SMSCode;
+import com.mfino.domain.SmsCode;
 
 /**
  * @author Deva
  *
  */
-public class SMSCodeDAO extends BaseDAO<SMSCode> {
+public class SMSCodeDAO extends BaseDAO<SmsCode> {
 
-    public List<SMSCode> get(SMSCodeQuery query) {
+    public List<SmsCode> get(SMSCodeQuery query) {
         Criteria criteria = createCriteria();
         if (query.getSmsCode() != null) {
-            criteria.add(Restrictions.eq(SMSCode.FieldName_SMSCodeText, query.getSmsCode()).ignoreCase());
+            criteria.add(Restrictions.eq(SmsCode.FieldName_SMSCodeText, query.getSmsCode()).ignoreCase());
         }
         if (query.getSmsStatus() != null) {
-            criteria.add(Restrictions.eq(SMSCode.FieldName_SMSCodeStatus, query.getSmsStatus()));
+            criteria.add(Restrictions.eq(SmsCode.FieldName_SMSCodeStatus, query.getSmsStatus()));
         }
         
         processPaging(query, criteria);
         @SuppressWarnings("unchecked")
         
-        List<SMSCode> results = criteria.list();
+        List<SmsCode> results = criteria.list();
         return results;
     }
 
@@ -37,10 +37,10 @@ public class SMSCodeDAO extends BaseDAO<SMSCode> {
 	 * @param smsCode
 	 * @return
 	 */
-	public SMSCode getByCode(String smsCode) {
+	public SmsCode getByCode(String smsCode) {
 		SMSCodeQuery smsCodeQuery = new SMSCodeQuery();
 		smsCodeQuery.setSmsCode(smsCode);
-		List<SMSCode> smsCodeList = this.get(smsCodeQuery);
+		List<SmsCode> smsCodeList = this.get(smsCodeQuery);
 		if (smsCodeList.size() > 0) {
 			return smsCodeList.get(0);
 		}

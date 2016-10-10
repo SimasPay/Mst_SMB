@@ -48,7 +48,7 @@ import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.Company;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerDefaultServices;
 import com.mfino.domain.PartnerServices;
@@ -59,9 +59,9 @@ import com.mfino.domain.ScheduleTemplate;
 import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.domain.SettlementTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.InvalidPasswordException;
 import com.mfino.exceptions.MDNNotFoudException;
 import com.mfino.exceptions.MfinoRuntimeException;
@@ -305,12 +305,12 @@ public class PartnerServiceImpl implements PartnerService {
 		}
 
 		Subscriber subscriber =subscriberMDN.getSubscriber();
-		User user=partner.getMfinoUser();
+		MfinoUser user=partner.getMfinoUser();
 		
 		Pocket bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 		Long groupID = null;
 		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		SubscriberGroup subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
+		SubscriberGroups subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
 		if(subscriberGroup != null)
 		{
 			groupID = subscriberGroup.getGroupid();
@@ -527,11 +527,11 @@ public class PartnerServiceImpl implements PartnerService {
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void changePin(String username, String transactionPin) throws Exception {
-		 User user;
+		 MfinoUser user;
 	        UserQuery query = new UserQuery();
 	        query.setUserName(username);
 	        UserDAO userdao = DAOFactory.getInstance().getUserDAO();
-	        List<User> results = userdao.get(query);
+	        List<MfinoUser> results = userdao.get(query);
 	        if (results != null && results.size() > 0) {
 	            user = results.get(0);
 	            Set<Partner> partners = user.getPartners();
@@ -589,7 +589,7 @@ public class PartnerServiceImpl implements PartnerService {
 	 * @return
 	 */
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
-	public String genratePartnerRegistrationMail(Partner partner, User user, Integer type, String password) {
+	public String genratePartnerRegistrationMail(Partner partner, MfinoUser user, Integer type, String password) {
 		String mailBody = ConfigurationUtil.getPartnerRegistrationMail();
 		//mailBody = mailBody.replace("$(firstname)", user.getFirstName());
 		//mailBody = mailBody.replace("$(Lastname)", user.getLastName());
@@ -665,7 +665,7 @@ public class PartnerServiceImpl implements PartnerService {
 		Partner partner = new Partner();
 		SubscriberMdn subscriberMDN;
 		Subscriber subscriber;
-		User user ;
+		MfinoUser user ;
 		
 		subscriberMDN= createSubscriberMDNEntityForPartner(partnerRegistration);
 		subscriber= subscriberMDN.getSubscriber();
@@ -684,9 +684,9 @@ public class PartnerServiceImpl implements PartnerService {
           subMdndao.save(subscriberMDN);
           partnerDAO.save(partner);
           SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-          List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+          List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
           if(subscriberGroups!= null && subscriberGroups.size() > 0){
-				for(SubscriberGroup sg: subscriberGroups){
+				for(SubscriberGroups sg: subscriberGroups){
 					subscriberGroupDao.save(sg);
 				}
 			}
@@ -760,8 +760,8 @@ public class PartnerServiceImpl implements PartnerService {
 			partnerRegistration.setApprovalRequired(Boolean.valueOf(systemParametersService.getString(SystemParameterKeys.PARTNER_REGISTER_THROUGHAPI_APPROVAL)));
 	}
 
-	private User createUserEntityForPartner(CMPartnerRegistrationThroughAPI partnerRegistration) throws Exception{
-		 User user = new User();
+	private MfinoUser createUserEntityForPartner(CMPartnerRegistrationThroughAPI partnerRegistration) throws Exception{
+		 MfinoUser user = new MfinoUser();
          Company company = subscriberService.getCompanyFromMDN(partnerRegistration.getMDN());
          if (company != null) {
              user.setCompany(company);
@@ -820,7 +820,7 @@ public class PartnerServiceImpl implements PartnerService {
          }
 		 subscriber.setType(CmFinoFIX.SubscriberType_Partner);
          KYCLevelDAO kyclevelDao  = DAOFactory.getInstance().getKycLevelDAO();
-         KYCLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
+         KycLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
          subscriber.setKycLevel(kycLevel);
          subscriber.setUpgradablekyclevel(null);
          Integer tempupgradeState = partnerRegistration.getApprovalRequired()?CmFinoFIX.UpgradeState_Upgradable:CmFinoFIX.UpgradeState_Approved;
@@ -872,9 +872,9 @@ public class PartnerServiceImpl implements PartnerService {
     			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
     			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 
-    	        List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+    	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
     			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
-    				SubscriberGroup sg = subscriberGroups.iterator().next();
+    				SubscriberGroups sg = subscriberGroups.iterator().next();
     				if(sg.getGroupid() != Long.valueOf(partnerRegistration.getGroupID())){
     					sg.setGroupid(Long.valueOf(partnerRegistration.getGroupID()));
     					subscriberGroupDao.save(sg);
@@ -882,7 +882,7 @@ public class PartnerServiceImpl implements PartnerService {
     			}
     			else{
     				Groups group = (Groups)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
-    				SubscriberGroup sg = new SubscriberGroup();
+    				SubscriberGroups sg = new SubscriberGroups();
     				sg.setSubscriberid(subscriber.getId().longValue());
     				sg.setGroupid(group.getId().longValue());
     				if(subscriber.getId() != null){
@@ -898,7 +898,7 @@ public class PartnerServiceImpl implements PartnerService {
 		Subscriber subscriber = partner.getSubscriber();
 		SubscriberMdn subscriberMDN = subscriber.getSubscriberMdns().iterator().next();
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroup> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 		Groups group = groupDao.getById(subscriberGroups.iterator().next().getGroupid());
 		Map<Integer, Pocket> defaultPockets = getDefaultPocketsMap(partner);

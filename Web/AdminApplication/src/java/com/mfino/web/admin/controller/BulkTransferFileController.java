@@ -32,7 +32,7 @@ import org.springframework.web.servlet.View;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.RolePermission;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -176,7 +176,7 @@ public class BulkTransferFileController {
                     String paymentDateStr = multipartRequest.getParameter("PaymentDate");
                     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                     Date paymentDate = sdf.parse(paymentDateStr);
-                    User loggedInUser = userService.getCurrentUser();
+                    MfinoUser loggedInUser = userService.getCurrentUser();
                     Timestamp currentTime = new Timestamp();
                     
                     bulkUpload.setCompany(loggedInUser.getCompany());
@@ -203,7 +203,7 @@ public class BulkTransferFileController {
                     String message = ConfigurationUtil.getBulkTranferApproverMessage();
                     String subject = ConfigurationUtil.getBulkTransferApproverSubject();
                     UserQuery userQuery = new UserQuery();
-                    List<User> lstApprover = null;
+                    List<MfinoUser> lstApprover = null;
                     List<RolePermission> rolePermissions = permissionService.getByPermission(CmFinoFIX.Permission_BulkTransfer_Approve);
                     List<Integer> roles = new ArrayList<Integer>();
                     Iterator<RolePermission> iterator = rolePermissions.iterator();
@@ -216,7 +216,7 @@ public class BulkTransferFileController {
                     	lstApprover = userService.get(userQuery);
                     }
                     if (CollectionUtils.isNotEmpty(lstApprover)) {
-                    	for (User approver: lstApprover) {
+                    	for (MfinoUser approver: lstApprover) {
                     		mailService.asyncSendEmail(approver.getEmail(), approver.getFirstname() + " " + approver.getLastname(), subject, message);
                     	}
                     }

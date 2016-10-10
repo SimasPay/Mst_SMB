@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.amazonaws.services.simpleemail.AWSJavaMailTransport;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.domain.Subscriber;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -328,7 +328,7 @@ public class MailServiceImpl implements MailService {
 			@Override
 			public void run() {
 				log.info("sending email to " + toAddress);
-				NotificationLogDetails notificationLogDetails = null;
+				NlogDetails notificationLogDetails = null;
 				if (notificationLogDetailsID != null) {
 					notificationLogDetails = notificationLogDetailsService
 							.getNotificationLogDetailsById(notificationLogDetailsID);
@@ -364,7 +364,7 @@ public class MailServiceImpl implements MailService {
 			@Override
 			public void run() {
 				log.info("sending email to " + toAddress);
-				NotificationLogDetails notificationLogDetails = null;
+				NlogDetails notificationLogDetails = null;
 				if (notificationLogDetailsID != null) {
 					notificationLogDetails = notificationLogDetailsService
 							.getNotificationLogDetailsById(notificationLogDetailsID);

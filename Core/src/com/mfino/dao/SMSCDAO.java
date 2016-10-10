@@ -9,7 +9,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.SMSCQuery;
-import com.mfino.domain.SMSPartner;
+import com.mfino.domain.SmsPartner;
 import com.mfino.domain.SmscConfiguration;
 
 /**
@@ -21,7 +21,7 @@ public class SMSCDAO extends BaseDAO<SmscConfiguration> {
     public List<SmscConfiguration> get(SMSCQuery query) {
         Criteria criteria = createCriteria();
         if (query.getPartnerID() != null) {
-            criteria.createCriteria("SMSPartnerByPartnerID").add(Restrictions.eq(SMSPartner.FieldName_RecordID, query.getPartnerID()));
+            criteria.createCriteria("SMSPartnerByPartnerID").add(Restrictions.eq(SmsPartner.FieldName_RecordID, query.getPartnerID()));
         }
         if (query.getShortCode() != null) {
             criteria.add(Restrictions.eq(SmscConfiguration.FieldName_ShortCode, query.getShortCode()).ignoreCase());

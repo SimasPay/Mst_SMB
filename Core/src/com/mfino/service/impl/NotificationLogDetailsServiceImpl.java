@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
 import com.mfino.domain.NotificationLog;
-import com.mfino.domain.NotificationLogDetails;
+import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.NotificationLogDetailsService;
 import com.mfino.service.NotificationLogService;
@@ -42,8 +42,8 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 	 * @return
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public NotificationLogDetails getNotificationLogDetailsById(Long notificationLogDetailsID) {
-		NotificationLogDetails notificationLogDetails = null;
+	public NlogDetails getNotificationLogDetailsById(Long notificationLogDetailsID) {
+		NlogDetails notificationLogDetails = null;
 		if(notificationLogDetailsID!=null){
 			log.info("Getting the NotificationLogDetails record for id: "+notificationLogDetailsID);
 			NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
@@ -57,7 +57,7 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 	 * @param notificationLogDetails
 	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public void saveNotificationLogDetails(NotificationLogDetails notificationLogDetails) {
+	public void saveNotificationLogDetails(NlogDetails notificationLogDetails) {
 		log.info("Saving the NotificationLogDetails record: "+notificationLogDetails);
 		NotificationLogDetailsDAO notificationLogDetailsDao = DAOFactory.getInstance().getNotificationLogDetailsDao();
 		notificationLogDetailsDao.save(notificationLogDetails);		
@@ -91,7 +91,7 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 			notificationLog.setIssensitivedata((short) Boolean.compare(false, true));
 			notificationLogService.saveNotificationLog(notificationLog);
 			
-			NotificationLogDetails notificationLogDetails = new NotificationLogDetails();
+			NlogDetails notificationLogDetails = new NlogDetails();
 			notificationLogDetails.setNotificationLog(notificationLog);
 			notificationLogDetails.setStatus(CmFinoFIX.SendNotificationStatus_Sending);
 			saveNotificationLogDetails(notificationLogDetails);

@@ -19,14 +19,14 @@ import com.mfino.dao.query.NotificationQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KYCLevel;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberGroup;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
@@ -144,7 +144,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		result.setIdNumber(idNumber);
 		result.setSourceMDN(sourceMdn);
 		
-		KYCLevel kycLevel = kycLevelService.getByKycLevel(new Long(kycType));
+		KycLevel kycLevel = kycLevelService.getByKycLevel(new Long(kycType));
 		if(kycLevel == null){
 			log.info("KYCUpgrade: Failed to get the KycLevel Domain Object Corresponding to KycType:"+kycType);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidKYCLevel);
@@ -167,7 +167,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		}
 		Subscriber srcSub = srcMDN.getSubscriber();
 		
-		KYCLevel subCurKycLevel = srcSub.getKycLevel();
+		KycLevel subCurKycLevel = srcSub.getKycLevel();
 		if(!subCurKycLevel.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
 			log.info("KYCUpgrade: Failed as the current KycLevel is not NoKyc, Corresponding to MDN:"+sourceMdn);
 			String status = enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberStatus, CmFinoFIX.Language_English, srcSub.getStatus());
@@ -210,7 +210,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		kycUpgrade.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		result.setSctlID(sctl.getId().longValue());		
 		
-		SubscriberGroup subGroup = subscriberGroupService.getBySubscriberID(srcSub.getId().longValue());
+		SubscriberGroups subGroup = subscriberGroupService.getBySubscriberID(srcSub.getId().longValue());
 		if(subGroup == null){
 			log.info("Failed to get  SubscriberGroup while doing KycUpgrade for MDN:"+sourceMdn);
 			transactionChargingService.failTheTransaction(sctl, MessageText._("KYC Upgrade Falied.Notification Code: "+CmFinoFIX.NotificationCode_KYCUpgradeFail));

@@ -13,23 +13,23 @@ import org.hibernate.criterion.Restrictions;
 import com.mfino.constants.DAOConstants;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.dao.query.LOPQuery;
-import com.mfino.domain.DistributionChainTemplate;
-import com.mfino.domain.LOP;
+import com.mfino.domain.DistributionChainTemp;
+import com.mfino.domain.LetterOfPurchase;
 import com.mfino.domain.Merchant;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.User;
+import com.mfino.domain.MfinoUser;
 
 /**
  *
  * @author srinu
  */
-public class LOPDAO extends BaseDAO<LOP> {
+public class LOPDAO extends BaseDAO<LetterOfPurchase> {
 
     public LOPDAO() {
         super();
     }
 
-    public List<LOP> get(LOPQuery query) {
+    public List<LetterOfPurchase> get(LOPQuery query) {
 
         final String MERCHANT_ASSOC_NAME = "MerchantBySubscriberID";
         final String USER_ASSOC_NAME = "User";
@@ -52,15 +52,15 @@ public class LOPDAO extends BaseDAO<LOP> {
             final String subscriberAlias = "Subscriber" + DAOConstants.ALIAS_SUFFIX;
             criteria = criteria.createAlias(merchantAlias + GeneralConstants.DOT_STRING + "Subscriber", subscriberAlias);
             if (query.getCompany() != null) {
-                criteria.add(Restrictions.eq(LOP.FieldName_Company, query.getCompany()));
+                criteria.add(Restrictions.eq(LetterOfPurchase.FieldName_Company, query.getCompany()));
             }
             if (query.getUserName() != null) {
                 final String userAlias = USER_ASSOC_NAME + DAOConstants.ALIAS_SUFFIX;
                 criteria = criteria.createAlias(subscriberAlias + GeneralConstants.DOT_STRING + USER_ASSOC_NAME, userAlias);
-                final String userWithAlias = userAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + User.FieldName_Username;
+                final String userWithAlias = userAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + MfinoUser.FieldName_Username;
 
                 addLikeStartRestriction(criteria, userWithAlias, query.getUserName());
-                processColumn(query, User.FieldName_Username, userWithAlias);
+                processColumn(query, MfinoUser.FieldName_Username, userWithAlias);
             }
         }
         if (query.getMdnid() != null) {
@@ -73,28 +73,28 @@ public class LOPDAO extends BaseDAO<LOP> {
         if (query.getDctName() != null) {
             final String dctAlias = DCTID + DAOConstants.ALIAS_SUFFIX;
             criteria = criteria.createAlias(DCTID, dctAlias);
-            final String dctWithAlias = dctAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + DistributionChainTemplate.FieldName_DistributionChainName;
+            final String dctWithAlias = dctAlias + DAOConstants.ALIAS_COLNAME_SEPARATOR + DistributionChainTemp.FieldName_DistributionChainName;
 
             addLikeStartRestriction(criteria, dctWithAlias, query.getDctName());
-            processColumn(query, DistributionChainTemplate.FieldName_DistributionChainName, dctWithAlias);
+            processColumn(query, DistributionChainTemp.FieldName_DistributionChainName, dctWithAlias);
         }
         if(query.isCommissionChanged() != null){
             if(query.isCommissionChanged())
-                criteria.add(Restrictions.eq(LOP.FieldName_IsCommissionChanged, query.isCommissionChanged()));
+                criteria.add(Restrictions.eq(LetterOfPurchase.FieldName_IsCommissionChanged, query.isCommissionChanged()));
             else
-                criteria.add(Restrictions.isNull(LOP.FieldName_IsCommissionChanged));// query.isCommissionChanged()));
+                criteria.add(Restrictions.isNull(LetterOfPurchase.FieldName_IsCommissionChanged));// query.isCommissionChanged()));
         }
         if (query.getLopid() != null) {
-            criteria.add(Restrictions.eq(LOP.FieldName_RecordID, query.getLopid()));
+            criteria.add(Restrictions.eq(LetterOfPurchase.FieldName_RecordID, query.getLopid()));
         }
         if (query.getLopstatus() != null) {
-            criteria.add(Restrictions.eq(LOP.FieldName_LOPStatus, query.getLopstatus()).ignoreCase());
+            criteria.add(Restrictions.eq(LetterOfPurchase.FieldName_LOPStatus, query.getLopstatus()).ignoreCase());
         }
         if (query.getStartDate() != null) {
-            criteria.add(Restrictions.gt(LOP.FieldName_CreateTime, query.getStartDate()));
+            criteria.add(Restrictions.gt(LetterOfPurchase.FieldName_CreateTime, query.getStartDate()));
         }
         if (query.getEndDate() != null) {
-            criteria.add(Restrictions.lt(LOP.FieldName_CreateTime, query.getEndDate()));
+            criteria.add(Restrictions.lt(LetterOfPurchase.FieldName_CreateTime, query.getEndDate()));
         }
 
         processBaseQuery(query, criteria);
@@ -103,10 +103,10 @@ public class LOPDAO extends BaseDAO<LOP> {
         processPaging(query, criteria);
 
         //applying Order
-        criteria.addOrder(Order.desc(LOP.FieldName_RecordID));
+        criteria.addOrder(Order.desc(LetterOfPurchase.FieldName_RecordID));
         applyOrder(query, criteria);
         @SuppressWarnings("unchecked")
-        List<LOP> results = criteria.list();
+        List<LetterOfPurchase> results = criteria.list();
 
         return results;
     }
