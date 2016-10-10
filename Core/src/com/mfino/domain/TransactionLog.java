@@ -25,6 +25,8 @@ import com.mfino.hibernate.Timestamp;
 public class TransactionLog  extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_LastUpdateTime = "lastupdatetime";
+	public static final String FieldName_TransactionTime = "transactiontime";
+	public static final String FieldName_ParentTransactionID = "parenttransactionid";
 	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal parenttransactionid;
 	private Long multixid;

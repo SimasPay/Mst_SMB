@@ -4,6 +4,7 @@
 package com.mfino.mailer;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 import com.mfino.domain.Bank;
 import com.mfino.domain.BulkLOP;
@@ -174,9 +175,15 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 		this.setCodeName(notification.getCodename());
 		this.setCompany(notification.getCompany());
 		this.setLanguage((int)notification.getLanguage());
-		this.setmFinoServiceProviderByMSPID(notification.getMfinoServiceProvider());
+		this.setMfinoServiceProviderByMSPID(notification.getMfinoServiceProvider());
 		this.setNotificationMethod((int)notification.getNotificationmethod());
-		this.setText(notification.getText());
+		
+		try {
+			this.setText(notification.getText().getSubString(0, ((Long)notification.getText().length()).intValue()));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

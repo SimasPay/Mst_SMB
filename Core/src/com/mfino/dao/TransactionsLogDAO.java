@@ -27,25 +27,25 @@ public class TransactionsLogDAO extends BaseDAO<TransactionLog> {
         Criteria criteria = createCriteria();
 
         if(null != query.getId()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionsLog.FieldName_RecordID, query.getId()));
+            criteria.add(Restrictions.eq(TransactionLog.FieldName_RecordID, query.getId()));
         }
 
         if (query.getCreateTimeGE() != null) {
-            criteria.add(Restrictions.gt(CmFinoFIX.CRTransactionsLog.FieldName_TransactionTime, query.getCreateTimeGE()));
+            criteria.add(Restrictions.gt(TransactionLog.FieldName_TransactionTime, query.getCreateTimeGE()));
         }
         if (query.getCreateTimeLT() != null) {
-            criteria.add(Restrictions.lt(CmFinoFIX.CRTransactionsLog.FieldName_TransactionTime, query.getCreateTimeLT()));
+            criteria.add(Restrictions.lt(TransactionLog.FieldName_TransactionTime, query.getCreateTimeLT()));
         }
 
         if(Boolean.TRUE == query.isTransactionsWithNullParentTxnIdSearch()) {
-            criteria.add(Restrictions.isNull(CmFinoFIX.CRTransactionsLog.FieldName_ParentTransactionID));
+            criteria.add(Restrictions.isNull(TransactionLog.FieldName_ParentTransactionID));
         }
 
         if (null != query.getParentTransactionId()) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRTransactionsLog.FieldName_ParentTransactionID, query.getParentTransactionId()));
+            criteria.add(Restrictions.eq(TransactionLog.FieldName_ParentTransactionID, query.getParentTransactionId()));
         }
 
-        criteria.addOrder(Order.asc(CmFinoFIX.CRTransactionsLog.FieldName_CreateTime));
+        criteria.addOrder(Order.asc(TransactionLog.FieldName_CreateTime));
 
         processBaseQuery(query, criteria);
         processPaging(query, criteria);
@@ -57,8 +57,8 @@ public class TransactionsLogDAO extends BaseDAO<TransactionLog> {
     
     public int getAllTxnCountBetween(Date start, Date end) {
       Criteria criteria = createCriteria();
-      criteria.add(Restrictions.ge(CmFinoFIX.CRTransactionsLog.FieldName_CreateTime, start));
-      criteria.add(Restrictions.lt(CmFinoFIX.CRTransactionsLog.FieldName_CreateTime, end));
+      criteria.add(Restrictions.ge(TransactionLog.FieldName_CreateTime, start));
+      criteria.add(Restrictions.lt(TransactionLog.FieldName_CreateTime, end));
       criteria.setProjection(Projections.rowCount());
       Integer count = (Integer) criteria.uniqueResult();
       return count;

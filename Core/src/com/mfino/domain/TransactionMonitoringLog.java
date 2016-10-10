@@ -3,12 +3,12 @@
  */
 package com.mfino.domain;
 
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.fix.CmFinoFIX.CRServiceChargeTxnLog;
 
 /**
  * @author Srinivaas
  *
  */
-public class TransactionMonitoringLog extends CmFinoFIX.CRServiceChargeTransactionLog{
+public class TransactionMonitoringLog extends CRServiceChargeTxnLog{
 
 }

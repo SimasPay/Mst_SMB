@@ -6892,7 +6892,7 @@
 			<field name="APIKey" required="Y" />
 			<field name="SendReport" required="N"/>
 		</record>
-		<record name="SMSC" ExtendsRecord="Base" Java="Y" SQLTable="smsc_configuration" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SMSCode" ExtendsRecord="Base" Java="Y" SQLTable="smsc_configuration" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="ShortCodeIndex" Unique="Y">
 				<field name="ShortCode" />
 			</index>
@@ -7196,7 +7196,7 @@
 			<field name="SubscriberID" required="N" References="Subscriber"/> 	
 		 	
 		</record>      
-		<record name="AuthorizingPerson" ExtendsRecord="Base" Java="Y" SQLTable="auth_person_details" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="AuthPersonDetails" ExtendsRecord="Base" Java="Y" SQLTable="auth_person_details" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
 			<field name="FirstName" required="N" />
 			<field name="LastName" required="N" />
@@ -7853,7 +7853,7 @@
 			<field name="ProcessingStatus" required="Y" />
 		</record>
 		
-		<record name="ServiceDefaultConfig" ExtendsRecord="Base" Java="Y" SQLTable="service_defualt_config" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="ServiceDefualtConfig" ExtendsRecord="Base" Java="Y" SQLTable="service_defualt_config" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<field name="ServiceProviderID" required="Y" References="Partner" />
 			<field name="ServiceID" required="Y" References="Service" />
 			<field name="SourcePocketType" required="Y" />

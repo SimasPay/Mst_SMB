@@ -24,6 +24,9 @@ import com.mfino.hibernate.Timestamp;
 public class IntegrationPartnerMapping extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_InstitutionID = "institutionid";
+	public static final String FieldName_IntegrationName = "integrationname";
+	public static final String FieldName_Partner = "partner";
+	public static final String FieldName_MFSBiller = "mfsBiller";
 	private Partner partner;
 	private MfsBiller mfsBiller;
 	private String institutionid;

@@ -259,7 +259,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 			urtiQuery.setMultiStatus(status);
 			urtiQuery.setWithdrawalMDN(withdrawalMDN);
 			urtiQuery.setMultiPartnerCode(multiPartnerCode);
-			urtiQuery.setSortString(CmFinoFIX.CRUnRegisteredTxnInfo.FieldName_CreateTime+":desc");
+			urtiQuery.setSortString(UnregisteredTxnInfo.FieldName_CreateTime+":desc");
 			urtiQuery.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_FUND_ALLOCATION);
 		}
 		

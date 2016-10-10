@@ -5,7 +5,7 @@
 
 package com.mfino.dialects;
 
-import org.hibernate.Hibernate;
+import org.hibernate.type.StandardBasicTypes;
 
 /**
  *
@@ -16,7 +16,7 @@ public class MySQLDialect extends org.hibernate.dialect.MySQLInnoDBDialect {
 
    public MySQLDialect() {
        super();
-        registerFunction("bitwise_and", new MySQLBitwiseAndSQLFunction("bitwise_and", Hibernate.INTEGER));
+        registerFunction("bitwise_and", new MySQLBitwiseAndSQLFunction("bitwise_and", StandardBasicTypes.INTEGER));
      
    }
 
