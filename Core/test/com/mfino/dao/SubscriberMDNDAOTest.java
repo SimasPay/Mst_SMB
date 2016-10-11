@@ -4,18 +4,22 @@
  */
 package com.mfino.dao;
 
-import com.mfino.dao.query.SubscriberMdnQuery;
-import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.hibernate.Timestamp;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.mfino.dao.query.SubscriberMdnQuery;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.hibernate.Timestamp;
 
 /**
  *
@@ -43,96 +47,96 @@ public class SubscriberMDNDAOTest {
 
     public void insertTestData() {
 
-        mFinoServiceProvider msp = mspDao.getById(1L);
+        MfinoServiceProvider msp = mspDao.getById(1L);
 
-        SubscriberMDN mdn1 = new SubscriberMDN();
-        SubscriberMDN mdn2 = new SubscriberMDN();
-        SubscriberMDN mdn3 = new SubscriberMDN();
+        SubscriberMdn mdn1 = new SubscriberMdn();
+        SubscriberMdn mdn2 = new SubscriberMdn();
+        SubscriberMdn mdn3 = new SubscriberMdn();
 
         Subscriber sub = new Subscriber();
-        sub.setFirstName("sandeep");
+        sub.setFirstname("sandeep");
         sub.setCurrency("dollar");
-        sub.setActivationTime(new Timestamp());
-        sub.setCreateTime(new Timestamp());
-        sub.setCreatedBy("sas");
+        sub.setActivationtime(new Timestamp());
+        sub.setCreatetime(new Timestamp());
+        sub.setCreatedby("sas");
         sub.setEmail("sasa");
         sub.setLanguage(new Integer(0));
-        sub.setLastName("sdas");
-        sub.setLastUpdateTime(new Timestamp());
-        sub.setNotificationMethod(new Integer(0));
+        sub.setLastname("sdas");
+        sub.setLastupdatetime(new Timestamp());
+        sub.setNotificationmethod(0L);
         sub.setRestrictions(new Integer(0));
         sub.setStatus(new Integer(0));
-        sub.setStatusTime(new Timestamp());
+        sub.setStatustime(new Timestamp());
         sub.setTimezone("sas");
         sub.setType(new Integer(0));
-        sub.setUpdatedBy("sasa");
+        sub.setUpdatedby("sasa");
         CompanyDAO comp = new CompanyDAO();
         sub.setCompany(comp.getById(1L));
-        sub.setmFinoServiceProviderByMSPID(msp);
+        sub.setMfinoServiceProvider(msp);
 
         subDao.save(sub);
 
-        mdn1.setMDN(getRandomMDN());
-        mdn2.setMDN(getRandomMDN());
-        mdn3.setMDN(getRandomMDN());
+        mdn1.setMdn(getRandomMDN());
+        mdn2.setMdn(getRandomMDN());
+        mdn3.setMdn(getRandomMDN());
 
         mdn1.setSubscriber(sub);
         mdn2.setSubscriber(sub);
         mdn3.setSubscriber(sub);
 
-        mdn1.setCreateTime(new Timestamp());
+        mdn1.setCreatetime(new Timestamp());
         mdn1.setRestrictions(new Integer(15));
         mdn1.setStatus(new Integer(0));
-        mdn1.setActivationTime(new Timestamp());
-        mdn1.setAuthenticationPhoneNumber("dsd");
-        mdn1.setAuthenticationPhrase("dsd");
-        mdn1.setCreatedBy("dsd");
-        mdn1.setDigestedPIN("sds");
-        mdn1.setLastTransactionID(Long.MIN_VALUE);
-        mdn1.setLastTransactionTime(new Timestamp());
-        mdn1.setLastUpdateTime(new Timestamp());
-        mdn1.setStatusTime(new Timestamp());
-        mdn1.setUpdatedBy("dsd");
-        mdn1.setWrongPINCount(Integer.MAX_VALUE);
+        mdn1.setActivationtime(new Timestamp());
+        mdn1.setAuthenticationphonenumber("dsd");
+        mdn1.setAuthenticationphrase("dsd");
+        mdn1.setCreatedby("dsd");
+        mdn1.setDigestedpin("sds");
+        mdn1.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn1.setLasttransactiontime(new Timestamp());
+        mdn1.setLastupdatetime(new Timestamp());
+        mdn1.setStatustime(new Timestamp());
+        mdn1.setUpdatedby("dsd");
+        mdn1.setWrongpincount(Integer.MAX_VALUE);
 
-        mdn2.setCreateTime(new Timestamp());
+        mdn2.setCreatetime(new Timestamp());
         mdn2.setRestrictions(new Integer(9));
         mdn2.setStatus(new Integer(0));
-        mdn2.setActivationTime(new Timestamp());
-        mdn2.setAuthenticationPhoneNumber("dsd");
-        mdn2.setAuthenticationPhrase("dsd");
-        mdn2.setCreatedBy("dsd");
-        mdn2.setDigestedPIN("sds");
-        mdn2.setLastTransactionID(Long.MIN_VALUE);
-        mdn2.setLastTransactionTime(new Timestamp());
-        mdn2.setLastUpdateTime(new Timestamp());
-        mdn2.setStatusTime(new Timestamp());
-        mdn2.setUpdatedBy("dsd");
-        mdn2.setWrongPINCount(Integer.MAX_VALUE);
+        mdn2.setActivationtime(new Timestamp());
+        mdn2.setAuthenticationphonenumber("dsd");
+        mdn2.setAuthenticationphrase("dsd");
+        mdn2.setCreatedby("dsd");
+        mdn2.setDigestedpin("sds");
+        mdn2.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn2.setLasttransactiontime(new Timestamp());
+        mdn2.setLastupdatetime(new Timestamp());
+        mdn2.setStatustime(new Timestamp());
+        mdn2.setUpdatedby("dsd");
+        mdn2.setWrongpincount(Integer.MAX_VALUE);
 
-        mdn3.setCreateTime(new Timestamp());
+        mdn3.setCreatetime(new Timestamp());
         mdn3.setRestrictions(new Integer(12));
         mdn3.setStatus(new Integer(0));
-        mdn3.setActivationTime(new Timestamp());
-        mdn3.setAuthenticationPhoneNumber("dsd");
-        mdn3.setAuthenticationPhrase("dsd");
-        mdn3.setCreatedBy("dsd");
-        mdn3.setDigestedPIN("sds");
-        mdn3.setLastTransactionID(Long.MIN_VALUE);
-        mdn3.setLastTransactionTime(new Timestamp());
-        mdn3.setLastUpdateTime(new Timestamp());
-        mdn3.setStatusTime(new Timestamp());
-        mdn3.setUpdatedBy("dsd");
-        mdn3.setWrongPINCount(Integer.MAX_VALUE);
+        mdn3.setActivationtime(new Timestamp());
+        mdn3.setAuthenticationphonenumber("dsd");
+        mdn3.setAuthenticationphrase("dsd");
+        mdn3.setCreatedby("dsd");
+        mdn3.setDigestedpin("sds");
+        mdn3.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn3.setLasttransactiontime(new Timestamp());
+        mdn3.setLastupdatetime(new Timestamp());
+        mdn3.setStatustime(new Timestamp());
+        mdn3.setUpdatedby("dsd");
+        mdn3.setWrongpincount(Integer.MAX_VALUE);
 
         dao.save(mdn1);
         dao.save(mdn2);
         dao.save(mdn3);
 
-        assertTrue(sub.getID() > 0);
-        assertTrue(mdn1.getID() > 0);
-        assertTrue(mdn2.getID() > 0);
-        assertTrue(mdn3.getID() > 0);
+        assertTrue(sub.getId().longValue() > 0);
+        assertTrue(mdn1.getId().longValue() > 0);
+        assertTrue(mdn2.getId().longValue() > 0);
+        assertTrue(mdn3.getId().longValue() > 0);
     }
 
     @Test
@@ -170,13 +174,13 @@ public class SubscriberMDNDAOTest {
     public void lazyLoadingTest() {
 
         SubscriberMdnQuery query = new SubscriberMdnQuery();
-        List<SubscriberMDN> list = dao.get(query);
+        List<SubscriberMdn> list = dao.get(query);
 
         assertTrue(list.size() > 0);
 
-        SubscriberMDN mdn = list.get(0);
+        SubscriberMdn mdn = list.get(0);
         Subscriber sub = mdn.getSubscriber();
-        System.out.println(sub.getID());
+        System.out.println(sub.getId());
     }
 
     private static String getRandomMDN() {

@@ -9,7 +9,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -92,7 +92,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 		}
 		
 		
-		List<ChargeTxnCommodityTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlID);
+		List<ChargetxnTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlID);
 		if(fixPendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel))
 		{
 			try{
@@ -100,7 +100,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 			}catch(Exception e){
 				log.error("Exception occured in saving TransactionPendingSummary Domaina Object corresponding to SCTL with id:"+sctl.getId()+" while Resolving",e);
 			}
-			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
+			for(ChargetxnTransferMap ctxn : ctxnMap){
 				PendingCommodityTransfer pct = null;
 				CommodityTransfer ct = null;
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
@@ -163,7 +163,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 			//transaction need to be completed
 			//identify the transaction and complete the transaction			
 			PendingCommodityTransfer pct = null;
-			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
+			for(ChargetxnTransferMap ctxn : ctxnMap){
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
 					pct.setCsraction(Long.valueOf(fixPendingRequest.getCSRAction()));

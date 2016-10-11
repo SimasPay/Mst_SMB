@@ -44,12 +44,12 @@ public class MobileNetworkOperatorDAOTest {
 
 
         MobileNetworkOperator mno = new MobileNetworkOperator();
-        mno.setCreateTime(new Timestamp());
+        mno.setCreatetime(new Timestamp());
         mno.setDescription("sas1");
-        mno.setLastUpdateTime(new Timestamp());
+        mno.setLastupdatetime(new Timestamp());
         mno.setName("Sass1");
-        mno.setStatus(Integer.MAX_VALUE);
-        mno.setStatusTime(new Timestamp());
+        mno.setStatus(Long.MAX_VALUE);
+        mno.setStatustime(new Timestamp());
         mnoDao.save(mno);
     }
 }

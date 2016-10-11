@@ -5,19 +5,21 @@
 
 package com.mfino.dao;
 
-import com.mfino.dao.query.DistributionChainLevelQuery;
-import com.mfino.domain.DistributionChainLvl;
-import com.mfino.domain.DistributionChainTemp;
-import com.mfino.domain.mFinoServiceProvider;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.mfino.dao.query.DistributionChainLevelQuery;
+import com.mfino.domain.DistributionChainLvl;
+import com.mfino.domain.DistributionChainTemp;
+import com.mfino.domain.MfinoServiceProvider;
 
 /**
  *
@@ -56,12 +58,12 @@ public class DistributionChainLevelDAOTest {
 
     private void insertData() {
 
-        mFinoServiceProvider msp = new mFinoServiceProvider();
+        MfinoServiceProvider msp = new MfinoServiceProvider();
 
         msp = mspDao.getById(1L);
-        System.out.println(msp.getCreatedBy());
+        System.out.println(msp.getCreatedby());
 
-        dctTemplate.setmFinoServiceProviderByMSPID(msp);
+        dctTemplate.setMfinoServiceProvider(msp);
         dctTemplate.setDescription("description text ");
         dctTemplate.setName(" Temaplate Name 1");
         
@@ -69,8 +71,8 @@ public class DistributionChainLevelDAOTest {
 
 
         dcl.setCommission(new BigDecimal(1000));
-        dcl.setDistributionChainTemplateByTemplateID(dctTemplate);
-        dcl.setDistributionLevel(new Integer(1));
+        dcl.setDistributionChainTemp(dctTemplate);
+        dcl.setDistributionlevel(new Integer(1));
         dcl.setPermissions(new Integer(1));
 
         dclDao.save(dcl);
@@ -80,7 +82,7 @@ public class DistributionChainLevelDAOTest {
     @Test
     public void testGetDCLByID() {
         insertData();
-        query.setId(dcl.getID());
+        query.setId(dcl.getId().longValue());
         List results = dclDao.get(query);
         assertTrue(results.size() == 1);
     }
@@ -88,7 +90,7 @@ public class DistributionChainLevelDAOTest {
     @Test
     public void testGetDCLByDCT() {
         insertData();
-        query.setDistributionChainTemplateID(dctTemplate.getID());
+        query.setDistributionChainTemplateID(dctTemplate.getId().longValue());
         List results = dclDao.get(query);
         assertTrue(results.size() == 1);
     }

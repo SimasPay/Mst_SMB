@@ -9,10 +9,8 @@ import junit.framework.TestCase;
 
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.service.impl.SubscriberServiceExtendedImpl;
 
 /**
  *
@@ -28,22 +26,22 @@ public class SubscriberServiceTest extends TestCase {
     public void tearDown() {
     }
 
-    private SubscriberMDN getMockSubscriber() {
-        SubscriberMDN sub = mock(SubscriberMDN.class);
+    private SubscriberMdn getMockSubscriber() {
+        SubscriberMdn sub = mock(SubscriberMdn.class);
         Pocket p = mock(Pocket.class);
         PocketTemplate template = mock(PocketTemplate.class);
         when(p.getPocketTemplate()).thenReturn(template);
-        when(p.getStatus()).thenReturn(CmFinoFIX.PocketStatus_Active);
-        when(template.getType()).thenReturn(CmFinoFIX.PocketType_BOBAccount);
+        when(p.getStatus()).thenReturn(CmFinoFIX.PocketStatus_Active.longValue());
+        when(template.getType()).thenReturn(CmFinoFIX.PocketType_BOBAccount.longValue());
         HashSet<Pocket> pockets = new HashSet<Pocket>();
         pockets.add(p);
-        when(sub.getPocketFromMDNID()).thenReturn(pockets);
+        when(sub.getPockets()).thenReturn(pockets);
 
         return sub;
     }
 
     public void testHasBobAccount() {
-        SubscriberMDN sub = getMockSubscriber();
+        SubscriberMdn sub = getMockSubscriber();
 //        assertTrue(SubscriberService.hasBOBPocket(sub));
     }
     

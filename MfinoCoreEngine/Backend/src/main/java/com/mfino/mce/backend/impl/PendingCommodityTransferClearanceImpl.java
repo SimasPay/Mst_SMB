@@ -12,7 +12,7 @@ import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.domain.BulkUpload;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SystemParameters;
@@ -211,7 +211,7 @@ public class PendingCommodityTransferClearanceImpl extends BaseServiceImpl imple
 		ChargeTxnCommodityTransferMapDAO cTxnCommodityTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
 		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 		query.setCommodityTransferID(pct.getId().longValue());
-		List<ChargeTxnCommodityTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
+		List<ChargetxnTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
 		Long sctlId = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?ctTxnCommodityTransferMap.get(0).getSctlid().longValue():null;
 
 		// Check if the Transaction is related to Bulk Transfer then do the changes in BulkUpload table also

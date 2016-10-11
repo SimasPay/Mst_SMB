@@ -6892,7 +6892,7 @@
 			<field name="APIKey" required="Y" />
 			<field name="SendReport" required="N"/>
 		</record>
-		<record name="SmsCode" ExtendsRecord="Base" Java="Y" SQLTable="smsc_configuration" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
+		<record name="SmscConfiguration" ExtendsRecord="Base" Java="Y" SQLTable="smsc_configuration" SQLInsert="Y" SQLSelect="Y" SQLUpdate="Y" SQLCreate="Y">
 			<index name="ShortCodeIndex" Unique="Y">
 				<field name="ShortCode" />
 			</index>

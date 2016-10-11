@@ -16,7 +16,7 @@ import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.domain.AutoReversals;
 import com.mfino.domain.BillPayments;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.fix.CFIXMsg;
@@ -228,10 +228,10 @@ public class BillPayPendingResolveServiceImpl extends BillPaymentsBaseServiceImp
 		{
 	        ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 			query.setSctlID(sctl.getId().longValue());
-			List<ChargeTxnCommodityTransferMap> ctxnList = chargeTxnCommodityTransferMapDao.get(query);
+			List<ChargetxnTransferMap> ctxnList = chargeTxnCommodityTransferMapDao.get(query);
 			
 			//Assuming there will be only one pending transaction for this sctlid
-			for(ChargeTxnCommodityTransferMap ctxnMap : ctxnList){
+			for(ChargetxnTransferMap ctxnMap : ctxnList){
 				pct = pctDao.getById(ctxnMap.getCommoditytransferid().longValue());
 				if(pct != null){
 					break;

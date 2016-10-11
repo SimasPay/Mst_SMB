@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.mFinoServiceProvider;
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -47,36 +47,36 @@ public class PocketTemplateDAOTest {
     @Test
     public void hello() {
 
-        mFinoServiceProvider msp = mspDao.getById(1L);
+        MfinoServiceProvider msp = mspDao.getById(1L);
         
         PocketTemplate pt = new PocketTemplate();
 
-        pt.setmFinoServiceProviderByMSPID(msp);
+        pt.setMfinoServiceProvider(msp);
         pt.setAllowance(Integer.MAX_VALUE);
-        pt.setBankAccountCardType(Integer.MAX_VALUE);
-        pt.setBankCode(Integer.MAX_VALUE);
-        pt.setCardPANSuffixLength(Integer.MAX_VALUE);
+        pt.setBankaccountcardtype(Long.MAX_VALUE);
+        pt.setBankcode(Long.MAX_VALUE);
+        pt.setCardpansuffixlength(Long.MAX_VALUE);
         pt.setCommodity(Integer.MAX_VALUE);
-        pt.setCreateTime(new Timestamp());
-        pt.setCreatedBy("sd");
+        pt.setCreatetime(new Timestamp());
+        pt.setCreatedby("sd");
         pt.setDescription("sd");
-        pt.setLastUpdateTime(new Timestamp());
-        pt.setMaxAmountPerDay(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxAmountPerMonth(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxAmountPerTransaction(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxAmountPerWeek(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxTransactionsPerDay(Integer.MAX_VALUE);
-        pt.setMaxTransactionsPerMonth(Integer.MAX_VALUE);
-        pt.setMaxTransactionsPerWeek(Integer.MAX_VALUE);
-        pt.setMaximumStoredValue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorCode(Integer.MAX_VALUE);
-        pt.setMinAmountPerTransaction(new BigDecimal(Long.MIN_VALUE));
-        pt.setMinTimeBetweenTransactions(Integer.MAX_VALUE);
-        pt.setMinimumStoredValue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorCode(Integer.MAX_VALUE);
+        pt.setLastupdatetime(new Timestamp());
+        pt.setMaxamountperday(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxamountpermonth(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxamountpertransaction(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxamountperweek(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxtransactionsperday(Integer.MAX_VALUE);
+        pt.setMaxtransactionspermonth(Integer.MAX_VALUE);
+        pt.setMaxtransactionsperweek(Integer.MAX_VALUE);
+        pt.setMaximumstoredvalue(new BigDecimal(Long.MIN_VALUE));
+        pt.setOperatorcode(Long.MAX_VALUE);
+        pt.setMaxamountpertransaction(new BigDecimal(Long.MIN_VALUE));
+        pt.setMintimebetweentransactions(Integer.MAX_VALUE);
+        pt.setMinimumstoredvalue(new BigDecimal(Long.MIN_VALUE));
+        pt.setOperatorcode(Long.MAX_VALUE);
         pt.setType(Integer.MAX_VALUE);
         pt.setUnits("sd");
-        pt.setUpdatedBy("dsd");
+        pt.setUpdatedby("dsd");
 
         poctDao.save(pt);
 

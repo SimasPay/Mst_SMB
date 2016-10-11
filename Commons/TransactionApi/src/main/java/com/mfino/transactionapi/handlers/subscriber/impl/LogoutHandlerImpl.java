@@ -1,7 +1,5 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
-import java.math.BigDecimal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.crypto.CryptographyService;
-import com.mfino.domain.ChannelSessionManagement;
+import com.mfino.domain.ChannelSessionMgmt;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
@@ -70,7 +68,7 @@ public class LogoutHandlerImpl extends FIXMessageHandler implements LogoutHandle
 		
 		addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 		
-		ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
+		ChannelSessionMgmt csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
 
 		byte[] encryptedBytes = CryptographyService.hexToBin(request.getAuthMAC().toCharArray());
 		byte[] key = CryptographyService.hexToBin((csm != null) ? csm.getSessionkey().toCharArray() : null);

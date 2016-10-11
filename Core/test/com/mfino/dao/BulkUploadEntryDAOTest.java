@@ -39,15 +39,15 @@ public class BulkUploadEntryDAOTest extends TestCase {
 
     private void insertData() {
         bue.setAmount(new BigDecimal(Long.MIN_VALUE));
-        bue.setCreatedBy(null);
-        bue.setDestMDN("12345");
-        bue.setLineNumber(Integer.SIZE);
-        bue.setUploadID(3l);
+        bue.setCreatedby(null);
+        bue.setDestmdn("12345");
+        bue.setLinenumber(Integer.SIZE);
+        bue.setUploadid(new BigDecimal(3));
         bue.setVersion(Integer.SIZE);
         bue.setStatus(1);
-        bue.setLastUpdateTime(new Timestamp());
-        bue.setCreateTime(new Timestamp());
-        bue.setUpdatedBy("raju");
+        bue.setLastupdatetime(new Timestamp());
+        bue.setCreatetime(new Timestamp());
+        bue.setUpdatedby("raju");
         dao.save(bue);
 
     }
@@ -56,7 +56,7 @@ public class BulkUploadEntryDAOTest extends TestCase {
     public void testGet() {
 
         insertData();
-        assertNotNull(bue.getID());
+        assertNotNull(bue.getId());
         BulkUploadEntryDAO service = new BulkUploadEntryDAO();
 
         List<BulkUploadEntry> results = service.getAll();

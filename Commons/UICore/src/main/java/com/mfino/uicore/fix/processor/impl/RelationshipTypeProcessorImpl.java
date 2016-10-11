@@ -17,7 +17,7 @@ import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PartnerRestrictionsDao;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
@@ -70,7 +70,7 @@ public class RelationshipTypeProcessorImpl extends BaseFixProcessor implements R
 			query.setDctId(dctId);
 			query.setLevel(level);
 			
-			List<DCTRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
+			List<DctRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
 			
 			PartnerRestrictionsQuery prQuery = new PartnerRestrictionsQuery();
 			prQuery.setDctId(dctId);
@@ -80,7 +80,7 @@ public class RelationshipTypeProcessorImpl extends BaseFixProcessor implements R
 			
 			Set<RelationshipType> relationshipTypes = new HashSet<RelationshipType>();
 			
-			for(DCTRestrictions dctRestriction : dctRestrictions){
+			for(DctRestrictions dctRestriction : dctRestrictions){
 				RelationshipType relationshipType = new RelationshipType();
 				relationshipType.setID(dctRestriction.getRelationshiptype().intValue());
 				relationshipType.setDescription(enumTextService.getEnumTextValue(CmFinoFIX.TagID_RelationShipType, CmFinoFIX.Language_English, dctRestriction.getRelationshiptype()));

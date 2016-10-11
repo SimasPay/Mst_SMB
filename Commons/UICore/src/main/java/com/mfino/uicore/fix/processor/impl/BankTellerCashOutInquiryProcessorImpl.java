@@ -15,22 +15,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
-import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
 import com.mfino.fix.CmFinoFIX.CMJSError;
-import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.ChargeTxnCommodityTransferMapService;
 import com.mfino.service.CommodityTransferService;
@@ -167,14 +164,14 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 		ChargeTxnCommodityTransferMapQuery query =new ChargeTxnCommodityTransferMapQuery();
 		query.setSctlID(sctl.getId().longValue());
- 		List<ChargeTxnCommodityTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
+ 		List<ChargetxnTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 		if(results==null||results.isEmpty()){
 			error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 			error.setErrorDescription("No Transaction found");
 			return error;
 		}
 		Long ctId = sctl.getCommoditytransferid().longValue();
-		for(ChargeTxnCommodityTransferMap txnTransfer:results){
+		for(ChargetxnTransferMap txnTransfer:results){
 			if(txnTransfer.getCommoditytransferid().equals(ctId)){
 				continue;
 			}

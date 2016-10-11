@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.ChargeTxnCommodityTransferMapDAO;
 import com.mfino.dao.CommodityTransferDAO;
 import com.mfino.dao.DAOFactory;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
@@ -242,7 +242,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 			throw new BackendRuntimeException(exp);
 		}
 		
-		ChargeTxnCommodityTransferMap txnTransferMap = new ChargeTxnCommodityTransferMap();
+		ChargetxnTransferMap txnTransferMap = new ChargetxnTransferMap();
 		txnTransferMap.setCommoditytransferid(pct.getId());
 		txnTransferMap.setSctlid(BigDecimal.valueOf(requestFix.getServiceChargeTransactionLogID()));
 		
@@ -278,9 +278,9 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		log.debug("CommodityTransferServiceImpl :: getPendingCT BEGIN sctlId="+sctlId);
 		PendingCommodityTransfer pendingCT = null;
 		
-		List<ChargeTxnCommodityTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlId);
+		List<ChargetxnTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlId);
 		
-		for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
+		for(ChargetxnTransferMap ctxn : ctxnMap){
 			pendingCT = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 			
 			if(pendingCT != null) break;

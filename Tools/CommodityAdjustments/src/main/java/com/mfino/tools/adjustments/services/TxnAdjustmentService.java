@@ -1,6 +1,5 @@
 package com.mfino.tools.adjustments.services;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import com.mfino.dao.LedgerDAO;
 import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Ledger;
 import com.mfino.domain.PendingCommodityTransfer;
@@ -35,14 +34,14 @@ public class TxnAdjustmentService {
 			query.setSctlID(sctl.getId().longValue());
 			
 			ChargeTxnCommodityTransferMapDAO ctmapDAO = DAOFactory.getInstance().getTxnTransferMap();
-			List<ChargeTxnCommodityTransferMap> txnTransferMapList = ctmapDAO.get(query);
+			List<ChargetxnTransferMap> txnTransferMapList = ctmapDAO.get(query);
 			
 			LedgerDAO ledgerDAO = DAOFactory.getInstance().getLedgerDAO();
 			List<Ledger> ctLedgers = new ArrayList<Ledger>();
 			Long ctID = null;
 			log.info("Getting ledger for SCTL:"+sctl.getId());
 			
-			for(ChargeTxnCommodityTransferMap txnMap : txnTransferMapList)
+			for(ChargetxnTransferMap txnMap : txnTransferMapList)
 			{
 				ctID = txnMap.getCommoditytransferid().longValue();
 				log.info("Getting ledger for CT:"+ctID);
@@ -109,14 +108,14 @@ public class TxnAdjustmentService {
 			query.setSctlID(sctl.getId().longValue());
 			
 			ChargeTxnCommodityTransferMapDAO ctmapDAO = DAOFactory.getInstance().getTxnTransferMap();
-			List<ChargeTxnCommodityTransferMap> txnTransferMapList = ctmapDAO.get(query);
+			List<ChargetxnTransferMap> txnTransferMapList = ctmapDAO.get(query);
 			
 			LedgerDAO ledgerDAO = DAOFactory.getInstance().getLedgerDAO();
 			List<Ledger> ctLedgers = new ArrayList<Ledger>();
 			Long ctID = null;
 			log.info("Getting ledger for SCTL:"+sctl.getId());
 			
-			for(ChargeTxnCommodityTransferMap txnMap : txnTransferMapList)
+			for(ChargetxnTransferMap txnMap : txnTransferMapList)
 			{
 				ctID = txnMap.getCommoditytransferid().longValue();
 				log.info("Getting ledger for CT:"+ctID);

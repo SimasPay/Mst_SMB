@@ -13,7 +13,7 @@ import com.mfino.dao.CommodityTransferDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.fix.CFIXMsg;
@@ -37,14 +37,14 @@ public class ChargeTransactionsViewProcessorImpl extends BaseFixProcessor implem
 				 ChargeTxnCommodityTransferMapDAO cTxnDao = daoFactory.getTxnTransferMap();
 				 ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 				 query.setSctlID(realMsg.getServiceChargeTransactionLogID());
-				 List<ChargeTxnCommodityTransferMap> cTxnMap = cTxnDao.get(query);
+				 List<ChargetxnTransferMap> cTxnMap = cTxnDao.get(query);
 				 int i=0;
 				 if(cTxnMap!=null&&!cTxnMap.isEmpty()){
 					 CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
 					 PendingCommodityTransferDAO pctDao = daoFactory.getPendingCommodityTransferDAO();
 					 realMsg.allocateEntries(cTxnMap.size());
 					
-					 for(ChargeTxnCommodityTransferMap ctxn:cTxnMap){
+					 for(ChargetxnTransferMap ctxn:cTxnMap){
 						 CMJSCommodityTransfer.CGEntries entry = new CMJSCommodityTransfer.CGEntries();
 						 Long id = ctxn.getCommoditytransferid().longValue();
 						 CommodityTransfer ct = ctDao.getById(id);

@@ -28,13 +28,13 @@ public class BankDAOTest extends TestCase {
         BankDAO service = new BankDAO();
 
         Bank u = new Bank();
-        u.setCreateTime(new Timestamp());
-        u.setCreatedBy("xchen");
+        u.setCreatetime(new Timestamp());
+        u.setCreatedby("xchen");
         u.setName("xchen");
         service.save(u);
 
-        assertTrue(u.getID() > 0);
-        Bank results = service.getById(u.getID());
+        assertTrue(u.getId().longValue() > 0);
+        Bank results = service.getById(u.getId().longValue());
         assertNotNull(results);
         assertEquals(results.getName(), "xchen");
 

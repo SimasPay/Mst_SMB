@@ -14,7 +14,7 @@ import com.mfino.dao.MoneyClearanceGravedDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.ClosedAccountSettlementMDNQuery;
 import com.mfino.dao.query.MoneyClearanceGravedQuery;
-import com.mfino.domain.ClosedAccountSettlementMDN;
+import com.mfino.domain.CloseAcctSetlMdn;
 import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -28,7 +28,7 @@ import com.mfino.uicore.fix.processor.ClosedAccountSettlementMdnProcessor;
  */
 @Service("ClosedAccountSettlementMdnProcessorImpl")
 public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor implements ClosedAccountSettlementMdnProcessor{
-	private void updateEntity(ClosedAccountSettlementMDN casmdn, CMJSClosedAccountSettlementMdn.CGEntries e) {
+	private void updateEntity(CloseAcctSetlMdn casmdn, CMJSClosedAccountSettlementMdn.CGEntries e) {
 		SubscriberMDNDAO smdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 				
 		if(e.getMDNID() != null){
@@ -64,7 +64,7 @@ public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor im
 		}
 	}
 	
-	private void updateMessage(ClosedAccountSettlementMDN casmdn, CMJSClosedAccountSettlementMdn.CGEntries e) {
+	private void updateMessage(CloseAcctSetlMdn casmdn, CMJSClosedAccountSettlementMdn.CGEntries e) {
 		e.setID(casmdn.getId().longValue());
 		e.setMDNID(casmdn.getSubscriberMdn().getId().longValue());
 		e.setToBankAccount(casmdn.getTobankaccount() != 0);
@@ -123,10 +123,10 @@ public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor im
 				query.setMdnId(realMsg.getEntries()[0].getMDNID());
 			}
 			
-			List<ClosedAccountSettlementMDN> lst = dao.get(query);
+			List<CloseAcctSetlMdn> lst = dao.get(query);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				realMsg.allocateEntries(lst.size());
-				for (ClosedAccountSettlementMDN casmdn: lst){
+				for (CloseAcctSetlMdn casmdn: lst){
 					CMJSClosedAccountSettlementMdn.CGEntries e = new CMJSClosedAccountSettlementMdn.CGEntries();
 					updateMessage(casmdn, e);
 					realMsg.getEntries()[i] = e;
@@ -147,13 +147,13 @@ public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor im
 				query.setMdnId(realMsg.getEntries()[0].getMDNID());
 			}
 			
-			List<ClosedAccountSettlementMDN> lst = dao.get(query);
+			List<CloseAcctSetlMdn> lst = dao.get(query);
 			for(CMJSClosedAccountSettlementMdn.CGEntries e : entries){
-				ClosedAccountSettlementMDN cas;
+				CloseAcctSetlMdn cas;
 				if(lst.size() > 0)
 					cas = lst.get(0);
 				else
-				    cas = new ClosedAccountSettlementMDN();
+				    cas = new CloseAcctSetlMdn();
         		updateEntity(cas, e);
 				dao.save(cas);
         		updateMessage(cas, e);
@@ -163,7 +163,7 @@ public class ClosedAccountSettlementMdnProcessorImpl extends BaseFixProcessor im
 		} else if (CmFinoFIX.JSaction_Update.equals(realMsg.getaction())){
 			CMJSClosedAccountSettlementMdn.CGEntries[] entries = realMsg.getEntries();
 			for(CMJSClosedAccountSettlementMdn.CGEntries e : entries){
-				ClosedAccountSettlementMDN cas = dao.getById(e.getID());
+				CloseAcctSetlMdn cas = dao.getById(e.getID());
         		updateEntity(cas, e);
 				dao.save(cas);
         		updateMessage(cas, e);

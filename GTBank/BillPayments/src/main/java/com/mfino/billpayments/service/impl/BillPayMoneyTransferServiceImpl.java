@@ -43,11 +43,11 @@ import com.mfino.dao.query.MFSBillerQuery;
 import com.mfino.dao.query.PartnerServicesQuery;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.MfsBiller;
+import com.mfino.domain.MfsbillerPartnerMap;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -735,9 +735,9 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 			ChargeTxnCommodityTransferMapDAO ctctmdao = DAOFactory.getInstance().getTxnTransferMap();
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 			query.setSctlID(sctlId);
-			List<ChargeTxnCommodityTransferMap> list= ctctmdao.get(query);
+			List<ChargetxnTransferMap> list= ctctmdao.get(query);
 			
-			for(ChargeTxnCommodityTransferMap map : list){
+			for(ChargetxnTransferMap map : list){
 				if(ctId>map.getCommoditytransferid().longValue())
 					ctId = map.getCommoditytransferid().longValue();
 			}

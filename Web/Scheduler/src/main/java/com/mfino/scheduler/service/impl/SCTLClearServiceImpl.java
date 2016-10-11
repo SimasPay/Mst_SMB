@@ -26,7 +26,7 @@ import com.mfino.domain.AutoReversals;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
@@ -394,7 +394,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 		ChargeTxnCommodityTransferMapQuery query =new ChargeTxnCommodityTransferMapQuery();
 		query.setSctlID(sctl.getId().longValue());
 		
-		List<ChargeTxnCommodityTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
+		List<ChargetxnTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 		
 		if(sctl.getTransactiontypeid().equals(unregCashoutTTId)){
 			UnRegisteredTxnInfoQuery unregquery = new UnRegisteredTxnInfoQuery();
@@ -408,7 +408,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 			if (CollectionUtils.isNotEmpty(results)) {
 				Long transferID= null;
 				boolean confirm= false;
-				for(ChargeTxnCommodityTransferMap sctlCtMap:results){		
+				for(ChargetxnTransferMap sctlCtMap:results){		
 					CommodityTransfer ct = commodityTransferService.getCommodityTransferById(sctlCtMap.getCommoditytransferid().longValue());
 					if(ct!=null){
 						if (CmFinoFIX.TransferStatus_Completed.intValue() == ct.getTransferstatus()) {

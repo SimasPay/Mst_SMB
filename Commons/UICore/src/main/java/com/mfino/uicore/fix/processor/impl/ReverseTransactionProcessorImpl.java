@@ -25,7 +25,7 @@ import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.Pocket;
@@ -155,9 +155,9 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 			ChargeTxnCommodityTransferMapDAO txnCommodityTransferMapDAO = daoFactory.getTxnTransferMap();
 			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 			query.setSctlID(sctl.getId().longValue());
-			List<ChargeTxnCommodityTransferMap> lstTxnCommodityTransferMaps = txnCommodityTransferMapDAO.get(query);
+			List<ChargetxnTransferMap> lstTxnCommodityTransferMaps = txnCommodityTransferMapDAO.get(query);
 			if (CollectionUtils.isNotEmpty(lstTxnCommodityTransferMaps)) {
-				for (ChargeTxnCommodityTransferMap ctmap: lstTxnCommodityTransferMaps) {
+				for (ChargetxnTransferMap ctmap: lstTxnCommodityTransferMaps) {
 					CommodityTransfer ct = ctDao.getById(ctmap.getCommoditytransferid().longValue());
 					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUicategory())) {
 						if (maxCT == null) {

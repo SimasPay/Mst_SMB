@@ -40,12 +40,12 @@ public class RegionDaoTest{
     public void hello() {
         RegionDAO dao = new RegionDAO();
         Region reg = new Region();
-        reg.setCreateTime(new Timestamp());
-        reg.setLastUpdateTime(new Timestamp());
-        reg.setCreatedBy("Raju");
-        reg.setUpdatedBy("mfino");
-        reg.setRegionName("Hyderabad");
-        reg.setRegionCode("1001");
+        reg.setCreatetime(new Timestamp());
+        reg.setLastupdatetime(new Timestamp());
+        reg.setCreatedby("Raju");
+        reg.setUpdatedby("mfino");
+        reg.setRegionname("Hyderabad");
+        reg.setRegioncode("1001");
         reg.setDescription("TestCase");
         CompanyDAO comp = new CompanyDAO();
         reg.setCompany(comp.getById(1L));

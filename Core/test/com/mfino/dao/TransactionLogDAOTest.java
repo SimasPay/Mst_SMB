@@ -4,14 +4,17 @@
  */
 package com.mfino.dao;
 
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.hibernate.Timestamp;
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.TransactionLog;
+import com.mfino.hibernate.Timestamp;
 
 /**
  *
@@ -43,19 +46,19 @@ public class TransactionLogDAOTest {
 
     @Test
     public void hello() {
-        mFinoServiceProvider msp = mspDao.getById(1L);
+        MfinoServiceProvider msp = mspDao.getById(1L);
         
-        TransactionsLog tlog = new TransactionsLog();
+        TransactionLog tlog = new TransactionLog();
 
-        tlog.setCreateTime(new Timestamp());
-        tlog.setCreatedBy("sa");
-        tlog.setLastUpdateTime(new Timestamp());
-        tlog.setmFinoServiceProviderByMSPID(msp);
-        tlog.setMessageCode(Integer.MAX_VALUE);
-        tlog.setMessageData("sas");
-        tlog.setParentTransactionID(Long.MIN_VALUE);
-        tlog.setTransactionTime(new Timestamp());
-        tlog.setUpdatedBy("sas");
+        tlog.setCreatetime(new Timestamp());
+        tlog.setCreatedby("sa");
+        tlog.setLastupdatetime(new Timestamp());
+        tlog.setMfinoServiceProvider(msp);
+        tlog.setMessagecode(Integer.MAX_VALUE);
+        tlog.setMessagedata("sas");
+        tlog.setParenttransactionid(new BigDecimal(Long.MIN_VALUE));
+        tlog.setTransactiontime(new Timestamp());
+        tlog.setUpdatedby("sas");
 
 
         trandao.save(tlog);

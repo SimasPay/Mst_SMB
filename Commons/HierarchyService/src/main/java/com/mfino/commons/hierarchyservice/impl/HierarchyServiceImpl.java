@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.mfino.commons.hierarchyservice.HierarchyService;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
@@ -115,11 +115,11 @@ public class HierarchyServiceImpl implements HierarchyService {
 			dctRestrictionsQuery.setDctId(dct.getId().longValue());
 			dctRestrictionsQuery.setIsAllowed(Boolean.TRUE);
 			
-			List<DCTRestrictions> dctRestrictions = dctRestrictionsService.getDctRestrictions(dctRestrictionsQuery);
+			List<DctRestrictions> dctRestrictions = dctRestrictionsService.getDctRestrictions(dctRestrictionsQuery);
 			Collection<Integer> relationshipTypes = relationshipService.getRelationshipTypes(sourcePartner, destPartner, dct);
 			
 			if((null != dctRestrictions) && (dctRestrictions.size() > 0)){
-				for(DCTRestrictions dctRestriction : dctRestrictions){
+				for(DctRestrictions dctRestriction : dctRestrictions){
 					if(((dctRestriction.getRelationshiptype().equals(CmFinoFIX.RelationShipType_SUBSCRIBER)) && (destPartner == null)) || 
 							(relationshipTypes.contains(dctRestriction.getRelationshiptype()))){
 						flag = Boolean.TRUE;

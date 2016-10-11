@@ -18,13 +18,13 @@ import org.junit.Test;
 
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.CommodityTransferQuery;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.TransactionsLog;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 
@@ -42,11 +42,11 @@ public class PendingCommodityTransferDAOTest {
     private TransactionsLogDAO trandao = new TransactionsLogDAO();
     private PocketDAO pocDao = new PocketDAO();
     private PocketTemplateDAO poctDao = new PocketTemplateDAO();
-    private mFinoServiceProvider msp = new mFinoServiceProvider();
+    private MfinoServiceProvider msp = new MfinoServiceProvider();
     private Subscriber sub = new Subscriber();
-    private SubscriberMDN mdn1 = new SubscriberMDN();
-    private SubscriberMDN mdn2 = new SubscriberMDN();
-    private TransactionsLog tlog = new TransactionsLog();
+    private SubscriberMdn mdn1 = new SubscriberMdn();
+    private SubscriberMdn mdn2 = new SubscriberMdn();
+    private TransactionLog tlog = new TransactionLog();
     private PocketTemplate pt = new PocketTemplate();
     private Pocket poc = new Pocket();
     private PendingCommodityTransfer pcmt = new PendingCommodityTransfer();
@@ -76,254 +76,254 @@ public class PendingCommodityTransferDAOTest {
 
     private void insertTestData(){
         msp = mspDao.getById(1L);
-        System.out.println(msp.getCreatedBy());
+        System.out.println(msp.getCreatedby());
 
-        sub.setFirstName("xxx");
+        sub.setFirstname("xxx");
         sub.setCurrency("dollar");
-        sub.setActivationTime(new Timestamp());
-        sub.setCreateTime(new Timestamp());
-        sub.setCreatedBy("sas");
+        sub.setActivationtime(new Timestamp());
+        sub.setCreatetime(new Timestamp());
+        sub.setCreatedby("sas");
         sub.setEmail("sasa");
         sub.setLanguage(Integer.MAX_VALUE);
-        sub.setLastName("sdas");
-        sub.setLastUpdateTime(new Timestamp());
-        sub.setNotificationMethod(Integer.MAX_VALUE);
+        sub.setLastname("sdas");
+        sub.setLastupdatetime(new Timestamp());
+        sub.setNotificationmethod(Long.MAX_VALUE);
       //  sub.setParentID(Long.MIN_VALUE);
         sub.setRestrictions(Integer.MAX_VALUE);
         sub.setStatus(Integer.MAX_VALUE);
-        sub.setStatusTime(new Timestamp());
+        sub.setStatustime(new Timestamp());
         sub.setTimezone("sas");
         sub.setType(Integer.MAX_VALUE);
-        sub.setUpdatedBy("sasa");
+        sub.setUpdatedby("sasa");
 
-        sub.setmFinoServiceProviderByMSPID(msp);
+        sub.setMfinoServiceProvider(msp);
 
         subDao.save(sub);
 
 //Change this if the MDN Already exists in the DB
-        mdn1.setMDN("9346110000");
+        mdn1.setMdn("9346110000");
         mdn1.setSubscriber(sub);
-        mdn1.setCreateTime(new Timestamp());
+        mdn1.setCreatetime(new Timestamp());
         mdn1.setRestrictions(new Integer(10));
         mdn1.setStatus(new Integer(10));
-        mdn1.setActivationTime(new Timestamp());
-        mdn1.setAuthenticationPhoneNumber("sunny");
-        mdn1.setAuthenticationPhrase("sunny");
-        mdn1.setCreatedBy("sunny");
-        mdn1.setDigestedPIN("sds");
-        mdn1.setLastTransactionID(Long.MIN_VALUE);
-        mdn1.setLastTransactionTime(new Timestamp());
-        mdn1.setLastUpdateTime(new Timestamp());
-        mdn1.setStatusTime(new Timestamp());
-        mdn1.setUpdatedBy("sunny");
-        mdn1.setWrongPINCount(Integer.MAX_VALUE);
+        mdn1.setActivationtime(new Timestamp());
+        mdn1.setAuthenticationphonenumber("sunny");
+        mdn1.setAuthenticationphrase("sunny");
+        mdn1.setCreatedby("sunny");
+        mdn1.setDigestedpin("sds");
+        mdn1.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn1.setLasttransactiontime(new Timestamp());
+        mdn1.setLastupdatetime(new Timestamp());
+        mdn1.setStatustime(new Timestamp());
+        mdn1.setUpdatedby("sunny");
+        mdn1.setWrongpincount(Integer.MAX_VALUE);
         mdndao.save(mdn1);
 //Change this when ever you run
-        mdn2.setMDN("9346220000");
+        mdn2.setMdn("9346220000");
         mdn2.setSubscriber(sub);
-        mdn2.setCreateTime(new Timestamp());
+        mdn2.setCreatetime(new Timestamp());
         mdn2.setRestrictions(new Integer(10));
         mdn2.setStatus(new Integer(10));
-        mdn2.setActivationTime(new Timestamp());
-        mdn2.setAuthenticationPhoneNumber("sunny");
-        mdn2.setAuthenticationPhrase("sunny");
-        mdn2.setCreatedBy("sunny");
-        mdn2.setDigestedPIN("sds");
-        mdn2.setLastTransactionID(Long.MIN_VALUE);
-        mdn2.setLastTransactionTime(new Timestamp());
-        mdn2.setLastUpdateTime(new Timestamp());
-        mdn2.setStatusTime(new Timestamp());
+        mdn2.setActivationtime(new Timestamp());
+        mdn2.setAuthenticationphonenumber("sunny");
+        mdn2.setAuthenticationphrase("sunny");
+        mdn2.setCreatedby("sunny");
+        mdn2.setDigestedpin("sds");
+        mdn2.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn2.setLasttransactiontime(new Timestamp());
+        mdn2.setLastupdatetime(new Timestamp());
+        mdn2.setStatustime(new Timestamp());
 //        mdn2.setSubscriberID(1L);
-        mdn2.setUpdatedBy("sunny");
-        mdn2.setWrongPINCount(Integer.MAX_VALUE);
+        mdn2.setUpdatedby("sunny");
+        mdn2.setWrongpincount(Integer.MAX_VALUE);
         mdndao.save(mdn2);
 
-        tlog.setCreateTime(new Timestamp());
-        tlog.setCreatedBy("sa");
-        tlog.setLastUpdateTime(new Timestamp());
-        tlog.setmFinoServiceProviderByMSPID(msp);
-        tlog.setMessageCode(Integer.MAX_VALUE);
-        tlog.setMessageData("sas");
-        tlog.setParentTransactionID(Long.MIN_VALUE);
-        tlog.setTransactionTime(new Timestamp());
-        tlog.setUpdatedBy("sas");
+        tlog.setCreatetime(new Timestamp());
+        tlog.setCreatedby("sa");
+        tlog.setLastupdatetime(new Timestamp());
+        tlog.setMfinoServiceProvider(msp);
+        tlog.setMessagecode(Integer.MAX_VALUE);
+        tlog.setMessagedata("sas");
+        tlog.setParenttransactionid(new BigDecimal(Long.MIN_VALUE));
+        tlog.setTransactiontime(new Timestamp());
+        tlog.setUpdatedby("sas");
 
         trandao.save(tlog);
 
-        pt.setmFinoServiceProviderByMSPID(msp);
+        pt.setMfinoServiceProvider(msp);
         pt.setAllowance(Integer.MAX_VALUE);
-        pt.setBankAccountCardType(Integer.MAX_VALUE);
-        pt.setBankCode(Integer.MAX_VALUE);
-        pt.setCardPANSuffixLength(Integer.MAX_VALUE);
+        pt.setBankaccountcardtype(Long.MAX_VALUE);
+        pt.setBankcode(Long.MAX_VALUE);
+        pt.setCardpansuffixlength(Long.MAX_VALUE);
         pt.setCommodity(new Integer(0));
-        pt.setCreateTime(new Timestamp());
-        pt.setCreatedBy("sd");
+        pt.setCreatetime(new Timestamp());
+        pt.setCreatedby("sd");
         pt.setDescription("sd");
-        pt.setLastUpdateTime(new Timestamp());
-        pt.setMaxAmountPerDay(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxAmountPerMonth(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxAmountPerTransaction(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxAmountPerWeek(new BigDecimal(Long.MIN_VALUE));
-        pt.setMaxTransactionsPerDay(Integer.MAX_VALUE);
-        pt.setMaxTransactionsPerMonth(Integer.MAX_VALUE);
-        pt.setMaxTransactionsPerWeek(Integer.MAX_VALUE);
-        pt.setMaximumStoredValue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorCode(Integer.MAX_VALUE);
-        pt.setMinAmountPerTransaction(new BigDecimal(Long.MIN_VALUE));
-        pt.setMinTimeBetweenTransactions(Integer.MAX_VALUE);
-        pt.setMinimumStoredValue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorCode(new Integer(881));
+        pt.setLastupdatetime(new Timestamp());
+        pt.setMaxamountperday(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxamountpermonth(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxamountpertransaction(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxamountperweek(new BigDecimal(Long.MIN_VALUE));
+        pt.setMaxtransactionsperday(Integer.MAX_VALUE);
+        pt.setMaxtransactionspermonth(Integer.MAX_VALUE);
+        pt.setMaxtransactionsperweek(Integer.MAX_VALUE);
+        pt.setMaximumstoredvalue(new BigDecimal(Long.MIN_VALUE));
+        pt.setOperatorcode(Long.MAX_VALUE);
+        pt.setMinamountpertransaction(new BigDecimal(Long.MIN_VALUE));
+        pt.setMintimebetweentransactions(Integer.MAX_VALUE);
+        pt.setMinimumstoredvalue(new BigDecimal(Long.MIN_VALUE));
+        pt.setOperatorcode(881L);
         pt.setType(new Integer(1));
         pt.setUnits("sd");
-        pt.setUpdatedBy("sunny");
-        pt.setBillingType(new Integer(0));
+        pt.setUpdatedby("sunny");
+        pt.setBillingtype(0L);
 
         poctDao.save(pt);
 
-        poc.setActivationTime(new Timestamp());
-        poc.setCardPAN("sdas");
-        poc.setCreateTime(new Timestamp());
-        poc.setCreatedBy("sasa");
-        poc.setCurrentBalance(new BigDecimal(Long.MIN_VALUE));
-        poc.setCurrentDailyExpenditure(new BigDecimal(Long.MIN_VALUE));
-        poc.setCurrentDailyTxnsCount(Integer.MAX_VALUE);
-        poc.setCurrentMonthlyExpenditure(new BigDecimal(Long.MIN_VALUE));
-        poc.setCurrentMonthlyTxnsCount(Integer.MAX_VALUE);
-        poc.setCurrentWeeklyExpenditure(new BigDecimal(Long.MIN_VALUE));
-        poc.setCurrentWeeklyTxnsCount(Integer.MIN_VALUE);
-        poc.setIsDefault(Boolean.TRUE);
-        poc.setLastBankAuthorizationCode("sas");
-        poc.setLastBankRequestCode(Integer.MAX_VALUE);
-        poc.setLastBankResponseCode(Integer.MAX_VALUE);
-        poc.setLastTransactionTime(new Timestamp());
-        poc.setLastUpdateTime(new Timestamp());
+        poc.setActivationtime(new Timestamp());
+        poc.setCardpan("sdas");
+        poc.setCreatetime(new Timestamp());
+        poc.setCreatedby("sasa");
+        poc.setCurrentbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        poc.setCurrentdailyexpenditure(new BigDecimal(Long.MIN_VALUE));
+        poc.setCurrentdailytxnscount(Integer.MAX_VALUE);
+        poc.setCurrentmonthlyexpenditure(new BigDecimal(Long.MIN_VALUE));
+        poc.setCurrentmonthlytxnscount(Integer.MAX_VALUE);
+        poc.setCurrentweeklyexpenditure(new BigDecimal(Long.MIN_VALUE));
+        poc.setCurrentweeklytxnscount(Integer.MIN_VALUE);
+        poc.setIsdefault((short)1);
+        poc.setLastbankauthorizationcode("sas");
+        poc.setLastbankrequestcode(Long.MAX_VALUE);
+        poc.setLastbankresponsecode(Long.MAX_VALUE);
+        poc.setLasttransactiontime(new Timestamp());
+        poc.setLastupdatetime(new Timestamp());
         poc.setRestrictions(Integer.MAX_VALUE);
         poc.setStatus(Integer.MAX_VALUE);
-        poc.setStatusTime(new Timestamp());
-        poc.setUpdatedBy("sas");
-        poc.setSubscriberMDNByMDNID(mdn1);
+        poc.setStatustime(new Timestamp());
+        poc.setUpdatedby("sas");
+        poc.setSubscriberMdn(mdn1);
         poc.setPocketTemplate(pt);
 
         pocDao.save(poc);
 
         pcmt.setAmount(new BigDecimal(1000));
-        pcmt.setDestMDN("9346233462");
-        pcmt.setStartTime(new Timestamp());
-        pcmt.setSourceMDN("9346233462");
-        pcmt.setBankAuthorizationCode("sunny");
-        pcmt.setBankCode(Integer.MAX_VALUE);
-        pcmt.setBankErrorText("sunny");
-        pcmt.setBankRejectReason("sunnys");
-        pcmt.setBankResponseCode(Integer.MAX_VALUE);
-        pcmt.setBankResponseTime(new Timestamp());
-        pcmt.setBillingType(Integer.MAX_VALUE);
-        pcmt.setBucketType("sunnys");
+        pcmt.setDestmdn("9346233462");
+        pcmt.setStarttime(new Timestamp());
+        pcmt.setSourcemdn("9346233462");
+        pcmt.setBankauthorizationcode("sunny");
+        pcmt.setBankcode(Long.MAX_VALUE);
+        pcmt.setBankerrortext("sunny");
+        pcmt.setBankrejectreason("sunnys");
+        pcmt.setBankresponsecode(Long.MAX_VALUE);
+        pcmt.setBankresponsetime(new Timestamp());
+        pcmt.setBillingtype(Long.MAX_VALUE);
+        pcmt.setBuckettype("sunnys");
         pcmt.setCommodity(Integer.MAX_VALUE);
-        pcmt.setCreateTime(new Timestamp());
+        pcmt.setCreatetime(new Timestamp());
         pcmt.setCurrency("dollar");
-        pcmt.setDestCardPAN("bunny");
-        pcmt.setDestMDNID(mdn2.getID());
-        pcmt.setDestPocketBalance(new BigDecimal(Long.MIN_VALUE));
-        pcmt.setDestPocketType(Integer.MAX_VALUE);
-        pcmt.setDestPocketID(Long.MIN_VALUE);
-        pcmt.setDestSubscriberID(Long.MIN_VALUE);
-        pcmt.setDestSubscriberName("sunny");
-        pcmt.setEndTime(new Timestamp());
-        pcmt.setLastUpdateTime(new Timestamp());
-        pcmt.setMsgType(Integer.MAX_VALUE);
-        pcmt.setOperatorAuthorizationCode("ssunny");
-        pcmt.setOperatorCode(Integer.MAX_VALUE);
-        pcmt.setOperatorErrorText("Error");
-        pcmt.setOperatorRejectReason("sunnys");
-        pcmt.setOperatorResponseCode(Integer.MAX_VALUE);
-        pcmt.setOperatorResponseTime(new Timestamp());
-        pcmt.setSourceApplication(Integer.MAX_VALUE);
-        pcmt.setSourceCardPAN("sda");
-        pcmt.setSourcePocketBalance(new BigDecimal(Long.MIN_VALUE));
-        pcmt.setSourcePocketType(Integer.MAX_VALUE);
-        pcmt.setSourceReferenceID("dssd");
-        pcmt.setSourceSubscriberName("sunnys");
-        pcmt.setTransferFailureReason(Integer.MAX_VALUE);
-        pcmt.setTransferStatus(Integer.MAX_VALUE);
+        pcmt.setDestcardpan("bunny");
+        pcmt.setDestmdnid(mdn2.getId());
+        pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt.setDestpockettype(Long.MAX_VALUE);
+        pcmt.setDestpocketid(new BigDecimal(Long.MIN_VALUE));
+        pcmt.setDestsubscriberid(new BigDecimal(Long.MIN_VALUE));
+        pcmt.setDestsubscribername("sunny");
+        pcmt.setEndtime(new Timestamp());
+        pcmt.setLastupdatetime(new Timestamp());
+        pcmt.setMsgtype(Integer.MAX_VALUE);
+        pcmt.setOperatorauthorizationcode("ssunny");
+        pcmt.setOperatorcode(Long.MAX_VALUE);
+        pcmt.setOperatorerrortext("Error");
+        pcmt.setOperatorrejectreason("sunnys");
+        pcmt.setOperatorresponsecode(Long.MAX_VALUE);
+        pcmt.setOperatorresponsetime(new Timestamp());
+        pcmt.setSourceapplication(Integer.MAX_VALUE);
+        pcmt.setSourcecardpan("sda");
+        pcmt.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt.setSourcepockettype(Integer.MAX_VALUE);
+        pcmt.setSourcereferenceid("dssd");
+        pcmt.setSourcesubscribername("sunnys");
+        pcmt.setTransferfailurereason(Long.MAX_VALUE);
+        pcmt.setTransferstatus(Integer.MAX_VALUE);
 
-        pcmt.setUpdatedBy("sd");
-        pcmt.setCreatedBy("sas");
+        pcmt.setUpdatedby("sd");
+        pcmt.setCreatedby("sas");
 
-        pcmt.setmFinoServiceProviderByMSPID(msp);
+        pcmt.setMfinoServiceProvider(msp);
 
 
-        pcmt.setSubscriberBySourceSubscriberID(sub);
-        pcmt.setSubscriberMDNBySourceMDNID(mdn1);
-        pcmt.setPocketBySourcePocketID(poc);
-        pcmt.setTransactionsLogByTransactionID(tlog);
-        pcmt.setLastReversalTime(new Timestamp());
-        pcmt.setReversalCount(1);
+        pcmt.setSubscriber(sub);
+        pcmt.setSubscriberMdn(mdn1);
+        pcmt.setPocket(poc);
+        pcmt.setTransactionLog(tlog);
+        pcmt.setLastreversaltime(new Timestamp());
+        pcmt.setReversalcount(1L);
 
 
         dao.save(pcmt);
 
 
         pcmt1.setAmount(new BigDecimal(1000));
-        pcmt1.setDestMDN("9346233560");
-        pcmt1.setStartTime(new Timestamp());
-        pcmt1.setSourceMDN("9346233560");
-        pcmt1.setBankAuthorizationCode("sunny");
-        pcmt1.setBankCode(Integer.MAX_VALUE);
-        pcmt1.setBankErrorText("sunny");
-        pcmt1.setBankRejectReason("sunnys");
-        pcmt1.setBankResponseCode(Integer.MAX_VALUE);
-        pcmt1.setBankResponseTime(new Timestamp());
-        pcmt1.setBillingType(Integer.MAX_VALUE);
-        pcmt1.setBucketType("sunnys");
+        pcmt1.setDestmdn("9346233560");
+        pcmt1.setStarttime(new Timestamp());
+        pcmt1.setSourcemdn("9346233560");
+        pcmt1.setBankauthorizationcode("sunny");
+        pcmt1.setBankcode(Long.MAX_VALUE);
+        pcmt1.setBankerrortext("sunny");
+        pcmt1.setBankrejectreason("sunnys");
+        pcmt1.setBankresponsecode(Long.MAX_VALUE);
+        pcmt1.setBankresponsetime(new Timestamp());
+        pcmt1.setBillingtype(Long.MAX_VALUE);
+        pcmt1.setBuckettype("sunnys");
         pcmt1.setCommodity(Integer.MAX_VALUE);
-        pcmt1.setCreateTime(new Timestamp());
+        pcmt1.setCreatetime(new Timestamp());
         pcmt1.setCurrency("dollar");
-        pcmt1.setDestCardPAN("bunny");
-        pcmt1.setDestMDNID(mdn1.getID());
-        pcmt1.setDestPocketBalance(new BigDecimal(Long.MIN_VALUE));
-        pcmt1.setDestPocketType(Integer.MAX_VALUE);
-        pcmt1.setDestPocketID(Long.MIN_VALUE);
-        pcmt1.setDestSubscriberID(Long.MIN_VALUE);
-        pcmt1.setDestSubscriberName("sunny");
-        pcmt1.setEndTime(new Timestamp());
-        pcmt1.setLastUpdateTime(new Timestamp());
-        pcmt1.setMsgType(Integer.MAX_VALUE);
-        pcmt1.setOperatorAuthorizationCode("ssunny");
-        pcmt1.setOperatorCode(Integer.MAX_VALUE);
-        pcmt1.setOperatorErrorText("Error");
-        pcmt1.setOperatorRejectReason("sunnys");
-        pcmt1.setOperatorResponseCode(Integer.MAX_VALUE);
-        pcmt1.setOperatorResponseTime(new Timestamp());
-        pcmt1.setSourceApplication(Integer.MAX_VALUE);
-        pcmt1.setSourceCardPAN("sdahhkjhjk");
-        pcmt1.setSourcePocketBalance(new BigDecimal(Long.MIN_VALUE));
-        pcmt1.setSourcePocketType(Integer.MAX_VALUE);
-        pcmt1.setSourceReferenceID("dssd");
-        pcmt1.setSourceSubscriberName("sunnys");
-        pcmt1.setTransferFailureReason(Integer.MAX_VALUE);
-        pcmt1.setTransferStatus(Integer.MAX_VALUE);
+        pcmt1.setDestcardpan("bunny");
+        pcmt1.setDestmdnid(mdn1.getId());
+        pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt1.setDestpockettype(Long.MAX_VALUE);
+        pcmt1.setDestpocketid(new BigDecimal(Long.MIN_VALUE));
+        pcmt1.setDestsubscriberid(new BigDecimal(Long.MIN_VALUE));
+        pcmt1.setDestsubscribername("sunny");
+        pcmt1.setEndtime(new Timestamp());
+        pcmt1.setLastupdatetime(new Timestamp());
+        pcmt1.setMsgtype(Integer.MAX_VALUE);
+        pcmt1.setOperatorauthorizationcode("ssunny");
+        pcmt1.setOperatorcode(Long.MAX_VALUE);
+        pcmt1.setOperatorerrortext("Error");
+        pcmt1.setOperatorrejectreason("sunnys");
+        pcmt1.setOperatorresponsecode(Long.MAX_VALUE);
+        pcmt1.setOperatorresponsetime(new Timestamp());
+        pcmt1.setSourceapplication(Integer.MAX_VALUE);
+        pcmt1.setSourcecardpan("sdahhkjhjk");
+        pcmt1.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt1.setSourcepockettype(Integer.MAX_VALUE);
+        pcmt1.setSourcereferenceid("dssd");
+        pcmt1.setSourcesubscribername("sunnys");
+        pcmt1.setTransferfailurereason(Long.MAX_VALUE);
+        pcmt1.setTransferstatus(Integer.MAX_VALUE);
 
-        pcmt1.setUpdatedBy("sd");
-        pcmt1.setCreatedBy("sas");
-        pcmt1.setmFinoServiceProviderByMSPID(msp);
+        pcmt1.setUpdatedby("sd");
+        pcmt1.setCreatedby("sas");
+        pcmt1.setMfinoServiceProvider(msp);
 
 
-        pcmt1.setSubscriberBySourceSubscriberID(sub);
-        pcmt1.setSubscriberMDNBySourceMDNID(mdn2);
-        pcmt1.setPocketBySourcePocketID(poc);
-        pcmt1.setTransactionsLogByTransactionID(tlog);
-        pcmt1.setLastReversalTime(new Timestamp());
-        pcmt1.setReversalCount(1);
+        pcmt1.setSubscriber(sub);
+        pcmt1.setSubscriberMdn(mdn2);
+        pcmt1.setPocket(poc);
+        pcmt1.setTransactionLog(tlog);
+        pcmt1.setLastreversaltime(new Timestamp());
+        pcmt1.setReversalcount(1L);
 
         dao.save(pcmt1);
 
-        assertTrue(pcmt.getID() > 0);
-        assertTrue(pcmt1.getID() > 0);
-        assertTrue(mdn1.getID() > 0);
-        assertTrue(mdn2.getID() > 0);
+        assertTrue(pcmt.getId().longValue() > 0);
+        assertTrue(pcmt1.getId().longValue() > 0);
+        assertTrue(mdn1.getId().longValue() > 0);
+        assertTrue(mdn2.getId().longValue() > 0);
 
-        mdn1ID = mdn1.getID();
-        mdn2ID = mdn2.getID();
+        mdn1ID = mdn1.getId().longValue();
+        mdn2ID = mdn2.getId().longValue();
     }
 
     @Ignore
@@ -387,10 +387,10 @@ public class PendingCommodityTransferDAOTest {
 
         List results = dao.get(query);
 
-        Long idOne = ((PendingCommodityTransfer) results.get(0)).getID();
-        Long idTwo = ((PendingCommodityTransfer) results.get(1)).getID();
+        BigDecimal idOne = ((PendingCommodityTransfer) results.get(0)).getId();
+        BigDecimal idTwo = ((PendingCommodityTransfer) results.get(1)).getId();
 
-        assertTrue(idOne > idTwo);
+        assertTrue(idOne.longValue() > idTwo.longValue());
 
     }
 
@@ -415,8 +415,8 @@ public class PendingCommodityTransferDAOTest {
 
         List results = dao.get(query);
 
-        Long idOne = new Long(((PendingCommodityTransfer) results.get(0)).getSourceMDN());
-        Long idTwo = new Long(((PendingCommodityTransfer) results.get(1)).getSourceMDN());
+        Long idOne = new Long(((PendingCommodityTransfer) results.get(0)).getDestmdn());
+        Long idTwo = new Long(((PendingCommodityTransfer) results.get(1)).getDestmdn());
 
         assertTrue(idOne <= idTwo);
     }
@@ -444,15 +444,15 @@ public class PendingCommodityTransferDAOTest {
 
         List results = dao.get(query);
 
-        Long idOne = ((PendingCommodityTransfer) results.get(0)).getID();
-        Long idTwo = ((PendingCommodityTransfer) results.get(1)).getID();
+        BigDecimal idOne = ((PendingCommodityTransfer) results.get(0)).getId();
+        BigDecimal idTwo = ((PendingCommodityTransfer) results.get(1)).getId();
 
 
-        assertTrue(idOne > idTwo);
+        assertTrue(idOne.longValue() > idTwo.longValue());
 
 
-        Long idOne1 = new Long(((PendingCommodityTransfer) results.get(0)).getSourceMDN());
-        Long idTwo1 = new Long(((PendingCommodityTransfer) results.get(1)).getSourceMDN());
+        Long idOne1 = new Long(((PendingCommodityTransfer) results.get(0)).getDestmdn());
+        Long idTwo1 = new Long(((PendingCommodityTransfer) results.get(1)).getDestmdn());
 
         assertTrue(idOne1 <= idTwo1);
 
@@ -483,16 +483,16 @@ public class PendingCommodityTransferDAOTest {
 
         List results = dao.get(query);
 
-        Long idOne = new Long(((PendingCommodityTransfer) results.get(0)).getSourceMDN());
-        Long idTwo = new Long(((PendingCommodityTransfer) results.get(1)).getSourceMDN());
+        Long idOne = new Long(((PendingCommodityTransfer) results.get(0)).getDestmdn());
+        Long idTwo = new Long(((PendingCommodityTransfer) results.get(1)).getDestmdn());
 
         assertTrue(idOne <= idTwo);
 
 
-        Long idOne1 = ((PendingCommodityTransfer) results.get(0)).getID();
-        Long idTwo1 = ((PendingCommodityTransfer) results.get(1)).getID();
+        BigDecimal idOne1 = ((PendingCommodityTransfer) results.get(0)).getId();
+        BigDecimal idTwo1 = ((PendingCommodityTransfer) results.get(1)).getId();
 
-        assertTrue(idOne1 > idTwo1);
+        assertTrue(idOne1.longValue() > idTwo1.longValue());
     }
 
     @Ignore //FIXME: This test fails

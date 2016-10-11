@@ -13,7 +13,8 @@ import com.mfino.dao.DCTRestrictionsDao;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainTemp;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -40,10 +41,10 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
             query.setDctRestrictionsId(realMsg.getIDSearch());
             query.setDctId(realMsg.getDCTIDSearch());
 
-            List<DCTRestrictions> results = dctRestrictionsDao.get(query);
+            List<DctRestrictions> results = dctRestrictionsDao.get(query);
             realMsg.allocateEntries(results.size());
             for (int i = 0; i < results.size(); i++) {
-                DCTRestrictions s = results.get(i);
+                DctRestrictions s = results.get(i);
                 CMJSDCTRestrictions.CGEntries entry = new CMJSDCTRestrictions.CGEntries();
                 updateMessage(s, entry);
                 realMsg.getEntries()[i] = entry;
@@ -56,7 +57,7 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 			CMJSDCTRestrictions.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSDCTRestrictions.CGEntries e : entries) {
-            	DCTRestrictions s = new DCTRestrictions();
+            	DctRestrictions s = new DctRestrictions();
                 updateEntity(s, e);
                 try{
                 	dctRestrictionsDao.save(s);
@@ -73,7 +74,7 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 			CMJSDCTRestrictions.CGEntries[] entries = realMsg.getEntries();
 
             for (CMJSDCTRestrictions.CGEntries e : entries) {
-            	DCTRestrictions s = dctRestrictionsDao.getById(e.getID());
+            	DctRestrictions s = dctRestrictionsDao.getById(e.getID());
 
 /*                // Check for Stale Data
                 if (!e.getRecordVersion().equals(s.getVersion())) {
@@ -91,9 +92,9 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 		if (CmFinoFIX.JSaction_Delete.equals(realMsg.getaction())) {
 			CMJSDCTRestrictions.CGEntries[] entries = realMsg.getEntries();
 
-			List<DCTRestrictions> deletedRestrictions = new ArrayList<DCTRestrictions>();
+			List<DctRestrictions> deletedRestrictions = new ArrayList<DctRestrictions>();
 			for (CMJSDCTRestrictions.CGEntries e : entries) {
-				DCTRestrictions dctRestriction = dctRestrictionsDao.getById(e.getID());
+				DctRestrictions dctRestriction = dctRestrictionsDao.getById(e.getID());
                 dctRestrictionsDao.deleteById(e.getID());
                 deletedRestrictions.add(dctRestriction);
             }
@@ -106,7 +107,7 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 		return realMsg;
 	}
 	
-	private void updateMessage(DCTRestrictions dctRestrictions, CMJSDCTRestrictions.CGEntries dctRestrictionsEntry) {
+	private void updateMessage(DctRestrictions dctRestrictions, CMJSDCTRestrictions.CGEntries dctRestrictionsEntry) {
 		log.info("DCTRestrictionsProcessor :: updateMessage BEGIN");
 		
 		dctRestrictionsEntry.setID(dctRestrictions.getId().longValue());
@@ -137,7 +138,7 @@ public class DCTRestrictionsProcessorImpl extends BaseFixProcessor implements DC
 		log.info("DCTRestrictionsProcessor :: updateMessage END");
 	}
 	
-    private void updateEntity(DCTRestrictions dctRestrictions, CMJSDCTRestrictions.CGEntries dctRestrictionsEntry) {
+    private void updateEntity(DctRestrictions dctRestrictions, CMJSDCTRestrictions.CGEntries dctRestrictionsEntry) {
     	log.info("DCTRestrictionsProcessor :: updateEntity BEGIN");
     	
     	DistributionChainTemplateDAO dctDao = DAOFactory.getInstance().getDistributionChainTemplateDAO();

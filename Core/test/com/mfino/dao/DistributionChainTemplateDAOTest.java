@@ -4,16 +4,19 @@
  */
 package com.mfino.dao;
 
-import com.mfino.dao.query.DistributionChainTemplateQuery;
-import com.mfino.domain.DistributionChainTemp;
-import com.mfino.domain.mFinoServiceProvider;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.mfino.dao.query.DistributionChainTemplateQuery;
+import com.mfino.domain.DistributionChainTemp;
+import com.mfino.domain.MfinoServiceProvider;
 
 /**
  *
@@ -47,15 +50,15 @@ public class DistributionChainTemplateDAOTest {
 
     private void insertData() {
 
-        mFinoServiceProvider msp = new mFinoServiceProvider();
+        MfinoServiceProvider msp = new MfinoServiceProvider();
 
         msp = mspDao.getById(1L);
-        System.out.println(msp.getCreatedBy());
+        System.out.println(msp.getCreatedby());
 
-        dctTemplate.setmFinoServiceProviderByMSPID(msp);
+        dctTemplate.setMfinoServiceProvider(msp);
         dctTemplate.setDescription("description text ");
         dctTemplate.setName(" Temaplate Name 1");
-        dctTemplate.setDistributionChainLevelFromTemplateID(null);
+        dctTemplate.setDistributionChainLvls(null);
 
         dctDao.save(dctTemplate);
     }
@@ -63,7 +66,7 @@ public class DistributionChainTemplateDAOTest {
     @Test
     public void testGetDCTByID() {
         insertData();
-        query.setId(dctTemplate.getID());
+        query.setId(dctTemplate.getId().longValue());
         List results = dctDao.get(query);
         assertTrue(results.size() == 1);
     }

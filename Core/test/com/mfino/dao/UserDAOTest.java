@@ -4,16 +4,20 @@
  */
 package com.mfino.dao;
 
-import com.mfino.domain.Company;
-import com.mfino.domain.MfinoUser;
-import com.mfino.domain.mFinoServiceProvider;
-import com.mfino.fix.CmFinoFIX;
-import com.mfino.hibernate.Timestamp;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
+
+import com.mfino.domain.Company;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.MfinoUser;
+import com.mfino.fix.CmFinoFIX;
+import com.mfino.hibernate.Timestamp;
 
 /**
  *
@@ -36,11 +40,11 @@ public class UserDAOTest extends TestCase {
         MfinoUser u = new MfinoUser();
         u.setUsername("xchen1234567890");
         u.setPassword("xchen");
-        u.setStatusTime(new Timestamp());
-        u.setCreateTime(new Timestamp());
-        u.setLastUpdateTime(new Timestamp());
-        u.setUpdatedBy("xchen");
-        u.setCreatedBy("xchen");
+        u.setStatustime(new Timestamp());
+        u.setCreatetime(new Timestamp());
+        u.setLastupdatetime(new Timestamp());
+        u.setUpdatedby("xchen");
+        u.setCreatedby("xchen");
         //make sure u have atleast one record in company table
         CompanyDAO dao = new CompanyDAO();
         List<Company> results = dao.getAll();
@@ -49,9 +53,9 @@ public class UserDAOTest extends TestCase {
         }
 
         //Dummy MSP
-        mFinoServiceProvider msp = new mFinoServiceProvider();
-        msp.setID(1l);
-        u.setmFinoServiceProviderByMSPID(msp);
+        MfinoServiceProvider msp = new MfinoServiceProvider();
+        msp.setId(new BigDecimal(0));
+        u.setMfinoServiceProvider(msp);
 
      //   service.save(u);
 //
@@ -61,10 +65,10 @@ public class UserDAOTest extends TestCase {
 //        HashSet authSet = new HashSet();
 //        authSet.add(auth);
 //        u.setUserAuthorityFromUserID(authSet);
-        u.setRole(CmFinoFIX.Role_Subscriber);
+        u.setRole(CmFinoFIX.Role_Subscriber.longValue());
        service.save(u);
 
-        assertTrue(u.getID() > 0);
+        assertTrue(u.getId().longValue() > 0);
         //assertTrue(auth.getID() > 0);
         //List<User> results = service.getAll();
        // assertTrue(results.size() > 0);        

@@ -11,7 +11,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.TransactionTypeDAO;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -79,12 +79,12 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 		}
 		
 		
-		List<ChargeTxnCommodityTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlID);
+		List<ChargetxnTransferMap> ctxnMap = coreDataWrapper.getBySctlID(sctlID);
 		if(fixPendingRequest.getCSRAction().equals(CmFinoFIX.CSRAction_Cancel))
 		{
 			//FIXME for cashout revesolve revert amount to subscriber
 			Integer uicatageory =0;
-			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
+			for(ChargetxnTransferMap ctxn : ctxnMap){
 				PendingCommodityTransfer pct = null;
 				CommodityTransfer ct = null;
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
@@ -134,7 +134,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 			
 			PendingCommodityTransfer pct = null;
 			Integer uicatageory =0;
-			for(ChargeTxnCommodityTransferMap ctxn : ctxnMap){
+			for(ChargetxnTransferMap ctxn : ctxnMap){
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
 					pct.setCsraction(fixPendingRequest.getCSRAction().longValue());

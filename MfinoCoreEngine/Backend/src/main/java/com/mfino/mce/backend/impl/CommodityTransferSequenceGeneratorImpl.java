@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.CommodityTransferNextIDDAO;
-import com.mfino.domain.CommodityTransferNextID;
+import com.mfino.domain.CommodityTransferNextId;
 import com.mfino.mce.backend.CommodityTransferSequenceGenerator;
 
 /**
@@ -25,7 +25,7 @@ public class CommodityTransferSequenceGeneratorImpl extends BaseServiceImpl impl
 	public Long getNextTransferID() {
 		log.info("CommodityTransferSequenceGeneratorImpl :: getNextTransferID() BEGIN");
 		CommodityTransferNextIDDAO commodityTransferNextIDDAO = coreDataWrapper.getCommodityTransferNextIDDAO();
-		CommodityTransferNextID commodityTransferNextID = commodityTransferNextIDDAO.getNextIDWithLock();
+		CommodityTransferNextId commodityTransferNextID = commodityTransferNextIDDAO.getNextIDWithLock();
 		long nextID = commodityTransferNextID.getNextrecordid().longValue();
 		commodityTransferNextID.setNextrecordid(commodityTransferNextID.getNextrecordid().add(new BigDecimal(1)));
 		commodityTransferNextIDDAO.save(commodityTransferNextID);

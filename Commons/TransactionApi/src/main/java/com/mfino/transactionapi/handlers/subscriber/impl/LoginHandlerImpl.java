@@ -1,6 +1,5 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -17,7 +16,7 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.crypto.KeyService;
-import com.mfino.domain.ChannelSessionManagement;
+import com.mfino.domain.ChannelSessionMgmt;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberMdn;
@@ -241,9 +240,9 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			String hexEncodedKey = new String(CryptographyService.binToHex(aesKey));
 
 			log.info("recalculating channelsession management data");
-			ChannelSessionManagement csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
+			ChannelSessionMgmt csm  = channelSessionManagementService.getChannelSessionManagemebtByMDNID(srcSubscriberMDN.getId().longValue());
 			if (csm == null)
-				csm = new ChannelSessionManagement();
+				csm = new ChannelSessionMgmt();
 			csm.setSubscriberMdn(srcSubscriberMDN);
 			csm.setCreatedby("System");
 			csm.setCreatetime(tLog.getTransactiontime());

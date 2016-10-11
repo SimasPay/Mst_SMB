@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.constants.SecurityConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.crypto.CryptographyService;
-import com.mfino.domain.ChannelSessionManagement;
+import com.mfino.domain.ChannelSessionMgmt;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.hibernate.Timestamp;
@@ -58,7 +58,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		SubscriberMdn smdn = subscriberMdnService.getByMDN(mdn);
 //		ChannelSessionManagementDAO dao = DAOFactory.getInstance().getChannelSessionManagementDAO();
 		try {
-			ChannelSessionManagement csm = channelSessionManagementService.getChannelSessionManagemebtByMDNID(smdn.getId().longValue());
+			ChannelSessionMgmt csm = channelSessionManagementService.getChannelSessionManagemebtByMDNID(smdn.getId().longValue());
 			return isCSMStatusValid(csm);
 		}
 		catch (Exception ex) {
@@ -68,7 +68,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 	}
 
 	
-	private  boolean isCSMStatusValid(ChannelSessionManagement csm) {
+	private  boolean isCSMStatusValid(ChannelSessionMgmt csm) {
 
 		Timestamp lastRequestTime = csm.getLastrequesttime();
 		Timestamp presentTime = new Timestamp();
@@ -136,7 +136,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		}
 
 //		ChannelSessionManagementDAO dao = DAOFactory.getInstance().getChannelSessionManagementDAO();
-		ChannelSessionManagement csm = channelSessionManagementService.getChannelSessionManagemebtByMDNID(smdn.getId().longValue());
+		ChannelSessionMgmt csm = channelSessionManagementService.getChannelSessionManagemebtByMDNID(smdn.getId().longValue());
 		if(isLoginEnabled)
 		{
 			if (csm == null || !isCSMStatusValid(csm)) {
@@ -174,7 +174,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 			throw new InvalidMDNException("MDN is not valid");
 		}
 //		ChannelSessionManagementDAO dao = DAOFactory.getInstance().getChannelSessionManagementDAO();
-		ChannelSessionManagement csm = channelSessionManagementService.getChannelSessionManagemebtByMDNID(smdn.getId().longValue());
+		ChannelSessionMgmt csm = channelSessionManagementService.getChannelSessionManagemebtByMDNID(smdn.getId().longValue());
 		if(isLoginEnabled)
 		{
 			if (csm == null || !isCSMStatusValid(csm)) {

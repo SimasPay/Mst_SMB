@@ -55,10 +55,10 @@ public class UserServiceTest{
         RolePermission rp = new RolePermission();
         rp.setRole(ROLE);
         rp.setPermission(PERMISSION);
-        rp.setCreateTime(new Timestamp());
-        rp.setCreatedBy("test");
-        rp.setLastUpdateTime(new Timestamp());
-        rp.setUpdatedBy("test");
+        rp.setCreatetime(new Timestamp());
+        rp.setCreatedby("test");
+        rp.setLastupdatetime(new Timestamp());
+        rp.setUpdatedby("test");
 
 
         rolePermissionDAO.save(rp);

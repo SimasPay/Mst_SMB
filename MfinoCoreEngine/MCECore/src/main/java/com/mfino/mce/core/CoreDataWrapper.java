@@ -42,12 +42,12 @@ import com.mfino.dao.query.NotificationQuery;
 import com.mfino.dao.query.PendingTransactionsEntryQuery;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.ActivitiesLog;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.FundDistributionInfo;
 import com.mfino.domain.Ledger;
-import com.mfino.domain.MfsLedger;
 import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.MfsLedger;
 import com.mfino.domain.Notification;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.PendingTxnsEntry;
@@ -289,7 +289,7 @@ public class CoreDataWrapper
 
 		return defaultBobPocket;
 	}
-	public List<ChargeTxnCommodityTransferMap> getBySctlID(Long sctlID) {
+	public List<ChargetxnTransferMap> getBySctlID(Long sctlID) {
 		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 		query.setSctlID(sctlID);
 		return chargeTxnCommodityTransferMapDAO.get(query);

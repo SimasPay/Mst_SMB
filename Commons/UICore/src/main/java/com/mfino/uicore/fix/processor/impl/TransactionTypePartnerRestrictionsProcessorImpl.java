@@ -18,7 +18,7 @@ import com.mfino.dao.PartnerRestrictionsDao;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
@@ -64,7 +64,7 @@ public class TransactionTypePartnerRestrictionsProcessorImpl extends BaseFixProc
 			query.setDctId(dctId);
 			query.setLevel(level);
 			
-			List<DCTRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
+			List<DctRestrictions> dctRestrictions = dctRestrictionsDao.get(query);
 
 			PartnerRestrictionsQuery prQuery = new PartnerRestrictionsQuery();
 			prQuery.setDctId(dctId);
@@ -76,7 +76,7 @@ public class TransactionTypePartnerRestrictionsProcessorImpl extends BaseFixProc
 			Set<TransactionType> transactionTypes = new HashSet<TransactionType>();
 			
 			TransactionTypeDAO transactionTypeDAO = DAOFactory.getInstance().getTransactionTypeDAO();
-			for(DCTRestrictions dctRestriction : dctRestrictions){
+			for(DctRestrictions dctRestriction : dctRestrictions){
 				TransactionType transactionType = transactionTypeDAO.getById(dctRestriction.getTransactiontypeid());
 				transactionTypes.add(transactionType);
 			}

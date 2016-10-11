@@ -7,7 +7,7 @@ package com.mfino.web.admin.Listeners;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.jasypt.hibernate.encryptor.HibernatePBEEncryptorRegistry;
+import org.jasypt.hibernate4.encryptor.HibernatePBEEncryptorRegistry;
 
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.util.EncryptionUtil;

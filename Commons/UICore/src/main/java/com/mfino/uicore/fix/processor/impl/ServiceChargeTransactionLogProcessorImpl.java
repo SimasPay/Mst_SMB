@@ -37,7 +37,7 @@ import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Adjustments;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.InterbankTransfers;
@@ -279,7 +279,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			ChargeTxnCommodityTransferMapDAO cTxnCommodityTransferMapDAO = daoFactory.getTxnTransferMap();
 			ChargeTxnCommodityTransferMapQuery query2 = new ChargeTxnCommodityTransferMapQuery();
 			query2.setCommodityTransferID(ctId);
-			List<ChargeTxnCommodityTransferMap> ctxnMap = cTxnCommodityTransferMapDAO.get(query2);
+			List<ChargetxnTransferMap> ctxnMap = cTxnCommodityTransferMapDAO.get(query2);
 			if(ctxnMap!=null&&!ctxnMap.isEmpty()){
 				return ctxnMap.get(0).getId().longValue();
 			}

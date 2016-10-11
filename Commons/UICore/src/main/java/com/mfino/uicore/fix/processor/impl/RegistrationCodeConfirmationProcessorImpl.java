@@ -23,7 +23,8 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.UserDAO;
 import com.mfino.domain.CardInfo;
-import com.mfino.domain.CreditCardDestinations;
+import com.mfino.domain.CreditcardDestinations;
+import com.mfino.domain.CreditcardDestinations;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
@@ -86,7 +87,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			Subscriber sub =  subs.iterator().next();
 			SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdns().toArray()[0];
 			Set<CardInfo> cards = sub.getCardInfos();
-			List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
+			List<CreditcardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 			// check for expiry
 			if ((user.getCreatetime() != null)&& (System.currentTimeMillis()- user.getCreatetime().getTime() 
 					< ConfigurationUtil.getCreditcardRegistrationExpirationTimeInHrs() * 60 * 60 * 1000)) {
@@ -121,8 +122,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 				cardDao.save(cards);
 
 				log.info("Activating Destinations");
-				for (Iterator<CreditCardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
-					CreditCardDestinations ccdeDestination = creIterator.next();
+				for (Iterator<CreditcardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
+					CreditcardDestinations ccdeDestination = creIterator.next();
 					if (ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_Registered)) {
 						ccdeDestination.setCcmdnstatus(CmFinoFIX.CCMDNStatus_Active.longValue());
 					}
@@ -176,7 +177,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			Set<Subscriber> subs = user.getSubscribersForSubscriberuserid();
 			Subscriber sub = subs.iterator().next();
 			Set<CardInfo> cards = sub.getCardInfos();
-			List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
+			List<CreditcardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 			int updatedcards = 0;
 			for (Iterator<CardInfo> cardIterator = cards.iterator(); cardIterator.hasNext();) {
 				CardInfo card = cardIterator.next();
@@ -206,8 +207,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 			}
 			
 			if (updatedcards > 0) {
-				for (Iterator<CreditCardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
-					CreditCardDestinations ccdeDestination = creIterator.next();
+				for (Iterator<CreditcardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
+					CreditcardDestinations ccdeDestination = creIterator.next();
 					if (ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_New)
 							|| ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_Updated)) {
 						ccdeDestination.setCcmdnstatus(CmFinoFIX.CCMDNStatus_Active.longValue());
@@ -228,7 +229,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 		Subscriber sub = subs.iterator().next();
 		//SubscriberMdn SubscriberMdn = (SubscriberMdn) sub.getSubscriberMdnFromSubscriberID().toArray()[0];
 		Set<CardInfo> cards = sub.getCardInfos();
-		List<CreditCardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
+		List<CreditcardDestinations> ccDestinations = creditCardDestinationDAO.getAllDestinations(sub);
 		
 		log.info("Expiring user "+user.getUsername());
 		user.setStatus(CmFinoFIX.UserStatus_Expired);
@@ -253,8 +254,8 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 		cardDao.save(cards);
 		
 		log.info("Expiring Destinations for user"+user.getUsername());
-		for (Iterator<CreditCardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
-			CreditCardDestinations ccdeDestination = creIterator.next();
+		for (Iterator<CreditcardDestinations> creIterator = ccDestinations.iterator(); creIterator.hasNext();) {
+			CreditcardDestinations ccdeDestination = creIterator.next();
 			if (ccdeDestination.getCcmdnstatus().equals(CmFinoFIX.CCMDNStatus_Registered)) {
 				ccdeDestination.setCcmdnstatus(CmFinoFIX.CCMDNStatus_Expired.longValue());
 			}

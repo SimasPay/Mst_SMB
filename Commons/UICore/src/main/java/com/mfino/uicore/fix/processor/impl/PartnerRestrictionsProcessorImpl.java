@@ -13,15 +13,13 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.DistributionChainTemplateDAO;
 import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.PartnerRestrictionsDao;
-import com.mfino.dao.ServiceDAO;
 import com.mfino.dao.TransactionTypeDAO;
 import com.mfino.dao.query.DCTRestrictionsQuery;
 import com.mfino.dao.query.PartnerRestrictionsQuery;
-import com.mfino.domain.DCTRestrictions;
+import com.mfino.domain.DctRestrictions;
 import com.mfino.domain.DistributionChainTemp;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerRestrictions;
-import com.mfino.domain.TransactionType;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSPartnerRestrictions;
@@ -156,7 +154,7 @@ public class PartnerRestrictionsProcessorImpl extends BaseFixProcessor implement
 			query.setTransactionTypeId(partnerRestrictions.getTransactiontypeid());
 			query.setRelationshipType(partnerRestrictions.getRelationshiptype().intValue());
 			
-			List<DCTRestrictions> dctRestrictions = dctRestrictionsService.getDctRestrictions(query);
+			List<DctRestrictions> dctRestrictions = dctRestrictionsService.getDctRestrictions(query);
 			
 			if(!((null != dctRestrictions) && (dctRestrictions.size() > 0))){
 				partnerRestrictionEntry.setIsValid(Boolean.FALSE);

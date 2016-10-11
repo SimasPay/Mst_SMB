@@ -4,6 +4,7 @@
  */
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
@@ -12,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mfino.dao.query.SubscriberMdnQuery;
+import com.mfino.domain.MfinoServiceProvider;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.SubscriberMDN;
-import com.mfino.domain.mFinoServiceProvider;
+import com.mfino.domain.SubscriberMdn;
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -41,73 +42,73 @@ public class SubscriberMDNDAOConcurrencyTest {
     public void dotest() throws InterruptedException {
 
 
-        mFinoServiceProvider msp = new mFinoServiceProvider();
+        MfinoServiceProvider msp = new MfinoServiceProvider();
 
-        msp.setCreateTime(new Timestamp());
-        msp.setCreatedBy("sas");
+        msp.setCreatetime(new Timestamp());
+        msp.setCreatedby("sas");
         msp.setDescription("sas");
-        msp.setLastUpdateTime(new Timestamp());
+        msp.setLastupdatetime(new Timestamp());
         msp.setName("saa");
-        msp.setUpdatedBy("sas");
+        msp.setUpdatedby("sas");
 
 
         mspDao.save(msp);
 
-        SubscriberMDN mdn = new SubscriberMDN();
+        SubscriberMdn mdn = new SubscriberMdn();
 
 
         Subscriber sub = new Subscriber();
-        sub.setFirstName("sandeep");
+        sub.setFirstname("sandeep");
         sub.setCurrency("USD");
-        sub.setActivationTime(new Timestamp());
-        sub.setCreateTime(new Timestamp());
-        sub.setCreatedBy("sas");
+        sub.setActivationtime(new Timestamp());
+        sub.setCreatetime(new Timestamp());
+        sub.setCreatedby("sas");
         sub.setEmail("sasa");
         sub.setLanguage(new Integer(0));
-        sub.setLastName("sdas");
-        sub.setLastUpdateTime(new Timestamp());
-        sub.setNotificationMethod(new Integer(0));
+        sub.setLastname("sdas");
+        sub.setLastupdatetime(new Timestamp());
+        sub.setNotificationmethod(0L);
         // sub.setParentID(Long.MIN_VALUE);
         sub.setRestrictions(new Integer(0));
         sub.setStatus(new Integer(0));
-        sub.setStatusTime(new Timestamp());
+        sub.setStatustime(new Timestamp());
         sub.setTimezone("sas");
         sub.setType(new Integer(0));
-        sub.setUpdatedBy("sasa");
+        sub.setUpdatedby("sasa");
         CompanyDAO comp = new CompanyDAO();
         sub.setCompany(comp.getById(1L));
 
-        sub.setmFinoServiceProviderByMSPID(msp);
+        sub.setMfinoServiceProvider(msp);
 
         subDao.save(sub);
 
 
 
-        mdn.setMDN(getRandomMdn());
+        mdn.setMdn(getRandomMdn());
 
         mdn.setSubscriber(sub);
 
-        mdn.setCreateTime(new Timestamp());
+        mdn.setCreatetime(new Timestamp());
         mdn.setRestrictions(new Integer(15));
         mdn.setStatus(new Integer(0));
-        mdn.setActivationTime(new Timestamp());
-        mdn.setAuthenticationPhoneNumber("dsd");
-        mdn.setAuthenticationPhrase("dsd");
-        mdn.setCreatedBy("dsd");
-        mdn.setDigestedPIN("sds");
-        mdn.setLastTransactionID(Long.MIN_VALUE);
-        mdn.setLastTransactionTime(new Timestamp());
-        mdn.setLastUpdateTime(new Timestamp());
-        mdn.setStatusTime(new Timestamp());
-        mdn.setUpdatedBy("dsd");
-        mdn.setWrongPINCount(Integer.MAX_VALUE);
+        mdn.setActivationtime(new Timestamp());
+        mdn.setAuthenticationphonenumber("dsd");
+        mdn.setAuthenticationphrase("dsd");
+        mdn.setCreatedby("dsd");
+        mdn.setDigestedpin("sds");
+        mdn.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn.setLasttransactiontime(new Timestamp());
+        mdn.setLastupdatetime(new Timestamp());
+        mdn.setStatustime(new Timestamp());
+        mdn.setUpdatedby("dsd");
+        mdn.setWrongpincount(Integer.MAX_VALUE);
 
         dao.save(mdn);
 
         Thread.sleep(3000);
 
         log.info("Version before =" + mdn.getVersion());
-
+        
         UpdaterThread t1 = new UpdaterThread(mdn, 1);
         UpdaterThread t2 = new UpdaterThread(mdn, 2);
 
@@ -122,11 +123,11 @@ public class SubscriberMDNDAOConcurrencyTest {
 
     }
 
-    private boolean isStaleData(SubscriberMDN subMdn) {
+    private boolean isStaleData(SubscriberMdn subMdn) {
 
         SubscriberMdnQuery query = new SubscriberMdnQuery();
 
-        query.setVersion(subMdn.getVersion());
+        query.setVersion(((Long)subMdn.getVersion()).intValue());
         query.setLimit(10);
         query.setStart(0);
 
@@ -142,9 +143,9 @@ public class SubscriberMDNDAOConcurrencyTest {
 
     class UpdaterThread extends Thread {
 
-        private SubscriberMDN subMdn;
+        private SubscriberMdn subMdn;
 
-        public UpdaterThread(SubscriberMDN subMdn, int status) {
+        public UpdaterThread(SubscriberMdn subMdn, int status) {
             this.subMdn = subMdn;
             this.subMdn.setStatus(new Integer(status));
         }

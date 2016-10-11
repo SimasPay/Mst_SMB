@@ -18,12 +18,12 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ChargeTxnCommodityTransferMap;
+import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerServices;
 import com.mfino.domain.ServiceChargeTxnLog;
-import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAutoReversal;
@@ -114,7 +114,7 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		CommodityTransfer ct = commodityTransferService.getCommodityTransferById(realMsg.getCommodityTransferID());
 		ChargeTxnCommodityTransferMapQuery query =new ChargeTxnCommodityTransferMapQuery();
 		query.setCommodityTransferID(ct.getId().longValue());
-		List<ChargeTxnCommodityTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
+		List<ChargetxnTransferMap> results =chargeTxnCommodityTransferMapService.getChargeTxnCommodityTransferMapByQuery(query);
 		if(results==null||results.isEmpty()){
 			log.info("SCTL not exist for commodityTransfet with id: "+ct.getId());
 			errorMsg.setErrorDescription(MessageText._("Invalid Transaction"));

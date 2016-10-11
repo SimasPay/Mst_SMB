@@ -17,7 +17,7 @@ import com.mfino.dao.query.ClosedAccountSettlementMDNQuery;
 import com.mfino.dao.query.MoneyClearanceGravedQuery;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.ChannelCode;
-import com.mfino.domain.ClosedAccountSettlementMDN;
+import com.mfino.domain.CloseAcctSetlMdn;
 import com.mfino.domain.MoneyClearanceGraved;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -148,11 +148,11 @@ public class ApproveRejectSettlementProcessorImpl extends BaseFixProcessor imple
 		
 		ClosedAccountSettlementMDNQuery casmQuery = new ClosedAccountSettlementMDNQuery();
 		casmQuery.setMdnId(realMsg.getSubscriberMDNID());
-		List<ClosedAccountSettlementMDN> casmLst = closedAccountSettlementMDNService.getClosedAccountSettlementMDNByQuery(casmQuery);
+		List<CloseAcctSetlMdn> casmLst = closedAccountSettlementMDNService.getClosedAccountSettlementMDNByQuery(casmQuery);
 		boolean toBankAccount = false;
 		String settlementMDN = null;
 		String settlementAccountNumber = null;
-		ClosedAccountSettlementMDN casm;
+		CloseAcctSetlMdn casm;
 		
 		if(casmLst.size() > 0){
 			casm = casmLst.get(0);
