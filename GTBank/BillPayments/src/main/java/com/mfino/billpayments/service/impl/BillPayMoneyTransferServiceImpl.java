@@ -154,7 +154,7 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 	@Override
 	public MCEMessage billPayMoneyTransferInquirySourceToSuspense(MCEMessage mceMessage) {
 		  sessionFactory = htm.getSessionFactory();
-		  Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+		  Session session = sessionFactory.getCurrentSession();
 		  TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 		log.info("BillPayMoneyTransferServiceImpl :: billPayMoneyTransferInquirySourceToSuspense mceMessage="+mceMessage);
 		
