@@ -1305,8 +1305,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						
 						if (merchant != null) {
 							log.info("Checking MDN range is valid for merchant: " + merchant.getId());
-							if (merchant.getMerchantByParentID() != null) {
-								Merchant merchantparent = merchant.getMerchantByParentID();
+							if (merchant.getMerchant() != null) {
+								Merchant merchantparent = merchant.getMerchant();
 								if (!mdnRangeService.isMDNInParentsRange(Long.parseLong(e.getMDN().substring(2)), merchantparent)) {
 									CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 									error.setErrorDescription(MessageText._("Subscriber updation failed. This subscriber is a merchant, and his MDN should lie inside his parent's range."));
