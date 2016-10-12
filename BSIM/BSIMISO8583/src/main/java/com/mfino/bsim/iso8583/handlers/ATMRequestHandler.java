@@ -78,7 +78,7 @@ public class ATMRequestHandler extends FIXMessageHandler {
 		FIXMessageHandler handler = null;
 		Integer response=null;
 		sessionFactory = htm.getSessionFactory();
-		Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+		Session session = sessionFactory.getCurrentSession();
 		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 		try {
 			property.load(new FileInputStream("mfino_conf"+File.separator+"ATMCodes.properties"));
@@ -170,7 +170,7 @@ public class ATMRequestHandler extends FIXMessageHandler {
 	public void updateDetails(ISOMsg msg){
 		try{
 			sessionFactory = htm.getSessionFactory();
-			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+			Session session = sessionFactory.getCurrentSession();
 			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 			CmFinoFIX.CMGetSubscriberDetailsToBank toBank = new CmFinoFIX.CMGetSubscriberDetailsToBank();
 			String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));
