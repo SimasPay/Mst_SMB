@@ -33,7 +33,7 @@
 	<osgi:reference id="RelationshipServiceImpl" interface="com.mfino.service.RelationshipService"/>
 	<osgi:reference id="TransactionChargingServiceImpl" interface="com.mfino.service.TransactionChargingService" context-class-loader="service-provider"/>
 
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	<context:component-scan base-package="com.mfino.commons.hierarchyservice.impl" />
 	
 	<osgi:service ref="HierarchyServiceImpl" interface="com.mfino.commons.hierarchyservice.HierarchyService" /> 

@@ -43,7 +43,7 @@
 	<!-- <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>-->
     <osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService" />
     <osgi:reference id="transactionLogServiceCoreImpl" bean-name="TransactionLogServiceImpl" interface="com.mfino.service.TransactionLogService"/>
-    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
     
     <bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

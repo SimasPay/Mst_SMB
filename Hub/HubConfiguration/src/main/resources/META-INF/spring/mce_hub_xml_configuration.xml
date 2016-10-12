@@ -30,7 +30,7 @@
 	<context:annotation-config />
 
 	<!--<osgi:reference id="integrationSummaryService" interface="com.mfino.mce.backend.IntegrationSummaryService" />-->
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	
 	<osgi:reference id="billPaymentsService" interface="com.mfino.billpayments.service.BillPaymentsService"/>
 	

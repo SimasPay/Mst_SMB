@@ -25,7 +25,7 @@
 	    http://www.springframework.org/schema/context/spring-context.xsd 
 	    http://activemq.apache.org/schema/core 
 	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" context-class-loader="service-provider"/>
 	<osgi:reference id="subscriberService" bean-name="SubscriberServiceImpl" interface="com.mfino.service.SubscriberService" />
 	<osgi:reference id="subscriberMdnService" bean-name="SubscriberMdnServiceImpl" interface="com.mfino.service.SubscriberMdnService" />
 	<osgi:reference id="pocketService" bean-name="PocketServiceImpl" interface="com.mfino.service.PocketService" />

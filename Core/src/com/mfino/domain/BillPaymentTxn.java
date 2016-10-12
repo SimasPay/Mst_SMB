@@ -111,6 +111,10 @@ public class BillPaymentTxn  extends Base implements java.io.Serializable {
 		return this.company;
 	}
 
+	public void setCompany(Company company) {
+		this.company=company;
+	}
+
 	
 	@Column(name = "PARENTTRANSACTIONID", nullable = false, scale = 0)
 	public BigDecimal getParenttransactionid() {

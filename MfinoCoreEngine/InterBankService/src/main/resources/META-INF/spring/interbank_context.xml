@@ -40,7 +40,7 @@
 
 	
 	<context:annotation-config />
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />	
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />	
 	<osgi:reference id="subscriberServiceImpl" interface="com.mfino.service.SubscriberService" context-class-loader="service-provider"/>
 
 	<bean id="interbankService" class="com.mfino.mce.interbank.impl.InterBankServiceImpl">

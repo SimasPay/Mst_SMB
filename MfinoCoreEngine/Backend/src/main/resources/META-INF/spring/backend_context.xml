@@ -64,7 +64,7 @@
 	<osgi:reference id="unRegisteredTxnInfoDAO" interface="com.mfino.dao.UnRegisteredTxnInfoDAO" />
 	<osgi:reference id="chargeTxnCommodityTransferMapDAO" interface="com.mfino.dao.ChargeTxnCommodityTransferMapDAO" />
 	<osgi:reference id="fundDistributionInfoDAO" interface="com.mfino.dao.FundDistributionInfoDAO" />	
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
  	<osgi:reference id="mfsLedgerDAO" interface="com.mfino.dao.MFSLedgerDAO"/>
  	<osgi:reference id="integrationSummaryDao" interface="com.mfino.dao.IntegrationSummaryDao"/>
 	<osgi:reference id="fundStorageServiceImpl" bean-name="FundStorageServiceImpl" interface="com.mfino.service.FundStorageService"/>

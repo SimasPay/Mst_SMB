@@ -40,7 +40,7 @@
 	    http://activemq.apache.org/schema/core 
 	    http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd ">
 
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 
 	<context:annotation-config />
 	<tx:annotation-driven transaction-manager="txManager" />

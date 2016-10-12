@@ -35,7 +35,7 @@
 	</bean>
 
 	<osgi:reference id="pooledConnectionFactory" interface="javax.jms.ConnectionFactory"/>
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	<osgi:reference id="mfinoServiceImpl" bean-name="MfinoServiceImpl" interface="com.mfino.service.MfinoService" />
 	<osgi:reference id="smsServiceImpl" bean-name="SMSServiceImpl" interface="com.mfino.service.SMSService" />
 	<osgi:reference id="notificationServiceImpl" bean-name="NotificationServiceImpl" interface="com.mfino.service.NotificationService" />

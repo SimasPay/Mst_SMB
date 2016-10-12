@@ -46,7 +46,7 @@
 	<bean id="frontendListenerDefaultImpl" class="com.mfino.mce.frontend.impl.FrontendListenerServiceDefaultImpl">
 	</bean>
 	
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 
 <!-- 	<bean id="missingResponseHandlerServiceDefaultImpl" class="com.mfino.mce.frontend.impl.MissingResponseHandlerServiceDefaultImpl"/> -->
 	<!--

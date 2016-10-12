@@ -37,7 +37,7 @@
 	
 	<osgi:reference id="autoReversalService" interface="com.mfino.mce.backend.AutoReversalService"/>
 	<osgi:reference id="autoReversalPendingResolveService" interface="com.mfino.mce.backend.AutoReversalPendingResolveService"/>
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	
 	<osgi:reference id="billerServiceImpl" bean-name="BillerServiceImpl" interface="com.mfino.service.BillerService"/>
 	<osgi:reference id="notificationMessageParserServiceImpl" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService"/>

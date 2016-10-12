@@ -33,7 +33,7 @@
 
 	<context:annotation-config />
 
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" context-class-loader="service-provider"/>
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" context-class-loader="service-provider"/>
 	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
 	<osgi:reference id="hibernateSessionHolder"
 		interface="com.mfino.hibernate.session.HibernateSessionHolder" />

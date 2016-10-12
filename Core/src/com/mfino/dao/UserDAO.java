@@ -4,6 +4,7 @@
  */
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
         //FIXME : everyone save it as 1 for now
         if (theUser.getMfinoServiceProvider() == null) {
             MfinoServiceProviderDAO mspDao = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-            MfinoServiceProvider msp = mspDao.getById(1);
+            MfinoServiceProvider msp = mspDao.getById(BigDecimal.valueOf(1));
             theUser.setMfinoServiceProvider(msp);
         }
 
@@ -54,7 +55,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
     public List<MfinoUser> get(UserQuery query) {
         Criteria criteria = createCriteria();
         MfinoServiceProviderDAO mspDAO = DAOFactory.getInstance().getMfinoServiceProviderDAO();
-        MfinoServiceProvider msp = mspDAO.getById(1l);
+        MfinoServiceProvider msp = mspDAO.getById(BigDecimal.valueOf(1l));
         
         if (query.getUserName() != null) {
         	criteria.add(Restrictions.eq(MfinoUser.FieldName_mFinoServiceProviderByMSPID, msp));

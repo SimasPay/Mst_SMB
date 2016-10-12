@@ -8,7 +8,7 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans 
         				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/security 
-                        http://www.springframework.org/schema/security/spring-security-3.0.4.xsd
+                        http://www.springframework.org/schema/security/spring-security-3.1.xsd
                         http://www.springframework.org/schema/tx 
                         http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
        					http://www.springframework.org/schema/context
@@ -23,7 +23,7 @@
         -->
     </global-method-security>
  
-    <http auto-config="false">
+    <http auto-config="true" use-expressions="true">
         <form-login login-page="/login.htm" default-target-url="/index.htm"
             authentication-failure-url="/login.htm?login_error=1" />
         <logout logout-success-url="/login.htm" />
@@ -31,19 +31,19 @@
         <!-- 
         <intercept-url pattern="/login.htm" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="any"/>
         -->
-        <intercept-url pattern="/forgotpassword.htm*" filters="none"/>
-        <intercept-url pattern="/resetpassword.htm*" filters="none"/>
-        <intercept-url pattern="/activation.htm*" filters="none"/>
-        <intercept-url pattern="/login.htm*" filters="none"/>
-        <intercept-url pattern="/merchant_registration.htm*" filters="none"/>
-        <intercept-url pattern="/js/**" filters="none" />
-        <intercept-url pattern="/extjs/**" filters="none" />
-        <intercept-url pattern="/test/**" filters="none" />
-        <intercept-url pattern="/resources/**" filters="none" />     
+        <intercept-url pattern="/forgotpassword.htm*" access="permitAll"/>
+        <intercept-url pattern="/resetpassword.htm*" access="permitAll"/>
+        <intercept-url pattern="/activation.htm*" access="permitAll"/>
+        <intercept-url pattern="/login.htm*" access="permitAll"/>
+        <intercept-url pattern="/merchant_registration.htm*" access="permitAll"/>
+        <intercept-url pattern="/js/**" access="permitAll" />
+        <intercept-url pattern="/extjs/**" access="permitAll" />
+        <intercept-url pattern="/test/**" access="permitAll" />
+        <intercept-url pattern="/resources/**" access="permitAll" />     
         <!--
         Grant access to any Prinicipal that is already authenticated
         -->
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED"/>
+        <intercept-url pattern="/**" access="isAuthenticated()"/>
         
         <custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
         <custom-filter ref="authenticationProcessingFilter" before="FORM_LOGIN_FILTER" />        

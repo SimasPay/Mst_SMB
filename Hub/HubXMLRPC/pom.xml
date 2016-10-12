@@ -119,7 +119,7 @@
                             org.apache.camel.component.jms,
               				org.osgi.framework,
               				org.springframework.beans.factory.config,
-              				org.springframework.orm.hibernate3,
+              				org.springframework.orm.hibernate4,
               				org.aopalliance.aop,
 							org.springframework.aop,
 							org.springframework.aop.framework,

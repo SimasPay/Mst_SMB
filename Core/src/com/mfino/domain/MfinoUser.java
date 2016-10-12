@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.StringUtils;
@@ -89,7 +90,8 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private Set<BankAdmin> bankAdmins = new HashSet<BankAdmin>(0);
 	private Set<Integer> permissions;
     private String languageCode;
-
+    
+    @Transient
     public Set<Integer> getPermissions() {
         return permissions;
     }

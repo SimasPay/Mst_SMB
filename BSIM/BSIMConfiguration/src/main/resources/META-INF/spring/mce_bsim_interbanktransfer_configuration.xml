@@ -30,7 +30,7 @@
 	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
 
 
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	<osgi:reference id="interbankService" interface="com.mfino.mce.interbank.InterBankService" />
 
 	<!-- define the jasypt properties parser with the given password to be used -->

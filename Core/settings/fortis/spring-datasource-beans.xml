@@ -176,7 +176,7 @@ class="org.springframework.jndi.JndiObjectFactoryBean">
 	
 	
 	<!--  Hibernate SessionFactory Definition -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="false">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
 		 <!-- <property name="mappingLocations">-->
 		  <property name="mappingResources">
 			<list>				

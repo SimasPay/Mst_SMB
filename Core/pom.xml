@@ -352,7 +352,7 @@
 							org.apache.camel.component.jms,
 							org.osgi.framework,
 							org.springframework.orm.hibernate4,
-							org.springframework.orm.hibernate3.annotation,
+							org.springframework.orm.hibernate4.annotation,
 							org.aopalliance.aop,
 							org.springframework.aop,
 							org.springframework.aop.framework,

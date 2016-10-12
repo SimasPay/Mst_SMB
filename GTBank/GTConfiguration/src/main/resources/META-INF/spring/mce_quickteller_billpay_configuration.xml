@@ -92,7 +92,7 @@
 	
 	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
 	
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	
 
 	<http:conduit name="*.http-conduit">

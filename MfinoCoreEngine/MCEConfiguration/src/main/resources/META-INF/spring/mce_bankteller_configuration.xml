@@ -27,7 +27,7 @@
      
    	<context:annotation-config />
 
-   	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" /> 
+   	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" /> 
 	<osgi:reference id="tellerService" interface="com.mfino.mce.bankteller.TellerService"/>	
 	<osgi:reference id="tellerPendingClearanceService" interface="com.mfino.mce.bankteller.TellerPendingClearanceService"/>
 	<osgi:reference id="tellerEmoneyTransferService" interface="com.mfino.mce.bankteller.TellerEmoneyTransferService"/>

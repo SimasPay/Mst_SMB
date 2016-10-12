@@ -180,7 +180,7 @@
 	
 	
 	<!--  Hibernate SessionFactory Definition -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="false">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
 		 <!-- <property name="mappingLocations">-->
 		  <property name="mappingResources">
 			<list>				
@@ -342,7 +342,7 @@
 	<tx:annotation-driven transaction-manager="txManager" />
 
 	<!-- Hibernate Transaction Manager Definition -->
-	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory">
 			<ref local="sessionFactory" />
 		</property>

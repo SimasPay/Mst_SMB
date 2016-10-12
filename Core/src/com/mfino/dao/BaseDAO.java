@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,7 +27,7 @@ import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -218,14 +219,14 @@ public class BaseDAO<T> {
      */
     @SuppressWarnings("unchecked")
     @Deprecated
-    public T getById(long id, LockMode lockMode) {
+    public T getById(BigDecimal id, LockMode lockMode) {
         T entity;
         entity = (T) getSession().get(getPersistentClass(), id, lockMode);
         return entity;
     }
     
     @SuppressWarnings("unchecked")
-    public T getById(long id) {
+    public T getById(BigDecimal id) {
         return getById(id, LockMode.NONE);
     }
 

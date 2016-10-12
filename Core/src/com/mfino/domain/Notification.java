@@ -8,12 +8,10 @@ import java.sql.Clob;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -34,8 +32,7 @@ public class Notification extends Base implements java.io.Serializable {
 	public static final String FieldName_NotificationCodeName = "codename";
 	public static final String FieldName_Company = "company";
 	
-	private BigDecimal id;
-	private long version;
+	
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
 	private long code;
@@ -102,25 +99,7 @@ public class Notification extends Base implements java.io.Serializable {
 		this.isactive = isactive;
 	}
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, scale = 0)
-	public BigDecimal getId() {
-		return this.id;
-	}
-
-	public void setId(BigDecimal id) {
-		this.id = id;
-	}
-
-	@Version
-	@Column(name = "VERSION", nullable = false, precision = 10, scale = 0)
-	public long getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(long version) {
-		this.version = version;
-	}
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)

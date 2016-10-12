@@ -59,7 +59,7 @@
     </bean>
     
     <!-- Config for Open Session for View 
-	<bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+	<bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor">
    		<property name="sessionFactory" ref="sessionFactory"/>
 		<property name="flushMode" value="1"/>
 	</bean>-->

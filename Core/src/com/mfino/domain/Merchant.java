@@ -17,9 +17,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 /**
@@ -27,12 +29,18 @@ import com.mfino.hibernate.Timestamp;
  */
 @Entity
 @Table(name = "MERCHANT")
-public class Merchant extends Base implements java.io.Serializable {
+public class Merchant  implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_TradeName = "tradename";
 	public static final String FieldName_MerchantByParentID = "merchant";
 	public static final String FieldName_GroupID = "groupid";
 	public static final String FieldName_StatusTime = "statustime";
+	private BigDecimal id;
+	private long version;
+	private Timestamp lastupdatetime;
+	private String updatedby;
+	private Timestamp createtime;
+	private String createdby;
 	private Address addressByMerchantaddressid;
 	private Address addressByFranchiseoutletaddressid;
 	private Region region;
@@ -148,8 +156,58 @@ public class Merchant extends Base implements java.io.Serializable {
 	public void setId(BigDecimal id) {
 		this.id = id;
 	}
+	
+	@Version
+	@Column(name = "Version", nullable = false)
+	public long getVersion() {
+		return this.version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+
+	@Type(type = "userDefinedTimeStamp")
+	@Column(name = "LastUpdateTime", nullable = false, length = 19)
+	public Timestamp getLastUpdateTime() {
+		return this.lastupdatetime;
+	}
+
+	public void setLastUpdateTime(Timestamp lastUpdateTime) {
+		this.lastupdatetime = lastUpdateTime;
+	}
+
+	@Column(name = "UpdatedBy", nullable = false)
+	public String getUpdatedBy() {
+		return this.updatedby;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedby = updatedBy;
+	}
+
+	@Type(type = "userDefinedTimeStamp")
+	@Column(name = "CreateTime", nullable = false, length = 19)
+	public Timestamp getCreateTime() {
+		return this.createtime;
+	}
+
+	public void setCreateTime(Timestamp createTime) {
+		this.createtime = createTime;
+	}
+
+	@Column(name = "CreatedBy", nullable = false)
+	public String getCreatedBy() {
+		return this.createdby;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdby = createdBy;
+	}
 
 	
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MERCHANTADDRESSID")
@@ -439,8 +497,6 @@ public class Merchant extends Base implements java.io.Serializable {
 		this.merchants = merchants;
 	}
 	
-	public Merchant getMerchantByParentID(){
-		return m_pMerchantByParentID;
-		}
+	
 	
 }
