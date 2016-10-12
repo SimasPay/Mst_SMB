@@ -35,7 +35,7 @@ public class MDNRangeServiceImpl implements MDNRangeService{
     public boolean isMDNInParentsRange(Long mdn, Merchant parent) {
         log.info("isMDNInParentsRange: MDN "+mdn + " where parent id is " + parent.getId());
         // an exception for top most guys
-        if(parent.getMerchantByParentID() == null)
+        if(parent.getMerchant() == null)
         {
             log.info("isMDNInParentsRange: Success, parent's parent is null");
             return Success;

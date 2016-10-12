@@ -96,7 +96,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 			if (subIter.hasNext()) {
 				Subscriber subscriber = subIter.next();
 				Merchant m = subscriber.getMerchant();
-				if (null == m.getMerchantByParentID()) {
+				if (null == m.getMerchant()) {
 					return false;
 				}
 			}

@@ -46,7 +46,7 @@ public class MerchantHierarchyValidator implements IValidator {
 		if (childMerchant == null || parentMerchant == null)
 			return CmFinoFIX.NotificationCode_NotDescendentNotification;
 		
-		if (childMerchant.getMerchantByParentID().getId()!=null && childMerchant.getMerchantByParentID().getId().equals(parentMerchant.getId()))
+		if (childMerchant.getMerchant().getId()!=null && childMerchant.getMerchant().getId().equals(parentMerchant.getId()))
 			return CmFinoFIX.NotificationCode_NotDescendentNotification;
 		return CmFinoFIX.ResponseCode_Success;
 	}
