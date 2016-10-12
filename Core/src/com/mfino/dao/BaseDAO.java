@@ -219,15 +219,15 @@ public class BaseDAO<T> {
      */
     @SuppressWarnings("unchecked")
     @Deprecated
-    public T getById(BigDecimal id, LockMode lockMode) {
+    public T getById(long id, LockMode lockMode) {
         T entity;
-        entity = (T) getSession().get(getPersistentClass(), id, lockMode);
+        entity = (T) getSession().get(getPersistentClass(), new BigDecimal(id), lockMode);
         return entity;
     }
     
     @SuppressWarnings("unchecked")
-    public T getById(BigDecimal id) {
-        return getById(id, LockMode.NONE);
+    public T getById(long id) {
+        return getById (id, LockMode.NONE);
     }
 
     public void processPaging(BaseQuery query, Criteria criteria) {

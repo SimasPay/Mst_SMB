@@ -31,6 +31,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "MERCHANT")
 public class Merchant  implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String FieldName_RecordID="id";
+	public static final String FieldName_CreateTime = "createtime";
+   public static final String FieldName_LastUpdateTime = "lastupdatetime";
+
+
 	public static final String FieldName_TradeName = "tradename";
 	public static final String FieldName_MerchantByParentID = "merchant";
 	public static final String FieldName_GroupID = "groupid";
