@@ -24,7 +24,7 @@ public class OpenSessionMethodInterceptor implements MethodInterceptor{
 		field.setAccessible(true);
 		HibernateTransactionManager txManager = (HibernateTransactionManager) field.get(obj);
 		sessionFactory = txManager.getSessionFactory();
-		session = SessionFactoryUtils.getSession(sessionFactory, true);
+		session = sessionFactory.getCurrentSession();
 		if(!TransactionSynchronizationManager.hasResource(sessionFactory)){
 		log.info("Opening and Binding Session for thread : "+ Thread.currentThread().getName());
 		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
