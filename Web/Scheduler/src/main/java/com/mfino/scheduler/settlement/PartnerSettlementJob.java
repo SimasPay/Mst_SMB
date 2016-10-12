@@ -65,7 +65,7 @@ public class PartnerSettlementJob implements Job{
 		
 			htm = (HibernateTransactionManager)schedContext.get(HibernateTransactionManager.class.getName());
 			sessionFactory = htm.getSessionFactory();
-			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+			Session session = sessionFactory.getCurrentSession();
 			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 			
