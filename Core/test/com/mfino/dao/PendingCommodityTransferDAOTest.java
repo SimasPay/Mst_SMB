@@ -225,8 +225,8 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setDestmdnid(mdn2.getId());
         pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
         pcmt.setDestpockettype(Long.MAX_VALUE);
-        pcmt.setDestpocketid(new BigDecimal(Long.MIN_VALUE));
-        pcmt.setDestsubscriberid(new BigDecimal(Long.MIN_VALUE));
+        pcmt.setDestpocketid(Long.MIN_VALUE);
+        pcmt.setDestsubscriberid(Long.MIN_VALUE);
         pcmt.setDestsubscribername("sunny");
         pcmt.setEndtime(new Timestamp());
         pcmt.setLastupdatetime(new Timestamp());
@@ -282,8 +282,8 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setDestmdnid(mdn1.getId());
         pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
         pcmt1.setDestpockettype(Long.MAX_VALUE);
-        pcmt1.setDestpocketid(new BigDecimal(Long.MIN_VALUE));
-        pcmt1.setDestsubscriberid(new BigDecimal(Long.MIN_VALUE));
+        pcmt1.setDestpocketid(Long.MIN_VALUE);
+        pcmt1.setDestsubscriberid(Long.MIN_VALUE);
         pcmt1.setDestsubscribername("sunny");
         pcmt1.setEndtime(new Timestamp());
         pcmt1.setLastupdatetime(new Timestamp());
