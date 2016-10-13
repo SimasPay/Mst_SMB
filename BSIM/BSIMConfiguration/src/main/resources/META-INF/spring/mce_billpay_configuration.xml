@@ -22,11 +22,6 @@
 	    http://camel.apache.org/schema/cxf
 		http://camel.apache.org/schema/cxf/camel-cxf.xsd ">
 
-	<import resource="classpath:META-INF/cxf/cxf.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
-
-
 	<!-- define the jasypt properties parser with the given password to be used -->
 	<bean id="jasypt"
 		class="org.apache.camel.component.jasypt.JasyptPropertiesParser">

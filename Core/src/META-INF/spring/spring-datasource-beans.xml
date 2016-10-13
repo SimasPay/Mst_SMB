@@ -203,6 +203,8 @@
 	    <property name="connectionFactory" ref="jmsConnectionFactory" />
 	 </bean>
 	 
+	 <osgi:service ref="pooledConnectionFactory" interface="javax.jms.ConnectionFactory" />
+	 
 	<tx:annotation-driven transaction-manager="txManager" />
 
 	<!-- Hibernate Transaction Manager Definition -->

@@ -33,7 +33,7 @@ public class AutoReversalsDao extends BaseDAO<AutoReversals> {
 		
 		if((null != statuses) && (statuses.size() > 0)){
 			Criteria criteria = createCriteria();
-			criteria.add(Restrictions.in(CRAutoReversals.FieldName_AutoRevStatus, statuses));
+			criteria.add(Restrictions.in(AutoReversals.FieldName_AutoRevStatus, statuses));
 			autoReversals = criteria.list();
 		}
 		

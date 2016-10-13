@@ -52,7 +52,7 @@
 
 
 	<osgi:reference id="coreDataWrapper" interface="com.mfino.mce.core.CoreDataWrapper" />
-	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	<osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
 	
 

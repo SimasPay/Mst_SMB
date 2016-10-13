@@ -65,7 +65,7 @@
     <osgi:reference id="transactionLogDao" interface="com.mfino.dao.TransactionsLogDAO"/>
     <osgi:reference id="systemParameterDao" interface="com.mfino.dao.SystemParametersDao"/>
     <osgi:reference id="commodityTransferDao" interface="com.mfino.dao.CommodityTransferDAO"/>
-    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
     <osgi:reference id="SubscriberServiceExtendedImpl" bean-name="SubscriberServiceExtendedImpl"  interface="com.mfino.service.SubscriberServiceExtended" />
     <osgi:reference id="pocketServiceImpl" bean-name="PocketServiceImpl"  interface="com.mfino.service.PocketService" />
     

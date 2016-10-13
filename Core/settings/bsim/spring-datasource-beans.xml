@@ -294,5 +294,4 @@
     	<property name="hibernateSessionHolder" ref="hibernateSessionHolder"/>
     </bean>
     
-    
 </beans>
