@@ -41,7 +41,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	private Company company;
 	private Pocket pocket;
 	private String description;
-	private BigDecimal mdnid;
+	private Long mdnid;
 	private String username;
 	private String mdn;
 	private String infilename;
@@ -143,11 +143,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "MDNID", scale = 0)
-	public BigDecimal getMdnid() {
+	public Long getMdnid() {
 		return this.mdnid;
 	}
 
-	public void setMdnid(BigDecimal mdnid) {
+	public void setMdnid(Long mdnid) {
 		this.mdnid = mdnid;
 	}
 

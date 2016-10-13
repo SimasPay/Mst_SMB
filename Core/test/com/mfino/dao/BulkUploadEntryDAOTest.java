@@ -42,7 +42,7 @@ public class BulkUploadEntryDAOTest extends TestCase {
         bue.setCreatedby(null);
         bue.setDestmdn("12345");
         bue.setLinenumber(Integer.SIZE);
-        bue.setUploadid(new BigDecimal(3));
+        bue.setUploadid((long)3);
         bue.setVersion(Integer.SIZE);
         bue.setStatus(1);
         bue.setLastupdatetime(new Timestamp());

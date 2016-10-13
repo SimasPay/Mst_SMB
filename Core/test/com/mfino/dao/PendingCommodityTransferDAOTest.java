@@ -387,8 +387,8 @@ public class PendingCommodityTransferDAOTest {
 
         List results = dao.get(query);
 
-        BigDecimal idOne = ((PendingCommodityTransfer) results.get(0)).getId();
-        BigDecimal idTwo = ((PendingCommodityTransfer) results.get(1)).getId();
+        BigDecimal idOne = BigDecimal.valueOf(((PendingCommodityTransfer) results.get(0)).getId());
+        BigDecimal idTwo = BigDecimal.valueOf(((PendingCommodityTransfer) results.get(1)).getId());
 
         assertTrue(idOne.longValue() > idTwo.longValue());
 
@@ -444,8 +444,8 @@ public class PendingCommodityTransferDAOTest {
 
         List results = dao.get(query);
 
-        BigDecimal idOne = ((PendingCommodityTransfer) results.get(0)).getId();
-        BigDecimal idTwo = ((PendingCommodityTransfer) results.get(1)).getId();
+        BigDecimal idOne =BigDecimal.valueOf( ((PendingCommodityTransfer) results.get(0)).getId());
+        BigDecimal idTwo =BigDecimal.valueOf( ((PendingCommodityTransfer) results.get(1)).getId());
 
 
         assertTrue(idOne.longValue() > idTwo.longValue());
@@ -489,8 +489,8 @@ public class PendingCommodityTransferDAOTest {
         assertTrue(idOne <= idTwo);
 
 
-        BigDecimal idOne1 = ((PendingCommodityTransfer) results.get(0)).getId();
-        BigDecimal idTwo1 = ((PendingCommodityTransfer) results.get(1)).getId();
+        BigDecimal idOne1 =BigDecimal.valueOf( ((PendingCommodityTransfer) results.get(0)).getId());
+        BigDecimal idTwo1 = BigDecimal.valueOf(((PendingCommodityTransfer) results.get(1)).getId());
 
         assertTrue(idOne1.longValue() > idTwo1.longValue());
     }

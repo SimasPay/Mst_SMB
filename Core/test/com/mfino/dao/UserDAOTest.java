@@ -54,7 +54,7 @@ public class UserDAOTest extends TestCase {
 
         //Dummy MSP
         MfinoServiceProvider msp = new MfinoServiceProvider();
-        msp.setId(new BigDecimal(0));
+        msp.setId((long)0);
         u.setMfinoServiceProvider(msp);
 
      //   service.save(u);

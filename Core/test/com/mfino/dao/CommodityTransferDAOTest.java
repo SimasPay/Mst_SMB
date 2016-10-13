@@ -208,7 +208,7 @@ public class CommodityTransferDAOTest {
 
         pocDao.save(poc);
 
-        pcmt.setId(new BigDecimal(getRandomID()));
+        pcmt.setId(getRandomID());
         pcmt.setAmount(new BigDecimal(1000));
         pcmt.setDestmdn(mdn2.getMdn());
         pcmt.setStarttime(new Timestamp());
@@ -267,7 +267,7 @@ public class CommodityTransferDAOTest {
         dao.save(pcmt);
 
 
-        pcmt1.setId(new BigDecimal(getRandomID()));
+        pcmt1.setId(getRandomID());
         pcmt1.setAmount(new BigDecimal(1000));
         pcmt1.setDestmdn(mdn1.getMdn());
         pcmt1.setStarttime(new Timestamp());

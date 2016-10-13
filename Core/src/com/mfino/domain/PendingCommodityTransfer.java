@@ -98,7 +98,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private String sourcecardpan;
 	private String sourcemessage;
 	private String destmdn;
-	private BigDecimal destmdnid;
+	private Long destmdnid;
 	private BigDecimal destsubscriberid;
 	private String destsubscribername;
 	private Long destpocketallowance;
@@ -453,11 +453,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	}
 
 	@Column(name = "DESTMDNID", scale = 0)
-	public BigDecimal getDestmdnid() {
+	public Long getDestmdnid() {
 		return this.destmdnid;
 	}
 
-	public void setDestmdnid(BigDecimal destmdnid) {
+	public void setDestmdnid(Long destmdnid) {
 		this.destmdnid = destmdnid;
 	}
 
