@@ -18,10 +18,11 @@ import com.mfino.hibernate.Timestamp;
 public class AutoReversals  extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SctlId = "sctlid";
+	public static final String FieldName_AutoRevStatus = "autorevstatus";
 	private BigDecimal sctlid;
 	private BigDecimal sourcepocketid;
 	private BigDecimal destpocketid;
-	private long autorevstatus;
+	private Integer autorevstatus;
 	private BigDecimal amount;
 	private BigDecimal charges;
 
@@ -31,7 +32,7 @@ public class AutoReversals  extends Base implements java.io.Serializable {
 	public AutoReversals(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid, BigDecimal sourcepocketid,
-			BigDecimal destpocketid, long autorevstatus) {
+			BigDecimal destpocketid, Integer autorevstatus) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
 		this.updatedby = updatedby;
@@ -46,7 +47,7 @@ public class AutoReversals  extends Base implements java.io.Serializable {
 	public AutoReversals(BigDecimal id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			BigDecimal sctlid, BigDecimal sourcepocketid,
-			BigDecimal destpocketid, long autorevstatus, BigDecimal amount,
+			BigDecimal destpocketid, Integer autorevstatus, BigDecimal amount,
 			BigDecimal charges) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
@@ -91,11 +92,11 @@ public class AutoReversals  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "AUTOREVSTATUS", nullable = false, precision = 11, scale = 0)
-	public long getAutorevstatus() {
+	public Integer getAutorevstatus() {
 		return this.autorevstatus;
 	}
 
-	public void setAutorevstatus(long autorevstatus) {
+	public void setAutorevstatus(Integer autorevstatus) {
 		this.autorevstatus = autorevstatus;
 	}
 
