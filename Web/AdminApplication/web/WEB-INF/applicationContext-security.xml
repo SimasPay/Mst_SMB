@@ -25,6 +25,7 @@
      <http pattern="/extjs/**" security="none"/>
      <http pattern="/js/**" security="none"/>
      <http pattern="/resources/**" security="none"/>
+      <http pattern="/login.htm*" security="none"/>
  
     <http auto-config="true" use-expressions="true" >
         <form-login login-page="/login.htm" default-target-url="/index.htm"
@@ -37,7 +38,6 @@
         <intercept-url pattern="/forgotpassword.htm*" access="permitAll"/>
         <intercept-url pattern="/resetpassword.htm*" access="permitAll"/>
         <intercept-url pattern="/activation.htm*" access="permitAll"/>
-        <intercept-url pattern="/login.htm*" access="permitAll"/>
         <intercept-url pattern="/merchant_registration.htm*" access="permitAll"/>
         <intercept-url pattern="/test/**" access="permitAll" />
         <!--
